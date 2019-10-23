@@ -13,44 +13,6 @@ local function setup_font_size(font_size)
 	return font_size
 end
 
-local function get_text_height(ui_renderer, size, ui_style, ui_content, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font_material, font_size, font_name = nil
-
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = ui_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = ui_style.font_size or font_size
-	end
-
-	if ui_style.localize then
-		text = Localize(text)
-	end
-
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local text_start_index = ui_content.text_start_index or 1
-	local max_texts = ui_content.max_texts or #texts
-	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
-
-	return full_font_height, num_texts
-end
-
 UITooltipPasses = {
 	background = {
 		setup_data = function ()
@@ -426,7 +388,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
 			local text_height = title_text_height
 			text_size[1] = size[1]
 			text_size[2] = text_height
@@ -619,7 +581,7 @@ UITooltipPasses = {
 					text_pass_data.text_id = text_id
 					local text = Localize(text_style.text)
 					content[text_id] = text
-					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 
 					if i == 2 then
 						position[1] = position_x - frame_margin + frame_margin / 4
@@ -627,7 +589,7 @@ UITooltipPasses = {
 						position[1] = position_x + frame_margin
 					end
 
-					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 
 					if i == 1 then
 						total_height = total_height + text_height
@@ -663,7 +625,7 @@ UITooltipPasses = {
 						local text_pass_data = data.text_pass_data
 						text_pass_data.text_id = text_id
 						content[text_id] = title
-						local text_height = get_text_height(ui_renderer, text_size, text_style, content, title, ui_style_global)
+						local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title, ui_style_global)
 
 						if draw then
 							local text_color = text_style.text_color
@@ -838,7 +800,7 @@ UITooltipPasses = {
 					local text = Localize(keyword)
 					local text_size = data.text_size
 					text_size[2] = 0
-					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
 					local old_y_position = position[2]
@@ -992,7 +954,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
@@ -1028,7 +990,7 @@ UITooltipPasses = {
 					text_style.color_override[1] = color_override_table
 					local text_size = data.text_size
 					text_size[2] = 0
-					local text_height, num_texts = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					text_size[2] = text_height
 					position[2] = position[2] - text_height
 					local old_y_position = position[2]
@@ -1234,7 +1196,7 @@ UITooltipPasses = {
 					local text_size = data.text_size
 					text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
 					text_size[2] = 0
-					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					text_size[2] = text_height
 					local old_x_position = position[1]
 					local old_y_position = position[2]
@@ -1425,7 +1387,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 				total_height = total_height + text_height
 				text_size[2] = text_height
 				local frame_size = data.frame_size
@@ -1630,7 +1592,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 			text_size[2] = text_height
 			local frame_size = data.frame_size
 			local frame_pass_data = data.frame_pass_data
@@ -1829,7 +1791,7 @@ UITooltipPasses = {
 			local title_text_size = data.title_text_size
 			title_text_size[1] = size[1] - frame_margin * 2
 			title_text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, title_text_size, title_text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, title_text_size, title_text_style, title_text, ui_style_global)
 			title_text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			title_text_style.text_color[1] = alpha
@@ -1842,7 +1804,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 			local font, size_of_font = UIFontByResolution(text_style)
 			local font_material = font[1]
 			local font_size = font[2]
@@ -2038,7 +2000,7 @@ UITooltipPasses = {
 			local title_text_size = data.title_text_size
 			title_text_size[1] = size[1] - frame_margin * 2
 			title_text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, title_text_size, title_text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, title_text_size, title_text_style, title_text, ui_style_global)
 			title_text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			title_text_style.text_color[1] = alpha
@@ -2052,7 +2014,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 				text_size[2] = text_height
 				position[2] = position[2] - text_height
 
@@ -2171,7 +2133,7 @@ UITooltipPasses = {
 				if text then
 					text_pass_data.text_id = style_name
 					text_size[2] = 0
-					local text_height = get_text_height(ui_renderer, text_size, text_style, text_content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					position[2] = position[2] - text_height
 					total_height = total_height + text_height
 
@@ -2409,8 +2371,8 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
-			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
+			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text, ui_style_global)
 			local text_height = title_text_height + type_text_height
 			text_size[2] = text_height
 			local background_size = data.background_size
@@ -2643,8 +2605,8 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
-			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
+			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text, ui_style_global)
 			local text_height = title_text_height + type_text_height
 			text_size[2] = text_height
 			local background_size = data.background_size
@@ -2874,7 +2836,7 @@ UITooltipPasses = {
 
 				if text then
 					text_pass_data.text_id = style_name
-					local text_height = get_text_height(ui_renderer, text_size, text_style, text_content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 
 					if draw then
 						text_style.text_color[1] = alpha
@@ -2977,7 +2939,7 @@ UITooltipPasses = {
 					local text_size = data.text_size
 					text_size[1] = size[1] - frame_margin * 2
 					text_size[2] = 0
-					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					text_size[2] = text_height
 
 					if draw then
@@ -3059,7 +3021,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text, ui_style_global)
 				text_size[2] = text_height
 
 				if draw then
@@ -3148,7 +3110,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 			text_size[2] = text_height
 			local total_height = text_height + frame_margin * 0.5
 
@@ -3300,7 +3262,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 			text_size[2] = text_height
 			local scale_inversed = RESOLUTION_LOOKUP.inv_scale
 			local total_height = text_height + frame_margin
@@ -3523,7 +3485,7 @@ UITooltipPasses = {
 						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, text_content, position, text_size, input_service, dt, ui_style_global)
 					end
 
-					local text_height = get_text_height(ui_renderer, text_size, text_style, text_content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 
 					if not ignore_line_change then
 						if draw_downwards then
@@ -3615,7 +3577,7 @@ UITooltipPasses = {
 			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, text, ui_style_global)
 			total_height = total_height + title_text_height
 			text_size[2] = title_text_height
 
@@ -3745,7 +3707,7 @@ UITooltipPasses = {
 
 				if text then
 					text_pass_data.text_id = style_name
-					local text_height = get_text_height(ui_renderer, text_size, text_style, text_content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 
 					if not ignore_line_change and not draw_downwards then
 						position[2] = position[2] + text_height
@@ -3877,7 +3839,7 @@ UITooltipPasses = {
 
 				if text then
 					text_pass_data.text_id = style_name
-					local text_height = get_text_height(ui_renderer, text_size, text_style, text_content, text, ui_style_global)
+					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 
 					if not ignore_line_change and not draw_downwards then
 						position[2] = position[2] + text_height
@@ -4003,8 +3965,8 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
-			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
+			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text, ui_style_global)
 			local text_height = title_text_height + type_text_height
 			text_size[2] = text_height
 
@@ -4148,8 +4110,8 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
-			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
+			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text, ui_style_global)
 			local text_height = title_text_height + type_text_height
 			text_size[2] = text_height
 
@@ -4307,7 +4269,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 				text_size[2] = text_height
 				local old_x_position = position[1]
 				local old_y_position = position[2]
@@ -4479,7 +4441,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
 			local text_height = title_text_height
 			text_size[2] = text_height
 			local divider_size = data.divider_size
@@ -4678,8 +4640,8 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
-			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
+			local type_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, type_text, ui_style_global)
 			local text_height = title_text_height + type_text_height
 			text_size[2] = text_height
 
@@ -4793,7 +4755,7 @@ UITooltipPasses = {
 			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
 			local text_height = title_text_height
 			total_height = total_height + title_text_height
 			text_size[2] = text_height
@@ -4901,7 +4863,7 @@ UITooltipPasses = {
 			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
 			local text_height = title_text_height
 			total_height = total_height + title_text_height
 			text_size[2] = text_height
@@ -5008,7 +4970,7 @@ UITooltipPasses = {
 			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
 			local text_height = title_text_height
 			total_height = total_height + title_text_height
 			text_size[2] = text_height
@@ -5106,7 +5068,7 @@ UITooltipPasses = {
 				local text_width = size[1] - frame_margin * 2
 				text_size[1] = text_width
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, title_text_style, title_text, ui_style_global)
 				total_height = total_height + title_text_height
 				text_size[2] = title_text_height
 
@@ -5211,7 +5173,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text, ui_style_global)
 				text_size[2] = text_height
 
 				if draw then
@@ -5308,7 +5270,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 				text_size[2] = text_height
 				local total_height = text_height + frame_margin * 0.5
 
@@ -5473,7 +5435,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 				text_size[2] = text_height
 				local total_height = text_height + frame_margin * 0.5
 
@@ -5658,7 +5620,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 			text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			total_height = total_height + title_text_height
@@ -5693,7 +5655,7 @@ UITooltipPasses = {
 				text_pass_data.text_id = text_id
 				local text_size = data.text_size
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, entry_text_style, content, text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, entry_text_style, text, ui_style_global)
 				text_size[2] = text_height
 				position[2] = position[2] - text_height
 				local old_y_position = position[2]
@@ -5837,7 +5799,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 			text_size[2] = 0
-			local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 			text_size[2] = title_text_height
 			position[2] = position[2] - title_text_height
 			total_height = total_height + title_text_height
@@ -5862,7 +5824,7 @@ UITooltipPasses = {
 				text_pass_data.text_id = text_id
 				local text_size = data.text_size
 				text_size[2] = 0
-				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+				local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 				text_size[2] = text_height
 				position[2] = position[2] - text_height
 				local old_y_position = position[2]
@@ -5985,7 +5947,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
+			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text, ui_style_global)
 			text_size[2] = text_height
 			local total_height = text_height + frame_margin * 0.5
 
@@ -6077,7 +6039,7 @@ UITooltipPasses = {
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
-			local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
+			local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, content.text, ui_style_global)
 			text_size[2] = text_height
 
 			if draw then
@@ -6254,7 +6216,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] / 2 - frame_margin * 2
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
@@ -6285,7 +6247,7 @@ UITooltipPasses = {
 					local text_height = nil
 
 					if not stat_descriptor.empty then
-						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					else
 						text_height = text_style.font_size
 					end
@@ -6549,7 +6511,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] / 2 - frame_margin * 2
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[1] = position[1] + size[1] / 2
 				position[2] = position[2] - title_text_height
@@ -6581,7 +6543,7 @@ UITooltipPasses = {
 					local text_height = nil
 
 					if not stat_descriptor.empty then
-						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					else
 						text_height = text_style.font_size
 					end
@@ -6849,7 +6811,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
@@ -6880,7 +6842,7 @@ UITooltipPasses = {
 					local text_height = nil
 
 					if not stat_descriptor.empty then
-						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					else
 						text_height = text_style.font_size
 					end
@@ -7116,7 +7078,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
@@ -7147,7 +7109,7 @@ UITooltipPasses = {
 					local text_height = nil
 
 					if not stat_descriptor.empty then
-						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					else
 						text_height = text_style.font_size
 					end
@@ -7329,7 +7291,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
@@ -7360,7 +7322,7 @@ UITooltipPasses = {
 					local text_height = nil
 
 					if not stat_descriptor.empty then
-						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					else
 						text_height = text_style.font_size
 					end
@@ -7596,7 +7558,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
@@ -7627,7 +7589,7 @@ UITooltipPasses = {
 					local text_height = nil
 
 					if not stat_descriptor.empty then
-						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					else
 						text_height = text_style.font_size
 					end
@@ -7863,7 +7825,7 @@ UITooltipPasses = {
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
-				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, title_text, ui_style_global)
 				text_size[2] = title_text_height
 				position[2] = position[2] - title_text_height
 				total_height = total_height + title_text_height
@@ -7894,7 +7856,7 @@ UITooltipPasses = {
 					local text_height = nil
 
 					if not stat_descriptor.empty then
-						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+						text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
 					else
 						text_height = text_style.font_size
 					end
@@ -8142,6 +8104,36 @@ UITooltipPasses = {
 						120,
 						120
 					},
+					offset = {
+						0,
+						0,
+						0
+					}
+				},
+				{
+					name = "essence_title",
+					pass_type = "text",
+					word_wrap = true,
+					horizontal_alignment = "center",
+					vertical_alignment = "center",
+					font_type = "hell_shark_header",
+					font_size = setup_font_size(24),
+					text_color = Colors.get_color_table_with_alpha("font_title", 255),
+					offset = {
+						0,
+						0,
+						0
+					}
+				},
+				{
+					name = "input_highlight",
+					pass_type = "text",
+					word_wrap = true,
+					horizontal_alignment = "center",
+					vertical_alignment = "center",
+					font_type = "hell_shark",
+					font_size = setup_font_size(18),
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
 					offset = {
 						0,
 						0,
@@ -8502,7 +8494,7 @@ UITooltipPasses = {
 							text_pass_data.text_id = style_name
 							text_size[1] = size[1] - offset[1]
 							text_size[2] = 0
-							local text_height, num_texts = get_text_height(ui_renderer, text_size, style, pass_content, text, ui_style_global)
+							local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, style, text, ui_style_global)
 							local text_width = UIUtils.get_text_width(ui_renderer, style, text, ui_style_global)
 
 							if text_height < minimum_height then
@@ -8749,7 +8741,7 @@ UITooltipPasses = {
 						text_pass_data.text_id = style_name
 						text_size[1] = size[1] - offset[1]
 						text_size[2] = 0
-						local text_height, num_texts = get_text_height(ui_renderer, text_size, style, pass_content, text, ui_style_global)
+						local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, style, text, ui_style_global)
 						local text_width = UIUtils.get_text_width(ui_renderer, style, text, ui_style_global)
 
 						if text_height < minimum_height then

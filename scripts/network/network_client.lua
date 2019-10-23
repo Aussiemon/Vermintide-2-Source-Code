@@ -90,7 +90,7 @@ NetworkClient.destroy = function (self)
 end
 
 NetworkClient.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_reload_level", "rpc_load_level", "rpc_game_started", "rpc_disconnect_peer", "rpc_connection_failed", "rpc_notify_connected", "rpc_set_migration_host")
+	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_reload_level", "rpc_load_level", "rpc_game_started", "rpc_disconnect_peer", "rpc_connection_failed", "rpc_notify_connected", "rpc_set_migration_host", "rpc_client_update_lobby_data")
 
 	self._network_event_delegate = network_event_delegate
 
@@ -119,18 +119,12 @@ end
 
 NetworkClient.rpc_notify_connected = function (self, sender)
 	if not self._notification_sent then
-		if self.lobby_client:is_dedicated_server() then
-			local cropped_string = UTF8Utils.sub_string(LobbyInternal.user_name(), 1, 16)
-
-			RPC.rpc_set_player_name(self.server_peer_id, cropped_string)
-		end
-
 		EAC.set_host(self.server_peer_id)
 
 		self._eac_has_set_host = true
 
 		EAC.validate_host()
-		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, self.wanted_career_index, Application.user_setting("clan_tag") or "0")
+		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, self.wanted_career_index, Application.user_setting("clan_tag") or "0", Managers.account:account_id() or "0")
 
 		self._notification_sent = true
 
@@ -204,6 +198,10 @@ NetworkClient.rpc_set_migration_host = function (self, sender, peer_id, do_migra
 	end
 end
 
+NetworkClient.rpc_client_update_lobby_data = function (self, sender)
+	self.lobby_client:force_update_lobby_data()
+end
+
 NetworkClient.set_state = function (self, new_state)
 	network_printf("New State %s (old state %s)", new_state, tostring(self.state))
 
@@ -221,8 +219,8 @@ NetworkClient.on_game_entered = function (self)
 	RPC.rpc_is_ingame(self.server_peer_id)
 end
 
-NetworkClient.request_profile = function (self, local_player_id, profile_name, career_name)
-	self._profile_requester:request_profile(Network.peer_id(), local_player_id, profile_name, career_name)
+NetworkClient.request_profile = function (self, local_player_id, profile_name, career_name, force_respawn)
+	self._profile_requester:request_profile(Network.peer_id(), local_player_id, profile_name, career_name, force_respawn)
 end
 
 NetworkClient.profile_requester = function (self)
@@ -308,16 +306,7 @@ NetworkClient.update = function (self, dt)
 
 		for i, peer_id in ipairs(members_joined) do
 			if peer_id ~= lobby_client:lobby_host() then
-				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
-
-				if PLATFORM ~= "win32" then
-					sender = lobby_client:user_name(peer_id)
-				end
-
-				local message = string.format(Localize("system_chat_player_joined_the_game"), sender)
-				local pop_chat = true
-
-				Managers.chat:add_local_system_message(1, message, pop_chat)
+				NetworkUtils.announce_chat_peer_joined(peer_id, lobby_client)
 			end
 		end
 
@@ -325,16 +314,7 @@ NetworkClient.update = function (self, dt)
 
 		for i, peer_id in ipairs(members_left) do
 			if peer_id ~= lobby_client:lobby_host() then
-				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
-
-				if PLATFORM ~= "win32" then
-					sender = lobby_client:user_name(peer_id)
-				end
-
-				local message = string.format(Localize("system_chat_player_left_the_game"), sender)
-				local pop_chat = true
-
-				Managers.chat:add_local_system_message(1, message, pop_chat)
+				NetworkUtils.announce_chat_peer_left(peer_id, lobby_client)
 			end
 		end
 	end

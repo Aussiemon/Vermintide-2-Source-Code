@@ -29,7 +29,6 @@ PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, e
 	self._shield_duration_left = 0
 	self._end_reason = ""
 	self.wounded_degen_timer = 0
-	self.last_damage_data = {}
 
 	if self.is_server and not is_local_player and not is_bot then
 		self:create_health_game_object()
@@ -179,6 +178,18 @@ PlayerUnitHealthExtension.knock_down = function (self, unit)
 
 	StatusUtils.set_knocked_down_network(unit, true)
 	StatusUtils.set_wounded_network(unit, false, "knocked_down")
+
+	local recent_damages = self:recent_damages()
+	local attacker_unit = recent_damages[3]
+	local attacker_player = Managers.player:owner(attacker_unit)
+
+	if attacker_player and Managers.mechanism:current_mechanism_name() == "versus" then
+		local stats_id = attacker_player:stats_id()
+		local statistics_db = Managers.player:statistics_db()
+		local target_breed = Unit.get_data(unit, "breed")
+
+		statistics_db:increment_stat(stats_id, "vs_badge_knocked_down_target_per_breed", target_breed.name)
+	end
 end
 
 PlayerUnitHealthExtension._revive = function (self, unit, t)
@@ -283,6 +294,10 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 			end
 
 			if temporary_health > 0 and state == "alive" then
+				if Managers.weave:get_active_wind() == "death" then
+					degen_amount = degen_amount * 2
+				end
+
 				local new_temporary_health = temporary_health - degen_amount
 				local min_temporary_health_left = (health <= 0 and 1) or 0
 				local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
@@ -306,13 +321,15 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 	end
 end
 
-local FORCED_PERMANENT_DAMAGE_TYPES = {}
+local FORCED_PERMANENT_DAMAGE_TYPES = {
+	death_explosion = true
+}
 
 PlayerUnitHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
 	return
 end
 
-PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	if DamageUtils.is_in_inn then
 		return
 	end
@@ -336,38 +353,17 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	fassert(damage_type, "No damage_type!")
 
 	local unit = self.unit
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
 
 	if damage_amount == nil then
 		Crashify.print_exception("HealthSystem", "damage_amount is nil in PlayerUnitHealthExtension:add_damage()")
 	end
 
 	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" then
-		local attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
-
-		if AiUtils.unit_alive(attacker_unit) then
-			local breed = Unit.get_data(attacker_unit, "breed")
-
-			StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
-
-			local ai_suicide = attacker_unit == unit and breed and not breed.is_player
-
-			if not ai_suicide and (attacker_unit ~= unit or damage_type ~= "cutting") and breed then
-				local last_damage_data = self.last_damage_data
-				last_damage_data.breed = breed
-				last_damage_data.damage_type = damage_type
-				local player = Managers.player:owner(attacker_unit)
-
-				if player then
-					last_damage_data.attacker_unique_id = player:unique_id()
-					last_damage_data.attacker_side = Managers.state.side.side_by_unit[attacker_unit]
-				else
-					last_damage_data.attacker_unique_id = nil
-					last_damage_data.attacker_side = nil
-				end
-			end
-		end
+		StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	end
+
+	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
@@ -390,20 +386,22 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 	buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type)
 
-	local ai_inventory_extension = ScriptUnit.has_extension(attacker_unit, "ai_inventory_system")
+	if damage_source_name ~= "dot_debuff" then
+		local ai_inventory_extension = ScriptUnit.has_extension(attacker_unit, "ai_inventory_system")
 
-	if ai_inventory_extension then
-		ai_inventory_extension:play_hit_sound(unit, damage_type)
+		if ai_inventory_extension then
+			ai_inventory_extension:play_hit_sound(unit, damage_type)
+		end
+
+		if self.player.local_player and (buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_duration")) then
+			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_hit")
+		end
 	end
 
 	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
 		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
-	end
-
-	if self.player.local_player and (buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_duration")) then
-		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-
-		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_hit")
 	end
 
 	local weave_manager = Managers.weave
@@ -448,6 +446,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 			local unit_id = self.unit_storage:go_id(unit)
 			local attacker_unit_id, attacker_is_level_unit = self.network_manager:game_object_or_level_id(attacker_unit)
+			local source_attacker_unit_id = self.network_manager:unit_game_object_id(source_attacker_unit) or attacker_unit_id
 			local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 			local damage_type_id = NetworkLookup.damage_types[damage_type]
 			local damage_source_id = NetworkLookup.damage_sources[damage_source_name or "n/a"]
@@ -459,7 +458,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			total_hits = total_hits or 1
 			backstab_multiplier = backstab_multiplier or 1
 
-			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 		end
 	end
 end

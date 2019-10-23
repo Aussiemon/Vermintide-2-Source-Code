@@ -204,7 +204,7 @@ HeroWindowTalents._handle_input = function (self, dt, t)
 	local row, column = self:_is_talent_pressed()
 
 	if row and column then
-		if self._selected_talents[row] == 0 then
+		if not self._selected_talents[row] or self._selected_talents[row] == 0 then
 			self:_play_sound("play_gui_talent_unlock")
 		else
 			self:_play_sound("play_gui_talents_selection_click")
@@ -243,44 +243,6 @@ end
 
 HeroWindowTalents._play_sound = function (self, event)
 	self.parent:play_sound(event)
-end
-
-HeroWindowTalents._get_text_height = function (self, ui_renderer, size, ui_style, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font_material, font_size, font_name = nil
-
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = ui_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = ui_style.font_size or font_size
-	end
-
-	if ui_style.localize then
-		text = Localize(text)
-	end
-
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local text_start_index = 1
-	local max_texts = #texts
-	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
-
-	return full_font_height
 end
 
 HeroWindowTalents._populate_talents_by_hero = function (self, initialize)

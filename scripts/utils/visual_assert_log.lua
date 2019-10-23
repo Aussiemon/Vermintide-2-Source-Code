@@ -30,7 +30,7 @@ VisualAssertLog.cleanup = function ()
 end
 
 local font_size = 16
-local font = "gw_arial_16"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 
 VisualAssertLog.update = function ()
@@ -144,7 +144,9 @@ function visual_assert(condition, message, ...)
 			VisualAssertLog.asserts[n_asserts] = assert_data
 
 			if DEDICATED_SERVER then
-				Application.error("GOT A VISUAL ASSERT!")
+				message = string.format(message, ...)
+
+				Application.error("Visual Assert: " .. message)
 			end
 		end
 	end

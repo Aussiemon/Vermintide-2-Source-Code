@@ -27,4 +27,13 @@ WeaveOnboardingUtils.get_ui_onboarding_state = function (statistics_db, stats_id
 	return statistics_db:get_persistent_stat(stats_id, ui_onboarding_state_stat)
 end
 
+WeaveOnboardingUtils.complete_onboarding = function ()
+	local statistics_db = Managers.player:statistics_db()
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+
+	statistics_db:set_stat(stats_id, onboarding_step_stat, 10)
+	statistics_db:set_stat(stats_id, ui_onboarding_state_stat, -1)
+end
+
 return

@@ -1,3 +1,5 @@
+require("scripts/helpers/player_utils")
+
 local definitions = local_require("scripts/ui/views/unit_frames_ui_definitions")
 UnitFramesUI = class(UnitFramesUI)
 local SLOTS_LIST = {
@@ -24,6 +26,7 @@ UnitFramesUI.init = function (self, ingame_ui_context)
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
+	self._unique_id = PlayerUtils.unique_player_id(self.peer_id, self.local_player_id)
 	self.lobby = ingame_ui_context.network_lobby
 	self.slot_equip_animations = {}
 
@@ -255,7 +258,7 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 
 	table.clear(tmp_peer_ids)
 
-	tmp_peer_ids[self.peer_id] = true
+	tmp_peer_ids[self._unique_id] = true
 
 	for index, player in pairs(human_players) do
 		repeat
@@ -274,8 +277,9 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 				break
 			end
 
-			tmp_peer_ids[player_peer_id] = true
-			tmp_peer_ids_by_index[i] = player_peer_id
+			local player_unique_id = player:unique_id()
+			tmp_peer_ids[player_unique_id] = true
+			tmp_peer_ids_by_index[i] = player_unique_id
 			local ingame_display_name = UIRenderer.crop_text(player:name(), 26)
 			local level = nil
 			local is_player_controlled = player:is_player_controlled()
@@ -511,16 +515,18 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 	local num_drawn_widgets = i
 
 	if i < 3 then
-		local members = self.lobby:members()
+		local party_manager = Managers.party
+		local _, party_id = party_manager:get_party_from_player_id(self.peer_id, self.local_player_id)
+		local party_members = party_manager:get_players_in_party(party_id)
 
-		if members then
-			local lobby_members = members:get_members()
+		if party_members then
+			for k = 1, #party_members, 1 do
+				local unique_id = party_members[k].unique_id
 
-			for idx, peer_id in ipairs(lobby_members) do
-				if not tmp_peer_ids[peer_id] then
+				if not tmp_peer_ids[unique_id] then
 					i = i + 1
-					tmp_peer_ids[peer_id] = true
-					tmp_peer_ids_by_index[i] = peer_id
+					tmp_peer_ids[unique_id] = true
+					tmp_peer_ids_by_index[i] = unique_id
 					local player_portrait_widget = other_player_portraits[i]
 					local player_inventory_widget = other_player_inventories[i]
 					local portrait_content = player_portrait_widget.content

@@ -29,6 +29,8 @@ GameModeInn.init = function (self, settings, world, ...)
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
+
+	self._local_player_spawned = false
 end
 
 GameModeInn.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -84,7 +86,8 @@ GameModeInn.evaluate_end_conditions = function (self, round_started)
 end
 
 GameModeInn.event_local_player_spawned = function (self, is_initial_spawn)
-	Managers.state.event:trigger("game_mode_ready_to_start", is_initial_spawn)
+	self._local_player_spawned = true
+	self._is_initial_spawn = is_initial_spawn
 end
 
 GameModeInn.COMPLETE_LEVEL = function (self)
@@ -297,6 +300,52 @@ GameModeInn.hot_join_sync = function (self, sender)
 	self._waystone_type = 0
 
 	RPC.rpc_waystone_active(sender, self._waystone_type, self._waystone_is_active, self._current_waystone_type)
+end
+
+GameModeInn.local_player_ready_to_start = function (self, player, loading_context)
+	if not self._local_player_spawned then
+		return false
+	end
+
+	return true
+end
+
+GameModeInn.local_player_game_starts = function (self, player, loading_context)
+	local show_profile_on_startup = loading_context.show_profile_on_startup
+	loading_context.show_profile_on_startup = nil
+
+	if show_profile_on_startup and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
+		local platform = PLATFORM
+
+		if platform == "ps4" or platform == "xb1" then
+			local transition_params = {
+				menu_state_name = "character"
+			}
+			local view = "initial_character_selection_force"
+
+			Managers.state.event:trigger("ui_event_transition", view, transition_params)
+		else
+			local first_hero_selection_made = SaveData.first_hero_selection_made
+			local backend_waiting_for_input = Managers.backend:is_waiting_for_user_input()
+			local show_hero_selection = not backend_waiting_for_input and not first_hero_selection_made
+			local transition_params = {
+				menu_state_name = (show_hero_selection and "character") or "overview"
+			}
+			local view = "initial_start_menu_view_force"
+
+			Managers.state.event:trigger("ui_event_transition", view, transition_params)
+		end
+	end
+
+	if self._is_initial_spawn then
+		LevelHelper:flow_event(self._world, "local_player_spawned")
+
+		if Development.parameter("attract_mode") then
+			LevelHelper:flow_event(self._world, "start_benchmark")
+		else
+			LevelHelper:flow_event(self._world, "level_start_local_player_spawned")
+		end
+	end
 end
 
 return

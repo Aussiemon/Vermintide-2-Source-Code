@@ -157,7 +157,11 @@ PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_pos
 	else
 		local hit_something_else = not Managers.state.side.side_by_unit[hit_unit]
 
-		if hit_something_else then
+		if Unit.get_data(hit_unit, "is_dummy") then
+			local level_index = nil
+
+			self:hit_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, level_index, has_ranged_boost, ranged_boost_curve_multiplier)
+		elseif hit_something_else then
 			self:hit_non_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, ranged_boost_curve_multiplier)
 		end
 	end
@@ -577,6 +581,7 @@ PlayerProjectileHuskExtension.do_aoe = function (self, aoe_data, position)
 	local owner_unit = self._owner_unit
 	local item_name = self.item_name
 	local is_server = self._is_server
+	local source_attacker_unit = self.owner_unit
 
 	if aoe_data.explosion then
 		local rotation = Unit.local_rotation(unit, 0)
@@ -584,7 +589,7 @@ PlayerProjectileHuskExtension.do_aoe = function (self, aoe_data, position)
 		local power_level = self.power_level
 		local is_husk = true
 
-		DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level, self._is_critical_strike)
+		DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level, self._is_critical_strike, source_attacker_unit)
 	end
 
 	if is_server then

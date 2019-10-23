@@ -20,8 +20,22 @@ end
 
 local RPCS = {
 	"rpc_to_client_spawn_player",
-	"rpc_is_ready_for_transition"
+	"rpc_is_ready_for_transition",
+	"rpc_change_game_mode_state"
 }
+local GAME_MODE_STATE_NETWORK_IDS = {}
+
+for game_mode_key, settings in pairs(GameModeSettings) do
+	local network_id_lookup = {}
+
+	for i, state_name in ipairs(settings.game_mode_states) do
+		network_id_lookup[i] = state_name
+		network_id_lookup[state_name] = i
+	end
+
+	GAME_MODE_STATE_NETWORK_IDS[game_mode_key] = network_id_lookup
+end
+
 GameModeManager = class(GameModeManager)
 
 GameModeManager.init = function (self, world, lobby_host, lobby_client, level_transition_handler, network_event_delegate, statistics_db, game_mode_key, network_server, network_transmit, profile_synchronizer)
@@ -42,13 +56,13 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 	self.network_server = network_server
 	self._network_transmit = network_transmit
 	self._profile_synchronizer = profile_synchronizer
+	self._have_signalled_ready_to_transition = false
 
 	self:_init_game_mode(game_mode_key)
 
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "reload_application_settings", "event_reload_application_settings")
-	event_manager:register(self, "gm_event_end_conditions_met", "gm_event_end_conditions_met")
 	event_manager:register(self, "gm_event_round_started", "gm_event_round_started")
 	event_manager:register(self, "camera_teleported", "event_camera_teleported")
 
@@ -78,6 +92,8 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 	if self.is_server then
 		self._initial_peers_ready = false
 	end
+
+	self._has_created_game_mode_data = false
 end
 
 GameModeManager.destroy = function (self)
@@ -579,16 +595,28 @@ GameModeManager.pre_update = function (self, t, dt)
 end
 
 GameModeManager.register_looping_event_timer = function (self, timer_name, delay, event_name)
-	local t = os.clock()
+	local os_t = os.clock()
 	self._looping_event_timers[timer_name] = {
 		delay = delay,
-		next_trigger_time = t + delay,
+		next_trigger_time = os_t + delay,
 		event_name = event_name
 	}
 end
 
 GameModeManager.unregister_looping_event_timer = function (self, timer_name)
 	self._looping_event_timers[timer_name] = nil
+end
+
+GameModeManager.local_player_ready_to_start = function (self, player)
+	if not Managers.state.network:in_game_session() then
+		return false
+	end
+
+	return self._game_mode:local_player_ready_to_start(player)
+end
+
+GameModeManager.local_player_game_starts = function (self, player, loading_context)
+	self._game_mode:local_player_game_starts(player, loading_context)
 end
 
 GameModeManager.update = function (self, dt, t)
@@ -598,11 +626,11 @@ GameModeManager.update = function (self, dt, t)
 		self._game_mode:update(t, dt)
 	end
 
-	local t = os.clock()
+	local os_t = os.clock()
 	local level = LevelHelper:current_level(self._world)
 
 	for name, timer in pairs(self._looping_event_timers) do
-		if timer.next_trigger_time < t then
+		if timer.next_trigger_time < os_t then
 			Level.trigger_event(level, timer.event_name)
 
 			timer.next_trigger_time = timer.next_trigger_time + timer.delay
@@ -618,86 +646,89 @@ GameModeManager._update_initial_join = function (self, t, dt)
 	end
 end
 
+GameModeManager.evaluate_end_condition_outcome = function (self, reason, player)
+	if self._game_mode.evaluate_end_condition_outcome then
+		return self._game_mode:evaluate_end_condition_outcome(reason, player)
+	end
+
+	local game_won = reason and reason == "won"
+	local game_lost = reason and reason == "lost"
+
+	return game_won, game_lost
+end
+
 GameModeManager.server_update = function (self, dt, t)
 	if not self._initial_peers_ready then
 		self:_update_initial_join(t, dt)
 	end
 
-	self._game_mode:server_update(t, dt)
+	local game_mode = self._game_mode
 
-	if not self._end_conditions_met and not LEVEL_EDITOR_TEST then
-		local game_mode = self._game_mode
-		local mutator_handler = self._mutator_handler
-		local round_started = self._round_started
-		local ended, reason = self._game_mode:evaluate_end_conditions(round_started, dt, t, mutator_handler)
+	game_mode:server_update(t, dt)
 
-		if ended then
-			local all_peers_ingame = self.network_server:are_all_peers_ingame()
+	if not self._have_signalled_game_mode_about_end_conditions then
+		if not self._end_conditions_met and not LEVEL_EDITOR_TEST then
+			local mutator_handler = self._mutator_handler
+			local round_started = self._round_started
+			local ended, reason = self._game_mode:evaluate_end_conditions(round_started, dt, t, mutator_handler)
 
-			if reason ~= "start_game" and not all_peers_ingame then
-				return
+			if ended then
+				local all_peers_ingame = self.network_server:are_all_peers_ingame()
+
+				if reason ~= "start_game" and not all_peers_ingame then
+					return
+				end
+
+				game_mode:ended(reason)
+
+				local level_key = Managers.mechanism:game_round_ended(t, dt, reason)
+
+				Managers.mechanism:progress_state()
+				self.network_server:enter_post_game()
+
+				self._end_conditions_met = true
+				self._end_reason = reason
+				local checkpoint_available = (reason == "lost" and Managers.state.spawn:checkpoint_data() and true) or false
+				local mission_system = Managers.state.entity:system("mission_system")
+				local percentages_completed = mission_system:percentages_completed()
+
+				self:trigger_event("end_conditions_met", reason, checkpoint_available, percentages_completed)
+
+				self._gm_event_end_conditions_met = true
+
+				self:_save_last_level_completed(reason)
+
+				self._ready_for_transition = {}
+				local human_players = Managers.player:human_players()
+
+				for _, player in pairs(human_players) do
+					local peer_id = player.peer_id
+					self._ready_for_transition[peer_id] = false
+				end
 			end
+		end
 
-			game_mode:ended(reason)
-
-			local level_key = Managers.mechanism:game_round_ended(t, dt, reason)
-
-			Managers.mechanism:progress_state()
-			self.network_server:enter_post_game()
-
-			self._end_conditions_met = true
-			self._end_reason = reason
-			local checkpoint_available = (reason == "lost" and Managers.state.spawn:checkpoint_data() and true) or false
-			local mission_system = Managers.state.entity:system("mission_system")
-			local percentages_completed = mission_system:percentages_completed()
-
-			self:trigger_event("end_conditions_met", reason, checkpoint_available, percentages_completed)
-
-			self._gm_event_end_conditions_met = true
-			self._ready_for_transition = {}
+		if not LEVEL_EDITOR_TEST and self._end_conditions_met then
+			local everyone_ready = true
 			local human_players = Managers.player:human_players()
 
 			for _, player in pairs(human_players) do
 				local peer_id = player.peer_id
-				self._ready_for_transition[peer_id] = false
+
+				if self._ready_for_transition[peer_id] == false then
+					everyone_ready = false
+
+					break
+				end
 			end
 
-			if reason == "start_game" then
-				self.level_transition_handler:level_completed()
-			elseif reason == "won" then
-				local default_level_key = self.level_transition_handler:default_level_key()
+			if everyone_ready then
+				game_mode:ready_to_transition()
 
-				self.level_transition_handler:set_next_level(level_key or default_level_key)
-			elseif reason == "lost" then
-				local default_level_key = self.level_transition_handler:default_level_key()
-
-				self.level_transition_handler:set_next_level(level_key or default_level_key)
-			elseif reason == "reload" then
-				self:retry_level()
+				self._have_signalled_ready_to_transition = true
 			else
-				fassert(false, "Invalid end reason %q.", tostring(reason))
+				self:update_timebased_level_start(dt)
 			end
-		end
-	end
-
-	if not LEVEL_EDITOR_TEST and self._end_conditions_met then
-		local everyone_ready = true
-		local human_players = Managers.player:human_players()
-
-		for _, player in pairs(human_players) do
-			local peer_id = player.peer_id
-
-			if self._ready_for_transition[peer_id] == false then
-				everyone_ready = false
-
-				break
-			end
-		end
-
-		if everyone_ready then
-			self.level_transition_handler:level_completed()
-		else
-			self:update_timebased_level_start(dt)
 		end
 	end
 end
@@ -714,12 +745,16 @@ GameModeManager.rpc_is_ready_for_transition = function (self, sender)
 	self._ready_for_transition[sender] = true
 end
 
-GameModeManager.game_won = function (self)
-	return self._end_reason == "won"
+GameModeManager.game_won = function (self, player)
+	local game_won, _ = self:evaluate_end_condition_outcome(self._end_reason, player)
+
+	return game_won
 end
 
-GameModeManager.game_lost = function (self)
-	return self._end_reason == "lost"
+GameModeManager.game_lost = function (self, player)
+	local _, game_lost = self:evaluate_end_condition_outcome(self._end_reason, player)
+
+	return game_lost
 end
 
 GameModeManager.set_end_reason = function (self, end_reason)
@@ -750,6 +785,15 @@ end
 
 GameModeManager.hot_join_sync = function (self, sender)
 	self._mutator_handler:hot_join_sync(sender)
+
+	local game_mode_state = self._game_mode:game_mode_state()
+
+	if game_mode_state ~= "initial_state" then
+		local network_lookup = GAME_MODE_STATE_NETWORK_IDS[self._game_mode_key]
+		local game_mode_state_id = network_lookup[game_mode_state]
+
+		self._network_transmit:send_rpc("rpc_change_game_mode_state", sender, game_mode_state_id)
+	end
 
 	if self._round_started then
 		self._network_transmit:send_rpc("rpc_gm_event_round_started", sender)
@@ -812,6 +856,20 @@ GameModeManager.set_respawning_enabled = function (self, enabled)
 	if self._game_mode.set_respawning_enabled then
 		self._game_mode:set_respawning_enabled(enabled)
 	end
+end
+
+GameModeManager.on_game_mode_data_created = function (self, game_session, game_object_id)
+	fassert(self._has_created_game_mode_data == false, "There has already been a game mode data go created.")
+
+	self._has_created_game_mode_data = true
+
+	self._game_mode:on_game_mode_data_created(game_session, game_object_id)
+end
+
+GameModeManager.on_game_mode_data_destroyed = function (self)
+	self._has_created_game_mode_data = false
+
+	self._game_mode:on_game_mode_data_created()
 end
 
 GameModeManager._update_end_level_areas = function (self)
@@ -877,6 +935,28 @@ GameModeManager._update_end_level_areas = function (self)
 
 		return num_non_disabled_players > 0
 	end
+end
+
+GameModeManager.change_game_mode_state = function (self, state_name)
+	fassert(self.is_server, "Should only be called on the server.")
+
+	local game_mode_states = self:setting("game_mode_states")
+
+	fassert(table.contains(game_mode_states, state_name), "state_name (%s) does not exist in GameModeSettings", state_name)
+
+	local network_lookup = GAME_MODE_STATE_NETWORK_IDS[self._game_mode_key]
+	local state_name_id = network_lookup[state_name]
+
+	self._network_transmit:send_rpc_clients("rpc_change_game_mode_state", state_name_id)
+end
+
+GameModeManager.rpc_change_game_mode_state = function (self, sender, state_name_id)
+	fassert(not self.is_server, "Should only appear on the clients.")
+
+	local network_lookup = GAME_MODE_STATE_NETWORK_IDS[self._game_mode_key]
+	local state_name = network_lookup[state_name_id]
+
+	self._game_mode:change_game_mode_state(state_name)
 end
 
 return

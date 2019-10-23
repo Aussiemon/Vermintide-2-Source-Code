@@ -557,8 +557,27 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 		social_wheel_unit = nil
 	end
 
-	local category = self._default_social_wheel_category
-	category = category or ((PLATFORM ~= "win32" or false) and "general")
+	local unique_id = self._player:unique_id()
+	local side = Managers.state.side:get_side_from_player_unique_id(unique_id)
+	local side_name = side:name()
+	local side_settings = Managers.state.game_mode:setting("social_wheel_by_side")
+	local category = nil
+
+	if side_settings then
+		category = side_settings[side_name]
+	else
+		category = "general"
+	end
+
+	if PLATFORM == "win32" then
+		local gamepad_enabled = Managers.input:is_device_active("gamepad")
+		local layout_settings = Application.user_setting("social_wheel_gamepad_layout")
+		local use_gamepad_layout = (layout_settings == "auto" and gamepad_enabled) or layout_settings == "always"
+
+		if use_gamepad_layout then
+			category = category .. "_gamepad"
+		end
+	end
 
 	for i = 1, #SocialWheelPriority, 1 do
 		local data = SocialWheelPriority[i]

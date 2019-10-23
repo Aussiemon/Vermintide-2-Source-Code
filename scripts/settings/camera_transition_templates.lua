@@ -44,6 +44,19 @@ CameraTransitionTemplates.first_person = {
 		duration = CameraTransitionSettings.perspective_transition_time * 0.8
 	}
 }
+CameraTransitionTemplates.first_person_fast = {
+	position = {
+		duration = 0.4,
+		class = "CameraTransitionPositionLinear",
+		transition_func = function (t)
+			return t^2 * 0.8
+		end
+	},
+	rotation = {
+		class = "CameraTransitionRotationLerp",
+		duration = 0.4
+	}
+}
 CameraTransitionTemplates.over_shoulder = {
 	position = {
 		class = "CameraTransitionPositionLinear",

@@ -99,7 +99,7 @@ BTPackMasterAttackAction.attack = function (self, unit, t, dt, blackboard)
 		blackboard.create_bot_threat_at = nil
 	end
 
-	if blackboard.attack_time_ends < t then
+	if not blackboard.attack_time_ends or blackboard.attack_time_ends < t then
 		blackboard.attack_aborted = true
 	end
 end

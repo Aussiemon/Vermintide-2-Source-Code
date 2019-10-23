@@ -499,8 +499,6 @@ BuffFunctionTemplates.functions = {
 		local weave_manager = Managers.weave
 		local wind_strength = weave_manager:get_wind_strength()
 		local thorns_damage = wind_settings.thorns_damage[wind_strength]
-
-		WwiseUtils.trigger_unit_event(world, "Play_winds_life_gameplay_thorn_hit_player", unit, 0)
 	end,
 	start_dot_damage = function (unit, buff, params)
 		local random_mod_next_dot_time = 0.75 * buff.template.time_between_dot_damages + math.random() * 0.5 * buff.template.time_between_dot_damages
@@ -546,10 +544,6 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	apply_dot_damage = function (unit, buff, params)
-		if not Managers.state.network.is_server then
-			return
-		end
-
 		local t = params.t
 
 		if buff.next_poison_damage_time < t then
@@ -559,27 +553,39 @@ BuffFunctionTemplates.functions = {
 				local buff_template = buff.template
 				local random_mod_next_dot_time = 0.75 * buff.template.time_between_dot_damages + math.random() * 0.5 * buff.template.time_between_dot_damages
 				buff.next_poison_damage_time = buff.next_poison_damage_time + random_mod_next_dot_time
-				local attacker_unit = params.attacker_unit
 
-				if Unit.alive(attacker_unit) then
-					local target_unit = unit
-					local hit_zone_name = buff.template.hit_zone or "full"
-					local attack_direction = Vector3.down()
-					local hit_ragdoll_actor = nil
-					local damage_source = buff.damage_source or "dot_debuff"
-					local power_level = buff.power_level or DefaultPowerLevel
-					local damage_profile_name = buff_template.damage_profile or "default"
-					local damage_profile = DamageProfileTemplates[damage_profile_name]
-					local target_index = nil
-					local boost_curve_multiplier = 0
-					local is_critical_strike = false
-					local can_damage = true
-					local can_stagger = false
-					local blocking = false
-					local shield_breaking_hit = false
-					local backstab_multiplier = nil
+				if Managers.state.network.is_server then
+					local attacker_unit = params.attacker_unit
+					local source_attacker_unit = params.source_attacker_unit
 
-					DamageUtils.server_apply_hit(t, attacker_unit, target_unit, hit_zone_name, nil, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier)
+					if Unit.alive(attacker_unit) then
+						local target_unit = unit
+						local hit_zone_name = buff.template.hit_zone or "full"
+						local attack_direction = Vector3.down()
+						local hit_ragdoll_actor = nil
+						local damage_source = buff.damage_source or "dot_debuff"
+						local power_level = buff.power_level or DefaultPowerLevel
+						local damage_profile_name = buff_template.damage_profile or "default"
+						local damage_profile = DamageProfileTemplates[damage_profile_name]
+						local target_index = nil
+						local boost_curve_multiplier = 0
+						local is_critical_strike = false
+						local can_damage = true
+						local can_stagger = false
+						local blocking = false
+						local shield_breaking_hit = false
+						local backstab_multiplier, first_hit, total_hits = nil
+
+						DamageUtils.server_apply_hit(t, attacker_unit, target_unit, hit_zone_name, nil, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
+					end
+				end
+			end
+
+			if buff.template.sound_event and is_local(unit) then
+				local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+				if first_person_extension then
+					first_person_extension:play_hud_sound_event(buff.template.sound_event)
 				end
 			end
 		end
@@ -618,7 +624,7 @@ BuffFunctionTemplates.functions = {
 			local liquid_extension = ScriptUnit.has_extension(attacker_unit, "area_damage_system")
 
 			if liquid_extension then
-				local source_unit = liquid_extension._source_unit
+				local source_unit = liquid_extension:get_source_attacker_unit()
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
 				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 			end
@@ -730,7 +736,7 @@ BuffFunctionTemplates.functions = {
 			local liquid_extension = ScriptUnit.has_extension(attacker_unit, "area_damage_system")
 
 			if liquid_extension then
-				local source_unit = liquid_extension._source_unit
+				local source_unit = liquid_extension:get_source_attacker_unit()
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
 				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 			end
@@ -1190,7 +1196,7 @@ BuffFunctionTemplates.functions = {
 
 		if Unit.alive(attacker_unit) then
 			local liquid_extension = ScriptUnit.extension(attacker_unit, "area_damage_system")
-			local source_unit = liquid_extension._source_unit
+			local source_unit = liquid_extension:get_source_attacker_unit()
 			local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
 			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 		end
@@ -1370,9 +1376,11 @@ BuffFunctionTemplates.functions = {
 
 		if breed.is_hero and first_person_extension then
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 			local no_ranged_knockback = buff_extension and buff_extension:has_buff_perk("no_ranged_knockback")
+			local is_valid_push_target = not no_ranged_knockback and not status_extension:is_disabled()
 
-			if not no_ranged_knockback then
+			if is_valid_push_target then
 				local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 				local push_speed = buff_template.push_speed
 				local pushed_velocity = pushed_direction * math.max(0, push_speed - distance)
@@ -3207,9 +3215,9 @@ BuffFunctionTemplates.functions = {
 		if projected_start_pos then
 			local liquid_template_name = "sienna_unchained_ability_patch"
 			local liquid_template_id = NetworkLookup.liquid_area_damage_templates[liquid_template_name]
-			local invalid_game_object_id = NetworkConstants.invalid_game_object_id
+			local owner_unit_go_id = network_manager:unit_game_object_id(unit)
 
-			network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", invalid_game_object_id, projected_start_pos, aim_direction, liquid_template_id)
+			network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", owner_unit_go_id, projected_start_pos, aim_direction, liquid_template_id)
 		end
 
 		if is_local(unit) then

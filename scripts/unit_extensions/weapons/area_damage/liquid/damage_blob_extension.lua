@@ -702,4 +702,8 @@ DamageBlobExtension._debug_render_blobs = function (self)
 	end
 end
 
+DamageBlobExtension.get_source_attacker_unit = function (self)
+	return self._source_unit
+end
+
 return

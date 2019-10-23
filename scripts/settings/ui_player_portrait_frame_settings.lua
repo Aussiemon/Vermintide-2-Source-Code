@@ -1378,6 +1378,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_scorpion_complete_all_helmgart_level_achievements_cataclysm = {
+		{
+			texture = "portrait_frame_scorpion_complete_all_helmgart_level_achievements_cataclysm",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_scorpion_complete_bogenhafen_cataclysm = {
 		{
 			texture = "portrait_frame_bogenhafen_5",
@@ -1585,42 +1597,6 @@ UIPlayerPortraitFrameSettings = {
 	frame_scorpion_season_1_cataclysm_3 = {
 		{
 			texture = "portrait_frame_season_01_cataclysm_3",
-			layer = 10,
-			color = {
-				255,
-				255,
-				255,
-				255
-			}
-		}
-	},
-	frame_scorpion_season_1_leaderboard_1 = {
-		{
-			texture = "portrait_frame_season_01_leaderboard_03",
-			layer = 10,
-			color = {
-				255,
-				255,
-				255,
-				255
-			}
-		}
-	},
-	frame_scorpion_season_1_leaderboard_2 = {
-		{
-			texture = "portrait_frame_season_01_leaderboard_02",
-			layer = 10,
-			color = {
-				255,
-				255,
-				255,
-				255
-			}
-		}
-	},
-	frame_scorpion_season_1_leaderboard_3 = {
-		{
-			texture = "portrait_frame_season_01_leaderboard_01",
 			layer = 10,
 			color = {
 				255,

@@ -251,7 +251,6 @@ IngameNewsTickerUI.setup_news_ticker = function (self, text)
 	local text_style = widget_style.text
 	local font_type = text_style.font_type
 	local font, scaled_font_size = UIFontByResolution(text_style)
-	local fonts = DynamicFonts[font_type]
 	local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, text, font[1], scaled_font_size)
 	self.news_ticker_text_width = text_width
 	self.news_ticker_started = true

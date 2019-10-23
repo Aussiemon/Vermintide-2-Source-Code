@@ -546,7 +546,7 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 end
 
 local font_size = 16
-local font = "gw_arial_16"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 
 AchievementManager.debug_draw = function (self)

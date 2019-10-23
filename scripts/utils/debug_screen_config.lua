@@ -20,6 +20,12 @@ local settings = {
 		category = "Allround useful stuff!"
 	},
 	{
+		description = "Skips trailer. Always.",
+		is_boolean = true,
+		setting_name = "skip_intro_trailer",
+		category = "Allround useful stuff!"
+	},
+	{
 		description = "Shows which keys can be used for debug stuff.",
 		is_boolean = true,
 		setting_name = "debug_key_handler_visible",
@@ -607,8 +613,9 @@ Features that make player mechanics nicer to work with.
 				local profile_index = FindProfileIndex(profile_name)
 				local career_index = 1
 				local career_name = SPProfiles[profile_index].careers[career_index].display_name
+				local force_respawn = true
 
-				Managers.state.network:request_profile(1, profile_name, career_name)
+				Managers.state.network:request_profile(1, profile_name, career_name, force_respawn)
 			end
 		end
 	},
@@ -668,6 +675,8 @@ Features that make player mechanics nicer to work with.
 			local parties = party_manager:parties()
 
 			table.clear(options)
+
+			options[#options + 1] = "none"
 
 			for i = 1, #parties, 1 do
 				local party = parties[i]
@@ -6121,6 +6130,12 @@ Features that make player mechanics nicer to work with.
 		category = "Bots"
 	},
 	{
+		description = "Enables bots on Weaves",
+		is_boolean = true,
+		setting_name = "enable_bots_in_weaves",
+		category = "Bots"
+	},
+	{
 		description = "Disables bot usage of career abilities.",
 		is_boolean = true,
 		setting_name = "ai_bots_career_abilities_disabled",
@@ -6664,6 +6679,43 @@ Features that make player mechanics nicer to work with.
 		}
 	},
 	{
+		setting_name = "debug_hud_visibility_group",
+		description = "Force activate a specific HUD visibility group",
+		category = "HUD",
+		item_source = {},
+		load_items_source_func = function (options)
+			if not options.initialized then
+				table.clear(options)
+
+				options[#options + 1] = "none"
+				local definitions = local_require("scripts/ui/views/ingame_hud_definitions")
+				local visibility_groups = definitions.visibility_groups
+
+				for _, settings in ipairs(visibility_groups) do
+					local name = settings.name
+					options[#options + 1] = name
+				end
+
+				options.initialized = true
+			end
+		end,
+		func = function (options, index)
+			local item = options[index]
+
+			if not item or item == "none" then
+				script_data.debug_hud_visibility_group = nil
+			else
+				script_data.debug_hud_visibility_group = item
+			end
+		end
+	},
+	{
+		description = "Used for spawning world markers on ping input",
+		is_boolean = true,
+		setting_name = "debug_world_marker_ping",
+		category = "UI"
+	},
+	{
 		description = "Prints the number of server controlled buffs.",
 		is_boolean = true,
 		setting_name = "debug_server_controlled_buffs",
@@ -7057,9 +7109,9 @@ Features that make player mechanics nicer to work with.
 		category = "Progress"
 	},
 	{
-		description = "Show data for objectives in the current weave",
+		description = "Show data for objectives in the current level",
 		is_boolean = true,
-		setting_name = "debug_weave_objectives",
+		setting_name = "debug_objectives",
 		category = "Gamemode/level"
 	},
 	{

@@ -22,6 +22,14 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	self._cached_name = nil
 end
 
+BulldozerPlayer.register_rpcs = function (self, network_event_delegate, network_transmit)
+	return
+end
+
+BulldozerPlayer.unregister_rpcs = function (self)
+	return
+end
+
 BulldozerPlayer.profile_index = function (self)
 	if self._profile_index then
 		return self._profile_index
@@ -39,6 +47,30 @@ end
 
 BulldozerPlayer.set_player_unit = function (self, unit)
 	self.player_unit = unit
+end
+
+BulldozerPlayer.set_hud = function (self, hud)
+	self._hud = hud
+
+	if self.player_unit and hud then
+		self:_add_hud_components()
+	end
+end
+
+BulldozerPlayer._add_hud_components = function (self)
+	local profile_index = self:profile_index()
+	local profile = SPProfiles[profile_index]
+	local hud_components = profile.hud_components
+
+	self._hud:add_components(hud_components)
+end
+
+BulldozerPlayer._remove_hud_components = function (self)
+	local profile_index = self:profile_index()
+	local profile = SPProfiles[profile_index]
+	local hud_components = profile.hud_components
+
+	self._hud:remove_components(hud_components)
 end
 
 BulldozerPlayer.type = function (self)
@@ -66,6 +98,10 @@ BulldozerPlayer.despawn = function (self)
 
 	if first_person_extension then
 		first_person_extension:play_hud_sound_event("Stop_ability_loop_turn_off")
+	end
+
+	if self._hud then
+		self:_remove_hud_components()
 	end
 
 	local player_unit = self.player_unit
@@ -340,10 +376,6 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 
 	if not breed.is_hero then
 		Unit.create_actor(unit, "enemy_collision", false)
-
-		local status_extension = ScriptUnit.extension(unit, "status_system")
-
-		status_extension:set_move_through_ai(true)
 	else
 		Unit.create_actor(unit, "human_collision", false)
 	end
@@ -355,6 +387,11 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	end
 
 	Managers.state.event:trigger("camera_teleported")
+
+	if self._hud then
+		self:_add_hud_components()
+	end
+
 	self:_set_spawn_state("spawned")
 
 	return unit
@@ -402,7 +439,11 @@ BulldozerPlayer.local_player_id = function (self)
 end
 
 BulldozerPlayer.platform_id = function (self)
-	return self.peer_id
+	if PLATFORM == "win32" then
+		return self.peer_id
+	else
+		return Managers.account:account_id()
+	end
 end
 
 BulldozerPlayer.profile_id = function (self)
@@ -422,7 +463,7 @@ BulldozerPlayer.stats_id = function (self)
 end
 
 BulldozerPlayer.telemetry_id = function (self)
-	return self._backend_id
+	return self._backend_id or self._unique_id
 end
 
 BulldozerPlayer.is_player_controlled = function (self)
@@ -489,6 +530,8 @@ BulldozerPlayer.cached_name = function (self)
 end
 
 BulldozerPlayer.destroy = function (self)
+	self:set_hud(nil)
+
 	if self._player_sync_data then
 		self._player_sync_data:destroy()
 	end
@@ -508,6 +551,12 @@ BulldozerPlayer.best_aquired_power_level = function (self)
 	local best_aquired_power_level = character_power_level + sum / 5
 
 	return best_aquired_power_level
+end
+
+BulldozerPlayer.get_party = function (self)
+	local status = Managers.party:get_status_from_unique_id(self._unique_id)
+
+	return Managers.party:get_party(status.party_id)
 end
 
 return

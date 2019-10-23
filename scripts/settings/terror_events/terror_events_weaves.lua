@@ -240,13 +240,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -276,7 +276,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -286,7 +286,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -296,7 +296,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -306,7 +306,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -331,13 +331,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -372,13 +372,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -398,7 +398,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "storm_vermin_shields_small"
+			composition_type = "weave_storm_vermin_shields_small"
 		},
 		{
 			"event_horde",
@@ -429,19 +429,19 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"spawn_at_raw",
@@ -452,7 +452,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -527,7 +527,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "storm_vermin_shields_medium"
+			composition_type = "weave_storm_vermin_shields_medium"
 		},
 		{
 			"event_horde",
@@ -608,13 +608,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"delay",
@@ -663,13 +663,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"delay",
@@ -684,7 +684,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"continue_when",
@@ -714,13 +714,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"delay",
@@ -735,7 +735,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"continue_when",
@@ -764,7 +764,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"delay",
@@ -928,7 +928,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"continue_when",
@@ -996,7 +996,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
@@ -1024,13 +1024,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_at_raw",
@@ -1046,7 +1046,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",
@@ -1068,7 +1068,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_at_raw",
@@ -1084,13 +1084,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors_small"
+			composition_type = "weave_chaos_warriors_small"
 		},
 		{
 			"delay",
@@ -1122,7 +1122,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",
@@ -1161,7 +1161,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"delay",
@@ -1171,7 +1171,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1210,7 +1210,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"delay",
@@ -1220,7 +1220,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1241,7 +1241,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1252,7 +1252,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"delay",
@@ -1272,7 +1272,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"continue_when",
@@ -1288,7 +1288,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1342,13 +1342,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"delay",
@@ -1358,7 +1358,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1373,7 +1373,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"delay",
@@ -1393,7 +1393,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1448,7 +1448,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1482,7 +1482,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "explosive_horde_medium"
+			composition_type = "weave_explosive_horde_medium"
 		},
 		{
 			"delay",
@@ -1511,7 +1511,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -1521,7 +1521,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_at_raw",
@@ -1565,7 +1565,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_at_raw",
@@ -1590,7 +1590,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -1601,7 +1601,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",
@@ -1645,7 +1645,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_at_raw",
@@ -1669,7 +1669,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",
@@ -1699,13 +1699,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors_small"
+			composition_type = "weave_chaos_warriors_small"
 		},
 		{
 			"delay",
@@ -1730,7 +1730,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",
@@ -1761,7 +1761,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",
@@ -2126,7 +2126,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "event_medium_shield"
+			composition_type = "weave_event_medium_shield"
 		},
 		{
 			"spawn_at_raw",
@@ -2191,7 +2191,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "event_medium_shield"
+			composition_type = "weave_event_medium_shield"
 		},
 		{
 			"delay",
@@ -2217,7 +2217,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "event_medium_shield"
+			composition_type = "weave_event_medium_shield"
 		},
 		{
 			"delay",
@@ -2310,7 +2310,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_at_raw",
@@ -2336,7 +2336,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_raiders_medium"
+			composition_type = "weave_chaos_raiders_medium"
 		},
 		{
 			"delay",
@@ -2375,7 +2375,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_raiders_medium"
+			composition_type = "weave_chaos_raiders_medium"
 		},
 		{
 			"delay",
@@ -2401,7 +2401,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -2683,13 +2683,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"delay",
@@ -2699,7 +2699,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -2709,14 +2709,14 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			difficulty_requirement = HARDER
 		},
 		{
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			difficulty_requirement = HARDER
 		},
 		{
@@ -2750,7 +2750,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -2760,7 +2760,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"spawn_at_raw",
@@ -2804,7 +2804,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"spawn_at_raw",
@@ -2825,7 +2825,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"event_horde",
@@ -2837,7 +2837,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"delay",
@@ -2888,7 +2888,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"spawn_at_raw",
@@ -2942,13 +2942,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"delay",
@@ -2984,7 +2984,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"spawn_at_raw",
@@ -2999,7 +2999,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"event_horde",
@@ -3047,7 +3047,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"delay",
@@ -3110,7 +3110,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"delay",
@@ -3120,7 +3120,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"spawn_at_raw",
@@ -3164,7 +3164,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"spawn_at_raw",
@@ -3185,7 +3185,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"event_horde",
@@ -3197,7 +3197,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"delay",
@@ -3248,7 +3248,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"spawn_at_raw",
@@ -3302,13 +3302,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors"
+			composition_type = "weave_bestigors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "bestigors_small"
+			composition_type = "weave_bestigors_small"
 		},
 		{
 			"delay",
@@ -3377,7 +3377,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -3387,7 +3387,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_at_raw",
@@ -3426,7 +3426,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -3436,7 +3436,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_warriors_small"
+			composition_type = "weave_chaos_warriors_small"
 		},
 		{
 			"spawn_at_raw",
@@ -3457,7 +3457,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
@@ -3469,7 +3469,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -3529,7 +3529,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"spawn_at_raw",
@@ -3553,7 +3553,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -3583,7 +3583,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
@@ -3604,7 +3604,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors_small"
+			composition_type = "weave_chaos_warriors_small"
 		},
 		{
 			"delay",
@@ -3682,7 +3682,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -3692,7 +3692,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "event_medium_shield"
+			composition_type = "weave_event_medium_shield"
 		},
 		{
 			"spawn_at_raw",
@@ -3713,7 +3713,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "event_medium_shield"
+			composition_type = "weave_event_medium_shield"
 		},
 		{
 			"spawn_at_raw",
@@ -3724,7 +3724,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -3760,7 +3760,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_at_raw",
@@ -3819,13 +3819,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "event_medium_shield"
+			composition_type = "weave_event_medium_shield"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "storm_vermin_shields_medium"
+			composition_type = "weave_storm_vermin_shields_medium"
 		},
 		{
 			"delay",
@@ -3881,7 +3881,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -3905,7 +3905,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "event_medium_shield"
+			composition_type = "weave_event_medium_shield"
 		},
 		{
 			"delay",
@@ -4005,7 +4005,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "ungor_archers"
+			composition_type = "weave_ungor_archers"
 		},
 		{
 			"spawn_at_raw",
@@ -4067,7 +4067,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "storm_vermin_small"
+			composition_type = "weave_storm_vermin_small"
 		},
 		{
 			"continue_when",
@@ -4109,7 +4109,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_small"
+			composition_type = "weave_chaos_berzerkers_small"
 		},
 		{
 			"continue_when",
@@ -4137,7 +4137,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "plague_monks_small"
+			composition_type = "weave_plague_monks_small"
 		},
 		{
 			"continue_when",
@@ -4224,7 +4224,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"spawn_weave_special_event",
@@ -4260,7 +4260,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -4344,7 +4344,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"spawn_weave_special_event",
@@ -4378,7 +4378,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -4464,7 +4464,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -4481,7 +4481,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_weave_special_event",
@@ -4534,7 +4534,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_shields_medium"
+			composition_type = "weave_storm_vermin_shields_medium"
 		},
 		{
 			"delay",
@@ -4635,7 +4635,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -4652,7 +4652,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_weave_special_event",
@@ -4703,7 +4703,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_shields_medium"
+			composition_type = "weave_storm_vermin_shields_medium"
 		},
 		{
 			"delay",
@@ -4806,7 +4806,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -4823,7 +4823,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_weave_special_event",
@@ -4876,7 +4876,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_shields_medium"
+			composition_type = "weave_storm_vermin_shields_medium"
 		},
 		{
 			"delay",
@@ -4929,7 +4929,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -4946,7 +4946,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -4973,7 +4973,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -4990,7 +4990,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -5074,7 +5074,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_003_skaven",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -5091,7 +5091,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_003_skaven",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -5142,7 +5142,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_003_skaven",
-			composition_type = "storm_vermin_shields_medium"
+			composition_type = "weave_storm_vermin_shields_medium"
 		},
 		{
 			"delay",
@@ -5165,7 +5165,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_003_skaven",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -5182,7 +5182,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_003_skaven",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -5209,7 +5209,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_003_skaven",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -5226,7 +5226,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_003_skaven",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -5276,7 +5276,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_2",
-			composition_type = "chaos_berzerkers_small"
+			composition_type = "weave_chaos_berzerkers_small"
 		},
 		{
 			"spawn_weave_special_event",
@@ -5329,7 +5329,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -5363,7 +5363,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"spawn_weave_special_event",
@@ -5416,7 +5416,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_2",
-			composition_type = "chaos_berzerkers_small"
+			composition_type = "weave_chaos_berzerkers_small"
 		},
 		{
 			"delay",
@@ -5443,7 +5443,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -5477,7 +5477,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_2",
-			composition_type = "chaos_berzerkers_small"
+			composition_type = "weave_chaos_berzerkers_small"
 		},
 		{
 			"delay",
@@ -5527,7 +5527,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1_chaos",
-			composition_type = "chaos_berzerkers_small"
+			composition_type = "weave_chaos_berzerkers_small"
 		},
 		{
 			"spawn_weave_special_event",
@@ -5576,7 +5576,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1_chaos",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -5625,7 +5625,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1_chaos",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -5678,7 +5678,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1_chaos",
-			composition_type = "chaos_berzerkers_small"
+			composition_type = "weave_chaos_berzerkers_small"
 		},
 		{
 			"delay",
@@ -5705,7 +5705,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1_chaos",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -5739,7 +5739,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_1_chaos",
-			composition_type = "chaos_berzerkers_small"
+			composition_type = "weave_chaos_berzerkers_small"
 		},
 		{
 			"delay",
@@ -5789,7 +5789,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_weave_special_event",
@@ -5861,7 +5861,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -5878,7 +5878,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -5931,7 +5931,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -5975,7 +5975,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_small"
+			composition_type = "weave_plague_monks_small"
 		},
 		{
 			"delay",
@@ -5992,7 +5992,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "storm_vermin_shields_small"
+			composition_type = "weave_storm_vermin_shields_small"
 		},
 		{
 			"delay",
@@ -6059,7 +6059,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"spawn_weave_special_event",
@@ -6127,7 +6127,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "storm_vermin_medium"
+			composition_type = "weave_storm_vermin_medium"
 		},
 		{
 			"delay",
@@ -6144,7 +6144,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -6195,7 +6195,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -6239,7 +6239,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "plague_monks_small"
+			composition_type = "weave_plague_monks_small"
 		},
 		{
 			"delay",
@@ -6256,7 +6256,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_3",
-			composition_type = "storm_vermin_shields_small"
+			composition_type = "weave_storm_vermin_shields_small"
 		},
 		{
 			"delay",
@@ -6488,7 +6488,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "capture_point_6_skaven",
-			composition_type = "plague_monks_medium"
+			composition_type = "weave_plague_monks_medium"
 		},
 		{
 			"delay",
@@ -7085,7 +7085,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "weave_spot_event_chaos_warriors",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -7095,7 +7095,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "weave_spot_event_chaos_warriors",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -8215,7 +8215,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -8230,7 +8230,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -8246,7 +8246,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -8261,7 +8261,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -8277,7 +8277,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -8293,7 +8293,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -8339,7 +8339,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -8370,7 +8370,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "event_smaller",
+			composition_type = "weave_event_smaller",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9265,7 +9265,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "plague_monks_small",
+			composition_type = "weave_plague_monks_small",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9280,7 +9280,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "plague_monks_small",
+			composition_type = "weave_plague_monks_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9296,7 +9296,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "plague_monks_small",
+			composition_type = "weave_plague_monks_small",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9311,7 +9311,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "plague_monks_small",
+			composition_type = "weave_plague_monks_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9327,7 +9327,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "plague_monks_small",
+			composition_type = "weave_plague_monks_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9343,7 +9343,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "plague_monks_small",
+			composition_type = "weave_plague_monks_small",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9358,7 +9358,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_shields_small",
+			composition_type = "weave_storm_vermin_shields_small",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9373,7 +9373,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_shields_small",
+			composition_type = "weave_storm_vermin_shields_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9389,7 +9389,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_shields_small",
+			composition_type = "weave_storm_vermin_shields_small",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9404,7 +9404,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_shields_small",
+			composition_type = "weave_storm_vermin_shields_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9420,7 +9420,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_shields_small",
+			composition_type = "weave_storm_vermin_shields_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9436,7 +9436,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_shields_medium",
+			composition_type = "weave_storm_vermin_shields_medium",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9451,7 +9451,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_small",
+			composition_type = "weave_storm_vermin_small",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9466,7 +9466,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_small",
+			composition_type = "weave_storm_vermin_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9482,7 +9482,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_small",
+			composition_type = "weave_storm_vermin_small",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9497,7 +9497,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_small",
+			composition_type = "weave_storm_vermin_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9513,7 +9513,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_small",
+			composition_type = "weave_storm_vermin_small",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -9529,7 +9529,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "storm_vermin_medium",
+			composition_type = "weave_storm_vermin_medium",
 			sound_settings = horde_sound_settings.skaven
 		}
 	},
@@ -9544,7 +9544,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_raiders_small",
+			composition_type = "weave_chaos_raiders_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9559,7 +9559,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_raiders_small",
+			composition_type = "weave_chaos_raiders_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9575,7 +9575,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_raiders_small",
+			composition_type = "weave_chaos_raiders_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9590,7 +9590,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_raiders_small",
+			composition_type = "weave_chaos_raiders_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9606,7 +9606,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_raiders_medium",
+			composition_type = "weave_chaos_raiders_medium",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9622,7 +9622,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_raiders_small",
+			composition_type = "weave_chaos_raiders_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9637,7 +9637,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_berzerkers_small",
+			composition_type = "weave_chaos_berzerkers_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9652,7 +9652,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_berzerkers_small",
+			composition_type = "weave_chaos_berzerkers_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9668,7 +9668,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_berzerkers_small",
+			composition_type = "weave_chaos_berzerkers_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9683,7 +9683,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_berzerkers_small",
+			composition_type = "weave_chaos_berzerkers_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9699,7 +9699,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_berzerkers_small",
+			composition_type = "weave_chaos_berzerkers_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9715,7 +9715,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_berzerkers_small",
+			composition_type = "weave_chaos_berzerkers_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9730,7 +9730,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_shields",
+			composition_type = "weave_chaos_shields",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9745,7 +9745,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_shields",
+			composition_type = "weave_chaos_shields",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9761,7 +9761,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_shields",
+			composition_type = "weave_chaos_shields",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9776,7 +9776,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_shields",
+			composition_type = "weave_chaos_shields",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9792,7 +9792,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_shields",
+			composition_type = "weave_chaos_shields",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9808,7 +9808,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_shields",
+			composition_type = "weave_chaos_shields",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9823,7 +9823,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_warriors_small",
+			composition_type = "weave_chaos_warriors_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9838,7 +9838,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_warriors_small",
+			composition_type = "weave_chaos_warriors_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9854,7 +9854,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_warriors_small",
+			composition_type = "weave_chaos_warriors_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9869,7 +9869,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_warriors_small",
+			composition_type = "weave_chaos_warriors_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9885,7 +9885,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_warriors_small",
+			composition_type = "weave_chaos_warriors_small",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -9901,7 +9901,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_warriors",
+			composition_type = "weave_chaos_warriors",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},
@@ -9916,7 +9916,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "bestigors",
+			composition_type = "weave_bestigors",
 			sound_settings = horde_sound_settings.beastmen
 		}
 	},
@@ -9931,7 +9931,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "bestigors_small",
+			composition_type = "weave_bestigors_small",
 			sound_settings = horde_sound_settings.beastmen
 		},
 		{
@@ -9947,7 +9947,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "bestigors",
+			composition_type = "weave_bestigors",
 			sound_settings = horde_sound_settings.beastmen
 		}
 	},
@@ -9962,7 +9962,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "bestigors_small",
+			composition_type = "weave_bestigors_small",
 			sound_settings = horde_sound_settings.beastmen
 		},
 		{
@@ -9978,7 +9978,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "bestigors",
+			composition_type = "weave_bestigors",
 			sound_settings = horde_sound_settings.beastmen
 		},
 		{
@@ -9994,7 +9994,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "bestigors",
+			composition_type = "weave_bestigors",
 			sound_settings = horde_sound_settings.beastmen
 		}
 	},
@@ -10009,7 +10009,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			sound_settings = horde_sound_settings.beastmen
 		}
 	},
@@ -10024,7 +10024,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			sound_settings = horde_sound_settings.beastmen
 		},
 		{
@@ -10040,7 +10040,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			sound_settings = horde_sound_settings.beastmen
 		}
 	},
@@ -10055,7 +10055,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			sound_settings = horde_sound_settings.beastmen
 		},
 		{
@@ -10071,7 +10071,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			sound_settings = horde_sound_settings.beastmen
 		},
 		{
@@ -10087,7 +10087,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "ungor_archers",
+			composition_type = "weave_ungor_archers",
 			sound_settings = horde_sound_settings.beastmen
 		}
 	},
@@ -12911,7 +12911,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "chaos_warriors",
+			composition_type = "weave_chaos_warriors",
 			sound_settings = horde_sound_settings.chaos
 		},
 		{
@@ -12939,7 +12939,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"ambush_horde",
-			composition_type = "explosive_horde_medium",
+			composition_type = "weave_explosive_horde_medium",
 			sound_settings = horde_sound_settings.skaven
 		},
 		{
@@ -13002,13 +13002,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",
@@ -13042,25 +13042,25 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -13077,13 +13077,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_warriors"
+			composition_type = "weave_chaos_warriors"
 		},
 		{
 			"delay",
@@ -13100,19 +13100,19 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "arena_fight1",
-			composition_type = "chaos_shields"
+			composition_type = "weave_chaos_shields"
 		},
 		{
 			"delay",
@@ -13146,19 +13146,19 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "arena_fight2",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "weave_chaos_berzerkers_medium"
 		},
 		{
 			"delay",

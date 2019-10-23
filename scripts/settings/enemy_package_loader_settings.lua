@@ -1,6 +1,6 @@
 EnemyPackageLoaderSettings = EnemyPackageLoaderSettings or {}
 EnemyPackageLoaderSettings.policy = "default"
-EnemyPackageLoaderSettings.max_loaded_breed_cap = 40
+EnemyPackageLoaderSettings.max_loaded_breed_cap = 35
 EnemyPackageLoaderSettings.unload_startup_packages_between_levels = true
 EnemyPackageLoaderSettings.breed_path = "resource_packages/breeds/"
 EnemyPackageLoaderSettings.categories = {
@@ -61,19 +61,6 @@ EnemyPackageLoaderSettings.categories = {
 		id = "always_loaded",
 		dynamic_loading = false,
 		breeds = {
-			"chaos_berzerker",
-			"chaos_fanatic",
-			"chaos_marauder",
-			"chaos_raider",
-			"chaos_warrior",
-			"skaven_clan_rat",
-			"skaven_storm_vermin",
-			"skaven_storm_vermin_with_shield",
-			"skaven_slave",
-			"skaven_loot_rat",
-			"chaos_marauder_with_shield",
-			"skaven_clan_rat_with_shield",
-			"skaven_plague_monk",
 			"chaos_vortex",
 			"critter_rat",
 			"critter_pig"
@@ -133,7 +120,7 @@ local category_changes = nil
 if PLATFORM == "xb1" or PLATFORM == "ps4" or script_data.enemy_package_loader_policy == "console" then
 	EnemyPackageLoaderSettings.policy = "console"
 	EnemyPackageLoaderSettings.unload_startup_packages_between_levels = true
-	EnemyPackageLoaderSettings.max_loaded_breed_cap = 40
+	EnemyPackageLoaderSettings.max_loaded_breed_cap = 35
 	category_changes = {
 		bosses = {
 			limit = 1,

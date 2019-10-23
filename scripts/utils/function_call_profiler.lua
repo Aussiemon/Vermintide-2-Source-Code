@@ -24,7 +24,7 @@ FunctionCallProfiler.destroy = function ()
 end
 
 local font_size = 16
-local font = "gw_arial_16"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 
 FunctionCallProfiler.render = function ()

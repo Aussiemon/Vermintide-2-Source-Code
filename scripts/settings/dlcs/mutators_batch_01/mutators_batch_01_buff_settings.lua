@@ -71,7 +71,7 @@ settings.buff_function_templates = {
 				local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-				Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 
 				local catapult_force = 12
 				local catapult_force_z = 6

@@ -548,6 +548,7 @@ if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_ov
 				texts_scenegraph_id = "texts",
 				font_type = "hell_shark",
 				localize = false,
+				font_size = 36,
 				texts = {
 					"PRE-RELEASE SOFTWARE",
 					"***",
@@ -558,10 +559,9 @@ if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_ov
 					"a pre-release game, Fatshark does not commit",
 					"to providing customer support for the game."
 				},
-				font_size = (is_pro and 52) or 36,
 				size = {
 					1920,
-					(is_pro and 70) or 50
+					50
 				},
 				offset = {
 					0,
@@ -573,6 +573,7 @@ if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_ov
 	end
 end
 
+local VIDEO_REFERENCE_NAME = "SplashView"
 SplashView = class(SplashView)
 
 SplashView.init = function (self, input_manager, world)
@@ -597,7 +598,7 @@ SplashView.init = function (self, input_manager, world)
 		local widget = nil
 
 		if splash.type == "video" then
-			widget = UIWidgets.create_splash_video(splash)
+			widget = UIWidgets.create_splash_video(splash, VIDEO_REFERENCE_NAME)
 		elseif splash.partner_splash then
 			widget = UIWidgets.create_partner_splash_widget(splash)
 		else
@@ -645,14 +646,14 @@ SplashView._next_splash = function (self, override_skip)
 end
 
 SplashView._update_video = function (self, gui, dt)
-	if not self.ui_renderer.video_player then
-		UIRenderer.create_video_player(self.ui_renderer, self._world, self._current_splash_data.video_name, false)
+	if not self.ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+		UIRenderer.create_video_player(self.ui_renderer, VIDEO_REFERENCE_NAME, self._world, self._current_splash_data.video_name, false)
 		Managers.transition:fade_out(0.5, nil)
 	else
 		local video_complete = self._current_widget.content.video_content.video_completed
 
 		if video_complete then
-			UIRenderer.destroy_video_player(self.ui_renderer)
+			UIRenderer.destroy_video_player(self.ui_renderer, VIDEO_REFERENCE_NAME)
 
 			self._sound_started = false
 
@@ -765,7 +766,7 @@ SplashView._create_ui_elements = function (self)
 		local widget = nil
 
 		if splash.type == "video" then
-			widget = UIWidgets.create_splash_video(splash)
+			widget = UIWidgets.create_splash_video(splash, VIDEO_REFERENCE_NAME)
 		elseif splash.type == "beta_end" then
 			widget = create_xbox_beta_widget(splash)
 		elseif splash.partner_splash then
@@ -805,15 +806,15 @@ SplashView.update = function (self, dt)
 	local skip = nil
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
-		skip = self:_get_console_input()
+		skip = script_data.skip_splash or self:_get_console_input()
 	else
-		skip = input_service:get("skip_splash")
+		skip = script_data.skip_splash or input_service:get("skip_splash")
 	end
 
 	if skip and (not self._current_splash_data or not self._current_splash_data.forced) then
 		if self._current_splash_data and self._current_splash_data.type == "video" then
-			if ui_renderer.video_player then
-				UIRenderer.destroy_video_player(self.ui_renderer)
+			if ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+				UIRenderer.destroy_video_player(self.ui_renderer, VIDEO_REFERENCE_NAME)
 			end
 
 			if self._current_splash_data.sound_stop then

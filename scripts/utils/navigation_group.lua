@@ -247,8 +247,8 @@ NavigationGroup.print_group = function (self, world, nav_world, line_object, lin
 
 	local m = Matrix4x4.identity()
 	local font_size = 1.2
-	local font_material = "materials/fonts/gw_arial_16"
-	local font = "gw_arial_16"
+	local font_material = "materials/fonts/arial"
+	local font = "arial"
 	local group_center = self._group_center:unbox()
 	local text_pos = Vector3(group_center[1], group_center[3], group_center[2])
 

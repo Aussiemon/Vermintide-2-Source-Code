@@ -54,6 +54,22 @@ HeroWindowWeaveForgeOverview.on_enter = function (self, params, offset)
 	self:_sync_backend_loadout()
 end
 
+HeroWindowWeaveForgeOverview._setup_definitions = function (self)
+	if self._parent:gamepad_style_active() then
+		definitions = dofile("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_overview_console_definitions")
+	else
+		definitions = dofile("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_overview_definitions")
+	end
+
+	top_widget_definitions = definitions.top_widgets
+	bottom_widget_definitions = definitions.bottom_widgets
+	bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
+	top_hdr_widget_definitions = definitions.top_hdr_widgets
+	scenegraph_definition = definitions.scenegraph_definition
+	animation_definitions = definitions.animation_definitions
+	weapon_crafting_tutorial_definitions = definitions.weapon_crafting_tutorial_definitions
+end
+
 HeroWindowWeaveForgeOverview._start_transition_animation = function (self, animation_name)
 	local params = {
 		parent = self._parent,
@@ -65,6 +81,8 @@ HeroWindowWeaveForgeOverview._start_transition_animation = function (self, anima
 end
 
 HeroWindowWeaveForgeOverview.create_ui_elements = function (self, params, offset)
+	self:_setup_definitions()
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local top_widgets = {}
 	local bottom_widgets = {}
@@ -262,7 +280,7 @@ HeroWindowWeaveForgeOverview._initialize_viewports = function (self)
 		viewports_data[i] = data
 	end
 
-	if weapon_crafting_tutorial then
+	if weapon_crafting_tutorial and not amulet_introduced then
 		local tutorial_widgets = self._top_widgets
 
 		for name, widget_definition in pairs(weapon_crafting_tutorial_definitions) do
@@ -640,7 +658,8 @@ HeroWindowWeaveForgeOverview._handle_input = function (self, dt, t)
 end
 
 HeroWindowWeaveForgeOverview._draw = function (self, dt)
-	local ui_renderer = self._ui_renderer
+	local parent = self._parent
+	local ui_renderer = parent:get_ui_renderer()
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local parent = self._parent
@@ -838,13 +857,17 @@ HeroWindowWeaveForgeOverview._set_essence_upgrade_cost = function (self, essence
 	local widget_button = widgets_by_name.upgrade_button
 	local button_content = widget_button.content
 	local button_style = widget_button.style
+	local ui_renderer = self._ui_top_renderer
 	local button_text = ""
+	local text_width = 0
+	local text_width_offset = 0
 
 	if essence_amount then
+		text_width_offset = 15
+		local max_width = 170
 		local value_string = WeaveUtils.comma_value(essence_amount)
 		button_text = Localize("menu_weave_forge_upgrade_button") .. " " .. value_string
-		local ui_renderer = self._ui_top_renderer
-		local text_width = UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text)
+		text_width = math.min(UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text), max_width)
 		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(button_content.price_icon)
 		local icon_size = icon_texture_settings.size
 		local icon_width = icon_size[1]
@@ -860,7 +883,10 @@ HeroWindowWeaveForgeOverview._set_essence_upgrade_cost = function (self, essence
 		button_style.price_icon_disabled.color[1] = 255
 		self._can_upgrade = true
 	else
+		text_width_offset = 23
+		local max_width = 200
 		button_text = Localize("menu_weave_forge_upgrade_loadout_button_cap")
+		text_width = math.min(UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text), max_width)
 		button_style.title_text.offset[1] = button_style.title_text.default_offset[1]
 		button_style.title_text_shadow.offset[1] = button_style.title_text_shadow.default_offset[1]
 		button_style.title_text_disabled.offset[1] = button_style.title_text_disabled.default_offset[1]
@@ -869,8 +895,17 @@ HeroWindowWeaveForgeOverview._set_essence_upgrade_cost = function (self, essence
 		self._can_upgrade = false
 	end
 
+	local size = button_content.size
+	local button_length = size[1]
+	local button_text_width_offset = text_width_offset + button_length / 2 - text_width / 2
 	button_content.button_hotspot.disable_button = not essence_amount or not can_afford
 	button_content.title_text = button_text
+	button_style.title_text.size[1] = text_width
+	button_style.title_text_shadow.size[1] = text_width
+	button_style.title_text_disabled.size[1] = text_width
+	button_style.title_text.offset[1] = button_text_width_offset
+	button_style.title_text_shadow.offset[1] = button_text_width_offset
+	button_style.title_text_disabled.offset[1] = button_text_width_offset
 end
 
 HeroWindowWeaveForgeOverview._set_forge_level = function (self, level)
@@ -879,8 +914,11 @@ HeroWindowWeaveForgeOverview._set_forge_level = function (self, level)
 	local widget_value = widgets_by_name.forge_level_text
 	widget_value.content.text = level
 	local ui_renderer = self._ui_top_renderer
-	local title_text_width = UIUtils.get_text_width(ui_renderer, widget_title.style.text, widget_title.content.text)
-	local value_text_width = UIUtils.get_text_width(ui_renderer, widget_value.style.text, widget_value.content.text)
+	local title_text_width = math.min(170, UIUtils.get_text_width(ui_renderer, widget_title.style.text, widget_title.content.text))
+	local value_text_width = math.min(30, UIUtils.get_text_width(ui_renderer, widget_value.style.text, widget_value.content.text))
+	local ui_scenegraph = self._ui_scenegraph
+	ui_scenegraph[widget_title.scenegraph_id].size[1] = title_text_width + 5
+	ui_scenegraph[widget_value.scenegraph_id].size[1] = value_text_width + 5
 	local spacing = 10
 	local total_width = title_text_width + value_text_width + spacing
 	local title_text_offset = -(total_width / 2 - title_text_width / 2)

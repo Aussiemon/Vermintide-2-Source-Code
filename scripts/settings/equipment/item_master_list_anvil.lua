@@ -12,6 +12,7 @@ ItemMasterList.bw_1h_flail_flaming = {
 	property_table_name = "melee",
 	item_type = "bw_1h_flail_flaming",
 	trait_table_name = "melee",
+	required_dlc = "scorpion",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -37,6 +38,7 @@ ItemMasterList.dr_1h_throwing_axes = {
 	has_power_level = true,
 	property_table_name = "ranged",
 	projectile_units_template = "throwing_axe_01_t1",
+	required_dlc = "scorpion",
 	can_wield = {
 		"dr_slayer",
 		"dr_ranger"
@@ -56,6 +58,7 @@ ItemMasterList.es_2h_heavy_spear = {
 	property_table_name = "melee",
 	item_type = "es_2h_heavy_spear",
 	trait_table_name = "melee",
+	required_dlc = "scorpion",
 	can_wield = {
 		"es_huntsman",
 		"es_mercenary"
@@ -76,6 +79,7 @@ ItemMasterList.we_1h_spears_shield = {
 	item_type = "we_1h_spears_shield",
 	slot_type = "melee",
 	trait_table_name = "melee",
+	required_dlc = "scorpion",
 	can_wield = {
 		"we_maidenguard"
 	}
@@ -94,6 +98,7 @@ ItemMasterList.wh_2h_billhook = {
 	property_table_name = "melee",
 	item_type = "wh_2h_billhook",
 	trait_table_name = "melee",
+	required_dlc = "scorpion",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",

@@ -3343,6 +3343,107 @@ UIWidgets.create_rect_with_frame = function (scenegraph_id, size, rect_color, fr
 	return widget
 end
 
+UIWidgets.create_rect_with_inner_rect_frame = function (scenegraph_id, size, background_color, rect_color, retained_mode)
+	local rect_thickness = 1
+	local rect_z_offset = 1
+	local passes = {
+		{
+			style_id = "background",
+			pass_type = "rect",
+			retained_mode = retained_mode
+		},
+		{
+			style_id = "bot_rect",
+			pass_type = "rect",
+			retained_mode = retained_mode
+		},
+		{
+			style_id = "top_rect",
+			pass_type = "rect",
+			retained_mode = retained_mode
+		},
+		{
+			style_id = "left_rect",
+			pass_type = "rect",
+			retained_mode = retained_mode
+		},
+		{
+			style_id = "right_rect",
+			pass_type = "rect",
+			retained_mode = retained_mode
+		}
+	}
+	local content = {}
+	local style = {
+		background = {
+			color = background_color
+		},
+		bot_rect = {
+			color = rect_color,
+			size = {
+				size[1],
+				rect_thickness
+			},
+			offset = {
+				0,
+				0,
+				rect_z_offset
+			}
+		},
+		top_rect = {
+			color = rect_color,
+			size = {
+				size[1],
+				rect_thickness
+			},
+			offset = {
+				0,
+				size[2] - rect_thickness,
+				rect_z_offset
+			}
+		},
+		left_rect = {
+			color = rect_color,
+			size = {
+				rect_thickness,
+				size[2]
+			},
+			offset = {
+				0,
+				0,
+				rect_z_offset
+			}
+		},
+		right_rect = {
+			color = rect_color,
+			size = {
+				rect_thickness,
+				size[2]
+			},
+			offset = {
+				size[1] - rect_thickness,
+				0,
+				rect_z_offset
+			}
+		}
+	}
+	local widget = {
+		element = {
+			passes = passes
+		},
+		content = content,
+		style = style,
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return widget
+end
+
 UIWidgets.create_background = function (scenegraph_id, size, background_texture, optional_color)
 	background_texture = background_texture or "menu_frame_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
@@ -15165,6 +15266,11 @@ UIWidgets.create_layout_button = function (scenegraph_id, texture, hover_texture
 				},
 				{
 					pass_type = "texture",
+					style_id = "texture_shadow_id",
+					texture_id = "texture_id"
+				},
+				{
+					pass_type = "texture",
 					style_id = "texture_hover_id",
 					texture_id = "texture_id"
 				},
@@ -15203,6 +15309,25 @@ UIWidgets.create_layout_button = function (scenegraph_id, texture, hover_texture
 				offset = {
 					0,
 					0,
+					1
+				}
+			},
+			texture_shadow_id = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					texture_size[1],
+					texture_size[2]
+				},
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					2,
+					-2,
 					0
 				}
 			},
@@ -15217,7 +15342,7 @@ UIWidgets.create_layout_button = function (scenegraph_id, texture, hover_texture
 				offset = {
 					0,
 					0,
-					1
+					2
 				}
 			},
 			selected_texture = {
@@ -15236,7 +15361,7 @@ UIWidgets.create_layout_button = function (scenegraph_id, texture, hover_texture
 				offset = {
 					0,
 					0,
-					2
+					3
 				}
 			}
 		},
@@ -15821,6 +15946,191 @@ UIWidgets.create_athanor_upgrade_button = function (scenegraph_id, size, icon, t
 			0,
 			0
 		}
+	}
+end
+
+UIWidgets.create_weave_panel_button = function (scenegraph_id, size, text, font_size, optional_offset, optional_horizontal_alignment)
+	local new_marker_offset = {
+		-19,
+		-25,
+		10
+	}
+	local selection_offset = {
+		0,
+		-8,
+		0
+	}
+	local shadow_offset = {
+		2,
+		3,
+		3
+	}
+	local marker_offset = {
+		0,
+		0,
+		2
+	}
+
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "button_hotspot",
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text_field"
+				},
+				{
+					style_id = "text_hover",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return not content.button_hotspot.disable_button and (content.button_hotspot.is_hover or content.button_hotspot.is_selected)
+					end
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return not content.button_hotspot.disable_button and not content.button_hotspot.is_hover and not content.button_hotspot.is_selected
+					end
+				},
+				{
+					style_id = "text_disabled",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return content.button_hotspot.disable_button
+					end
+				},
+				{
+					texture_id = "new_marker",
+					style_id = "new_marker",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.new
+					end
+				}
+			}
+		},
+		content = {
+			new_marker = "list_item_tag_new",
+			button_hotspot = {},
+			text_field = text,
+			default_font_size = font_size,
+			size = size
+		},
+		style = {
+			button_hotspot = {
+				size = size
+			},
+			text = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_offset = {
+					0,
+					10,
+					4
+				},
+				offset = {
+					0,
+					5,
+					4
+				},
+				size = size
+			},
+			text_shadow = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_offset = shadow_offset,
+				offset = shadow_offset,
+				size = size
+			},
+			text_hover = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				default_offset = {
+					0,
+					10,
+					4
+				},
+				offset = {
+					0,
+					5,
+					4
+				},
+				size = size
+			},
+			text_disabled = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("gray", 50),
+				default_offset = {
+					0,
+					10,
+					4
+				},
+				offset = {
+					0,
+					5,
+					4
+				},
+				size = size
+			},
+			new_marker = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					math.floor(88.19999999999999),
+					math.floor(35.699999999999996)
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					new_marker_offset[1],
+					new_marker_offset[2],
+					new_marker_offset[3]
+				},
+				size = size
+			}
+		},
+		offset = optional_offset or {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
 	}
 end
 

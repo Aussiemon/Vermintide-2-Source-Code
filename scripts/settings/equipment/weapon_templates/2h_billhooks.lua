@@ -956,7 +956,7 @@ weapon_template.actions = {
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.polearm
-weapon_template.display_unit = "units/weapons/weapon_display/display_2h_weapon"
+weapon_template.display_unit = "units/weapons/weapon_display/display_2h_billhooks"
 weapon_template.wield_anim = "to_2h_billhook"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "POLEARM"

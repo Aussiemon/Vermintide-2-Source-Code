@@ -56,19 +56,21 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 
 	local game_mode = search_config.game_mode
 
-	if game_mode == "adventure" then
-		local game_mode = "custom"
-		local game_mode_index = NetworkLookup.game_modes[game_mode]
-		current_filters.game_mode = {
-			value = game_mode_index,
-			comparison = LobbyComparison.LESS_OR_EQUAL
-		}
-	else
-		local game_mode_index = NetworkLookup.game_modes[game_mode]
-		current_filters.game_mode = {
-			value = game_mode_index,
-			comparison = LobbyComparison.EQUAL
-		}
+	if game_mode then
+		if game_mode == "adventure" then
+			local game_mode = "custom"
+			local game_mode_index = NetworkLookup.game_modes[game_mode]
+			current_filters.game_mode = {
+				value = game_mode_index,
+				comparison = LobbyComparison.LESS_OR_EQUAL
+			}
+		else
+			local game_mode_index = NetworkLookup.game_modes[game_mode]
+			current_filters.game_mode = {
+				value = game_mode_index,
+				comparison = LobbyComparison.EQUAL
+			}
+		end
 	end
 
 	local eac_authorized = false
@@ -80,6 +82,10 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 
 	current_filters.eac_authorized = {
 		value = (eac_authorized and "true") or "false",
+		comparison = LobbyComparison.EQUAL
+	}
+	current_filters.mechanism = {
+		value = Managers.mechanism:current_mechanism_name(),
 		comparison = LobbyComparison.EQUAL
 	}
 	self._current_filters = current_filters
@@ -224,11 +230,14 @@ MatchmakingStateSearchGame._search_for_game = function (self, dt)
 	local preferred_levels = {}
 	local game_mode = search_config.game_mode
 	local selected_level_key = search_config.level_key
+	local preferred_level_keys = search_config.preferred_level_keys
 
 	if selected_level_key then
 		preferred_levels = {
 			selected_level_key
 		}
+	elseif preferred_level_keys then
+		preferred_levels = table.clone(preferred_level_keys)
 	else
 		chosen_level, preferred_levels = matchmaking_manager:get_weighed_random_unlocked_level(false, not search_config.quick_game)
 	end
@@ -342,13 +351,13 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 				local discard = false
 				local discard_reason = nil
 				local secondary_option = false
-				local level_key = lobby_data.selected_level_key or lobby_data.level_key
+				local lobby_level_key = lobby_data.selected_level_key or lobby_data.level_key
 				local ignore_dlc_check = search_config.quick_game
 				local is_event_mode = search_config.game_mode == "event"
 
-				if not selected_level_key and not discard and not matchmaking_manager:party_has_level_unlocked(level_key, ignore_dlc_check, nil, is_event_mode) then
+				if not selected_level_key and not discard and not matchmaking_manager:party_has_level_unlocked(lobby_level_key, ignore_dlc_check, nil, is_event_mode) then
 					discard = true
-					discard_reason = string.format("level(%s) is not unlocked by party", level_key)
+					discard_reason = string.format("level(%s) is not unlocked by party", lobby_level_key)
 				end
 
 				if not discard and not matchmaking_manager:hero_available_in_lobby_data(wanted_profile_id, lobby_data) then

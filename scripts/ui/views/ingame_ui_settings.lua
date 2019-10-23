@@ -578,6 +578,27 @@ view_settings = {
 			console_friends_view = ConsoleFriendsView:new(ingame_ui_context)
 		}
 
+		for _, dlc in pairs(DLCSettings) do
+			if dlc.ui_views then
+				local game_mechanism_name = Managers.mechanism:current_mechanism_name()
+
+				for _, view in ipairs(dlc.ui_views) do
+					local view_name = view.name
+					local view_class_name = view.class_name
+
+					if view_name and view_class_name then
+						fassert(views[view_name] == nil, "view name (%s) already exists", view_name)
+
+						local filter = view.mechanism_filter
+
+						if (not filter or filter[game_mechanism_name] == true) and (not view.only_in_inn or ingame_ui_context.is_in_inn) and (not view.only_in_game or not ingame_ui_context.is_in_inn) then
+							views[view_name] = _G[view_class_name]:new(ingame_ui_context)
+						end
+					end
+				end
+			end
+		end
+
 		return views
 	end,
 	hotkey_mapping = {
@@ -652,7 +673,21 @@ view_settings = {
 	blocked_transitions = {}
 }
 
-for name, dlc in pairs(DLCSettings) do
+for _, dlc in pairs(DLCSettings) do
+	local ui_views = dlc.ui_views
+
+	if ui_views then
+		for _, view in ipairs(ui_views) do
+			if view.transitions then
+				for transition_name, func in pairs(view.transitions) do
+					fassert(transitions[transition_name] == nil, "Transition (%s) already exists. Duplicate somewhere", transition_name)
+
+					transitions[transition_name] = func
+				end
+			end
+		end
+	end
+
 	local hotkey_mapping = dlc.hotkey_mapping
 
 	if hotkey_mapping then

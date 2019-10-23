@@ -134,7 +134,7 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 				end
 			end
 
-			DamageUtils.create_explosion(world, blackboard.target_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, false)
+			DamageUtils.create_explosion(world, blackboard.target_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, false, nil, unit)
 
 			for i = 1, #nearby_beastmen_blackboards, 1 do
 				slot30 = nearby_beastmen_blackboards[i]
@@ -144,7 +144,7 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 			local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
 			local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-			Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 		end
 
 		blackboard.anim_cb_place_standard = true

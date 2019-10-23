@@ -574,6 +574,12 @@ TutorialUI.setup_objective_tooltip_widget = function (self, widget_holder, objec
 	end
 
 	widget.content.texture_id = template.icon or "hud_tutorial_icon_info"
+	local game_mode = Managers.state.game_mode:game_mode_key()
+
+	if game_mode and template.game_mode_icons and template.game_mode_icons[game_mode] then
+		widget.content.texture_id = template.game_mode_icons[game_mode]
+	end
+
 	widget.style.texture_id.color[1] = 0
 	widget.style.arrow.color[1] = 0
 	widget.mission_tooltip_animation_in_time = 0

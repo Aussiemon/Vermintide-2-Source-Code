@@ -21,12 +21,13 @@ BackendInterfaceLootPlayfab._new_id = function (self)
 	return self._last_id
 end
 
-BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend_id)
+BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend_id, game_mode_key)
 	local id = self:_new_id()
 	local data = {
 		hero_name = hero_name,
 		playfab_id = backend_id,
-		id = id
+		id = id,
+		game_mode_key = game_mode_key
 	}
 	local generate_loot_chest_rewards_request = {
 		FunctionName = "generateLootChestRewards",
@@ -149,6 +150,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local experience_pool = function_result.ExperiencePool
 	local recent_quickplay_games = function_result.RecentQuickplayGames
 	local essence_rewards = function_result.EssenceRewards
+	local total_essence = function_result.total_essence
 	local num_items = #items
 	local loot_request = {}
 	local backend_mirror = self._backend_mirror
@@ -206,6 +208,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		backend_mirror:set_essence(new_total_essence)
 	end
 
+	backend_mirror:set_total_essence(total_essence)
 	Managers.backend:dirtify_interfaces()
 
 	self._loot_requests[id] = loot_request

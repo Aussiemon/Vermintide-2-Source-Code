@@ -3,7 +3,7 @@ local ai_units = {}
 AreaDamageTemplates.templates = {
 	globadier_area_dot_damage = {
 		server = {
-			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
+			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier, side)
 				if life_time < life_timer then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
@@ -47,12 +47,13 @@ AreaDamageTemplates.templates = {
 
 				return true, damage_buffer
 			end,
-			do_damage = function (data, extension_unit)
+			do_damage = function (data, extension_unit, source_attacker_unit)
 				local hit_unit = data.unit
 				local damage = data.damage
 				local damage_source = data.damage_source
+				local hit_ragdoll_actor = nil
 
-				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit)
 			end
 		},
 		client = {
@@ -171,12 +172,13 @@ AreaDamageTemplates.templates = {
 
 				return true, damage_buffer
 			end,
-			do_damage = function (data, extension_unit)
+			do_damage = function (data, extension_unit, source_attacker_unit)
 				local hit_unit = data.unit
 				local damage = data.damage
 				local damage_source = data.damage_source
+				local hit_ragdoll_actor = nil
 
-				DamageUtils.add_damage_network(hit_unit, extension_unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source)
+				DamageUtils.add_damage_network(hit_unit, unit, damage, "torso", "damage_over_time", nil, Vector3(1, 0, 0), damage_source, hit_ragdoll_actor, source_attacker_unit)
 			end
 		},
 		client = {
@@ -246,7 +248,7 @@ AreaDamageTemplates.templates = {
 	},
 	explosion_template_aoe = {
 		server = {
-			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier)
+			update = function (damage_source, unit, radius, damage, life_time, life_timer, damage_interval, damage_timer, aoe_dot_player_take_damage, explosion_template_name, slow_modifier, side)
 				if life_time < life_timer then
 					Managers.state.unit_spawner:mark_for_deletion(unit)
 
@@ -309,16 +311,38 @@ AreaDamageTemplates.templates = {
 						damage_buffer[#damage_buffer + 1] = damage_data
 					end
 
-					local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+					if aoe_dot_player_take_damage then
+						local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+						local enemy_players = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-					if aoe_dot_player_take_damage and difficulty_settings.friendly_fire_ranged and friendly_fire_data then
-						for _, player in pairs(Managers.player:players()) do
-							local player_unit = player.player_unit
+						for _, player_unit in ipairs(enemy_players) do
+							local unit_position = POSITION_LOOKUP[player_unit]
+							local distance = Vector3.distance(unit_position, area_damage_position)
+							local is_inside_radius = distance < radius
+							local dot_template_name = aoe_data.dot_template_name
+							local ghost_ext = ScriptUnit.has_extension(player_unit, "ghost_mode_system")
+							local is_in_ghost_mode = ghost_ext and ghost_ext:is_in_ghost_mode()
 
-							if player_unit ~= nil then
+							if is_inside_radius and not is_in_ghost_mode then
+								local damage_data = {
+									area_damage_template = "explosion_template_aoe",
+									unit = player_unit,
+									damage_source = damage_source,
+									hit_zone_name = hit_zone_name,
+									dot_template_name = dot_template_name
+								}
+								damage_buffer[#damage_buffer + 1] = damage_data
+							end
+						end
+
+						if difficulty_settings.friendly_fire_ranged and friendly_fire_data then
+							local friendly_players = side.PLAYER_AND_BOT_UNITS
+
+							for _, player_unit in ipairs(friendly_players) do
 								local unit_position = POSITION_LOOKUP[player_unit]
 								local distance = Vector3.distance(unit_position, area_damage_position)
 								local is_inside_radius = distance < radius
+								local dot_template_name = aoe_data.dot_template_name
 
 								if is_inside_radius then
 									local damage_data = {
@@ -336,7 +360,7 @@ AreaDamageTemplates.templates = {
 					return true, damage_buffer
 				end
 			end,
-			do_damage = function (data, extension_unit)
+			do_damage = function (data, extension_unit, source_attacker_unit)
 				local dot_template_name = data.dot_template_name
 
 				if dot_template_name then
@@ -349,13 +373,13 @@ AreaDamageTemplates.templates = {
 					if dot_type then
 						local dot_func = Dots[dot_type]
 
-						dot_func(dot_template_name, nil, nil, nil, target_unit, attacker_unit, hit_zone_name, damage_source, nil, nil)
+						dot_func(dot_template_name, nil, nil, nil, target_unit, attacker_unit, hit_zone_name, damage_source, nil, nil, source_attacker_unit)
 					end
 				end
 			end
 		},
 		client = {
-			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, damage_players, explosion_template_name)
+			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, damage_players, explosion_template_name, side)
 				return
 			end,
 			spawn_effect = function (world, unit, effect_name, particle_var_table, override_position)
@@ -410,7 +434,7 @@ AreaDamageTemplates.templates = {
 
 				return true, damage_buffer
 			end,
-			do_damage = function (data, extension_unit)
+			do_damage = function (data, extension_unit, source_unit)
 				local network_manager = Managers.state.network
 				local unit = data.unit
 				local power_level = MAX_POWER_LEVEL

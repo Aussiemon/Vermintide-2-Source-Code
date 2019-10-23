@@ -7,6 +7,7 @@ local hero_widget_definitions = definitions.hero_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local update_bar_progress = definitions.update_bar_progress
+local generic_input_actions = definitions.generic_input_actions
 local player_frame_spacing = 430
 local player_name_width = player_frame_spacing - 20
 
@@ -28,6 +29,7 @@ EndViewStateWeave.on_enter = function (self, params)
 	local context = params.context
 	self._context = context
 	self.ui_renderer = context.ui_renderer
+	self.ui_top_renderer = context.ui_top_renderer
 	self.wwise_world = context.wwise_world
 	self.input_manager = context.input_manager
 	self.statistics_db = context.statistics_db
@@ -39,11 +41,13 @@ EndViewStateWeave.on_enter = function (self, params)
 	self.platform = PLATFORM
 	self.peer_id = context.peer_id
 	self.weave_personal_best_achieved = context.weave_personal_best_achieved
+	self.weave_personal_best_ranking = context.weave_personal_best_ranking
 	self._animations = {}
 	self._ui_animations = {}
 	self._player_count = Managers.weave:get_num_players()
 	self._exit_timer = nil
 	self._screen_done = false
+	self._selected_profile = 1
 
 	if params.initial_state then
 		self._initial_preview = true
@@ -102,6 +106,9 @@ EndViewStateWeave.create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, Managers.input:get_service("end_of_level"), 4, 900, generic_input_actions.default)
+
+	self._menu_input_description:set_input_description(generic_input_actions.show_profile)
 end
 
 EndViewStateWeave._wanted_state = function (self)
@@ -154,7 +161,11 @@ EndViewStateWeave.update = function (self, dt, t)
 	local transitioning = self.parent:transitioning()
 
 	if not transitioning and not self._transition_timer then
-		self:_handle_input(dt, t)
+		if Managers.input:is_device_active("gamepad") then
+			self:_handle_gamepad_input(dt, t)
+		else
+			self:_handle_input(dt, t)
+		end
 	end
 end
 
@@ -190,6 +201,73 @@ EndViewStateWeave._handle_input = function (self, dt, t)
 		else
 			self.parent:signal_done(false)
 		end
+	end
+end
+
+EndViewStateWeave._handle_gamepad_input = function (self, dt, t)
+	local input_service = Managers.input:get_service("end_of_level")
+
+	if input_service:get("confirm_press") then
+		self:_play_sound("play_gui_mission_summary_button_return_to_keep_click")
+
+		self._ready_button_widget.content.button_hotspot.disable_button = true
+
+		if self.parent._left_lobby then
+			self._screen_done = true
+		else
+			self.parent:signal_done(false)
+		end
+	elseif input_service:get("move_left") then
+		local index = self._selected_profile
+		local new_index = math.clamp(index - 1, 1, self._player_count)
+
+		if new_index ~= index then
+			self:_play_sound("play_gui_start_menu_button_hover")
+			self:_move_profile_selector(new_index)
+		end
+	elseif input_service:get("move_right") then
+		local index = self._selected_profile
+		local new_index = math.clamp(index + 1, 1, self._player_count)
+
+		if new_index ~= index then
+			self:_play_sound("play_gui_start_menu_button_hover")
+			self:_move_profile_selector(new_index)
+		end
+	elseif input_service:get("special_1_press") then
+		local players_session_scores = self._context.players_session_score
+		local sorted_stat_ids = {}
+
+		for stats_id in pairs(players_session_scores) do
+			table.insert(sorted_stat_ids, stats_id)
+		end
+
+		table.sort(sorted_stat_ids)
+
+		local player_stat_id = sorted_stat_ids[self._selected_profile]
+		local player_data = players_session_scores[player_stat_id]
+
+		if player_data then
+			self:_show_profile_by_peer_id(player_data.peer_id)
+		end
+	end
+end
+
+EndViewStateWeave._show_profile_by_peer_id = function (self, peer_id)
+	local platform = self.platform
+
+	if platform == "win32" and rawget(_G, "Steam") then
+		local id = Steam.id_hex_to_dec(peer_id)
+		local url = "http://steamcommunity.com/profiles/" .. id
+
+		Steam.open_url(url)
+	elseif platform == "xb1" then
+		local xuid = self._context.lobby.lobby:xuid(peer_id)
+
+		if xuid then
+			XboxLive.show_gamercard(Managers.account:user_id(), xuid)
+		end
+	elseif platform == "ps4" then
+		Managers.account:show_player_profile_with_account_id(peer_id)
 	end
 end
 
@@ -243,15 +321,20 @@ end
 
 EndViewStateWeave.draw = function (self, input_service, dt)
 	local ui_renderer = self.ui_renderer
+	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local render_settings = self.render_settings
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
-	draw_widgets(ui_renderer, self._widgets)
-	draw_widgets(ui_renderer, self._hero_widgets)
-	draw_widgets(ui_renderer, self._player_name_widgets)
-	UIRenderer.end_pass(ui_renderer)
+	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
+	draw_widgets(ui_top_renderer, self._widgets)
+	draw_widgets(ui_top_renderer, self._hero_widgets)
+	draw_widgets(ui_top_renderer, self._player_name_widgets)
+	UIRenderer.end_pass(ui_top_renderer)
+
+	if gamepad_active then
+		self._menu_input_description:draw(ui_top_renderer, dt)
+	end
 end
 
 EndViewStateWeave._start_transition_animation = function (self, key, animation_name)
@@ -317,14 +400,44 @@ EndViewStateWeave._setup_team_results = function (self, players_session_scores)
 	end
 
 	self:_setup_score_panel()
+	self:_move_profile_selector(1)
+end
+
+EndViewStateWeave._move_profile_selector = function (self, selection_index)
+	local hero_frame_count = self._player_count
+	local profile_selector_widget = self._widgets_by_name.profile_selector
+	local x_offset = player_frame_spacing * (selection_index - hero_frame_count / 2 - 0.5)
+	profile_selector_widget.offset = {
+		x_offset,
+		0,
+		0
+	}
+	self._selected_profile = selection_index
+	local players_session_scores = self._context.players_session_score
+	local sorted_stat_ids = {}
+
+	for stats_id in pairs(players_session_scores) do
+		table.insert(sorted_stat_ids, stats_id)
+	end
+
+	table.sort(sorted_stat_ids)
+
+	local current_stat_id = sorted_stat_ids[self._selected_profile]
+	local player_data = players_session_scores[current_stat_id]
+
+	if player_data then
+		self._menu_input_description:set_input_description(generic_input_actions.show_profile)
+	else
+		self._menu_input_description:set_input_description(nil)
+	end
 end
 
 EndViewStateWeave._fill_portrait = function (self, slot, portrait_frame, level_text, portrait_image, player_name)
 	local hero_frame_count = self._player_count
 	local x_offset = player_frame_spacing * (slot - hero_frame_count / 2 - 0.5)
 	local portrait_frame = portrait_frame or "default"
-	local level_text = level_text or "-"
-	local portrait_image = portrait_image or "unit_frame_portrait_default"
+	local level_text = level_text or ""
+	local portrait_image = portrait_image or "eor_empty_player"
 	local widget_definition = UIWidgets.create_portrait_frame("player_frame", portrait_frame, level_text, 1, nil, portrait_image)
 	local hero_widget = self._hero_widgets[slot]
 	hero_widget = UIWidget.init(widget_definition)

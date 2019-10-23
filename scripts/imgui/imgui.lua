@@ -1,6 +1,8 @@
 require("scripts/imgui/imgui_umbra_debug")
 require("scripts/imgui/imgui_combat_log")
+require("scripts/imgui/imgui_craft_item")
 require("scripts/imgui/imgui_weapon_debug")
+require("scripts/imgui/imgui_buffs_debug")
 
 ImguiManager = class(ImguiManager)
 
@@ -11,7 +13,9 @@ ImguiManager.init = function (self)
 
 	self:add_gui(ImguiUmbraDebug:new(), "World", "Umbra")
 	self:add_gui(ImguiCombatLog:new(), "Gameplay", "Combat Log")
+	self:add_gui(ImguiCraftItem:new(), "Gameplay", "Craft Item")
 	self:add_gui(ImguiWeaponDebug:new(), "Gameplay", "Weapon Debug")
+	self:add_gui(ImguiBuffsDebug:new(), "Gameplay", "Buffs Debug")
 end
 
 ImguiManager.add_gui = function (self, gui, category, name)
@@ -35,13 +39,13 @@ ImguiManager.update = function (self)
 
 		if self.open then
 			Imgui.open_imgui()
-			Window.set_mouse_focus(false)
+			self:_capture_input()
 		else
-			Window.set_mouse_focus(true)
-
 			if self.persistant_sub_windows == 0 then
 				Imgui.close_imgui()
 			end
+
+			self:_release_input()
 		end
 	end
 
@@ -102,6 +106,38 @@ ImguiManager.update_guis = function (self)
 			end
 		end
 	end
+end
+
+ImguiManager._capture_input = function (self)
+	local input_manager = Managers.input
+
+	if input_manager then
+		input_manager:capture_input({
+			"keyboard",
+			"gamepad",
+			"mouse"
+		}, 1, "chat_input", "Imgui")
+	end
+
+	Window.set_mouse_focus(false)
+	Imgui.enable_imgui_input_system(Imgui.KEYBOARD)
+	Imgui.enable_imgui_input_system(Imgui.MOUSE)
+end
+
+ImguiManager._release_input = function (self)
+	local input_manager = Managers.input
+
+	if input_manager then
+		input_manager:release_input({
+			"keyboard",
+			"gamepad",
+			"mouse"
+		}, 1, "chat_input", "Imgui")
+	end
+
+	Window.set_mouse_focus(true)
+	Imgui.disable_imgui_input_system(Imgui.KEYBOARD)
+	Imgui.disable_imgui_input_system(Imgui.MOUSE)
 end
 
 return

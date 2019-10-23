@@ -50,10 +50,10 @@ WeaveUI._draw = function (self, dt, t)
 		local minutes = math.floor(seconds / 60)
 		local hours = math.floor(minutes / 60)
 		local time_text = string.format("%02d:%02d:%02d", hours, minutes - hours * 60, seconds % 60)
-		local min, max = Gui.text_extents(self.gui, time_text, "materials/fonts/gw_arial_32", 26)
+		local min, max = Gui.text_extents(self.gui, time_text, "materials/fonts/arial", 26)
 		local width = max.x - min.x
 
-		Gui.text(self.gui, time_text, "materials/fonts/gw_arial_32", 26, "gw_arial_32", Vector3(res_x / 2 - width / 2, res_y - 186, width), Color(255, 255, 255, 255))
+		Gui.text(self.gui, time_text, "materials/fonts/arial", 26, "arial", Vector3(res_x / 2 - width / 2, res_y - 186, width), Color(255, 255, 255, 255))
 	end
 end
 

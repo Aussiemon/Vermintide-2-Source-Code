@@ -53,14 +53,15 @@ LobbyInternal.matchmaking_lobby_data = {
 	}
 }
 LobbyInternal.lobby_data_network_lookups = {
+	difficulty = "difficulties",
 	matchmaking = "lobby_data_values",
-	selected_level_key = "level_keys",
-	level_key = "level_keys",
-	primary_region = "matchmaking_regions",
 	is_private = "lobby_data_values",
 	game_mode = "game_modes",
-	difficulty = "difficulties",
-	secondary_region = "matchmaking_regions"
+	primary_region = "matchmaking_regions",
+	quick_game = "lobby_data_values",
+	selected_level_key = "level_keys",
+	secondary_region = "matchmaking_regions",
+	level_key = "level_keys"
 }
 
 LobbyInternal.init_client = function (network_options)
@@ -321,6 +322,10 @@ LobbyInternal.is_friend = function (peer_id)
 	print("LobbyInternal.is_friend() is not implemented on the ps4")
 
 	return false
+end
+
+LobbyInternal.set_max_members = function (lobby, max_members)
+	ferror("set_max_members not supported on platform.")
 end
 
 PSNRoom = class(PSNRoom)

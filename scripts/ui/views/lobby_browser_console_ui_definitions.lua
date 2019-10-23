@@ -1,5 +1,5 @@
 local spacing = 2
-local num_visible_entries = 9
+local num_visible_entries = 10
 local entry_height = 62
 local browser_width = 1200
 local details_width = 520
@@ -59,7 +59,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			element_settings.window_width,
-			120
+			90
 		},
 		position = {
 			100,
@@ -77,7 +77,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-66,
+			-55,
 			1
 		}
 	},
@@ -91,7 +91,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			100,
-			-340,
+			-300,
 			0
 		}
 	},
@@ -121,6 +121,20 @@ local scenegraph_definition = {
 			0,
 			80 + element_settings.spacing * 2,
 			20
+		}
+	},
+	lobby_browser_window = {
+		vertical_alignment = "top",
+		parent = "filter_base",
+		horizontal_alignment = "left",
+		size = {
+			browser_width + details_width + spacing,
+			element_settings.window_height + filter_height * 3 + spacing * 3
+		},
+		position = {
+			0,
+			-0,
+			-20
 		}
 	},
 	details_base = {
@@ -195,7 +209,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			70,
+			50,
 			-1
 		},
 		size = {
@@ -211,6 +225,306 @@ local scenegraph_definition = {
 			0,
 			10,
 			-1
+		}
+	},
+	weave_details_base = {
+		vertical_alignment = "top",
+		parent = "lobby_browser_frame",
+		horizontal_alignment = "left",
+		size = {
+			520,
+			element_settings.window_height
+		},
+		position = {
+			browser_width + element_settings.spacing,
+			-40 + spacing,
+			1
+		}
+	},
+	weave_details_level_frame = {
+		vertical_alignment = "top",
+		parent = "weave_details_base",
+		horizontal_alignment = "right",
+		size = {
+			180,
+			180
+		},
+		position = {
+			-5,
+			-5,
+			2
+		}
+	},
+	weave_details_level_image = {
+		vertical_alignment = "center",
+		parent = "weave_details_level_frame",
+		horizontal_alignment = "center",
+		size = {
+			160,
+			160
+		},
+		position = {
+			0,
+			0,
+			-1
+		}
+	},
+	weave_details_level_name = {
+		vertical_alignment = "top",
+		parent = "weave_details_base",
+		horizontal_alignment = "left",
+		position = {
+			15,
+			-15,
+			-1
+		},
+		size = {
+			520,
+			170
+		}
+	},
+	weave_details_hero_tabs = {
+		vertical_alignment = "top",
+		parent = "weave_details_level_name",
+		horizontal_alignment = "left",
+		position = {
+			150,
+			10,
+			-1
+		}
+	},
+	weave_details_locked_reason = {
+		vertical_alignment = "bottom",
+		parent = "weave_details_base",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			50,
+			-1
+		},
+		size = {
+			520,
+			170
+		}
+	},
+	weave_details_level_info = {
+		vertical_alignment = "bottom",
+		parent = "weave_details_base",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			10,
+			-1
+		}
+	},
+	wind_icon_bg = {
+		vertical_alignment = "bottom",
+		parent = "weave_details_level_frame",
+		horizontal_alignment = "center",
+		size = {
+			62.05,
+			62.05
+		},
+		position = {
+			0,
+			-20,
+			2
+		}
+	},
+	wind_icon_slot = {
+		vertical_alignment = "center",
+		parent = "wind_icon_bg",
+		horizontal_alignment = "center",
+		size = {
+			54.4,
+			54.4
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	wind_icon_glow = {
+		vertical_alignment = "center",
+		parent = "wind_icon_slot",
+		horizontal_alignment = "center",
+		size = {
+			43.35,
+			45.05
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	wind_icon = {
+		vertical_alignment = "center",
+		parent = "wind_icon_slot",
+		horizontal_alignment = "center",
+		size = {
+			54.4,
+			54.4
+		},
+		position = {
+			0,
+			0,
+			2
+		}
+	},
+	wind_name = {
+		vertical_alignment = "top",
+		parent = "weave_details_level_name",
+		horizontal_alignment = "left",
+		size = {
+			520,
+			32
+		},
+		position = {
+			0,
+			-40,
+			0
+		}
+	},
+	wind_mutator_window = {
+		vertical_alignment = "top",
+		parent = "details_level_frame",
+		horizontal_alignment = "center",
+		size = {
+			520,
+			0
+		},
+		position = {
+			0,
+			-175,
+			1
+		}
+	},
+	wind_mutator_icon = {
+		vertical_alignment = "top",
+		parent = "wind_mutator_window",
+		horizontal_alignment = "left",
+		size = {
+			60,
+			60
+		},
+		position = {
+			10,
+			-50,
+			5
+		}
+	},
+	wind_mutator_icon_frame = {
+		vertical_alignment = "center",
+		parent = "wind_mutator_icon",
+		horizontal_alignment = "center",
+		size = {
+			60,
+			60
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	wind_mutator_title_text = {
+		vertical_alignment = "top",
+		parent = "wind_mutator_window",
+		horizontal_alignment = "left",
+		size = {
+			312,
+			50
+		},
+		position = {
+			10,
+			-5,
+			1
+		}
+	},
+	wind_mutator_title_divider = {
+		vertical_alignment = "bottom",
+		parent = "wind_mutator_title_text",
+		horizontal_alignment = "left",
+		size = {
+			450,
+			4
+		},
+		position = {
+			0,
+			10,
+			1
+		}
+	},
+	wind_mutator_description_text = {
+		vertical_alignment = "top",
+		parent = "wind_mutator_icon",
+		horizontal_alignment = "left",
+		size = {
+			430,
+			100
+		},
+		position = {
+			70,
+			0,
+			1
+		}
+	},
+	objective_title = {
+		vertical_alignment = "bottom",
+		parent = "wind_mutator_icon",
+		horizontal_alignment = "left",
+		size = {
+			520,
+			40
+		},
+		position = {
+			0,
+			-80,
+			3
+		}
+	},
+	objective_title_bg = {
+		vertical_alignment = "center",
+		parent = "objective_title",
+		horizontal_alignment = "center",
+		size = {
+			467,
+			59
+		},
+		position = {
+			0,
+			0,
+			-1
+		}
+	},
+	objective_1 = {
+		vertical_alignment = "bottom",
+		parent = "objective_title",
+		horizontal_alignment = "center",
+		size = {
+			520,
+			30
+		},
+		position = {
+			0,
+			-35,
+			3
+		}
+	},
+	objective_2 = {
+		vertical_alignment = "bottom",
+		parent = "objective_1",
+		horizontal_alignment = "center",
+		size = {
+			520,
+			30
+		},
+		position = {
+			0,
+			-35,
+			0
 		}
 	},
 	filter_level_entry_anchor = {
@@ -912,9 +1226,9 @@ local function create_lobby_browser_frame(scenegraph_id)
 				upper_case = true,
 				localize = true,
 				horizontal_alignment = "left",
-				font_size = 28,
+				font_size = 20,
 				font_type = "hell_shark_header",
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
 					20,
 					-2,
@@ -925,12 +1239,12 @@ local function create_lobby_browser_frame(scenegraph_id)
 				vertical_alignment = "center",
 				upper_case = true,
 				localize = true,
-				horizontal_alignment = "left",
-				font_size = 28,
+				horizontal_alignment = "center",
+				font_size = 20,
 				font_type = "hell_shark_header",
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
-					640,
+					100,
 					-2,
 					1
 				}
@@ -939,12 +1253,12 @@ local function create_lobby_browser_frame(scenegraph_id)
 				vertical_alignment = "center",
 				upper_case = true,
 				localize = true,
-				horizontal_alignment = "left",
-				font_size = 28,
+				horizontal_alignment = "center",
+				font_size = 20,
 				font_type = "hell_shark_header",
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
-					840,
+					305,
 					-2,
 					1
 				}
@@ -953,12 +1267,12 @@ local function create_lobby_browser_frame(scenegraph_id)
 				vertical_alignment = "center",
 				upper_case = true,
 				localize = true,
-				horizontal_alignment = "left",
-				font_size = 28,
+				horizontal_alignment = "center",
+				font_size = 20,
 				font_type = "hell_shark_header",
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
-					1060,
+					510,
 					-2,
 					1
 				}
@@ -968,9 +1282,9 @@ local function create_lobby_browser_frame(scenegraph_id)
 				upper_case = true,
 				localize = true,
 				horizontal_alignment = "left",
-				font_size = 28,
+				font_size = 20,
 				font_type = "hell_shark_header",
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
 					1220,
 					-2,
@@ -983,7 +1297,7 @@ local function create_lobby_browser_frame(scenegraph_id)
 				localize = false,
 				font_size = 24,
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					13,
 					-element_settings.window_height - bottom_border_size - 2,
@@ -996,7 +1310,7 @@ local function create_lobby_browser_frame(scenegraph_id)
 				localize = false,
 				font_size = 24,
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					browser_width - 105,
 					-element_settings.window_height - bottom_border_size - 2,
@@ -1009,7 +1323,7 @@ local function create_lobby_browser_frame(scenegraph_id)
 				localize = false,
 				font_size = 24,
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					-110,
 					-element_settings.window_height - bottom_border_size - 2,
@@ -1040,112 +1354,128 @@ local function create_filter_frame(scenegraph_id)
 					style_id = "level_left_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 1
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 1) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
 					style_id = "level_right_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 1
-					end
-				},
-				{
-					style_id = "level_left_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 1
-					end
-				},
-				{
-					style_id = "level_right_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 1
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 1) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
 					style_id = "difficulty_left_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 2
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 2) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
 					style_id = "difficulty_right_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 2
-					end
-				},
-				{
-					style_id = "difficulty_left_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 2
-					end
-				},
-				{
-					style_id = "difficulty_right_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 2
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 2) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
 					style_id = "lobby_filter_left_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 3
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 3) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
 					style_id = "lobby_filter_right_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 3
-					end
-				},
-				{
-					style_id = "lobby_filter_left_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 3
-					end
-				},
-				{
-					style_id = "lobby_filter_right_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 3
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 3) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
 					style_id = "distance_left_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 4
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 4) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
 					style_id = "distance_right_triangle",
 					pass_type = "triangle",
 					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 4
-					end
-				},
-				{
-					style_id = "distance_left_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 4
-					end
-				},
-				{
-					style_id = "distance_right_triangle_border",
-					pass_type = "triangle",
-					content_check_function = function (content, style)
-						return content.filter_selection and content.filter_index == 4
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return (content.filter_selection and content.filter_index == 4) or not gamepad_active
+					end,
+					content_change_function = function (content, style)
+						if (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
+							style.color = style.select_color
+						else
+							style.color = style.base_color
+						end
 					end
 				},
 				{
@@ -1237,7 +1567,7 @@ local function create_filter_frame(scenegraph_id)
 					pass_type = "text",
 					text_id = "mission_name",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 1 then
+						if (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1249,7 +1579,7 @@ local function create_filter_frame(scenegraph_id)
 					pass_type = "text",
 					text_id = "difficulty_name",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 2 then
+						if (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1261,7 +1591,7 @@ local function create_filter_frame(scenegraph_id)
 					pass_type = "text",
 					text_id = "show_lobbies_name",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 3 then
+						if (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1273,7 +1603,7 @@ local function create_filter_frame(scenegraph_id)
 					pass_type = "text",
 					text_id = "distance_name",
 					content_change_function = function (content, style)
-						if content.filter_selection and content.filter_index == 4 then
+						if (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1322,18 +1652,20 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_left",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					-25 + label_distance * 1,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
 			},
@@ -1342,59 +1674,21 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_right",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					label_distance * 0.5 - 20,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					(-25 + label_distance * 1) - 7.5,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
-				}
-			},
-			level_left_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_left",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
-				}
-			},
-			level_right_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_right",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					label_distance * 0.5 - 20 - 4,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
 				}
 			},
 			difficulty_left_triangle = {
@@ -1402,18 +1696,20 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_left",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					label_distance + element_settings.spacing + label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					-25 + label_distance * 2,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
 			},
@@ -1422,59 +1718,21 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_right",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(label_distance + element_settings.spacing + label_distance * 0.5) - 20,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					(-25 + label_distance * 2) - 7.5,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
-				}
-			},
-			difficulty_left_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_left",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					label_distance + element_settings.spacing + label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
-				}
-			},
-			difficulty_right_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_right",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					(label_distance + element_settings.spacing + label_distance * 0.5) - 20 - 4,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
 				}
 			},
 			lobby_filter_left_triangle = {
@@ -1482,18 +1740,20 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_left",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					label_distance * 2 + element_settings.spacing + label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					-25 + label_distance * 3,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
 			},
@@ -1502,59 +1762,21 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_right",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(label_distance * 2 + element_settings.spacing + label_distance * 0.5) - 20,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					(-25 + label_distance * 3) - 7.5,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
-				}
-			},
-			lobby_filter_left_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_left",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					label_distance * 2 + element_settings.spacing + label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
-				}
-			},
-			lobby_filter_right_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_right",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					(label_distance * 2 + element_settings.spacing + label_distance * 0.5) - 20 - 4,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
 				}
 			},
 			distance_left_triangle = {
@@ -1562,18 +1784,20 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_left",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					label_distance * 3 + element_settings.spacing + label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					-25 + label_distance * 4,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
 			},
@@ -1582,59 +1806,21 @@ local function create_filter_frame(scenegraph_id)
 				horizontal_alignment = "left",
 				triangle_alignment = "top_right",
 				texture_size = {
-					20,
-					20
+					7.5,
+					10
 				},
-				color = {
+				select_color = {
 					196,
 					0,
 					0,
 					0
 				},
+				base_color = Colors.get_color_table_with_alpha("font_default", 128),
+				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(label_distance * 3 + element_settings.spacing + label_distance * 0.5) - 20,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 4,
+					(-25 + label_distance * 4) - 7.5,
+					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
-				}
-			},
-			distance_left_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_left",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					label_distance * 3 + element_settings.spacing + label_distance * 0.5,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
-				}
-			},
-			distance_right_triangle_border = {
-				vertical_alignment = "top",
-				horizontal_alignment = "left",
-				triangle_alignment = "top_right",
-				texture_size = {
-					24,
-					24
-				},
-				color = {
-					255,
-					96,
-					96,
-					96
-				},
-				offset = {
-					(label_distance * 3 + element_settings.spacing + label_distance * 0.5) - 20 - 4,
-					-element_settings.filter_height * 2 - element_settings.spacing * 2 - 2,
-					0
 				}
 			},
 			mask = {
@@ -1847,9 +2033,9 @@ local function create_filter_frame(scenegraph_id)
 			},
 			mission_label = {
 				vertical_alignment = "center",
-				horizontal_alignment = "center",
+				horizontal_alignment = "left",
 				localize = false,
-				font_size = 28,
+				font_size = 24,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				size = {
@@ -1857,15 +2043,15 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					-label_distance * 1.5,
+					15 + label_distance * 0,
 					158,
 					1
 				}
 			},
 			mission_name = {
 				localize = false,
-				font_size = 28,
-				horizontal_alignment = "center",
+				font_size = 24,
+				horizontal_alignment = "left",
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1876,16 +2062,16 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					-label_distance * 1.5,
+					15 + label_distance * 0,
 					118,
 					1
 				}
 			},
 			difficulty_label = {
 				vertical_alignment = "center",
-				horizontal_alignment = "center",
+				horizontal_alignment = "left",
 				localize = false,
-				font_size = 28,
+				font_size = 24,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				size = {
@@ -1893,15 +2079,15 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					-label_distance * 0.5,
+					15 + label_distance * 1,
 					158,
 					1
 				}
 			},
 			difficulty_name = {
 				localize = false,
-				font_size = 28,
-				horizontal_alignment = "center",
+				font_size = 24,
+				horizontal_alignment = "left",
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1912,16 +2098,16 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					-label_distance * 0.5,
+					15 + label_distance * 1,
 					118,
 					1
 				}
 			},
 			show_lobbies_label = {
 				vertical_alignment = "center",
-				horizontal_alignment = "center",
+				horizontal_alignment = "left",
 				localize = false,
-				font_size = 28,
+				font_size = 24,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				size = {
@@ -1929,15 +2115,15 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					label_distance * 0.5,
+					15 + label_distance * 2,
 					158,
 					1
 				}
 			},
 			show_lobbies_name = {
 				localize = false,
-				font_size = 28,
-				horizontal_alignment = "center",
+				font_size = 24,
+				horizontal_alignment = "left",
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1948,16 +2134,16 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					label_distance * 0.5,
+					15 + label_distance * 2,
 					118,
 					1
 				}
 			},
 			distance_label = {
 				vertical_alignment = "center",
-				horizontal_alignment = "center",
+				horizontal_alignment = "left",
 				localize = false,
-				font_size = 28,
+				font_size = 24,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				size = {
@@ -1965,15 +2151,15 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					label_distance * 1.5,
+					15 + label_distance * 3,
 					158,
 					1
 				}
 			},
 			distance_name = {
 				localize = false,
-				font_size = 28,
-				horizontal_alignment = "center",
+				font_size = 24,
+				horizontal_alignment = "left",
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1984,7 +2170,7 @@ local function create_filter_frame(scenegraph_id)
 					40
 				},
 				offset = {
-					label_distance * 1.5,
+					15 + label_distance * 3,
 					118,
 					1
 				}
@@ -2011,6 +2197,10 @@ local function create_level_filter_scroller_func(num_elements)
 				{
 					pass_type = "rect",
 					style_id = "background"
+				},
+				{
+					pass_type = "rect",
+					style_id = "border"
 				},
 				{
 					style_id = "inner_scroller",
@@ -2047,13 +2237,32 @@ local function create_level_filter_scroller_func(num_elements)
 					0
 				},
 				texture_size = {
-					scroller_width,
-					element_settings.window_height + element_settings.filter_height + element_settings.spacing
+					scroller_width - element_settings.spacing,
+					element_settings.window_height + element_settings.filter_height
 				},
 				offset = {
 					0,
 					-element_settings.spacing - element_settings.filter_height,
 					0
+				}
+			},
+			border = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				color = {
+					255,
+					96,
+					96,
+					96
+				},
+				texture_size = {
+					scroller_width - element_settings.spacing,
+					element_settings.window_height + element_settings.filter_height
+				},
+				offset = {
+					element_settings.spacing,
+					-element_settings.spacing - element_settings.filter_height,
+					-1
 				}
 			},
 			inner_scroller = {
@@ -2065,7 +2274,7 @@ local function create_level_filter_scroller_func(num_elements)
 				},
 				color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
-					-2,
+					-1,
 					-element_settings.spacing - element_settings.filter_height,
 					2
 				}
@@ -2095,11 +2304,15 @@ local function create_level_filter_entry_func(level, unlocked)
 		element = {
 			passes = {
 				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
 					style_id = "background",
 					texture_id = "texture_id",
 					pass_type = "texture",
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -2119,7 +2332,7 @@ local function create_level_filter_entry_func(level, unlocked)
 						return content.unlocked
 					end,
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -2138,6 +2351,7 @@ local function create_level_filter_entry_func(level, unlocked)
 		},
 		content = {
 			texture_id = "rect_masked",
+			button_hotspot = {},
 			level_name_id = level_name,
 			level = level,
 			unlocked = unlocked
@@ -2168,7 +2382,7 @@ local function create_level_filter_entry_func(level, unlocked)
 					element_settings.filter_height
 				},
 				offset = {
-					0,
+					element_settings.spacing,
 					0,
 					1
 				}
@@ -2182,12 +2396,12 @@ local function create_level_filter_entry_func(level, unlocked)
 					96
 				},
 				texture_size = {
-					label_distance - element_settings.spacing - scroller_width,
+					label_distance - element_settings.spacing - scroller_width + element_settings.spacing * 2,
 					element_settings.filter_height + element_settings.spacing * 2
 				},
 				offset = {
 					0,
-					-element_settings.spacing,
+					element_settings.spacing,
 					0
 				}
 			},
@@ -2248,10 +2462,14 @@ local function create_difficulty_filter_entry_func(difficulty, offset_y)
 		element = {
 			passes = {
 				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
 					style_id = "background",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -2270,7 +2488,7 @@ local function create_difficulty_filter_entry_func(difficulty, offset_y)
 						return content.unlocked
 					end,
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -2288,6 +2506,7 @@ local function create_difficulty_filter_entry_func(difficulty, offset_y)
 			}
 		},
 		content = {
+			button_hotspot = {},
 			difficulty_name_id = difficulty_name,
 			difficulty = difficulty,
 			unlocked = unlocked
@@ -2332,11 +2551,11 @@ local function create_difficulty_filter_entry_func(difficulty, offset_y)
 					96
 				},
 				texture_size = {
-					label_distance - element_settings.spacing,
+					label_distance - element_settings.spacing + element_settings.spacing * 2,
 					element_settings.filter_height + element_settings.spacing * 2
 				},
 				offset = {
-					0,
+					-element_settings.spacing,
 					element_settings.spacing,
 					0
 				}
@@ -2386,10 +2605,14 @@ local function create_lobby_filter_entry_func(lobby_filter, offset_y)
 		element = {
 			passes = {
 				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
 					style_id = "background",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -2405,7 +2628,7 @@ local function create_lobby_filter_entry_func(lobby_filter, offset_y)
 					pass_type = "text",
 					text_id = "lobby_filter_name_id",
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -2415,6 +2638,7 @@ local function create_lobby_filter_entry_func(lobby_filter, offset_y)
 			}
 		},
 		content = {
+			button_hotspot = {},
 			lobby_filter_name_id = Localize(lobby_filter),
 			lobby_filter = lobby_filter
 		},
@@ -2462,11 +2686,11 @@ local function create_lobby_filter_entry_func(lobby_filter, offset_y)
 					96
 				},
 				texture_size = {
-					label_distance - element_settings.spacing,
+					label_distance - element_settings.spacing + element_settings.spacing * 2,
 					element_settings.filter_height + element_settings.spacing * 2
 				},
 				offset = {
-					0,
+					-element_settings.spacing,
 					element_settings.spacing,
 					0
 				}
@@ -2503,10 +2727,14 @@ local function create_distance_filter_entry_func(distance, offset_y)
 		element = {
 			passes = {
 				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
 					style_id = "background",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -2522,7 +2750,7 @@ local function create_distance_filter_entry_func(distance, offset_y)
 					pass_type = "text",
 					text_id = "distance_name_id",
 					content_change_function = function (content, style)
-						if content.selected then
+						if content.selected or content.button_hotspot.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -2532,6 +2760,7 @@ local function create_distance_filter_entry_func(distance, offset_y)
 			}
 		},
 		content = {
+			button_hotspot = {},
 			distance_name_id = Localize(distance),
 			distance = distance
 		},
@@ -2575,11 +2804,11 @@ local function create_distance_filter_entry_func(distance, offset_y)
 					96
 				},
 				texture_size = {
-					label_distance - element_settings.spacing,
+					label_distance - element_settings.spacing + element_settings.spacing * 2,
 					element_settings.filter_height + element_settings.spacing * 2
 				},
 				offset = {
-					0,
+					-element_settings.spacing,
 					element_settings.spacing,
 					0
 				}
@@ -2609,9 +2838,12 @@ local function create_distance_filter_entry_func(distance, offset_y)
 end
 
 local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinable, completed_difficulty_index)
-	local host_name = lobby_data.name or "UNKNOWN"
+	local host_name = (PLATFORM == "win32" and (lobby_data.unique_server_name or lobby_data.host)) or lobby_data.name or "UNKNOWN"
 	local num_players = lobby_data.num_players
 	local country_code = lobby_data.country_code
+	local game_mode_id = lobby_data.game_mode
+	local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
+	local weave_name = lobby_data.weave_name
 	local difficulty = lobby_data.difficulty or "UNKNOWN"
 	local difficulty_settings = DifficultySettings[difficulty]
 
@@ -2623,7 +2855,11 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 	local level_image = "any_small_image"
 	local selected_level_name = lobby_data.selected_level_key
 
-	if selected_level_name then
+	if game_mode == "weave" and weave_name then
+		local weave_template = WeaveSettings.templates[weave_name]
+		local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
+		selected_level_name = weave_index .. ". " .. Localize(weave_template.display_name)
+	elseif selected_level_name then
 		local level_settings = LevelSettings[selected_level_name]
 		selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
 		level_image = lobby_data.selected_level_key .. "_small_image"
@@ -3352,9 +3588,8 @@ local function create_empty_lobby_entry_func(offset_y)
 	}
 end
 
-local function create_details_information()
+local function create_details_information(scenegraph_id)
 	return {
-		scenegraph_id = "details_level_info",
 		element = {
 			passes = {
 				{
@@ -3499,11 +3734,131 @@ local function create_details_information()
 				}
 			}
 		},
+		scenegraph_id = scenegraph_id,
 		offset = {
 			0,
 			0,
 			0
 		}
+	}
+end
+
+local function create_objective(scenegraph_id, size)
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "background",
+					style_id = "background",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				},
+				{
+					texture_id = "icon",
+					style_id = "icon",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.text ~= "tutorial_no_text"
+					end
+				}
+			}
+		},
+		content = {
+			text = "-",
+			icon = "trial_gem",
+			background = "chest_upgrade_fill_glow"
+		},
+		style = {
+			background = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				texture_size = {
+					49,
+					44
+				},
+				color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			text = {
+				word_wrap = true,
+				localize = true,
+				font_size = 20,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				size = {
+					size[1] - 60,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					50,
+					2,
+					2
+				}
+			},
+			text_shadow = {
+				word_wrap = true,
+				localize = true,
+				font_size = 20,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				size = {
+					size[1] - 60,
+					size[2]
+				},
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					52,
+					0,
+					1
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
 	}
 end
 
@@ -3520,11 +3875,17 @@ local lobby_browser_description_style = {
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
-		-20,
+		-10,
 		2
 	}
 }
 local base_widget_definition = {
+	background = UIWidgets.create_simple_rect("lobby_browser_window", {
+		50,
+		0,
+		0,
+		0
+	}, -10),
 	lobby_browser_background = UIWidgets.create_rect_with_outer_frame("lobby_browser_background", scenegraph_definition.lobby_browser_background.size, "frame_outer_fade_02", nil, UISettings.console_start_game_menu_rect_color),
 	lobby_browser_title = UIWidgets.create_simple_text(Localize("menu_title_lobby_browser"), "lobby_browser_background", nil, nil, lobby_browser_description_style),
 	custom_game_divider = UIWidgets.create_simple_texture("divider_01_top", "lobby_browser_divider"),
@@ -3543,9 +3904,33 @@ local hero_entry_size_scale = 0.75
 local hero_entry_width = 96 * hero_entry_size_scale
 local hero_entry_height = 112 * hero_entry_size_scale
 local hero_entry_spacing = 5 * hero_entry_size_scale
-hero_entry_frame_size = {
+local hero_entry_frame_size = {
 	86 * hero_entry_size_scale,
 	108 * hero_entry_size_scale
+}
+local weave_hero_entry_size_scale = 0.6
+local weave_hero_entry_width = 96 * weave_hero_entry_size_scale
+local weave_hero_entry_height = 112 * weave_hero_entry_size_scale
+local weave_hero_entry_spacing = 5 * weave_hero_entry_size_scale
+local weave_hero_entry_frame_size = {
+	86 * weave_hero_entry_size_scale,
+	108 * weave_hero_entry_size_scale
+}
+local wind_name_style = {
+	font_size = 28,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
 }
 local level_name_style = {
 	font_size = 32,
@@ -3563,8 +3948,24 @@ local level_name_style = {
 		2
 	}
 }
-local locked_reason_style = {
+local weave_level_name_style = {
 	font_size = 32,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local locked_reason_style = {
+	font_size = 24,
 	upper_case = true,
 	localize = true,
 	use_shadow = true,
@@ -3572,7 +3973,61 @@ local locked_reason_style = {
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
 	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("red", 255),
+	text_color = {
+		255,
+		255,
+		62,
+		62
+	},
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local mutator_title_text_style = {
+	font_size = 28,
+	upper_case = false,
+	localize = true,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	dynamic_font_size = true,
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		-5,
+		2
+	}
+}
+local mutator_description_text_style = {
+	font_size = 20,
+	use_shadow = true,
+	localize = true,
+	dynamic_font_size_word_wrap = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local objective_title_text_style = {
+	font_size = 24,
+	upper_case = true,
+	localize = true,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 	offset = {
 		0,
 		0,
@@ -3584,17 +4039,43 @@ local details_widget_definition = {
 	level_image = UIWidgets.create_simple_texture("level_image_any", "details_level_image"),
 	level_name = UIWidgets.create_simple_text(" ", "details_level_name", nil, nil, level_name_style),
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
-	details_information = create_details_information(),
+	details_information = create_details_information("details_level_info"),
 	hero_tabs = UIWidgets.create_icon_selector("details_hero_tabs", {
 		hero_entry_width,
 		hero_entry_height
 	}, hero_icons, hero_entry_spacing, true, hero_entry_frame_size, true)
+}
+local weave_details_widget_definition = {
+	level_image_frame = UIWidgets.create_simple_texture("map_frame_00", "weave_details_level_frame"),
+	level_image = UIWidgets.create_simple_texture("level_image_any", "weave_details_level_image"),
+	wind_icon = UIWidgets.create_simple_texture("icon_wind_azyr", "wind_icon"),
+	wind_icon_glow = UIWidgets.create_simple_texture("winds_icon_background_glow", "wind_icon_glow"),
+	wind_icon_bg = UIWidgets.create_simple_texture("weave_item_icon_border_selected", "wind_icon_bg"),
+	wind_icon_slot = UIWidgets.create_simple_texture("weave_item_icon_border_center", "wind_icon_slot"),
+	wind_name = UIWidgets.create_simple_text("wind_name", "wind_name", nil, nil, wind_name_style),
+	level_name = UIWidgets.create_simple_text(" ", "weave_details_level_name", nil, nil, weave_level_name_style),
+	hero_tabs = UIWidgets.create_icon_selector("weave_details_hero_tabs", {
+		weave_hero_entry_width,
+		weave_hero_entry_height
+	}, hero_icons, weave_hero_entry_spacing, true, weave_hero_entry_frame_size, true),
+	wind_mutator_icon = UIWidgets.create_simple_texture("icons_placeholder", "wind_mutator_icon"),
+	wind_mutator_icon_frame = UIWidgets.create_simple_texture("talent_frame", "wind_mutator_icon_frame"),
+	wind_mutator_title_text = UIWidgets.create_simple_text("n/a", "wind_mutator_title_text", nil, nil, mutator_title_text_style),
+	wind_mutator_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "wind_mutator_title_divider"),
+	wind_mutator_description_text = UIWidgets.create_simple_text("n/a", "wind_mutator_description_text", nil, nil, mutator_description_text_style),
+	objective_title_bg = UIWidgets.create_simple_texture("menu_subheader_bg", "objective_title_bg"),
+	objective_title = UIWidgets.create_simple_text("weave_objective_title", "objective_title", nil, nil, objective_title_text_style),
+	objective_1 = create_objective("objective_1", scenegraph_definition.objective_1.size),
+	objective_2 = create_objective("objective_2", scenegraph_definition.objective_2.size),
+	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "weave_details_locked_reason", nil, nil, locked_reason_style),
+	details_information = create_details_information("weave_details_level_info")
 }
 
 return {
 	scenegraph_definition = scenegraph_definition,
 	base_widget_definition = base_widget_definition,
 	details_widget_definition = details_widget_definition,
+	weave_details_widget_definition = weave_details_widget_definition,
 	create_lobby_entry_func = create_lobby_entry_func,
 	create_empty_lobby_entry_func = create_empty_lobby_entry_func,
 	create_level_filter_entry_func = create_level_filter_entry_func,

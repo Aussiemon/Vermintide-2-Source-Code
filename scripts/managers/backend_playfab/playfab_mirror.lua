@@ -392,10 +392,21 @@ PlayFabMirror.fix_inventory_data_1_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 	local function_result = result.FunctionResult
 	local updated_xp_data = function_result and function_result.updated_xp_data
+	local new_read_only_data = function_result and function_result.new_read_only_data
 
 	if updated_xp_data then
 		for key, value in pairs(updated_xp_data) do
 			self:set_read_only_data(key, value, true)
+		end
+	end
+
+	if new_read_only_data then
+		for key, value in pairs(new_read_only_data) do
+			self:set_read_only_data(key, value, true)
+
+			if key == "unlocked_weapon_skins" then
+				self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(new_read_only_data)
+			end
 		end
 	end
 
@@ -473,6 +484,8 @@ PlayFabMirror.weaves_player_setup_request_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local created = function_result.created
 	local essence = function_result.essence
+	local total_essence = function_result.total_essence
+	local maximum_essence = function_result.maximum_essence
 
 	if created then
 		local new_user_data = function_result.new_user_data
@@ -483,6 +496,8 @@ PlayFabMirror.weaves_player_setup_request_cb = function (self, result)
 	end
 
 	self:set_essence(essence)
+	self:set_total_essence(total_essence)
+	self:set_maximum_essence(maximum_essence)
 	self:_request_user_inventory()
 end
 
@@ -516,7 +531,19 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 
 				self:_update_data(item, backend_id)
 
-				if item.data.item_type ~= "weapon_skin" then
+				local filter = false
+
+				if item.data.item_type == "weapon_skin" then
+					filter = true
+				end
+
+				local required_dlc = ItemMasterList[item.ItemId].required_dlc
+
+				if required_dlc and not Managers.unlock:is_dlc_unlocked(required_dlc) then
+					filter = true
+				end
+
+				if not filter then
 					self._inventory_items[backend_id] = item
 				end
 			end
@@ -527,19 +554,128 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 	unlocked_weapon_skins = unlocked_weapon_skins or {}
 
 	self:_create_fake_inventory_items(unlocked_weapon_skins)
-	self:_request_all_users_characters()
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_request_characters_versus()
+	else
+		self:_request_characters_adventure()
+	end
 end
 
-PlayFabMirror._request_all_users_characters = function (self)
+PlayFabMirror._request_characters_versus = function (self)
+	if not self._read_only_data.vs_characters_data then
+		self._num_items_to_load = self._num_items_to_load + 1
+		local request = {
+			FunctionName = "versusPlayerSetup",
+			FunctionParameter = {}
+		}
+		local versus_player_setup_cb = callback(self, "versus_player_setup_cb")
+
+		PlayFabClientApi.ExecuteCloudScript(request, versus_player_setup_cb)
+
+		return
+	end
+
+	self:setup_careers_versus()
+end
+
+PlayFabMirror.versus_player_setup_cb = function (self, result)
+	local function_result = result.FunctionResult
+	local vs_characters_data = function_result.vs_characters_data
+	local num_items_granted = function_result.num_items_granted
+	self._read_only_data.vs_characters_data = vs_characters_data
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	if num_items_granted > 0 then
+		self:_request_user_inventory()
+	else
+		self:setup_careers_versus()
+	end
+end
+
+PlayFabMirror.setup_careers_versus = function (self)
+	local read_only_data = self._read_only_data
+	local vs_characters_data = cjson.decode(read_only_data.vs_characters_data)
+	self._career_data = {}
+	self._career_data_mirror = {}
+	self._career_lookup = {}
+	local broken_slots_data = {}
+
+	for character_name, character_data in pairs(vs_characters_data) do
+		for career_name, career_data in pairs(character_data.careers) do
+			self._career_data[career_name] = {}
+			self._career_data_mirror[career_name] = {}
+			local broken_slots = self:_set_inital_career_data(career_name, career_data)
+
+			if broken_slots then
+				broken_slots_data[career_name] = broken_slots
+
+				print("Broken item slots for career", career_name)
+				table.dump(broken_slots)
+			end
+		end
+	end
+
+	if table.is_empty(broken_slots_data) then
+		self._vs_characters_data = vs_characters_data
+		self._vs_characters_data_mirror = table.clone(vs_characters_data)
+	else
+		self:_versus_fix_career_data(broken_slots_data)
+	end
+end
+
+PlayFabMirror._versus_fix_career_data = function (self, broken_slots_data)
+	self._num_items_to_load = self._num_items_to_load + 1
+	local request = {
+		FunctionName = "versusFixCareerData",
+		FunctionParameter = {
+			broken_slots = broken_slots_data
+		}
+	}
+	local fix_versus_career_data_request_cb = callback(self, "fix_versus_career_data_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, fix_versus_career_data_request_cb)
+end
+
+PlayFabMirror.fix_versus_career_data_request_cb = function (self, result)
+	self.broken_slots_data = nil
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+
+	if function_result.num_items_granted > 0 then
+		self:_request_user_inventory()
+
+		return
+	end
+
+	local vs_character_starting_gear = function_result.vs_character_starting_gear
+	local current_career_data = self._career_data
+	local mirror_career_data = self._career_data_mirror
+	self._vs_characters_data = vs_character_starting_gear
+	self._vs_characters_data_mirror = table.clone(vs_character_starting_gear)
+
+	for character_names, character_data in pairs(vs_character_starting_gear) do
+		local careers = character_data.careers
+
+		for career_name, career_data in pairs(careers) do
+			for attribute_name, attribute_value in pairs(career_data) do
+				current_career_data[career_name][attribute_name] = attribute_value
+				mirror_career_data[career_name][attribute_name] = attribute_value
+			end
+		end
+	end
+end
+
+PlayFabMirror._request_characters_adventure = function (self)
 	local request = {}
-	local character_request_cb = callback(self, "character_request_cb")
+	local character_request_cb = callback(self, "character_request_adventure_cb")
 
 	PlayFabClientApi.GetAllUsersCharacters(request, character_request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
-PlayFabMirror.character_request_cb = function (self, result)
+PlayFabMirror.character_request_adventure_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 	self._career_data = {}
 	self._career_data_mirror = {}
@@ -573,7 +709,7 @@ PlayFabMirror.character_data_request_cb = function (self, characters, i, result)
 	local character_id = result.CharacterId
 	local character_name = self._career_lookup[character_id]
 	local character_data = result.Data
-	local broken_slots = self:_set_inital_career_data(character_id, character_data)
+	local broken_slots = self:_set_inital_career_data(character_name, character_data)
 
 	if broken_slots then
 		self._num_items_to_load = self._num_items_to_load + 1
@@ -618,7 +754,7 @@ PlayFabMirror.fix_career_data_request_cb = function (self, characters, i, result
 	end
 end
 
-local slots_to_verify_if_they_exist = {
+local hero_slots_to_verify_if_they_exist = {
 	"slot_ranged",
 	"slot_melee",
 	"slot_hat",
@@ -628,24 +764,38 @@ local slots_to_verify_if_they_exist = {
 	"slot_ring",
 	"slot_frame"
 }
+local dark_pact_slots_to_verify_exist = {
+	"slot_melee",
+	"slot_skin",
+	"slot_frame"
+}
 
-PlayFabMirror._set_inital_career_data = function (self, character_id, character_data)
-	local career_name = self._career_lookup[character_id]
+PlayFabMirror._set_inital_career_data = function (self, career_name, character_data)
 	local career_data = self._career_data[career_name]
 	local career_data_mirror = self._career_data_mirror[career_name]
 	local broken_slots = {}
+	local loadout = character_data
 
 	table.clear(career_data)
 	table.clear(career_data_mirror)
 
-	for i = 1, #slots_to_verify_if_they_exist, 1 do
-		local slot_name = slots_to_verify_if_they_exist[i]
+	local slots_to_verify = nil
 
-		if not character_data[slot_name] or not character_data[slot_name].Value then
+	if career_name:find("^vs_.*") ~= nil then
+		slots_to_verify = dark_pact_slots_to_verify_exist
+	else
+		slots_to_verify = hero_slots_to_verify_if_they_exist
+	end
+
+	for i = 1, #slots_to_verify, 1 do
+		local slot_name = slots_to_verify[i]
+		local slot_data = loadout[slot_name]
+		local slot_item_value = (type(slot_data) == "table" and slot_data.Value) or slot_data
+
+		if not slot_item_value then
 			broken_slots[slot_name] = true
 		else
-			local value = character_data[slot_name].Value
-			local item = self._inventory_items[value]
+			local item = self._inventory_items[slot_item_value]
 
 			if not item then
 				broken_slots[slot_name] = true
@@ -653,10 +803,10 @@ PlayFabMirror._set_inital_career_data = function (self, character_id, character_
 		end
 	end
 
-	self:_verify_items_are_usable(broken_slots, character_data, career_name)
+	self:_verify_items_are_usable(broken_slots, loadout, career_name, slots_to_verify)
 
-	for key, data in pairs(character_data) do
-		local value = data.Value
+	for key, data in pairs(loadout) do
+		local value = (type(data) == "table" and data.Value) or data
 		career_data[key] = value
 		career_data_mirror[key] = value
 	end
@@ -687,15 +837,16 @@ local slot_mapping = {
 	ring = "slot_ring"
 }
 
-PlayFabMirror._verify_items_are_usable = function (self, broken_slots, character_data, career_name)
+PlayFabMirror._verify_items_are_usable = function (self, broken_slots, character_data, career_name, slots_to_verify)
 	local career_settings = CareerSettings[career_name]
 	local item_slot_types_by_slot_name = career_settings.item_slot_types_by_slot_name
 
-	for i = 1, #slots_to_verify_by_item_data, 1 do
-		local slot_name = slots_to_verify_by_item_data[i]
+	for i = 1, #slots_to_verify, 1 do
+		local slot_name = slots_to_verify[i]
 
 		if not broken_slots[slot_name] then
-			local value = character_data[slot_name] and character_data[slot_name].Value
+			local slot_data = character_data[slot_name]
+			local value = (type(slot_data) == "table" and slot_data.Value) or slot_data
 
 			if value then
 				local item = self._inventory_items[value]
@@ -886,7 +1037,13 @@ PlayFabMirror.get_playfab_id = function (self)
 end
 
 PlayFabMirror.get_character_data = function (self, career_name, key)
-	return self._career_data[career_name][key]
+	local career_data = self._career_data
+
+	if career_data[career_name] ~= nil then
+		return self._career_data[career_name][key]
+	end
+
+	return nil
 end
 
 PlayFabMirror.set_character_data = function (self, career_name, key, value)
@@ -959,6 +1116,18 @@ PlayFabMirror.set_read_only_data = function (self, key, value, set_mirror)
 	if set_mirror then
 		self._read_only_data_mirror[key] = value
 	end
+end
+
+PlayFabMirror.set_career_read_only_data = function (self, character, key, value, career, set_mirror)
+	local characters_data = self._vs_characters_data
+	local data = (career and characters_data[character][career]) or characters_data[character]
+	data[key] = value
+
+	if set_mirror then
+		self._read_only_data_mirror = characters_data
+	end
+
+	self:set_read_only_data("vs_characters_data", cjson.encode(characters_data))
 end
 
 PlayFabMirror.get_all_inventory_items = function (self)
@@ -1106,14 +1275,18 @@ end
 
 PlayFabMirror.add_item = function (self, backend_id, item)
 	local inventory_items = self._inventory_items
+	local skin_data = WeaponSkins.skins[item.ItemId]
 
-	self:_update_data(item, backend_id)
+	if skin_data then
+		self:add_unlocked_weapon_skin(item.ItemId)
+	else
+		inventory_items[backend_id] = item
 
-	inventory_items[backend_id] = item
-
-	ItemHelper.mark_backend_id_as_new(backend_id)
-	self:_re_evaluate_best_power_level(item)
-	ItemHelper.on_inventory_item_added(item)
+		self:_update_data(item, backend_id)
+		ItemHelper.mark_backend_id_as_new(backend_id)
+		self:_re_evaluate_best_power_level(item)
+		ItemHelper.on_inventory_item_added(item)
+	end
 end
 
 PlayFabMirror.remove_item = function (self, backend_id)
@@ -1157,6 +1330,22 @@ end
 
 PlayFabMirror.get_essence = function (self)
 	return self._essence
+end
+
+PlayFabMirror.set_total_essence = function (self, amount)
+	self._total_essence = amount
+end
+
+PlayFabMirror.get_total_essence = function (self)
+	return self._total_essence
+end
+
+PlayFabMirror.set_maximum_essence = function (self, amount)
+	self._maximum_essence = amount
+end
+
+PlayFabMirror.get_maximum_essence = function (self)
+	return self._maximum_essence
 end
 
 PlayFabMirror.commit = function (self, skip_queue, commit_complete_callback)
@@ -1223,22 +1412,54 @@ local hero_attributes = {
 local num_updates_per_request = 5
 local num_requests = math.ceil(#keys / num_updates_per_request)
 
-PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callback)
-	print("PlayFabMirror:_commit_internal", queue_id)
+PlayFabMirror._check_career_data = function (self, careers_data, career_data_mirror)
+	local characters_data = self._vs_characters_data
+	local characters_data_mirror = self._vs_characters_data_mirror
+	local dirty = false
 
-	local career_data = self._career_data
+	for name, data in pairs(characters_data) do
+		for name_mirror, data_mirror in pairs(characters_data_mirror) do
+			if name == name_mirror then
+				dirty = not table.compare(data, data_mirror, {
+					"careers"
+				})
+
+				break
+			end
+		end
+
+		if dirty then
+			break
+		end
+	end
+
+	for career_name, career_data in pairs(careers_data) do
+		local career_id = self._career_lookup[career_name]
+		local mirror_data = career_data_mirror[career_name]
+
+		for _, loadout_key in pairs(keys) do
+			local loadout_value = career_data[loadout_key]
+			local mirror_loadout_value = mirror_data[loadout_key]
+
+			if loadout_value ~= mirror_loadout_value then
+				for _, data in pairs(characters_data) do
+					if data.careers[career_name] then
+						data.careers[career_name][loadout_key] = loadout_value
+
+						break
+					end
+				end
+
+				dirty = true
+			end
+		end
+	end
+
+	return dirty, characters_data
+end
+
+PlayFabMirror._check_careers_dirty_adventure = function (self, commit, commit_id)
 	local career_data_mirror = self._career_data_mirror
-	local commit_id = queue_id or self:_new_id()
-
-	table.clear(self._queued_commit)
-
-	local commit = {
-		num_updates = 0,
-		status = "success",
-		updates_to_make = 0,
-		commit_complete_callback = commit_complete_callback,
-		request_queue_ids = {}
-	}
 	local update_character_data_request = {
 		FunctionName = "updateCharacterData",
 		FunctionParameter = {}
@@ -1291,6 +1512,47 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 				commit.request_queue_ids[#commit.request_queue_ids + 1] = id
 			end
 		end
+	end
+end
+
+PlayFabMirror._check_careers_dirty_versus = function (self, commit, commit_id)
+	local dirty, new_career_data = self:_check_career_data(self._career_data, self._career_data_mirror)
+
+	if dirty then
+		local update_character_data_request = {
+			FunctionName = "versusUpdateCharacterData",
+			FunctionParameter = {
+				data = cjson.encode(new_career_data),
+				commit_id = commit_id
+			}
+		}
+		local success_callback = callback(self, "update_character_data_request_versus_cb")
+		local id = self._request_queue:enqueue(update_character_data_request, success_callback, false)
+		commit.status = "waiting"
+		commit.updates_to_make = commit.updates_to_make + 1
+		commit.request_queue_ids[#commit.request_queue_ids + 1] = id
+	end
+end
+
+PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callback)
+	print("PlayFabMirror:_commit_internal", queue_id)
+
+	local career_data = self._career_data
+	local commit_id = queue_id or self:_new_id()
+	local commit = {
+		num_updates = 0,
+		status = "success",
+		updates_to_make = 0,
+		commit_complete_callback = commit_complete_callback,
+		request_queue_ids = {}
+	}
+
+	table.clear(self._queued_commit)
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_check_careers_dirty_versus(commit, commit_id)
+	else
+		self:_check_careers_dirty_adventure(commit, commit_id)
 	end
 
 	self._commit_current_id = commit_id
@@ -1369,6 +1631,25 @@ PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callb
 	self._commits[commit_id] = commit
 
 	return commit_id
+end
+
+PlayFabMirror.update_character_data_request_versus_cb = function (self, result)
+	local function_result = result.FunctionResult
+	local vs_characters_data = cjson.decode(function_result.characters_data)
+	local career_data_mirror = self._career_data_mirror
+	self._vs_characters_data_mirror = vs_characters_data
+
+	table.clear(career_data_mirror)
+
+	for character_name, character_data in pairs(vs_characters_data) do
+		for career_name, career_data in pairs(character_data.careers) do
+			career_data_mirror[career_name] = career_data
+		end
+	end
+
+	local commit_id = function_result.CommitId
+	local commit = self._commits[commit_id]
+	commit.num_updates = commit.num_updates + 1
 end
 
 PlayFabMirror.update_character_data_request_cb = function (self, result)

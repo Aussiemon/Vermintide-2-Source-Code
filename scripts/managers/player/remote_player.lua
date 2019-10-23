@@ -1,12 +1,17 @@
 RemotePlayer = class(RemotePlayer)
+local RPCS = {
+	"rpc_set_observed_player_id"
+}
 
-RemotePlayer.init = function (self, network_manager, peer, player_controlled, is_server, local_player_id, unique_id, clan_tag, ui_id)
+RemotePlayer.init = function (self, network_manager, peer, player_controlled, is_server, local_player_id, unique_id, clan_tag, ui_id, account_id)
 	self.network_manager = network_manager
 	self.remote = true
 	self.peer_id = peer
 	self.is_server = is_server
 	self._player_controlled = player_controlled
 	self._ui_id = ui_id
+	self._observed_player_id = nil
+	self._account_id = account_id
 	self.owned_units = {}
 	self.game_object_id = nil
 	self._unique_id = unique_id
@@ -19,6 +24,20 @@ RemotePlayer.init = function (self, network_manager, peer, player_controlled, is
 
 	self.index = self.game_object_id
 	self._cached_name = nil
+end
+
+RemotePlayer.register_rpcs = function (self, network_event_delegate, network_transmit)
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+	self._network_transmit = network_transmit
+end
+
+RemotePlayer.unregister_rpcs = function (self)
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
+	self._network_transmit = nil
 end
 
 RemotePlayer.profile_id = function (self)
@@ -34,7 +53,11 @@ RemotePlayer.unique_id = function (self)
 end
 
 RemotePlayer.platform_id = function (self)
-	return self.peer_id
+	if PLATFORM == "win32" then
+		return self.peer_id
+	else
+		return self._account_id
+	end
 end
 
 RemotePlayer.despawn = function (self)
@@ -178,7 +201,7 @@ RemotePlayer.name = function (self)
 			return self._cached_name
 		end
 
-		name = Managers.game_server:peer_name(self:network_id()) or "Remote #" .. tostring(self.peer_id:sub(-3, -1))
+		name = Managers.game_server:peer_name(self:network_id())
 		self._cached_name = name
 	else
 		name = "Remote #" .. tostring(self.peer_id:sub(-3, -1))
@@ -240,6 +263,21 @@ end
 
 RemotePlayer.sync_data_active = function (self)
 	return self._player_sync_data and self._player_sync_data:active()
+end
+
+RemotePlayer.get_party = function (self)
+	local status = Managers.party:get_status_from_unique_id(self._unique_id)
+
+	return Managers.party:get_party(status.party_id)
+end
+
+RemotePlayer.observed_player_id = function (self)
+	return self._observed_player_id
+end
+
+RemotePlayer.rpc_set_observed_player_id = function (self, sender, observed_player_game_object_id)
+	local player = Managers.player:player_from_game_object_id(observed_player_game_object_id)
+	self._observed_player_id = player:unique_id()
 end
 
 return

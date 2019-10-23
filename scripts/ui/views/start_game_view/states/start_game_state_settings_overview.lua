@@ -121,7 +121,7 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 end
 
 StartGameStateSettingsOverview._calculate_current_weave = function (self)
-	local ignore_dlc_check = true
+	local ignore_dlc_check = false
 	local weave_templates = WeaveSettings.templates_ordered
 	local num_entries = #weave_templates
 	local statistics_db = Managers.player:statistics_db()
@@ -169,6 +169,7 @@ StartGameStateSettingsOverview._setup_menu_layout = function (self)
 	self._video_resources = layout_settings.video_resources
 	self._windows_settings = layout_settings.windows
 	self._max_active_windows = layout_settings.max_active_windows
+	self._max_alignment_windows = layout_settings.max_alignment_windows
 	self._gamepad_style_active = use_gamepad_layout
 	self._layout_settings = layout_settings
 	self._window_layouts = layout_settings.window_layouts
@@ -359,7 +360,7 @@ StartGameStateSettingsOverview._change_window = function (self, window_index, wi
 		local window_size = window_default_settings.size
 		local window_spacing = window_default_settings.spacing or 10
 		local window_width = window_size[1]
-		local max_active_windows = self._max_active_windows
+		local max_active_windows = self._max_alignment_windows or self._max_active_windows
 		local total_spacing = window_spacing * (max_active_windows - 1)
 		local total_windows_width = max_active_windows * window_width
 		local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
@@ -887,9 +888,10 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 	elseif game_mode_type == "weave" then
 		local weave_name = self:get_selected_weave_id()
 		local objective_index = self:get_selected_weave_objective_index()
-		local is_private = self:is_private_option_enabled()
+		local is_private = is_offline or self:is_private_option_enabled()
+		local always_host = is_offline
 
-		self.parent:start_game_weave(weave_name, objective_index, is_private)
+		self.parent:start_game_weave(weave_name, objective_index, is_private, always_host)
 	elseif game_mode_type == "weave_find_group" then
 		self.parent:start_game_weave_find_group(force_close_menu)
 	else

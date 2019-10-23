@@ -157,6 +157,13 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 		end,
 		run = function (parent, unit)
 			return true
+		end,
+		leave = function (parent, unit)
+			local position = unit and position_lookup[unit]
+
+			if position then
+				parent.locomotion_extension:teleport_to(position)
+			end
 		end
 	},
 	pack_master_unhooked = {

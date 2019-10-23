@@ -19,7 +19,7 @@ StartGameWindowWeaveFindGroupConsole.on_enter = function (self, params, offset)
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
-	self._is_server = ingame_ui_context._is_server
+	self._is_server = ingame_ui_context.is_server
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -35,7 +35,8 @@ StartGameWindowWeaveFindGroupConsole.on_enter = function (self, params, offset)
 	self._show_additional_settings = false
 	self._previous_can_play = nil
 
-	self._parent:change_generic_actions("default")
+	self._parent:change_generic_actions("default_weave_find_group")
+	self._parent:set_input_description(nil)
 	self:_start_transition_animation("on_enter")
 end
 
@@ -154,7 +155,7 @@ StartGameWindowWeaveFindGroupConsole._update_can_play = function (self)
 				self._parent:set_input_description(nil)
 			end
 		elseif can_play then
-			self._parent:set_input_description("play_available")
+			self._parent:set_input_description("search_available")
 		else
 			self._parent:set_input_description(nil)
 		end

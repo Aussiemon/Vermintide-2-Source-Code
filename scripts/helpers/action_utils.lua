@@ -269,28 +269,30 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 		end
 	end
 
-	local power_level_target_multiplier = 1
+	local armor_power_level_target_multiplier = 1
 	local armor_category = (breed and breed.armor_category) or dummy_unit_armor or 1
 
 	if armor_category == 2 then
-		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_armoured")
+		armor_power_level_target_multiplier = buff_extension:apply_buffs_to_value(armor_power_level_target_multiplier, "power_level_armoured")
 	elseif armor_category == 3 then
-		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_large")
+		armor_power_level_target_multiplier = buff_extension:apply_buffs_to_value(armor_power_level_target_multiplier, "power_level_large")
 	elseif armor_category == 5 then
-		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_frenzy")
+		armor_power_level_target_multiplier = buff_extension:apply_buffs_to_value(armor_power_level_target_multiplier, "power_level_frenzy")
 	elseif armor_category == 1 then
-		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_unarmoured")
+		armor_power_level_target_multiplier = buff_extension:apply_buffs_to_value(armor_power_level_target_multiplier, "power_level_unarmoured")
 	end
 
+	local race_power_level_target_multiplier = 1
 	local race = (breed and breed.race) or unit_get_data(unit, "race")
 
 	if race == "chaos" or race == "beastmen" or dummy_unit_armor == 1 then
-		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_chaos")
+		race_power_level_target_multiplier = buff_extension:apply_buffs_to_value(race_power_level_target_multiplier, "power_level_chaos")
 	elseif race == "skaven" or dummy_unit_armor == 2 then
-		power_level_target_multiplier = buff_extension:apply_buffs_to_value(power_level_target_multiplier, "power_level_skaven")
+		race_power_level_target_multiplier = buff_extension:apply_buffs_to_value(race_power_level_target_multiplier, "power_level_skaven")
 	end
 
-	power_level = power_level * (power_level_weapon_multiplier + power_level_target_multiplier - 1)
+	local power_level_target_multiplier = (armor_power_level_target_multiplier + race_power_level_target_multiplier) - 2
+	power_level = power_level * (power_level_weapon_multiplier + power_level_target_multiplier)
 
 	return power_level
 end
@@ -366,13 +368,16 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 		local damage = health_extension.damage
 		local explode_time = 0
 		local fuse_time = 6
+		local attacker_unit_id = nil
 
 		if health_extension.ignited then
 			local data = health_extension:health_data()
 			explode_time = data.explode_time
 			fuse_time = data.fuse_time
+			attacker_unit_id = data.attacker_unit_id
 		end
 
+		attacker_unit_id = attacker_unit_id or NetworkConstants.invalid_game_object_id
 		local item_name_id = NetworkLookup.item_names[item_name]
 
 		if ScriptUnit.has_extension(weapon_unit, "limited_item_track_system") then
@@ -384,9 +389,9 @@ ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_u
 			local spawner_unit_id = Level.unit_index(level, spawner_unit)
 			projectile_unit_template_name_id = NetworkLookup.go_types.explosive_pickup_projectile_unit_limited
 
-			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile_limited", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, damage, explode_time, fuse_time, item_name_id, spawn_type_id)
+			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile_limited", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, spawn_type_id)
 		else
-			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, damage, explode_time, fuse_time, item_name_id, spawn_type_id)
+			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_explosive_pickup_projectile", projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, spawn_type_id)
 		end
 	elseif ScriptUnit.has_extension(weapon_unit, "limited_item_track_system") then
 		local limited_item_extension = ScriptUnit.extension(weapon_unit, "limited_item_track_system")

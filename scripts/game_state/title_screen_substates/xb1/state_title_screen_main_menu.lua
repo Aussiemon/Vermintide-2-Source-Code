@@ -637,9 +637,11 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	end
 
 	if level_key == "prologue" then
+		local switch_to_tutorial_backend, tutorial_state = Managers.mechanism:should_run_tutorial()
 		loading_context.gamma_correct = not SaveData.gamma_corrected
 		loading_context.play_trailer = true
-		loading_context.switch_to_tutorial_backend = true
+		loading_context.switch_to_tutorial_backend = switch_to_tutorial_backend
+		loading_context.wanted_tutorial_state = tutorial_state
 	elseif script_data.honduras_demo then
 		self.parent.parent.loading_context.wanted_profile_index = (profile_name and FindProfileIndex(profile_name)) or DemoSettings.wanted_profile_index
 		GameSettingsDevelopment.disable_free_flight = DemoSettings.disable_free_flight

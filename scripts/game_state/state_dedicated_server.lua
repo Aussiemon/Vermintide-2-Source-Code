@@ -201,7 +201,6 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 	}
 
 	Managers.game_server:setup_network_context(network_context)
-	Managers.game_server:register_rpcs(self._network_event_delegate)
 	fassert(Managers.matchmaking == nil, "Already has a matchmaking server manager.")
 
 	local matchmaking_params = {
@@ -221,7 +220,7 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 	loading_context.game_server = game_server
 	loading_context.network_server = self._network_server
 
-	Managers.mechanism:generate_locked_director_functions(level_key)
+	Managers.mechanism:generate_locked_director_functions(initial_level)
 	Managers.mechanism:generate_level_seed()
 	level_transition_handler:set_next_level(initial_level)
 	self._network_server:set_current_level(initial_level)
@@ -300,10 +299,6 @@ end
 StateDedicatedServer.on_exit = function (self, application_shutdown)
 	if self._network_server then
 		self._network_server:unregister_rpcs()
-	end
-
-	if Managers.game_server then
-		Managers.game_server:unregister_rpcs()
 	end
 
 	if Managers.matchmaking then

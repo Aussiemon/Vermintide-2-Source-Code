@@ -23,10 +23,19 @@ GameModeBase.init = function (self, settings, world, network_server, level_trans
 	self._player_spawners = {}
 	self._pending_bot_remove = {}
 	self._num_pending_bot_remove = 0
+	self._game_mode_state = "initial_state"
 end
 
 GameModeBase.destroy = function (self)
 	return
+end
+
+GameModeBase.add_hud_components = function (self, ingame_hud)
+	local hud_components = self._settings.hud_components
+
+	if hud_components then
+		ingame_hud:add_components(hud_components)
+	end
 end
 
 GameModeBase.cleanup_game_mode_units = function (self)
@@ -175,6 +184,10 @@ GameModeBase.evaluate_end_conditions = function (self)
 	return false, nil
 end
 
+GameModeBase.ready_to_transition = function (self)
+	self._level_transition_handler:level_completed()
+end
+
 GameModeBase.object_sets = function (self)
 	return self._settings.object_sets
 end
@@ -237,6 +250,26 @@ GameModeBase.player_left_party = function (self, peer_id, local_player_id, party
 	for i = 1, #player_spawners, 1 do
 		player_spawners[i]:player_left_party(peer_id, local_player_id, party_id, slot_id)
 	end
+end
+
+GameModeBase.game_mode_state = function (self)
+	return self._game_mode_state
+end
+
+GameModeBase.change_game_mode_state = function (self, state_name)
+	printf("[GameMode] Changing game mode state to %s", state_name)
+
+	self._game_mode_state = state_name
+
+	self:_game_mode_state_changed(state_name)
+
+	if self._is_server then
+		Managers.state.game_mode:change_game_mode_state(state_name)
+	end
+end
+
+GameModeBase._game_mode_state_changed = function (self, state_name)
+	return
 end
 
 GameModeBase.disable_player_spawning = function (self)
@@ -389,6 +422,14 @@ end
 
 GameModeBase.get_end_screen_config = function (self, game_won, game_lost, player)
 	return "none", {}
+end
+
+GameModeBase.local_player_ready_to_start = function (self, player)
+	return true
+end
+
+GameModeBase.local_player_game_starts = function (self, player, loading_context)
+	return
 end
 
 return

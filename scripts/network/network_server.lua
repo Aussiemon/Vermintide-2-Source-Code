@@ -50,13 +50,16 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	}
 	self.voip = Voip:new(voip_params)
 	self._reserved_slots = {}
-	self.wanted_profile_index = wanted_profile_index
-	local profile = SPProfiles[self.wanted_profile_index]
 
-	if profile then
-		local hero_name = profile.display_name
-		local hero_attributes = Managers.backend:get_interface("hero_attributes")
-		self.wanted_career_index = hero_attributes:get(hero_name, "career") or 1
+	if not DEDICATED_SERVER then
+		self.wanted_profile_index = wanted_profile_index or SaveData.wanted_profile_index or 1
+		local profile = SPProfiles[self.wanted_profile_index]
+
+		if profile then
+			local hero_name = profile.display_name
+			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+			self.wanted_career_index = hero_attributes:get(hero_name, "career") or 1
+		end
 	end
 
 	local server_name = nil
@@ -198,8 +201,8 @@ NetworkServer.on_game_entered = function (self, game_network_manager)
 	end
 end
 
-NetworkServer.request_profile = function (self, local_player_id, profile_name, career_name)
-	self._profile_requester:request_profile(Network.peer_id(), local_player_id, profile_name, career_name)
+NetworkServer.request_profile = function (self, local_player_id, profile_name, career_name, force_respawn)
+	self._profile_requester:request_profile(Network.peer_id(), local_player_id, profile_name, career_name, force_respawn)
 end
 
 NetworkServer.profile_requester = function (self)
@@ -416,7 +419,7 @@ NetworkServer.rpc_client_connection_state = function (self, sender, peer_id, pee
 	return
 end
 
-NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_index, wanted_career_index, clan_tag)
+NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_index, wanted_career_index, clan_tag, account_id)
 	network_printf("Peer %s has sent rpc_notify_lobby_joined", tostring(sender))
 
 	local peer_state_machine = self.peer_state_machines[sender]
@@ -425,7 +428,7 @@ NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_i
 		network_printf("RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_notify_lobby_joined")
 		RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)
 	else
-		peer_state_machine.rpc_notify_lobby_joined(wanted_profile_index, wanted_career_index, clan_tag)
+		peer_state_machine.rpc_notify_lobby_joined(wanted_profile_index, wanted_career_index, clan_tag, account_id)
 
 		if sender ~= self.my_peer_id then
 			self:_add_peer_to_eac(sender)
@@ -501,6 +504,7 @@ NetworkServer.update = function (self, dt)
 		local peer_id = new_connections[i]
 
 		network_printf("New connection detected in NetworkServer from %q", peer_id)
+		NetworkUtils.announce_chat_peer_joined(peer_id, self.lobby_host)
 	end
 
 	local lobby_members = self.lobby_host:members()
@@ -511,47 +515,8 @@ NetworkServer.update = function (self, dt)
 		for i, peer_id in ipairs(members_joined) do
 			if peer_id ~= self.lobby_host:lobby_host() then
 				network_printf("Peer %s joined server lobby.", peer_id)
-				network_printf("Creating peer info.")
 
 				peer_state_machines[peer_id] = PeerStateMachine.create(self, peer_id)
-				local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
-
-				if PLATFORM ~= "win32" then
-					sender = self.lobby_host:user_name(peer_id)
-				end
-
-				local message = string.format(Localize("system_chat_player_joined_the_game"), sender)
-				local pop_chat = true
-
-				Managers.chat:add_local_system_message(1, message, pop_chat)
-			end
-		end
-
-		local members_left = lobby_members:get_members_left()
-
-		for i, peer_id in ipairs(members_left) do
-			network_printf("Peer %s left server lobby.", peer_id)
-
-			local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
-
-			if PLATFORM ~= "win32" then
-				sender = self.lobby_host:user_name(peer_id)
-			end
-
-			local message = string.format(Localize("system_chat_player_left_the_game"), sender)
-			local pop_chat = true
-
-			Managers.chat:add_local_system_message(1, message, pop_chat)
-
-			local enemy_package_loader = self.level_transition_handler.enemy_package_loader
-
-			enemy_package_loader:client_disconnected(peer_id)
-
-			local peer_state_machine = peer_state_machines[peer_id]
-
-			if peer_state_machine and peer_state_machine.current_state ~= PeerStates.Disconnecting and peer_state_machine.current_state ~= PeerStates.Disconnected then
-				network_printf("Disconnecting peer.")
-				peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
 			end
 		end
 	end
@@ -560,12 +525,9 @@ NetworkServer.update = function (self, dt)
 
 	for i = 1, broken_connections_n, 1 do
 		local peer_id = broken_connections[i]
-		local peer_state_machine = peer_state_machines[peer_id]
 
-		if peer_state_machine and peer_state_machine.current_state ~= PeerStates.Disconnecting and peer_state_machine.current_state ~= PeerStates.Disconnected then
-			peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
-			network_printf("Broken connection to peer id %s discovered in connection handler. Server selecting peer to disconnect.", peer_id)
-		end
+		network_printf("Broken connection to peer id %s discovered in connection handler. Server selecting peer to disconnect.", peer_id)
+		self:_handle_peer_left_game(peer_id)
 
 		broken_connections[i] = nil
 	end
@@ -574,10 +536,10 @@ NetworkServer.update = function (self, dt)
 
 	if game_session then
 		local peer_id = GameSession.wants_to_leave(game_session)
-		local peer_state_machine = peer_state_machines[peer_id]
 
-		if peer_state_machine and peer_state_machine.current_state ~= PeerStates.Disconnecting and peer_state_machine.current_state ~= PeerStates.Disconnected then
-			peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
+		if peer_id then
+			network_printf("Peer wants to leave game session: peer id %s", peer_id)
+			self:_handle_peer_left_game(peer_id)
 		end
 	end
 
@@ -604,6 +566,10 @@ NetworkServer.update = function (self, dt)
 		end
 
 		if Managers.weave:get_active_weave() ~= nil then
+			host_to_migrate_to = nil
+		end
+
+		if self.lobby_host:lost_connection_to_lobby() then
 			host_to_migrate_to = nil
 		end
 
@@ -671,6 +637,18 @@ NetworkServer.update = function (self, dt)
 
 	if Development.parameter("network_draw_peer_states") then
 		self:_draw_peer_states()
+	end
+end
+
+NetworkServer._handle_peer_left_game = function (self, peer_id)
+	if peer_id then
+		NetworkUtils.announce_chat_peer_left(peer_id, self.lobby_host)
+
+		local peer_state_machine = self.peer_state_machines[peer_id]
+
+		if peer_state_machine and peer_state_machine.current_state ~= PeerStates.Disconnecting and peer_state_machine.current_state ~= PeerStates.Disconnected then
+			peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
+		end
 	end
 end
 
@@ -1023,7 +1001,7 @@ NetworkServer.disconnected = function (self)
 	return false
 end
 
-NetworkServer.wanted_profile = function (self, peer_id, local_player_id)
+NetworkServer.peer_wanted_profile = function (self, peer_id, local_player_id)
 	local peer_state_machine = self.peer_state_machines[peer_id]
 	local state_data = peer_state_machine.state_data
 	local wanted_profile_index = state_data.wanted_profile_index

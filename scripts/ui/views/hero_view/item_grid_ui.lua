@@ -677,7 +677,8 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	local career_specific_filter = settings.career_specific_filter
 
 	if hero_specific_filter then
-		item_filter = "can_wield_by_current_hero and " .. item_filter
+		local temp_item_filter = (item_filter and "and " .. item_filter) or ""
+		item_filter = "can_wield_by_current_hero " .. temp_item_filter
 	end
 
 	if settings.wield then
@@ -701,7 +702,7 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 end
 
 ItemGridUI.change_item_filter = function (self, item_filter, change_page)
-	self._item_filter = item_filter
+	item_filter = "available_in_current_mechanism and ( " .. item_filter .. " )"
 	local items_1 = self:_get_items_by_filter("can_wield_by_current_career and ( " .. item_filter .. " )")
 	local items_2 = self:_get_items_by_filter("not can_wield_by_current_career and ( " .. item_filter .. " )")
 	local item_sort_func = self._item_sort_func

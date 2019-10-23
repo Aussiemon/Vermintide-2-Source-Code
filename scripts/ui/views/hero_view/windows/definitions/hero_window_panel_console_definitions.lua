@@ -428,7 +428,7 @@ local widgets = {
 	panel_input_area_2 = UIWidgets.create_simple_texture("xbone_button_icon_rt", "panel_input_area_2"),
 	panel = UIWidgets.create_simple_texture("menu_panel_bg", "panel", nil, nil, panel_color),
 	panel_edge = UIWidgets.create_tiled_texture("panel_edge", "menu_frame_04_divider", {
-		1,
+		1920,
 		4
 	}),
 	bottom_panel = UIWidgets.create_simple_uv_texture("menu_panel_bg", {

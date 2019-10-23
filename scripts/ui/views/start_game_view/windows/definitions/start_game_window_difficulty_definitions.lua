@@ -258,7 +258,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-100,
+			-80,
 			1
 		}
 	},
@@ -550,10 +550,10 @@ local difficulty_second_lock_text_style = {
 	upper_case = false,
 	localize = false,
 	use_shadow = true,
-	word_wrap = false,
+	word_wrap = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
-	dynamic_font_size = true,
+	dynamic_font_size = false,
 	font_type = "hell_shark",
 	text_color = {
 		255,
@@ -1538,8 +1538,8 @@ local widgets = {
 	description_text = UIWidgets.create_simple_text(Localize("start_game_window_adventure_desc"), "description_text", nil, nil, description_text_style),
 	difficulty_chest_info = UIWidgets.create_simple_text("", "difficulty_chest_info", nil, nil, difficulty_chest_info_style),
 	difficulty_lock_text = UIWidgets.create_simple_text("difficulty_lock_text", "requirement_bg", nil, nil, difficulty_lock_text_style),
-	difficulty_second_lock_text = UIWidgets.create_simple_text("KIll all the lords on Legend Difficulty", "requirement_bg", nil, nil, difficulty_second_lock_text_style),
-	difficulty_is_locked_text = UIWidgets.create_simple_text("Some people in your party do not meet the required Hero Power.", "requirement_bg", nil, nil, difficulty_is_locked_text_style),
+	difficulty_second_lock_text = UIWidgets.create_simple_text("n/a", "requirement_bg", nil, nil, difficulty_second_lock_text_style),
+	difficulty_is_locked_text = UIWidgets.create_simple_text("n/a", "requirement_bg", nil, nil, difficulty_is_locked_text_style),
 	dlc_lock_text = UIWidgets.create_simple_text(Localize("cataclysm_no_wom"), "buy_button", nil, nil, dlc_is_locked_text_style),
 	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("confirm_menu_button_name"), 32, nil, nil, nil, disable_with_gamepad),
 	buy_button = create_buy_button("buy_button", scenegraph_definition.buy_button.size, nil, "wom_button", Localize("menu_weave_area_no_wom_button"), 32, nil, nil, nil, disable_with_gamepad),

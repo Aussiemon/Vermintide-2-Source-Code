@@ -2173,13 +2173,11 @@ HitEffectsSkavenClanRat = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn"
 		}
 	},
 	burn_sniper = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_sniper"
 		},
@@ -2188,7 +2186,6 @@ HitEffectsSkavenClanRat = {
 		}
 	},
 	burn_shotgun = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage = true,
 			damage_type = "burn_shotgun"
@@ -2198,7 +2195,6 @@ HitEffectsSkavenClanRat = {
 		}
 	},
 	burn_machinegun = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_machinegun"
 		},
@@ -2207,7 +2203,6 @@ HitEffectsSkavenClanRat = {
 		}
 	},
 	burn_carbine = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_machinegun"
 		},
@@ -2216,7 +2211,6 @@ HitEffectsSkavenClanRat = {
 		}
 	},
 	burninating = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burninating"
 		}
@@ -2583,7 +2577,6 @@ HitEffectsSkavenClanRat = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2607,7 +2600,6 @@ HitEffectsSkavenClanRat = {
 	},
 	drakegun_glance = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun_glance"
@@ -2810,7 +2802,6 @@ HitEffectsSkavenClanRat = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

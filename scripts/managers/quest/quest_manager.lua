@@ -303,15 +303,8 @@ QuestManager.get_data_by_id = function (self, quest_id)
 	local required_dlc = nil
 	local backend_quest_data = backend_interface_quests:get_quest_by_key(quest_key)
 
-	if backend_quest_data then
-		if backend_quest_data.type and backend_quest_data.type == "bogenhafen" then
-			required_dlc = "bogenhafen"
-			icon = "quest_book_event_bogenhafen"
-		end
-
-		if backend_quest_data.reward then
-			reward = backend_quest_data.reward
-		end
+	if backend_quest_data and backend_quest_data.reward then
+		reward = backend_quest_data.reward
 	end
 
 	local evaluated_quest = {

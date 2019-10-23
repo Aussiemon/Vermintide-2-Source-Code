@@ -1910,7 +1910,6 @@ HitEffectsSkavenPlagueMonk = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn"
 		}
@@ -1924,7 +1923,6 @@ HitEffectsSkavenPlagueMonk = {
 		}
 	},
 	burn_shotgun = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage = true,
 			damage_type = "burn_shotgun"
@@ -2296,7 +2294,6 @@ HitEffectsSkavenPlagueMonk = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2467,7 +2464,6 @@ HitEffectsSkavenPlagueMonk = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

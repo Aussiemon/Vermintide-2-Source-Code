@@ -19,11 +19,12 @@ DeedManager.destroy = function (self)
 	end
 end
 
-DeedManager.network_context_created = function (self, lobby, server_peer_id, own_peer_id)
+DeedManager.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_server)
 	self._lobby = lobby
 	self._server_peer_id = server_peer_id
 	self._peer_id = own_peer_id
-	self._is_server = server_peer_id == own_peer_id
+	self._network_server = network_server
+	self._is_server = is_server
 	local ignore_send = true
 
 	self:reset(ignore_send)
@@ -33,6 +34,8 @@ DeedManager.network_context_destroyed = function (self)
 	self._lobby = nil
 	self._server_peer_id = nil
 	self._peer_id = nil
+	self._network_server = nil
+	self._is_server = false
 	local ignore_send = true
 
 	self:reset(ignore_send)
@@ -215,27 +218,24 @@ DeedManager.rpc_reset_deed = function (self, sender)
 end
 
 DeedManager._send_rpc_to_server = function (self, rpc_name, ...)
-	if not self._lobby then
-		return
-	end
-
 	local rpc = RPC[rpc_name]
 
 	rpc(self._server_peer_id, ...)
 end
 
 DeedManager._send_rpc_to_clients = function (self, rpc_name, ...)
-	if not self._lobby then
+	local network_server = self._network_server
+
+	if not network_server then
 		return
 	end
 
 	local rpc = RPC[rpc_name]
 	local server_peer_id = self._server_peer_id
-	local members = self._lobby:members():get_members()
-	local num_members = #members
+	local client_peer_ids = network_server:players_past_connecting()
 
-	for i = 1, num_members, 1 do
-		local peer_id = members[i]
+	for i = 1, #client_peer_ids, 1 do
+		local peer_id = client_peer_ids[i]
 
 		if peer_id ~= server_peer_id then
 			rpc(peer_id, ...)
@@ -244,17 +244,18 @@ DeedManager._send_rpc_to_clients = function (self, rpc_name, ...)
 end
 
 DeedManager._send_rpc_to_clients_except = function (self, rpc_name, except, ...)
-	if not self._lobby then
+	local network_server = self._network_server
+
+	if not network_server then
 		return
 	end
 
 	local rpc = RPC[rpc_name]
 	local server_peer_id = self._server_peer_id
-	local members = self._lobby:members():get_members()
-	local num_members = #members
+	local client_peer_ids = network_server:players_past_connecting()
 
-	for i = 1, num_members, 1 do
-		local peer_id = members[i]
+	for i = 1, #client_peer_ids, 1 do
+		local peer_id = client_peer_ids[i]
 
 		if peer_id ~= server_peer_id and peer_id ~= except then
 			rpc(peer_id, ...)

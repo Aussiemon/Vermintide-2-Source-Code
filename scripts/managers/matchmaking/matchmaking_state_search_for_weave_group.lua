@@ -324,6 +324,12 @@ MatchmakingStateSearchForWeaveGroup._compare_secondary_prio_lobbies = function (
 end
 
 MatchmakingStateSearchForWeaveGroup._handle_expansion_rules = function (self, my_expansion_rules, lobby_data)
+	if PLATFORM == "ps4" then
+		Application.warning("[MatchmakingStateSearchForWeaveGroup] Expansion rules not implemented on PS4 yet")
+
+		return false
+	end
+
 	local my_near_filters = my_expansion_rules.near_filters
 
 	for key, filter_data in pairs(my_near_filters) do
@@ -332,6 +338,11 @@ MatchmakingStateSearchForWeaveGroup._handle_expansion_rules = function (self, my
 		if requirements then
 			local lobby_value = (filter_data.transform_data_function and filter_data.transform_data_function(lobby_data[key])) or lobby_data[key]
 			local own_value = filter_data.fetch_function(self)
+
+			if filter_data.transform_data_function then
+				own_value = filter_data.transform_data_function(own_value) or own_value
+			end
+
 			local range_up = requirements.range_up
 			local range_down = requirements.range_down
 
@@ -355,6 +366,11 @@ MatchmakingStateSearchForWeaveGroup._handle_expansion_rules = function (self, my
 			if lobby_requirements then
 				local lobby_value = (filter_data.transform_data_function and filter_data.transform_data_function(lobby_data[key])) or lobby_data[key]
 				local own_value = filter_data.fetch_function(self)
+
+				if filter_data.transform_data_function then
+					own_value = filter_data.transform_data_function(own_value) or own_value
+				end
+
 				local lobby_range_up = lobby_requirements.range_up
 				local lobby_range_down = lobby_requirements.range_down
 

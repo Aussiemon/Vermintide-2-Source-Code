@@ -12,9 +12,21 @@ local scenegraph_definition = {
 			UILayer.interaction
 		}
 	},
+	screen = {
+		scale = "fit",
+		position = {
+			0,
+			0,
+			UILayer.hud
+		},
+		size = {
+			1920,
+			1080
+		}
+	},
 	pivot = {
 		vertical_alignment = "center",
-		parent = "root",
+		parent = "screen",
 		horizontal_alignment = "center",
 		position = {
 			0,
@@ -109,6 +121,11 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.screen.scale = "hud_fit"
+end
+
 local widget_definitions = {
 	tooltip = {
 		scenegraph_id = "interaction",
@@ -475,7 +492,15 @@ InteractionUI._handle_interaction_progress = function (self, progress)
 	end
 end
 
+local DO_RELOAD = false
+
 InteractionUI.update = function (self, dt, t, my_player)
+	if DO_RELOAD then
+		self:create_ui_elements()
+
+		DO_RELOAD = false
+	end
+
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")

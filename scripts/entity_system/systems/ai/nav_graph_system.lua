@@ -5,6 +5,7 @@ local extensions = {
 	"LevelUnitSmartObjectExtension"
 }
 script_data.nav_mesh_debug = script_data.nav_mesh_debug or Development.parameter("nav_mesh_debug")
+use_simple_jump_units = true
 
 NavGraphSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
@@ -78,6 +79,7 @@ NavGraphSystem.destroy = function (self)
 end
 
 local control_points = {}
+local BROADPHASE_RESULTS = {}
 
 NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extension)
 	local nav_world = self.nav_world
@@ -85,8 +87,11 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 	local debug_color = Colors.get("orange")
 	local smart_object_unit_data = smart_objects[smart_object_id]
 	local level_jumps = self.level_jumps
+	local count = 0
+	local num_smart_objects_in_unit = #smart_object_unit_data
 
-	for smart_object, smart_object_data in pairs(smart_object_unit_data) do
+	for i = 1, num_smart_objects_in_unit, 1 do
+		local smart_object_data = smart_object_unit_data[i]
 		local smart_object_type = smart_object_data.smart_object_type or "ledges"
 		local layer_id = LAYER_ID_MAPPING[smart_object_type]
 		control_points[1] = Vector3Aux.unbox(smart_object_data.pos1)
@@ -101,18 +106,70 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 		local smart_object_index = smart_object_data.smart_object_index
 		self.smart_object_types[smart_object_index] = smart_object_type
 		self.smart_object_data[smart_object_index] = smart_object_data.data
+		local use_for_versus = Unit.get_data(unit, "ledge_enabled_vs")
 		local navgraph = GwNavGraph.create(nav_world, is_bidirectional, control_points, debug_color, layer_id, smart_object_index)
 
-		GwNavGraph.add_to_database(navgraph)
-
-		if not script_data.disable_crowd_dispersion then
-			GwNavWorld.register_all_navgraphedges_for_crowd_dispersion(nav_world, navgraph, 1, 100)
+		if not use_for_versus then
+			GwNavGraph.add_to_database(navgraph)
 		end
 
-		extension.navgraphs[#extension.navgraphs + 1] = navgraph
+		if not use_for_versus then
+			if not script_data.disable_crowd_dispersion then
+				GwNavWorld.register_all_navgraphedges_for_crowd_dispersion(nav_world, navgraph, 1, 100)
+			end
+
+			extension.navgraphs[#extension.navgraphs + 1] = navgraph
+		end
 	end
 
 	self.initialized_unit_nav_graphs[unit] = true
+end
+
+NavGraphSystem.spawn_jump_unit = function (self, world, position, jump_data)
+	if use_simple_jump_units then
+		local jump_unit = World.spawn_unit(world, "units/test_unit/jump_marker_ground_pactsworn", position)
+		jump_data.unit = jump_unit
+
+		return
+	end
+
+	local jump_object_data = jump_data.jump_object_data
+	local p1 = Vector3Aux.unbox(jump_object_data.pos1)
+	local p2 = Vector3Aux.unbox(jump_object_data.pos2)
+	local swapped = jump_data.swap_entrance_exit
+	local to_vec = (swapped and p2 - p1) or p1 - p2
+	local to_vec_flat = Vector3.flat(to_vec)
+	local rot = Quaternion.look(to_vec_flat)
+	local jump_unit = World.spawn_unit(world, "units/gameplay/ledges/indicator_jump", position, rot)
+	jump_data.unit = jump_unit
+	local data = jump_object_data.data
+	local height = to_vec.z
+
+	if data.is_on_small_fence or data.ledge_position2 then
+		local ledge_pos = Vector3Aux.unbox(data.ledge_position)
+		local to_ledge = ledge_pos - position
+		height = to_ledge.z
+	end
+
+	local length = Vector3.length(to_vec_flat)
+
+	Unit.set_data(jump_unit, "length", length - 2)
+	Unit.set_data(jump_unit, "height", height)
+	Unit.flow_event(jump_unit, "lua_update_dimensions")
+end
+
+NavGraphSystem.show_all_jump_units = function (self, show)
+	if not self._use_level_jumps or self._jumps_are_shown == show then
+		return
+	end
+
+	for id, jump_data in pairs(self.level_jumps) do
+		local unit = jump_data.unit
+
+		Unit.set_unit_visibility(unit, show)
+	end
+
+	self._jumps_are_shown = show
 end
 
 NavGraphSystem.on_add_extension = function (self, world, unit, extension_name)

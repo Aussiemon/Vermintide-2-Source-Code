@@ -1,6 +1,17 @@
 ImguiWeaponDebug = class(ImguiWeaponDebug)
 local SHOULD_RELOAD = true
 local min_power_level = 5
+local font = "arial"
+local font_mtrl = "materials/fonts/" .. font
+
+function gui_shadow_text(gui, string, size, position, color)
+	local font_offset = Vector3(0, 2, 0)
+	local shadow_offset_amount = size * 0.07
+	local font_shadow_offset = Vector3(shadow_offset_amount, -shadow_offset_amount, 0) + font_offset
+
+	Gui.text(gui, string, font_mtrl, size, font, position + font_shadow_offset, Color(255, 0, 0, 0))
+	Gui.text(gui, string, font_mtrl, size, font, position + font_offset, color)
+end
 
 ImguiWeaponDebug.init = function (self)
 	self._draw_hit_box = false
@@ -41,8 +52,12 @@ ImguiWeaponDebug.init = function (self)
 	self._combat_critical = false
 	self._combat_power_boost = false
 	self._combat_use_current_power_level = true
+	self._combat_pop_settings = false
 	self._combat_backstab_multiplier = 1
 	self._combat_stagger_level = 0
+	self._combat_hit_actions = {}
+	self._combat_current_weapon = nil
+	self._combat_current_weapon_name = nil
 
 	self:_refresh_unit_list()
 end
@@ -77,9 +92,11 @@ ImguiWeaponDebug.update = function (self)
 		self:_refresh_unit_list()
 	end
 
-	script_data.debug_weapons = Imgui.Checkbox("Draw Hit Box", script_data.debug_weapons)
+	if script_data and script_data.debug_weapons ~= nil then
+		script_data.debug_weapons = Imgui.Checkbox("Draw Hit Box", script_data.debug_weapons)
 
-	Imgui.SameLine()
+		Imgui.SameLine()
+	end
 
 	self._draw_chain_action_data = Imgui.Checkbox("Draw Action Chain", self._draw_chain_action_data)
 
@@ -159,19 +176,22 @@ ImguiWeaponDebug._refresh_unit_list = function (self)
 	table.insert(self._units, false)
 
 	local player_manager = Managers.player
-	local players = player_manager:human_and_bot_players()
 
-	for id, player in pairs(players) do
-		if player then
-			local profile_display_name = player:profile_display_name()
+	if player_manager then
+		local players = player_manager:human_and_bot_players()
 
-			table.insert(self._unit_names, profile_display_name)
-			table.insert(self._units, player.player_unit)
+		for id, player in pairs(players) do
+			if player then
+				local profile_display_name = player:profile_display_name()
 
-			if player.local_player then
-				self._selected_unit = #self._unit_names - 1
+				table.insert(self._unit_names, profile_display_name)
+				table.insert(self._units, player.player_unit)
 
-				self:_initialize_unit(player.player_unit)
+				if player.local_player then
+					self._selected_unit = #self._unit_names - 1
+
+					self:_initialize_unit(player.player_unit)
+				end
 			end
 		end
 	end
@@ -185,6 +205,9 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 	self._action_list = {}
 	self._sub_action_list = {}
 	self._current_actions = {}
+	self._combat_hit_actions = {}
+	self._combat_current_weapon = nil
+	self._combat_current_weapon_name = nil
 
 	if unit then
 		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
@@ -201,6 +224,8 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 			local template = Weapons[weapon.template]
 			local actions = template.actions
 			self._current_actions = actions
+			self._combat_current_weapon = weapon
+			self._combat_current_weapon_name = extension.item_name
 
 			for name, action in pairs(actions) do
 				table.insert(self._action_list, name)
@@ -213,6 +238,12 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 
 				for sub_name, sub_action in pairs(action) do
 					table.insert(sub_action_list, sub_name)
+
+					local left, right = self:_get_damage_profile_for_action(sub_action)
+
+					if left or right then
+						self._combat_hit_actions[sub_name] = sub_action
+					end
 				end
 
 				table.sort(sub_action_list)
@@ -224,18 +255,32 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 end
 
 ImguiWeaponDebug._draw_basic_info = function (self)
-	local weapon_extension = self:_get_current_weapon()
+	local weapon = self._combat_current_weapon
+	local weapon_name = self._combat_current_weapon_name or "-"
 
-	if self._current_unit and weapon_extension then
-		local owner_unit = self._current_unit
-		local weapon = ItemMasterList[weapon_extension.item_name]
-
+	if weapon then
 		Imgui.Separator()
-		Imgui.Text("Basic Information")
-		Imgui.Text(string.format("Item Name:     %s", weapon_extension.item_name))
-		Imgui.Text(string.format("Template Name: %s", weapon.template))
-		Imgui.Text(string.format("Left Hand:     %s", weapon.left_hand_unit))
-		Imgui.Text(string.format("Right Hand:    %s", weapon.right_hand_unit))
+
+		if Imgui.TreeNode("Basic Information") then
+			Imgui.Text(string.format("Item Name:     %s", weapon_name))
+			Imgui.Text(string.format("Template Name: %s", weapon.template))
+			Imgui.Text(string.format("Left Hand:     %s", weapon.left_hand_unit))
+			Imgui.Text(string.format("Right Hand:    %s", weapon.right_hand_unit))
+			Imgui.Separator()
+			Imgui.Text(string.format("%-24s: %-28s / %28s", "Damage Profiles", "left", "right"))
+			Imgui.Separator()
+
+			local damage_actions = self._combat_hit_actions
+
+			for action_name, sub_action in pairs(damage_actions) do
+				local action_hand = sub_action and sub_action.weapon_action_hand
+				local damage_profile_name_1, damage_profile_name_2 = self:_get_damage_profile_name(sub_action, action_hand)
+
+				Imgui.Text(string.format("%-24s: %-28s / %28s", action_name, tostring(damage_profile_name_1), tostring(damage_profile_name_2)))
+			end
+
+			Imgui.TreePop()
+		end
 	end
 end
 
@@ -243,6 +288,29 @@ ImguiWeaponDebug._draw_damage_info = function (self)
 	Imgui.Separator()
 	Imgui.Text("Damage Information")
 
+	self._combat_pop_settings = Imgui.Checkbox("Pop Combat Settings", self._combat_pop_settings)
+
+	if self._combat_pop_settings then
+		Imgui.Begin("Combat Settings (Weapon Debug)")
+		self:_update_combat_settings()
+		Imgui.End()
+	else
+		self:_update_combat_settings()
+	end
+
+	local difficulty_level = self._difficulties[self._damage_difficulty_id + 1]
+	local hit_zone_name = self._hit_zone_names[self._damage_hit_zone_id + 1]
+
+	for breed_table_name, breed_table in pairs(self._breed_table) do
+		if difficulty_level and hit_zone_name and Imgui.TreeNode(breed_table_name) then
+			Imgui.Separator()
+			self:_draw_faction_combat_info(breed_table, difficulty_level, hit_zone_name, self._damage_power_level, self._combat_stagger_level, self._combat_critical, self._combat_backstab_multiplier, self._combat_power_boost)
+			Imgui.TreePop()
+		end
+	end
+end
+
+ImguiWeaponDebug._update_combat_settings = function (self)
 	self._combat_use_current_power_level = Imgui.Checkbox("Use Current Power Level", self._combat_use_current_power_level)
 
 	if self._combat_use_current_power_level then
@@ -255,8 +323,6 @@ ImguiWeaponDebug._draw_damage_info = function (self)
 	self._damage_power_level = math.max(Imgui.InputFloat("Power Level", self._damage_power_level), min_power_level)
 	self._damage_difficulty_id = Imgui.Combo("Difficulty", self._damage_difficulty_id, self._difficulties) - 1
 	self._damage_hit_zone_id = Imgui.Combo("Hit Zone", self._damage_hit_zone_id, self._hit_zone_names) - 1
-	local difficulty_level = self._difficulties[self._damage_difficulty_id + 1]
-	local hit_zone_name = self._hit_zone_names[self._damage_hit_zone_id + 1]
 	self._combat_backstab_multiplier = Imgui.SliderFloat("Backstab Mult", self._combat_backstab_multiplier, 1, 2)
 	self._combat_stagger_level = math.floor(Imgui.SliderFloat("Stagger Level", self._combat_stagger_level, 0, 3))
 	self._combat_critical = Imgui.Checkbox("Critical", self._combat_critical)
@@ -264,71 +330,56 @@ ImguiWeaponDebug._draw_damage_info = function (self)
 	Imgui.SameLine()
 
 	self._combat_power_boost = Imgui.Checkbox("Power Boost", self._combat_power_boost)
-	local action = self:_get_current_action()
-	local action_hand = action and action.weapon_action_hand
-	local damage_profile_name_1, damage_profile_name_2 = self:_get_damage_profile_name(action, action_hand)
-
-	Imgui.Text(string.format("Damage Profile: %s / %s", tostring(damage_profile_name_1), tostring(damage_profile_name_2)))
-
-	for breed_table_name, breed_table in pairs(self._breed_table) do
-		if difficulty_level and hit_zone_name and Imgui.TreeNode(breed_table_name) then
-			self:_draw_faction_combat_info(breed_table, difficulty_level, hit_zone_name, self._damage_power_level, self._combat_stagger_level, self._combat_critical, self._combat_backstab_multiplier, self._combat_power_boost)
-			Imgui.TreePop()
-		end
-	end
 end
 
 ImguiWeaponDebug._draw_faction_combat_info = function (self, breed_table, difficulty_level, hit_zone_name, power_level, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
 	local start_target_index = 1
 	local max_target_index = 8
+	local hit_index_format = string.format("%7s%6s", "%2d", "")
+	local damage_actions = self._combat_hit_actions
 	local target_damage = {}
 	local target_hits = {}
 
 	for breed_name, _ in pairs(breed_table) do
+		Imgui.Separator()
+
 		local breed = Breeds[breed_name]
 		local armor_type, _, primary_armor_type, _ = ActionUtils.get_target_armor(hit_zone_name, breed, 1)
 		local node_name = string.format("Breed: %s (Armor: %d / Primary Armor: %d)", breed_name, armor_type or 0, primary_armor_type or 0)
 
 		if Imgui.TreeNode(node_name) then
-			table.clear(target_damage)
-			table.clear(target_hits)
+			local breed_health = self:get_breed_health(difficulty_level, breed)
 
-			local max_health = 0
+			Imgui.Text(string.format("Health: %.2f", breed_health))
+			Imgui.Text(string.format("%-24s:", "Hit Index"))
 
 			for i = start_target_index, max_target_index, 1 do
-				local damage, hits = nil
-				damage, max_health, hits = self:get_damage(power_level, difficulty_level, hit_zone_name, breed, i, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
-
-				table.insert(target_damage, damage)
-				table.insert(target_hits, hits)
+				Imgui.SameLine()
+				Imgui.Text(string.format(hit_index_format, i))
 			end
 
-			Imgui.Text(string.format("Health:    %6.2f", max_health))
-			Imgui.Text(string.format("Hit Index:", max_health))
+			for action_name, sub_action in pairs(damage_actions) do
+				table.clear(target_damage)
+				table.clear(target_hits)
 
-			for i = 1, #target_damage, 1 do
-				Imgui.SameLine()
-				Imgui.Text(string.format("%6d", i))
-			end
+				for i = start_target_index, max_target_index, 1 do
+					local damage = self:get_damage(sub_action, power_level, difficulty_level, hit_zone_name, breed, i, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
+					local hits_to_kill = (damage > 0 and math.ceil(breed_health / damage)) or 0
 
-			Imgui.Text(string.format("Damage:   "))
+					table.insert(target_damage, damage)
+					table.insert(target_hits, hits_to_kill)
+				end
 
-			for i = 1, #target_damage, 1 do
-				Imgui.SameLine()
-				Imgui.Text(string.format("%6.2f", target_damage[i]))
-			end
+				Imgui.Text(string.format("%-24s:", action_name))
 
-			Imgui.Text(string.format("Hits:     "))
-
-			for i = 1, #target_hits, 1 do
-				Imgui.SameLine()
-				Imgui.Text(string.format("%6d", target_hits[i]))
+				for i = 1, #target_damage, 1 do
+					Imgui.SameLine()
+					Imgui.Text(string.format("%6.2f - %-3d", target_damage[i], target_hits[i]))
+				end
 			end
 
 			Imgui.TreePop()
 		end
-
-		Imgui.Separator()
 	end
 end
 
@@ -392,9 +443,8 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 	local res_y = RESOLUTION_LOOKUP.res_h
 	local start_x = res_x / 2 - (max_size_x - input_name_width) / 2
 	local start_y = res_y * 0.25 + max_size_y / 2
+	local small_font_size = 12
 	local font_size = 16
-	local font = "gw_arial_16"
-	local font_mtrl = "materials/fonts/" .. font
 	local font_color = Color(255, 255, 255, 255)
 	local chain_time_scale = action.anim_time_scale or 1
 	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, owner_unit)
@@ -413,7 +463,7 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 	local action_min_x = start_x + action_min_length * width_per_second
 
 	ScriptGUI.hud_line(gui, Vector3(action_min_x, start_y, 0.5), Vector3(action_min_x, start_y - max_size_y, 0.5), 3, 2, Color(255, 255, 0, 0))
-	Gui.text(gui, string.format("%.2f", action_min_length), font_mtrl, 12, font, Vector3(action_min_x + 5, start_y, 0.5), Color(255, 255, 0, 0))
+	gui_shadow_text(gui, string.format("%.2f", action_min_length), small_font_size, Vector3(action_min_x + 5, start_y, 0.5), Color(255, 255, 0, 0))
 
 	local max_action_end_x = start_x + max_action_length * width_per_second
 
@@ -422,7 +472,7 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 	local action_end_x = start_x + clamped_action_length * width_per_second
 
 	ScriptGUI.hud_line(gui, Vector3(action_end_x, start_y, 1), Vector3(action_end_x, start_y - max_size_y, 1), 3, 2, Color(255, 255, 0, 0))
-	Gui.text(gui, string.format("%.2f", action_length), font_mtrl, 12, font, Vector3(action_end_x + 5, start_y, 0.5), Color(255, 255, 0, 0))
+	gui_shadow_text(gui, string.format("%.2f", action_length), small_font_size, Vector3(action_end_x + 5, start_y, 0.5), Color(255, 255, 0, 0))
 
 	if action.damage_window_start and action.damage_window_end then
 		local anim_time_scale = action.anim_time_scale or 1
@@ -443,14 +493,14 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 		local x = start_x + i * seperator_size * width_per_second
 
 		ScriptGUI.hud_line(gui, Vector3(x, start_y, 0.1), Vector3(x, start_y - max_size_y, 0.1), 3, 2, Color(50, 255, 255, 255))
-		Gui.text(gui, string.format("%.2f", i * seperator_size), font_mtrl, 12, font, Vector3(x, start_y - max_size_y, 0.1), font_color)
+		gui_shadow_text(gui, string.format("%.2f", i * seperator_size), small_font_size, Vector3(x, start_y - max_size_y, 0.1), font_color)
 	end
 
 	local lookup_data = action.lookup_data
 
 	if lookup_data then
-		Gui.text(gui, lookup_data.action_name, font_mtrl, 12, font, Vector3(start_x - input_name_width, start_y + 20, 0.1), font_color)
-		Gui.text(gui, lookup_data.sub_action_name, font_mtrl, 12, font, Vector3(start_x - input_name_width, start_y + 5, 0.1), font_color)
+		gui_shadow_text(gui, lookup_data.action_name, small_font_size, Vector3(start_x - input_name_width, start_y + 20, 0.1), font_color)
+		gui_shadow_text(gui, lookup_data.sub_action_name, small_font_size, Vector3(start_x - input_name_width, start_y + 5, 0.1), font_color)
 	end
 
 	local damage_profile_name = action.damage_profile
@@ -463,10 +513,10 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 		local default_target_settings = damage_profile.default_target
 		local default_boost_curve_type = default_target_settings and default_target_settings.boost_curve_type
 
-		Gui.text(gui, string.format("[damage profile] %s", damage_profile_name), font_mtrl, 12, font, Vector3(damge_profile_text_x, damge_profile_text_y, 0.1), font_color)
+		gui_shadow_text(gui, string.format("[damage profile] %s", damage_profile_name), small_font_size, Vector3(damge_profile_text_x, damge_profile_text_y, 0.1), font_color)
 
 		if default_target_settings then
-			Gui.text(gui, string.format("[default] %s", tostring(default_boost_curve_type)), font_mtrl, 12, font, Vector3(damge_profile_text_x, damge_profile_text_y - damge_profile_text_row, 0.1), font_color)
+			gui_shadow_text(gui, string.format("[default] %s", tostring(default_boost_curve_type)), small_font_size, Vector3(damge_profile_text_x, damge_profile_text_y - damge_profile_text_row, 0.1), font_color)
 		end
 
 		local target_settings = damage_profile.targets
@@ -475,7 +525,7 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 			local target = target_settings[i]
 			local boost_curve_type = target and target.boost_curve_type
 
-			Gui.text(gui, string.format("[%d] %s", i, tostring(boost_curve_type)), font_mtrl, 12, font, Vector3(damge_profile_text_x, damge_profile_text_y - damge_profile_text_row * (i + 1), 0.1), font_color)
+			gui_shadow_text(gui, string.format("[%d] %s", i, tostring(boost_curve_type)), small_font_size, Vector3(damge_profile_text_x, damge_profile_text_y - damge_profile_text_row * (i + 1), 0.1), font_color)
 		end
 	end
 
@@ -500,11 +550,11 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 
 		local chain_box_name = chain_action_name .. string.format(" [%.2f - %.2f]", chain_start_time, chain_end_time)
 
-		Gui.text(gui, chain_box_name, font_mtrl, font_size, font, action_box_pos, font_color)
+		gui_shadow_text(gui, chain_box_name, font_size, action_box_pos, font_color)
 
 		local action_input_pos = Vector3(start_x - input_name_width, y, 0.1)
 
-		Gui.text(gui, input_name, font_mtrl, font_size, font, action_input_pos, font_color)
+		gui_shadow_text(gui, input_name, font_size, action_input_pos, font_color)
 	end
 
 	local timeline_start_x = start_x + clamped_time_in_action * width_per_second
@@ -513,22 +563,34 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 	local timeline_end_y = timeline_start_y - max_size_y - 20
 
 	ScriptGUI.hud_line(gui, Vector3(timeline_start_x, timeline_start_y, 1), Vector3(timeline_end_x, timeline_end_y, 1), 3, 2, Color(255, 255, 255, 255))
-	Gui.text(gui, string.format("%.2f", current_time_in_action), font_mtrl, font_size, font, Vector3(timeline_start_x + 5, timeline_start_y, 1), font_color)
+	gui_shadow_text(gui, string.format("%.2f", current_time_in_action), font_size, Vector3(timeline_start_x + 5, timeline_start_y, 1), font_color)
 end
 
-ImguiWeaponDebug.get_damage = function (self, power_level, difficulty_level, hit_zone_name, breed, target_index, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
-	local unit = self._current_unit
-	local item = self:_get_current_item()
-	local action = self:_get_current_action()
+ImguiWeaponDebug.get_breed_health = function (self, difficulty_level, breed)
+	local breed_health = 0
+	local difficulty_settings = DifficultySettings[difficulty_level]
 
-	if item and unit and action and breed then
-		local action_hand = action.weapon_action_hand
+	if difficulty_settings and breed then
+		local breed_health_table = breed.max_health
+		local difficulty_rank = difficulty_settings.rank
+		breed_health = (breed_health_table and breed_health_table[difficulty_rank]) or 0
+	end
+
+	return breed_health
+end
+
+ImguiWeaponDebug.get_damage = function (self, sub_action, power_level, difficulty_level, hit_zone_name, breed, target_index, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
+	local unit = self._current_unit
+	local item = self._combat_current_weapon
+
+	if item and unit and sub_action and breed then
+		local action_hand = sub_action.weapon_action_hand
 
 		if action_hand == "both" and self._selected_weapon_extenstion_name ~= "any" then
 			action_hand = self._selected_weapon_extenstion_name
 		end
 
-		local damage_profile_name_left, damage_profile_name_right = self:_get_damage_profile_name(action, action_hand)
+		local damage_profile_name_left, damage_profile_name_right = self:_get_damage_profile_name(sub_action, action_hand)
 		local damage_profile_left = damage_profile_name_left and DamageProfileTemplates[damage_profile_name_left]
 		local damage_profile_right = damage_profile_name_right and DamageProfileTemplates[damage_profile_name_right]
 		local difficulty_settings = DifficultySettings[difficulty_level]
@@ -546,16 +608,12 @@ ImguiWeaponDebug.get_damage = function (self, power_level, difficulty_level, hit
 			end
 
 			local damage = damage_left + damage_right
-			local breed_health_table = breed.max_health
-			local difficulty_rank = difficulty_settings.rank
-			local breed_health = (breed_health_table and breed_health_table[difficulty_rank]) or 0
-			local hits_to_kill = (damage > 0 and math.ceil(breed_health / damage)) or 0
 
-			return damage, breed_health, hits_to_kill
+			return damage
 		end
 	end
 
-	return 0, 0, 0
+	return 0
 end
 
 ImguiWeaponDebug._calculate_damage = function (self, unit, item, damage_profile, difficulty_settings, power_level, difficulty_level, hit_zone_name, breed, target_index, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
@@ -593,16 +651,6 @@ ImguiWeaponDebug._add_stagger_damage = function (self, damage, difficulty_settin
 	return damage
 end
 
-ImguiWeaponDebug._get_current_item = function (self)
-	local weapon_extension = self:_get_current_weapon()
-
-	if weapon_extension then
-		return ItemMasterList[weapon_extension.item_name]
-	end
-
-	return nil
-end
-
 ImguiWeaponDebug._get_damage_profile_name = function (self, action, action_hand)
 	if action then
 		local impact_data = action.impact_data
@@ -627,6 +675,20 @@ ImguiWeaponDebug._get_damage_profile_name = function (self, action, action_hand)
 		end
 
 		return nil, damage_profile_name_either
+	end
+
+	return nil, nil
+end
+
+ImguiWeaponDebug._get_damage_profile_for_action = function (self, sub_action)
+	if sub_action then
+		local action_hand = sub_action.weapon_action_hand
+
+		if action_hand == "both" and self._selected_weapon_extenstion_name ~= "any" then
+			action_hand = self._selected_weapon_extenstion_name
+		end
+
+		return self:_get_damage_profile_name(sub_action, action_hand)
 	end
 
 	return nil, nil

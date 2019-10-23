@@ -382,6 +382,42 @@ local generic_input_actions = {
 			end
 		}
 	},
+	default_weave = {
+		{
+			input_action = "d_vertical",
+			priority = 1,
+			description_text = "input_description_select",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "back",
+			priority = 2,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 3,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+			end
+		}
+	},
+	default_weave_find_group = {
+		{
+			input_action = "back",
+			priority = 2,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 3,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+			end
+		}
+	},
 	select_difficulty = {
 		ignore_generic_actions = true,
 		actions = {
@@ -562,6 +598,15 @@ local generic_input_actions = {
 				input_action = "refresh",
 				priority = 6,
 				description_text = "input_description_play"
+			}
+		}
+	},
+	search_available = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "lb_search"
 			}
 		}
 	},

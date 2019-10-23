@@ -247,7 +247,8 @@ ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_
 		self._auto_aim_reset = true
 	end
 
-	local is_within_damage_window = self:_update_sweep(dt, t, current_action, current_time_in_action)
+	local modified_time_in_action = current_time_in_action - 2 * dt
+	local is_within_damage_window = self:_update_sweep(dt, t, current_action, modified_time_in_action)
 	local hud_extension = self._owner_hud_extension
 
 	if hud_extension and self._is_critical_strike then
@@ -278,7 +279,7 @@ ActionSweep._update_sweep = function (self, dt, t, current_action, current_time_
 		local lerp_t = current_dt / dt
 		local current_position = Vector3.lerp(start_position, end_position, lerp_t)
 		local current_rotation = Quaternion.lerp(start_rotation, end_rotation, lerp_t)
-		is_within_damage_window = self:_is_within_damage_window(current_time_in_action - 2 * dt + current_dt, current_action, owner_unit)
+		is_within_damage_window = self:_is_within_damage_window(current_time_in_action + current_dt, current_action, owner_unit)
 		aborted = self:_do_overlap(interpolated_dt, t, weapon_unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
 	end
 
@@ -479,9 +480,9 @@ ActionSweep._send_attack_hit = function (self, t, damage_source_id, attacker_uni
 			local impact_explosion_template_id = NetworkLookup.explosion_templates[impact_explosion_template_name]
 
 			if is_server then
-				network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, explosion_position, rotation, impact_explosion_template_id, scale, damage_source_id, power_level, is_critical_strike)
+				network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, explosion_position, rotation, impact_explosion_template_id, scale, damage_source_id, power_level, is_critical_strike, owner_unit_go_id)
 			else
-				network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, explosion_position, rotation, impact_explosion_template_id, scale, damage_source_id, power_level, is_critical_strike)
+				network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, explosion_position, rotation, impact_explosion_template_id, scale, damage_source_id, power_level, is_critical_strike, owner_unit_go_id)
 			end
 
 			DamageUtils.create_explosion(world, owner_unit, explosion_position, rotation, impact_explosion_template, scale, item_name, is_server, is_husk, weapon_unit, power_level, is_critical_strike)
@@ -1253,7 +1254,7 @@ ActionSweep.finish = function (self, reason, data)
 		local dt = self._dt
 		local t = Managers.time:time("game")
 
-		self:_update_sweep(dt, t, current_action, current_time_in_action)
+		self:_update_sweep(dt * 2, t, current_action, current_time_in_action - dt)
 	end
 
 	if reason == "interacting" then

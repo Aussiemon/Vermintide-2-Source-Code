@@ -226,6 +226,19 @@ BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, s
 	return loadouts[career_name][slot_name]
 end
 
+BackendInterfaceItemPlayfab.get_cosmetic_loadout = function (self, career_name)
+	local loadouts = self:get_loadout()
+	local career_loadout = loadouts[career_name]
+
+	return career_loadout.slot_hat, career_loadout.slot_skin, career_loadout.slot_frame
+end
+
+BackendInterfaceItemPlayfab.get_item_name = function (self, item_id)
+	local items = self:get_all_backend_items()
+
+	return items[item_id].key
+end
+
 local empty_params = {}
 
 BackendInterfaceItemPlayfab.get_filtered_items = function (self, filter, params)

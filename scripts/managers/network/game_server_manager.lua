@@ -1,14 +1,10 @@
 require("scripts/managers/matchmaking/matchmaking_handshaker")
 
 GameServerManager = class(GameServerManager)
-local rpcs = {
-	"rpc_set_player_name"
-}
 
 GameServerManager.init = function (self, level_transition_handler)
 	self._level_transition_handler = level_transition_handler
 	self._last_error_reason = ""
-	self._player_names = {}
 end
 
 GameServerManager.setup_network_context = function (self, network_context)
@@ -38,30 +34,15 @@ GameServerManager.update = function (self, dt, t)
 end
 
 GameServerManager.peer_name = function (self, peer_id)
-	return self._player_names[peer_id]
+	return self._game_server:user_name(peer_id)
 end
 
 GameServerManager.remove_peer = function (self, peer_id)
 	self._game_server:remove_peer(peer_id)
-
-	self._player_names[peer_id] = nil
 end
 
 GameServerManager._update_game_server = function (self, dt, t)
 	self:_update_leader()
-end
-
-GameServerManager.register_rpcs = function (self, network_event_delegate)
-	network_event_delegate:register(self, unpack(rpcs))
-
-	self._network_event_delegate = network_event_delegate
-end
-
-GameServerManager.unregister_rpcs = function (self)
-	fassert(self._network_event_delegate, "Rpcs have not been registered yet (%s) (%s)", self._network_event_delegate, self._network_transmit)
-	self._network_event_delegate:unregister(self)
-
-	self._network_event_delegate = nil
 end
 
 GameServerManager.set_leader_peer_id = function (self, leader_peer_id)
@@ -74,10 +55,11 @@ GameServerManager.set_leader_peer_id = function (self, leader_peer_id)
 
 	Managers.party:set_leader(leader_peer_id)
 
+	local non_nil_leader = (leader_peer_id == nil and "0") or leader_peer_id
 	local members = self._game_server:members():get_members()
 
 	for _, peer_id in ipairs(members) do
-		RPC.rpc_game_server_set_group_leader(peer_id, leader_peer_id)
+		RPC.rpc_game_server_set_group_leader(peer_id, non_nil_leader)
 	end
 end
 
@@ -96,7 +78,10 @@ GameServerManager.get_transition = function (self)
 end
 
 GameServerManager.hot_join_sync = function (self, peer_id)
-	RPC.rpc_game_server_set_group_leader(peer_id, Managers.party:leader())
+	local leader = Managers.party:leader()
+	local non_nil_leader = (leader == nil and "0") or leader
+
+	RPC.rpc_game_server_set_group_leader(peer_id, non_nil_leader)
 end
 
 GameServerManager.set_start_game_params = function (self, sender, level_key, game_mode, difficulty, private_game)
@@ -122,10 +107,6 @@ GameServerManager.set_start_game_params = function (self, sender, level_key, gam
 		difficulty = difficulty,
 		private_game = private_game
 	}
-end
-
-GameServerManager.rpc_set_player_name = function (self, sender, cropped_name)
-	self._player_names[sender] = cropped_name
 end
 
 GameServerManager._notify_backend_errors = function (self)

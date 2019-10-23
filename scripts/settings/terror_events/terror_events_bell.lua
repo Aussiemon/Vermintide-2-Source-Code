@@ -144,17 +144,9 @@ local terror_event_blueprints = {
 		{
 			"control_pacing",
 			enable = false
-		},
-		{
-			"continue_when",
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 6
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "canyon_escape_event_done"
-		},
+		}
+	},
+	canyon_escape_event_completion_check = {
 		{
 			"has_completed_time_challenge",
 			time_challenge_name = "bell_speed_event"

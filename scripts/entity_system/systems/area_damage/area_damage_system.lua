@@ -89,7 +89,7 @@ AreaDamageSystem.update = function (self, context, t)
 	self:_update_aoe_damage_buffer()
 end
 
-AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rotation, explosion_template_name, scale, damage_source, attacker_power_level, is_critical_strike)
+AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rotation, explosion_template_name, scale, damage_source, attacker_power_level, is_critical_strike, source_attacker_unit)
 	if not NetworkUtils.network_safe_position(position) then
 		return false
 	end
@@ -111,13 +111,14 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 	local attacker_power_level = attacker_power_level or 0
 	local is_critical_strike = not not is_critical_strike
+	local source_attacker_unit_id = network_manager:unit_game_object_id(source_attacker_unit) or attacker_unit_id
 	local game = network_manager:game()
 
 	if game then
 		if self.is_server then
-			self.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike)
+			self.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike, source_attacker_unit_id)
 		else
-			self.network_transmit:send_rpc_server("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike)
+			self.network_transmit:send_rpc_server("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike, source_attacker_unit_id)
 		end
 	end
 end
@@ -182,7 +183,7 @@ AreaDamageSystem._create_aoe_damage_buffer = function (self)
 	end
 end
 
-AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, full_power_level, actual_power_level, hit_direction, explosion_template_name, is_critical_strike, allow_critical_proc, dgjdflgj)
+AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, full_power_level, actual_power_level, hit_direction, explosion_template_name, is_critical_strike, allow_critical_proc, source_attacker_unit)
 	local aoe_damage_ring_buffer = self._aoe_damage_ring_buffer
 	local buffer = aoe_damage_ring_buffer.buffer
 	local read_index = aoe_damage_ring_buffer.read_index
@@ -202,6 +203,7 @@ AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit
 	local aoe_damage_data = buffer[write_index]
 	aoe_damage_data.hit_unit = hit_unit
 	aoe_damage_data.attacker_unit = attacker_unit
+	aoe_damage_data.source_attacker_unit = source_attacker_unit
 
 	aoe_damage_data.impact_position:store(impact_position)
 
@@ -257,6 +259,7 @@ end
 AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 	local hit_unit = aoe_damage_data.hit_unit
 	local attacker_unit = aoe_damage_data.attacker_unit
+	local source_attacker_unit = aoe_damage_data.source_attacker_unit
 	local impact_position = aoe_damage_data.impact_position:unbox()
 	local shield_blocked = aoe_damage_data.shield_blocked
 	local do_damage = aoe_damage_data.do_damage
@@ -366,7 +369,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local first_hit = false
 		local total_hits = 0
 
-		DamageUtils.add_damage_network_player(damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, impact_position, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+		DamageUtils.add_damage_network_player(damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, impact_position, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
 
 		local target_alive = AiUtils.unit_alive(hit_unit)
 
@@ -376,7 +379,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 			explosion_data.on_death_func(hit_unit)
 		end
 
-		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template)
+		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template, source_attacker_unit)
 
 		if push_speed and DamageUtils.is_player_unit(hit_unit) then
 			local status_extension = ScriptUnit.extension(hit_unit, "status_system")
@@ -399,9 +402,9 @@ AreaDamageSystem.rpc_area_damage = function (self, sender, go_id, position)
 	end
 end
 
-AreaDamageSystem.rpc_create_explosion = function (self, sender, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level, is_critical_strike)
+AreaDamageSystem.rpc_create_explosion = function (self, sender, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level, is_critical_strike, source_attacker_unit_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_create_explosion", sender, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level or 0, is_critical_strike)
+		self.network_transmit:send_rpc_clients_except("rpc_create_explosion", sender, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level or 0, is_critical_strike, source_attacker_unit_id)
 	end
 
 	local attacker_unit = nil
@@ -412,12 +415,13 @@ AreaDamageSystem.rpc_create_explosion = function (self, sender, attacker_unit_id
 		attacker_unit = self.unit_storage:unit(attacker_unit_id)
 	end
 
+	local source_attacker_unit = self.unit_storage:unit(source_attacker_unit_id)
 	local explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name_id]
 	local explosion_template = ExplosionTemplates[explosion_template_name]
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 	local is_husk = true
 
-	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level, is_critical_strike)
+	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level, is_critical_strike, source_attacker_unit)
 end
 
 AreaDamageSystem.rpc_enable_area_damage = function (self, sender, level_index, enable)

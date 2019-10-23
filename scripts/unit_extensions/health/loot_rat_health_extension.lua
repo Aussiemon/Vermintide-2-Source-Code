@@ -20,7 +20,7 @@ LootRatHealthExtension.apply_client_predicted_damage = function (self, predicted
 	return
 end
 
-LootRatHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+LootRatHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
 	local blackboard = BLACKBOARDS[self.unit]
 	local dodge_points = blackboard.dodge_damage_points
 	local dodge_success = false
@@ -36,7 +36,7 @@ LootRatHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	end
 
 	if not dodge_success then
-		LootRatHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+		LootRatHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
 	end
 
 	blackboard.dodge_damage_success = dodge_success

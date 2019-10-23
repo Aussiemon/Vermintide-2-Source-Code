@@ -2132,7 +2132,7 @@ UIWidgets.create_horizontal_chain_scrollbar = function (scenegraph_id, scroll_ar
 	return definition
 end
 
-UIWidgets.create_scrollbar = function (scenegraph_id, size)
+UIWidgets.create_scrollbar = function (scenegraph_id, size, scroll_area_scenegraph_id, thumb_color, track_color, thumb_width, corner_radius)
 	local passes = {
 		{
 			pass_type = "local_offset",
@@ -2243,8 +2243,8 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size)
 	}
 	local style = {
 		background = {
-			corner_radius = 2,
-			color = {
+			corner_radius = corner_radius or 2,
+			color = track_color or {
 				255,
 				5,
 				5,
@@ -2252,17 +2252,17 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size)
 			}
 		},
 		scroll_bar_box = {
-			corner_radius = 2,
+			corner_radius = corner_radius or 2,
 			offset = {
-				0,
+				(thumb_width and size[1] / 2 - thumb_width * 0.5) or 0,
 				0,
 				1
 			},
 			size = {
-				size[1],
+				thumb_width,
 				size[2]
 			},
-			color = Colors.get_color_table_with_alpha("font_button_normal", 255)
+			color = thumb_color or Colors.get_color_table_with_alpha("font_button_normal", 255)
 		},
 		hotspot = {
 			offset = {
@@ -2284,6 +2284,58 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size)
 		style = style,
 		scenegraph_id = scenegraph_id
 	}
+
+	if scroll_area_scenegraph_id then
+		passes[#passes + 1] = {
+			style_id = "scroll_area_hotspot",
+			pass_type = "scroll",
+			content_id = "scroll_area_hotspot",
+			scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis, dt)
+				local axis_input = scroll_axis.y * -1
+				local parent_content = ui_content.parent
+				local scroll_bar_info = parent_content.scroll_bar_info
+				local total_scroll_height = scroll_bar_info.total_scroll_height
+				local scroll_amount = scroll_bar_info.scroll_amount
+
+				if axis_input ~= 0 and ui_content.is_hover then
+					scroll_bar_info.axis_input = axis_input
+					local previous_scroll_add = scroll_bar_info.scroll_add or 0
+					scroll_bar_info.scroll_add = previous_scroll_add + axis_input * scroll_amount
+				else
+					axis_input = scroll_bar_info.axis_input
+				end
+
+				local scroll_add = scroll_bar_info.scroll_add
+
+				if scroll_add then
+					local speed = scroll_bar_info.scroll_speed or 5
+					local step = scroll_add * dt * speed
+					scroll_add = scroll_add - step
+
+					if math.abs(scroll_add) > scroll_amount / 20 then
+						scroll_bar_info.scroll_add = scroll_add
+					else
+						scroll_bar_info.scroll_add = nil
+					end
+
+					local current_scroll_value = scroll_bar_info.scroll_value
+
+					if current_scroll_value then
+						scroll_bar_info.scroll_value = math.clamp(current_scroll_value + step, 0, 1)
+					end
+				end
+			end
+		}
+		style.scroll_area_hotspot = {
+			offset = {
+				0,
+				0,
+				0
+			},
+			scenegraph_id = scroll_area_scenegraph_id
+		}
+		content.scroll_area_hotspot = {}
+	end
 
 	return definition
 end
@@ -5010,6 +5062,11 @@ UIWidgets.create_additional_option_tooltip = function (scenegraph_id, size, cont
 				}
 			}
 		},
+		offset = {
+			0,
+			0,
+			0
+		},
 		scenegraph_id = scenegraph_id
 	}
 end
@@ -5143,6 +5200,49 @@ UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, reta
 		},
 		style = {
 			texture_id = {
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				masked = masked
+			}
+		},
+		offset = {
+			0,
+			0,
+			layer or 0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+UIWidgets.create_aligned_texture = function (texture, texture_size, horizontal_alignment, vertical_alignment, scenegraph_id, masked, retained, color, layer)
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture",
+					retained_mode = retained
+				}
+			}
+		},
+		content = {
+			texture_id = texture
+		},
+		style = {
+			texture_id = {
+				vertical_alignment = vertical_alignment,
+				horizontal_alignment = horizontal_alignment,
+				texture_size = texture_size,
 				color = color or {
 					255,
 					255,
@@ -5382,7 +5482,7 @@ UIWidgets.create_simple_gradient_mask_texture = function (texture, scenegraph_id
 	}
 end
 
-UIWidgets.create_simple_rotated_texture = function (texture, angle, pivot, scenegraph_id, masked, retained, color, layer)
+UIWidgets.create_simple_rotated_texture = function (texture, angle, pivot, scenegraph_id, masked, retained, color, layer, offset)
 	return {
 		element = {
 			passes = {
@@ -5415,7 +5515,7 @@ UIWidgets.create_simple_rotated_texture = function (texture, angle, pivot, scene
 				}
 			}
 		},
-		offset = {
+		offset = offset or {
 			0,
 			0,
 			0
@@ -5424,7 +5524,7 @@ UIWidgets.create_simple_rotated_texture = function (texture, angle, pivot, scene
 	}
 end
 
-UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivot, scenegraph_id, masked, retained, color, layer)
+UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivot, scenegraph_id, masked, retained, color, layer, offset)
 	return {
 		element = {
 			passes = {
@@ -5458,7 +5558,7 @@ UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivo
 				}
 			}
 		},
-		offset = {
+		offset = offset or {
 			0,
 			0,
 			0
@@ -7269,7 +7369,7 @@ UIWidgets.create_scoreboard_topic_widget = function (scenegraph_id)
 	}
 end
 
-UIWidgets.create_splash_video = function (input)
+UIWidgets.create_splash_video = function (input, video_player_reference)
 	return {
 		element = {
 			passes = {
@@ -7299,6 +7399,7 @@ UIWidgets.create_splash_video = function (input)
 		content = {
 			video_content = {
 				video_completed = false,
+				video_player_reference = video_player_reference,
 				material_name = input.material_name
 			}
 		},
@@ -7312,7 +7413,7 @@ UIWidgets.create_splash_video = function (input)
 	}
 end
 
-UIWidgets.create_video = function (scenegraph_id, material_name)
+UIWidgets.create_video = function (scenegraph_id, material_name, video_player_reference)
 	return {
 		element = {
 			passes = {
@@ -7326,6 +7427,7 @@ UIWidgets.create_video = function (scenegraph_id, material_name)
 		content = {
 			video_content = {
 				video_completed = false,
+				video_player_reference = video_player_reference,
 				material_name = material_name
 			}
 		},
@@ -8910,7 +9012,7 @@ UIWidgets.create_story_level_map_widget = function (scenegraph_id, level_key, de
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				dynamic_font = true,
-				font_type = "hell_shark_no_outline",
+				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					0,

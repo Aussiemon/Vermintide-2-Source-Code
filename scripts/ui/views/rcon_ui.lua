@@ -63,7 +63,6 @@ RconUI.add_output = function (self, text, text_type)
 		table.remove(message_tables, 1)
 	end
 
-	local font_material, font_size, font_name = unpack(Fonts.arial)
 	local irc_type, sender = nil
 
 	if text_type == RconUI.ECHO_MSG then

@@ -22,9 +22,10 @@ CareerSettings = {
 		profile_name = "dwarf_ranger",
 		display_name = "dr_ironbreaker",
 		sound_character = "dwarf_ironbreaker",
-		portrait_image = "unit_frame_portrait_bardin_ironbreaker",
-		preview_idle_animation = "career_idle_01",
 		name = "dr_ironbreaker",
+		portrait_image_picking = "picking_portrait_bardin_ironbreaker",
+		package_name = "resource_packages/careers/dr_ironbreaker",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -32,7 +33,7 @@ CareerSettings = {
 		base_skin = "skin_dr_ironbreaker",
 		preview_wield_slot = "melee",
 		playfab_name = "dr_1",
-		package_name = "resource_packages/careers/dr_ironbreaker",
+		portrait_image = "unit_frame_portrait_bardin_ironbreaker",
 		portrait_thumbnail = "portrait_bardin_ironbreaker_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_dr_ironbreaker,
@@ -51,8 +52,12 @@ CareerSettings = {
 			resource = "video/career_videos/bardin/dr_ironbreaker"
 		},
 		preview_items = {
-			"dr_shield_hammer",
-			"ironbreaker_hat_0000"
+			{
+				item_name = "dr_shield_hammer"
+			},
+			{
+				item_name = "ironbreaker_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -108,9 +113,10 @@ CareerSettings = {
 		profile_name = "dwarf_ranger",
 		display_name = "dr_slayer",
 		sound_character = "dwarf_slayer",
-		portrait_image = "unit_frame_portrait_bardin_slayer",
-		preview_idle_animation = "career_idle_02",
 		name = "dr_slayer",
+		portrait_image_picking = "picking_portrait_bardin_slayer",
+		package_name = "resource_packages/careers/dr_slayer",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -118,7 +124,7 @@ CareerSettings = {
 		base_skin = "skin_dr_slayer",
 		preview_wield_slot = "melee",
 		playfab_name = "dr_2",
-		package_name = "resource_packages/careers/dr_slayer",
+		portrait_image = "unit_frame_portrait_bardin_slayer",
 		portrait_thumbnail = "portrait_bardin_slayer_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_dr_slayer,
@@ -136,8 +142,12 @@ CareerSettings = {
 			resource = "video/career_videos/bardin/dr_slayer"
 		},
 		preview_items = {
-			"dr_dual_wield_axes",
-			"slayer_hat_0000"
+			{
+				item_name = "dr_dual_wield_axes"
+			},
+			{
+				item_name = "slayer_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -194,9 +204,10 @@ CareerSettings = {
 		profile_name = "dwarf_ranger",
 		display_name = "dr_ranger",
 		sound_character = "dwarf_ranger",
-		portrait_image = "unit_frame_portrait_bardin_ranger",
-		preview_idle_animation = "career_idle_03",
 		name = "dr_ranger",
+		portrait_image_picking = "picking_portrait_bardin_ranger",
+		package_name = "resource_packages/careers/dr_ranger",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -204,7 +215,7 @@ CareerSettings = {
 		base_skin = "skin_dr_ranger",
 		preview_wield_slot = "ranged",
 		playfab_name = "dr_3",
-		package_name = "resource_packages/careers/dr_ranger",
+		portrait_image = "unit_frame_portrait_bardin_ranger",
 		portrait_thumbnail = "portrait_bardin_ranger_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_dr_ranger,
@@ -222,8 +233,12 @@ CareerSettings = {
 			resource = "video/career_videos/bardin/dr_ranger"
 		},
 		preview_items = {
-			"dr_crossbow",
-			"ranger_hat_0000"
+			{
+				item_name = "dr_crossbow"
+			},
+			{
+				item_name = "ranger_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -279,9 +294,10 @@ CareerSettings = {
 		profile_name = "empire_soldier",
 		display_name = "es_huntsman",
 		sound_character = "empire_soldier_huntsman",
-		portrait_image = "unit_frame_portrait_kruber_huntsman",
-		preview_idle_animation = "career_idle_03",
 		name = "es_huntsman",
+		portrait_image_picking = "picking_portrait_kruber_huntsman",
+		package_name = "resource_packages/careers/es_huntsman",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -289,7 +305,7 @@ CareerSettings = {
 		base_skin = "skin_es_huntsman",
 		preview_wield_slot = "ranged",
 		playfab_name = "es_1",
-		package_name = "resource_packages/careers/es_huntsman",
+		portrait_image = "unit_frame_portrait_kruber_huntsman",
 		portrait_thumbnail = "portrait_kruber_huntsman_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_es_huntsman,
@@ -306,8 +322,12 @@ CareerSettings = {
 			resource = "video/career_videos/kruber/es_huntsman"
 		},
 		preview_items = {
-			"es_handgun",
-			"huntsman_hat_0000"
+			{
+				item_name = "es_handgun"
+			},
+			{
+				item_name = "huntsman_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -363,9 +383,10 @@ CareerSettings = {
 		profile_name = "empire_soldier",
 		display_name = "es_knight",
 		sound_character = "empire_soldier_knight",
-		portrait_image = "unit_frame_portrait_kruber_knight",
-		preview_idle_animation = "career_idle_02",
 		name = "es_knight",
+		portrait_image_picking = "picking_portrait_kruber_knight",
+		package_name = "resource_packages/careers/es_knight",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -373,7 +394,7 @@ CareerSettings = {
 		base_skin = "skin_es_knight",
 		preview_wield_slot = "melee",
 		playfab_name = "es_2",
-		package_name = "resource_packages/careers/es_knight",
+		portrait_image = "unit_frame_portrait_kruber_knight",
 		portrait_thumbnail = "portrait_kruber_knight_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_es_knight,
@@ -390,8 +411,12 @@ CareerSettings = {
 			resource = "video/career_videos/kruber/es_knight"
 		},
 		preview_items = {
-			"es_sword_shield",
-			"knight_hat_0000"
+			{
+				item_name = "es_sword_shield"
+			},
+			{
+				item_name = "knight_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -447,9 +472,10 @@ CareerSettings = {
 		profile_name = "empire_soldier",
 		display_name = "es_mercenary",
 		sound_character = "empire_soldier",
-		portrait_image = "unit_frame_portrait_kruber_mercenary",
-		preview_idle_animation = "career_idle_01",
 		name = "es_mercenary",
+		portrait_image_picking = "picking_portrait_kruber_mercenary",
+		package_name = "resource_packages/careers/es_mercenary",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -457,7 +483,7 @@ CareerSettings = {
 		base_skin = "skin_es_mercenary",
 		preview_wield_slot = "melee",
 		playfab_name = "es_3",
-		package_name = "resource_packages/careers/es_mercenary",
+		portrait_image = "unit_frame_portrait_kruber_mercenary",
 		portrait_thumbnail = "portrait_kruber_mercenary_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_es_mercenary,
@@ -474,8 +500,12 @@ CareerSettings = {
 			resource = "video/career_videos/kruber/es_mercenary"
 		},
 		preview_items = {
-			"es_halberd",
-			"mercenary_hat_0000"
+			{
+				item_name = "es_halberd"
+			},
+			{
+				item_name = "mercenary_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -531,9 +561,10 @@ CareerSettings = {
 		profile_name = "wood_elf",
 		display_name = "we_shade",
 		sound_character = "wood_elf_shade",
-		portrait_image = "unit_frame_portrait_kerillian_shade",
-		preview_idle_animation = "career_idle_01",
 		name = "we_shade",
+		portrait_image_picking = "picking_portrait_kerillian_shade",
+		package_name = "resource_packages/careers/we_shade",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -541,7 +572,7 @@ CareerSettings = {
 		base_skin = "skin_ww_shade",
 		preview_wield_slot = "melee",
 		playfab_name = "we_1",
-		package_name = "resource_packages/careers/we_shade",
+		portrait_image = "unit_frame_portrait_kerillian_shade",
 		portrait_thumbnail = "portrait_kerillian_shade_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_we_shade,
@@ -558,8 +589,12 @@ CareerSettings = {
 			resource = "video/career_videos/kerillian/we_shade"
 		},
 		preview_items = {
-			"we_dual_wield_sword_dagger",
-			"shade_hat_0000"
+			{
+				item_name = "we_dual_wield_sword_dagger"
+			},
+			{
+				item_name = "shade_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -615,9 +650,10 @@ CareerSettings = {
 		profile_name = "wood_elf",
 		display_name = "we_maidenguard",
 		sound_character = "wood_elf_handmaiden",
-		portrait_image = "unit_frame_portrait_kerillian_maidenguard",
-		preview_idle_animation = "career_idle_03",
 		name = "we_maidenguard",
+		portrait_image_picking = "picking_portrait_kerillian_maidenguard",
+		package_name = "resource_packages/careers/we_maidenguard",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -625,7 +661,7 @@ CareerSettings = {
 		base_skin = "skin_ww_maidenguard",
 		preview_wield_slot = "melee",
 		playfab_name = "we_2",
-		package_name = "resource_packages/careers/we_maidenguard",
+		portrait_image = "unit_frame_portrait_kerillian_maidenguard",
 		portrait_thumbnail = "portrait_kerillian_maidenguard_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_we_maidenguard,
@@ -642,8 +678,12 @@ CareerSettings = {
 			resource = "video/career_videos/kerillian/we_maidenguard"
 		},
 		preview_items = {
-			"we_spear",
-			"maidenguard_hat_0000"
+			{
+				item_name = "we_spear"
+			},
+			{
+				item_name = "maidenguard_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -699,9 +739,10 @@ CareerSettings = {
 		profile_name = "wood_elf",
 		display_name = "we_waywatcher",
 		sound_character = "wood_elf",
-		portrait_image = "unit_frame_portrait_kerillian_waywatcher",
-		preview_idle_animation = "career_idle_02",
 		name = "we_waywatcher",
+		portrait_image_picking = "picking_portrait_kerillian_waywatcher",
+		package_name = "resource_packages/careers/we_waywatcher",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -709,7 +750,7 @@ CareerSettings = {
 		base_skin = "skin_ww_waywatcher",
 		preview_wield_slot = "ranged",
 		playfab_name = "we_3",
-		package_name = "resource_packages/careers/we_waywatcher",
+		portrait_image = "unit_frame_portrait_kerillian_waywatcher",
 		portrait_thumbnail = "portrait_kerillian_waywatcher_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_we_waywatcher,
@@ -726,8 +767,12 @@ CareerSettings = {
 			resource = "video/career_videos/kerillian/we_waywatcher"
 		},
 		preview_items = {
-			"we_longbow",
-			"waywatcher_hat_0000"
+			{
+				item_name = "we_longbow"
+			},
+			{
+				item_name = "waywatcher_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -783,9 +828,10 @@ CareerSettings = {
 		profile_name = "witch_hunter",
 		display_name = "wh_zealot",
 		sound_character = "witch_hunter_zealot",
-		portrait_image = "unit_frame_portrait_victor_zealot",
-		preview_idle_animation = "career_idle_03",
 		name = "wh_zealot",
+		portrait_image_picking = "picking_portrait_victor_zealot",
+		package_name = "resource_packages/careers/wh_zealot",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -793,7 +839,7 @@ CareerSettings = {
 		base_skin = "skin_wh_zealot",
 		preview_wield_slot = "melee",
 		playfab_name = "wh_1",
-		package_name = "resource_packages/careers/wh_zealot",
+		portrait_image = "unit_frame_portrait_victor_zealot",
 		portrait_thumbnail = "portrait_victor_zealot_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_wh_zealot,
@@ -810,8 +856,12 @@ CareerSettings = {
 			resource = "video/career_videos/victor/wh_zealot"
 		},
 		preview_items = {
-			"es_1h_flail",
-			"zealot_hat_0000"
+			{
+				item_name = "es_1h_flail"
+			},
+			{
+				item_name = "zealot_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -867,9 +917,10 @@ CareerSettings = {
 		profile_name = "witch_hunter",
 		display_name = "wh_bountyhunter",
 		sound_character = "witch_hunter_bounty_hunter",
-		portrait_image = "unit_frame_portrait_victor_bountyhunter",
-		preview_idle_animation = "career_idle_02",
 		name = "wh_bountyhunter",
+		portrait_image_picking = "picking_portrait_victor_bounty_hunter",
+		package_name = "resource_packages/careers/wh_bountyhunter",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -877,7 +928,7 @@ CareerSettings = {
 		base_skin = "skin_wh_bountyhunter",
 		preview_wield_slot = "ranged",
 		playfab_name = "wh_2",
-		package_name = "resource_packages/careers/wh_bountyhunter",
+		portrait_image = "unit_frame_portrait_victor_bountyhunter",
 		portrait_thumbnail = "portrait_victor_bounty_hunter_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_wh_bountyhunter,
@@ -894,8 +945,12 @@ CareerSettings = {
 			resource = "video/career_videos/victor/wh_bountyhunter"
 		},
 		preview_items = {
-			"wh_repeating_pistols",
-			"bountyhunter_hat_0000"
+			{
+				item_name = "wh_repeating_pistols"
+			},
+			{
+				item_name = "bountyhunter_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -951,9 +1006,10 @@ CareerSettings = {
 		profile_name = "witch_hunter",
 		display_name = "wh_captain",
 		sound_character = "witch_hunter",
-		portrait_image = "unit_frame_portrait_victor_captain",
-		preview_idle_animation = "career_idle_01",
 		name = "wh_captain",
+		portrait_image_picking = "picking_portrait_victor_captain",
+		package_name = "resource_packages/careers/wh_captain",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -961,7 +1017,7 @@ CareerSettings = {
 		base_skin = "skin_wh_captain",
 		preview_wield_slot = "melee",
 		playfab_name = "wh_3",
-		package_name = "resource_packages/careers/wh_captain",
+		portrait_image = "unit_frame_portrait_victor_captain",
 		portrait_thumbnail = "portrait_victor_captain_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_wh_captain,
@@ -978,8 +1034,12 @@ CareerSettings = {
 			resource = "video/career_videos/victor/wh_captain"
 		},
 		preview_items = {
-			"wh_fencing_sword",
-			"witchhunter_hat_0000"
+			{
+				item_name = "wh_fencing_sword"
+			},
+			{
+				item_name = "witchhunter_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -1035,9 +1095,10 @@ CareerSettings = {
 		profile_name = "bright_wizard",
 		display_name = "bw_scholar",
 		sound_character = "bright_wizard",
-		portrait_image = "unit_frame_portrait_sienna_scholar",
-		preview_idle_animation = "career_idle_03",
 		name = "bw_scholar",
+		portrait_image_picking = "picking_portrait_sienna_scholar",
+		package_name = "resource_packages/careers/bw_scholar",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -1045,7 +1106,7 @@ CareerSettings = {
 		base_skin = "skin_bw_scholar",
 		preview_wield_slot = "ranged",
 		playfab_name = "bw_1",
-		package_name = "resource_packages/careers/bw_scholar",
+		portrait_image = "unit_frame_portrait_sienna_scholar",
 		portrait_thumbnail = "portrait_sienna_scholar_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_bw_scholar,
@@ -1062,8 +1123,12 @@ CareerSettings = {
 			resource = "video/career_videos/sienna/bw_scholar"
 		},
 		preview_items = {
-			"bw_skullstaff_spear",
-			"scholar_hat_0000"
+			{
+				item_name = "bw_skullstaff_spear"
+			},
+			{
+				item_name = "scholar_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -1119,9 +1184,10 @@ CareerSettings = {
 		profile_name = "bright_wizard",
 		display_name = "bw_adept",
 		sound_character = "bright_wizard_battle_wizard",
-		portrait_image = "unit_frame_portrait_sienna_adept",
-		preview_idle_animation = "career_idle_02",
 		name = "bw_adept",
+		portrait_image_picking = "picking_portrait_sienna_adept",
+		package_name = "resource_packages/careers/bw_adept",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -1129,7 +1195,7 @@ CareerSettings = {
 		base_skin = "skin_bw_adept",
 		preview_wield_slot = "ranged",
 		playfab_name = "bw_2",
-		package_name = "resource_packages/careers/bw_adept",
+		portrait_image = "unit_frame_portrait_sienna_adept",
 		portrait_thumbnail = "portrait_sienna_adept_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_bw_adept,
@@ -1146,8 +1212,12 @@ CareerSettings = {
 			resource = "video/career_videos/sienna/bw_adept"
 		},
 		preview_items = {
-			"bw_skullstaff_fireball",
-			"adept_hat_0000"
+			{
+				item_name = "bw_skullstaff_fireball"
+			},
+			{
+				item_name = "adept_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -1203,9 +1273,10 @@ CareerSettings = {
 		profile_name = "bright_wizard",
 		display_name = "bw_unchained",
 		sound_character = "bright_wizard_unchained",
-		portrait_image = "unit_frame_portrait_sienna_unchained",
-		preview_idle_animation = "career_idle_01",
 		name = "bw_unchained",
+		portrait_image_picking = "picking_portrait_sienna_unchained",
+		package_name = "resource_packages/careers/bw_unchained",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -1213,7 +1284,7 @@ CareerSettings = {
 		base_skin = "skin_bw_unchained",
 		preview_wield_slot = "melee",
 		playfab_name = "bw_3",
-		package_name = "resource_packages/careers/bw_unchained",
+		portrait_image = "unit_frame_portrait_sienna_unchained",
 		portrait_thumbnail = "portrait_sienna_unchained_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_bw_unchained,
@@ -1230,8 +1301,12 @@ CareerSettings = {
 			resource = "video/career_videos/sienna/bw_unchained"
 		},
 		preview_items = {
-			"bw_flame_sword",
-			"unchained_hat_0000"
+			{
+				item_name = "bw_flame_sword"
+			},
+			{
+				item_name = "unchained_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -1312,8 +1387,12 @@ CareerSettings = {
 			resource = "video/career_videos/kruber/es_knight"
 		},
 		preview_items = {
-			"es_sword_shield",
-			"knight_hat_0000"
+			{
+				item_name = "es_sword_shield"
+			},
+			{
+				item_name = "knight_hat_0000"
+			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			return true
@@ -1386,13 +1465,21 @@ end
 
 if script_data.honduras_demo then
 	CareerSettings.we_shade.preview_items = {
-		"we_spear",
-		"shade_hat_0000"
+		{
+			item_name = "we_spear"
+		},
+		{
+			item_name = "shade_hat_0000"
+		}
 	}
 	CareerSettings.we_shade.preview_animation = "career_select_03"
 	CareerSettings.es_knight.preview_items = {
-		"es_2h_hammer",
-		"knight_hat_0000"
+		{
+			item_name = "es_2h_hammer"
+		},
+		{
+			item_name = "knight_hat_0000"
+		}
 	}
 	CareerSettings.es_knight.preview_animation = nil
 end

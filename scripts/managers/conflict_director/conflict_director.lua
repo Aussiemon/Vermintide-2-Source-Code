@@ -133,7 +133,11 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	network_event_delegate:register(self, "rpc_terror_event_trigger_flow")
 
 	self.frozen_intensity_decay_until = 0
-	self.debug_breed_picker = DebugListPicker:new(DebugBreedSpawns, "debug_breed")
+
+	if not DEDICATED_SERVER then
+		self.debug_breed_picker = DebugListPicker:new(DebugBreedSpawns, "debug_breed")
+	end
+
 	self.threat_value = 0
 	self.num_aggroed = 0
 	local difficulty = Managers.state.difficulty:get_difficulty()
@@ -1252,7 +1256,7 @@ ConflictDirector.update = function (self, dt, t)
 			end
 		end
 	else
-		if not conflict_settings.specials.disabled and self.specials_pacing and not script_data.ai_specials_spawning_disabled then
+		if not conflict_settings.specials.disabled and self.specials_pacing and not script_data.ai_specials_spawning_disabled and not Managers.state.game_mode:setting("ai_specials_spawning_disabled") then
 			local specials_population = pacing:specials_population()
 			local side = self._hero_side
 			local player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
@@ -1742,7 +1746,9 @@ ConflictDirector.spawned_units_by_breed = function (self, breed_name)
 end
 
 ConflictDirector.count_units_by_breed_during_event = function (self, breed_name)
-	return self._num_spawned_by_breed_during_event[breed_name] or 0
+	local amount = self._num_spawned_by_breed_during_event[breed_name] or 0
+
+	return amount
 end
 
 ConflictDirector.add_unit_to_bosses = function (self, unit)
@@ -2790,6 +2796,14 @@ ConflictDirector._spawn_spline_group = function (self, base_group_data, spline)
 end
 
 ConflictDirector.spawn_one = function (self, breed, optional_pos, group_data, optional_data)
+	if breed.special then
+		local specials_spawning_disabled = Managers.state.game_mode:setting("ai_specials_spawning_disabled")
+
+		if specials_spawning_disabled then
+			return
+		end
+	end
+
 	local spawn_category = "spawn_one"
 	local side = self._hero_side
 	local player_positions = side.PLAYER_POSITIONS
@@ -2980,7 +2994,7 @@ ConflictDirector.ai_ready = function (self, level_seed)
 	local level_settings = LevelSettings[self._level_key]
 
 	if not level_settings.load_no_enemies then
-		self.breed_freezer = BreedFreezer:new(self._world, Managers.state.entity, self._network_event_delegate)
+		self.breed_freezer = BreedFreezer:new(self._world, Managers.state.entity, self._network_event_delegate, self.enemy_package_loader)
 	end
 end
 
@@ -3636,7 +3650,8 @@ ConflictDirector.client_ready = function (self)
 	local level_settings = LevelSettings[self._level_key]
 
 	if not level_settings.load_no_enemies then
-		self.breed_freezer = BreedFreezer:new(self._world, Managers.state.entity, self._network_event_delegate)
+		local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+		self.breed_freezer = BreedFreezer:new(self._world, Managers.state.entity, self._network_event_delegate, enemy_package_loader)
 	end
 end
 

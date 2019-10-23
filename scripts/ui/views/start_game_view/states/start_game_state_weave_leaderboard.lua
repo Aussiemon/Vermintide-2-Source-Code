@@ -21,6 +21,20 @@ local fake_input_service = {
 		return
 	end
 }
+local localized_reward_tier_strings = {
+	Localize("menu_weave_leaderboard_tier_3_title"),
+	Localize("menu_weave_leaderboard_tier_2_title"),
+	Localize("menu_weave_leaderboard_tier_1_title")
+}
+local localized_reward_tier_tooltip_strings = {
+	Localize("menu_weave_leaderboard_tier_tooltip_bronze"),
+	Localize("menu_weave_leaderboard_tier_tooltip_silver"),
+	Localize("menu_weave_leaderboard_tier_tooltip_gold")
+}
+local localized_time_strings = {
+	Localize("menu_weave_leaderboard_button_refresh_2"),
+	Localize("menu_weave_leaderboard_button_refresh_1")
+}
 StartGameStateWeaveLeaderboard = class(StartGameStateWeaveLeaderboard)
 StartGameStateWeaveLeaderboard.NAME = "StartGameStateWeaveLeaderboard"
 
@@ -63,46 +77,180 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 		self:disable_player_world()
 	end
 
-	local stepper_1_data = {
+	local leaderboard_tab_data = {
 		{
-			value = 1,
-			text = Localize("menu_weave_leaderboard_filter_option_players_1")
-		},
-		{
-			value = 2,
-			text = Localize("menu_weave_leaderboard_filter_option_players_2")
-		},
-		{
-			value = 3,
-			text = Localize("menu_weave_leaderboard_filter_option_players_3")
-		},
-		{
-			value = 4,
-			text = Localize("menu_weave_leaderboard_filter_option_players_4")
-		}
-	}
-	local stepper_2_data = {
-		{
-			value = 1,
+			value = "global",
 			text = Localize("menu_weave_leaderboard_filter_option_global")
 		},
 		{
-			value = 2,
+			value = "friends",
 			text = Localize("menu_weave_leaderboard_filter_option_friends")
 		}
 	}
+	local filter_data = {
+		{
+			value = "personal",
+			text = Localize("menu_weave_leaderboard_filter_option_you")
+		},
+		{
+			value = "top",
+			text = Localize("menu_weave_leaderboard_filter_option_top")
+		}
+	}
+	local team_size_data = {
+		{
+			value = "season_1_weave_score_1_players",
+			text = Localize("menu_weave_leaderboard_filter_option_players_1")
+		},
+		{
+			value = "season_1_weave_score_2_players",
+			text = Localize("menu_weave_leaderboard_filter_option_players_2")
+		},
+		{
+			value = "season_1_weave_score_3_players",
+			text = Localize("menu_weave_leaderboard_filter_option_players_3")
+		},
+		{
+			value = "season_1_weave_score_4_players",
+			text = Localize("menu_weave_leaderboard_filter_option_players_4")
+		}
+	}
+	self._team_size_data = team_size_data
+	self._filter_data = filter_data
+	self._leaderboard_tab_data = leaderboard_tab_data
 
-	self:_initialize_stepper(1, Localize("menu_weave_leaderboard_filter_title_team_size"), stepper_1_data, 4)
-	self:_initialize_stepper(2, Localize("menu_weave_leaderboard_filter_title_player_range"), stepper_2_data)
-	self:_refresh_list()
+	self:_setup_tab_widget(leaderboard_tab_data)
+	self:_select_tab_by_index(1)
+	self:_initialize_stepper(1, Localize("menu_weave_leaderboard_filter_title_position"), filter_data)
+	self:_initialize_stepper(2, Localize("menu_weave_leaderboard_filter_title_team_size"), team_size_data, #team_size_data)
+	self:_restart_poll_queue(Application.time_since_launch())
+	self:_update_leaderboard_presentation()
 	Managers.input:enable_gamepad_cursor()
 	self:play_sound("menu_leaderboard_open")
 end
 
-StartGameStateWeaveLeaderboard._refresh_list = function (self)
+StartGameStateWeaveLeaderboard._setup_poll_queue = function (self, leaderboard_type_data, filter_data, stat_names_data)
+	self._poll_queues = {}
+
+	for _, type_data in ipairs(leaderboard_type_data) do
+		local leaderboard_type = type_data.value
+
+		for _, filter in ipairs(filter_data) do
+			local filter_value = filter.value
+
+			for i = #stat_names_data, 1, -1 do
+				local stat_data = stat_names_data[i]
+				local stat_name = stat_data.value
+
+				self:_add_poll_queue(filter_value, leaderboard_type, stat_name)
+			end
+		end
+	end
+end
+
+StartGameStateWeaveLeaderboard._restart_poll_queue = function (self, t)
+	self._cashed_list_data = {}
+
+	self:_setup_poll_queue(self._leaderboard_tab_data, self._filter_data, self._team_size_data)
+	self:_handle_next_poll_request(t)
+end
+
+StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, leaderboard_type, stat_name)
+	local leaderboard_tab_data = self._leaderboard_tab_data
+	local queue_index = nil
+
+	for i = 1, #leaderboard_tab_data, 1 do
+		if leaderboard_tab_data[i].value == leaderboard_type then
+			queue_index = i
+
+			break
+		end
+	end
+
+	if queue_index then
+		local poll_queues = self._poll_queues
+		local poll_queue = poll_queues[queue_index] or {}
+		poll_queues[queue_index] = poll_queue
+		poll_queue[#poll_queue + 1] = {
+			filter_value = filter_value,
+			leaderboard_type = leaderboard_type,
+			stat_name = stat_name
+		}
+	end
+
+	self._polling_done = false
+end
+
+StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
+	if self._polling_done then
+		return true
+	end
+
+	local poll_queues = self._poll_queues
+	local priority_index = self._selected_option_tab_index or 1
+	local next_poll_request = nil
+
+	if priority_index and #poll_queues[priority_index] > 0 then
+		local poll_queue = poll_queues[priority_index]
+		local next_poll_queue_index = nil
+
+		for i = 1, #poll_queue, 1 do
+			local poll_queue = poll_queue[i]
+			local leaderboard_type = poll_queue.leaderboard_type
+			local filter_value = poll_queue.filter_value
+			local stat_name = poll_queue.stat_name
+
+			if self._stat_name == stat_name and self._filter_value == filter_value and self._leaderboard_type == leaderboard_type then
+				next_poll_queue_index = i
+
+				break
+			else
+				next_poll_queue_index = next_poll_queue_index or i
+			end
+		end
+
+		next_poll_request = table.remove(poll_queue, next_poll_queue_index)
+	else
+		for i = 1, #poll_queues, 1 do
+			local poll_queue = poll_queues[i]
+
+			if #poll_queue > 0 then
+				next_poll_request = table.remove(poll_queue, 1)
+
+				break
+			end
+		end
+	end
+
+	if not next_poll_request then
+		self._polling_done = true
+
+		return
+	end
+
+	local filter_value = next_poll_request.filter_value
+	local leaderboard_type = next_poll_request.leaderboard_type
+	local stat_name = next_poll_request.stat_name
+	local weave_interface = Managers.backend:get_interface("weaves")
+
+	if filter_value == "top" then
+		local start_position = 0
+
+		weave_interface:request_leaderboard(stat_name, start_position, leaderboard_type)
+	elseif filter_value == "personal" then
+		local max_result_count = 100
+
+		weave_interface:request_leaderboard_around_player(stat_name, leaderboard_type, max_result_count)
+	end
+
+	self._polling_callback = callback(self, "_cb_cashe_list_data", filter_value, leaderboard_type, stat_name)
+	local time = Application.time_since_launch()
+	self._min_poll_time = time + MIN_TIME_BETWEEN_LEADERBOARD_REQUESTS
+end
+
+StartGameStateWeaveLeaderboard._update_leaderboard_presentation = function (self)
+	local stat_name, filter_value, leaderboard_type = nil
 	local stepper_settings = self._stepper_settings
-	local stat_name = "season_1_weave_score_"
-	local leaderboard_type = "global"
 
 	if stepper_settings then
 		for i = 1, #stepper_settings, 1 do
@@ -114,77 +262,181 @@ StartGameStateWeaveLeaderboard._refresh_list = function (self)
 			local read_value = read_content.value
 
 			if stepper_name == "setting_stepper_1" then
-				stat_name = stat_name .. read_value .. "_players"
+				filter_value = read_value
 			end
 
-			if stepper_name == "setting_stepper_2" and read_value == 2 then
-				leaderboard_type = "friends"
+			if stepper_name == "setting_stepper_2" then
+				stat_name = read_value
 			end
 		end
 	end
 
+	local selected_option_tab_index = self._selected_option_tab_index
+	local selected_option = self._leaderboard_tab_data[selected_option_tab_index]
+	leaderboard_type = selected_option.value
+	self._stat_name = stat_name
+	self._filter_value = filter_value
+	self._leaderboard_type = leaderboard_type
+	local cashed_list_data = self:_get_cashed_list_data(filter_value, leaderboard_type, stat_name)
+	local waiting_for_list = cashed_list_data == nil
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.refresh_button.content.button_hotspot.disable_button = true
-	widgets_by_name.loading_icon.content.visible = true
-	self._polling = true
-	local time = Application.time_since_launch()
-	self._min_poll_time = time + MIN_TIME_BETWEEN_LEADERBOARD_REQUESTS
-	local weave_interface = Managers.backend:get_interface("weaves")
+	widgets_by_name.loading_icon.content.visible = waiting_for_list
+	widgets_by_name.refresh_button.content.button_hotspot.disable_button = waiting_for_list
 
-	weave_interface:request_player_rank(stat_name, leaderboard_type)
+	if not waiting_for_list then
+		local cashed_list_entries = cashed_list_data[1]
+		local cashed_list_refresh_time = cashed_list_data[2]
+		local show_no_placement = false
 
-	local start_position = 0
+		if filter_value == "personal" then
+			show_no_placement = not self:_list_including_local_player(cashed_list_entries)
+		end
 
-	weave_interface:request_leaderboard(stat_name, start_position, leaderboard_type)
-	self:_set_player_info(nil, true)
+		if show_no_placement then
+			self:_populate_list(nil)
+		else
+			self:_populate_list(cashed_list_entries)
+		end
+
+		self:_set_refresh_time(cashed_list_refresh_time)
+	else
+		self:_set_refresh_time(nil)
+	end
+
+	self._waiting_for_list = waiting_for_list
+end
+
+StartGameStateWeaveLeaderboard._list_including_local_player = function (self, list_entries)
+	if list_entries then
+		for i = 1, #list_entries, 1 do
+			local entry = list_entries[i]
+
+			if entry.local_player then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+StartGameStateWeaveLeaderboard._get_cashed_list_data = function (self, filter_value, leaderboard_type, stat_name)
+	local cashed_list_data = self._cashed_list_data
+
+	if not cashed_list_data[filter_value] or not cashed_list_data[filter_value][leaderboard_type] then
+		return
+	end
+
+	return cashed_list_data[filter_value][leaderboard_type][stat_name]
+end
+
+StartGameStateWeaveLeaderboard._cb_cashe_list_data = function (self, filter_value, leaderboard_type, stat_name, list_entries, request_failed)
+	if request_failed then
+		self:_add_poll_queue(filter_value, leaderboard_type, stat_name)
+
+		return
+	end
+
+	local cashed_list_data = self._cashed_list_data
+
+	if not cashed_list_data[filter_value] then
+		cashed_list_data[filter_value] = {}
+	end
+
+	if not cashed_list_data[filter_value][leaderboard_type] then
+		cashed_list_data[filter_value][leaderboard_type] = {}
+	end
+
+	if not cashed_list_data[filter_value][leaderboard_type][stat_name] then
+		cashed_list_data[filter_value][leaderboard_type][stat_name] = {}
+	end
+
+	cashed_list_data[filter_value][leaderboard_type][stat_name] = {
+		list_entries,
+		Application.time_since_launch()
+	}
+
+	if leaderboard_type == "global" and filter_value == "personal" then
+		local player_entry = nil
+
+		for i = 1, #list_entries, 1 do
+			local entry = list_entries[i]
+
+			if entry.local_player then
+				player_entry = table.clone(entry)
+
+				break
+			end
+		end
+	end
+
+	if self._waiting_for_list then
+		local correct_stat_name = self._stat_name == stat_name
+		local correct_leaderboard_type = self._leaderboard_type == leaderboard_type
+		local correct_filter_value = self._filter_value == filter_value
+
+		if correct_stat_name and correct_leaderboard_type and correct_filter_value then
+			self:_update_leaderboard_presentation()
+		end
+	end
 end
 
 StartGameStateWeaveLeaderboard._poll_list = function (self, dt, t)
 	local weave_interface = Managers.backend:get_interface("weaves")
 
-	if self._polling then
+	if self._polling_callback then
 		if weave_interface:is_requesting_leaderboard() then
 			return
 		elseif t < self._min_poll_time then
 			return
-		else
-			self._polling = false
 		end
 	else
 		return
 	end
 
+	local request_failed = weave_interface:has_leaderboard_request_failed()
 	local entries = weave_interface:get_leaderboard_entries()
+	local list_entries = self:_create_list_entries(entries)
 
-	self:_populate_list(entries)
+	if self._polling_callback then
+		self._polling_callback(list_entries, request_failed)
 
-	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.refresh_button.content.button_hotspot.disable_button = false
-	widgets_by_name.loading_icon.content.visible = false
-	local player_entry = weave_interface:get_player_entry()
-
-	self:_set_player_info(player_entry)
-end
-
-StartGameStateWeaveLeaderboard._set_player_info = function (self, player_entry, hide_all)
-	local widgets_by_name = self._widgets_by_name
-	local widget = widgets_by_name.player_entry
-	local content = widget.content
-	local has_rank = player_entry and player_entry.ranking ~= "-"
-
-	if has_rank then
-		content.name = player_entry.name
-		content.score = WeaveUtils.comma_value(player_entry.score)
-		content.weave = tostring(player_entry.weave)
-		content.ranking = tostring(player_entry.ranking)
-		content.career_name = player_entry.career_name
-		local career = CareerSettings[content.career_name]
-		local portrait_thumbnail = (career and career.portrait_thumbnail) or "icons_placeholder"
-		content.career_icon = portrait_thumbnail
+		self._polling_callback = nil
 	end
 
-	widgets_by_name.player_entry.content.visible = (has_rank and not hide_all) or false
-	widgets_by_name.no_placement_text.content.visible = (not hide_all and not has_rank) or false
+	self:_handle_next_poll_request(t)
+end
+
+StartGameStateWeaveLeaderboard._set_refresh_time = function (self, t)
+	self._refreshed_at_time = t
+
+	self:_update_refresh_time(t)
+end
+
+StartGameStateWeaveLeaderboard._update_refresh_time = function (self, t)
+	local refreshed_at_time = self._refreshed_at_time
+	local widgets_by_name = self._widgets_by_name
+	local widget = widgets_by_name.refresh_text
+	local content = widget.content
+	content.visible = refreshed_at_time ~= nil
+
+	if refreshed_at_time then
+		local time_diff = t - refreshed_at_time
+		time_diff = math.max(time_diff, 0)
+		local seconds = math.max(time_diff, 0)
+		local minutes = math.floor(seconds / 60)
+		local hours = math.floor(minutes / 60)
+		local days = math.floor(hours / 24)
+		local text = nil
+
+		if minutes > 0 then
+			text = string.format(localized_time_strings[1], minutes)
+		else
+			text = localized_time_strings[2]
+		end
+
+		content.text = text
+	end
 end
 
 StartGameStateWeaveLeaderboard._initialize_stepper = function (self, stepper_index, title_text, content, start_index)
@@ -260,6 +512,49 @@ StartGameStateWeaveLeaderboard._create_ui_elements = function (self, params)
 	self._menu_input_description:set_input_description(nil)
 end
 
+StartGameStateWeaveLeaderboard._setup_tab_widget = function (self, options)
+	local num_tabs = #options
+	local widgets = self._widgets
+	local widgets_by_name = self._widgets_by_name
+	local option_tabs_segments = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
+		5,
+		35
+	}, "option_tabs_segments", num_tabs - 1))
+	local option_tabs_segments_top = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
+		17,
+		9
+	}, "option_tabs_segments_top", num_tabs - 1))
+	local option_tabs_segments_bottom = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
+		17,
+		9
+	}, "option_tabs_segments_bottom", num_tabs - 1))
+	widgets_by_name.option_tabs_segments = option_tabs_segments
+	widgets_by_name.option_tabs_segments_top = option_tabs_segments_top
+	widgets_by_name.option_tabs_segments_bottom = option_tabs_segments_bottom
+	widgets[#widgets + 1] = option_tabs_segments
+	widgets[#widgets + 1] = option_tabs_segments_top
+	widgets[#widgets + 1] = option_tabs_segments_bottom
+	local scenegraph_id = "option_tabs"
+	local size = scenegraph_definition.option_tabs.size
+	local widget_definition = UIWidgets.create_default_text_tabs(scenegraph_id, size, num_tabs)
+	local widget = UIWidget.init(widget_definition)
+	widgets_by_name[scenegraph_id] = widget
+	widgets[#widgets + 1] = widget
+	local widget_content = widget.content
+
+	for index, option in ipairs(options) do
+		local name_suffix = "_" .. tostring(index)
+		local hotspot_name = "hotspot" .. name_suffix
+		local text_name = "text" .. name_suffix
+		local hotspot_content = widget_content[hotspot_name]
+		local text = option.text
+		local value = option.value
+		hotspot_content[text_name] = text
+		hotspot_content.index = index
+		hotspot_content.value = value
+	end
+end
+
 StartGameStateWeaveLeaderboard.disable_player_world = function (self)
 	if not self._player_world_disabled then
 		self._player_world_disabled = true
@@ -309,7 +604,7 @@ StartGameStateWeaveLeaderboard.clear_wanted_menu_state = function (self)
 end
 
 StartGameStateWeaveLeaderboard.hotkey_allowed = function (self)
-	return not self._polling
+	return true
 end
 
 StartGameStateWeaveLeaderboard.on_exit = function (self, params)
@@ -328,6 +623,8 @@ StartGameStateWeaveLeaderboard.on_exit = function (self, params)
 
 	Managers.input:disable_gamepad_cursor()
 	self:play_sound("menu_leaderboard_close")
+
+	self._polling_callback = nil
 end
 
 StartGameStateWeaveLeaderboard._update_transition_timer = function (self, dt)
@@ -358,13 +655,10 @@ StartGameStateWeaveLeaderboard.update = function (self, dt, t)
 
 	self:_poll_list(dt, t)
 	self:_update_transition_timer(dt)
-
-	if not self._polling then
-		self:_update_scroll_position(dt)
-		self:_update_visible_list_entries()
-		self._scrollbar_logic:update(dt, t)
-	end
-
+	self:_update_scroll_position(dt)
+	self:_update_visible_list_entries()
+	self._scrollbar_logic:update(dt, t)
+	self:_update_refresh_time(t)
 	self:draw(input_service, dt)
 
 	local wanted_state = self:_wanted_state()
@@ -382,7 +676,7 @@ StartGameStateWeaveLeaderboard.post_update = function (self, dt, t)
 
 	local transitioning = self.parent:transitioning()
 
-	if not transitioning and not self._transition_timer and not self._polling then
+	if not transitioning and not self._transition_timer then
 		self:_handle_input(dt, t)
 	end
 end
@@ -412,7 +706,10 @@ StartGameStateWeaveLeaderboard._update_animations = function (self, dt)
 	local refresh_button = widgets_by_name.refresh_button
 
 	UIWidgetUtils.animate_default_button(exit_button, dt)
-	UIWidgetUtils.animate_default_button(refresh_button, dt)
+
+	local option_tabs = widgets_by_name.option_tabs
+
+	UIWidgetUtils.animate_default_text_tabs(option_tabs, dt)
 end
 
 StartGameStateWeaveLeaderboard._is_button_hover_enter = function (self, widget)
@@ -420,6 +717,37 @@ StartGameStateWeaveLeaderboard._is_button_hover_enter = function (self, widget)
 	local hotspot = content.button_hotspot
 
 	return hotspot.on_hover_enter
+end
+
+StartGameStateWeaveLeaderboard._is_inventory_tab_pressed = function (self)
+	local widget = self._widgets_by_name.option_tabs
+	local widget_content = widget.content
+	local amount = widget_content.amount
+
+	for i = 1, amount, 1 do
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot_content = widget_content[hotspot_name]
+
+		if hotspot_content.on_release and not hotspot_content.is_selected then
+			return i
+		end
+	end
+end
+
+StartGameStateWeaveLeaderboard._select_tab_by_index = function (self, index)
+	local widget = self._widgets_by_name.option_tabs
+	local widget_content = widget.content
+	local amount = widget_content.amount
+
+	for i = 1, amount, 1 do
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot_content = widget_content[hotspot_name]
+		hotspot_content.is_selected = index == i
+	end
+
+	self._selected_option_tab_index = index
 end
 
 StartGameStateWeaveLeaderboard._handle_input = function (self, dt, t)
@@ -434,6 +762,16 @@ StartGameStateWeaveLeaderboard._handle_input = function (self, dt, t)
 
 	if self:_is_button_hover_enter(exit_button) or self:_is_button_hover_enter(refresh_button) then
 		self:play_sound("Play_hud_hover")
+	end
+
+	local tab_index_pressed = self:_is_inventory_tab_pressed()
+	local filter_changed = false
+
+	if tab_index_pressed and tab_index_pressed ~= self._selected_option_tab_index then
+		self:_select_tab_by_index(tab_index_pressed)
+		self:play_sound("Play_hud_hover")
+
+		filter_changed = true
 	end
 
 	local stepper_settings = self._stepper_settings
@@ -451,18 +789,25 @@ StartGameStateWeaveLeaderboard._handle_input = function (self, dt, t)
 
 				self:_set_stepper_read_index(i, new_read_index)
 				self:play_sound("Play_hud_hover")
-				self:_refresh_list()
+
+				filter_changed = true
 			end
 		end
 	end
 
-	if self:_is_button_pressed(refresh_button) or (input_service:get("special_1") and not self._polling) then
+	if self:_is_button_pressed(refresh_button) or input_service:get("special_1") then
 		self:play_sound("Play_hud_select")
-		self:_refresh_list()
+		self:_restart_poll_queue(t)
+
+		filter_changed = true
 	elseif close_on_exit and (back_pressed or input_pressed or self:_is_button_pressed(exit_button)) then
 		self:close_menu()
 
 		return
+	end
+
+	if filter_changed then
+		self:_update_leaderboard_presentation()
 	end
 end
 
@@ -507,69 +852,79 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 				render_settings.snap_pixel_positions = widget.snap_pixel_positions
 			end
 
+			render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
+
 			UIRenderer.draw_widget(ui_renderer, widget)
 
 			render_settings.snap_pixel_positions = snap_pixel_positions
 		end
 
+		render_settings.alpha_multiplier = alpha_multiplier
 		local list_entries = self._list_entries
-		local list_widget = self._list_widget
-		local list_draw_index = self._list_draw_index
-		local list_fade_in_time = self._list_fade_in_time
-		local list_fade_in_progress = nil
 
-		if list_fade_in_time then
-			list_fade_in_time = math.max(list_fade_in_time - dt, 0)
+		if list_entries then
+			local list_widget = self._list_widget
+			local list_draw_index = self._list_draw_index
+			local list_fade_in_time = self._list_fade_in_time
+			local list_fade_in_progress = nil
 
-			if list_fade_in_time == 0 then
-				self._list_fade_in_time = nil
-			else
-				self._list_fade_in_time = list_fade_in_time
+			if list_fade_in_time then
+				list_fade_in_time = math.max(list_fade_in_time - dt, 0)
+
+				if list_fade_in_time == 0 then
+					self._list_fade_in_time = nil
+				else
+					self._list_fade_in_time = list_fade_in_time
+				end
+
+				list_fade_in_progress = 1 - list_fade_in_time / LIST_FADE_IN_DURATION
 			end
 
-			list_fade_in_progress = 1 - list_fade_in_time / LIST_FADE_IN_DURATION
-		end
+			if list_entries and list_widget and list_draw_index then
+				local start_index = list_draw_index
+				local end_index = math.min(list_draw_index + LIST_PRESENTATION_AMOUNT + 1, #list_entries)
+				local draw_count = 0
 
-		if list_entries and list_widget and list_draw_index then
-			local start_index = list_draw_index
-			local end_index = math.min(list_draw_index + LIST_PRESENTATION_AMOUNT + 1, #list_entries)
-			local draw_count = 0
+				for i = start_index, end_index, 1 do
+					draw_count = draw_count + 1
+					local content = list_widget.content
+					local style = list_widget.style
+					local offset = list_widget.offset
+					local size = content.size
+					local height = size[2]
+					local y_offset = LIST_EDGE_SPACING + (height + LIST_SPACING) * (i - 1)
+					offset[2] = -y_offset
+					local entry = list_entries[i]
+					local name = entry.name
+					local weave = entry.weave
+					local score = entry.score
+					local ranking = entry.ranking
+					local career_icon = entry.career_icon
+					local real_ranking = entry.real_ranking
+					local local_player = entry.local_player
+					content.name = name
+					content.score = score
+					content.weave = weave
+					content.ranking = ranking
+					content.real_ranking = real_ranking
+					content.career_icon = career_icon
+					content.local_player = local_player
 
-			for i = start_index, end_index, 1 do
-				draw_count = draw_count + 1
-				local content = list_widget.content
-				local style = list_widget.style
-				local offset = list_widget.offset
-				local size = content.size
-				local height = size[2]
-				local y_offset = LIST_EDGE_SPACING + (height + LIST_SPACING) * (i - 1)
-				offset[2] = -y_offset
-				local entry = list_entries[i]
-				local name = entry.name
-				local weave = entry.weave
-				local score = entry.score
-				local ranking = entry.ranking
-				local career_icon = entry.career_icon
-				content.name = name
-				content.score = score
-				content.weave = weave
-				content.ranking = ranking
-				content.career_icon = career_icon
+					if list_widget.snap_pixel_positions ~= nil then
+						render_settings.snap_pixel_positions = list_widget.snap_pixel_positions
+					end
 
-				if list_widget.snap_pixel_positions ~= nil then
-					render_settings.snap_pixel_positions = list_widget.snap_pixel_positions
+					if list_fade_in_progress then
+						local internal_progress = math.easeInCubic(math.min(list_fade_in_progress + (end_index - i) * 0.05, 1))
+						render_settings.alpha_multiplier = internal_progress
+						offset[1] = -30 * (1 - internal_progress)
+					end
+
+					UIRenderer.draw_widget(ui_renderer, list_widget)
+
+					render_settings.snap_pixel_positions = snap_pixel_positions
+					render_settings.alpha_multiplier = alpha_multiplier
 				end
-
-				if list_fade_in_progress then
-					local internal_progress = math.easeInCubic(math.min(list_fade_in_progress + (end_index - i) * 0.05, 1))
-					render_settings.alpha_multiplier = internal_progress
-					offset[1] = -30 * (1 - internal_progress)
-				end
-
-				UIRenderer.draw_widget(ui_renderer, list_widget)
-
-				render_settings.snap_pixel_positions = snap_pixel_positions
-				render_settings.alpha_multiplier = alpha_multiplier
 			end
 		end
 
@@ -634,7 +989,7 @@ StartGameStateWeaveLeaderboard._setup_list_widget = function (self)
 	self._list_widget = widget
 end
 
-StartGameStateWeaveLeaderboard._populate_list = function (self, entries)
+StartGameStateWeaveLeaderboard._create_list_entries = function (self, entries)
 	local list_entries = {}
 	local num_entries = #entries
 
@@ -645,15 +1000,22 @@ StartGameStateWeaveLeaderboard._populate_list = function (self, entries)
 		local portrait_thumbnail = (career and career.portrait_thumbnail) or "icons_placeholder"
 		list_entries[i] = {
 			alpha_fade_in_delay = 0.4,
-			name = entry.name,
+			name = entry.name or "UNKNOWN",
 			weave = tostring(entry.weave),
 			score = WeaveUtils.comma_value(entry.score),
 			ranking = WeaveUtils.comma_value(entry.ranking),
 			career_name = career_name,
-			career_icon = portrait_thumbnail
+			career_icon = portrait_thumbnail,
+			local_player = entry.local_player,
+			real_ranking = entry.real_ranking
 		}
 	end
 
+	return list_entries
+end
+
+StartGameStateWeaveLeaderboard._populate_list = function (self, list_entries)
+	local num_entries = (list_entries and #list_entries) or 0
 	self._list_entries = list_entries
 
 	self:_calculate_list_height(num_entries)
@@ -682,7 +1044,7 @@ StartGameStateWeaveLeaderboard._calculate_list_height = function (self, amount)
 end
 
 StartGameStateWeaveLeaderboard._initialize_scrollbar = function (self)
-	local list_window_size = scenegraph_definition.list_window.size
+	local list_window_size = scenegraph_definition.list_mask.size
 	local list_scrollbar_size = scenegraph_definition.list_scrollbar.size
 	local draw_length = list_window_size[2]
 	local content_length = self._total_list_height
@@ -693,6 +1055,8 @@ StartGameStateWeaveLeaderboard._initialize_scrollbar = function (self)
 
 	scrollbar_logic:set_scrollbar_values(draw_length, content_length, scrollbar_length, step_size, scroll_step_multiplier)
 	scrollbar_logic:set_scroll_percentage(0)
+
+	self._widgets_by_name.list_scrollbar.content.visible = draw_length < content_length
 end
 
 StartGameStateWeaveLeaderboard._update_scroll_position = function (self)
@@ -789,6 +1153,18 @@ StartGameStateWeaveLeaderboard._get_scrollbar_percentage_by_index = function (se
 	end
 
 	return 0
+end
+
+StartGameStateWeaveLeaderboard._animate_element_by_time = function (self, target, target_index, from, to, time)
+	local new_animation = UIAnimation.init(UIAnimation.function_by_time, target, target_index, from, to, time, math.ease_out_quad)
+
+	return new_animation
+end
+
+StartGameStateWeaveLeaderboard._animate_element_by_catmullrom = function (self, target, target_index, target_value, p0, p1, p2, p3, time)
+	local new_animation = UIAnimation.init(UIAnimation.catmullrom, target, target_index, target_value, p0, p1, p2, p3, time)
+
+	return new_animation
 end
 
 return

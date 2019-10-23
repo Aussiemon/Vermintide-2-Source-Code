@@ -1237,7 +1237,7 @@ end
 
 PerceptionUtils.debug_ai_perception = function (unit, ai_ext, blackboard, t, gui, x1, y1)
 	local tiny_font_size = 16
-	local tiny_font = "gw_arial_16"
+	local tiny_font = "arial"
 	local tiny_font_mtrl = "materials/fonts/" .. tiny_font
 	local resx = RESOLUTION_LOOKUP.res_w
 	local resy = RESOLUTION_LOOKUP.res_h
@@ -1286,7 +1286,7 @@ end
 
 PerceptionUtils.debug_rat_ogre_perception = function (gui, t, x1, y1, blackboard)
 	local tiny_font_size = 16
-	local tiny_font = "gw_arial_16"
+	local tiny_font = "arial"
 	local tiny_font_mtrl = "materials/fonts/" .. tiny_font
 	local resx = RESOLUTION_LOOKUP.res_w
 	local resy = RESOLUTION_LOOKUP.res_h

@@ -731,6 +731,7 @@ local function _uncomplet_winds(statistics_db, stats_id, wind, amount_of_weaves)
 end
 
 local function _weave_completed_career_rainbow(statistics_db, stats_id, career)
+	local complete = false
 	local counter = 0
 	local amount_of_weaves = #WeaveSettings.winds
 

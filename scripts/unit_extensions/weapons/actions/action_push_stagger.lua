@@ -176,7 +176,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 
 				local breed = Unit.get_data(hit_unit, "breed")
 
-				if not breed or breed.is_player then
+				if not breed then
 					return
 				end
 

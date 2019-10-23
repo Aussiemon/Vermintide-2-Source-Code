@@ -152,11 +152,8 @@ ImguiCombatLog.update_subwindow = function (self)
 				local text = data[1]
 				local color = data[2]
 
+				Imgui.SameLine()
 				Imgui.TextColored(text, color[2], color[3], color[4], color[1])
-
-				if i > 1 then
-					Imgui.SameLine()
-				end
 			end
 		end
 	end
@@ -164,24 +161,26 @@ ImguiCombatLog.update_subwindow = function (self)
 	Imgui.End("Combat Log")
 end
 
-ImguiCombatLog.log_damage = function (self, attacker_unit, victim_unit, networkified_damage_amount, hit_zone_name, damage_type, damage_source, is_critical_strike, backstab_multiplier, added_dot, target_index, first_hit, total_hits)
-	local attacker_unit_breed = attacker_unit and Unit.get_data(attacker_unit, "breed")
-	local victim_unit_breed = victim_unit and Unit.get_data(victim_unit, "breed")
+ImguiCombatLog.log_damage = function (self, attacker_unit, victim_unit, networkified_damage_amount, hit_zone_name, damage_type, damage_source, is_critical_strike, backstab_multiplier, added_dot, target_index, first_hit, total_hits, power_level)
+	local attacker_unit_breed = Unit.alive(attacker_unit) and Unit.get_data(attacker_unit, "breed")
+	local victim_unit_breed = Unit.alive(victim_unit) and Unit.get_data(victim_unit, "breed")
+	local network_manager = Managers.state.network
+	local unit_id = network_manager and network_manager:unit_game_object_id(victim_unit)
 	local line = self:_add_line("damage")
 
-	self:_add_colored_segment(line, string.format("%s -> %s (%.2f %s), hit (%s) using (%s) Crit: %s, Backstab Mult: %.2f, Target Index: %d", tostring((attacker_unit_breed and attacker_unit_breed.name) or attacker_unit), tostring((victim_unit_breed and victim_unit_breed.name) or victim_unit), networkified_damage_amount or 0, tostring(damage_type), tostring(hit_zone_name), tostring(damage_source), tostring(is_critical_strike), backstab_multiplier or 1, target_index or 0), Colors.get_table("orange"))
+	self:_add_colored_segment(line, string.format("%s -> %s (%d) (%.2f %s), Power(%.2f), hit (%s) using (%s) Crit: %s, Backstab Mult: %.2f, Target Index: %d", tostring((attacker_unit_breed and attacker_unit_breed.name) or attacker_unit), tostring((victim_unit_breed and victim_unit_breed.name) or victim_unit), unit_id or 0, networkified_damage_amount or 0, tostring(damage_type), power_level or 0, tostring(hit_zone_name), tostring(damage_source), tostring(is_critical_strike), backstab_multiplier or 1, target_index or 0), Colors.get_table("orange"))
 end
 
 ImguiCombatLog.log_heal = function (self, healer_unit, unit, buffed_heal_amount, heal_type)
-	local healer_unit_breed = healer_unit and Unit.get_data(healer_unit, "breed")
-	local unit_breed = unit and Unit.get_data(unit, "breed")
+	local healer_unit_breed = Unit.alive(healer_unit) and Unit.get_data(healer_unit, "breed")
+	local unit_breed = Unit.alive(unit) and Unit.get_data(unit, "breed")
 	local line = self:_add_line("heal")
 
 	self:_add_colored_segment(line, string.format("%s -> %s (%.2f %s)", tostring((healer_unit_breed and healer_unit_breed.name) or healer_unit), tostring((unit_breed and unit_breed.name) or unit), buffed_heal_amount or 0, tostring(heal_type)), Colors.get_table("lime"))
 end
 
 ImguiCombatLog.log_action = function (self, unit, item_name, kind, action_name, sub_action_name, power_level, started, reason)
-	local unit_breed = unit and Unit.get_data(unit, "breed")
+	local unit_breed = Unit.alive(unit) and Unit.get_data(unit, "breed")
 	local line = self:_add_line("action")
 
 	if started then
@@ -193,16 +192,16 @@ end
 
 ImguiCombatLog.log_proc = function (self, player, event, buff, params, success)
 	local unit = player and player.player_unit
-	local unit_breed = unit and Unit.get_data(unit, "breed")
+	local unit_breed = Unit.alive(unit) and Unit.get_data(unit, "breed")
 	local line = self:_add_line("buff_proc")
 
 	self:_add_colored_segment(line, string.format("%s (%s) -> %s", tostring((unit_breed and unit_breed.name) or unit), event or "-", tostring(buff.buff_type)), Colors.get_table("silver"))
 end
 
 ImguiCombatLog.log_buff = function (self, unit, buff, added, stack_count, max_stacks)
-	local owner_breed = unit and Unit.get_data(unit, "breed")
+	local owner_breed = Unit.alive(unit) and Unit.get_data(unit, "breed")
 	local attacker_unit = buff and buff.attacker_unit
-	local attacker_breed = attacker_unit and Unit.get_data(attacker_unit, "breed")
+	local attacker_breed = Unit.alive(attacker_unit) and Unit.get_data(attacker_unit, "breed")
 	local line = self:_add_line("buff")
 
 	if added then

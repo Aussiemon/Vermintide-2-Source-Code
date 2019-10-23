@@ -5,13 +5,29 @@ LiquidAreaDamageHuskExtension.init = function (self, extension_init_context, uni
 	self._unit = unit
 	self._blobs = {}
 	self._world = world
-	self._source_unit = extension_init_data.source_unit
+	self._source_attacker_unit = extension_init_data.source_unit
 	self._nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local template_name = extension_init_data.liquid_template
 	local template = LiquidAreaDamageTemplates.templates[template_name]
 	self._fx_name_filled = template.fx_name_filled
 	self._fx_name_rim = template.fx_name_rim
 	self._liquid_area_damage_template = template_name
+	self.source_attacker_unit_data = {}
+	local source_attacker_unit_data = self.source_attacker_unit_data
+	local source_attacker_unit = self._source_attacker_unit
+
+	if source_attacker_unit then
+		source_attacker_unit_data.breed = Unit.get_data(source_attacker_unit, "breed")
+		local player = Managers.player:owner(source_attacker_unit)
+
+		if player then
+			source_attacker_unit_data.attacker_unique_id = player:unique_id()
+			source_attacker_unit_data.attacker_side = Managers.state.side.side_by_unit[source_attacker_unit]
+		else
+			source_attacker_unit_data.attacker_unique_id = nil
+			source_attacker_unit_data.attacker_side = nil
+		end
+	end
 
 	Unit.set_unit_visibility(self._unit, false)
 
@@ -130,6 +146,10 @@ LiquidAreaDamageHuskExtension.destroy = function (self)
 			World.stop_spawning_particles(world, fx_id)
 		end
 	end
+end
+
+LiquidAreaDamageHuskExtension.get_source_attacker_unit = function (self)
+	return self._source_attacker_unit
 end
 
 return

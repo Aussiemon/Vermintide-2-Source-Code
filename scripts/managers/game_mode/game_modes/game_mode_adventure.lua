@@ -38,6 +38,8 @@ GameModeAdventure.init = function (self, settings, world, ...)
 
 		Managers.party:request_join_party(peer_id, local_player_id, party_id)
 	end
+
+	self._local_player_spawned = false
 end
 
 GameModeAdventure.destroy = function (self)
@@ -61,7 +63,8 @@ GameModeAdventure.unregister_rpcs = function (self)
 end
 
 GameModeAdventure.event_local_player_spawned = function (self, is_initial_spawn)
-	Managers.state.event:trigger("game_mode_ready_to_start", is_initial_spawn)
+	self._local_player_spawned = true
+	self._is_initial_spawn = is_initial_spawn
 end
 
 GameModeAdventure.server_update = function (self, t, dt)
@@ -107,7 +110,11 @@ GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t
 	elseif self:update_end_level_areas() then
 		return true, "won"
 	elseif self._level_completed then
-		return true, "won"
+		if Managers.deed:has_deed() and Managers.deed:is_session_faulty() then
+			return true, "lost"
+		else
+			return true, "won"
+		end
 	else
 		return false
 	end
@@ -160,6 +167,26 @@ GameModeAdventure.get_end_screen_config = function (self, game_won, game_lost, p
 	end
 
 	return screen_name, screen_config
+end
+
+GameModeAdventure.local_player_ready_to_start = function (self, player)
+	if not self._local_player_spawned then
+		return false
+	end
+
+	return true
+end
+
+GameModeAdventure.local_player_game_starts = function (self, player, loading_context)
+	if self._is_initial_spawn then
+		LevelHelper:flow_event(self._world, "local_player_spawned")
+
+		if Development.parameter("attract_mode") then
+			LevelHelper:flow_event(self._world, "start_benchmark")
+		else
+			LevelHelper:flow_event(self._world, "level_start_local_player_spawned")
+		end
+	end
 end
 
 GameModeAdventure.disable_player_spawning = function (self)

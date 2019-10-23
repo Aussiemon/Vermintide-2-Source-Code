@@ -328,6 +328,7 @@ PauseEvents = {
 				}
 			},
 			allowed_input = {
+				"move",
 				"move_left",
 				"move_right",
 				"move_controller",

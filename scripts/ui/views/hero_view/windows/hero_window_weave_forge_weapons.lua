@@ -58,6 +58,13 @@ HeroWindowWeaveForgeWeapons.on_enter = function (self, params, offset)
 	local weapon_crafting_tutorial_completed = WeaveOnboardingUtils.tutorial_completed(ui_onboarding_state, WeaveUITutorials.equip_weapon)
 	self._crafting_tutorial = not weapon_crafting_tutorial_completed
 
+	if self._crafting_tutorial then
+		local widgets_by_name = self._widgets_by_name
+		local unlock_button = widgets_by_name.unlock_button
+		unlock_button.content.highlighted = true
+		self._ui_animations.unlock_button_pulse = UIAnimation.init(UIAnimation.pulse_animation, unlock_button.style.texture_highlight.color, 1, 100, 255, 2)
+	end
+
 	self:_setup_weapon_list()
 	self:_sync_backend_loadout()
 	Managers.state.event:trigger("weave_forge_weapons_entered")
@@ -125,7 +132,33 @@ HeroWindowWeaveForgeWeapons._setup_weapon_list = function (self)
 	self:_populate_list(weapon_layout)
 end
 
+HeroWindowWeaveForgeWeapons._setup_definitions = function (self)
+	if self._parent:gamepad_style_active() then
+		definitions = dofile("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_weapons_console_definitions")
+	else
+		definitions = dofile("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_weapons_definitions")
+	end
+
+	top_widget_definitions = definitions.top_widgets
+	bottom_widget_definitions = definitions.bottom_widgets
+	bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
+	top_hdr_widget_definitions = definitions.top_hdr_widgets
+	scenegraph_definition = definitions.scenegraph_definition
+	animation_definitions = definitions.animation_definitions
+	create_weapon_entry_widget = definitions.create_weapon_entry_widget
+	create_property_option = definitions.create_property_option
+	create_trait_option = definitions.create_trait_option
+	create_divider_option = definitions.create_divider_option
+	create_item_block_option = definitions.create_item_block_option
+	create_item_stamina_option = definitions.create_item_stamina_option
+	create_item_ammunition_option = definitions.create_item_ammunition_option
+	create_item_keywords_option = definitions.create_item_keywords_option
+	create_item_overheat_option = definitions.create_item_overheat_option
+end
+
 HeroWindowWeaveForgeWeapons.create_ui_elements = function (self, params, offset)
+	self:_setup_definitions()
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local top_widgets = {}
 	local bottom_widgets = {}
@@ -631,6 +664,8 @@ HeroWindowWeaveForgeWeapons._list_index_by_item_key = function (self, item_key)
 			return i
 		end
 	end
+
+	return 1
 end
 
 HeroWindowWeaveForgeWeapons._present_item = function (self, item_key, activate_spin)
@@ -783,6 +818,11 @@ HeroWindowWeaveForgeWeapons._unlock_item = function (self, item_id)
 
 	if self._crafting_tutorial then
 		callback(true)
+
+		local world = Managers.world:world("level_world")
+		local level = LevelHelper:current_level(world)
+
+		Level.trigger_event(level, "lua_keep_vom_magic_forge_tutorial_weapon_craft")
 	else
 		local backend_manger = Managers.backend
 		local backend_interface_weaves = backend_manger:get_interface("weaves")
@@ -796,6 +836,10 @@ HeroWindowWeaveForgeWeapons._unlock_item_cb = function (self, success)
 
 	if self._crafting_tutorial then
 		self._crafting_tutorial = false
+		local widgets_by_name = self._widgets_by_name
+		local unlock_button = widgets_by_name.unlock_button
+		unlock_button.content.highlighted = false
+		self._ui_animations.unlock_button_pulse = nil
 
 		self:_setup_weapon_list()
 	end
@@ -881,7 +925,7 @@ HeroWindowWeaveForgeWeapons._draw = function (self, dt)
 	self:_update_visible_list_entries()
 
 	local parent = self._parent
-	local ui_renderer = self._ui_renderer
+	local ui_renderer = parent:get_ui_renderer()
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = parent:window_input_service()
@@ -1319,7 +1363,7 @@ HeroWindowWeaveForgeWeapons._setup_weapon_stats = function (self, item)
 		entry_height
 	}
 	local item_option_spacing = 10
-	local item_title_widget = self:_create_divider_option_entry(divider_size, "weapon stats")
+	local item_title_widget = self:_create_divider_option_entry(divider_size, Localize("menu_weave_forge_weapon_stats_title"))
 	widgets[#widgets + 1] = item_title_widget
 	item_title_widget.offset[2] = -total_height
 	total_height = total_height + entry_height
@@ -1406,7 +1450,7 @@ HeroWindowWeaveForgeWeapons._setup_weapon_stats = function (self, item)
 		end
 
 		if num_traits_added > 0 then
-			local traits_title_widget = self:_create_divider_option_entry(divider_size, "traits")
+			local traits_title_widget = self:_create_divider_option_entry(divider_size, Localize("menu_weave_forge_options_title_traits"))
 			widgets[#widgets + 1] = traits_title_widget
 			traits_title_widget.offset[2] = -total_height
 			total_height = total_height + entry_height
@@ -1445,7 +1489,7 @@ HeroWindowWeaveForgeWeapons._setup_weapon_stats = function (self, item)
 		end
 
 		if num_properties_added > 0 then
-			local property_title_widget = self:_create_divider_option_entry(divider_size, "properties")
+			local property_title_widget = self:_create_divider_option_entry(divider_size, Localize("menu_weave_forge_options_title_properties"))
 			widgets[#widgets + 1] = property_title_widget
 			property_title_widget.offset[2] = -total_height
 			total_height = total_height + entry_height

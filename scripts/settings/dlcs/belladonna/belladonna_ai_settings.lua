@@ -38,12 +38,6 @@ settings.health_extensions = {
 settings.enemy_package_loader_breed_categories = {
 	specials = {
 		"beastmen_standard_bearer"
-	},
-	always_loaded = {
-		"beastmen_gor",
-		"beastmen_ungor",
-		"beastmen_ungor_archer",
-		"beastmen_bestigor"
 	}
 }
 settings.alias_to_breed = {

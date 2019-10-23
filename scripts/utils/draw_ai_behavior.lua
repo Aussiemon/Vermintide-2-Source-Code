@@ -3,10 +3,10 @@ require("scripts/utils/script_gui")
 local SMALL_FONT_SIZE = 16
 local MEDIUM_FONT_SIZE = 22
 local FONT_SIZE = 26
-local FONT = "gw_arial_32"
+local FONT = "arial"
 local FONT_MTRL = "materials/fonts/" .. FONT
 local TINY_FONT_SIZE = 16
-local TINY_FONT = "gw_arial_16"
+local TINY_FONT = "arial"
 local TINY_FONT_MTRL = "materials/fonts/" .. TINY_FONT
 local LAYER = 100
 local RES_X, RES_Y = Application.resolution()

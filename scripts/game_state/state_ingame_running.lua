@@ -15,7 +15,8 @@ require("scripts/ui/views/loading_view")
 require("scripts/entity_system/systems/mission/rewards")
 
 local RPCS = {
-	"rpc_trigger_local_afk_system_message"
+	"rpc_trigger_local_afk_system_message",
+	"rpc_follow_to_lobby"
 }
 StateInGameRunning = class(StateInGameRunning)
 StateInGameRunning.NAME = "StateInGameRunning"
@@ -95,7 +96,6 @@ StateInGameRunning.on_enter = function (self, params)
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "game_started", "event_game_started")
-	event_manager:register(self, "game_mode_ready_to_start", "event_game_mode_ready_to_start")
 	event_manager:register(self, "checkpoint_vote_cancelled", "on_checkpoint_vote_cancelled")
 	event_manager:register(self, "conflict_director_setup_done", "event_conflict_director_setup_done")
 	event_manager:register(self, "close_ingame_menu", "event_close_ingame_menu")
@@ -215,6 +215,7 @@ StateInGameRunning.on_enter = function (self, params)
 
 	self._waiting_for_peers_message_timer = Managers.time:time("game") + 10
 	self._game_started_current_frame = false
+	self._transitioned_from_black_screen = false
 end
 
 StateInGameRunning.create_ingame_ui = function (self, ingame_ui_context)
@@ -236,7 +237,7 @@ end
 StateInGameRunning._setup_end_of_level_UI = function (self)
 	if script_data.disable_end_screens then
 		Managers.state.network.network_transmit:send_rpc_server("rpc_is_ready_for_transition")
-	else
+	elseif not Managers.state.game_mode:setting("skip_level_end_view") then
 		local game_won = not self.game_lost
 		local players_session_score = ScoreboardHelper.get_grouped_topic_statistics(self.statistics_db, self.profile_synchronizer)
 		local scoreboard_session_data = ScoreboardHelper.get_sorted_topic_statistics(self.statistics_db, self.profile_synchronizer)
@@ -468,7 +469,7 @@ StateInGameRunning.on_end_screen_ui_complete = function (self)
 end
 
 StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentages_completed)
-	if not self._spawn_initialized then
+	if not self._game_has_started then
 		Managers.transition:hide_loading_icon()
 		Managers.transition:fade_out(GameSettings.transition_fade_in_speed)
 	end
@@ -479,8 +480,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	local difficulty_key = Managers.state.difficulty:get_difficulty()
 	local level_key = Managers.state.game_mode:level_key()
 	local game_mode_key = self.game_mode_key
-	local game_won = reason and reason == "won"
-	local game_lost = reason and reason == "lost"
+	local game_won, game_lost = Managers.state.game_mode:evaluate_end_condition_outcome(reason, player)
 	local ingame_ui = self.ingame_ui
 	local stats_id = player:stats_id()
 	local statistics_db = self.statistics_db
@@ -577,7 +577,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		if game_mode_key == "weave" then
 			Managers.weave:store_saved_game_mode_data()
 
-			if not is_booted_unstrusted and game_won and is_final_objective and is_server then
+			if not is_booted_unstrusted and game_won and is_final_objective and is_server and not self.is_quickplay then
 				self:_submit_weave_scores()
 			end
 		end
@@ -698,6 +698,16 @@ if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
 end
 
 StateInGameRunning.update = function (self, dt, t)
+	if not self._transitioned_from_black_screen then
+		local allowed_to_transition = self:_check_black_screen_transition_requirements(dt, t)
+
+		if allowed_to_transition then
+			self:_game_actually_starts()
+
+			self._transitioned_from_black_screen = true
+		end
+	end
+
 	if self._waiting_for_peers_message_timer and self._waiting_for_peers_message_timer < t then
 		if self.is_server then
 			local lobby_members_class = self._lobby_host:members()
@@ -715,22 +725,6 @@ StateInGameRunning.update = function (self, dt, t)
 		end
 	end
 
-	if Development.parameter("auto_host_dedicated") and self._spawn_initialized then
-		local t = nil
-		local level = Development.parameter("auto_host_dedicated")
-		local game_mode = LevelSettings[level].game_mode
-		local area = nil
-		local search_config = {
-			private_game = false,
-			quick_game = false,
-			difficulty = "normal",
-			level_key = level
-		}
-
-		Managers.matchmaking:find_game(search_config)
-		Development.set_parameter("auto_host_dedicated", nil)
-	end
-
 	self:update_mood(dt, t)
 
 	if self.checkpoint_vote_cancelled then
@@ -740,7 +734,7 @@ StateInGameRunning.update = function (self, dt, t)
 
 	local ingame_ui = self.ingame_ui
 
-	if self.ingame_ui then
+	if ingame_ui then
 		local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
 		local rewards_ready = self._booted_eac_untrusted or (self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global"))
 
@@ -768,8 +762,6 @@ StateInGameRunning.update = function (self, dt, t)
 	if self._benchmark_handler then
 		self._benchmark_handler:update(dt, t)
 	end
-
-	self:_update_catchup_framerate_before_starting()
 end
 
 StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
@@ -928,7 +920,9 @@ StateInGameRunning.post_update = function (self, dt, t)
 end
 
 StateInGameRunning.post_render = function (self)
-	self.ingame_ui:post_render()
+	if self.ingame_ui then
+		self.ingame_ui:post_render()
+	end
 end
 
 StateInGameRunning.trigger_xbox_multiplayer_round_end_events = function (self)
@@ -1100,17 +1094,34 @@ if PLATFORM == "xb1" then
 	end
 end
 
-StateInGameRunning.event_conflict_director_setup_done = function (self)
-	self._conflict_directory_is_ready = true
+StateInGameRunning._check_black_screen_transition_requirements = function (self)
+	if not self._game_mode_ready_to_start then
+		local game_mode_ready_to_start = Managers.state.game_mode:local_player_ready_to_start(self.player)
+		self._game_mode_ready_to_start = game_mode_ready_to_start
+	end
 
-	self:_catchup_framerate_before_starting()
+	local conflict_directory_is_ready = self._conflict_directory_is_ready or not self.is_server
+	local game_mode_ready_to_start = self._game_mode_ready_to_start
+
+	if conflict_directory_is_ready and game_mode_ready_to_start then
+		if not self._has_started_framerate_catchup then
+			self:_catchup_framerate_before_starting()
+
+			self._has_started_framerate_catchup = true
+		end
+
+		self:_update_catchup_framerate_before_starting()
+
+		if self._frame_catchup_counter == nil then
+			return true
+		end
+	end
+
+	return false
 end
 
-StateInGameRunning.event_game_mode_ready_to_start = function (self, is_initial_spawn)
-	self._game_mode_ready_to_start = true
-	self._is_initial_spawn = is_initial_spawn
-
-	self:_catchup_framerate_before_starting()
+StateInGameRunning.event_conflict_director_setup_done = function (self)
+	self._conflict_directory_is_ready = true
 end
 
 StateInGameRunning._catchup_framerate_before_starting = function (self)
@@ -1130,88 +1141,33 @@ StateInGameRunning._update_catchup_framerate_before_starting = function (self)
 		self._frame_catchup_counter = nil
 
 		Framerate.set_playing()
-		self:_game_actually_starts()
 	end
 end
 
 StateInGameRunning._game_actually_starts = function (self)
-	if not self._spawn_initialized and self._game_mode_ready_to_start and (not self.is_server or self._conflict_directory_is_ready) then
-		local platform = PLATFORM
-		local loading_context = self.parent.parent.loading_context
-		local first_hero_selection_made = SaveData.first_hero_selection_made
-		local show_profile_on_startup = loading_context.show_profile_on_startup
-		local backend_waiting_for_input = Managers.backend:is_waiting_for_user_input()
-		local level_key = Managers.state.game_mode:level_key()
-		local mechanism_name = Managers.mechanism:current_mechanism_name()
-		local game_mode_setting = GameModeSettings[self.game_mode_key]
+	print("StateInGameRunning:_game_actually_starts()")
 
-		if game_mode_setting.show_profile_on_startup then
-			show_profile_on_startup = true
-		end
+	local loading_context = self.parent.parent.loading_context
 
-		if show_profile_on_startup and level_key == "inn_level" and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
-			if platform == "ps4" or platform == "xb1" then
-				local transition_params = {
-					menu_state_name = "character"
-				}
+	Managers.state.game_mode:local_player_game_starts(self.player, loading_context)
+	Managers.transition:fade_out(GameSettings.transition_fade_in_speed)
 
-				self.ingame_ui:transition_with_fade("initial_character_selection_force", transition_params)
-			else
-				local show_hero_selection = not backend_waiting_for_input and not first_hero_selection_made
-				local transition_params = {
-					menu_state_name = (show_hero_selection and "character") or "overview"
-				}
-				local view = "initial_start_menu_view_force"
+	self._game_started_current_frame = true
+	self._game_has_started = true
 
-				if self.ingame_ui then
-					self.ingame_ui:transition_with_fade(view, transition_params)
-				end
-			end
+	Managers.transition:hide_loading_icon()
+	Managers.transition:show_waiting_for_peers_message(false)
 
-			loading_context.show_profile_on_startup = nil
-		else
-			Managers.transition:fade_out(GameSettings.transition_fade_in_speed)
+	self._waiting_for_peers_message_timer = nil
 
-			self._game_started_current_frame = true
-		end
+	Managers.load_time:end_timer()
 
-		LevelHelper:flow_event(self.world, "local_player_spawned")
+	if Managers.twitch then
+		local level_key = self.level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
 
-		if self._is_initial_spawn then
-			if self._benchmark_handler then
-				LevelHelper:flow_event(self.world, "start_benchmark")
-			else
-				LevelHelper:flow_event(self.world, "level_start_local_player_spawned")
-			end
-		end
-
-		self._spawn_initialized = true
-		self._conflict_directory_is_ready = nil
-		self._game_mode_ready_to_start = nil
-
-		Managers.transition:hide_loading_icon()
-		Managers.transition:show_waiting_for_peers_message(false)
-
-		self._waiting_for_peers_message_timer = nil
-
-		Managers.load_time:end_timer()
-
-		if Managers.twitch then
-			local level_key = self.level_transition_handler:get_current_level_keys()
-			local level_settings = LevelSettings[level_key]
-
-			if level_settings and not level_settings.disable_twitch_game_mode then
-				Managers.twitch:activate_twitch_game_mode(self.network_event_delegate, Managers.state.game_mode:game_mode_key())
-			end
-		end
-
-		local weave_manager = Managers.weave
-
-		if self.is_server and self.game_mode_key == "weave" then
-			weave_manager:store_player_ids()
-			weave_manager:start_objective()
-			weave_manager:reset_statistics_for_challenges()
-			weave_manager:start_timer()
+		if level_settings and not level_settings.disable_twitch_game_mode then
+			Managers.twitch:activate_twitch_game_mode(self.network_event_delegate, Managers.state.game_mode:game_mode_key())
 		end
 	end
 end
@@ -1341,6 +1297,31 @@ StateInGameRunning._kick_afk_player = function (self)
 	self:rpc_trigger_local_afk_system_message(peer_id, message_id, peer_id)
 
 	self.afk_kick = true
+end
+
+StateInGameRunning.rpc_follow_to_lobby = function (self, sender, lobby_type, lobby_to_join)
+	printf("Got message from lobby host to join %s %s", NetworkLookup.lobby_type[lobby_type], lobby_to_join)
+
+	if not Managers.party:is_leader(sender) then
+		return
+	end
+
+	local lobby_join_data = {}
+
+	if NetworkLookup.lobby_type[lobby_type] == "server" then
+		lobby_join_data.is_server_invite = true
+		lobby_join_data.id = lobby_to_join
+		lobby_join_data.server_info = {
+			ip_port = lobby_to_join
+		}
+	else
+		lobby_join_data.is_server_invite = false
+		lobby_join_data.id = lobby_to_join
+	end
+
+	Managers.matchmaking:request_join_lobby(lobby_join_data, {
+		friend_join = true
+	})
 end
 
 return

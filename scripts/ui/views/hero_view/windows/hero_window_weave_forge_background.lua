@@ -36,7 +36,21 @@ HeroWindowWeaveForgeBackground.on_enter = function (self, params, offset)
 	self._hero_name = hero_name
 end
 
+HeroWindowWeaveForgeBackground._setup_definitions = function (self)
+	if self._parent:gamepad_style_active() then
+		definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_background_console_definitions")
+	else
+		definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_background_definitions")
+	end
+
+	widget_definitions = definitions.widgets
+	scenegraph_definition = definitions.scenegraph_definition
+	animation_definitions = definitions.animation_definitions
+end
+
 HeroWindowWeaveForgeBackground.create_ui_elements = function (self, params, offset)
+	self:_setup_definitions()
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
@@ -107,7 +121,7 @@ HeroWindowWeaveForgeBackground._update_animations = function (self, dt)
 end
 
 HeroWindowWeaveForgeBackground._draw = function (self, dt)
-	local ui_renderer = self._ui_renderer
+	local ui_renderer = self._parent:get_ui_renderer()
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._parent:window_input_service()
 	local render_settings = self._render_settings

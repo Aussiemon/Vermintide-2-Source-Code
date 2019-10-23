@@ -114,7 +114,7 @@ TeamPreviewer.cb_hero_unit_spawned_skin_preview = function (self, hero_previewer
 		hero_previewer:wield_weapon_slot(weapon_slot)
 	end
 
-	local preview_idle_animation = "idle"
+	local preview_idle_animation = hero_data.preview_animation or "idle"
 
 	if preview_idle_animation then
 		hero_previewer:play_character_animation(preview_idle_animation)

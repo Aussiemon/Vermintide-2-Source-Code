@@ -5,6 +5,7 @@ local function debug_print(message, ...)
 end
 
 TwitchVoteTemplates = TwitchVoteTemplates or {}
+local twitch_settings = (PLATFORM == "xb1" and MixerSettings) or TwitchSettings
 TwitchVoteTemplates.twitch_add_speed_potion_buff = {
 	cost = -200,
 	use_frame_texture = true,
@@ -15,7 +16,7 @@ TwitchVoteTemplates.twitch_add_speed_potion_buff = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server)
 		if is_server then
@@ -46,7 +47,7 @@ TwitchVoteTemplates.twitch_add_damage_potion_buff = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server)
 		if is_server then
@@ -77,7 +78,7 @@ TwitchVoteTemplates.twitch_add_cooldown_potion_buff = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server)
 		if is_server then
@@ -136,7 +137,7 @@ TwitchVoteTemplates.twitch_no_overcharge_no_ammo_reloads = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server)
 		if is_server then
@@ -181,7 +182,7 @@ TwitchVoteTemplates.twitch_health_regen = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server)
 		if is_server then
@@ -358,7 +359,7 @@ TwitchVoteTemplates.twitch_vote_full_temp_hp = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		if is_server then
@@ -389,7 +390,7 @@ TwitchVoteTemplates.twitch_vote_critical_strikes = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		if is_server then
@@ -421,7 +422,7 @@ TwitchVoteTemplates.twitch_vote_infinite_bombs = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		if is_server then
@@ -462,7 +463,7 @@ TwitchVoteTemplates.twitch_vote_invincibility = {
 	condition_func = function ()
 		local total_intensity = Managers.state.conflict.pacing:get_pacing_intensity()
 
-		return not TwitchSettings.disable_positive_votes and total_intensity >= 100
+		return not twitch_settings.disable_positive_votes and total_intensity >= 100
 	end,
 	on_success = function (is_server, vote_index)
 		if is_server then

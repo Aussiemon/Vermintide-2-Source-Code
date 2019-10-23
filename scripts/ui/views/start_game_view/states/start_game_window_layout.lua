@@ -245,9 +245,11 @@ table.sort(window_layouts, function (a, b)
 	end
 end)
 
-local MAX_ACTIVE_WINDOWS = 3
+local MAX_ACTIVE_WINDOWS = 4
+local MAX_ALIGNMENT_WINDOWS = 3
 
 return {
+	max_alignment_windows = MAX_ALIGNMENT_WINDOWS,
 	max_active_windows = MAX_ACTIVE_WINDOWS,
 	windows = windows,
 	window_layouts = window_layouts

@@ -56,7 +56,7 @@ MatchmakingUI.init = function (self, parent, ingame_ui_context)
 	self:create_ui_elements()
 
 	self.num_players_text = Localize("number_of_players")
-	self.max_number_of_players = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
+	self._max_number_of_players = Managers.mechanism:max_members()
 	self.portrait_index_table = {}
 	self._my_peer_id = Network.peer_id()
 
@@ -136,6 +136,12 @@ end
 MatchmakingUI.update = function (self, dt, t)
 	if RESOLUTION_LOOKUP.modified then
 		self:_update_button_prompts()
+	end
+
+	local disable_matchmaking_ui = false
+
+	if disable_matchmaking_ui then
+		return
 	end
 
 	local parent = self._parent
@@ -684,7 +690,7 @@ MatchmakingUI._update_portraits = function (self, has_mission_vote)
 	if members then
 		local portrait_index_table = self.portrait_index_table
 
-		for i = 1, MatchmakingSettings.MAX_NUMBER_OF_PLAYERS, 1 do
+		for i = 1, self._max_number_of_players, 1 do
 			local peer_id = portrait_index_table[i]
 
 			if peer_id and not members[peer_id] then
@@ -731,7 +737,7 @@ end
 MatchmakingUI._get_portrait_index = function (self, peer_id)
 	local portrait_index_table = self.portrait_index_table
 
-	for i = 1, MatchmakingSettings.MAX_NUMBER_OF_PLAYERS, 1 do
+	for i = 1, self._max_number_of_players, 1 do
 		local player_peer_id = portrait_index_table[i]
 
 		if player_peer_id == peer_id then
@@ -743,7 +749,7 @@ end
 MatchmakingUI._get_first_free_portrait_index = function (self)
 	local portrait_index_table = self.portrait_index_table
 
-	for i = 1, MatchmakingSettings.MAX_NUMBER_OF_PLAYERS, 1 do
+	for i = 1, self._max_number_of_players, 1 do
 		local player_peer_id = portrait_index_table[i]
 
 		if player_peer_id == nil then
@@ -801,7 +807,7 @@ MatchmakingUI.large_window_set_player_portrait = function (self, index, peer_id)
 end
 
 MatchmakingUI._get_party_slot_index_by_peer_id = function (self, peer_id)
-	for i = 1, MatchmakingSettings.MAX_NUMBER_OF_PLAYERS, 1 do
+	for i = 1, self._max_number_of_players, 1 do
 		local widget_name = "party_slot_" .. i
 		local widget = self:_get_detail_widget(widget_name)
 		local content = widget.content

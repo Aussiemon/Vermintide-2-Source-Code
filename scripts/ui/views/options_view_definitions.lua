@@ -2190,7 +2190,7 @@ local DROP_DOWN_WIDGET_SIZE = {
 	30
 }
 
-local function create_drop_down_widget(text, options, selected_option, tooltip_text, scenegraph_id, base_offset)
+local function create_drop_down_widget(text, options, selected_option, tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
 	local options_texts = {}
 	local options_values = {}
 	local options_n = #options
@@ -2207,6 +2207,13 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 	}
 	local item_styles = {}
 	local item_contents = {}
+	local max_draw_count = math.min(options_n, 10)
+	local selected_bg_y = item_size[2] * max_draw_count
+	local using_scrollbar = max_draw_count < options_n
+
+	if using_scrollbar then
+		item_size[1] = item_size[1] - 25
+	end
 
 	for i = 1, options_n, 1 do
 		local content = {
@@ -2217,7 +2224,6 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 		}
 		local style = {
 			text = {
-				upper_case = true,
 				horizontal_alignment = "center",
 				font_size = 16,
 				dynamic_font = true,
@@ -2230,6 +2236,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				default_color = Colors.get_color_table_with_alpha("font_default", 255),
 				hover_color = Colors.get_color_table_with_alpha("font_default", 255),
+				upper_case = not ignore_upper_case,
 				size = item_size
 			},
 			highlight_texture = {
@@ -2254,7 +2261,6 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 		item_contents[i] = content
 	end
 
-	local selected_bg_y = item_size[2] * options_n
 	local pi = math.pi
 	local definition = {
 		element = {
@@ -2440,6 +2446,14 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					end
 				},
 				{
+					pass_type = "texture",
+					style_id = "selected_bg_shade",
+					texture_id = "rect_masked",
+					content_check_function = function (content, style)
+						return content.active
+					end
+				},
+				{
 					pass_type = "rect",
 					content_check_function = function (content)
 						return DEBUG_WIDGETS
@@ -2470,6 +2484,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 			rect_masked = "rect_masked",
 			disabled = false,
 			active = false,
+			using_scrollbar = using_scrollbar,
 			hotspot = {},
 			highlight_hotspot = {},
 			list_content = item_contents,
@@ -2523,7 +2538,8 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					base_offset[2] - item_size[2],
 					base_offset[3] + 5
 				},
-				num_draws = options_n,
+				num_draws = max_draw_count,
+				total_draws = options_n,
 				list_member_offset = {
 					0,
 					-item_size[2],
@@ -2631,7 +2647,6 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 			},
 			selected_option = {
 				horizontal_alignment = "center",
-				upper_case = true,
 				font_size = 16,
 				dynamic_font = true,
 				font_type = "hell_shark_masked",
@@ -2643,7 +2658,8 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				default_color = Colors.get_color_table_with_alpha("font_default", 255),
 				hover_color = Colors.get_color_table_with_alpha("font_default", 255),
-				disabled_color = Colors.get_color_table_with_alpha("font_default", 50)
+				disabled_color = Colors.get_color_table_with_alpha("font_default", 50),
+				upper_case = not ignore_upper_case
 			},
 			selected_bg = {
 				masked = true,
@@ -2661,6 +2677,24 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					10,
 					10,
 					10
+				}
+			},
+			selected_bg_shade = {
+				masked = true,
+				offset = {
+					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - (INPUT_FIELD_WIDTH - 28) - 2,
+					base_offset[2] - (selected_bg_y + 2),
+					base_offset[3] + 19
+				},
+				size = {
+					INPUT_FIELD_WIDTH - 56 + 4,
+					selected_bg_y + 2
+				},
+				color = {
+					255,
+					80,
+					80,
+					80
 				}
 			},
 			debug_middle_line = {
@@ -2702,6 +2736,132 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 		},
 		scenegraph_id = scenegraph_id
 	}
+
+	if using_scrollbar then
+		local thumbnail_fraction = (options_n - max_draw_count) / options_n
+		local thumbnail_height = selected_bg_y * thumbnail_fraction
+		local total_scroll_distance = selected_bg_y - thumbnail_height
+		local step_size = total_scroll_distance / (options_n - max_draw_count) - 1
+		local hotspot_pass = {
+			style_id = "thumbnail",
+			pass_type = "hotspot",
+			content_id = "thumbnail_hotspot",
+			content_check_function = function (content)
+				return content.parent.active
+			end
+		}
+		local held_pass = {
+			style_id = "thumbnail",
+			pass_type = "held",
+			content_id = "thumbnail_hotspot",
+			content_check_function = function (content)
+				return content.parent.active
+			end,
+			held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				local gamepad_active = Managers.input:is_device_active("gamepad")
+
+				if gamepad_active then
+					return
+				end
+
+				local thumbnail_fraction = ui_content.thumbnail_fraction
+				local thumbnail_length = ui_content.thumbnail_length
+				local scroll_length = ui_content.scroll_length
+				local parent_style = ui_style.parent
+				local parent_offest = parent_style.offset
+				local default_offset_y = ui_style.default_offset_y
+				local offset = ui_style.offset
+				local axis = 2
+				local base_cursor = input_service:get("cursor")
+				local cursor = UIInverseScaleVectorToResolution(base_cursor)
+				local cursor_y = cursor[axis]
+
+				if not ui_content.cursor_y then
+					ui_content.cursor_y = cursor_y
+					ui_content.parent.dragging = true
+				end
+
+				local diff_y = cursor_y - ui_content.cursor_y
+				ui_content.cursor_y = cursor_y
+				local start_position = 0
+				local end_position = scroll_length
+				local current_position = default_offset_y - offset[axis] - diff_y
+				current_position = math.clamp(current_position, start_position, end_position)
+				local percentage = current_position / end_position
+				local list_style = ui_style.parent.list_style
+				local num_draws = list_style.num_draws
+				local total_draws = list_style.total_draws
+				local draw_amount_diff = total_draws - num_draws
+				local step_percent = 1 / draw_amount_diff
+				local steps_scrolled = math.floor(percentage / step_percent)
+				list_style.start_index = steps_scrolled + 1
+				ui_content.scroll_progress = percentage
+			end,
+			release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+				ui_content.cursor_y = nil
+				ui_content.parent.dragging = nil
+			end
+		}
+		local pass = {
+			style_id = "thumbnail",
+			texture_id = "rect_masked",
+			pass_type = "texture",
+			content_check_function = function (content, style)
+				return content.active
+			end,
+			content_change_function = function (content, style)
+				local default_offset_y = style.default_offset_y
+				local offset = style.offset
+				local step_size = style.step_size
+				local size = style.size
+				local axis = 2
+				local hotspot = content.thumbnail_hotspot
+				local scroll_progress = hotspot.scroll_progress
+				local scroll_length = hotspot.scroll_length
+				local thumb_length = hotspot.thumbnail_length
+				local start_position = 0
+				local end_position = scroll_length - thumb_length
+				local current_position = scroll_length * scroll_progress
+				offset[axis] = default_offset_y - current_position
+			end
+		}
+		local style = {
+			vertical_alignment = "bottom",
+			horizontal_alignment = "center",
+			step_size = step_size,
+			default_offset_y = base_offset[2] - thumbnail_height,
+			offset = {
+				(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - 50,
+				base_offset[2] - thumbnail_height,
+				base_offset[3] + 25
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				20,
+				thumbnail_height
+			},
+			texture_size = {
+				5,
+				thumbnail_height
+			}
+		}
+		definition.element.passes[#definition.element.passes + 1] = pass
+		definition.element.passes[#definition.element.passes + 1] = held_pass
+		definition.element.passes[#definition.element.passes + 1] = hotspot_pass
+		definition.content.thumbnail_hotspot = {
+			scroll_progress = 0,
+			thumbnail_fraction = thumbnail_fraction,
+			thumbnail_length = thumbnail_height,
+			scroll_length = total_scroll_distance,
+			scenegraph_id = scenegraph_id
+		}
+		definition.style.thumbnail = style
+	end
 
 	return UIWidget.init(definition)
 end
@@ -4527,13 +4687,19 @@ SettingsWidgetTypeTemplate = {
 			local style = widget.style
 			local list_content = content.list_content
 			local list_style = style.list_style
+			local start_index = list_style.start_index
+			local num_draws = list_style.num_draws
+			local total_draws = list_style.total_draws
+			local using_scrollbar = content.using_scrollbar
+			local thumbnail_hotspot = content.thumbnail_hotspot
 
 			if content.active then
-				if input_service:get("move_up") then
-					local num_draws = list_style.num_draws
+				local selection_input_done = false
+
+				if input_service:get("move_up_hold_continuous") then
 					local selected_index = nil
 
-					for i = 1, num_draws, 1 do
+					for i = 1, total_draws, 1 do
 						local entry_hotspot = list_content[i].hotspot
 
 						if entry_hotspot.is_selected then
@@ -4547,17 +4713,20 @@ SettingsWidgetTypeTemplate = {
 						if selected_index > 1 then
 							list_content[selected_index].hotspot.is_selected = false
 							list_content[selected_index - 1].hotspot.is_selected = true
+
+							if using_scrollbar and start_index >= selected_index - 1 then
+								list_style.start_index = math.max(start_index - 1, 1)
+							end
 						end
 					else
 						list_content[1].hotspot.is_selected = true
 					end
 
-					return true
-				elseif input_service:get("move_down") then
-					local num_draws = list_style.num_draws
+					selection_input_done = true
+				elseif input_service:get("move_down_hold_continuous") then
 					local selected_index = nil
 
-					for i = 1, num_draws, 1 do
+					for i = 1, total_draws, 1 do
 						local entry_hotspot = list_content[i].hotspot
 
 						if entry_hotspot.is_selected then
@@ -4568,12 +4737,27 @@ SettingsWidgetTypeTemplate = {
 					end
 
 					if selected_index then
-						if selected_index < num_draws then
+						if selected_index < total_draws then
 							list_content[selected_index].hotspot.is_selected = false
 							list_content[selected_index + 1].hotspot.is_selected = true
+
+							if using_scrollbar and num_draws <= selected_index + 1 then
+								list_style.start_index = math.min(start_index + 1, total_draws - num_draws + 1)
+							end
 						end
 					else
 						list_content[1].hotspot.is_selected = true
+					end
+
+					selection_input_done = true
+				end
+
+				if selection_input_done then
+					if using_scrollbar then
+						local start_index = list_style.start_index
+						local draw_amount_diff = total_draws - num_draws
+						local scroll_percent = (start_index - 1) / draw_amount_diff
+						thumbnail_hotspot.scroll_progress = scroll_percent
 					end
 
 					return true
@@ -4591,6 +4775,14 @@ SettingsWidgetTypeTemplate = {
 						if current_selection then
 							local list_content_entry = list_content[current_selection]
 							list_content_entry.hotspot.is_selected = true
+
+							if using_scrollbar then
+								local draw_amount_diff = total_draws - num_draws
+								list_style.start_index = math.min(current_selection, draw_amount_diff)
+								local start_index = list_style.start_index
+								local scroll_percent = (start_index - 1) / draw_amount_diff
+								thumbnail_hotspot.scroll_progress = scroll_percent
+							end
 						end
 					end
 				else
@@ -4599,7 +4791,7 @@ SettingsWidgetTypeTemplate = {
 					local num_draws = list_style.num_draws
 					local selected_index = nil
 
-					for i = 1, num_draws, 1 do
+					for i = 1, total_draws, 1 do
 						local entry_hotspot = list_content[i].hotspot
 
 						if entry_hotspot.is_selected then

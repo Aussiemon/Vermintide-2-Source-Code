@@ -109,12 +109,12 @@ ActionCareerDRRanger._stagger_explosion = function (self)
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
 	if is_server then
-		network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, self.power_level, false)
+		network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, self.power_level, false, owner_unit_go_id)
 	else
-		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, self.power_level, false)
+		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, self.power_level, false, owner_unit_go_id)
 	end
 
-	DamageUtils.create_explosion(world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, self.power_level, false)
+	DamageUtils.create_explosion(world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, self.power_level, false, owner_unit)
 end
 
 ActionCareerDRRanger._throw = function (self)

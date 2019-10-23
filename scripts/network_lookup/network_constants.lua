@@ -138,4 +138,12 @@ check_bounderies("interaction_state_lookup", "interaction_states")
 check_bounderies("proc_function_lookup", "proc_functions")
 check_bounderies("difficulty_lookup", "difficulties")
 
+local game_mode_state_id_max = Network.type_info("game_mode_state_id").max
+
+for game_mode_key, settings in pairs(GameModeSettings) do
+	local num_states = #settings.game_mode_states
+
+	fassert(num_states <= game_mode_state_id_max, "Too many game mode states in %s, it has %u maximum is %u", game_mode_key, num_states, game_mode_state_id_max)
+end
+
 return

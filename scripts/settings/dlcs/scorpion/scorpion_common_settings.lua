@@ -7,18 +7,23 @@ settings.unlock_settings = {
 }
 settings.unlock_settings_xb1 = {
 	scorpion = {
-		class = "AlwaysUnlocked"
+		class = "UnlockDlc",
+		id = "633879CB-F38D-409B-BBFE-48EA39EF3277"
 	}
 }
 settings.unlock_settings_ps4 = {
 	CUSA13595_00 = {
 		scorpion = {
-			class = "AlwaysUnlocked"
+			id = "46def96ff75e44669adc3bec30de70a3",
+			product_label = "V2MAPPACKUS00003",
+			class = "UnlockDlc"
 		}
 	},
 	CUSA13645_00 = {
 		scorpion = {
-			class = "AlwaysUnlocked"
+			id = "e9ff7de07b5849f3b79ec4cd3fba5523",
+			product_label = "V2MAPPACKEU00003",
+			class = "UnlockDlc"
 		}
 	}
 }
@@ -28,7 +33,8 @@ settings.statistics_lookup = {
 	"weave_light_low_curse",
 	"scorpion_weaves_fire_season_1",
 	"weave_shadow_kill_no_shrouded",
-	"weave_death_hit_by_spirit"
+	"weave_death_hit_by_spirit",
+	"scorpion_keep_standard_bearer_alive"
 }
 settings.husk_lookup = {
 	"units/weapons/player/wpn_dw_thrown_axe_01_t2/wpn_dw_thrown_axe_01_t2_magic_01_3p",
@@ -72,9 +78,13 @@ local level_names = {
 	"river",
 	"canyon",
 	"alleys",
+	"hold",
 	"arena_castle",
 	"arena_temple",
-	"arena_void"
+	"arena_void",
+	"arena_pillars",
+	"arena_town_square",
+	"arena_snow"
 }
 settings.interactions_filenames = {
 	"scripts/settings/dlcs/scorpion/scorpion_interactions"

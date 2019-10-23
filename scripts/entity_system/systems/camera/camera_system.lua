@@ -6,6 +6,7 @@ require("scripts/unit_extensions/camera/states/camera_state_follow")
 require("scripts/unit_extensions/camera/states/camera_state_follow_third_person")
 require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_ledge")
 require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_over_shoulder")
+require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_smart_climbing")
 require("scripts/unit_extensions/camera/states/camera_state_follow_chaos_spawn_grabbed")
 require("scripts/unit_extensions/camera/states/camera_state_observer")
 require("scripts/unit_extensions/camera/states/camera_state_attract")
@@ -119,6 +120,7 @@ CameraSystem._setup_camera_unit = function (self, player, viewport_name)
 		CameraStateFollowAttract,
 		CameraStateFollowThirdPersonLedge,
 		CameraStateFollowThirdPersonOverShoulder,
+		CameraStateFollowThirdPersonSmartClimbing,
 		CameraStateFollowChaosSpawnGrabbed,
 		CameraStateObserver,
 		CameraStateInteraction

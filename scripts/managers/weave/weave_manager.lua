@@ -777,12 +777,6 @@ WeaveManager.ai_killed = function (self, killed_unit, killer_unit, death_data, k
 		self:_track_ai_killed(death_data.breed.name)
 	end
 
-	local weapon_name = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
-
-	if weapon_name == "suicide" then
-		return
-	end
-
 	local weave_objective_system = Managers.state.entity:system("weave_objective_system")
 
 	weave_objective_system:on_ai_killed(killed_unit, killer_unit, death_data, killing_blow)

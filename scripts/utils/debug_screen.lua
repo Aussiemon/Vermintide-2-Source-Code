@@ -1,4 +1,4 @@
-local font = "gw_arial_32"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 local fade_speed = 10
 local base_layer = UILayer.debug_screen
@@ -298,10 +298,6 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		input_manager:device_block_service("keyboard", 1, "Debug", "debug_screen")
 
 		opened_this_frame = true
-	end
-
-	if input_service:get("f1") then
-		Debug.create_jira_issue()
 	end
 
 	if not DebugScreen.active and DebugScreen.fade_timer == 0 then
@@ -1029,6 +1025,10 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 			local string_length = string.len(DebugScreen.search_string)
 			local character_index = Utf8.location(DebugScreen.search_string, string_length)
 			DebugScreen.search_string = DebugScreen.search_string:sub(1, character_index - 1)
+
+			if DebugScreen.search_string:find(".", 1, true) == nil then
+				DebugScreen.active_id = nil
+			end
 		end
 	end
 

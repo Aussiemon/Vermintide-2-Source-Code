@@ -906,14 +906,14 @@ local weekly_complete_quickplay_missions_mappings = {
 }
 local weekly_complete_weekly_event_missions_mappings = {
 	{
-		played_levels_event = {}
+		played_levels_weekly_event = {}
 	}
 }
 
 for i = 1, #UnlockableLevels, 1 do
 	local level_key = UnlockableLevels[i]
 	local complete_quickplay_missions_mapping = weekly_complete_quickplay_missions_mappings[1].played_levels_quickplay
-	local complete_weekly_event_missions_mapping = weekly_complete_weekly_event_missions_mappings[1].played_levels_event
+	local complete_weekly_event_missions_mapping = weekly_complete_weekly_event_missions_mappings[1].played_levels_weekly_event
 	complete_quickplay_missions_mapping[level_key] = true
 	complete_weekly_event_missions_mapping[level_key] = true
 end

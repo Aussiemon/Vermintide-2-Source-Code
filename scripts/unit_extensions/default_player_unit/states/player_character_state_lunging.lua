@@ -231,7 +231,7 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 
 		local input_service = Managers.input:get_service("Player")
 
-		if input_service:get("action_two", true) then
+		if input_service and input_service:get("action_two", true) then
 			local position = POSITION_LOOKUP[unit]
 			local forward_direction = Quaternion.forward(first_person_extension:current_rotation())
 

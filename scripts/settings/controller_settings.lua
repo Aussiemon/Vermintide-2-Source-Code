@@ -352,6 +352,11 @@ if InputUtils.keymaps_key_approved("win32") then
 			"mouse",
 			"right",
 			"pressed"
+		},
+		ghost_mode_enter = {
+			"keyboard",
+			"q",
+			"pressed"
 		}
 	}
 end
@@ -4154,6 +4159,56 @@ if InputUtils.keymaps_key_approved("win32") then
 			"keyboard",
 			"right ctrl",
 			"held"
+		},
+		keyboard_1 = {
+			"keyboard",
+			"1",
+			"pressed"
+		},
+		keyboard_2 = {
+			"keyboard",
+			"2",
+			"pressed"
+		},
+		keyboard_3 = {
+			"keyboard",
+			"3",
+			"pressed"
+		},
+		keyboard_4 = {
+			"keyboard",
+			"4",
+			"pressed"
+		},
+		keyboard_5 = {
+			"keyboard",
+			"5",
+			"pressed"
+		},
+		keyboard_6 = {
+			"keyboard",
+			"6",
+			"pressed"
+		},
+		keyboard_7 = {
+			"keyboard",
+			"7",
+			"pressed"
+		},
+		keyboard_8 = {
+			"keyboard",
+			"8",
+			"pressed"
+		},
+		keyboard_9 = {
+			"keyboard",
+			"9",
+			"pressed"
+		},
+		keyboard_0 = {
+			"keyboard",
+			"0",
+			"pressed"
 		},
 		scroll_axis = {
 			"mouse",

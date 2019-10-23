@@ -741,8 +741,9 @@ ItemMasterList.kerillian_waywatcher_career_skill_weapon = {
 	rarity = "plentiful",
 	can_wield = {},
 	item_units_to_replace = {
-		right_hand_unit = true,
-		left_hand_unit = true
+		material_settings = true,
+		left_hand_unit = true,
+		right_hand_unit = true
 	}
 }
 ItemMasterList.kerillian_waywatcher_career_skill_weapon_piercing_shot = {
@@ -753,8 +754,9 @@ ItemMasterList.kerillian_waywatcher_career_skill_weapon_piercing_shot = {
 	rarity = "plentiful",
 	can_wield = {},
 	item_units_to_replace = {
-		right_hand_unit = true,
-		left_hand_unit = true
+		material_settings = true,
+		left_hand_unit = true,
+		right_hand_unit = true
 	}
 }
 ItemMasterList.sienna_scholar_career_skill_weapon = {

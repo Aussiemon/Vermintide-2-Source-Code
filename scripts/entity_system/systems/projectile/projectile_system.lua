@@ -216,11 +216,11 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 		if instant_explosion then
 			local extension_init_data = {
 				area_damage_system = {
-					dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
+					area_damage_template = "globadier_area_dot_damage",
 					invisible_unit = true,
 					player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 					area_ai_random_death_template = "area_poison_ai_random_death",
-					area_damage_template = "globadier_area_dot_damage",
+					dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
 					extra_dot_effect_name = "fx/chr_gutter_death",
 					damage_players = true,
 					aoe_dot_damage = aoe_dot_damage,
@@ -231,7 +231,8 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 					life_time = duration,
 					damage_source = damage_source,
 					create_nav_tag_volume = create_nav_tag_volume,
-					nav_tag_volume_layer = nav_tag_volume_layer
+					nav_tag_volume_layer = nav_tag_volume_layer,
+					source_attacker_unit = owner_unit
 				}
 			}
 			local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
@@ -260,11 +261,11 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 					owner_unit = owner_unit
 				},
 				area_damage_system = {
+					area_damage_template = "globadier_area_dot_damage",
 					invisible_unit = false,
 					player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 					area_ai_random_death_template = "area_poison_ai_random_death",
 					dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
-					area_damage_template = "globadier_area_dot_damage",
 					damage_players = true,
 					aoe_dot_damage = aoe_dot_damage,
 					aoe_init_damage = aoe_init_damage,
@@ -274,7 +275,9 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 					life_time = duration,
 					damage_source = damage_source,
 					create_nav_tag_volume = create_nav_tag_volume,
-					nav_tag_volume_layer = nav_tag_volume_layer
+					nav_tag_volume_layer = nav_tag_volume_layer,
+					source_attacker_unit = owner_unit,
+					owner_player = Managers.player:owner(owner_unit)
 				}
 			}
 			local projectile_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
@@ -376,7 +379,7 @@ ProjectileSystem.rpc_spawn_pickup_projectile_limited = function (self, sender, p
 	Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, projectile_unit_template_name, extension_init_data, position, rotation)
 end
 
-ProjectileSystem.rpc_spawn_explosive_pickup_projectile = function (self, sender, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, damage, explode_time, fuse_time, item_name_id, pickup_spawn_type_id)
+ProjectileSystem.rpc_spawn_explosive_pickup_projectile = function (self, sender, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, pickup_spawn_type_id)
 	if not Managers.state.network:game() then
 		return
 	end
@@ -391,7 +394,8 @@ ProjectileSystem.rpc_spawn_explosive_pickup_projectile = function (self, sender,
 	if explode_time ~= 0 then
 		explosion_data = {
 			explode_time = explode_time,
-			fuse_time = fuse_time
+			fuse_time = fuse_time,
+			attacker_unit_id = attacker_unit_id
 		}
 	end
 
@@ -424,7 +428,7 @@ ProjectileSystem.rpc_spawn_explosive_pickup_projectile = function (self, sender,
 	Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, projectile_unit_template_name, extension_init_data, position, rotation)
 end
 
-ProjectileSystem.rpc_spawn_explosive_pickup_projectile_limited = function (self, sender, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, damage, explode_time, fuse_time, item_name_id, pickup_spawn_type_id)
+ProjectileSystem.rpc_spawn_explosive_pickup_projectile_limited = function (self, sender, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, damage, explode_time, fuse_time, attacker_unit_id, item_name_id, pickup_spawn_type_id)
 	if not Managers.state.network:game() then
 		return
 	end
@@ -441,7 +445,8 @@ ProjectileSystem.rpc_spawn_explosive_pickup_projectile_limited = function (self,
 	if explode_time ~= 0 then
 		explosion_data = {
 			explode_time = explode_time,
-			fuse_time = fuse_time
+			fuse_time = fuse_time,
+			attacker_unit_id = attacker_unit_id
 		}
 	end
 

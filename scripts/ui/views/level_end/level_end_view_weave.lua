@@ -27,7 +27,7 @@ local fake_input_service = {
 		return
 	end
 }
-LevelEndViewWeave = class(LevelEndViewWeave, LevelEndView_Base)
+LevelEndViewWeave = class(LevelEndViewWeave, LevelEndViewBase)
 
 LevelEndViewWeave.init = function (self, context)
 	self._team_heroes = {}
@@ -89,8 +89,11 @@ LevelEndViewWeave.create_ui_elements = function (self)
 	end
 
 	if self.game_won then
-		self:_setup_team_heroes(self.context.players_session_score)
-		self:_setup_team_previewer()
+		local weave_manager = Managers.weave
+		local num_players = weave_manager:get_num_players()
+
+		self:_setup_team_heroes(self.context.players_session_score, num_players)
+		self:_setup_team_previewer(num_players)
 	end
 end
 
@@ -186,12 +189,12 @@ LevelEndViewWeave._setup_weave_data = function (self)
 	Managers.weave:set_next_objective(current_objective_index)
 end
 
-local unit_x = 0
+local unit_x = 0.07
 local unit_x_seperation = 1.36
 local unit_y = -1.9
 local unit_y_seperation = 0.15
 local unit_z = 0
-local unit_locations = {
+local hero_locations = {
 	{
 		{
 			unit_x,
@@ -269,7 +272,7 @@ LevelEndViewWeave._update_team_previewer = function (self, dt, t)
 	end
 end
 
-LevelEndViewWeave._setup_team_previewer = function (self)
+LevelEndViewWeave._setup_team_previewer = function (self, num_players)
 	if self._team_previewer then
 		return
 	end
@@ -279,10 +282,10 @@ LevelEndViewWeave._setup_team_previewer = function (self)
 	local team_data = self._team_heroes
 	local player_count = #team_data
 
-	self._team_previewer:setup_team(team_data, unit_locations[player_count])
+	self._team_previewer:setup_team(team_data, hero_locations[num_players])
 end
 
-LevelEndViewWeave._setup_team_heroes = function (self, players_session_scores)
+LevelEndViewWeave._setup_team_heroes = function (self, players_session_scores, num_players)
 	local sorted_stat_ids = {}
 
 	for stats_id in pairs(players_session_scores) do
@@ -297,12 +300,15 @@ LevelEndViewWeave._setup_team_heroes = function (self, players_session_scores)
 	table.clear(team_heroes)
 	table.clear(players_with_score)
 
-	for i = 1, #sorted_stat_ids, 1 do
+	for i = 1, num_players, 1 do
 		local player_stat_id = sorted_stat_ids[i]
-		local player_data = players_session_scores[player_stat_id]
-		team_heroes[i] = self:get_hero_from_score(player_data)
-		local peer_id = player_data.peer_id
-		players_with_score[peer_id] = true
+
+		if player_stat_id then
+			local player_data = players_session_scores[player_stat_id]
+			team_heroes[#team_heroes + 1] = self:get_hero_from_score(player_data)
+			local peer_id = player_data.peer_id
+			players_with_score[peer_id] = true
+		end
 	end
 end
 

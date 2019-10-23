@@ -151,7 +151,7 @@ StateTitleScreenLoadSave.cb_query_done = function (self, data)
 		self._state = "create_save"
 	end
 
-	if not GameSettingsDevelopment.disable_intro_trailer then
+	if not GameSettingsDevelopment.disable_intro_trailer and not script_data.skip_intro_trailer then
 		self.parent.parent.loading_context.first_time = true
 	end
 end

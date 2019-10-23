@@ -310,7 +310,11 @@ LocomotionUtils.set_animation_translation_scale = function (unit, animation_tran
 		if network_manager:game() then
 			local go_id = Managers.state.unit_storage:go_id(unit)
 
-			network_manager.network_transmit:send_rpc_clients("rpc_set_animation_translation_scale", go_id, animation_translation_scale)
+			if network_manager.is_server then
+				network_manager.network_transmit:send_rpc_clients("rpc_set_animation_translation_scale", go_id, animation_translation_scale)
+			else
+				network_manager.network_transmit:send_rpc_server("rpc_set_animation_translation_scale", go_id, animation_translation_scale)
+			end
 		end
 	end
 end

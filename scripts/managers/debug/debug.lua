@@ -1,5 +1,5 @@
 local font_size = 26
-local font = "gw_arial_32"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 Debug = Debug or {}
 

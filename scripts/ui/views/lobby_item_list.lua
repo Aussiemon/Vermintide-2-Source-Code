@@ -461,7 +461,7 @@ local function lobby_level_display_name(lobby_data)
 	end
 
 	local game_mode_index = tonumber(lobby_data.game_mode)
-	local game_mode_names = table.clone(NetworkLookup.game_modes)
+	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
 	local game_mode_name = game_mode_index and game_mode_names[game_mode_index]
 
 	if game_mode_name == "weave" then
@@ -534,7 +534,7 @@ function level_is_locked(lobby_data)
 	local statistics_db = player_manager:statistics_db()
 	local player_stats_id = player:stats_id()
 	local game_mode_index = tonumber(lobby_data.game_mode)
-	local game_mode_names = table.clone(NetworkLookup.game_modes)
+	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
 	local game_mode = game_mode_names[game_mode_index]
 	local game_mode_settings = game_mode and GameModeSettings[game_mode]
 
@@ -569,7 +569,7 @@ end
 
 function difficulty_is_locked(lobby_data)
 	local game_mode_index = tonumber(lobby_data.game_mode)
-	local game_mode_names = table.clone(NetworkLookup.game_modes)
+	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
 	local game_mode = game_mode_names[game_mode_index]
 
 	if game_mode == "weave" then

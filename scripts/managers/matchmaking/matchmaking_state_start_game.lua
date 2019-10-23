@@ -141,10 +141,24 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			ignore_dlc_check = false
 		end
 
-		level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
-	end
+		if game_mode == "weave" then
+			local weave_index = Math.random(#WeaveSettings.templates_ordered)
+			local weave_template = WeaveSettings.templates_ordered[weave_index]
+			weave_name = weave_template.name
+			level_key = weave_template.objectives[1].level_id
 
-	if game_mode == "weave" then
+			Managers.weave:set_next_weave(weave_name)
+			Managers.weave:set_next_objective(1)
+		else
+			local preferred_level_keys = search_config.preferred_level_keys
+
+			if preferred_level_keys then
+				level_key = preferred_level_keys[Math.random(1, #preferred_level_keys)]
+			else
+				level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
+			end
+		end
+	elseif game_mode == "weave" then
 		weave_name = search_config.weave_name
 	end
 
@@ -164,12 +178,16 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 	end
 
 	if PLATFORM == "xb1" then
+		local hopper_name = LobbyInternal.HOPPER_NAME
 		local DIFFICULTY_LUT = {
 			"easy",
 			"normal",
 			"hard",
 			"harder",
-			"hardest"
+			"hardest",
+			"cataclysm",
+			"cataclysm_2",
+			"cataclysm_3"
 		}
 		local matchmaking_types = nil
 
@@ -178,8 +196,10 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 				"event"
 			}
 		elseif game_mode == "weave" then
+			hopper_name = LobbyInternal.WEAVE_HOPPER_NAME
 			matchmaking_types = {
-				"weave"
+				"weave",
+				weave_name
 			}
 		else
 			matchmaking_types = {
@@ -204,6 +224,8 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		local powerlevel = self._matchmaking_manager:get_average_power_level()
 		local strict_matchmaking = 0
 		local network_hash = self._lobby:get_network_hash()
+		local weave_template = weave_name and WeaveSettings.templates[weave_name]
+		local weave_index = weave_template and table.find(WeaveSettings.templates_ordered, weave_template)
 		local ticket_params = {
 			level = {
 				level_key
@@ -213,10 +235,11 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			powerlevel = powerlevel,
 			strict_matchmaking = strict_matchmaking,
 			profiles = profiles,
-			network_hash = network_hash
+			network_hash = network_hash,
+			weave_index = weave_index
 		}
 
-		self._lobby:enable_matchmaking(not search_config.private_game, ticket_params, 600)
+		self._lobby:enable_matchmaking(not search_config.private_game, ticket_params, 600, hopper_name)
 	end
 
 	if game_mode == "adventure" then

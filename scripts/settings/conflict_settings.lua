@@ -4709,7 +4709,7 @@ DefaultConflictDirectorSet = {
 }
 ConflictDirectorLockedFunctions = {
 	beastmen = function (level_key)
-		if script_data.unlock_all_levels then
+		if DEDICATED_SERVER then
 			return false
 		end
 

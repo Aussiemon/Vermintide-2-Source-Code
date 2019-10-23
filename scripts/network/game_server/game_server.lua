@@ -87,6 +87,8 @@ GameServer.update = function (self, dt, t)
 		end
 	end
 
+	GameServerInternal.run_callbacks(self._game_server, self)
+
 	return self._state
 end
 
@@ -123,6 +125,10 @@ GameServer.get_stored_lobby_data = function (self)
 	return self._data_table
 end
 
+GameServer.lost_connection_to_lobby = function (self)
+	return false
+end
+
 GameServer.is_dedicated_server = function (self)
 	return true
 end
@@ -141,6 +147,10 @@ end
 
 GameServer.members = function (self)
 	return self._members
+end
+
+GameServer.user_name = function (self, peer_id)
+	return GameServerInternal.user_name(self._game_server, peer_id)
 end
 
 GameServer.get_max_members = function (self)
@@ -169,6 +179,27 @@ end
 
 GameServer.failed = function (self)
 	return self._state == GameServerState.DISCONNECTED
+end
+
+GameServer.server_member_added = function (self, peer_id)
+	printf("Member %s was added", peer_id)
+end
+
+GameServer.server_slot_allocation_request = function (self, reserver, peers)
+	if Managers.mechanism:try_reserve_game_server_slots(reserver, peers) then
+		printf("Request by %s to allocate %d slots was approved", reserver, #peers)
+
+		return true
+	else
+		printf("Request by %s to allocate %d slots was disapproved", reserver, #peers)
+
+		return false
+	end
+end
+
+GameServer.server_slot_expired = function (self, peer_id)
+	Managers.mechanism:game_server_slot_reservation_expired(peer_id)
+	printf("Server slot %s was deallocated", peer_id)
 end
 
 return

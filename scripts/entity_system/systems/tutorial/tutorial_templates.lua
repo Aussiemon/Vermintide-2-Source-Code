@@ -142,8 +142,9 @@ TutorialTemplates = {
 		end
 	},
 	advanced_grenade = {
-		needed_points = 3,
 		priority = 60,
+		needed_points = 3,
+		allowed_in_tutorial = true,
 		display_type = "tooltip",
 		icon = "grenade_icon",
 		is_mission_tutorial = true,
@@ -351,6 +352,9 @@ TutorialTemplates.objective_pickup = {
 	display_type = "objective_tooltip",
 	icon = "hud_tutorial_icon_mission",
 	is_mission_tutorial = true,
+	game_mode_icons = {
+		weave = "hud_weaves_icon_mission"
+	},
 	get_text = function (data)
 		return data.objective_text
 	end,
@@ -450,6 +454,9 @@ TutorialTemplates.objective_socket = {
 	display_type = "objective_tooltip",
 	icon = "hud_tutorial_icon_mission",
 	is_mission_tutorial = true,
+	game_mode_icons = {
+		weave = "hud_weaves_icon_mission"
+	},
 	get_text = function (data)
 		return data.objective_text
 	end,
@@ -514,6 +521,9 @@ TutorialTemplates.objective_unit = {
 	display_type = "objective_tooltip",
 	icon = "hud_tutorial_icon_mission",
 	is_mission_tutorial = true,
+	game_mode_icons = {
+		weave = "hud_weaves_icon_mission"
+	},
 	get_text = function (data)
 		return data.objective_text
 	end,

@@ -80,7 +80,7 @@ LocomotionSystem.init = function (self, entity_system_creation_context, system_n
 		extensions.AILocomotionExtensionC = nil
 	end
 
-	EngineOptimized.bone_lod_init(GameSettingsDevelopment.bone_lod_husks.lod_out_range_sq, GameSettingsDevelopment.bone_lod_husks.lod_in_range_sq, GameSettingsDevelopment.bone_lod_husks.lod_multiplier)
+	EngineOptimized.bone_lod_init(GameSettingsDevelopment.bone_lod_husks.lod_in_range_sq, GameSettingsDevelopment.bone_lod_husks.lod_out_range_sq, GameSettingsDevelopment.bone_lod_husks.lod_multiplier)
 end
 
 LocomotionSystem.destroy = function (self)
@@ -125,8 +125,6 @@ LocomotionSystem.extensions_ready = function (self, world, unit, extension_name)
 		if bone_lod_level > 0 and not script_data.bone_lod_disable then
 			extension.bone_lod_extension_id = EngineOptimized.bone_lod_register_extension(unit)
 			self.animation_lod_units[unit] = extension
-
-			Unit.set_bones_lod(unit, 1)
 		end
 	else
 		self.player_units[unit] = extension
@@ -176,8 +174,6 @@ LocomotionSystem.unfreeze = function (self, unit, extension_name)
 		if bone_lod_level > 0 and not script_data.bone_lod_disable then
 			extension.bone_lod_extension_id = EngineOptimized.bone_lod_register_extension(unit)
 			self.animation_lod_units[unit] = extension
-
-			Unit.set_bones_lod(unit, 1)
 		end
 	end
 end
@@ -243,7 +239,7 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 	for id, player in pairs(human_and_bot_players) do
 		local unit = player.player_unit
 
-		if unit and not player.remote then
+		if Unit.alive(unit) and not player.remote then
 			local first_persion_system = ScriptUnit.extension(unit, "first_person_system")
 			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 			local position = first_persion_system:current_position()
@@ -323,6 +319,10 @@ LocomotionSystem.rpc_set_animation_translation_scale = function (self, sender, g
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	locomotion_extension:set_animation_translation_scale(animation_translation_scale)
+
+	if self.is_server then
+		self.network_transmit:send_rpc_clients_except("rpc_set_animation_translation_scale", sender, game_object_id, animation_translation_scale)
+	end
 end
 
 LocomotionSystem.rpc_set_animation_rotation_scale = function (self, sender, game_object_id, animation_rotation_scale)

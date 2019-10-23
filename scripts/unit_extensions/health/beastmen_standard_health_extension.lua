@@ -20,28 +20,38 @@ BeastmenStandardHealthExtension.apply_client_predicted_damage = function (self, 
 	return
 end
 
+local white_listed_damage_sources = {
+	explosive_barrel = true,
+	grenade_frag_02 = true,
+	torch = true,
+	grenade_frag_01 = true,
+	shadow_torch = true
+}
+
 BeastmenStandardHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 	if damage_source_name == "suicide" then
 		BeastmenStandardHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 	else
+		local can_damage_banner = false
 		local master_list_item = rawget(ItemMasterList, damage_source_name)
 
 		if master_list_item then
 			local slot_type = master_list_item.slot_type
 			local rapier_pistol = damage_type == "shot_carbine"
-			local melee_weapon = slot_type and slot_type == "melee" and not rapier_pistol
+			can_damage_banner = slot_type and slot_type == "melee" and not rapier_pistol
+			can_damage_banner = can_damage_banner or white_listed_damage_sources[damage_source_name]
+		end
 
-			if melee_weapon then
-				BeastmenStandardHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+		if can_damage_banner then
+			BeastmenStandardHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
-				local standard_extension = ScriptUnit.has_extension(self._unit, "ai_supplementary_system")
-				local standard_template = standard_extension.standard_template
+			local standard_extension = ScriptUnit.has_extension(self._unit, "ai_supplementary_system")
+			local standard_template = standard_extension.standard_template
 
-				if standard_template then
-					local sfx_taking_damage = standard_template.sfx_taking_damage
+			if standard_template then
+				local sfx_taking_damage = standard_template.sfx_taking_damage
 
-					WwiseUtils.trigger_unit_event(standard_extension.world, sfx_taking_damage, self._unit, 0)
-				end
+				WwiseUtils.trigger_unit_event(standard_extension.world, sfx_taking_damage, self._unit, 0)
 			end
 		end
 	end

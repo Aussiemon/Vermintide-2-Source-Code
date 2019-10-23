@@ -2049,13 +2049,11 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn"
 		}
 	},
 	burn_sniper = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_sniper"
 		},
@@ -2064,7 +2062,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_shotgun = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage = true,
 			damage_type = "burn_shotgun"
@@ -2074,7 +2071,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_machinegun = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_machinegun"
 		},
@@ -2083,7 +2079,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_carbine = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_machinegun"
 		},
@@ -2092,7 +2087,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burninating = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burninating"
 		}
@@ -2439,7 +2433,6 @@ HitEffectsChaosMarauder = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2464,7 +2457,6 @@ HitEffectsChaosMarauder = {
 	},
 	drakegun_glance = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		}
@@ -2629,7 +2621,6 @@ HitEffectsChaosMarauder = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

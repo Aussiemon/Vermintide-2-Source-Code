@@ -511,13 +511,13 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 
 	local cluster_utility, loneliest_index, loneliest_value, loneliness = conflictutils.cluster_weight_and_loneliness(healthy_target_positions, 10)
 	local loneliest_enemy_unit = healthy_targets[loneliest_index]
-	local sqr_dist_to_loneliest = vector3.distance_squared(healthy_target_positions[loneliest_index], position_lookup[unit])
+	local sqr_dist_to_loneliest = Vector3.distance_squared(healthy_target_positions[loneliest_index], POSITION_LOOKUP[unit])
 
-	if dist_to_loneliest < 30 then
+	if sqr_dist_to_loneliest < 30 then
 		urgency_to_engage = 10
 		local dist_to_loneliest = math.sqrt(sqr_dist_to_loneliest)
 
-		return loneliest_enemy_unit, dist_to_lonliest, urgency_to_engage
+		return loneliest_enemy_unit, dist_to_loneliest, urgency_to_engage
 	end
 
 	return urgency_to_engage

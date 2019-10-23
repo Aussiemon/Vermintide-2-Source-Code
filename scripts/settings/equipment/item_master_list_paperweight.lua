@@ -12,6 +12,7 @@ ItemMasterList.we_1h_axe = {
 	property_table_name = "melee",
 	item_type = "we_1h_axe",
 	trait_table_name = "melee",
+	required_dlc = "holly",
 	can_wield = {
 		"we_shade",
 		"we_maidenguard",
@@ -32,6 +33,7 @@ ItemMasterList.bw_1h_crowbill = {
 	property_table_name = "melee",
 	item_type = "bw_1h_crowbill",
 	trait_table_name = "melee",
+	required_dlc = "holly",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -53,6 +55,7 @@ ItemMasterList.wh_dual_wield_axe_falchion = {
 	item_type = "wh_dual_wield_axe_falchion",
 	slot_type = "melee",
 	trait_table_name = "melee",
+	required_dlc = "holly",
 	can_wield = {
 		"wh_zealot",
 		"wh_bountyhunter",
@@ -74,6 +77,7 @@ ItemMasterList.dr_dual_wield_hammers = {
 	item_type = "dr_dual_wield_hammers",
 	slot_type = "melee",
 	trait_table_name = "melee",
+	required_dlc = "holly",
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_slayer",
@@ -95,6 +99,7 @@ ItemMasterList.es_dual_wield_hammer_sword = {
 	item_type = "es_dual_wield_hammer_sword",
 	slot_type = "melee",
 	trait_table_name = "melee",
+	required_dlc = "holly",
 	can_wield = {
 		"es_huntsman",
 		"es_knight",

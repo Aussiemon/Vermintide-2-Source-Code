@@ -5,8 +5,7 @@ return {
 	terror_events = {
 		"capture_point_3_event",
 		"capture_point_1_event_large",
-		"capture_point_1_event_small",
-		"weave_trickle_skaven_small"
+		"capture_point_1_event_small"
 	},
 	objectives = {
 		{
@@ -25,9 +24,9 @@ return {
 					{
 						kill_enemies = {
 							score_multiplier = {
-								cataclysm = 0.234,
-								cataclysm_3 = 0.182,
-								normal = 0.52
+								cataclysm = 0.24300000000000002,
+								cataclysm_3 = 0.189,
+								normal = 0.54
 							}
 						},
 						capture_point_004 = {

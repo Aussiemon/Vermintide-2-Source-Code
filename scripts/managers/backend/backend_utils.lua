@@ -105,6 +105,11 @@ BackendUtils.get_total_power_level = function (profile_name, career_name, option
 	end
 
 	local game_mode_key = optional_game_mode_key or game_mode_manager:game_mode_key()
+	local game_mode_setting = GameModeSettings[game_mode_key]
+
+	if game_mode_setting and game_mode_setting.power_level_override then
+		return game_mode_setting.power_level_override
+	end
 
 	if game_mode_key == "weave" or game_mode_key == "weave_find_group" then
 		local weaves_interface = Managers.backend:get_interface("weaves")

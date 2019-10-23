@@ -116,6 +116,7 @@ local video_settings_definition = {
 		name = "resolutions",
 		saved_value = "cb_resolutions_saved_value",
 		callback = "cb_resolutions",
+		ignore_upper_case = true,
 		tooltip_text = "tooltip_resolutions",
 		widget_type = "drop_down"
 	},

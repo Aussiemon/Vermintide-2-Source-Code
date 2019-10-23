@@ -443,11 +443,12 @@ TelemetryEvents.tech_system = function (self, system_info, adapter_index)
 	self.manager:register_event("tech_system", params)
 end
 
-TelemetryEvents.vo_event_played = function (self, sound_event, dialogue, unit_name)
+TelemetryEvents.vo_event_played = function (self, category, dialogue, sound_event, unit_name)
 	table.clear(params)
 
-	params.sound_event = sound_event
+	params.category = category
 	params.dialogue = dialogue
+	params.sound_event = sound_event
 	params.unit_name = unit_name
 
 	self.manager:register_event("vo_event_played", params)
@@ -507,6 +508,16 @@ TelemetryEvents.end_of_game_rewards = function (self, rewards)
 	params.rewards = rewards
 
 	self.manager:register_event("end_of_game_rewards", params)
+end
+
+TelemetryEvents.magic_item_level_upgraded = function (self, item_id, essence_cost, new_magic_level)
+	table.clear(params)
+
+	params.item_id = item_id
+	params.essence_cost = essence_cost
+	params.new_magic_level = new_magic_level
+
+	self.manager:register_event("magic_item_level_upgraded", params)
 end
 
 return

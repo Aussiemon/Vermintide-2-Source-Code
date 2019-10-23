@@ -354,28 +354,19 @@ end
 ContractLogUI._get_text_size = function (self, text_style, text)
 	local ui_renderer = self.ui_renderer
 	local size = text_style.size
-	local font, size_of_font = UIFontByResolution(text_style, nil)
-	local font_material = font[1]
-	local _ = font[2]
-	local font_name = font[3]
-	local font_size = size_of_font
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local num_texts = #texts
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min)) * inv_scale
+	local text_height = UIUtils.get_text_height(ui_renderer, size, text_style, text)
 	local longest_width = 0
 
 	for i = 1, num_texts, 1 do
 		local text_line = texts[i]
-		local width, height, min = UIRenderer.text_size(ui_renderer, text_line, font_material, font_size, full_font_height)
+		local width = UIUtils.get_text_width(ui_renderer, text_style, text_line)
 
 		if longest_width < width then
 			longest_width = width
 		end
 	end
 
-	return num_texts * full_font_height, longest_width
+	return text_height, longest_width
 end
 
 ContractLogUI.update = function (self, dt, t)

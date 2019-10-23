@@ -829,27 +829,29 @@ InteractionDefinitions.pickup_object = {
 					local num_players_and_bots = #player_and_bot_units
 
 					if pickup_settings.ranger_ammo then
-						local local_player = Managers.player:local_player()
-						local local_player_unit = local_player.player_unit
-						local buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
+						if not DEDICATED_SERVER then
+							local local_player = Managers.player:local_player()
+							local local_player_unit = local_player.player_unit
+							local buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
 
-						if buff_extension then
-							buff_extension:trigger_procs("on_bardin_consumable_picked_up_any_player")
+							if buff_extension then
+								buff_extension:trigger_procs("on_bardin_consumable_picked_up_any_player")
+							end
+						end
 
-							for i = 1, num_players_and_bots, 1 do
-								local player_unit = player_and_bot_units[i]
+						for i = 1, num_players_and_bots, 1 do
+							local player_unit = player_and_bot_units[i]
 
-								if Unit.alive(player_unit) then
-									local player_manager = Managers.player
-									local owner_player = player_manager:owner(player_unit)
+							if Unit.alive(player_unit) then
+								local player_manager = Managers.player
+								local owner_player = player_manager:owner(player_unit)
 
-									if not LEVEL_EDITOR_TEST and player_manager.is_server then
-										local peer_id = owner_player:network_id()
-										local local_player_id = owner_player:local_player_id()
-										local event_id = NetworkLookup.proc_events.on_bardin_consumable_picked_up_any_player
+								if not LEVEL_EDITOR_TEST then
+									local peer_id = owner_player:network_id()
+									local local_player_id = owner_player:local_player_id()
+									local event_id = NetworkLookup.proc_events.on_bardin_consumable_picked_up_any_player
 
-										Managers.state.network.network_transmit:send_rpc_clients("rpc_proc_event", peer_id, local_player_id, event_id)
-									end
+									Managers.state.network.network_transmit:send_rpc_clients("rpc_proc_event", peer_id, local_player_id, event_id)
 								end
 							end
 						end
@@ -1647,8 +1649,9 @@ InteractionDefinitions.heal = {
 			local is_dead = status_extension:is_dead()
 			local health_extension = ScriptUnit.extension(interactable_unit, "health_system")
 			local has_max_health = health_extension:current_permanent_health_percent() >= 1
+			local is_wounded = status_extension:is_wounded()
 
-			return not is_knocked_down and not is_dead and not has_max_health
+			return not is_knocked_down and not is_dead and (not has_max_health or not not is_wounded)
 		end
 	},
 	client = {
@@ -1731,6 +1734,7 @@ InteractionDefinitions.heal = {
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
 			local is_alive = health_extension:is_alive() and not status_extension:is_knocked_down()
 			local has_max_health = health_extension:current_permanent_health_percent() >= 1
+			local is_wounded = status_extension:is_wounded()
 			local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 			local item_template = inventory_extension:get_wielded_slot_item_template()
 
@@ -1740,7 +1744,7 @@ InteractionDefinitions.heal = {
 
 			local interactor_has_medpack = item_template.can_heal_other
 
-			return interactor_has_medpack and is_alive and not has_max_health
+			return interactor_has_medpack and is_alive and (not has_max_health or is_wounded)
 		end,
 		set_interactor_data = function (interactor_unit, interactable_unit, interactor_data)
 			local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")

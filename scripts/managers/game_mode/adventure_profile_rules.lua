@@ -80,7 +80,7 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 	local current_profile_index, current_career_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 
 	if not current_profile_index then
-		local wanted_profile_index, wanted_career_index = self._network_server:wanted_profile(peer_id, local_player_id)
+		local wanted_profile_index, wanted_career_index = self._network_server:peer_wanted_profile(peer_id, local_player_id)
 		local can_use_wanted_profile = wanted_profile_index and wanted_career_index and self:_profile_available(wanted_profile_index, wanted_career_index, peer_id, local_player_id)
 
 		if can_use_wanted_profile then

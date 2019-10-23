@@ -157,6 +157,7 @@ end
 
 MatchmakingStateHostFindWeaveGroup._fill_weave_matchmaing_data = function (self)
 	local lobby_data = self._lobby:get_stored_lobby_data()
+	local num_expansion_rules = #WeaveMatchmakingSettings.expansion_rules
 	local expansion_rules = WeaveMatchmakingSettings.expansion_rules[1]
 	local current_filter_rules = expansion_rules.near_filters
 
@@ -165,7 +166,7 @@ MatchmakingStateHostFindWeaveGroup._fill_weave_matchmaing_data = function (self)
 		lobby_data[key] = value
 	end
 
-	local expansion_rule_index = self.state_context.expansion_rule_index or 1
+	local expansion_rule_index = math.min(self.state_context.expansion_rule_index or 1, num_expansion_rules)
 	lobby_data.expansion_rule_index = expansion_rule_index
 
 	self._lobby:set_lobby_data(lobby_data)

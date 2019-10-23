@@ -754,6 +754,10 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					frame_width + 5,
 					-55,
 					10
+				},
+				size = {
+					size[1] - icon_texture_size[1] - 60,
+					size[2]
 				}
 			},
 			option_text_shadow = {
@@ -770,6 +774,10 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					frame_width + 5 + 2,
 					-57,
 					9
+				},
+				size = {
+					size[1] - icon_texture_size[1] - 60,
+					size[2]
 				}
 			},
 			button_text = {

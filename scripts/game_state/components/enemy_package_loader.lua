@@ -638,6 +638,31 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 	local director_list = level_settings.conflict_director_set or DefaultConflictDirectorSet
 	local breed_cap = EnemyPackageLoaderSettings.max_loaded_breed_cap
 	self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, difficulty, non_random_conflict_directors, level_seed, failed_locked_functions)
+	local loop_breeds = true
+
+	while loop_breeds do
+		loop_breeds = false
+
+		for breed_name, _ in pairs(breed_lookup) do
+			local breed_data = Breeds[breed_name]
+
+			if breed_data.additional_breed_packages_to_load then
+				local additional_breeds = breed_data.additional_breed_packages_to_load(difficulty)
+
+				if additional_breeds then
+					for i = 1, #additional_breeds, 1 do
+						local additional_breed_name = additional_breeds[i]
+						local breed_added = breed_lookup[additional_breed_name]
+
+						if not breed_added then
+							breed_lookup[additional_breed_name] = true
+							loop_breeds = true
+						end
+					end
+				end
+			end
+		end
+	end
 
 	return breed_lookup
 end
@@ -922,51 +947,31 @@ EnemyPackageLoader._send_rpc_to_server = function (self, rpc_name, ...)
 end
 
 EnemyPackageLoader._send_rpc_to_clients = function (self, rpc_name, ...)
-	if not self._lobby then
-		return
-	end
-
 	local rpc = RPC[rpc_name]
 	local server_peer_id = self._server_peer_id
-	local members = self._lobby:members():get_members()
-	local num_members = #members
 	local unique_connections = self._unique_connections
 
-	for i = 1, num_members, 1 do
-		local peer_id = members[i]
-
-		if peer_id ~= server_peer_id then
-			local connection_key = unique_connections[peer_id]
-
-			if connection_key then
-				rpc(peer_id, connection_key, ...)
-			end
+	for peer_id, connection_key in pairs(unique_connections) do
+		if peer_id ~= server_peer_id and connection_key then
+			rpc(peer_id, connection_key, ...)
 		end
 	end
 end
 
 EnemyPackageLoader._send_rpc_to_clients_except = function (self, rpc_name, except, ...)
-	if not self._lobby then
-		return
-	end
-
 	local rpc = RPC[rpc_name]
 	local server_peer_id = self._server_peer_id
-	local members = self._lobby:members():get_members()
-	local num_members = #members
 	local unique_connections = self._unique_connections
 
-	for i = 1, num_members, 1 do
-		local peer_id = members[i]
-
-		if peer_id ~= server_peer_id and peer_id ~= except then
-			local connection_key = unique_connections[peer_id]
-
-			if connection_key then
-				rpc(peer_id, connection_key, ...)
-			end
+	for peer_id, connection_key in pairs(unique_connections) do
+		if peer_id ~= server_peer_id and peer_id ~= except and connection_key then
+			rpc(peer_id, connection_key, ...)
 		end
 	end
+end
+
+EnemyPackageLoader.get_startup_breeds = function (self)
+	return self._breeds_to_load_at_startup
 end
 
 EnemyPackageLoader.client_connected = function (self, peer_id)

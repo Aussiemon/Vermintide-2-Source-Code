@@ -1266,7 +1266,7 @@ SpawnZoneBaker.draw_zone_info_on_screen = function (self)
 
 	Gui.rect(self._gui, Vector3(win_x1, win_y1, UILayer.transition), Vector2(win_x2, win_y2), Color(alpha, 40, 40, 40))
 	self:_draw_legend(self._breed_pack_legend, w - 450, top - 40)
-	Gui.text(self._gui, string.format("Spawn Zone Baker. #zones=%d", num_zones), "materials/fonts/gw_arial_32", 14, "gw_arial_32", Vector3(left + 15, top - 40, 1000))
+	Gui.text(self._gui, string.format("Spawn Zone Baker. #zones=%d", num_zones), "materials/fonts/arial", 14, "arial", Vector3(left + 15, top - 40, 1000))
 
 	local max_rows_shown = 40
 	local mid_row = math.floor(max_rows_shown / 2)

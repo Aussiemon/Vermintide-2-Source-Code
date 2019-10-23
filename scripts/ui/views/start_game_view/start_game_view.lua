@@ -412,6 +412,7 @@ StartGameView.hotkey_allowed = function (self, input, mapping_data)
 			if not transition_sub_state or transition_sub_state == active_sub_settings_name then
 				return true
 			elseif transition_sub_state then
+				return true
 			end
 		elseif transition_state then
 			self:requested_screen_change_by_name(transition_state, transition_sub_state)
@@ -668,7 +669,7 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 	self:close_menu()
 end
 
-StartGameView.start_game_weave = function (self, weave_name, objective_index, private_game)
+StartGameView.start_game_weave = function (self, weave_name, objective_index, private_game, always_host)
 	local weave_template = WeaveSettings.templates[weave_name]
 	local level_key = weave_template.objectives[objective_index].level_id
 	local difficulty = weave_template.difficulty_key
@@ -678,7 +679,8 @@ StartGameView.start_game_weave = function (self, weave_name, objective_index, pr
 		difficulty = difficulty,
 		private_game = private_game,
 		weave_name = weave_name,
-		objective_index = objective_index
+		objective_index = objective_index,
+		always_host = always_host
 	}
 
 	Managers.state.voting:request_vote("game_settings_weave_vote", vote_data, Network.peer_id())

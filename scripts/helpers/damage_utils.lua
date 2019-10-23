@@ -54,7 +54,7 @@ DamageUtils.get_boost_curve_multiplier = function (curve, percent)
 	return value
 end
 
-local function do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, damage_from_enemy, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk)
+local function do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, target_max_health)
 	if damage_profile and damage_profile.no_damage then
 		return 0
 	end
@@ -102,7 +102,7 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 	end
 
 	local damage, target_damages = nil
-	target_damages = (damage_from_enemy and ((type(damage_output) == "table" and damage_output[1]) or damage_output)) or damage_output[target_unit_armor] or (target_unit_armor == 0 and 0) or damage_output[1]
+	target_damages = (static_base_damage and ((type(damage_output) == "table" and damage_output[1]) or damage_output)) or damage_output[target_unit_armor] or (target_unit_armor == 0 and 0) or damage_output[1]
 
 	if type(target_damages) == "table" then
 		local damage_range = target_damages.max - target_damages.min
@@ -124,7 +124,7 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 		backstab_damage = (power_boost_damage and damage < power_boost_damage and power_boost_damage * (backstab_multiplier - 1)) or damage * (backstab_multiplier - 1)
 	end
 
-	if not damage_from_enemy then
+	if not static_base_damage then
 		local power_boost_amount = 0
 		local head_shot_boost_amount = 0
 
@@ -281,10 +281,14 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 				local primary_armor = breed.primary_armor_category
 
 				if not boss and not primary_armor then
-					local breed_health_table = breed.max_health
-					local difficulty_rank = difficulty_settings.rank
-					local breed_health = breed_health_table[difficulty_rank]
-					damage = breed_health
+					if target_max_health then
+						damage = target_max_health
+					else
+						local breed_health_table = breed.max_health
+						local difficulty_rank = difficulty_settings.rank
+						local breed_health = breed_health_table[difficulty_rank]
+						damage = breed_health
+					end
 				end
 			end
 		end
@@ -331,18 +335,19 @@ end
 DamageUtils.calculate_damage_tooltip = function (attacker_unit, damage_source, original_power_level, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, dropoff_scalar, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor)
 	local damage_output = DamageOutput
 	local dummy_unit_armor, is_dummy = nil
-	local damage_from_enemy = false
+	local static_base_damage = false
 	local is_player_friendly_fire = false
 	local has_crit_head_shot_killing_blow_perk = false
 	local has_crit_backstab_killing_blow_perk = false
-	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, damage_from_enemy, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk)
+	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk)
 	calculated_damage = DamageUtils.networkify_damage(calculated_damage)
 
 	return calculated_damage
 end
 
 DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_unit, hit_zone_name, original_power_level, boost_curve, boost_damage_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier, damage_source)
-	local breed, dummy_unit_armor, is_dummy = nil
+	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+	local breed, dummy_unit_armor, is_dummy, unit_max_health = nil
 
 	if target_unit then
 		breed = AiUtils.unit_breed(target_unit)
@@ -354,14 +359,29 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		if is_invincible then
 			return 0
 		end
+
+		if target_unit_health_extension and not is_dummy then
+			unit_max_health = target_unit_health_extension:get_max_health()
+		elseif breed then
+			local breed_health_table = breed.max_health
+			local difficulty_rank = difficulty_settings.rank
+			local breed_health = breed_health_table[difficulty_rank]
+			unit_max_health = breed_health
+		end
 	end
 
-	local damage_from_enemy = not attacker_unit or not Managers.player:is_player_unit(attacker_unit)
-	local is_player_friendly_fire = not damage_from_enemy and Managers.state.side:is_player_friendly_fire(attacker_unit, target_unit)
+	local attacker_breed = nil
+
+	if attacker_unit then
+		attacker_breed = Unit.get_data(attacker_unit, "breed")
+	end
+
+	local static_base_damage = not attacker_breed or not attacker_breed.is_hero
+	local is_player_friendly_fire = not static_base_damage and Managers.state.side:is_player_friendly_fire(attacker_unit, target_unit)
 	local target_is_hero = breed and breed.is_hero
 	local dropoff_scalar = 0
 
-	if damage_profile and not damage_from_enemy then
+	if damage_profile and not static_base_damage then
 		local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 		dropoff_scalar = ActionUtils.get_dropoff_scalar(damage_profile, target_settings, attacker_unit, target_unit)
 	end
@@ -386,7 +406,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		target_unit_armor, _, target_unit_primary_armor, _ = ActionUtils.get_target_armor(hit_zone_name, breed, dummy_unit_armor)
 	end
 
-	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, damage_from_enemy, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk)
+	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, unit_max_health)
 
 	if damage_profile and not damage_profile.is_dot then
 		local blackboard = BLACKBOARDS[target_unit]
@@ -415,12 +435,16 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 			local target_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
 			stagger_number = target_buff_extension:apply_buffs_to_value(0, "dummy_stagger")
 
+			if damage_profile.no_stagger_damage_reduction_ranged then
+				local stagger_number_override = 1
+				stagger_number = math.max(stagger_number_override, stagger_number)
+			end
+
 			if not damage_profile.no_stagger_damage_reduction_ranged then
 				stagger_number = apply_buffs_to_stagger_damage(attacker_unit, target_unit, target_index, hit_zone_name, is_critical_strike, stagger_number)
 			end
 		end
 
-		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 		local min_stagger_damage_coefficient = difficulty_settings.min_stagger_damage_coefficient
 		local stagger_damage_multiplier = difficulty_settings.stagger_damage_multiplier
 
@@ -439,7 +463,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 
 	local weave_manager = Managers.weave
 
-	if target_is_hero and damage_from_enemy and weave_manager:get_active_weave() then
+	if target_is_hero and static_base_damage and weave_manager:get_active_weave() then
 		local scaling_value = weave_manager:get_scaling_value("enemy_damage")
 		calculated_damage = calculated_damage * (1 + scaling_value)
 	end
@@ -461,8 +485,12 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local attack_template_name = target_settings.attack_template
 	local attack_template = AttackTemplates[attack_template_name]
+	local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local is_player = blackboard.is_player and not ai_extension
+	local stagger_count = (is_player and status_extension:stagger_count()) or blackboard.stagger_count
 
-	if hit_zone_name == "weakspot" and blackboard.stagger_count == 0 and (not blackboard.stagger or blackboard.stagger_anim_done) then
+	if hit_zone_name == "weakspot" and stagger_count == 0 and (not blackboard.stagger or blackboard.stagger_anim_done or (is_player and not status_extension:stagger())) then
 		stagger = WEAKSPOT_STAGGER_CATEGORY
 	elseif stagger_table and not breed.stagger_immune then
 		local stagger_settings = stagger_table[target_unit_armor]
@@ -485,7 +513,7 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 		if breed then
 			local difficulty_rank = DifficultySettings[difficulty_level].rank
 			local stagger_resistance = (breed.diff_stagger_resist and breed.diff_stagger_resist[difficulty_rank]) or breed.stagger_resistance or 2
-			local enemy_current_action = blackboard.action
+			local enemy_current_action = (is_player and status_extension:breed_action()) or blackboard.action
 			local action_stagger_reduction = enemy_current_action and enemy_current_action.stagger_reduction
 			local stagger_reduction = not finesse_hit and not damage_profile.ignore_stagger_reduction and (action_stagger_reduction or breed.stagger_reduction)
 
@@ -501,6 +529,10 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 
 			if blackboard.stagger then
 				local stagger_bonus = math.clamp(blackboard.stagger * (breed.stagger_multiplier or 0.5) * stagger_strength, 0, stagger_strength)
+				stagger_strength = stagger_strength + stagger_bonus
+			elseif is_player and status_extension and status_extension:stagger() > 0 then
+				local stagger_tmp = status_extension:stagger()
+				local stagger_bonus = math.clamp(stagger_tmp * (breed.stagger_multiplier or 0.5) * stagger_strength, 0, stagger_strength)
 				stagger_strength = stagger_strength + stagger_bonus
 			elseif damage_profile.is_push then
 				first_push = true
@@ -593,7 +625,7 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 		stagger = 0
 	end
 
-	local action = blackboard.action
+	local action = (is_player and status_extension:breed_action()) or blackboard.action
 	local ignore_staggers = action and action.ignore_staggers
 
 	if ignore_staggers and attacker_buff_extension and attacker_buff_extension:has_buff_type("push_increase") then
@@ -651,6 +683,9 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local dropoff_scalar = ActionUtils.get_dropoff_scalar(damage_profile, target_settings, attacker_unit, target_unit)
 	local ai_shield_extension = ScriptUnit.has_extension(target_unit, "ai_shield_system")
+	local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local is_player = blackboard.is_player and not ai_extension
 	local has_power_boost = false
 
 	if attacker_unit and unit_alive(attacker_unit) then
@@ -659,7 +694,7 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 		if attacker_buff_extension then
 			has_power_boost = attacker_buff_extension:has_buff_type("armor penetration")
 			original_power_level = attacker_buff_extension:apply_buffs_to_value(original_power_level, "push_power")
-			local blackboard_action = blackboard.action
+			local blackboard_action = (is_player and status_extension:breed_action()) or blackboard.action
 
 			if blackboard_action and blackboard_action.damage then
 				original_power_level = attacker_buff_extension:apply_buffs_to_value(original_power_level, "counter_push_power")
@@ -753,6 +788,9 @@ DamageUtils.calculate_stagger = function (impact_table, duration_table, target_u
 	local shield_user = AiUtils.shield_user(target_unit)
 	local stagger = 0
 	local duration = 0.5
+	local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local is_player = blackboard.is_player and not ai_extension
 
 	if hit_zone_name == "weakspot" and blackboard.stagger_count == 0 and (not blackboard.stagger or blackboard.stagger_anim_done) then
 		stagger = WEAKSPOT_STAGGER_CATEGORY
@@ -774,7 +812,7 @@ DamageUtils.calculate_stagger = function (impact_table, duration_table, target_u
 		stagger = 0
 	end
 
-	local action = blackboard.action
+	local action = (is_player and status_extension:breed_action()) or blackboard.action
 	local ignore_staggers = action and action.ignore_staggers
 
 	if ignore_staggers then
@@ -810,6 +848,32 @@ end
 
 DamageUtils.is_player_unit = function (unit)
 	return Managers.player:is_player_unit(unit)
+end
+
+DamageUtils.stagger_player = function (unit, breed, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push, should_play_push_sound)
+	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
+
+	stagger_value = stagger_value or 1
+	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+	local difficulty_modifier = difficulty_settings.stagger_modifier
+	local status_extension = ScriptUnit.has_extension(unit, "status_system")
+	local stagger_time = stagger_duration * difficulty_modifier * 0.5
+	local stagger_animation_scale = (stagger_animation_scale or 1) * 2
+	local stagger = status_extension:stagger()
+	local stagger_clamped = math.clamp(0, 2, (stagger and stagger + stagger_value) or stagger_value)
+
+	print("stagger_clamped", stagger_clamped)
+
+	stagger = math.max(stagger_clamped, stagger_value)
+
+	print("stagger", stagger)
+	status_extension:set_stagger_values(stagger, stagger_direction, stagger_length, stagger_type, stagger_time, stagger_animation_scale, always_stagger, true)
+
+	if should_play_push_sound then
+		local push_sound_event = breed.push_sound_event or "Play_generic_pushed_impact_small"
+
+		Managers.state.entity:system("audio_system"):play_audio_unit_event(push_sound_event, unit)
+	end
 end
 
 DamageUtils.hit_zone = function (unit, actor)
@@ -870,7 +934,7 @@ local AOE_TARGET_UNITS = {}
 local AOE_TARGET_ARRAY = {}
 local AOE_SIMPLE_DAMAGE_UNITS = {}
 
-DamageUtils.create_explosion = function (world, attacker_unit, impact_position, rotation, explosion_template, scale, damage_source, is_server, is_husk, damaging_unit, attacker_power_level, is_critical_strike)
+DamageUtils.create_explosion = function (world, attacker_unit, impact_position, rotation, explosion_template, scale, damage_source, is_server, is_husk, damaging_unit, attacker_power_level, is_critical_strike, source_attacker_unit)
 	local DamageUtils = DamageUtils
 	local explosion_data = explosion_template.explosion
 	local active_wind = Managers.weave:get_active_wind()
@@ -1158,7 +1222,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 
 			local allow_critical_proc = false
 
-			area_damage_system:add_aoe_damage_target(hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, power_level, actual_power_level, hit_direction_normalized, explosion_template.name, is_critical_strike, allow_critical_proc)
+			area_damage_system:add_aoe_damage_target(hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, power_level, actual_power_level, hit_direction_normalized, explosion_template.name, is_critical_strike, allow_critical_proc, source_attacker_unit)
 
 			if explosion_data.buff_to_apply and DamageUtils.is_player_unit(hit_unit) then
 				if not explosion_data.only_facing then
@@ -1271,6 +1335,7 @@ end
 DamageUtils.create_aoe = function (world, attacker_unit, position, damage_source, explosion_template)
 	local aoe_data = explosion_template.aoe
 	local radius = aoe_data.radius
+	local attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
 	local is_grenade = explosion_template.is_grenade
 
 	if ScriptUnit.has_extension(attacker_unit, "buff_system") and is_grenade then
@@ -1280,8 +1345,9 @@ DamageUtils.create_aoe = function (world, attacker_unit, position, damage_source
 
 	local attacker_player = Managers.player:owner(attacker_unit)
 	local damage_players = true
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
 
-	if attacker_player ~= nil then
+	if attacker_player ~= nil and mechanism_name ~= "versus" then
 		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 		local friendly_fire_disabled = aoe_data.no_friendly_fire
 		local friendly_fire_allowed = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
@@ -1306,7 +1372,8 @@ DamageUtils.create_aoe = function (world, attacker_unit, position, damage_source
 			create_nav_tag_volume = aoe_data.create_nav_tag_volume,
 			nav_tag_volume_layer = aoe_data.nav_tag_volume_layer,
 			explosion_template_name = explosion_template.name,
-			owner_player = attacker_player
+			owner_player = attacker_player,
+			source_attacker_unit = attacker_unit
 		}
 	}
 	local aoe_unit_name = "units/hub_elements/empty"
@@ -1364,7 +1431,7 @@ end
 
 local VICTIM_UNITS = {}
 
-DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, original_damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, original_damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	local network_manager = Managers.state.network
 
 	if not network_manager:game() then
@@ -1407,7 +1474,7 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 			damage_type = (victim_unit == attacked_unit and damage_type) or "buff"
 			local health_extension = ScriptUnit.extension(victim_unit, "health_system")
 
-			health_extension:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+			health_extension:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 
 			if not health_extension:is_alive() then
 				Managers.state.unit_spawner:prioritize_death_watch_unit(attacked_unit, t)
@@ -1416,6 +1483,7 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 	else
 		local unit_id, is_level_unit = network_manager:game_object_or_level_id(attacked_unit)
 		local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
+		local source_attacker_unit_id = network_manager:unit_game_object_id(source_attacker_unit) or NetworkConstants.invalid_game_object_id
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 		local damage_type_id = NetworkLookup.damage_types[damage_type]
 		local damage_source_id = NetworkLookup.damage_sources[damage_source or "n/a"]
@@ -1426,11 +1494,11 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 		total_hits = total_hits or 0
 		backstab_multiplier = backstab_multiplier or 1
 
-		network_manager.network_transmit:send_rpc_server("rpc_add_damage_network", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+		network_manager.network_transmit:send_rpc_server("rpc_add_damage_network", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	end
 end
 
-DamageUtils.add_damage_network_player = function (damage_profile, target_index, power_level, hit_unit, attacker_unit, hit_zone_name, hit_position, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+DamageUtils.add_damage_network_player = function (damage_profile, target_index, power_level, hit_unit, attacker_unit, hit_zone_name, hit_position, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
 	local network_manager = Managers.state.network
 
 	if not network_manager:game() then
@@ -1503,7 +1571,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 				local num_calls = math.floor(damage_amount / max_network_damage)
 
 				for _ = 1, num_calls, 1 do
-					target_health_extension:add_damage(attacker_unit, max_network_damage, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, nil, nil, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+					target_health_extension:add_damage(attacker_unit, max_network_damage, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 				end
 
 				local remaining_damage_amount = damage_amount - max_network_damage * num_calls
@@ -1512,7 +1580,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 
 			local networkified_damage_amount = DamageUtils.networkify_damage(damage_amount)
 
-			target_health_extension:add_damage(attacker_unit, networkified_damage_amount, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, nil, nil, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+			target_health_extension:add_damage(attacker_unit, networkified_damage_amount, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 
 			if not target_health_extension:is_alive() then
 				Managers.state.unit_spawner:prioritize_death_watch_unit(hit_unit, t)
@@ -1942,6 +2010,17 @@ DamageUtils.heal_network = function (healed_unit, healer_unit, heal_amount, heal
 				StatusUtils.set_wounded_network(unit, false, "healed")
 			end
 		end
+	else
+		local num_healed_units = #HEALED_UNITS
+
+		for i = 1, num_healed_units, 1 do
+			local unit = HEALED_UNITS[i]
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
+			if not LEVEL_EDITOR_TEST and status_extension:is_wounded() and status_extension:heal_can_remove_wounded(heal_type) then
+				StatusUtils.set_wounded_network(unit, false, "healed")
+			end
+		end
 	end
 end
 
@@ -1951,7 +2030,10 @@ DamageUtils.apply_buffs_to_heal = function (healed_unit, healer_unit, heal_amoun
 
 	if ScriptUnit.has_extension(healed_unit, "buff_system") then
 		local buff_extension = ScriptUnit.extension(healed_unit, "buff_system")
-		heal_amount = buff_extension:apply_buffs_to_value(heal_amount, "healing_received")
+
+		if not heal_type == "raw_heal" then
+			heal_amount = buff_extension:apply_buffs_to_value(heal_amount, "healing_received")
+		end
 
 		if buff_extension:has_buff_type("shared_health_pool") then
 			local healed_side = Managers.state.side.side_by_unit[healed_unit]
@@ -2031,7 +2113,9 @@ DamageUtils.check_distance = function (action, blackboard, attacking_unit, targe
 	end
 
 	local to_target = pos_target - pos_attacker
-	local current_action = blackboard.action
+	local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
+	local is_player = blackboard.is_player and not ai_extension
+	local current_action = (is_player and status_extension:breed_action()) or blackboard.action
 	local player_radius = 1
 
 	if blackboard.target_dodged_during_attack or blackboard.set_dodge_rotation_timer or blackboard.locked_attack_rotation then
@@ -2060,14 +2144,22 @@ end
 
 DamageUtils.check_infront = function (attacking_unit, target_unit)
 	local pos_attacker = POSITION_LOOKUP[attacking_unit]
-	local pos_target = POSITION_LOOKUP[target_unit]
+	local pos_target = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
+
+	if not pos_target or not pos_attacker then
+		return false
+	end
+
 	local to_target = Vector3.flat(pos_target - pos_attacker)
 	local rot_attacker = unit_local_rotation(attacking_unit, 0)
 	local fwd_attacker = Quaternion.forward(rot_attacker)
 	local cos_a = Vector3.dot(Vector3.normalize(to_target), fwd_attacker)
 	local blackboard = BLACKBOARDS[attacking_unit]
 	local breed = blackboard.breed
-	local current_action = blackboard.action
+	local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local is_player = blackboard.is_player and not ai_extension
+	local current_action = (is_player and status_extension:breed_action()) or blackboard.action
 	local default_reach_cone = 0.866
 
 	if blackboard.target_dodged_during_attack or blackboard.set_dodge_rotation_timer or blackboard.locked_attack_rotation then
@@ -2117,7 +2209,9 @@ DamageUtils.check_block = function (attacking_unit, target_unit, fatigue_type, o
 				network_manager.network_transmit:send_rpc_clients("rpc_player_blocked_attack", go_id, fatigue_type_id, attacker_unit_id, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction, attacker_is_level_unit)
 
 				local blackboard = BLACKBOARDS[attacking_unit]
-				local action = blackboard.action
+				local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
+				local is_player = blackboard.is_player and not ai_extension
+				local action = (is_player and status_extension:breed_action()) or blackboard.action
 
 				if action.no_block_stagger then
 				elseif not blackboard.stagger then
@@ -2256,9 +2350,9 @@ DamageUtils.damage_level_unit = function (hit_unit, attacker_unit, hit_zone_name
 		local boost_curve = BoostCurves[target_settings.boost_curve_type]
 		local damage_amount = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, nil, damage_source)
 		local damage_type = "destructible_level_object_hit"
-		local hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, added_dot = nil
+		local hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, added_dot = nil
 
-		DamageUtils.add_damage_network(hit_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, hit_normal, damage_source, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot)
+		DamageUtils.add_damage_network(hit_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, hit_normal, damage_source, hit_ragdoll_actor, source_attacker_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot)
 	end
 end
 
@@ -2862,8 +2956,9 @@ local function is_stagger_immune(blackboard, t)
 	return false
 end
 
-local function action_ignores_stagger(blackboard, attack_template, stagger_type)
-	local action = blackboard.action
+local function action_ignores_stagger(blackboard, attack_template, stagger_type, target_unit, is_player)
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local action = (is_player and status_extension:breed_action()) or blackboard.action
 	local ignore_staggers = action and action.ignore_staggers
 
 	if blackboard.anim_cb_stagger_immune then
@@ -2908,12 +3003,17 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 	end
 
 	local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
+	local blackboard = (ai_extension and ai_extension:blackboard()) or BLACKBOARDS[target_unit]
 
-	if not ai_extension then
+	if not blackboard then
 		return
 	end
 
-	local blackboard = ai_extension:blackboard()
+	local is_hero_player = blackboard.breed.is_hero and not ai_extension
+
+	if is_hero_player then
+		return
+	end
 
 	if is_stagger_immune(blackboard, t) then
 		return
@@ -2929,11 +3029,15 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 		return
 	end
 
-	if action_ignores_stagger(blackboard, attack_template, stagger_type) then
+	local is_player = blackboard.is_player and not ai_extension
+
+	if action_ignores_stagger(blackboard, attack_template, stagger_type, target_unit, is_player) then
 		return
 	end
 
-	add_stagger_hit(blackboard, t)
+	if not is_player then
+		add_stagger_hit(blackboard, t)
+	end
 
 	local stagger_angle = attack_template.stagger_angle
 	local target_unit_position = POSITION_LOOKUP[target_unit] or unit_world_position(target_unit, 0)
@@ -2949,7 +3053,11 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 	end
 
 	if stagger_type > 0 then
-		AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push)
+		if is_player then
+			DamageUtils.stagger_player(target_unit, blackboard.breed, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push)
+		else
+			AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push)
+		end
 
 		local attacker_buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
 
@@ -2964,7 +3072,7 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 	end
 end
 
-DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone_name, hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits)
+DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone_name, hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
 	if not blocking then
 		local attack_power_level = power_level
 
@@ -2999,17 +3107,18 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 			end
 		end
 
+		local source_attacker_unit = source_attacker_unit or attacker_unit
 		local added_dot = nil
 
 		if not damage_profile.require_damage_for_dot or attack_power_level ~= 0 then
-			added_dot = DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, nil)
+			added_dot = DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, nil, source_attacker_unit)
 		end
 
 		if added_dot and remove_dot_template then
 			damage_profile.dot_template_name = nil
 		end
 
-		DamageUtils.add_damage_network_player(damage_profile, target_index, attack_power_level, target_unit, attacker_unit, hit_zone_name, hit_position, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+		DamageUtils.add_damage_network_player(damage_profile, target_index, attack_power_level, target_unit, attacker_unit, hit_zone_name, hit_position, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
 	elseif shield_breaking_hit then
 		local shield_extension = ScriptUnit.has_extension(target_unit, "ai_shield_system")
 
@@ -3059,7 +3168,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 	end
 end
 
-DamageUtils.apply_dot = function (damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template)
+DamageUtils.apply_dot = function (damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template, source_attacker_unit)
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local explosion = explosion_template and explosion_template.explosion
 	local explosion_template_dot = nil
@@ -3074,7 +3183,7 @@ DamageUtils.apply_dot = function (damage_profile, target_index, power_level, tar
 
 	if dot_type then
 		local dot_func = Dots[dot_type]
-		applied_dot = dot_func(dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+		applied_dot = dot_func(dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
 	end
 
 	return applied_dot

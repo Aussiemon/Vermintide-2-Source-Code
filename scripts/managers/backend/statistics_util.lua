@@ -27,9 +27,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 		if breed_killed then
 			local breed_killed_name = breed_killed.name
 
-			if not breed_killed.is_player then
-				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
-			end
+			statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
 
 			if breed_killed.race and breed_killed.race == "critter" then
 				statistics_db:increment_stat(stats_id, "kills_critter_total")
@@ -324,7 +322,11 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 
 				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt", damage_amount)
 
-				if not target_breed.is_player then
+				if GameSettingsDevelopment.disable_carousel then
+					if Breeds[breed_name] then
+						statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
+					end
+				else
 					statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
 				end
 			end

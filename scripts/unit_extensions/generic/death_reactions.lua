@@ -1542,8 +1542,11 @@ DeathReactions.templates = {
 						local rotation = Unit.local_rotation(unit, 0)
 						local explosion_template = "explosive_barrel"
 						local item_name = health_extension.item_name
+						local last_damage_data = health_extension.last_damage_data
+						local network_manager = Managers.state.network
+						local last_attacker_unit = network_manager:game_object_or_level_unit(last_damage_data.attacker_unit_id, false) or unit
 
-						Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, 1, item_name, nil, false)
+						Managers.state.entity:system("area_damage_system"):create_explosion(last_attacker_unit, position, rotation, explosion_template, 1, item_name, nil, false)
 					end
 
 					data.exploded = true
@@ -1759,6 +1762,10 @@ DeathReactions.templates = {
 					local position = POSITION_LOOKUP[unit]
 					local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 					local position_on_navmesh = LocomotionUtils.get_close_pos_below_on_mesh(nav_world, position, 4)
+					local health_extension = ScriptUnit.extension(unit, "health_system")
+					local last_damage_data = health_extension.last_damage_data
+					local network_manager = Managers.state.network
+					local last_attacker_unit = network_manager:game_object_or_level_unit(last_damage_data.attacker_unit_id, false) or unit
 
 					if not position_on_navmesh then
 						Managers.state.unit_spawner:mark_for_deletion(unit)
@@ -1772,7 +1779,7 @@ DeathReactions.templates = {
 							area_damage_system = {
 								liquid_template = "lamp_oil_fire",
 								flow_dir = direction,
-								source_unit = unit
+								source_unit = last_attacker_unit
 							}
 						}
 						local aoe_unit_name = "units/hub_elements/empty"
@@ -1781,8 +1788,6 @@ DeathReactions.templates = {
 
 						liquid_area_damage_extension:ready()
 					end
-
-					local health_extension = ScriptUnit.extension(unit, "health_system")
 
 					if health_extension.in_hand and not health_extension.thrown then
 						local owner_unit = health_extension.owner_unit
@@ -1843,9 +1848,10 @@ DeathReactions.templates = {
 							direction = Vector3.flat(direction)
 							local liquid_template_id = NetworkLookup.liquid_area_damage_templates.lamp_oil_fire
 							local network_manager = Managers.state.network
-							local invalid_game_object_id = NetworkConstants.invalid_game_object_id
+							local last_damage_data = health_extension.last_damage_data
+							local last_attacker_unique_id = last_damage_data.attacker_unique_id
 
-							network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", invalid_game_object_id, position_on_navmesh, direction, liquid_template_id)
+							network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", last_attacker_unique_id, position_on_navmesh, direction, liquid_template_id)
 						end
 
 						local owner_unit = health_extension.owner_unit

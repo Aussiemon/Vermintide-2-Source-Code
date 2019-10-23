@@ -39,6 +39,7 @@ GameModeTutorial._switch_profile_to_tutorial = function (self)
 	local career_index = 1
 	self._tutorial_profile_index = profile_index
 	self._tutorial_career_index = career_index
+	self._local_player_spawned = false
 
 	self._profile_synchronizer:select_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index)
 end
@@ -79,7 +80,8 @@ GameModeTutorial.player_entered_game_session = function (self, peer_id, local_pl
 end
 
 GameModeTutorial.event_local_player_spawned = function (self, is_initial_spawn)
-	Managers.state.event:trigger("game_mode_ready_to_start", is_initial_spawn)
+	self._local_player_spawned = true
+	self._is_initial_spawn = is_initial_spawn
 end
 
 GameModeTutorial.destroy = function (self)
@@ -225,6 +227,26 @@ GameModeTutorial.get_end_screen_config = function (self, game_won, game_lost, pl
 	end
 
 	return screen_name, screen_config
+end
+
+GameModeTutorial.local_player_ready_to_start = function (self, player)
+	if not self._local_player_spawned then
+		return false
+	end
+
+	return true
+end
+
+GameModeTutorial.local_player_game_starts = function (self, player, loading_context)
+	if self._is_initial_spawn then
+		LevelHelper:flow_event(self._world, "local_player_spawned")
+
+		if Development.parameter("attract_mode") then
+			LevelHelper:flow_event(self._world, "start_benchmark")
+		else
+			LevelHelper:flow_event(self._world, "level_start_local_player_spawned")
+		end
+	end
 end
 
 return

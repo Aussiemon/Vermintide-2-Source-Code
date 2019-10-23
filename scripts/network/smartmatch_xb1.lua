@@ -29,20 +29,41 @@ local HOPPER_PARAMS_LUT = {
 		"profiles",
 		"network_hash",
 		"matchmaking_types"
+	},
+	weave_find_group_hopper = {
+		"difficulty",
+		"powerlevel",
+		"profiles",
+		"network_hash",
+		"matchmaking_types",
+		"weave_index"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {
-	powerlevel = "number",
-	matchmaking_types = "collection",
 	network_hash = "string",
 	strict_matchmaking = "number",
+	weave_index = "number",
+	powerlevel = "number",
+	matchmaking_types = "collection",
 	profiles = "collection",
 	stage = "number",
 	difficulty = "number",
 	level = "collection"
 }
 local OPTIONAL_HOPPER_PARAM_LUT = {
-	strict_matchmaking = true
+	default_stage_hopper = {},
+	new_stage_hopper = {
+		strict_matchmaking = true
+	},
+	safe_profiles_hopper = {
+		strict_matchmaking = true
+	},
+	weave_find_group_hopper = {
+		profiles = true,
+		weave_index = true,
+		difficulty = true,
+		powerlevel = true
+	}
 }
 local SMARTMATCH_STATUS_LUT = {
 	[SmartMatchStatus.UNKNOWN] = "UNKNOWN",
@@ -79,7 +100,7 @@ end
 
 SmartMatch._create_smartmatch_session = function (self)
 	local session_name = Application.guid()
-	local hopper_name = LobbyInternal.HOPPER_NAME
+	local hopper_name = self._hopper_name
 	local session_template_name = LobbyInternal.SMARTMATCH_SESSION_TEMPLATE_NAME
 	local keywords = nil
 	local min_num_members = 0
@@ -194,6 +215,7 @@ end
 
 SmartMatch._convert_to_json = function (self, hopper_name, params)
 	local lut_variables = HOPPER_PARAMS_LUT[hopper_name]
+	local optional_lut_variables = OPTIONAL_HOPPER_PARAM_LUT[hopper_name]
 
 	fassert(lut_variables, "[SmartMatch::_convert_to_json] No such hopper_name:  %s", hopper_name)
 
@@ -203,7 +225,7 @@ SmartMatch._convert_to_json = function (self, hopper_name, params)
 		local var_type = HOPPER_PARAM_TYPE_LUT[var]
 		local val = params[var]
 
-		fassert(val or OPTIONAL_HOPPER_PARAM_LUT[var], "[SmartMatch::_convert_to_json] Missing variable [%s] in params", var)
+		fassert(val or optional_lut_variables[var], "[SmartMatch::_convert_to_json] Missing variable [%s] in params", var)
 
 		if val then
 			if var_type == "number" then

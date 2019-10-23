@@ -1,4 +1,4 @@
-DLCSettings = {
+DLCSettings = DLCSettings or {
 	social_wheel = {
 		package_name = "resource_packages/dlcs/social_wheel",
 		additional_settings = {
@@ -53,6 +53,7 @@ DLCSettings = {
 		start_game_windows = {
 			"scripts/ui/views/start_game_view/windows/start_game_window_weave_list",
 			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_definitions",
+			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_console_definitions",
 			"scripts/ui/views/start_game_view/windows/start_game_window_weave_info",
 			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_info_definitions",
 			"scripts/ui/views/start_game_view/windows/start_game_window_weave_console",

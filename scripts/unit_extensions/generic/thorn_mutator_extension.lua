@@ -15,6 +15,7 @@ ThornMutatorExtension.init = function (self, extension_init_context, unit, exten
 	local area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
 	self._area_damage_extension = area_damage_extension
 	self._life_time = area_damage_extension.life_time
+	self._despawning = false
 end
 
 ThornMutatorExtension.current_progress = function (self)
@@ -85,6 +86,7 @@ end
 ThornMutatorExtension.despawn = function (self)
 	Unit.flow_event(self._unit, "despawn")
 
+	self._despawning = true
 	local extension = ScriptUnit.extension(self._unit, "area_damage_system")
 
 	extension:enable(false)

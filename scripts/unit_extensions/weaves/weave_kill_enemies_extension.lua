@@ -1,5 +1,14 @@
 WeaveKillEnemiesExtension = class(WeaveKillEnemiesExtension)
 WeaveKillEnemiesExtension.NAME = "WeaveKillEnemiesExtension"
+local BASE_SCORE_MULTIPLIER = {
+	hardest = 0.7,
+	hard = 0.9,
+	harder = 0.8,
+	cataclysm_2 = 0.5,
+	cataclysm = 0.6,
+	cataclysm_3 = 0.4,
+	normal = 1
+}
 
 WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._extension_init_context = extension_init_context
@@ -21,7 +30,7 @@ WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, e
 	local difficulty = difficulty_manager:get_difficulty()
 
 	if type(score_multiplier) == "table" then
-		score_multiplier = score_multiplier[difficulty] or 1
+		score_multiplier = score_multiplier[difficulty] or BASE_SCORE_MULTIPLIER[difficulty] or 1
 	end
 
 	self._score_multiplier = score_multiplier

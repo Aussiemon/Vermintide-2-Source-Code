@@ -51,7 +51,6 @@ HitEffectsChaosExaltedSorcerer = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn"
 		}

@@ -1,4 +1,5 @@
 require("scripts/settings/equipment/player_wwise_dependencies")
+require("scripts/utils/cosmetics_utils")
 
 Cosmetics = {
 	skin_dr_default = {
@@ -2442,6 +2443,9 @@ Cosmetics = {
 		icon = "unit_frame_02"
 	},
 	frame_scorpion_complete_all_helmgart_levels_cataclysm = {
+		icon = "unit_frame_02"
+	},
+	frame_scorpion_complete_all_helmgart_level_achievements_cataclysm = {
 		icon = "unit_frame_02"
 	},
 	frame_scorpion_complete_bogenhafen_cataclysm = {

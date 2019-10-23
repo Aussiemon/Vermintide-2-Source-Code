@@ -78,6 +78,28 @@ local base_character_states = {
 	"PlayerCharacterStateInHangingCage",
 	"PlayerCharacterStateGrabbedByCorruptor"
 }
+local hud_components = {
+	"LootObjectiveUI",
+	"WaitForRescueUI",
+	"ItemReceivedFeedbackUI",
+	"OverchargeBarUI",
+	"BuffUI",
+	"BuffPresentationUI",
+	"EquipmentUI",
+	"GamePadEquipmentUI",
+	"AbilityUI",
+	"GamePadAbilityUI",
+	"InteractionUI",
+	"DamageIndicatorGui",
+	"CrosshairUI",
+	"FatigueUI",
+	"BonusDiceUI",
+	"PlayerInventoryUI",
+	"SocialWheelUI",
+	"WeaveProgressUI",
+	"WeaveTimerUI",
+	"WorldMarkerUI"
+}
 SPProfiles = {
 	{
 		career_voice_parameter = "victor_career_voice_effect",
@@ -119,7 +141,8 @@ SPProfiles = {
 			CareerSettings.wh_bountyhunter,
 			CareerSettings.wh_zealot
 		},
-		base_character_states = base_character_states
+		base_character_states = base_character_states,
+		hud_components = hud_components
 	},
 	{
 		career_voice_parameter = "sienna_career_voice_effect",
@@ -161,7 +184,8 @@ SPProfiles = {
 			CareerSettings.bw_scholar,
 			CareerSettings.bw_unchained
 		},
-		base_character_states = base_character_states
+		base_character_states = base_character_states,
+		hud_components = hud_components
 	},
 	{
 		career_voice_parameter = "dwarf_career_voice_effect",
@@ -203,7 +227,8 @@ SPProfiles = {
 			CareerSettings.dr_ironbreaker,
 			CareerSettings.dr_slayer
 		},
-		base_character_states = base_character_states
+		base_character_states = base_character_states,
+		hud_components = hud_components
 	},
 	{
 		career_voice_parameter = "kerillian_career_voice_effect",
@@ -245,7 +270,8 @@ SPProfiles = {
 			CareerSettings.we_maidenguard,
 			CareerSettings.we_shade
 		},
-		base_character_states = base_character_states
+		base_character_states = base_character_states,
+		hud_components = hud_components
 	},
 	{
 		career_voice_parameter = "markus_career_voice_effect",
@@ -287,7 +313,8 @@ SPProfiles = {
 			CareerSettings.es_huntsman,
 			CareerSettings.es_knight
 		},
-		base_character_states = base_character_states
+		base_character_states = base_character_states,
+		hud_components = hud_components
 	},
 	{
 		career_voice_parameter = "markus_career_voice_effect",
@@ -329,7 +356,8 @@ SPProfiles = {
 			CareerSettings.empire_soldier_tutorial,
 			CareerSettings.empire_soldier_tutorial
 		},
-		base_character_states = base_character_states
+		base_character_states = base_character_states,
+		hud_components = hud_components
 	}
 }
 TUTORIAL_PROFILE_INDEX = nil

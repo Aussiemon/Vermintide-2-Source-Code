@@ -13,6 +13,7 @@ MatchmakingStateJoinGame.init = function (self, params)
 	self._hero_popup_at_t = nil
 	self._selected_hero_at_t = nil
 	self._show_popup = false
+	self._wwise_world = params.wwise_world
 end
 
 MatchmakingStateJoinGame.destroy = function (self)
@@ -45,6 +46,7 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 
 		self._matchmaking_manager:send_system_chat_message("matchmaking_status_aquiring_profiles")
 	else
+		WwiseWorld.trigger_event(self._wwise_world, "menu_wind_countdown_warning")
 		self:_set_state_to_start_lobby()
 	end
 
@@ -97,9 +99,8 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		mm_printf_force("Search was aborted")
 
 		local matchmaking_manager = self._matchmaking_manager
-		local lobby_id = self.lobby_client:id()
 
-		matchmaking_manager:add_broken_lobby(lobby_id, t, false)
+		matchmaking_manager:add_broken_lobby_client(self.lobby_client, t, false)
 
 		if self.lobby_client then
 			self.lobby_client:destroy()
@@ -208,10 +209,9 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 		local player = Managers.player:local_player(1)
 		local reason = (self._popup_join_lobby_handler.cancel_timer <= 0 and "timed_out") or "cancelled"
 		local time_taken = (self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t) or 0
-		local lobby_id = self.lobby_client:id()
 		local is_bad_connection = false
 
-		self._matchmaking_manager:add_broken_lobby(lobby_id, t, is_bad_connection)
+		self._matchmaking_manager:add_broken_lobby_client(self.lobby_client, t, is_bad_connection)
 
 		if reason == "cancelled" then
 			cancel = true

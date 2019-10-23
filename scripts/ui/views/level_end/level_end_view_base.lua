@@ -22,9 +22,9 @@ local RPCS = {
 	"rpc_signal_end_of_level_done",
 	"rpc_notify_lobby_joined"
 }
-LevelEndView_Base = class(LevelEndView_Base)
+LevelEndViewBase = class(LevelEndViewBase)
 
-LevelEndView_Base.init = function (self, context)
+LevelEndViewBase.init = function (self, context)
 	self:setup_world(context)
 
 	local game_won = context.game_won
@@ -87,7 +87,7 @@ LevelEndView_Base.init = function (self, context)
 	end
 end
 
-LevelEndView_Base.register_rpcs = function (self, network_event_delegate)
+LevelEndViewBase.register_rpcs = function (self, network_event_delegate)
 	self._registered_rpcs = true
 
 	network_event_delegate:register(self, unpack(RPCS))
@@ -95,18 +95,18 @@ LevelEndView_Base.register_rpcs = function (self, network_event_delegate)
 	self._network_event_delegate = network_event_delegate
 end
 
-LevelEndView_Base.unregister_rpcs = function (self)
+LevelEndViewBase.unregister_rpcs = function (self)
 	self._network_event_delegate:unregister(self)
 
 	self._network_event_delegate = nil
 	self._registered_rpcs = false
 end
 
-LevelEndView_Base.enable_chat = function (self)
+LevelEndViewBase.enable_chat = function (self)
 	return true
 end
 
-LevelEndView_Base.start = function (self)
+LevelEndViewBase.start = function (self)
 	self:_activate_viewport()
 
 	self.waiting_to_start = nil
@@ -115,11 +115,11 @@ LevelEndView_Base.start = function (self)
 	self:_proceed_to_next_auto_state(1, #self._state_name_by_index)
 end
 
-LevelEndView_Base.on_enter = function (self)
+LevelEndViewBase.on_enter = function (self)
 	return
 end
 
-LevelEndView_Base.on_exit = function (self)
+LevelEndViewBase.on_exit = function (self)
 	if not self._is_untrusted then
 		local difficulty_key = Managers.state.difficulty:get_difficulty()
 		local chest_settings = LootChestData.chests_by_category[difficulty_key]
@@ -129,7 +129,7 @@ LevelEndView_Base.on_exit = function (self)
 	end
 end
 
-LevelEndView_Base._vote_to_leave_game = function (self)
+LevelEndViewBase._vote_to_leave_game = function (self)
 	local voting_manager = Managers.state.voting
 
 	voting_manager:vote(1)
@@ -137,34 +137,34 @@ LevelEndView_Base._vote_to_leave_game = function (self)
 	self._voted = true
 end
 
-LevelEndView_Base.exit_to_game = function (self)
+LevelEndViewBase.exit_to_game = function (self)
 	self:play_sound(self._stop_music_event)
 
 	self._exit_timer = 2
 	self._started_exit = true
 end
 
-LevelEndView_Base.done = function (self)
+LevelEndViewBase.done = function (self)
 	return self._wants_to_exit_to_game
 end
 
-LevelEndView_Base.setup_pages = function (self, game_won, rewards)
+LevelEndViewBase.setup_pages = function (self, game_won, rewards)
 	local index_by_state_name = {}
 
 	return index_by_state_name
 end
 
-LevelEndView_Base.create_ui_elements = function (self)
+LevelEndViewBase.create_ui_elements = function (self)
 	return
 end
 
-LevelEndView_Base._activate_viewport = function (self)
+LevelEndViewBase._activate_viewport = function (self)
 	local world, viewport = self:get_viewport_world()
 
 	ScriptWorld.activate_viewport(world, viewport)
 end
 
-LevelEndView_Base.get_world_link_unit = function (self)
+LevelEndViewBase.get_world_link_unit = function (self)
 	local level_name = "levels/end_screen/world"
 	local world = self:get_viewport_world()
 	local level = ScriptWorld.level(world, level_name)
@@ -182,11 +182,11 @@ LevelEndView_Base.get_world_link_unit = function (self)
 	end
 end
 
-LevelEndView_Base.get_viewport_world = function (self)
+LevelEndViewBase.get_viewport_world = function (self)
 	return self._world, self._world_viewport
 end
 
-LevelEndView_Base.update = function (self, dt, t)
+LevelEndViewBase.update = function (self, dt, t)
 	if self.suspended or self.waiting_for_post_update_enter then
 		return
 	end
@@ -234,11 +234,11 @@ LevelEndView_Base.update = function (self, dt, t)
 	end
 end
 
-LevelEndView_Base.transitioning = function (self)
+LevelEndViewBase.transitioning = function (self)
 	return self.exiting
 end
 
-LevelEndView_Base.left_lobby = function (self)
+LevelEndViewBase.left_lobby = function (self)
 	self._left_lobby = true
 	self._lobby = nil
 
@@ -247,7 +247,7 @@ LevelEndView_Base.left_lobby = function (self)
 	end
 end
 
-LevelEndView_Base.destroy = function (self)
+LevelEndViewBase.destroy = function (self)
 	if self._registered_rpcs then
 		self._network_event_delegate:unregister(self)
 
@@ -274,11 +274,11 @@ LevelEndView_Base.destroy = function (self)
 	self:destroy_world()
 end
 
-LevelEndView_Base.play_sound = function (self, event)
+LevelEndViewBase.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
 
-LevelEndView_Base._is_button_pressed = function (self, widget)
+LevelEndViewBase._is_button_pressed = function (self, widget)
 	local button_hotspot = widget.content.button_hotspot
 
 	if button_hotspot.on_release then
@@ -288,14 +288,14 @@ LevelEndView_Base._is_button_pressed = function (self, widget)
 	end
 end
 
-LevelEndView_Base._is_button_hover_enter = function (self, widget)
+LevelEndViewBase._is_button_hover_enter = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
 	return hotspot.on_hover_enter
 end
 
-LevelEndView_Base._is_page_selector_pressed = function (self)
+LevelEndViewBase._is_page_selector_pressed = function (self)
 	local widget = self._page_selector_widget
 	local content = widget.content
 	local amount = content.amount
@@ -311,7 +311,7 @@ LevelEndView_Base._is_page_selector_pressed = function (self)
 	end
 end
 
-LevelEndView_Base._set_page_selector_selection = function (self, index)
+LevelEndViewBase._set_page_selector_selection = function (self, index)
 	local widget = self._page_selector_widget
 	local content = widget.content
 	local amount = content.amount
@@ -324,7 +324,7 @@ LevelEndView_Base._set_page_selector_selection = function (self, index)
 	end
 end
 
-LevelEndView_Base._update_exit = function (self, dt)
+LevelEndViewBase._update_exit = function (self, dt)
 	self._exit_timer = math.max(0, self._exit_timer - dt)
 
 	if self._exit_timer == 0 then
@@ -333,11 +333,11 @@ LevelEndView_Base._update_exit = function (self, dt)
 	end
 end
 
-LevelEndView_Base.do_retry = function (self)
+LevelEndViewBase.do_retry = function (self)
 	return false
 end
 
-LevelEndView_Base._get_level_up_rewards = function (self)
+LevelEndViewBase._get_level_up_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local items_by_level = {}
 
@@ -358,7 +358,7 @@ LevelEndView_Base._get_level_up_rewards = function (self)
 	return items_by_level
 end
 
-LevelEndView_Base._get_deed_rewards = function (self)
+LevelEndViewBase._get_deed_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local deed_rewards = {}
 
@@ -371,7 +371,7 @@ LevelEndView_Base._get_deed_rewards = function (self)
 	return deed_rewards
 end
 
-LevelEndView_Base._get_event_rewards = function (self)
+LevelEndViewBase._get_event_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local event_rewards = {}
 
@@ -384,7 +384,7 @@ LevelEndView_Base._get_event_rewards = function (self)
 	return event_rewards
 end
 
-LevelEndView_Base._get_keep_decoration_rewards = function (self)
+LevelEndViewBase._get_keep_decoration_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local keep_decoration_rewards = {}
 
@@ -397,7 +397,7 @@ LevelEndView_Base._get_keep_decoration_rewards = function (self)
 	return keep_decoration_rewards
 end
 
-LevelEndView_Base._present_reward = function (self, data)
+LevelEndViewBase._present_reward = function (self, data)
 	local reward_popup = self.reward_popup
 
 	if self:displaying_reward_presentation() then
@@ -408,7 +408,7 @@ LevelEndView_Base._present_reward = function (self, data)
 	end
 end
 
-LevelEndView_Base._handle_queued_presentations = function (self)
+LevelEndViewBase._handle_queued_presentations = function (self)
 	if self:_is_reward_presentation_complete() or (#self._reward_presentation_queue == 0 and not self:displaying_reward_presentation()) then
 		local reward_presentation_queue = self._reward_presentation_queue
 		local num_queued_rewards = #reward_presentation_queue
@@ -423,19 +423,19 @@ LevelEndView_Base._handle_queued_presentations = function (self)
 	end
 end
 
-LevelEndView_Base.displaying_reward_presentation = function (self)
+LevelEndViewBase.displaying_reward_presentation = function (self)
 	return self.reward_popup:is_presentation_active()
 end
 
-LevelEndView_Base._is_reward_presentation_complete = function (self)
+LevelEndViewBase._is_reward_presentation_complete = function (self)
 	return self.reward_popup:is_presentation_complete()
 end
 
-LevelEndView_Base.reward_presentation_done = function (self)
+LevelEndViewBase.reward_presentation_done = function (self)
 	return self._reward_presentation_done
 end
 
-LevelEndView_Base.present_level_up = function (self, hero_name, hero_level)
+LevelEndViewBase.present_level_up = function (self, hero_name, hero_level)
 	local level_unlocks = ProgressionUnlocks.get_level_unlocks(hero_level, hero_name)
 	local level_up_rewards = self.level_up_rewards[hero_level]
 	local has_level_up_unlocks = level_unlocks and #level_unlocks > 0
@@ -520,7 +520,7 @@ LevelEndView_Base.present_level_up = function (self, hero_name, hero_level)
 	end
 end
 
-LevelEndView_Base.present_additional_rewards = function (self)
+LevelEndViewBase.present_additional_rewards = function (self)
 	local deed_rewards = self.deed_rewards
 	local num_deed_rewards = #deed_rewards
 	local item_interface = Managers.backend:get_interface("items")
@@ -639,7 +639,7 @@ LevelEndView_Base.present_additional_rewards = function (self)
 	end
 end
 
-LevelEndView_Base.present_chest_rewards = function (self)
+LevelEndViewBase.present_chest_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local item_interface = Managers.backend:get_interface("items")
 	local chest = end_of_level_rewards.chest
@@ -698,15 +698,15 @@ LevelEndView_Base.present_chest_rewards = function (self)
 	end
 end
 
-LevelEndView_Base.wanted_menu_state = function (self)
+LevelEndViewBase.wanted_menu_state = function (self)
 	return self._wanted_menu_state
 end
 
-LevelEndView_Base.clear_wanted_menu_state = function (self)
+LevelEndViewBase.clear_wanted_menu_state = function (self)
 	self._wanted_menu_state = nil
 end
 
-LevelEndView_Base._request_state_change = function (self, state_name)
+LevelEndViewBase._request_state_change = function (self, state_name)
 	local state_machine = self._machine
 
 	if not state_machine then
@@ -730,7 +730,7 @@ LevelEndView_Base._request_state_change = function (self, state_name)
 	self._new_state_name = state_name
 end
 
-LevelEndView_Base._handle_state_exit = function (self)
+LevelEndViewBase._handle_state_exit = function (self)
 	local state_machine = self._machine
 
 	if not state_machine then
@@ -746,7 +746,7 @@ LevelEndView_Base._handle_state_exit = function (self)
 	end
 end
 
-LevelEndView_Base._setup_state_machine = function (self, optional_start_state_name, initial)
+LevelEndViewBase._setup_state_machine = function (self, optional_start_state_name, initial)
 	if self._machine then
 		self._machine:destroy()
 
@@ -777,7 +777,7 @@ LevelEndView_Base._setup_state_machine = function (self, optional_start_state_na
 	self._machine = StateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
 end
 
-LevelEndView_Base._handle_state_auto_change = function (self)
+LevelEndViewBase._handle_state_auto_change = function (self)
 	local state_machine = self._machine
 
 	if not state_machine then
@@ -819,7 +819,7 @@ LevelEndView_Base._handle_state_auto_change = function (self)
 	end
 end
 
-LevelEndView_Base._proceed_to_next_auto_state = function (self, index, num_states)
+LevelEndViewBase._proceed_to_next_auto_state = function (self, index, num_states)
 	local new_state = self._state_name_by_index[index]
 
 	self:_setup_state_machine(new_state, true)
@@ -831,7 +831,7 @@ LevelEndView_Base._proceed_to_next_auto_state = function (self, index, num_state
 	self._next_auto_state_index = nil
 end
 
-LevelEndView_Base.rpc_signal_end_of_level_done = function (self, sender, peer_id, do_reload)
+LevelEndViewBase.rpc_signal_end_of_level_done = function (self, sender, peer_id, do_reload)
 	if self.is_server then
 		local lobby = self._lobby
 		local members = lobby:members():get_members()
@@ -847,7 +847,7 @@ LevelEndView_Base.rpc_signal_end_of_level_done = function (self, sender, peer_id
 	self:peer_signaled_done(peer_id, do_reload)
 end
 
-LevelEndView_Base.signal_done = function (self, do_reload)
+LevelEndViewBase.signal_done = function (self, do_reload)
 	if self._signaled_done then
 		return
 	end
@@ -879,7 +879,7 @@ LevelEndView_Base.signal_done = function (self, do_reload)
 	self:peer_signaled_done(Network.peer_id(), do_reload)
 end
 
-LevelEndView_Base.peer_signaled_done = function (self, peer_id, do_reload)
+LevelEndViewBase.peer_signaled_done = function (self, peer_id, do_reload)
 	if not self._started_force_shutdown then
 		self:start_force_shutdown()
 	end
@@ -888,7 +888,7 @@ LevelEndView_Base.peer_signaled_done = function (self, peer_id, do_reload)
 	self._wants_reload[peer_id] = do_reload
 end
 
-LevelEndView_Base.rpc_notify_lobby_joined = function (self, peer_id)
+LevelEndViewBase.rpc_notify_lobby_joined = function (self, peer_id)
 	if self.is_server then
 		local do_reload = false
 		local lobby = self._lobby
@@ -905,21 +905,21 @@ LevelEndView_Base.rpc_notify_lobby_joined = function (self, peer_id)
 	end
 end
 
-LevelEndView_Base.start_force_shutdown = function (self)
+LevelEndViewBase.start_force_shutdown = function (self)
 	self._started_force_shutdown = true
 	self._force_shutdown_timer = 10
 	self._force_shutdown_timer_start = self._force_shutdown_timer
 end
 
-LevelEndView_Base.get_force_shutdown_time = function (self)
+LevelEndViewBase.get_force_shutdown_time = function (self)
 	return self._force_shutdown_timer, self._force_shutdown_timer_start
 end
 
-LevelEndView_Base.is_force_shutdown_active = function (self)
+LevelEndViewBase.is_force_shutdown_active = function (self)
 	return self._started_force_shutdown
 end
 
-LevelEndView_Base.update_force_shutdown = function (self, dt)
+LevelEndViewBase.update_force_shutdown = function (self, dt)
 	self._force_shutdown_timer = math.max(0, self._force_shutdown_timer - dt)
 
 	if self._force_shutdown_timer == 0 and not self._signaled_done then
@@ -962,7 +962,7 @@ local cam_shake_settings = {
 	octaves = 7
 }
 
-LevelEndView_Base.setup_camera = function (self)
+LevelEndViewBase.setup_camera = function (self)
 	local camera_pose = nil
 	local level_name = "levels/end_screen/world"
 	local unit_indices = LevelResource.unit_indices(level_name, "units/hub_elements/cutscene_camera/cutscene_camera")
@@ -986,7 +986,7 @@ LevelEndView_Base.setup_camera = function (self)
 	self:position_camera()
 end
 
-LevelEndView_Base.add_camera_shake = function (self, settings, start_time, scale)
+LevelEndViewBase.add_camera_shake = function (self, settings, start_time, scale)
 	local data = {}
 	local current_rot = self:get_camera_rotation()
 	local settings = settings or cam_shake_settings
@@ -1007,7 +1007,7 @@ LevelEndView_Base.add_camera_shake = function (self, settings, start_time, scale
 	}
 end
 
-LevelEndView_Base._apply_shake_event = function (self, settings, t)
+LevelEndViewBase._apply_shake_event = function (self, settings, t)
 	local active_camera_shakes = self._active_camera_shakes
 	local start_time = settings.start_time
 	local end_time = settings.end_time
@@ -1036,7 +1036,7 @@ LevelEndView_Base._apply_shake_event = function (self, settings, t)
 	end
 end
 
-LevelEndView_Base._calculate_perlin_value = function (self, x, settings)
+LevelEndViewBase._calculate_perlin_value = function (self, x, settings)
 	local total = 0
 	local shake_settings = settings.shake_settings
 	local persistance = shake_settings.persistance
@@ -1055,7 +1055,7 @@ LevelEndView_Base._calculate_perlin_value = function (self, x, settings)
 	return total
 end
 
-LevelEndView_Base._interpolated_noise = function (self, x, settings)
+LevelEndViewBase._interpolated_noise = function (self, x, settings)
 	local x_floored = math.floor(x)
 	local remainder = x - x_floored
 	local v1 = self:_smoothed_noise(x_floored, settings)
@@ -1064,46 +1064,46 @@ LevelEndView_Base._interpolated_noise = function (self, x, settings)
 	return math.lerp(v1, v2, remainder)
 end
 
-LevelEndView_Base._smoothed_noise = function (self, x, settings)
+LevelEndViewBase._smoothed_noise = function (self, x, settings)
 	return self:_noise(x, settings) / 2 + self:_noise(x - 1, settings) / 4 + self:_noise(x + 1, settings) / 4
 end
 
-LevelEndView_Base._noise = function (self, x, settings)
+LevelEndViewBase._noise = function (self, x, settings)
 	local next_seed, _ = Math.next_random(x + settings.seed)
 	local _, value = Math.next_random(next_seed)
 
 	return value * 2 - 1
 end
 
-LevelEndView_Base.set_camera_position = function (self, position)
+LevelEndViewBase.set_camera_position = function (self, position)
 	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.set_local_position(camera, position)
 end
 
-LevelEndView_Base.set_camera_rotation = function (self, rotation)
+LevelEndViewBase.set_camera_rotation = function (self, rotation)
 	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.set_local_rotation(camera, rotation)
 end
 
-LevelEndView_Base.get_camera_position = function (self)
+LevelEndViewBase.get_camera_position = function (self)
 	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.position(camera)
 end
 
-LevelEndView_Base.get_camera_rotation = function (self)
+LevelEndViewBase.get_camera_rotation = function (self)
 	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.rotation(camera)
 end
 
-LevelEndView_Base.position_camera = function (self, optional_pose, fov)
+LevelEndViewBase.position_camera = function (self, optional_pose, fov)
 	local world, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 	local camera_pose = optional_pose or self._camera_pose:unbox()
@@ -1117,7 +1117,7 @@ LevelEndView_Base.position_camera = function (self, optional_pose, fov)
 	end
 end
 
-LevelEndView_Base.set_camera_zoom = function (self, progress)
+LevelEndViewBase.set_camera_zoom = function (self, progress)
 	local camera_pose = self._camera_pose:unbox()
 	local translation = Matrix4x4.translation(camera_pose)
 	local rotation = Matrix4x4.rotation(camera_pose)
@@ -1129,7 +1129,7 @@ LevelEndView_Base.set_camera_zoom = function (self, progress)
 	self:set_camera_position(position)
 end
 
-LevelEndView_Base._setup_viewport_camera = function (self)
+LevelEndViewBase._setup_viewport_camera = function (self)
 	local world, viewport = self:get_viewport_world()
 	local level_camera_unit = World.unit_by_name(world, "camera")
 	local level_camera_rot = Unit.world_rotation(level_camera_unit, 0)
@@ -1142,7 +1142,7 @@ LevelEndView_Base._setup_viewport_camera = function (self)
 	ScriptCamera.set_local_position(viewport_camera, level_camera_pos)
 end
 
-LevelEndView_Base._push_mouse_cursor = function (self)
+LevelEndViewBase._push_mouse_cursor = function (self)
 	if not self._cursor_visible then
 		ShowCursorStack.push()
 
@@ -1150,7 +1150,7 @@ LevelEndView_Base._push_mouse_cursor = function (self)
 	end
 end
 
-LevelEndView_Base._pop_mouse_cursor = function (self)
+LevelEndViewBase._pop_mouse_cursor = function (self)
 	if self._cursor_visible then
 		ShowCursorStack.pop()
 
@@ -1158,7 +1158,7 @@ LevelEndView_Base._pop_mouse_cursor = function (self)
 	end
 end
 
-LevelEndView_Base.set_input_manager = function (self, input_manager)
+LevelEndViewBase.set_input_manager = function (self, input_manager)
 	self.input_manager = input_manager
 
 	if self.reward_popup then
@@ -1170,23 +1170,23 @@ LevelEndView_Base.set_input_manager = function (self, input_manager)
 	state:set_input_manager(input_manager)
 end
 
-LevelEndView_Base.input_service = function (self)
+LevelEndViewBase.input_service = function (self)
 	return (self:displaying_reward_presentation() and fake_input_service) or self.input_manager:get_service("end_of_level")
 end
 
-LevelEndView_Base.menu_input_service = function (self)
+LevelEndViewBase.menu_input_service = function (self)
 	return (self.input_blocked and fake_input_service) or self:input_service()
 end
 
-LevelEndView_Base.set_input_blocked = function (self, blocked)
+LevelEndViewBase.set_input_blocked = function (self, blocked)
 	self.input_blocked = blocked
 end
 
-LevelEndView_Base.input_enabled = function (self)
+LevelEndViewBase.input_enabled = function (self)
 	return true
 end
 
-LevelEndView_Base.setup_world = function (self, context)
+LevelEndViewBase.setup_world = function (self, context)
 	local world, top_world = self:create_world(context)
 	local level = self:spawn_level(context, world)
 	local viewport = self:create_viewport(context, world)
@@ -1206,7 +1206,7 @@ LevelEndView_Base.setup_world = function (self, context)
 	context.wwise_world = wwise_world
 end
 
-LevelEndView_Base.destroy_world = function (self)
+LevelEndViewBase.destroy_world = function (self)
 	UIRenderer.destroy(self.ui_renderer, self._world)
 
 	self.ui_renderer = nil
@@ -1221,7 +1221,7 @@ LevelEndView_Base.destroy_world = function (self)
 	self._top_world = nil
 end
 
-LevelEndView_Base.get_world_flags = function (self)
+LevelEndViewBase.get_world_flags = function (self)
 	local flags = {
 		Application.DISABLE_SOUND,
 		Application.DISABLE_ESRAM,
@@ -1238,7 +1238,7 @@ LevelEndView_Base.get_world_flags = function (self)
 	return flags
 end
 
-LevelEndView_Base.create_world = function (self, context)
+LevelEndViewBase.create_world = function (self, context)
 	local world_name = "end_screen"
 	local shading_environment = "environment/ui_end_screen"
 	local layer = 2
@@ -1252,7 +1252,7 @@ LevelEndView_Base.create_world = function (self, context)
 	return world, top_world
 end
 
-LevelEndView_Base.create_viewport = function (self, context, world)
+LevelEndViewBase.create_viewport = function (self, context, world)
 	local viewport_name = "end_screen_viewport"
 	local viewport_type = "default"
 	local layer = 2
@@ -1261,7 +1261,7 @@ LevelEndView_Base.create_viewport = function (self, context, world)
 	return viewport
 end
 
-LevelEndView_Base.spawn_level = function (self, context, world)
+LevelEndViewBase.spawn_level = function (self, context, world)
 	local level_name = "levels/end_screen/world"
 	local object_sets = {}
 	local level = ScriptWorld.load_level(world, level_name, object_sets, nil, nil, nil)
@@ -1271,7 +1271,7 @@ LevelEndView_Base.spawn_level = function (self, context, world)
 	return level
 end
 
-LevelEndView_Base.create_ui_renderer = function (self, context, world, top_world)
+LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 	local materials = {
 		"material",
 		"materials/ui/ui_1080p_hud_atlas_textures",

@@ -403,6 +403,14 @@ OptionsView._setup_input_functions = function (self)
 		drop_down = function (widget, input_source, dt)
 			local content = widget.content
 			local style = widget.style
+			local list_style = style.list_style
+			local item_contents = content.list_content
+			local item_styles = list_style.item_styles
+			local start_index = list_style.start_index
+			local num_draws = list_style.num_draws
+			local total_draws = list_style.total_draws
+			local using_scrollbar = content.using_scrollbar
+			local thumbnail_hotspot = content.thumbnail_hotspot
 
 			if not content.active then
 				local hotspot = content.hotspot
@@ -411,21 +419,27 @@ OptionsView._setup_input_functions = function (self)
 					WwiseWorld.trigger_event(self.wwise_world, "Play_hud_hover")
 				end
 
-				if hotspot.on_release then
+				local current_selection = content.current_selection
+
+				if hotspot.on_release and current_selection then
 					content.active = true
-					style.list_style.active = true
+					list_style.active = true
 					self.disable_all_input = true
+
+					if using_scrollbar then
+						local draw_amount_diff = total_draws - num_draws
+						list_style.start_index = math.min(current_selection, draw_amount_diff)
+						local start_index = list_style.start_index
+						local scroll_percent = (start_index - 1) / draw_amount_diff
+						thumbnail_hotspot.scroll_progress = scroll_percent
+					end
 
 					WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 				end
 			else
-				local list_style = style.list_style
-				local item_contents = content.list_content
-				local item_styles = list_style.item_styles
-				local num_draws = list_style.num_draws
 				local options_texts = content.options_texts
 
-				for i = 1, num_draws, 1 do
+				for i = start_index, start_index - 1 + num_draws, 1 do
 					local item_content = item_contents[i]
 					local hotspot = item_content.hotspot
 
@@ -448,12 +462,43 @@ OptionsView._setup_input_functions = function (self)
 					end
 				end
 
-				if content.active and input_source:get("left_release") and not Managers.input:is_device_active("gamepad") then
-					content.active = false
-					list_style.active = false
-					self.disable_all_input = false
+				local thumbnail_was_dragging = content.was_dragging
+				local thumbnail_dragging = content.dragging
+				content.was_dragging = thumbnail_dragging
+				local gamepad_active = Managers.input:is_device_active("gamepad")
 
-					WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+				if not gamepad_active then
+					if using_scrollbar then
+						local scroll_axis = input_source:get("scroll_axis")
+
+						if scroll_axis then
+							local axis_input = scroll_axis.y
+							local input_made = false
+
+							if axis_input > 0 then
+								input_made = true
+								list_style.start_index = math.max(start_index - 1, 1)
+							elseif axis_input < 0 then
+								input_made = true
+								list_style.start_index = math.min(start_index + 1, total_draws - num_draws + 1)
+							end
+
+							if input_made then
+								local start_index = list_style.start_index
+								local draw_amount_diff = total_draws - num_draws
+								local scroll_percent = (start_index - 1) / draw_amount_diff
+								thumbnail_hotspot.scroll_progress = scroll_percent
+							end
+						end
+					end
+
+					if input_source:get("left_release") and not thumbnail_dragging and not thumbnail_was_dragging then
+						content.active = false
+						list_style.active = false
+						self.disable_all_input = false
+
+						WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+					end
 				end
 			end
 		end,
@@ -1125,9 +1170,10 @@ OptionsView.build_drop_down_widget = function (self, element, scenegraph_id, bas
 	local callback_func = self:make_callback(callback_name)
 	local saved_value_cb_name = element.saved_value
 	local saved_value_cb = callback(self, saved_value_cb_name)
+	local ignore_upper_case = element.ignore_upper_case
 	local setup_name = element.setup
 	local selected_option, options, text, default_value = self[setup_name](self)
-	local widget = definitions.create_drop_down_widget(text, options, selected_option, element.tooltip_text, scenegraph_id, base_offset)
+	local widget = definitions.create_drop_down_widget(text, options, selected_option, element.tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
 	local content = widget.content
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
@@ -1399,7 +1445,7 @@ OptionsView.force_set_widget_value = function (self, name, value)
 
 		content:callback()
 	else
-		fassert(false, "Force set widget value not supported for widget type %q yet", wiget_type)
+		fassert(false, "Force set widget value not supported for widget type %q yet", widget_type)
 	end
 end
 
@@ -2031,7 +2077,9 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 			if not player.local_player and Unit.alive(player_unit) then
 				local outline_extension = ScriptUnit.extension(player_unit, "outline_system")
 
-				outline_extension.update_override_method_player_setting()
+				if outline_extension.update_override_method_player_setting then
+					outline_extension.update_override_method_player_setting()
+				end
 			end
 		end
 	end
@@ -4626,7 +4674,7 @@ OptionsView.cb_resolutions_setup = function (self)
 
 	table.sort(options, comparator)
 
-	local selected_option = nil
+	local selected_option = 1
 
 	for i = 1, #options, 1 do
 		local resolution = options[i]
@@ -4645,7 +4693,7 @@ OptionsView.cb_resolutions_saved_value = function (self, widget)
 	local options_values = widget.content.options_values
 	local options_texts = widget.content.options_texts
 	local resolution = assigned(self.changed_user_settings.screen_resolution, Application.user_setting("screen_resolution"))
-	local selected_option = nil
+	local selected_option = 1
 
 	for i = 1, #options_values, 1 do
 		local value = options_values[i]

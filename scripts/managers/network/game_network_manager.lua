@@ -46,7 +46,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self._event_delegate = event_delegate
 
-	event_delegate:register(self, "rpc_play_particle_effect", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
+	event_delegate:register(self, "rpc_play_particle_effect", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
 end
 
 GameNetworkManager.lobby = function (self)
@@ -340,13 +340,13 @@ GameNetworkManager.game_object_template = function (self, go_type)
 	return game_object_templates[go_type]
 end
 
-GameNetworkManager.request_profile = function (self, local_player_id, profile_name, career_name)
+GameNetworkManager.request_profile = function (self, local_player_id, profile_name, career_name, force_respawn)
 	if self.network_server then
-		self.network_server:request_profile(local_player_id, profile_name, career_name)
+		self.network_server:request_profile(local_player_id, profile_name, career_name, force_respawn)
 	end
 
 	if self.network_client then
-		self.network_client:request_profile(local_player_id, profile_name, career_name)
+		self.network_client:request_profile(local_player_id, profile_name, career_name, force_respawn)
 	end
 end
 
@@ -555,6 +555,14 @@ GameNetworkManager.game_object_destroyed_progress_timer = function (self, game_o
 	local progress_extension = ScriptUnit.extension(unit, "progress_system")
 
 	progress_extension:on_game_object_destroyed()
+end
+
+GameNetworkManager.game_object_created_game_mode_data = function (self, game_object_id, owner_id, go_template)
+	Managers.state.game_mode:on_game_mode_data_created(self.game_session, game_object_id)
+end
+
+GameNetworkManager.game_object_destroyed_game_mode_data = function (self, game_object_id, owner_id, go_template)
+	Managers.state.game_mode:on_game_mode_data_destroyed()
 end
 
 GameNetworkManager.game_object_created_weave = function (self, game_object_id, owner_id, go_template)
@@ -819,6 +827,14 @@ end
 
 GameNetworkManager.rpc_gm_event_round_started = function (self, sender)
 	Managers.state.game_mode:trigger_event("round_started")
+end
+
+GameNetworkManager.gm_event_initial_peers_spawned = function (self)
+	self.network_transmit:send_rpc_clients("rpc_gm_event_initial_peers_spawned")
+end
+
+GameNetworkManager.rpc_gm_event_initial_peers_spawned = function (self, sender)
+	Managers.state.game_mode:trigger_event("initial_peers_spawned")
 end
 
 GameNetworkManager.rpc_play_melee_hit_effects = function (self, sender, sound_event_id, hit_position, sound_type_id, unit_game_object_id)
