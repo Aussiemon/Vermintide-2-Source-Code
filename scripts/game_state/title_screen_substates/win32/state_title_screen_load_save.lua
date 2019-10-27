@@ -33,7 +33,9 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 		end
 	end
 
-	if SaveData.has_completed_tutorial or script_data.disable_tutorial_at_start then
+	local run_tutorial, tutorial_state = Managers.mechanism:should_run_tutorial()
+
+	if SaveData.has_completed_tutorial or script_data.disable_tutorial_at_start or not run_tutorial then
 		return
 	end
 
@@ -42,7 +44,8 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 	level_transition_handler:set_next_level("prologue")
 
 	self.parent.parent.loading_context.level_transition_handler = level_transition_handler
-	self.parent.parent.loading_context.switch_to_tutorial_backend = true
+	self.parent.parent.loading_context.switch_to_tutorial_backend = run_tutorial
+	self.parent.parent.loading_context.wanted_tutorial_state = tutorial_state
 	self.parent.parent.loading_context.first_time = true
 	SaveData.has_completed_tutorial = true
 

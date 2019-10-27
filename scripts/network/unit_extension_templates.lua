@@ -52,7 +52,6 @@ local unit_templates = {
 			"TargetOverrideExtension",
 			"AIPlayerSlotExtension",
 			"PlayerVolumeExtension",
-			"RoundStartedExtension",
 			"PlayerTutorialExtension",
 			"StatisticsExtension",
 			"ContextAwarePingExtension",
@@ -98,7 +97,6 @@ local unit_templates = {
 			"TargetOverrideExtension",
 			"AIPlayerSlotExtension",
 			"PlayerVolumeExtension",
-			"RoundStartedExtension",
 			"StatisticsExtension",
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
@@ -134,7 +132,8 @@ local unit_templates = {
 			"PlayerProximityExtension",
 			"SurroundingObserverExtension",
 			"GenericAggroableExtension",
-			"PlayerOutlineExtension"
+			"PlayerOutlineExtension",
+			"RoundStartedExtension"
 		},
 		husk_extensions = {
 			"GenericStatusExtension",
@@ -161,7 +160,8 @@ local unit_templates = {
 			"PlayerProximityExtension",
 			"SurroundingObserverHuskExtension",
 			"GenericAggroableExtension",
-			"PlayerHuskOutlineExtension"
+			"PlayerHuskOutlineExtension",
+			"RoundStartedExtension"
 		}
 	},
 	player_unit_3rd_tutorial = {
@@ -1493,6 +1493,15 @@ local unit_templates = {
 			"PlayerProjectileHuskExtension"
 		}
 	},
+	prop_projectile_unit = {
+		go_type = "prop_projectile_unit",
+		self_owned_extensions = {
+			"ProjectilePhysicsUnitLocomotionExtension"
+		},
+		husk_extensions = {
+			"ProjectilePhysicsHuskLocomotionExtension"
+		}
+	},
 	pickup_projectile_unit = {
 		go_type = "pickup_projectile_unit",
 		self_owned_extensions = {
@@ -1581,6 +1590,15 @@ local unit_templates = {
 			"LookatTargetExtension",
 			"PingTargetExtension",
 			"BuffExtension"
+		}
+	},
+	versus_volume_objective_unit = {
+		go_type = "versus_volume_objective_unit",
+		self_owned_extensions = {
+			"VersusVolumeObjectiveExtension"
+		},
+		husk_extensions = {
+			"VersusVolumeObjectiveExtension"
 		}
 	},
 	weave_capture_point_unit = {

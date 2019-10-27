@@ -29,32 +29,35 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._num_ai_string = "SPAWNED: %3i   ACTIVE: %3i   EVENT SPAWNED: %3i   EVENT SPAWNED ACTIVE: %3i"
 	self._settings = {
 		critical = {
-			font = "materials/fonts/gw_arial_32",
+			font = "materials/fonts/arial",
 			distance_from_top = 60,
 			size = 36,
-			material = "gw_arial_32",
+			material = "arial",
 			color = ColorBox(255, 255, 0, 0),
 			color_to = ColorBox(255, 255, 255, 0),
 			position = Vector3Box()
 		},
 		normal = {
-			font = "materials/fonts/gw_arial_16",
+			font = "materials/fonts/arial",
 			distance_from_top = 30,
 			size = 26,
-			material = "gw_arial_16",
+			material = "arial",
 			color = ColorBox(255, 0, 255, 0),
 			position = Vector3Box()
 		}
 	}
-	local w, h = Gui.resolution()
 
-	for _, setting in pairs(self._settings) do
-		local min, max = Gui.text_extents(gui, self._num_ai_string, setting.font, setting.size, setting.material)
-		local x = math.floor(((w + min.x) - max.x) * 0.5)
-		local y = h - setting.distance_from_top
-		local z = 999
+	if not DEDICATED_SERVER then
+		local w, h = Gui.resolution()
 
-		setting.position:store(x, y, z)
+		for _, setting in pairs(self._settings) do
+			local min, max = Gui.text_extents(gui, self._num_ai_string, setting.font, setting.size, setting.material)
+			local x = math.floor(((w + min.x) - max.x) * 0.5)
+			local y = h - setting.distance_from_top
+			local z = 999
+
+			setting.position:store(x, y, z)
+		end
 	end
 
 	self._events = {

@@ -235,6 +235,13 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
+	prop_projectile_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	pickup_projectile_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -250,6 +257,13 @@ local game_object_templates = {
 		is_level_unit = false
 	},
 	pickup_training_dummy_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	versus_volume_objective_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
 		syncs_rotation = true,
@@ -514,6 +528,10 @@ local game_object_templates = {
 	weave_objective = {
 		game_object_created_func_name = "game_object_created_weave_objective",
 		game_object_destroyed_func_name = "game_object_destroyed_weave_objective"
+	},
+	game_mode_data = {
+		game_object_created_func_name = "game_object_created_game_mode_data",
+		game_object_destroyed_func_name = "game_object_destroyed_game_mode_data"
 	}
 }
 

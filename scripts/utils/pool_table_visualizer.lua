@@ -19,7 +19,7 @@ PoolTableVisualizer.destroy = function ()
 end
 
 local font_size = 14
-local font = "gw_arial_16"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 
 PoolTableVisualizer.render = function (t)

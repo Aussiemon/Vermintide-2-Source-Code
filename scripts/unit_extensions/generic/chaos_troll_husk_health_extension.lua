@@ -51,41 +51,15 @@ ChaosTrollHuskHealthExtension.apply_client_predicted_damage = function (self, pr
 	return
 end
 
-ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot)
 	local unit = self.unit
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
 
+	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
 	fassert(damage_type, "No damage_type!")
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
-
-	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" then
-		attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
-
-		if AiUtils.unit_alive(attacker_unit) then
-			local breed = Unit.get_data(attacker_unit, "breed")
-
-			StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
-
-			local ai_suicide = attacker_unit == unit and breed and not breed.is_player
-
-			if not ai_suicide and (attacker_unit ~= unit or damage_type ~= "cutting") and breed then
-				local last_damage_data = self.last_damage_data
-				last_damage_data.breed = breed
-				last_damage_data.damage_type = damage_type
-				local player = Managers.player:owner(attacker_unit)
-
-				if player then
-					last_damage_data.attacker_unique_id = player:unique_id()
-					last_damage_data.attacker_side = Managers.state.side.side_by_unit[attacker_unit]
-				else
-					last_damage_data.attacker_unique_id = nil
-					last_damage_data.attacker_side = nil
-				end
-			end
-		end
-	end
 
 	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
 		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)

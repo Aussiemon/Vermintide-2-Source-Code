@@ -141,7 +141,8 @@ else
 		"resource_packages/levels/ui_end_screen_victory",
 		"resource_packages/ingame",
 		"resource_packages/pickups",
-		"resource_packages/projection_decals"
+		"resource_packages/projection_decals",
+		"resource_packages/slug_core_materials"
 	}
 end
 

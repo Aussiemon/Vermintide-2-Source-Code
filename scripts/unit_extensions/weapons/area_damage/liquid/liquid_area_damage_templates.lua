@@ -746,7 +746,7 @@ LiquidAreaDamageTemplates = {
 		return math.max((1 - angle / math.pi)^2, 0)
 	end,
 	bile_troll_vomit_init = function (self, t)
-		local troll_unit = self._source_unit
+		local troll_unit = self._source_attacker_unit
 
 		if AiUtils.unit_alive(troll_unit) then
 			local world = self._world
@@ -767,7 +767,7 @@ LiquidAreaDamageTemplates = {
 	end,
 	bile_troll_vomit_update = function (self, t, dt)
 		local vomit_unit = self._vomit_unit
-		local troll_unit = self._source_unit
+		local troll_unit = self._source_attacker_unit
 		local source_unit_is_alive = AiUtils.unit_alive(troll_unit)
 		local firing_time_deadline = self._firing_time_deadline
 

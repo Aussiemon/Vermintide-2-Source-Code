@@ -34,6 +34,7 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	local party_id = player_status.party_id
 	local party = party_manager:get_party(party_id)
 	local side = Managers.state.side.side_by_party[party]
+	self._party_id = party_id
 	self.platform = PLATFORM
 	self._unit_frames = {}
 	self._unit_frame_index_by_ui_id = {}
@@ -295,13 +296,12 @@ UnitFramesHandler._handle_connecting_peers = function (self, active_peer_ids, nu
 	table.clear(temp_connecting_peer_ids)
 
 	if num_unit_frames_used < 3 then
-		local members = self.lobby:members()
+		local party_manager = Managers.party
+		local party_members = party_manager:get_players_in_party(self._party_id)
 
-		if members then
-			local lobby_members = members:get_members()
-
-			for i = 1, #lobby_members, 1 do
-				local peer_id = lobby_members[i]
+		if party_members then
+			for k = 1, #party_members, 1 do
+				local peer_id = party_members[k].peer_id
 
 				if not active_peer_ids[peer_id] then
 					local unit_frame = self:_get_unit_frame_by_connecting_peer_id(peer_id)

@@ -271,6 +271,12 @@ CharacterStateHelper.do_common_state_transitions = function (status_extension, c
 		return true
 	end
 
+	if CharacterStateHelper.is_staggered(status_extension) then
+		csm:change_state("staggered")
+
+		return true
+	end
+
 	if CharacterStateHelper.is_knocked_down(status_extension) then
 		csm:change_state("knocked_down")
 
@@ -401,6 +407,43 @@ CharacterStateHelper.move_in_air = function (first_person_extension, input_exten
 	local move_velocity = Vector3.normalize(Vector3.flat(Quaternion.rotate(unit_rotation, move_direction)))
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local move_cap = math.clamp(movement_settings_table.move_speed, 0, PlayerUnitMovementSettings.move_speed)
+
+	if movement.y < 0 then
+		speed = speed * movement_settings_table.backward_move_scale
+		move_cap = move_cap * movement_settings_table.backward_move_scale * 0.9
+	end
+
+	local prev_move_velocity = Vector3.flat(locomotion_extension:current_velocity())
+	local new_move_velocity = prev_move_velocity + move_velocity * speed
+	local new_move_speed = Vector3.length(new_move_velocity)
+	new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
+	local new_move_direction = Vector3.normalize(new_move_velocity)
+
+	locomotion_extension:set_wanted_velocity(new_move_direction * new_move_speed)
+end
+
+CharacterStateHelper.move_in_air_pactsworn = function (first_person_extension, input_extension, locomotion_extension, speed, unit, wait_timer_force_backwards_movement, wait_timer_force_forward_movement)
+	local movement = CharacterStateHelper.get_movement_input(input_extension)
+	local force_y_movement = 0
+	local breed = Unit.get_data(unit, "breed")
+
+	if wait_timer_force_backwards_movement and wait_timer_force_backwards_movement > 0 then
+		force_y_movement = force_y_movement - 1
+	end
+
+	if wait_timer_force_forward_movement and wait_timer_force_forward_movement > 0 then
+		force_y_movement = force_y_movement + 1
+	end
+
+	if force_y_movement ~= 0 then
+		Vector3.set_y(movement, force_y_movement)
+	end
+
+	local move_direction = Vector3.normalize(movement)
+	local unit_rotation = first_person_extension:current_rotation()
+	local move_velocity = Vector3.normalize(Vector3.flat(Quaternion.rotate(unit_rotation, move_direction)))
+	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local move_cap = breed.movement_speed
 
 	if movement.y < 0 then
 		speed = speed * movement_settings_table.backward_move_scale
@@ -1346,6 +1389,10 @@ end
 
 CharacterStateHelper.is_knocked_down = function (status_extension)
 	return status_extension:is_knocked_down()
+end
+
+CharacterStateHelper.is_staggered = function (status_extension)
+	return status_extension:is_staggered()
 end
 
 CharacterStateHelper.is_pounced_down = function (status_extension)

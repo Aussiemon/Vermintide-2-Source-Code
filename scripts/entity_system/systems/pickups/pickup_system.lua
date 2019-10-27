@@ -55,6 +55,9 @@ PickupSystem.init = function (self, context, system_name)
 	self._life_time_pickups = {}
 	self._limited_owned_pickups = {}
 
+	if not DEDICATED_SERVER then
+	end
+
 	Managers.state.event:register(self, "delete_limited_owned_pickups", "event_delete_limited_owned_pickups")
 end
 

@@ -1889,7 +1889,7 @@ GenericStatusExtension.set_invisible = function (self, invisible)
 	local local_player_party = local_player and Managers.party:get_party_from_player_id(local_player:network_id(), local_player:local_player_id())
 	local local_player_side = local_player_party and side_manager.side_by_party[local_player_party]
 	local is_enemies = side_manager:is_enemy_by_side(local_player_side, unit_side)
-	local fade_value = (is_enemies and 1) or 0.8
+	local fade_value = (is_enemies and 1) or 0.65
 	local side = Managers.state.side.side_by_unit[unit]
 	local unit_is_hero = side and side:name() == "heroes"
 
@@ -2143,6 +2143,10 @@ end
 
 GenericStatusExtension.is_in_end_zone = function (self)
 	return self.in_end_zone
+end
+
+GenericStatusExtension.is_staggered = function (self)
+	return false
 end
 
 return

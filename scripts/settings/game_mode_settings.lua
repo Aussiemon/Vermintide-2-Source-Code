@@ -6,7 +6,13 @@ GameModeSettings.base = {
 	cap_power_level = true,
 	class_name = "GameModeBase",
 	visible = false,
-	object_sets = {}
+	object_sets = {},
+	game_mode_states = {
+		"initial_state"
+	},
+	social_wheel_by_side = {
+		heroes = "general"
+	}
 }
 GameModeSettings.adventure = table.clone(GameModeSettings.base)
 GameModeSettings.adventure.key = "adventure"
@@ -21,6 +27,10 @@ GameModeSettings.adventure.lose_condition_time = 10
 GameModeSettings.adventure.playable = true
 GameModeSettings.adventure.difficulties = DefaultDifficulties
 GameModeSettings.adventure.end_mission_rewards = true
+GameModeSettings.adventure.hud_components = {
+	"TwitchVoteUI"
+}
+GameModeSettings.adventure.use_keep_decorations = true
 GameModeSettings.survival = table.clone(GameModeSettings.base)
 GameModeSettings.survival.key = "survival"
 GameModeSettings.survival.class_name = "GameModeSurvival"
@@ -37,6 +47,11 @@ GameModeSettings.survival.playable = true
 GameModeSettings.survival.difficulties = SurvivalDifficulties
 GameModeSettings.survival.required_act_unlocked = "act_1"
 GameModeSettings.survival.end_mission_rewards = true
+GameModeSettings.survival.hud_components = {
+	"GameTimerUI",
+	"DifficultyUnlockUI"
+}
+GameModeSettings.survival.use_keep_decorations = true
 GameModeSettings.tutorial = table.clone(GameModeSettings.base)
 GameModeSettings.tutorial.key = "tutorial"
 GameModeSettings.tutorial.private_only = true
@@ -48,6 +63,11 @@ GameModeSettings.tutorial.object_sets = {
 GameModeSettings.tutorial.lose_condition_time_dead = 4
 GameModeSettings.tutorial.lose_condition_time = 10
 GameModeSettings.tutorial.end_mission_rewards = true
+GameModeSettings.tutorial.hud_components = {
+	"TutorialInputUI",
+	"CutsceneOverlayUI"
+}
+GameModeSettings.tutorial.use_keep_decorations = true
 GameModeSettings.demo = table.clone(GameModeSettings.base)
 GameModeSettings.demo.key = "demo"
 GameModeSettings.demo.private_only = true
@@ -59,6 +79,7 @@ GameModeSettings.demo.object_sets = {
 GameModeSettings.demo.lose_condition_time_dead = 4
 GameModeSettings.demo.lose_condition_time = 10
 GameModeSettings.demo.end_mission_rewards = true
+GameModeSettings.demo.use_keep_decorations = true
 GameModeSettings.inn = table.clone(GameModeSettings.base)
 GameModeSettings.inn.key = "inn"
 GameModeSettings.inn.disable_difficulty_spawning_items = true
@@ -68,6 +89,16 @@ GameModeSettings.inn.player_damage_forbidden = true
 GameModeSettings.inn.cap_power_level = false
 GameModeSettings.inn.end_mission_rewards = false
 GameModeSettings.inn.hide_difficulty = true
+GameModeSettings.inn.hud_components = {
+	"MissionVotingUI",
+	"LevelCountdownUI",
+	"NewsFeedUI",
+	"GiftPopupUI"
+}
+GameModeSettings.inn.use_keep_decorations = true
+GameModeSettings.inn.social_wheel_by_side = {
+	heroes = "general"
+}
 GameModeSettings.weave = table.clone(GameModeSettings.base)
 GameModeSettings.weave.key = "weave"
 GameModeSettings.weave.class_name = "GameModeWeave"

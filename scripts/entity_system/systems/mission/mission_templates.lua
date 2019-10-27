@@ -268,7 +268,7 @@ MissionTemplates = {
 				if Unit.alive(unit) then
 					local status_extension = ScriptUnit.extension(unit, "status_system")
 
-					if not status_extension:is_disabled() and status_extension:is_in_end_zone() then
+					if not status_extension:is_disabled() and (status_extension:is_in_end_zone() or player.bot_player) then
 						num_alive = num_alive + 1
 					end
 				end

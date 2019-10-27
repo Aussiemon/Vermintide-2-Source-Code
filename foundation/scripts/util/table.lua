@@ -1,3 +1,5 @@
+require("foundation/scripts/util/class")
+
 table.is_empty = function (t)
 	return next(t) == nil
 end
@@ -12,22 +14,26 @@ table.size = function (t)
 	return elements
 end
 
-table.clone = function (t)
+table.clone = function (t, skip_metatable)
 	local clone = {}
 
+	assert(skip_metatable or getmetatable(t) == nil, "Metatables will be sliced off")
+
 	for key, value in pairs(t) do
-		if type(value) == "table" then
-			clone[key] = table.clone(value)
-		else
+		if type(value) ~= "table" or is_class_instance(value) then
 			clone[key] = value
+		else
+			clone[key] = table.clone(value)
 		end
 	end
 
 	return clone
 end
 
-table.shallow_copy = function (t)
+table.shallow_copy = function (t, skip_metatable)
 	local copy = {}
+
+	assert(skip_metatable or getmetatable(t) == nil, "Metatables will be sliced off")
 
 	for key, value in pairs(t) do
 		copy[key] = value
@@ -48,15 +54,33 @@ table.crop = function (t, index)
 	return new_table, new_table_size
 end
 
+table.compare = function (t1, t2, ignore_keys)
+	ignore_keys = ignore_keys or {}
+
+	for key_t1, value_t1 in pairs(t1) do
+		if not table.contains(ignore_keys, key_t1) then
+			for key_t2, value_t2 in pairs(t2) do
+				if key_t1 == key_t2 and value_t1 ~= value_t2 then
+					return false
+				end
+			end
+		end
+	end
+
+	return true
+end
+
 table.create_copy = function (copy, original)
 	if not copy then
 		return table.clone(original)
 	else
+		assert(getmetatable(original) == nil, "Metatables will be sliced off")
+
 		for key, value in pairs(original) do
-			if type(value) == "table" then
-				copy[key] = table.create_copy(copy[key], value)
-			else
+			if type(value) ~= "table" or is_class_instance(value) then
 				copy[key] = value
+			else
+				copy[key] = table.create_copy(copy[key], value)
 			end
 		end
 
@@ -558,6 +582,38 @@ table.swap_delete = function (t, index)
 	local table_length = #t
 	t[index] = t[table_length]
 	t[table_length] = nil
+end
+
+table.array_remove_if = function (t, compare_func)
+	local target_index = 1
+	local num_elements = #t
+
+	for source_index = 1, num_elements, 1 do
+		if not compare_func(t[source_index]) then
+			t[target_index] = t[source_index]
+			target_index = target_index + 1
+		end
+	end
+
+	while target_index <= num_elements do
+		t[target_index] = nil
+		target_index = target_index + 1
+	end
+end
+
+table.remove_if = function (t, compare_func)
+	local key, value = next(t, nil)
+	local next_key = nil
+
+	while key do
+		if compare_func(key, value) then
+			next_key, value = next(t, key)
+			t[key] = nil
+			key = next_key
+		else
+			key, value = next(t, key)
+		end
+	end
 end
 
 local _enum_index_metatable = {

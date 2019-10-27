@@ -14,13 +14,16 @@ BackendInterfaceTalentsPlayfab._refresh = function (self)
 	for career_name, settings in pairs(CareerSettings) do
 		if settings.playfab_name then
 			local talent_string = backend_mirror:get_character_data(career_name, "talents")
-			local career_talents = string.split(talent_string, ",")
 
-			for i = 1, #career_talents, 1 do
-				career_talents[i] = tonumber(career_talents[i])
+			if talent_string then
+				local career_talents = string.split(talent_string, ",")
+
+				for i = 1, #career_talents, 1 do
+					career_talents[i] = tonumber(career_talents[i])
+				end
+
+				talents[career_name] = career_talents
 			end
-
-			talents[career_name] = career_talents
 		end
 	end
 

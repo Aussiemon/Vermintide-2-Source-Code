@@ -169,26 +169,29 @@ BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, b
 	local max_height = vortex_template.max_height
 	local spawn_radius = vortex_data.vortex_spawn_radius
 	local inner_radius_p = math.min(spawn_radius / vortex_template.full_inner_radius, 1)
-	local inner_decal_unit_name = action.inner_decal_unit_name
 
-	if inner_decal_unit_name then
-		local inner_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), summon_position)
-		local inner_radius = math.max(vortex_template.min_inner_radius, inner_radius_p * vortex_template.full_inner_radius)
+	if Managers.player.is_server then
+		local inner_decal_unit_name = action.inner_decal_unit_name
 
-		Matrix4x4.set_scale(inner_spawn_pose, Vector3(inner_radius, inner_radius, inner_radius))
+		if inner_decal_unit_name then
+			local inner_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), summon_position)
+			local inner_radius = math.max(vortex_template.min_inner_radius, inner_radius_p * vortex_template.full_inner_radius)
 
-		vortex_data.inner_decal_unit = Managers.state.unit_spawner:spawn_network_unit(inner_decal_unit_name, "network_synched_dummy_unit", nil, inner_spawn_pose)
-	end
+			Matrix4x4.set_scale(inner_spawn_pose, Vector3(inner_radius, inner_radius, inner_radius))
 
-	local outer_decal_unit_name = action.outer_decal_unit_name
+			vortex_data.inner_decal_unit = Managers.state.unit_spawner:spawn_network_unit(inner_decal_unit_name, "network_synched_dummy_unit", nil, inner_spawn_pose)
+		end
 
-	if outer_decal_unit_name then
-		local outer_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), summon_position)
-		local outer_radius = math.max(vortex_template.min_outer_radius, inner_radius_p * vortex_template.full_outer_radius)
+		local outer_decal_unit_name = action.outer_decal_unit_name
 
-		Matrix4x4.set_scale(outer_spawn_pose, Vector3(outer_radius, outer_radius, outer_radius))
+		if outer_decal_unit_name then
+			local outer_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), summon_position)
+			local outer_radius = math.max(vortex_template.min_outer_radius, inner_radius_p * vortex_template.full_outer_radius)
 
-		vortex_data.outer_decal_unit = Managers.state.unit_spawner:spawn_network_unit(outer_decal_unit_name, "network_synched_dummy_unit", nil, outer_spawn_pose)
+			Matrix4x4.set_scale(outer_spawn_pose, Vector3(outer_radius, outer_radius, outer_radius))
+
+			vortex_data.outer_decal_unit = Managers.state.unit_spawner:spawn_network_unit(outer_decal_unit_name, "network_synched_dummy_unit", nil, outer_spawn_pose)
+		end
 	end
 
 	vortex_data.next_missile_cast_t = t
@@ -345,7 +348,7 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 	vortex_data = vortex_data or blackboard.vortex_data
 	local action = blackboard.action
 	local vortex_pos = vortex_data.vortex_spawn_pos:unbox()
-	local vortex_template_name = action.vortex_template_name
+	local vortex_template_name = blackboard.breed.vortex_template_name or action.vortex_template_name
 	local vortex_template = VortexTemplates[vortex_template_name]
 	local breed_name = vortex_template.breed_name
 	local breed = Breeds[breed_name]

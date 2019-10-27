@@ -145,6 +145,17 @@ local function is_valid_player_and_target_unit_exclude_local_player(player_profi
 	end
 end
 
+local function flash_own_unit_outline(player_profile_name, player_unit, player)
+	local player_unit = player.player_unit
+
+	if Unit.alive(player_unit) then
+		local network_manager = Managers.state.network
+		local pinger_unit_id = network_manager:unit_game_object_id(player_unit)
+
+		network_manager.network_transmit:send_rpc_server("rpc_ping_unit", pinger_unit_id, pinger_unit_id, true)
+	end
+end
+
 SocialWheelPriority = {
 	{
 		"item",
@@ -349,6 +360,14 @@ SocialWheelSettings = {
 		angle = math.pi
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local additional_settings = dlc.social_wheel_settings
+
+	if additional_settings then
+		dofile(additional_settings)
+	end
+end
 
 for _, category_settings in pairs(SocialWheelSettings) do
 	for idx, setting in ipairs(category_settings) do

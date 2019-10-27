@@ -5,15 +5,23 @@ end
 local components = {
 	{
 		use_hud_scale = true,
+		class_name = "WorldMarkerUI",
+		filename = "scripts/ui/hud_ui/world_marker_ui",
+		visibility_groups = {
+			"alive"
+		},
+		validation_function = function ()
+			return true
+		end
+	},
+	{
+		use_hud_scale = true,
 		class_name = "LootObjectiveUI",
 		filename = "scripts/ui/hud_ui/loot_objective_ui",
 		visibility_groups = {
 			"dead",
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -21,10 +29,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/wait_for_rescue_ui",
 		visibility_groups = {
 			"dead"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -32,10 +37,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/item_received_feedback_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -43,12 +45,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/overcharge_bar_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "BossHealthUI",
 		filename = "scripts/ui/hud_ui/boss_health_ui",
@@ -75,6 +75,7 @@ local components = {
 		end
 	},
 	{
+		always_active = true,
 		class_name = "IngameNewsTickerUI",
 		filename = "scripts/ui/hud_ui/ingame_news_ticker_ui",
 		visibility_groups = {
@@ -121,6 +122,7 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "UnitFramesHandler",
 		filename = "scripts/ui/hud_ui/unit_frames_handler",
@@ -135,10 +137,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/buff_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -146,10 +145,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/buff_presentation_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -157,10 +153,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/equipment_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -168,10 +161,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/gamepad_equipment_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -179,10 +169,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/ability_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -190,12 +177,10 @@ local components = {
 		filename = "scripts/ui/hud_ui/gamepad_ability_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "ContractLogUI",
 		filename = "scripts/ui/hud_ui/contract_log_ui",
@@ -210,6 +195,7 @@ local components = {
 		end
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "DamageNumbersUI",
 		filename = "scripts/ui/hud_ui/damage_numbers_ui",
@@ -230,10 +216,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/news_feed_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function (context, is_in_inn)
-			return is_in_inn
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -258,12 +241,7 @@ local components = {
 			"game_mode_disable_hud",
 			"dead",
 			"alive"
-		},
-		validation_function = function (context, is_in_inn)
-			local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-			return game_mode_key == "survival"
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -271,12 +249,7 @@ local components = {
 		filename = "scripts/ui/hud_ui/difficulty_unlock_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function (context, is_in_inn)
-			local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-			return game_mode_key == "survival"
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -286,10 +259,7 @@ local components = {
 			"realism",
 			"game_mode_disable_hud",
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -300,6 +270,7 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "TutorialUI",
 		filename = "scripts/ui/views/tutorial_ui",
@@ -308,6 +279,7 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "AreaIndicatorUI",
 		filename = "scripts/ui/views/area_indicator_ui",
@@ -318,6 +290,7 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "MissionObjectiveUI",
 		filename = "scripts/ui/views/mission_objective_ui",
@@ -339,15 +312,21 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
+		use_hud_scale = true,
+		class_name = "BadgeUI",
+		filename = "scripts/ui/hud_ui/badge_ui",
+		visibility_groups = {
+			"alive"
+		}
+	},
+	{
 		use_hud_scale = true,
 		class_name = "FatigueUI",
 		filename = "scripts/ui/views/fatigue_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
 		use_hud_scale = true,
@@ -355,12 +334,10 @@ local components = {
 		filename = "scripts/ui/views/bonus_dice_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function ()
-			return validate_component()
-		end
+		}
 	},
 	{
+		always_active = true,
 		class_name = "IngamePlayerListUI",
 		filename = "scripts/ui/views/ingame_player_list_ui",
 		visibility_groups = {
@@ -372,6 +349,7 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "PositiveReinforcementUI",
 		filename = "scripts/ui/views/positive_reinforcement_ui",
@@ -387,12 +365,7 @@ local components = {
 		visibility_groups = {
 			"game_mode_disable_hud",
 			"alive"
-		},
-		validation_function = function (context, is_in_inn)
-			local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-			return game_mode_key == "tutorial"
-		end
+		}
 	},
 	{
 		class_name = "CutsceneOverlayUI",
@@ -400,14 +373,10 @@ local components = {
 		visibility_groups = {
 			"cutscene",
 			"alive"
-		},
-		validation_function = function (context, is_in_inn)
-			local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-			return game_mode_key == "tutorial"
-		end
+		}
 	},
 	{
+		always_active = true,
 		class_name = "CutsceneUI",
 		filename = "scripts/ui/views/cutscene_ui",
 		visibility_groups = {
@@ -438,6 +407,7 @@ local components = {
 		end
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "SubtitleGui",
 		filename = "scripts/ui/views/subtitle_gui",
@@ -465,12 +435,10 @@ local components = {
 		filename = "scripts/ui/gift_popup/gift_popup_ui",
 		visibility_groups = {
 			"alive"
-		},
-		validation_function = function (context, is_in_inn)
-			return is_in_inn
-		end
+		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "IngameVotingUI",
 		filename = "scripts/ui/views/ingame_voting_ui",
@@ -482,6 +450,7 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
 		use_hud_scale = true,
 		class_name = "MatchmakingUI",
 		filename = "scripts/ui/views/matchmaking_ui",
@@ -499,6 +468,7 @@ local components = {
 		}
 	},
 	{
+		always_active = true,
 		class_name = "FloatingIconUI",
 		filename = "scripts/ui/hud_ui/floating_icon_ui",
 		visibility_groups = {

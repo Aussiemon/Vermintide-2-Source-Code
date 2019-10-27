@@ -84,9 +84,12 @@ TwitchManager.connect = function (self, twitch_user_name, optional_connection_fa
 	fassert(twitch_user_name, "[TwitchManager] You need to provide a user name to connect")
 
 	local url = "https://api.twitch.tv/kraken/users?login=" .. twitch_user_name
-	local options = {
-		[Managers.curl._curl.OPT_SSL_OPTIONS] = Managers.curl._curl.SSLOPT_NO_REVOKE
-	}
+	local options = {}
+
+	if PLATFORM == "win32" then
+		options[Managers.curl._curl.OPT_SSL_OPTIONS] = Managers.curl._curl.SSLOPT_NO_REVOKE
+	end
+
 	self._connecting = true
 	self._connection_failure_callback = optional_connection_failure_callback
 	self._connection_success_callback = optional_connection_success_callback

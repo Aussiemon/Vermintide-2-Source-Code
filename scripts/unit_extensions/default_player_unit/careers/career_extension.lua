@@ -32,6 +32,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 
 		self._abilities[ability_id] = {
 			cooldown_paused = false,
+			cooldown_anim_started = false,
 			is_ready = false,
 			name = ability_data.name,
 			cooldown = cooldown,
@@ -40,7 +41,8 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 			spawn_cooldown = cooldown,
 			activated_ability = ability_class and ability_class:new(extension_init_context, unit, extension_init_data, ability_data),
 			weapon_name = ability_data.weapon_name,
-			uses_conditionals = ability_data.uses_conditionals
+			uses_conditionals = ability_data.uses_conditionals,
+			cooldown_anim_time = ability_data.cooldown_anim_time
 		}
 	end
 
@@ -108,6 +110,9 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local cooldown_speed_multiplier = buff_extension:apply_buffs_to_value(1, "cooldown_regen")
 			ability.cooldown = math.max(ability.cooldown - dt * cooldown_speed_multiplier, 0)
+
+			self:check_cooldown_anim(i)
+
 			local uses_conditionals = ability.uses_conditionals
 
 			if ability.is_ready or uses_conditionals then
@@ -122,11 +127,8 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 				end
 			elseif ability.cooldown == 0 and not uses_conditionals then
 				ability.is_ready = true
-				local first_person_extension = self._first_person_extension
 
-				if first_person_extension then
-					first_person_extension:play_hud_sound_event("Play_hud_ability_ready")
-				end
+				self:run_ability_ready_feedback(i)
 			end
 		end
 	end
@@ -191,6 +193,7 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 	local cooldown = ability.max_cooldown * (1 - (refund_percent or 0))
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
 	ability.cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
+	ability.cooldown_anim_started = false
 	ability.cooldown_paused = false
 	ability.is_ready = false
 end
@@ -377,6 +380,30 @@ end
 
 CareerExtension.ability_amount = function (self)
 	return self._num_abilities
+end
+
+CareerExtension.run_ability_ready_feedback = function (self, ability_id)
+	local ability = self._abilities[ability_id]
+
+	if ability.activated_ability and ability.activated_ability.ability_ready then
+		ability.activated_ability:ability_ready()
+	else
+		local first_person_extension = self._first_person_extension
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_hud_ability_ready")
+		end
+	end
+end
+
+CareerExtension.check_cooldown_anim = function (self, ability_id)
+	local ability = self._abilities[ability_id]
+
+	if not ability.cooldown_anim_started and ability.cooldown_anim_time and ability.cooldown - ability.cooldown_anim_time < 0 then
+		ability.cooldown_anim_started = true
+
+		ability.activated_ability:start_cooldown_anim()
+	end
 end
 
 return

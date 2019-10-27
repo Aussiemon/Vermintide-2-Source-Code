@@ -261,7 +261,7 @@ weapon_template.actions = {
 					send_buffer = true,
 					action = "action_one",
 					auto_chain = true,
-					start_time = 0.8
+					start_time = 0.5
 				}
 			}
 		},
@@ -365,7 +365,7 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
-					sub_action = "default_charge_2",
+					sub_action = "default_left",
 					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_hold"
@@ -411,6 +411,7 @@ weapon_template.actions = {
 			weapon_up_offset_mod = 0.15,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_left",
+			hit_stop_anim = "attack_hit",
 			reset_aim_on_attack = true,
 			total_time = 1.2,
 			anim_end_event_condition_func = function (unit, end_reason)
@@ -939,7 +940,7 @@ weapon_template.actions = {
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.flail
-weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
+weapon_template.display_unit = "units/weapons/weapon_display/display_1h_flail"
 weapon_template.wield_anim = "to_1h_flail"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "FLAIL_1H"

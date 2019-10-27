@@ -467,18 +467,19 @@ UnitFrameUI.set_player_name = function (self, name_text)
 	if widget then
 		local widget_content = widget.content
 		local display_name = name_text
+		local max_width = 170 * RESOLUTION_LOOKUP.scale
 
 		if PLATFORM == "ps4" then
 			local player_name_style = widget.style.player_name
 			local player_name_shadow_style = widget.style.player_name_shadow
 			player_name_style.font_size = 18
 			player_name_shadow_style.font_size = 18
-			local player_name_font_size = UIRenderer.scaled_font_size_by_width(self.ui_renderer, display_name, 160, player_name_style)
+			local player_name_font_size = UIRenderer.scaled_font_size_by_width(self.ui_renderer, display_name, max_width, player_name_style)
 			widget.style.player_name.font_size = player_name_font_size
-			local player_name_shadow_font_size = UIRenderer.scaled_font_size_by_width(self.ui_renderer, display_name, 160, player_name_shadow_style)
+			local player_name_shadow_font_size = UIRenderer.scaled_font_size_by_width(self.ui_renderer, display_name, max_width, player_name_shadow_style)
 			player_name_shadow_style.font_size = player_name_shadow_font_size
 		else
-			display_name = (widget.style.player_name and PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name_text) and UIRenderer.crop_text_width(self.ui_renderer, name_text, 160, widget.style.player_name)) or name_text
+			display_name = (widget.style.player_name and PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name_text) and UIRenderer.crop_text_width(self.ui_renderer, name_text, max_width, widget.style.player_name)) or name_text
 		end
 
 		widget_content.player_name = display_name
@@ -790,7 +791,8 @@ UnitFrameUI.add_damage_feedback = function (self, hash, is_local_player, event_t
 	local t = Managers.time:time("game")
 	local increment_duration = UISettings.damage_feedback.increment_duration
 	local existing_event = events[full_hash]
-	local target_name = target_player:cached_name() or target_player.character_name
+	local target_name = target_player:cached_name()
+	target_name = target_name or ((not target_player:is_player_controlled() or target_player:name()) and target_player.character_name)
 
 	if not existing_event then
 		existing_event = {

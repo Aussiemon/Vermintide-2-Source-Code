@@ -42,6 +42,35 @@ BackendInterfaceHeroAttributesPlayFab.make_dirty = function (self)
 end
 
 BackendInterfaceHeroAttributesPlayFab._refresh = function (self)
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_refresh_versus()
+	else
+		self:_refresh_adventure()
+	end
+
+	self._dirty = false
+end
+
+BackendInterfaceHeroAttributesPlayFab._refresh_versus = function (self)
+	table.clear(self._attributes)
+
+	local characters_data = self._backend_mirror._vs_characters_data_mirror
+	local attribute_names = {
+		"experience",
+		"career",
+		"prestige"
+	}
+	local attributes = self._attributes
+
+	for character, data in pairs(characters_data) do
+		for _, attribute_name in ipairs(attribute_names) do
+			local key = string.format("%s_%s", character, attribute_name)
+			attributes[key] = data[attribute_name]
+		end
+	end
+end
+
+BackendInterfaceHeroAttributesPlayFab._refresh_adventure = function (self)
 	table.clear(self._attributes)
 
 	local mirror = self._backend_mirror
@@ -80,10 +109,15 @@ end
 BackendInterfaceHeroAttributesPlayFab.set = function (self, hero, attribute, value)
 	fassert(value ~= nil, "Trying to set a hero attribute to nil, don't do this")
 
-	local key = hero .. "_" .. attribute
 	local mirror = self._backend_mirror
 
-	mirror:set_read_only_data(key, value, false)
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		mirror:set_career_read_only_data(hero, attribute, value, nil, false)
+	else
+		local key = hero .. "_" .. attribute
+
+		mirror:set_read_only_data(key, value, false)
+	end
 
 	self._dirty = true
 end

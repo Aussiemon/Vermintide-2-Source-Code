@@ -9,6 +9,14 @@ AnimationCallbackTemplates.client.anim_cb_enable_second_hit_ragdoll = function (
 	death_ext:enable_second_hit_ragdoll()
 end
 
+AnimationCallbackTemplates.client.anim_cb_push_finished = function (unit, param)
+	local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+	if status_extension then
+		status_extension:set_stagger_animation_done(true)
+	end
+end
+
 AnimationCallbackTemplates.server = {
 	anim_cb_spawn_finished = function (unit, param)
 		local blackboard = BLACKBOARDS[unit]

@@ -165,4 +165,8 @@ LobbyInternal.is_friend = function (peer_id)
 	return Friends.in_category(peer_id, Friends.FRIEND_FLAG)
 end
 
+LobbyInternal.set_max_members = function (lobby, max_members)
+	SteamLobby.set_max_members(lobby, max_members)
+end
+
 return

@@ -379,6 +379,12 @@ StatisticsDatabase.modify_stat_by_amount = function (self, id, ...)
 		stat.persistent_value = stat.persistent_value + increment_value
 	end
 
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:trigger("event_stat_modified_by", id, ...)
+	end
+
 	dbprintf("StatisticsDatabase: Modified stat %s for id=%s from %f to %f", stat.name, tostring(id), old_value, old_value + increment_value)
 end
 

@@ -105,20 +105,22 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 		end
 	end
 
+	local aborted = false
+
 	if CharacterStateHelper.do_common_state_transitions(status_extension, csm) then
-		return
+		aborted = true
 	end
 
 	if CharacterStateHelper.is_using_transport(status_extension) then
 		csm:change_state("using_transport")
 
-		return
+		aborted = true
 	end
 
 	if CharacterStateHelper.is_overcharge_exploding(status_extension) then
 		csm:change_state("overcharge_exploding")
 
-		return
+		aborted = true
 	end
 
 	if CharacterStateHelper.is_pushed(status_extension) then
@@ -130,6 +132,18 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 	end
 
 	local movement_done, final_position = self:_update_movement(unit, dt, t)
+
+	if aborted then
+		if leap_events then
+			local finished_event_function = leap_events.finished
+
+			if finished_event_function then
+				finished_event_function(self, true, final_position or POSITION_LOOKUP[unit])
+			end
+		end
+
+		return
+	end
 
 	if movement_done then
 		self:_finish(unit, t, false, final_position)

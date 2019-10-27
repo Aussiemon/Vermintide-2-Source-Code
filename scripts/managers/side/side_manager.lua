@@ -485,4 +485,14 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 	end
 end
 
+SideManager.get_side_from_player_unique_id = function (self, unique_id)
+	local party_manager = Managers.party
+	local player_status = party_manager:get_status_from_unique_id(unique_id)
+	local player_party_id = player_status.party_id
+	local player_party = party_manager:get_party(player_party_id)
+	local side = self.side_by_party[player_party]
+
+	return side
+end
+
 return

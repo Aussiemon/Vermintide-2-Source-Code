@@ -281,7 +281,29 @@ AIInventoryExtension.unfreeze = function (self)
 		}
 	}
 	local inventory_configuration = InventoryConfigurations[self.inventory_configuration_name]
-	local items_n = self:_setup_configuration(unit, 0, inventory_configuration, item_extension_init_data)
+	local items_n = 0
+	local multiple_configurations = inventory_configuration.multiple_configurations
+
+	if multiple_configurations then
+		self.item_sets = {}
+
+		for i = 1, #multiple_configurations, 1 do
+			local item_set = {
+				start_index = items_n + 1
+			}
+			self.item_sets[#self.item_sets + 1] = item_set
+			inventory_configuration = InventoryConfigurations[multiple_configurations[i]]
+			items_n = self:_setup_configuration(unit, items_n, inventory_configuration, item_extension_init_data)
+			item_set.end_index = items_n
+			item_set.inventory_configuration = inventory_configuration
+			item_set.equip_anim = inventory_configuration.equip_anim
+		end
+
+		inventory_configuration = InventoryConfigurations[multiple_configurations[1]]
+	else
+		items_n = self:_setup_configuration(unit, 0, inventory_configuration, item_extension_init_data)
+	end
+
 	self.inventory_items_n = items_n
 	local anim_state_event = inventory_configuration.anim_state_event
 

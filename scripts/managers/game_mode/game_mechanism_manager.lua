@@ -2,8 +2,10 @@ require("scripts/managers/game_mode/mechanisms/adventure_mechanism")
 
 MechanismSettings = {
 	adventure = {
-		max_members = 4,
 		class_name = "AdventureMechanism",
+		max_members = 4,
+		server_universe = "vermintide2",
+		tobii_available = true,
 		states = {
 			"inn",
 			"ingame",
@@ -30,7 +32,10 @@ end
 GameMechanismManager = class(GameMechanismManager)
 local rpcs = {
 	"rpc_from_server_set_mechanism",
-	"rpc_set_current_mechanism_state"
+	"rpc_set_current_mechanism_state",
+	"rpc_carousel_set_local_match",
+	"rpc_reserved_slots_count",
+	"rpc_force_start_dedicated_server"
 }
 
 GameMechanismManager.init = function (self)
@@ -77,6 +82,22 @@ GameMechanismManager.get_level_seed = function (self, optional_system)
 	end
 end
 
+GameMechanismManager.register_network_server = function (self, network_server)
+	fassert(self._network_server == nil, "Game is trying to create duplicated instances of NetworkServer")
+
+	self._network_server = network_server
+end
+
+GameMechanismManager.unregister_network_server = function (self)
+	fassert(self._network_server, "Trying to destroy NetworkServer even though it has already been destroyed?")
+
+	self._network_server = nil
+end
+
+GameMechanismManager.network_server = function (self)
+	return self._network_server
+end
+
 GameMechanismManager.set_level_seed = function (self, seed)
 	print("GameMechanismManager setting level seed:", seed)
 
@@ -111,6 +132,10 @@ GameMechanismManager._reset = function (self)
 end
 
 GameMechanismManager.destroy = function (self)
+	if self._game_mechanism.destroy then
+		self._game_mechanism:destroy()
+	end
+
 	if self._network_event_delegate then
 		self._network_event_delegate:unregister(self)
 
@@ -142,6 +167,10 @@ end
 
 GameMechanismManager.server_peer_id = function (self)
 	return self._server_peer_id
+end
+
+GameMechanismManager.is_server = function (self)
+	return self._is_server
 end
 
 GameMechanismManager.network_context_destroyed = function (self)
@@ -207,15 +236,45 @@ GameMechanismManager.current_mechanism_name = function (self)
 	return self._mechanism_key
 end
 
+GameMechanismManager.mechanism_setting = function (self, setting_name)
+	fassert(self._mechanism_key, "No mechanism set yet.")
+
+	return MechanismSettings[self._mechanism_key][setting_name]
+end
+
 GameMechanismManager.max_members = function (self)
 	fassert(self._mechanism_key, "No mechanism set yet.")
 
+	if self._game_mechanism.max_members then
+		return self._game_mechanism:max_members()
+	end
+
 	return MechanismSettings[self._mechanism_key].max_members
+end
+
+GameMechanismManager.server_universe = function (self)
+	fassert(self._mechanism_key, "No mechanism set yet.")
+
+	return MechanismSettings[self._mechanism_key].server_universe
 end
 
 GameMechanismManager.leaving_game = function (self)
 	print("Mechanism leaving game")
 	self:_reset()
+end
+
+GameMechanismManager.is_packages_loaded = function (self)
+	if self._game_mechanism.is_packages_loaded then
+		return self._game_mechanism:is_packages_loaded()
+	end
+
+	return true
+end
+
+GameMechanismManager.load_packages = function (self)
+	if self._game_mechanism.load_packages then
+		self._game_mechanism:load_packages()
+	end
 end
 
 GameMechanismManager.client_joined = function (self, peer_id)
@@ -233,6 +292,10 @@ GameMechanismManager.client_joined = function (self, peer_id)
 	local state_id = table.find(states, state_name)
 
 	RPC.rpc_set_current_mechanism_state(peer_id, state_id)
+
+	if self._game_mechanism.client_joined then
+		self._game_mechanism:client_joined(peer_id)
+	end
 end
 
 GameMechanismManager.client_left = function (self, peer_id)
@@ -286,13 +349,33 @@ GameMechanismManager.progress_state = function (self)
 	local state_id = table.find(states, new_state)
 
 	fassert(state_id, "State not found in mechanism settings")
-	self:_send_rpc_clients("rpc_set_current_mechanism_state", state_id)
+	self:send_rpc_clients("rpc_set_current_mechanism_state", state_id)
 end
 
 GameMechanismManager.get_starting_level = function (self)
 	local level_key = (self._game_mechanism.get_starting_level and self._game_mechanism:get_starting_level()) or LevelSettings.default_start_level
 
 	return level_key
+end
+
+GameMechanismManager.set_lobby_max_members = function (self, max_members)
+	self._lobby:set_max_members(max_members)
+end
+
+GameMechanismManager.try_reserve_game_server_slots = function (self, reserver, peers)
+	if self._game_mechanism.try_reserve_game_server_slots then
+		return self._game_mechanism:try_reserve_game_server_slots(reserver, peers)
+	end
+
+	printf("[GameMechanismManager] Approving slot reservation by default.")
+
+	return true
+end
+
+GameMechanismManager.game_server_slot_reservation_expired = function (self, peer_id)
+	if self._game_mechanism.game_server_slot_reservation_expired then
+		self._game_mechanism:game_server_slot_reservation_expired(peer_id)
+	end
 end
 
 GameMechanismManager.rpc_from_server_set_mechanism = function (self, sender, mechanism_id)
@@ -314,12 +397,50 @@ GameMechanismManager.rpc_set_current_mechanism_state = function (self, sender, s
 	self._game_mechanism:set_current_state(state_name)
 end
 
-GameMechanismManager._send_rpc_clients = function (self, rpc_name, ...)
+GameMechanismManager.rpc_carousel_set_local_match = function (self, sender, local_match)
+	if sender ~= self._server_peer_id then
+		return
+	end
+
+	self._game_mechanism:set_local_match(local_match)
+end
+
+GameMechanismManager.rpc_reserved_slots_count = function (self, sender, num_reserved_slots, num_slots_total)
+	if not self._game_mechanism.num_dedicated_reserved_slots_changed then
+		return
+	end
+
+	self._game_mechanism:num_dedicated_reserved_slots_changed(num_reserved_slots, num_slots_total)
+
+	if self._is_server then
+		self._dedicated_server_peer_id = sender
+
+		self:send_rpc_clients("rpc_reserved_slots_count", num_reserved_slots, num_slots_total)
+	end
+end
+
+GameMechanismManager.rpc_force_start_dedicated_server = function (self, sender)
+	print("got GameMechanismManager:rpc_force_start_dedicated_server from", sender)
+
+	if self._game_mechanism.force_start_dedicated_server then
+		self._game_mechanism:force_start_dedicated_server()
+	end
+end
+
+GameMechanismManager.dedicated_server_peer_id = function (self)
+	return self._dedicated_server_peer_id
+end
+
+GameMechanismManager.send_rpc_clients = function (self, rpc_name, ...)
 	local rpc_func = RPC[rpc_name]
 
 	for peer_id, _ in pairs(self._joined_peers) do
 		rpc_func(peer_id, ...)
 	end
+end
+
+GameMechanismManager.should_run_tutorial = function (self)
+	return self._game_mechanism:should_run_tutorial()
 end
 
 return

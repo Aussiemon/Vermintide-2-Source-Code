@@ -1733,7 +1733,8 @@ HeroViewStateLoot.cb_hero_unit_spawned_skin_preview = function (self, world_prev
 	local preview_items = career_settings.preview_items
 
 	if preview_items then
-		for _, item_name in ipairs(preview_items) do
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
 			local item_template = ItemMasterList[item_name]
 			local slot_type = item_template.slot_type
 			local slot_names = InventorySettings.slot_names_by_type[slot_type]
@@ -1766,7 +1767,8 @@ HeroViewStateLoot.cb_hero_unit_spawned_hat_preview = function (self, world_previ
 	world_previewer:equip_item(hat_item_name, hat_slot)
 
 	if preview_items then
-		for _, item_name in ipairs(preview_items) do
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
 			local item_template = ItemMasterList[item_name]
 			local slot_type = item_template.slot_type
 
@@ -1832,7 +1834,8 @@ HeroViewStateLoot._open_chest = function (self, selected_item)
 	local backend_loot = Managers.backend:get_interface("loot")
 	local hero_name = self.hero_name
 	local backend_id = selected_item.backend_id
-	self._open_loot_chest_id = backend_loot:open_loot_chest(hero_name, backend_id)
+	local game_mode_key = Managers.state.game_mode:game_mode_key()
+	self._open_loot_chest_id = backend_loot:open_loot_chest(hero_name, backend_id, game_mode_key)
 
 	self.menu_input_description:set_input_description(nil)
 

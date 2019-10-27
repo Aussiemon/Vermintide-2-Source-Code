@@ -15,6 +15,7 @@ local single_widget_definitions = definitions.single_widget_definitions
 DemoTitleUI = class(DemoTitleUI)
 local WORLD_GUI_RESOLUTION = 1920
 local CAMERA_TRANSITION_TIME = 2
+local VIDEO_REFERENCE_NAME = "DemoTitleUI"
 
 DemoTitleUI.init = function (self, world, viewport, parent)
 	self._world = world
@@ -141,7 +142,7 @@ end
 
 DemoTitleUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	self._attract_video = UIWidget.init(UIWidgets.create_splash_video(attract_mode_video))
+	self._attract_video = UIWidget.init(UIWidgets.create_splash_video(attract_mode_video, VIDEO_REFERENCE_NAME))
 	self._widgets = {}
 
 	for name, widget in pairs(widget_definitions) do
@@ -246,8 +247,8 @@ DemoTitleUI._destroy_career_video_player = function (self)
 	local ui_renderer = self._career_video_ui_renderer
 	local widget = self._video_widget
 
-	if ui_renderer and ui_renderer.video_player then
-		UIRenderer.destroy_video_player(ui_renderer, self._world)
+	if ui_renderer and widget then
+		UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME, self._world)
 	end
 
 	self._video_created = nil
@@ -255,14 +256,14 @@ end
 
 DemoTitleUI._setup_video_player = function (self, material_name, resource)
 	self:_destroy_career_video_player()
-	UIRenderer.create_video_player(self._career_video_ui_renderer, self._world, resource, true)
+	UIRenderer.create_video_player(self._career_video_ui_renderer, VIDEO_REFERENCE_NAME, self._world, resource, true)
 
 	local widget_definition = create_vide_func("info_window_video", material_name)
 	local widget = UIWidget.init(widget_definition)
 	self._video_widget = widget
 	self._video_created = true
 	local video_widget_content = self._video_widget.content
-	video_widget_content.video_player = self._career_video_ui_renderer.video_player
+	video_widget_content.video_player_reference = VIDEO_REFERENCE_NAME
 end
 
 DemoTitleUI._setup_input = function (self)
@@ -588,13 +589,13 @@ DemoTitleUI._draw = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self._render_settings)
 
 	if self._destroy_video_player then
-		UIRenderer.destroy_video_player(ui_renderer)
+		UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 
 		self._destroy_video_player = nil
 	elseif self._attract_mode_enabled then
 		if not self._attract_video.content.video_completed then
-			if not ui_renderer.video_player then
-				UIRenderer.create_video_player(ui_renderer, self._world, attract_mode_video.video_name, attract_mode_video.loop)
+			if not ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+				UIRenderer.create_video_player(ui_renderer, VIDEO_REFERENCE_NAME, self._world, attract_mode_video.video_name, attract_mode_video.loop)
 			else
 				if not self._sound_started then
 					if attract_mode_video.sound_start then
@@ -607,8 +608,8 @@ DemoTitleUI._draw = function (self, dt, t)
 				UIRenderer.draw_widget(ui_renderer, self._attract_video)
 				UIRenderer.draw_widget(ui_renderer, self._dead_space_filler_widget)
 			end
-		elseif ui_renderer.video_player then
-			UIRenderer.destroy_video_player(ui_renderer)
+		elseif ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+			UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 
 			self._sound_started = false
 
@@ -667,7 +668,7 @@ DemoTitleUI._draw = function (self, dt, t)
 	end
 end
 
-local debug_font = "gw_arial_32"
+local debug_font = "arial"
 local debug_font_mtrl = "materials/fonts/" .. debug_font
 local debug_font_size = 32
 local position = {}

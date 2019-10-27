@@ -12,6 +12,16 @@ require("scripts/managers/matchmaking/matchmaking_state_search_for_weave_group")
 require("scripts/managers/matchmaking/matchmaking_state_host_weave_find_group")
 require("scripts/managers/matchmaking/matchmaking_handshaker")
 
+for _, dlc in pairs(DLCSettings) do
+	local matchmaking_state_files = dlc.matchmaking_state_files
+
+	if matchmaking_state_files then
+		for _, file in ipairs(matchmaking_state_files) do
+			require(file)
+		end
+	end
+end
+
 MatchmakingManager = class(MatchmakingManager)
 script_data.matchmaking_debug = script_data.matchmaking_debug or Development.parameter("matchmaking_debug")
 
@@ -98,9 +108,11 @@ local RPCS = {
 	"rpc_matchmaking_sync_quickplay_data",
 	"rpc_matchmaking_request_quickplay_data",
 	"rpc_matchmaking_verify_dlc",
-	"rpc_matchmaking_verify_dlc_reply"
+	"rpc_matchmaking_verify_dlc_reply",
+	"rpc_join_reserved_game_server"
 }
-MatchmakingBrokenLobbies = MatchmakingBrokenLobbies or {}
+MatchmakingManager._broken_lobbies = MatchmakingManager._broken_lobbies or {}
+MatchmakingManager._broken_servers = MatchmakingManager._broken_servers or {}
 
 MatchmakingManager.init = function (self, params)
 	self.params = params
@@ -118,7 +130,6 @@ MatchmakingManager.init = function (self, params)
 	self._power_level_timer = 0
 	self.party_owned_dlcs = {}
 	self._level_weights = {}
-	self.requested_profiles = {}
 	self._quick_game = params.quick_game
 	self.handshaker_host = MatchmakingHandshakerHost:new(self.network_transmit)
 
@@ -401,6 +412,28 @@ MatchmakingManager._change_state = function (self, new_state, params, state_cont
 	end
 end
 
+MatchmakingManager._remove_old_broken_lobbies = function (self, t)
+	local broken_lobbies = MatchmakingManager._broken_lobbies
+
+	for lobby_id, time_to_clear in pairs(broken_lobbies) do
+		if time_to_clear < t then
+			mm_printf("Removing broken lobby %s, perhaps it will now work again?!", tostring(lobby_id))
+
+			broken_lobbies[lobby_id] = nil
+		end
+	end
+
+	local broken_servers = MatchmakingManager._broken_servers
+
+	for ip_port, time_to_clear in pairs(broken_servers) do
+		if time_to_clear < t then
+			mm_printf("Removing broken server %s, perhaps it will now work again?!", ip_port)
+
+			broken_servers[ip_port] = nil
+		end
+	end
+end
+
 MatchmakingManager.update = function (self, dt, t)
 	if self._state then
 		local state_name = self._state.NAME
@@ -413,16 +446,7 @@ MatchmakingManager.update = function (self, dt, t)
 
 	self:_update_power_level(t)
 	self:_update_afk_logic(dt, t)
-
-	local MatchmakingBrokenLobbies = MatchmakingBrokenLobbies
-
-	for lobby_id, time_to_clear in pairs(MatchmakingBrokenLobbies) do
-		if time_to_clear < t then
-			mm_printf("Removing broken lobby %s, perhaps it will now work again?!", tostring(lobby_id))
-
-			MatchmakingBrokenLobbies[lobby_id] = nil
-		end
-	end
+	self:_remove_old_broken_lobbies(t)
 
 	if self.is_server then
 		if next(self.peers_to_sync) then
@@ -516,9 +540,11 @@ MatchmakingManager._update_power_level = function (self, t)
 		local sync_data_active = local_player:sync_data_active()
 		local hero_name = local_player:profile_display_name()
 		local career_name = local_player:career_name()
+		local game_mode_id = self.lobby:lobby_data("game_mode")
+		local game_mode = game_mode_id and ((PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)])
 
 		if sync_data_active and hero_name and career_name then
-			local power_level = BackendUtils.get_total_power_level(hero_name, career_name)
+			local power_level = BackendUtils.get_total_power_level(hero_name, career_name, game_mode)
 
 			if power_level ~= local_player:get_data("power_level") then
 				local_player:set_data("power_level", power_level)
@@ -911,10 +937,12 @@ MatchmakingManager.set_matchmaking_data = function (self, next_level_key, diffic
 	lobby_data.num_players = num_players
 	lobby_data.difficulty = difficulty
 	lobby_data.weave_name = weave_name
+	lobby_data.weave_index = weave_name and table.find(WeaveSettings.templates_ordered, WeaveSettings.templates[weave_name])
 	lobby_data.quick_game = (quick_game and "true") or "false"
 	lobby_data.country_code = (rawget(_G, "Steam") and Steam.user_country_code()) or Managers.account:region()
 	lobby_data.twitch_enabled = (GameSettingsDevelopment.twitch_enabled and Managers.twitch:is_connected() and Managers.twitch:game_mode_supported(game_mode) and "true") or "false"
 	lobby_data.eac_authorized = (eac_authorized and "true") or "false"
+	lobby_data.mechanism = Managers.mechanism:current_mechanism_name()
 
 	print("[MATCHMAKING] - Hosting game on level:", current_level_key, next_level_key)
 	level_transition_handler:set_next_level(next_level_key)
@@ -926,9 +954,9 @@ MatchmakingManager.on_dedicated_server = function (self)
 end
 
 MatchmakingManager.weave_vote_result = function (self, accepted)
-	print(self._state.NAME)
-
 	if self._state.NAME == "MatchmakingStateSearchForWeaveGroup" then
+		self._state:weave_vote_result(accepted)
+	elseif PLATFORM == "xb1" and self._state.NAME == "MatchmakingStateRequestJoinGame" then
 		self._state:weave_vote_result(accepted)
 	else
 		self:cancel_matchmaking()
@@ -937,6 +965,10 @@ end
 
 MatchmakingManager.find_game = function (self, search_config)
 	if self.is_server then
+		local dedicated_servers = search_config.dedicated_servers
+
+		fassert(dedicated_servers ~= nil, "Dedicated server game wasn't set!")
+
 		self.state_context = {
 			search_config = table.clone(search_config),
 			started_matchmaking_t = Managers.time:time("main")
@@ -950,11 +982,24 @@ MatchmakingManager.find_game = function (self, search_config)
 		fassert(quick_game ~= nil, "Quick game wasn't set!")
 		self:set_quick_game(quick_game)
 
+		local join_method = search_config.join_method
+
+		if join_method == "party" then
+			fassert(search_config.party_members ~= nil, "Missing party members for party join")
+			fassert(search_config.party_lobby_host ~= nil, "Missing party lobby for party join")
+		end
+
 		local game_mode = search_config.game_mode
 		local next_state = nil
 
-		if Development.parameter("auto_host_dedicated") then
-			next_state = MatchmakingStateSearchGameServer
+		if dedicated_servers then
+			if join_method == "party" then
+				fassert(search_config.wait_for_join_message ~= nil, "Missing wait_for_join_message for dedicated server party join.")
+
+				next_state = MatchmakingStateReserveLobby
+			else
+				fassert(false, "Join method %s not implemented", join_method)
+			end
 		else
 			local num_active_peers = self.network_server:num_active_peers()
 			local people_in_local_hosted_party = num_active_peers > 1
@@ -1040,6 +1085,10 @@ MatchmakingManager.cancel_matchmaking = function (self)
 	self.state_context = {}
 
 	if self._state then
+		if self._state.terminate then
+			self._state:terminate()
+		end
+
 		if self._state.lobby_client then
 			self._state.lobby_client:destroy()
 
@@ -1319,33 +1368,15 @@ MatchmakingManager.rpc_matchmaking_request_profile = function (self, sender, cli
 		return
 	end
 
-	local hero_profile_index = GetHeroAffiliationIndex(profile)
-	local player_slot_available = true
-	local reply = true
+	local game_mechanism = Managers.mechanism:game_mechanism()
+	local player_slot_available = (game_mechanism.allocate_slot and game_mechanism:allocate_slot(sender, profile)) or true
 
-	if Managers.mechanism:current_mechanism_name() == "adventure" and hero_profile_index then
-		player_slot_available = self.slot_allocator:is_free(hero_profile_index)
-		reply = player_slot_available
-	end
-
-	if player_slot_available and hero_profile_index then
+	if player_slot_available then
 		mm_printf("Assigning profile slot %d to %s", profile, sender)
-
-		local local_player_id = 1
-
-		self.slot_allocator:allocate_slot(hero_profile_index, sender, local_player_id)
 		self:update_profiles_data_on_clients()
 	end
 
-	if reply then
-		self.requested_profiles[sender] = profile
-	end
-
-	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply", sender, client_cookie, host_cookie, profile, reply)
-end
-
-MatchmakingManager.get_requested_profiles = function (self)
-	return self.requested_profiles
+	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply", sender, client_cookie, host_cookie, profile, player_slot_available)
 end
 
 MatchmakingManager.current_state = function (self)
@@ -1363,10 +1394,6 @@ MatchmakingManager.get_transition = function (self)
 
 	if self.lobby_to_join then
 		return "join_lobby", self.lobby_to_join
-	end
-
-	if self._game_server_post_game_params then
-		return "leave_game_server", self._game_server_post_game_params
 	end
 end
 
@@ -1465,7 +1492,7 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 			return false, "wrong game mode"
 		end
 
-		if game_mode == "weave" and weave_name ~= lobby_data.weave_name then
+		if game_mode == "weave" and weave_name and weave_name ~= lobby_data.weave_name then
 			return false, "wrong weave name"
 		end
 	elseif game_mode == "weave_find_group" then
@@ -1505,16 +1532,39 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 	return true
 end
 
-MatchmakingManager.add_broken_lobby = function (self, lobby_id, t, is_bad_connection_or_otherwise_not_nice)
+MatchmakingManager.add_broken_lobby_client = function (self, lobby_client, t, is_bad_connection_or_otherwise_not_nice)
+	if lobby_client == nil then
+		return
+	end
+
 	local time_to_ignore = (is_bad_connection_or_otherwise_not_nice and 120) or 20
+	local broken_until = t + time_to_ignore
 
-	mm_printf("Adding broken lobby: %s Due to bad connection or something: %s, ignoring it for %d seconds", tostring(lobby_id), tostring(is_bad_connection_or_otherwise_not_nice), time_to_ignore)
+	if lobby_client:is_dedicated_server() then
+		local ip_port = lobby_client:ip_address()
 
-	MatchmakingBrokenLobbies[lobby_id] = t + time_to_ignore
+		mm_printf("Adding broken server: %s Due to bad connection or something: %s, ignoring it for %d seconds", ip_port, tostring(is_bad_connection_or_otherwise_not_nice), time_to_ignore)
+
+		MatchmakingManager._broken_servers[ip_port] = broken_until
+	else
+		local lobby_id = lobby_client:id()
+
+		mm_printf("Adding broken lobby: %s Due to bad connection or something: %s, ignoring it for %d seconds", tostring(lobby_id), tostring(is_bad_connection_or_otherwise_not_nice), time_to_ignore)
+
+		MatchmakingManager._broken_lobbies[lobby_id] = broken_until
+	end
 end
 
 MatchmakingManager.lobby_listed_as_broken = function (self, lobby_id)
-	return MatchmakingBrokenLobbies[lobby_id]
+	return MatchmakingManager._broken_lobbies[lobby_id]
+end
+
+MatchmakingManager.server_listed_as_broken = function (self, ip_port)
+	return MatchmakingManager._broken_servers[ip_port]
+end
+
+MatchmakingManager.broken_server_map = function (self)
+	return MatchmakingManager._broken_servers
 end
 
 MatchmakingManager.rpc_matchmaking_request_join_lobby_reply = function (self, sender, client_cookie, host_cookie, reply_id, reply_variable)
@@ -1664,6 +1714,10 @@ MatchmakingManager.rpc_matchmaking_status_message = function (self, sender, clie
 end
 
 MatchmakingManager.rpc_game_server_set_group_leader = function (self, sender, peer_id)
+	if peer_id == "0" then
+		peer_id = nil
+	end
+
 	Managers.party:set_leader(peer_id)
 end
 
@@ -1734,6 +1788,16 @@ MatchmakingManager.rpc_matchmaking_verify_dlc_reply = function (self, sender, su
 		local state_name = (self._state and self._state.NAME) or "none"
 
 		mm_printf_force("rpc_matchmaking_verify_dlc_reply, got this in wrong state current_state:%s", state_name)
+	end
+end
+
+MatchmakingManager.rpc_join_reserved_game_server = function (self, sender)
+	local state_name = (self._state and self._state.NAME) or "none"
+
+	if state_name == "MatchmakingStateReserveLobby" then
+		self._state:rpc_join_reserved_game_server(sender)
+	else
+		mm_printf_force("rpc_join_reserved_game_server, got this in wrong state current_state:%s", state_name)
 	end
 end
 
@@ -1830,7 +1894,7 @@ MatchmakingManager.setup_filter_requirements = function (self, number_of_players
 		server_browser_filters = {
 			dedicated = "valuenotused",
 			full = "valuenotused",
-			gamedir = "vermintide2"
+			gamedir = Managers.mechanism:server_universe()
 		},
 		matchmaking_filters = requirements.filters
 	}
@@ -2008,9 +2072,9 @@ MatchmakingManager._matchmaking_status = function (self)
 		return "idle"
 	elseif state_name == "MatchmakingStateSearchGame" then
 		return "searching_for_game"
-	elseif state_name == "MatchmakingStateHostGame" or state_name == "MatchmakingStateWaitForCountdown" or state_name == "MatchmakingStateStartGame" or state_name == "MatchmakingStateSearchGameServer" or state_name == "MatchmakingStateRequestGameServerOwnership" then
+	elseif state_name == "MatchmakingStateHostGame" or state_name == "MatchmakingStateWaitForCountdown" or state_name == "MatchmakingStateStartGame" or state_name == "MatchmakingStateRequestGameServerOwnership" then
 		return "hosting_game"
-	elseif state_name == "MatchmakingStateRequestJoinGame" or state_name == "MatchmakingStateRequestProfiles" or state_name == "MatchmakingStateJoinGame" then
+	elseif state_name == "MatchmakingStateRequestJoinGame" or state_name == "MatchmakingStateRequestProfiles" or state_name == "MatchmakingStateReserveLobby" or state_name == "MatchmakingStateJoinGame" then
 		return "joining_game"
 	elseif state_name == "MatchmakingStateFriendClient" then
 		return "waiting_for_game_start"
@@ -2072,7 +2136,7 @@ MatchmakingManager.search_info = function (self)
 				info.weave_name = weave_name
 			end
 		end
-	elseif PLATFORM ~= "xb1" then
+	elseif true or PLATFORM ~= "xb1" then
 		local lobby = self.lobby
 		local level_key = lobby:lobby_data("selected_level_key")
 		local difficulty = lobby:lobby_data("difficulty")
@@ -2105,6 +2169,11 @@ MatchmakingManager.setup_weave_filters = function (self, state_context, filter_t
 
 	for filter_name, filter_data in pairs(current_filter_rules) do
 		local value = filter_data.value or filter_data.fetch_function(self._state)
+
+		if filter_data.transform_data_function then
+			value = filter_data.transform_data_function(value) or value
+		end
+
 		local comparison = filter_data.comparison
 		filter_table[filter_name] = {
 			value = value,
@@ -2120,6 +2189,11 @@ MatchmakingManager.setup_weave_near_filters = function (self, state_context, fil
 
 	for filter_name, filter_data in pairs(current_filter_rules) do
 		local value = filter_data.value or filter_data.fetch_function(self._state)
+
+		if filter_data.transform_data_function then
+			value = filter_data.transform_data_function(value) or value
+		end
+
 		local comparison = filter_data.comparison
 		filter_table[#filter_table + 1] = {
 			key = filter_name,
@@ -2139,6 +2213,10 @@ MatchmakingManager.debug_weave_matchmaking = function (self, state_context, stat
 	for name, filter_data in pairs(expansion_rule_settings.filters) do
 		local value = filter_data.fetch_function(state)
 
+		if filter_data.transform_data_function then
+			value = filter_data.transform_data_function(value) or value
+		end
+
 		if filter_data.debug_format then
 			value = filter_data.debug_format(value)
 		end
@@ -2151,6 +2229,11 @@ MatchmakingManager.debug_weave_matchmaking = function (self, state_context, stat
 
 	for name, filter_data in pairs(expansion_rule_settings.near_filters) do
 		local value = filter_data.fetch_function(state)
+
+		if filter_data.transform_data_function then
+			value = filter_data.transform_data_function(value) or value
+		end
+
 		local requirements = filter_data.requirements
 
 		if requirements then

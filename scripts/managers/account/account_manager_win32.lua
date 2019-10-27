@@ -103,6 +103,10 @@ AccountManager.show_player_profile = function (self, id)
 	end
 end
 
+AccountManager.account_id = function (self)
+	return Network.peer_id()
+end
+
 AccountManager.friends_list_initiated = function (self)
 	return
 end

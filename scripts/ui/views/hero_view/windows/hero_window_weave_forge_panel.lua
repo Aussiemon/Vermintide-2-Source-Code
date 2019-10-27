@@ -58,7 +58,23 @@ HeroWindowWeaveForgePanel._start_transition_animation = function (self, key, ani
 	self._animations[key] = anim_id
 end
 
+HeroWindowWeaveForgePanel._setup_definitions = function (self)
+	if self._parent:gamepad_style_active() then
+		definitions = dofile("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_panel_console_definitions")
+	else
+		definitions = dofile("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_forge_panel_definitions")
+	end
+
+	top_widget_definitions = definitions.top_widgets
+	bottom_widget_definitions = definitions.bottom_widgets
+	bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
+	scenegraph_definition = definitions.scenegraph_definition
+	animation_definitions = definitions.animation_definitions
+end
+
 HeroWindowWeaveForgePanel.create_ui_elements = function (self, params, offset)
+	self:_setup_definitions()
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets_by_name = {}
 	local top_widgets = {}
@@ -98,7 +114,55 @@ HeroWindowWeaveForgePanel.create_ui_elements = function (self, params, offset)
 		window_position[3] = window_position[3] + offset[3]
 	end
 
+	self:_setup_essence_tooltip()
 	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
+end
+
+HeroWindowWeaveForgePanel._setup_essence_tooltip = function (self)
+	local top_widgets = self._top_widgets
+	local widgets_by_name = self._widgets_by_name
+	local value_string_gained = WeaveUtils.comma_value(0)
+	local value_string_cap = WeaveUtils.comma_value(0)
+	local essence_total_gained_text = string.format(Localize("menu_weave_forge_tooltip_essence_description_total"), value_string_gained, value_string_cap)
+	local scenegraph_id = "essence_panel"
+	local size = scenegraph_definition[scenegraph_id].size
+	local content_passes = {
+		"weave_progression_slot_titles"
+	}
+	local content_data = {
+		title = Localize("menu_weave_forge_tooltip_essence_title"),
+		description = Localize("menu_weave_forge_tooltip_essence_description"),
+		divider_description = Localize("menu_weave_forge_tooltip_essence_description_base_game"),
+		essence_title = Localize("menu_weave_forge_tooltip_essence_description_total_title"),
+		input_highlight = essence_total_gained_text
+	}
+	local max_width = 400
+	local grow_downwards = true
+	local horizontal_alignment, vertical_alignment = nil
+	local offset = {
+		96,
+		0,
+		0
+	}
+	local widget_definition = UIWidgets.create_additional_option_tooltip(scenegraph_id, size, content_passes, content_data, max_width, horizontal_alignment, vertical_alignment, grow_downwards, offset)
+	local widget = UIWidget.init(widget_definition)
+	top_widgets[#top_widgets + 1] = widget
+	widgets_by_name.essence_tooltip = widget
+end
+
+HeroWindowWeaveForgePanel._set_essence_tooltip_amounts = function (self, total_essence, maximum_essence)
+	local widgets_by_name = self._widgets_by_name
+	local widget = widgets_by_name.essence_tooltip
+	local content = widget.content
+	local tooltip = content.tooltip
+	local value_string_gained = WeaveUtils.comma_value(total_essence)
+	local value_string_cap = WeaveUtils.comma_value(maximum_essence)
+	local essence_total_gained_text = string.format(Localize("menu_weave_forge_tooltip_essence_description_total"), value_string_gained, value_string_cap)
+	tooltip.title = Localize("menu_weave_forge_tooltip_essence_title")
+	tooltip.description = Localize("menu_weave_forge_tooltip_essence_description")
+	tooltip.divider_description = Localize("menu_weave_forge_tooltip_essence_description_base_game")
+	tooltip.essence_title = Localize("menu_weave_forge_tooltip_essence_description_total_title")
+	tooltip.input_highlight = essence_total_gained_text
 end
 
 HeroWindowWeaveForgePanel.on_exit = function (self, params)
@@ -141,8 +205,13 @@ HeroWindowWeaveForgePanel._sync_backend_loadout = function (self)
 	local backend_manger = Managers.backend
 	local backend_interface_weaves = backend_manger:get_interface("weaves")
 	local essence_amount = backend_interface_weaves:get_essence()
+	local maximum_essence = backend_interface_weaves:get_maximum_essence()
+	local total_essence = backend_interface_weaves:get_total_essence()
 	self._current_essence_amount = essence_amount
-	self._essence_value_string = self:_set_essence_amount(essence_amount)
+	self._essence_value_string = self:_set_essence_amount(math.min(essence_amount, maximum_essence))
+
+	self:_set_essence_tooltip_amounts(math.min(total_essence, maximum_essence), maximum_essence)
+
 	local average_power_level = backend_interface_weaves:get_average_power_level(career_name)
 	average_power_level = UIUtils.presentable_hero_power_level_weaves(average_power_level)
 
@@ -269,7 +338,7 @@ end
 
 HeroWindowWeaveForgePanel._draw = function (self, dt)
 	local parent = self._parent
-	local ui_renderer = self._ui_renderer
+	local ui_renderer = parent:get_ui_renderer()
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings

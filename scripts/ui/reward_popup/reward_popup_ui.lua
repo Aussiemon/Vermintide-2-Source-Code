@@ -224,15 +224,15 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 	if widget_type == "title" or widget_type == "level" then
 		widget.content.text = value
 		local style = widget.style.text
-		widget_size[2] = self:_get_text_height(self.ui_renderer, widget_scenegraph_size, style, value)
+		widget_size[2] = UIUtils.get_text_height(self.ui_renderer, widget_scenegraph_size, style, value)
 		widget_height = widget_size[2]
 	elseif widget_type == "description" then
 		widget.content.title_text = value[1]
 		widget.content.text = value[2]
 		local text_style = widget.style.text
 		local title_text_style = widget.style.title_text
-		local text_height = self:_get_text_height(self.ui_renderer, widget_scenegraph_size, text_style, value[1])
-		local title_text_height = self:_get_text_height(self.ui_renderer, widget_scenegraph_size, title_text_style, value[2])
+		local text_height = UIUtils.get_text_height(self.ui_renderer, widget_scenegraph_size, text_style, value[1])
+		local title_text_height = UIUtils.get_text_height(self.ui_renderer, widget_scenegraph_size, title_text_style, value[2])
 		widget_size[2] = text_height + title_text_height
 		widget_height = widget_size[2]
 	elseif widget_type == "texture" or widget_type == "icon" then
@@ -457,44 +457,6 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 	end
 
 	return true
-end
-
-RewardPopupUI._get_text_height = function (self, ui_renderer, size, ui_style, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font_material, font_size, font_name = nil
-
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = ui_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = ui_style.font_size or font_size
-	end
-
-	if ui_style.localize then
-		text = Localize(text)
-	end
-
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local text_start_index = 1
-	local max_texts = #texts
-	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
-
-	return full_font_height
 end
 
 RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, progress)

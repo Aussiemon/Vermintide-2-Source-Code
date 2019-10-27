@@ -324,4 +324,26 @@ PlayerHuskLocomotionExtension.current_rotation = function (self)
 	return self._current_rotation:unbox()
 end
 
+local ALLOWED_MOVER_MOVE_DISTANCE = 1
+
+PlayerHuskLocomotionExtension.move_to_non_intersecting_position = function (self)
+	local unit = self.unit
+	local mover = Unit.mover(unit)
+	local is_colliding, colliding_actor, move_vector, new_position = Mover.separate(mover, ALLOWED_MOVER_MOVE_DISTANCE)
+
+	if is_colliding and new_position then
+		Mover.set_position(mover, new_position)
+		Unit.set_local_position(unit, 0, new_position)
+	end
+end
+
+PlayerHuskLocomotionExtension.teleport_to = function (self, pos, rot)
+	local unit = self.unit
+	local mover = Unit.mover(unit)
+
+	Mover.set_position(mover, pos)
+	Unit.set_local_position(unit, 0, pos)
+	self:move_to_non_intersecting_position()
+end
+
 return

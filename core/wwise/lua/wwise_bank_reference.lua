@@ -1,5 +1,4 @@
-stingray.WwiseBankReference = stingray.WwiseBankReference or {}
-local WwiseBankReference = stingray.WwiseBankReference
+WwiseBankReference = WwiseBankReference or {}
 
 local function lazy_init(self)
 	if not self.references then

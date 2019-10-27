@@ -762,19 +762,16 @@ HitEffectsPoisonWind = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn"
 		}
 	},
 	burn_sniper = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_sniper"
 		}
 	},
 	burn_shotgun = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_machinegun"
 		}
@@ -978,7 +975,6 @@ HitEffectsPoisonWind = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun"
 		}
@@ -1018,7 +1014,6 @@ HitEffectsPoisonWind = {
 	},
 	drakegun_glance = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		}
@@ -1039,7 +1034,6 @@ HitEffectsPoisonWind = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

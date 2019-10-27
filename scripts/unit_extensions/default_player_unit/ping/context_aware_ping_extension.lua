@@ -98,6 +98,12 @@ end
 
 ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t)
 	if unit_to_ping and self.ping_timer <= t and not LEVEL_EDITOR_TEST then
+		local ghost_mode_extension = ScriptUnit.has_extension(unit_to_ping, "ghost_mode_system")
+
+		if ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode() then
+			return false
+		end
+
 		local network_manager = Managers.state.network
 		local pinger_unit_id = network_manager:unit_game_object_id(unit)
 		local pinged_unit_id = network_manager:unit_game_object_id(unit_to_ping)

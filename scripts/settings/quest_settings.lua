@@ -316,26 +316,6 @@ QuestSettings.stat_mappings = {
 		"weekly_quest_6_stat_1",
 		"weekly_quest_6_stat_2",
 		"weekly_quest_6_stat_3"
-	},
-	weekly_quest_7 = {
-		"weekly_quest_7_stat_1",
-		"weekly_quest_7_stat_2",
-		"weekly_quest_7_stat_3"
-	},
-	weekly_quest_8 = {
-		"weekly_quest_8_stat_1",
-		"weekly_quest_8_stat_2",
-		"weekly_quest_8_stat_3"
-	},
-	weekly_quest_9 = {
-		"weekly_quest_9_stat_1",
-		"weekly_quest_9_stat_2",
-		"weekly_quest_9_stat_3"
-	},
-	weekly_quest_10 = {
-		"weekly_quest_10_stat_1",
-		"weekly_quest_10_stat_2",
-		"weekly_quest_10_stat_3"
 	}
 }
 

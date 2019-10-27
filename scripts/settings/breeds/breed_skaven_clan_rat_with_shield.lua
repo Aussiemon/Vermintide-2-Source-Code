@@ -29,6 +29,7 @@ local breed_data = {
 	race = "skaven",
 	proximity_system_check = true,
 	poison_resistance = 70,
+	armor_category = 1,
 	backstab_player_sound_event = "Play_clan_rat_attack_player_back_vce",
 	death_sound_event = "Play_clan_rat_die_vce",
 	behavior = "shield_rat",

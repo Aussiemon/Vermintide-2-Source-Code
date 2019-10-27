@@ -63,8 +63,10 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 	self.first_person_extension = first_person_extension
 	self._first_person_unit = first_person_extension:get_first_person_unit()
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
-	self.career_extension = ScriptUnit.extension(unit, "career_system")
-	self.talent_extension = ScriptUnit.extension(unit, "talent_system")
+	local career_extension = ScriptUnit.extension(unit, "career_system")
+	self.career_extension = career_extension
+	local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
+	self.talent_extension = talent_extension
 	local equipment = self._equipment
 	local profile = self._profile
 	local unit_1p = self._first_person_unit
@@ -73,8 +75,8 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 	self:add_equipment_by_category("weapon_slots")
 	self:add_equipment_by_category("enemy_weapon_slots")
 
-	local weapon_index = self.talent_extension:get_talent_weapon_index()
-	self.initial_inventory.slot_career_skill_weapon = self.career_extension:career_skill_weapon_name(weapon_index)
+	local weapon_index = (talent_extension and talent_extension:get_talent_weapon_index()) or 1
+	self.initial_inventory.slot_career_skill_weapon = career_extension:career_skill_weapon_name(weapon_index)
 
 	self:add_equipment_by_category("career_skill_weapon_slots")
 	Unit.set_data(self._first_person_unit, "equipment", self._equipment)
@@ -85,7 +87,7 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 
 		if not slot_data then
 			table.dump(self._equipment.slots, "self._equipment.slots", 1)
-			Application.error("Tried to wield default slot %s for %s that contained no weapon.", default_wielded_slot, self.career_extension:career_name())
+			Application.error("Tried to wield default slot %s for %s that contained no weapon.", default_wielded_slot, career_extension:career_name())
 		end
 
 		self:_wield_slot(equipment, slot_data, unit_1p, unit_3p)
@@ -107,10 +109,10 @@ end
 SimpleInventoryExtension.update_career_skill_weapon_slot = function (self, world, unit)
 	local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	self._first_person_unit = first_person_extension:get_first_person_unit()
-	self.career_extension = ScriptUnit.extension(unit, "career_system")
-	self.talent_extension = ScriptUnit.extension(unit, "talent_system")
-	local weapon_index = self.talent_extension:get_talent_weapon_index()
-	self.initial_inventory.slot_career_skill_weapon = self.career_extension:career_skill_weapon_name(weapon_index)
+	local career_extension = self.career_extension
+	local talent_extension = self.talent_extension
+	local weapon_index = (talent_extension and talent_extension:get_talent_weapon_index()) or 1
+	self.initial_inventory.slot_career_skill_weapon = career_extension:career_skill_weapon_name(weapon_index)
 
 	self:add_equipment_by_category("career_skill_weapon_slots")
 	Unit.set_data(self._first_person_unit, "equipment", self._equipment)
@@ -262,6 +264,36 @@ SimpleInventoryExtension.destroy = function (self)
 	end
 
 	self:_despawn_attached_units()
+end
+
+SimpleInventoryExtension._unlink_unit = function (self, unit, reason, attachment_node_linking)
+	World.unlink_unit(self._world, unit)
+
+	local node_linking_data = attachment_node_linking.wielded or attachment_node_linking
+
+	for i, attachment_nodes in ipairs(node_linking_data) do
+		local target_node = attachment_nodes.target
+
+		if target_node ~= 0 then
+			local target_node_index = (type(target_node) == "string" and Unit.node(unit, target_node)) or target_node
+			local parent = Unit.scene_graph_parent(unit, target_node_index)
+
+			Unit.scene_graph_link(unit, target_node_index, 0)
+		end
+	end
+
+	Unit.set_flow_variable(unit, "lua_drop_reason", reason)
+	Unit.set_shader_pass_flag_for_meshes_in_unit_and_childs(unit, "outline_unit", false)
+	Unit.flow_event(unit, "lua_dropped")
+
+	local actor = Unit.create_actor(unit, "rp_dropped")
+
+	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+	Actor.add_velocity(actor, Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
+end
+
+SimpleInventoryExtension.drop_equipped_weapons = function (self, reason, unit)
+	return
 end
 
 SimpleInventoryExtension.equipment = function (self)
@@ -991,7 +1023,8 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 		item_data = item_data,
 		skin = item_units.skin
 	}
-	local weapon_index = self.talent_extension:get_talent_weapon_index()
+	local talent_extension = self.talent_extension
+	local weapon_index = (talent_extension and talent_extension:get_talent_weapon_index()) or 1
 	local career_skill_weapon_name = self.career_extension:career_skill_weapon_name(weapon_index)
 
 	if career_skill_weapon_name then

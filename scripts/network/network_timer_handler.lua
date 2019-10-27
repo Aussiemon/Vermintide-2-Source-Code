@@ -75,7 +75,7 @@ NetworkTimerHandler._render_timer = function (self)
 	Gui.rect(self._gui, pos, size, Color(150, 102, 255, 102))
 
 	local text_pos = Vector3(20, 15, 110)
-	local material = "gw_arial_32"
+	local material = "arial"
 	local font = "materials/fonts/" .. material
 	local font_size = 30
 

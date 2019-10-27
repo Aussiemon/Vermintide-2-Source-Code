@@ -101,6 +101,7 @@ HeroViewStateWeaveForge.on_enter = function (self, params)
 
 		if self.is_in_inn then
 			self:play_sound("play_gui_amb_hero_screen_loop_begin")
+			self:_setup_gamepad_gui()
 			self:disable_player_world()
 		else
 			self:enable_ingame_overlay()
@@ -113,6 +114,22 @@ HeroViewStateWeaveForge.on_enter = function (self, params)
 	Managers.state.event:trigger("weave_forge_entered")
 end
 
+HeroViewStateWeaveForge.gamepad_style_active = function (self)
+	return self._gamepad_style_active
+end
+
+HeroViewStateWeaveForge.get_ui_renderer = function (self)
+	if self._gamepad_style_active then
+		return self._gui_data.bottom.renderer
+	else
+		return self.ui_renderer
+	end
+end
+
+HeroViewStateWeaveForge.get_ui_top_renderer = function (self)
+	return self.ui_top_renderer
+end
+
 HeroViewStateWeaveForge.hdr_renderer = function (self)
 	return self.parent:hdr_renderer()
 end
@@ -121,8 +138,55 @@ HeroViewStateWeaveForge.hdr_top_renderer = function (self)
 	return self.parent:hdr_top_renderer()
 end
 
+HeroViewStateWeaveForge._setup_gamepad_gui = function (self)
+	if self.is_in_inn then
+		local gui_data = {}
+		local world_name = "weave_forge_gamepad"
+		local renderer, world, viewport_name = self:_setup_gamepad_renderer(world_name, 1, GameSettingsDevelopment.default_environment)
+		gui_data.bottom = {
+			renderer = renderer,
+			world = world,
+			viewport_name = viewport_name
+		}
+		self._gui_data = gui_data
+	end
+end
+
+HeroViewStateWeaveForge._setup_gamepad_renderer = function (self, name, layer, shading_environment)
+	local world_flags = {
+		Application.DISABLE_SOUND,
+		Application.DISABLE_ESRAM
+	}
+	local world_name = name
+	local viewport_name = name
+	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(world_flags))
+	local viewport_type = "overlay"
+	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, 999)
+	local renderer = self.ingame_ui:create_ui_renderer(world, false, self.is_in_inn)
+
+	return renderer, world, viewport_name
+end
+
+HeroViewStateWeaveForge._destroy_gamepad_gui = function (self)
+	local gui_data = self._gui_data
+
+	if gui_data then
+		for _, data in pairs(gui_data) do
+			local renderer = data.renderer
+			local world = data.world
+			local viewport_name = data.viewport_name
+
+			UIRenderer.destroy(renderer, world)
+			ScriptWorld.destroy_viewport(world, viewport_name)
+			Managers.world:destroy_world(world)
+		end
+
+		self._gui_data = nil
+	end
+end
+
 HeroViewStateWeaveForge._setup_menu_layout = function (self)
-	local use_gamepad_layout = false
+	local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
 	self._layout_settings = local_require("scripts/ui/views/hero_view/states/weave_forge_window_layout")
 	self._windows_settings = self._layout_settings.windows
 	self._window_layouts = self._layout_settings.window_layouts
@@ -491,6 +555,7 @@ HeroViewStateWeaveForge.on_exit = function (self, params)
 
 		if self.is_in_inn then
 			self:play_sound("play_gui_amb_hero_screen_loop_end")
+			self:_destroy_gamepad_gui()
 			self:enable_player_world()
 		else
 			self:disable_ingame_overlay()
@@ -549,6 +614,8 @@ HeroViewStateWeaveForge.update = function (self, dt, t)
 
 	if not self._gamepad_style_active then
 		self:draw(input_service, dt)
+	else
+		self:draw_gamepad_cursor(input_service, dt)
 	end
 
 	self:_update_transition_timer(dt)
@@ -706,6 +773,25 @@ HeroViewStateWeaveForge.close_menu = function (self, ignore_sound_on_close_menu)
 		self.parent:requested_screen_change_by_name(self._on_close_next_state)
 	else
 		self.parent:close_menu(nil, ignore_sound_on_close_menu)
+	end
+end
+
+HeroViewStateWeaveForge.draw_gamepad_cursor = function (self, input_service, dt)
+	local ui_renderer = self:get_ui_renderer()
+	local ui_top_renderer = self:get_ui_top_renderer()
+	local ui_scenegraph = self.ui_scenegraph
+	local input_manager = self.input_manager
+	local render_settings = self.render_settings
+	local gamepad_active = input_manager:is_device_active("gamepad")
+
+	if gamepad_active then
+		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt)
+		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor_widget)
+		UIRenderer.end_pass(ui_top_renderer)
+
+		if self._menu_input_description then
+			self._menu_input_description:draw(ui_top_renderer, dt)
+		end
 	end
 end
 

@@ -4,10 +4,13 @@ CameraStateObserver.init = function (self, camera_state_init_context)
 	CameraState.init(self, camera_state_init_context, "observer")
 
 	self._follow_node_name = "camera_attach"
+	self._game_settings = Managers.state.game_mode:settings()
 end
 
 CameraStateObserver.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	self._observed_player_id = nil
+	self._network_transmit = context.network_transmit
+	self._is_server = context.network_transmit.is_server
 
 	self:follow_next_unit()
 	Managers.state.event:trigger("camera_teleported")
@@ -89,9 +92,41 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 	Unit.set_local_position(unit, 0, new_position)
 end
 
-CameraStateObserver.follow_next_unit = function (self)
+CameraStateObserver._get_valid_players_to_observe = function (self)
 	local player_manager = Managers.player
-	local players = player_manager:players()
+	local side_manager = Managers.state.side
+	local player = self.camera_extension.player
+	local unique_id = player:unique_id()
+	local player_side = side_manager:get_side_from_player_unique_id(unique_id)
+	local player_side_name = player_side:name()
+	local side_settings = self._game_settings.side_settings
+	local player_side_settings = side_settings and side_settings[player_side_name]
+	local observe_sides = player_side_settings and player_side_settings.observe_sides
+
+	if not observe_sides then
+		return player_manager:players()
+	end
+
+	local allowed_players_to_observe = {}
+
+	for _, side_name in ipairs(observe_sides) do
+		local side = side_manager:get_side_from_name(side_name)
+
+		for _, player_unit in ipairs(side.PLAYER_AND_BOT_UNITS) do
+			local other_player = player_manager:owner(player_unit)
+			local other_unique_id = other_player:unique_id()
+
+			if unique_id ~= other_unique_id then
+				allowed_players_to_observe[other_unique_id] = other_player
+			end
+		end
+	end
+
+	return allowed_players_to_observe
+end
+
+CameraStateObserver.follow_next_unit = function (self)
+	local players = self:_get_valid_players_to_observe()
 	local observed_player_id = self._observed_player_id
 	local follow_unit = nil
 
@@ -114,8 +149,7 @@ CameraStateObserver.follow_next_unit = function (self)
 end
 
 CameraStateObserver.follow_previous_unit = function (self)
-	local player_manager = Managers.player
-	local players = player_manager:players()
+	local players = self:_get_valid_players_to_observe()
 	local observed_player_id = self._observed_player_id
 	local current_player_id, current_player, previous_player_id, previous_player_unit = nil
 
@@ -166,6 +200,16 @@ CameraStateObserver._set_follow_unit = function (self, observed_player_id, follo
 	self._observed_player_id = observed_player_id
 
 	self.camera_extension:set_observed_player_id(observed_player_id)
+
+	if not self._is_server then
+		local player = Managers.player:player_from_unique_id(observed_player_id)
+
+		if player then
+			local game_object_id = player.game_object_id
+
+			self._network_transmit:send_rpc_server("rpc_set_observed_player_id", game_object_id)
+		end
+	end
 end
 
 return

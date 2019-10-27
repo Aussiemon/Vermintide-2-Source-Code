@@ -4,6 +4,7 @@ local background_widget_definitions = definitions.background_widget_definitions
 local widget_definitions = definitions.widget_definitions
 local demo_video = definitions.demo_video
 local DO_RELOAD = false
+local VIDEO_REFERENCE_NAME = "DemoEndUI"
 DemoEndUI = class(DemoEndUI)
 
 DemoEndUI.init = function (self, world)
@@ -28,7 +29,7 @@ end
 
 DemoEndUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	self._demo_video = UIWidget.init(UIWidgets.create_splash_video(demo_video))
+	self._demo_video = UIWidget.init(UIWidgets.create_splash_video(demo_video, VIDEO_REFERENCE_NAME))
 	self._widgets = {}
 
 	for widget_name, widget_definition in pairs(widget_definitions) do
@@ -54,8 +55,8 @@ DemoEndUI._draw = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
 	if not self._demo_video.content.video_content.video_completed then
-		if not ui_renderer.video_player then
-			UIRenderer.create_video_player(ui_renderer, self._world, demo_video.video_name, demo_video.loop)
+		if not ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+			UIRenderer.create_video_player(ui_renderer, VIDEO_REFERENCE_NAME, self._world, demo_video.video_name, demo_video.loop)
 		else
 			if not self._sound_started then
 				if demo_video.sound_start then
@@ -67,8 +68,8 @@ DemoEndUI._draw = function (self, dt, t)
 
 			UIRenderer.draw_widget(ui_renderer, self._demo_video)
 		end
-	elseif ui_renderer.video_player then
-		UIRenderer.destroy_video_player(ui_renderer)
+	elseif ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+		UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 
 		self._sound_started = false
 

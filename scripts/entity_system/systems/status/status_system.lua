@@ -14,7 +14,9 @@ local RPCS = {
 	"rpc_hooked_sync",
 	"rpc_hot_join_sync_health_status",
 	"rpc_replenish_fatigue",
-	"rpc_replenish_fatigue_other_players"
+	"rpc_replenish_fatigue_other_players",
+	"rpc_set_stagger",
+	"rpc_set_action_data"
 }
 local extensions = {
 	"GenericStatusExtension"
@@ -60,6 +62,20 @@ StatusSystem.rpc_hooked_sync = function (self, sender, status_id, game_object_id
 	elseif status == "pack_master_unhooked" then
 		status_ext.release_unhook_time_left = t + time_left
 	end
+end
+
+StatusSystem.rpc_set_action_data = function (self, sender, game_object_id, breed_id, breed_action_id)
+	local unit = self.unit_storage:unit(game_object_id)
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	local status_ext = ScriptUnit.extension(unit, "status_system")
+	local breed_name = NetworkLookup.breeds[breed_id]
+	local breed_action_name = NetworkLookup.bt_action_names[breed_action_id]
+
+	status_ext:set_breed_action(breed_name, breed_action_name)
 end
 
 StatusSystem.rpc_status_change_bool = function (self, sender, status_id, status_bool, game_object_id, other_object_id)
@@ -327,6 +343,14 @@ StatusSystem.rpc_replenish_fatigue_other_players = function (self, sender, fatig
 	local fatigue_type = NetworkLookup.fatigue_types[fatigue_type_id]
 
 	StatusUtils.replenish_stamina_local_players(nil, fatigue_type)
+end
+
+StatusSystem.rpc_set_stagger = function (self, sender, game_object_id, stagger, stagger_direction, stagger_length, stagger_type, stagger_time, stagger_animation_scale, always_stagger_suffered)
+	local unit = self.unit_storage:unit(game_object_id)
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+
+	fassert(status_extension.set_stagger_values)
+	status_extension:set_stagger_values(stagger, stagger_direction, stagger_length, stagger_type, stagger_time, stagger_animation_scale, always_stagger_suffered, false)
 end
 
 return

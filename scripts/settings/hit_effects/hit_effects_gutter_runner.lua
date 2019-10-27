@@ -1658,7 +1658,6 @@ HitEffectsGutterRunner = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn"
 		}
@@ -1672,7 +1671,6 @@ HitEffectsGutterRunner = {
 		}
 	},
 	burn_shotgun = {
-		flow_event = "burn",
 		extra_conditions = {
 			damage = true,
 			damage_type = "burn_shotgun"
@@ -1976,7 +1974,6 @@ HitEffectsGutterRunner = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2000,7 +1997,6 @@ HitEffectsGutterRunner = {
 	},
 	drakegun_glance = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		}
@@ -2087,7 +2083,6 @@ HitEffectsGutterRunner = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

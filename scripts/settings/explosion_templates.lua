@@ -544,9 +544,9 @@ ExplosionTemplates.bardin_slayer_activated_ability_landing_stagger_impact.explos
 ExplosionTemplates.cannon_ball_throw = {
 	explosion = {
 		always_hurt_players = false,
-		radius = 4,
+		radius = 10,
 		no_prop_damage = true,
-		max_damage_radius = 2,
+		max_damage_radius = 5,
 		effect_name = "fx/wpnfx_frag_grenade_impact",
 		sound_event_name = "player_combat_weapon_grenade_explosion",
 		attack_template = "drakegun",

@@ -270,7 +270,7 @@ end
 HeroWindowTalentsConsole._set_talent_selected = function (self, row, column)
 	local selected_talents = self._selected_talents
 
-	if selected_talents[row] == 0 then
+	if not selected_talents[row] or selected_talents[row] == 0 then
 		self:_play_sound("play_gui_talent_unlock")
 	else
 		self:_play_sound("play_gui_talents_selection_click")
@@ -312,44 +312,6 @@ end
 
 HeroWindowTalentsConsole._play_sound = function (self, event)
 	self.parent:play_sound(event)
-end
-
-HeroWindowTalentsConsole._get_text_height = function (self, ui_renderer, size, ui_style, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font_material, font_size, font_name = nil
-
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = ui_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = ui_style.font_size or font_size
-	end
-
-	if ui_style.localize then
-		text = Localize(text)
-	end
-
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local text_start_index = 1
-	local max_texts = #texts
-	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
-
-	return full_font_height
 end
 
 HeroWindowTalentsConsole._populate_talents_by_hero = function (self, initialize)
@@ -633,8 +595,8 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 			local description_text_shadow_style = style.description_text_shadow
 			content.title_text = display_name
 			content.description_text = description
-			local title_height = self:_get_text_height(ui_renderer, size, title_text_style, display_name)
-			local description_height = self:_get_text_height(ui_renderer, size, description_text_style, description)
+			local title_height = UIUtils.get_text_height(ui_renderer, size, title_text_style, display_name)
+			local description_height = UIUtils.get_text_height(ui_renderer, size, description_text_style, description)
 			description_text_style.offset[2] = -description_height
 			description_text_shadow_style.offset[2] = -(description_height + 2)
 			total_perks_height = total_perks_height + title_height + description_height + perks_height_spacing

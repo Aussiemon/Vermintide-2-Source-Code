@@ -1,3 +1,5 @@
+local twitch_settings = (PLATFORM == "xb1" and MixerSettings) or TwitchSettings
+
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
 		print("[Twitch] " .. string.format(message, ...))
@@ -31,13 +33,13 @@ TwitchVoteTemplates.twitch_vote_activate_splitting_enemies = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("splitting_enemies") and not TwitchSettings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("splitting_enemies") and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
 			local mutator_handler = Managers.state.game_mode._mutator_handler
 			local mutator_name = "splitting_enemies"
-			local duration = 30 * TwitchSettings.mutator_duration_multiplier
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
 
 			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
 			mutator_handler:initialize_mutators({
@@ -60,13 +62,13 @@ TwitchVoteTemplates.twitch_vote_activate_leash = {
 	condition_func = function (current_vote)
 		local num_human_players = Managers.player:num_human_players()
 
-		return num_human_players > 1 and not Managers.state.game_mode._mutator_handler:has_activated_mutator("leash") and not TwitchSettings.disable_mutators
+		return num_human_players > 1 and not Managers.state.game_mode._mutator_handler:has_activated_mutator("leash") and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
 			local mutator_handler = Managers.state.game_mode._mutator_handler
 			local mutator_name = "leash"
-			local duration = 30 * TwitchSettings.mutator_duration_multiplier
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
 
 			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
 			mutator_handler:initialize_mutators({
@@ -87,13 +89,13 @@ TwitchVoteTemplates.twitch_vote_activate_slayer_curse = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("slayer_curse") and not TwitchSettings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("slayer_curse") and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
 			local mutator_handler = Managers.state.game_mode._mutator_handler
 			local mutator_name = "slayer_curse"
-			local duration = 30 * TwitchSettings.mutator_duration_multiplier
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
 
 			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
 			mutator_handler:initialize_mutators({
@@ -114,13 +116,13 @@ TwitchVoteTemplates.twitch_vote_activate_bloodlust = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("bloodlust") and not TwitchSettings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("bloodlust") and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
 			local mutator_handler = Managers.state.game_mode._mutator_handler
 			local mutator_name = "bloodlust"
-			local duration = 30 * TwitchSettings.mutator_duration_multiplier
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
 
 			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
 			mutator_handler:initialize_mutators({
@@ -141,13 +143,13 @@ TwitchVoteTemplates.twitch_vote_activate_realism = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("realism") and not TwitchSettings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("realism") and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
 			local mutator_handler = Managers.state.game_mode._mutator_handler
 			local mutator_name = "realism"
-			local duration = 60 * TwitchSettings.mutator_duration_multiplier
+			local duration = 60 * twitch_settings.mutator_duration_multiplier
 
 			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
 			mutator_handler:initialize_mutators({
@@ -167,13 +169,13 @@ TwitchVoteTemplates.twitch_vote_activate_darkness = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("twitch_darkness") and not TwitchSettings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("twitch_darkness") and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
 			local mutator_handler = Managers.state.game_mode._mutator_handler
 			local mutator_name = "twitch_darkness"
-			local duration = 30 * TwitchSettings.mutator_duration_multiplier
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
 
 			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
 			mutator_handler:initialize_mutators({
@@ -193,13 +195,13 @@ TwitchVoteTemplates.twitch_vote_activate_ticking_bomb = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("ticking_bomb") and not TwitchSettings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("ticking_bomb") and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
 			local mutator_handler = Managers.state.game_mode._mutator_handler
 			local mutator_name = "ticking_bomb"
-			local duration = 30 * TwitchSettings.mutator_duration_multiplier
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
 
 			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
 			mutator_handler:initialize_mutators({

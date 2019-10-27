@@ -219,9 +219,10 @@ CareerAbilityBWAdept._run_ability = function (self)
 		if projected_start_pos then
 			local damage_wave_template_name = "sienna_adept_ability_trail"
 			local damage_wave_template_id = NetworkLookup.damage_wave_templates[damage_wave_template_name]
-			local invalid_game_object_id = NetworkConstants.invalid_game_object_id
+			local network_manager = self._network_manager
+			local source_unit_id = network_manager:unit_game_object_id(owner_unit)
 
-			network_transmit:send_rpc_server("rpc_create_damage_wave", invalid_game_object_id, projected_start_pos, hit_pos, damage_wave_template_id)
+			network_manager.network_transmit:send_rpc_server("rpc_create_damage_wave", source_unit_id, projected_start_pos, hit_pos, damage_wave_template_id)
 		end
 	end
 

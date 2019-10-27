@@ -114,4 +114,8 @@ LobbyInternal.client_ready = function ()
 	return false
 end
 
+LobbyInternal.set_max_members = function (lobby, max_members)
+	LanLobby.set_max_members(lobby, max_members)
+end
+
 return

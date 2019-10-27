@@ -179,129 +179,173 @@ WeaveSettings.score = {
 		essence = 17040
 	}
 }
-WeaveMatchmakingSettings = {
-	hosting_time = 20,
-	expansion_rules = {
-		{
-			other_requirements = {
-				allow_hosted_weaves = false,
-				allow_occupied_hero_lobbies = false
-			},
-			filters = {
-				difficulty = {
-					fetch_function = function (state)
-						local search_config = state.search_config
-						local difficulty = search_config.difficulty
 
-						return difficulty
-					end,
-					comparison = LobbyComparison.EQUAL
+if PLATFORM ~= "xb1" then
+	WeaveMatchmakingSettings = {
+		hosting_time = 20,
+		expansion_rules = {
+			{
+				other_requirements = {
+					allow_hosted_weaves = false,
+					allow_occupied_hero_lobbies = false
 				},
-				game_mode = {
-					fetch_function = function (state)
-						local value = NetworkLookup.game_modes.weave_find_group
+				filters = {
+					difficulty = {
+						fetch_function = function (state)
+							local search_config = state.search_config
+							local difficulty = search_config.difficulty
 
-						return value
-					end,
-					debug_format = function (value)
-						return NetworkLookup.game_modes[value]
-					end,
-					comparison = LobbyComparison.EQUAL
-				}
-			},
-			near_filters = {
-				magic_power_level = {
-					fetch_function = function (state)
-						local local_player = Managers.player:local_player()
-						local hero_name = local_player:profile_display_name()
-						local career_name = local_player:career_name()
-						local power_level = BackendUtils.get_total_power_level(hero_name, career_name, "weave")
+							return difficulty
+						end,
+						comparison = LobbyComparison.EQUAL
+					},
+					game_mode = {
+						fetch_function = function (state)
+							local value = (PLATFORM == "win32" and NetworkLookup.game_modes.weave_find_group) or "weave_find_group"
 
-						return power_level
-					end,
-					transform_data_function = function (lobby_data_value)
-						return tonumber(lobby_data_value)
-					end,
-					requirements = {
-						range_down = 50,
-						range_up = 50
+							return value
+						end,
+						debug_format = function (value)
+							return NetworkLookup.game_modes[value]
+						end,
+						comparison = LobbyComparison.EQUAL
 					}
 				},
-				weave_index = {
-					fetch_function = function (state)
-						local ignore_dlc_check = false
-						local current_weave = LevelUnlockUtils.current_weave(state._statistics_db, state._stats_id, ignore_dlc_check)
-						local weave_template = WeaveSettings.templates[current_weave]
-						local weave_templates_ordererd = WeaveSettings.templates_ordered
-						local current_weave_index = table.find(weave_templates_ordererd, weave_template)
+				near_filters = {
+					power_level = {
+						fetch_function = function (state)
+							local local_player = Managers.player:local_player()
+							local hero_name = local_player:profile_display_name()
+							local career_name = local_player:career_name()
+							local power_level = BackendUtils.get_total_power_level(hero_name, career_name, "weave")
 
-						return current_weave_index
-					end,
-					transform_data_function = function (lobby_data_value)
-						return tonumber(lobby_data_value)
-					end,
-					requirements = {
-						range_down = 5,
-						range_up = 5
+							return power_level
+						end,
+						transform_data_function = function (lobby_data_value)
+							return tonumber(lobby_data_value)
+						end,
+						requirements = {
+							range_down = 50,
+							range_up = 50
+						}
+					},
+					weave_name = {
+						fetch_function = function (state)
+							local ignore_dlc_check = false
+							local current_weave = LevelUnlockUtils.current_weave(state._statistics_db, state._stats_id, ignore_dlc_check)
+
+							return current_weave
+						end,
+						transform_data_function = function (lobby_data_value)
+							local weave_template = WeaveSettings.templates[lobby_data_value]
+							local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
+
+							return weave_index
+						end,
+						requirements = {
+							range_down = 5,
+							range_up = 5
+						}
 					}
 				}
+			},
+			{
+				other_requirements = {
+					allow_hosted_weaves = true,
+					allow_occupied_hero_lobbies = false
+				},
+				filters = {},
+				near_filters = {
+					power_level = {
+						fetch_function = function (state)
+							local local_player = Managers.player:local_player()
+							local hero_name = local_player:profile_display_name()
+							local career_name = local_player:career_name()
+							local power_level = BackendUtils.get_total_power_level(hero_name, career_name, "weave")
+
+							return power_level
+						end,
+						transform_data_function = function (lobby_data_value)
+							return tonumber(lobby_data_value)
+						end,
+						requirements = {
+							range_down = 150,
+							range_up = 150
+						}
+					},
+					weave_name = {
+						fetch_function = function (state)
+							local ignore_dlc_check = false
+							local current_weave = LevelUnlockUtils.current_weave(state._statistics_db, state._stats_id, ignore_dlc_check)
+
+							return current_weave
+						end,
+						transform_data_function = function (lobby_data_value)
+							local weave_template = WeaveSettings.templates[lobby_data_value]
+							local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
+
+							return weave_index
+						end,
+						requirements = {
+							range_down = 10,
+							range_up = 10
+						}
+					}
+				}
+			},
+			{
+				other_requirements = {
+					allow_hosted_weaves = true,
+					allow_occupied_hero_lobbies = true
+				},
+				filters = {},
+				near_filters = {}
 			}
-		},
-		{
-			other_requirements = {
-				allow_hosted_weaves = true,
-				allow_occupied_hero_lobbies = false
-			},
-			filters = {},
-			near_filters = {
-				magic_power_level = {
-					fetch_function = function (state)
-						local local_player = Managers.player:local_player()
-						local hero_name = local_player:profile_display_name()
-						local career_name = local_player:career_name()
-						local power_level = BackendUtils.get_total_power_level(hero_name, career_name, "weave")
-
-						return power_level
-					end,
-					transform_data_function = function (lobby_data_value)
-						return tonumber(lobby_data_value)
-					end,
-					requirements = {
-						range_down = 150,
-						range_up = 150
-					}
-				},
-				weave_index = {
-					fetch_function = function (state)
-						local ignore_dlc_check = false
-						local current_weave = LevelUnlockUtils.current_weave(state._statistics_db, state._stats_id, ignore_dlc_check)
-						local weave_template = WeaveSettings.templates[current_weave]
-						local weave_templates_ordererd = WeaveSettings.templates_ordered
-						local current_weave_index = table.find(weave_templates_ordererd, weave_template)
-
-						return current_weave_index
-					end,
-					transform_data_function = function (lobby_data_value)
-						return tonumber(lobby_data_value)
-					end,
-					requirements = {
-						range_down = 10,
-						range_up = 10
-					}
-				}
-			}
-		},
-		{
-			other_requirements = {
-				allow_hosted_weaves = true,
-				allow_occupied_hero_lobbies = true
-			},
-			filters = {},
-			near_filters = {}
 		}
 	}
-}
-WeaveMatchmakingSettings.num_expansion_rules = #WeaveMatchmakingSettings.expansion_rules
+	WeaveMatchmakingSettings.num_expansion_rules = #WeaveMatchmakingSettings.expansion_rules
+else
+	WeaveMatchmakingSettings = {
+		rule_timeout = 20,
+		expansion_rules = {
+			{
+				difficulty = {},
+				matchmaking_types = {
+					value = {
+						"weave_find_group"
+					}
+				},
+				network_hash = {},
+				powerlevel = {},
+				profiles = {},
+				weave_index = {}
+			},
+			{
+				matchmaking_types = {
+					value = {
+						"weave_find_group",
+						"weave"
+					}
+				},
+				network_hash = {},
+				powerlevel = {},
+				profiles = {},
+				weave_index = {}
+			},
+			{
+				matchmaking_types = {
+					value = {
+						"weave_find_group",
+						"weave"
+					}
+				},
+				network_hash = {}
+			}
+		}
+	}
+	WeaveMatchmakingSettings.num_expansion_rules = #WeaveMatchmakingSettings.expansion_rules
+end
+
 local templates = {}
 local weaves_to_add = {
 	"weave_1",
@@ -351,6 +395,20 @@ for i = 1, #weaves_to_add, 1 do
 	local path = string.format("scripts/settings/weaves/%s", name)
 	local template = local_require(path)
 	templates[#templates + 1] = template
+end
+
+function generate_missing_weave_horde_compositions()
+	local added_compositions = {}
+	local missing_composition_string = "\n"
+
+	for i = 1, #weaves_to_add, 1 do
+		local name = weaves_to_add[i]
+		local path = string.format("scripts/settings/weaves/%s", name)
+		local template = local_require(path)
+		missing_composition_string = get_missing_horde_compositions_string(template, added_compositions, missing_composition_string)
+	end
+
+	print(missing_composition_string)
 end
 
 local num_templates = #templates

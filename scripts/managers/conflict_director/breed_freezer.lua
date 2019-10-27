@@ -55,6 +55,9 @@ BreedFreezerSettings = {
 		beastmen_ungor = {
 			pool_size = 50
 		},
+		beastmen_ungor_archer = {
+			pool_size = 16
+		},
 		beastmen_gor = {
 			pool_size = 32
 		},
@@ -67,19 +70,10 @@ BreedFreezerSettings = {
 
 fassert(BreedFreezerSettings.freezer_offset[2] > 0, "Must have positive offset so we can sort the units when hot joining")
 
-local num_pools = table.size(BreedFreezerSettings.breeds)
-local max_pool_size = 0
-local breeds_index_lookup = BreedFreezerSettings.breeds_index_lookup
-
-for breed_name, settings in pairs(BreedFreezerSettings.breeds) do
-	max_pool_size = math.max(max_pool_size, settings.pool_size)
-	breeds_index_lookup[#breeds_index_lookup + 1] = breed_name
-end
-
 local unit_templates = require("scripts/network/unit_extension_templates")
 BreedFreezer = class(BreedFreezer)
 
-BreedFreezer.init = function (self, world, entity_manager, network_event_delegate)
+BreedFreezer.init = function (self, world, entity_manager, network_event_delegate, enemy_package_loader)
 	local is_server = Managers.player.is_server
 	self.is_server = is_server
 	self.world = world
@@ -91,6 +85,7 @@ BreedFreezer.init = function (self, world, entity_manager, network_event_delegat
 		network_event_delegate:register(self, "rpc_breed_freeze_units", "rpc_breed_unfreeze_breed", "rpc_breed_freezer_hot_join", "rpc_breed_freezer_sync_breeds")
 	end
 
+	self._breed_freezer_settings = self:_setup_freezable_breeds(enemy_package_loader)
 	self.breed_spawn_queues = {}
 	self.extensions = {}
 	self.systems_by_breed = {}
@@ -105,22 +100,47 @@ BreedFreezer.init = function (self, world, entity_manager, network_event_delegat
 		self:_setup_freeze_box()
 	end
 
-	for _, settings in pairs(BreedFreezerSettings.breeds) do
+	for _, settings in pairs(self._breed_freezer_settings.breeds) do
 		fassert(settings.pool_size <= NetworkConstants.max_breed_freezer_units_per_rpc, "Pool size too large to sync!")
 	end
 end
 
+BreedFreezer._setup_freezable_breeds = function (self, enemy_package_loader)
+	local startup_breeds = enemy_package_loader:get_startup_breeds()
+	local breed_freezer_settings = table.clone(BreedFreezerSettings)
+	local breeds = breed_freezer_settings.breeds
+
+	for breed_name, data in pairs(breeds) do
+		if not startup_breeds[breed_name] then
+			breeds[breed_name] = nil
+		end
+	end
+
+	breed_freezer_settings.num_pools = table.size(breeds)
+	local max_pool_size = 0
+	local breeds_index_lookup = breed_freezer_settings.breeds_index_lookup
+
+	for breed_name, settings in pairs(breeds) do
+		max_pool_size = math.max(max_pool_size, settings.pool_size)
+		breeds_index_lookup[#breeds_index_lookup + 1] = breed_name
+	end
+
+	breed_freezer_settings.max_pool_size = max_pool_size
+
+	return breed_freezer_settings
+end
+
 BreedFreezer._setup_freeze_box = function (self)
 	local offset_z = 0
-	local freezer_pos = (script_data.debug_breed_freeze and Vector3Aux.unbox(BreedFreezerSettings.freezer_pos_debug)) or Vector3Aux.unbox(BreedFreezerSettings.freezer_pos)
-	local freezer_offset = (script_data.debug_breed_freeze and Vector3Aux.unbox(BreedFreezerSettings.freezer_offset_debug)) or Vector3Aux.unbox(BreedFreezerSettings.freezer_offset)
+	local freezer_pos = (script_data.debug_breed_freeze and Vector3Aux.unbox(self._breed_freezer_settings.freezer_pos_debug)) or Vector3Aux.unbox(self._breed_freezer_settings.freezer_pos)
+	local freezer_offset = (script_data.debug_breed_freeze and Vector3Aux.unbox(self._breed_freezer_settings.freezer_offset_debug)) or Vector3Aux.unbox(self._breed_freezer_settings.freezer_offset)
 	self.freezer_pos = Vector3Box(freezer_pos)
 	self.freezer_offset = Vector3Box(freezer_offset)
 	local world = self.world
 	local is_server = self.is_server
 	local entity_manager = self.entity_manager
 
-	for breed_name, settings in pairs(BreedFreezerSettings.breeds) do
+	for breed_name, settings in pairs(self._breed_freezer_settings.breeds) do
 		self.breed_offsets[breed_name] = offset_z
 		self.units_to_freeze[breed_name] = {}
 		self.breed_spawn_queues[breed_name] = CircularQueue:new(settings.pool_size)
@@ -165,9 +185,9 @@ BreedFreezer._setup_freeze_box = function (self)
 		offset_z = offset_z + freezer_offset.z
 	end
 
-	BreedFreezerSettings.freezer_size[1] = 4
-	BreedFreezerSettings.freezer_size[2] = freezer_offset[2] * (max_pool_size + 1)
-	BreedFreezerSettings.freezer_size[3] = freezer_offset[3] * (num_pools + 1)
+	self._breed_freezer_settings.freezer_size[1] = 4
+	self._breed_freezer_settings.freezer_size[2] = freezer_offset[2] * (self._breed_freezer_settings.max_pool_size + 1)
+	self._breed_freezer_settings.freezer_size[3] = freezer_offset[3] * (self._breed_freezer_settings.num_pools + 1)
 	self.spawn_data = {
 		[2] = Vector3Box(),
 		QuaternionBox()
@@ -197,7 +217,7 @@ end
 BreedFreezer.try_mark_unit_for_freeze = function (self, breed, unit)
 	local breed_name = breed.name
 
-	if BreedFreezerSettings.breeds[breed_name] == nil then
+	if self._breed_freezer_settings.breeds[breed_name] == nil then
 		return false
 	end
 
@@ -241,7 +261,7 @@ BreedFreezer.rpc_breed_freeze_units = function (self, peer_id, unit_go_ids)
 		local breed = ai_extension:breed()
 		local breed_name = breed.name
 
-		fassert(BreedFreezerSettings.breeds[breed_name], "Can't freeze unit of breed %s", breed_name)
+		fassert(self._breed_freezer_settings.breeds[breed_name], "Can't freeze unit of breed %s", breed_name)
 
 		local units_to_freeze = self.units_to_freeze[breed_name]
 
@@ -263,7 +283,7 @@ BreedFreezer.commit_freezes = function (self)
 
 	local freezer_offset = self.freezer_offset:unbox()
 	local freezer_pos = self.freezer_pos:unbox()
-	local freezer_size = Vector3Aux.unbox(BreedFreezerSettings.freezer_size)
+	local freezer_size = Vector3Aux.unbox(self._breed_freezer_settings.freezer_size)
 	local is_server = self.is_server
 	local network_manager = Managers.state.network
 	local in_game_session = network_manager:in_game_session()
@@ -345,7 +365,7 @@ end
 BreedFreezer.try_unfreeze_breed = function (self, breed, data)
 	local breed_name = breed.name
 
-	if BreedFreezerSettings.breeds[breed_name] == nil then
+	if self._breed_freezer_settings.breeds[breed_name] == nil then
 		return nil
 	end
 
@@ -377,7 +397,7 @@ BreedFreezer.rpc_breed_unfreeze_breed = function (self, peer_id, breed_id, pos, 
 	local queue = self.breed_spawn_queues[breed_name]
 	local unit = queue:pop_first()
 
-	fassert(BreedFreezerSettings.breeds[breed_name], "Can't unfreeze unit of breed %s", breed_name)
+	fassert(self._breed_freezer_settings.breeds[breed_name], "Can't unfreeze unit of breed %s", breed_name)
 	Managers.state.unit_storage:unfreeze(unit)
 
 	local check_go_id = Managers.state.unit_storage:go_id(unit)
@@ -458,7 +478,7 @@ BreedFreezer.hot_join_sync = function (self, peer_id)
 	RPC.rpc_breed_freezer_hot_join(peer_id, script_data.debug_breed_freeze or false)
 
 	local frozen_goids = Managers.state.unit_storage.frozen_bimap_goid_unit
-	local indexed_lookup = BreedFreezerSettings.breeds_index_lookup
+	local indexed_lookup = self._breed_freezer_settings.breeds_index_lookup
 
 	for i = 1, #indexed_lookup, 1 do
 		local breed_name = indexed_lookup[i]
@@ -501,9 +521,9 @@ BreedFreezer.rpc_breed_freezer_sync_breeds = function (self, peer_id, starts, un
 
 	for i = 1, #starts, 2 do
 		breed_index = breed_index + 1
-		local breed_name = BreedFreezerSettings.breeds_index_lookup[breed_index]
+		local breed_name = self._breed_freezer_settings.breeds_index_lookup[breed_index]
 
-		fassert(BreedFreezerSettings.breeds[breed_name], "Can't freeze unit of breed %s", breed_name)
+		fassert(self._breed_freezer_settings.breeds[breed_name], "Can't freeze unit of breed %s", breed_name)
 
 		local queue_start = starts[i]
 		local amount = starts[i + 1]
@@ -532,9 +552,9 @@ BreedFreezer.rpc_breed_freezer_sync_breeds = function (self, peer_id, starts, un
 
 	self._current_synked_breed_index = breed_index
 
-	print("Breed freezer counts: ", self._current_synked_breed_index, #BreedFreezerSettings.breeds_index_lookup)
+	print("Breed freezer counts: ", self._current_synked_breed_index, #self._breed_freezer_settings.breeds_index_lookup)
 
-	if self._current_synked_breed_index == #BreedFreezerSettings.breeds_index_lookup then
+	if self._current_synked_breed_index == #self._breed_freezer_settings.breeds_index_lookup then
 		print("Comitting breed freezer frozen units")
 		self:commit_freezes()
 	end

@@ -11,11 +11,14 @@ end
 GameServerLobbyState = {}
 
 if platform == "win32" then
+	GameServerLobbyState.RESERVING = "reserving"
+	GameServerLobbyState.RESERVED = "reserved"
 	GameServerLobbyState.JOINING = "joining"
 	GameServerLobbyState.JOINED = "joined"
 	GameServerLobbyState.FAILED = "failed"
 	GameServerLobbyState.SERVER_IS_FULL = "server_is_full"
 	GameServerLobbyState.TIMEOUT = "timeout"
+	GameServerLobbyState.INVALID = "invalid"
 end
 
 GameServerAux.create_network_hash = function (config_file_name, project_hash)

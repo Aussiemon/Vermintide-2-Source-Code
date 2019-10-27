@@ -640,7 +640,7 @@ local function create_progress_ui(scenegraph_id)
 			bonus_time = "+ 0:00",
 			essence_id = "Essence:",
 			bar_progress = 0,
-			standard_objective_text_id = "Kill enemies to gain essence",
+			standard_objective_text_id = "objective_kill_enemies",
 			bubble_icon_id = bubble_icon_texture,
 			bubble_icon_grayscale_id = bubble_icon_grayscale_texture,
 			essence_icon_id = essence_icon_texture,
@@ -880,10 +880,11 @@ local function create_progress_ui(scenegraph_id)
 			standard_objective = {
 				word_wrap = false,
 				upper_case = false,
-				localize = false,
+				localize = true,
 				font_size = 22,
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				text_color = {
 					255,
@@ -895,15 +896,20 @@ local function create_progress_ui(scenegraph_id)
 					80,
 					-48,
 					1
+				},
+				size = {
+					PROGRESS_UI_WINDOW_SIZE[1] - 80,
+					PROGRESS_UI_WINDOW_SIZE[2]
 				}
 			},
 			standard_objective_shadow = {
 				word_wrap = false,
 				upper_case = false,
-				localize = false,
+				localize = true,
 				font_size = 22,
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				text_color = {
 					255,
@@ -915,6 +921,10 @@ local function create_progress_ui(scenegraph_id)
 					82,
 					-50,
 					0
+				},
+				size = {
+					PROGRESS_UI_WINDOW_SIZE[1] - 80,
+					PROGRESS_UI_WINDOW_SIZE[2]
 				}
 			},
 			bonus_time = {
@@ -1024,7 +1034,7 @@ local function create_bonus_objective_header_func()
 	}
 end
 
-local function create_bonus_objective_func(display_name, score, index)
+local function create_bonus_objective_func(display_name, score, index, stack_name, objective_name)
 	local scenegraph_id = "progress_ui"
 	local checkmark_texture = "matchmaking_checkbox"
 	local checkmark_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(checkmark_texture)
@@ -1070,7 +1080,17 @@ local function create_bonus_objective_func(display_name, score, index)
 				{
 					style_id = "objective_name",
 					pass_type = "text",
-					text_id = "objective_name_id"
+					text_id = "objective_name_id",
+					content_change_function = function (content)
+						if not content.stack then
+							return
+						end
+
+						content.objective_name_id = content.base_objective_name_id
+						local stack = content.stack
+						local done_stack = content.done_stack
+						content.objective_name_id = content.objective_name_id .. " " .. table.size(done_stack) .. "/" .. table.size(stack)
+					end
 				},
 				{
 					style_id = "objective_name_shadow",
@@ -1080,13 +1100,26 @@ local function create_bonus_objective_func(display_name, score, index)
 			}
 		},
 		content = {
-			is_done = false,
 			show_marker = false,
+			is_done = false,
 			essence_icon_id = essence_icon_texture,
 			checkmark_id = checkmark_texture,
 			bullet_id = bullet_texture,
 			score_id = score,
-			objective_name_id = display_name
+			base_objective_name_id = Localize(display_name),
+			objective_name_id = Localize(display_name),
+			stack = objective_name and {
+				objective_name
+			},
+			done_stack = {},
+			stack_name = stack_name,
+			is_done_func = function (content, objective_name)
+				if content.is_done or content.stack == false then
+					return true
+				end
+
+				return table.find(content.done_stack, objective_name)
+			end
 		},
 		style = {
 			stroke = {
@@ -1145,7 +1178,7 @@ local function create_bonus_objective_func(display_name, score, index)
 			objective_name = {
 				word_wrap = false,
 				upper_case = false,
-				localize = true,
+				localize = false,
 				font_size = 22,
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
@@ -1160,7 +1193,7 @@ local function create_bonus_objective_func(display_name, score, index)
 			objective_name_shadow = {
 				word_wrap = false,
 				upper_case = false,
-				localize = true,
+				localize = false,
 				font_size = 22,
 				horizontal_alignment = "left",
 				vertical_alignment = "top",

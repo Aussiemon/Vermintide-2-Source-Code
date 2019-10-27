@@ -54,6 +54,7 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	end
 
 	self._legitimate_target_func = (template.legitimate_target_func and self[template.legitimate_target_func]) or self.legitimate_target
+	self._keep_target_on_miss_check_func = (template.keep_target_on_miss_check_func and self[template.keep_target_on_miss_check_func]) or self.legitimate_never
 	self._lerp_modifier_func = template.lerp_modifier_func or function (distance)
 		return (distance < 5 and 1) or 5 / distance
 	end
@@ -249,7 +250,7 @@ ProjectileTrueFlightLocomotionExtension._check_target_valid = function (self, ta
 			if self:_legitimate_target_func(target, current_position) then
 				can_see_target = true
 			elseif template.retarget_on_miss then
-				has_good_target = false
+				has_good_target = self:_keep_target_on_miss_check_func(target, current_position)
 			end
 		end
 	end
@@ -627,6 +628,10 @@ end
 
 ProjectileTrueFlightLocomotionExtension.legitimate_always = function (self, unit, position)
 	return true
+end
+
+ProjectileTrueFlightLocomotionExtension.legitimate_never = function (self, unit, position)
+	return false
 end
 
 ProjectileTrueFlightLocomotionExtension.legitimate_only_dot_check = function (self, unit, position)

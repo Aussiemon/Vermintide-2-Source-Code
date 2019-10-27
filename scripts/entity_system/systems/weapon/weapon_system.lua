@@ -459,10 +459,13 @@ end
 
 WeaponSystem.change_single_weapon_state = function (self, owner_unit, state, except_peer, received_via_network)
 	local blackboard = BLACKBOARDS[owner_unit]
-	local weapon_unit = blackboard.weapon_unit
-	local single_weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 
-	single_weapon_extension:change_state(state)
+	if blackboard then
+		local weapon_unit = blackboard.weapon_unit
+		local single_weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
+		single_weapon_extension:change_state(state)
+	end
 
 	local owner_unit_id = Managers.state.unit_storage:go_id(owner_unit)
 	local state_id = NetworkLookup.single_weapon_states[state]

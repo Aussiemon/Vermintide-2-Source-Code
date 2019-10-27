@@ -317,8 +317,29 @@ UIFrameSettings = {
 	menu_frame_16 = {
 		texture = "menu_frame_16",
 		texture_size = {
-			9,
-			9
+			138,
+			138
+		},
+		texture_sizes = {
+			corner = {
+				64,
+				64
+			},
+			vertical = {
+				64,
+				1
+			},
+			horizontal = {
+				1,
+				64
+			}
+		}
+	},
+	menu_frame_16_white = {
+		texture = "menu_frame_16_white",
+		texture_size = {
+			138,
+			138
 		},
 		texture_sizes = {
 			corner = {

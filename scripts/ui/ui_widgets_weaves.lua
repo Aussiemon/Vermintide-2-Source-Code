@@ -4,15 +4,15 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 	local background_spacing = 8
 	local width_spacing = 4
 	local ranking_size = {
-		math.floor(size[1] * 0.1),
+		math.floor(size[1] * 0.18),
 		size[2]
 	}
 	local weave_size = {
-		math.floor(size[1] * 0.15),
+		math.floor(size[1] * 0.1),
 		size[2]
 	}
 	local score_size = {
-		math.floor(size[1] * 0.3),
+		math.floor(size[1] * 0.15),
 		size[2]
 	}
 	local background_height = ranking_size[2] - background_spacing
@@ -47,11 +47,28 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 	}
 	local frame_name = "menu_frame_17"
 	local frame_settings = UIFrameSettings[frame_name]
+	local local_player_color = {
+		50,
+		100,
+		65,
+		164
+	}
 	local passes = {
 		{
 			pass_type = "texture",
+			style_id = "ranking_background_local_player",
+			texture_id = "background",
+			content_check_function = function (content)
+				return content.local_player
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "ranking_background",
-			texture_id = "background"
+			texture_id = "background",
+			content_check_function = function (content)
+				return not content.local_player
+			end
 		},
 		{
 			pass_type = "texture_frame",
@@ -70,8 +87,19 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 		},
 		{
 			pass_type = "texture",
+			style_id = "name_background_local_player",
+			texture_id = "background",
+			content_check_function = function (content)
+				return content.local_player
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "name_background",
-			texture_id = "background"
+			texture_id = "background",
+			content_check_function = function (content)
+				return not content.local_player
+			end
 		},
 		{
 			pass_type = "texture_frame",
@@ -98,8 +126,19 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 		},
 		{
 			pass_type = "texture",
+			style_id = "weave_background_local_player",
+			texture_id = "background",
+			content_check_function = function (content)
+				return content.local_player
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "weave_background",
-			texture_id = "background"
+			texture_id = "background",
+			content_check_function = function (content)
+				return not content.local_player
+			end
 		},
 		{
 			pass_type = "texture_frame",
@@ -118,8 +157,19 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 		},
 		{
 			pass_type = "texture",
+			style_id = "score_background_local_player",
+			texture_id = "background",
+			content_check_function = function (content)
+				return content.local_player
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "score_background",
-			texture_id = "background"
+			texture_id = "background",
+			content_check_function = function (content)
+				return not content.local_player
+			end
 		},
 		{
 			pass_type = "texture_frame",
@@ -143,6 +193,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 		weave = "000",
 		career_icon = "icons_placeholder",
 		ranking = "000",
+		local_player = false,
 		button_hotspot = {},
 		background = (masked and "rect_masked") or "simple_rect_texture",
 		frame = frame_settings.texture,
@@ -150,7 +201,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 	}
 	local style = {
 		ranking = {
-			font_size = 28,
+			font_size = 22,
 			upper_case = true,
 			localize = false,
 			horizontal_alignment = "center",
@@ -166,7 +217,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			}
 		},
 		ranking_shadow = {
-			font_size = 28,
+			font_size = 22,
 			upper_case = true,
 			localize = false,
 			horizontal_alignment = "center",
@@ -212,8 +263,21 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				ranking_offset[3]
 			}
 		},
+		ranking_background_local_player = {
+			masked = masked,
+			size = {
+				ranking_size[1] - background_spacing,
+				ranking_size[2] - background_spacing
+			},
+			color = local_player_color,
+			offset = {
+				ranking_offset[1] + background_spacing / 2,
+				ranking_offset[2] + background_spacing / 2,
+				ranking_offset[3]
+			}
+		},
 		name = {
-			font_size = 24,
+			font_size = 22,
 			upper_case = false,
 			localize = false,
 			horizontal_alignment = "left",
@@ -232,7 +296,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			}
 		},
 		name_shadow = {
-			font_size = 24,
+			font_size = 22,
 			upper_case = false,
 			localize = false,
 			horizontal_alignment = "left",
@@ -281,6 +345,19 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				name_offset[3]
 			}
 		},
+		name_background_local_player = {
+			masked = masked,
+			size = {
+				name_size[1] - background_spacing,
+				name_size[2] - background_spacing
+			},
+			color = local_player_color,
+			offset = {
+				name_offset[1] + background_spacing / 2,
+				name_offset[2] + background_spacing / 2,
+				name_offset[3]
+			}
+		},
 		career_icon = {
 			masked = masked,
 			size = career_icon_size,
@@ -297,7 +374,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			}
 		},
 		weave = {
-			font_size = 28,
+			font_size = 22,
 			upper_case = true,
 			localize = false,
 			horizontal_alignment = "center",
@@ -313,7 +390,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			}
 		},
 		weave_shadow = {
-			font_size = 28,
+			font_size = 22,
 			upper_case = true,
 			localize = false,
 			horizontal_alignment = "center",
@@ -359,8 +436,21 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				weave_offset[3]
 			}
 		},
+		weave_background_local_player = {
+			masked = masked,
+			size = {
+				weave_size[1] - background_spacing,
+				weave_size[2] - background_spacing
+			},
+			color = local_player_color,
+			offset = {
+				weave_offset[1] + background_spacing / 2,
+				weave_offset[2] + background_spacing / 2,
+				weave_offset[3]
+			}
+		},
 		score = {
-			font_size = 28,
+			font_size = 22,
 			upper_case = true,
 			localize = false,
 			horizontal_alignment = "center",
@@ -376,7 +466,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			}
 		},
 		score_shadow = {
-			font_size = 28,
+			font_size = 22,
 			upper_case = true,
 			localize = false,
 			horizontal_alignment = "center",
@@ -421,6 +511,19 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				score_offset[2] + background_spacing / 2,
 				score_offset[3]
 			}
+		},
+		score_background_local_player = {
+			masked = masked,
+			size = {
+				score_size[1] - background_spacing,
+				score_size[2] - background_spacing
+			},
+			color = local_player_color,
+			offset = {
+				score_offset[1] + background_spacing / 2,
+				score_offset[2] + background_spacing / 2,
+				score_offset[3]
+			}
 		}
 	}
 	local widget = {}
@@ -440,7 +543,10 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 	return widget
 end
 
-UIWidgets.create_leaderboard_loading_icon = function (scenegraph_id, overlay_scenegraph_ids)
+UIWidgets.create_leaderboard_loading_icon = function (scenegraph_id, overlay_scenegraph_ids, optional_loading_texture)
+	local loading_texture = optional_loading_texture or "loot_loading"
+	local loading_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(loading_texture)
+	local loading_texture_size = loading_texture_settings.size
 	local passes = {
 		{
 			style_id = "texture_id",
@@ -456,15 +562,93 @@ UIWidgets.create_leaderboard_loading_icon = function (scenegraph_id, overlay_sce
 		}
 	}
 	local content = {
-		texture_id = "loot_loading"
+		texture_id = loading_texture
 	}
 	local style = {
 		texture_id = {
+			vertical_alignment = "center",
 			angle = 0,
-			pivot = {
-				75,
-				75
+			horizontal_alignment = "center",
+			texture_size = {
+				loading_texture_size[1],
+				loading_texture_size[2]
 			},
+			pivot = {
+				loading_texture_size[1] / 2,
+				loading_texture_size[2] / 2
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				1
+			}
+		}
+	}
+
+	if overlay_scenegraph_ids then
+		for i = 1, #overlay_scenegraph_ids, 1 do
+			local style_id = "overlay_" .. i
+			local overlay_scenegraph_id = overlay_scenegraph_ids[i]
+			local pass = {
+				pass_type = "rect",
+				style_id = style_id
+			}
+
+			table.insert(passes, pass)
+
+			style[style_id] = {
+				scenegraph_id = overlay_scenegraph_id,
+				color = {
+					200,
+					10,
+					10,
+					10
+				},
+				offset = {
+					0,
+					0,
+					19
+				}
+			}
+		end
+	end
+
+	local widget = {}
+	local element = {
+		passes = passes
+	}
+	widget.element = element
+	widget.content = content
+	widget.style = style
+	widget.offset = {
+		0,
+		0,
+		0
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
+
+UIWidgets.create_leaderboard_error_icon = function (scenegraph_id, overlay_scenegraph_ids)
+	local passes = {
+		{
+			texture_id = "texture_id",
+			style_id = "texture_id",
+			pass_type = "texture"
+		}
+	}
+	local content = {
+		texture_id = "icon_connection_lost"
+	}
+	local style = {
+		texture_id = {
 			color = {
 				255,
 				255,

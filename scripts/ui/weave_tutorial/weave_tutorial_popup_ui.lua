@@ -64,7 +64,7 @@ WeaveTutorialPopupUI._create_ui_elements = function (self)
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 end
 
-WeaveTutorialPopupUI.show = function (self, title, sub_title, body, optional_button_2, optional_button_2_func)
+WeaveTutorialPopupUI.show = function (self, title, sub_title, body, optional_button_2, optional_button_2_func, optional_button_2_input_actions, disable_body_localization)
 	if self.is_visible then
 		print("WeaveTutorialPopupUI is already visible")
 
@@ -73,8 +73,9 @@ WeaveTutorialPopupUI.show = function (self, title, sub_title, body, optional_but
 
 	self._optional_button_2_func = optional_button_2_func
 
+	self._menu_input_description:set_input_description(optional_button_2_input_actions)
 	self:start_transition_animation("on_show", "transition_enter")
-	self:populate_message(title, sub_title, body, optional_button_2)
+	self:populate_message(title, sub_title, body, optional_button_2, disable_body_localization)
 
 	self.is_visible = true
 
@@ -166,7 +167,7 @@ WeaveTutorialPopupUI._draw = function (self, dt, input_service)
 	end
 end
 
-WeaveTutorialPopupUI.populate_message = function (self, title_text, sub_title_text, body_text, optional_button_2)
+WeaveTutorialPopupUI.populate_message = function (self, title_text, sub_title_text, body_text, optional_button_2, disable_body_localization)
 	local title = self.title_text.content
 	title.text = title_text or ""
 	title.visible = title_text ~= nil
@@ -182,7 +183,8 @@ WeaveTutorialPopupUI.populate_message = function (self, title_text, sub_title_te
 		button_2.content.visible = false
 	end
 
-	self.body_paragraphs = self:break_paragraphs(Localize(body_text))
+	local localized_body_text = (disable_body_localization and body_text) or Localize(body_text)
+	self.body_paragraphs = self:break_paragraphs(localized_body_text)
 
 	self:resize_to_fit()
 

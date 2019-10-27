@@ -1,3 +1,5 @@
+local MAX_RAYCASTS = 5
+
 return {
 	description = "weaves_death_mutator_desc",
 	display_name = "weaves_death_mutator_name",
@@ -19,7 +21,100 @@ return {
 		data.spirits[spirit_id] = spirit
 	end,
 	update_spirits = function (context, data, dt, t)
-		for id, spirit in pairs(data.spirits) do
+		local spirits = data.spirits
+
+		while data.num_raycasts <= MAX_RAYCASTS do
+			local current_unit = data.current_unit
+			local spirit, id = nil
+
+			if current_unit == nil or spirits[current_unit] then
+				id, spirit = next(spirits, current_unit)
+			end
+
+			local unit = spirit and spirit.unit
+
+			if unit and spirit.delay_time == 0 then
+				local physics_world = World.physics_world(context.world)
+				local spirit_position = Unit.local_position(unit, 0)
+				local player_unit = spirit.follow_unit
+
+				if Unit.alive(player_unit) and AiUtils.unit_alive(player_unit) then
+					local player_pos = POSITION_LOOKUP[player_unit]
+					local direction = player_pos - spirit_position
+					direction = Vector3.normalize(direction)
+					local length = 0.75
+
+					PhysicsWorld.prepare_actors_for_raycast(physics_world, spirit_position, direction, 0.1)
+
+					local result = PhysicsWorld.immediate_raycast(physics_world, spirit_position, direction, length, "all", "collision_filter", "filter_player_hit_box_check")
+
+					if result then
+						local num_hits = #result
+
+						for i = 1, num_hits, 1 do
+							local hit = result[i]
+							local hit_actor = hit[4]
+							local hit_unit = Actor.unit(hit_actor)
+
+							if hit_unit == spirit.follow_unit then
+								local damage_profile = DamageProfileTemplates.death_explosion
+								local power_level = data.spirit_power_level
+								local hit_direction = spirit_position - player_pos
+								hit_direction = Vector3.normalize(hit_direction)
+
+								DamageUtils.add_damage_network_player(damage_profile, nil, power_level, player_unit, unit, "full", player_pos, hit_direction, "undefined", nil, 0, false, nil, false, 0, 1)
+
+								local rotation = Unit.world_rotation(unit, 0)
+								local area_damage_system = Managers.state.entity:system("area_damage_system")
+
+								area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
+								data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
+								Managers.state.unit_spawner:mark_for_deletion(unit)
+
+								data.spirits[id] = nil
+								local stat_group_name = "season_1"
+								local stat_name = "weave_death_hit_by_spirit"
+								local player = Managers.player:owner(player_unit)
+
+								if player.local_player then
+									local statistics_db = Managers.player:statistics_db()
+									local local_player = Managers.player:local_player()
+									local stats_id = local_player:stats_id()
+
+									statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
+								else
+									local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
+									local stat_name_index = NetworkLookup.statistics[stat_name]
+									local peer_id = player:network_id()
+
+									Managers.state.network.network_transmit:send_rpc("rpc_increment_stat_group", peer_id, stat_group_index, stat_name_index)
+								end
+							end
+						end
+					end
+
+					data.num_raycasts = data.num_raycasts + 1
+					data.current_unit = unit
+				else
+					local rotation = Unit.world_rotation(unit, 0)
+					local area_damage_system = Managers.state.entity:system("area_damage_system")
+
+					area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
+					data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
+					Managers.state.unit_spawner:mark_for_deletion(unit)
+
+					data.spirits[id] = nil
+				end
+			else
+				data.current_unit = nil
+
+				break
+			end
+		end
+
+		data.num_raycasts = 0
+
+		for id, spirit in pairs(spirits) do
 			local unit = spirit.unit
 
 			if Unit.alive(unit) then
@@ -29,85 +124,25 @@ return {
 					local player_pos = POSITION_LOOKUP[player_unit]
 
 					if player_pos then
-						local physics_world = World.physics_world(context.world)
-						local direction = player_pos - spirit_position
-						direction = Vector3.normalize(direction)
-						local length = 0.75
+						spirit.chase_time = math.max(spirit.chase_time - dt, 0)
+						local unit_position = Unit.local_position(unit, 0)
+						local chase_target_position = player_pos + Vector3(0, 0, 1)
+						local direction_vector = chase_target_position - unit_position
+						direction_vector = Vector3.normalize(direction_vector)
+						local move_vector = direction_vector * dt * data.chase_speed
+						local new_position = unit_position + move_vector
 
-						PhysicsWorld.prepare_actors_for_raycast(physics_world, spirit_position, direction, 0.1)
+						Unit.set_local_position(unit, 0, new_position)
 
-						local result = PhysicsWorld.immediate_raycast(physics_world, spirit_position, direction, length, "all", "collision_filter", "filter_player_hit_box_check")
-						local hit_target = false
+						if spirit.chase_time == 0 then
+							local rotation = Unit.world_rotation(unit, 0)
+							local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-						if result then
-							local num_hits = #result
+							area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
+							data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
+							Managers.state.unit_spawner:mark_for_deletion(unit)
 
-							for i = 1, num_hits, 1 do
-								local hit = result[i]
-								local hit_actor = hit[4]
-								local hit_unit = Actor.unit(hit_actor)
-
-								if hit_unit == spirit.follow_unit then
-									local damage_profile = DamageProfileTemplates.warpfire_thrower_explosion
-									local power_level = data.spirit_power_level
-									local hit_direction = spirit_position - player_pos
-									hit_direction = Vector3.normalize(hit_direction)
-
-									DamageUtils.add_damage_network_player(damage_profile, nil, power_level, player_unit, unit, "full", player_pos, hit_direction, "undefined", nil, 0, false, nil, false, 0, 1)
-
-									local rotation = Unit.world_rotation(unit, 0)
-									local area_damage_system = Managers.state.entity:system("area_damage_system")
-
-									area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
-									data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
-
-									hit_target = true
-
-									Managers.state.unit_spawner:mark_for_deletion(unit)
-
-									data.spirits[id] = nil
-									local stat_group_name = "season_1"
-									local stat_name = "weave_death_hit_by_spirit"
-									local player = Managers.player:owner(player_unit)
-
-									if player.local_player then
-										local statistics_db = Managers.player:statistics_db()
-										local local_player = Managers.player:local_player()
-										local stats_id = local_player:stats_id()
-
-										statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
-									else
-										local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
-										local stat_name_index = NetworkLookup.statistics[stat_name]
-										local peer_id = player:network_id()
-
-										Managers.state.network.network_transmit:send_rpc("rpc_increment_stat_group", peer_id, stat_group_index, stat_name_index)
-									end
-								end
-							end
-						end
-
-						if not hit_target then
-							spirit.chase_time = math.max(spirit.chase_time - dt, 0)
-							local unit_position = Unit.local_position(unit, 0)
-							local chase_target_position = player_pos + Vector3(0, 0, 1)
-							local direction_vector = chase_target_position - unit_position
-							direction_vector = Vector3.normalize(direction_vector)
-							local move_vector = direction_vector * dt * data.chase_speed
-							local new_position = unit_position + move_vector
-
-							Unit.set_local_position(unit, 0, new_position)
-
-							if spirit.chase_time == 0 then
-								local rotation = Unit.world_rotation(unit, 0)
-								local area_damage_system = Managers.state.entity:system("area_damage_system")
-
-								area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
-								data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
-								Managers.state.unit_spawner:mark_for_deletion(unit)
-
-								data.spirits[id] = nil
-							end
+							data.spirits[id] = nil
 						end
 					end
 				else
@@ -196,6 +231,7 @@ return {
 		data.spirit_unit_name = "units/fx/vfx_animation_death_spirit_02"
 		data.extension_init_data = {}
 		data.offset = 1
+		data.num_raycasts = 0
 	end,
 	server_update_function = function (context, data, dt, t)
 		local game_session = Network.game_session()

@@ -184,7 +184,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 	local item_data = item.data
 	local backend_id = item.backend_id
 	local item_skin = item.skin
-	local item_key = item_data.key
+	local item_key = item_data.key or item.key
 	local item_data = ItemMasterList[item_key]
 	local item_template = nil
 	local item_type = item_data.item_type
@@ -195,6 +195,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 	elseif item_type == "weapon_skin" then
 		local matching_item_key = item_data.matching_item_key
 		item_template = ItemHelper.get_template_by_item_name(matching_item_key)
+		item_skin = item_skin or item_key
 	end
 
 	item_template = item_template or ItemHelper.get_template_by_item_name(item_key)

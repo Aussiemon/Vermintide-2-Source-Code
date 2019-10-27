@@ -308,6 +308,17 @@ function flow_callback_weave_item_gizmo_spawned(params)
 	end
 end
 
+function flow_callback_versus_item_gizmo_spawned(params)
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		local entity_manager = Managers.state.entity
+		local versus_item_spawner_system = entity_manager:system("versus_item_spawner_system")
+
+		if versus_item_spawner_system then
+			versus_item_spawner_system:item_gizmo_spawned(params.unit)
+		end
+	end
+end
+
 function flow_callback_boss_gizmo_spawned(params)
 	local conflict_director = Managers.state.conflict
 
@@ -3869,6 +3880,16 @@ function flow_callback_specific_pickup_gizmo_spawned(params)
 
 	if pickup_system then
 		pickup_system:specific_pickup_gizmo_spawned(params.unit)
+	end
+end
+
+function flow_callback_set_unit_faded_status(params)
+	local unit = params.unit
+	local faded = params.faded
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+
+	if status_extension then
+		status_extension:set_invisible(faded)
 	end
 end
 

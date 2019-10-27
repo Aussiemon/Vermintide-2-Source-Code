@@ -126,7 +126,7 @@ T.update_movement = function (data, t, dt)
 
 		if on_ground then
 			local physics_world = World.physics_world(Unit.world(unit))
-			local hits, num_hits = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", POSITION_LOOKUP[unit], "rotation", rotation, "size", size, "collision_filter", "filter_player_mover")
+			local hits, num_hits = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", POSITION_LOOKUP[unit], "rotation", rotation, "size", size, "collision_filter", extension._default_mover_filter)
 			extension.on_ground = num_hits > 0 or (Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0)
 		else
 			extension.on_ground = Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0

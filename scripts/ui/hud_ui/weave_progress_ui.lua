@@ -24,6 +24,8 @@ WeaveProgressUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._render_settings = self._render_settings or {}
 	self._bonus_objective_widgets = {}
+	self._bonus_objective_stack_widgets = {}
+	self._bonus_objective_lookup = {}
 	self._widgets = {}
 
 	for name, widget in pairs(widget_definitions) do
@@ -99,12 +101,16 @@ end
 
 local TEMP_TABLE = {}
 local OBJECTIVES_TO_ADD = {}
+local STACKS_ADDED = {}
 
 WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 	table.clear(TEMP_TABLE)
 	table.clear(OBJECTIVES_TO_ADD)
+	table.clear(STACKS_ADDED)
 
+	local bonus_objective_lookup = self._bonus_objective_lookup
 	local bonus_objective_widgets = self._bonus_objective_widgets
+	local bonus_objective_stack_widgets = self._bonus_objective_stack_widgets
 	local weave_template = Managers.weave:get_active_weave_template()
 
 	if not weave_template then
@@ -124,7 +130,7 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 			local objective_name = objective:objective_name()
 			TEMP_TABLE[objective_name] = true
 
-			if not bonus_objective_widgets[objective_name] then
+			if not bonus_objective_lookup[objective_name] then
 				local objective_settings = objective:get_objective_settings()
 
 				if objective_settings then
@@ -144,12 +150,29 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 			local objective_settings = objective_data.objective:get_objective_settings()
 			local score = objective_data.objective:score()
 			local display_name = objective_settings.display_name
-			local widget_definition = definitions.create_bonus_objective_func(display_name, score, table.size(bonus_objective_widgets))
-			bonus_objective_widgets[objective_name] = UIWidget.init(widget_definition)
+
+			if objective_settings.stack then
+				if not STACKS_ADDED[objective_settings.stack] then
+					local widget_definition = definitions.create_bonus_objective_func(display_name, score, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets), objective_settings.stack, objective_name)
+					local stack = bonus_objective_stack_widgets[objective_settings.stack] or {}
+					stack[#stack + 1] = UIWidget.init(widget_definition)
+					bonus_objective_stack_widgets[objective_settings.stack] = stack
+					bonus_objective_lookup[objective_name] = stack[#stack]
+					STACKS_ADDED[objective_settings.stack] = true
+				else
+					local bonus_objective = bonus_objective_stack_widgets[objective_settings.stack][#bonus_objective_stack_widgets[objective_settings.stack]]
+					bonus_objective.content.stack[#bonus_objective.content.stack + 1] = objective_name
+					bonus_objective_lookup[objective_name] = bonus_objective
+				end
+			else
+				local widget_definition = definitions.create_bonus_objective_func(display_name, score, table.size(bonus_objective_widgets) + table.size(bonus_objective_stack_widgets))
+				bonus_objective_widgets[objective_name] = UIWidget.init(widget_definition)
+				bonus_objective_lookup[objective_name] = bonus_objective_widgets[objective_name]
+			end
 		end
 
-		for objective_name, widget in pairs(self._bonus_objective_widgets) do
-			if not TEMP_TABLE[objective_name] and not widget.content.is_done then
+		for objective_name, widget in pairs(bonus_objective_lookup) do
+			if not TEMP_TABLE[objective_name] and not widget.content:is_done_func(objective_name) and self:_handle_stacks(widget, objective_name) then
 				widget.content.is_done = true
 				local text = widget.content.objective_name_id
 				local objective_style = widget.style.objective_name
@@ -183,6 +206,20 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 			end
 		end
 	end
+end
+
+WeaveProgressUI._handle_stacks = function (self, widget, objective_name)
+	local widget_content = widget.content
+
+	if not widget_content.stack then
+		return true
+	end
+
+	local stack = widget_content.stack
+	local done_stack = widget_content.done_stack
+	done_stack[#done_stack + 1] = objective_name
+
+	return table.size(done_stack) == table.size(stack)
 end
 
 WeaveProgressUI._update_animations = function (self, dt)
@@ -257,6 +294,20 @@ WeaveProgressUI._draw = function (self, dt, t)
 		for _, widget in pairs(bonus_objective_widgets) do
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end
+	end
+
+	local bonus_objective_stack_widgets = self._bonus_objective_stack_widgets
+
+	if table.size(bonus_objective_stack_widgets) > 0 then
+		for stack_name, stack in pairs(bonus_objective_stack_widgets) do
+			for _, widget in pairs(stack) do
+				UIRenderer.draw_widget(ui_renderer, widget)
+			end
+		end
+	end
+
+	if table.size(bonus_objective_widgets) > 0 or table.size(bonus_objective_stack_widgets) > 0 then
+		UIRenderer.draw_widget(ui_renderer, self._bonus_header_widget)
 	end
 
 	UIRenderer.end_pass(ui_renderer)

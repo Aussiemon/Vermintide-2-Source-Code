@@ -3965,17 +3965,17 @@ DamageProfileTemplates.cannonball_impact = {
 	no_stagger_damage_reduction_ranged = true,
 	armor_modifier = {
 		attack = {
-			1,
-			0.5,
 			10,
-			1,
-			1
+			10,
+			200,
+			10,
+			10
 		},
 		impact = {
-			1,
-			0.5,
+			5,
+			5,
 			1.5,
-			1,
+			100,
 			1
 		}
 	},

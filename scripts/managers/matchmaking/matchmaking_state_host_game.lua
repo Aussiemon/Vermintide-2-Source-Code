@@ -90,6 +90,14 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 		end
 	end
 
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if not DEDICATED_SERVER and mechanism_name == "versus" then
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_2d_audio_event("menu_wind_countdown_warning")
+	end
+
 	self._difficulty_manager:set_difficulty(difficulty)
 
 	local is_dedicated_server = self._lobby:is_dedicated_server()
@@ -115,6 +123,8 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 		if not quick_game and game_mode ~= "event" then
 			local level_settings = LevelSettings[level_key]
 			waystone_type = level_settings.waystone_type or waystone_type
+		elseif quick_game and game_mode == "weave" then
+			waystone_type = 3
 		end
 
 		self._matchmaking_manager:activate_waystone_portal(true, waystone_type)

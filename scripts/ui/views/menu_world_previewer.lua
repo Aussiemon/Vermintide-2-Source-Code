@@ -606,18 +606,12 @@ MenuWorldPreviewer.clear_units = function (self, reset_camera)
 	MenuWorldPreviewer.super.clear_units(self)
 	table.clear(self._requested_mip_streaming_units)
 
-	if self.character_unit ~= nil then
-		World.destroy_unit(world, self.character_unit)
+	if reset_camera then
+		local default_animation_data = self._default_animation_data
 
-		self.character_unit = nil
-
-		if reset_camera then
-			local default_animation_data = self._default_animation_data
-
-			self:set_character_axis_offset("x", default_animation_data.x.value, 0.5, math.easeOutCubic)
-			self:set_character_axis_offset("y", default_animation_data.y.value, 0.5, math.easeOutCubic)
-			self:set_character_axis_offset("z", default_animation_data.z.value, 0.5, math.easeOutCubic)
-		end
+		self:set_character_axis_offset("x", default_animation_data.x.value, 0.5, math.easeOutCubic)
+		self:set_character_axis_offset("y", default_animation_data.y.value, 0.5, math.easeOutCubic)
+		self:set_character_axis_offset("z", default_animation_data.z.value, 0.5, math.easeOutCubic)
 	end
 end
 

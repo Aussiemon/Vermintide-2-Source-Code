@@ -896,7 +896,7 @@ ProcFunctions = {
 			if Managers.state.network.is_server then
 				local heal_amount = (current_health - damage) * -1 + 1
 
-				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "raw_heal")
 			end
 
 			if killing_blow and not buff_extension:has_buff_perk("victor_zealot_activated_ability") then
@@ -2104,9 +2104,7 @@ ProcFunctions = {
 			local attack_type = params[2]
 			local right_unit_1p = slot_data.right_unit_1p
 			local left_unit_1p = slot_data.left_unit_1p
-			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
-			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
-			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+			local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
 			local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
 
@@ -2118,12 +2116,14 @@ ProcFunctions = {
 				local has_procced = buff.has_procced
 
 				if not has_procced then
-					local do_reload = ammo_extension:remaining_ammo() == 0
-					local clip_full = ammo_extension:clip_full()
-
 					ammo_extension:add_ammo_to_reserve(ammo_amount)
 
-					if do_reload and not clip_full then
+					local can_reload = ammo_extension:can_reload()
+					local is_reloading = ammo_extension:is_reloading()
+					local ammo_count = ammo_extension:ammo_count()
+					local do_reload = can_reload and ammo_count == 0 and not is_reloading
+
+					if do_reload then
 						local play_animation = true
 
 						ammo_extension:start_reload(play_animation)
@@ -2181,17 +2181,17 @@ ProcFunctions = {
 			local slot_data = inventory_extension:get_slot_data(weapon_slot)
 			local right_unit_1p = slot_data.right_unit_1p
 			local left_unit_1p = slot_data.left_unit_1p
-			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
-			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
-			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+			local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
 
 			if ammo_extension then
-				local do_reload = ammo_extension:remaining_ammo() == 0
-				local clip_full = ammo_extension:clip_full()
-
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
 
-				if do_reload and not clip_full then
+				local can_reload = ammo_extension:can_reload()
+				local is_reloading = ammo_extension:is_reloading()
+				local ammo_count = ammo_extension:ammo_count()
+				local do_reload = can_reload and ammo_count == 0 and not is_reloading
+
+				if do_reload then
 					local play_animation = true
 
 					ammo_extension:start_reload(play_animation)
@@ -2221,17 +2221,17 @@ ProcFunctions = {
 			local slot_data = inventory_extension:get_slot_data(weapon_slot)
 			local right_unit_1p = slot_data.right_unit_1p
 			local left_unit_1p = slot_data.left_unit_1p
-			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
-			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
-			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+			local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
 
 			if ammo_extension then
-				local do_reload = ammo_extension:remaining_ammo() == 0
-				local clip_full = ammo_extension:clip_full()
-
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
 
-				if do_reload and not clip_full then
+				local can_reload = ammo_extension:can_reload()
+				local is_reloading = ammo_extension:is_reloading()
+				local ammo_count = ammo_extension:ammo_count()
+				local do_reload = can_reload and ammo_count == 0 and not is_reloading
+
+				if do_reload then
 					local play_animation = true
 
 					ammo_extension:start_reload(play_animation)
@@ -4333,17 +4333,19 @@ BuffTemplates = {
 	mutator_fire_player_dot = {
 		buffs = {
 			{
-				update_func = "apply_dot_damage",
+				sound_event = "Play_winds_fire_gameplay_fire_damage_player",
 				name = "mutator_fire_player_dot",
 				icon = "buff_icon_mutator_ticking_bomb",
 				time_between_dot_damages = 1,
 				damage_profile = "mutator_player_dot",
 				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage"
+				apply_buff_func = "start_dot_damage",
+				update_func = "apply_dot_damage"
 			}
 		}
 	},
 	mutator_fire_enemy_dot = {
+		activation_sound = "Play_enemy_on_fire_loop",
 		buffs = {
 			{
 				apply_buff_func = "start_dot_damage",
@@ -7314,7 +7316,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_splitting_enemies",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * TwitchSettings.mutator_duration_multiplier
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
 				end
 			}
 		}
@@ -7326,7 +7328,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_leash",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * TwitchSettings.mutator_duration_multiplier
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
 				end
 			}
 		}
@@ -7338,7 +7340,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_slayers_curse",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * TwitchSettings.mutator_duration_multiplier
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
 				end
 			}
 		}
@@ -7350,7 +7352,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_shared_health_pool",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * TwitchSettings.mutator_duration_multiplier
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
 				end
 			}
 		}
@@ -7362,7 +7364,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_bloodlust",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * TwitchSettings.mutator_duration_multiplier
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
 				end
 			}
 		}
@@ -7374,7 +7376,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_ticking_bomb",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * TwitchSettings.mutator_duration_multiplier
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
 				end
 			}
 		}

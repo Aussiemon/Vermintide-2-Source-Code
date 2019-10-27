@@ -2,13 +2,16 @@ require("scripts/network/game_server/game_server_aux")
 
 GameServerInternal = GameServerInternal or {}
 GameServerInternal.lobby_state_map = {
+	[SteamGameServerLobby.RESERVING] = GameServerLobbyState.RESERVING,
+	[SteamGameServerLobby.RESERVED] = GameServerLobbyState.RESERVED,
 	[SteamGameServerLobby.JOINING] = GameServerLobbyState.JOINING,
 	[SteamGameServerLobby.JOINED] = GameServerLobbyState.JOINED,
 	[SteamGameServerLobby.FAILED] = GameServerLobbyState.FAILED
 }
 GameServerInternal.lobby_failed_reason_map = {
 	[SteamGameServerLobby.SERVER_IS_FULL] = GameServerLobbyState.SERVER_IS_FULL,
-	[SteamGameServerLobby.TIMEOUT] = GameServerLobbyState.TIMEOUT
+	[SteamGameServerLobby.TIMEOUT] = GameServerLobbyState.TIMEOUT,
+	[SteamGameServerLobby.INVALID] = GameServerLobbyState.INVALID
 }
 GameServerInternal.search_types_map = {
 	internet = SteamServerBrowser.INTERNET,
@@ -28,6 +31,20 @@ GameServerInternal.join_server = function (game_server_info, password)
 	return game_server_lobby
 end
 
+GameServerInternal.reserve_server = function (game_server_info, password, reserve_peers)
+	local ip_address = game_server_info.ip_port
+	local use_eac = true
+	local game_server_lobby = Network.reserve_steam_server(use_eac, reserve_peers, ip_address, password)
+
+	SteamGameServerLobby.auto_update_data(game_server_lobby)
+
+	return game_server_lobby
+end
+
+GameServerInternal.claim_reserved = function (game_server_lobby)
+	SteamGameServerLobby.join(game_server_lobby)
+end
+
 GameServerInternal.leave_server = function (game_server_lobby)
 	Network.leave_steam_server(game_server_lobby)
 end
@@ -38,10 +55,6 @@ end
 
 GameServerInternal.lobby_id = function (game_server_lobby)
 	return SteamGameServerLobby.game_session_host(game_server_lobby)
-end
-
-GameServerInternal.user_name = function (user)
-	error("The dedicated server can't lookup names")
 end
 
 GameServerInternal.server_browser = function ()

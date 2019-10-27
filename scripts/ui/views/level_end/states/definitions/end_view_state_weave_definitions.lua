@@ -1,10 +1,11 @@
 local window_frame_width = 22
+local platform_offset = (PLATFORM ~= "win32" and 50) or 0
 local score_container_w = 1600
 local score_container_margin_w = 50
 local score_content_w = score_container_w - score_container_margin_w
 local content_size = {
 	1920,
-	230
+	230 + platform_offset
 }
 local score_box_size = {
 	250,
@@ -49,7 +50,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.end_screen
+			UILayer.end_screen + 30
 		}
 	},
 	content_top_fade = {
@@ -185,7 +186,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			150,
-			35,
+			35 + platform_offset,
 			15
 		}
 	},
@@ -199,7 +200,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			-150,
-			20,
+			20 + platform_offset,
 			15
 		}
 	},
@@ -498,7 +499,21 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			190,
+			190 + platform_offset * 0.5,
+			10
+		}
+	},
+	profile_selector = {
+		vertical_alignment = "bottom",
+		parent = "player_frame",
+		horizontal_alignment = "center",
+		size = {
+			78,
+			28
+		},
+		position = {
+			0,
+			-120,
 			10
 		}
 	}
@@ -615,8 +630,8 @@ local player_name_text_style = {
 	}
 }
 
-local function create_ready_button(scenegraph_id, size, text, font_size, button_detail)
-	local def = UIWidgets.create_default_button(scenegraph_id, size, nil, nil, text, 24, font_size, button_detail)
+local function create_ready_button(scenegraph_id, size, text, font_size, button_detail, disable_with_gamepad)
+	local def = UIWidgets.create_default_button(scenegraph_id, size, nil, nil, text, 24, font_size, button_detail, nil, disable_with_gamepad)
 	def.content.hover_glow = "button_state_hover_green"
 	def.content.effect = "play_button_passive_glow"
 	def.content.glow = "button_state_normal_green"
@@ -947,6 +962,77 @@ local function update_timer_bar_progress(widget, progress, t)
 	style.bar_edge.color[1] = min_alpha + (max_alpha - min_alpha) * pulse_progress
 end
 
+function create_simple_gamepad_disabled_texture(scenegraph_id, masked, retained, color, layer, gamepad_disabled)
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture",
+					retained_mode = retained
+				},
+				{
+					style_id = "glow",
+					pass_type = "texture",
+					texture_id = "glow_id",
+					retained_mode = retained,
+					content_change_function = function (content, style)
+						style.color[1] = 40 + 20 * math.sin(Application.time_since_launch() * 5)
+					end
+				}
+			}
+		},
+		content = {
+			glow_id = "winds_icon_background_glow",
+			texture_id = "keep_decorations_divider_02",
+			gamepad_disabled = gamepad_disabled
+		},
+		style = {
+			texture_id = {
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				masked = masked
+			},
+			glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					400,
+					50
+				},
+				color = {
+					40,
+					255,
+					255,
+					0
+				},
+				offset = {
+					0,
+					30,
+					0
+				},
+				masked = masked
+			}
+		},
+		offset = {
+			0,
+			0,
+			layer or 0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local score_glow_color = {
 	90,
 	90,
@@ -959,6 +1045,7 @@ local score_divider_color = {
 	30,
 	30
 }
+local disable_with_gamepad = true
 local widgets = {
 	content_bg = UIWidgets.create_tiled_texture("content_bg", "menu_frame_bg_06", {
 		256,
@@ -1088,8 +1175,9 @@ local widgets = {
 	total_score_text = UIWidgets.create_simple_text("weave_endscreen_total_score", "total_score_container", nil, nil, total_score_box_title_text_style),
 	total_score_value = UIWidgets.create_simple_text("", "total_score_container", nil, nil, total_score_box_value_text_style),
 	ready_button_panel = UIWidgets.create_simple_texture("esc_menu_top", "ready_button_panel"),
-	ready_button = create_ready_button("ready_button", scenegraph_definition.ready_button.size, Localize("continue"), 24, "button_detail_03"),
+	ready_button = create_ready_button("ready_button", scenegraph_definition.ready_button.size, Localize("continue"), 24, "button_detail_03", disable_with_gamepad),
 	ready_timer = create_timer_bar("ready_timer_bar", scenegraph_definition.ready_timer_bar.size),
+	profile_selector = create_simple_gamepad_disabled_texture("profile_selector", nil, nil, nil, nil, gamepad_disabled),
 	highscore_sigil = UIWidgets.create_simple_texture("weave_highscore_sigil", "highscore_sigil"),
 	highscore_ribbon = UIWidgets.create_simple_texture("weave_highscore_ribbon", "highscore_ribbon"),
 	highscore_text = UIWidgets.create_simple_text("weave_endscreen_new_record", "highscore_text", nil, nil, highscore_text_style)
@@ -1343,6 +1431,30 @@ local animation_definitions = {
 		}
 	}
 }
+local generic_input_actions = {
+	default = {
+		{
+			input_action = "d_horizontal",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "confirm",
+			priority = 3,
+			description_text = "continue_menu_button_name"
+		}
+	},
+	show_profile = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 2,
+				description_text = "input_description_show_profile"
+			}
+		}
+	}
+}
 
 return {
 	widgets = widgets,
@@ -1350,5 +1462,6 @@ return {
 	score_widgets = score_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions,
-	update_bar_progress = update_timer_bar_progress
+	update_bar_progress = update_timer_bar_progress,
+	generic_input_actions = generic_input_actions
 }

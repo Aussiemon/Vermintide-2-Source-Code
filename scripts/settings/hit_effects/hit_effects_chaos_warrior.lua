@@ -1617,7 +1617,6 @@ HitEffectsChaosWarrior = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			death = false,
 			damage = true,
@@ -1699,7 +1698,6 @@ HitEffectsChaosWarrior = {
 	},
 	burn_shotgun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_shotgun"
 		},
@@ -1989,7 +1987,6 @@ HitEffectsChaosWarrior = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2012,7 +2009,6 @@ HitEffectsChaosWarrior = {
 	},
 	drakegun_glance = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		}
@@ -2146,7 +2142,6 @@ HitEffectsChaosWarrior = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

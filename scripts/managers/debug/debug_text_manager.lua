@@ -32,7 +32,7 @@ end
 DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 	local camera_rotation = Managers.state.camera:camera_rotation(viewport_name)
 	local world_gui = self._world_gui
-	local material = "gw_arial_16"
+	local material = "arial"
 	local text_size = self._unit_text_size
 	local font = "materials/fonts/" .. material
 
@@ -83,7 +83,7 @@ DebugTextManager._update_world_texts = function (self, viewport_name)
 	local camera_rotation = Managers.state.camera:camera_rotation(viewport_name)
 	local world_gui = self._world_gui
 	local text_size = self._world_text_size
-	local material = "gw_arial_16"
+	local material = "arial"
 	local font = "materials/fonts/" .. material
 
 	for category, gui_texts in pairs(self._world_texts) do
@@ -120,7 +120,7 @@ DebugTextManager.output_unit_text = function (self, text, text_size, unit, node_
 	node_index = node_index or 0
 	text_size = text_size or self._unit_text_size
 	local gui = self._world_gui
-	local material = "gw_arial_16"
+	local material = "arial"
 	local font = "materials/fonts/" .. material
 	local tm = nil
 
@@ -201,7 +201,7 @@ DebugTextManager.output_world_text = function (self, text, text_size, position, 
 
 	text_size = text_size or self._world_text_size
 	local gui = self._world_gui
-	local material = "gw_arial_16"
+	local material = "arial"
 	local font = "materials/fonts/" .. material
 	local tm = nil
 
@@ -265,7 +265,7 @@ DebugTextManager.output_screen_text = function (self, text, text_size, time, col
 	color = color or Vector3(255, 255, 255)
 	local gui = self._gui
 	local resolution = Vector2(RESOLUTION_LOOKUP.res_w, RESOLUTION_LOOKUP.res_h)
-	local material = "gw_arial_16"
+	local material = "arial"
 	local font = "materials/fonts/" .. material
 	local text_extent_min, text_extent_max = Gui.text_extents(gui, text, font, text_size)
 	local text_w = text_extent_max[1] - text_extent_min[1]

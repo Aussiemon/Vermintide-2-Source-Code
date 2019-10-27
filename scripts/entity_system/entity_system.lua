@@ -168,6 +168,16 @@ require("scripts/unit_extensions/weaves/weave_item_extension")
 require("scripts/unit_extensions/weaves/weave_interaction_extension")
 require("scripts/unit_extensions/weaves/weave_kill_enemies_extension")
 
+for _, dlc in pairs(DLCSettings) do
+	local files = dlc.entity_extensions
+
+	if files then
+		for _, file in ipairs(files) do
+			require(file)
+		end
+	end
+end
+
 local projectile_locomotion_extensions = {
 	"ProjectilePhysicsHuskLocomotionExtension",
 	"ProjectilePhysicsUnitLocomotionExtension",
@@ -236,8 +246,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("ai_inventory_system", AIInventorySystem, entity_system_creation_context)
 	self:_add_system("ai_inventory_item_system", AIInventoryItemSystem, entity_system_creation_context)
 	self:_add_system("objective_socket_system", ObjectiveSocketSystem, entity_system_creation_context)
-	self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
 	self:_add_system("weave_item_spawner_system", WeaveItemSpawnerSystem, entity_system_creation_context)
+	self:_add_system("weave_objective_system", WeaveObjectiveSystem, entity_system_creation_context)
 	self:_add_system("limited_item_track_system", LimitedItemTrackSystem, entity_system_creation_context)
 	self:_add_system("aggro_system", AggroSystem, entity_system_creation_context)
 	self:_add_system("ping_system", PingSystem, entity_system_creation_context)
@@ -251,6 +261,24 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
 	self:_add_system("mutator_item_system", MutatorItemSystem, entity_system_creation_context)
 	self:_add_system("weave_loadout_system", WeaveLoadoutSystem, entity_system_creation_context)
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_add_system("ghost_mode_system", GhostModeSystem, entity_system_creation_context)
+		self:_add_system("versus_item_spawner_system", VersusItemSpawnerSystem, entity_system_creation_context)
+	end
+
+	if GameSettingsDevelopment.disable_carousel or not DLCSettings.carousel then
+		self.entity_manager:add_ignore_extensions({
+			"VersusVolumeObjectiveExtension",
+			"VersusInteractObjectiveExtension",
+			"VersusPayloadObjectiveExtension",
+			"VersusSocketObjectiveExtension",
+			"VersusTargetObjectiveExtension"
+		})
+	else
+		self:_add_system("versus_objective_system", VersusObjectiveSystem, entity_system_creation_context)
+	end
+
 	self:_add_system("buff_system", BuffSystem, entity_system_creation_context)
 	self:_add_system("buff_area_system", ExtensionSystemBase, entity_system_creation_context, {
 		"BuffAreaExtension"
@@ -313,7 +341,15 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("career_system", ExtensionSystemBase, entity_system_creation_context, {
 		"CareerExtension"
 	})
-	self:_add_system("keep_decoration_system", KeepDecorationSystem, entity_system_creation_context)
+
+	if Managers.state.game_mode:settings().use_keep_decorations then
+		self:_add_system("keep_decoration_system", KeepDecorationSystem, entity_system_creation_context)
+	else
+		self.entity_manager:add_ignore_extensions({
+			"KeepDecorationPaintingExtension"
+		})
+	end
+
 	self:_add_system("aim_system", AimSystem, entity_system_creation_context, {
 		"GenericUnitAimExtension"
 	})

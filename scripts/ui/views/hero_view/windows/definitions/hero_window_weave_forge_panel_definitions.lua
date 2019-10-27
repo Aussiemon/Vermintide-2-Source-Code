@@ -577,13 +577,6 @@ local top_widgets = {
 	essence_icon = UIWidgets.create_simple_texture("icon_crafting_essence_small", "essence_icon"),
 	essence_panel = UIWidgets.create_simple_texture("athanor_panel_front", "essence_panel"),
 	essence_text = UIWidgets.create_simple_text("", "essence_text", nil, nil, essence_text_style),
-	essence_tooltip = UIWidgets.create_additional_option_tooltip("essence_panel", scenegraph_definition.essence_panel.size, {
-		"weave_progression_slot_titles"
-	}, {
-		title = Localize("menu_weave_forge_tooltip_essence_title"),
-		description = Localize("menu_weave_forge_tooltip_essence_description"),
-		input = Localize("menu_weave_forge_tooltip_essence_description_base_game")
-	}, nil, nil, nil, true),
 	loadout_power_title = UIWidgets.create_simple_text(Localize("menu_weave_forge_power_level_title"), "loadout_power_title", nil, nil, panel_title_text_style),
 	loadout_power_text = UIWidgets.create_simple_text("0", "loadout_power_text", nil, nil, panel_value_text_style),
 	loadout_power_tooltip = UIWidgets.create_additional_option_tooltip("loadout_power_text", scenegraph_definition.loadout_power_text.size, {

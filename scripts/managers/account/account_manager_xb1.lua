@@ -157,6 +157,10 @@ AccountManager.xbox_user_id = function (self)
 	return self._user_info.xbox_user_id
 end
 
+AccountManager.account_id = function (self)
+	return self._user_info.xbox_user_id
+end
+
 AccountManager.backend_user_id = function (self)
 	return self._backend_user_id
 end

@@ -271,21 +271,10 @@ UIUtils.get_text_height = function (ui_renderer, size, text_style, text, ui_styl
 		widget_scale = ui_style_global.scale
 	end
 
-	local font_material, font_size, font_name = nil
-
-	if text_style.font_type then
-		local font, size_of_font = UIFontByResolution(text_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = text_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = text_style.font_size or font_size
-	end
+	local font, scaled_font_size = UIFontByResolution(text_style, widget_scale)
+	local font_type = text_style.font_type
+	local font_path = font[1]
+	local font_name = font[3]
 
 	if text_style.localize then
 		text = Localize(text)
@@ -295,15 +284,15 @@ UIUtils.get_text_height = function (ui_renderer, size, text_style, text, ui_styl
 		text = TextToUpper(text)
 	end
 
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
+	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_type, scaled_font_size)
+	local texts = UIRenderer.word_wrap(ui_renderer, text, font_path, scaled_font_size, size[1])
 	local text_start_index = 1
 	local max_texts = #texts
 	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
-	return full_font_height
+	return full_font_height, num_texts
 end
 
 UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_global)
@@ -351,6 +340,21 @@ UIUtils.is_button_hover_enter = function (widget)
 	local hotspot = content.button_hotspot or content.hotspot
 
 	return hotspot.on_hover_enter
+end
+
+UIUtils.comma_value = function (amount)
+	local formatted = amount
+	local k = nil
+
+	while true do
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1 %2")
+
+		if k == 0 then
+			break
+		end
+	end
+
+	return formatted
 end
 
 return

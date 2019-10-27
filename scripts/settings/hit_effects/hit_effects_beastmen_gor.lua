@@ -1713,7 +1713,6 @@ HitEffectsBeastmenGor = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			death = false,
 			damage = true,
@@ -1797,7 +1796,6 @@ HitEffectsBeastmenGor = {
 	},
 	burn_shotgun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_shotgun"
 		},
@@ -2098,7 +2096,6 @@ HitEffectsBeastmenGor = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2121,7 +2118,6 @@ HitEffectsBeastmenGor = {
 	},
 	drakegun_glance = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		}
@@ -2274,7 +2270,6 @@ HitEffectsBeastmenGor = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

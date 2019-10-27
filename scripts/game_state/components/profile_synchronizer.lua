@@ -122,14 +122,10 @@ end
 ProfileSynchronizer._send_rpc_lobby_clients = function (self, rpc, ...)
 	fassert(self._is_server, "Trying to send rpc to lobby clients without being lobby host.")
 
-	local members = self._lobby_host:members()
+	local my_peer_id = Network.peer_id()
 
-	if not members then
-		return
-	end
-
-	for _, peer_id in ipairs(members:get_members()) do
-		if peer_id ~= Network.peer_id() and self._hot_join_synced_peers[peer_id] then
+	for peer_id, _ in pairs(self._hot_join_synced_peers) do
+		if peer_id ~= my_peer_id then
 			RPC[rpc](peer_id, ...)
 		end
 	end
@@ -173,12 +169,6 @@ ProfileSynchronizer._assign_peer_to_profile = function (self, peer_id, local_pla
 	fassert(self._is_server)
 	fassert(profile_index)
 	printf("Assigning peer(%s:%s) to profile(%s) career(%s)", peer_id, local_player_id, profile_index, career_index)
-
-	local requested_profiles = Managers.matchmaking:get_requested_profiles()
-
-	if requested_profiles[peer_id] and not requested_profiles[peer_id] == profile_index then
-		Crashify.print_exception("Matchmaking", "Client received different profile than the one originally requested")
-	end
 
 	local previous_profile_index, previous_career_index = self:profile_by_peer(peer_id, local_player_id)
 

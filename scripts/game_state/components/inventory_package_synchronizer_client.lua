@@ -42,49 +42,11 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 			local item_units = BackendUtils.get_item_units(item_data, backend_id)
 
 			if slot_category == "weapon" then
-				local left_hand_unit_name = item_units.left_hand_unit
+				local weapon_packages = WeaponUtils.get_weapon_packages(item_template, item_units, is_first_person)
 
-				if left_hand_unit_name then
-					packages_list[left_hand_unit_name] = first_person_value
-					packages_list[left_hand_unit_name .. "_3p"] = false
-				end
-
-				local right_hand_unit_name = item_units.right_hand_unit
-
-				if right_hand_unit_name then
-					packages_list[right_hand_unit_name] = first_person_value
-					packages_list[right_hand_unit_name .. "_3p"] = false
-				end
-
-				local ammo_unit_name = item_units.ammo_unit
-
-				if ammo_unit_name then
-					packages_list[ammo_unit_name] = first_person_value
-					packages_list[item_units.ammo_unit_3p or ammo_unit_name .. "_3p"] = false
-				end
-
-				local actions = item_template.actions
-
-				for _, sub_actions in pairs(actions) do
-					for _, sub_action_data in pairs(sub_actions) do
-						local projectile_info = sub_action_data.projectile_info
-
-						if projectile_info then
-							if projectile_info.projectile_unit_name then
-								packages_list[projectile_info.projectile_unit_name] = false
-							end
-
-							if projectile_info.dummy_linker_unit_name then
-								packages_list[projectile_info.dummy_linker_unit_name] = false
-							end
-
-							if projectile_info.dummy_linker_broken_units then
-								for _, unit in pairs(projectile_info.dummy_linker_broken_units) do
-									packages_list[unit] = false
-								end
-							end
-						end
-					end
+				for j = 1, #weapon_packages, 1 do
+					local package_name = weapon_packages[j]
+					packages_list[package_name] = false
 				end
 			else
 				if slot_category == "attachment" then
@@ -113,21 +75,11 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 	local base_skin_name = career.base_skin
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local skin_name = (skin_item and skin_item.data.name) or base_skin_name
-	local skin_data = Cosmetics[skin_name]
-	local material_changes = skin_data.material_changes
+	local skin_packages = CosmeticsUtils.retrieve_skin_packages(skin_name, is_first_person)
 
-	if is_first_person then
-		packages_list[skin_data.first_person] = false
-		packages_list[skin_data.first_person_bot] = false
-		packages_list[skin_data.third_person] = false
-		packages_list[skin_data.third_person_bot] = false
-		packages_list[skin_data.first_person_attachment.unit] = false
-	else
-		packages_list[skin_data.third_person_husk] = false
-	end
-
-	if material_changes then
-		packages_list[material_changes.package_name] = false
+	for i = 1, #skin_packages, 1 do
+		local package_name = skin_packages[i]
+		packages_list[package_name] = false
 	end
 
 	packages_list[career.package_name] = false

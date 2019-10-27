@@ -5,6 +5,7 @@ dofile("scripts/settings/equipment/item_master_list_exported")
 dofile("scripts/settings/equipment/attachments")
 dofile("scripts/settings/equipment/cosmetics")
 dofile("scripts/settings/equipment/player_wwise_dependencies")
+dofile("scripts/settings/equipment/item_master_list_weapon_skins")
 
 for _, dlc in pairs(DLCSettings) do
 	if dlc.item_list_file_names then

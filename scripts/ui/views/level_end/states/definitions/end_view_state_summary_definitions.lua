@@ -268,7 +268,7 @@ local scenegraph_definition = {
 		parent = "summary_entry_essence_background",
 		horizontal_alignment = "right",
 		size = {
-			100,
+			300,
 			97
 		},
 		position = {
@@ -491,12 +491,34 @@ local essence_text_style = {
 local essence_amount_style = {
 	font_size = 32,
 	upper_case = true,
-	word_wrap = true,
 	use_shadow = true,
+	word_wrap = true,
 	horizontal_alignment = "right",
 	vertical_alignment = "center",
+	dynamic_font_size = true,
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local essence_max_amount_style = {
+	font_size = 32,
+	upper_case = true,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "right",
+	vertical_alignment = "center",
+	dynamic_font_size = true,
+	font_type = "hell_shark",
+	text_color = {
+		255,
+		160,
+		160,
+		160
+	},
 	offset = {
 		0,
 		0,
@@ -558,6 +580,7 @@ local widgets = {
 	essence_background_frame = UIWidgets.create_frame("summary_entry_essence_background", scenegraph_definition.summary_entry_essence_background.size, "button_frame_01", 3),
 	total_essence_title = UIWidgets.create_simple_text(Localize("summary_total_essence_title"), "summary_entry_total_essence_title", nil, nil, essence_text_style),
 	essence_total_text = UIWidgets.create_simple_text("", "summary_entry_total_essence_gained", nil, nil, essence_amount_style),
+	essence_total_text_max = UIWidgets.create_simple_text(Localize("weave_endscreen_max_essence"), "summary_entry_total_essence_gained", nil, nil, essence_max_amount_style),
 	icon_essence = UIWidgets.create_simple_texture("icon_crafting_essence_small", "summary_entry_essence_icon")
 }
 local num_experience_entries = 10

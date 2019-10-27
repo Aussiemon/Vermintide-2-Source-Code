@@ -231,7 +231,7 @@ UIRenderer.create_ui_renderer = function (world, gui, gui_retained)
 		ui_scenegraph = StrictNil,
 		ui_scenegraph_queue = pdArray.new(),
 		input_service = StrictNil,
-		video_player = StrictNil,
+		video_players = {},
 		world = world,
 		wwise_world = Managers.world:wwise_world(world),
 		clipping_rects = pdArray.new(),
@@ -245,40 +245,49 @@ UIRenderer.create_ui_renderer = function (world, gui, gui_retained)
 	}))
 end
 
-UIRenderer.create_video_player = function (self, world, resource, set_loop)
+UIRenderer.create_video_player = function (self, reference_name, world, resource, set_loop)
 	if script_data.disable_video_player then
 		return
 	end
 
-	assert(not self.video_player)
+	local video_players = self.video_players
 
-	self.video_player = world:create_video_player(resource, set_loop)
+	assert(not video_players[reference_name])
+
+	local video_world = world or self.world
+	local video_player = video_world:create_video_player(resource, set_loop)
+	video_players[reference_name] = video_player
 
 	if set_loop == false then
-		VideoPlayer.set_loop(self.video_player, false)
+		VideoPlayer.set_loop(video_player, false)
 	end
 end
 
-UIRenderer.destroy_video_player = function (self, world)
+UIRenderer.destroy_video_player = function (self, reference_name, world)
 	if script_data.disable_video_player then
 		return
 	end
 
-	assert(self.video_player)
-	World.destroy_video_player(world or self.world, self.video_player)
+	local video_players = self.video_players
+	local video_player = video_players[reference_name]
 
-	self.video_player = nil
+	assert(video_player)
+	World.destroy_video_player(world or self.world, video_player)
+
+	video_players[reference_name] = nil
 end
 
 UIRenderer.destroy = function (self, world)
-	if self.video_player then
-		World.destroy_video_player(self.world, self.video_player)
+	local video_players = self.video_players
 
-		self.video_player = nil
+	for reference_name, video_player in pairs(video_players) do
+		World.destroy_video_player(world or self.world, video_player)
+
+		video_players[reference_name] = nil
 	end
 
-	World.destroy_gui(world, self.gui)
-	World.destroy_gui(world, self.gui_retained)
+	World.destroy_gui(world or self.world, self.gui)
+	World.destroy_gui(world or self.world, self.gui_retained)
 end
 
 UIRenderer.clear_scenegraph_queue = function (self)
@@ -341,7 +350,7 @@ UIRenderer.begin_pass = function (self, ui_scenegraph, input_service, dt, parent
 
 					local text = string.format("%d pixels.", cursor.x - debug_startpoint[1])
 
-					Gui.text(self.gui, text, "materials/fonts/gw_arial_16", 14, "gw_arial_16", Vector3Aux.unbox(debug_startpoint), Color(255, 255, 255, 255))
+					Gui.text(self.gui, text, "materials/fonts/arial", 14, "arial", Vector3Aux.unbox(debug_startpoint), Color(255, 255, 255, 255))
 				else
 					local current_endpos = Vector3(debug_startpoint[1], cursor.y, 999)
 
@@ -349,7 +358,7 @@ UIRenderer.begin_pass = function (self, ui_scenegraph, input_service, dt, parent
 
 					local text = string.format("%d pixels.", cursor.y - debug_startpoint[2])
 
-					Gui.text(self.gui, text, "materials/fonts/gw_arial_16", 14, "gw_arial_16", Vector3Aux.unbox(debug_startpoint), Color(255, 255, 255, 255))
+					Gui.text(self.gui, text, "materials/fonts/arial", 14, "arial", Vector3Aux.unbox(debug_startpoint), Color(255, 255, 255, 255))
 				end
 			end
 		elseif self.debug_startpoint and not input_service:is_blocked() then
@@ -685,7 +694,7 @@ UIRenderer.draw_rect_rotated = function (self, size, position, angle, pivot, col
 	Gui.rect_3d(self.gui, tm, Vector3.zero(), position[3], size, color)
 end
 
-local font_name = "gw_arial_16"
+local font_name = "arial"
 local font_mtrl = "materials/fonts/" .. font_name
 
 local function debug_draw_texture(self, pos, size, texture)
@@ -1176,20 +1185,27 @@ UIRenderer.draw_text = function (self, text, font_material, font_size, font_name
 		font_name = font_name .. "_offscreen"
 	end
 
+	local flags = 0
+	local font = Fonts[font_name]
+
+	if font then
+		flags = font[4] or 0
+	end
+
 	if use_var_args then
 		if retained_id == true then
-			return_value = Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, unpack(draw_text_var_args))
+			return_value = Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, flags, unpack(draw_text_var_args))
 		elseif retained_id then
-			Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color, unpack(draw_text_var_args))
+			Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color, flags, unpack(draw_text_var_args))
 		else
-			Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color, unpack(draw_text_var_args))
+			Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color, flags, unpack(draw_text_var_args))
 		end
 	elseif retained_id == true then
-		return_value = Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color)
+		return_value = Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, flags)
 	elseif retained_id then
-		Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color)
+		Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color, flags)
 	else
-		Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color)
+		Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color, flags)
 	end
 
 	if use_var_args then
@@ -1213,19 +1229,25 @@ UIRenderer.draw_justified_text = function (self, text, font_material, font_size,
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
+	local flags = 0
+	local font = Fonts[font_name]
+
+	if font then
+		flags = font[4] or 0
+	end
 
 	if retained_id == true then
-		return Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, "justify", UIScaleScalarToResolution(justify_width), ...)
+		return Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, flags, "justify", UIScaleScalarToResolution(justify_width), ...)
 	elseif retained_id then
-		Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color, "justify", UIScaleScalarToResolution(justify_width), ...)
+		Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color, flags, "justify", UIScaleScalarToResolution(justify_width), ...)
 	else
-		Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color, "justify", UIScaleScalarToResolution(justify_width), ...)
+		Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color, flags, "justify", UIScaleScalarToResolution(justify_width), ...)
 	end
 end
 
 UIRenderer.word_wrap = function (self, text, font_material, size, width, option)
 	local whitespace = " \u3002\uff0c"
-	local soft_dividers = "-+&/*"
+	local soft_dividers = " -+&/*"
 	local return_dividers = "\n"
 	local reuse_global_table = true
 	local scale = RESOLUTION_LOOKUP.scale
@@ -1258,13 +1280,13 @@ UIRenderer.text_alignment_size = function (self, text, font_material, font_size,
 	return width, height, min
 end
 
-UIRenderer.draw_video = function (self, material_name, position, size, color, optional_video_player)
+UIRenderer.draw_video = function (self, material_name, position, size, color, video_player_reference, optional_video_player)
 	if script_data.disable_video_player then
 		return true
 	end
 
 	local gui = self.gui
-	local video_player = optional_video_player or self.video_player
+	local video_player = optional_video_player or self.video_players[video_player_reference]
 	local pixel_snap = true
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
@@ -1277,12 +1299,12 @@ UIRenderer.draw_video = function (self, material_name, position, size, color, op
 	return is_complete
 end
 
-UIRenderer.draw_splash_video = function (self, material_name, position, size, color, optional_video_player)
+UIRenderer.draw_splash_video = function (self, material_name, position, size, color, video_player_reference, optional_video_player)
 	if script_data.disable_video_player then
 		return true
 	end
 
-	local video_player = optional_video_player or self.video_player
+	local video_player = optional_video_player or self.video_players[video_player_reference]
 
 	if VideoPlayer.current_frame(video_player) == VideoPlayer.number_of_frames(video_player) then
 		return true
@@ -1415,7 +1437,7 @@ UIRenderer.is_clipped = function (self, position, size)
 	return position.y <= y1 and y0 <= position.y + size.y and position.x <= x1 and x0 <= position.x + size.x
 end
 
-UIRenderer.clip_is_enclosing = function (position, size)
+UIRenderer.clip_is_enclosing = function (self, position, size)
 	local x0, y0, x1, y1 = unpack(self.current_clipping_rect)
 
 	return y0 <= position.y and y1 >= position.y + size.y and x0 <= position.x and x1 >= position.x + size.x
@@ -1501,7 +1523,8 @@ UIRenderer.scaled_font_size_by_area = function (self, text, area_size, style)
 		local font_material = font[1]
 		local _ = font[2]
 		local font_name = font[3]
-		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, scaled_font_size)
+		local font_type = style.font_type
+		local _, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_type, scaled_font_size)
 		local whitespace = " \u3002\uff0c"
 		local soft_dividers = "-+&/*"
 		local return_dividers = "\n"

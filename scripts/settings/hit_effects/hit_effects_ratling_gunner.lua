@@ -1655,7 +1655,6 @@ HitEffectsRatlingGunner = {
 		}
 	},
 	burn = {
-		flow_event = "burn",
 		extra_conditions = {
 			death = false,
 			damage = true,
@@ -1737,7 +1736,6 @@ HitEffectsRatlingGunner = {
 	},
 	burn_shotgun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_shotgun"
 		},
@@ -2023,7 +2021,6 @@ HitEffectsRatlingGunner = {
 	},
 	drakegun = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2046,7 +2043,6 @@ HitEffectsRatlingGunner = {
 	},
 	drakegun_glance = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		}
@@ -2172,7 +2168,6 @@ HitEffectsRatlingGunner = {
 	},
 	default_burning = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

@@ -30,11 +30,13 @@ require("scripts/ui/weave_tutorial/weave_ui_onboarding_tutorial")
 require("scripts/ui/dlc_upsell/upsell_popup_handler")
 
 for _, dlc in pairs(DLCSettings) do
-	local views = dlc.views
+	local ui_views = dlc.ui_views
 
-	if views then
-		for _, view in ipairs(views) do
-			dofile(view)
+	if ui_views then
+		for _, view in ipairs(ui_views) do
+			if view.file then
+				dofile(view.file)
+			end
 		end
 	end
 end
@@ -84,8 +86,13 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
+	self._player = ingame_ui_context.player
 	self.is_server = ingame_ui_context.is_server
 	self.ingame_hud = IngameHud:new(self, ingame_ui_context)
+
+	Managers.state.game_mode:game_mode():add_hud_components(self.ingame_hud)
+	self._player:set_hud(self.ingame_hud)
+
 	self.last_resolution_x, self.last_resolution_y = Application.resolution()
 
 	InitVideo()
@@ -125,6 +132,7 @@ IngameUI.init = function (self, ingame_ui_context)
 
 	if event_manager then
 		event_manager:register(self, "ui_event_transition_with_fade", "transition_with_fade")
+		event_manager:register(self, "ui_event_transition", "handle_transition")
 	end
 end
 
@@ -194,6 +202,8 @@ IngameUI.unregister_rpcs = function (self)
 end
 
 IngameUI.destroy = function (self)
+	self._player:set_hud(nil)
+
 	local event_manager = Managers.state.event
 
 	if event_manager then
@@ -524,7 +534,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 						menu_sub_state_name = menu_sub_state_name
 					}
 
-					self:transition_with_fade("hero_view_force", menu_state_name, menu_sub_state_name)
+					self:transition_with_fade("hero_view_force", transition_params)
 				else
 					local menu_sub_state_name = "system"
 					local transition_params = {
@@ -732,7 +742,7 @@ IngameUI.show_info = function (self)
 end
 
 IngameUI._show_text = function (self, text, pos)
-	Gui.text(self.ui_renderer.gui, text, "materials/fonts/gw_head_32", 20, "gw_head_20", pos, Color(0, 255, 0))
+	Gui.text(self.ui_renderer.gui, "text", "materials/fonts/gw_head", 20, "gw_head", pos, Color(0, 255, 0))
 
 	return Vector3(pos[1], pos[2] - 30, pos[3])
 end
@@ -838,6 +848,7 @@ IngameUI.handle_transition = function (self, new_transition, params)
 		return
 	end
 
+	params = params or {}
 	local old_view = self.current_view
 
 	transitions[new_transition](self, params)
@@ -864,7 +875,7 @@ IngameUI.handle_transition = function (self, new_transition, params)
 	end
 end
 
-IngameUI.transition_with_fade = function (self, new_transition, params)
+IngameUI.transition_with_fade = function (self, new_transition, params, fade_in_speed, fade_out_speed)
 	local blocked_transitions = self.blocked_transitions
 
 	if blocked_transitions and blocked_transitions[new_transition] then
@@ -879,10 +890,11 @@ IngameUI.transition_with_fade = function (self, new_transition, params)
 
 	self._transition_fade_data = {
 		new_transition = new_transition,
-		transition_params = params
+		transition_params = params,
+		fade_out_speed = fade_out_speed
 	}
 
-	Managers.transition:fade_in(10)
+	Managers.transition:fade_in(fade_in_speed or 10)
 end
 
 IngameUI._update_fade_transition = function (self)
@@ -900,9 +912,10 @@ IngameUI._update_fade_transition = function (self)
 
 		self:handle_transition(new_transition, transition_params)
 
+		local fade_out_speed = self._transition_fade_data.fade_out_speed
 		self._transition_fade_data = nil
 
-		Managers.transition:fade_out(10)
+		Managers.transition:fade_out(fade_out_speed or 10)
 	end
 end
 
@@ -997,7 +1010,7 @@ IngameUI.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
 
-local debug_font = "gw_arial_16"
+local debug_font = "arial"
 local debug_font_mtrl = "materials/fonts/" .. debug_font
 local position = {}
 local white_color = Colors.color_definitions.white
@@ -1167,8 +1180,9 @@ IngameUI.respawn = function (self)
 	local local_player_id = self.local_player_id
 	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
+	local force_respawn = true
 
-	self._profile_requester:request_profile(peer_id, local_player_id, profile_name, career_name)
+	self._profile_requester:request_profile(peer_id, local_player_id, profile_name, career_name, force_respawn)
 
 	self._respawning = true
 end

@@ -847,7 +847,7 @@ weapon_template.actions = {
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
-weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
+weapon_template.display_unit = "units/weapons/weapon_display/display_1h_hammer"
 weapon_template.wield_anim = "to_1h_hammer"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "MACE_1H"

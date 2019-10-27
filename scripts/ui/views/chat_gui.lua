@@ -2,7 +2,7 @@ require("scripts/utils/keystroke_helper")
 
 local definitions = local_require("scripts/ui/views/chat_gui_definitions")
 ChatGui = class(ChatGui)
-ChatGui.MAX_CHARS = 512
+ChatGui.MAX_CHARS = 500
 
 ChatGui.init = function (self, ui_context)
 	self.input_manager = ui_context.input_manager
@@ -264,7 +264,6 @@ ChatGui._update_chat_messages = function (self)
 			end
 		end
 
-		local font_material, font_size, font_name = unpack(Fonts.arial)
 		num_current = #message_tables
 
 		for i = 1, num_new, 1 do

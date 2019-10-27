@@ -17,8 +17,8 @@ FindServerState.enter = function (self)
 
 	local game_server_requirements = {
 		server_browser_filters = {
-			gamedir = "vermintide2",
-			dedicated = "valuenotused"
+			dedicated = "valuenotused",
+			gamedir = Managers.mechanism:server_universe()
 		},
 		matchmaking_filters = {}
 	}

@@ -804,7 +804,7 @@ ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, d
 				break
 			end
 
-			if sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" or sub_event_name == "spawn_special" then
+			if sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" or sub_event_name == "spawn_special" or sub_event_name == "spawn_weave_special" or sub_event_name == "spawn_weave_special_event" then
 				add_breed_or_breeds(sub_event.breed_name, output)
 			elseif sub_event_name == "spawn_patrol" then
 				local formations = sub_event.formations
@@ -822,7 +822,7 @@ ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, d
 				if contained_event_name ~= event_name then
 					ConflictUtils.add_breeds_from_event(event_name, contained_event, difficulty, difficulty_rank, output, terror_event_lookup)
 				end
-			elseif sub_event_name == "event_horde" then
+			elseif sub_event_name == "event_horde" or sub_event_name == "ambush_horde" then
 				local event_composition_type = sub_event.composition_type
 				local difficulty_index = DifficultySettings[difficulty].rank - 1
 				local event_composition = HordeCompositions[event_composition_type][difficulty_index]

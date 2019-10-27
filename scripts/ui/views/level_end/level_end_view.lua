@@ -29,7 +29,7 @@ local fake_input_service = {
 		return
 	end
 }
-LevelEndView = class(LevelEndView, LevelEndView_Base)
+LevelEndView = class(LevelEndView, LevelEndViewBase)
 
 LevelEndView.init = function (self, context)
 	LevelEndView.super.init(self, context)

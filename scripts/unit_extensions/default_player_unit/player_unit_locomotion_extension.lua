@@ -11,6 +11,12 @@ end
 PlayerUnitLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.is_server = Managers.player.is_server
+	self.player = extension_init_data.player
+	local profile_index = self.player:profile_index()
+	local profile = SPProfiles[profile_index]
+	local mover_profile = profile.mover_profile
+	self._default_mover_filter = mover_profile or "filter_player_mover"
+	self._pactsworn_no_clip = self._default_mover_filter == "filter_player_mover_pactsworn"
 	self.velocity_network = Vector3Box()
 	self.velocity_current = Vector3Box()
 	self.animation_translation_scale = Vector3Box(1, 1, 1)
@@ -81,7 +87,7 @@ PlayerUnitLocomotionExtension.set_mover_filter_property = function (self, proper
 	elseif modes.enemy_noclip then
 		filter = "filter_player_enemy_noclip_mover"
 	else
-		filter = "filter_player_mover"
+		filter = self._default_mover_filter
 	end
 
 	local mover = Unit.mover(self.unit)
@@ -379,8 +385,10 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		local max_dot = 1
 		local query_radius = 1
 		local query_position = current_position + velocity_flat_normalized * 0.5
+		local no_clip = self._mover_modes.enemy_noclip == true
+		local collide_with_enemies = not self._pactsworn_no_clip and not no_clip
 
-		if self._mover_modes.enemy_noclip == false then
+		if collide_with_enemies then
 			local num_ai_units = AiUtils.broadphase_query(query_position, query_radius, ai_units)
 
 			for i = 1, num_ai_units, 1 do
@@ -490,15 +498,19 @@ PlayerUnitLocomotionExtension.set_animation_translation_scale = function (self, 
 	self.animation_translation_scale:store(animation_translation_scale)
 end
 
+PlayerUnitLocomotionExtension.get_animation_translation_scale = function (self)
+	return self.animation_translation_scale:unbox()
+end
+
 PlayerUnitLocomotionExtension.update_animation_driven_movement_no_mover = function (self, unit, dt, t)
 	local wanted_pose = Unit.animation_wanted_root_pose(unit)
 	local wanted_position = Matrix4x4.translation(wanted_pose)
-
-	Unit.set_local_position(unit, 0, wanted_position)
-
 	local current_position = POSITION_LOOKUP[unit]
-	local velocity_new = (wanted_position - current_position) / dt
+	local delta_anim = wanted_position - current_position
+	delta_anim = Vector3.multiply_elements(delta_anim, self.animation_translation_scale:unbox())
+	local velocity_new = delta_anim / dt
 
+	Unit.set_local_position(unit, 0, current_position + delta_anim)
 	self.velocity_network:store(velocity_new)
 	self.velocity_current:store(velocity_new)
 end

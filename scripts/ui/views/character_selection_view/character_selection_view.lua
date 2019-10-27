@@ -87,6 +87,16 @@ CharacterSelectionView._setup_state_machine = function (self, state_machine_para
 	state_machine_params.allow_back_button = not self:initial_profile_view()
 	state_machine_params.start_state = optional_start_sub_state
 	state_machine_params.state_params = optional_params
+
+	if self._pick_time then
+		state_machine_params.pick_time = self._pick_time
+	end
+
+	if self._profile_id then
+		state_machine_params.profile_id = self._profile_id
+		state_machine_params.career_id = self._career_id
+	end
+
 	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
 	self._state_machine_params = state_machine_params
 	state_machine_params.state_params = nil
@@ -268,10 +278,25 @@ CharacterSelectionView.on_enter = function (self, params)
 
 	self:create_ui_elements()
 
-	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+	local pick_time = params.pick_time
 
-	if profile_index then
-		self:set_current_hero(profile_index)
+	if pick_time then
+		self._pick_time = pick_time
+	end
+
+	local profile_id = params.profile_id
+
+	if profile_id and profile_id > 0 then
+		self._profile_id = profile_id
+		self._career_id = params.career_id
+
+		self:set_current_hero(profile_id)
+	else
+		local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+
+		if profile_index then
+			self:set_current_hero(profile_index)
+		end
 	end
 
 	self.waiting_for_post_update_enter = true
@@ -315,7 +340,9 @@ CharacterSelectionView.set_current_hero = function (self, profile_index)
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local prestige = hero_attributes:get(display_name, "prestige")
 
-	self:set_prestige_level(prestige)
+	if prestige then
+		self:set_prestige_level(prestige)
+	end
 end
 
 CharacterSelectionView._get_sorted_players = function (self)
@@ -495,13 +522,24 @@ CharacterSelectionView.post_update_on_exit = function (self)
 	end
 end
 
-CharacterSelectionView.on_exit = function (self)
+CharacterSelectionView.last_hero_picked = function (self, profile_index, career_index)
+	self._last_picked_profile_index = profile_index
+	self._last_picked_career_index = career_index
+end
+
+CharacterSelectionView.on_exit = function (self, params)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
 	ShowCursorStack.pop()
 
 	self.exiting = nil
+
+	fassert(params.last_picked_profile_index == nil and params.last_picked_career_index == nil, "should not be set")
+
+	params.last_picked_profile_index = self._last_picked_profile_index
+	params.last_picked_career_index = self._last_picked_career_index
+	params.came_from_character_selection_view = true
 
 	if self._machine then
 		self._machine:destroy()

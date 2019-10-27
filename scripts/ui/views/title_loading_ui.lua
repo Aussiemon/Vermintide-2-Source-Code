@@ -895,6 +895,7 @@ local generic_input_actions = {
 		}
 	}
 }
+local VIDEO_REFERENCE_NAME = "TitleLoadingUI"
 TitleLoadingUI = class(TitleLoadingUI)
 
 TitleLoadingUI.init = function (self, world, params, force_done)
@@ -936,7 +937,7 @@ end
 
 TitleLoadingUI._create_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	self._video_widget = UIWidget.init(UIWidgets.create_splash_video(first_time_video))
+	self._video_widget = UIWidget.init(UIWidgets.create_splash_video(first_time_video, VIDEO_REFERENCE_NAME))
 	self._skip_widget = UIWidget.init(skip_widget)
 	self._dead_space_filler_widget = UIWidget.init(dead_space_filler_widget)
 	self._done_button = UIWidget.init(done_button)
@@ -1693,13 +1694,13 @@ TitleLoadingUI._render_video = function (self, dt)
 		return
 	end
 
-	if not self._ui_renderer.video_player then
-		UIRenderer.create_video_player(self._ui_renderer, self._world, first_time_video.video_name, false)
+	if not self._ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+		UIRenderer.create_video_player(self._ui_renderer, VIDEO_REFERENCE_NAME, self._world, first_time_video.video_name, false)
 	else
 		local video_complete = self._video_widget.content.video_content.video_completed
 
 		if video_complete then
-			UIRenderer.destroy_video_player(self._ui_renderer)
+			UIRenderer.destroy_video_player(self._ui_renderer, VIDEO_REFERENCE_NAME)
 
 			self._sound_started = false
 

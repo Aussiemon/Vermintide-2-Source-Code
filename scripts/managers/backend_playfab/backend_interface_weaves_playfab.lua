@@ -64,6 +64,8 @@ BackendInterfaceWeavesPlayFab.init = function (self, backend_mirror)
 	self._player_entry = {}
 	self._requesting_leaderboard = 0
 	self._leaderboard_entries = {}
+	self._leaderboard_player_rank_error = false
+	self._leaderboard_request_error = false
 end
 
 BackendInterfaceWeavesPlayFab._validate_backend_progression_settings = function (self, progression_settings)
@@ -113,7 +115,7 @@ BackendInterfaceWeavesPlayFab._parse_loadouts = function (self, read_only_data)
 	local loadouts = {}
 
 	for career_name, settings in pairs(CareerSettings) do
-		if settings.playfab_name then
+		if settings.playfab_name and not settings.excluded_from_weave_loadouts then
 			local loadout_json = read_only_data["weaves_loadout_" .. career_name]
 			local loadout = loadout_json and cjson.decode(loadout_json)
 			loadouts[career_name] = loadout
@@ -209,12 +211,16 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 	local position = data.Position + 1
 	local profile = data.Profile
 	local linked_accounts = profile.LinkedAccounts
-	local name = nil
+	local name, position_text = nil
 
 	for i = 1, #linked_accounts, 1 do
 		local account_data = linked_accounts[i]
 
 		if account_data.Platform == "Steam" then
+			name = account_data.Username
+		elseif account_data.Platform == "XBoxLive" then
+			name = account_data.Usernameelse
+		elseif account_data.Platform == "PSN" then
 			name = account_data.Username
 		end
 	end
@@ -223,13 +229,14 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 	local local_player = profile.PlayerId == self._backend_mirror:get_playfab_id()
 
 	if score == previous_score and tier == previous_tier then
-		position = ""
+		position_text = ""
 	end
 
 	local entry = {
 		name = name,
 		career_name = career_name,
-		ranking = position,
+		ranking = position_text or position,
+		real_ranking = position,
 		weave = tier,
 		score = score,
 		local_player = local_player
@@ -325,8 +332,12 @@ BackendInterfaceWeavesPlayFab.submit_scores = function (self, tier, score, num_p
 	local scores_by_platform_id = {}
 
 	for _, player in pairs(players) do
-		local id = player:platform_id()
-		local platform_id = Application.hex64_to_dec(id)
+		local platform_id = player:platform_id()
+
+		if PLATFORM ~= "xb1" then
+			platform_id = Application.hex64_to_dec(platform_id)
+		end
+
 		local career_name = player:career_name()
 		local weave_score = BackendUtils.calculate_weave_score(tier, score, career_name)
 		scores_by_platform_id[platform_id] = weave_score
@@ -349,7 +360,7 @@ BackendInterfaceWeavesPlayFab.submit_weave_score_request_cb = function (self)
 	return
 end
 
-BackendInterfaceWeavesPlayFab.request_player_rank = function (self, stat_name, leaderboard_type)
+BackendInterfaceWeavesPlayFab.request_player_rank = function (self, stat_name, leaderboard_type, external_error_cb)
 	local player_rank_request = {
 		MaxResultsCount = 1,
 		StatisticName = stat_name,
@@ -358,10 +369,11 @@ BackendInterfaceWeavesPlayFab.request_player_rank = function (self, stat_name, l
 		}
 	}
 	local success_callback = callback(self, "player_rank_request_cb")
+	local fail_callback = callback(self, "player_rank_request_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
 	local request_function = (leaderboard_type == "friends" and "GetFriendLeaderboardAroundPlayer") or "GetLeaderboardAroundPlayer"
 
-	request_queue:enqueue_api_request(request_function, player_rank_request, success_callback)
+	request_queue:enqueue_api_request(request_function, player_rank_request, success_callback, fail_callback)
 
 	self._requesting_leaderboard = self._requesting_leaderboard + 1
 end
@@ -377,9 +389,10 @@ BackendInterfaceWeavesPlayFab.player_rank_request_cb = function (self, result)
 	local leaderboard_entry = self:_create_leaderboard_entry(data)
 	self._requesting_leaderboard = self._requesting_leaderboard - 1
 	self._player_entry = leaderboard_entry
+	self._leaderboard_player_rank_error = false
 end
 
-BackendInterfaceWeavesPlayFab.request_leaderboard_around_player = function (self, stat_name, leaderboard_type, max_result_count)
+BackendInterfaceWeavesPlayFab.request_leaderboard_around_player = function (self, stat_name, leaderboard_type, max_result_count, external_error_cb)
 	local request_leaderboard_around_player = {
 		MaxResultsCount = max_result_count or 1,
 		StatisticName = stat_name,
@@ -388,12 +401,14 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player = function (self
 		}
 	}
 	local success_callback = callback(self, "request_leaderboard_around_player_cb")
+	local fail_callback = callback(self, "request_leaderboard_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
 	local request_function = (leaderboard_type == "friends" and "GetFriendLeaderboardAroundPlayer") or "GetLeaderboardAroundPlayer"
 
-	request_queue:enqueue_api_request(request_function, request_leaderboard_around_player, success_callback)
+	request_queue:enqueue_api_request(request_function, request_leaderboard_around_player, success_callback, fail_callback)
 
 	self._requesting_leaderboard = self._requesting_leaderboard + 1
+	self._leaderboard_request_error = false
 end
 
 BackendInterfaceWeavesPlayFab.request_leaderboard_around_player_cb = function (self, result)
@@ -420,7 +435,7 @@ BackendInterfaceWeavesPlayFab.get_player_entry = function (self)
 	return self._player_entry
 end
 
-BackendInterfaceWeavesPlayFab.request_leaderboard = function (self, stat_name, start_position, leaderboard_type)
+BackendInterfaceWeavesPlayFab.request_leaderboard = function (self, stat_name, start_position, leaderboard_type, external_error_cb)
 	local leaderboard_request = {
 		MaxResultsCount = 100,
 		StatisticName = stat_name,
@@ -430,10 +445,11 @@ BackendInterfaceWeavesPlayFab.request_leaderboard = function (self, stat_name, s
 		StartPosition = start_position
 	}
 	local success_callback = callback(self, "leaderboard_request_cb")
+	local fail_callback = callback(self, "request_leaderboard_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
 	local request_function = (leaderboard_type == "friends" and "GetFriendLeaderboard") or "GetLeaderboard"
 
-	request_queue:enqueue_api_request(request_function, leaderboard_request, success_callback)
+	request_queue:enqueue_api_request(request_function, leaderboard_request, success_callback, fail_callback)
 
 	self._requesting_leaderboard = self._requesting_leaderboard + 1
 end
@@ -452,6 +468,7 @@ BackendInterfaceWeavesPlayFab.leaderboard_request_cb = function (self, result)
 	end
 
 	self._requesting_leaderboard = self._requesting_leaderboard - 1
+	self._leaderboard_request_error = false
 end
 
 BackendInterfaceWeavesPlayFab.is_requesting_leaderboard = function (self)
@@ -460,6 +477,35 @@ end
 
 BackendInterfaceWeavesPlayFab.get_leaderboard_entries = function (self)
 	return self._leaderboard_entries
+end
+
+BackendInterfaceWeavesPlayFab.has_leaderboard_request_failed = function (self)
+	return self._leaderboard_player_rank_error or self._leaderboard_request_error
+end
+
+BackendInterfaceWeavesPlayFab.player_rank_request_failed_cb = function (self, external_error_cb, result, reenable_queue_function)
+	self._requesting_leaderboard = self._requesting_leaderboard - 1
+	self._leaderboard_player_rank_error = true
+	self._player_entry = self:_create_leaderboard_entry(nil)
+
+	if external_error_cb then
+		external_error_cb(result)
+	end
+
+	reenable_queue_function()
+end
+
+BackendInterfaceWeavesPlayFab.request_leaderboard_failed_cb = function (self, external_error_cb, result, reenable_queue_function)
+	self._requesting_leaderboard = self._requesting_leaderboard - 1
+	self._leaderboard_request_error = true
+
+	table.clear(self._leaderboard_entries)
+
+	if external_error_cb then
+		external_error_cb(result)
+	end
+
+	reenable_queue_function()
 end
 
 BackendInterfaceWeavesPlayFab.get_mastery = function (self, career_name, optional_item_backend_id)
@@ -492,6 +538,14 @@ end
 
 BackendInterfaceWeavesPlayFab.get_essence = function (self)
 	return self._backend_mirror:get_essence()
+end
+
+BackendInterfaceWeavesPlayFab.get_total_essence = function (self)
+	return self._backend_mirror:get_total_essence()
+end
+
+BackendInterfaceWeavesPlayFab.get_maximum_essence = function (self)
+	return self._backend_mirror:get_maximum_essence()
 end
 
 BackendInterfaceWeavesPlayFab.get_average_power_level = function (self, career_name)
@@ -699,9 +753,14 @@ BackendInterfaceWeavesPlayFab.upgrade_item_magic_level_cb = function (self, exte
 		return
 	end
 
+	local item_id = function_result.item_id
+	local essence_cost = function_result.essence_cost
 	local item_backend_id = function_result.item_backend_id
 	local new_magic_level = function_result.new_magic_level
 	local new_essence = function_result.new_essence
+
+	Managers.telemetry.events:magic_item_level_upgraded(item_id, essence_cost, new_magic_level)
+
 	local backend_mirror = self._backend_mirror
 
 	backend_mirror:update_item_field(item_backend_id, "magic_level", new_magic_level)
@@ -1043,6 +1102,31 @@ BackendInterfaceWeavesPlayFab.get_loadout_traits = function (self, career_name, 
 	end
 
 	return traits
+end
+
+BackendInterfaceWeavesPlayFab.apply_career_item_loadouts = function (self, career_name)
+	if career_name then
+		local loadout = self._loadouts[career_name]
+		local item_loadouts = loadout and loadout.item_loadouts
+
+		if item_loadouts then
+			local melee_item = loadout.slot_melee
+
+			if melee_item then
+				local melee_loadout = item_loadouts[melee_item] or {}
+
+				self:_update_item_custom_data(melee_item, melee_loadout)
+			end
+
+			local ranged_item = loadout.slot_ranged
+
+			if ranged_item then
+				local ranged_loadout = item_loadouts[ranged_item] or {}
+
+				self:_update_item_custom_data(ranged_item, ranged_loadout)
+			end
+		end
+	end
 end
 
 BackendInterfaceWeavesPlayFab.get_talent_mastery_cost = function (self, talent_name)

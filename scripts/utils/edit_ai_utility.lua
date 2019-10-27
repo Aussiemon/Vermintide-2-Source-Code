@@ -1,9 +1,9 @@
 local serialize = require("scripts/utils/serialize")
 local font_size = 26
-local font = "gw_arial_32"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 local tiny_font_size = 16
-local tiny_font = "gw_arial_16"
+local tiny_font = "arial"
 local tiny_font_mtrl = "materials/fonts/" .. tiny_font
 local status = {}
 local resx, resy = Application.resolution()

@@ -364,7 +364,7 @@ weapon_template.default_loaded_projectile_settings = {
 }
 weapon_template.default_spread_template = "longbow"
 weapon_template.left_hand_unit = "units/weapons/player/wpn_we_bow_01_t1/wpn_we_bow_01_t1"
-weapon_template.display_unit = "units/weapons/weapon_display/display_bow"
+weapon_template.display_unit = "units/weapons/weapon_display/display_longbow"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.bow
 weapon_template.wield_anim = "to_longbow"
 weapon_template.wield_anim_no_ammo = "to_longbow_noammo"

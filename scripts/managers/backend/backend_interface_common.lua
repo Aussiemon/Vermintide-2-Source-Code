@@ -568,6 +568,43 @@ local filter_macros = {
 			end
 		end
 	end,
+	available_in_mechanism_versus = function (item, backend_id)
+		local item_data = item.data
+		local mechanisms = item_data.mechanisms
+		local is_cosmetic = table.contains({
+			"hat",
+			"weapon_skin",
+			"frame",
+			"skin"
+		}, item_data.slot_type)
+
+		return is_cosmetic or (mechanisms and table.contains(mechanisms, "versus"))
+	end,
+	available_in_mechanism_adventure = function (item, backend_id)
+		local item_data = item.data
+		local mechanisms = item_data.mechanisms
+		local is_cosmetic = table.contains({
+			"hat",
+			"weapon_skin",
+			"frame",
+			"skin"
+		}, item_data.slot_type)
+
+		return is_cosmetic or not mechanisms or table.contains(mechanisms, "adventure")
+	end,
+	available_in_current_mechanism = function (item, backend_id)
+		local item_data = item.data
+		local mechanisms = item_data.mechanisms
+		local current_mechanism = Managers.mechanism:current_mechanism_name()
+		local is_cosmetic = table.contains({
+			"hat",
+			"weapon_skin",
+			"frame",
+			"skin"
+		}, item_data.slot_type)
+
+		return is_cosmetic or (mechanisms and table.contains(mechanisms, current_mechanism)) or (not mechanisms and current_mechanism == "adventure")
+	end,
 	is_fake_item = function (item, backend_id)
 		local item_interface = Managers.backend:get_interface("items")
 		local fake_items = item_interface:get_all_fake_backend_items()

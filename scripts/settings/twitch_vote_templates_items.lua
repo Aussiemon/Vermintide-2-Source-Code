@@ -1,3 +1,5 @@
+local twitch_settings = (PLATFORM == "xb1" and MixerSettings) or TwitchSettings
+
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
 		print("[Twitch] " .. string.format(message, ...))
@@ -131,7 +133,7 @@ TwitchVoteTemplates.twitch_give_first_aid_kit = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
@@ -167,7 +169,7 @@ TwitchVoteTemplates.twitch_give_healing_draught = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
@@ -203,7 +205,7 @@ TwitchVoteTemplates.twitch_give_damage_boost_potion = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
@@ -239,7 +241,7 @@ TwitchVoteTemplates.twitch_give_speed_boost_potion = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
@@ -275,7 +277,7 @@ TwitchVoteTemplates.twitch_give_cooldown_reduction_potion = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
@@ -311,7 +313,7 @@ TwitchVoteTemplates.twitch_give_frag_grenade_t1 = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name
@@ -347,7 +349,7 @@ TwitchVoteTemplates.twitch_give_fire_grenade_t1 = {
 		70
 	},
 	condition_func = function ()
-		return not TwitchSettings.disable_giving_items and not TwitchSettings.disable_positive_votes
+		return not twitch_settings.disable_giving_items and not twitch_settings.disable_positive_votes
 	end,
 	on_success = function (is_server, vote_index)
 		local selected_display_name = SPProfiles[vote_index].display_name

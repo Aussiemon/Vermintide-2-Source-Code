@@ -11,10 +11,10 @@ IngameHud.init = function (self, parent, ingame_ui_context)
 	self._peer_id = Network.peer_id()
 	self._ingame_ui_context = ingame_ui_context
 	self._currently_visible_components = {}
-	local is_adventure_mechanism = Managers.mechanism:current_mechanism_name() == "adventure"
+	local tobii_available = Managers.mechanism:mechanism_setting("tobii_available")
 	local has_tobii = rawget(_G, "Tobii")
 
-	if has_tobii and is_adventure_mechanism then
+	if has_tobii and tobii_available then
 		ingame_ui_context.cleanui = UICleanUI.create(self._peer_id)
 		self._clean_ui = ingame_ui_context.cleanui
 		self._clean_ui.hud = self
@@ -26,30 +26,119 @@ IngameHud.init = function (self, parent, ingame_ui_context)
 		self._clean_ui = nil
 	end
 
-	self:_initialize_components(ingame_ui_context)
+	self:_compile_component_list(ingame_ui_context, definitions.components)
 end
 
-IngameHud._initialize_components = function (self, ingame_ui_context)
-	local is_in_inn = ingame_ui_context.is_in_inn
-	local added_components = {}
-	local added_components_array = {}
-	local components = definitions.components
+IngameHud._compile_component_list = function (self, ingame_ui_context, component_definitions)
+	local component_list = {}
+	local components = {}
+	local components_array = {}
+	local components_array_id_lookup = {}
 
-	for _, settings in ipairs(components) do
-		local validation_function = settings.validation_function
+	for i = 1, #component_definitions, 1 do
+		local definition = component_definitions[i]
+		local class_name = definition.class_name
 
-		if not validation_function or validation_function(ingame_ui_context, is_in_inn) then
-			local class_name = settings.class_name
-			local class = rawget(_G, class_name)
-			local component = class:new(self, ingame_ui_context)
-			component.name = class_name
-			added_components[class_name] = component
-			added_components_array[#added_components_array + 1] = component
+		fassert(component_list[class_name] == nil, "Duplicate entries of component (%s)", class_name)
+
+		component_list[class_name] = definition
+
+		if definition.always_active then
+			self:_add_component(component_list, components, components_array, components_array_id_lookup, class_name)
 		end
 	end
 
-	self._components = added_components
-	self._components_array = added_components_array
+	self._component_list = component_list
+	self._components = components
+	self._components_array = components_array
+	self._components_array_id_lookup = components_array_id_lookup
+end
+
+IngameHud._add_component = function (self, component_list, components, components_array, components_array_id_lookup, class_name)
+	local definition = component_list[class_name]
+
+	fassert(definition, "No definition found for component (%s)", class_name)
+
+	if components[class_name] ~= nil then
+		table.dump(components, "Hud components:")
+	end
+
+	fassert(components[class_name] == nil, "Component (%s) is already added", class_name)
+
+	local ingame_ui_context = self._ingame_ui_context
+	local validation_function = definition.validation_function
+
+	if not validation_function or validation_function(ingame_ui_context, ingame_ui_context.is_in_inn) then
+		local class = rawget(_G, class_name)
+		local component = class:new(self, ingame_ui_context)
+		component.name = class_name
+		components[class_name] = component
+		local id = #components_array + 1
+		components_array[id] = component
+		components_array_id_lookup[component] = id
+	end
+end
+
+IngameHud._remove_component = function (self, component_list, components, components_array, components_array_id_lookup, class_name)
+	local component = components[class_name]
+
+	if not component then
+		local definition = component_list[class_name]
+
+		fassert(definition.validation_function, "Component does not exist and doesn't have a validation_function, how did this happen?")
+
+		local ingame_ui_context = self._ingame_ui_context
+		local validated = definition.validation_function(ingame_ui_context, ingame_ui_context.is_in_inn)
+
+		fassert(validated == false, "Validation functions returned true but component does not exist, somethings weird.")
+
+		return
+	end
+
+	self._currently_visible_components[component.name] = nil
+	local id = components_array_id_lookup[component]
+	local last_component_id = #components_array
+	local last_component = components_array[last_component_id]
+	components_array[id] = last_component
+	components_array_id_lookup[last_component] = id
+
+	if component.destroy then
+		component:destroy()
+	end
+
+	components[class_name] = nil
+	components_array[last_component_id] = nil
+	components_array_id_lookup[component] = nil
+end
+
+IngameHud.add_components = function (self, components_to_add)
+	local component_list = self._component_list
+	local components = self._components
+	local components_array = self._components_array
+	local components_array_id_lookup = self._components_array_id_lookup
+	local num_components = #components_to_add
+
+	for i = 1, num_components, 1 do
+		local class_name = components_to_add[i]
+
+		self:_add_component(component_list, components, components_array, components_array_id_lookup, class_name)
+	end
+
+	self._current_group_name = nil
+end
+
+IngameHud.remove_components = function (self, components_to_remove)
+	local component_list = self._component_list
+	local components = self._components
+	local components_array = self._components_array
+	local components_array_id_lookup = self._components_array_id_lookup
+	local num_components = #components_to_remove
+
+	for i = 1, num_components, 1 do
+		local class_name = components_to_remove[i]
+
+		self:_remove_component(component_list, components, components_array, components_array_id_lookup, class_name)
+	end
 end
 
 IngameHud.component = function (self, component_name)
@@ -63,13 +152,21 @@ IngameHud._update_component_visibility = function (self)
 	self._definitions = definitions
 	local visibility_groups = definitions.visibility_groups
 	local num_visibility_groups = #visibility_groups
+	local debug_visibility_group = script_data.debug_hud_visibility_group
 
 	for i = 1, num_visibility_groups, 1 do
 		local visibility_group = visibility_groups[i]
 		local group_name = visibility_group.name
 		local validation_function = visibility_group.validation_function
+		local is_valid = false
 
-		if validation_function(self) then
+		if debug_visibility_group then
+			is_valid = group_name == debug_visibility_group
+		else
+			is_valid = validation_function(self)
+		end
+
+		if is_valid then
 			if group_name ~= self._current_group_name then
 				local components_array = self._components_array
 				local currently_visible_components = self._currently_visible_components
@@ -92,6 +189,10 @@ IngameHud._update_component_visibility = function (self)
 
 			break
 		end
+	end
+
+	if debug_visibility_group then
+		Debug.text("HUD visibility group: " .. tostring(self._current_group_name or "none"))
 	end
 end
 
@@ -237,7 +338,13 @@ IngameHud.is_cutscene_active = function (self)
 end
 
 IngameHud.is_own_player_dead = function (self)
-	if not self._is_own_player_dead then
+	local debug_visibility_group = script_data.debug_hud_visibility_group
+
+	if debug_visibility_group and debug_visibility_group == "dead" then
+		return true
+	end
+
+	if self._is_own_player_dead == nil then
 		local peer_id = self._peer_id
 		local player_manager = Managers.player
 		local my_player = player_manager:player_from_peer_id(peer_id)
@@ -300,7 +407,7 @@ IngameHud._update_clean_ui = function (self, dt, t)
 		return
 	end
 
-	local had_tobii = self._had_tobii
+	local had_tobii = self._had_tobii or false
 	local has_tobii = rawget(_G, "Tobii") and Tobii.get_is_connected()
 
 	if had_tobii ~= has_tobii then

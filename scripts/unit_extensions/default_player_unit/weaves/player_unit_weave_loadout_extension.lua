@@ -24,6 +24,11 @@ PlayerUnitWeaveLoadoutExtension.extensions_ready = function (self, world, unit)
 		self._buffs = buffs
 
 		self:_apply_buffs(buffs)
+
+		local weaves_interface = Managers.backend:get_interface("weaves")
+		local career_name = self._career_extension:career_name()
+
+		weaves_interface:apply_career_item_loadouts(career_name)
 	end
 end
 

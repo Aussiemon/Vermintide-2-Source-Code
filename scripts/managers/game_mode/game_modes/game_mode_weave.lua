@@ -21,6 +21,7 @@ GameModeWeave.init = function (self, settings, world, network_server, level_tran
 
 	self:_register_player_spawner(self._weave_spawning)
 
+	self._local_player_spawned = false
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
@@ -37,7 +38,8 @@ GameModeWeave.unregister_rpcs = function (self)
 end
 
 GameModeWeave.event_local_player_spawned = function (self, is_initial_spawn)
-	Managers.state.event:trigger("game_mode_ready_to_start", is_initial_spawn)
+	self._local_player_spawned = true
+	self._is_initial_spawn = is_initial_spawn
 end
 
 GameModeWeave.server_update = function (self, t, dt)
@@ -274,6 +276,35 @@ GameModeWeave.get_end_screen_config = function (self, game_won, game_lost, playe
 	end
 
 	return screen_name, screen_config
+end
+
+GameModeWeave.local_player_ready_to_start = function (self, player)
+	if not self._local_player_spawned then
+		return false
+	end
+
+	return true
+end
+
+GameModeWeave.local_player_game_starts = function (self, player, loading_context)
+	if self._is_initial_spawn then
+		LevelHelper:flow_event(self._world, "local_player_spawned")
+
+		if Development.parameter("attract_mode") then
+			LevelHelper:flow_event(self._world, "start_benchmark")
+		else
+			LevelHelper:flow_event(self._world, "level_start_local_player_spawned")
+		end
+	end
+
+	local weave_manager = Managers.weave
+
+	if self._is_server then
+		weave_manager:store_player_ids()
+		weave_manager:start_objective()
+		weave_manager:reset_statistics_for_challenges()
+		weave_manager:start_timer()
+	end
 end
 
 return

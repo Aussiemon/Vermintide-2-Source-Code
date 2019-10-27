@@ -3,6 +3,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local background_widget_definitions = definitions.background_widget_definitions
 local widget_definitions = definitions.widget_definitions
 local demo_video = definitions.demo_video
+local VIDEO_REFERENCE_NAME = "TransitionVideo"
 TransitionVideo = class(TransitionVideo)
 local fake_input_service = {
 	get = function ()
@@ -28,7 +29,7 @@ end
 
 TransitionVideo._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	self._demo_video = UIWidget.init(UIWidgets.create_splash_video(self._video_data_table))
+	self._demo_video = UIWidget.init(UIWidgets.create_splash_video(self._video_data_table, VIDEO_REFERENCE_NAME))
 	self._widgets = {}
 
 	for widget_name, widget_definition in pairs(widget_definitions) do
@@ -61,8 +62,8 @@ end
 TransitionVideo._destroy_video = function (self)
 	local ui_renderer = self._ui_renderer
 
-	if ui_renderer.video_player then
-		UIRenderer.destroy_video_player(ui_renderer)
+	if ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+		UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 
 		self._sound_started = false
 
@@ -85,8 +86,8 @@ TransitionVideo._draw = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, self.render_settings)
 
 	if not self._demo_video.content.video_content.video_completed then
-		if not ui_renderer.video_player then
-			UIRenderer.create_video_player(ui_renderer, self._world, self._video_data_table.video_name, self._video_data_table.loop)
+		if not ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+			UIRenderer.create_video_player(ui_renderer, VIDEO_REFERENCE_NAME, self._world, self._video_data_table.video_name, self._video_data_table.loop)
 		else
 			if not self._sound_started then
 				if self._video_data_table.sound_start then
@@ -98,8 +99,8 @@ TransitionVideo._draw = function (self, dt, t)
 
 			UIRenderer.draw_widget(ui_renderer, self._demo_video)
 		end
-	elseif ui_renderer.video_player then
-		UIRenderer.destroy_video_player(ui_renderer)
+	elseif ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+		UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 
 		self._sound_started = false
 

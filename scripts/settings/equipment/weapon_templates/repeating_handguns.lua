@@ -226,7 +226,7 @@ weapon_template.attack_meta_data = {
 }
 weapon_template.right_hand_unit = ""
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.repeating_handgun
-weapon_template.display_unit = "units/weapons/weapon_display/display_rifle"
+weapon_template.display_unit = "units/weapons/weapon_display/display_repeating_handguns"
 weapon_template.wield_anim = "to_repeating_handgun"
 weapon_template.wield_anim_no_ammo = "to_repeating_handgun_noammo"
 weapon_template.reload_event = "reload"

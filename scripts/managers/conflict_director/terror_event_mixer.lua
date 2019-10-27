@@ -1104,7 +1104,7 @@ TerrorEventMixer.run_event = function (event, t, dt)
 end
 
 local tiny_font_size = 16
-local tiny_font = "gw_arial_16"
+local tiny_font = "arial"
 local tiny_font_mtrl = "materials/fonts/" .. tiny_font
 local resx, resy = Application.resolution()
 local debug_win_width = 330

@@ -11,6 +11,8 @@ ExplosiveBarrelHealthExtension.init = function (self, extension_init_context, un
 		self.ignited = true
 		self.explode_time = data.explode_time
 		self.fuse_time = data.fuse_time
+		local last_damage_data = self.last_damage_data
+		last_damage_data.attacker_unit_id = data.attacker_unit_id
 		self.insta_explode = not self.in_hand
 
 		Unit.flow_event(unit, "exploding_barrel_fuse_init")
@@ -36,6 +38,7 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 			local attacker_unit = recent_damages[j + DamageDataIndex.ATTACKER]
 			local damage_amount = recent_damages[j + DamageDataIndex.DAMAGE_AMOUNT]
 			local damage_type = recent_damages[j + DamageDataIndex.DAMAGE_TYPE]
+			local source_attacker_unit = recent_damages[j + DamageDataIndex.SOURCE_ATTACKER_UNIT]
 			local ignore_damage_type = self.ignored_damage_types[damage_type]
 
 			if not ignore_damage_type then
@@ -47,7 +50,7 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 					local damage_direction = Vector3Aux.unbox(recent_damages[j + DamageDataIndex.DIRECTION])
 					local damage_source_name = recent_damages[j + DamageDataIndex.DAMAGE_SOURCE_NAME]
 
-					self:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name)
+					self:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, nil, source_attacker_unit)
 				end
 			end
 		end
@@ -78,7 +81,7 @@ ExplosiveBarrelHealthExtension.apply_client_predicted_damage = function (self, p
 	return
 end
 
-ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
+ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot)
 	if damage_type and damage_type == "blade_storm" then
 		return
 	end
@@ -87,13 +90,15 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	fassert(damage_type, "No damage_type!")
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
+
+	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
 
 	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
 		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
@@ -110,7 +115,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 		end
 	end
 
-	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
+	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, source_attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
 
 	if did_damage and not self.ignited then
 		local network_time = Managers.state.network:network_time()
@@ -134,9 +139,11 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 end
 
 ExplosiveBarrelHealthExtension.health_data = function (self)
+	local last_damage_data = self.last_damage_data
 	local data = {
 		fuse_time = self.fuse_time,
-		explode_time = self.explode_time
+		explode_time = self.explode_time,
+		attacker_unit_id = last_damage_data.attacker_unit_id
 	}
 
 	return data

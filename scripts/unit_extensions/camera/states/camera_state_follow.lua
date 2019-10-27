@@ -14,7 +14,9 @@ CameraStateFollow.on_enter = function (self, unit, input, dt, context, t, previo
 
 	Unit.set_data(unit, "camera", "settings_node", "first_person_node")
 
-	if previous_state == "camera_state_interaction" then
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if previous_state == "camera_state_interaction" or (mechanism_name == "versus" and previous_state == "observer") then
 		self.total_lerp_time = UISettings.map.camera_time_exit
 		self.lerp_time = 0
 		self.progress = 0

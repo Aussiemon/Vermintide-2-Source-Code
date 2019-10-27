@@ -25,10 +25,12 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	self.explosion_template_name = extension_init_data.explosion_template_name
 	self.owner_player = extension_init_data.owner_player
 	self.slow_modifier = extension_init_data.slow_modifier
+	self.source_attacker_unit = extension_init_data.source_attacker_unit
 	self.effect_size = self.radius * 1.5
 	self.damage_timer = 0
 	self.life_timer = 0
 	self.is_server = Managers.player.is_server
+	self.num_hits = 0
 	self.enabled = false
 	self.ai_system = Managers.state.entity:system("ai_system")
 	self.player_unit_particles = {}
@@ -38,6 +40,10 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	if self.owner_player then
 		Managers.player:assign_unit_ownership(self.unit, self.owner_player)
 	end
+
+	local side_manager = Managers.state.side
+	local source_attacker_side = side_manager.side_by_unit[self.source_attacker_unit]
+	self._side = source_attacker_side
 
 	if self.invisible_unit then
 		Unit.set_unit_visibility(unit, false)
@@ -133,7 +139,7 @@ AreaDamageExtension.start = function (self)
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
 
 	if self.is_server and self.aoe_init_damage then
-		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.initial_radius, self.aoe_init_damage, 0, 0, 0, 0, self.damage_players, self.explosion_template_name)
+		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.initial_radius, self.aoe_init_damage, 0, 0, 0, 0, self.damage_players, self.explosion_template_name, self.slow_modifier, self._side)
 
 		if updated then
 			self:_add_to_damage_buffer(damage_buffer)
@@ -249,7 +255,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
 
 	if self.is_server then
-		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage, self.life_time, self.life_timer, self.aoe_dot_damage_interval, self.damage_timer, self.damage_players, self.explosion_template_name, self.slow_modifier)
+		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage, self.life_time, self.life_timer, self.aoe_dot_damage_interval, self.damage_timer, self.damage_players, self.explosion_template_name, self.slow_modifier, self._side)
 
 		if updated then
 			self:_add_to_damage_buffer(damage_buffer)
@@ -269,7 +275,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	area_damage.client.update(self.world, self.radius, self.unit, self.player_screen_effect_name, self.player_unit_particles, self.damage_players, self.explosion_template_name, self.slow_modifier)
+	area_damage.client.update(self.world, self.radius, self.unit, self.player_screen_effect_name, self.player_unit_particles, self.damage_players, self.explosion_template_name, self.slow_modifier, self._side)
 
 	self.damage_timer = self.damage_timer + dt
 	self.life_timer = self.life_timer + dt
@@ -287,6 +293,7 @@ AreaDamageExtension._update_damage_buffer = function (self)
 	end
 
 	local damage_buffer = self._damage_buffer
+	local num_hits = self.num_hits
 
 	if #damage_buffer == 0 then
 		return
@@ -308,11 +315,14 @@ AreaDamageExtension._update_damage_buffer = function (self)
 		local unit = damage_data.unit
 
 		if Unit.alive(unit) then
+			num_hits = num_hits + 1
 			local area_damage = AreaDamageTemplates.get_template(damage_data.area_damage_template)
 
-			area_damage.server.do_damage(damage_data, self.unit)
+			area_damage.server.do_damage(damage_data, self.unit, self.source_attacker_unit)
 		end
 	end
+
+	self.num_hits = num_hits
 
 	if reset then
 		self._current_damage_buffer_index = 1

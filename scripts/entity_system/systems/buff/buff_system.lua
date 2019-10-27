@@ -196,10 +196,11 @@ end
 
 local params = {}
 
-BuffSystem._add_buff_helper_function = function (self, unit, template_name, attacker_unit, server_buff_id, power_level)
+BuffSystem._add_buff_helper_function = function (self, unit, template_name, attacker_unit, server_buff_id, power_level, source_attacker_unit)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	params.attacker_unit = attacker_unit
 	params.power_level = power_level
+	params.source_attacker_unit = source_attacker_unit
 
 	if server_buff_id > 0 then
 		if not self.server_controlled_buffs[unit] then
@@ -220,7 +221,8 @@ BuffSystem._add_buff_helper_function = function (self, unit, template_name, atta
 			self.server_controlled_buffs[unit][server_buff_id] = {
 				local_buff_id = local_buff_id,
 				template_name = template_name,
-				attacker_unit = attacker_unit
+				attacker_unit = attacker_unit,
+				source_attacker_unit = source_attacker_unit
 			}
 		end
 	else
@@ -228,7 +230,7 @@ BuffSystem._add_buff_helper_function = function (self, unit, template_name, atta
 	end
 end
 
-BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_server_controlled, power_level)
+BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_server_controlled, power_level, source_attacker_unit)
 	if not ScriptUnit.has_extension(unit, "buff_system") then
 		return
 	end
@@ -238,7 +240,7 @@ BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_ser
 	local server_buff_id = (is_server_controlled and self:_next_free_server_buff_id()) or 0
 
 	if ScriptUnit.has_extension(unit, "buff_system") then
-		self:_add_buff_helper_function(unit, template_name, attacker_unit, server_buff_id, power_level)
+		self:_add_buff_helper_function(unit, template_name, attacker_unit, server_buff_id, power_level, source_attacker_unit)
 	end
 
 	local network_manager = self.network_manager
@@ -374,12 +376,20 @@ BuffSystem.rpc_remove_server_controlled_buff = function (self, sender, unit_id, 
 	local unit = self.unit_storage:unit(unit_id)
 
 	if Unit.alive(unit) then
-		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local id = self.server_controlled_buffs[unit][server_buff_id].local_buff_id
+		local unit_buffs = self.server_controlled_buffs[unit]
+		local buff = unit_buffs and unit_buffs[server_buff_id]
 
-		buff_extension:remove_buff(id)
+		if buff then
+			local id = buff.local_buff_id
 
-		self.server_controlled_buffs[unit][server_buff_id] = nil
+			if id then
+				local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
+				buff_extension:remove_buff(id)
+			end
+
+			self.server_controlled_buffs[unit][server_buff_id] = nil
+		end
 	end
 end
 

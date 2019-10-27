@@ -76,8 +76,21 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	self._colliding_units = {}
 	self._buff_affected_units = {}
 	self._affected_player_units = {}
-	self._source_unit = extension_init_data.source_unit or unit
+	self._source_attacker_unit = extension_init_data.source_unit or unit
 	self._done = false
+	self.source_attacker_unit_data = {}
+	local source_attacker_unit_data = self.source_attacker_unit_data
+	local source_attacker_unit = self._source_attacker_unit
+	source_attacker_unit_data.breed = Unit.get_data(source_attacker_unit, "breed")
+	local player = Managers.player:owner(source_attacker_unit)
+
+	if player then
+		source_attacker_unit_data.attacker_unique_id = player:unique_id()
+		source_attacker_unit_data.attacker_side = Managers.state.side.side_by_unit[source_attacker_unit]
+	else
+		source_attacker_unit_data.attacker_unique_id = nil
+		source_attacker_unit_data.attacker_side = nil
+	end
 
 	if use_nav_cost_map_volumes then
 		local nav_cost_map_cost_type = template.nav_cost_map_cost_type
@@ -560,7 +573,7 @@ LiquidAreaDamageExtension._update_collision_detection = function (self, dt, t)
 					if not self._affected_player_units[unit] and self._hit_player_function then
 						self._affected_player_units[unit] = true
 
-						self._hit_player_function(unit, player_and_bot_units, self._source_unit)
+						self._hit_player_function(unit, player_and_bot_units, self._source_attacker_unit)
 					end
 
 					local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -668,6 +681,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 	local remove_i = 0
 	local damage_dir = self._damage_direction:unbox()
 	local damage_type = self._damage_type
+	local source_attacker_unit = self._source_attacker_unit
 	local do_direct_damage_player = self._do_direct_damage_player
 	local do_direct_damage_ai = self._do_direct_damage_ai
 	local damage_buff_template_name = self._damage_buff_name
@@ -681,7 +695,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 			if (is_player and do_direct_damage_player) or (not is_player and do_direct_damage_ai) then
 				local damage = damage_table[armor_category] or damage_table[1]
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, damage_dir)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, damage_dir, nil, nil, source_attacker_unit)
 
 				if damage_buff_template_name then
 					local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -745,6 +759,10 @@ LiquidAreaDamageExtension.hot_join_sync = function (self, sender)
 
 		network_transmit:send_rpc("rpc_add_liquid_damage_blob", sender, liquid_unit_id, real_index, position, is_filled)
 	end
+end
+
+LiquidAreaDamageExtension.get_source_attacker_unit = function (self)
+	return self._source_attacker_unit
 end
 
 return

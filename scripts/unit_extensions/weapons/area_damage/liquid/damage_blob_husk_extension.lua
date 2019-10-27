@@ -196,4 +196,8 @@ DamageBlobHuskExtension.abort = function (self)
 	self.aborted = true
 end
 
+DamageBlobHuskExtension.get_source_attacker_unit = function (self)
+	return self._source_unit
+end
+
 return

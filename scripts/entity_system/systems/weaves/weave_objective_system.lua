@@ -1,6 +1,7 @@
+require("scripts/entity_system/systems/objective/objective_system")
 require("scripts/settings/weave_objective_settings")
 
-WeaveObjectiveSystem = class(WeaveObjectiveSystem, ExtensionSystemBase)
+WeaveObjectiveSystem = class(WeaveObjectiveSystem, ObjectiveSystem)
 local extensions = {
 	"WeaveCapturePointExtension",
 	"WeaveTargetExtension",
@@ -13,21 +14,11 @@ local extensions = {
 }
 
 WeaveObjectiveSystem.init = function (self, entity_system_creation_context, system_name)
-	WeaveObjectiveSystem.super.init(self, entity_system_creation_context, system_name, extensions)
+	self.super.init(self, entity_system_creation_context, system_name, extensions)
 
-	self._game_session = Network.game_session()
-	self._entity_system_creation_context = entity_system_creation_context
-	self._is_server = entity_system_creation_context.is_server
-	self._world = entity_system_creation_context.world
-	self._current_objective_index = 1
-	self._objectives_by_name = {}
-	self._update_list = {}
-	self._activated = false
+	self._item_spawner_system = Managers.state.entity:system("weave_item_spawner_system")
 	self._spawn_essence_units = true
-	self._objectives_completed = 0
-	self._num_objectives = 0
 	self._weave_manager = Managers.weave
-	self._initial_activation_done = false
 	self._essence_unit_names = {
 		"units/fx/essence_unit",
 		"units/fx/essence_unit"
@@ -46,124 +37,33 @@ WeaveObjectiveSystem.init = function (self, entity_system_creation_context, syst
 	self._collecting_essence = false
 end
 
-WeaveObjectiveSystem.activate_objectives = function (self, objective_lists)
-	if self._is_server then
-		self:_server_activate_objectives(objective_lists)
-	else
-		self:_client_activate_objectives(objective_lists)
-	end
-end
-
-WeaveObjectiveSystem._server_activate_objectives = function (self, objective_lists)
-	fassert(self._is_server, "[WeaveObjectiveSystem] Only the server should call _server_activate_objectives")
-
-	self._activated = true
-	local num_objectives = 0
-
-	for _, objective_list in ipairs(objective_lists) do
-		for objective_name, objective_data in pairs(objective_list) do
-			num_objectives = num_objectives + 1
-		end
-	end
-
-	self._num_objectives = num_objectives
-	self._objective_lists = objective_lists
-	local current_objectives = self._objective_lists[self._current_objective_index]
-
-	self:_activate_next_objectives(current_objectives)
-end
-
-WeaveObjectiveSystem._client_activate_objectives = function (self, objective_lists)
-	local update_list = self._update_list
-
-	if not update_list then
-		return
-	end
-
-	for go_id, extension in pairs(update_list) do
-		extension:activate(go_id)
-	end
-
-	self._initial_activation_done = true
-end
-
 WeaveObjectiveSystem._activate_next_objectives = function (self, objectives)
-	local weave_item_spawner_system = Managers.state.entity:system("weave_item_spawner_system")
+	self.super._activate_next_objectives(self, objectives)
 
-	weave_item_spawner_system:spawn_items(objectives)
-
-	for objective_name, objective_data in pairs(objectives) do
-		local objective_extension = self._objectives_by_name[objective_name]
-
-		fassert(objective_extension, "[WeaveObjectiveSystem] There is no objective called %q in the current level", objective_name)
-
-		if objective_extension.activate then
-			objective_extension:activate(nil, objective_data)
-		end
-
+	for _, _ in pairs(objectives) do
 		local audio_system = Managers.state.entity:system("audio_system")
 
 		audio_system:play_2d_audio_event("Play_hud_wind_objective_start")
-
-		self._update_list[#self._update_list + 1] = objective_extension
 	end
-end
-
-WeaveObjectiveSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	local extension_alias = self.NAME
-	local extension_pool_table = nil
-	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, extension_alias, extension_init_data, extension_pool_table)
-	self.extensions[extension_name] = (self.extensions[extension_name] or 0) + 1
-	local objective_name = extension:objective_name()
-	self._objectives_by_name[objective_name] = extension
-
-	return extension
 end
 
 WeaveObjectiveSystem.update = function (self, context, t)
 	local dt = context.dt
 
-	if self._is_server then
-		self:_update_server(dt, t)
-	else
-		self:_update_client(dt, t)
-	end
-end
-
-WeaveObjectiveSystem._update_server = function (self, dt, t)
 	self:_collect_dropped_essence(dt)
 
 	if not self._activated then
 		return
 	end
 
-	local update_list = self._update_list
+	self.super.update(self, context, t)
+end
 
-	for _, extension in ipairs(update_list) do
-		extension:update(dt, t)
-	end
+WeaveObjectiveSystem._update_activate_next_objectives = function (self)
+	local num_update_list = #self._update_list
+	local only_kill_objective_left = num_update_list == 1 and self._update_list[1]:objective_name() == "kill_enemies"
 
-	local objects_to_remove = {}
-
-	for idx, extension in ipairs(update_list) do
-		if extension:is_done() then
-			self:_complete_objective(idx, extension, objects_to_remove)
-		end
-	end
-
-	if #objects_to_remove == 0 then
-		return
-	end
-
-	for i = #objects_to_remove, 1, -1 do
-		local index = objects_to_remove[i]
-
-		table.remove(self._update_list, index)
-	end
-
-	local only_kill_objective_left = #self._update_list == 1 and self._update_list[1]:objective_name() == "kill_enemies"
-
-	if #self._update_list == 0 or only_kill_objective_left then
+	if num_update_list == 0 or only_kill_objective_left then
 		local next_objective_index = self._current_objective_index + 1
 		local next_objectives = self._objective_lists[next_objective_index]
 		local mission_system = Managers.state.entity:system("mission_system")
@@ -185,30 +85,24 @@ WeaveObjectiveSystem._update_server = function (self, dt, t)
 end
 
 WeaveObjectiveSystem._complete_objective = function (self, id, extension, objects_to_remove)
-	local objective_name = extension:objective_name()
-
 	self._weave_manager:increase_bar_score(extension:get_score())
-	extension:complete()
-
-	if not extension.keep_alive then
-		local weave_item_spawner_system = Managers.state.entity:system("weave_item_spawner_system")
-
-		weave_item_spawner_system:destroy_objective(objective_name)
-	end
-
-	objects_to_remove[#objects_to_remove + 1] = id
+	self.super._complete_objective(self, id, extension, objects_to_remove)
 end
 
-WeaveObjectiveSystem._update_client = function (self, dt, t)
-	self:_collect_dropped_essence(dt)
+WeaveObjectiveSystem.deactivate = function (self)
+	self.super.deactivate(self)
 
-	for _, extension in pairs(self._update_list) do
-		extension:update(dt, t)
+	local essence_unit_data = self._essence_unit_data
+
+	for i = 1, #essence_unit_data, 1 do
+		local data = essence_unit_data[i]
+		local unit = data.unit
+
+		if Unit.alive(unit) then
+			Managers.state.unit_spawner:mark_for_deletion(unit)
+			table.clear(data)
+		end
 	end
-end
-
-WeaveObjectiveSystem.current_objectives = function (self)
-	return self._update_list
 end
 
 WeaveObjectiveSystem.game_object_created = function (self, game_object_id)
@@ -229,63 +123,6 @@ WeaveObjectiveSystem.game_object_created = function (self, game_object_id)
 
 		self._update_list[game_object_id] = extension
 	end
-end
-
-WeaveObjectiveSystem.game_object_destroyed = function (self, game_object_id)
-	local extension = self._update_list[game_object_id]
-
-	extension:deactivate()
-
-	self._deactivated_objective = true
-	self._update_list[game_object_id] = nil
-end
-
-WeaveObjectiveSystem.destroy = function (self)
-	return
-end
-
-WeaveObjectiveSystem.deactivate = function (self)
-	local objects_to_remove = {}
-	self._spawn_essence_units = false
-
-	for idx, extension in pairs(self._update_list) do
-		if extension.should_disable and extension:should_disable() then
-			extension:disable()
-		else
-			extension:deactivate()
-
-			if not extension.keep_alive then
-				local objective_name = extension:objective_name()
-				local weave_item_spawner_system = Managers.state.entity:system("weave_item_spawner_system")
-
-				weave_item_spawner_system:destroy_objective(objective_name)
-			end
-
-			objects_to_remove[#objects_to_remove + 1] = idx
-		end
-	end
-
-	for i = #objects_to_remove, 1, -1 do
-		local index = objects_to_remove[i]
-
-		table.remove(self._update_list, index)
-	end
-
-	local essence_unit_data = self._essence_unit_data
-
-	for i = 1, #essence_unit_data, 1 do
-		local data = essence_unit_data[i]
-		local unit = data.unit
-
-		if Unit.alive(unit) then
-			Managers.state.unit_spawner:mark_for_deletion(unit)
-			table.clear(data)
-		end
-	end
-end
-
-WeaveObjectiveSystem.hot_join_sync = function (self, sender)
-	return
 end
 
 WeaveObjectiveSystem.add_score = function (self, score)
@@ -336,12 +173,13 @@ WeaveObjectiveSystem.spawn_essence_unit = function (self, position, size)
 end
 
 WeaveObjectiveSystem._collect_dropped_essence = function (self, dt)
-	local local_player_unit = Managers.player:local_player().player_unit
+	local local_player = Managers.player:local_player()
 
-	if not local_player_unit then
+	if not local_player or not local_player.player_unit then
 		return
 	end
 
+	local local_player_unit = local_player.player_unit
 	local unit_spawner = Managers.state.unit_spawner
 	local player_position = POSITION_LOOKUP[local_player_unit] + Vector3(0, 0, 0.5)
 	local up_vector = Vector3.up()

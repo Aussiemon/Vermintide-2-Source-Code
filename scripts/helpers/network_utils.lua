@@ -40,7 +40,32 @@ NetworkUtils = {
 		local pos_max = pos_constant.max
 
 		return Vector3.clamp(pos, pos_min, pos_max)
+	end,
+	get_user_name = function (peer_id, lobby)
+		if PLATFORM ~= "win32" then
+			return lobby:user_name(peer_id)
+		elseif rawget(_G, "Steam") then
+			return Steam.user_name(peer_id)
+		end
+
+		return tostring(peer_id)
 	end
 }
+
+NetworkUtils.announce_chat_peer_joined = function (peer_id, lobby)
+	local sender = NetworkUtils.get_user_name(peer_id, lobby)
+	local message = string.format(Localize("system_chat_player_joined_the_game"), sender)
+	local pop_chat = true
+
+	Managers.chat:add_local_system_message(1, message, pop_chat)
+end
+
+NetworkUtils.announce_chat_peer_left = function (peer_id, lobby)
+	local sender = NetworkUtils.get_user_name(peer_id, lobby)
+	local message = string.format(Localize("system_chat_player_left_the_game"), sender)
+	local pop_chat = true
+
+	Managers.chat:add_local_system_message(1, message, pop_chat)
+end
 
 return

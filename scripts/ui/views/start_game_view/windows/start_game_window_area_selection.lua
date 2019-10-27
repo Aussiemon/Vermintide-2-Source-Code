@@ -3,6 +3,7 @@ local widget_definitions = definitions.widgets
 local area_widget_definitions = definitions.area_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+local VIDEO_REFERENCE_NAME = "StartGameWindowAreaSelection"
 StartGameWindowAreaSelection = class(StartGameWindowAreaSelection)
 StartGameWindowAreaSelection.NAME = "StartGameWindowAreaSelection"
 
@@ -436,14 +437,14 @@ StartGameWindowAreaSelection._setup_video_player = function (self, material_name
 
 	local ui_renderer = self.ui_renderer
 
-	if not ui_renderer.video_player then
+	if not ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
 		local set_loop = true
 
-		UIRenderer.create_video_player(ui_renderer, ui_renderer.world, resource, set_loop)
+		UIRenderer.create_video_player(ui_renderer, VIDEO_REFERENCE_NAME, ui_renderer.world, resource, set_loop)
 	end
 
 	local scenegraph_id = "video"
-	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name)
+	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name, VIDEO_REFERENCE_NAME)
 	local widget = UIWidget.init(widget_definition)
 	self._video_widget = widget
 	self._video_created = true
@@ -460,10 +461,10 @@ StartGameWindowAreaSelection._destroy_video_player = function (self)
 		self._video_widget = nil
 	end
 
-	if ui_renderer and ui_renderer.video_player then
+	if ui_renderer and ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
 		local world = ui_renderer.world
 
-		UIRenderer.destroy_video_player(ui_renderer, world)
+		UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME, world)
 	end
 
 	self._video_created = nil

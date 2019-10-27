@@ -1,0 +1,6 @@
+BadgeTemplates = {
+	server = {},
+	client = {}
+}
+
+return

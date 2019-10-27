@@ -45,29 +45,30 @@ DAMAGE_TYPES_AOE = {
 }
 local buff_params = {}
 
-local function add_dot(dot_template_name, hit_unit, attacker_unit, damage_source, power_level)
+local function add_dot(dot_template_name, hit_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 	if ScriptUnit.has_extension(hit_unit, "buff_system") then
 		table.clear(buff_params)
 
 		buff_params.attacker_unit = attacker_unit
 		buff_params.damage_source = damage_source
 		buff_params.power_level = power_level
+		buff_params.source_attacker_unit = source_attacker_unit
 		local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 
 		buff_extension:add_buff(dot_template_name, buff_params)
 	end
 end
 
-local function add_dot_network_synced(dot_template_name, hit_unit, attacker_unit, damage_source, power_level)
+local function add_dot_network_synced(dot_template_name, hit_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 	if ScriptUnit.has_extension(hit_unit, "buff_system") then
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		buff_system:add_buff(hit_unit, dot_template_name, attacker_unit, false, power_level)
+		buff_system:add_buff(hit_unit, dot_template_name, attacker_unit, false, power_level, source_attacker_unit)
 	end
 end
 
 Dots = {
-	poison_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+	poison_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
 		if not damage_profile then
 			return false
 		end
@@ -95,15 +96,15 @@ Dots = {
 
 		if do_dot then
 			if target_settings.network_sync_dot then
-				add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+				add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 			else
-				add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+				add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 			end
 		end
 
 		return do_dot
 	end,
-	burning_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+	burning_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
 		if damage_profile then
 			dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
 		end
@@ -129,11 +130,11 @@ Dots = {
 			attacker_unit_buff_extension:trigger_procs("on_enemy_ignited", dot_template_name, damage_profile, target_index, target_unit, hit_zone_name, damage_source, is_critical_strike)
 		end
 
-		add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+		add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 
 		return true
 	end,
-	slow_debuff = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
+	slow_debuff = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
 		if damage_profile then
 			dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
 		end
@@ -142,7 +143,7 @@ Dots = {
 			return false
 		end
 
-		add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level)
+		add_dot(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 
 		return true
 	end

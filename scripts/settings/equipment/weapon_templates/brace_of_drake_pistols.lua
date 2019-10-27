@@ -205,14 +205,14 @@ weapon_template.actions = {
 	weapon_reload = {
 		default = {
 			charge_sound_stop_event = "stop_weapon_drakegun_cooldown_loop",
-			weapon_action_hand = "both",
 			fire_at_gaze_setting = false,
-			kind = "charge",
 			uninterruptible = true,
+			kind = "charge",
+			anim_end_event = "attack_finished",
 			do_not_validate_with_hold = true,
 			minimum_hold_time = 0.5,
 			vent_overcharge = true,
-			anim_end_event = "attack_finished",
+			weapon_action_hand = "both",
 			charge_time = 3,
 			hold_input = "weapon_reload_hold",
 			anim_event = "cooldown_start",
@@ -229,6 +229,11 @@ weapon_template.actions = {
 					end_time = math.huge
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -284,7 +289,7 @@ weapon_template.right_hand_unit = ""
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.drake_pistol.right
 weapon_template.left_hand_unit = ""
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.drake_pistol.left
-weapon_template.display_unit = "units/weapons/weapon_display/display_pistols"
+weapon_template.display_unit = "units/weapons/weapon_display/display_drakefire_pistols"
 weapon_template.wield_anim = "to_drakefire_pistols"
 weapon_template.crosshair_style = "arrows"
 weapon_template.fire_at_gaze_setting = "tobii_fire_at_gaze_drake_pistols"

@@ -81,6 +81,7 @@ BuffExtension.clear = function (self)
 		buff_extension_function_params.t = end_time
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
+		buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
 
 		self:_remove_sub_buff(buff, num_buffs, buff_extension_function_params)
 
@@ -132,6 +133,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 							existing_buff.duration = duration
 							existing_buff.end_time = end_time
 							existing_buff.attacker_unit = (params and params.attacker_unit) or nil
+							existing_buff.source_attacker_unit = (params and params.source_attacker_unit) or nil
 							local reapply_buff_func = sub_buff_template.reapply_buff_func
 
 							if reapply_buff_func then
@@ -140,6 +142,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 								buff_extension_function_params.t = start_time
 								buff_extension_function_params.end_time = end_time
 								buff_extension_function_params.attacker_unit = existing_buff.attacker_unit
+								buff_extension_function_params.source_attacker_unit = existing_buff.source_attacker_unit
 
 								BuffFunctionTemplates.functions[reapply_buff_func](self._unit, existing_buff, buff_extension_function_params, world)
 							end
@@ -181,6 +184,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 								buff_extension_function_params.t = start_time
 								buff_extension_function_params.end_time = buff.duration and buff.start_time + buff.duration
 								buff_extension_function_params.attacker_unit = buff.attacker_unit
+								buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
 
 								self:_remove_sub_buff(buff, j, buff_extension_function_params)
 
@@ -217,6 +221,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 			end
 
 			buff.attacker_unit = (params and params.attacker_unit) or nil
+			buff.source_attacker_unit = (params and params.source_attacker_unit) or nil
 			local bonus = sub_buff_template.bonus
 			local multiplier = sub_buff_template.multiplier
 			local proc_chance = sub_buff_template.proc_chance
@@ -280,6 +285,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 			buff_extension_function_params.t = start_time
 			buff_extension_function_params.end_time = end_time
 			buff_extension_function_params.attacker_unit = buff.attacker_unit
+			buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
 			local apply_buff_func = sub_buff_template.apply_buff_func
 
 			if apply_buff_func then

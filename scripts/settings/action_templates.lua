@@ -163,7 +163,8 @@ ActionTemplates.instant_equip_and_heal_self = {
 			local status_extension = ScriptUnit.extension(action_user, "status_system")
 			local is_alive = health_extension:is_alive() and not status_extension:is_disabled()
 			local has_max_health = health_extension:current_permanent_health_percent() == 1
-			local can_use_heal_item = is_alive and not has_max_health
+			local is_wounded = status_extension:is_wounded()
+			local can_use_heal_item = is_alive and (not has_max_health or is_wounded)
 
 			return heal_item_equipped and can_use_heal_item
 		end,
@@ -290,7 +291,8 @@ ActionTemplates.instant_equip_and_drink_healing_draught = {
 			local status_extension = ScriptUnit.extension(action_user, "status_system")
 			local is_alive = health_extension:is_alive() and not status_extension:is_disabled()
 			local has_max_health = health_extension:current_permanent_health_percent() == 1
-			local can_use_heal_item = is_alive and not has_max_health
+			local is_wounded = status_extension:is_wounded()
+			local can_use_heal_item = is_alive and (not has_max_health or is_wounded)
 
 			return has_healing_draught and can_use_heal_item
 		end,
@@ -460,7 +462,8 @@ ActionTemplates.action_use_consumable = {
 			local status_extension = ScriptUnit.extension(action_user, "status_system")
 			local is_alive = health_extension:is_alive() and not status_extension:is_disabled()
 			local has_max_health = health_extension:current_permanent_health_percent() == 1
-			local can_use_heal_item = is_alive and not has_max_health
+			local is_wounded = status_extension:is_wounded()
+			local can_use_heal_item = is_alive and (not has_max_health or is_wounded)
 
 			return has_health_kit and can_use_heal_item
 		end,
@@ -494,7 +497,8 @@ ActionTemplates.action_use_consumable = {
 			local status_extension = ScriptUnit.extension(action_user, "status_system")
 			local is_alive = health_extension:is_alive() and not status_extension:is_disabled()
 			local has_max_health = health_extension:current_permanent_health_percent() == 1
-			local can_use_heal_item = is_alive and not has_max_health
+			local is_wounded = status_extension:is_wounded()
+			local can_use_heal_item = is_alive and (not has_max_health or is_wounded)
 
 			return has_healing_draught and can_use_heal_item
 		end,

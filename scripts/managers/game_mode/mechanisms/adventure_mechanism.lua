@@ -91,6 +91,21 @@ AdventureMechanism.get_starting_level = function (self)
 	return LevelSettings.default_start_level
 end
 
+AdventureMechanism.allocate_slot = function (self, sender, profile)
+	local network_server = Managers.mechanism:network_server()
+	local slot_allocator = network_server.slot_allocator
+
+	if slot_allocator:is_free(profile) then
+		local local_player_id = 1
+
+		slot_allocator:allocate_slot(profile, sender, local_player_id)
+
+		return true
+	end
+
+	return false
+end
+
 AdventureMechanism.get_level_seed = function (self, level_seed, optional_system)
 	local weave_manager = Managers.weave
 
@@ -132,7 +147,21 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 		level_key = "inn_level"
 	end
 
+	if reason == "start_game" then
+		self._level_transition_handler:level_completed()
+	elseif reason == "won" or reason == "lost" then
+		self._level_transition_handler:set_next_level(level_key)
+	elseif reason == "reload" then
+		self._level_transition_handler:reload_level()
+	else
+		fassert(false, "Invalid end reason %q.", tostring(reason))
+	end
+
 	return level_key
+end
+
+AdventureMechanism.should_run_tutorial = function (self)
+	return true, "tutorial"
 end
 
 AdventureMechanism.start_next_round = function (self, level_transition_handler)

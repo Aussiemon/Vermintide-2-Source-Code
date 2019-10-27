@@ -26,6 +26,7 @@ end
 
 SplineCurve.recalc_splines = function (self, points)
 	self:_build_splines(self._splines, points, self._spline_class, 1)
+	self._movement:recalc_splines()
 end
 
 SplineCurve._build_splines = function (self, splines, points, spline_class)
@@ -47,6 +48,8 @@ SplineCurve._build_splines = function (self, splines, points, spline_class)
 		index = spline_class.next_index(points, index)
 		spline_index = spline_index + 1
 	end
+
+	self._num_points = #points - 1
 end
 
 function unpack_unbox(t, k)
@@ -63,7 +66,11 @@ end
 SplineCurve.draw = function (self, segments_per_spline, drawer, tangent_scale, color)
 	local spline_class = self._spline_class
 
-	for _, spline in ipairs(self._splines) do
+	for index, spline in ipairs(self._splines) do
+		if self._num_points < index then
+			return
+		end
+
 		local points = spline.points
 
 		spline_class.draw(segments_per_spline, drawer, tangent_scale, color, unpack_unbox(points))
@@ -72,10 +79,15 @@ end
 
 SplineCurve.length = function (self, segments_per_spline)
 	local spline_class = self._spline_class
+	local length = 0
 
-	for _, spline in ipairs(self._splines) do
+	for index, spline in ipairs(self._splines) do
+		if self._num_points < index then
+			break
+		end
+
 		local points = spline.points
-		length = spline_class.length(segments_per_spline, unpack_unbox(points))
+		length = length + spline_class.length(segments_per_spline, unpack_unbox(points))
 	end
 
 	return length
@@ -101,6 +113,10 @@ SplineCurve.get_point_at_distance = function (self, dist)
 	local travel_dist = 0
 
 	for i = 1, #spline_points, 1 do
+		if self._num_points < i then
+			break
+		end
+
 		local data = spline_points[i]
 		local segment_length = data.length
 
@@ -143,10 +159,16 @@ SplineMovementMetered.init = function (self, spline_curve, splines, spline_class
 	self._current_spline_index = 1
 	self._t = 0
 
-	self:_set_spline_lengths(splines, spline_class, 10)
+	self:_set_spline_lengths(splines, spline_class)
+end
+
+SplineMovementMetered.recalc_splines = function (self)
+	self:_set_spline_lengths(self._splines, self._spline_class)
 end
 
 SplineMovementMetered._set_spline_lengths = function (self, splines, spline_class, segments_per_spline)
+	segments_per_spline = segments_per_spline or 10
+
 	for index, spline in ipairs(splines) do
 		local points = spline.points
 		spline.length = spline_class.length(segments_per_spline, unpack_unbox(points))
@@ -220,6 +242,10 @@ SplineMovementHermiteInterpolatedMetered.init = function (self, spline_curve, sp
 	self:_build_subdivisions(subdivisions, splines, spline_class)
 end
 
+SplineMovementHermiteInterpolatedMetered.recalc_splines = function (self)
+	self:_set_spline_lengths(self._splines, self._spline_class)
+end
+
 SplineMovementHermiteInterpolatedMetered._build_subdivisions = function (self, subdivisions, splines, spline_class)
 	local first_point = spline_class.calc_point(0, unpack_unbox(splines[1].points))
 	local points = {
@@ -268,6 +294,8 @@ SplineMovementHermiteInterpolatedMetered._build_subdivisions = function (self, s
 end
 
 SplineMovementHermiteInterpolatedMetered._set_spline_lengths = function (self, splines, spline_class, segments_per_spline)
+	segments_per_spline = segments_per_spline or 10
+
 	for index, spline in ipairs(splines) do
 		local points = spline.points
 		spline.length = spline_class.length(segments_per_spline, unpack_unbox(points))

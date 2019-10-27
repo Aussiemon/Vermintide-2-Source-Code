@@ -289,11 +289,11 @@ AiUtils.poison_explode_unit = function (unit, action, blackboard)
 	local nav_tag_volume_layer = action.nav_tag_volume_layer
 	local extension_init_data = {
 		area_damage_system = {
-			dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
+			area_damage_template = "globadier_area_dot_damage",
 			invisible_unit = true,
 			player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 			area_ai_random_death_template = "area_poison_ai_random_death",
-			area_damage_template = "globadier_area_dot_damage",
+			dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
 			extra_dot_effect_name = "fx/chr_gutter_death",
 			damage_players = true,
 			aoe_dot_damage = aoe_dot_damage,
@@ -304,7 +304,8 @@ AiUtils.poison_explode_unit = function (unit, action, blackboard)
 			life_time = duration,
 			damage_source = blackboard.breed.name,
 			create_nav_tag_volume = create_nav_tag_volume,
-			nav_tag_volume_layer = nav_tag_volume_layer
+			nav_tag_volume_layer = nav_tag_volume_layer,
+			source_attacker_unit = unit
 		}
 	}
 	local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
@@ -337,7 +338,7 @@ AiUtils.warpfire_explode_unit = function (unit, blackboard)
 	Actor.set_collision_filter(actor, "filter_trigger")
 	Actor.set_scene_query_enabled(actor, false)
 	DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, 0, false)
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 
 	local position = POSITION_LOOKUP[unit]
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
@@ -375,7 +376,7 @@ AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit
 	local explosion_template_id = NetworkLookup.explosion_templates.chaos_zombie_explosion
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 
 	if delete_unit then
 		Managers.state.unit_spawner:mark_for_deletion(unit)
@@ -400,7 +401,7 @@ AiUtils.generic_mutator_explosion = function (unit, blackboard, explosion_templa
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 
 	local blood_dir = Quaternion.up(Unit.local_rotation(unit, 0))
 
@@ -418,7 +419,7 @@ AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 	Managers.state.unit_spawner:mark_for_deletion(exploding_unit)
 end
 
@@ -433,7 +434,7 @@ AiUtils.loot_rat_explosion = function (exploding_unit, owner_unit, blackboard, d
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
 
 	blackboard.delete_at_t = Managers.time:time("game") + 0.1
 end
@@ -548,9 +549,24 @@ AiUtils.calculate_bot_threat_time = function (bot_threat)
 end
 
 AiUtils.get_actual_attacker_unit = function (attacker_unit)
-	if ScriptUnit.has_extension(attacker_unit, "projectile_system") and not ScriptUnit.has_extension(attacker_unit, "limited_item_track_system") then
-		local projectile_extension = ScriptUnit.extension(attacker_unit, "projectile_system")
+	local projectile_extension = ScriptUnit.has_extension(attacker_unit, "projectile_system")
+
+	if projectile_extension and not ScriptUnit.has_extension(attacker_unit, "limited_item_track_system") then
 		attacker_unit = projectile_extension.owner_unit
+
+		return attacker_unit
+	end
+
+	local area_damage_system = ScriptUnit.has_extension(attacker_unit, "area_damage_system")
+
+	if area_damage_system then
+		local owner_player = area_damage_system.owner_player
+
+		if owner_player then
+			attacker_unit = owner_player.player_unit
+
+			return attacker_unit
+		end
 	end
 
 	return attacker_unit
@@ -1091,7 +1107,7 @@ end
 
 AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 	local tiny_font_size = 16
-	local tiny_font = "gw_arial_16"
+	local tiny_font = "arial"
 	local tiny_font_mtrl = "materials/fonts/" .. tiny_font
 	local resx = RESOLUTION_LOOKUP.res_w
 	local resy = RESOLUTION_LOOKUP.res_h

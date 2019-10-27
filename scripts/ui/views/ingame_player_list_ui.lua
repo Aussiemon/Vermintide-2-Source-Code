@@ -89,21 +89,8 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 		self:set_difficulty_name("")
 	end
 
-	local weave_manager = Managers.weave
-
-	if weave_manager then
-		local weave_template = weave_manager:get_active_weave_template()
-
-		if weave_template then
-			local weave_display_name = weave_template.tier .. ". " .. Localize(weave_template.display_name)
-			local wind = weave_template.wind
-			local wind_settings = WindSettings[wind]
-			local wind_display_name = wind_settings.display_name
-
-			self:set_level_name(weave_display_name)
-			self:set_difficulty_name(Localize(wind_display_name))
-		end
-	end
+	self:_setup_weave_display_info()
+	Managers.state.event:register(self, "weave_objective_synced", "event_weave_objective_synced")
 end
 
 IngamePlayerListUI.create_ui_elements = function (self)
@@ -316,6 +303,29 @@ IngamePlayerListUI._create_player_portrait = function (self, portrait_frame, por
 	self._player_portrait_widget = widget
 end
 
+IngamePlayerListUI._setup_weave_display_info = function (self)
+	if Managers.state.game_mode:game_mode_key() == "weave" then
+		local weave_manager = Managers.weave
+
+		if weave_manager then
+			local weave_template = weave_manager:get_active_weave_template()
+
+			if weave_template then
+				local weave_display_name = weave_template.tier .. ". " .. Localize(weave_template.display_name)
+				local wind = weave_template.wind
+				local wind_settings = WindSettings[wind]
+				local wind_display_name = wind_settings.display_name
+
+				self:set_level_name(weave_display_name)
+				self:set_difficulty_name(Localize(wind_display_name))
+			else
+				self:set_level_name("")
+				self:set_difficulty_name("")
+			end
+		end
+	end
+end
+
 IngamePlayerListUI.destroy = function (self)
 	if self.cursor_active then
 		ShowCursorStack.pop()
@@ -329,6 +339,7 @@ IngamePlayerListUI.destroy = function (self)
 		self.cursor_active = false
 	end
 
+	Managers.state.event:unregister("weave_objective_synced", self)
 	print("[IngamePlayerListUI] - Destroy")
 end
 
@@ -1151,6 +1162,10 @@ IngamePlayerListUI.show_profile_by_peer_id = function (self, peer_id)
 	elseif platform == "ps4" then
 		Managers.account:show_player_profile_with_account_id(peer_id)
 	end
+end
+
+IngamePlayerListUI.event_weave_objective_synced = function (self)
+	self:_setup_weave_display_info()
 end
 
 return

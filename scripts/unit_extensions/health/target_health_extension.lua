@@ -123,4 +123,8 @@ TargetHealthExtension.apply_client_predicted_damage = function (self, predicted_
 	return
 end
 
+TargetHealthExtension.get_max_health = function (self)
+	return self._max_health
+end
+
 return

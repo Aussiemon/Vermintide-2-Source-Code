@@ -105,8 +105,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	if extension_name == "ObjectiveUnitExtension" then
 		local server_only = Unit.get_data(unit, "objective_server_only")
-		local network_synced = Unit.get_data(unit, "network_synced")
-		local activate_func = nil
+		local network_synced, activate_func = nil
 
 		if Managers.player.is_server and not server_only then
 			function activate_func(extension, active)
@@ -114,6 +113,14 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 					Application.warning("[ObjectiveUnitExtension] Trying to set active on unit %q to %q when it's already %q", tostring(unit), active, extension.active)
 				else
 					extension.active = active
+					local level_transition_handler = Managers.state.game_mode.level_transition_handler
+					local level_key = level_transition_handler:get_current_level_keys()
+
+					if level_key == "inn_level" then
+						network_synced = Unit.get_data(unit, "network_synced")
+					else
+						network_synced = true
+					end
 
 					if network_synced then
 						local network_manager = Managers.state.network

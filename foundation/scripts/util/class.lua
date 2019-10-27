@@ -19,6 +19,7 @@ function class(class_table, ...)
 
 	if not class_table then
 		class_table = {
+			___is_class_metatable___ = true,
 			super = super,
 			__index = class_table,
 			new = function (self, ...)
@@ -51,6 +52,20 @@ function class(class_table, ...)
 	end
 
 	return class_table
+end
+
+function is_class_instance(object)
+	if type(object) ~= "table" then
+		return false
+	end
+
+	local metatable = getmetatable(object)
+
+	if metatable == nil then
+		return false
+	end
+
+	return rawget(metatable, "___is_class_metatable___") == true
 end
 
 return

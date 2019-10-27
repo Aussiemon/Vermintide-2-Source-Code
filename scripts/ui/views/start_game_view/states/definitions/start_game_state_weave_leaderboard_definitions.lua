@@ -1,8 +1,9 @@
 local window_default_settings = UISettings.game_start_windows
-local small_window_background = window_default_settings.background
-local small_window_frame = window_default_settings.frame
 local small_window_size = window_default_settings.size
 local small_window_spacing = window_default_settings.spacing
+local window_frame_name = "menu_frame_11"
+local window_frame = UIFrameSettings[window_frame_name]
+local window_frame_width = window_frame.texture_sizes.vertical[1]
 local large_window_frame = window_default_settings.large_window_frame
 local large_window_frame_width = UIFrameSettings[large_window_frame].texture_sizes.vertical[1]
 local inner_window_size = {
@@ -13,24 +14,22 @@ local window_size = {
 	inner_window_size[1] + 50,
 	inner_window_size[2]
 }
-local settings_window_size = window_default_settings.size
-local settings_window_frame = window_default_settings.frame
-local player_window_size = {
-	settings_window_size[1] * 2 + small_window_spacing,
-	100
-}
-local title_height = 40
+local option_tabs_height = 40
 local list_fade_height = 10
 local list_window_size = {
-	settings_window_size[1] * 2 + small_window_spacing,
-	settings_window_size[2] - (player_window_size[2] + title_height + 20)
+	window_size[1] - window_frame_width * 2,
+	window_size[2] - window_frame_width * 2
+}
+local list_mask_size = {
+	list_window_size[1] - 100,
+	list_window_size[2] - 280
 }
 local list_scrollbar_size = {
 	16,
-	list_window_size[2]
+	list_mask_size[2]
 }
 local list_entry_size = {
-	list_window_size[1] - 80,
+	list_mask_size[1] - 80,
 	48
 }
 local scenegraph_definition = {
@@ -150,20 +149,6 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	inner_window_header = {
-		vertical_alignment = "top",
-		parent = "inner_window",
-		horizontal_alignment = "center",
-		size = {
-			inner_window_size[1],
-			50
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
 	exit_button = {
 		vertical_alignment = "bottom",
 		parent = "window",
@@ -220,150 +205,30 @@ local scenegraph_definition = {
 			2
 		}
 	},
-	settings_window = {
-		vertical_alignment = "center",
-		parent = "inner_window",
-		horizontal_alignment = "left",
-		size = settings_window_size,
-		position = {
-			small_window_spacing / 2,
-			0,
-			1
-		}
-	},
-	season_title = {
-		vertical_alignment = "top",
-		parent = "settings_window",
-		horizontal_alignment = "center",
-		size = {
-			settings_window_size[1] - 50,
-			40
-		},
-		position = {
-			0,
-			-80,
-			3
-		}
-	},
-	season_title_divider = {
-		vertical_alignment = "center",
-		parent = "season_title",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
-		position = {
-			0,
-			-30,
-			-1
-		}
-	},
-	setting_stepper_1 = {
-		vertical_alignment = "top",
-		parent = "season_title_divider",
-		horizontal_alignment = "center",
-		size = {
-			settings_window_size[1] - 100,
-			100
-		},
-		position = {
-			0,
-			-51,
-			4
-		}
-	},
-	setting_stepper_2 = {
-		vertical_alignment = "top",
-		parent = "setting_stepper_1",
-		horizontal_alignment = "center",
-		size = {
-			settings_window_size[1] - 100,
-			100
-		},
-		position = {
-			0,
-			-105,
-			0
-		}
-	},
-	setting_stepper_3 = {
-		vertical_alignment = "top",
-		parent = "setting_stepper_2",
-		horizontal_alignment = "center",
-		size = {
-			settings_window_size[1] - 100,
-			100
-		},
-		position = {
-			0,
-			-105,
-			0
-		}
-	},
-	refresh_button = {
-		vertical_alignment = "bottom",
-		parent = "settings_window",
-		horizontal_alignment = "center",
-		size = {
-			settings_window_size[1] - 100,
-			72
-		},
-		position = {
-			0,
-			20,
-			3
-		}
-	},
-	player_window = {
-		vertical_alignment = "bottom",
-		parent = "inner_window",
-		horizontal_alignment = "right",
-		size = player_window_size,
-		position = {
-			-small_window_spacing / 2,
-			40,
-			1
-		}
-	},
-	player_entry = {
-		vertical_alignment = "center",
-		parent = "player_window",
-		horizontal_alignment = "left",
-		size = list_entry_size,
-		position = {
-			25,
-			0,
-			10
-		}
-	},
 	list_window = {
-		vertical_alignment = "top",
-		parent = "player_window",
-		horizontal_alignment = "right",
+		vertical_alignment = "center",
+		parent = "window",
+		horizontal_alignment = "left",
 		size = list_window_size,
 		position = {
+			window_frame_width,
 			0,
-			list_window_size[2] + 20,
 			1
 		}
 	},
 	list_mask = {
-		vertical_alignment = "center",
+		vertical_alignment = "bottom",
 		parent = "list_window",
 		horizontal_alignment = "center",
-		size = {
-			list_window_size[1],
-			list_window_size[2]
-		},
+		size = list_mask_size,
 		position = {
 			0,
-			0,
+			80,
 			3
 		}
 	},
 	list_scrollbar = {
-		vertical_alignment = "top",
+		vertical_alignment = "bottom",
 		parent = "list_mask",
 		horizontal_alignment = "right",
 		size = list_scrollbar_size,
@@ -398,9 +263,37 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	setting_stepper_1 = {
+		vertical_alignment = "top",
+		parent = "list_window",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1] / 3,
+			85
+		},
+		position = {
+			list_window_size[1] / 5,
+			-(option_tabs_height + 13),
+			4
+		}
+	},
+	setting_stepper_2 = {
+		vertical_alignment = "top",
+		parent = "list_window",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1] / 3,
+			85
+		},
+		position = {
+			-list_window_size[1] / 5,
+			-(option_tabs_height + 13),
+			4
+		}
+	},
 	loading_icon = {
 		vertical_alignment = "center",
-		parent = "list_window",
+		parent = "list_mask",
 		horizontal_alignment = "center",
 		size = {
 			150,
@@ -414,15 +307,15 @@ local scenegraph_definition = {
 	},
 	list_title_rank = {
 		vertical_alignment = "top",
-		parent = "list_window",
+		parent = "list_mask",
 		horizontal_alignment = "left",
 		size = {
 			90,
 			40
 		},
 		position = {
-			30,
-			40,
+			112,
+			45,
 			1
 		}
 	},
@@ -435,7 +328,7 @@ local scenegraph_definition = {
 			40
 		},
 		position = {
-			438,
+			748,
 			0,
 			0
 		}
@@ -449,7 +342,7 @@ local scenegraph_definition = {
 			40
 		},
 		position = {
-			152,
+			306,
 			0,
 			0
 		}
@@ -463,9 +356,107 @@ local scenegraph_definition = {
 			40
 		},
 		position = {
-			298,
+			261,
 			0,
 			0
+		}
+	},
+	option_tabs = {
+		vertical_alignment = "top",
+		parent = "list_window",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1],
+			option_tabs_height
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	option_tabs_segments = {
+		vertical_alignment = "bottom",
+		parent = "option_tabs",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1],
+			0
+		},
+		position = {
+			0,
+			5,
+			1
+		}
+	},
+	option_tabs_segments_top = {
+		vertical_alignment = "top",
+		parent = "option_tabs",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1],
+			0
+		},
+		position = {
+			0,
+			-7,
+			10
+		}
+	},
+	option_tabs_segments_bottom = {
+		vertical_alignment = "bottom",
+		parent = "option_tabs",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1],
+			0
+		},
+		position = {
+			0,
+			3,
+			10
+		}
+	},
+	option_tabs_divider = {
+		vertical_alignment = "bottom",
+		parent = "option_tabs",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1] + 6,
+			0
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	refresh_button = {
+		vertical_alignment = "bottom",
+		parent = "list_mask",
+		horizontal_alignment = "left",
+		size = {
+			30,
+			30
+		},
+		position = {
+			0,
+			-50,
+			3
+		}
+	},
+	refresh_text = {
+		vertical_alignment = "center",
+		parent = "refresh_button",
+		horizontal_alignment = "left",
+		size = {
+			list_window_size[1] - 40,
+			30
+		},
+		position = {
+			40,
+			0,
+			1
 		}
 	}
 }
@@ -485,47 +476,42 @@ local title_text_style = {
 		2
 	}
 }
-local no_placement_text_style = {
-	font_size = 28,
-	use_shadow = true,
-	localize = false,
-	dynamic_font_size_word_wrap = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local season_title_text_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
-	font_size = 38,
-	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
 local list_title_text_style = {
 	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	font_size = 24,
+	font_size = 20,
 	horizontal_alignment = "center",
 	vertical_alignment = "bottom",
 	dynamic_font_size = true,
 	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	text_color = {
+		255,
+		120,
+		120,
+		120
+	},
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local refresh_text_style = {
+	use_shadow = true,
+	upper_case = false,
+	localize = false,
+	font_size = 18,
+	horizontal_alignment = "left",
+	vertical_alignment = "bottom",
+	dynamic_font_size = true,
+	font_type = "hell_shark",
+	text_color = {
+		255,
+		120,
+		120,
+		120
+	},
 	offset = {
 		0,
 		0,
@@ -561,7 +547,9 @@ local function create_list_mask(scenegraph_id, size, fade_height)
 	local content = {
 		mask_texture = "mask_rect",
 		mask_edge = "mask_rect_edge_fade",
-		hotspot = {}
+		hotspot = {
+			allow_multi_hover = true
+		}
 	}
 	local style = {
 		mask = {
@@ -666,10 +654,6 @@ local function create_stepper(scenegraph_id, size)
 		element = {
 			passes = {
 				{
-					pass_type = "rect",
-					style_id = "button_hotspot_left"
-				},
-				{
 					style_id = "title_text",
 					pass_type = "text",
 					text_id = "title_text"
@@ -681,8 +665,8 @@ local function create_stepper(scenegraph_id, size)
 				},
 				{
 					pass_type = "texture",
-					style_id = "title_background",
-					texture_id = "title_background"
+					style_id = "setting_background",
+					texture_id = "setting_background"
 				},
 				{
 					style_id = "setting_text",
@@ -720,7 +704,7 @@ local function create_stepper(scenegraph_id, size)
 		},
 		content = {
 			title_text = "title_text",
-			title_background = "menu_subheader_bg",
+			setting_background = "menu_subheader_bg",
 			setting_text = "setting_text",
 			arrow_icon = {
 				texture_id = "settings_arrow_normal",
@@ -739,24 +723,11 @@ local function create_stepper(scenegraph_id, size)
 			button_hotspot_right = {}
 		},
 		style = {
-			debug_rect = {
-				color = {
-					150,
-					30,
-					30,
-					30
-				},
-				offset = {
-					0,
-					0,
-					1
-				}
-			},
-			title_background = {
-				vertical_alignment = "top",
+			setting_background = {
+				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
 				texture_size = {
-					467,
+					400,
 					59
 				},
 				color = {
@@ -767,23 +738,23 @@ local function create_stepper(scenegraph_id, size)
 				},
 				offset = {
 					0,
-					0,
+					-10,
 					0
 				}
 			},
 			title_text = {
 				word_wrap = true,
 				upper_case = true,
-				font_size = 24,
+				font_size = 20,
 				pixel_perfect = true,
 				horizontal_alignment = "center",
-				vertical_alignment = "center",
+				vertical_alignment = "bottom",
 				dynamic_font = true,
 				font_type = "hell_shark_header",
-				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					0,
-					size[2] - 59,
+					size[2] - 50,
 					4
 				},
 				size = {
@@ -794,16 +765,16 @@ local function create_stepper(scenegraph_id, size)
 			title_text_shadow = {
 				word_wrap = true,
 				upper_case = true,
-				font_size = 24,
+				font_size = 20,
 				pixel_perfect = true,
 				horizontal_alignment = "center",
-				vertical_alignment = "center",
+				vertical_alignment = "bottom",
 				dynamic_font = true,
 				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					2,
-					size[2] - 59 - 2,
+					size[2] - 50 - 2,
 					3
 				},
 				size = {
@@ -812,12 +783,13 @@ local function create_stepper(scenegraph_id, size)
 				}
 			},
 			setting_text = {
-				font_size = 24,
 				word_wrap = true,
+				font_size = 20,
 				pixel_perfect = true,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
@@ -831,12 +803,13 @@ local function create_stepper(scenegraph_id, size)
 				}
 			},
 			setting_text_shadow = {
-				font_size = 24,
 				word_wrap = true,
+				font_size = 20,
 				pixel_perfect = true,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
@@ -901,85 +874,276 @@ local function create_stepper(scenegraph_id, size)
 	}
 end
 
+local function create_window_divider(scenegraph_id, size)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "bottom_edge",
+					style_id = "bottom_edge",
+					pass_type = "tiled_texture"
+				},
+				{
+					texture_id = "edge_holder_left",
+					style_id = "edge_holder_left",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "edge_holder_right",
+					style_id = "edge_holder_right",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			edge_holder_right = "menu_frame_09_divider_right",
+			edge_holder_left = "menu_frame_09_divider_left",
+			bottom_edge = "menu_frame_09_divider"
+		},
+		style = {
+			bottom_edge = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					5,
+					0,
+					6
+				},
+				size = {
+					size[1] - 10,
+					5
+				},
+				texture_tiling_size = {
+					size[1] - 10,
+					5
+				}
+			},
+			edge_holder_left = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					3,
+					-6,
+					10
+				},
+				size = {
+					9,
+					17
+				}
+			},
+			edge_holder_right = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 12,
+					-6,
+					10
+				},
+				size = {
+					9,
+					17
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+local function create_refresh_button(scenegraph_id, size)
+	local frame_settings = UIFrameSettings.menu_frame_09
+	local element = {
+		passes = {
+			{
+				style_id = "button",
+				pass_type = "hotspot",
+				content_id = "button_hotspot"
+			},
+			{
+				pass_type = "rect",
+				style_id = "button"
+			},
+			{
+				pass_type = "texture_frame",
+				style_id = "frame",
+				texture_id = "frame"
+			},
+			{
+				pass_type = "texture",
+				style_id = "icon",
+				texture_id = "icon",
+				content_check_function = function (content)
+					return not content.button_hotspot.is_hover
+				end
+			},
+			{
+				pass_type = "texture",
+				style_id = "icon_hover",
+				texture_id = "icon",
+				content_check_function = function (content)
+					return content.button_hotspot.is_hover
+				end
+			},
+			{
+				pass_type = "texture",
+				style_id = "hover",
+				texture_id = "hover",
+				content_check_function = function (content)
+					return content.button_hotspot.is_hover
+				end
+			}
+		}
+	}
+	local content = {
+		icon = "leaderboard_icon_refresh",
+		hover = "button_state_default_2",
+		button_hotspot = {},
+		frame = frame_settings.texture
+	}
+	local style = {
+		button = {
+			color = Colors.get_color_table_with_alpha("black", 200),
+			offset = {
+				0,
+				0,
+				0
+			}
+		},
+		icon = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				15,
+				13
+			},
+			color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+			offset = {
+				0,
+				0,
+				3
+			}
+		},
+		icon_hover = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				15,
+				13
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				0,
+				0,
+				3
+			}
+		},
+		frame = {
+			texture_size = frame_settings.texture_size,
+			texture_sizes = frame_settings.texture_sizes,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				2
+			}
+		},
+		hover = {
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				1
+			}
+		}
+	}
+	local widget = {
+		element = element,
+		content = content,
+		style = style,
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return widget
+end
+
 local disable_with_gamepad = true
 local widgets = {
 	window = UIWidgets.create_frame("window", scenegraph_definition.window.size, "menu_frame_11"),
-	window_background = UIWidgets.create_tiled_texture("window_background", "menu_frame_bg_01", {
-		960,
-		1080
-	}, nil, nil, {
+	window_background = UIWidgets.create_tiled_texture("window_background", "quests_background", {
+		50,
+		156
+	}, {
+		0,
+		0,
+		-1
+	}, nil, {
 		255,
-		100,
-		100,
-		100
+		200,
+		200,
+		200
 	}),
-	window_background_mask = UIWidgets.create_tiled_texture("window_background_mask", "menu_frame_bg_01", {
-		960,
-		1080
-	}, nil, true),
 	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("menu_close"), 24, nil, "button_detail_04", 34, disable_with_gamepad),
 	title = UIWidgets.create_simple_texture("frame_title_bg", "title"),
 	title_bg = UIWidgets.create_background("title_bg", scenegraph_definition.title_bg.size, "menu_frame_bg_02"),
 	title_text = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title"), "title_text", nil, nil, title_text_style),
+	option_tabs_divider = create_window_divider("option_tabs_divider", scenegraph_definition.option_tabs_divider.size),
 	list_title_rank = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_rank"), "list_title_rank", nil, nil, list_title_text_style),
 	list_title_name = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_player_name"), "list_title_name", nil, nil, list_title_text_style),
 	list_title_weave = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_number"), "list_title_weave", nil, nil, list_title_text_style),
 	list_title_score = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_score"), "list_title_score", nil, nil, list_title_text_style),
-	settings_window = UIWidgets.create_frame("settings_window", scenegraph_definition.settings_window.size, settings_window_frame, 20),
-	settings_background = UIWidgets.create_tiled_texture("settings_window", "quests_background", {
-		50,
-		156
-	}, nil, nil, {
-		255,
-		200,
-		200,
-		200
-	}),
-	settings_background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "settings_window", nil, nil, nil, 2),
-	season_title = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_season_title"), "season_title", nil, nil, season_title_text_style),
-	season_title_divider = UIWidgets.create_simple_texture("divider_01_top", "season_title_divider"),
-	refresh_button = UIWidgets.create_default_button("refresh_button", scenegraph_definition.refresh_button.size, nil, nil, Localize("menu_description_refresh"), 34, nil, nil, nil, disable_with_gamepad),
-	list_window = UIWidgets.create_frame("list_window", scenegraph_definition.list_window.size, settings_window_frame, 20),
-	list_background = UIWidgets.create_tiled_texture("list_window", "quests_background", {
-		50,
-		156
-	}, nil, nil, {
-		255,
-		200,
-		200,
-		200
-	}),
-	list_background_fade = UIWidgets.create_frame("list_window", scenegraph_definition.list_window.size, "frame_inner_glow_01", 2, {
-		255,
-		0,
-		0,
-		0
-	}),
+	refresh_button = create_refresh_button("refresh_button", scenegraph_definition.refresh_button.size),
+	refresh_text = UIWidgets.create_simple_text(Localize("menu_description_refresh"), "refresh_text", nil, nil, refresh_text_style),
+	list_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "list_window", nil, nil, nil, -1),
 	list_scrollbar = UIWidgets.create_chain_scrollbar("list_scrollbar", "list_mask", scenegraph_definition.list_scrollbar.size),
 	list_mask = create_list_mask("list_mask", scenegraph_definition.list_mask.size, list_fade_height),
-	player_window = UIWidgets.create_frame("player_window", scenegraph_definition.player_window.size, settings_window_frame, 20),
-	player_window_background = UIWidgets.create_tiled_texture("player_window", "quests_background", {
-		50,
-		156
-	}, nil, nil, {
-		255,
-		200,
-		200,
-		200
-	}),
-	player_window_background_fade = UIWidgets.create_frame("player_window", scenegraph_definition.player_window.size, "frame_inner_glow_01", 2, {
+	list_mask_window = UIWidgets.create_rect_with_outer_frame("list_mask", scenegraph_definition.list_mask.size, "shadow_frame_02", nil, {
+		100,
+		0,
+		0,
+		0
+	}, {
 		255,
 		0,
 		0,
 		0
 	}),
-	player_entry = UIWidgets.create_leaderboard_entry_definition("player_entry", scenegraph_definition.player_entry.size),
-	no_placement_text = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_no_placement_text"), "player_entry", nil, nil, no_placement_text_style),
 	setting_stepper_1 = create_stepper("setting_stepper_1", scenegraph_definition.setting_stepper_1.size),
 	setting_stepper_2 = create_stepper("setting_stepper_2", scenegraph_definition.setting_stepper_2.size),
 	loading_icon = UIWidgets.create_leaderboard_loading_icon("loading_icon", {
-		"list_window",
-		"player_window"
+		"list_mask"
 	})
 }
 local animation_definitions = {

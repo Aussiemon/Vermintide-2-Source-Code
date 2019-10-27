@@ -1,5 +1,4 @@
-stingray.WwiseVisualization = stingray.WwiseVisualization or {}
-WwiseVisualization = stingray.WwiseVisualization
+WwiseVisualization = WwiseVisualization or {}
 local Unit = stingray.Unit
 local Vector3 = stingray.Vector3
 local LineObject = stingray.LineObject

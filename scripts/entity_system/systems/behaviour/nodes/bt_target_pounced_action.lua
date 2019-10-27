@@ -219,8 +219,10 @@ BTTargetPouncedAction.direct_damage = function (unit, blackboard)
 	local base_damage = action.damage
 	local multiplier = 1 + normalized_time * action.final_damage_multiplier
 	base_damage = base_damage * multiplier
+	local jump_data = blackboard.jump_data
+	local target_unit = jump_data.target_unit
 
-	AiUtils.damage_target(blackboard.target_unit, unit, blackboard.action, base_damage)
+	AiUtils.damage_target(target_unit, unit, blackboard.action, base_damage)
 end
 
 return

@@ -745,6 +745,26 @@ go_type_table = {
 
 			return data_table
 		end,
+		prop_projectile_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+			local network_position = locomotion_extension.network_position
+			local network_rotation = locomotion_extension.network_rotation
+			local network_velocity = locomotion_extension.network_velocity
+			local network_angular_velocity = locomotion_extension.network_angular_velocity
+			local data_table = {
+				go_type = NetworkLookup.go_types.prop_projectile_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0),
+				network_position = network_position,
+				network_rotation = network_rotation,
+				network_velocity = network_velocity,
+				network_angular_velocity = network_angular_velocity,
+				debug_pos = Unit.local_position(unit, 0)
+			}
+
+			return data_table
+		end,
 		pickup_projectile_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
 			local network_position = locomotion_extension.network_position
@@ -853,6 +873,20 @@ go_type_table = {
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
 				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+			}
+
+			return data_table
+		end,
+		versus_volume_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local versus_objective_ext = ScriptUnit.extension(unit, "versus_objective_system")
+			local objective_name = versus_objective_ext:objective_name()
+			local data_table = {
+				go_type = NetworkLookup.go_types.versus_volume_objective_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0),
+				scale = Unit.local_scale(unit, 0)[1],
+				objective_name = NetworkLookup.versus_objective_names[objective_name]
 			}
 
 			return data_table
@@ -1280,6 +1314,7 @@ go_type_table = {
 			local player_screen_effect_name = area_damage_system.player_screen_effect_name
 			local dot_effect_name = area_damage_system.dot_effect_name
 			local area_damage_template = area_damage_system.area_damage_template
+			local source_attacker_unit = area_damage_system.source_attacker_unit
 			local network_manager = Managers.state.network
 			local data_table = {
 				go_type = NetworkLookup.go_types.aoe_projectile_unit,
@@ -1303,6 +1338,7 @@ go_type_table = {
 				player_screen_effect_name = NetworkLookup.effects[player_screen_effect_name],
 				dot_effect_name = NetworkLookup.effects[dot_effect_name],
 				area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
+				source_attacker_unit = network_manager:unit_game_object_id(source_attacker_unit),
 				damage_source_id = NetworkLookup.damage_sources[damage_source]
 			}
 
@@ -1368,7 +1404,7 @@ go_type_table = {
 		liquid_aoe_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local liquid_area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
 			local liquid_area_damage_template = liquid_area_damage_extension._liquid_area_damage_template
-			local source_unit = liquid_area_damage_extension._source_unit
+			local source_unit = liquid_area_damage_extension._source_attacker_unit
 			local network_manager = Managers.state.network
 			local data_table = {
 				go_type = NetworkLookup.go_types.liquid_aoe_unit,
@@ -1405,6 +1441,7 @@ go_type_table = {
 			local extra_dot_effect_name = area_damage_extension.extra_dot_effect_name
 			local explosion_template_name = area_damage_extension.explosion_template_name
 			local owner_player = area_damage_extension.owner_player
+			local source_attacker_unit = area_damage_extension.source_attacker_unit
 
 			if dot_effect_name == nil then
 				dot_effect_name = "n/a"
@@ -1428,6 +1465,12 @@ go_type_table = {
 				owner_player_id = owner_player.game_object_id
 			end
 
+			local source_attacker_unit_id = NetworkConstants.invalid_game_object_id
+
+			if source_attacker_unit then
+				source_attacker_unit_id = Managers.state.network:unit_game_object_id(source_attacker_unit)
+			end
+
 			local data_table = {
 				go_type = NetworkLookup.go_types.aoe_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
@@ -1444,7 +1487,8 @@ go_type_table = {
 				invisible_unit = invisible_unit,
 				area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 				explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name],
-				owner_player_id = owner_player_id
+				owner_player_id = owner_player_id,
+				source_attacker_unit_id = source_attacker_unit_id
 			}
 
 			return data_table
@@ -3015,6 +3059,23 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
+		prop_projectile_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local network_position = GameSession.game_object_field(game_session, go_id, "network_position")
+			local network_rotation = GameSession.game_object_field(game_session, go_id, "network_rotation")
+			local network_velocity = GameSession.game_object_field(game_session, go_id, "network_velocity")
+			local network_angular_velocity = GameSession.game_object_field(game_session, go_id, "network_angular_velocity")
+			local extension_init_data = {
+				projectile_locomotion_system = {
+					network_position = network_position,
+					network_rotation = network_rotation,
+					network_velocity = network_velocity,
+					network_angular_velocity = network_angular_velocity
+				}
+			}
+			local unit_template_name = "prop_projectile_unit"
+
+			return unit_template_name, extension_init_data
+		end,
 		pickup_projectile_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local network_position = GameSession.game_object_field(game_session, go_id, "network_position")
 			local network_rotation = GameSession.game_object_field(game_session, go_id, "network_rotation")
@@ -3122,6 +3183,19 @@ go_type_table = {
 				hit_reaction_system = {}
 			}
 			local unit_template_name = "pickup_training_dummy_unit"
+
+			return unit_template_name, extension_init_data
+		end,
+		versus_volume_objective_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
+			local scale = GameSession.game_object_field(game_session, go_id, "scale")
+			local extension_init_data = {
+				versus_objective_system = {
+					objective_name = NetworkLookup.versus_objective_names[objective_name],
+					scale = Vector3(scale, scale, scale)
+				}
+			}
+			local unit_template_name = "versus_volume_objective_unit"
 
 			return unit_template_name, extension_init_data
 		end,
@@ -3551,7 +3625,8 @@ go_type_table = {
 			local target_vector = GameSession.game_object_field(game_session, go_id, "target_vector")
 			local initial_position = GameSession.game_object_field(game_session, go_id, "initial_position")
 			local trajectory_template_name = GameSession.game_object_field(game_session, go_id, "trajectory_template_name")
-			local owner_unit = GameSession.game_object_field(game_session, go_id, "owner_unit")
+			local owner_unit_id = GameSession.game_object_field(game_session, go_id, "owner_unit")
+			local source_attacker_unit = GameSession.game_object_field(game_session, go_id, "source_attacker_unit")
 			local server_side_raycast = GameSession.game_object_field(game_session, go_id, "server_side_raycast")
 			local collision_filter_id = GameSession.game_object_field(game_session, go_id, "collision_filter")
 			local impact_template_name = GameSession.game_object_field(game_session, go_id, "impact_template_name")
@@ -3565,7 +3640,9 @@ go_type_table = {
 			local dot_effect_name = GameSession.game_object_field(game_session, go_id, "dot_effect_name")
 			local area_damage_template = GameSession.game_object_field(game_session, go_id, "area_damage_template")
 			local damage_source_id = GameSession.game_object_field(game_session, go_id, "damage_source_id")
-			local owner_unit = Managers.state.unit_storage:unit(owner_unit)
+			local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
+			local owner_player = Managers.player:unit_owner(owner_unit)
+			local source_attacker_unit = Managers.state.unit_storage:unit(source_attacker_unit)
 			local extension_init_data = {
 				projectile_locomotion_system = {
 					is_husk = true,
@@ -3596,7 +3673,9 @@ go_type_table = {
 					player_screen_effect_name = NetworkLookup.effects[player_screen_effect_name],
 					dot_effect_name = NetworkLookup.effects[dot_effect_name],
 					area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
-					damage_source = NetworkLookup.damage_sources[damage_source_id]
+					damage_source = NetworkLookup.damage_sources[damage_source_id],
+					source_attacker_unit = source_attacker_unit,
+					owner_player = owner_player
 				}
 			}
 			local unit_template_name = "aoe_projectile_unit"
@@ -3692,6 +3771,7 @@ go_type_table = {
 			local extra_dot_effect_name = GameSession.game_object_field(game_session, go_id, "extra_dot_effect_name")
 			local explosion_template_name = GameSession.game_object_field(game_session, go_id, "explosion_template_name")
 			local owner_player_id = GameSession.game_object_field(game_session, go_id, "owner_player_id")
+			local source_attacker_unit_id = GameSession.game_object_field(game_session, go_id, "source_attacker_unit_id")
 			extra_dot_effect_name = NetworkLookup.effects[extra_dot_effect_name]
 
 			if extra_dot_effect_name == "n/a" then
@@ -3733,6 +3813,12 @@ go_type_table = {
 				owner_player = Managers.player:player_from_game_object_id(owner_player_id)
 			end
 
+			local source_attacker_unit = nil
+
+			if source_attacker_unit_id ~= NetworkConstants.invalid_game_object_id then
+				source_attacker_unit = Managers.state.unit_storage:unit(source_attacker_unit_id)
+			end
+
 			local extension_init_data = {
 				area_damage_system = {
 					aoe_dot_damage = aoe_dot_damage,
@@ -3747,7 +3833,8 @@ go_type_table = {
 					extra_dot_effect_name = extra_dot_effect_name,
 					area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 					explosion_template_name = explosion_template_name,
-					owner_player = owner_player
+					owner_player = owner_player,
+					source_attacker_unit = source_attacker_unit
 				}
 			}
 			local unit_template_name = "aoe_unit"

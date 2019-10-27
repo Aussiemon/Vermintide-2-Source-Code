@@ -100,6 +100,14 @@ MixerManager.cb_open_session = function (self, result_data)
 		self._connected = true
 
 		Mixer.set_ready(true)
+
+		if Managers.player.is_server then
+			local lobby = Managers.state.network:lobby()
+			local lobby_data_table = lobby:get_stored_lobby_data()
+			lobby_data_table.twitch_enabled = "true"
+
+			lobby:set_lobby_data(lobby_data_table)
+		end
 	end
 
 	self._connecting = false
@@ -119,6 +127,14 @@ MixerManager.cb_close_session = function (self, result_data)
 		end
 	elseif self._disconnect_success_callback then
 		self._disconnect_success_callback()
+	end
+
+	if Managers.player.is_server then
+		local lobby = Managers.state.network:lobby()
+		local lobby_data_table = lobby:get_stored_lobby_data()
+		lobby_data_table.twitch_enabled = "false"
+
+		lobby:set_lobby_data(lobby_data_table)
 	end
 
 	self._connected = false

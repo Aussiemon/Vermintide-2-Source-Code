@@ -288,7 +288,7 @@ local generic_input_actions = {
 	default = {
 		{
 			input_action = "confirm",
-			priority = 1,
+			priority = 2,
 			description_text = "button_ok"
 		}
 	}

@@ -230,7 +230,31 @@ HeroWindowWeaveProperties._selected_unit_name = function (self)
 	return params.selected_unit_name
 end
 
+HeroWindowWeaveProperties._setup_definitions = function (self)
+	if self._parent:gamepad_style_active() then
+		definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_properties_console_definitions")
+	else
+		definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_properties_definitions")
+	end
+
+	top_widget_definitions = definitions.top_widgets
+	bottom_widget_definitions = definitions.bottom_widgets
+	bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
+	top_hdr_widget_definitions = definitions.top_hdr_widgets
+	scenegraph_definition = definitions.scenegraph_definition
+	animation_definitions = definitions.animation_definitions
+	scrollbar_widget_definition = definitions.scrollbar_widget
+	create_menu_option_trait_definition = definitions.create_menu_option_trait_definition
+	create_menu_option_talent_definition = definitions.create_menu_option_talent_definition
+	create_menu_option_property_definition = definitions.create_menu_option_property_definition
+	create_trait_slot_definition = definitions.create_trait_slot_definition
+	create_talent_slot_definition = definitions.create_talent_slot_definition
+	create_property_slot_definition = definitions.create_property_slot_definition
+end
+
 HeroWindowWeaveProperties.create_ui_elements = function (self, params, offset)
+	self:_setup_definitions()
+
 	if self._viewport_widget then
 		UIWidget.destroy(self._ui_renderer, self._viewport_widget)
 
@@ -1721,7 +1745,7 @@ HeroWindowWeaveProperties._setup_upgrade_tooltip = function (self, magic_level, 
 
 		if is_item then
 			local power_level_per_magic_level = PowerLevelFromMagicLevel.power_level_per_magic_level
-			upgrade_tooltip_data.upgrade_power_text = "+" .. power_level_per_magic_level .. " Power"
+			upgrade_tooltip_data.upgrade_power_text = "+" .. power_level_per_magic_level .. " " .. Localize("menu_weave_forge_loadout_power_title")
 		end
 	end
 
@@ -2602,7 +2626,7 @@ end
 
 HeroWindowWeaveProperties._draw = function (self, dt)
 	local parent = self._parent
-	local ui_renderer = self._ui_renderer
+	local ui_renderer = self._parent:get_ui_renderer()
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = parent:window_input_service()
@@ -2863,7 +2887,8 @@ HeroWindowWeaveProperties.cb_hero_unit_spawned_skin_preview = function (self, wo
 	local preview_items = career_settings.preview_items
 
 	if preview_items then
-		for _, item_name in ipairs(preview_items) do
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
 			local item_template = ItemMasterList[item_name]
 			local slot_type = item_template.slot_type
 
@@ -2896,7 +2921,8 @@ HeroWindowWeaveProperties.cb_hero_unit_spawned_hat_preview = function (self, wor
 	world_previewer:equip_item(hat_item_name, hat_slot)
 
 	if preview_items then
-		for _, item_name in ipairs(preview_items) do
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
 			local item_template = ItemMasterList[item_name]
 			local slot_type = item_template.slot_type
 

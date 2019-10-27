@@ -109,6 +109,11 @@ UICleanUI.update = function (self, dt)
 
 	local equipment_background = hud:component("EquipmentUI")
 	local gamepad_equipment_background = hud:component("GamePadEquipmentUI")
+
+	if not equipment_background or not gamepad_equipment_background then
+		return
+	end
+
 	local ammo_world_position = equipment_background.ui_scenegraph.ammo_background.world_position
 	local ammo_background_size = equipment_background.ui_scenegraph.ammo_background.size
 	local equipment_world_position = equipment_background.ui_scenegraph.background_panel.world_position

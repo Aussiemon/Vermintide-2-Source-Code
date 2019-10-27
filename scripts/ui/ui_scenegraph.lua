@@ -420,7 +420,7 @@ local default_size = {
 local draw_color = Colors.get_color_table_with_alpha("maroon", 64)
 local draw_text_color = Colors.get_color_table_with_alpha("white", 255)
 local font_size = 10
-local font_name = "gw_arial_16"
+local font_name = "arial"
 local font_mtrl = "materials/fonts/" .. font_name
 
 local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph)

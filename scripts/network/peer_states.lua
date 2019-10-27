@@ -9,10 +9,11 @@ PeerStates.Connecting = {
 		self.resend_timer = time_between_resend_rpc_notify_connected
 		self.resend_post_game_timer = time_between_resend_rpc_notify_connected
 	end,
-	rpc_notify_lobby_joined = function (self, wanted_profile_index, wanted_career_index, clan_tag)
+	rpc_notify_lobby_joined = function (self, wanted_profile_index, wanted_career_index, clan_tag, account_id)
 		self.num_players = 1
 		self.has_received_rpc_notify_lobby_joined = true
 		self.clan_tag = clan_tag
+		self.account_id = account_id
 
 		printf("[PSM] Peer %s joined. Want to use profile index %q", tostring(self.peer_id), tostring(wanted_profile_index), tostring(clan_tag))
 
@@ -43,6 +44,13 @@ PeerStates.Connecting = {
 
 		if self.server.level_key == "prologue" and self.peer_id ~= self.server.my_peer_id then
 			self.server:disconnect_peer(self.peer_id, "host_plays_prologue")
+
+			return PeerStates.Disconnecting
+		end
+
+		if self.server.lobby_host:lost_connection_to_lobby() and self.peer_id ~= self.server.my_peer_id then
+			printf("[PSM] Disconnecting player (%s) due to no connection with our own lobby", self.peer_id)
+			self.server:disconnect_peer(self.peer_id, "host_left_game")
 
 			return PeerStates.Disconnecting
 		end
@@ -338,7 +346,7 @@ PeerStates.WaitingForGameObjectSync = {
 				local player_controlled = true
 				local local_player_id = 1
 
-				Managers.player:add_remote_player(self.peer_id, player_controlled, local_player_id, self.clan_tag)
+				Managers.player:add_remote_player(self.peer_id, player_controlled, local_player_id, self.clan_tag, self.account_id)
 			end
 
 			Managers.state.game_mode:player_entered_game_session(self.peer_id, 1)
@@ -404,6 +412,7 @@ PeerStates.InPostGame = {
 }
 PeerStates.Disconnecting = {
 	on_enter = function (self, previous_state)
+		printf("[PSM] Disconnecting peer %s", self.peer_id)
 		Network.write_dump_tag(string.format("%s disconnecting", self.peer_id))
 
 		self.is_ingame = nil
@@ -418,8 +427,11 @@ PeerStates.Disconnecting = {
 			local _, leader_id = next(leader_candidates)
 
 			if leader_id == nil then
+				printf("[PSM] None to set to leader, so restarting now")
+				Managers.game_server:set_leader_peer_id(nil)
 				Managers.game_server:restart()
 			else
+				printf("[PSM] Selecting %s as the new leader", leader_id)
 				Managers.game_server:set_leader_peer_id(leader_id)
 			end
 		end
@@ -477,6 +489,10 @@ PeerStates.Disconnected = {
 
 		if is_client then
 			Managers.mechanism:client_left(peer_id)
+
+			local enemy_package_loader = server.level_transition_handler.enemy_package_loader
+
+			enemy_package_loader:client_disconnected(peer_id)
 		end
 	end,
 	update = function (self, dt)

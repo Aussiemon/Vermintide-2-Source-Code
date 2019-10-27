@@ -5,7 +5,7 @@ script_data.ai_debugger_freeflight_only = script_data.ai_debugger_freeflight_onl
 local font_size = 26
 local font_size_medium = 22
 local font_size_blackboard = 16
-local font = "gw_arial_32"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 
 local function table_as_sorted_string_arrays(source, key_dest, value_dest)

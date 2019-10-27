@@ -15,15 +15,19 @@ weapon_template.actions = {
 			allowed_chain_actions = {},
 			condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
+				local status_extension = ScriptUnit.extension(user_unit, "status_system")
 				local full_health = health_extension:current_permanent_health_percent() >= 1
+				local is_wounded = status_extension:is_wounded()
 
-				return not full_health
+				return is_wounded or not full_health
 			end,
 			chain_condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
+				local status_extension = ScriptUnit.extension(user_unit, "status_system")
 				local full_health = health_extension:current_permanent_health_percent() >= 1
+				local is_wounded = status_extension:is_wounded()
 
-				return not full_health
+				return is_wounded or not full_health
 			end
 		}
 	},
@@ -53,15 +57,19 @@ weapon_template.actions = {
 			allowed_chain_actions = {},
 			condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local health_percent = health_extension:current_permanent_health_percent()
+				local status_extension = ScriptUnit.extension(user_unit, "status_system")
+				local full_health = health_extension:current_permanent_health_percent() >= 1
+				local is_wounded = status_extension:is_wounded()
 
-				return health_percent < 1
+				return is_wounded or not full_health
 			end,
 			chain_condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local health_percent = health_extension:current_permanent_health_percent()
+				local status_extension = ScriptUnit.extension(user_unit, "status_system")
+				local full_health = health_extension:current_permanent_health_percent() >= 1
+				local is_wounded = status_extension:is_wounded()
 
-				return health_percent < 1
+				return is_wounded or not full_health
 			end
 		}
 	},

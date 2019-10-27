@@ -80,7 +80,6 @@ HitEffectsStormVerminChampion = {
 	},
 	burn = {
 		disable_blood = true,
-		flow_event = "burn",
 		extra_conditions = {
 			death = false,
 			damage = true,
@@ -156,7 +155,6 @@ HitEffectsStormVerminChampion = {
 	default_burning = {
 		inherits = "default",
 		disable_blood = true,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

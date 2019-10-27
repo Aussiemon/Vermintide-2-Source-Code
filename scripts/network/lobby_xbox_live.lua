@@ -10,6 +10,7 @@ require("scripts/network/voice_chat_xb1")
 
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.TYPE = "xboxlive"
+LobbyInternal.WEAVE_HOPPER_NAME = "weave_find_group_hopper"
 LobbyInternal.HOPPER_NAME = "safe_profiles_hopper"
 LobbyInternal.SESSION_TEMPLATE_NAME = "new_default_game"
 LobbyInternal.SMARTMATCH_SESSION_TEMPLATE_NAME = "ticket_default"
@@ -149,6 +150,10 @@ LobbyInternal.is_friend = function (peer_id)
 	return false
 end
 
+LobbyInternal.set_max_members = function (lobby, max_members)
+	ferror("set_max_members not supported on platform.")
+end
+
 script_data.debug_xbox_lobby = true
 
 local function dprintf()
@@ -192,19 +197,27 @@ local HOPPER_PARAMS_LUT = {
 		"profiles",
 		"network_hash",
 		"matchmaking_types"
+	},
+	weave_find_group_hopper = {
+		"difficulty",
+		"powerlevel",
+		"profiles",
+		"network_hash",
+		"matchmaking_types",
+		"weave_index"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {
-	powerlevel = "number",
-	matchmaking_types = "collection",
 	network_hash = "string",
 	strict_matchmaking = "number",
+	weave_index = "number",
+	powerlevel = "number",
+	matchmaking_types = "collection",
 	profiles = "collection",
 	stage = "number",
 	difficulty = "number",
 	level = "collection"
 }
-local SECONDS_BETWEEN_LOBBY_DATA_READS = 30
 XboxLiveLobby = class(XboxLiveLobby)
 
 XboxLiveLobby.init = function (self, session_id, unique_server_name, session_template_name, is_hosting)
@@ -220,6 +233,8 @@ XboxLiveLobby.init = function (self, session_id, unique_server_name, session_tem
 	self._smartmatch_ticket_params = {}
 	self._activity_set = false
 	self._data_needs_update = false
+	self._waiting_for_result = false
+	self._client_update_lobby_data = false
 	self._data_update_status_id = nil
 	self._data_update_time_left = 0
 	self._is_hosting = is_hosting
@@ -239,9 +254,10 @@ XboxLiveLobby.set_hosting = function (self, hosting)
 	self._is_hosting = hosting
 end
 
-XboxLiveLobby.enable_smartmatch = function (self, enable, params, timeout)
+XboxLiveLobby.enable_smartmatch = function (self, enable, params, timeout, hopper_name)
 	fassert((enable and params ~= nil) or not enable, "You need to supply ticket_params if you want to enable matchmaking")
 
+	self._hopper_name = hopper_name or LobbyInternal.HOPPER_NAME
 	self._smartmatch_enabled = enable
 	self._smartmatch_ticket_params = params
 	self._timeout = timeout
@@ -315,16 +331,37 @@ XboxLiveLobby.invite_friends_list = function (self, friends_to_invite)
 	self._friends_to_invite = friends_to_invite
 end
 
+XboxLiveLobby.force_update_data = function (self)
+	self._client_update_lobby_data = true
+end
+
 XboxLiveLobby.update_data = function (self, dt)
 	if Managers.account:user_detached() then
 		return
 	end
 
 	if self._is_hosting then
-		if self._data_needs_update and MultiplayerSession.status(self._session_id) == MultiplayerSession.READY then
+		local is_ready = MultiplayerSession.status(self._session_id) == MultiplayerSession.READY
+
+		if self._data_needs_update and is_ready then
 			MultiplayerSession.set_custom_property_json(self._session_id, "data", cjson.encode(self._data))
 
 			self._data_needs_update = false
+			self._waiting_for_result = true
+		elseif self._waiting_for_result and is_ready then
+			local session_id = self._session_id
+			local members = MultiplayerSession.members(session_id)
+			local my_peer_id = Network.peer_id()
+
+			for i, member_data in ipairs(members) do
+				local peer_id = member_data.peer
+
+				if peer_id ~= my_peer_id then
+					RPC.rpc_client_update_lobby_data(peer_id)
+				end
+			end
+
+			self._waiting_for_result = false
 		end
 	else
 		if self._data_update_status_id ~= nil then
@@ -344,24 +381,23 @@ XboxLiveLobby.update_data = function (self, dt)
 				MultiplayerSession.free_custom_property_json(self._data_update_status_id)
 
 				self._data_update_status_id = nil
-				self._data_update_time_left = SECONDS_BETWEEN_LOBBY_DATA_READS
 			elseif status == SessionJobStatus.FAILED then
 				dprintf("Failed to get data from session")
 				MultiplayerSession.free_custom_property_json(self._data_update_status_id)
 
 				self._data_update_status_id = nil
-				self._data_update_time_left = SECONDS_BETWEEN_LOBBY_DATA_READS
 			end
 		end
 
-		if self._data_update_time_left >= 0 then
-			self._data_update_time_left = self._data_update_time_left - dt
-
-			if self._data_update_time_left < 0 and not self._data_update_status_id then
-				self._data_update_status_id = MultiplayerSession.custom_property_json(self._session_id, "data")
-			end
+		if self._client_update_lobby_data then
+			self._data_update_status_id = MultiplayerSession.custom_property_json(self._session_id, "data")
+			self._client_update_lobby_data = false
 		end
 	end
+end
+
+XboxLiveLobby.is_updating_lobby_data = function (self)
+	return self._client_update_lobby_data or self._data_update_status_id or self._waiting_for_result or self._data_needs_update
 end
 
 XboxLiveLobby.update_activity = function (self, dt, level_key)
@@ -590,8 +626,8 @@ XboxLiveLobby._create_smartmatch_broadcast = function (self, timeout)
 		dprintf("Ticket Params: %s Hopper Name: %s", ticket_param_str, self._hopper_name)
 	end
 
-	dprintf("Starting SmartMatch with session_id: %s Hopper name: %s PreserveSessionMode: %s Ticket params: %s Timeout: %s", tostring(self._session_id), LobbyInternal.HOPPER_NAME, "ALWAYS", ticket_param_str, tostring(timeout_in_seconds))
-	MultiplayerSession.start_smartmatch(self._session_id, LobbyInternal.HOPPER_NAME, timeout_in_seconds, preserve_session_mode, ticket_param_str)
+	dprintf("Starting SmartMatch with session_id: %s Hopper name: %s PreserveSessionMode: %s Ticket params: %s Timeout: %s", tostring(self._session_id), self._hopper_name, "ALWAYS", ticket_param_str, tostring(timeout_in_seconds))
+	MultiplayerSession.start_smartmatch(self._session_id, self._hopper_name, timeout_in_seconds, preserve_session_mode, ticket_param_str)
 
 	self._smartmatch_user_id = Managers.account:user_id()
 end

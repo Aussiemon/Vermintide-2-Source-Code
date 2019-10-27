@@ -140,7 +140,8 @@ CosmeticUtils.get_default_cosmetic_slot = function (career_settings, slot_name)
 
 		if preview_items then
 			for i = 1, #preview_items, 1 do
-				local item_name = preview_items[i]
+				local item = preview_items[i]
+				local item_name = item.item_name
 				local item_template = ItemMasterList[item_name]
 				local slot_type = item_template.slot_type
 				local slot_names = InventorySettings.slot_names_by_type[slot_type]
@@ -177,7 +178,8 @@ CosmeticUtils.sync_local_player_cosmetics = function (profile_index, career_inde
 
 	if preview_items then
 		for i = 1, #preview_items, 1 do
-			local item_name = preview_items[i]
+			local item = preview_items[i]
+			local item_name = item.item_name
 			local item_template = ItemMasterList[item_name]
 			local slot_type = item_template.slot_type
 			local slot_names = InventorySettings.slot_names_by_type[slot_type]

@@ -1357,6 +1357,34 @@ ItemMasterList.frame_scorpion_complete_all_helmgart_levels_cataclysm = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_scorpion_complete_all_helmgart_level_achievements_cataclysm = {
+	description = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm_description",
+	temporary_template = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm",
+	display_name = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_scorpion_complete_all_helmgart_level_achievements_cataclysm",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_scorpion_complete_bogenhafen_cataclysm = {
 	description = "frame_scorpion_complete_bogenhafen_cataclysm_description",
 	temporary_template = "frame_scorpion_complete_bogenhafen_cataclysm",
@@ -1839,90 +1867,6 @@ ItemMasterList.frame_scorpion_season_1_cataclysm_3 = {
 	display_name = "frame_scorpion_season_1_cataclysm_3_name",
 	hud_icon = "unit_frame_02",
 	inventory_icon = "icon_portrait_frame_season_01_cataclysm_3",
-	slot_type = "frame",
-	information_text = "information_text_frame",
-	rarity = "promo",
-	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.frame_scorpion_season_1_leaderboard_1 = {
-	description = "frame_scorpion_season_1_leaderboard_1_description",
-	temporary_template = "frame_scorpion_season_1_leaderboard_1",
-	display_name = "frame_scorpion_season_1_leaderboard_1_name",
-	hud_icon = "unit_frame_02",
-	inventory_icon = "icon_portrait_frame_season_01_leaderboard_03",
-	slot_type = "frame",
-	information_text = "information_text_frame",
-	rarity = "promo",
-	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.frame_scorpion_season_1_leaderboard_2 = {
-	description = "frame_scorpion_season_1_leaderboard_2_description",
-	temporary_template = "frame_scorpion_season_1_leaderboard_2",
-	display_name = "frame_scorpion_season_1_leaderboard_2_name",
-	hud_icon = "unit_frame_02",
-	inventory_icon = "icon_portrait_frame_season_01_leaderboard_02",
-	slot_type = "frame",
-	information_text = "information_text_frame",
-	rarity = "promo",
-	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
-}
-ItemMasterList.frame_scorpion_season_1_leaderboard_3 = {
-	description = "frame_scorpion_season_1_leaderboard_3_description",
-	temporary_template = "frame_scorpion_season_1_leaderboard_3",
-	display_name = "frame_scorpion_season_1_leaderboard_3_name",
-	hud_icon = "unit_frame_02",
-	inventory_icon = "icon_portrait_frame_season_01_leaderboard_01",
 	slot_type = "frame",
 	information_text = "information_text_frame",
 	rarity = "promo",

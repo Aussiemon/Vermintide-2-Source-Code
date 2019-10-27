@@ -270,7 +270,8 @@ StartMenuStateOverview.cb_hero_unit_spawned = function (self, hero_name)
 	local preview_items = career_settings.preview_items
 
 	if preview_items then
-		for _, item_name in ipairs(preview_items) do
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
 			local item_template = ItemMasterList[item_name]
 			local slot_type = item_template.slot_type
 			local slot_names = InventorySettings.slot_names_by_type[slot_type]

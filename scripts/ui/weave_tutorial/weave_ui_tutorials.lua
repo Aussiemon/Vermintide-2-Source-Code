@@ -72,19 +72,41 @@ WeaveUITutorials.requirements_not_met = {
 	popup_title = "menu_weave_area_locked_title",
 	popup_body = "menu_weave_area_locked_body"
 }
+WeaveUITutorials.platform_not_supported = {
+	popup_body = "Not implemented for Consoles yet",
+	ui_onboarding_bit = 0,
+	popup_title = "menu_weave_area_locked_title",
+	onboarding_step = 0,
+	disable_body_localization = true
+}
 WeaveUITutorials.twitch_not_supported_for_weaves = {
-	optional_button_2 = "input_description_disconnect",
 	ui_onboarding_bit = 0,
 	popup_title = "menu_weave_play_title",
+	optional_button_2 = "input_description_disconnect",
 	onboarding_step = 0,
-	popup_body = "menu_weave_area_locked_twitch_body",
+	popup_body = (PLATFORM ~= "xb1" and "menu_weave_area_locked_twitch_body") or "menu_weave_area_locked_mixer_body",
 	optional_button_2_func = function (self)
 		local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
 		if twitch_connection then
 			Managers.twitch:disconnect()
 		end
-	end
+	end,
+	optional_button_2_input_actions = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "input_description_disconnect"
+			}
+		}
+	}
+}
+WeaveUITutorials.twitch_not_supported_for_weaves_client = {
+	ui_onboarding_bit = 0,
+	onboarding_step = 0,
+	popup_title = "menu_weave_play_title",
+	popup_body = (PLATFORM ~= "xb1" and "menu_weave_area_locked_twitch_client_body") or "menu_weave_area_locked_mixer_client_body"
 }
 
 return

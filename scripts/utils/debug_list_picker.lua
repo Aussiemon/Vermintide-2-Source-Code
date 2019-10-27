@@ -1,6 +1,6 @@
 DebugListPicker = class(DebugListPicker)
 local font_size = 22
-local font = "gw_arial_32"
+local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 local font_height = 22
 local COLUMN_SPACING = 10

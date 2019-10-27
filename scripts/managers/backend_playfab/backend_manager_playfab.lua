@@ -144,6 +144,12 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 end
 
 BackendManagerPlayFab.update_items = function (self, leader_peer_id)
+	local mirror = self._backend_mirror
+
+	if mirror == nil then
+		return
+	end
+
 	self._backend_mirror:update_items(leader_peer_id)
 	self:dirtify_interfaces()
 end
@@ -1169,23 +1175,27 @@ BackendManagerPlayFab._create_dlc_interfaces = function (self, settings, force_l
 
 		if dlc_interfaces then
 			for interface_name, interface_settings in pairs(dlc_interfaces) do
-				local interface = nil
+				local skip_interface = DEDICATED_SERVER and interface_settings.ignore_on_dedicated_server
 
-				if force_local then
-					local class_name = interface_settings.local_class
-					local class = rawget(_G, class_name)
-					interface = class:new(save_data)
-				else
-					local file_name = interface_settings.playfab_file
+				if not skip_interface then
+					local interface = nil
 
-					require(file_name)
+					if force_local then
+						local class_name = interface_settings.local_class
+						local class = rawget(_G, class_name)
+						interface = class:new(save_data)
+					else
+						local file_name = interface_settings.playfab_file
 
-					local class_name = interface_settings.playfab_class
-					local class = rawget(_G, class_name)
-					interface = class:new(backend_mirror)
+						require(file_name)
+
+						local class_name = interface_settings.playfab_class
+						local class = rawget(_G, class_name)
+						interface = class:new(backend_mirror)
+					end
+
+					interfaces[interface_name] = interface
 				end
-
-				interfaces[interface_name] = interface
 			end
 		end
 	end

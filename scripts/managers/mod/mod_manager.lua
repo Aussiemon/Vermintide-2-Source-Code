@@ -190,8 +190,8 @@ ModManager.update = function (self, dt)
 		local pos = Vector3(5, 10, 1)
 		local color = Color(255, 255, 255, 255)
 		local size = 16
-		local font = "core/performance_hud/debug"
-		local font_material = "core/performance_hud/debug"
+		local font = "arial"
+		local font_material = "materials/fonts/" .. font
 
 		if state == "scanning" then
 			Gui.text(gui, "Scanning for mods" .. dots_string, font_material, size, font, pos, color)

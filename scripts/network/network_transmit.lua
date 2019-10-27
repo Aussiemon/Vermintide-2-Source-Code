@@ -115,6 +115,37 @@ NetworkTransmit.send_rpc_server = function (self, rpc_name, ...)
 	end
 end
 
+NetworkTransmit.send_rpc_party_clients = function (self, rpc_name, party, ...)
+	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
+
+	local rpc = RPC[rpc_name]
+
+	fassert(rpc, "[NetworkTransmit:send_rpc_clients()] rpc does not exist: %q", rpc_name)
+
+	local session = self.game_session
+
+	if not session then
+		return
+	end
+
+	local occupied_slots = party.occupied_slots
+	local peer_ids = {}
+
+	for _, player_data in ipairs(occupied_slots) do
+		if player_data.is_player then
+			peer_ids[#peer_ids + 1] = player_data.peer_id
+		end
+	end
+
+	local peer_ignore_list = self.peer_ignore_list
+
+	for _, peer_id in ipairs(GameSession.other_peers(session)) do
+		if not peer_ignore_list[peer_id] and table.contains(peer_ids, peer_id) then
+			rpc(peer_id, ...)
+		end
+	end
+end
+
 NetworkTransmit.send_rpc_clients = function (self, rpc_name, ...)
 	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
 

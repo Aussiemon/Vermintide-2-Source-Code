@@ -1,3 +1,5 @@
+local twitch_settings = (PLATFORM == "xb1" and MixerSettings) or TwitchSettings
+
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
 		print("[Twitch] " .. string.format(message, ...))
@@ -8,7 +10,7 @@ local function spawn_custom_horde(breed_name, difficulty_amounts)
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local num_enemies_range = difficulty_amounts[difficulty]
 	num_enemies_range = num_enemies_range or difficulty_amounts.hardest
-	local amount_of_enemies = math.ceil(math.random(num_enemies_range[1], num_enemies_range[2]) * TwitchSettings.spawn_amount_multiplier)
+	local amount_of_enemies = math.ceil(math.random(num_enemies_range[1], num_enemies_range[2]) * twitch_settings.spawn_amount_multiplier)
 	local side = Managers.state.side:get_side_from_name("dark_pact")
 	local side_id = side.side_id
 	local spawn_list = {}
@@ -33,9 +35,9 @@ local function spawn_hidden(breed_name, difficulty_amounts)
 	local amount_of_enemies = nil
 
 	if type(num_enemies) == "table" then
-		amount_of_enemies = math.ceil(math.random(num_enemies[1], num_enemies[2]) * TwitchSettings.spawn_amount_multiplier)
+		amount_of_enemies = math.ceil(math.random(num_enemies[1], num_enemies[2]) * twitch_settings.spawn_amount_multiplier)
 	else
-		amount_of_enemies = math.ceil(num_enemies * TwitchSettings.spawn_amount_multiplier)
+		amount_of_enemies = math.ceil(num_enemies * twitch_settings.spawn_amount_multiplier)
 	end
 
 	local conflict_director = Managers.state.conflict
@@ -62,7 +64,7 @@ TwitchVoteTemplates.twitch_spawn_rat_ogre = {
 			debug_print("[TWITCH VOTE] Spawning rat ogre")
 
 			local breed = Breeds.skaven_rat_ogre
-			local spawn_amount = math.floor(1 * TwitchSettings.spawn_amount_multiplier)
+			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
 			for i = 1, spawn_amount, 1 do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
@@ -86,7 +88,7 @@ TwitchVoteTemplates.twitch_spawn_stormfiend = {
 			debug_print("[TWITCH VOTE] Spawning stormfiend")
 
 			local breed = Breeds.skaven_stormfiend
-			local spawn_amount = math.floor(1 * TwitchSettings.spawn_amount_multiplier)
+			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
 			for i = 1, spawn_amount, 1 do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
@@ -110,7 +112,7 @@ TwitchVoteTemplates.twitch_spawn_chaos_troll = {
 			debug_print("[TWITCH VOTE] Spawning chaos troll")
 
 			local breed = Breeds.chaos_troll
-			local spawn_amount = math.floor(1 * TwitchSettings.spawn_amount_multiplier)
+			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
 			for i = 1, spawn_amount, 1 do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
@@ -134,7 +136,7 @@ TwitchVoteTemplates.twitch_spawn_chaos_spawn = {
 			debug_print("[TWITCH VOTE] Spawning chaos spawn")
 
 			local breed = Breeds.chaos_spawn
-			local spawn_amount = math.floor(1 * TwitchSettings.spawn_amount_multiplier)
+			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
 			for i = 1, spawn_amount, 1 do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
@@ -161,7 +163,7 @@ TwitchVoteTemplates.twitch_spawn_minotaur = {
 			debug_print("[TWITCH VOTE] Spawning chaos spawn")
 
 			local breed = Breeds.beastmen_minotaur
-			local spawn_amount = math.floor(1 * TwitchSettings.spawn_amount_multiplier)
+			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
 			for i = 1, spawn_amount, 1 do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
@@ -568,7 +570,7 @@ TwitchVoteTemplates.twitch_spawn_loot_rat_fiesta = {
 		if is_server then
 			debug_print("[TWITCH VOTE] Spawning loot rat fiesta")
 
-			local amount = 10 * TwitchSettings.spawn_amount_multiplier
+			local amount = 10 * twitch_settings.spawn_amount_multiplier
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.skaven_loot_rat

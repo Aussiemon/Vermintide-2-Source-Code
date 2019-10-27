@@ -8,13 +8,16 @@ local function dprintf(string, ...)
 	printf("[GameServerLobbyClient]: %s", s)
 end
 
-GameServerLobbyClient.init = function (self, network_options, game_server_data, password)
+GameServerLobbyClient.init = function (self, network_options, game_server_data, password, reserve_peers)
 	dprintf("Joining lobby on address %s", game_server_data.server_info.ip_port)
 
 	self._game_server_info = game_server_data.server_info
-	self._game_server_lobby = GameServerInternal.join_server(self._game_server_info, password)
 
-	Presence.advertise_playing(self._game_server_info.ip_port)
+	if reserve_peers then
+		self._game_server_lobby = GameServerInternal.reserve_server(self._game_server_info, password, reserve_peers)
+	else
+		self._game_server_lobby = GameServerInternal.join_server(self._game_server_info, password)
+	end
 
 	self._game_server_lobby_data = game_server_data
 	local config_file_name = network_options.config_file_name
@@ -48,6 +51,8 @@ GameServerLobbyClient.update = function (self, dt)
 		self._state = new_state
 
 		if new_state == GameServerLobbyState.JOINED then
+			Presence.advertise_playing(self._game_server_info.ip_port)
+
 			self._members = self._members or LobbyMembers:new(lobby)
 		end
 
@@ -59,6 +64,10 @@ GameServerLobbyClient.update = function (self, dt)
 	if self._members then
 		self._members:update()
 	end
+end
+
+GameServerLobbyClient.claim_reserved = function (self)
+	GameServerInternal.claim_reserved(self._game_server_lobby)
 end
 
 GameServerLobbyClient.state = function (self)

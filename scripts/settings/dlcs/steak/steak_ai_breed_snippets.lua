@@ -73,7 +73,6 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 
 	conflict_director:freeze_intensity_decay(10)
 	conflict_director:add_unit_to_bosses(unit)
-	Managers.music:music_trigger("combat_music", "enemy_minotaur_stinger")
 end
 
 AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)

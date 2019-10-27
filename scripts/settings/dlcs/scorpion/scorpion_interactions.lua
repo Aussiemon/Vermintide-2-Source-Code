@@ -36,6 +36,16 @@ InteractionDefinitions._fulfill_requirements_for_weave = function ()
 	return true
 end
 
+InteractionDefinitions._fullfill_requirements_for_weave_leaderboards = function ()
+	local weave_access = InteractionDefinitions._fulfill_requirements_for_weave()
+
+	if not weave_access then
+		return false
+	end
+
+	return true
+end
+
 InteractionDefinitions.weave_level_select_access = InteractionDefinitions.weave_level_select_access or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.weave_level_select_access.config.swap_to_3p = false
 
@@ -58,6 +68,14 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.twitch_not_supported_for_weaves)
 
 			return
+		elseif not Managers.player.is_server then
+			local lobby = Managers.state.network:lobby()
+
+			if lobby:lobby_data("twitch_enabled") == "true" then
+				Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.twitch_not_supported_for_weaves_client)
+
+				return
+			end
 		end
 
 		local fulfill_requirements_for_weave_levels = InteractionDefinitions._fulfill_requirements_for_weave()
@@ -139,7 +157,7 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 			return
 		end
 
-		local fulfill_requirements_for_leaderboard = InteractionDefinitions._fulfill_requirements_for_weave()
+		local fulfill_requirements_for_leaderboard = InteractionDefinitions._fullfill_requirements_for_weave_leaderboards()
 
 		if fulfill_requirements_for_leaderboard then
 			local transition_params = {
@@ -148,6 +166,8 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 
 			Managers.state.event:trigger("ui_event_transition_with_fade", "start_game_view_force", transition_params)
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
+		elseif PLATFORM ~= "win32" then
+			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.platform_not_supported)
 		else
 			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.requirements_not_met)
 		end

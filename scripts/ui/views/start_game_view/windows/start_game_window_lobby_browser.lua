@@ -468,7 +468,7 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 	local level_image_widget = info_box_widgets.level_image
 	level_image_widget.content.texture_id = level_image
 	local level_name_widget = info_box_widgets.level_name
-	level_name_widget.content.text = (weave_template and weave_template.display_name) or ""
+	level_name_widget.content.text = (weave_template and weave_template.display_name and Localize(weave_template.display_name)) or ""
 	local num_players_text = "n/a"
 	local num_players = lobby_data.num_players
 
@@ -574,7 +574,7 @@ StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
 	local game_mode_name = ""
 
 	if game_mode then
-		local game_mode_names = table.clone(NetworkLookup.game_modes)
+		local game_mode_names = table.clone(NetworkLookup.game_modes, true)
 		game_mode_name = game_mode_names[tonumber(game_mode)]
 		game_type_text = GAME_MODE_LOOKUP_STRINGS[game_mode_name] or game_type_text
 	end
@@ -862,6 +862,7 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 	local is_valid = lobby_data.valid
 
 	if not is_valid then
+		return false
 	end
 
 	local level_key = lobby_data.selected_level_key or lobby_data.level_key
@@ -903,7 +904,7 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 		end
 
 		local game_mode_index = tonumber(lobby_data.game_mode)
-		local game_mode_names = table.clone(NetworkLookup.game_modes)
+		local game_mode_names = table.clone(NetworkLookup.game_modes, true)
 		local game_mode = game_mode_names[game_mode_index]
 		local game_mode_settings = GameModeSettings[game_mode]
 
@@ -1130,7 +1131,7 @@ StartGameWindowLobbyBrowser._search = function (self)
 			server_browser_filters = {
 				dedicated = "valuenotused",
 				full = "valuenotused",
-				gamedir = "vermintide2"
+				gamedir = Managers.mechanism:server_universe()
 			},
 			matchmaking_filters = requirements.filters
 		}

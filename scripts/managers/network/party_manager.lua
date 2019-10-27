@@ -1,3 +1,5 @@
+require("scripts/helpers/player_utils")
+
 PartyManager = class(PartyManager)
 local rpcs = {
 	"rpc_request_join_party",
@@ -65,10 +67,14 @@ end
 PartyManager._register_party = function (self, def)
 	local num_slots = def.num_slots
 	local slots = {}
+	local slots_data = {}
 
 	for j = 1, num_slots, 1 do
 		slots[j] = {
 			game_mode_data = {}
+		}
+		slots_data[j] = {
+			slot_id = j
 		}
 	end
 
@@ -81,7 +87,8 @@ PartyManager._register_party = function (self, def)
 		num_slots = num_slots,
 		slots = slots,
 		occupied_slots = {},
-		bot_add_order = {}
+		bot_add_order = {},
+		slots_data = slots_data
 	}
 
 	return party
@@ -100,7 +107,7 @@ PartyManager.register_parties = function (self, party_definitions)
 end
 
 PartyManager._create_player_status = function (self, peer_id, local_player_id, is_bot)
-	local unique_id = self:_unique_player_id(peer_id, local_player_id)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local statuses = self._player_statuses
 	local status = {
 		score = 0,
@@ -108,6 +115,7 @@ PartyManager._create_player_status = function (self, peer_id, local_player_id, i
 		local_player_id = local_player_id,
 		unique_id = unique_id,
 		is_bot = is_bot,
+		is_player = not is_bot,
 		game_mode_data = {}
 	}
 
@@ -197,12 +205,8 @@ PartyManager.request_join_party = function (self, peer_id, local_player_id, part
 	end
 end
 
-PartyManager._unique_player_id = function (self, peer_id, local_player_id)
-	return peer_id .. ":" .. local_player_id
-end
-
 PartyManager.get_player_status = function (self, peer_id, local_player_id)
-	local unique_id = peer_id .. ":" .. local_player_id
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local status = self._player_statuses[unique_id]
 
 	return status
@@ -213,7 +217,7 @@ PartyManager.get_status_from_unique_id = function (self, unique_id)
 end
 
 PartyManager.get_party_from_player_id = function (self, peer_id, local_player_id)
-	local unique_id = self:_unique_player_id(peer_id, local_player_id)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local status = self._player_statuses[unique_id]
 
 	if status then
@@ -237,7 +241,7 @@ end
 
 PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wanted_party_id, optional_slot_id, is_bot)
 	is_bot = not not is_bot
-	local unique_id = self:_unique_player_id(peer_id, local_player_id)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local existing_player = true
 	local player_status = self._player_statuses[unique_id]
 
@@ -282,6 +286,8 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 	if Managers.state.game_mode then
 		Managers.state.game_mode:player_joined_party(peer_id, local_player_id, party_id, slot_id)
 	end
+
+	return player_status
 end
 
 PartyManager.remove_peer_from_party = function (self, peer_id, local_player_id, party_id)
@@ -307,6 +313,18 @@ PartyManager.remove_peer_from_party = function (self, peer_id, local_player_id, 
 	if self._is_server then
 		self:_send_rpc_to_clients("rpc_remove_peer_from_party", peer_id, local_player_id, party_id)
 	end
+end
+
+PartyManager.get_players_in_party = function (self, party_id)
+	local player_statuses = {}
+
+	for unique_id, status in pairs(self._player_statuses) do
+		if status.party_id == party_id then
+			table.insert(player_statuses, status)
+		end
+	end
+
+	return player_statuses
 end
 
 PartyManager._find_slot_index = function (party, slot_id)
@@ -393,6 +411,13 @@ PartyManager.is_party_full = function (self, party_id)
 	return num_open_slots == 0
 end
 
+PartyManager.is_player_in_party = function (self, unique_id, party_id)
+	local party = self._parties[party_id]
+	local player_status = self._player_statuses[unique_id]
+
+	return party_id == player_status.party_id
+end
+
 PartyManager._get_last_added_bot_for_party = function (self, party_id)
 	local party = self._parties[party_id]
 	local slot_id = party.bot_add_order[party.num_bots]
@@ -421,19 +446,11 @@ PartyManager.hot_join_sync = function (self, peer_id)
 end
 
 PartyManager._send_rpc_to_clients = function (self, rpc_name, ...)
-	if not self._lobby then
-		return
-	end
-
 	local rpc = RPC[rpc_name]
 	local server_peer_id = self._server_peer_id
-	local members = self._lobby:members():get_members()
-	local num_members = #members
 
-	for i = 1, num_members, 1 do
-		local peer_id = members[i]
-
-		if peer_id ~= server_peer_id and self._hot_join_synced_peers[peer_id] then
+	for peer_id, synced in pairs(self._hot_join_synced_peers) do
+		if peer_id ~= server_peer_id and synced then
 			rpc(peer_id, ...)
 		end
 	end
@@ -504,18 +521,19 @@ PartyManager.rpc_remove_peer_from_party = function (self, sender, peer_id, local
 end
 
 PartyManager._draw_debug = function (self, t)
-	local font = "foundation/fonts/debug"
-	local font_material = "debug"
+	local font = "materials/fonts/arial"
+	local font_material = "arial"
 	local text_height = 20
 	local row_height = 20
 	local margin = 32
 	local peer_width = 180
-	local state_width = 110
-	local profile_width = 140
+	local state_width = 160
+	local profile_width = 90
 	local win_width = 2 * margin + peer_width + state_width + profile_width
 	local is_server = Managers.player.is_server
 	local background_color = Color(128, 0, 0, 0)
 	local text_color = Color(255, 255, 255, 255)
+	local text_color2 = Color(255, 128, 255, 255)
 	local party_header_color = Color(255, 155, 155, 255)
 	local game_mode_color = Color(255, 155, 255, 155)
 	local mechanism_color = Color(255, 55, 155, 156)
@@ -526,7 +544,7 @@ PartyManager._draw_debug = function (self, t)
 
 	if self._gui == nil then
 		local world = Application.debug_world()
-		self._gui = World.create_screen_gui(world, "immediate", "material", font)
+		self._gui = World.create_screen_gui(world, "immediate", "material", "materials/fonts/gw_fonts")
 	end
 
 	Gui.rect(self._gui, Vector2(win_start_x, 0), Vector2(win_width, height), background_color)
@@ -548,6 +566,11 @@ PartyManager._draw_debug = function (self, t)
 	local info2 = string.format("Game mode: '%s', seed: %s", game_mode_name, tostring(level_seed))
 
 	Gui.text(self._gui, info2, font, text_height, font_material, Vector3(win_start_x + margin, y, 0), game_mode_color)
+
+	y = y - row_height
+	local info3 = string.format("    state: '%s' max: %s", game_mode:game_mode_state(), Managers.lobby._network_options.max_members)
+
+	Gui.text(self._gui, info3, font, text_height, font_material, Vector3(win_start_x + margin, y, 0), game_mode_color)
 
 	y = y - row_height * 2
 	local parties = self._parties
@@ -576,7 +599,7 @@ PartyManager._draw_debug = function (self, t)
 
 		x = x + state_width
 
-		Gui.text(self._gui, "Profile", font, text_height, font_material, Vector3(x, y, 0), text_color)
+		Gui.text(self._gui, "Info", font, text_height, font_material, Vector3(x, y, 0), text_color)
 
 		y = y - 4
 
@@ -592,6 +615,13 @@ PartyManager._draw_debug = function (self, t)
 			local state = string.format("%s %s", status.game_mode_data.spawn_state or "?", timer)
 			local peer = status.peer_id
 			local profile_id = status.profile_id
+			local profile_index = status.profile_index
+			local career_index = status.career_index
+			local slot_data = party.slots_data[status.slot_id]
+			local wanted_profile_id = slot_data.wanted_profile_id
+			local wanted_profile_name = SPProfiles[wanted_profile_id] and SPProfiles[wanted_profile_id].display_name
+			local wanted_career_id = slot_data.wanted_career_id
+			local row2_text = string.format("P/C: %s-%s/%s, Picked: %s-%s/%s", tostring(profile_id), tostring(profile_index), tostring(career_index), tostring(wanted_profile_name), tostring(wanted_profile_id), tostring(wanted_career_id))
 			local info = "-"
 			local player_controlled = "?"
 			local player = status.player
@@ -633,7 +663,12 @@ PartyManager._draw_debug = function (self, t)
 
 			x = x + state_width
 
-			Gui.text(self._gui, info .. "-" .. tostring(profile_id), font, text_height, font_material, Vector3(x, y, 0), text_color)
+			Gui.text(self._gui, info, font, text_height, font_material, Vector3(x, y, 0), text_color)
+
+			y = y - row_height
+			x = win_start_x + margin
+
+			Gui.text(self._gui, tostring(row2_text), font, text_height, font_material, Vector3(x, y, 0), text_color2)
 
 			y = y - row_height
 		end

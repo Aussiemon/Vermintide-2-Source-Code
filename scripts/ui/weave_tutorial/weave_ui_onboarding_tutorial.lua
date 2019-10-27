@@ -106,8 +106,10 @@ WeaveUIOnboardingTutorial.show_tutorial = function (self, tutorial_data)
 		local body = tutorial_data.popup_body
 		local optional_button_2 = tutorial_data.optional_button_2
 		local optional_button_2_func = tutorial_data.optional_button_2_func
+		local optional_button_2_input_actions = tutorial_data.optional_button_2_input_actions
+		local disable_body_localization = tutorial_data.disable_body_localization
 
-		self.tutorial_popup:show(title, sub_title, body, optional_button_2, optional_button_2_func)
+		self.tutorial_popup:show(title, sub_title, body, optional_button_2, optional_button_2_func, optional_button_2_input_actions, disable_body_localization)
 		self:set_completed(tutorial_data)
 	end
 end

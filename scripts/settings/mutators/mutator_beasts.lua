@@ -33,7 +33,7 @@ return {
 		if data.update_timer > 1 then
 			data.update_timer = 0
 
-			for index, totem in ipairs(data.totems) do
+			for _, totem in ipairs(data.totems) do
 				if totem.active then
 					table.clear(data.ai_units_broadphase_result)
 
@@ -60,9 +60,6 @@ return {
 							totem.respawn_time = data.totem_respawn_time
 							local position = Unit.local_position(totem.unit, 0)
 							local rotation = Unit.local_rotation(totem.unit, 0)
-
-							Managers.state.unit_spawner:mark_for_deletion(totem.unit)
-
 							local unit = Managers.state.unit_spawner:spawn_network_unit(data.unit_name, data.unit_extension_template, data.extension_init_data, position, rotation)
 							totem.unit = unit
 						end

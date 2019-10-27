@@ -171,17 +171,24 @@ PlayFabRequestQueue._send_request = function (self, entry)
 	local api_function_name = entry.api_function_name
 	local request = entry.request
 	local success_callback = entry.success_callback
-	local success_cb = callback(self, "playfab_request_success_cb", success_callback)
+	local success_cb = callback(self, "playfab_request_success_cb", success_callback, entry.id)
 	local error_callback = entry.error_callback
-	local error_cb = error_callback and callback(self, "playfab_request_error_cb", error_callback)
+	local error_cb = error_callback and callback(self, "playfab_request_error_cb", error_callback, entry.id)
 
 	PlayFabClientApi[api_function_name](request, success_cb, error_cb)
 end
 
-PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callback, result)
+PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callback, id, result)
 	local entry = self._active_entry
-	local request = entry.request
 	local function_result = result.FunctionResult
+
+	if not entry or (id and id ~= entry.id) then
+		print("[PlayFabRequestQueue] Received Timed Out Success Response - Ignoring", id)
+
+		return
+	end
+
+	local request = entry.request
 
 	if function_result and function_result.eac_failed_verification then
 		print("[PlayFabRequestQueue] EAC Failed Verification", request.FunctionName, entry.id)
@@ -197,9 +204,15 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 	success_callback(result)
 end
 
-PlayFabRequestQueue.playfab_request_error_cb = function (self, error_callback, result)
+PlayFabRequestQueue.playfab_request_error_cb = function (self, error_callback, id, result)
 	local entry = self._active_entry
 	local request = entry.request
+
+	if not entry or (id and id ~= entry.id) then
+		print("[PlayFabRequestQueue] Received Timed Out Error Response - Ignoring", id)
+
+		return
+	end
 
 	print("[PlayFabRequestQueue] Request Error", entry.api_function_name, request.FunctionName, entry.id, result.errorCode, result.errorMessage)
 

@@ -64,7 +64,9 @@ MusicManager.init = function (self)
 
 	local sound_channel_configuration = Application.user_setting("sound_channel_configuration")
 
-	Wwise.set_bus_config("ingame_mastering_channel", sound_channel_configuration)
+	if not DEDICATED_SERVER then
+		Wwise.set_bus_config("ingame_mastering_channel", sound_channel_configuration)
+	end
 end
 
 MusicManager.stop_all_sounds = function (self)
@@ -517,7 +519,9 @@ MusicManager._update_game_state = function (self, dt, t, conflict_director)
 		local horde_type, sound_settings = conflict_director:has_horde()
 		local game_mode_manager = Managers.state.game_mode
 		local lost = (game_mode_manager:game_mode().about_to_lose and true) or false
-		local won = game_mode_manager:game_won()
+		local player_manager = Managers.player
+		local local_player = player_manager:local_player()
+		local won = game_mode_manager:game_won(local_player)
 		local old_state = self._game_state
 		local is_survival = game_mode_manager:game_mode_key() == "survival"
 		local horde_size, horde_ends_at = conflict_director:horde_size()

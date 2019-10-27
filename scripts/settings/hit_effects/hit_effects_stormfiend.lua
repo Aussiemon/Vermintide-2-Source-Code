@@ -11,7 +11,6 @@ HitEffectsStormfiend = {
 	},
 	burn = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",

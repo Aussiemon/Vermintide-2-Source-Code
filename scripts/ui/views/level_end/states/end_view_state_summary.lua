@@ -400,22 +400,40 @@ EndViewStateSummary._setup_essence_presentation = function (self)
 	local has_wom_dlc = Managers.unlock:is_dlc_unlocked("scorpion")
 	local draw_essence_presentation = has_wom_dlc and essence_gained ~= nil
 	local widgets_by_name = self._widgets_by_name
+	local draw_essence_icon = true
+
+	if essence_gained then
+		local backend_manger = Managers.backend
+		local backend_interface_weaves = backend_manger:get_interface("weaves")
+		local essence_amount = backend_interface_weaves:get_essence()
+		local total_essence = backend_interface_weaves:get_total_essence()
+		local maximum_essence = backend_interface_weaves:get_maximum_essence()
+
+		if maximum_essence < total_essence and maximum_essence > total_essence - essence_gained then
+			essence_gained = essence_gained - (maximum_essence - total_essence)
+		elseif maximum_essence < total_essence - essence_gained then
+			essence_gained = nil
+			draw_essence_icon = false
+		end
+
+		if essence_gained then
+			local essence_total_text = widgets_by_name.essence_total_text
+			essence_total_text.content.text = essence_gained
+			local essence_gained_width = UIUtils.get_text_width(self.ui_renderer, essence_total_text.style.text, tostring(essence_gained))
+			local icon_essence = widgets_by_name.icon_essence
+			icon_essence.offset[1] = -essence_gained_width
+		end
+	end
+
 	widgets_by_name.essence_background.content.visible = draw_essence_presentation
 	widgets_by_name.essence_background_frame.content.visible = draw_essence_presentation
 	widgets_by_name.essence_background_shadow.content.visible = draw_essence_presentation
 	widgets_by_name.essence_background_effect_left.content.visible = draw_essence_presentation
 	widgets_by_name.essence_background_effect_right.content.visible = draw_essence_presentation
 	widgets_by_name.total_essence_title.content.visible = draw_essence_presentation
-	widgets_by_name.essence_total_text.content.visible = draw_essence_presentation
-	widgets_by_name.icon_essence.content.visible = draw_essence_presentation
-
-	if essence_gained then
-		local essence_total_text = widgets_by_name.essence_total_text
-		essence_total_text.content.text = essence_gained
-		local essence_gained_width = UIUtils.get_text_width(self.ui_renderer, essence_total_text.style.text, tostring(essence_gained))
-		local icon_essence = widgets_by_name.icon_essence
-		icon_essence.offset[1] = -essence_gained_width
-	end
+	widgets_by_name.icon_essence.content.visible = (draw_essence_icon and draw_essence_presentation) or false
+	widgets_by_name.essence_total_text.content.visible = (essence_gained ~= nil and draw_essence_presentation) or false
+	widgets_by_name.essence_total_text_max.content.visible = draw_essence_presentation and not draw_essence_icon
 end
 
 EndViewStateSummary._get_total_experience_progress_data = function (self, start_experience, start_experience_pool)

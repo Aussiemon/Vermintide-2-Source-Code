@@ -168,8 +168,22 @@ for _, dlc in pairs(DLCSettings) do
 	local lookups = dlc.network_lookups
 
 	if lookups then
-		for name, table_name in pairs(lookups) do
-			NetworkLookup[name] = create_lookup({}, rawget(_G, table_name))
+		for name, table_data in pairs(lookups) do
+			if type(table_data) == "table" then
+				local table_name = table_data.table_name
+				local base_table = table_data.base_table or {}
+				NetworkLookup[name] = create_lookup(base_table, rawget(_G, table_name))
+			else
+				local table_names = string.split(table_data, ".")
+				local table_values = rawget(_G, table_names[1])
+
+				for i = 2, #table_names, 1 do
+					local table_name = table_names[i]
+					table_values = table_values[table_name]
+				end
+
+				NetworkLookup[name] = create_lookup({}, table_values)
+			end
 		end
 	end
 end
@@ -526,6 +540,7 @@ NetworkLookup.go_types = {
 	"projectile_unit",
 	"pickup_torch_unit",
 	"pickup_torch_unit_init",
+	"prop_projectile_unit",
 	"pickup_projectile_unit",
 	"pickup_projectile_unit_limited",
 	"life_time_pickup_projectile_unit",
@@ -567,6 +582,7 @@ NetworkLookup.go_types = {
 	"weave",
 	"timed_explosion_unit",
 	"progress_timer",
+	"game_mode_data",
 	"ai_unit_chaos_troll",
 	"destructible_objective_unit",
 	"weave_objective",
@@ -574,7 +590,8 @@ NetworkLookup.go_types = {
 	"weave_target_unit",
 	"weave_interaction_unit",
 	"weave_doom_wheel_unit",
-	"weave_kill_enemies_unit"
+	"weave_kill_enemies_unit",
+	"versus_volume_objective_unit"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -638,7 +655,9 @@ NetworkLookup.heal_types = {
 	"health_regen",
 	"healing_draught_temp_health",
 	"bandage_temp_health",
-	"buff_shared_medpack_temp_health"
+	"buff_shared_medpack_temp_health",
+	"mutator",
+	"raw_heal"
 }
 NetworkLookup.conflict_director_lock_lookup = create_lookup({}, ConflictDirectorLockedFunctions)
 NetworkLookup.dlcs = create_lookup({}, UnlockSettings[1].unlocks)
@@ -712,6 +731,15 @@ NetworkLookup.game_modes = {
 	"weave",
 	"weave_find_group"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local modes = dlc.game_modes
+
+	if modes then
+		table.append(NetworkLookup.game_modes, modes)
+	end
+end
+
 NetworkLookup.buff_attack_types = {
 	"n/a",
 	"aoe",
@@ -885,6 +913,7 @@ NetworkLookup.damage_types = {
 	"player_overcharge_explosion_dwarf",
 	"knockdown_bleed",
 	"blade_storm",
+	"death_explosion",
 	"light_slashing_linesman",
 	"light_slashing_linesman_hs",
 	"slashing_linesman",
@@ -1075,6 +1104,15 @@ NetworkLookup.game_end_reasons = {
 	"start_game",
 	"reload"
 }
+
+for _, settings in pairs(GameModeSettings) do
+	if settings.additional_game_end_reasons then
+		for _, reason in ipairs(settings.additional_game_end_reasons) do
+			NetworkLookup.game_end_reasons[#NetworkLookup.game_end_reasons + 1] = reason
+		end
+	end
+end
+
 NetworkLookup.set_wounded_reasons = {
 	"healed",
 	"knocked_down",
@@ -1429,6 +1467,7 @@ NetworkLookup.sound_events = {
 	"play_enemy_standard_bearer_attack_husk_vce",
 	"Play_enemy_standard_bearer_attack_player_back_vce",
 	"Play_standard_bearer_die_vce",
+	"Play_enemy_minotaur_spawn",
 	"Play_enemy_minotaur_die_vce",
 	"Stop_enemy_beastmen_standar_spell_loop",
 	"Play_enemy_standard_bearer_place_standar",
@@ -1439,7 +1478,13 @@ NetworkLookup.sound_events = {
 	"Play_prop_magic_barrel_explosion",
 	"Play_enemy_vce_chaos_warrior_attack_player_back",
 	"Play_plague_monk_attack_player_back_vce",
-	"Play_stormvermin_attack_player_back_vce"
+	"Play_stormvermin_attack_player_back_vce",
+	"Play_enemy_mutator_chaos_sorcerer_wind_loop",
+	"Stop_enemy_mutator_chaos_sorcerer_wind_loop",
+	"Play_enemy_mutator_chaos_sorcerer_skulking_loop",
+	"Stop_enemy_mutator_chaos_sorcerer_skulking_loop",
+	"Play_enemy_mutator_chaos_sorcerer_hunting_loop",
+	"Stop_enemy_mutator_chaos_sorcerer_hunting_loop"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1562,9 +1607,9 @@ NetworkLookup.ai_inventory = {
 	"beastmen_2h_axe_standard",
 	"beastmen_standard_bearer_dual_setup",
 	"beastmen_ungor_bow",
-	"beastmen_ungor_archer_bow_and_spear",
 	"opt_beastmen_ungor_bow",
 	"beastmen_ungor_just_add_spear",
+	"beastmen_ungor_archer_bow_and_spear",
 	"opt_beastmen_ungor_archer_bow_and_spear",
 	"beastmen_minotaur_dual_axes"
 }
@@ -1582,7 +1627,8 @@ NetworkLookup.connection_fails = {
 	"host_has_no_backend_connection",
 	"host_plays_prologue",
 	"client_is_banned",
-	"cannot_join_weave"
+	"cannot_join_weave",
+	"game_aborted"
 }
 NetworkLookup.health_statuses = {
 	"alive",
@@ -1808,8 +1854,7 @@ NetworkLookup.statistics = {
 	"scorpion_bestigor_charge_chaos_warrior",
 	"scorpion_kill_minotaur_farmlands_oak",
 	"scorpion_kill_archers_kill_minotaur",
-	"scorpion_slay_gors_warpfire_damage",
-	"scorpion_keep_standard_bearer_alive"
+	"scorpion_slay_gors_warpfire_damage"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1934,6 +1979,10 @@ NetworkLookup.spawn_states = {
 	"spawning",
 	"spawned",
 	"dead"
+}
+NetworkLookup.lobby_type = {
+	"lobby",
+	"server"
 }
 NetworkLookup.weave_winds = {
 	"none",

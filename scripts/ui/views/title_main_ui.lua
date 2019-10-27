@@ -14,6 +14,7 @@ local menu_item_index_lookup = definitions.menu_item_index_lookup
 local menu_videos = definitions.menu_videos
 local info_texts = definitions.info_texts
 local DO_RELOAD = false
+local VIDEO_REFERENCE_NAME = "TitleMainUI_ATTRACTMODE"
 local legal_texts = {
 	"fatshark_legal_1",
 	"gw_legal_1",
@@ -470,13 +471,13 @@ TitleMainUI._draw = function (self, dt, t, render_background_only)
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
 		if self._destroy_video_player then
-			UIRenderer.destroy_video_player(ui_renderer)
+			UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 
 			self._destroy_video_player = nil
 		elseif self._attract_mode_enabled then
 			if not self.attract_video.content.video_completed then
-				if not ui_renderer.video_player then
-					UIRenderer.create_video_player(ui_renderer, self._world, attract_mode_video.video_name, attract_mode_video.loop)
+				if not ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+					UIRenderer.create_video_player(ui_renderer, VIDEO_REFERENCE_NAME, self._world, attract_mode_video.video_name, attract_mode_video.loop)
 				else
 					if not self._sound_started then
 						if attract_mode_video.sound_start then
@@ -488,8 +489,8 @@ TitleMainUI._draw = function (self, dt, t, render_background_only)
 
 					UIRenderer.draw_widget(ui_renderer, self.attract_video)
 				end
-			elseif ui_renderer.video_player then
-				UIRenderer.destroy_video_player(ui_renderer)
+			elseif ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+				UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 
 				self._sound_started = false
 
@@ -500,8 +501,8 @@ TitleMainUI._draw = function (self, dt, t, render_background_only)
 		end
 
 		if self._attract_mode_active then
-			if ui_renderer.video_player then
-				UIRenderer.destroy_video_player(ui_renderer)
+			if ui_renderer.video_players[VIDEO_REFERENCE_NAME] then
+				UIRenderer.destroy_video_player(ui_renderer, VIDEO_REFERENCE_NAME)
 			end
 		else
 			if self._show_menu then

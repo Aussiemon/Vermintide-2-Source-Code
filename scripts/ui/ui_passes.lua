@@ -398,6 +398,10 @@ UIPasses.gradient_mask_texture = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local color = nil
+		local masked = false
+		local gradient_threshold = 1
+
 		if ui_style then
 			local texture_size = ui_style.texture_size
 
@@ -418,17 +422,21 @@ UIPasses.gradient_mask_texture = {
 
 				size = texture_size
 			end
+
+			color = ui_style.color
+			masked = ui_style.masked
+			gradient_threshold = ui_style.gradient_threshold or gradient_threshold
 		end
 
-		local texture_id = pass_definition.texture_id
+		local texture_id = pass_definition.texture_id or "texture_id"
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style.gradient_threshold or 1, retained_id)
+			retained_id = UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, gradient_threshold, retained_id)
 			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style.gradient_threshold or 1)
+			UIRenderer.draw_gradient_mask_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, gradient_threshold)
 		end
 	end
 }
@@ -437,29 +445,30 @@ UIPasses.texture_frame = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local texture_size, texture_sizes, color, masked, saturated, only_corners = nil
 		local gui_position = position
 		local gui_size = size
 		local texture_id = pass_definition.texture_id or "texture_id"
 
 		if ui_style then
-			local texture_size = ui_style.area_size
+			local area_size = ui_style.area_size
 
-			if texture_size then
+			if area_size then
 				if ui_style.horizontal_alignment == "right" then
-					position[1] = (position[1] + size[1]) - texture_size[1]
+					position[1] = (position[1] + size[1]) - area_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1]) / 2
+					position[1] = position[1] + (size[1] - area_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2]) / 2
+					position[2] = position[2] + (size[2] - area_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
-					position[2] = (position[2] + size[2]) - texture_size[2]
+					position[2] = (position[2] + size[2]) - area_size[2]
 				end
 
-				gui_size = Vector2(texture_size[1], texture_size[2])
+				gui_size = Vector2(area_size[1], area_size[2])
 			end
 
 			local frame_margins = ui_style.frame_margins
@@ -479,9 +488,16 @@ UIPasses.texture_frame = {
 					gui_size[2] = size[2] - frame_margins[2] * 2
 				end
 			end
+
+			texture_size = ui_style.texture_size
+			texture_sizes = ui_style.texture_sizes
+			color = ui_style.color
+			masked = ui_style.masked
+			saturated = ui_style.saturated
+			only_corners = ui_style.only_corners
 		end
 
-		return UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], ui_style.texture_size, ui_style.texture_sizes, ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated, ui_style and ui_style.only_corners)
+		return UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners)
 	end
 }
 UIPasses.texture_dynamic_color = {
@@ -534,7 +550,7 @@ UIPasses.texture = {
 			end
 		end
 
-		local texture_id = pass_definition.texture_id
+		local texture_id = pass_definition.texture_id or "texture_id"
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
@@ -564,6 +580,9 @@ UIPasses.shader_tiled_texture = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local color, masked, saturated = nil
+		local texture_id = pass_definition.texture_id or "texture_id"
+
 		if ui_style then
 			local texture_size = ui_style.texture_size
 
@@ -584,34 +603,37 @@ UIPasses.shader_tiled_texture = {
 
 				size = texture_size
 			end
+
+			local tile_size = ui_style.tile_size
+			local tiles = Vector2(size[1] / tile_size[1], size[2] / tile_size[2])
+			local material = Gui.material(ui_renderer.gui, ui_content[texture_id])
+
+			Material.set_vector2(material, "tile_multiplier", tiles)
+
+			local tile_offset = Vector2(0, 0)
+
+			if ui_style.tile_offset[1] then
+				tile_offset[1] = position[1] / tile_size[1]
+			end
+
+			if ui_style.tile_offset[2] then
+				tile_offset[2] = position[2] / tile_size[2]
+			end
+
+			Material.set_vector2(material, "tile_offset", tile_offset)
+
+			color = ui_style.color
+			masked = ui_style.masked
+			saturated = ui_style.saturated
 		end
-
-		local texture_id = pass_definition.texture_id
-		local tile_size = ui_style.tile_size
-		local tiles = Vector2(size[1] / tile_size[1], size[2] / tile_size[2])
-		local material = Gui.material(ui_renderer.gui, ui_content[texture_id])
-
-		Material.set_vector2(material, "tile_multiplier", tiles)
-
-		local tile_offset = Vector2(0, 0)
-
-		if ui_style.tile_offset[1] then
-			tile_offset[1] = position[1] / tile_size[1]
-		end
-
-		if ui_style.tile_offset[2] then
-			tile_offset[2] = position[2] / tile_size[2]
-		end
-
-		Material.set_vector2(material, "tile_offset", tile_offset)
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated, retained_id)
+			retained_id = UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, saturated, retained_id)
 			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated)
+			UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, color, masked, saturated)
 		end
 	end
 }
@@ -620,6 +642,8 @@ UIPasses.tiled_texture = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local texture_tiling_size, color, masked, saturated = nil
+
 		if ui_style then
 			local texture_size = ui_style.texture_size
 
@@ -640,13 +664,16 @@ UIPasses.tiled_texture = {
 
 				size = texture_size
 			end
+
+			texture_tiling_size = ui_style.texture_tiling_size
+			color = ui_style.color
+			masked = ui_style.masked
+			saturated = ui_style.saturated
 		end
 
-		local texture_size = ui_style.texture_tiling_size
+		assert(texture_tiling_size, "Missing texture_tiling_size")
 
-		assert(texture_size, "Missing texture_tiling_size")
-
-		return UIRenderer.draw_tiled_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, texture_size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated)
+		return UIRenderer.draw_tiled_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, texture_tiling_size, color, masked, saturated)
 	end
 }
 UIPasses.multi_texture = {
@@ -803,7 +830,7 @@ UIPasses.texture_uv = {
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local uvs = ui_content.uvs
 		local texture = ui_content[pass_definition.texture_id or "texture_id"]
-		local color = ui_style.color
+		local color, masked, saturated = nil
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -825,15 +852,19 @@ UIPasses.texture_uv = {
 
 				size = texture_size
 			end
+
+			color = ui_style.color
+			masked = ui_style.masked
+			saturated = ui_style.saturated
 		end
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, ui_style and ui_style.masked, ui_style and ui_style.saturated, retained_id)
+			retained_id = UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated, retained_id)
 			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, ui_style and ui_style.masked, ui_style and ui_style.saturated)
+			UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated)
 		end
 	end
 }
@@ -883,12 +914,10 @@ UIPasses.rotated_texture = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local texture_id = pass_definition.texture_id
-		local texture = ui_content[texture_id or "texture_id"]
-		local angle = ui_style.angle
-		local pivot = ui_style.pivot
-		local color = ui_style.color
-		local uvs = ui_style.uvs
+		local texture_id = pass_definition.texture_id or "texture_id"
+		local texture = ui_content[texture_id]
+		local angle, pivot, color, uvs = nil
+		local masked = false
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -910,15 +939,21 @@ UIPasses.rotated_texture = {
 
 				size = texture_size
 			end
+
+			angle = ui_style.angle
+			pivot = ui_style.pivot
+			color = ui_style.color
+			uvs = ui_style.uvs
+			masked = ui_style.masked
 		end
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, ui_style and ui_style.masked, retained_id)
+			retained_id = UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, masked, retained_id)
 			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, ui_style and ui_style.masked)
+			UIRenderer.draw_texture_rotated(ui_renderer, texture, size, position, angle, pivot, color, uvs, masked)
 		end
 	end
 }
@@ -927,6 +962,8 @@ UIPasses.rounded_background = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local corner_radius, color = nil
+
 		if ui_style then
 			local rect_size = ui_style.rect_size
 
@@ -947,9 +984,12 @@ UIPasses.rounded_background = {
 
 				size = rect_size
 			end
+
+			corner_radius = ui_style.corner_radius
+			color = ui_style.color
 		end
 
-		return UIRenderer.draw_rounded_rect(ui_renderer, position, size, ui_style.corner_radius, ui_style.color)
+		return UIRenderer.draw_rounded_rect(ui_renderer, position, size, corner_radius, color)
 	end
 }
 UIPasses.rect = {
@@ -970,6 +1010,8 @@ UIPasses.rect = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local color = nil
+
 		if ui_style then
 			local texture_size = ui_style.texture_size
 
@@ -990,15 +1032,17 @@ UIPasses.rect = {
 
 				size = texture_size
 			end
+
+			color = ui_style.color
 		end
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer.draw_rect(ui_renderer, position, size, ui_style.color, retained_id)
+			retained_id = UIRenderer.draw_rect(ui_renderer, position, size, color, retained_id)
 			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer.draw_rect(ui_renderer, position, size, ui_style.color)
+			UIRenderer.draw_rect(ui_renderer, position, size, color)
 		end
 	end
 }
@@ -1139,8 +1183,6 @@ UIPasses.scrollbar_hotspot = {
 		ui_content.is_hover_scrollbar = is_hover_scrollbar
 		local left_pressed = input_service and input_service:get("left_press")
 		local left_hold = input_service and input_service:get("left_hold")
-		local target_value = nil
-		local should_update_scrollbar_position = false
 
 		if is_hover_scrollbar then
 			if left_hold then
@@ -1154,6 +1196,8 @@ UIPasses.scrollbar_hotspot = {
 		elseif is_hover and left_hold then
 			ui_content.holding = true
 		end
+
+		local target_value = nil
 
 		if ui_content.holding then
 			if not left_hold then
@@ -1286,6 +1330,9 @@ UIPasses.rect_rotated = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local angle = 0
+		local pivot, color = nil
+
 		if ui_style then
 			local texture_size = ui_style.texture_size
 
@@ -1306,9 +1353,13 @@ UIPasses.rect_rotated = {
 
 				size = texture_size
 			end
+
+			angle = ui_style.angle
+			pivot = ui_style.pivot
+			color = ui_style.color
 		end
 
-		return UIRenderer.draw_rect_rotated(ui_renderer, size, position, ui_style.angle, ui_style.pivot, ui_style.color)
+		return UIRenderer.draw_rect_rotated(ui_renderer, size, position, angle, pivot, color)
 	end
 }
 local border_fill_rect_color = {
@@ -1330,7 +1381,7 @@ UIPasses.video = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local is_complete = UIRenderer.draw_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player)
+		local is_complete = UIRenderer.draw_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player_reference, ui_content.video_player)
 		ui_content.video_completed = is_complete
 	end
 }
@@ -1339,7 +1390,7 @@ UIPasses.splash_video = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local is_complete = UIRenderer.draw_splash_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player)
+		local is_complete = UIRenderer.draw_splash_video(ui_renderer, ui_content.material_name, position, size, ui_style.color, ui_content.video_player_reference, ui_content.video_player)
 		ui_content.video_completed = is_complete
 	end
 }
@@ -1552,7 +1603,6 @@ UIPasses.text_area_chat = {
 				end
 
 				if formatted_emojis and formatted_emojis[j] then
-					local test = formatted_emojis_array
 					local formatted_emojis_data = formatted_emojis[j]
 					formatted_emojis_array[row] = formatted_emojis_data
 				end
@@ -1638,7 +1688,6 @@ UIPasses.text_area_chat = {
 		end
 	end
 }
-local temp_line_color_override = {}
 UIPasses.text = {
 	init = function (pass_definition)
 		assert(pass_definition.text_id, "no text id in pass definition. YOU NEEDS IT.")
@@ -1707,7 +1756,7 @@ UIPasses.text = {
 			ui_style._dynamic_wraped_text = text
 			ui_style._dynamic_wraped_scale = RESOLUTION_LOOKUP.scale
 		elseif ui_style.dynamic_font_size then
-			ui_style.font_size = UIRenderer.scaled_font_size_by_width(ui_renderer, text, size[1], ui_style)
+			ui_style.font_size = UIRenderer.scaled_font_size_by_width(ui_renderer, text, size[1] - 1, ui_style)
 		end
 
 		local font_material, font_size, font_name = nil
@@ -1718,6 +1767,7 @@ UIPasses.text = {
 			font_size = font[2]
 			font_material = font[1]
 			font_size = size_of_font
+			font_name = ui_style.font_type
 		else
 			local font = ui_style.font
 			font_name = font[3]
@@ -2050,7 +2100,7 @@ UIPasses.lorebook_paragraph_divider = {
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local divider_positions = ui_content.positions
 		local num_dividers = #divider_positions
-		local texture_id = pass_definition.texture_id
+		local texture_id = pass_definition.texture_id or "texture_id"
 		local initial_y = position[2]
 
 		if pass_definition.retained_mode then
@@ -2100,7 +2150,7 @@ UIPasses.text_positive_reinforcement = {
 		end
 
 		local inv_scale = RESOLUTION_LOOKUP.inv_scale
-		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
+		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, ui_style.font_type, font_size)
 		local full_font_height = (font_max + math.abs(font_min)) * inv_scale
 
 		if ui_style.vertical_alignment == "top" then
@@ -2752,6 +2802,8 @@ UIPasses.additional_option_tooltip = {
 
 		if ui_style.horizontal_alignment == "center" then
 			position[1] = (position[1] + parent_size[1] / 2) - size[1] / 2
+		elseif ui_style.horizontal_alignment == "right" then
+			position[1] = (position[1] + parent_size[1]) - size[1]
 		else
 			position[1] = position[1] - size[1]
 		end
@@ -3612,7 +3664,6 @@ local tooltip_background_color = {
 	3,
 	3
 }
-local temp_text_lines = {}
 UIPasses.tooltip_text = {
 	init = function (pass_definition)
 		assert(pass_definition.text_id, "no text id in pass definition. YOU NEEDS IT.")
@@ -3646,7 +3697,7 @@ UIPasses.tooltip_text = {
 		end
 
 		local max_width = ui_style.max_width or size[1]
-		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
+		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, ui_style.font_type, font_size)
 		local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, max_width)
 		local text_start_index = ui_content.text_start_index or 1
 		local max_texts = ui_content.max_texts or #texts
@@ -3766,7 +3817,7 @@ UIPasses.rect_text = {
 		end
 
 		local max_width = ui_style.max_width or size[1]
-		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
+		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, ui_style.font_type, font_size)
 		local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, max_width)
 		local text_start_index = ui_content.text_start_index or 1
 		local max_texts = ui_content.max_texts or #texts
@@ -3842,7 +3893,6 @@ UIPasses.rect_text = {
 		end
 	end
 }
-local test_timer = nil
 local double_click_threshold = UISettings.double_click_threshold
 local cursor_value_type_name = "Vector3"
 UIPasses.hotspot = {

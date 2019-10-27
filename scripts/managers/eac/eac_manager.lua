@@ -79,8 +79,8 @@ end
 EacManager._draw_indicator = function (self, gui, dt, state_text, violation_text, cause_text, explanation_text, reason_text)
 	local margin = 8
 	local w, h = Application.resolution()
-	local font = "materials/fonts/gw_arial_16"
-	local font_material = "gw_arial_16"
+	local font = "materials/fonts/arial"
+	local font_material = "arial"
 	local font_size = 12
 	local row_margin = -4
 	local text_adjustment = -10

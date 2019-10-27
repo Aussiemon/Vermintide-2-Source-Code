@@ -74,6 +74,56 @@ SimpleHuskInventoryExtension.drop_level_event_item = function (self, slot_data)
 	self:destroy_slot("slot_level_event")
 end
 
+SimpleHuskInventoryExtension._unlink_unit = function (self, unit, reason, attachment_node_linking)
+	World.unlink_unit(self._world, unit)
+
+	local node_linking_data = attachment_node_linking.wielded or attachment_node_linking
+
+	for i, attachment_nodes in ipairs(node_linking_data) do
+		local target_node = attachment_nodes.target
+
+		if target_node ~= 0 then
+			local target_node_index = (type(target_node) == "string" and Unit.node(unit, target_node)) or target_node
+			local parent = Unit.scene_graph_parent(unit, target_node_index)
+
+			Unit.scene_graph_link(unit, target_node_index, 0)
+			Unit.set_local_pose(unit, target_node_index, Matrix4x4.identity())
+		end
+	end
+
+	Unit.set_flow_variable(unit, "lua_drop_reason", reason)
+	Unit.set_shader_pass_flag_for_meshes_in_unit_and_childs(unit, "outline_unit", false)
+	Unit.flow_event(unit, "lua_dropped")
+
+	local actor = Unit.create_actor(unit, "rp_dropped")
+
+	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+	Actor.add_velocity(actor, Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
+end
+
+SimpleHuskInventoryExtension.drop_equipped_weapons = function (self, reason)
+	local equipment = self._equipment
+	local wielded = equipment.wielded
+	local template_name = wielded.template
+	local linking_template = AttachmentNodeLinking[template_name]
+	local left_hand_unit_name = wielded.left_hand_unit
+	local right_hand_unit_name = wielded.right_hand_unit
+
+	if left_hand_unit_name then
+		local attachment_node_linking = (linking_template.left and linking_template.left.third_person) or linking_template.third_person
+		local left_hand_unit = equipment.left_hand_wielded_unit_3p
+
+		self:_unlink_unit(left_hand_unit, reason, attachment_node_linking)
+	end
+
+	if right_hand_unit_name then
+		local attachment_node_linking = (linking_template.right and linking_template.right.third_person) or linking_template.third_person
+		local right_hand_unit = equipment.right_hand_wielded_unit_3p
+
+		self:_unlink_unit(right_hand_unit, reason, attachment_node_linking)
+	end
+end
+
 SimpleHuskInventoryExtension.equipment = function (self)
 	return self._equipment
 end

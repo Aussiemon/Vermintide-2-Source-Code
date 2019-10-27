@@ -115,6 +115,8 @@ LobbyHost.update = function (self, dt)
 
 			if peer_id == my_peer_id then
 				self._lost_connection_to_lobby = true
+
+				print("[LobbyHost] Lost connection to the lobby")
 			end
 		end
 	end
@@ -228,6 +230,12 @@ end
 
 LobbyHost.get_max_members = function (self)
 	return self.max_members
+end
+
+LobbyHost.set_max_members = function (self, max_members)
+	self.max_members = max_members
+
+	LobbyInternal.set_max_members(self.lobby, max_members)
 end
 
 LobbyHost.set_lobby = function (self, lobby)

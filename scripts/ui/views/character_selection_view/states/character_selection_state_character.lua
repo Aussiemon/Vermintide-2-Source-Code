@@ -9,6 +9,7 @@ local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local DO_RELOAD = false
+local VIDEO_REFERENCE_NAME = "CharacterSelectionStateCharacter"
 local fake_input_service = {
 	get = function ()
 		return
@@ -34,10 +35,16 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	}
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.is_server = ingame_ui_context.is_server
+	self._close_on_successful_profile_request = true
 	self.world_previewer = params.world_previewer
 	self.wwise_world = params.wwise_world
 	self.platform = PLATFORM
 	self.allow_back_button = params.allow_back_button
+
+	if params.pick_time then
+		self.pick_time = params.pick_time
+	end
+
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -62,13 +69,23 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 
 	self._hero_preview_skin = nil
 	local hero_name = self._hero_name
-	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+	local profile_id = params.profile_id
 
-	if profile_index and hero_name then
-		local hero_attributes = Managers.backend:get_interface("hero_attributes")
-		self._career_index = career_index
+	if profile_id and profile_id > 0 then
+		self._career_index = params.career_id
+		self._close_on_successful_profile_request = false
 
-		self:_select_hero(profile_index, self._career_index, true)
+		self:_select_hero(profile_id, self._career_index, true)
+		self:_change_profile(profile_id, self._career_index)
+	else
+		local profile_index, career_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+
+		if profile_index and hero_name then
+			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+			self._career_index = career_index
+
+			self:_select_hero(profile_index, self._career_index, true)
+		end
 	end
 
 	self.parent:set_input_blocked(false)
@@ -98,10 +115,10 @@ CharacterSelectionStateCharacter._setup_video_player = function (self, material_
 	local set_loop = true
 	local world, viewport = self.parent:get_background_world()
 
-	UIRenderer.create_video_player(ui_top_renderer, world, resource, set_loop)
+	UIRenderer.create_video_player(ui_top_renderer, VIDEO_REFERENCE_NAME, world, resource, set_loop)
 
 	local scenegraph_id = "info_window_video"
-	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name)
+	local widget_definition = UIWidgets.create_video(scenegraph_id, material_name, VIDEO_REFERENCE_NAME)
 	local widget = UIWidget.init(widget_definition)
 	self._video_widget = widget
 	self._video_created = true
@@ -117,10 +134,10 @@ CharacterSelectionStateCharacter._destroy_video_player = function (self)
 		self._video_widget = nil
 	end
 
-	if ui_top_renderer and ui_top_renderer.video_player then
+	if ui_top_renderer and ui_top_renderer.video_players[VIDEO_REFERENCE_NAME] then
 		local world, viewport = self.parent:get_background_world()
 
-		UIRenderer.destroy_video_player(ui_top_renderer, world)
+		UIRenderer.destroy_video_player(ui_top_renderer, VIDEO_REFERENCE_NAME, world)
 	end
 
 	self._video_created = nil
@@ -574,7 +591,8 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 	local preview_items = career_settings.preview_items
 
 	if preview_items then
-		for _, item_name in ipairs(preview_items) do
+		for _, item_data in ipairs(preview_items) do
+			local item_name = item_data.item_name
 			local item_template = ItemMasterList[item_name]
 			local slot_type = item_template.slot_type
 			local slot_names = InventorySettings.slot_names_by_type[slot_type]
@@ -664,8 +682,8 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 			local description_text_shadow_style = style.description_text_shadow
 			content.title_text = display_name
 			content.description_text = description
-			local title_height = self:_get_text_height(ui_top_renderer, size, title_text_style, display_name)
-			local description_height = self:_get_text_height(ui_top_renderer, size, description_text_style, description)
+			local title_height = UIUtils.get_text_height(ui_top_renderer, size, title_text_style, display_name)
+			local description_height = UIUtils.get_text_height(ui_top_renderer, size, description_text_style, description)
 			description_text_style.offset[2] = -description_height
 			description_text_shadow_style.offset[2] = -(description_height + 2)
 			total_perks_height = total_perks_height + title_height + description_height + perks_height_spacing
@@ -686,44 +704,6 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 	self:_destroy_video_player()
 end
 
-CharacterSelectionStateCharacter._get_text_height = function (self, ui_renderer, size, ui_style, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font_material, font_size, font_name = nil
-
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = ui_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = ui_style.font_size or font_size
-	end
-
-	if ui_style.localize then
-		text = Localize(text)
-	end
-
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local text_start_index = 1
-	local max_texts = #texts
-	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
-
-	return full_font_height
-end
-
 CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 	local input_service = self:input_service()
 
@@ -734,6 +714,12 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 	local select_button = self._widgets_by_name.select_button
 
 	UIWidgetUtils.animate_default_button(select_button, dt)
+
+	if self.pick_time then
+		self.pick_time = math.clamp(self.pick_time - dt, 0, 100)
+		select_button.content.title_text = string.format("Confirm %.1f", self.pick_time)
+		select_button.element.dirty = true
+	end
 
 	if self:_is_button_hover_enter(select_button) then
 		self:_play_sound("play_gui_start_menu_button_hover")
@@ -817,8 +803,9 @@ CharacterSelectionStateCharacter._change_profile = function (self, profile_index
 	local profile = SPProfiles[profile_index]
 	local profile_name = profile.display_name
 	local career_name = profile.careers[career_index].display_name
+	local force_respawn = true
 
-	self._profile_requester:request_profile(peer_id, local_player_id, profile_name, career_name)
+	self._profile_requester:request_profile(peer_id, local_player_id, profile_name, career_name, force_respawn)
 
 	self._pending_profile_request = true
 	self._requested_profile_index = profile_index
@@ -876,8 +863,18 @@ CharacterSelectionStateCharacter._update_profile_request = function (self)
 
 			hero_attributes:set(hero_name, "career", career_index)
 			self:_save_selected_profile(profile_index)
+
+			if self.parent.last_hero_picked then
+				self.parent:last_hero_picked(profile_index, career_index)
+			end
+
 			self.parent:set_current_hero(profile_index)
-			self.parent:close_menu()
+
+			if self._close_on_successful_profile_request then
+				self.parent:close_menu()
+			end
+
+			self._close_on_successful_profile_request = true
 		elseif result == "failure" then
 			self._pending_profile_request = nil
 

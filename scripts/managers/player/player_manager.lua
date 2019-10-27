@@ -1,3 +1,4 @@
+require("scripts/helpers/player_utils")
 require("scripts/settings/player_unit_damage_settings")
 require("scripts/managers/player/bulldozer_player")
 require("scripts/managers/player/remote_player")
@@ -19,10 +20,6 @@ end
 local RPCS = {
 	"rpc_to_client_spawn_player"
 }
-
-PlayerManager._unique_id = function (self, peer_id, local_player_id)
-	return peer_id .. ":" .. local_player_id
-end
 
 PlayerManager.set_is_server = function (self, is_server, network_event_delegate, network_manager)
 	self.is_server = is_server
@@ -156,7 +153,7 @@ PlayerManager.add_player = function (self, input_source, viewport_name, viewport
 	end
 
 	local peer_id = Network.peer_id()
-	local unique_id = self:_unique_id(peer_id, local_player_id)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local ui_id = self:_create_ui_id()
 	local backend_id = Managers.backend:player_id()
 	local player = BulldozerPlayer:new(self.network_manager, input_source, viewport_name, viewport_world_name, self.is_server, local_player_id, unique_id, ui_id, backend_id)
@@ -174,14 +171,19 @@ PlayerManager.add_player = function (self, input_source, viewport_name, viewport
 	return player
 end
 
-PlayerManager.add_remote_player = function (self, peer_id, player_controlled, local_player_id, clan_tag)
+PlayerManager.add_remote_player = function (self, peer_id, player_controlled, local_player_id, clan_tag, account_id)
 	if script_data.network_debug_connections then
 		printf("PlayerManager:add_remote_player %s", tostring(peer_id))
 	end
 
-	local unique_id = self:_unique_id(peer_id, local_player_id)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local ui_id = self:_create_ui_id()
-	local player = RemotePlayer:new(self.network_manager, peer_id, player_controlled, self.is_server, local_player_id, unique_id, clan_tag, ui_id)
+	local player = RemotePlayer:new(self.network_manager, peer_id, player_controlled, self.is_server, local_player_id, unique_id, clan_tag, ui_id, account_id)
+	local network_manager = Managers.state.network
+	local network_transmit = network_manager.network_transmit
+
+	player:register_rpcs(self.network_event_delegate, network_transmit)
+
 	self._players[unique_id] = player
 
 	if player_controlled then
@@ -228,7 +230,7 @@ end
 
 PlayerManager.add_bot_player = function (self, player_name, bot_player_peer_id, bot_profile_index, profile_index, career_index, local_player_id)
 	local peer_id = Network.peer_id()
-	local unique_id = self:_unique_id(peer_id, local_player_id)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local ui_id = self:_create_ui_id()
 	local player = PlayerBot:new(player_name, bot_profile_index, self.is_server, profile_index, career_index, local_player_id, unique_id, ui_id)
 	self._players[unique_id] = player
@@ -273,7 +275,7 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 		printf("PlayerManager:remove_player peer_id=%s %i", tostring(peer_id), local_player_id or -1)
 	end
 
-	local unique_id = self:_unique_id(peer_id, local_player_id)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local player = self._players[unique_id]
 
 	if player then
@@ -297,6 +299,7 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 		end
 
 		self._statistics_db:unregister(player:stats_id())
+		player:unregister_rpcs()
 		player:destroy()
 	end
 end

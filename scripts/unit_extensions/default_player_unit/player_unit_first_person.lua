@@ -77,6 +77,7 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	end
 
 	self._rig_update_timestep = 0.016666666666666666
+	self._show_selected_jump = Managers.state.game_mode:setting("show_selected_jump")
 end
 
 PlayerUnitFirstPerson.reset = function (self)

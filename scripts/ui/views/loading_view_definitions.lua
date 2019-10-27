@@ -107,7 +107,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			120,
-			2
+			10
 		}
 	},
 	tip_text_prefix = {
@@ -121,7 +121,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			35,
-			2
+			10
 		}
 	},
 	gamepad_input_icon = {
@@ -132,7 +132,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			65,
-			3
+			11
 		}
 	},
 	second_gamepad_input_icon = {
@@ -143,7 +143,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			65,
-			3
+			11
 		}
 	},
 	tip_text_suffix = {
@@ -157,7 +157,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			35,
-			2
+			10
 		}
 	},
 	second_row_tip_text_prefix = {
@@ -171,7 +171,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			6,
-			2
+			10
 		}
 	},
 	second_row_gamepad_input_icon = {
@@ -182,7 +182,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			36,
-			3
+			11
 		}
 	},
 	second_row_second_gamepad_input_icon = {
@@ -193,7 +193,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			36,
-			3
+			11
 		}
 	},
 	second_row_tip_text_suffix = {
@@ -207,7 +207,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			6,
-			2
+			10
 		}
 	},
 	news_ticker_text = {
@@ -221,7 +221,7 @@ local scenegraph_definition = {
 		position = {
 			1960,
 			-10,
-			2
+			10
 		}
 	},
 	news_ticker_mask = {
@@ -235,7 +235,7 @@ local scenegraph_definition = {
 		position = {
 			6,
 			0,
-			3
+			11
 		}
 	},
 	act_name = {
@@ -507,7 +507,7 @@ local background_image = {
 	content = {
 		objective_icon = "loading_objective_icon",
 		weave_name = "",
-		location_header = "location",
+		location_header = "loading_view_location",
 		mutator_description = "",
 		bg_texture = "to_be_set",
 		location_name = "",
@@ -565,7 +565,7 @@ local background_image = {
 			},
 			offset = {
 				130,
-				-60,
+				50,
 				6
 			}
 		},
@@ -584,14 +584,14 @@ local background_image = {
 			},
 			offset = {
 				130,
-				-62,
+				48,
 				5
 			}
 		},
 		location_header = {
 			vertical_alignment = "bottom",
 			upper_case = true,
-			localize = false,
+			localize = true,
 			horizontal_alignment = "left",
 			font_size = 24,
 			font_type = "hell_shark_header",
@@ -603,7 +603,7 @@ local background_image = {
 			},
 			offset = {
 				130,
-				335,
+				445,
 				6
 			}
 		},
@@ -622,7 +622,7 @@ local background_image = {
 			},
 			offset = {
 				130,
-				270,
+				380,
 				6
 			}
 		},
@@ -641,7 +641,7 @@ local background_image = {
 			},
 			offset = {
 				130,
-				268,
+				378,
 				5
 			}
 		},
@@ -660,7 +660,7 @@ local background_image = {
 			},
 			offset = {
 				130,
-				200,
+				310,
 				6
 			}
 		},
@@ -684,7 +684,7 @@ local background_image = {
 			},
 			offset = {
 				130,
-				200,
+				310,
 				6
 			}
 		},
@@ -699,7 +699,7 @@ local background_image = {
 			},
 			offset = {
 				130,
-				174,
+				284,
 				10
 			},
 			texture_size = {
@@ -722,7 +722,7 @@ local background_image = {
 			},
 			offset = {
 				170,
-				170,
+				280,
 				6
 			}
 		}

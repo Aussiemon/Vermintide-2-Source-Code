@@ -487,4 +487,12 @@ PayloadExtension.cb_game_session_disconnect = function (self)
 	self._game = nil
 end
 
+PayloadExtension.started = function (self)
+	return self._started
+end
+
+PayloadExtension.finished = function (self)
+	return self._previous_status == "end"
+end
+
 return

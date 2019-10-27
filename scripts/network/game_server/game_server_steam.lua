@@ -12,11 +12,11 @@ GameServerInternal.init_server = function (network_options, server_name)
 	local project_hash = network_options.project_hash
 	local network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
 	local settings = {
-		gamedir = "vermintide2",
 		dedicated = true,
 		server_version = "1.0.0.0",
 		steam_port = network_options.steam_port,
 		game_description = network_hash,
+		gamedir = Managers.mechanism:server_universe(),
 		ip_address = network_options.ip_address,
 		map = network_options.map,
 		max_players = network_options.max_members,
@@ -27,6 +27,7 @@ GameServerInternal.init_server = function (network_options, server_name)
 	local use_eac = true
 	local server = Network.init_steam_server(config_file_name, settings, use_eac)
 
+	GameSettingsDevelopment.set_ignored_rpc_logs()
 	CommandWindow.print(string.format("Appid: %s", SteamGameServer.app_id()))
 
 	return server
@@ -54,6 +55,14 @@ end
 
 GameServerInternal.set_level_name = function (game_server, name)
 	SteamGameServer.set_map(game_server, name)
+end
+
+GameServerInternal.run_callbacks = function (game_server, callback_object)
+	SteamGameServer.run_callbacks(game_server, callback_object)
+end
+
+GameServerInternal.user_name = function (game_server, peer_id)
+	return SteamGameServer.name(game_server, peer_id)
 end
 
 return

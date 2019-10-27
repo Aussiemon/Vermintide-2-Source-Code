@@ -886,7 +886,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					playing_units[dialogue_actor_unit] = extension
 
 					if source_id ~= 0 then
-						Managers.telemetry.events:vo_event_played(sound_event, result, speaker_name)
+						Managers.telemetry.events:vo_event_played(dialogue.category, result, sound_event, speaker_name)
 					end
 
 					if player_manager:owner(dialogue_actor_unit) ~= nil or Unit.has_data(dialogue_actor_unit, "dialogue_face_anim") then
