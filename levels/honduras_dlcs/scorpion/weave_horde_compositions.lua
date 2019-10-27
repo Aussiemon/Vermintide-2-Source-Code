@@ -2560,6 +2560,2065 @@ local weave_horde_compositions = {
 				}
 			}
 		}
+	},
+	weave_life_boss_event_1 = {
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"chaos_troll",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					2,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					2,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					2
+				}
+			}
+		}
+	},
+	weave_boss_event_1 = {
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					2,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					2,
+					"chaos_spawn",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"chaos_spawn",
+					2
+				}
+			}
+		}
+	},
+	weave_event_smaller = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						8,
+						10
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						5,
+						6
+					},
+					"skaven_clan_rat",
+					{
+						1,
+						2
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						9,
+						11
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						5,
+						6
+					},
+					"skaven_clan_rat",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						10,
+						12
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						5,
+						6
+					},
+					"skaven_clan_rat",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						13,
+						14
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						7,
+						8
+					},
+					"skaven_clan_rat",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						16,
+						17
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						7,
+						8
+					},
+					"skaven_clan_rat",
+					{
+						7,
+						8
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						16,
+						17
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						7,
+						8
+					},
+					"skaven_clan_rat",
+					{
+						7,
+						8
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"skaven_slave",
+					{
+						16,
+						17
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						7,
+						8
+					},
+					"skaven_clan_rat",
+					{
+						7,
+						8
+					}
+				}
+			}
+		}
+	},
+	weave_storm_vermin_shields_small = {
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						1,
+						2
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						7,
+						8
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						9,
+						10
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						9,
+						10
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						9,
+						10
+					}
+				}
+			}
+		}
+	},
+	weave_plague_monks_small = {
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						1,
+						2
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						6,
+						7
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						6,
+						7
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						6,
+						7
+					}
+				}
+			}
+		}
+	},
+	weave_chaos_berzerkers_small = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						1,
+						2
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						5,
+						6
+					}
+				}
+			}
+		}
+	},
+	weave_bestigors = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						1,
+						2
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						5,
+						6
+					}
+				}
+			}
+		}
+	},
+	weave_ungor_archers = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					{
+						6,
+						7
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					8
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					{
+						9,
+						10
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					10
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					12
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_ungor_archer",
+					12
+				}
+			}
+		}
+	},
+	weave_bestigors_small = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_bestigor",
+					{
+						3,
+						4
+					}
+				}
+			}
+		}
+	},
+	weave_chaos_raiders_small = {
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						1,
+						2
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						8,
+						9
+					}
+				}
+			}
+		}
+	},
+	weave_plague_monks_medium = {
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						6,
+						7
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mines_plague_monks",
+				weight = 1,
+				breeds = {
+					"skaven_plague_monk",
+					{
+						8,
+						9
+					}
+				}
+			}
+		}
+	},
+	weave_storm_vermin_medium = {
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						11,
+						12
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						11,
+						12
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						11,
+						12
+					}
+				}
+			}
+		}
+	},
+	weave_storm_vermin_shields_medium = {
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						11,
+						12
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						11,
+						12
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_with_shield",
+					{
+						11,
+						12
+					}
+				}
+			}
+		}
+	},
+	weave_chaos_shields = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						7,
+						8
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_marauder_with_shield",
+					{
+						8,
+						9
+					}
+				}
+			}
+		}
+	},
+	weave_storm_vermin_small = {
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						1,
+						2
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "somevermin",
+				weight = 3,
+				breeds = {
+					"skaven_storm_vermin_commander",
+					{
+						8,
+						9
+					}
+				}
+			}
+		}
+	},
+	weave_chaos_warriors = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						6,
+						7
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						6,
+						7
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						6,
+						7
+					}
+				}
+			}
+		}
+	},
+	weave_chaos_warriors_small = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
+						4,
+						5
+					}
+				}
+			}
+		}
+	},
+	weave_event_medium_shield = {
+		{
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						18,
+						20
+					},
+					"skaven_clan_rat",
+					{
+						1,
+						2
+					},
+					"skaven_clan_rat_with_shield",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						18,
+						20
+					},
+					"skaven_clan_rat",
+					{
+						2,
+						4
+					},
+					"skaven_clan_rat_with_shield",
+					{
+						6,
+						7
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						18,
+						20
+					},
+					"skaven_clan_rat",
+					{
+						4,
+						6
+					},
+					"skaven_clan_rat_with_shield",
+					{
+						7,
+						8
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						18,
+						20
+					},
+					"skaven_clan_rat",
+					{
+						6,
+						8
+					},
+					"skaven_clan_rat_with_shield",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						18,
+						20
+					},
+					"skaven_clan_rat",
+					{
+						8,
+						11
+					},
+					"skaven_clan_rat_with_shield",
+					{
+						11,
+						13
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						18,
+						20
+					},
+					"skaven_clan_rat",
+					{
+						8,
+						11
+					},
+					"skaven_clan_rat_with_shield",
+					{
+						11,
+						13
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					{
+						18,
+						20
+					},
+					"skaven_clan_rat",
+					{
+						8,
+						11
+					},
+					"skaven_clan_rat_with_shield",
+					{
+						11,
+						13
+					}
+				}
+			}
+		}
+	},
+	weave_chaos_berzerkers_medium = {
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						4,
+						5
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_berzerker",
+					{
+						8,
+						9
+					}
+				}
+			}
+		}
+	},
+	weave_explosive_horde_medium = {
+		{
+			{
+				name = "explo",
+				weight = 3,
+				breeds = {
+					"skaven_explosive_loot_rat",
+					6
+				}
+			}
+		},
+		{
+			{
+				name = "explo",
+				weight = 3,
+				breeds = {
+					"skaven_explosive_loot_rat",
+					8
+				}
+			}
+		},
+		{
+			{
+				name = "explo",
+				weight = 3,
+				breeds = {
+					"skaven_explosive_loot_rat",
+					10
+				}
+			}
+		},
+		{
+			{
+				name = "explo",
+				weight = 3,
+				breeds = {
+					"skaven_explosive_loot_rat",
+					12
+				}
+			}
+		},
+		{
+			{
+				name = "explo",
+				weight = 3,
+				breeds = {
+					"skaven_explosive_loot_rat",
+					13
+				}
+			}
+		},
+		{
+			{
+				name = "explo",
+				weight = 3,
+				breeds = {
+					"skaven_explosive_loot_rat",
+					13
+				}
+			}
+		},
+		{
+			{
+				name = "explo",
+				weight = 3,
+				breeds = {
+					"skaven_explosive_loot_rat",
+					13
+				}
+			}
+		}
+	},
+	weave_chaos_raiders_medium = {
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						3,
+						4
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						5,
+						6
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						8,
+						9
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						10,
+						11
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						10,
+						11
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "raiders",
+				weight = 3,
+				breeds = {
+					"chaos_raider",
+					{
+						10,
+						11
+					}
+				}
+			}
+		}
 	}
 }
 
