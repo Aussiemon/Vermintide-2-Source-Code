@@ -81,6 +81,8 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	if DEDICATED_SERVER then
 		self._eac_authorized_written_to_lobby_data = ""
 	end
+
+	Managers.mechanism:register_network_server(self)
 end
 
 NetworkServer.eac_server = function (self)
@@ -289,6 +291,8 @@ NetworkServer.destroy = function (self)
 
 		self._gui = nil
 	end
+
+	Managers.mechanism:unregister_network_server()
 end
 
 NetworkServer.register_rpcs = function (self, network_event_delegate, network_transmit)

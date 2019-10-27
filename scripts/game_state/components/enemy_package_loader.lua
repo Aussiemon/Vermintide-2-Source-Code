@@ -638,31 +638,6 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 	local director_list = level_settings.conflict_director_set or DefaultConflictDirectorSet
 	local breed_cap = EnemyPackageLoaderSettings.max_loaded_breed_cap
 	self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, difficulty, non_random_conflict_directors, level_seed, failed_locked_functions)
-	local loop_breeds = true
-
-	while loop_breeds do
-		loop_breeds = false
-
-		for breed_name, _ in pairs(breed_lookup) do
-			local breed_data = Breeds[breed_name]
-
-			if breed_data.additional_breed_packages_to_load then
-				local additional_breeds = breed_data.additional_breed_packages_to_load(difficulty)
-
-				if additional_breeds then
-					for i = 1, #additional_breeds, 1 do
-						local additional_breed_name = additional_breeds[i]
-						local breed_added = breed_lookup[additional_breed_name]
-
-						if not breed_added then
-							breed_lookup[additional_breed_name] = true
-							loop_breeds = true
-						end
-					end
-				end
-			end
-		end
-	end
 
 	return breed_lookup
 end

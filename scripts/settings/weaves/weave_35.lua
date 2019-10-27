@@ -23,10 +23,10 @@ return {
 					{
 						kill_enemies = {
 							score_multiplier = {
-								hardest = 0.18,
-								cataclysm_3 = 0.1296,
-								cataclysm_2 = 0.144,
-								normal = 0.4
+								hardest = 0.25,
+								cataclysm_3 = 0.18,
+								cataclysm_2 = 0.2,
+								normal = 0.6
 							}
 						},
 						weave_prop_skaven_doom_wheel_01_spawner_001 = {

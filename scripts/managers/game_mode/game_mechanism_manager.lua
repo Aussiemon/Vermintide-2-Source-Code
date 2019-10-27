@@ -82,6 +82,22 @@ GameMechanismManager.get_level_seed = function (self, optional_system)
 	end
 end
 
+GameMechanismManager.register_network_server = function (self, network_server)
+	fassert(self._network_server == nil, "Game is trying to create duplicated instances of NetworkServer")
+
+	self._network_server = network_server
+end
+
+GameMechanismManager.unregister_network_server = function (self)
+	fassert(self._network_server, "Trying to destroy NetworkServer even though it has already been destroyed?")
+
+	self._network_server = nil
+end
+
+GameMechanismManager.network_server = function (self)
+	return self._network_server
+end
+
 GameMechanismManager.set_level_seed = function (self, seed)
 	print("GameMechanismManager setting level seed:", seed)
 

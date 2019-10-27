@@ -92,7 +92,7 @@ AdventureMechanism.get_starting_level = function (self)
 end
 
 AdventureMechanism.allocate_slot = function (self, sender, profile)
-	local network_server = Managers.matchmaking.network_server
+	local network_server = Managers.mechanism:network_server()
 	local slot_allocator = network_server.slot_allocator
 
 	if slot_allocator:is_free(profile) then
