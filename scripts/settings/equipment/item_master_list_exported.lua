@@ -1855,6 +1855,34 @@ ItemMasterList.frame_geheimnisnacht_02 = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_geheimnisnacht_03 = {
+	description = "frame_geheimnisnacht_03_description",
+	temporary_template = "frame_geheimnisnacht_03",
+	display_name = "frame_geheimnisnacht_03_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_geheimnisnacht_03",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_summer = {
 	description = "frame_summer_description",
 	temporary_template = "frame_summer",

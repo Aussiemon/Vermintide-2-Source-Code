@@ -485,7 +485,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 			local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
 
 			if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
-				return "DIfficulty requirements not met"
+				return false, "DIfficulty requirements not met"
 			end
 		end
 

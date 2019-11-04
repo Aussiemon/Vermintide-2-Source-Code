@@ -2118,17 +2118,6 @@ ProcFunctions = {
 				if not has_procced then
 					ammo_extension:add_ammo_to_reserve(ammo_amount)
 
-					local can_reload = ammo_extension:can_reload()
-					local is_reloading = ammo_extension:is_reloading()
-					local ammo_count = ammo_extension:ammo_count()
-					local do_reload = can_reload and ammo_count == 0 and not is_reloading
-
-					if do_reload then
-						local play_animation = true
-
-						ammo_extension:start_reload(play_animation)
-					end
-
 					buff.has_procced = true
 				end
 			end
@@ -2185,17 +2174,6 @@ ProcFunctions = {
 
 			if ammo_extension then
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
-
-				local can_reload = ammo_extension:can_reload()
-				local is_reloading = ammo_extension:is_reloading()
-				local ammo_count = ammo_extension:ammo_count()
-				local do_reload = can_reload and ammo_count == 0 and not is_reloading
-
-				if do_reload then
-					local play_animation = true
-
-					ammo_extension:start_reload(play_animation)
-				end
 			end
 		end
 	end,
@@ -2225,17 +2203,6 @@ ProcFunctions = {
 
 			if ammo_extension then
 				ammo_extension:add_ammo_to_reserve(ammo_amount)
-
-				local can_reload = ammo_extension:can_reload()
-				local is_reloading = ammo_extension:is_reloading()
-				local ammo_count = ammo_extension:ammo_count()
-				local do_reload = can_reload and ammo_count == 0 and not is_reloading
-
-				if do_reload then
-					local play_animation = true
-
-					ammo_extension:start_reload(play_animation)
-				end
 			end
 		end
 	end,

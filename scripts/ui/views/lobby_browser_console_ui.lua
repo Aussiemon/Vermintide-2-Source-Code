@@ -1282,7 +1282,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 
 	if lobby_data then
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
-		locked_reason_widget_content.text = locked_reason
+		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
 	else
 		locked_reason_widget_content.text = "tutorial_no_text"
 	end
@@ -1416,7 +1416,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 
 	if lobby_data then
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
-		locked_reason_widget_content.text = locked_reason
+		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
 	else
 		locked_reason_widget_content.text = "tutorial_no_text"
 	end

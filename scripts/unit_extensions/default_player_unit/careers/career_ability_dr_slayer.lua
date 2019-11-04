@@ -328,6 +328,11 @@ CareerAbilityDRSlayer._do_leap = function (self)
 		sfx_event_jump = local_player and "Play_career_ability_bardin_slayer_jump",
 		sfx_event_land = local_player and "Play_career_ability_bardin_slayer_impact",
 		leap_events = {
+			start = function (this)
+				local unit_3p = this.unit
+				local buff_extension = ScriptUnit.has_extension(unit_3p, "buff_system")
+				self._uninterruptible_buff_id = buff_extension:add_buff("bardin_slayer_passive_uninterruptible_leap")
+			end,
 			finished = function (this, aborted, final_position)
 				local unit_3p = this.unit
 				local player = this.player
@@ -354,6 +359,14 @@ CareerAbilityDRSlayer._do_leap = function (self)
 					local unit_id = network_manager:unit_game_object_id(unit_3p)
 
 					network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
+				end
+
+				local buff_extension = ScriptUnit.has_extension(unit_3p, "buff_system")
+
+				if self._uninterruptible_buff_id then
+					buff_extension:remove_buff(self._uninterruptible_buff_id)
+
+					self._uninterruptible_buff_id = nil
 				end
 			end
 		}

@@ -250,12 +250,11 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						end
 
 						local charge_value = self.damage_profile.charge_value or "heavy_attack"
-						local num_hit_targets = 1
 						local send_to_server = true
 						local buff_type = DamageUtils.get_item_buff_type(self.item_name)
-						local target_index = self._num_targets_hit
+						target_index = self._num_targets_hit
 
-						DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, target_hit_zone_name, num_hit_targets, send_to_server, buff_type)
+						DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, target_hit_zone_name, target_index, send_to_server, buff_type)
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", self._num_targets_hit == 1)
 					end
 				end

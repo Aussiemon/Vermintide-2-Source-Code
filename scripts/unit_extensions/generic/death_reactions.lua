@@ -1849,9 +1849,9 @@ DeathReactions.templates = {
 							local liquid_template_id = NetworkLookup.liquid_area_damage_templates.lamp_oil_fire
 							local network_manager = Managers.state.network
 							local last_damage_data = health_extension.last_damage_data
-							local last_attacker_unique_id = last_damage_data.attacker_unique_id
+							local last_attacker_unit_id = last_damage_data.attacker_unit_id or NetworkConstants.invalid_game_object_id
 
-							network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", last_attacker_unique_id, position_on_navmesh, direction, liquid_template_id)
+							network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", last_attacker_unit_id, position_on_navmesh, direction, liquid_template_id)
 						end
 
 						local owner_unit = health_extension.owner_unit

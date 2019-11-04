@@ -2031,7 +2031,7 @@ DamageUtils.apply_buffs_to_heal = function (healed_unit, healer_unit, heal_amoun
 	if ScriptUnit.has_extension(healed_unit, "buff_system") then
 		local buff_extension = ScriptUnit.extension(healed_unit, "buff_system")
 
-		if not heal_type == "raw_heal" then
+		if heal_type ~= "raw_heal" then
 			heal_amount = buff_extension:apply_buffs_to_value(heal_amount, "healing_received")
 		end
 
@@ -2231,7 +2231,7 @@ DamageUtils.check_ranged_block = function (attacking_unit, target_unit, attack_d
 	local is_blocking = status_extension:is_blocking()
 	local can_block, fatigue_point_costs_multiplier, improved_block, _ = status_extension:can_block(attacking_unit)
 
-	if is_blocking and can_block then
+	if is_blocking and can_block and improved_block then
 		local inventory_extension = ScriptUnit.extension(target_unit, "inventory_system")
 		local weapon_data = inventory_extension:get_wielded_slot_item_template()
 
@@ -2244,14 +2244,6 @@ DamageUtils.check_ranged_block = function (attacking_unit, target_unit, attack_d
 		end
 
 		local network_manager = Managers.state.network
-		local game = network_manager:game()
-		local unit_id = network_manager:unit_game_object_id(target_unit)
-		local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
-		local dot = Vector3.dot(Vector3.normalize(attack_direction), Vector3.normalize(aim_direction))
-
-		if dot > -0.7 then
-			return false
-		end
 
 		status_extension:blocked_attack(fatigue_type, attacking_unit, fatigue_point_costs_multiplier, false)
 

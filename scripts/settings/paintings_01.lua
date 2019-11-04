@@ -898,6 +898,21 @@ Paintings.hor_wom = {
 		wood = true
 	}
 }
+Paintings.hor_CurseOfTheVampireCoast_KeyArt = {
+	sound_event = "painting_curseofthevampirecoast_keyart_description",
+	rarity = "common",
+	display_name = "painting_curseofthevampirecoast_keyart_name",
+	icon = "icon_painting_2",
+	frame = "painted",
+	description = "painting_curseofthevampirecoast_keyart_description",
+	artist = "painting_CurseOfTheVampireCoast_KeyArt_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -927,6 +942,7 @@ local painting_order = {
 	"hor_entrance01",
 	"hor_beastmen_page_08",
 	"hor_wom",
+	"hor_CurseOfTheVampireCoast_KeyArt",
 	"ver_none",
 	"ver_bw01",
 	"ver_khorne04",

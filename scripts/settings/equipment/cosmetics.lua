@@ -2400,6 +2400,9 @@ Cosmetics = {
 	frame_geheimnisnacht_02 = {
 		icon = "unit_frame_02"
 	},
+	frame_geheimnisnacht_03 = {
+		icon = "unit_frame_02"
+	},
 	frame_bogenhafen_01 = {
 		icon = "unit_frame_02"
 	},

@@ -608,6 +608,14 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
+	bardin_slayer_passive_uninterruptible_leap = {
+		buffs = {
+			{
+				max_stacks = 1,
+				perk = "uninterruptible"
+			}
+		}
+	},
 	bardin_slayer_passive_stacking_damage_buff_on_hit = {
 		buffs = {
 			{

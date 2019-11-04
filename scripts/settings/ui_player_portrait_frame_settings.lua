@@ -136,6 +136,65 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_geheimnisnacht_03 = {
+		{
+			texture = "portrait_frame_geheimnisnacht_03",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_geheimnisnacht_03_effect",
+			layer = 11,
+			color = {
+				255,
+				135,
+				242,
+				181
+			},
+			size = {
+				126,
+				138
+			}
+		},
+		{
+			texture = "portrait_frame_geheimnisnacht_03_effect",
+			layer = 11,
+			color = {
+				255,
+				135,
+				242,
+				181
+			},
+			size = {
+				126,
+				138
+			}
+		},
+		{
+			texture = "portrait_frame_geheimnisnacht_03_moon",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				64,
+				64
+			},
+			offset = {
+				0,
+				27,
+				0
+			}
+		}
+	},
 	frame_bogenhafen_01 = {
 		{
 			texture = "portrait_frame_bogenhafen_1",

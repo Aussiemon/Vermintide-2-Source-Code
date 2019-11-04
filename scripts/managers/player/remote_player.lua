@@ -277,7 +277,7 @@ end
 
 RemotePlayer.rpc_set_observed_player_id = function (self, sender, observed_player_game_object_id)
 	local player = Managers.player:player_from_game_object_id(observed_player_game_object_id)
-	self._observed_player_id = player:unique_id()
+	self._observed_player_id = (player and player:unique_id()) or nil
 end
 
 return
