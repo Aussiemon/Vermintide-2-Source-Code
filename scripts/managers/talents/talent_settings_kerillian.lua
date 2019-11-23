@@ -185,7 +185,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown
+				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
 	},
@@ -194,7 +194,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_damage_taken",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown_on_damage_taken
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
 	},
@@ -225,7 +225,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_hit",
 				max_stacks = 1,
 				event_buff = true,
-				buff_func = ProcFunctions.end_shade_activated_ability
+				buff_func = "end_shade_activated_ability"
 			}
 		}
 	},
@@ -249,10 +249,10 @@ TalentBuffTemplates.wood_elf = {
 			{
 				name = "regrowth",
 				event_buff = true,
+				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				perk = "ninja_healing",
-				bonus = 2,
-				buff_func = ProcFunctions.heal_finesse_damage_on_melee
+				bonus = 2
 			}
 		}
 	},
@@ -262,10 +262,10 @@ TalentBuffTemplates.wood_elf = {
 				multiplier = 0.45,
 				name = "bloodlust",
 				event_buff = true,
+				buff_func = "heal_percent_of_damage_dealt_on_melee",
 				event = "on_damage_dealt",
 				perk = "smiter_healing",
-				heal_cap = 0.25,
-				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+				heal_cap = 0.25
 			}
 		}
 	},
@@ -275,9 +275,9 @@ TalentBuffTemplates.wood_elf = {
 				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
-				range = 10,
-				buff_func = ProcFunctions.heal_other_players_percent_at_range
+				range = 10
 			}
 		}
 	},
@@ -301,7 +301,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_hit",
 				buff_to_add = "kerillian_shade_stacking_headshot_damage_on_headshot_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff_on_headshot
+				buff_func = "add_buff_on_headshot"
 			}
 		}
 	},
@@ -327,7 +327,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_backstab",
 				event_buff = true,
-				buff_func = ProcFunctions.ammo_gain
+				buff_func = "ammo_gain"
 			}
 		}
 	},
@@ -336,7 +336,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_kill",
 				event_buff = true,
-				buff_func = ProcFunctions.kerillian_shade_stealth_on_backstab_kill
+				buff_func = "kerillian_shade_stealth_on_backstab_kill"
 			}
 		}
 	},
@@ -345,11 +345,11 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				apply_buff_func = "apply_shade_activated_ability",
-				name = "kerillian_shade_activated_ability",
+				name = "kerillian_shade_activated_ability_short",
 				remove_buff_func = "end_shade_activated_ability",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				icon = "passive_bonus_kerillian_shade",
+				icon = "kerillian_shade_passive_stealth_on_backstab_kill",
 				dormant = true,
 				refresh_durations = true
 			}
@@ -372,7 +372,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_critical_hit",
 				buff_to_add = "kerillian_shade_movement_speed_on_critical_hit_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -397,7 +397,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_critical_hit",
 				buff_to_add = "kerillian_shade_damage_reduction_on_critical_hit_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -448,7 +448,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown
+				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
 	},
@@ -457,7 +457,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_damage_taken",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown_on_damage_taken
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
 	},
@@ -537,11 +537,11 @@ TalentBuffTemplates.wood_elf = {
 				multiplier = -0.05,
 				name = "reaper",
 				event_buff = true,
+				buff_func = "heal_damage_targets_on_melee",
 				event = "on_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
-				bonus = 0.25,
-				buff_func = ProcFunctions.heal_damage_targets_on_melee
+				bonus = 0.25
 			}
 		}
 	},
@@ -551,10 +551,10 @@ TalentBuffTemplates.wood_elf = {
 				multiplier = 0.45,
 				name = "bloodlust",
 				event_buff = true,
+				buff_func = "heal_percent_of_damage_dealt_on_melee",
 				event = "on_damage_dealt",
 				perk = "smiter_healing",
-				heal_cap = 0.25,
-				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+				heal_cap = 0.25
 			}
 		}
 	},
@@ -564,9 +564,9 @@ TalentBuffTemplates.wood_elf = {
 				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
-				range = 10,
-				buff_func = ProcFunctions.heal_other_players_percent_at_range
+				range = 10
 			}
 		}
 	},
@@ -576,11 +576,11 @@ TalentBuffTemplates.wood_elf = {
 				stat_buff = "power_level",
 				remove_on_proc = true,
 				event_buff = true,
+				buff_func = "maidenguard_reset_unharmed_buff",
 				event = "on_damage_taken",
 				icon = "kerillian_maidenguard_power_level_on_unharmed",
 				dormant = true,
-				max_stacks = 1,
-				buff_func = ProcFunctions.maidenguard_reset_unharmed_buff
+				max_stacks = 1
 			}
 		}
 	},
@@ -629,7 +629,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_dodge",
 				buff_to_add = "kerillian_maidenguard_passive_attack_speed_on_dodge_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -673,7 +673,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_dodge",
 				set_status = true,
 				event_buff = true,
-				buff_func = ProcFunctions.set_noclip
+				buff_func = "set_noclip"
 			}
 		}
 	},
@@ -683,7 +683,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_dodge_finished",
 				set_status = false,
 				event_buff = true,
-				buff_func = ProcFunctions.set_noclip
+				buff_func = "set_noclip"
 			}
 		}
 	},
@@ -725,7 +725,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_charge_ability_hit",
 				buff_to_add = "kerillian_maidenguard_activated_ability_buff_on_enemy_hit_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -744,7 +744,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown
+				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
 	},
@@ -753,7 +753,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_damage_taken",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown_on_damage_taken
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
 	},
@@ -792,10 +792,10 @@ TalentBuffTemplates.wood_elf = {
 			{
 				name = "regrowth",
 				event_buff = true,
+				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				perk = "ninja_healing",
-				bonus = 2,
-				buff_func = ProcFunctions.heal_finesse_damage_on_melee
+				bonus = 2
 			}
 		}
 	},
@@ -805,11 +805,11 @@ TalentBuffTemplates.wood_elf = {
 				multiplier = -0.05,
 				name = "reaper",
 				event_buff = true,
+				buff_func = "heal_damage_targets_on_melee",
 				event = "on_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
-				bonus = 0.25,
-				buff_func = ProcFunctions.heal_damage_targets_on_melee
+				bonus = 0.25
 			}
 		}
 	},
@@ -819,9 +819,9 @@ TalentBuffTemplates.wood_elf = {
 				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
-				range = 10,
-				buff_func = ProcFunctions.heal_other_players_percent_at_range
+				range = 10
 			}
 		}
 	},
@@ -831,7 +831,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_kill",
 				buff_to_add = "kerillian_waywatcher_extra_arrow_melee_kill_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.kerillian_waywatcher_add_extra_shot_buff_on_melee_kill
+				buff_func = "kerillian_waywatcher_add_extra_shot_buff_on_melee_kill"
 			}
 		}
 	},
@@ -841,11 +841,11 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_ranged_hit",
 				icon = "kerillian_waywatcher_extra_arrow_melee_kill",
 				event_buff = true,
+				buff_func = "dummy_function",
 				remove_on_proc = true,
 				perk = "extra_shot",
 				refresh_durations = true,
-				max_stacks = 1,
-				buff_func = ProcFunctions.dummy_function
+				max_stacks = 1
 			}
 		}
 	},
@@ -862,8 +862,8 @@ TalentBuffTemplates.wood_elf = {
 				buff_to_add = "kerillian_waywatcher_attack_speed_on_ranged_headshot_buff",
 				buff_on_stacks = 5,
 				event_buff = true,
-				event = "on_hit",
-				buff_func = ProcFunctions.add_buff_on_ranged_headshot
+				buff_func = "add_buff_on_ranged_headshot",
+				event = "on_hit"
 			}
 		}
 	},
@@ -884,7 +884,7 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_kill_elite_special",
 				buff_to_add = "kerillian_waywatcher_movement_speed_on_special_kill_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -924,7 +924,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_kill_elite_special",
 				event_buff = true,
-				buff_func = ProcFunctions.kerillian_waywatcher_restore_ammo_on_career_skill_special_kill
+				buff_func = "kerillian_waywatcher_restore_ammo_on_career_skill_special_kill"
 			}
 		}
 	},
@@ -933,7 +933,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.kerillian_waywatcher_reduce_activated_ability_cooldown
+				buff_func = "kerillian_waywatcher_reduce_activated_ability_cooldown"
 			}
 		}
 	}

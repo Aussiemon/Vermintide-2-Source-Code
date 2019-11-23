@@ -74,13 +74,6 @@ local terror_event_blueprints = {
 			amount = 1
 		},
 		{
-			"spawn_special",
-			breed_name = "skaven_warpfire_thrower",
-			spawner_id = "forest_end_event_specials",
-			amount = 1,
-			difficulty_requirement = HARDER
-		},
-		{
 			"event_horde",
 			spawner_id = "forest_end_event",
 			composition_type = "storm_vermin_shields_small"
@@ -105,7 +98,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_plague_monk") < 5
 			end
@@ -158,7 +151,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("chaos_marauder") < 4 and count_event_breed("chaos_fanatic") < 4
 			end
@@ -183,7 +176,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_fanatic") < 3 and count_event_breed("chaos_raider") < 2
 			end
@@ -249,7 +242,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin") < 2
 			end
@@ -298,7 +291,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
 			end
@@ -318,7 +311,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5 and count_event_breed("chaos_warrior") < 2
 			end
@@ -342,13 +335,6 @@ local terror_event_blueprints = {
 			limit_spawners = 2,
 			spawner_id = "forest_end_event",
 			composition_type = "event_extra_spice_small"
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "forest_end_event",
-			composition_type = "event_smaller",
-			difficulty_requirement = HARDER
 		},
 		{
 			"delay",
@@ -563,7 +549,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 4
 			end
@@ -582,7 +568,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 4
 			end
@@ -615,7 +601,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 4
 			end
@@ -655,7 +641,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 4
 			end
@@ -674,7 +660,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 4
 			end

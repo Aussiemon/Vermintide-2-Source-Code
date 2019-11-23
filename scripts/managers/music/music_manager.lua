@@ -549,7 +549,7 @@ MusicManager._update_game_state = function (self, dt, t, conflict_director)
 		elseif is_pre_horde and self._scream_delay and self._scream_delay < t then
 			self._scream_delay = nil
 			state = "horde"
-		elseif is_pre_horde and not self._scream_delay and self:_horde_has_engaged(horde_type) then
+		elseif is_pre_horde and not self._scream_delay and self:_horde_done_spawning(horde_type) then
 			if horde_type == "ambush" then
 				self:delay_trigger_horde_dialogue(t, t + DialogueSettings.ambush_delay, "ambush")
 
@@ -595,8 +595,8 @@ end
 
 local ai_units = {}
 
-MusicManager._horde_has_engaged = function (self, horde)
-	local engage_distance = (horde == "ambush" and 15) or 2
+MusicManager._horde_done_spawning = function (self, horde)
+	local engage_distance = (horde == "ambush" and 25) or 25
 	local pos = nil
 	local players = Managers.player:players()
 

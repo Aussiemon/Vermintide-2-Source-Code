@@ -80,6 +80,13 @@ BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 
 	locomotion_extension:teleport_to(best_position)
 
+	local status_extension = blackboard.status_extension
+
+	if status_extension then
+		status_extension:set_falling_height(true, best_position.z)
+		status_extension:set_ignore_next_fall_damage(true)
+	end
+
 	blackboard.has_teleported = true
 
 	navigation_extension:teleport(best_position)

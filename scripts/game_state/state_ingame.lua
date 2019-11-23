@@ -1730,13 +1730,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	if TelemetrySettings.send then
-		local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-		if game_mode_key == "inn" then
-			print("[StateIngame] Skipped uploading telemetry data for the inn level")
-		else
-			Managers.telemetry:send()
-		end
+		Managers.telemetry:send()
 	else
 		printf("[StateIngame] Skipped uploading telemetry data")
 	end

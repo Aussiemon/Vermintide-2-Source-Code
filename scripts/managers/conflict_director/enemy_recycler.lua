@@ -826,21 +826,25 @@ EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_eve
 	end
 
 	local num_events = #main_path_events
-	main_path_events[num_events + 1] = {
+	num_events = num_events + 1
+	main_path_events[num_events] = {
 		travel_dist,
 		boxed_pos,
 		terror_event_name,
 		event_data
 	}
 
-	if #main_path_events == 1 then
+	if num_events == 1 then
 		self.current_main_path_event_id = 1
 		self.current_main_path_event_activation_dist = travel_dist
-	end
+	else
+		table.sort(main_path_events, function (a, b)
+			return a[1] < b[1]
+		end)
 
-	table.sort(main_path_events, function (a, b)
-		return a[1] < b[1]
-	end)
+		local next_event = main_path_events[self.current_main_path_event_id]
+		self.current_main_path_event_activation_dist = math.min(next_event[MP_TRAVEL_DIST], self.current_main_path_event_activation_dist)
+	end
 end
 
 EnemyRecycler.setup_main_path_events = function (self, t)

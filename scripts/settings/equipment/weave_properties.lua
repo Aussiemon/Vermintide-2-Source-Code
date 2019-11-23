@@ -551,6 +551,7 @@ WeaveProperties.categories = {
 		"weave_stamina",
 		"weave_attack_speed",
 		"weave_block_cost",
+		"weave_push_block_arc",
 		"weave_power_vs_skaven",
 		"weave_power_vs_chaos"
 	},

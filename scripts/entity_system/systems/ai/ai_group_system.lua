@@ -560,6 +560,7 @@ AIGroupSystem.update = function (self, context, t)
 				local template = group.template
 				local template_init = AIGroupTemplates[template].init
 
+				printf("Init group template: %s", template)
 				template_init(world, nav_world, group, t)
 
 				self.groups_to_initialize[group.id] = nil
@@ -615,7 +616,8 @@ AIGroupSystem.update = function (self, context, t)
 				local spline_data = {
 					start_position = start_position_boxed,
 					start_direction = Vector3Box(start_direction),
-					spline_points = spline_points
+					spline_points = spline_points,
+					failed = spline.failed
 				}
 
 				self:_add_spline(spline_name, spline_data, spline_type)
@@ -767,7 +769,7 @@ AIGroupSystem.draw_spline = function (self, spline, drawer, color)
 	end
 end
 
-AIGroupSystem.create_formation_data = function (self, position, formation, spline_name, spawn_all_at_same_position)
+AIGroupSystem.create_formation_data = function (self, position, formation, spline_name, spawn_all_at_same_position, group_data)
 	local anchor_offset_y = PatrolFormationSettings.default_settings.offsets.ANCHOR_OFFSET.y
 	local anchor_offset_x = PatrolFormationSettings.default_settings.speeds.SPLINE_SPEED
 	local start_direction = self:spline_start_direction(spline_name)
@@ -826,8 +828,6 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 			flat_start_direction = Vector3.flat(direction_on_spline)
 		end
 
-		local patrol_unit_spot_found = false
-
 		for column, breed_name in ipairs(columns) do
 			local num_columns_in_row = #columns
 			local column_length = (num_columns_in_row - 1) * anchor_offset_y * 2
@@ -846,10 +846,15 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 						start_direction = Vector3Box(flat_start_direction)
 					}
 					group_size = group_size + 1
-					patrol_unit_spot_found = true
-
-					if true then
+				else
+					if group_data then
+						printf("Patrol formation outside navmesh. template_name: %s, spline_name: %s group_type: %s, wanted_spawn_pos: %s", group_data.template, spline_name, group_data.group_type, tostring(wanted_spawn_position))
 					end
+
+					formation_data[current_row][column] = {
+						start_position = Vector3Box(wanted_spawn_position),
+						start_direction = Vector3Box(flat_start_direction)
+					}
 				end
 			else
 				formation_data[current_row][column] = {
@@ -857,10 +862,6 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 					start_direction = Vector3Box(flat_start_direction)
 				}
 			end
-		end
-
-		if not patrol_unit_spot_found then
-			table.clear(formation_data[current_row])
 		end
 
 		if #formation_data[current_row] > 0 then

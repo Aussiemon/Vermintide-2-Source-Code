@@ -127,7 +127,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
 			end
@@ -183,6 +183,10 @@ local terror_event_blueprints = {
 			condition = function (t)
 				return count_breed("skaven_grey_seer") < 1
 			end
+		},
+		{
+			"has_completed_time_challenge",
+			time_challenge_name = "skittergate_speed_event"
 		},
 		{
 			"has_completed_time_challenge",

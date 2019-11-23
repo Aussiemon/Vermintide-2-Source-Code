@@ -1288,14 +1288,14 @@ AiUtils.attack_is_dodged = function (hit_unit)
 	return dodged
 end
 
-AiUtils.unit_is_flanking_player = function (enemy_unit, player_unit)
+AiUtils.unit_is_flanking_player = function (enemy_unit, player_unit, optional_rotation)
 	local network_manager = Managers.state.network
 	local player_unit_id = network_manager:unit_game_object_id(player_unit)
 	local game = network_manager:game()
 
 	if game and player_unit_id then
 		local to_target_vec = Vector3.normalize(POSITION_LOOKUP[enemy_unit] - POSITION_LOOKUP[player_unit])
-		local player_rot = GameSession.game_object_field(game, player_unit_id, "aim_direction")
+		local player_rot = optional_rotation or GameSession.game_object_field(game, player_unit_id, "aim_direction")
 		local unit_fwd_dir = Quaternion.forward(Quaternion.look(player_rot))
 		local is_behind = Vector3.dot(to_target_vec, unit_fwd_dir) < 0.4
 

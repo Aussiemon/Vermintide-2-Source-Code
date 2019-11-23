@@ -28,8 +28,7 @@ ActionThrownProjectile.client_owner_start_action = function (self, new_action, t
 	input_extension:reset_input_buffer()
 
 	self.state = "waiting_to_shoot"
-	local anim_time_scale = new_action.anim_time_scale or 1
-	local buffed_anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
+	local buffed_anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
 	local fire_time = (new_action.fire_time or 0) * 1 / buffed_anim_time_scale
 	self._time_to_shoot = t + fire_time
 	self._time_to_unzoom = (new_action.unzoom_time and t + new_action.unzoom_time) or nil

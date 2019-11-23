@@ -119,11 +119,13 @@ end
 CareerAbilityBWAdept._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
+	local locomotion_extension = self._locomotion_extension
 	local can_use = career_extension:can_use_activated_ability()
 	local is_disabled = status_extension:is_disabled()
 	local is_overcharge_exploding = status_extension:is_overcharge_exploding()
+	local is_on_ground = locomotion_extension:is_on_ground()
 
-	return can_use and not is_disabled and not is_overcharge_exploding
+	return can_use and not is_disabled and not is_overcharge_exploding and is_on_ground
 end
 
 CareerAbilityBWAdept._start_priming = function (self)
@@ -133,7 +135,7 @@ CareerAbilityBWAdept._start_priming = function (self)
 		self._effect_id = World.create_particles(world, effect_name, Vector3.zero())
 	end
 
-	self._last_valid_position = nil
+	self._last_valid_landing_position = nil
 	self._is_priming = true
 end
 
@@ -271,9 +273,15 @@ CareerAbilityBWAdept._run_ability = function (self)
 				event_function = function (this)
 					local unit_3p = this.unit
 					local career_ext = ScriptUnit.extension(unit_3p, "career_system")
+					local talent_ext = ScriptUnit.extension(unit_3p, "talent_system")
 					local position = POSITION_LOOKUP[unit_3p] or Unit.world_position(unit_3p, 0)
 					local rotation = Unit.local_rotation(unit_3p, 0)
 					local explosion_template = "sienna_adept_activated_ability_step_stagger"
+
+					if talent_ext:has_talent("sienna_adept_activated_ability_explosion") then
+						explosion_template = "sienna_adept_activated_ability_end_stagger_improved"
+					end
+
 					local scale = 1
 					local career_power_level = career_ext:get_career_power_level()
 					local area_damage_system = Managers.state.entity:system("area_damage_system")

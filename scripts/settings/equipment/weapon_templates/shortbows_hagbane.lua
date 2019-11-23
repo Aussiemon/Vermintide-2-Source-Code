@@ -121,8 +121,8 @@ weapon_template.actions = {
 			},
 			hit_effect = ARROW_HIT_EFFECT,
 			cleave_distribution = {
-				attack = 0.15,
-				impact = 0.15
+				attack = 0,
+				impact = 0
 			},
 			projectile_info = Projectiles.carbine_poison_arrow,
 			impact_data = {

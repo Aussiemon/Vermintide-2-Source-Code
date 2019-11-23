@@ -24,7 +24,8 @@ local RPCS = {
 	"rpc_sync_tentacle_path",
 	"rpc_set_ward_state",
 	"rpc_set_hit_reaction_template",
-	"rpc_set_corruptor_beam_state"
+	"rpc_set_corruptor_beam_state",
+	"rpc_check_trigger_backstab_sfx"
 }
 local extensions = {
 	"AISimpleExtension",
@@ -126,6 +127,7 @@ AISystem.init = function (self, context, name)
 	self.ai_units_perception = {}
 	self.ai_units_perception_prioritized = {}
 	self.num_perception_units = 0
+	self.world = context.world
 	self.number_ordinary_aggroed_enemies = 0
 	self.number_special_aggored_enemies = 0
 	self.start_prio_index = 1
@@ -1395,6 +1397,29 @@ AISystem.rpc_set_allowed_nav_layer = function (self, peer_id, layer_id, allowed)
 		GwNavTagLayerCostTable.allow_layer(self._navtag_layer_cost_table, layer_id)
 	else
 		GwNavTagLayerCostTable.forbid_layer(self._navtag_layer_cost_table, layer_id)
+	end
+end
+
+AISystem.rpc_check_trigger_backstab_sfx = function (self, peer_id, unit_id)
+	local network_manager = Managers.state.network
+	local unit = network_manager:game_object_or_level_unit(unit_id)
+	local local_player = Managers.player:local_player()
+	local player_unit = local_player.player_unit
+	local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+
+	if first_person_extension then
+		local rotation = Quaternion.forward(first_person_extension:current_rotation())
+		local is_flanking = AiUtils.unit_is_flanking_player(unit, player_unit, rotation)
+
+		if is_flanking then
+			local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+			local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(self.world, unit, dialogue_extension.voice_node)
+			local breed = Unit.get_data(unit, "breed")
+			local sound_event = breed.backstab_player_sound_event
+			local audio_system_extension = Managers.state.entity:system("audio_system")
+
+			audio_system_extension:_play_event_with_source(wwise_world, sound_event, wwise_source)
+		end
 	end
 end
 

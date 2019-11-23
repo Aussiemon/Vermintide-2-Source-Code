@@ -54,17 +54,6 @@ local terror_event_blueprints = {
 			difficulty_requirement = HARDEST
 		},
 		{
-			"spawn_special",
-			amount = 1,
-			breed_name = {
-				"skaven_poison_wind_globadier",
-				"skaven_pack_master",
-				"skaven_gutter_runner",
-				"skaven_ratling_gunner"
-			},
-			difficulty_requirement = CATACLYSM
-		},
-		{
 			"control_specials",
 			enable = true
 		},
@@ -88,17 +77,6 @@ local terror_event_blueprints = {
 			"spawn_at_raw",
 			spawner_id = "canyon_ogre_boss",
 			breed_name = "skaven_rat_ogre"
-		},
-		{
-			"spawn_special",
-			amount = 1,
-			breed_name = {
-				"skaven_poison_wind_globadier",
-				"skaven_pack_master",
-				"skaven_gutter_runner",
-				"skaven_ratling_gunner"
-			},
-			difficulty_requirement = CATACLYSM
 		},
 		{
 			"spawn_special",

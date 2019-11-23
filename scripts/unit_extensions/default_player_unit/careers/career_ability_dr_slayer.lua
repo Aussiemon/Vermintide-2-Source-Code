@@ -134,6 +134,7 @@ CareerAbilityDRSlayer._start_priming = function (self)
 		self._effect_id = World.create_particles(world, effect_name, Vector3.zero())
 	end
 
+	self._last_valid_landing_position = nil
 	self._is_priming = true
 end
 

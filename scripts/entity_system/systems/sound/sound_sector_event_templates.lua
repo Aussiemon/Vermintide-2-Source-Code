@@ -70,11 +70,11 @@ SoundSectorEventTemplates.distant_horde = {
 		return is_within_distance, units_center, num_horde_units
 	end
 }
-local last_horde_unit_marauder = nil
-local horde_units_marauder = {}
-local horde_positions_marauder = {}
-local num_horde_units_marauder = 0
-SoundSectorEventTemplates.distant_horde_marauder = {
+local last_horde_unit_chaos = nil
+local horde_units_chaos = {}
+local horde_positions_chaos = {}
+local num_horde_units_chaos = 0
+SoundSectorEventTemplates.distant_horde_chaos = {
 	sound_event_stop = "stop_distant_horde_marauder",
 	sound_event_start = "distant_horde_marauder",
 	evaluate = function (sectors, sector_index, t, entities, camera_position)
@@ -85,12 +85,12 @@ SoundSectorEventTemplates.distant_horde_marauder = {
 		end
 
 		local unit, death_extension = nil
-		local iterate_first_unit = not last_horde_unit_marauder or not Unit.alive(last_horde_unit_marauder) or not sector[last_horde_unit_marauder]
+		local iterate_first_unit = not last_horde_unit_chaos or not Unit.alive(last_horde_unit_chaos) or not sector[last_horde_unit_chaos]
 
 		if iterate_first_unit then
 			unit, death_extension = next(sector, nil)
 		else
-			unit, death_extension = next(sector, last_horde_unit_marauder)
+			unit, death_extension = next(sector, last_horde_unit_chaos)
 		end
 
 		if unit then
@@ -99,52 +99,52 @@ SoundSectorEventTemplates.distant_horde_marauder = {
 			local is_chaos = breed.race == "chaos"
 
 			if is_chaos and entities[unit].has_target and not death_extension:has_death_started() then
-				local contains_this_unit = horde_units_marauder[unit]
+				local contains_this_unit = horde_units_chaos[unit]
 
 				if not contains_this_unit then
-					num_horde_units_marauder = num_horde_units_marauder + 1
+					num_horde_units_chaos = num_horde_units_chaos + 1
 				end
 
 				local position = POSITION_LOOKUP[unit]
-				horde_units_marauder[unit] = death_extension
-				horde_positions_marauder[unit] = Vector3Box(position)
+				horde_units_chaos[unit] = death_extension
+				horde_positions_chaos[unit] = Vector3Box(position)
 			end
 		end
 
 		local units_center = Vector3.zero()
 
-		for horde_unit, horde_unit_death_extension in pairs(horde_units_marauder) do
-			local position = horde_positions_marauder[horde_unit]:unbox()
+		for horde_unit, horde_unit_death_extension in pairs(horde_units_chaos) do
+			local position = horde_positions_chaos[horde_unit]:unbox()
 
 			if not Unit.alive(horde_unit) or horde_unit_death_extension:has_death_started() or not sector[horde_unit] or not entities[horde_unit].has_target then
-				horde_units_marauder[horde_unit] = nil
-				horde_positions_marauder[horde_unit] = nil
-				num_horde_units_marauder = num_horde_units_marauder - 1
+				horde_units_chaos[horde_unit] = nil
+				horde_positions_chaos[horde_unit] = nil
+				num_horde_units_chaos = num_horde_units_chaos - 1
 			elseif position then
 				units_center = units_center + position
 			end
 		end
 
-		last_horde_unit_marauder = unit
-		local min_units = 7
+		last_horde_unit_chaos = unit
+		local min_units = 4
 
-		if num_horde_units_marauder < min_units then
+		if num_horde_units_chaos < min_units then
 			return false
 		end
 
 		local min_distance_sq = 4
-		local max_distance_sq = 1600
-		units_center = units_center / num_horde_units_marauder
+		local max_distance_sq = 3600
+		units_center = units_center / num_horde_units_chaos
 		local distance_sq = Vector3.distance_squared(camera_position, units_center)
 		local is_within_distance = min_distance_sq <= distance_sq and distance_sq <= max_distance_sq
 
-		return is_within_distance, units_center, num_horde_units_marauder
+		return is_within_distance, units_center, num_horde_units_chaos
 	end
 }
-local last_horde_unit_gor = nil
-local horde_units_gor = {}
-local horde_positions_gor = {}
-local num_horde_units_gor = 0
+local last_horde_unit_beastmen = nil
+local horde_units_beastmen = {}
+local horde_positions_beastmen = {}
+local num_horde_units_beastmen = 0
 SoundSectorEventTemplates.distant_horde_beastmen = {
 	sound_event_stop = "stop_distant_horde_beastmen",
 	sound_event_start = "distant_horde_beastmen",
@@ -156,12 +156,12 @@ SoundSectorEventTemplates.distant_horde_beastmen = {
 		end
 
 		local unit, death_extension = nil
-		local iterate_first_unit = not last_horde_unit_gor or not Unit.alive(last_horde_unit_gor) or not sector[last_horde_unit_gor]
+		local iterate_first_unit = not last_horde_unit_beastmen or not Unit.alive(last_horde_unit_beastmen) or not sector[last_horde_unit_beastmen]
 
 		if iterate_first_unit then
 			unit, death_extension = next(sector, nil)
 		else
-			unit, death_extension = next(sector, last_horde_unit_gor)
+			unit, death_extension = next(sector, last_horde_unit_beastmen)
 		end
 
 		if unit then
@@ -170,46 +170,46 @@ SoundSectorEventTemplates.distant_horde_beastmen = {
 			local is_beastmen = breed.race == "beastmen"
 
 			if is_beastmen and entities[unit].has_target and not death_extension:has_death_started() then
-				local contains_this_unit = horde_units_gor[unit]
+				local contains_this_unit = horde_units_beastmen[unit]
 
 				if not contains_this_unit then
-					num_horde_units_gor = num_horde_units_gor + 1
+					num_horde_units_beastmen = num_horde_units_beastmen + 1
 				end
 
 				local position = POSITION_LOOKUP[unit]
-				horde_units_gor[unit] = death_extension
-				horde_positions_gor[unit] = Vector3Box(position)
+				horde_units_beastmen[unit] = death_extension
+				horde_positions_beastmen[unit] = Vector3Box(position)
 			end
 		end
 
 		local units_center = Vector3.zero()
 
-		for horde_unit, horde_unit_death_extension in pairs(horde_units_gor) do
-			local position = horde_positions_gor[horde_unit]:unbox()
+		for horde_unit, horde_unit_death_extension in pairs(horde_units_beastmen) do
+			local position = horde_positions_beastmen[horde_unit]:unbox()
 
 			if not Unit.alive(horde_unit) or horde_unit_death_extension:has_death_started() or not sector[horde_unit] or not entities[horde_unit].has_target then
-				horde_units_gor[horde_unit] = nil
-				horde_positions_gor[horde_unit] = nil
-				num_horde_units_gor = num_horde_units_gor - 1
+				horde_units_beastmen[horde_unit] = nil
+				horde_positions_beastmen[horde_unit] = nil
+				num_horde_units_beastmen = num_horde_units_beastmen - 1
 			elseif position then
 				units_center = units_center + position
 			end
 		end
 
-		last_horde_unit_gor = unit
-		local min_units = 7
+		last_horde_unit_beastmen = unit
+		local min_units = 4
 
-		if num_horde_units_gor < min_units then
+		if num_horde_units_beastmen < min_units then
 			return false
 		end
 
 		local min_distance_sq = 4
-		local max_distance_sq = 1600
-		units_center = units_center / num_horde_units_gor
+		local max_distance_sq = 3600
+		units_center = units_center / num_horde_units_beastmen
 		local distance_sq = Vector3.distance_squared(camera_position, units_center)
 		local is_within_distance = min_distance_sq <= distance_sq and distance_sq <= max_distance_sq
 
-		return is_within_distance, units_center, num_horde_units_gor
+		return is_within_distance, units_center, num_horde_units_beastmen
 	end
 }
 

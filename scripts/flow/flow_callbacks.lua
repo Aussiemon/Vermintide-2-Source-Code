@@ -53,6 +53,10 @@ function flow_callback_add_coop_spawn_point(params)
 	Managers.state.game_mode:flow_callback_add_spawn_point(params.unit)
 end
 
+function flow_callback_add_game_mode_spawn_point(params)
+	Managers.state.game_mode:flow_callback_add_game_mode_specific_spawn_point(params.unit)
+end
+
 function flow_callback_set_checkpoint(params)
 	Managers.state.spawn:flow_callback_set_checkpoint(params.no_spawn_volume, params.safe_zone_volume, params.unit1, params.unit2, params.unit3, params.unit4)
 end

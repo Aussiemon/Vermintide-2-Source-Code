@@ -386,6 +386,8 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 	buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type)
 
+	local min_health = (buff_extension:has_buff_perk("ignore_death") and 1) or 0
+
 	if damage_source_name ~= "dot_debuff" then
 		local ai_inventory_extension = ScriptUnit.has_extension(attacker_unit, "ai_inventory_system")
 
@@ -419,13 +421,15 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			local current_health = GameSession.game_object_field(game, game_object_id, "current_health")
 			local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 			local permanent_damage_amount, temporary_damage_amount = nil
+			local total_health = current_health + current_temporary_health
+			local modified_damage_amount = (damage_amount >= total_health and total_health - min_health) or damage_amount
 
 			if force_permanent_damage then
-				permanent_damage_amount = (current_health < damage_amount and current_health) or damage_amount
-				temporary_damage_amount = (current_health < damage_amount and damage_amount - current_health) or 0
+				permanent_damage_amount = (current_health < modified_damage_amount and current_health) or modified_damage_amount
+				temporary_damage_amount = (current_health < modified_damage_amount and modified_damage_amount - current_health) or 0
 			else
-				permanent_damage_amount = (current_temporary_health < damage_amount and damage_amount - current_temporary_health) or 0
-				temporary_damage_amount = (current_temporary_health < damage_amount and current_temporary_health) or damage_amount
+				permanent_damage_amount = (current_temporary_health < modified_damage_amount and modified_damage_amount - current_temporary_health) or 0
+				temporary_damage_amount = (current_temporary_health < modified_damage_amount and current_temporary_health) or modified_damage_amount
 			end
 
 			local new_health = (current_health < permanent_damage_amount and 0) or current_health - permanent_damage_amount

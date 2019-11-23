@@ -19,6 +19,10 @@ return {
 			hardest = {
 				7,
 				11
+			},
+			cataclysm = {
+				9,
+				13
 			}
 		}
 		data.spawn_frequency_per_difficulty = {
@@ -37,6 +41,10 @@ return {
 			hardest = {
 				24,
 				32
+			},
+			cataclysm = {
+				20,
+				28
 			}
 		}
 		local side = Managers.state.side:get_side_from_name("dark_pact")

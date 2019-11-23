@@ -529,7 +529,7 @@ local action_data = {
 		}
 	},
 	special_attack_cleave = {
-		offset_forward = 0,
+		offset_forward = 0.6,
 		damage_type = "cutting",
 		range = 3,
 		fatigue_type = "chaos_cleave",

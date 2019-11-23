@@ -4465,6 +4465,19 @@ HordeCompositions = {
 				breeds = {
 					"chaos_warrior",
 					{
+						2,
+						3
+					}
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"chaos_warrior",
+					{
 						3,
 						4
 					}
@@ -4491,8 +4504,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_warrior",
 					{
-						6,
-						7
+						4,
+						5
 					}
 				}
 			}
@@ -4504,21 +4517,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_warrior",
 					{
-						6,
-						7
-					}
-				}
-			}
-		},
-		{
-			{
-				name = "plain",
-				weight = 7,
-				breeds = {
-					"chaos_warrior",
-					{
-						6,
-						7
+						4,
+						5
 					}
 				}
 			}
@@ -4575,8 +4575,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_warrior",
 					{
-						4,
-						5
+						3,
+						4
 					}
 				}
 			}
@@ -4588,8 +4588,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_warrior",
 					{
-						4,
-						5
+						3,
+						4
 					}
 				}
 			}
@@ -4601,8 +4601,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_warrior",
 					{
-						4,
-						5
+						3,
+						4
 					}
 				}
 			}

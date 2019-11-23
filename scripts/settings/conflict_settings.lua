@@ -7,17 +7,18 @@ HordeSettingsBasics = {
 	ambush = {
 		max_size,
 		max_horde_spawner_dist = 35,
-		max_spawners = 15,
-		min_hidden_spawner_dist = 10,
+		min_hidden_spawner_dist = 5,
+		min_spawners = 3,
 		start_delay = 3.45,
-		max_hidden_spawner_dist = 20,
-		min_horde_spawner_dist = 1
+		max_hidden_spawner_dist = 40,
+		min_horde_spawner_dist = 1,
+		max_spawners = math.huge
 	},
 	vector = {
 		max_size,
-		max_horde_spawner_dist = 15,
+		max_horde_spawner_dist = 40,
 		start_delay = 8,
-		max_hidden_spawner_dist = 20,
+		max_hidden_spawner_dist = 40,
 		min_hidden_spawner_dist = 0,
 		main_path_dist_from_players = 30,
 		max_spawners = 6,

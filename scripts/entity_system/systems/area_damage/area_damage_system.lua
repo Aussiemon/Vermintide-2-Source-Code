@@ -232,16 +232,15 @@ end
 
 AreaDamageSystem._update_aoe_damage_buffer = function (self)
 	local aoe_damage_ring_buffer = self._aoe_damage_ring_buffer
-	local size = aoe_damage_ring_buffer.size
 
-	if size == 0 then
+	if aoe_damage_ring_buffer.size == 0 then
 		return
 	end
 
 	local buffer = aoe_damage_ring_buffer.buffer
 	local read_index = aoe_damage_ring_buffer.read_index
 	local max_size = aoe_damage_ring_buffer.max_size
-	local num_updates = math.min(NUM_UNITS_TO_DAMAGE_PER_FRAME, size)
+	local num_updates = math.min(NUM_UNITS_TO_DAMAGE_PER_FRAME, aoe_damage_ring_buffer.size)
 
 	for i = 1, num_updates, 1 do
 		local aoe_damage_data = buffer[read_index]
@@ -249,10 +248,9 @@ AreaDamageSystem._update_aoe_damage_buffer = function (self)
 		self:_damage_unit(aoe_damage_data)
 
 		read_index = read_index % max_size + 1
-		size = size - 1
+		aoe_damage_ring_buffer.size = aoe_damage_ring_buffer.size - 1
 	end
 
-	aoe_damage_ring_buffer.size = size
 	aoe_damage_ring_buffer.read_index = read_index
 end
 

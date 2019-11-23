@@ -237,6 +237,10 @@ BTPrepareForCrazyJumpAction.test_trajectory = function (blackboard, p1, p2, segm
 
 	local in_los, velocity, time_of_flight = WeaponHelper.test_angled_trajectory(physics_world, p1 + wedge, p2 + wedge, -gravity, jump_speed, jump_angle, segment_list)
 
+	if velocity and jump_speed then
+		velocity = Vector3.normalize(velocity) * jump_speed
+	end
+
 	if multiple_raycasts then
 		if not in_los then
 			return

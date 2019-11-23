@@ -176,7 +176,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_slave") < 10 and count_event_breed("skaven_clan_rat") < 10
 			end
@@ -206,22 +206,10 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 120,
 			condition = function (t)
 				return count_event_breed("skaven_slave") < 10 and count_event_breed("skaven_clan_rat") < 10
 			end
-		},
-		{
-			"spawn_at_raw",
-			spawner_id = "manual_special_spawners",
-			breed_name = {
-				"skaven_poison_wind_globadier",
-				"skaven_pack_master",
-				"skaven_gutter_runner",
-				"skaven_ratling_gunner",
-				"skaven_warpfire_thrower"
-			},
-			difficulty_requirement = HARDEST
 		},
 		{
 			"event_horde",

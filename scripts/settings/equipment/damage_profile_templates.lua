@@ -1028,7 +1028,7 @@ DamageProfileTemplates.crossbow_bolt_repeating = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			1.5,
 			1,
 			0.5,
 			0.25
@@ -1108,7 +1108,7 @@ DamageProfileTemplates.shot_shotgun = {
 			0.3,
 			0.5,
 			1,
-			0.5,
+			1,
 			0
 		},
 		impact_armor_power_modifer = {
@@ -2229,7 +2229,7 @@ DamageProfileTemplates.arrow_carbine = {
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
-		boost_curve_type = "linesman_curve",
+		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient = 1.25,
 		attack_template = "arrow_carbine",
 		power_distribution_near = {
@@ -2270,7 +2270,7 @@ DamageProfileTemplates.arrow_sniper = {
 			0.8,
 			1.5,
 			1,
-			0.5,
+			1,
 			0
 		},
 		impact = {
@@ -2288,7 +2288,7 @@ DamageProfileTemplates.arrow_sniper = {
 			0.8,
 			1.5,
 			1,
-			0.5,
+			1,
 			0
 		},
 		impact = {
@@ -2483,17 +2483,17 @@ DamageProfileTemplates.shortbow_hagbane = {
 		attack_armor_power_modifer = {
 			1,
 			0.25,
+			1.5,
 			1,
-			1,
-			1,
+			1.5,
 			0.25
 		},
 		impact_armor_power_modifer = {
 			1,
 			0.3,
+			1.5,
 			1,
-			1,
-			1,
+			1.5,
 			0.25
 		}
 	},
@@ -2583,7 +2583,7 @@ DamageProfileTemplates.staff_fireball = {
 		attack_armor_power_modifer = {
 			1,
 			0.35,
-			1,
+			1.5,
 			1,
 			1,
 			0.25
@@ -2796,7 +2796,7 @@ DamageProfileTemplates.fire_spear_2 = {
 		attack_armor_power_modifer = {
 			1,
 			0.4,
-			1,
+			1.5,
 			1,
 			1,
 			0.25
@@ -3146,7 +3146,7 @@ DamageProfileTemplates.flamethrower = {
 		attack_armor_power_modifer = {
 			1,
 			0.25,
-			1,
+			1.5,
 			1,
 			0.5,
 			0.25

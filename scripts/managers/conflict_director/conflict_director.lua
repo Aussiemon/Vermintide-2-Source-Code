@@ -1367,7 +1367,9 @@ ConflictDirector.update = function (self, dt, t)
 			local spline_ready = ai_group_system:spline_ready(spline_name)
 
 			if spline_ready then
-				if spline_ready == "failed" then
+				if spline_ready == "failed" or spline_ready.failed then
+					print("spline is in fail state, cancelling the spline spawn.", spline_name)
+
 					self._spline_groups_to_spawn[spline_name] = nil
 				else
 					self:_spawn_spline_group(group_data, spline_ready)
@@ -2692,7 +2694,12 @@ ConflictDirector.spawn_spline_group = function (self, patrol_template_name, posi
 
 	if spline then
 		print("Spline already found!")
-		self:_spawn_spline_group(base_group_data)
+
+		if not spline.failed then
+			self:_spawn_spline_group(base_group_data)
+		else
+			print("spline is in fail state, cancelling the spline spawn.", spline_name)
+		end
 	elseif data.spline_way_points then
 		ai_group_system:create_spline_from_way_points(spline_name, data.spline_way_points, data.spline_type)
 
@@ -2733,7 +2740,7 @@ ConflictDirector._spawn_spline_group = function (self, base_group_data, spline)
 	local spawn_all_at_same_position = base_group_data.spawn_all_at_same_position
 	local group_start_position = base_group_data.group_start_position and base_group_data.group_start_position:unbox()
 	local start_position = group_start_position or ai_group_system:spline_start_position(spline_name)
-	local formation_data = ai_group_system:create_formation_data(start_position, formation, spline_name, spawn_all_at_same_position)
+	local formation_data = ai_group_system:create_formation_data(start_position, formation, spline_name, spawn_all_at_same_position, base_group_data)
 	base_group_data.formation = formation_data
 	base_group_data.group_start_position = Vector3Box(start_position)
 	local group_size = formation_data.group_size

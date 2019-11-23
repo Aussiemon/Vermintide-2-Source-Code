@@ -9,8 +9,7 @@ ActionCatch.client_owner_start_action = function (self, new_action, t, chain_act
 
 	local owner_unit = self.owner_unit
 	self._inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
-	local anim_time_scale = new_action.anim_time_scale or 1
-	local buffed_anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
+	local buffed_anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
 	local catch_time = (new_action.catch_time or 0) * 1 / buffed_anim_time_scale
 	self._catch_time = t + catch_time
 	self._state = "waiting_to_catch"

@@ -104,6 +104,7 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 	local to_target = target_pos - position
 	local initial_dist = Vector3.length(to_target)
 	self.initial_dist = initial_dist
+	self.original_pos_z = position.z
 	local direction = Vector3.normalize(to_target)
 	local effect_rotation = Quaternion.look(direction)
 	self.wave_direction = Vector3Box(direction)
@@ -259,13 +260,17 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	end
 
 	local position = position_lookup[unit]
+	local current_rotation = Unit.local_rotation(unit, 0)
+	position = Vector3(position.x, position.y, self.original_pos_z)
 	local target_pos = self.target_pos:unbox()
 	local to_target = target_pos - position
-	local to_target_dir = Vector3.normalize(to_target)
+	local dist_to_target = Vector3.length(to_target)
+	local to_target_dir = (dist_to_target < 0.001 and Vector3.zero()) or Vector3.divide(to_target, dist_to_target)
 	local wave_dir = self.wave_direction:unbox()
-	local frame_dist = current_speed * dt
+	local frame_dist = math.min(current_speed * dt, dist_to_target)
 	self.travel_dist = self.travel_dist + frame_dist
 	position = position + wave_dir * frame_dist
+	self.original_pos_z = position.z
 	local nav_world = self.nav_world
 	local above = 1.5
 	local below = (self.template.ignore_obstacles and 15) or 1.5
@@ -277,25 +282,22 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 
 	Unit.set_local_position(unit, 0, position)
 
-	local dist = Vector3.length(to_target)
-	local current_rotation = Unit.local_rotation(unit, 0)
-
-	if self.blob_separation_dist and self.blob_separation_dist <= self.last_dist - dist then
+	if self.blob_separation_dist and self.blob_separation_dist <= self.last_dist - dist_to_target then
 		self:insert_blob(position, self.wave_width, current_rotation, nav_world)
 
-		self.last_dist = dist
+		self.last_dist = dist_to_target
 	end
 
-	if self.fx_separation_dist <= self.last_fx_dist - dist and self.fx_name_filled then
+	if self.fx_separation_dist <= self.last_fx_dist - dist_to_target and self.fx_name_filled then
 		local wave_rotation = Quaternion.look(wave_dir, Vector3(0, 0, 1))
 
 		self:insert_fx(position, wave_rotation, 2)
 
-		self.last_fx_dist = dist
+		self.last_fx_dist = dist_to_target
 	end
 
 	local height_percentage = nil
-	local p = (total_dist > 0 and dist / total_dist) or 0
+	local p = (total_dist > 0 and dist_to_target / total_dist) or 0
 
 	if grow then
 		height_percentage = math.clamp(p, 0, 1)
@@ -307,7 +309,7 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	GameSession.set_game_object_field(self.game, self.unit_id, "position", position)
 	GameSession.set_game_object_field(self.game, self.unit_id, "rotation", current_rotation)
 
-	return to_target_dir, dist, success or self.template.ignore_obstacles
+	return to_target_dir, dist_to_target, success or self.template.ignore_obstacles
 end
 
 DamageWaveExtension.on_hit_by_wave = function (hit_unit, unit, parent)

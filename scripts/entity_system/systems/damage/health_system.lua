@@ -427,9 +427,6 @@ HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id,
 	local damage_type = NetworkLookup.damage_types[damage_type_id]
 	local damage_source_name = NetworkLookup.damage_sources[damage_source_id]
 	local hit_react_type = NetworkLookup.hit_react_types[hit_react_type_id]
-
-	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, nil, source_attacker_unit, nil, hit_react_type, is_critical_strike, added_dot)
-
 	local hit_ragdoll_actor, damaging_unit, buff_attack_type = nil
 	first_hit = first_hit or false
 	total_hits = total_hits or 0

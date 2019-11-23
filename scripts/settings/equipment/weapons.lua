@@ -64,6 +64,14 @@ local function add_dot_network_synced(dot_template_name, hit_unit, attacker_unit
 		local buff_system = Managers.state.entity:system("buff_system")
 
 		buff_system:add_buff(hit_unit, dot_template_name, attacker_unit, false, power_level, source_attacker_unit)
+
+		if source_attacker_unit then
+			local breed = AiUtils.unit_breed(hit_unit)
+
+			if breed and not breed.is_hero then
+				AiUtils.alert_unit_of_enemy(hit_unit, source_attacker_unit)
+			end
+		end
 	end
 end
 

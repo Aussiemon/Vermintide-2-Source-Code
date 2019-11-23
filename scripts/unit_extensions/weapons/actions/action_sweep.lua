@@ -21,6 +21,47 @@ local function weapon_printf(...)
 	end
 end
 
+local BAKED_SWEEP_TIME = 1
+local BAKED_SWEEP_POS = 2
+local BAKED_SWEEP_ROT = 5
+
+local function _get_baked_pose(time, data)
+	local num_data = #data
+
+	for i = 1, num_data, 1 do
+		local current = data[i]
+		local next = data[math.min(i + 1, num_data)]
+
+		if current == next or (i == 1 and time <= current[BAKED_SWEEP_TIME]) then
+			local loc = Vector3(current[BAKED_SWEEP_POS], current[BAKED_SWEEP_POS + 1], current[BAKED_SWEEP_POS + 2])
+			local rot = Quaternion.from_elements(current[BAKED_SWEEP_ROT], current[BAKED_SWEEP_ROT + 1], current[BAKED_SWEEP_ROT + 2], current[BAKED_SWEEP_ROT + 3])
+
+			return Matrix4x4.from_quaternion_position(rot, loc)
+		elseif current[BAKED_SWEEP_TIME] <= time and time <= next[BAKED_SWEEP_TIME] then
+			local time_range = math.max(next[BAKED_SWEEP_TIME] - current[BAKED_SWEEP_TIME], 0.0001)
+			local lerp_t = (time - current[BAKED_SWEEP_TIME]) / time_range
+			local start_position = Vector3(current[BAKED_SWEEP_POS], current[BAKED_SWEEP_POS + 1], current[BAKED_SWEEP_POS + 2])
+			local start_rotation = Quaternion.from_elements(current[BAKED_SWEEP_ROT], current[BAKED_SWEEP_ROT + 1], current[BAKED_SWEEP_ROT + 2], current[BAKED_SWEEP_ROT + 3])
+			local end_position = Vector3(next[BAKED_SWEEP_POS], next[BAKED_SWEEP_POS + 1], next[BAKED_SWEEP_POS + 2])
+			local end_rotation = Quaternion.from_elements(next[BAKED_SWEEP_ROT], next[BAKED_SWEEP_ROT + 1], next[BAKED_SWEEP_ROT + 2], next[BAKED_SWEEP_ROT + 3])
+			local current_position = Vector3.lerp(start_position, end_position, lerp_t)
+			local current_rotation = Quaternion.lerp(start_rotation, end_rotation, lerp_t)
+
+			return Matrix4x4.from_quaternion_position(current_rotation, current_position)
+		end
+	end
+
+	return nil, nil
+end
+
+local function get_baked_data_name(action_hand)
+	if action_hand then
+		return "baked_sweep_" .. action_hand
+	else
+		return "baked_sweep"
+	end
+end
+
 ActionSweep.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionSweep.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
@@ -92,12 +133,14 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 	self._owner_buff_extension = buff_extension
 	self._owner_hud_extension = hud_extension
-	local anim_time_scale = new_action.anim_time_scale or 1
-	self._anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
+	local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
+	self._anim_time_scale = anim_time_scale
 	self._time_to_hit = t + (new_action.hit_time or 0) / anim_time_scale
 	local action_hand = action_init_data and action_init_data.action_hand
 	local damage_profile_name = (action_hand and new_action["damage_profile_" .. action_hand]) or new_action.damage_profile or "default"
 	self._action_hand = action_hand
+	self._baked_sweep_data = new_action[get_baked_data_name(self._action_hand)]
+	self._baked_data_dt_recip = (self._baked_sweep_data and 1 / #self._baked_sweep_data) or 1
 	self._damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	self._damage_profile = damage_profile
@@ -261,6 +304,59 @@ ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_
 end
 
 ActionSweep._update_sweep = function (self, dt, t, current_action, current_time_in_action)
+	local is_within_damage_window = nil
+	local use_baked = self._baked_sweep_data
+
+	if use_baked then
+		is_within_damage_window = self:_update_sweep_baked(dt, t, current_action, current_time_in_action)
+	else
+		is_within_damage_window = self:_update_sweep_runtime(dt, t, current_action, current_time_in_action)
+	end
+
+	if self._send_delayed_hit_rpc and self._time_to_hit <= t then
+		local data = self._stored_attack_data
+
+		self:_send_attack_hit(t, data.damage_source_id, data.attacker_unit_id, data.hit_unit_id, data.hit_zone_id, data.hit_position:unbox(), data.attack_direction:unbox(), data.damage_profile_id, unpack(data.optional_parameters))
+
+		self._send_delayed_hit_rpc = false
+	end
+
+	return is_within_damage_window
+end
+
+ActionSweep._update_sweep_baked = function (self, dt, t, current_action, current_time_in_action)
+	local is_within_damage_window = nil
+	local damage_window_start = current_action.damage_window_start / self._anim_time_scale
+
+	if current_time_in_action + dt >= damage_window_start - 0.03333333333333333 then
+		local owner_unit = self.owner_unit
+		local weapon_unit = self.weapon_unit
+		local physics_world = self.physics_world
+		local baked_sweep_data = self._baked_sweep_data
+		local aborted = false
+		local current_dt = 0
+		local max_dt = 0.016666666666666666
+		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+		local first_person_unit = first_person_extension:get_first_person_unit()
+		local unit_transform = Unit.world_pose(first_person_unit, 0)
+
+		while not aborted and not self._attack_aborted and current_dt < dt do
+			local interpolated_dt = math.min(max_dt, dt - current_dt)
+			current_dt = math.min(current_dt + max_dt, dt)
+			local action_time = (current_time_in_action + current_dt) * self._anim_time_scale
+			local local_pose = _get_baked_pose(action_time, baked_sweep_data)
+			local world_pose = Matrix4x4.multiply(local_pose, unit_transform)
+			local current_position = Matrix4x4.translation(world_pose)
+			local current_rotation = Matrix4x4.rotation(world_pose)
+			is_within_damage_window = self:_is_within_damage_window(current_time_in_action + current_dt, current_action, owner_unit)
+			aborted = self:_do_overlap(interpolated_dt, t, weapon_unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
+		end
+	end
+
+	return is_within_damage_window
+end
+
+ActionSweep._update_sweep_runtime = function (self, dt, t, current_action, current_time_in_action)
 	local owner_unit = self.owner_unit
 	local weapon_unit = self.weapon_unit
 	local physics_world = self.physics_world
@@ -281,14 +377,6 @@ ActionSweep._update_sweep = function (self, dt, t, current_action, current_time_
 		local current_rotation = Quaternion.lerp(start_rotation, end_rotation, lerp_t)
 		is_within_damage_window = self:_is_within_damage_window(current_time_in_action + current_dt, current_action, owner_unit)
 		aborted = self:_do_overlap(interpolated_dt, t, weapon_unit, owner_unit, current_action, physics_world, is_within_damage_window, current_position, current_rotation)
-	end
-
-	if self._send_delayed_hit_rpc and self._time_to_hit <= t then
-		local data = self._stored_attack_data
-
-		self:_send_attack_hit(t, data.damage_source_id, data.attacker_unit_id, data.hit_unit_id, data.hit_zone_id, data.hit_position:unbox(), data.attack_direction:unbox(), data.damage_profile_id, unpack(data.optional_parameters))
-
-		self._send_delayed_hit_rpc = false
 	end
 
 	return is_within_damage_window

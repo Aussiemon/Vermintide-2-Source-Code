@@ -828,6 +828,37 @@ GameModeManager.flow_callback_add_spawn_point = function (self, unit)
 	self._game_mode:flow_callback_add_spawn_point(unit)
 end
 
+GameModeManager.flow_callback_add_game_mode_specific_spawn_point = function (self, unit)
+	local i = 0
+	local sides = {}
+
+	while Unit.has_data(unit, "sides", i) do
+		local side = Unit.get_data(unit, "sides", i)
+
+		if #side > 0 then
+			sides[#sides + 1] = side
+		end
+
+		i = i + 1
+	end
+
+	i = 0
+
+	while Unit.has_data(unit, "game_modes", i) do
+		local game_mode = Unit.get_data(unit, "game_modes", i)
+
+		if game_mode == self._game_mode_key then
+			if self._game_mode.flow_callback_add_game_mode_specific_spawn_point then
+				self._game_mode:flow_callback_add_game_mode_specific_spawn_point(unit, sides)
+			end
+
+			break
+		end
+
+		i = i + 1
+	end
+end
+
 GameModeManager.remove_respawn_units_due_to_crossroads = function (self, removed_path_distances, total_main_path_length)
 	if self._game_mode.remove_respawn_units_due_to_crossroads then
 		self._game_mode:remove_respawn_units_due_to_crossroads(removed_path_distances, total_main_path_length)

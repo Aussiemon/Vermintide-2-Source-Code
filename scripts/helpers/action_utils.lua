@@ -419,47 +419,20 @@ ActionUtils.spawn_true_flight_projectile = function (owner_unit, target_unit, tr
 	projectile_system:spawn_true_flight_projectile(owner_unit, target_unit, true_flight_template_name, position, rotation, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, scale, is_critical_strike, power_level)
 end
 
-ActionUtils.apply_attack_speed_buff = function (attack_speed_value, unit)
-	local new_value = attack_speed_value
+ActionUtils.get_action_time_scale = function (unit, action_settings, is_animation, custom_value)
+	local time_scale = custom_value or action_settings.anim_time_scale or 1
 
 	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		new_value = buff_extension:apply_buffs_to_value(attack_speed_value, "attack_speed")
+		time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
+
+		if action_settings.scale_chain_window_by_charge_time_buff or (action_settings.scale_anim_by_charge_time_buff and is_animation) then
+			local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
+			time_scale = time_scale * 1 / charge_speed
+		end
 	end
 
-	return new_value
-end
-
-ActionUtils.apply_charge_speed_buff_anim_scale = function (anim_time_scale, unit, action_settings)
-	local new_anim_time_scale = anim_time_scale
-
-	if not action_settings.scale_anim_by_charge_time_buff then
-		return new_anim_time_scale
-	end
-
-	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
-		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
-		new_anim_time_scale = anim_time_scale * 1 / charge_speed
-	end
-
-	return new_anim_time_scale
-end
-
-ActionUtils.apply_charge_speed_buff_chain_window = function (anim_time_scale, unit, action_settings)
-	local new_anim_time_scale = anim_time_scale
-
-	if not action_settings.scale_chain_window_by_charge_time_buff then
-		return new_anim_time_scale
-	end
-
-	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
-		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
-		new_anim_time_scale = anim_time_scale * 1 / charge_speed
-	end
-
-	return new_anim_time_scale
+	return time_scale
 end
 
 ActionUtils.init_action_buff_data = function (action_buff_data, buff_data, t)

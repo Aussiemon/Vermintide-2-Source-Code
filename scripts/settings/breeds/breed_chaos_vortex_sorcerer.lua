@@ -19,7 +19,6 @@ local breed_data = {
 	stagger_resistance = 3,
 	dialogue_source_name = "chaos_vortex_sorcerer",
 	threat_value = 10,
-	special_on_spawn_stinger = "Play_vortex_sorcerer_spawn",
 	max_health = BreedTweaks.max_health.vortex_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = BreedTweaks.stagger_duration.sorcerer,

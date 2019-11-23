@@ -126,7 +126,7 @@ BeastmenStandardExtension.on_death = function (self, killer_unit)
 
 	table.clear(self.standard_data)
 
-	if killer_unit ~= self.unit then
+	if killer_unit and killer_unit ~= self.unit then
 		local explosion_position = Unit.local_position(self.unit, 0)
 		local explosion_template = ExplosionTemplates.standard_death_explosion
 		local damage_source = "beastmen_standard_bearer"

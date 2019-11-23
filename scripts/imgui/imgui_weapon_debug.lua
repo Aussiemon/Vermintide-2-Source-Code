@@ -446,10 +446,8 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 	local small_font_size = 12
 	local font_size = 16
 	local font_color = Color(255, 255, 255, 255)
-	local chain_time_scale = action.anim_time_scale or 1
-	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, owner_unit)
-	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, owner_unit, action)
-	local action_length = action.total_time
+	local action_time_scale = ActionUtils.get_action_time_scale(owner_unit, action)
+	local action_length = action.total_time / ActionUtils.get_action_time_scale(owner_unit, action)
 	local action_min_length = weapon_extension:get_scaled_min_hold_time(action)
 	local clamped_action_length = math.min(action_length, max_action_length)
 	local clamped_time_in_action = math.min(current_time_in_action, clamped_action_length)
@@ -475,12 +473,10 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 	gui_shadow_text(gui, string.format("%.2f", action_length), small_font_size, Vector3(action_end_x + 5, start_y, 0.5), Color(255, 255, 0, 0))
 
 	if action.damage_window_start and action.damage_window_end then
-		local anim_time_scale = action.anim_time_scale or 1
-		anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
 		local damage_window_start = action.damage_window_start
-		damage_window_start = damage_window_start / anim_time_scale
+		damage_window_start = damage_window_start / action_time_scale
 		local damage_window_end = action.damage_window_end or action.total_time or math.huge
-		damage_window_end = damage_window_end / anim_time_scale
+		damage_window_end = damage_window_end / action_time_scale
 		local damage_start_x = start_x + damage_window_start * width_per_second
 		local damage_size_x = (damage_window_end - damage_window_start) * width_per_second
 
@@ -535,8 +531,8 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 		local chain_action = allowed_chain_actions[i]
 		local chain_action_name = tostring(chain_action.action) .. "/" .. tostring(chain_action.sub_action)
 		local input_name = (chain_action.auto_chain and "auto_chain") or tostring(chain_action.input)
-		local chain_start_time = chain_action.start_time / chain_time_scale
-		local chain_end_time = (chain_action.end_time and chain_action.end_time / chain_time_scale) or math.huge
+		local chain_start_time = chain_action.start_time / action_time_scale
+		local chain_end_time = (chain_action.end_time and chain_action.end_time / action_time_scale) or math.huge
 		local action_color = (clamped_time_in_action < chain_start_time and Colors.get("orange")) or (chain_end_time <= clamped_time_in_action and Colors.get("red")) or Colors.get("green")
 		local row_number = i
 		local x = start_x + chain_start_time * width_per_second

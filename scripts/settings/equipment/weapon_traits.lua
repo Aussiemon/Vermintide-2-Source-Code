@@ -120,9 +120,9 @@ WeaponTraits.buff_templates = {
 			{
 				buff_to_add = "traits_melee_attack_speed_on_crit_proc",
 				event_buff = true,
+				buff_func = "add_buff",
 				event = "on_critical_hit",
-				dormant = true,
-				buff_func = ProcFunctions.add_buff
+				dormant = true
 			}
 		}
 	},
@@ -148,7 +148,7 @@ WeaponTraits.buff_templates = {
 				event = "on_block",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.block_increase_enemy_damage_taken
+				buff_func = "block_increase_enemy_damage_taken"
 			}
 		}
 	},
@@ -166,7 +166,7 @@ WeaponTraits.buff_templates = {
 				event = "on_assisted_ally",
 				event_buff = true,
 				dormant = true,
-				buff_func = ProcFunctions.heal_assisted_and_self_on_assist
+				buff_func = "heal_assisted_and_self_on_assist"
 			}
 		}
 	},
@@ -176,7 +176,7 @@ WeaponTraits.buff_templates = {
 				event = "on_hit",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.replenish_ammo_on_headshot_ranged
+				buff_func = "replenish_ammo_on_headshot_ranged"
 			}
 		}
 	},
@@ -195,7 +195,7 @@ WeaponTraits.buff_templates = {
 				event = "on_damage_taken",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.increased_movement_speed
+				buff_func = "increased_movement_speed"
 			}
 		}
 	},
@@ -214,7 +214,7 @@ WeaponTraits.buff_templates = {
 				event = "on_hit",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.replenish_ammo_on_headshot_ranged
+				buff_func = "replenish_ammo_on_headshot_ranged"
 			}
 		}
 	},
@@ -224,7 +224,7 @@ WeaponTraits.buff_templates = {
 				event = "on_critical_hit",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.ammo_fraction_gain_on_crit_trait
+				buff_func = "ammo_fraction_gain_on_crit_trait"
 			}
 		}
 	},
@@ -232,10 +232,10 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event_buff = true,
+				buff_func = "remove_overcharge",
 				event = "on_critical_hit",
 				perk = "no_overcharge_crit",
-				dormant = true,
-				buff_func = ProcFunctions.remove_overcharge
+				dormant = true
 			}
 		}
 	},
@@ -245,7 +245,7 @@ WeaponTraits.buff_templates = {
 				event = "on_hit",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.buff_consecutive_shots_damage
+				buff_func = "buff_consecutive_shots_damage"
 			}
 		}
 	},
@@ -274,7 +274,7 @@ WeaponTraits.buff_templates = {
 				event = "on_critical_hit",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.ranged_crits_increase_dmg_vs_armour_type
+				buff_func = "ranged_crits_increase_dmg_vs_armour_type"
 			}
 		}
 	},
@@ -323,10 +323,10 @@ WeaponTraits.buff_templates = {
 			{
 				buff_to_add = "traits_reduce_cooldown_on_crit_internal_cooldown",
 				event_buff = true,
+				buff_func = "reduce_activated_ability_cooldown_with_internal_cooldown_on_crit",
 				event = "on_critical_hit",
 				dormant = true,
-				bonus = 1,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown_with_internal_cooldown_on_crit
+				bonus = 1
 			}
 		}
 	},
@@ -342,10 +342,10 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event_buff = true,
+				buff_func = "heal",
 				event = "on_critical_hit",
 				dormant = true,
-				bonus = 5,
-				buff_func = ProcFunctions.heal
+				bonus = 5
 			}
 		}
 	},
@@ -429,7 +429,7 @@ WeaponTraits.buff_templates = {
 				event = "on_damage_taken",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.buff_defence_on_damage_taken
+				buff_func = "buff_defence_on_damage_taken"
 			}
 		}
 	},
@@ -464,7 +464,7 @@ WeaponTraits.buff_templates = {
 				event = "on_hit",
 				dormant = true,
 				event_buff = true,
-				buff_func = ProcFunctions.debuff_defence_grenade_hit
+				buff_func = "debuff_defence_grenade_hit"
 			}
 		}
 	},

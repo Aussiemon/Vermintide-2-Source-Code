@@ -119,9 +119,7 @@ local function is_within_damage_window(current_time_in_action, action, owner_uni
 		return false
 	end
 
-	local damage_time_scale = action.anim_time_scale or 1
-	damage_time_scale = ActionUtils.apply_attack_speed_buff(damage_time_scale, owner_unit)
-	damage_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(damage_time_scale, owner_unit, action)
+	local damage_time_scale = ActionUtils.get_action_time_scale(owner_unit, action, false)
 	damage_window_start = damage_window_start / damage_time_scale
 	damage_window_end = damage_window_end or action.total_time or math.huge
 	damage_window_end = damage_window_end / damage_time_scale
@@ -313,6 +311,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			time_to_complete = buff_extension:apply_buffs_to_value(time_to_complete, "reload_speed")
 		end
 
+		time_to_complete = time_to_complete / ActionUtils.get_action_time_scale(owner_unit, current_action_settings)
 		local event = current_action_settings.anim_event
 		local event_3p = current_action_settings.anim_event_3p or event
 		local looping_event = current_action_settings.looping_anim
@@ -375,9 +374,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		end
 
 		if event then
-			local anim_time_scale = current_action_settings.anim_time_scale or 1
-			anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
-			anim_time_scale = ActionUtils.apply_charge_speed_buff_anim_scale(anim_time_scale, owner_unit, current_action_settings)
+			local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, current_action_settings, true)
 			anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
 			local go_id = Managers.state.unit_storage:go_id(owner_unit)
 			local event_id = NetworkLookup.anims[event_3p]
@@ -574,9 +571,7 @@ WeaponUnitExtension.is_chain_action_available = function (self, next_chain_actio
 	local current_time_in_action = t - self.action_time_started
 	local max_time = current_action_settings.total_time + 2
 	time_offset = time_offset or 0
-	local chain_time_scale = current_action_settings.anim_time_scale or 1
-	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, self.owner_unit)
-	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, self.owner_unit, current_action_settings)
+	local chain_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, current_action_settings)
 
 	if next_chain_action.auto_chain then
 		return current_time_in_action >= ((next_chain_action.start_time and next_chain_action.start_time / chain_time_scale) or max_time) + time_offset
@@ -592,9 +587,7 @@ WeaponUnitExtension.time_to_next_chain_action = function (self, next_chain_actio
 	local current_time_in_action = (self:has_current_action() and t - self.action_time_started) or 0
 	local max_time = action_settings.total_time + 2
 	time_offset = time_offset or 0
-	local chain_time_scale = action_settings.anim_time_scale or 1
-	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, self.owner_unit)
-	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, self.owner_unit, action_settings)
+	local chain_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, action_settings)
 	local start_time = ((next_chain_action.start_time and next_chain_action.start_time / chain_time_scale) or max_time) + time_offset
 
 	return start_time - current_time_in_action
@@ -614,9 +607,8 @@ WeaponUnitExtension.get_scaled_min_hold_time = function (self, action)
 		scaled_min_hold_time = buff_extension:apply_buffs_to_value(scaled_min_hold_time, "reload_speed")
 
 		if scaled_min_hold_time > 0 then
-			local buffed_minimum_hold_time = ActionUtils.apply_attack_speed_buff(scaled_min_hold_time, self.owner_unit)
-			buffed_minimum_hold_time = ActionUtils.apply_charge_speed_buff_chain_window(buffed_minimum_hold_time, self.owner_unit, action)
-			scaled_min_hold_time = scaled_min_hold_time * scaled_min_hold_time / buffed_minimum_hold_time
+			local action_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, action, false, 1)
+			scaled_min_hold_time = scaled_min_hold_time / action_time_scale
 		end
 	end
 
@@ -667,9 +659,7 @@ WeaponUnitExtension._is_before_end_time = function (self, next_chain_action, t)
 	local current_action_settings = self.current_action_settings or self.temporary_action_settings
 	local current_time_in_action = t - self.action_time_started
 	local max_time = current_action_settings.total_time + 2
-	local chain_time_scale = current_action_settings.anim_time_scale or 1
-	chain_time_scale = ActionUtils.apply_attack_speed_buff(chain_time_scale, self.owner_unit)
-	chain_time_scale = ActionUtils.apply_charge_speed_buff_chain_window(chain_time_scale, self.owner_unit, current_action_settings)
+	local chain_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, current_action_settings)
 	local end_time = (next_chain_action.end_time and next_chain_action.end_time / chain_time_scale) or max_time
 
 	return current_time_in_action < end_time

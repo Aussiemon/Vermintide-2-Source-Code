@@ -9,16 +9,6 @@ SlotTypeSettings = {
 		count = 9,
 		dialogue_surrounded_count = 4
 	},
-	skirmish = {
-		debug_color = "blue",
-		priority = 3,
-		distance = 3,
-		queue_distance = 3.75,
-		radius = 0.4,
-		use_wait_slots = true,
-		count = 11,
-		dialogue_surrounded_count = 4
-	},
 	medium = {
 		debug_color = "yellow",
 		priority = 1.5,

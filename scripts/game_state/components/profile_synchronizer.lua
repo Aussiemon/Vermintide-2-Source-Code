@@ -196,7 +196,11 @@ ProfileSynchronizer.unassign_peer_to_profile = function (self, peer_id, local_pl
 		local hero_profile_index = GetHeroAffiliationIndex(profile_index)
 
 		if hero_profile_index then
-			self._slot_allocator:free_slot(hero_profile_index)
+			local is_human_player = self:is_human_player(peer_id, local_player_id)
+
+			if is_human_player then
+				self._slot_allocator:free_slot(hero_profile_index)
+			end
 		end
 
 		self:_send_rpc_lobby_clients("rpc_server_unassign_peer_to_profile", peer_id, local_player_id, profile_index, career_index)

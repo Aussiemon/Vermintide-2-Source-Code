@@ -267,7 +267,7 @@ local skin_combinations = {
 }
 local default_skins = {
 	dr_1h_throwing_axes = "dr_1h_throwing_axes_skin_01",
-	we_1h_spears_shield = "we_1h_spears_shield_01",
+	we_1h_spears_shield = "we_1h_spears_shield_skin_01",
 	wh_2h_billhook = "wh_2h_billhook_skin_01",
 	es_2h_heavy_spear = "es_2h_heavy_spear_skin_01",
 	bw_1h_flail_flaming = "bw_1h_flail_flaming_skin_01"

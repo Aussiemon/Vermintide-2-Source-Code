@@ -88,14 +88,36 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 	local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
 	if blackboard.attack_token and target_status_extension then
-		local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
 		local breed = blackboard.breed
-		local should_backstab = breed.use_backstab_vo and is_flanking and target_unit_slot_extension and target_unit_slot_extension.num_occupied_slots <= 5
 
-		if should_backstab then
-			DialogueSystem:trigger_backstab(target_unit, unit, blackboard)
+		if breed.use_backstab_vo and target_unit_slot_extension and target_unit_slot_extension.num_occupied_slots <= 5 then
+			local player = Managers.player:unit_owner(target_unit)
 
-			blackboard.backstab_attack_trigger = true
+			if player and not player.bot_player then
+				local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
+
+				if is_flanking then
+					blackboard.backstab_attack_trigger = true
+				end
+
+				if player.local_player then
+					if is_flanking then
+						local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+						local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, unit, dialogue_extension.voice_node)
+						local sound_event = breed.backstab_player_sound_event
+						local audio_system_extension = Managers.state.entity:system("audio_system")
+
+						audio_system_extension:_play_event_with_source(wwise_world, sound_event, wwise_source)
+					end
+				else
+					local network_manager = Managers.state.network
+					local network_transmit = network_manager.network_transmit
+					local unit_id = network_manager:unit_game_object_id(unit)
+					local peer_id = player:network_id()
+
+					network_transmit:send_rpc("rpc_check_trigger_backstab_sfx", peer_id, unit_id)
+				end
+			end
 		end
 	end
 
@@ -239,6 +261,12 @@ end
 BTComboAttackAction.run = function (self, unit, blackboard, t, dt)
 	local combo = blackboard.combo_attack_data
 	local attacking_target = combo.attacking_target
+	local target_unit = blackboard.target_unit
+
+	if target_unit and target_unit ~= attacking_target then
+		combo.attacking_target = target_unit
+		attacking_target = target_unit
+	end
 
 	if blackboard.attack_aborted or not Unit.alive(attacking_target) then
 		combo.aborted = true

@@ -314,7 +314,7 @@ UtilityConsiderations.beastmen_gor_headbutt_attack = {
 		}
 	},
 	max_occupied_slots = {
-		max_value = 5,
+		max_value = 4,
 		blackboard_input = "target_num_occupied_slots",
 		spline = {
 			0,

@@ -42,14 +42,32 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.spawn_to_running = nil
-	local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
 	local breed = blackboard.breed
-	local should_backstab = breed.use_backstab_vo and is_flanking
 
-	if should_backstab then
-		DialogueSystem:trigger_backstab(target_unit, unit, blackboard)
+	if breed.use_backstab_vo then
+		local player = Managers.player:unit_owner(target_unit)
 
-		blackboard.backstab_attack_trigger = true
+		if player and not player.bot_player then
+			local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
+
+			if player.local_player then
+				if is_flanking then
+					local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+					local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, unit, dialogue_extension.voice_node)
+					local sound_event = breed.backstab_player_sound_event
+					local audio_system_extension = Managers.state.entity:system("audio_system")
+
+					audio_system_extension:_play_event_with_source(wwise_world, sound_event, wwise_source)
+				end
+			else
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_id = network_manager:unit_game_object_id(unit)
+				local peer_id = player:network_id()
+
+				network_transmit:send_rpc("rpc_check_trigger_backstab_sfx", peer_id, unit_id)
+			end
+		end
 	end
 
 	AiUtils.add_attack_intensity(target_unit, action, blackboard)

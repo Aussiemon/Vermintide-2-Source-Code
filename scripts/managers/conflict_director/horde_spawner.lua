@@ -257,6 +257,7 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallbac
 	print("setting up ambush-horde")
 
 	local settings = CurrentHordeSettings.ambush
+	local min_spawners = settings.min_spawners
 	local max_spawners = settings.max_spawners
 	local min_dist = settings.min_horde_spawner_dist
 	local max_dist = settings.max_horde_spawner_dist
@@ -341,18 +342,14 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallbac
 
 	local n_cover_spawners = #found_cover_points
 
-	if n_cover_spawners <= 0 then
-		if n_horde_spawners <= 0 then
-			self:execute_fallback("ambush", side_id, fallback, "ambush horde failed to find spawners, starts a vector-horde instead", extra_data)
-
-			return
-		end
-
+	if min_spawners >= n_cover_spawners + n_horde_spawners then
 		if n_horde_spawners_hidden <= 0 and variant.must_use_hidden_spawners then
 			self:execute_fallback("ambush", side_id, fallback, "ambush horde failed to find any kind of hidden spawners for their none-horde compatable units, starts a vector-horde instead", extra_data)
-
-			return
+		else
+			self:execute_fallback("ambush", side_id, fallback, "ambush horde failed to find spawners, starts a vector-horde instead", extra_data)
 		end
+
+		return
 	end
 
 	local num_to_spawn = self:compose_horde_spawn_list(variant)

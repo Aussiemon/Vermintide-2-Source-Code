@@ -342,10 +342,6 @@ weapon_template.actions = {
 				input_extension:reset_release_input()
 				input_extension:clear_input_buffer()
 			end,
-			cleave_distribution = {
-				attack = 0.25,
-				impact = 0.25
-			},
 			projectile_info = Projectiles.spear,
 			impact_data = {
 				damage_profile = "fire_spear_2"

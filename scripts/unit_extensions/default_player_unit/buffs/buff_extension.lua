@@ -700,7 +700,7 @@ BuffExtension.trigger_procs = function (self, event, ...)
 		local proc_chance = buff.proc_chance or 1
 
 		if math.random() <= proc_chance then
-			local buff_func = buff.buff_func
+			local buff_func = ProcFunctions[buff.buff_func]
 			local success = buff_func(player, buff, params)
 
 			if success and buff.template.remove_on_proc then

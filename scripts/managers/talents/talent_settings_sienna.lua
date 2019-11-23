@@ -204,7 +204,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown
+				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
 	},
@@ -213,7 +213,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_damage_taken",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown_on_damage_taken
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
 	},
@@ -248,11 +248,11 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = -0.05,
 				name = "reaper",
 				event_buff = true,
+				buff_func = "heal_damage_targets_on_melee",
 				event = "on_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
-				bonus = 0.25,
-				buff_func = ProcFunctions.heal_damage_targets_on_melee
+				bonus = 0.25
 			}
 		}
 	},
@@ -262,10 +262,10 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 0.45,
 				name = "bloodlust",
 				event_buff = true,
+				buff_func = "heal_percent_of_damage_dealt_on_melee",
 				event = "on_damage_dealt",
 				perk = "smiter_healing",
-				heal_cap = 0.25,
-				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+				heal_cap = 0.25
 			}
 		}
 	},
@@ -275,9 +275,9 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
-				range = 10,
-				buff_func = ProcFunctions.heal_other_players_percent_at_range
+				range = 10
 			}
 		}
 	},
@@ -363,7 +363,7 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_kill",
 				buff_to_add = "sienna_scholar_passive_overcharge_pause_on_special_kill_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff_on_special_kill
+				buff_func = "add_buff_on_special_kill"
 			}
 		}
 	},
@@ -384,7 +384,7 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_kill",
 				buff_to_add = "sienna_scholar_damage_taken_on_elite_or_special_kill_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff_on_elite_or_special_kill
+				buff_func = "add_buff_on_elite_or_special_kill"
 			}
 		}
 	},
@@ -404,7 +404,7 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_critical_hit",
 				buff_to_add = "sienna_scholar_move_speed_on_critical_hit_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -434,7 +434,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.sienna_scholar_refund_activated_ability_cooldown
+				buff_func = "sienna_scholar_refund_activated_ability_cooldown"
 			}
 		}
 	},
@@ -443,7 +443,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown
+				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
 	},
@@ -452,7 +452,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_damage_taken",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown_on_damage_taken
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
 	},
@@ -512,7 +512,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_damage_taken",
 				event_buff = true,
-				buff_func = ProcFunctions.reset_tranquility
+				buff_func = "reset_tranquility"
 			}
 		}
 	},
@@ -521,7 +521,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_spell_used",
 				event_buff = true,
-				buff_func = ProcFunctions.reset_tranquility
+				buff_func = "reset_tranquility"
 			}
 		}
 	},
@@ -550,9 +550,9 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 1,
 				name = "vanguard",
 				event_buff = true,
+				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing",
-				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+				perk = "tank_healing"
 			}
 		}
 	},
@@ -562,10 +562,10 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 0.45,
 				name = "bloodlust",
 				event_buff = true,
+				buff_func = "heal_percent_of_damage_dealt_on_melee",
 				event = "on_damage_dealt",
 				perk = "smiter_healing",
-				heal_cap = 0.25,
-				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+				heal_cap = 0.25
 			}
 		}
 	},
@@ -575,9 +575,9 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
-				range = 10,
-				buff_func = ProcFunctions.heal_other_players_percent_at_range
+				range = 10
 			}
 		}
 	},
@@ -587,9 +587,9 @@ TalentBuffTemplates.bright_wizard = {
 				buff_to_add = "sienna_adept_power_level_on_full_charge_buff",
 				stat_buff = "full_charge_boost",
 				event_buff = true,
+				buff_func = "add_buff",
 				event = "on_full_charge",
-				perk = "full_charge_boost",
-				buff_func = ProcFunctions.add_buff
+				perk = "full_charge_boost"
 			}
 		}
 	},
@@ -599,10 +599,10 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_charge_finished",
 				max_stacks = 1,
 				event_buff = true,
+				buff_func = "dummy_function",
 				remove_on_proc = true,
 				icon = "sienna_adept_power_level_on_full_charge",
-				priority_buff = true,
-				buff_func = ProcFunctions.dummy_function
+				priority_buff = true
 			}
 		}
 	},
@@ -612,7 +612,7 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_hit",
 				buff_to_add = "sienna_adept_attack_speed_on_enemies_hit_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.sienna_adept_add_attack_speed_buff_on_enemies_hit
+				buff_func = "sienna_adept_add_attack_speed_buff_on_enemies_hit"
 			}
 		}
 	},
@@ -669,7 +669,7 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_enemy_ignited",
 				buff_to_add = "sienna_adept_damage_reduction_on_ignited_enemy_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.add_buff
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -688,7 +688,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_kill",
 				event_buff = true,
-				buff_func = ProcFunctions.sienna_adept_reduce_activated_ability_cooldown_on_burning_enemy_killed
+				buff_func = "sienna_adept_reduce_activated_ability_cooldown_on_burning_enemy_killed"
 			}
 		}
 	},
@@ -721,7 +721,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_hit",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown
+				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
 	},
@@ -730,7 +730,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				event = "on_damage_taken",
 				event_buff = true,
-				buff_func = ProcFunctions.reduce_activated_ability_cooldown_on_damage_taken
+				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
 	},
@@ -779,9 +779,9 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 1,
 				name = "vanguard",
 				event_buff = true,
+				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing",
-				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+				perk = "tank_healing"
 			}
 		}
 	},
@@ -791,11 +791,11 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = -0.05,
 				name = "reaper",
 				event_buff = true,
+				buff_func = "heal_damage_targets_on_melee",
 				event = "on_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
-				bonus = 0.25,
-				buff_func = ProcFunctions.heal_damage_targets_on_melee
+				bonus = 0.25
 			}
 		}
 	},
@@ -805,9 +805,9 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
-				range = 10,
-				buff_func = ProcFunctions.heal_other_players_percent_at_range
+				range = 10
 			}
 		}
 	},
@@ -858,7 +858,7 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_damage_taken",
 				buff_to_add = "sienna_unchained_reduced_damage_taken_after_venting_buff",
 				event_buff = true,
-				buff_func = ProcFunctions.sienna_unchained_add_buff_on_vent_damage
+				buff_func = "sienna_unchained_add_buff_on_vent_damage"
 			}
 		}
 	},
@@ -897,10 +897,10 @@ TalentBuffTemplates.bright_wizard = {
 				buff_to_add = "sienna_unchained_vent_overheat_on_low_health_cooldown",
 				remove_on_proc = true,
 				event_buff = true,
+				buff_func = "sienna_unchained_vent_overheat_on_low_health",
 				event = "on_damage_taken",
 				icon = "sienna_unchained_vent_overheat_on_low_health",
-				max_stacks = 1,
-				buff_func = ProcFunctions.sienna_unchained_vent_overheat_on_low_health
+				max_stacks = 1
 			}
 		}
 	},
@@ -917,8 +917,8 @@ TalentBuffTemplates.bright_wizard = {
 				buff_to_add = "sienna_unchained_activated_ability_power_on_enemies_hit_buff",
 				max_stacks = 1,
 				event_buff = true,
-				event = "on_hit",
-				buff_func = ProcFunctions.sienna_unchained_activated_ability_power_on_enemies_hit
+				buff_func = "sienna_unchained_activated_ability_power_on_enemies_hit",
+				event = "on_hit"
 			}
 		}
 	},

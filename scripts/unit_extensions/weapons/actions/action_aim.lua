@@ -14,14 +14,8 @@ end
 
 local function scale_delay_value(action_settings, value, owner_unit, buff_extension)
 	local new_value = value
-	local original_anim_time_scale = action_settings.anim_time_scale or 1
-	local new_anim_time_scale = ActionUtils.apply_attack_speed_buff(original_anim_time_scale, owner_unit)
-	new_anim_time_scale = ActionUtils.apply_charge_speed_buff_anim_scale(new_anim_time_scale, owner_unit, action_settings)
-	local time_scale_percentage = new_anim_time_scale / original_anim_time_scale
-
-	if time_scale_percentage ~= 0 then
-		new_value = 1 / time_scale_percentage * value
-	end
+	local time_scale = ActionUtils.get_action_time_scale(owner_unit, action_settings)
+	new_value = new_value / time_scale
 
 	return new_value
 end

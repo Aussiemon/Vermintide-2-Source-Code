@@ -893,13 +893,7 @@ ProcFunctions = {
 			local template = buff.template
 			local buff_to_add = template.buff_to_add
 
-			if Managers.state.network.is_server then
-				local heal_amount = (current_health - damage) * -1 + 1
-
-				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "raw_heal")
-			end
-
-			if killing_blow and not buff_extension:has_buff_perk("victor_zealot_activated_ability") then
+			if killing_blow and not buff_extension:has_buff_perk("ignore_death") then
 				buff_extension:add_buff(buff_to_add)
 
 				return true
@@ -1704,17 +1698,14 @@ ProcFunctions = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local template = buff.template
 			local buff_to_add = template.buff_to_add
+			local buff_type = params[5]
 
-			if not buff_extension:has_buff_type(buff_to_add) then
-				local buff_type = params[5]
+			if buff_type ~= "MELEE_1H" and buff_type ~= "MELEE_2H" then
+				local target_number = params[4]
+				local required_target = template.target_number
 
-				if buff_type ~= "MELEE_1H" and buff_type ~= "MELEE_2H" then
-					local target_number = params[4]
-					local required_target = template.target_number
-
-					if required_target <= target_number then
-						buff_extension:add_buff(buff_to_add)
-					end
+				if required_target <= target_number then
+					buff_extension:add_buff(buff_to_add)
 				end
 			end
 		end
@@ -2321,6 +2312,7 @@ ProcFunctions = {
 		local attack_type = params[2]
 		local buff_to_add = buff_template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_applied = true
 
 		if Unit.alive(player_unit) and target_number and buff_template.targets <= target_number and (attack_type == "light_attack" or attack_type == "heavy_attack") then
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
@@ -2328,12 +2320,10 @@ ProcFunctions = {
 			if talent_extension:has_talent("markus_mercenary_passive_improved", "empire_soldier", true) then
 				if target_number >= 4 then
 					buff_system:add_buff(player_unit, "markus_mercenary_passive_improved", owner_unit, false)
+				else
+					buff_applied = false
 				end
-
-				return
-			end
-
-			if talent_extension:has_talent("markus_mercenary_passive_group_proc", "empire_soldier", true) then
+			elseif talent_extension:has_talent("markus_mercenary_passive_group_proc", "empire_soldier", true) then
 				local side = Managers.state.side.side_by_unit[player_unit]
 				local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 				local num_units = #player_and_bot_units
@@ -2345,8 +2335,15 @@ ProcFunctions = {
 						buff_system:add_buff(unit, buff_to_add, owner_unit, false)
 					end
 				end
+			elseif talent_extension:has_talent("markus_mercenary_passive_power_level_on_proc", "empire_soldier", true) then
+				buff_system:add_buff(player_unit, "markus_mercenary_passive_power_level", owner_unit, false)
+				buff_system:add_buff(player_unit, buff_to_add, owner_unit, false)
 			else
 				buff_system:add_buff(player_unit, buff_to_add, owner_unit, false)
+			end
+
+			if talent_extension:has_talent("markus_mercenary_passive_defence_on_proc", "empire_soldier", true) and buff_applied then
+				buff_system:add_buff(player_unit, "markus_mercenary_passive_defence", owner_unit, false)
 			end
 		end
 	end,
@@ -4018,10 +4015,10 @@ BuffTemplates = {
 			{
 				name = "regrowth",
 				event_buff = true,
+				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				perk = "ninja_healing",
-				bonus = 2,
-				buff_func = ProcFunctions.heal_finesse_damage_on_melee
+				bonus = 2
 			}
 		}
 	},
@@ -4031,9 +4028,9 @@ BuffTemplates = {
 				multiplier = 0.2,
 				name = "bloodlust",
 				event_buff = true,
+				buff_func = "heal_percent_of_damage_dealt_on_melee",
 				event = "on_damage_dealt",
-				perk = "smiter_healing",
-				buff_func = ProcFunctions.heal_percent_of_damage_dealt_on_melee
+				perk = "smiter_healing"
 			}
 		}
 	},
@@ -4043,9 +4040,9 @@ BuffTemplates = {
 				multiplier = 0.25,
 				name = "vanguard",
 				event_buff = true,
+				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing",
-				buff_func = ProcFunctions.heal_stagger_targets_on_melee
+				perk = "tank_healing"
 			}
 		}
 	},
@@ -4055,10 +4052,10 @@ BuffTemplates = {
 				max_targets = 5,
 				name = "reaper",
 				event_buff = true,
+				buff_func = "heal_damage_targets_on_melee",
 				event = "on_damage_dealt",
 				perk = "linesman_healing",
-				bonus = 0.75,
-				buff_func = ProcFunctions.heal_damage_targets_on_melee
+				bonus = 0.75
 			}
 		}
 	},
@@ -4068,9 +4065,9 @@ BuffTemplates = {
 				multiplier = 0.2,
 				name = "conqueror",
 				event_buff = true,
+				buff_func = "heal_other_players_percent_at_range",
 				event = "on_healed_consumeable",
-				range = 10,
-				buff_func = ProcFunctions.heal_other_players_percent_at_range
+				range = 10
 			}
 		}
 	},
@@ -4123,9 +4120,9 @@ BuffTemplates = {
 				max_display_multiplier = 0.4,
 				name = "tank_unbalance",
 				event_buff = true,
+				buff_func = "unbalance_debuff_on_stagger",
 				event = "on_stagger",
-				display_multiplier = 0.2,
-				buff_func = ProcFunctions.unbalance_debuff_on_stagger
+				display_multiplier = 0.2
 			}
 		}
 	},
@@ -4229,9 +4226,9 @@ BuffTemplates = {
 			{
 				name = "mutator_life_damage_on_hit",
 				event_buff = true,
+				buff_func = "damage_attacker",
 				event = "on_hit",
-				bonus = 1,
-				buff_func = ProcFunctions.damage_attacker
+				bonus = 1
 			}
 		}
 	},
@@ -4240,10 +4237,10 @@ BuffTemplates = {
 			{
 				name = "mutator_life_health_regeneration",
 				event_buff = true,
+				buff_func = "life_mutator_remove_regen",
 				event = "on_damage_taken",
 				update_func = "mutator_life_health_regeneration_update",
-				apply_buff_func = "mutator_life_health_regeneration_start",
-				buff_func = ProcFunctions.life_mutator_remove_regen
+				apply_buff_func = "mutator_life_health_regeneration_start"
 			}
 		}
 	},
@@ -4450,9 +4447,9 @@ BuffTemplates = {
 				num_stacks = 15,
 				name = "mutator_metal_killing_blow",
 				event_buff = true,
+				buff_func = "metal_mutator_stacks_on_hit",
 				event = "on_hit",
 				bonus = 100,
-				buff_func = ProcFunctions.metal_mutator_stacks_on_hit,
 				breeds = {
 					"skaven_slave",
 					"skaven_clan_rat",
@@ -7249,9 +7246,9 @@ BuffTemplates = {
 			{
 				name = "weapon_trait_bloodlust",
 				event_buff = true,
+				buff_func = "heal",
 				event = "on_kill",
-				bonus = 1,
-				buff_func = ProcFunctions.heal
+				bonus = 1
 			}
 		}
 	},
@@ -7268,7 +7265,7 @@ BuffTemplates = {
 				event = "on_hit",
 				bonus = 1,
 				event_buff = true,
-				buff_func = ProcFunctions.replenish_ammo_on_headshot_ranged
+				buff_func = "replenish_ammo_on_headshot_ranged"
 			},
 			{
 				stat_buff = "total_ammo",

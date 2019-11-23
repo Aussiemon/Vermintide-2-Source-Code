@@ -807,6 +807,15 @@ LevelAnalysis.spawn_all_boss_spline_patrols = function (self, optional_id)
 
 				self.enemy_recycler:add_main_path_terror_event(spline_waypoints[1], "boss_event_spline_patrol", 45, event_data)
 				print("INJECTING BOSS SPLINE ID", waypoints_table.id)
+
+				local spawner_pos = spline_waypoints[1]:unbox()
+				local path_pos, travel_dist, move_percent, path_index, sub_index = MainPathUtils.closest_pos_at_main_path(nil, spawner_pos)
+				local activation_pos, _ = MainPathUtils.point_on_mainpath(nil, travel_dist - 45)
+
+				QuickDrawerStay:line(spawner_pos, spawner_pos + Vector3(0, 0, 15), Color(125, 255, 0))
+				QuickDrawerStay:sphere(spawner_pos, 5, Colors.get("purple"))
+				QuickDrawerStay:line(spawner_pos, activation_pos, Color(125, 255, 0))
+				QuickDrawerStay:sphere(activation_pos, 5, Colors.get("pink"))
 			end
 		end
 	end

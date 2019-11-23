@@ -986,20 +986,6 @@ UtilityConsiderations = {
 		}
 	},
 	clan_rat_follow = {
-		distance_to_target = {
-			max_value = 10,
-			blackboard_input = "target_dist",
-			spline = {
-				0,
-				0,
-				0.2,
-				0,
-				0.21,
-				1,
-				1,
-				1
-			}
-		},
 		distance_to_destination = {
 			max_value = 5,
 			blackboard_input = "destination_dist",
@@ -1489,6 +1475,18 @@ UtilityConsiderations = {
 				0,
 				1,
 				0
+			}
+		},
+		have_slot = {
+			max_value = 1,
+			blackboard_input = "have_slot",
+			spline = {
+				0,
+				0,
+				0.5033333333333333,
+				0,
+				1,
+				1
 			}
 		},
 		not_in_attack_cooldown = {

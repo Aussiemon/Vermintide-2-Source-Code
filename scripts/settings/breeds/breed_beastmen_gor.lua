@@ -575,8 +575,7 @@ local action_data = {
 			anims = {
 				"attack_headbutt",
 				"attack_headbutt_2",
-				"attack_punch",
-				"attack_push"
+				"attack_punch"
 			},
 			damage_box_range = {
 				flat = 2.25,

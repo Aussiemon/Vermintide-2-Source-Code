@@ -207,6 +207,8 @@ RespawnHandler.update = function (self, dt, t, slots)
 		elseif data.health_state == "dead" and not data.ready_for_respawn and data.respawn_timer < t then
 			data.respawn_timer = nil
 			data.ready_for_respawn = true
+		elseif data.health_state ~= "dead" and data.respawn_timer then
+			data.respawn_timer = nil
 		end
 
 		if all_synced and data.health_state == "dead" and data.ready_for_respawn and status.peer_id then

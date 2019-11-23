@@ -452,7 +452,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 			local bonus_damage_percentage = stagger_number * stagger_damage_multiplier
 			local target_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
 
-			if target_buff_extension then
+			if target_buff_extension and not damage_profile.no_stagger_damage_reduction_ranged then
 				bonus_damage_percentage = target_buff_extension:apply_buffs_to_value(bonus_damage_percentage, "unbalanced_damage_taken")
 			end
 
@@ -496,6 +496,15 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 		local stagger_settings = stagger_table[target_unit_armor]
 		local stagger_range = stagger_settings.max - stagger_settings.min
 		local _, impact_power = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, nil, damage_source, breed, dummy_unit_armor, dropoff_scalar, difficulty_level, target_unit_armor, nil)
+
+		if attacker_unit and unit_alive(attacker_unit) and attacker_buff_extension then
+			impact_power = attacker_buff_extension:apply_buffs_to_value(impact_power, "push_power")
+			local blackboard_action = (is_player and status_extension:breed_action()) or blackboard.action
+
+			if blackboard_action and blackboard_action.damage then
+				impact_power = attacker_buff_extension:apply_buffs_to_value(impact_power, "counter_push_power")
+			end
+		end
 
 		if attacker_buff_extension then
 			impact_power = attacker_buff_extension:apply_buffs_to_value(impact_power, "power_level_impact")
@@ -683,9 +692,6 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local dropoff_scalar = ActionUtils.get_dropoff_scalar(damage_profile, target_settings, attacker_unit, target_unit)
 	local ai_shield_extension = ScriptUnit.has_extension(target_unit, "ai_shield_system")
-	local ai_extension = ScriptUnit.has_extension(target_unit, "ai_system")
-	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
-	local is_player = blackboard.is_player and not ai_extension
 	local has_power_boost = false
 
 	if attacker_unit and unit_alive(attacker_unit) then
@@ -693,12 +699,6 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 
 		if attacker_buff_extension then
 			has_power_boost = attacker_buff_extension:has_buff_type("armor penetration")
-			original_power_level = attacker_buff_extension:apply_buffs_to_value(original_power_level, "push_power")
-			local blackboard_action = (is_player and status_extension:breed_action()) or blackboard.action
-
-			if blackboard_action and blackboard_action.damage then
-				original_power_level = attacker_buff_extension:apply_buffs_to_value(original_power_level, "counter_push_power")
-			end
 		end
 	end
 

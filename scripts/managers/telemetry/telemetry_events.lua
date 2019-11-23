@@ -520,4 +520,48 @@ TelemetryEvents.magic_item_level_upgraded = function (self, item_id, essence_cos
 	self.manager:register_event("magic_item_level_upgraded", params)
 end
 
+TelemetryEvents.store_opened = function (self)
+	table.clear(params)
+	self.manager:register_event("store_opened", params)
+end
+
+TelemetryEvents.store_closed = function (self)
+	table.clear(params)
+	self.manager:register_event("store_closed", params)
+end
+
+TelemetryEvents.store_breadcrumbs_changed = function (self, widgets, product)
+	table.clear(params)
+
+	local path = {}
+	local path_localized = {}
+
+	for _, widget in ipairs(widgets) do
+		path[#path + 1] = widget.content.page_name
+		path_localized[#path_localized + 1] = widget.content.text
+	end
+
+	if product then
+		path[#path] = product.product_id
+	end
+
+	params.path = path
+	params.path_localized = path_localized
+
+	self.manager:register_event("store_breadcrumbs_changed", params)
+end
+
+TelemetryEvents.store_product_purchased = function (self, product)
+	table.clear(params)
+
+	params.id = product.product_id
+	params.name = product.item.name
+	params.type = product.item.data.item_type
+	params.current_price = product.item.current_prices.SM
+	params.regular_price = product.item.regular_prices.SM
+	params.localized_name = product.item.data.localized_name
+
+	self.manager:register_event("store_product_purchased", params)
+end
+
 return

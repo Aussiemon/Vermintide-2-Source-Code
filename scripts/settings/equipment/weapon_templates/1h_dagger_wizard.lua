@@ -327,14 +327,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right_heavy",
-					start_time = 0.5,
+					start_time = 0.4,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_right_heavy",
-					start_time = 0.5,
+					start_time = 0.4,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"

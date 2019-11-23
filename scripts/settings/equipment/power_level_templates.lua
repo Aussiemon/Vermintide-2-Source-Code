@@ -241,7 +241,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			2,
 			1,
 			1
 		},
@@ -1440,7 +1440,7 @@ PowerLevelTemplates = {
 	},
 	critical_strike_smiter_L_dual_light = {
 		attack_armor_power_modifer = {
-			1,
+			1.25,
 			0.75,
 			2.75,
 			1,
@@ -1533,7 +1533,7 @@ PowerLevelTemplates = {
 	},
 	default_target_smiter_L_dual_light = {
 		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient_headshot = 0.5,
+		boost_curve_coefficient_headshot = 1,
 		attack_template = "slashing_smiter",
 		power_distribution = {
 			attack = 0.225,
@@ -2778,16 +2778,16 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
+			1.5,
 			1,
-			1,
-			1
+			1.5
 		},
 		impact_armor_power_modifer = {
 			1,
 			1,
-			0.5,
+			1.5,
 			1,
-			1
+			1.5
 		}
 	},
 	armor_modifier_burning_tank_M = {
@@ -2920,7 +2920,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.6,
-			1.5,
+			2,
 			1,
 			1
 		},

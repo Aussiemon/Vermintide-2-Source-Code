@@ -19,6 +19,7 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id)
 	}
 	self.character_rotation = 0
 	self.unique_id = unique_id
+	self._session_id = 0
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
 end

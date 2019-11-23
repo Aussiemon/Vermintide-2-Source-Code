@@ -793,11 +793,7 @@ local terror_event_blueprints = {
 			end
 		}
 	},
-	farmlands_gate_open_event = {
-		{
-			"set_freeze_condition",
-			max_active_enemies = 100
-		},
+	farmlands_gate_open_event_challenge = {
 		{
 			"has_completed_time_challenge",
 			time_challenge_name = "farmlands_speed_event"
@@ -805,6 +801,12 @@ local terror_event_blueprints = {
 		{
 			"has_completed_time_challenge",
 			time_challenge_name = "farmlands_speed_event_cata"
+		}
+	},
+	farmlands_gate_open_event_horde = {
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
 		},
 		{
 			"control_pacing",

@@ -126,7 +126,7 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	end
 
 	self.state = "waiting_to_hit"
-	local anim_time_scale = ActionUtils.apply_attack_speed_buff(new_action.anim_time_scale or 1, owner_unit)
+	local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
 	self.time_to_hit = t + (new_action.hit_time or 0) / anim_time_scale
 
 	table.clear(self.hit_units)
@@ -186,6 +186,13 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 	local inner_hit_units = self.inner_hit_units
 	local hit_units = self.hit_units
 	local unit_get_data = Unit.get_data
+
+	if script_data.debug_weapons then
+		self._drawer:sphere(attack_pos, radius, Color(255, 0, 0))
+		self._drawer:sphere(inner_attack_pos_near, inner_radius, Color(0, 255, 0))
+		self._drawer:sphere(inner_attack_pos, inner_radius, Color(0, 255, 0))
+	end
+
 	local target_breed_unit = self.target_breed_unit
 	local target_breed_unit_health_extension = Unit.alive(target_breed_unit) and ScriptUnit.extension(target_breed_unit, "health_system")
 

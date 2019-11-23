@@ -80,7 +80,6 @@ AiBreedSnippets.on_rat_ogre_spawn = function (unit, blackboard)
 	setup_start_angry(unit, blackboard, conflict_director)
 	conflict_director:freeze_intensity_decay(10)
 	conflict_director:add_unit_to_bosses(unit)
-	Managers.music:music_trigger("combat_music", "enemy_ratogre_stinger")
 end
 
 AiBreedSnippets.on_rat_ogre_death = function (unit, blackboard)
@@ -661,7 +660,6 @@ AiBreedSnippets.on_chaos_spawn_spawn = function (unit, blackboard)
 	setup_start_angry(unit, blackboard, conflict_director)
 	conflict_director:freeze_intensity_decay(10)
 	conflict_director:add_unit_to_bosses(unit)
-	Managers.music:music_trigger("combat_music", "enemy_chaos_spawn_stinger")
 end
 
 AiBreedSnippets.on_chaos_spawn_death = function (unit, blackboard)

@@ -407,19 +407,22 @@ GenericStatusExtension.fall_distance = function (self)
 	return 0
 end
 
+GenericStatusExtension.set_ignore_next_fall_damage = function (self, ignore)
+	self.ignore_next_fall_damage = ignore
+end
+
 GenericStatusExtension.update_falling = function (self, t)
 	if self.locomotion_extension:is_on_ground() and not self.on_ladder then
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(self.unit)
 		local min_fall_damage_height = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_HEIGHT
 		local hard_landing_fall_height = movement_settings_table.fall.heights.HARD_LANDING_FALL_HEIGHT
-		local end_fall_height = POSITION_LOOKUP[self.unit].z
-		local fall_distance = self.fall_height - end_fall_height
+		local fall_distance = self:fall_distance()
 		local fall_event = "landed"
 
 		if min_fall_damage_height < fall_distance then
 			fall_distance = math.abs(fall_distance)
 
-			if not global_is_inside_inn and not self.inside_transport_unit then
+			if not global_is_inside_inn and not self.inside_transport_unit and not self.ignore_next_fall_damage then
 				local network_height = math.clamp(fall_distance * 4, 0, 255)
 				local network_manager = Managers.state.network
 				local unit_storage = Managers.state.unit_storage
@@ -439,6 +442,7 @@ GenericStatusExtension.update_falling = function (self, t)
 			self.first_person_extension:play_camera_effect_sequence(fall_event, t)
 		end
 
+		self.ignore_next_fall_damage = false
 		self.update_funcs.falling = nil
 		self.fall_height = nil
 	end

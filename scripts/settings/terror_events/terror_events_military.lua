@@ -178,7 +178,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_plague_monk") < 2 and count_event_breed("skaven_poison_wind_globadier") < 1 and count_event_breed("chaos_corruptor_sorcerer") < 1 and count_event_breed("chaos_vortex_sorcerer") < 1 and count_event_breed("skaven_warpfire_thrower") < 1
 			end
@@ -195,7 +195,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return spawned_during_event() < 6
 			end
@@ -218,7 +218,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return spawned_during_event() < 6
 			end
@@ -249,7 +249,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_plague_monk") < 2
 			end
@@ -283,7 +283,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_poison_wind_globadier") < 1
 			end
@@ -304,7 +304,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_plague_monk") < 2
 			end
@@ -343,7 +343,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("chaos_corruptor_sorcerer") < 1 and count_event_breed("chaos_vortex_sorcerer") < 1
 			end
@@ -364,7 +364,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_plague_monk") < 2
 			end
@@ -398,7 +398,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("chaos_vortex_sorcerer") < 1
 			end
@@ -411,7 +411,7 @@ local terror_event_blueprints = {
 	military_courtyard_event_specials_04 = {
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_plague_monk") < 2
 			end
@@ -450,7 +450,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_warpfire_thrower") < 1 and count_event_breed("skaven_pack_master") < 1
 			end
@@ -467,7 +467,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_plague_monk") < 2
 			end
@@ -506,7 +506,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_ratling_gunner") < 1 and count_event_breed("skaven_poison_wind_globadier") < 1
 			end
@@ -589,7 +589,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2
 			end
@@ -642,7 +642,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4 and count_event_breed("chaos_warrior") < 2
 			end
@@ -695,7 +695,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
@@ -740,7 +740,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
@@ -796,7 +796,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4 and count_event_breed("chaos_warrior") < 2
 			end
@@ -841,7 +841,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
@@ -886,7 +886,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("chaos_fanatic") < 4
 			end
@@ -942,7 +942,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2
 			end
@@ -998,7 +998,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2
 			end
@@ -1054,7 +1054,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2
 			end
@@ -1110,7 +1110,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2
 			end
@@ -1151,7 +1151,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
@@ -1192,7 +1192,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
@@ -1233,7 +1233,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
@@ -1274,7 +1274,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
@@ -1329,7 +1329,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("skaven_plague_monk") < 2
 			end
@@ -1384,7 +1384,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("skaven_plague_monk") < 2
 			end
@@ -1439,7 +1439,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("skaven_plague_monk") < 2
 			end
@@ -1494,7 +1494,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 6 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("skaven_plague_monk") < 2
 			end
@@ -1535,7 +1535,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
@@ -1576,7 +1576,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
@@ -1617,7 +1617,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 1 and count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
@@ -1644,18 +1644,12 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			breed_name = "skaven_warpfire_thrower",
-			amount = 1,
-			difficulty_requirement = HARDEST
-		},
-		{
 			"delay",
 			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_poison_wind_globadier") < 1
 			end
@@ -1693,18 +1687,12 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			breed_name = "skaven_ratling_gunner",
-			amount = 1,
-			difficulty_requirement = HARDEST
-		},
-		{
 			"delay",
 			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("chaos_corruptor_sorcerer") < 1 and count_event_breed("skaven_poison_wind_globadier") < 1
 			end
@@ -1742,18 +1730,12 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			breed_name = "chaos_corruptor_sorcerer",
-			amount = 1,
-			difficulty_requirement = HARDEST
-		},
-		{
 			"delay",
 			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_warpfire_thrower") < 1 and count_event_breed("skaven_pack_master") < 1
 			end
@@ -1791,18 +1773,12 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			breed_name = "skaven_gutter_runner",
-			amount = 1,
-			difficulty_requirement = HARDEST
-		},
-		{
 			"delay",
 			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_ratling_gunner") < 1 and count_event_breed("skaven_pack_master") < 1
 			end
@@ -1840,18 +1816,12 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			breed_name = "chaos_vortex_sorcerer",
-			amount = 1,
-			difficulty_requirement = HARDEST
-		},
-		{
 			"delay",
 			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_warpfire_thrower") < 1 and count_event_breed("skaven_poison_wind_globadier") < 1
 			end
@@ -1889,18 +1859,12 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			breed_name = "skaven_gutter_runner",
-			amount = 1,
-			difficulty_requirement = HARDEST
-		},
-		{
 			"delay",
 			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_ratling_gunner") < 1 and count_event_breed("skaven_poison_wind_globadier") < 1
 			end
@@ -1935,7 +1899,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
+			duration = 100,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 4
 			end

@@ -427,6 +427,36 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 			dragged_velocity.z = fall_speed
 		end
+	else
+		local flat_player_pos = Vector3.flat(current_position)
+		local query_radius = 1
+		local query_position = current_position + velocity_flat_normalized * 0.5
+		local no_clip = self._mover_modes.enemy_noclip == true
+		local collide_with_enemies = not self._pactsworn_no_clip and not no_clip
+
+		if collide_with_enemies then
+			local num_ai_units = AiUtils.broadphase_query(query_position, query_radius, ai_units)
+
+			for i = 1, num_ai_units, 1 do
+				local ai_unit = ai_units[i]
+				local breed = ScriptUnit.extension(ai_unit, "ai_system")._breed
+				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
+
+				if is_alive and breed.player_locomotion_constrain_radius ~= nil then
+					local ai_position = Vector3.flat(POSITION_LOOKUP[ai_unit])
+					local ai_radius = breed.player_locomotion_constrain_radius
+					local ai_radius_sq = ai_radius * ai_radius
+					local dist_to_ai_sq = Vector3.distance_squared(ai_position, flat_player_pos)
+
+					if dist_to_ai_sq < ai_radius_sq then
+						local push_strength = 2
+						local push_force = push_strength * (1 - dist_to_ai_sq / ai_radius_sq)
+						local push_direction = Vector3.normalize(flat_player_pos - ai_position)
+						dragged_velocity = dragged_velocity + push_direction * push_force
+					end
+				end
+			end
+		end
 	end
 
 	local delta = dragged_velocity * dt
