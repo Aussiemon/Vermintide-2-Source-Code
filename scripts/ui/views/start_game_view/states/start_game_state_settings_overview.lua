@@ -384,8 +384,9 @@ end
 StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_name)
 	if table_name then
 		local mission_selection_save_data = PlayerData.mission_selection
+		local mission_select_data = mission_selection_save_data[table_name]
 
-		if not mission_selection_save_data[table_name] or not self:_validate_mission_save_data(mission_selection_save_data[table_name]) then
+		if not mission_select_data or not self:_validate_mission_save_data(mission_select_data) then
 			mission_selection_save_data[table_name] = {}
 		end
 
@@ -407,6 +408,8 @@ StartGameStateSettingsOverview._validate_mission_save_data = function (self, mis
 
 	if not level_id then
 		return true
+	elseif not rawget(LevelSettings, level_id) then
+		return false
 	end
 
 	local stats_id = self._stats_id

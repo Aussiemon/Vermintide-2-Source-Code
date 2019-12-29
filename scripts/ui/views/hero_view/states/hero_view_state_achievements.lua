@@ -2266,6 +2266,7 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 		local draw_refresh_icon = quest_type == "daily" and can_refresh_quest and has_entries
 
 		self:_set_color_values(refresh_icon_color, (draw_refresh_icon and alpha) or 0)
+		assert(num_visible_entries <= #bar_content.slot, "There are more " .. quest_type .. " quests (" .. num_visible_entries .. ") than UIWidgets.create_quest_bar is configured to handle (" .. #bar_content.slot .. ").")
 
 		local has_presented_cooldown = false
 

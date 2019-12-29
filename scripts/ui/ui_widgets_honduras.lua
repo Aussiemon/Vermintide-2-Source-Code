@@ -6272,13 +6272,13 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 	}
 end
 
-UIWidgets.create_quest_bar = function (scenegraph_id, size)
+UIWidgets.create_quest_bar = function (scenegraph_id, size, side_spacing)
 	local side_detail_texture = "chain_end"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
-	local amount = 5
+	local amount = 10
 	local spacing = 0
-	local multi_texture_extra_width = 116
+	local multi_texture_extra_width = side_spacing * 2
 	local multi_texture_width = size[1] + multi_texture_extra_width
 	local multi_texture_size = {
 		multi_texture_width,

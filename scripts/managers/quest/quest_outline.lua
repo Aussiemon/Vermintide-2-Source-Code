@@ -9,11 +9,8 @@ local weekly_quests = {
 	quest_type = "weekly",
 	name = "achv_menu_weekly_category_title",
 	type = "quest",
-	max_entry_amount = 0,
-	entries = {},
-	max_dlc_entries = {
-		bogenhafen = 3
-	}
+	max_entry_amount = 7,
+	entries = {}
 }
 local event_quests = {
 	quest_type = "event",

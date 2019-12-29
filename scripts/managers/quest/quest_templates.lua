@@ -952,7 +952,6 @@ for i = 1, #UnlockableLevels, 1 do
 end
 
 quest_templates.quests.weekly_complete_quickplay_missions = {
-	required_dlc = "bogenhafen",
 	name = "quest_daily_complete_quickplay_missions_name",
 	icon = "quest_book_skull",
 	desc = function ()

@@ -316,6 +316,11 @@ QuestSettings.stat_mappings = {
 		"weekly_quest_6_stat_1",
 		"weekly_quest_6_stat_2",
 		"weekly_quest_6_stat_3"
+	},
+	weekly_quest_7 = {
+		"weekly_quest_7_stat_1",
+		"weekly_quest_7_stat_2",
+		"weekly_quest_7_stat_3"
 	}
 }
 
