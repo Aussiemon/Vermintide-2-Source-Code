@@ -485,6 +485,92 @@ local weave_horde_compositions = {
 			}
 		}
 	},
+	weave_horde_beastmen_skaven_small = {
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"beastmen_ungor",
+					1,
+					"skaven_slave",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"beastmen_ungor",
+					2,
+					"skaven_slave",
+					3
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"beastmen_ungor",
+					3,
+					"skaven_slave",
+					4
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat",
+					4,
+					"beastmen_gor",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat",
+					6,
+					"beastmen_gor",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat",
+					8,
+					"beastmen_gor",
+					3
+				}
+			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 1,
+				breeds = {
+					"skaven_clan_rat",
+					10,
+					"beastmen_gor",
+					3
+				}
+			}
+		}
+	},
 	weave_horde_beastmen_small = {
 		{
 			{
@@ -2726,6 +2812,92 @@ local weave_horde_compositions = {
 					"skaven_rat_ogre",
 					1,
 					"chaos_spawn",
+					2
+				}
+			}
+		}
+	},
+	weave_boss_event_2 = {
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"beastmen_minotaur",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"beastmen_minotaur",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"beastmen_minotaur",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					2,
+					"beastmen_minotaur",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					2,
+					"beastmen_minotaur",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"beastmen_minotaur",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "bosses",
+				weight = 3,
+				breeds = {
+					"skaven_rat_ogre",
+					1,
+					"beastmen_minotaur",
 					2
 				}
 			}

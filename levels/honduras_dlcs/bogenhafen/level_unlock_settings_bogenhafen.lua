@@ -311,7 +311,7 @@ ActSettings.act_bogenhafen = {
 	banner_texture = "menu_frame_bg_01",
 	sorting = 2,
 	display_name = "area_selection_bogenhafen_name",
-	console_offset = 100
+	console_offset = 350
 }
 
 return
