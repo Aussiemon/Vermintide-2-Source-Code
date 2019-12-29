@@ -29,7 +29,14 @@ MatchmakingStateFriendClient.on_exit = function (self)
 end
 
 MatchmakingStateFriendClient.update = function (self, dt, t)
-	if not Managers.state.game_mode or Managers.state.game_mode:level_key() ~= "inn_level" then
+	if not Managers.state.game_mode then
+		return
+	end
+
+	local level_key = Managers.state.game_mode:level_key()
+	local level_settings = LevelSettings[level_key]
+
+	if not level_settings.hub_level then
 		return
 	end
 

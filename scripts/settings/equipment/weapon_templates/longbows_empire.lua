@@ -108,7 +108,7 @@ weapon_template.actions = {
 			hold_input = "action_two_hold",
 			anim_event = "attack_shoot",
 			scale_total_time_on_mastercrafted = true,
-			total_time = 0.85,
+			total_time = 2,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -118,13 +118,6 @@ weapon_template.actions = {
 					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.75,
-					action = "action_one",
-					release_required = "action_two_hold",
-					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -186,7 +179,7 @@ weapon_template.actions = {
 			hold_input = "action_two_hold",
 			anim_event = "attack_shoot",
 			scale_total_time_on_mastercrafted = true,
-			total_time = 0.85,
+			total_time = 2,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -196,13 +189,6 @@ weapon_template.actions = {
 					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.85,
-					action = "action_one",
-					release_required = "action_two_hold",
-					input = "action_one"
 				},
 				{
 					sub_action = "default",

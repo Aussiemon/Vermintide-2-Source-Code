@@ -2712,5 +2712,10 @@ BreedTweaks.standard_bearer_spawn_list = {
 		"beastmen_gor"
 	}
 }
+BreedTweaks.standard_bearer_spawn_list_replacements = {
+	"beastmen_gor",
+	"beastmen_ungor_archer",
+	"beastmen_ungor"
+}
 
 return

@@ -366,7 +366,7 @@ LootItemUnitPreviewer._spawn_link_unit = function (self, item)
 
 	if item_type == "weapon_skin" then
 		local skin_template = WeaponSkins.skins[item_skin]
-		unit_name = skin_template[display_unit_key] or skin_template[default_display_unit_key]
+		unit_name = skin_template[display_unit_key] or skin_template[default_display_unit_key] or unit_name
 	elseif not unit_name then
 		local item_template = ItemHelper.get_template_by_item_name(item_key)
 		unit_name = item_template[display_unit_key] or item_template[default_display_unit_key]

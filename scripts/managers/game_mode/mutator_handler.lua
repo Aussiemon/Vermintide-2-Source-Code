@@ -88,6 +88,15 @@ MutatorHandler.activate_mutator = function (self, name, optional_duration, optio
 	end
 end
 
+MutatorHandler.deactivate_mutator = function (self, name)
+	if self._is_server then
+		local active_mutators = self._active_mutators
+		local mutator_context = self._mutator_context
+
+		self:_deactivate_mutator(name, active_mutators, mutator_context)
+	end
+end
+
 MutatorHandler.hot_join_sync = function (self, peer_id)
 	local network_transmit = self._network_transmit
 	local active_mutators = self._active_mutators

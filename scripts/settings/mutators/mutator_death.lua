@@ -1,9 +1,7 @@
-local MAX_RAYCASTS = 5
-
 return {
 	description = "weaves_death_mutator_desc",
-	display_name = "weaves_death_mutator_name",
 	icon = "mutator_icon_death_spirits",
+	display_name = "weaves_death_mutator_name",
 	spawn_spirit = function (data, spawn_unit, target_unit)
 		local spawn_position = Vector3.add(Unit.local_position(spawn_unit, 0), Vector3(0, 0, data.offset))
 		local spirit_unit = data.unit_spawner:spawn_network_unit(data.spirit_unit_name, "position_synched_dummy_unit", data.extension_init_data, spawn_position)
@@ -22,56 +20,54 @@ return {
 	end,
 	update_spirits = function (context, data, dt, t)
 		local spirits = data.spirits
+		local hit_distance = 1
 
-		while data.num_raycasts <= MAX_RAYCASTS do
-			local current_unit = data.current_unit
-			local spirit, id = nil
+		for id, spirit in pairs(spirits) do
+			local unit = spirit.unit
 
-			if current_unit == nil or spirits[current_unit] then
-				id, spirit = next(spirits, current_unit)
-			end
-
-			local unit = spirit and spirit.unit
-
-			if unit and spirit.delay_time == 0 then
-				local physics_world = World.physics_world(context.world)
-				local spirit_position = Unit.local_position(unit, 0)
-				local player_unit = spirit.follow_unit
-
-				if Unit.alive(player_unit) and AiUtils.unit_alive(player_unit) then
+			if Unit.alive(unit) then
+				if spirit.delay_time == 0 then
+					local spirit_position = Unit.local_position(unit, 0)
+					local player_unit = spirit.follow_unit
 					local player_pos = POSITION_LOOKUP[player_unit]
-					local direction = player_pos - spirit_position
-					direction = Vector3.normalize(direction)
-					local length = 0.75
 
-					PhysicsWorld.prepare_actors_for_raycast(physics_world, spirit_position, direction, 0.1)
+					if player_pos then
+						player_pos = player_pos + Vector3.up()
+						local direction = player_pos - spirit_position
+						local distance_squared = Vector3.length_squared(direction)
+						direction = Vector3.normalize(direction)
 
-					local result = PhysicsWorld.immediate_raycast(physics_world, spirit_position, direction, length, "all", "collision_filter", "filter_player_hit_box_check")
+						if distance_squared <= hit_distance * hit_distance then
+							local health_extension = ScriptUnit.extension(player_unit, "health_system")
 
-					if result then
-						local num_hits = #result
+							if health_extension then
+								local current_health = health_extension:current_permanent_health()
 
-						for i = 1, num_hits, 1 do
-							local hit = result[i]
-							local hit_actor = hit[4]
-							local hit_unit = Actor.unit(hit_actor)
+								if current_health > 0 then
+									local current_temporary_health = health_extension:current_temporary_health()
+									local spirit_damage = data.spirit_damage
+									local damage = nil
 
-							if hit_unit == spirit.follow_unit then
-								local damage_profile = DamageProfileTemplates.death_explosion
-								local power_level = data.spirit_power_level
-								local hit_direction = spirit_position - player_pos
-								hit_direction = Vector3.normalize(hit_direction)
+									if spirit_damage < current_temporary_health + current_health then
+										damage = spirit_damage
+									else
+										damage = current_health - 1
+									end
 
-								DamageUtils.add_damage_network_player(damage_profile, nil, power_level, player_unit, unit, "full", player_pos, hit_direction, "undefined", nil, 0, false, nil, false, 0, 1)
+									DamageUtils.add_damage_network(player_unit, unit, damage, "torso", "death_explosion", nil, direction, "undefined")
+								end
+							end
 
-								local rotation = Unit.world_rotation(unit, 0)
-								local area_damage_system = Managers.state.entity:system("area_damage_system")
+							local rotation = Unit.world_rotation(unit, 0)
+							local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-								area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
-								data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
-								Managers.state.unit_spawner:mark_for_deletion(unit)
+							area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
+							data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
+							Managers.state.unit_spawner:mark_for_deletion(unit)
 
-								data.spirits[id] = nil
+							data.spirits[id] = nil
+
+							if ScorpionSeasonalSettings.current_season_id == 1 then
 								local stat_group_name = "season_1"
 								local stat_name = "weave_death_hit_by_spirit"
 								local player = Managers.player:owner(player_unit)
@@ -90,59 +86,23 @@ return {
 									Managers.state.network.network_transmit:send_rpc("rpc_increment_stat_group", peer_id, stat_group_index, stat_name_index)
 								end
 							end
-						end
-					end
+						else
+							spirit.chase_time = math.max(spirit.chase_time - dt, 0)
+							local move_vector = direction * dt * data.chase_speed
+							local new_position = spirit_position + move_vector
 
-					data.num_raycasts = data.num_raycasts + 1
-					data.current_unit = unit
-				else
-					local rotation = Unit.world_rotation(unit, 0)
-					local area_damage_system = Managers.state.entity:system("area_damage_system")
+							Unit.set_local_position(unit, 0, new_position)
 
-					area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
-					data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
-					Managers.state.unit_spawner:mark_for_deletion(unit)
+							if spirit.chase_time == 0 then
+								local rotation = Unit.world_rotation(unit, 0)
+								local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-					data.spirits[id] = nil
-				end
-			else
-				data.current_unit = nil
+								area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
+								data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
+								Managers.state.unit_spawner:mark_for_deletion(unit)
 
-				break
-			end
-		end
-
-		data.num_raycasts = 0
-
-		for id, spirit in pairs(spirits) do
-			local unit = spirit.unit
-
-			if Unit.alive(unit) then
-				if spirit.delay_time == 0 then
-					local spirit_position = Unit.local_position(unit, 0)
-					local player_unit = spirit.follow_unit
-					local player_pos = POSITION_LOOKUP[player_unit]
-
-					if player_pos then
-						spirit.chase_time = math.max(spirit.chase_time - dt, 0)
-						local unit_position = Unit.local_position(unit, 0)
-						local chase_target_position = player_pos + Vector3(0, 0, 1)
-						local direction_vector = chase_target_position - unit_position
-						direction_vector = Vector3.normalize(direction_vector)
-						local move_vector = direction_vector * dt * data.chase_speed
-						local new_position = unit_position + move_vector
-
-						Unit.set_local_position(unit, 0, new_position)
-
-						if spirit.chase_time == 0 then
-							local rotation = Unit.world_rotation(unit, 0)
-							local area_damage_system = Managers.state.entity:system("area_damage_system")
-
-							area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
-							data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
-							Managers.state.unit_spawner:mark_for_deletion(unit)
-
-							data.spirits[id] = nil
+								data.spirits[id] = nil
+							end
 						end
 					end
 				else
@@ -162,7 +122,7 @@ return {
 			end
 
 			local health_extension = ScriptUnit.extension(player.player_unit, "health_system")
-			local current_health_percent = health_extension:current_health_percent()
+			local current_health_percent = health_extension:current_permanent_health_percent()
 			local buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
 			local unit_id = data.network_manager:unit_game_object_id(player.player_unit)
 			local has_buff = buff_extension:has_buff_type("death_attack_speed_buff")
@@ -180,6 +140,12 @@ return {
 		end
 	end,
 	server_ai_hit_by_player_function = function (context, data, hit_unit, attacker_unit, hit_data)
+		local is_player_unit = DamageUtils.is_player_unit(attacker_unit)
+
+		if not is_player_unit then
+			return
+		end
+
 		local breed = Unit.get_data(hit_unit, "breed")
 
 		if breed.boss then
@@ -199,8 +165,23 @@ return {
 			end
 		end
 	end,
+	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
+		local damage_type = hit_data[2]
+		local is_player_unit = DamageUtils.is_player_unit(hit_unit)
+
+		if damage_type == "death_explosion" and is_player_unit then
+			local network_manager = data.network_manager
+			local heal_type_id = NetworkLookup.heal_types.mutator
+			local damage_amount = hit_data[1]
+			local unit_go_id = network_manager:unit_game_object_id(hit_unit)
+
+			network_manager.network_transmit:send_rpc_server("rpc_request_heal", unit_go_id, damage_amount, heal_type_id)
+		end
+	end,
 	server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data)
-		if not ScriptUnit.has_extension(killer_unit, "status_system") then
+		local is_player_unit = DamageUtils.is_player_unit(killer_unit)
+
+		if not is_player_unit or not ScriptUnit.has_extension(killer_unit, "status_system") then
 			return
 		end
 
@@ -216,7 +197,7 @@ return {
 		local wind_settings = weave_manager:get_active_wind_settings()
 		local wind_strength = weave_manager:get_wind_strength()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
-		data.spirit_power_level = wind_settings.spirit_settings.power_level[difficulty_name][wind_strength]
+		data.spirit_damage = wind_settings.spirit_settings.damage[difficulty_name][wind_strength]
 		data.delay_time = wind_settings.spirit_settings.wait_time[difficulty_name][wind_strength]
 		data.chase_speed = wind_settings.spirit_settings.chase_speed[difficulty_name][wind_strength]
 		data.chase_time = wind_settings.spirit_settings.chase_time[difficulty_name][wind_strength]

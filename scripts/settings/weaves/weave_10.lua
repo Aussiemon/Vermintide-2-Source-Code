@@ -1,12 +1,11 @@
 return {
 	wind_strength = 5,
-	wind = "metal",
+	wind = "death",
 	seed = 23094,
-	terror_events = {},
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_alleys_metal",
+			level_id = "dlc_scorpion_alleys_death",
 			objective_type = "kill",
 			conflict_settings = "default_weave_light",
 			level_seed = 45982256,
@@ -33,7 +32,7 @@ return {
 				pickups = 239840
 			},
 			spawning_settings = {
-				terror_event_trickle = "trickle_event_armour",
+				terror_event_trickle = "trickle_event_05",
 				main_path_spawning = {
 					{
 						terror_event_name = "main_path_theme_armored_skaven_medium",
@@ -130,7 +129,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_metal",
+			level_id = "dlc_scorpion_arena_castle_death",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 450982,
 			level_seed = 795483,
@@ -141,7 +140,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "metal_bosses_3",
+						terror_event_name = "fire_bosses",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

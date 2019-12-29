@@ -218,7 +218,7 @@ EndViewStateScore._update_gamepad_input = function (self, dt, input_service)
 	elseif input_service:get("confirm_press") then
 		local player_data = self._players_by_widget_index[new_selection]
 
-		if player_data.is_player_controlled and is_online then
+		if player_data and player_data.is_player_controlled and is_online then
 			self:show_gamercard(player_data.peer_id)
 		end
 	end
@@ -228,7 +228,7 @@ EndViewStateScore._update_gamepad_input = function (self, dt, input_service)
 		self._current_gamepad_selection = new_selection
 		local player_data = self._players_by_widget_index[new_selection]
 
-		if player_data.is_player_controlled and is_online then
+		if player_data and player_data.is_player_controlled and is_online then
 			self.parent:set_input_description("profile_available")
 		else
 			self.parent:set_input_description(nil)

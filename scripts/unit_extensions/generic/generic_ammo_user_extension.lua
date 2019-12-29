@@ -236,16 +236,18 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 
 		local buff_extension = self.owner_buff_extension
 
-		buff_extension:trigger_procs("on_gained_ammo_from_no_ammo")
+		if buff_extension then
+			buff_extension:trigger_procs("on_gained_ammo_from_no_ammo")
 
-		if not LEVEL_EDITOR_TEST and not Managers.player.is_server then
-			local player_manager = Managers.player
-			local owner_player = player_manager:owner(self.owner_unit)
-			local peer_id = owner_player:network_id()
-			local local_player_id = owner_player:local_player_id()
-			local event_id = NetworkLookup.proc_events.on_gained_ammo_from_no_ammo
+			if not LEVEL_EDITOR_TEST and not Managers.player.is_server then
+				local player_manager = Managers.player
+				local owner_player = player_manager:owner(self.owner_unit)
+				local peer_id = owner_player:network_id()
+				local local_player_id = owner_player:local_player_id()
+				local event_id = NetworkLookup.proc_events.on_gained_ammo_from_no_ammo
 
-			Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+				Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+			end
 		end
 	end
 

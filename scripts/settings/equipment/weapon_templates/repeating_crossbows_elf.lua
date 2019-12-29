@@ -159,12 +159,6 @@ weapon_template.actions = {
 				climb_function = math.ease_out_quad,
 				restore_function = math.ease_out_quad
 			}
-		},
-		zoom_cancel = {
-			kind = "dummy",
-			weapon_action_hand = "left",
-			total_time = 0,
-			allowed_chain_actions = {}
 		}
 	},
 	action_two = {

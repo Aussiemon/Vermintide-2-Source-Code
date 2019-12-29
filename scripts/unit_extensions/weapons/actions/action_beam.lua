@@ -150,8 +150,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 		end
 
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local current_position = first_person_extension:current_position()
-		local current_rotation = first_person_extension:current_rotation()
+		local current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
 		local direction = Quaternion.forward(current_rotation)
 		local physics_world = World.get_data(self.world, "physics_world")
 		local range = current_action.range or 30

@@ -89,10 +89,10 @@ weapon_template.actions = {
 			speed = 8000,
 			hold_input = "action_two_hold",
 			anim_event = "attack_shoot",
-			total_time = 0.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
+			total_time = math.huge,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -105,12 +105,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_one",
 					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_two",
-					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -145,12 +139,6 @@ weapon_template.actions = {
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad
 			}
-		},
-		zoom_cancel = {
-			kind = "dummy",
-			weapon_action_hand = "left",
-			total_time = 0,
-			allowed_chain_actions = {}
 		}
 	},
 	action_two = {
@@ -182,7 +170,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},

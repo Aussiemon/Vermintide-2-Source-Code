@@ -224,61 +224,6 @@ weapon_template.actions = {
 				}
 			}
 		},
-		default_right_heavy = {
-			kind = "melee_start",
-			anim_end_event = "attack_finished",
-			anim_event = "attack_swing_charge_down",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			total_time = math.huge,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.35,
-					buff_name = "planted_charging_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "light_attack_right_diagonal",
-					start_time = 0,
-					action = "action_one",
-					end_time = 0.3,
-					input = "action_one_release"
-				},
-				{
-					sub_action = "heavy_attack_2",
-					start_time = 0.5,
-					action = "action_one",
-					input = "action_one_release"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					start_time = 0.3,
-					blocker = true,
-					end_time = 1,
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "heavy_attack_2",
-					start_time = 1,
-					action = "action_one",
-					auto_chain = true
-				}
-			}
-		},
 		heavy_attack = {
 			damage_window_start = 0.2,
 			kind = "sweep",
@@ -638,70 +583,6 @@ weapon_template.actions = {
 				}
 			}
 		},
-		light_attack_right_diagonal = {
-			damage_window_start = 0.25,
-			range_mod = 1.2,
-			anim_end_event = "attack_finished",
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			weapon_action_hand = "left",
-			additional_critical_strike_chance = 0,
-			damage_profile = "light_blunt_tank_dual_diag",
-			hit_effect = "melee_hit_hammers_1h",
-			damage_window_end = 0.35,
-			impact_sound_event = "hammer_2h_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
-			dedicated_target_range = 2.5,
-			anim_event = "attack_swing_right_diagonal",
-			hit_stop_anim = "attack_hit",
-			total_time = 2.1,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			anim_time_scale = time_mod * 1.05,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 1.25,
-					end_time = 0.2,
-					buff_name = "planted_fast_decrease_movement"
-				},
-				{
-					start_time = 0.3,
-					external_multiplier = 0.75,
-					end_time = 0.5,
-					buff_name = "planted_fast_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "default_left",
-					start_time = 0.45,
-					action = "action_one",
-					end_time = 1.2,
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 1.2,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "action_wield",
-					input = "action_wield"
-				}
-			},
-			hit_mass_count = TANK_HIT_MASS_COUNT
-		},
 		light_attack_left_diagonal = {
 			damage_window_start = 0.3,
 			range_mod = 1.2,
@@ -984,7 +865,7 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			cooldown = 0.15,
-			minimum_hold_time = 0.3,
+			minimum_hold_time = 0.2,
 			anim_end_event = "parry_finished",
 			kind = "block",
 			hold_input = "action_two_hold",
@@ -1006,7 +887,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "push",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					input = "action_one",
@@ -1016,7 +897,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					release_required = "action_two_hold",
 					doubleclick_window = 0,
@@ -1024,7 +905,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				}

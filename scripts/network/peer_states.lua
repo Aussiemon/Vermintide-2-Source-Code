@@ -77,45 +77,29 @@ PeerStates.Connecting = {
 
 		if not Development.parameter("allow_weave_joining") then
 			local lobby = self.server.lobby_host
-			local game_mode_manager = Managers.state.game_mode
 			local matchmaking = lobby:lobby_data("matchmaking")
 			local game_mode_id = lobby:lobby_data("game_mode")
+			local game_mode_key = "n/a"
 
-			if not game_mode_manager then
-				local game_mode_key = "n/a"
+			if game_mode_id then
+				game_mode_key = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
+			end
 
-				if game_mode_id then
-					game_mode_key = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
-				end
+			if game_mode_key == "weave" and matchmaking == "false" then
+				local loading_context = Boot.loading_context
+				local weave_data = loading_context and loading_context.weave_data
+				local player_ids = weave_data and weave_data.player_ids
 
-				if game_mode_key == "weave" and matchmaking == "false" then
-					local loading_context = Boot.loading_context
-					local weave_data = loading_context and loading_context.weave_data
-					local player_ids = weave_data and weave_data.player_ids
-
-					if player_ids then
-						if not player_ids[self.peer_id] then
-							self.server:disconnect_peer(self.peer_id, "cannot_join_weave")
-
-							return PeerStates.Disconnecting
-						end
-					else
-						self.server:disconnect_peer(self.peer_id, "cannot_join_weave")
-
-						return PeerStates.Disconnecting
-					end
-				end
-			else
-				local game_mode_key = game_mode_manager:game_mode_key()
-
-				if game_mode_key == "weave" and matchmaking == "false" then
-					local player_ids = Managers.weave:get_player_ids()
-
+				if player_ids then
 					if not player_ids[self.peer_id] then
 						self.server:disconnect_peer(self.peer_id, "cannot_join_weave")
 
 						return PeerStates.Disconnecting
 					end
+				else
+					self.server:disconnect_peer(self.peer_id, "cannot_join_weave")
+
+					return PeerStates.Disconnecting
 				end
 			end
 		end
@@ -184,11 +168,17 @@ PeerStates.Loading = {
 
 		self.game_started = false
 		self.is_ingame = nil
+		local mechanism_manager = Managers.mechanism
+		local network_transmit = self.server.network_transmit
+		local peer_id = self.peer_id
+
+		mechanism_manager:sync_game_mode_data_to_peer(network_transmit, peer_id)
+
 		local level_key = self.server.level_key
-		local level_seed = Managers.mechanism:get_level_seed()
-		local difficulty = Managers.mechanism:get_difficulty()
+		local level_seed = mechanism_manager:get_level_seed()
+		local difficulty = mechanism_manager:get_difficulty()
 		local difficulty_id = NetworkLookup.difficulties[difficulty]
-		local locked_director_function_ids = Managers.mechanism:get_locked_director_function_ids(level_key)
+		local locked_director_function_ids = mechanism_manager:get_locked_director_function_ids(level_key)
 
 		if level_seed == nil then
 			Application.warning("[PSM] No level seed set, fallbacking to 0")
@@ -196,8 +186,8 @@ PeerStates.Loading = {
 			level_seed = 0
 		end
 
-		print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", self.peer_id)
-		self.server.network_transmit:send_rpc("rpc_load_level", self.peer_id, NetworkLookup.level_keys[level_key], level_seed, difficulty_id, locked_director_function_ids)
+		print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", peer_id)
+		network_transmit:send_rpc("rpc_load_level", peer_id, NetworkLookup.level_keys[level_key], level_seed, difficulty_id, locked_director_function_ids)
 	end,
 	rpc_is_ingame = function (self)
 		print("[PSM] Got rpc_is_ingame in PeerStates.Loading, is that ok?")

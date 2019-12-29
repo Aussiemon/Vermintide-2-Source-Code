@@ -140,8 +140,7 @@ ActionBow.fire = function (self, current_action, add_spread)
 	local owner_unit = self.owner_unit
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local speed = current_action.speed
-	local rotation = first_person_extension:current_rotation()
-	local position = first_person_extension:current_position()
+	local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 	local spread_extension = self.spread_extension
 
 	if spread_extension then

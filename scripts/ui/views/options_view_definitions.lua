@@ -2227,7 +2227,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				horizontal_alignment = "center",
 				font_size = 16,
 				dynamic_font = true,
-				font_type = "hell_shark_masked",
+				font_type = "hell_shark",
 				offset = {
 					0,
 					0,
@@ -2240,7 +2240,6 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				size = item_size
 			},
 			highlight_texture = {
-				masked = true,
 				offset = {
 					0,
 					0,
@@ -2438,17 +2437,15 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					}
 				},
 				{
-					pass_type = "texture",
 					style_id = "selected_bg",
-					texture_id = "rect_masked",
+					pass_type = "rect",
 					content_check_function = function (content, style)
 						return content.active
 					end
 				},
 				{
-					pass_type = "texture",
 					style_id = "selected_bg_shade",
-					texture_id = "rect_masked",
+					pass_type = "rect",
 					content_check_function = function (content, style)
 						return content.active
 					end

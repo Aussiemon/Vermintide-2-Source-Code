@@ -649,6 +649,16 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 		}
 
 		Managers.state.voting:request_vote("game_settings_event_vote", vote_data, Network.peer_id())
+	elseif game_mode == "weave_quick_play" then
+		local vote_data = {
+			quick_game = true,
+			game_mode = "weave",
+			difficulty = difficulty_key,
+			private_game = private_game,
+			always_host = always_host
+		}
+
+		Managers.state.voting:request_vote("game_settings_weave_quick_play_vote", vote_data, Network.peer_id())
 	else
 		local vote_data = {
 			level_key = level_key,
@@ -674,10 +684,10 @@ StartGameView.start_game_weave = function (self, weave_name, objective_index, pr
 	local level_key = weave_template.objectives[objective_index].level_id
 	local difficulty = weave_template.difficulty_key
 	local vote_data = {
+		private_game = true,
 		game_mode = "weave",
 		level_key = level_key,
 		difficulty = difficulty,
-		private_game = private_game,
 		weave_name = weave_name,
 		objective_index = objective_index,
 		always_host = always_host

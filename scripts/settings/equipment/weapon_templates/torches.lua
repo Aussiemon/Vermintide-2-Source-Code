@@ -775,8 +775,14 @@ shadow_torch.actions.action_dropped.default.projectile_info.projectile_unit_name
 shadow_torch.actions.action_dropped.default.projectile_info.pickup_name = "shadow_torch"
 shadow_torch.right_hand_unit = "units/weapons/player/wpn_shadow_torch/wpn_shadow_torch"
 shadow_torch.pickup_data.pickup_name = "shadow_torch"
+local mutator_torch = table.clone(weapon_template)
+mutator_torch.actions.action_three.default.projectile_info.pickup_name = "mutator_torch"
+mutator_torch.actions.action_wield.default.projectile_info.pickup_name = "mutator_torch"
+mutator_torch.actions.action_dropped.default.projectile_info.pickup_name = "mutator_torch"
+mutator_torch.pickup_data.pickup_name = "mutator_torch"
 
 return {
 	torch = table.clone(weapon_template),
-	shadow_torch = table.clone(shadow_torch)
+	shadow_torch = table.clone(shadow_torch),
+	mutator_torch = table.clone(mutator_torch)
 }

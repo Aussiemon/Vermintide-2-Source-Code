@@ -72,13 +72,6 @@ WeaveUITutorials.requirements_not_met = {
 	popup_title = "menu_weave_area_locked_title",
 	popup_body = "menu_weave_area_locked_body"
 }
-WeaveUITutorials.platform_not_supported = {
-	popup_body = "Not implemented for Consoles yet",
-	ui_onboarding_bit = 0,
-	popup_title = "menu_weave_area_locked_title",
-	onboarding_step = 0,
-	disable_body_localization = true
-}
 WeaveUITutorials.twitch_not_supported_for_weaves = {
 	ui_onboarding_bit = 0,
 	popup_title = "menu_weave_play_title",
@@ -107,6 +100,24 @@ WeaveUITutorials.twitch_not_supported_for_weaves_client = {
 	onboarding_step = 0,
 	popup_title = "menu_weave_play_title",
 	popup_body = (PLATFORM ~= "xb1" and "menu_weave_area_locked_twitch_client_body") or "menu_weave_area_locked_mixer_client_body"
+}
+WeaveUITutorials.chat_info = {
+	ui_onboarding_bit = 0,
+	onboarding_step = 0,
+	popup_title = "menu_chat_info_title",
+	popup_body = "menu_chat_info_descripttion"
+}
+WeaveUITutorials.weave_quickplay_desc = {
+	ui_onboarding_bit = 0,
+	onboarding_step = 0,
+	popup_title = "start_game_window_weave_quickplay_title",
+	popup_body = "menu_weave_quick_play_body"
+}
+WeaveUITutorials.ranked_weave_desc = {
+	ui_onboarding_bit = 0,
+	onboarding_step = 0,
+	popup_title = "start_game_window_ranked_weave_title",
+	popup_body = "menu_ranked_weaves_body"
 }
 
 return

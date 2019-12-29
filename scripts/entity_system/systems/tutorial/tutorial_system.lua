@@ -115,8 +115,9 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 					extension.active = active
 					local level_transition_handler = Managers.state.game_mode.level_transition_handler
 					local level_key = level_transition_handler:get_current_level_keys()
+					local level_settings = LevelSettings[level_key]
 
-					if level_key == "inn_level" then
+					if level_settings.hub_level then
 						network_synced = Unit.get_data(unit, "network_synced")
 					else
 						network_synced = true
@@ -262,7 +263,8 @@ TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_un
 	local in_play_go = Managers.state.entity:system("play_go_tutorial_system"):active()
 	local level_transition_handler = Managers.state.game_mode.level_transition_handler
 	local level_key = level_transition_handler:get_current_level_keys()
-	local is_in_inn = level_key == "inn_level"
+	local level_settings = LevelSettings[level_key]
+	local is_in_inn = level_settings.hub_level
 
 	for i = 1, tooltip_templates_n, 1 do
 		repeat

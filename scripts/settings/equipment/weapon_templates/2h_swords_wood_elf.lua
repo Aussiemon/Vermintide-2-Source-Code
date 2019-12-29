@@ -1021,7 +1021,7 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			cooldown = 0.15,
-			minimum_hold_time = 0.3,
+			minimum_hold_time = 0.2,
 			anim_end_event = "parry_finished",
 			kind = "block",
 			hold_input = "action_two_hold",
@@ -1042,8 +1042,14 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
+					sub_action = "default",
+					start_time = 0.2,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
 					sub_action = "push",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					input = "action_one",
@@ -1053,17 +1059,11 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					release_required = "action_two_hold",
 					doubleclick_window = 0,
 					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				}
 			}
 		}

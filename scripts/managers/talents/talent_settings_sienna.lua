@@ -131,6 +131,9 @@ local buff_tweak_data = {
 	sienna_adept_activated_ability_distance = {
 		display_multiplier = 0.5
 	},
+	sienna_adept_activated_ability_cooldown = {
+		multiplier = -0.3
+	},
 	sienna_unchained_ability_cooldown_on_hit = {
 		bonus = 0.25
 	},
@@ -716,6 +719,13 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
+	sienna_adept_activated_ability_cooldown = {
+		buffs = {
+			{
+				stat_buff = "activated_cooldown"
+			}
+		}
+	},
 	sienna_unchained_ability_cooldown_on_hit = {
 		buffs = {
 			{
@@ -975,7 +985,7 @@ TalentTrees.bright_wizard = {
 		},
 		{
 			"sienna_adept_power_level_on_full_charge",
-			"sienna_adept_attack_speed_on_enemies_hit",
+			"sienna_adept_increased_burn_damage_reduced_non_burn_damage",
 			"sienna_adept_infinite_burn"
 		},
 		{
@@ -991,10 +1001,10 @@ TalentTrees.bright_wizard = {
 		{
 			"sienna_adept_damage_reduction_on_ignited_enemy",
 			"sienna_adept_cooldown_reduction_on_burning_enemy_killed",
-			"sienna_adept_increased_burn_damage_reduced_non_burn_damage"
+			"sienna_adept_attack_speed_on_enemies_hit"
 		},
 		{
-			"sienna_adept_activated_ability_distance",
+			"sienna_adept_activated_ability_cooldown",
 			"sienna_adept_activated_ability_explosion",
 			"sienna_adept_ability_trail_double"
 		}
@@ -1606,6 +1616,23 @@ Talents.bright_wizard = {
 		},
 		requirements = {},
 		buffs = {},
+		buff_data = {}
+	},
+	{
+		description = "sienna_adept_activated_ability_cooldown_desc",
+		name = "sienna_adept_activated_ability_cooldown",
+		num_ranks = 1,
+		icon = "sienna_adept_activated_ability_cooldown",
+		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.sienna_adept_activated_ability_cooldown.multiplier
+			}
+		},
+		requirements = {},
+		buffs = {
+			"sienna_adept_activated_ability_cooldown"
+		},
 		buff_data = {}
 	},
 	{

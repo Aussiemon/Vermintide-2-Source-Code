@@ -101,6 +101,10 @@ AudioSystem.play_audio_unit_event = function (self, event, unit, object)
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
 	local sound_event_id = NetworkLookup.sound_events[event]
 
+	if not unit_id then
+		return
+	end
+
 	if self.is_server then
 		network_manager.network_transmit:send_rpc_clients("rpc_server_audio_unit_event", sound_event_id, unit_id, is_level_unit, object_id)
 	else

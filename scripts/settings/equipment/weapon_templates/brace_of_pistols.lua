@@ -179,7 +179,7 @@ weapon_template.actions = {
 			allow_hold_toggle = true,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
-			minimum_hold_time = 0.25,
+			minimum_hold_time = 0.2,
 			spread_template_override = "pistol_special",
 			hold_input = "action_two_hold",
 			ammo_requirement = 1,
@@ -197,7 +197,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},

@@ -328,6 +328,18 @@ BackendInterfaceItemPlayfab.has_item = function (self, item_key)
 	return false
 end
 
+BackendInterfaceItemPlayfab.has_weapon_illusion = function (self, item_key)
+	local items = self:get_all_fake_backend_items()
+
+	for backend_id, item in pairs(items) do
+		if item_key == item.skin then
+			return true
+		end
+	end
+
+	return false
+end
+
 BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = Weapons[template_name]

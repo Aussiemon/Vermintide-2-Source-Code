@@ -119,8 +119,12 @@ GameModeTutorial._remove_bot = function (self, bot_players, index)
 	bot_players[last] = nil
 end
 
-GameModeTutorial.server_update = function (self, t, dt)
+GameModeTutorial.update = function (self, t, dt)
 	self._adventure_spawning:update(t, dt)
+end
+
+GameModeTutorial.server_update = function (self, t, dt)
+	self._adventure_spawning:server_update(t, dt)
 end
 
 GameModeTutorial.evaluate_end_conditions = function (self, round_started, dt, t)

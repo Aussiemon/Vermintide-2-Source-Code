@@ -1,24 +1,24 @@
 return {
 	wind_strength = 4,
-	wind = "metal",
+	wind = "death",
 	seed = 5923569,
-	terror_events = {
-		"capture_point_1_chaos",
-		"capture_point_6_boss_event_skaven",
-		"capture_point_event_beastmen"
-	},
 	objectives = {
 		{
 			display_name = "objective_capture_points_name",
-			level_id = "dlc_scorpion_woods_metal",
+			level_id = "dlc_scorpion_woods_death",
 			objective_type = "capture_points",
 			conflict_settings = "default_weave_light",
-			level_seed = 295720,
 			end_zone_name = "end_zone_03",
-			show_bar = true,
+			level_seed = 295720,
 			base_level_id = "dlc_scorpion_woods",
 			objective_start_flow_event = "weave_objective_capture_points_start",
+			show_bar = true,
 			spawning_seed = 3654632,
+			terror_events = {
+				"capture_point_1_chaos",
+				"capture_point_6_boss_event_skaven",
+				"capture_point_event_beastmen"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
@@ -76,7 +76,7 @@ return {
 				pickups = 48294
 			},
 			spawning_settings = {
-				terror_event_trickle = "trickle_event_armour",
+				terror_event_trickle = "trickle_event_chaos_medium",
 				main_path_spawning = {
 					{
 						terror_event_name = "main_path_specials_disablers_mixed_short_cata",
@@ -89,7 +89,7 @@ return {
 						percentage_spawn_offset = 20
 					},
 					{
-						terror_event_name = "main_path_theme_armored_chaos_medium",
+						terror_event_name = "main_path_theme_vanilla_chaos_medium",
 						percentage = 30,
 						percentage_spawn_offset = 20
 					},
@@ -109,7 +109,7 @@ return {
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_theme_armored_skaven_short",
+						terror_event_name = "main_path_standard_skaven_medium_medium",
 						percentage = 45,
 						percentage_spawn_offset = 10
 					},
@@ -158,7 +158,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_metal",
+			level_id = "dlc_scorpion_arena_void_death",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 549684,
 			level_seed = 5684648,
@@ -169,7 +169,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "metal_bosses_2",
+						terror_event_name = "swarms_2_bosses_event",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

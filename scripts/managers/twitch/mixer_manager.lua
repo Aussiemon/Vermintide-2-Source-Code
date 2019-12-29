@@ -2,6 +2,7 @@ require("scripts/settings/mixer_settings")
 require("scripts/managers/twitch/script_mixer_token")
 
 DEBUG_TWITCH = false
+local MIXER_CONNECT_DELAY = 2
 local NUM_ROUNDS_TO_DISABLE_USED_VOTES = 15
 local MIN_VOTES_LEFT_IN_ROTATION = 2
 
@@ -97,7 +98,7 @@ MixerManager.cb_open_session = function (self, result_data)
 			self._connection_success_callback()
 		end
 
-		self._connected = true
+		self._connect_delay = Managers.time:time("main") + MIXER_CONNECT_DELAY
 
 		Mixer.set_ready(true)
 
@@ -110,7 +111,6 @@ MixerManager.cb_open_session = function (self, result_data)
 		end
 	end
 
-	self._connecting = false
 	self._connection_success_callback = nil
 	self._connection_failure_callback = nil
 end
@@ -588,7 +588,20 @@ MixerManager.disconnect = function (self, optional_disconnect_success_callback, 
 	self._connected = false
 end
 
+MixerManager._handle_delayed_connection = function (self)
+	if self._connect_delay then
+		local time = Managers.time:time("main")
+
+		if self._connect_delay < time then
+			self._connected = self._connecting
+			self._connecting = false
+			self._connect_delay = nil
+		end
+	end
+end
+
 MixerManager.update = function (self, dt, t)
+	self:_handle_delayed_connection()
 	self:_handle_disconnect_popup()
 
 	if not self._connected and not self._connecting and not self._activated then

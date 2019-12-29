@@ -1,4 +1,5 @@
 require("scripts/managers/irc/script_irc_token")
+require("scripts/managers/irc/irc_utils")
 
 IRCManager = class(IRCManager)
 Irc.LIST_END_MSG = 8
@@ -196,7 +197,7 @@ IRCManager._handle_connections = function (self, message_type, username, message
 		if username == self._user_name then
 			icon_id = 1
 			info = "vermintide owns"
-			local level = ExperienceSettings.get_account_level()
+			local level = ExperienceSettings.get_highest_character_level()
 			user_data = {
 				name = username,
 				time = Managers.time:time("main"),

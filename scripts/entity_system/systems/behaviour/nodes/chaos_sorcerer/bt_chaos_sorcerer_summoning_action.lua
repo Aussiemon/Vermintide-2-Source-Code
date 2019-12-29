@@ -107,7 +107,7 @@ BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
 	if Unit.alive(target_unit) then
 		local status_ext = ScriptUnit.has_extension(target_unit, "status_system")
 
-		if status_ext and not status_ext:is_invisible() and not status_ext:get_is_dodging() then
+		if status_ext and not status_ext:is_invisible() and not status_ext:get_is_dodging() and not action.use_first_position then
 			blackboard.target_position:store(POSITION_LOOKUP[target_unit])
 		end
 

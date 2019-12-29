@@ -295,6 +295,10 @@ StartGameWindowWeaveBackgroundConsole._animate_wheel_position = function (self, 
 			0,
 			220
 		},
+		weave_quickplay = {
+			0,
+			220
+		},
 		default = {
 			0,
 			0

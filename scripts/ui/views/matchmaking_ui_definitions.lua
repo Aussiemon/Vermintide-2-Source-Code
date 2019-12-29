@@ -77,7 +77,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			43,
-			-25,
+			-28,
 			1
 		}
 	},
@@ -720,14 +720,14 @@ local window_background_color = {
 	10
 }
 local default_text_style = {
-	font_size = 24,
+	font_size = 22,
 	upper_case = true,
 	word_wrap = true,
 	use_shadow = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
@@ -740,6 +740,7 @@ title_text_style.horizontal_alignment = "left"
 title_text_style.dynamic_font_size = true
 title_text_style.offset[2] = -10
 title_text_style.offset[1] = 15
+title_text_style.text_color = Colors.get_color_table_with_alpha("font_title", 255)
 local difficulty_text_style = table.clone(default_text_style)
 difficulty_text_style.vertical_alignment = "top"
 difficulty_text_style.horizontal_alignment = "left"
@@ -749,7 +750,7 @@ difficulty_text_style.offset[2] = -35
 local matchmaking_status_text_style = table.clone(default_text_style)
 matchmaking_status_text_style.vertical_alignment = "center"
 matchmaking_status_text_style.horizontal_alignment = "center"
-matchmaking_status_text_style.font_size = 32
+matchmaking_status_text_style.font_size = 26
 matchmaking_status_text_style.dynamic_font_size = true
 matchmaking_status_text_style.word_wrap = false
 matchmaking_status_text_style.offset[2] = 2

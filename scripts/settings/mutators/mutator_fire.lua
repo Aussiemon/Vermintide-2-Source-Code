@@ -53,22 +53,25 @@ return {
 			if boss_killed then
 				data.boss_spawned_counter = data.boss_spawned_counter - 1
 				data.boss_spawned[killed_unit] = nil
-				local buff_template_name = data.buff_name_enemy
-				local buff_extension = ScriptUnit.extension(killed_unit, "buff_system")
-				local unit_has_buff = buff_extension:has_buff_type(buff_template_name)
-				local wounded_dot = killing_blow_data[DamageDataIndex.DAMAGE_TYPE] == "wounded_dot"
 
-				if unit_has_buff and wounded_dot then
-					local stat_group_name = "season_1"
-					local stat_name = "scorpion_weaves_fire_season_1"
-					local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
-					local stat_name_index = NetworkLookup.statistics[stat_name]
-					local statistics_db = Managers.player:statistics_db()
-					local local_player = Managers.player:local_player()
-					local stats_id = local_player:stats_id()
+				if ScorpionSeasonalSettings.current_season_id == 1 then
+					local buff_template_name = data.buff_name_enemy
+					local buff_extension = ScriptUnit.extension(killed_unit, "buff_system")
+					local unit_has_buff = buff_extension:has_buff_type(buff_template_name)
+					local wounded_dot = killing_blow_data[DamageDataIndex.DAMAGE_TYPE] == "wounded_dot"
 
-					statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
-					Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+					if unit_has_buff and wounded_dot then
+						local stat_group_name = "season_1"
+						local stat_name = "scorpion_weaves_fire_season_1"
+						local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
+						local stat_name_index = NetworkLookup.statistics[stat_name]
+						local statistics_db = Managers.player:statistics_db()
+						local local_player = Managers.player:local_player()
+						local stats_id = local_player:stats_id()
+
+						statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
+						Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+					end
 				end
 			end
 		end

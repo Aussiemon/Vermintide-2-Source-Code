@@ -1,23 +1,23 @@
 return {
 	wind_strength = 5,
-	wind = "shadow",
+	wind = "fire",
 	seed = 571238,
-	terror_events = {
-		"weave_spot_event_skaven_gutter_runner",
-		"objective_event_beastmen"
-	},
 	objectives = {
 		{
 			display_name = "objective_destroy_doom_wheels_name",
-			level_id = "dlc_scorpion_canyon_shadow",
+			level_id = "dlc_scorpion_canyon_fire",
 			objective_type = "doom_wheels",
 			conflict_settings = "weave_beastmen_light",
-			level_seed = 789654,
 			end_zone_name = "end_zone_03",
-			show_bar = true,
+			level_seed = 789654,
 			base_level_id = "dlc_scorpion_canyon",
 			objective_start_flow_event = "weave_objective_doom_wheels_start",
+			show_bar = true,
 			spawning_seed = 2156845,
+			terror_events = {
+				"weave_spot_event_skaven_gutter_runner",
+				"objective_event_beastmen"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
@@ -181,7 +181,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_temple_shadow",
+			level_id = "dlc_scorpion_arena_temple_fire",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

@@ -1,25 +1,25 @@
 return {
 	wind_strength = 2,
-	wind = "metal",
+	wind = "death",
 	seed = 23094,
-	terror_events = {
-		"weave_spot_event_boss_chaos_spawn_nodelay",
-		"weave_spot_event_boss_minotaur",
-		"weave_spot_event_special_mixed",
-		"weave_spot_event_skaven_gutter_runner"
-	},
 	objectives = {
 		{
 			display_name = "objective_destroy_doom_wheels_name",
-			level_id = "dlc_scorpion_river_metal",
+			level_id = "dlc_scorpion_river_death",
 			objective_type = "doom_wheels",
 			conflict_settings = "weave_chaos_light",
-			level_seed = 45982256,
 			end_zone_name = "end_zone_03",
-			show_bar = true,
+			level_seed = 45982256,
 			base_level_id = "dlc_scorpion_river",
 			objective_start_flow_event = "weave_objective_doom_wheels_start",
+			show_bar = true,
 			spawning_seed = 452354,
+			terror_events = {
+				"weave_spot_event_boss_chaos_spawn_nodelay",
+				"weave_spot_event_boss_minotaur",
+				"weave_spot_event_special_mixed",
+				"weave_spot_event_skaven_gutter_runner"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
@@ -116,7 +116,7 @@ return {
 						percentage_spawn_offset = 5
 					},
 					{
-						terror_event_name = "main_path_theme_armored_chaos_short",
+						terror_event_name = "main_path_theme_vanilla_chaos_short",
 						percentage = 8,
 						percentage_spawn_offset = 0
 					},
@@ -126,7 +126,7 @@ return {
 						percentage_spawn_offset = 5
 					},
 					{
-						terror_event_name = "main_path_theme_armored_chaos_short",
+						terror_event_name = "main_path_theme_vanilla_chaos_short",
 						percentage = 17,
 						percentage_spawn_offset = 0
 					},
@@ -136,7 +136,7 @@ return {
 						percentage_spawn_offset = 15
 					},
 					{
-						terror_event_name = "main_path_theme_armored_skaven_short",
+						terror_event_name = "main_path_standard_skaven_medium_short",
 						percentage = 35,
 						percentage_spawn_offset = 0
 					},
@@ -195,7 +195,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_metal",
+			level_id = "dlc_scorpion_arena_void_death",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 450982,
 			level_seed = 795483,
@@ -206,7 +206,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "chaos_swarm_event",
+						terror_event_name = "boss_05",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

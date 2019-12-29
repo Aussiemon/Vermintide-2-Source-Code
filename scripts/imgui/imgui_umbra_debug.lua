@@ -137,41 +137,64 @@ ImguiUmbraDebug.update = function (self)
 
 		SHOULD_RELOAD = false
 	end
+end
 
+ImguiUmbraDebug.is_persistent = function (self)
+	return self:_has_floater()
+end
+
+ImguiUmbraDebug._has_floater = function (self)
+	local subwindow_count = 0
+
+	if self.enable_debug == false then
+		return false
+	end
+
+	for i, v in ipairs(self.sub_windows) do
+		subwindow_count = subwindow_count + ((v.option.enabled == true and 1) or 0)
+	end
+
+	return subwindow_count > 0
+end
+
+ImguiUmbraDebug.draw = function (self, is_open)
 	if not Managers.world:has_world("level_world") then
 		return
 	end
 
 	local world = Managers.world:world("level_world")
 
-	Imgui.Begin("Umbra Debug")
+	if is_open then
+		Imgui.Begin("Umbra Debug")
 
-	self.enable_debug = Imgui.Checkbox("Enable Debug", self.enable_debug)
+		self.enable_debug = Imgui.Checkbox("Enable Debug", self.enable_debug)
 
-	if self.enable_debug then
-		if Imgui.TreeNode("Debug render options", true) then
-			for i, v in ipairs(self.debug_options) do
-				v.enabled = Imgui.Checkbox(v.name, v.enabled)
-			end
-
-			Imgui.TreePop()
-		end
-
-		if Imgui.TreeNode("Config parameters") then
-			for k, v in pairs(self.debug_config) do
-				local val = World.get_umbra_debug_config_value(world, v.idx)
-				local new_val = Imgui.SliderFloat(k, val, v.min, v.max, v.speed)
-
-				if val ~= new_val then
-					World.set_umbra_debug_config_value(world, v.idx, new_val)
+		if self.enable_debug then
+			if Imgui.TreeNode("Debug render options", true) then
+				for i, v in ipairs(self.debug_options) do
+					v.enabled = Imgui.Checkbox(v.name, v.enabled)
 				end
+
+				Imgui.TreePop()
 			end
 
-			Imgui.TreePop()
+			if Imgui.TreeNode("Config parameters") then
+				for k, v in pairs(self.debug_config) do
+					local val = World.get_umbra_debug_config_value(world, v.idx)
+					local new_val = Imgui.SliderFloat(k, val, v.min, v.max, v.speed)
+
+					if val ~= new_val then
+						World.set_umbra_debug_config_value(world, v.idx, new_val)
+					end
+				end
+
+				Imgui.TreePop()
+			end
 		end
+
+		Imgui.End("Umbra Debug")
 	end
 
-	Imgui.End("Umbra Debug")
 	World.set_umbra_debug_enable(world, self.enable_debug)
 
 	if self.enable_debug then
@@ -179,29 +202,13 @@ ImguiUmbraDebug.update = function (self)
 			World.set_umbra_debug_flag(world, v.query, v.mask, v.enabled)
 		end
 	end
+
+	if self:_has_floater() then
+		self:_update_floater(world)
+	end
 end
 
-ImguiUmbraDebug.subwindow_count = function (self)
-	local subwindow_count = 0
-
-	if self.enable_debug == false then
-		return 0
-	end
-
-	for i, v in ipairs(self.sub_windows) do
-		subwindow_count = subwindow_count + ((v.option.enabled == true and 1) or 0)
-	end
-
-	return subwindow_count
-end
-
-ImguiUmbraDebug.update_subwindow = function (self)
-	if not Managers.world:has_world("level_world") then
-		return
-	end
-
-	local world = Managers.world:world("level_world")
-
+ImguiUmbraDebug._update_floater = function (self, world)
 	Imgui.Begin("Umbra Floater")
 
 	for i, v in ipairs(self.sub_windows) do

@@ -1121,7 +1121,7 @@ local widgets = {
 	title_text = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title"), "title_text", nil, nil, title_text_style),
 	option_tabs_divider = create_window_divider("option_tabs_divider", scenegraph_definition.option_tabs_divider.size),
 	list_title_rank = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_rank"), "list_title_rank", nil, nil, list_title_text_style),
-	list_title_name = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_player_name"), "list_title_name", nil, nil, list_title_text_style),
+	list_title_name = UIWidgets.create_simple_text((PLATFORM ~= "xb1" and Localize("menu_weave_leaderboard_title_player_name")) or Localize("menu_weave_leaderboard_title_gamertag"), "list_title_name", nil, nil, list_title_text_style),
 	list_title_weave = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_number"), "list_title_weave", nil, nil, list_title_text_style),
 	list_title_score = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_score"), "list_title_score", nil, nil, list_title_text_style),
 	refresh_button = create_refresh_button("refresh_button", scenegraph_definition.refresh_button.size),
@@ -1186,18 +1186,27 @@ local generic_input_actions = {
 	default = {
 		{
 			input_action = "special_1",
-			priority = 1,
+			priority = 3,
 			description_text = "menu_description_refresh"
 		},
 		{
 			input_action = "confirm",
-			priority = 2,
+			priority = 4,
 			description_text = "input_description_select"
 		},
 		{
 			input_action = "back",
-			priority = 3,
+			priority = 5,
 			description_text = "input_description_close"
+		}
+	},
+	open_profile = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 1,
+				description_text = "input_description_show_profile"
+			}
 		}
 	}
 }

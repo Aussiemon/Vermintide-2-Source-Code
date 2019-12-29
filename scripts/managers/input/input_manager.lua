@@ -444,7 +444,7 @@ InputManager.capture_input = function (self, device_types, device_index, service
 	end
 end
 
-InputManager.release_input = function (self, device_types, device_index, service_name, capture_owner)
+InputManager.release_input = function (self, device_types, device_index, service_name, capture_owner, block_reason)
 	if not device_types then
 		return
 	end
@@ -462,7 +462,7 @@ InputManager.release_input = function (self, device_types, device_index, service
 	end
 
 	for i = 1, #device_types, 1 do
-		self:device_block_service(device_types[i], device_index, service_name)
+		self:device_block_service(device_types[i], device_index, service_name, block_reason)
 	end
 
 	local group_name = self:_find_service_input_group(service_name)

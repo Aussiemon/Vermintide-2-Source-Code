@@ -43,10 +43,9 @@ local CHAT_VIEW_LUT = {
 	}
 }
 CHAT_VIEW_TYPE_LUT = {
-	[0] = "Private",
-	"Channels",
-	nil,
-	"Party"
+	[Irc.PRIVATE_MSG] = "Private",
+	[Irc.CHANNEL_MSG] = "Channels",
+	[Irc.PARTY_MSG] = "Party"
 }
 CHAT_VIEW_COLOR = {
 	All = Colors.get_table("white"),
@@ -114,9 +113,25 @@ ChatManager.cb_encrypted_app_ticket_recieved = function (self, info)
 		port = 6667,
 		allow_send = true,
 		channel_name = "#vermintide_se",
-		address = "irc.fatsharkgames.se"
+		address = "172.16.2.24"
 	}
-	local user_name = Steam.user_name()
+	local steam_user_name = Steam.user_name()
+	local start_idx, end_idx = string.find(steam_user_name, "[0-9]+")
+
+	if end_idx then
+		steam_user_name = string.sub(steam_user_name, end_idx + 1)
+	end
+
+	local suffix = "_" .. IrcUtils.convert_steam_user_id_to_base_64(Steam.user_id())
+	local suffix_length = string.len(suffix)
+	steam_user_name = string.gsub(steam_user_name, "%W+", "_")
+	steam_user_name = string.sub(steam_user_name, 1, 30 - suffix_length)
+
+	if steam_user_name == "" or steam_user_name == "_" then
+		steam_user_name = "INVALID"
+	end
+
+	local user_name = steam_user_name .. suffix
 
 	Managers.irc:connect(user_name, password, irc_settings, callback(self, "cb_notify_connected"))
 end
@@ -679,6 +694,10 @@ ChatManager._profanity_check = function (self, message)
 end
 
 ChatManager._add_message_to_list = function (self, channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev, message_type, link, data)
+	if PLATFORM ~= "win32" and not self._chat_enabled then
+		return
+	end
+
 	local player_manager = Managers.player
 	local player = player_manager:player_from_peer_id(message_sender, local_player_id)
 	local is_bot = false
@@ -691,21 +710,34 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 		message = self:_profanity_check(message)
 	end
 
+	local parsed_message = ""
+	local message_edited = false
+
+	if not is_system_message then
+		parsed_message = string.gsub(message, "{#.*}", "")
+		message_edited = true
+	end
+
 	local global_messages = self.global_messages
 	global_messages[#global_messages + 1] = {
 		channel_id = channel_id,
 		message_sender = message_sender,
 		local_player_id = local_player_id,
-		message = message,
+		message = (message_edited and parsed_message) or message,
 		type = message_type or (is_system_message and Irc.SYSTEM_MSG) or Irc.PARTY_MSG,
 		pop_chat = pop_chat,
 		is_dev = is_dev,
 		is_bot = is_bot,
 		link = link,
-		data = data
+		data = data,
+		is_system_message = is_system_message
 	}
 
-	if not self._chat_enabled and not is_system_message then
+	if PLATFORM ~= "win32" then
+		if not self._chat_enabled then
+			return
+		end
+	elseif not self._chat_enabled and not is_system_message then
 		return
 	end
 
@@ -715,7 +747,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 	if is_system_message then
 		local sender = "System"
 
-		printf("[ChatManager][%s]%s: %s", channel_id, sender, message)
+		printf("[ChatManager][%s]%s: %s", channel_id, sender, (message_edited and parsed_message) or message)
 	end
 end
 

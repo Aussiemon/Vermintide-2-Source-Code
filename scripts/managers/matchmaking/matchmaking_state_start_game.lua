@@ -189,6 +189,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			"cataclysm_2",
 			"cataclysm_3"
 		}
+		local ticket_level_key = level_key
 		local matchmaking_types = nil
 
 		if game_mode == "event" then
@@ -196,11 +197,18 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 				"event"
 			}
 		elseif game_mode == "weave" then
-			hopper_name = LobbyInternal.WEAVE_HOPPER_NAME
-			matchmaking_types = {
-				"weave",
-				weave_name
-			}
+			if quick_game then
+				ticket_level_key = "weave_any"
+				matchmaking_types = {
+					"weave_quick_game"
+				}
+			else
+				hopper_name = LobbyInternal.WEAVE_HOPPER_NAME
+				matchmaking_types = {
+					"weave",
+					weave_name
+				}
+			end
 		else
 			matchmaking_types = {
 				"quick_game",
@@ -228,7 +236,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		local weave_index = weave_template and table.find(WeaveSettings.templates_ordered, weave_template)
 		local ticket_params = {
 			level = {
-				level_key
+				ticket_level_key
 			},
 			matchmaking_types = matchmaking_types,
 			difficulty = difficulty_id,

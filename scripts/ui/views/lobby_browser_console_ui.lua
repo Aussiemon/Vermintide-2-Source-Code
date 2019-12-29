@@ -7,6 +7,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local base_widget_definition = definitions.base_widget_definition
 local details_widget_definition = definitions.details_widget_definition
 local weave_details_widget_definition = definitions.weave_details_widget_definition
+local animation_definitions = definitions.animation_definitions
 LobbyBrowserConsoleUI = class(LobbyBrowserConsoleUI)
 
 LobbyBrowserConsoleUI.init = function (self, parent, ingame_ui_context, game_mode_data, show_lobby_data_table, distance_data_table)
@@ -15,6 +16,9 @@ LobbyBrowserConsoleUI.init = function (self, parent, ingame_ui_context, game_mod
 	self._show_lobby_data_table = show_lobby_data_table
 	self._distance_data_table = distance_data_table
 	self._parent = parent
+	self._render_settings = {
+		snap_pixel_positions = true
+	}
 	self._ui_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._world_manager = ingame_ui_context.world_manager
@@ -22,11 +26,22 @@ LobbyBrowserConsoleUI.init = function (self, parent, ingame_ui_context, game_mod
 	self._wwise_world = Managers.world:wwise_world(self._world)
 
 	self:_create_ui_elements()
+	self:_start_transition_animation("on_enter")
+end
+
+LobbyBrowserConsoleUI._start_transition_animation = function (self, animation_name)
+	local params = {
+		render_settings = self._render_settings
+	}
+	local widgets = {}
+	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	self._animations[animation_name] = anim_id
 end
 
 LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._widgets = {}
+	self._animations = {}
 	self._lobby_entry_widgets = {}
 	self._empty_lobby_entry_widgets = {}
 	self._details_widgets = {}
@@ -64,6 +79,8 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	self:populate_lobby_list(self._lobbies or {}, false)
 	self:_create_filters()
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
+
+	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 end
 
 LobbyBrowserConsoleUI._create_filters = function (self)
@@ -212,6 +229,10 @@ LobbyBrowserConsoleUI._update_info_text = function (self, dt, t, loading)
 end
 
 LobbyBrowserConsoleUI._update_animations = function (self, dt, t)
+	local ui_animator = self._ui_animator
+
+	ui_animator:update(dt)
+
 	local animations = self._ui_animations
 
 	for animation_name, animation in pairs(animations) do
@@ -226,12 +247,41 @@ end
 LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 	local valid_lobbies = {}
 	local num_lobbies = #lobbies
+	local level_settings = table.clone(LevelSettings, true)
+	local invalid = false
 
 	for i = 1, num_lobbies, 1 do
+		invalid = false
 		local lobby = lobbies[i]
 
 		if lobby then
-			valid_lobbies[#valid_lobbies + 1] = lobby
+			local selected_level_key = lobby.selected_level_key
+
+			if selected_level_key then
+				if level_settings[selected_level_key] ~= nil then
+					if false then
+						invalid = false
+					end
+				else
+					invalid = true
+				end
+			end
+
+			local level_key = lobby.level_key
+
+			if level_key then
+				if level_settings[level_key] ~= nil then
+					if false then
+						invalid = false
+					end
+				else
+					invalid = true
+				end
+			end
+
+			if not invalid then
+				valid_lobbies[#valid_lobbies + 1] = lobby
+			end
 		end
 	end
 
@@ -431,10 +481,6 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 		widget_content.filter_selection = true
 		widget_content.filter_index = self._current_filter_index
 
-		return
-	end
-
-	if Managers.matchmaking:is_game_matchmaking() then
 		return
 	end
 
@@ -1205,9 +1251,10 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 
 	if lobby_data then
 		local game_mode_id = lobby_data.game_mode
+		local weave_name = lobby_data.weave_name
 		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
 
-		if game_mode == "weave" then
+		if game_mode == "weave" and weave_name ~= "false" then
 			self:_fill_weave_details(lobby_data)
 		else
 			self:_fill_details(lobby_data)
@@ -1295,6 +1342,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 			event = "lb_game_type_event",
 			deed = "lb_game_type_deed",
 			weave_find_group = "lb_game_type_weave_find_group",
+			weave_quick_play = "lb_game_type_weave_quick_play",
 			weave = "lb_game_type_weave",
 			custom = "lb_game_type_custom",
 			adventure = "lb_game_type_quick_play",
@@ -1305,6 +1353,11 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 		local game_mode_id = lobby_data.game_mode
 		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
 		local level_setting = LevelSettings[lobby_data.level_key]
+
+		if game_mode == "weave" and lobby_data.quick_game == "true" then
+			game_mode = "weave_quick_play"
+		end
+
 		details_information_widget_content.game_type_id = (game_mode and (game_mode_lookup[game_mode] or "lb_unknown")) or "lb_game_type_none"
 		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
 	else
@@ -1329,7 +1382,9 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 	local wind_thumbnail_icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(wind_thumbnail_icon)
 	local wind_thumbnail_icon_size = wind_thumbnail_icon_settings.size
 	local wind_icon_widget = details_widgets.wind_icon
+	local wind_icon_content = wind_icon_widget.content
 	local wind_icon_style = wind_icon_widget.style.texture_id
+	wind_icon_content.texture_id = wind_thumbnail_icon
 	wind_icon_style.texture_size = {
 		wind_thumbnail_icon_size[1] * 0.6,
 		wind_thumbnail_icon_size[2] * 0.6
@@ -1379,7 +1434,13 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 	local level_image_widget = details_widgets.level_image
 	level_image_widget.content.texture_id = level_image
 	local level_name_widget = details_widgets.level_name
-	level_name_widget.content.text = weave_index .. ". " .. Localize(level_name)
+
+	if lobby_data.quick_game == "true" then
+		level_name_widget.content.text = Localize(level_name)
+	else
+		level_name_widget.content.text = weave_index .. ". " .. Localize(level_name)
+	end
+
 	local occupied_profiles = {}
 
 	if lobby_data then
@@ -1429,6 +1490,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 			event = "lb_game_type_event",
 			deed = "lb_game_type_deed",
 			weave_find_group = "lb_game_type_weave_find_group",
+			weave_quick_play = "lb_game_type_weave_quick_play",
 			weave = "lb_game_type_weave",
 			custom = "lb_game_type_custom",
 			adventure = "lb_game_type_quick_play",
@@ -1439,6 +1501,11 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 		local game_mode_id = lobby_data.game_mode
 		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
 		local level_setting = LevelSettings[lobby_data.level_key]
+
+		if game_mode == "weave" and lobby_data.quick_game == "true" then
+			game_mode = "weave_quick_play"
+		end
+
 		details_information_widget_content.game_type_id = (game_mode and (game_mode_lookup[game_mode] or "lb_unknown")) or "lb_game_type_none"
 		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
 	else
@@ -1487,9 +1554,11 @@ LobbyBrowserConsoleUI._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_manager = self._input_manager
+	local render_settings = self._render_settings
 	local input_service = self._parent:input_service()
+	local parent_scenegraph_id = nil
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	for _, widget in pairs(self._widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)

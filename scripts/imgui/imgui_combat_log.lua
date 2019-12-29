@@ -1,7 +1,7 @@
 ImguiCombatLog = class(ImguiCombatLog)
 local SHOULD_RELOAD = false
 
-function format_timestamp(time)
+local function format_timestamp(time)
 	local miliseconds = time % 60
 	local seconds = math.floor(time)
 
@@ -80,11 +80,11 @@ ImguiCombatLog.update = function (self)
 	end
 end
 
-ImguiCombatLog.subwindow_count = function (self)
-	return 1
+ImguiCombatLog.is_persistent = function (self)
+	return true
 end
 
-ImguiCombatLog.update_subwindow = function (self)
+ImguiCombatLog.draw = function (self, is_open)
 	Imgui.Begin("Combat Log")
 
 	self._show_timestamp = Imgui.Checkbox("Timestamp", self._show_timestamp)
@@ -147,13 +147,18 @@ ImguiCombatLog.update_subwindow = function (self)
 				Imgui.SameLine()
 			end
 
-			for i = 1, #line_contents, 1 do
+			local line_content_num = #line_contents
+
+			for i = 1, line_content_num, 1 do
 				local data = line_contents[i]
 				local text = data[1]
 				local color = data[2]
 
-				Imgui.SameLine()
 				Imgui.TextColored(text, color[2], color[3], color[4], color[1])
+
+				if i ~= line_content_num then
+					Imgui.SameLine()
+				end
 			end
 		end
 	end

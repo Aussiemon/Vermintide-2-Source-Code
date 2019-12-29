@@ -14,12 +14,18 @@ KeystrokeHelper.num_utf8chars = function (text)
 	return num_chars
 end
 
-KeystrokeHelper.parse_strokes = function (text, index, mode, keystrokes)
+KeystrokeHelper.parse_strokes = function (text, index, mode, keystrokes, optional_text_length_cap)
 	local text_table = KeystrokeHelper._build_utf8_table(text)
 
 	for _, stroke in ipairs(keystrokes) do
 		if type(stroke) == "string" then
-			index, mode = KeystrokeHelper._add_character(text_table, stroke, index, mode)
+			if optional_text_length_cap then
+				if optional_text_length_cap > #text_table then
+					index, mode = KeystrokeHelper._add_character(text_table, stroke, index, mode)
+				end
+			else
+				index, mode = KeystrokeHelper._add_character(text_table, stroke, index, mode)
+			end
 		elseif stroke == Keyboard.ENTER then
 			break
 		elseif KeystrokeHelper[stroke] then
@@ -97,10 +103,7 @@ KeystrokeHelper[Keyboard.BACKSPACE] = function (text_table, index, mode)
 	return backspace_index, mode
 end
 
-KeystrokeHelper[Keyboard.TAB] = function (text_table, index, mode)
-	return KeystrokeHelper._add_character(text_table, "\t", index, mode)
-end
-
+KeystrokeHelper[Keyboard.TAB] = nil
 KeystrokeHelper[Keyboard.PAGE_UP] = nil
 KeystrokeHelper[Keyboard.PAGE_DOWN] = nil
 KeystrokeHelper[Keyboard.ESCAPE] = nil

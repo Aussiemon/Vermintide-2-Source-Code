@@ -354,17 +354,13 @@ TalentBuffTemplates.witch_hunter = {
 				icon = "victor_zealot_crit_count",
 				dormant = true,
 				on_max_stacks_func = function (player, sub_buff_template)
-					if not Managers.state.network.is_server then
-						return
-					end
-
 					local player_unit = player.player_unit
 
 					if Unit.alive(player_unit) then
-						local buff_to_add = "victor_zealot_crit_count_buff"
-						local buff_system = Managers.state.entity:system("buff_system")
+						local buff_to_add = "markus_mercenary_crit_count_buff"
+						local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-						buff_system:add_buff(player_unit, buff_to_add, player_unit, true)
+						buff_extension:add_buff(buff_to_add)
 					end
 				end
 			}
@@ -1321,7 +1317,6 @@ Talents.witch_hunter = {
 		description = "victor_zealot_crit_count_desc",
 		name = "victor_zealot_crit_count",
 		num_ranks = 1,
-		buffer = "server",
 		icon = "victor_zealot_crit_count",
 		description_values = {
 			{

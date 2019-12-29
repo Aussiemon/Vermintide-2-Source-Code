@@ -45,6 +45,7 @@ local objective_texts = {
 	objective_destroy_doom_wheels_name = "nfl_olesya_all_weave_objective_essence_nodes_02",
 	objective_targets_name = "nfl_olesya_all_weave_objective_essence_shards_04"
 }
+local num_subtitle_rows = 5
 LoadingView = class(LoadingView)
 local fake_input_service = {
 	get = function ()
@@ -78,7 +79,6 @@ LoadingView.init = function (self, ui_context)
 	self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 
 	self:create_ui_elements()
-	self:_create_hdr_gui()
 
 	self._gamepad_active = Managers.input:is_device_active("gamepad")
 	DO_RELOAD = false
@@ -129,12 +129,13 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 	self.bg_widget.content.bg_texture = optional_loading_screen_material_name or "loading_screen"
 
 	if weave_data then
+		self:_create_hdr_gui()
+
 		local wind_name = weave_data.wind_name
 		local weave_display_name = weave_data.weave_display_name
 		local location_display_name = weave_data.location_display_name
 		local objective_name = weave_data.objective_name
 		local objective_text = objective_texts[objective_name]
-		self.bg_widget.content.weave_name = weave_display_name
 		self.bg_widget.content.location_name = location_display_name
 		self.bg_widget.content.wind_name = wind_name
 		self.bg_widget.content.mutator_name = MutatorTemplates[wind_name].display_name
@@ -163,7 +164,7 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 	else
 		self.bg_widget.content.is_weave = false
 
-		if level_key ~= "inn_level" and level_settings.level_type ~= "survival" then
+		if not level_settings.hub_level and level_settings.level_type ~= "survival" then
 			self:setup_act_text(level_key)
 			self:setup_difficulty_text(game_difficulty)
 		end
@@ -194,7 +195,6 @@ end
 LoadingView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.bg_widget = UIWidget.init(definitions.background_image)
-	self.subtitle_widget = UIWidget.init(definitions.subtitle)
 	self.tip_title_widget = UIWidget.init(definitions.tip_title_widget)
 	self.tip_text_prefix_widget = UIWidget.init(definitions.tip_text_prefix_widget)
 	self.tip_text_suffix_widget = UIWidget.init(definitions.tip_text_suffix_widget)
@@ -238,16 +238,6 @@ LoadingView.create_ui_elements = function (self)
 		self.widgets[#self.widgets + 1] = UIWidget.init(definitions.news_ticker_mask_widget)
 	end
 
-	local subtitle_row_widgets = {}
-	local NUM_SUBTITLE_ROWS = definitions.NUM_SUBTITLE_ROWS
-
-	for i = 1, NUM_SUBTITLE_ROWS, 1 do
-		local subtitle_row_widget = UIWidget.init(definitions.subtitle_row_widgets[i])
-		subtitle_row_widgets[i] = subtitle_row_widget
-		self.widgets[#self.widgets + 1] = subtitle_row_widget
-	end
-
-	self._subtitle_row_widgets = subtitle_row_widgets
 	self.bg_widget.content.bg_texture = self.default_loading_screen
 	local level_settings = self.level_key and LevelSettings[self.level_key]
 	local game_mode = (level_settings and level_settings.game_mode) or "adventure"
@@ -261,7 +251,6 @@ LoadingView.create_ui_elements = function (self)
 		local location_display_name = weave_data.location_display_name
 		local objective_name = weave_data.objective_name
 		local objective_text = objective_texts[objective_name]
-		self.bg_widget.content.weave_name = weave_display_name
 		self.bg_widget.content.location_name = location_display_name
 		self.bg_widget.content.wind_name = wind_name
 		self.bg_widget.content.mutator_name = MutatorTemplates[wind_name].display_name
@@ -290,15 +279,19 @@ LoadingView.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 end
 
+LoadingView.subtitle_gui = function (self)
+	return self.subtitle_timed_gui
+end
+
 LoadingView.trigger_subtitles = function (self, wwise_event, t)
 	if wwise_event and not self.subtitle_timed_gui and Application.user_setting("use_subtitles") then
-		self.subtitle_timed_gui = SubtitleTimedGui:new(wwise_event, self._subtitle_row_widgets)
+		self.subtitle_timed_gui = SubtitleTimedGui:new(wwise_event, num_subtitle_rows)
 	end
 end
 
 LoadingView.trigger_weave_subtitles = function (self, wwise_events, t)
 	if wwise_events and not self.subtitle_timed_gui and Application.user_setting("use_subtitles") then
-		self.subtitle_timed_gui = SubtitleTimedGui:new(wwise_events, self._subtitle_row_widgets)
+		self.subtitle_timed_gui = SubtitleTimedGui:new(wwise_events, num_subtitle_rows)
 	end
 end
 
@@ -647,7 +640,7 @@ LoadingView.update = function (self, dt)
 	end
 
 	if self.subtitle_timed_gui then
-		self.subtitle_timed_gui:update(dt)
+		self.subtitle_timed_gui:update(self.ui_renderer, dt)
 	end
 
 	self:draw(dt)
@@ -694,8 +687,12 @@ end
 LoadingView.destroy = function (self)
 	VisualAssertLog.cleanup()
 	UIRenderer.destroy(self.ui_renderer, self.world)
-	UIRenderer.destroy(self._ui_hdr_renderer, self._ui_hdr_world)
-	Managers.world:destroy_world(self._ui_hdr_world)
+
+	if self._ui_hdr_world then
+		UIRenderer.destroy(self._ui_hdr_renderer, self._ui_hdr_world)
+		Managers.world:destroy_world(self._ui_hdr_world)
+	end
+
 	Managers.transition:show_loading_icon()
 end
 

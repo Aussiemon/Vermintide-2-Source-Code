@@ -332,7 +332,7 @@ function flow_query_leader_completed_celebrate_event_2019(params)
 end
 
 function flow_query_leader_achievement_completed(params)
-	if script_data.settings.use_beta_overlay or not Managers.state.achievement:is_enabled() then
+	if script_data.settings.use_beta_mode or not Managers.state.achievement:is_enabled() then
 		flow_return_table.value = false
 
 		return flow_return_table
@@ -365,7 +365,7 @@ function flow_query_leader_achievement_completed(params)
 end
 
 function flow_query_local_player_achievement_completed(params)
-	if script_data.settings.use_beta_overlay or not Managers.state.achievement:is_enabled() then
+	if script_data.settings.use_beta_mode or not Managers.state.achievement:is_enabled() then
 		flow_return_table.value = false
 
 		return flow_return_table
@@ -385,8 +385,13 @@ function flow_query_local_player_achievement_completed(params)
 	local player_manager = Managers.player
 	local statistics_db = player_manager:statistics_db()
 	local player = player_manager:local_player()
-	local stats_id = player:stats_id()
-	local completed = achievement_data.completed(statistics_db, stats_id)
+	local completed = false
+
+	if player then
+		local stats_id = player:stats_id()
+		completed = achievement_data.completed(statistics_db, stats_id)
+	end
+
 	flow_return_table.value = completed
 
 	return flow_return_table

@@ -374,7 +374,8 @@ CharacterStateHelper.is_colliding_with_gameplay_collision_box = function (world,
 	local rotation = Unit.local_rotation(unit, 0)
 	local radius = movement_settings_table[(params and params.movement_settings_table_name) or "gameplay_collision_box"].collision_check_player_radius
 	local size = Vector3(radius, player_half_height, radius)
-	local actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", position, "rotation", rotation, "size", size, "collision_filter", collision_filter, "use_global_table")
+	local shape = (player_half_height - radius > 0 and "capsule") or "sphere"
+	local actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position, "rotation", rotation, "size", size, "collision_filter", collision_filter, "use_global_table")
 	local collided_actor = actors and actors[1]
 	local colliding, collided_unit = nil
 
@@ -671,7 +672,7 @@ CharacterStateHelper.set_is_on_ledge = function (ledge_unit, unit, on_ledge, is_
 end
 
 CharacterStateHelper.get_buffered_input = function (input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold, is_melee_slot)
-	local input = nil
+	local input, buffered = nil
 
 	if input_id then
 		input = input_extension:get(input_id)
@@ -686,11 +687,12 @@ CharacterStateHelper.get_buffered_input = function (input_id, input_extension, n
 				input_extension:add_buffer(input_id, doubleclick_window, is_melee_slot)
 			else
 				input = input_extension:get_buffer(input_id)
+				buffered = true
 			end
 		end
 	end
 
-	return input
+	return input, buffered
 end
 
 CharacterStateHelper._check_cooldown = function (self, weapon_extension, action, t)
@@ -865,7 +867,7 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 
 	local input_id = action_data.input
 	local softbutton_threshold = action_data.softbutton_threshold
-	local input = nil
+	local input, buffered = nil
 	local no_buffer = action_data.no_buffer
 	local doubleclick_window = action_data.doubleclick_window or 0.2
 	local blocking_input = action_data.blocking_input
@@ -878,7 +880,11 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 	if input_extra_requirement and not blocked then
 		local equipment = inventory_extension:equipment()
 		local wielded_slot_name = equipment.wielded_slot
-		input = CharacterStateHelper.get_buffered_input(input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold, wielded_slot_name == "slot_melee")
+		input, buffered = CharacterStateHelper.get_buffered_input(input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold, wielded_slot_name == "slot_melee")
+
+		if not input and action_data.hold_allowed then
+			input, buffered = CharacterStateHelper.get_buffered_input(input_id .. "_hold", input_extension, no_buffer, doubleclick_window, softbutton_threshold, wielded_slot_name == "slot_melee")
+		end
 	end
 
 	if not input then
@@ -914,7 +920,10 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 				if action_settings and not condition_failed and not cooldown then
 					send_buffer = action_data.send_buffer
 					clear_buffer = action_data.clear_buffer
-					force_release_input = action_data.force_release_input
+
+					if buffered and action_data.input == "action_one_release" then
+						force_release_input = "action_one_hold"
+					end
 
 					return true, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input
 				end

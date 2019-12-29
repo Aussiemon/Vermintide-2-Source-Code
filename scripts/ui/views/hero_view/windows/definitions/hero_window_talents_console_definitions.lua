@@ -27,7 +27,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-90,
+			-20,
 			1
 		}
 	},
@@ -381,11 +381,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_window_size[1] - 20,
-			170
+			240
 		},
 		position = {
 			0,
-			-90,
+			-20,
 			1
 		}
 	},

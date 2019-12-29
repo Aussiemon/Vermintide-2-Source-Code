@@ -7,11 +7,35 @@ RazerChromaSettings = {
 		length = 2,
 		file_path = "razer_chromas/concentrationpotion"
 	},
+	cooldown_reduction_potion_increased = {
+		length = 2,
+		file_path = "razer_chromas/concentrationpotion"
+	},
+	cooldown_reduction_potion_reduced = {
+		length = 2,
+		file_path = "razer_chromas/concentrationpotion"
+	},
 	speed_boost_potion = {
 		length = 2,
 		file_path = "razer_chromas/speedpotion"
 	},
+	speed_boost_potion_increased = {
+		length = 2,
+		file_path = "razer_chromas/speedpotion"
+	},
+	speed_boost_potion_reduced = {
+		length = 2,
+		file_path = "razer_chromas/speedpotion"
+	},
 	damage_boost_potion = {
+		length = 2,
+		file_path = "razer_chromas/damagepotion"
+	},
+	damage_boost_potion_increased = {
+		length = 2,
+		file_path = "razer_chromas/damagepotion"
+	},
+	damage_boost_potion_reduced = {
 		length = 2,
 		file_path = "razer_chromas/damagepotion"
 	},

@@ -755,9 +755,9 @@ local action_data = {
 			hard = 100,
 			normal = 10,
 			hardest = 300,
-			cataclysm = 60,
-			cataclysm_3 = 125,
-			cataclysm_2 = 80,
+			cataclysm = 400,
+			cataclysm_3 = 500,
+			cataclysm_2 = 450,
 			easy = 10
 		}
 	},

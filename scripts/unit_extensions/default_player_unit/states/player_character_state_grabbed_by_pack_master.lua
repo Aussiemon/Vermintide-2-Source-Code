@@ -372,7 +372,11 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 	Unit.set_local_rotation(unit, 0, rotation)
 
 	local physics_world = World.get_data(self.world, "physics_world")
-	local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", position + Vector3(0, 0, 0.9), "size", Vector3(0.6, 0.6, 0.9), "collision_filter", "filter_player_mover", "use_global_table")
+	local radius = 0.9
+	local half_height = 0.6
+	local size = Vector3(radius, half_height, radius)
+	local shape = (half_height - radius > 0 and "capsule") or "sphere"
+	local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position + Vector3(0, 0, 0.9), "size", size, "collision_filter", "filter_player_mover", "use_global_table")
 
 	if num_actors == 0 then
 		self.last_valid_position:store(position)

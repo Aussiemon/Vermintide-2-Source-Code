@@ -307,6 +307,11 @@ StatisticsDatabase.increment_stat = function (self, id, ...)
 
 	for i = 1, arg_n, 1 do
 		local arg_value = select(i, ...)
+
+		if arg_value == "s2" or arg_value == "dlc_portals" or string.find(arg_value, "penny_") then
+			return
+		end
+
 		stat = stat[arg_value]
 	end
 
@@ -332,6 +337,11 @@ StatisticsDatabase.decrement_stat = function (self, id, ...)
 
 	for i = 1, arg_n, 1 do
 		local arg_value = select(i, ...)
+
+		if arg_value == "s2" or arg_value == "dlc_portals" or string.find(arg_value, "penny_") then
+			return
+		end
+
 		stat = stat[arg_value]
 	end
 
@@ -367,6 +377,11 @@ StatisticsDatabase.modify_stat_by_amount = function (self, id, ...)
 
 	for i = 1, arg_n - 1, 1 do
 		local arg_value = select(i, ...)
+
+		if arg_value == "s2" or arg_value == "dlc_portals" or string.find(arg_value, "penny_") then
+			return
+		end
+
 		stat = stat[arg_value]
 	end
 
@@ -426,6 +441,11 @@ StatisticsDatabase.set_array_stat = function (self, id, ...)
 
 	for i = 1, arg_n - 2, 1 do
 		local arg_value = select(i, ...)
+
+		if arg_value == "s2" or arg_value == "dlc_portals" or string.find(arg_value, "penny_") then
+			return
+		end
+
 		array_stat = array_stat[arg_value]
 	end
 
@@ -446,6 +466,11 @@ StatisticsDatabase.set_stat = function (self, id, ...)
 
 	for i = 1, arg_n - 1, 1 do
 		local arg_value = select(i, ...)
+
+		if arg_value == "s2" or arg_value == "dlc_portals" or string.find(arg_value, "penny_") then
+			return
+		end
+
 		stat = stat[arg_value]
 	end
 

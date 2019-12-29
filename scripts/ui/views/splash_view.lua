@@ -456,7 +456,7 @@ local splash_content = {
 	}
 }
 
-if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay then
+if Development.parameter("use_beta_mode") or script_data.settings.use_beta_mode then
 	if PLATFORM == "xb1" then
 		local is_xbox_one_x = false
 		local console_type = XboxOne.console_type()

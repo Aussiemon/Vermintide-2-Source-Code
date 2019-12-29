@@ -90,7 +90,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			damage_profile = "shield_slam_shotgun",
 			hit_effect = "melee_hit_slashing",
-			hit_time = 0.2,
+			hit_time = 0.25,
 			additional_critical_strike_chance = 0,
 			impact_sound_event = "blunt_hit",
 			charge_value = "heavy_attack",
@@ -105,7 +105,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0,
+					action = "action_wield",
+					end_time = 0.2,
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.45,
 					action = "action_wield",
 					input = "action_wield"
 				},

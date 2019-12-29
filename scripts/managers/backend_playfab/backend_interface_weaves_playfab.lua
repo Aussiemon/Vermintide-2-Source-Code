@@ -211,17 +211,20 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 	local position = data.Position + 1
 	local profile = data.Profile
 	local linked_accounts = profile.LinkedAccounts
-	local name, position_text = nil
+	local name, position_text, platform_user_id = nil
 
 	for i = 1, #linked_accounts, 1 do
 		local account_data = linked_accounts[i]
 
 		if account_data.Platform == "Steam" then
 			name = account_data.Username
+			platform_user_id = account_data.PlatformUserId
 		elseif account_data.Platform == "XBoxLive" then
-			name = account_data.Usernameelse
+			name = account_data.Username
+			platform_user_id = account_data.PlatformUserId
 		elseif account_data.Platform == "PSN" then
 			name = account_data.Username
+			platform_user_id = account_data.PlatformUserId
 		end
 	end
 
@@ -239,7 +242,8 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 		real_ranking = position,
 		weave = tier,
 		score = score,
-		local_player = local_player
+		local_player = local_player,
+		platform_user_id = platform_user_id
 	}
 
 	return entry

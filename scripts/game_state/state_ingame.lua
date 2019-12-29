@@ -260,6 +260,12 @@ StateIngame.on_enter = function (self)
 	Managers.mechanism:register_rpcs(network_event_delegate)
 	Managers.party:register_rpcs(network_event_delegate)
 
+	if is_server then
+		local is_quick_game = self._lobby_host:lobby_data("quick_game") == "true"
+
+		Managers.matchmaking:set_quick_game(is_quick_game)
+	end
+
 	if rawget(_G, "ControllerFeaturesManager") then
 		Managers.state.controller_features = ControllerFeaturesManager:new(self.is_in_inn)
 	end
@@ -307,6 +313,8 @@ StateIngame.on_enter = function (self)
 			Managers.state.conflict.level_analysis:set_random_seed(checkpoint_data, override_seed)
 		end
 	end
+
+	self:_request_live_events()
 
 	if Managers.state.room then
 		Managers.state.room:setup_level_anchor_points(self.level)
@@ -739,7 +747,15 @@ StateIngame._create_level = function (self)
 	game_mode_manager:register_object_sets(object_sets)
 	Level.spawn_background(level)
 
-	local backend_manager = Managers.backend
+	return level, level_key
+end
+
+StateIngame._request_live_events = function (self)
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	self._live_event_request_id = live_event_interface:request_live_events()
+end
+
+StateIngame._live_events_ready = function (self)
 	local live_event_interface = Managers.backend:get_interface("live_events")
 	local live_events = live_event_interface:get_live_events()
 	local level_flow_events = {}
@@ -747,15 +763,9 @@ StateIngame._create_level = function (self)
 
 	for i = 1, #live_events, 1 do
 		local live_event = live_events[i]
-		local level_settings = live_event.level_settings and live_event.level_settings[level_key]
+		local level_settings = live_event.level_settings and live_event.level_settings[self.level_key]
 
 		if level_settings then
-			local sub_level_name = level_settings.sub_level_name
-
-			if sub_level_name then
-				ScriptWorld.load_level(self.world, sub_level_name)
-			end
-
 			local environment_flow_event = level_settings.environment_flow_event
 
 			if environment_flow_event then
@@ -778,8 +788,6 @@ StateIngame._create_level = function (self)
 	end
 
 	self._level_flow_events = level_flow_events
-
-	return level, level_key
 end
 
 StateIngame.pre_update = function (self, dt)
@@ -933,7 +941,18 @@ StateIngame.update = function (self, dt, main_t)
 	self:_generate_ingame_clock()
 	self._camera_carrier:update(dt)
 
-	if #self._level_flow_events > 0 and not self._called_level_flow_events then
+	if self._live_event_request_id then
+		local live_event_interface = Managers.backend:get_interface("live_events")
+		local request_complete = live_event_interface:live_events_request_complete(self._live_event_request_id)
+
+		if request_complete then
+			self._live_event_request_id = nil
+
+			self:_live_events_ready()
+		end
+	end
+
+	if self._level_flow_events and #self._level_flow_events > 0 and not self._called_level_flow_events then
 		local flow_events = self._level_flow_events
 
 		for i = 1, #flow_events, 1 do
@@ -981,6 +1000,7 @@ StateIngame._check_exit = function (self, t)
 	local network_manager = Managers.state.network
 	local lobby = self._lobby_host or self._lobby_client
 	local platform = PLATFORM
+	local game_mode_key = self.game_mode_key
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local difficulty_id = NetworkLookup.difficulties[difficulty]
 	local backend_manager = Managers.backend
@@ -1509,6 +1529,9 @@ StateIngame._check_exit = function (self, t)
 				loading_context.restart_network = true
 
 				self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key())
+
+				loading_context.play_trailer = Application.user_setting("play_intro_cinematic")
+
 				printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", exit_type)
 			else
 				loading_context.restart_network = nil

@@ -675,8 +675,8 @@ GameModeManager.server_update = function (self, dt, t)
 			if ended then
 				local all_peers_ingame = self.network_server:are_all_peers_ingame()
 
-				if reason ~= "start_game" and not all_peers_ingame then
-					return
+				if not all_peers_ingame and reason ~= "start_game" then
+					self.network_server:disconnect_joining_peers()
 				end
 
 				game_mode:ended(reason)

@@ -1,7 +1,4 @@
 RemotePlayer = class(RemotePlayer)
-local RPCS = {
-	"rpc_set_observed_player_id"
-}
 
 RemotePlayer.init = function (self, network_manager, peer, player_controlled, is_server, local_player_id, unique_id, clan_tag, ui_id, account_id)
 	self.network_manager = network_manager
@@ -24,20 +21,6 @@ RemotePlayer.init = function (self, network_manager, peer, player_controlled, is
 
 	self.index = self.game_object_id
 	self._cached_name = nil
-end
-
-RemotePlayer.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, unpack(RPCS))
-
-	self._network_event_delegate = network_event_delegate
-	self._network_transmit = network_transmit
-end
-
-RemotePlayer.unregister_rpcs = function (self)
-	self._network_event_delegate:unregister(self)
-
-	self._network_event_delegate = nil
-	self._network_transmit = nil
 end
 
 RemotePlayer.profile_id = function (self)
@@ -231,7 +214,8 @@ RemotePlayer.create_game_object = function (self)
 		network_id = self:network_id(),
 		local_player_id = self:local_player_id(),
 		player_controlled = self._player_controlled,
-		clan_tag = self._clan_tag
+		clan_tag = self._clan_tag,
+		account_id = self._account_id
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	self.game_object_id = self.network_manager:create_player_game_object("player", game_object_data_table, callback)
@@ -275,9 +259,8 @@ RemotePlayer.observed_player_id = function (self)
 	return self._observed_player_id
 end
 
-RemotePlayer.rpc_set_observed_player_id = function (self, sender, observed_player_game_object_id)
-	local player = Managers.player:player_from_game_object_id(observed_player_game_object_id)
-	self._observed_player_id = (player and player:unique_id()) or nil
+RemotePlayer.set_observed_player_id = function (self, player_id)
+	self._observed_player_id = player_id
 end
 
 return

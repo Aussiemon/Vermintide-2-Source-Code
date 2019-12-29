@@ -391,6 +391,14 @@ local function create_achievement_entry(scenegraph_id, size)
 		},
 		{
 			pass_type = "texture",
+			style_id = "reward_icon_background",
+			texture_id = "reward_icon_background",
+			content_check_function = function (content)
+				return content.reward_icon_background ~= nil
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "reward_hover",
 			texture_id = "reward_hover",
 			content_check_function = function (content)
@@ -416,6 +424,14 @@ local function create_achievement_entry(scenegraph_id, size)
 			pass_type = "texture",
 			style_id = "reward_frame",
 			texture_id = "reward_frame"
+		},
+		{
+			pass_type = "texture",
+			style_id = "reward_illusion_frame",
+			texture_id = "reward_illusion_frame",
+			content_check_function = function (content)
+				return content.is_illusion
+			end
 		},
 		{
 			style_id = "reward_icon",
@@ -552,23 +568,25 @@ local function create_achievement_entry(scenegraph_id, size)
 	local content = {
 		icon_background = "achievement_left",
 		expand_background_edge = "achievement_paper_bottom",
-		expand_background = "achievement_paper_middle",
+		reward_illusion_frame = "item_frame_illusion",
 		progress_text = "n/a",
 		glass = "button_glass_02",
+		reward_icon = "icons_placeholder",
 		progress_bar = "experience_bar_fill",
 		draw_bar = true,
+		completed = false,
 		icon = "achievement_trophy_01",
 		arrow = "achievement_arrow",
 		title_divider = "divider_01_bottom",
 		background_fade = "options_window_fade_01",
-		reward_icon = "icons_placeholder",
+		is_illusion = false,
 		reward_icon_claimed = "achievement_banner",
 		background_completed = "achievement_background",
 		background = "achievement_background_dark",
 		arrow_hover = "achievement_arrow_hover",
 		expand_background_shadow = "edge_fade_small",
 		hover_glow = "button_state_default",
-		completed = false,
+		expand_background = "achievement_paper_middle",
 		title = "n/a",
 		claimed = false,
 		expanded = false,
@@ -1215,7 +1233,46 @@ local function create_achievement_entry(scenegraph_id, size)
 			offset = {
 				size[1] - 80 - 2,
 				size[2] / 2 - 40,
+				12
+			}
+		},
+		reward_icon_background = {
+			saturated = false,
+			masked = true,
+			size = {
+				80,
+				80
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				size[1] - 80 - 2,
+				size[2] / 2 - 40,
 				11
+			}
+		},
+		reward_illusion_frame = {
+			vertical_alignment = "center",
+			masked = true,
+			horizontal_alignment = "right",
+			texture_size = {
+				80,
+				80
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				-2,
+				0,
+				14
 			}
 		},
 		reward_frame = {

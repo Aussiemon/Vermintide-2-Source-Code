@@ -840,9 +840,9 @@ HeroWindowWeaveForgeWeapons._unlock_item_cb = function (self, success)
 		local unlock_button = widgets_by_name.unlock_button
 		unlock_button.content.highlighted = false
 		self._ui_animations.unlock_button_pulse = nil
-
-		self:_setup_weapon_list()
 	end
+
+	self:_setup_weapon_list()
 end
 
 HeroWindowWeaveForgeWeapons._on_unlock_item_done = function (self, success)

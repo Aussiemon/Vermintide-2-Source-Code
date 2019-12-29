@@ -1,22 +1,22 @@
 return {
 	wind_strength = 3,
-	wind = "shadow",
+	wind = "fire",
 	seed = 571238,
-	terror_events = {
-		"weave_spot_event_special_mixed"
-	},
 	objectives = {
 		{
 			display_name = "objective_targets_name",
-			level_id = "dlc_scorpion_pit_shadow",
+			level_id = "dlc_scorpion_pit_fire",
 			objective_type = "targets",
 			conflict_settings = "weave_chaos",
-			level_seed = 789654,
 			end_zone_name = "end_zone_02",
-			show_bar = true,
+			level_seed = 789654,
 			base_level_id = "dlc_scorpion_pit",
 			objective_start_flow_event = "weave_objective_targets_start",
+			show_bar = true,
 			spawning_seed = 2156845,
+			terror_events = {
+				"weave_spot_event_special_mixed"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
@@ -188,7 +188,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_shadow",
+			level_id = "dlc_scorpion_arena_temple_fire",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

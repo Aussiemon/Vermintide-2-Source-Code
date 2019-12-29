@@ -71,8 +71,9 @@ DarknessSystem.on_add_extension = function (self, world, unit, extension_name, e
 		return DarknessSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 	end
 
+	local script_data_intensity = Unit.get_data(unit, "light_intensity")
 	local extension = {
-		intensity = (extension_init_data and extension_init_data.intensity) or 1
+		intensity = (extension_init_data and extension_init_data.intensity) or script_data_intensity or 1
 	}
 
 	ScriptUnit.set_extension(unit, self.name, extension)
@@ -134,17 +135,20 @@ DarknessSystem._update_player_unit_darkness = function (self, dt, t)
 
 		if in_darkness then
 			local side = Managers.state.side.side_by_unit[unit]
-			light_value = self:calculate_light_value(pos, side.PLAYER_UNITS)
 
-			if LIGHT_LIGHT_VALUE < light_value then
-				data.intensity = 0
-				data.in_darkness = false
-			elseif IN_TWILIGHT_LIGHT_VALUE < light_value then
-				data.intensity = math.auto_lerp(LIGHT_LIGHT_VALUE, IN_TWILIGHT_LIGHT_VALUE, 0, TWILIGHT_MAX_INTENSITY, light_value)
-				data.in_darkness = true
-			else
-				data.intensity = math.min(math.max(data.intensity, TWILIGHT_MAX_INTENSITY) + dt * LIGHT_TO_DARKNESS_INTENSITY_CONVERSION_FUNCTION(light_value), 1)
-				data.in_darkness = true
+			if side then
+				light_value = self:calculate_light_value(pos, side.PLAYER_UNITS)
+
+				if LIGHT_LIGHT_VALUE < light_value then
+					data.intensity = 0
+					data.in_darkness = false
+				elseif IN_TWILIGHT_LIGHT_VALUE < light_value then
+					data.intensity = math.auto_lerp(LIGHT_LIGHT_VALUE, IN_TWILIGHT_LIGHT_VALUE, 0, TWILIGHT_MAX_INTENSITY, light_value)
+					data.in_darkness = true
+				else
+					data.intensity = math.min(math.max(data.intensity, TWILIGHT_MAX_INTENSITY) + dt * LIGHT_TO_DARKNESS_INTENSITY_CONVERSION_FUNCTION(light_value), 1)
+					data.in_darkness = true
+				end
 			end
 		else
 			data.in_darkness = false
@@ -296,6 +300,45 @@ DarknessSystem._update_shadow_flare_extensions = function (self, dt, t)
 
 	for unit, extension in pairs(units) do
 		extension:update(unit, dt)
+	end
+end
+
+DarknessSystem.remove_mutator_torches = function (self)
+	local local_player_unit = Managers.player:local_player().player_unit
+	local source_units = self._light_source_data
+
+	if Managers.player.is_server then
+		local pickup_system = Managers.state.entity:system("pickup_system")
+
+		pickup_system:disable_teleporting_pickups()
+
+		for unit, _ in pairs(source_units) do
+			local pickup_extension = ScriptUnit.has_extension(unit, "pickup_system")
+
+			if pickup_extension and pickup_extension.pickup_name == "mutator_torch" then
+				Managers.state.unit_spawner:mark_for_deletion(unit)
+			end
+		end
+	end
+
+	if Unit.alive(local_player_unit) then
+		local inventory_extension = ScriptUnit.has_extension(local_player_unit, "inventory_system")
+
+		if inventory_extension then
+			local weapon_slot = inventory_extension:get_wielded_slot_name()
+			local weapon_data = inventory_extension:get_slot_data(weapon_slot)
+
+			if weapon_data then
+				local item_data = weapon_data.item_data
+				local item_name = item_data and item_data.name
+
+				if item_name == "mutator_torch" then
+					CharacterStateHelper.stop_weapon_actions(inventory_extension, "wield")
+					inventory_extension:destroy_slot("slot_level_event", true)
+					inventory_extension:wield("slot_melee")
+				end
+			end
+		end
 	end
 end
 

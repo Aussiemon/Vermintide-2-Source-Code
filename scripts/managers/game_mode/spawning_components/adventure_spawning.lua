@@ -173,6 +173,12 @@ end
 
 AdventureSpawning.update = function (self, t, dt)
 	if Managers.state.network:game() then
+		self._respawn_handler:update(dt, t)
+	end
+end
+
+AdventureSpawning.server_update = function (self, t, dt)
+	if Managers.state.network:game() then
 		local party = self._side.party
 		local occupied_slots = party.occupied_slots
 
@@ -181,7 +187,7 @@ AdventureSpawning.update = function (self, t, dt)
 		local allow_respawns = Managers.state.difficulty:get_difficulty_settings().allow_respawns
 
 		if self._respawns_enabled and allow_respawns then
-			self._respawn_handler:update(dt, t, occupied_slots)
+			self._respawn_handler:server_update(dt, t, occupied_slots)
 		end
 
 		self:_update_spawning(dt, t, occupied_slots)

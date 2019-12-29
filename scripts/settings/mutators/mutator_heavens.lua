@@ -47,24 +47,28 @@ return {
 		data.boss_lightning_challenge_counter = 0
 	end,
 	server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data, killing_blow_data)
-		if data.boss_lightning_challenge_counter > 0 then
-			local boss_killed_only_by_lightning = data.boss_lightning_challenge[killed_unit]
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			if data.boss_lightning_challenge_counter > 0 then
+				local boss_killed_only_by_lightning = data.boss_lightning_challenge[killed_unit]
 
-			if boss_killed_only_by_lightning then
-				local stat_group_name = "season_1"
-				local stat_name = "scorpion_weaves_heavens_season_1"
-				local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
-				local stat_name_index = NetworkLookup.statistics[stat_name]
-				local statistics_db = Managers.player:statistics_db()
-				local local_player = Managers.player:local_player()
-				local stats_id = local_player:stats_id()
+				if boss_killed_only_by_lightning then
+					local stat_group_name = "season_1"
+					local stat_name = "scorpion_weaves_heavens_season_1"
+					local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
+					local stat_name_index = NetworkLookup.statistics[stat_name]
+					local statistics_db = Managers.player:statistics_db()
+					local local_player = Managers.player:local_player()
+					local stats_id = local_player:stats_id()
 
-				statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
+					statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
 
-				data.boss_lightning_challenge_counter = 0
+					data.boss_lightning_challenge_counter = 0
 
-				Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+					Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+				end
 			end
+		else
+			data.boss_lightning_challenge_counter = 0
 		end
 	end,
 	server_ai_hit_by_player_function = function (context, data, hit_unit, attacker_unit, hit_data)

@@ -524,7 +524,7 @@ local function create_window(scenegraph_id, size)
 				26
 			},
 			caret_offset = {
-				-8,
+				0,
 				-4,
 				4
 			},
@@ -616,11 +616,11 @@ local chat_output_widget = {
 			vertical_alignment = "top",
 			dynamic_font = true,
 			font_size = 18,
-			font_type = "hell_shark_arial_masked",
+			font_type = "chat_output_font_masked",
 			text_color = Colors.get_table("white"),
 			name_color = Colors.get_table("sky_blue"),
 			name_color_dev = Colors.get_table("cheeseburger"),
-			name_color_system = Colors.get_table("white"),
+			name_color_system = Colors.get_table("gold"),
 			offset = {
 				0,
 				-10,

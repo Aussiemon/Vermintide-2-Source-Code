@@ -17,7 +17,7 @@ LevelEndViewWrapper.init = function (self, level_end_view_context)
 
 	self:_create_input_service()
 
-	local is_weave = self._level_end_view_context.game_mode_key == "weave"
+	local is_weave = self._level_end_view_context.game_mode_key == "weave" and not self._level_end_view_context.is_quickplay
 	self._level_end_view = (is_weave and LevelEndViewWeave:new(level_end_view_context)) or LevelEndView:new(level_end_view_context)
 end
 

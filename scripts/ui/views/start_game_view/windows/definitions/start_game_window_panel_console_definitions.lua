@@ -223,10 +223,7 @@ local scenegraph_definition = {
 }
 local panel_color = UISettings.console_menu_rect_color
 local widgets = {
-	panel_edge = UIWidgets.create_tiled_texture("panel_edge", "menu_frame_04_divider", {
-		1,
-		4
-	}),
+	panel_edge = UIWidgets.create_simple_texture("menu_frame_04_divider", "panel_edge"),
 	panel_input_area_1 = UIWidgets.create_simple_texture("xbone_button_icon_lt", "panel_input_area_1"),
 	panel_input_area_2 = UIWidgets.create_simple_texture("xbone_button_icon_rt", "panel_input_area_2"),
 	panel = UIWidgets.create_simple_texture("menu_panel_bg", "panel", nil, nil, panel_color),

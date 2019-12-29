@@ -249,7 +249,9 @@ end
 BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 	local debug = script_data.ai_hesitation_debug
 	local action = blackboard.action
-	local exit_override = blackboard.is_within_proximity or blackboard.hesitate_finished or (blackboard.previous_attacker and not blackboard.taunt_unit)
+	blackboard.target_unit = nil
+	local target_alive = blackboard.target_unit and Unit.alive(blackboard.target_unit)
+	local exit_override = blackboard.is_within_proximity or blackboard.hesitate_finished or (blackboard.previous_attacker and not blackboard.taunt_unit) or not target_alive
 	local finished_hesitating = blackboard.confirmed_player_sighting or blackboard.no_hesitation or exit_override
 
 	if finished_hesitating then

@@ -63,8 +63,8 @@ weapon_template.actions = {
 				return input_extension:reset_release_input()
 			end,
 			cleave_distribution = {
-				attack = 0.15,
-				impact = 0.15
+				attack = 0,
+				impact = 0
 			},
 			projectile_info = Projectiles.machinegun_poison_arrow,
 			impact_data = {

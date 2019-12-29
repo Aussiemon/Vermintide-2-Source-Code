@@ -223,6 +223,16 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 		local damage_amount = damages[(i + DD_DAMAGE_AMOUNT) - 1]
 		local damage_type = damages[(i + DD_DAMAGE_TYPE) - 1]
 
+		if self.hit_reaction_template == "player" then
+			local hit = {}
+
+			pack_index[stride](hit, 1, unpack_index[stride](damages, i))
+
+			local attacker_unit = hit[DamageDataIndex.ATTACKER]
+
+			Managers.state.game_mode:player_hit(unit, attacker_unit, hit)
+		end
+
 		if damage_type ~= "heal" and best_damage_amount < damage_amount and damage_amount >= 0 then
 			best_damage_amount = damage_amount
 			best_damage_index = i

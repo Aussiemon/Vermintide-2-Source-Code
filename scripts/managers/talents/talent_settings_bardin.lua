@@ -125,8 +125,8 @@ local buff_tweak_data = {
 		bonus = 10
 	},
 	bardin_slayer_damage_reduction_on_melee_charge_action_buff = {
-		duration = 1,
-		multiplier = -0.5
+		duration = 5,
+		multiplier = -0.4
 	},
 	bardin_slayer_activated_ability_movement = {
 		multiplier = 1.25
@@ -136,6 +136,9 @@ local buff_tweak_data = {
 	},
 	bardin_slayer_activated_ability_leap_damage_buff = {
 		multiplier = 1.5
+	},
+	bardin_slayer_activated_ability_impact_damage = {
+		display_multiplier = 1
 	},
 	bardin_ranger_ability_cooldown_on_hit = {
 		bonus = 0.3
@@ -777,7 +780,11 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				buff_to_add = "bardin_slayer_damage_reduction_on_melee_charge_action_buff",
-				update_func = "bardin_slayer_active_buff_on_charge_action"
+				event = "on_hit",
+				event_buff = true,
+				buff_func = "add_buff_on_charged_attack_hit",
+				max_stacks = 1,
+				server_controlled = false
 			}
 		}
 	},
@@ -1192,7 +1199,7 @@ TalentTrees.dwarf_ranger = {
 			"bardin_slayer_push_on_dodge"
 		},
 		{
-			"bardin_slayer_activated_ability_leap_range",
+			"bardin_slayer_activated_ability_impact_damage",
 			"bardin_slayer_activated_ability_leap_damage",
 			"bardin_slayer_activated_ability_movement"
 		}
@@ -1722,14 +1729,18 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_slayer_damage_reduction_on_melee_charge_action_desc",
+		description = "bardin_slayer_damage_reduction_on_melee_charge_action_desc_2",
 		name = "bardin_slayer_damage_reduction_on_melee_charge_action",
 		num_ranks = 1,
+		buffer = "server",
 		icon = "bardin_slayer_damage_reduction_on_melee_charge_action",
 		description_values = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.bardin_slayer_damage_reduction_on_melee_charge_action_buff.multiplier
+			},
+			{
+				value = buff_tweak_data.bardin_slayer_damage_reduction_on_melee_charge_action_buff.duration
 			}
 		},
 		requirements = {},
@@ -1783,6 +1794,21 @@ Talents.dwarf_ranger = {
 			"bardin_slayer_activated_ability_leap_damage_add",
 			"bardin_slayer_activated_ability_leap_damage_remove"
 		},
+		buff_data = {}
+	},
+	{
+		description = "bardin_slayer_activated_ability_impact_damage_desc_2",
+		name = "bardin_slayer_activated_ability_impact_damage",
+		num_ranks = 1,
+		icon = "bardin_slayer_activated_ability_impact_damage",
+		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_slayer_activated_ability_impact_damage.display_multiplier
+			}
+		},
+		requirements = {},
+		buffs = {},
 		buff_data = {}
 	},
 	{

@@ -9,12 +9,23 @@ for _, dlc in pairs(DLCSettings) do
 
 	if files then
 		for _, file in ipairs(files) do
-			require(file)
+			local hero_name, talent_buff_templates, talent_trees, talents = require(file)
+
+			if talent_buff_templates then
+				table.merge(Talents[hero_name], talent_buff_templates)
+			end
+
+			if talent_trees then
+				table.merge(TalentsTrees[hero_name], talent_trees)
+			end
+
+			if talents then
+				table.merge(Talents[hero_name], talents)
+			end
 		end
 	end
 end
 
-NumTalentTrees = 3
 MaxTalentPoints = 6
 NumTalentRows = 6
 NumTalentColumns = 3

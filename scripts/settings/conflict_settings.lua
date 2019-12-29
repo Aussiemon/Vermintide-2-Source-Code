@@ -5255,12 +5255,12 @@ DebugBreedSpawns[#DebugBreedSpawns + 1] = {
 		{
 			skaven_dummy_clan_rat = true,
 			chaos_dummy_sorcerer = true,
-			chaos_exalted_champion_warcamp = true,
 			chaos_exalted_sorcerer = true,
-			skaven_storm_vermin_warlord = true,
-			chaos_plague_sorcerer = true,
-			chaos_plague_wave_spawner = true,
 			skaven_dummy_slave = true,
+			chaos_exalted_champion_warcamp = true,
+			skaven_storm_vermin_warlord = true,
+			chaos_plague_wave_spawner = true,
+			chaos_plague_sorcerer = true,
 			chaos_exalted_champion_norsca = true,
 			skaven_storm_vermin_champion = true,
 			chaos_tentacle = true,
@@ -5271,6 +5271,7 @@ DebugBreedSpawns[#DebugBreedSpawns + 1] = {
 			skaven_grey_seer = true,
 			chaos_tentacle_sorcerer = true,
 			chaos_zombie = true,
+			chaos_exalted_sorcerer_drachenfels = true,
 			skaven_stormfiend_boss = true,
 			chaos_vortex = true
 		}

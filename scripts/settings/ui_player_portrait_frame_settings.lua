@@ -1287,6 +1287,78 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_0084 = {
+		{
+			texture = "portrait_frame_0084",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0085 = {
+		{
+			texture = "portrait_frame_0085",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0086 = {
+		{
+			texture = "portrait_frame_0086",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0087 = {
+		{
+			texture = "portrait_frame_0087",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0089 = {
+		{
+			texture = "portrait_frame_0089",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0090 = {
+		{
+			texture = "portrait_frame_0090",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_0091 = {
 		{
 			texture = "portrait_frame_0091",

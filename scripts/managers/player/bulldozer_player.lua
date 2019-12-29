@@ -22,14 +22,6 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	self._cached_name = nil
 end
 
-BulldozerPlayer.register_rpcs = function (self, network_event_delegate, network_transmit)
-	return
-end
-
-BulldozerPlayer.unregister_rpcs = function (self)
-	return
-end
-
 BulldozerPlayer.profile_index = function (self)
 	if self._profile_index then
 		return self._profile_index
@@ -108,7 +100,7 @@ BulldozerPlayer.despawn = function (self)
 
 	if Unit.alive(player_unit) then
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
-	else
+	elseif not Boot.is_controlled_exit then
 		ferror("bulldozer_player was already despawned. Should not happen.")
 	end
 
@@ -404,7 +396,8 @@ BulldozerPlayer.create_game_object = function (self)
 		go_type = NetworkLookup.go_types.player,
 		network_id = self:network_id(),
 		local_player_id = self:local_player_id(),
-		clan_tag = Application.user_setting("clan_tag") or "0"
+		clan_tag = Application.user_setting("clan_tag") or "0",
+		account_id = Managers.account:account_id() or "0"
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	local game_object_id = self.network_manager:create_player_game_object("player", game_object_data_table, callback)
@@ -557,6 +550,14 @@ BulldozerPlayer.get_party = function (self)
 	local status = Managers.party:get_status_from_unique_id(self._unique_id)
 
 	return Managers.party:get_party(status.party_id)
+end
+
+BulldozerPlayer.observed_player_id = function (self)
+	return self._observed_player_id
+end
+
+BulldozerPlayer.set_observed_player_id = function (self, player_id)
+	self._observed_player_id = player_id
 end
 
 return

@@ -173,7 +173,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.2,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},

@@ -337,8 +337,13 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 		local limit_spawners = nil
 		local terror_event_id = action.terror_event_id
 		local conflict_director = Managers.state.conflict
-
-		conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+		local group_template = {
+			size = 0,
+			template = "horde",
+			id = Managers.state.entity:system("ai_group_system"):generate_group_id()
+		}
+		local horde = conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players)
+		blackboard.spawn_allies_horde = horde
 	end
 end
 

@@ -114,4 +114,8 @@ GameServerLobbyClient.id = function (self)
 	return (GameServerInternal.lobby_id and GameServerInternal.lobby_id(self._game_server_lobby)) or "no_id"
 end
 
+GameServerLobbyClient.lost_connection_to_lobby = function (self)
+	return false
+end
+
 return

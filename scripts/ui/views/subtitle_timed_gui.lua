@@ -1,3 +1,117 @@
+local scenegraph_definition = {
+	root = {
+		is_root = true,
+		position = {
+			0,
+			0,
+			1
+		},
+		size = {
+			1920,
+			1080
+		}
+	},
+	menu_root = {
+		vertical_alignment = "center",
+		parent = "root",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	subtitle_row = {
+		vertical_alignment = "bottom",
+		parent = "menu_root",
+		horizontal_alignment = "center",
+		size = {
+			600,
+			50
+		},
+		position = {
+			0,
+			300,
+			3
+		}
+	}
+}
+local subtitle_row_widget = {
+	start_offset_y = 0,
+	scenegraph_id = "subtitle_row",
+	element = {
+		passes = {
+			{
+				style_id = "text",
+				pass_type = "text",
+				text_id = "text"
+			},
+			{
+				style_id = "shadow_text",
+				pass_type = "text",
+				text_id = "text"
+			}
+		}
+	},
+	content = {
+		text = ""
+	},
+	style = {
+		text = {
+			vertical_alignment = "center",
+			font_type = "hell_shark",
+			word_wrap = false,
+			font_size = 36,
+			horizontal_alignment = "center",
+			text_color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				1
+			}
+		},
+		shadow_text = {
+			vertical_alignment = "center",
+			font_type = "hell_shark",
+			word_wrap = false,
+			font_size = 36,
+			horizontal_alignment = "center",
+			text_color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				2,
+				-2,
+				0
+			}
+		}
+	},
+	offset = {
+		0,
+		0,
+		0
+	}
+}
+local fake_input_service = {
+	get = function ()
+		return
+	end,
+	has = function ()
+		return
+	end
+}
 local DO_RELOAD = false
 SubtitleTimedGui = class(SubtitleTimedGui)
 
@@ -48,7 +162,15 @@ local function extract_lines(text)
 	return lines
 end
 
-SubtitleTimedGui.init = function (self, subtitle_timing_name, target_widgets)
+SubtitleTimedGui.is_complete = function (self)
+	return self._complete
+end
+
+SubtitleTimedGui.init = function (self, subtitle_timing_name, num_rows)
+	self._num_rows = num_rows or 5
+	self.render_settings = {
+		snap_pixel_positions = true
+	}
 	local localized_subtitle_timing_name = ""
 
 	if type(subtitle_timing_name) == "table" then
@@ -60,61 +182,111 @@ SubtitleTimedGui.init = function (self, subtitle_timing_name, target_widgets)
 	end
 
 	self.texts = extract_lines(localized_subtitle_timing_name)
-	self.text_scroll_height = 0
 	self.next_text_index = 0
 	self.text_speed = 20
 	self.subtitle_timing_name = localized_subtitle_timing_name
-	self.target_widgets = target_widgets
 	DO_RELOAD = false
 end
 
-SubtitleTimedGui.update = function (self, dt)
-	local target_widgets = self.target_widgets
+SubtitleTimedGui._create_ui_elements = function (self, ui_renderer)
+	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	local widgets = {}
+
+	for i = 1, self._num_rows, 1 do
+		local widget = UIWidget.init(subtitle_row_widget)
+		widgets[i] = widget
+		local start_offset_y = -(i - 1) * 50
+		widget.start_offset_y = start_offset_y
+		widget.offset[2] = start_offset_y
+	end
+
+	self._widgets = widgets
+
+	UIRenderer.clear_scenegraph_queue(ui_renderer)
+end
+
+SubtitleTimedGui.update = function (self, ui_renderer, dt)
+	if not self._widgets_initialized then
+		self._widgets_initialized = true
+
+		self:_create_ui_elements(ui_renderer)
+	end
+
+	local widgets = self._widgets
 
 	if DO_RELOAD then
 		DO_RELOAD = false
 		self.texts = extract_lines(self.subtitle_timing_name)
 		self.next_text_index = 0
 
-		for i = 1, #target_widgets, 1 do
-			local widget = target_widgets[i]
-			widget.style.text.offset[2] = widget.style.text.start_offset_y
+		for i = 1, #widgets, 1 do
+			local widget = widgets[i]
+			widget.offset[2] = widget.start_offset_y
 		end
 	end
 
-	for i = 1, #target_widgets, 1 do
-		local widget = target_widgets[i]
-		local offset_y = widget.style.text.offset[2]
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+		local offset_y = widget.offset[2]
 		local offset_y_old = offset_y
 		offset_y = offset_y + dt * self.text_speed
+		local style = widget.style
+		local text_style = style.text
+		local shadow_text_style = style.shadow_text
 
 		if offset_y > 0 and offset_y_old <= 0 then
 			local next_text_index = self.next_text_index + 1
 			self.next_text_index = next_text_index
 			local text = self.texts[next_text_index]
 			widget.content.text = text or ""
+			widget.content.text_index = next_text_index
 		elseif offset_y > 200 then
-			offset_y = offset_y - #target_widgets * 50
-			widget.style.text.text_color[1] = 0
+			offset_y = offset_y - #widgets * 50
+			text_style.text_color[1] = 0
+			shadow_text_style.text_color[1] = 0
+
+			if widget.content.text_index > #self.texts then
+				self._complete = true
+			end
 		end
 
-		widget.style.text.offset[2] = offset_y
+		widget.offset[2] = offset_y
 
 		if offset_y >= 0 and offset_y < 50 then
 			local alpha = math.lerp(0, 255, offset_y / 50)
-			widget.style.text.text_color[1] = alpha
+			text_style.text_color[1] = alpha
+			shadow_text_style.text_color[1] = alpha
 		elseif offset_y >= 50 and offset_y < 150 then
-			widget.style.text.text_color[1] = 255
+			text_style.text_color[1] = 255
+			shadow_text_style.text_color[1] = 255
 		elseif offset_y >= 150 then
 			local alpha = math.lerp(255, 0, (offset_y - 150) / 50)
-			widget.style.text.text_color[1] = alpha
+			text_style.text_color[1] = alpha
+			shadow_text_style.text_color[1] = alpha
 		end
 	end
 
-	local text_scroll_height = self.text_scroll_height + dt * self.text_speed
+	self:draw(ui_renderer, dt)
+end
 
-	if script_data.subtitle_debug then
+SubtitleTimedGui.draw = function (self, ui_renderer, dt)
+	local ui_scenegraph = self.ui_scenegraph
+	local render_settings = self.render_settings
+	local widgets = self._widgets
+
+	if not widgets then
+		return
 	end
+
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, render_settings)
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	UIRenderer.end_pass(ui_renderer)
 end
 
 return

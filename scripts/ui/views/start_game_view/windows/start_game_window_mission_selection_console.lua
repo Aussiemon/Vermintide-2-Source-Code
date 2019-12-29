@@ -195,8 +195,9 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 			local act_display_name = act_settings.display_name
 			act_widget.content.background = act_settings.banner_texture
 			act_widget.content.text = (act_display_name and Localize(act_display_name)) or ""
+			local area_name_width = UIUtils.get_text_width(self.ui_renderer, act_widget.style.text, act_widget.content.text)
 			local num_levels_in_act = #levels
-			local level_position_x = act_settings.console_offset or 0
+			local level_position_x = area_name_width - 50
 			local level_position_y = 0
 
 			for i = 1, num_levels_in_act, 1 do

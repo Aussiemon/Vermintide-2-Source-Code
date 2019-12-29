@@ -221,6 +221,31 @@ local terror_event_blueprints = {
 			"complete_weave"
 		}
 	},
+	boss_06 = {
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_boss_event_2"
+		},
+		{
+			"delay",
+			duration = 6
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return num_spawned_enemies() < 1
+			end
+		},
+		{
+			"complete_weave"
+		}
+	},
 	metal_bosses = {
 		{
 			"set_master_event_running",
@@ -2417,6 +2442,190 @@ local terror_event_blueprints = {
 			"complete_weave"
 		}
 	},
+	swarms_2_beastmen_bosses_event = {
+		{
+			"set_master_event_running",
+			name = "swarms_2_beastmen_bosses_event"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_horde_beastmen_large"
+		},
+		{
+			"delay",
+			duration = 2
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_horde_beastmen_large"
+		},
+		{
+			"delay",
+			duration = 3
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "manual2",
+			breed_name = "beastmen_standard_bearer"
+		},
+		{
+			"delay",
+			duration = 6
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return num_spawned_enemies() < 2
+			end
+		},
+		{
+			"delay",
+			duration = 3
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "manual2",
+			breed_name = "beastmen_minotaur"
+		},
+		{
+			"delay",
+			duration = 3
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_horde_beastmen_large"
+		},
+		{
+			"delay",
+			duration = 20
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_ungor_archers"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_horde_beastmen_medium"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "manual2",
+			breed_name = "beastmen_bestigor"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"continue_when",
+			duration = 45,
+			condition = function (t)
+				return num_spawned_enemies() < 1
+			end
+		},
+		{
+			"delay",
+			duration = 3
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_ungor_archers"
+		},
+		{
+			"delay",
+			duration = 3
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "manual3",
+			breed_name = "beastmen_minotaur"
+		},
+		{
+			"delay",
+			duration = 15
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_event_small_beastmen"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "manual2",
+			breed_name = "beastmen_standard_bearer"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "manual1",
+			breed_name = "beastmen_bestigor"
+		},
+		{
+			"delay",
+			duration = 3
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_ungor_archers"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_horde_beastmen_medium"
+		},
+		{
+			"delay",
+			duration = 15
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_horde_beastmen_medium"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_spice_elite_beastmen"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return num_spawned_enemies() < 1
+			end
+		},
+		{
+			"complete_weave"
+		}
+	},
 	skaven_swarm_heavens_intro = {
 		{
 			"set_master_event_running",
@@ -2711,6 +2920,125 @@ local terror_event_blueprints = {
 			spawner_id = "arena_fight1",
 			composition_type = "weave_ungor_archers",
 			difficulty_requirement = HARDER
+		},
+		{
+			"event_horde",
+			limit_spawners = 1,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_ungor_archers",
+			difficulty_requirement = HARDER
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return num_spawned_enemies() < 1
+			end
+		},
+		{
+			"complete_weave"
+		}
+	},
+	beastmen_bosses_bestigors = {
+		{
+			"set_master_event_running",
+			name = "beastmen_bosses_heavens_outro"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "manual2",
+			breed_name = "beastmen_minotaur"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_bestigors"
+		},
+		{
+			"spawn_at_raw",
+			breed_name = "beastmen_minotaur",
+			spawner_id = "manual1",
+			difficulty_requirement = CATACLYSM
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"spawn_at_raw",
+			breed_name = "beastmen_minotaur",
+			spawner_id = "manual1",
+			difficulty_requirement = CATACLYSM3
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_event_small_beastmen"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_event_large_beastmen",
+			difficulty_requirement = CATACLYSM2
+		},
+		{
+			"delay",
+			duration = 15
+		},
+		{
+			"event_horde",
+			limit_spawners = 1,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_ungor_archers"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_bestigors"
+		},
+		{
+			"event_horde",
+			limit_spawners = 1,
+			spawner_id = "arena_fight2",
+			composition_type = "weave_ungor_archers"
+		},
+		{
+			"delay",
+			duration = 15
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_bestigors"
+		},
+		{
+			"delay",
+			duration = 2
+		},
+		{
+			"event_horde",
+			limit_spawners = 1,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_ungor_archers",
+			difficulty_requirement = HARDER
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "arena_fight1",
+			composition_type = "weave_bestigors"
 		},
 		{
 			"event_horde",
@@ -7653,6 +7981,17 @@ local terror_event_blueprints = {
 		{
 			"ambush_horde",
 			composition_type = "weave_horde_chaos_large",
+			sound_settings = horde_sound_settings.chaos
+		}
+	},
+	beastmen_skaven_main_path_event_horde_small = {
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"ambush_horde",
+			composition_type = "weave_horde_beastmen_skaven_small",
 			sound_settings = horde_sound_settings.chaos
 		}
 	},

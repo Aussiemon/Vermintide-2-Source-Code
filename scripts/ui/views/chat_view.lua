@@ -125,6 +125,10 @@ ChatView.init = function (self, ingame_ui_context)
 	self:_create_ui_elements()
 end
 
+ChatView._strip_identifier_from_user_name = function (self, user_name)
+	return string.sub(user_name, 1, -11)
+end
+
 ChatView.cb_private_message = function (self, key, message_type, username, message, parameter)
 	local chat_output_widget = self._widgets.chat_output_widget
 	local private_messages_widget = self._widgets.private_messages_widget
@@ -137,6 +141,7 @@ ChatView.cb_private_message = function (self, key, message_type, username, messa
 	local emojis = EmojiHelper.parse_emojis(message)
 	local new_message_table = {
 		sender = username .. ": ",
+		trimmed_sender = self:_strip_identifier_from_user_name(username) .. ": ",
 		message = message,
 		type = message_type
 	}
@@ -177,6 +182,7 @@ ChatView.cb_channel_message = function (self, key, message_type, username, messa
 	local emojis = EmojiHelper.parse_emojis(message)
 	local new_message_table = {
 		sender = username .. ": ",
+		trimmed_sender = self:_strip_identifier_from_user_name(username) .. ": ",
 		message = message,
 		type = message_type
 	}
@@ -265,24 +271,68 @@ ChatView._change_channel = function (self, channel_name)
 	chat_output_content.channel_name = channel_name
 	name_list_content.channel_name = channel_name
 	chat_output_content.private_user_name = nil
+	chat_output_content.trimmed_private_user_name = nil
 	local frame_widget = self._widgets.frame_widget
 	local frame_widget_content = frame_widget.content
 	frame_widget_content.private_user_name = nil
+	frame_widget_content.trimmed_private_user_name = nil
 	local message_tables = chat_output_content.channel_messages_table[channel_name] or {}
 	chat_output_content.text_start_offset = #message_tables
 
 	self:_update_members()
+	self:_verify_channel_tabs()
+end
+
+local TO_REMOVE = {}
+
+ChatView._verify_channel_tabs = function (self)
+	local channels = Managers.irc:get_channels()
+	local widget_definitions = definitions.widget_definitions
+	local channels = Managers.irc:get_channels()
+
+	for channel_name, _ in pairs(channels) do
+		if not self._channel_tab_lookup[channel_name] then
+			self._channel_tabs[#self._channel_tabs + 1] = UIWidget.init(widget_definitions.create_channel_tab(channel_name, #self._channel_tabs + 1, self._current_channel_name))
+			self._channel_tab_lookup[channel_name] = true
+		end
+	end
+
+	table.clear(TO_REMOVE)
+
+	local verified_idx = 1
+
+	for idx, channel_tab_widget in ipairs(self._channel_tabs) do
+		local widget_content = channel_tab_widget.content
+		local channel_name = widget_content.channel_name
+
+		if not channels[channel_name] then
+			self._channel_tab_lookup[channel_name] = nil
+			TO_REMOVE[#TO_REMOVE + 1] = idx
+		else
+			widget_content.selected = channel_name == self._current_channel_name
+			channel_tab_widget.offset[1] = self._ui_scenegraph.channel_tab_anchor.size[1] * (verified_idx - 1)
+			verified_idx = verified_idx + 1
+		end
+	end
+
+	for i = #TO_REMOVE, 1, -1 do
+		local index = TO_REMOVE[i]
+
+		table.remove(self._channel_tabs, index)
+	end
 end
 
 ChatView._change_to_private = function (self, user_name)
 	local chat_output_widget = self._widgets.chat_output_widget
 	local chat_output_content = chat_output_widget.content
 	chat_output_content.private_user_name = user_name
+	chat_output_content.trimmed_private_user_name = self:_strip_identifier_from_user_name(user_name)
 	local message_tables = chat_output_content.private_messages_table[user_name] or {}
 	chat_output_content.text_start_offset = #message_tables
 	local frame_widget = self._widgets.frame_widget
 	local frame_widget_content = frame_widget.content
 	frame_widget_content.private_user_name = user_name
+	frame_widget_content.trimmed_private_user_name = self:_strip_identifier_from_user_name(user_name)
 	local private_messages_widget = self._widgets.private_messages_widget
 	local private_messages_widget_content = private_messages_widget.content
 	private_messages_widget_content.new_per_user[user_name] = nil
@@ -332,6 +382,7 @@ end
 ChatView._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self._widgets = {}
+	self._current_tab_offset_index = 1
 	self._channels_list_widgets = {}
 	self._popular_channel_list_widgets = {}
 	self._channel_list_widgets = {}
@@ -343,6 +394,9 @@ ChatView._create_ui_elements = function (self)
 	self._recent_channels_widgets = {}
 	self._invite_widgets = {}
 	self._emoji_widgets = {}
+	self._channel_tabs = {}
+	self._channel_tab_lookup = {}
+	self._ui_animations = {}
 	local widget_definitions = definitions.widget_definitions
 
 	for name, widget in pairs(widget_definitions.widgets) do
@@ -369,6 +423,14 @@ ChatView._create_ui_elements = function (self)
 	self._user_entry_widgets = user_entries
 
 	self:_update_members()
+
+	local channels = Managers.irc:get_channels()
+
+	for channel_name, _ in pairs(channels) do
+		self._channel_tabs[#self._channel_tabs + 1] = UIWidget.init(widget_definitions.create_channel_tab(channel_name, #self._channel_tabs + 1, self._current_channel_name))
+		self._channel_tab_lookup[channel_name] = #self._channel_tabs
+	end
+
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 	Managers.input:device_unblock_service("keyboard", 1, "chat_view")
 	Managers.input:device_unblock_service("mouse", 1, "chat_view")
@@ -378,7 +440,7 @@ ChatView.on_enter = function (self)
 	self:set_active(true)
 end
 
-local DO_RELOAD = true
+local DO_RELOAD = false
 
 ChatView.update = function (self, dt, t, is_sub_menu)
 	if DO_RELOAD then
@@ -396,7 +458,9 @@ ChatView.update = function (self, dt, t, is_sub_menu)
 		return
 	end
 
+	self:_update_animations(dt, t)
 	self:_draw(dt, t)
+	self:_update_channel_tabs(dt, t)
 	self:_update_input(dt, t)
 	self:_update_channels_list_input(dt, t)
 	self:_update_create_channel_input(dt, t)
@@ -455,6 +519,9 @@ ChatView._update_recent_channels_input = function (self, dt, t)
 	local input_service = Managers.input:get_service("channels_list")
 	local join_button_widget = self._recent_channels_widgets.join_button
 	local recent_channels_window_widget = self._recent_channels_widgets.recent_channels_window
+
+	UIWidgetUtils.animate_default_button(join_button_widget, dt)
+
 	local join_button_content = join_button_widget.content
 	local recent_channels_window_content = recent_channels_window_widget.content
 	local join_button_hotspot = join_button_content.button_hotspot
@@ -615,6 +682,8 @@ ChatView._update_send_invite_input = function (self, dt, t)
 	local close_hotspot = send_invite_window_content.close_hotspot
 	send_invite_button_hotspot.disable_button = send_invite_window_content.chat_text_id == ""
 
+	UIWidgetUtils.animate_default_button(send_invite_button_widget, dt)
+
 	if widget_hotspot.is_hover then
 		if close_hotspot.on_pressed then
 			self:_destroy_send_invite_window()
@@ -708,6 +777,8 @@ ChatView._update_create_channel_input = function (self, dt, t)
 	local widget_hotspot = create_channel_window_content.widget_hotspot
 	local close_hotspot = create_channel_window_content.close_hotspot
 	create_button_hotspot.disable_button = create_channel_window_content.chat_text_id == ""
+
+	UIWidgetUtils.animate_default_button(create_button_widget, dt)
 
 	if widget_hotspot.is_hover then
 		if close_hotspot.on_pressed then
@@ -948,6 +1019,10 @@ ChatView._update_channels_list_input = function (self, dt, t)
 		return
 	end
 
+	UIWidgetUtils.animate_default_button(join_button_widget, dt)
+	UIWidgetUtils.animate_default_button(create_button_widget, dt)
+	UIWidgetUtils.animate_default_button(recent_channels_button_widget, dt)
+
 	if input_service:get("deactivate_chat_input") then
 		self:_destroy_channels_list()
 	elseif input_hotspot.on_pressed then
@@ -1042,7 +1117,7 @@ ChatView._update_input = function (self, dt, t)
 			frame_widget_content.text_field_active = false
 			frame_widget_content.chat_text.text = ""
 		else
-			self:_exit()
+			self:_exit(true)
 
 			return
 		end
@@ -1053,6 +1128,8 @@ ChatView._update_input = function (self, dt, t)
 	local input_hotspot = frame_widget_content.text_input_hotspot
 	local screen_hotspot = frame_widget_content.screen_hotspot
 	local channel_hotspot = frame_widget_content.channel_hotspot
+	local left_hotspot = frame_widget_content.left_hotspot
+	local right_hotspot = frame_widget_content.right_hotspot
 	local private_button_hotspot = self._widgets.private_messages_widget.content.button_hotspot
 	local send_invite_hotspot = self._widgets.send_invite_widget.content.button_hotspot
 	local channels_hotspot = self._widgets.channels_widget.content.button_hotspot
@@ -1135,7 +1212,26 @@ ChatView._update_input = function (self, dt, t)
 	elseif screen_hotspot.on_pressed then
 		deactivate_chat_input = true
 		clear_chat = true
+	elseif left_hotspot.on_release then
+		self._current_tab_offset_index = math.max(self._current_tab_offset_index - 1, 1)
+		self._ui_animations.tab_animation = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.channel_tab_anchor.position, 1, self._ui_scenegraph.channel_tab_anchor.position[1], -self._ui_scenegraph.channel_tab_anchor.size[1] * (self._current_tab_offset_index - 1) + 10, 0.25, math.easeOutCubic)
+	elseif right_hotspot.on_release then
+		self._current_tab_offset_index = math.min(self._current_tab_offset_index + 1, math.max(#self._channel_tabs - 3, 1))
+
+		print(self._current_tab_offset_index)
+
+		self._ui_animations.tab_animation = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.channel_tab_anchor.position, 1, self._ui_scenegraph.channel_tab_anchor.position[1], -self._ui_scenegraph.channel_tab_anchor.size[1] * (self._current_tab_offset_index - 1) + 10, 0.25, math.easeOutCubic)
 	end
+
+	local send_invite_widget = self._widgets.send_invite_widget
+	local channels_widget = self._widgets.channels_widget
+	local commands_widget = self._widgets.commands_widget
+	local emoji_widget = self._widgets.emoji_widget
+
+	UIWidgetUtils.animate_default_button(send_invite_widget, dt)
+	UIWidgetUtils.animate_default_button(channels_widget, dt)
+	UIWidgetUtils.animate_default_button(commands_widget, dt)
+	UIWidgetUtils.animate_default_button(emoji_widget, dt)
 
 	if frame_widget_content.text_field_active then
 		if input_service:get("execute_chat_input") then
@@ -1308,7 +1404,7 @@ ChatView._create_channel_list = function (self)
 	local max_width = 0
 
 	for channel, _ in pairs(channels) do
-		local widget = UIWidget.init(create_channel_entry_func(channel, -50 - 40 * cnt))
+		local widget = UIWidget.init(create_channel_entry_func(channel, -10 - 30 * cnt))
 		self._channel_list_widgets["channel_" .. cnt + 1] = widget
 		cnt = cnt + 1
 		local channel_style = widget.style.channel_name
@@ -1320,9 +1416,9 @@ ChatView._create_channel_list = function (self)
 	end
 
 	self._channel_list_widgets.channel_list_frame = UIWidget.init(widget_definitions.channel_list_frame)
-	self._ui_scenegraph.channel_list.size[2] = 100 + cnt * 40
+	self._ui_scenegraph.channel_list.size[2] = 30 + cnt * 30
 	self._ui_scenegraph.channel_list.size[1] = max_width + 125
-	self._ui_scenegraph.channel_list_entry.size[1] = max_width + 40
+	self._ui_scenegraph.channel_list_entry.size[1] = max_width + 30
 end
 
 ChatView._destroy_emoji_list = function (self)
@@ -1455,8 +1551,8 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 					emoji_frame_widget_content.emoji_text_id = EMOJI_SETTINGS[index].keys
 					emoji_frame_widget_content.emoji_texture_id = EMOJI_SETTINGS[index].texture
 					emoji_frame_widget_style.emoji_texture.texture_size = emoji_size
-					emoji_frame_widget_style.emoji_texture.offset[1] = emoji_size[1]
-					emoji_frame_widget_style.emoji_text.offset[1] = emoji_size[1] * 2 + emoji_width_spacing
+					emoji_frame_widget_style.emoji_texture.offset[1] = 10
+					emoji_frame_widget_style.emoji_text.offset[1] = emoji_frame_widget_style.emoji_texture.offset[1] + emoji_size[1] + emoji_width_spacing
 				end
 			end
 		end
@@ -1722,6 +1818,7 @@ ChatView._show_welcome_message = function (self)
 		local message = WELCOME_MESSAGE[i]
 		local new_message_table = {
 			sender = string.format(message, self._current_channel_name),
+			trimmed_sender = new_message_table.sender,
 			message = "",
 			type = nil
 		}
@@ -1745,6 +1842,7 @@ ChatView._send_channel_message = function (self, content, emojis)
 			local message_tables = channel_messages_table[self._current_channel_name]
 			local new_message_table = {
 				sender = user_name .. ": ",
+				trimmed_sender = self:_strip_identifier_from_user_name(user_name) .. ": ",
 				message = content.chat_text.text,
 				type = Irc.CHANNEL_MSG
 			}
@@ -1773,6 +1871,7 @@ ChatView._send_channel_message = function (self, content, emojis)
 		local message_tables = private_messages_table[user_name]
 		local new_message_table = {
 			sender = "To [" .. user_name .. "]: ",
+			trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: ",
 			message = message,
 			type = Irc.PRIVATE_MSG
 		}
@@ -1800,6 +1899,7 @@ ChatView._send_channel_message = function (self, content, emojis)
 		local message_tables = channel_messages_table[self._current_channel_name]
 		local new_message_table = {
 			sender = user_name .. ": ",
+			trimmed_sender = self:_strip_identifier_from_user_name(user_name) .. ": ",
 			message = message,
 			type = Irc.CHANNEL_MSG
 		}
@@ -1846,6 +1946,7 @@ ChatView._send_private_message = function (self, content, emojis)
 			local message_tables = private_messages_table[user_name]
 			local new_message_table = {
 				sender = "To [" .. user_name .. "]: ",
+				trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: ",
 				message = content.chat_text.text,
 				type = Irc.PRIVATE_MSG
 			}
@@ -1873,6 +1974,7 @@ ChatView._send_private_message = function (self, content, emojis)
 		local message_tables = private_messages_table[user_name]
 		local new_message_table = {
 			sender = "To [" .. user_name .. "]: ",
+			trimmed_sender = "To [" .. self:_strip_identifier_from_user_name(user_name) .. "]: ",
 			message = message,
 			type = Irc.PRIVATE_MSG
 		}
@@ -1934,6 +2036,16 @@ ChatView.unsuspend = function (self)
 	self._suspended = nil
 end
 
+ChatView._update_animations = function (self, dt, t)
+	for name, animation in pairs(self._ui_animations) do
+		UIAnimation.update(animation, dt)
+
+		if UIAnimation.completed(animation) then
+			self._ui_animations[name] = nil
+		end
+	end
+end
+
 ChatView._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
@@ -1970,6 +2082,10 @@ ChatView._draw = function (self, dt, t)
 	end
 
 	for name, widget in pairs(self._filtered_user_names_list_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	for name, widget in pairs(self._channel_tabs) do
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
@@ -2014,6 +2130,19 @@ ChatView._draw = function (self, dt, t)
 	end
 end
 
+ChatView._update_channel_tabs = function (self, dt, t)
+	for idx, widget in ipairs(self._channel_tabs) do
+		local widget_content = widget.content
+		local hotspot = widget_content.tab_hotspot
+
+		if hotspot.on_release then
+			local channel_name = widget_content.channel_name
+
+			self:_change_channel(channel_name)
+		end
+	end
+end
+
 ChatView.on_exit = function (self)
 	self:set_active(false)
 end
@@ -2053,12 +2182,12 @@ ChatView._handle_user_pressed = function (self)
 		local hotspot = content.button_hotspot
 
 		if hotspot.on_double_click then
-			local user_name = string.gsub(content.title_text, "@", "")
+			local user_name = string.gsub(content.user_name, "@", "")
 
 			self:_change_to_private(user_name)
 			self:_set_text_field_active(true)
 		elseif hotspot.on_right_click then
-			print("on right click", content.title_text)
+			print("on right click", content.user_name)
 		end
 	end
 end
@@ -2073,7 +2202,8 @@ ChatView._populate_user_widgets = function (self, users, read_index)
 		local user_data = users[current_user_index]
 
 		if user_data then
-			content.title_text = user_data.name
+			content.user_name = user_data.name
+			content.title_text = string.sub(user_data.name, 1, -11)
 			content.level_text = user_data.level or tostring(math.random(1, 100) + math.random(0, 100))
 			content.description_text = user_data.info or "abc..."
 			content.icon = tmp_icons[user_data.icon_id] or "icons_placeholder"

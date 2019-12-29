@@ -43,6 +43,11 @@ DAMAGE_TYPES_AOE = {
 	plague_face = true,
 	warpfire_ground = true
 }
+
+local function kinda_equals(a, b, tolerence)
+	return math.abs(a - b) < tolerence
+end
+
 local buff_params = {}
 
 local function add_dot(dot_template_name, hit_unit, attacker_unit, damage_source, power_level, source_attacker_unit)

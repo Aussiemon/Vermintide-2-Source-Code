@@ -25,6 +25,11 @@ BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 	end
 end
 
+BTLeaveHooks.wave_summoning_ends = function (unit, blackboard, t)
+	blackboard.is_summoning = false
+	blackboard.wave_cooldown = blackboard.wave_total_cooldown
+end
+
 BTLeaveHooks.summoning_ends = function (unit, blackboard, t)
 	blackboard.is_summoning = false
 end
@@ -39,6 +44,22 @@ BTLeaveHooks.sorcerer_next_phase = function (unit, blackboard, t)
 	else
 		blackboard.phase = "defensive_completed"
 	end
+end
+
+BTLeaveHooks.sorcerer_drachenfels_go_offensive = function (unit, blackboard, t)
+	blackboard.mode = "offensive"
+end
+
+BTLeaveHooks.sorcerer_drachenfels_go_defensive = function (unit, blackboard, t)
+	blackboard.mode = "defensive"
+	blackboard.phase = "defensive_starts"
+	blackboard.setup_done = true
+end
+
+BTLeaveHooks.sorcerer_drachenfels_re_enter_defensive = function (unit, blackboard, t)
+	blackboard.mode = "defensive"
+	blackboard.phase = "defensive_starts"
+	blackboard.transition_done = true
 end
 
 BTLeaveHooks.sorcerer_setup_done = function (unit, blackboard, t)

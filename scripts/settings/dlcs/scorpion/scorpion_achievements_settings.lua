@@ -39,7 +39,7 @@ settings.achievement_outline = {
 		},
 		categories = {
 			{
-				sorting = 1,
+				sorting = 100,
 				name = "achv_menu_season_1_scorpion_category_title",
 				entries = {
 					"scorpion_weaves_rainbow_es_mercenary_season_1",
@@ -86,6 +86,7 @@ settings.achievement_outline = {
 	}
 }
 settings.achievement_template_file_names = {
+	"scripts/settings/dlcs/scorpion/scorpion_seasonal_settings",
 	"scripts/managers/achievements/achievement_templates_scorpion"
 }
 

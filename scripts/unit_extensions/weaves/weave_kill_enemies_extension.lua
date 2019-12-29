@@ -23,7 +23,7 @@ WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, e
 	self._on_complete_func = extension_init_data.on_complete_func
 	self._num_killed = 0
 	self._kills_required = extension_init_data.amount or 0
-	self._base_score_per_kill = extension_init_data.base_score_per_kill or 0.3
+	self._base_score_per_kill = extension_init_data.base_score_per_kill or WeaveSettings.base_score_per_kill
 	self._breed_score_multipliers = extension_init_data.breed_score_multipliers or {}
 	local score_multiplier = extension_init_data.score_multiplier or 1
 	local difficulty_manager = Managers.state.difficulty
@@ -33,13 +33,13 @@ WeaveKillEnemiesExtension.init = function (self, extension_init_context, unit, e
 		score_multiplier = score_multiplier[difficulty] or BASE_SCORE_MULTIPLIER[difficulty] or 1
 	end
 
+	self._weave_manager = Managers.weave
 	self._score_multiplier = score_multiplier
 	self._breeds_allowed = extension_init_data.breeds_allowed
 	self._races_allowed = extension_init_data.races_allowed
 	self._hit_zones_allowed = extension_init_data.hit_zones_allowed
 	self._attacks_allowed = extension_init_data.attacks_allowed
 	self._damage_types_allowed = extension_init_data.damage_types_allowed
-	self._weave_manager = Managers.weave
 	self._weave_objective_system = Managers.state.entity:system("weave_objective_system")
 
 	if not extension_init_context.is_server then
@@ -257,13 +257,17 @@ WeaveKillEnemiesExtension.on_ai_killed = function (self, killed_unit, killer_uni
 	end
 
 	if self._method == "score" then
+		local roaming_multiplier = WeaveSettings.roaming_multiplier[PLATFORM]
+		local spawn_type = Unit.get_data(killed_unit, "spawn_type") or "unknown"
 		local score_multiplier_per_breed = self._breed_score_multipliers
 		local breed_score_multiplier = score_multiplier_per_breed[breed_name] or score_multiplier_per_breed.default
-		local score_multiplier = self._score_multiplier
+		local score_multiplier = (spawn_type == "roam" and self._score_multiplier * roaming_multiplier) or self._score_multiplier
 		local score_per_kill = self._base_score_per_kill
 		local score = score_per_kill * score_multiplier * breed_score_multiplier
 
 		self._weave_objective_system:add_score(score)
+		print("Spawn type: " .. spawn_type, "Score: " .. score, "Score Multiplier: ", score_multiplier)
+		Unit.set_data(killed_unit, "spawn_type", nil)
 	end
 
 	local game_session = Network.game_session()

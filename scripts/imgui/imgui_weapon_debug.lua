@@ -27,6 +27,8 @@ ImguiWeaponDebug.init = function (self)
 	self._weapon_extensions = {}
 	self._selected_weapon_extenstion_name = ""
 	self._current_unit = nil
+	self._weapon_unit_left = nil
+	self._weapon_unit_right = nil
 	self._current_weapon_extension = nil
 	self._current_actions = nil
 	self._damage_power_level = 200
@@ -47,7 +49,8 @@ ImguiWeaponDebug.init = function (self)
 		Chaos = CHAOS,
 		Skaven = SKAVEN,
 		Beastmen = BEASTMEN,
-		Elites = ELITES
+		Elites = ELITES,
+		VS = PlayerBreeds
 	}
 	self._combat_critical = false
 	self._combat_power_boost = false
@@ -56,6 +59,7 @@ ImguiWeaponDebug.init = function (self)
 	self._combat_backstab_multiplier = 1
 	self._combat_stagger_level = 0
 	self._combat_hit_actions = {}
+	self._combat_push_actions = {}
 	self._combat_current_weapon = nil
 	self._combat_current_weapon_name = nil
 
@@ -65,17 +69,39 @@ end
 ImguiWeaponDebug.update = function (self)
 	if SHOULD_RELOAD then
 		self:init()
+		self:_verify_crits()
 
 		SHOULD_RELOAD = false
 	end
 
-	if self._current_unit and not Unit.alive(self._current_unit) then
+	if (self._current_unit and not Unit.alive(self._current_unit)) or (self._weapon_unit_left and not Unit.alive(self._weapon_unit_left)) or (self._weapon_unit_right and not Unit.alive(self._weapon_unit_right)) or (self._weapon_unit_left == nil and self._weapon_unit_right == nil) then
 		self._current_unit = nil
 		self._current_weapon_extension = nil
 
 		self:_refresh_unit_list()
 	end
 
+	local owner_unit = self._current_unit
+	local weapon_extension = self:_get_current_weapon()
+
+	if owner_unit and weapon_extension and self._current_actions then
+		local action = self:_get_current_action()
+
+		if action then
+			local current_time_in_action = (self._display_current_action and weapon_extension.weapon_system.t - weapon_extension.action_time_started) or 0
+
+			if self._draw_chain_action_data and action then
+				self:debug_draw_chain_data(current_time_in_action, action, owner_unit, weapon_extension)
+			end
+		end
+	end
+end
+
+ImguiWeaponDebug.is_persistent = function (self)
+	return self._draw_chain_action_data or self._draw_hit_box
+end
+
+ImguiWeaponDebug.draw = function (self)
 	Imgui.Begin("Weapon Debug")
 
 	local selected_unit = Imgui.Combo("Unit", self._selected_unit, self._unit_names) - 1
@@ -135,38 +161,6 @@ ImguiWeaponDebug.update = function (self)
 	Imgui.End()
 end
 
-ImguiWeaponDebug.subwindow_count = function (self)
-	return (self:_should_update() and 1) or 0
-end
-
-ImguiWeaponDebug.update_subwindow = function (self)
-	if self._current_unit and not Unit.alive(self._current_unit) then
-		self._current_unit = nil
-		self._current_weapon_extension = nil
-
-		self:_refresh_unit_list()
-	end
-
-	local owner_unit = self._current_unit
-	local weapon_extension = self:_get_current_weapon()
-
-	if owner_unit and weapon_extension and self._current_actions then
-		local action = self:_get_current_action()
-
-		if action then
-			local current_time_in_action = (self._display_current_action and weapon_extension.weapon_system.t - weapon_extension.action_time_started) or 0
-
-			if self._draw_chain_action_data and action then
-				self:debug_draw_chain_data(current_time_in_action, action, owner_unit, weapon_extension)
-			end
-		end
-	end
-end
-
-ImguiWeaponDebug._should_update = function (self)
-	return self._draw_chain_action_data or self._draw_hit_box
-end
-
 ImguiWeaponDebug._refresh_unit_list = function (self)
 	self._unit_names = {}
 	self._units = {}
@@ -199,6 +193,8 @@ end
 
 ImguiWeaponDebug._initialize_unit = function (self, unit)
 	self._current_unit = unit
+	self._weapon_unit_left = nil
+	self._weapon_unit_right = nil
 	self._weapon_extensions = {}
 	self._current_weapon_extension = nil
 	self._selected_weapon_extenstion_name = "any"
@@ -206,12 +202,15 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 	self._sub_action_list = {}
 	self._current_actions = {}
 	self._combat_hit_actions = {}
+	self._combat_push_actions = {}
 	self._combat_current_weapon = nil
 	self._combat_current_weapon_name = nil
 
 	if unit then
 		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
 		local lh_weapon_unit, rh_weapon_unit = inventory_extension:get_all_weapon_unit()
+		self._weapon_unit_left = lh_weapon_unit
+		self._weapon_unit_right = rh_weapon_unit
 		local lh_weapon_extension = Unit.alive(lh_weapon_unit) and ScriptUnit.extension(lh_weapon_unit, "weapon_system")
 		local rh_weapon_extension = Unit.alive(rh_weapon_unit) and ScriptUnit.extension(rh_weapon_unit, "weapon_system")
 		self._weapon_extensions.left = lh_weapon_extension
@@ -221,32 +220,44 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 
 		if extension then
 			local weapon = ItemMasterList[extension.item_name]
-			local template = Weapons[weapon.template]
-			local actions = template.actions
-			self._current_actions = actions
-			self._combat_current_weapon = weapon
-			self._combat_current_weapon_name = extension.item_name
+			local template = Weapons[weapon.template] or Weapons[weapon.temporary_template]
 
-			for name, action in pairs(actions) do
-				table.insert(self._action_list, name)
+			if template then
+				local actions = template.actions
+				self._current_actions = actions
+				self._combat_current_weapon = weapon
+				self._combat_current_weapon_name = extension.item_name
 
-				if not self._sub_action_list[name] then
-					self._sub_action_list[name] = {}
-				end
+				for name, action in pairs(actions) do
+					table.insert(self._action_list, name)
 
-				local sub_action_list = self._sub_action_list[name]
-
-				for sub_name, sub_action in pairs(action) do
-					table.insert(sub_action_list, sub_name)
-
-					local left, right = self:_get_damage_profile_for_action(sub_action)
-
-					if left or right then
-						self._combat_hit_actions[sub_name] = sub_action
+					if not self._sub_action_list[name] then
+						self._sub_action_list[name] = {}
 					end
-				end
 
-				table.sort(sub_action_list)
+					local sub_action_list = self._sub_action_list[name]
+
+					for sub_name, sub_action in pairs(action) do
+						table.insert(sub_action_list, sub_name)
+
+						local left, right = self:_get_damage_profile_for_action(sub_action)
+
+						if left or right then
+							self._combat_hit_actions[sub_name] = sub_action
+						end
+
+						local inner, outer = self:_get_push_damage_profile_name(sub_action)
+
+						if inner or outer then
+							self._combat_push_actions[sub_name] = {
+								inner = inner,
+								outer = outer
+							}
+						end
+					end
+
+					table.sort(sub_action_list)
+				end
 			end
 
 			table.sort(self._action_list)
@@ -330,6 +341,13 @@ ImguiWeaponDebug._update_combat_settings = function (self)
 	Imgui.SameLine()
 
 	self._combat_power_boost = Imgui.Checkbox("Power Boost", self._combat_power_boost)
+
+	for power_type, _ in pairs(POWER_LEVEL_DIFF_RATIO) do
+		local difficulty_level = self._difficulties[self._damage_difficulty_id + 1]
+		local scaled_power_level = ActionUtils.scale_power_levels(self._damage_power_level, power_type, self._current_unit, difficulty_level)
+
+		Imgui.Text(string.format("Scaled - %-8s: %s", power_type, scaled_power_level))
+	end
 end
 
 ImguiWeaponDebug._draw_faction_combat_info = function (self, breed_table, difficulty_level, hit_zone_name, power_level, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
@@ -337,20 +355,23 @@ ImguiWeaponDebug._draw_faction_combat_info = function (self, breed_table, diffic
 	local max_target_index = 8
 	local hit_index_format = string.format("%7s%6s", "%2d", "")
 	local damage_actions = self._combat_hit_actions
+	local push_actions = self._combat_push_actions
 	local target_damage = {}
 	local target_hits = {}
 
 	for breed_name, _ in pairs(breed_table) do
 		Imgui.Separator()
 
-		local breed = Breeds[breed_name]
+		local breed = Breeds[breed_name] or PlayerBreeds[breed_name]
 		local armor_type, _, primary_armor_type, _ = ActionUtils.get_target_armor(hit_zone_name, breed, 1)
 		local node_name = string.format("Breed: %s (Armor: %d / Primary Armor: %d)", breed_name, armor_type or 0, primary_armor_type or 0)
 
 		if Imgui.TreeNode(node_name) then
 			local breed_health = self:get_breed_health(difficulty_level, breed)
+			local stagger_threshold_light, stagger_threshold_medium, stagger_threshold_heavy = self:get_breed_stagger(difficulty_level, breed)
 
 			Imgui.Text(string.format("Health: %.2f", breed_health))
+			Imgui.Text(string.format("Stagger Thresholds: %.2f / %.2f / %.2f", stagger_threshold_light, stagger_threshold_medium, stagger_threshold_heavy))
 			Imgui.Text(string.format("%-24s:", "Hit Index"))
 
 			for i = start_target_index, max_target_index, 1 do
@@ -376,6 +397,22 @@ ImguiWeaponDebug._draw_faction_combat_info = function (self, breed_table, diffic
 					Imgui.SameLine()
 					Imgui.Text(string.format("%6.2f - %-3d", target_damage[i], target_hits[i]))
 				end
+			end
+
+			Imgui.Dummy(10, 10)
+
+			for action_name, damage_profiles in pairs(push_actions) do
+				Imgui.Text(string.format("%-24s: %-12s%-12s%-12s%-12s%-12s", action_name, "Type", "Duration", "Distance", "Value", "Strength"))
+
+				local inner_damage_profile = DamageProfileTemplates[damage_profiles.inner]
+				local type, duration, distance, value, strength = self:get_ai_stagger(inner_damage_profile, power_level, difficulty_level, hit_zone_name, breed, 1, is_critical_strike, has_power_boost)
+
+				Imgui.Text(string.format("%-24s: %-12.2f%-12.2f%-12.2f%-12.2f%-12.2f", "Inner", type, duration, distance, value, strength))
+
+				local outer_damage_profile = DamageProfileTemplates[damage_profiles.inner]
+				local type, duration, distance, value, strength = self:get_ai_stagger(outer_damage_profile, power_level, difficulty_level, hit_zone_name, breed, 1, is_critical_strike, has_power_boost)
+
+				Imgui.Text(string.format("%-24s: %-12.2f%-12.2f%-12.2f%-12.2f%-12.2f", "Outer", type, duration, distance, value, strength))
 			end
 
 			Imgui.TreePop()
@@ -575,6 +612,24 @@ ImguiWeaponDebug.get_breed_health = function (self, difficulty_level, breed)
 	return breed_health
 end
 
+ImguiWeaponDebug.get_breed_stagger = function (self, difficulty_level, breed)
+	local stagger_threshold_light = 0
+	local stagger_threshold_medium = 0
+	local stagger_threshold_heavy = 0
+	local finesse_hit = false
+	local difficulty_settings = DifficultySettings[difficulty_level]
+
+	if difficulty_settings and breed then
+		local difficulty_rank = difficulty_settings.rank
+		local stagger_resistance = (breed.diff_stagger_resist and breed.diff_stagger_resist[difficulty_rank]) or breed.stagger_resistance or 2
+		stagger_threshold_light = (finesse_hit and 0) or (breed.stagger_threshold_light and breed.stagger_threshold_light * stagger_resistance) or 0.25 * stagger_resistance
+		stagger_threshold_medium = (breed.stagger_threshold_medium and breed.stagger_threshold_medium * stagger_resistance) or 1 * stagger_resistance
+		stagger_threshold_heavy = (breed.stagger_threshold_heavy and breed.stagger_threshold_heavy * stagger_resistance) or 2.5 * stagger_resistance
+	end
+
+	return stagger_threshold_light, stagger_threshold_medium, stagger_threshold_heavy
+end
+
 ImguiWeaponDebug.get_damage = function (self, sub_action, power_level, difficulty_level, hit_zone_name, breed, target_index, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
 	local unit = self._current_unit
 	local item = self._combat_current_weapon
@@ -612,6 +667,17 @@ ImguiWeaponDebug.get_damage = function (self, sub_action, power_level, difficult
 	return 0
 end
 
+ImguiWeaponDebug.get_ai_stagger = function (self, damage_profile, power_level, difficulty_level, hit_zone_name, breed, target_index, is_critical_strike, has_power_boost)
+	local unit = self._current_unit
+	local item = self._combat_current_weapon
+
+	if item and unit and damage_profile and breed then
+		return self:_calculate_ai_stagger(unit, item, damage_profile, power_level, difficulty_level, hit_zone_name, breed, target_index, is_critical_strike, has_power_boost)
+	end
+
+	return 0, 0, 0, 0, 0
+end
+
 ImguiWeaponDebug._calculate_damage = function (self, unit, item, damage_profile, difficulty_settings, power_level, difficulty_level, hit_zone_name, breed, target_index, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
 	local damage_source = item.name
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
@@ -624,6 +690,15 @@ ImguiWeaponDebug._calculate_damage = function (self, unit, item, damage_profile,
 	damage = self:_add_stagger_damage(damage, difficulty_settings, damage_profile, stagger_level)
 
 	return damage
+end
+
+ImguiWeaponDebug._calculate_ai_stagger = function (self, unit, item, damage_profile, power_level, difficulty_level, hit_zone_name, breed, target_index, is_critical_strike, has_power_boost)
+	local blocked = false
+	local damage_source = item.name
+	local dropoff_scalar = 0
+	local type, duration, distance, value, strength = DamageUtils.calculate_stagger_player_tooltip(breed, unit, hit_zone_name, power_level, is_critical_strike, damage_profile, target_index, blocked, damage_source, difficulty_level, has_power_boost, dropoff_scalar)
+
+	return type, duration, distance, value, strength
 end
 
 ImguiWeaponDebug._add_stagger_damage = function (self, damage, difficulty_settings, damage_profile, stagger_number)
@@ -676,6 +751,14 @@ ImguiWeaponDebug._get_damage_profile_name = function (self, action, action_hand)
 	return nil, nil
 end
 
+ImguiWeaponDebug._get_push_damage_profile_name = function (self, action)
+	if action then
+		return action.damage_profile_inner, action.damage_profile_outer
+	end
+
+	return nil, nil
+end
+
 ImguiWeaponDebug._get_damage_profile_for_action = function (self, sub_action)
 	if sub_action then
 		local action_hand = sub_action.weapon_action_hand
@@ -688,6 +771,10 @@ ImguiWeaponDebug._get_damage_profile_for_action = function (self, sub_action)
 	end
 
 	return nil, nil
+end
+
+ImguiWeaponDebug._verify_crits = function (self)
+	return
 end
 
 return

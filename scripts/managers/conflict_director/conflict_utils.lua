@@ -1125,41 +1125,40 @@ ConflictUtils.patch_settings_with_difficulty = function (source_settings, diffic
 	end
 end
 
-ConflictUtils.patch_terror_events_with_weaves = function (level_key, weave_data)
+ConflictUtils.patch_terror_events_with_weaves = function (level_key, weave_data, objective_index)
 	local weave_name = weave_data.name
 	local weave_template = WeaveSettings.templates[weave_name]
 	local objectives = weave_template.objectives
-	local objective_events = weave_template.terror_events
 	local weave_terror_events = TerrorEventBlueprints.weaves
 	TerrorEventBlueprints[level_key] = TerrorEventBlueprints[level_key] or {}
 
 	table.clear(TerrorEventBlueprints[level_key])
 
-	for i = 1, #objectives, 1 do
-		local objective = objectives[i]
-		local spawning_settings = objective.spawning_settings
+	local objective = objectives[objective_index]
+	local spawning_settings = objective.spawning_settings
 
-		if spawning_settings then
-			local main_path_spawning = spawning_settings.main_path_spawning
-			local terror_event_trickle = spawning_settings.terror_event_trickle
+	if spawning_settings then
+		local main_path_spawning = spawning_settings.main_path_spawning
+		local terror_event_trickle = spawning_settings.terror_event_trickle
 
-			if main_path_spawning then
-				for j = 1, #main_path_spawning, 1 do
-					local main_path_spawning_setting = main_path_spawning[j]
-					local terror_event_name = main_path_spawning_setting.terror_event_name
-					TerrorEventBlueprints[level_key][terror_event_name] = weave_terror_events[terror_event_name]
-				end
+		if main_path_spawning then
+			for j = 1, #main_path_spawning, 1 do
+				local main_path_spawning_setting = main_path_spawning[j]
+				local terror_event_name = main_path_spawning_setting.terror_event_name
+				TerrorEventBlueprints[level_key][terror_event_name] = weave_terror_events[terror_event_name]
 			end
+		end
 
-			if terror_event_trickle then
-				TerrorEventBlueprints[level_key][terror_event_trickle] = weave_terror_events[terror_event_trickle]
-			end
+		if terror_event_trickle then
+			TerrorEventBlueprints[level_key][terror_event_trickle] = weave_terror_events[terror_event_trickle]
 		end
 	end
 
-	if objective_events then
-		for i = 1, #objective_events, 1 do
-			local objective_event = objective_events[i]
+	local objective_terror_events = objective.terror_events
+
+	if objective_terror_events then
+		for i = 1, #objective_terror_events, 1 do
+			local objective_event = objective_terror_events[i]
 			TerrorEventBlueprints[level_key][objective_event] = weave_terror_events[objective_event]
 		end
 	end

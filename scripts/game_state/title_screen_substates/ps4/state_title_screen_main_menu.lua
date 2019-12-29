@@ -17,7 +17,7 @@ if script_data.honduras_demo then
 			Managers.music:trigger_event("Play_console_menu_start_game")
 		end
 	}
-elseif script_data.settings.use_beta_overlay then
+elseif script_data.settings.use_beta_mode then
 	if script_data.settings.disable_tutorial_at_start then
 		menu_functions = {
 			function (this)
@@ -197,7 +197,7 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 
 	self:_try_activate_splash()
 
-	if not script_data.settings.use_beta_overlay and GameSettingsDevelopment.additional_content_view_enabled then
+	if not script_data.settings.use_beta_mode and GameSettingsDevelopment.additional_content_view_enabled then
 		local additional_content_view = self._views.additional_content_view
 		local has_splashes = additional_content_view and additional_content_view:has_active_splashes()
 
@@ -257,7 +257,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		self._views = {
 			credits_view = CreditsView:new(view_context),
 			options_view = OptionsView:new(view_context),
-			additional_content_view = (not script_data.settings.use_beta_overlay and GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context)) or nil
+			additional_content_view = (not script_data.settings.use_beta_mode and GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context)) or nil
 		}
 	end
 

@@ -198,6 +198,7 @@ ScoreboardHelper.scoreboard_grouped_topic_stats = {
 		stats = {}
 	}
 }
+local TEMP_TABLE = {}
 
 local function get_score(statistics_db, stats_id, stat_type)
 	if type(stat_type) == "table" then
@@ -207,7 +208,7 @@ local function get_score(statistics_db, stats_id, stat_type)
 	end
 end
 
-local function get_score_by_name(statistics_db, stats_id, stat_name)
+local function get_score_by_name(statistics_db, stats_id, stat_name, saved_scoreboard_data)
 	local topic = nil
 
 	for _, topic_data in ipairs(ScoreboardHelper.scoreboard_topic_stats) do
@@ -239,6 +240,20 @@ local function get_score_by_name(statistics_db, stats_id, stat_name)
 		score_amount = score
 	end
 
+	if saved_scoreboard_data then
+		table.clear(TEMP_TABLE)
+
+		local player_data = saved_scoreboard_data[stats_id]
+		local player_data_scores = (player_data and player_data.scores) or TEMP_TABLE
+		local saved_score_amount = player_data_scores[stat_name] or 0
+
+		if saved_score_amount > 0 then
+			print(string.format("### Adding saved score for %q: %i ID: %s", stat_name, saved_score_amount, stats_id))
+		end
+
+		score_amount = score_amount + saved_score_amount
+	end
+
 	assert(score_amount ~= nil, "Couldn't find scoreboard statistic for '%s'", topic.name)
 
 	return {
@@ -248,7 +263,67 @@ local function get_score_by_name(statistics_db, stats_id, stat_name)
 	}
 end
 
-ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_synchronizer)
+ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer)
+	assert(statistics_db, "Missing statistics_database reference.")
+	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
+
+	local bots_and_players = Managers.player:human_and_bot_players()
+	local own_player_stats_id = nil
+	local player_list = {}
+
+	for _, player in pairs(bots_and_players) do
+		local is_local_player = player.local_player
+		local player_peer_id = player:network_id()
+		local player_name = player:name()
+		local stats_id = player:stats_id()
+		local profile_index = profile_synchronizer:profile_by_peer(player_peer_id, player:local_player_id())
+		local is_player_controlled = player:is_player_controlled()
+		player_list[stats_id] = {
+			name = player_name,
+			peer_id = player_peer_id,
+			local_player_id = player:local_player_id(),
+			stats_id = stats_id,
+			profile_index = profile_index,
+			is_player_controlled = is_player_controlled,
+			scores = {}
+		}
+
+		if is_local_player then
+			own_player_stats_id = stats_id
+		end
+	end
+
+	local topic_stats_table = {}
+	local scoreboard_topic_stats = ScoreboardHelper.scoreboard_topic_stats
+
+	for i, topic in ipairs(scoreboard_topic_stats) do
+		local stat_types = topic.stat_types
+
+		for stats_id, player_data in pairs(player_list) do
+			if stat_types ~= nil then
+				local stat_types_n = #stat_types
+				local score = 0
+
+				for i = 1, stat_types_n, 1 do
+					local stat_type = stat_types[i]
+					score = score + get_score(statistics_db, player_data.stats_id, stat_type)
+				end
+
+				local data = player_list[stats_id]
+				data.scores[topic.name] = score
+			else
+				local stat_type = topic.stat_type
+				local score = get_score(statistics_db, player_data.stats_id, stat_type)
+				local data = player_list[stats_id]
+				data.scores[topic.name] = score
+			end
+		end
+	end
+
+	return player_list
+end
+
+ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_synchronizer, saved_scoreboard_data)
 	assert(statistics_db, "Missing statistics_database reference.")
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
 
@@ -302,6 +377,7 @@ ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_
 	end
 
 	for i, topic in ipairs(scoreboard_topic_stats) do
+		local stat_name = topic.name
 		local stat_types = topic.stat_types
 		local scores = {}
 		local scores_n = 0
@@ -331,6 +407,22 @@ ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_
 				}
 			end
 
+			if saved_scoreboard_data then
+				table.clear(TEMP_TABLE)
+
+				local saved_player_data = saved_scoreboard_data[stats_id]
+				local saved_player_data_scores = (saved_player_data and saved_player_data.scores) or TEMP_TABLE
+				local saved_score_amount = saved_player_data_scores[stat_name] or 0
+
+				if saved_score_amount > 0 then
+					local profile = SPProfiles[player_data.profile_index]
+
+					print(string.format("*** [%s] Adding saved score for %q: %i ID: %s", profile.display_name, stat_name, saved_score_amount, stats_id))
+				end
+
+				scores[scores_n].score = scores[scores_n].score + saved_score_amount
+			end
+
 			assert(scores[scores_n].score ~= nil, "Couldn't find scoreboard statistic for '%s'", topic.display_text)
 		end
 
@@ -352,7 +444,7 @@ ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_
 	}
 end
 
-ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile_synchronizer)
+ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile_synchronizer, saved_scoreboard_data)
 	assert(statistics_db, "Missing statistics_database reference.")
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
 
@@ -426,7 +518,7 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 			local group_scores = scores[group_name]
 
 			for _, stat_name in pairs(stats) do
-				local score_data = get_score_by_name(statistics_db, stats_id, stat_name)
+				local score_data = get_score_by_name(statistics_db, stats_id, stat_name, saved_scoreboard_data)
 				group_scores[#group_scores + 1] = score_data
 			end
 		end

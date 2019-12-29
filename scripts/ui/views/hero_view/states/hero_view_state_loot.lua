@@ -631,6 +631,9 @@ HeroViewStateLoot.on_exit = function (self, params)
 		self.menu_input_description = nil
 	end
 
+	self:_destroy_chest_unit()
+	self:_unload_loaded_packages()
+
 	local loot_ui_renderer = self.loot_ui_renderer
 
 	if self.viewport_widget then
@@ -689,18 +692,6 @@ HeroViewStateLoot.on_exit = function (self, params)
 	end
 
 	self:enable_player_world()
-
-	if self._loaded_package then
-		self:_unload_package(self._loaded_package)
-
-		self._loaded_package = nil
-	end
-
-	if self._package_loading then
-		self:_unload_package(self._package_loading)
-
-		self._package_loading = nil
-	end
 end
 
 HeroViewStateLoot._update_transition_timer = function (self, dt)
@@ -1133,6 +1124,8 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 		self:set_chest_title_alpha_progress(1)
 		self.menu_input_description:set_input_description(generic_input_actions.chest_selected)
 	else
+		self:_destroy_chest_unit()
+		self:_unload_loaded_packages()
 		self:set_chest_title_alpha_progress(0)
 		self.menu_input_description:set_input_description(generic_input_actions.chest_not_selected)
 	end
@@ -1889,12 +1882,6 @@ HeroViewStateLoot.loot_chest_opened = function (self, loot)
 end
 
 HeroViewStateLoot._start_reward_presentation = function (self, loot)
-	local unit = self._chest_unit
-
-	if not unit then
-		return
-	end
-
 	local ui_scenegraph = self.ui_scenegraph
 	ui_scenegraph.loot_option_1.size[2] = 0
 	ui_scenegraph.loot_option_2.size[2] = 0
@@ -1944,15 +1931,7 @@ HeroViewStateLoot.set_reward_options_height_progress = function (self, progress)
 	ui_scenegraph.loot_option_3.local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_3), 0, 0, 1, -1.8))
 end
 
-HeroViewStateLoot._load_package = function (self, package_name)
-	if self._chest_unit then
-		local world = self:get_viewport_world()
-
-		World.destroy_unit(world, self._chest_unit)
-
-		self._chest_unit = nil
-	end
-
+HeroViewStateLoot._unload_loaded_packages = function (self)
 	if self._loaded_package then
 		self:_unload_package(self._loaded_package)
 
@@ -1964,6 +1943,21 @@ HeroViewStateLoot._load_package = function (self, package_name)
 
 		self._package_loading = nil
 	end
+end
+
+HeroViewStateLoot._destroy_chest_unit = function (self)
+	if self._chest_unit then
+		local world = self:get_viewport_world()
+
+		World.destroy_unit(world, self._chest_unit)
+
+		self._chest_unit = nil
+	end
+end
+
+HeroViewStateLoot._load_package = function (self, package_name)
+	self:_destroy_chest_unit()
+	self:_unload_loaded_packages()
 
 	self._package_loading = package_name
 	local package_manager = Managers.package
@@ -1975,7 +1969,6 @@ end
 
 HeroViewStateLoot._on_load_complete = function (self, package_name)
 	self:play_sound(self._sound_event)
-	print("on loaded complet")
 	self:_spawn_chest_unit(self._unit_to_spawn, nil, nil)
 
 	self._loaded_package = package_name

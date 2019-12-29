@@ -891,6 +891,20 @@ go_type_table = {
 
 			return data_table
 		end,
+		versus_mission_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local versus_objective_ext = ScriptUnit.extension(unit, "versus_objective_system")
+			local objective_name = versus_objective_ext:objective_name()
+			local data_table = {
+				go_type = NetworkLookup.go_types.versus_mission_objective_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0),
+				scale = Unit.local_scale(unit, 0)[1],
+				objective_name = NetworkLookup.versus_objective_names[objective_name]
+			}
+
+			return data_table
+		end,
 		weave_capture_point_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local weave_objective_ext = ScriptUnit.extension(unit, "weave_objective_system")
 			local objective_name = weave_objective_ext:objective_name()
@@ -3196,6 +3210,19 @@ go_type_table = {
 				}
 			}
 			local unit_template_name = "versus_volume_objective_unit"
+
+			return unit_template_name, extension_init_data
+		end,
+		versus_mission_objective_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
+			local scale = GameSession.game_object_field(game_session, go_id, "scale")
+			local extension_init_data = {
+				versus_objective_system = {
+					objective_name = NetworkLookup.versus_objective_names[objective_name],
+					scale = Vector3(scale, scale, scale)
+				}
+			}
+			local unit_template_name = "versus_mission_objective_unit"
 
 			return unit_template_name, extension_init_data
 		end,

@@ -20,6 +20,7 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_aborted = false
 	blackboard.attack_damage_triggered = false
 	blackboard.attack_token = true
+	blackboard.keep_target = true
 	local target_unit = blackboard.target_unit
 	local target_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 
@@ -247,6 +248,7 @@ BTComboAttackAction.leave = function (self, unit, blackboard, t, reason, destroy
 	blackboard.action = nil
 	blackboard.attack_token = nil
 	blackboard.backstab_attack_trigger = nil
+	blackboard.keep_target = nil
 
 	if reason == "aborted" then
 		combo.aborted = true
@@ -261,12 +263,6 @@ end
 BTComboAttackAction.run = function (self, unit, blackboard, t, dt)
 	local combo = blackboard.combo_attack_data
 	local attacking_target = combo.attacking_target
-	local target_unit = blackboard.target_unit
-
-	if target_unit and target_unit ~= attacking_target then
-		combo.attacking_target = target_unit
-		attacking_target = target_unit
-	end
 
 	if blackboard.attack_aborted or not Unit.alive(attacking_target) then
 		combo.aborted = true
@@ -413,7 +409,7 @@ BTComboAttackAction._update_rotation_target = function (self, t, unit, blackboar
 
 	self:_set_target_position(blackboard, combo, pos, t)
 
-	local rot = LocomotionUtils.look_at_position(unit, pos)
+	local rot = LocomotionUtils.look_at_position_flat(unit, pos)
 
 	combo.rotation_target:store(rot)
 end

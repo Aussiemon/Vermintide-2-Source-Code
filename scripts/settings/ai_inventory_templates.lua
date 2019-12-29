@@ -687,6 +687,10 @@ local items = {
 		unit_name = "units/weapons/enemy/wpn_chaos_sorcerer_book/wpn_chaos_sorcerer_book",
 		attachment_node_linking = AttachmentNodeLinking.ai_chaos_sorcerer_book
 	},
+	wpn_chaos_sorcerer_scythe_01 = {
+		unit_name = "units/weapons/enemy/wpn_chaos_sorcerer_scythe/wpn_chaos_sorcerer_scythe_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_chaos_sorcerer_stick
+	},
 	moc_helmet_01 = {
 		unit_extension_template = "ai_helmet_unit",
 		unit_name = "units/beings/enemies/addons/chaos_marauder/moc_helmet_01/moc_helmet_01",
@@ -1398,6 +1402,9 @@ local item_categories = {
 	chaos_sorcerer_book = {
 		items.wpn_chaos_sorcerer_book
 	},
+	chaos_sorcerer_scythe_01 = {
+		items.wpn_chaos_sorcerer_scythe_01
+	},
 	beastmen_1h = {
 		items.wpn_bm_gor_axe_01,
 		items.wpn_bm_gor_axe_02,
@@ -1846,6 +1853,12 @@ InventoryConfigurations = {
 		anim_state_event = "to_boss",
 		items = {
 			item_categories.chaos_sorcerer_stick
+		}
+	},
+	chaos_exalted_sorcerer_drachenfels = {
+		anim_state_event = "to_boss",
+		items = {
+			item_categories.chaos_sorcerer_scythe_01
 		}
 	},
 	chaos_mutator_sorcerer = {

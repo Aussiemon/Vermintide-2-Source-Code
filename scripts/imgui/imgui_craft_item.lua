@@ -39,10 +39,16 @@ ImguiCraftItem.update = function (self)
 
 		SHOULD_RELOAD = false
 	end
+end
 
-	Imgui.Begin("Craft Item (LOCAL BACKEND ONLY)")
+ImguiCraftItem.is_persistent = function (self)
+	return false
+end
 
-	self._power_level = Imgui.SliderFloat("Power Level", self._power_level, min_power_level, max_power_level)
+ImguiCraftItem.draw = function (self, is_open)
+	Imgui.Begin("Craft Item")
+
+	self._power_level = math.floor(Imgui.SliderFloat("Power Level", self._power_level, min_power_level, max_power_level))
 	self._current_type = Imgui.Combo("Item Type", self._current_type, self._types, max_combo_size) - 1
 	local current_type_name = self._current_type >= 0 and self._types[self._current_type + 1]
 	local current_item_list = (current_type_name and self._items_per_type[current_type_name]) or {}
@@ -117,14 +123,6 @@ ImguiCraftItem.update = function (self)
 	end
 
 	Imgui.End()
-end
-
-ImguiCraftItem.subwindow_count = function (self)
-	return 0
-end
-
-ImguiCraftItem.update_subwindow = function (self)
-	return
 end
 
 ImguiCraftItem.give_item = function (self, item_key, power_level, skin_name, rarity, properties, traits)

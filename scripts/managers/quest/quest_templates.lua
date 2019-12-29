@@ -1505,7 +1505,7 @@ for i = 1, 3, 1 do
 		name = "quest_weekly_daily_quests_name",
 		icon = "quest_book_skull",
 		desc = function ()
-			return string.format(Localize("quest_weekly_daily_quests_name"), QuestSettings.weekly_daily_quests[i])
+			return string.format(Localize("quest_weekly_daily_quests_desc"), QuestSettings.weekly_daily_quests[i])
 		end,
 		stat_mappings = weekly_daily_quests_mappings,
 		completed = function (statistics_db, stats_id, quest_key)

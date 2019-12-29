@@ -6,16 +6,17 @@ local large_window_size = window_default_settings.large_window_size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_text_width = default_window_size[1] - (window_frame_width * 2 + 60)
+local panel_height = 70
 local window_frame_name = "menu_frame_11"
 local window_frame = UIFrameSettings[window_frame_name]
 local window_frame_width = window_frame.texture_sizes.vertical[1]
 local window_size = {
-	600,
-	large_window_size[2] - window_frame_width * 2
+	570,
+	large_window_size[2] - window_frame_width * 2 - panel_height
 }
 local list_size = {
 	default_window_size[1],
-	580
+	window_size[2] - 300
 }
 local list_entry_size = {
 	default_window_size[1] - 50,
@@ -23,7 +24,7 @@ local list_entry_size = {
 }
 local list_scrollbar_size = {
 	16,
-	window_size[2] - 220
+	window_size[2] - 150
 }
 local weave_entry_spacing = 10
 local scenegraph_definition = {
@@ -77,13 +78,13 @@ local scenegraph_definition = {
 		}
 	},
 	window = {
-		vertical_alignment = "center",
+		vertical_alignment = "bottom",
 		parent = "parent_window",
 		horizontal_alignment = "left",
 		size = window_size,
 		position = {
 			window_frame_width,
-			0,
+			window_frame_width,
 			1
 		}
 	},
@@ -96,7 +97,7 @@ local scenegraph_definition = {
 			80
 		},
 		position = {
-			0,
+			20,
 			-30,
 			10
 		}
@@ -138,6 +139,84 @@ local scenegraph_definition = {
 			0,
 			-80,
 			4
+		}
+	},
+	list_mask = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			list_size[1],
+			list_size[2]
+		},
+		position = {
+			20,
+			0,
+			2
+		}
+	},
+	list_window = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			list_size[1],
+			list_size[2]
+		},
+		position = {
+			20,
+			0,
+			2
+		}
+	},
+	list_window_top_edge = {
+		vertical_alignment = "top",
+		parent = "list_mask",
+		horizontal_alignment = "center",
+		size = {
+			list_size[1],
+			20
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	list_window_bottom_edge = {
+		vertical_alignment = "bottom",
+		parent = "list_mask",
+		horizontal_alignment = "center",
+		size = {
+			list_size[1],
+			20
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	list_anchor = {
+		vertical_alignment = "top",
+		parent = "list_window",
+		horizontal_alignment = "center",
+		size = list_entry_size,
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	list_scrollbar = {
+		vertical_alignment = "top",
+		parent = "window",
+		horizontal_alignment = "left",
+		size = list_scrollbar_size,
+		position = {
+			20,
+			-40,
+			3
 		}
 	},
 	unlocked_weaves_title_bg = {
@@ -196,102 +275,10 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	list_window = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			list_size[1],
-			list_size[2]
-		},
-		position = {
-			0,
-			0,
-			2
-		}
-	},
-	list_window_top_edge = {
-		vertical_alignment = "top",
-		parent = "list_window",
-		horizontal_alignment = "center",
-		size = {
-			list_size[1],
-			20
-		},
-		position = {
-			0,
-			0,
-			0
-		}
-	},
-	list_window_bottom_edge = {
-		vertical_alignment = "bottom",
-		parent = "list_window",
-		horizontal_alignment = "center",
-		size = {
-			list_size[1],
-			20
-		},
-		position = {
-			0,
-			0,
-			0
-		}
-	},
-	list_anchor = {
-		vertical_alignment = "top",
-		parent = "list_window",
-		horizontal_alignment = "center",
-		size = list_entry_size,
-		position = {
-			0,
-			0,
-			0
-		}
-	},
-	list_scrollbar = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "left",
-		size = list_scrollbar_size,
-		position = {
-			20,
-			0,
-			3
-		}
-	},
-	top_corner_left = {
-		vertical_alignment = "top",
-		parent = "window",
-		horizontal_alignment = "left",
-		size = {
-			110,
-			110
-		},
-		position = {
-			0,
-			0,
-			12
-		}
-	},
 	top_corner_right = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "right",
-		size = {
-			110,
-			110
-		},
-		position = {
-			0,
-			0,
-			12
-		}
-	},
-	bottom_corner_left = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "left",
 		size = {
 			110,
 			110
@@ -1039,24 +1026,20 @@ local widgets = {
 			0
 		}
 	}, "list_window_bottom_edge"),
-	mask = UIWidgets.create_simple_texture("mask_rect", "list_window"),
+	mask = UIWidgets.create_simple_texture("mask_rect", "list_mask"),
 	list_hotspot = create_simple_hotspot("list_window"),
 	list_scrollbar = UIWidgets.create_chain_scrollbar("list_scrollbar", "list_window", scenegraph_definition.list_scrollbar.size),
-	background = UIWidgets.create_tiled_texture("window", "menu_frame_bg_03", {
-		256,
-		256
-	}, nil, nil, {
+	background_fade = UIWidgets.create_rect_with_outer_frame("window", scenegraph_definition.window.size, "shadow_frame_02", nil, {
+		100,
+		0,
+		0,
+		0
+	}, {
 		255,
-		150,
-		150,
-		150
+		0,
+		0,
+		0
 	}),
-	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window", nil, nil, {
-		200,
-		255,
-		255,
-		255
-	}, 1),
 	next_window_top = UIWidgets.create_simple_texture("divider_01_top", "next_window_top"),
 	next_window_bottom = UIWidgets.create_simple_texture("divider_01_bottom", "next_window_bottom"),
 	next_weave_bg = UIWidgets.create_simple_texture("hud_difficulty_unlocked_bg_fade", "next_weave_bg"),
@@ -1065,61 +1048,37 @@ local widgets = {
 	unlocked_weaves_top = UIWidgets.create_simple_texture("divider_01_top", "unlocked_weaves_top"),
 	unlocked_weaves_bottom = UIWidgets.create_simple_texture("divider_01_bottom", "unlocked_weaves_bottom"),
 	unlocked_weaves_bg = UIWidgets.create_simple_texture("hud_difficulty_unlocked_bg_fade", "unlocked_weaves_bg"),
-	unlocked_weaves_title = UIWidgets.create_simple_text(Localize("menu_weave_play_completed_weaves"), "unlocked_weaves_bg", nil, nil, title_text_style),
-	top_corner_left = UIWidgets.create_simple_texture("athanor_decoration_corner", "top_corner_left"),
-	top_corner_right = UIWidgets.create_simple_uv_texture("athanor_decoration_corner", {
-		{
-			1,
-			0
-		},
-		{
-			0,
-			1
-		}
-	}, "top_corner_right"),
-	bottom_corner_left = UIWidgets.create_simple_uv_texture("athanor_decoration_corner", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_corner_left"),
-	bottom_corner_right = UIWidgets.create_simple_uv_texture("athanor_decoration_corner", {
-		{
-			1,
-			1
-		},
-		{
-			0,
-			0
-		}
-	}, "bottom_corner_right"),
-	side_edge = UIWidgets.create_simple_uv_texture("divider_vertical", {
-		{
-			1,
-			0
-		},
-		{
-			0,
-			1
-		}
-	}, "side_edge")
+	unlocked_weaves_title = UIWidgets.create_simple_text(Localize("menu_weave_play_completed_weaves"), "unlocked_weaves_bg", nil, nil, title_text_style)
 }
 local animation_definitions = {
 	on_enter = {
 		{
 			name = "fade_in",
 			start_progress = 0,
-			end_progress = 0.3,
+			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
+				widgets.background_fade.alpha_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
+				local anim_progress = math.easeInCubic(progress)
+				widgets.background_fade.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "fade_in_2",
+			start_progress = 0.3,
+			end_progress = 0.6,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+				ui_scenegraph.list_window.position[1] = scenegraph_definition.list_window.position[1]
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeInCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
+				ui_scenegraph.list_window.position[1] = scenegraph_definition.list_window.position[1] + (1 - anim_progress) * 30
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

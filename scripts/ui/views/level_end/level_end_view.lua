@@ -19,6 +19,7 @@ local widget_definitions = definitions.widgets_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
 local generic_input_actions = definitions.generic_input_actions
+local weave_widget_definitions = definitions.weave_widget_definitions
 local debug_draw_scenegraph = false
 local debug_menu = false
 local fake_input_service = {
@@ -33,6 +34,10 @@ LevelEndView = class(LevelEndView, LevelEndViewBase)
 
 LevelEndView.init = function (self, context)
 	LevelEndView.super.init(self, context)
+
+	self._weave_render_settings = {
+		snap_pixel_positions = true
+	}
 end
 
 LevelEndView.start = function (self)
@@ -114,6 +119,11 @@ LevelEndView.create_ui_elements = function (self)
 	self._ready_button_widget = UIWidget.init(widget_definitions.ready_button)
 	self._retry_checkboxes_widget = UIWidget.init(widget_definitions.retry_checkboxes)
 	self._reload_checkboxes_widget = UIWidget.init(widget_definitions.reload_checkboxes)
+	self._weave_widgets = {}
+
+	for name, widget_definition in pairs(weave_widget_definitions) do
+		self._weave_widgets[name] = UIWidget.init(widget_definition)
+	end
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -125,6 +135,27 @@ LevelEndView.create_ui_elements = function (self)
 
 	self.active = true
 	self._ready_button_widget.scenegraph_id = "ready_button_alone"
+end
+
+LevelEndView.draw_weave_widgets = function (self, dt, input_service)
+	local is_weave = self.context.game_mode_key == "weave"
+	local is_quickplay = self.context.is_quickplay
+
+	if not is_weave or not is_quickplay then
+		return
+	end
+
+	local ui_renderer = self.ui_renderer
+	local ui_scenegraph = self.ui_scenegraph
+	local render_settings = self._weave_render_settings
+
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
+
+	for _, widget in pairs(self._weave_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	UIRenderer.end_pass(ui_renderer)
 end
 
 LevelEndView.draw = function (self, dt, input_service)
@@ -174,11 +205,13 @@ end
 LevelEndView.update = function (self, dt, t)
 	LevelEndView.super.update(self, dt, t)
 
+	local input_service = self:input_service()
+
+	self:draw_weave_widgets(dt, input_service)
+
 	if self.suspended or self.waiting_for_post_update_enter then
 		return
 	end
-
-	local input_service = self:input_service()
 
 	self:_update_animations(dt, t)
 	self:draw(dt, input_service)

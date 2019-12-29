@@ -465,13 +465,15 @@ local function lobby_level_display_name(lobby_data)
 	local game_mode_name = game_mode_index and game_mode_names[game_mode_index]
 
 	if game_mode_name == "weave" then
-		if lobby_data.weave_name then
+		if lobby_data.weave_name ~= "false" and lobby_data.quick_game == "false" then
 			local weave_name_data = string.split(lobby_data.weave_name, "_")
 			local weave_name = "Weave " .. weave_name_data[2]
 
 			return weave_name
+		elseif lobby_data.quick_game == "true" then
+			return Localize("start_game_window_weave_quickplay_title")
 		else
-			return "Unknown"
+			return Localize("lb_unknown")
 		end
 	else
 		local level_setting = level and LevelSettings[level]

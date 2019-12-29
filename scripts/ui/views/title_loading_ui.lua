@@ -3,6 +3,7 @@ require("scripts/ui/ui_widgets")
 require("scripts/ui/views/cutscene_overlay_ui")
 
 local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
+local wom_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_wom_intro")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -820,7 +821,8 @@ wom_intro_video = {
 	sound_start = "cinematic_intro_wom",
 	scenegraph_id = "splash_video",
 	material_name = "vermintide_2_wom_intro",
-	sound_stop = "stop_cinematic_intro_wom"
+	sound_stop = "stop_cinematic_intro_wom",
+	subtitle_template_settings = wom_intro_video_subtitle_settings
 }
 
 local function get_slider_progress(min, max, value)
@@ -930,7 +932,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 end
 
 TitleLoadingUI._setup_gui = function (self)
-	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_splash_screen", "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
+	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
 
 	self:_create_elements()
 end

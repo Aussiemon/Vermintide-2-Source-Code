@@ -14,11 +14,13 @@ PlayerManager.init = function (self)
 	self._num_human_players = 0
 	self._human_players = {}
 	self._unit_owners = {}
+	self._player_units_owners = {}
 	self._ui_id_increment = 0
 end
 
 local RPCS = {
-	"rpc_to_client_spawn_player"
+	"rpc_to_client_spawn_player",
+	"rpc_set_observed_player_id"
 }
 
 PlayerManager.set_is_server = function (self, is_server, network_event_delegate, network_manager)
@@ -93,6 +95,8 @@ PlayerManager.assign_unit_ownership = function (self, unit, player, is_player_un
 	player.owned_units[unit] = unit
 
 	if is_player_unit then
+		self._player_units_owners[unit] = player
+
 		player:set_player_unit(unit)
 
 		local party_manager = Managers.party
@@ -134,11 +138,16 @@ PlayerManager.relinquish_unit_ownership = function (self, unit)
 	fassert(self._unit_owners[unit], "[PlayerManager:relinquish_unit_ownership] Unit %s ownership cannot be relinquished, not owned.", unit)
 
 	local unit_owner = self._unit_owners[unit]
+	local player_unit_owner = self._player_units_owners[unit]
 
-	if unit == unit_owner.player_unit then
+	if player_unit_owner then
+		if unit == unit_owner.player_unit then
+			unit_owner.player_unit = nil
+		end
+
 		Managers.state.side:remove_player_unit_from_side(unit)
 
-		unit_owner.player_unit = nil
+		self._player_units_owners[unit] = nil
 	end
 
 	self._unit_owners[unit] = nil
@@ -181,9 +190,6 @@ PlayerManager.add_remote_player = function (self, peer_id, player_controlled, lo
 	local player = RemotePlayer:new(self.network_manager, peer_id, player_controlled, self.is_server, local_player_id, unique_id, clan_tag, ui_id, account_id)
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
-
-	player:register_rpcs(self.network_event_delegate, network_transmit)
-
 	self._players[unique_id] = player
 
 	if player_controlled then
@@ -299,7 +305,6 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 		end
 
 		self._statistics_db:unregister(player:stats_id())
-		player:unregister_rpcs()
 		player:destroy()
 	end
 end
@@ -443,6 +448,16 @@ function DEBUG_PLAYERS()
 	end
 
 	print(" ")
+end
+
+PlayerManager.rpc_set_observed_player_id = function (self, sender, observer_player_go_id, player_to_observe_go_id)
+	fassert(self.is_server, "Only server should get this")
+
+	local player_manager = Managers.player
+	local observer_player = player_manager:player_from_game_object_id(observer_player_go_id)
+	local player_to_observe = player_manager:player_from_game_object_id(player_to_observe_go_id)
+
+	observer_player:set_observed_player_id(player_to_observe:unique_id())
 end
 
 return

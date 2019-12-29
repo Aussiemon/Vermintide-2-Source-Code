@@ -1,12 +1,5 @@
-local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_definitions")
-local widget_definitions = definitions.widgets
-local scenegraph_definition = definitions.scenegraph_definition
-local animation_definitions = definitions.animation_definitions
-local create_weave_entry_func = definitions.create_weave_entry_func
-local weave_entry_size = definitions.entry_size
-local weave_entry_spacing = definitions.entry_spacing
-local num_visible_weave_entries = definitions.num_visible_weave_entries
-local DO_RELOAD = false
+local definitions, widget_definitions, scenegraph_definition, animation_definitions, create_weave_entry_func, weave_entry_size, weave_entry_spacing, num_visible_weave_entries = nil
+local DO_RELOAD = true
 StartGameWindowWeaveList = class(StartGameWindowWeaveList)
 StartGameWindowWeaveList.NAME = "StartGameWindowWeaveList"
 
@@ -16,18 +9,61 @@ StartGameWindowWeaveList.on_enter = function (self, params, offset)
 	self._params = params
 	self._parent = params.parent
 	local ingame_ui_context = params.ingame_ui_context
+	self._is_server = ingame_ui_context.is_server
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
 		snap_pixel_positions = true
 	}
+	self._current_index = 0
+	self._hold_down_timer = 0
+	self._hold_up_timer = 0
+	self._current_scroll_value = 0
+	self._wanted_scrollbar_value = 0
+	self._start_index = 0
+	self._play_button_pressed = false
+	self._animations = {}
 
+	self:_setup_definitions(params)
 	self:_create_ui_elements(params, offset)
 	self:_populate_list()
-	self:_on_weave_widget_pressed(self._next_weave_widget)
+
+	local ignore_sound = true
+
+	self:_on_weave_widget_pressed(self._next_weave_widget, ignore_sound)
 	Managers.state.event:trigger("weave_list_entered")
+	self:_start_transition_animation("on_enter")
+	self._parent:change_generic_actions("default_weave")
+end
+
+StartGameWindowWeaveList._setup_definitions = function (self, params)
+	local gamepad_active = params.use_gamepad_layout or PLATFORM ~= "win32"
+
+	if gamepad_active then
+		definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_console_definitions")
+	else
+		definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_definitions")
+	end
+
+	widget_definitions = definitions.widgets
+	scenegraph_definition = definitions.scenegraph_definition
+	animation_definitions = definitions.animation_definitions
+	create_weave_entry_func = definitions.create_weave_entry_func
+	weave_entry_size = definitions.entry_size
+	weave_entry_spacing = definitions.entry_spacing
+	num_visible_weave_entries = definitions.num_visible_weave_entries
+end
+
+StartGameWindowWeaveList._start_transition_animation = function (self, animation_name)
+	local params = {
+		render_settings = self._render_settings
+	}
+	local widgets = self._widgets_by_name
+	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowWeaveList._create_ui_elements = function (self, params, offset)
+	DO_RELOAD = false
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
@@ -45,32 +81,262 @@ StartGameWindowWeaveList._create_ui_elements = function (self, params, offset)
 
 	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self._ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 end
 
 StartGameWindowWeaveList.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowWeaveList")
 
-	self.ui_animator = nil
+	self._ui_animator = nil
 	self._params.selected_weave_template = nil
 end
 
 StartGameWindowWeaveList.update = function (self, dt, t)
 	if DO_RELOAD then
-		DO_RELOAD = false
-
+		self:_setup_definitions(self._params)
 		self:_create_ui_elements()
 	end
 
-	self:_handle_input(dt, t)
+	script_data.weave_list = self
+
+	self:_update_can_play(dt, t)
+	self:_update_animations(dt)
+
+	if not self._play_button_pressed then
+		self:_handle_input(dt, t)
+		self:_handle_gamepad_input(dt, t)
+	end
+
 	self:_draw(dt)
+end
+
+StartGameWindowWeaveList._can_play = function (self)
+	local can_play = self._selected_weave_name ~= nil
+
+	return can_play
+end
+
+StartGameWindowWeaveList._can_set_next_weave = function (self)
+	local next_weave_widget = self._next_weave_widget
+	local next_weave_widget_content = next_weave_widget.content
+	local weave_template_name = next_weave_widget_content.weave_template_name
+
+	return self._selected_weave_name ~= weave_template_name
+end
+
+StartGameWindowWeaveList._update_can_play = function (self)
+	local is_matchmaking = Managers.matchmaking:is_game_matchmaking()
+	local can_play = self:_can_play()
+	local can_set_next_weave = self:_can_set_next_weave()
+
+	if self._previous_can_play ~= can_play or self._previous_set_next_weave ~= can_set_next_weave or is_matchmaking ~= self._was_matchmaking then
+		self._previous_can_play = can_play
+		self._previous_set_next_weave = can_set_next_weave
+		self._was_matchmaking = is_matchmaking
+
+		if is_matchmaking then
+			if self._is_server then
+				if can_set_next_weave then
+					self._parent:set_input_description("cancel_available_set_next_weave_available")
+				else
+					self._parent:set_input_description("cancel_matchmaking")
+				end
+			elseif can_set_next_weave then
+				self._parent:set_input_description("set_next_weave_available")
+			else
+				self._parent:set_input_description(nil)
+			end
+		elseif can_play then
+			if can_set_next_weave then
+				self._parent:set_input_description("play_available_set_next_weave_available")
+			else
+				self._parent:set_input_description("play_available")
+			end
+		elseif can_set_next_weave then
+			self._parent:set_input_description("set_next_weave_available")
+		else
+			self._parent:set_input_description(nil)
+		end
+	end
 end
 
 StartGameWindowWeaveList.post_update = function (self, dt, t)
 	return
 end
 
+StartGameWindowWeaveList._update_animations = function (self, dt)
+	local animations = self._animations
+	local ui_animator = self._ui_animator
+
+	ui_animator:update(dt)
+
+	for animation_name, animation_id in pairs(animations) do
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
+
+			animations[animation_name] = nil
+		end
+	end
+end
+
+StartGameWindowWeaveList._on_list_index_selected = function (self, index)
+	local widgets = self._weave_entry_widgets
+	local widget = widgets[index]
+
+	if not widget then
+		return
+	end
+
+	local widget_content = widget.content
+	local template_id = widget_content.template_id
+
+	for idx, widget in ipairs(widgets) do
+		local content = widget.content
+		local hotspot = content.button_hotspot
+		local is_selected = idx == index
+
+		if hotspot then
+			hotspot.is_selected = is_selected
+			hotspot.has_focus = is_selected
+		end
+	end
+
+	local selected_widget = widgets[index]
+
+	if selected_widget then
+		local next_weave_widget_content = self._next_weave_widget.content
+		next_weave_widget_content.button_hotspot.is_selected = false
+		next_weave_widget_content.button_hotspot.has_focus = false
+	end
+
+	local weave_templates = WeaveSettings.templates_ordered
+	local template = weave_templates[template_id]
+	self._params.selected_weave_template = template
+	self._current_index = index
+	local weave_name = template.name
+	self._selected_weave_name = weave_name
+
+	self._parent:set_selected_weave_id(weave_name)
+	self._parent:set_selected_weave_objective_index(1)
+	self:_play_sound("menu_wind_level_select")
+end
+
+StartGameWindowWeaveList._handle_gamepad_input = function (self, dt, t)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if not gamepad_active then
+		return
+	end
+
+	local num_entries = #self._weave_entry_widgets
+	local input_service = self._parent:window_input_service()
+	local is_matchmaking = Managers.matchmaking:is_game_matchmaking()
+
+	if input_service:get("move_up_hold") then
+		self._hold_up_timer = self._hold_up_timer + dt
+		self._hold_down_timer = 0
+	elseif input_service:get("move_down_hold") then
+		self._hold_down_timer = self._hold_down_timer + dt
+		self._hold_up_timer = 0
+	else
+		self._hold_up_timer = 0
+		self._hold_down_timer = 0
+	end
+
+	if input_service:get("move_up") or self._hold_up_timer > 0.5 then
+		if self._hold_up_timer > 0.5 then
+			self._hold_up_timer = 0.45
+		end
+
+		local current_index = self._current_index
+		local new_index = current_index - 1
+
+		if new_index < 1 then
+			new_index = num_entries
+		end
+
+		if new_index ~= current_index then
+			self:_on_list_index_selected(new_index)
+		end
+	elseif input_service:get("move_down") or self._hold_down_timer > 0.5 then
+		if self._hold_down_timer > 0.5 then
+			self._hold_down_timer = 0.45
+		end
+
+		local weave_templates = WeaveSettings.templates_ordered
+		local current_index = self._current_index
+		local new_index = 1 + current_index % num_entries
+
+		if new_index ~= current_index then
+			self:_on_list_index_selected(new_index)
+		end
+	else
+		if is_matchmaking then
+			if self._is_server and input_service:get("refresh_press") then
+				self._parent:play_sound("Play_hud_hover")
+				Managers.matchmaking:cancel_matchmaking()
+			end
+		elseif self:_can_play() and input_service:get("refresh_press") then
+			self._play_button_pressed = true
+			local force_close_menu = true
+
+			self._parent:play(t, "weave", force_close_menu)
+		end
+
+		if input_service:get("special_1") then
+			self._current_index = 0
+			self._hold_down_timer = 0
+			self._hold_up_timer = 0
+			self._current_scroll_value = 0
+			self._wanted_scrollbar_value = 0
+			self._start_index = 0
+
+			self:_on_weave_widget_pressed(self._next_weave_widget)
+		elseif input_service:get("trigger_cycle_next") then
+			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.ranked_weave_desc)
+		end
+	end
+
+	self:_handle_gamepad_scrollbar(dt, t)
+	self:_animate_list_entries(false, dt)
+end
+
+StartGameWindowWeaveList._handle_gamepad_scrollbar = function (self, dt, t)
+	local num_entries = #self._weave_entry_widgets
+
+	if num_entries <= num_visible_weave_entries then
+		return
+	end
+
+	local start_index = self._start_index
+	local step = 1 / (num_entries - num_visible_weave_entries + 1)
+	local current_index = self._current_index
+	local relative_index = self._current_index - (start_index - 1)
+
+	if relative_index > num_visible_weave_entries - 3 then
+		local diff = relative_index - (num_visible_weave_entries - 3)
+		self._start_index = math.min(start_index + diff, num_entries - num_visible_weave_entries + 3)
+		self._current_scroll_value = self._wanted_scrollbar_value
+		self._wanted_scrollbar_value = math.min(self._wanted_scrollbar_value + step * diff, 1)
+	elseif self._current_index < start_index + 2 then
+		local diff = (start_index + 2) - self._current_index
+		self._start_index = math.max(start_index - diff, 1)
+		self._current_scroll_value = self._wanted_scrollbar_value
+		self._wanted_scrollbar_value = math.max(self._wanted_scrollbar_value - step * diff, 0)
+	end
+
+	self._current_scroll_value = math.lerp(self._current_scroll_value, self._wanted_scrollbar_value, dt * 7)
+
+	self:_set_scrollbar_value(self._current_scroll_value)
+end
+
 StartGameWindowWeaveList._handle_input = function (self, dt, t)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active then
+		return
+	end
+
 	local parent = self._parent
 	local widgets_by_name = self._widgets_by_name
 	local input_service = self._parent:window_input_service()
@@ -111,7 +377,7 @@ StartGameWindowWeaveList._is_list_hovered = function (self)
 	return hotspot.is_hover == true
 end
 
-StartGameWindowWeaveList._on_weave_widget_pressed = function (self, widget)
+StartGameWindowWeaveList._on_weave_widget_pressed = function (self, widget, ignore_sound)
 	local widgets = self._weave_entry_widgets
 	local selected_widget = widget
 	local selected_content = selected_widget.content
@@ -124,28 +390,39 @@ StartGameWindowWeaveList._on_weave_widget_pressed = function (self, widget)
 
 		if hotspot then
 			hotspot.is_selected = is_selected
+			hotspot.has_focus = is_selected
 		end
 	end
 
 	local next_weave_widget_content = self._next_weave_widget.content
 	next_weave_widget_content.button_hotspot.is_selected = widget == self._next_weave_widget
+	next_weave_widget_content.button_hotspot.has_focus = widget == self._next_weave_widget
 	local weave_templates = WeaveSettings.templates_ordered
 	local template = weave_templates[template_id]
 	self._params.selected_weave_template = template
 	local weave_name = template.name
+	self._selected_weave_name = weave_name
 
 	self._parent:set_selected_weave_id(weave_name)
 	self._parent:set_selected_weave_objective_index(1)
+
+	if not ignore_sound then
+		self:_play_sound("menu_wind_level_select")
+	end
 end
 
 StartGameWindowWeaveList._draw = function (self, dt)
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self._parent:window_input_service()
+	local render_settings = self._render_settings
+	local alpha_multiplier = render_settings.alpha_multiplier or 0
 
-	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self._render_settings)
+	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	for widget_name, widget in pairs(self._widgets_by_name) do
+		render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
+
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
@@ -155,9 +432,13 @@ StartGameWindowWeaveList._draw = function (self, dt)
 		local widget = self._weave_entry_widgets[i]
 
 		if widget then
+			render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
+
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
 	end
+
+	render_settings.alpha_multiplier = alpha_multiplier
 
 	UIRenderer.draw_widget(ui_top_renderer, self._next_weave_widget)
 	UIRenderer.end_pass(ui_top_renderer)
@@ -367,12 +648,13 @@ StartGameWindowWeaveList._animate_list_entries = function (self, list_hovered, d
 end
 
 StartGameWindowWeaveList._animate_list_entry = function (self, content, style, dt, optional_hover)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local hotspot = content.button_hotspot or content.hotspot
-	local is_hover = hotspot.is_hover
+	local is_hover = hotspot.is_hover or (gamepad_active and hotspot.has_focus)
 	local is_selected = hotspot.is_selected
 	local on_hover_enter = hotspot.on_hover_enter
 
-	if optional_hover ~= nil and not optional_hover then
+	if not gamepad_active and optional_hover ~= nil and not optional_hover then
 		is_hover = false
 		on_hover_enter = false
 	end

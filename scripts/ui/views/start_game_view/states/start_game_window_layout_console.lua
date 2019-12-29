@@ -382,6 +382,37 @@ local generic_input_actions = {
 			end
 		}
 	},
+	default_weave_quick_play = {
+		{
+			input_action = "d_horizontal",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 4,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+			end
+		},
+		{
+			input_action = "trigger_cycle_next",
+			priority = 5,
+			description_text = "start_game_window_adventure_header"
+		}
+	},
 	default_weave = {
 		{
 			input_action = "d_vertical",
@@ -401,6 +432,11 @@ local generic_input_actions = {
 			content_check_function = function ()
 				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
 			end
+		},
+		{
+			input_action = "trigger_cycle_next",
+			priority = 4,
+			description_text = "start_game_window_adventure_header"
 		}
 	},
 	default_weave_find_group = {

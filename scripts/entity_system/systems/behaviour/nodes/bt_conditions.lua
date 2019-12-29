@@ -269,6 +269,30 @@ BTConditions.tentacle_found_target = function (blackboard)
 	return unit_alive(blackboard.target_unit) and not blackboard.tentacle_satisfied
 end
 
+BTConditions.at_half_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.5
+end
+
+BTConditions.can_transition_half_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.5 and not blackboard.transition_done
+end
+
+BTConditions.transitioned_half_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.5 and blackboard.transition_done
+end
+
+BTConditions.spawned_allies_dead = function (blackboard)
+	return blackboard.spawn_allies_horde and blackboard.spawn_allies_horde.is_dead
+end
+
+BTConditions.ready_to_summon_wave = function (blackboard)
+	return blackboard.wave_cooldown == 0
+end
+
+BTConditions.not_ready_to_summon_wave = function (blackboard)
+	return not blackboard.ready_to_summon or (not blackboard.summoning and not Unit.alive(blackboard.target_unit)) or blackboard.wave_cooldown ~= 0
+end
+
 BTConditions.ready_to_summon = function (blackboard)
 	return blackboard.ready_to_summon and (blackboard.summoning or Unit.alive(blackboard.target_unit))
 end
@@ -559,6 +583,56 @@ BTConditions.should_wait_idle = function (blackboard)
 	end
 end
 
+BTConditions.beastmen_standard_bearer_place_standard = function (blackboard)
+	return unit_alive(blackboard.target_unit) and not blackboard.has_placed_standard
+end
+
+BTConditions.beastmen_standard_bearer_pickup_standard = function (blackboard)
+	if blackboard.ignore_standard_pickup then
+		return false
+	end
+
+	local target_distance_to_standard = blackboard.target_distance_to_standard
+
+	if blackboard.moving_to_pick_up_standard then
+		return true
+	else
+		return blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and AiUtils.unit_alive(blackboard.standard_unit) and target_distance_to_standard and blackboard.breed.pickup_standard_distance < target_distance_to_standard
+	end
+end
+
+BTConditions.beastmen_standard_bearer_move_and_place_standard = function (blackboard)
+	local has_move_and_place_standard_position = blackboard.move_and_place_standard
+
+	return has_move_and_place_standard_position
+end
+
+BTConditions.ungor_archer_enter_melee_combat = function (blackboard)
+	return blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or (blackboard.target_dist and blackboard.target_dist < 5))
+end
+
+BTConditions.bestigor_at_smartobject = function (blackboard)
+	local in_charge_action = blackboard.charge_state ~= nil
+	local at_smartobject = not in_charge_action and BTConditions.at_smartobject(blackboard)
+
+	return at_smartobject
+end
+
+BTConditions.confirmed_player_sighting_standard_bearer = function (blackboard)
+	return unit_alive(blackboard.target_unit) and blackboard.confirmed_player_sighting and blackboard.has_placed_standard
+end
+
+BTConditions.standard_bearer_should_be_defensive = function (blackboard)
+	local pickup_standard_distance = blackboard.breed.pickup_standard_distance
+	local defensive_threshold_distance = blackboard.breed.defensive_threshold_distance
+	local in_combat = unit_alive(blackboard.target_unit) and blackboard.confirmed_player_sighting and blackboard.has_placed_standard
+	local target_distance_to_standard = blackboard.target_distance_to_standard
+	local target_is_within_range = target_distance_to_standard and defensive_threshold_distance <= target_distance_to_standard and target_distance_to_standard <= pickup_standard_distance
+	local not_attacking = blackboard.move_state ~= "attacking"
+
+	return in_combat and target_is_within_range and not_attacking
+end
+
 BTConditions.switch_to_melee_weapon = function (blackboard)
 	return BTConditions.ungor_archer_enter_melee_combat(blackboard) and not blackboard.has_switched_weapons
 end
@@ -567,14 +641,20 @@ BTConditions.confirmed_player_sighting_and_has_switched_weapons = function (blac
 	return blackboard.confirmed_player_sighting and blackboard.has_switched_weapons
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local bt_conditions = dlc.bt_conditions
+BTConditions.player_controller_is_alive = function (blackboard)
+	return blackboard.player_controller_unit and unit_alive(blackboard.player_controller_unit) and not blackboard.target_is_in_combat
+end
 
-	if bt_conditions then
-		for function_name, condition_function in pairs(bt_conditions) do
-			BTConditions[function_name] = condition_function
-		end
-	end
+BTConditions.player_controller_is_in_combat = function (blackboard)
+	return blackboard.player_controller_unit and blackboard.target_is_in_combat
+end
+
+BTConditions.is_in_inn = function (blackboard)
+	return blackboard.inn_idle_spots and global_is_inside_inn
+end
+
+BTConditions.has_no_idle_spot = function (blackboard)
+	return not blackboard.has_idle_spot
 end
 
 return

@@ -57,7 +57,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 	else
 		local ping = self.input_extension:get("ping")
 		local social_wheel_delay = Application.user_setting("social_wheel_delay") or DefaultUserSettings.get("user_settings", "social_wheel_delay")
-		local ping_only = (script_data.enable_social_wheel ~= true and ping) or self.input_extension:get("ping_only")
+		local ping_only = self.input_extension:get("ping_only")
 		local social_wheel_only = self.input_extension:get("social_wheel_only")
 
 		if not ping and self.status_extension:is_ready_for_assisted_respawn() then

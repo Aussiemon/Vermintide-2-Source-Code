@@ -38,22 +38,24 @@ return {
 		end
 	end,
 	increment_challenge_stat = function (player_unit)
-		local stat_group_name = "season_1"
-		local stat_name = "weave_shadow_kill_no_shrouded"
-		local player = Managers.player:owner(player_unit)
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			local stat_group_name = "season_1"
+			local stat_name = "weave_shadow_kill_no_shrouded"
+			local player = Managers.player:owner(player_unit)
 
-		if player.local_player then
-			local statistics_db = Managers.player:statistics_db()
-			local local_player = Managers.player:local_player()
-			local stats_id = local_player:stats_id()
+			if player.local_player then
+				local statistics_db = Managers.player:statistics_db()
+				local local_player = Managers.player:local_player()
+				local stats_id = local_player:stats_id()
 
-			statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
-		else
-			local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
-			local stat_name_index = NetworkLookup.statistics[stat_name]
-			local peer_id = player:network_id()
+				statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
+			else
+				local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
+				local stat_name_index = NetworkLookup.statistics[stat_name]
+				local peer_id = player:network_id()
 
-			Managers.state.network.network_transmit:send_rpc("rpc_increment_stat_group", peer_id, stat_group_index, stat_name_index)
+				Managers.state.network.network_transmit:send_rpc("rpc_increment_stat_group", peer_id, stat_group_index, stat_name_index)
+			end
 		end
 	end,
 	server_update_function = function (context, data, dt, t)

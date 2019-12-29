@@ -4075,6 +4075,35 @@ DamageProfileTemplates.warpfire_thrower_explosion = {
 		}
 	}
 }
+DamageProfileTemplates.huge_boss_explosion = {
+	charge_value = "grenade",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1.5,
+			1,
+			1.5,
+			0.75,
+			1.2
+		},
+		impact = {
+			1.5,
+			1,
+			1.5,
+			0.75,
+			1.2
+		}
+	},
+	default_target = {
+		damage_type = "warpfire_ground",
+		attack_template = "fire_grenade_explosion",
+		power_distribution = {
+			attack = 0.75,
+			impact = 0.75
+		}
+	}
+}
 DamageProfileTemplates.globadier_gas_cloud = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.globadier_gas_cloud.default_target.attack_template = "poison_globe_ai_initial_damage"
 DamageProfileTemplates.globadier_gas_cloud.no_stagger_damage_reduction_ranged = true

@@ -48,6 +48,10 @@ BloodManager.update_blood_enabled = function (self, blood_enabled)
 	BloodSettings.hit_effects.enabled = blood_enabled
 end
 
+BloodManager.get_blood_enabled = function (self)
+	return self._blood_active
+end
+
 BloodManager.update_num_blood_decals = function (self, num_blood_decals)
 	BloodSettings.blood_decals.num_decals = num_blood_decals
 end

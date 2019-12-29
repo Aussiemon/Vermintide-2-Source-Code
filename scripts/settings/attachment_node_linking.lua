@@ -2881,6 +2881,26 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	hat_skinned_face = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "j_neck"
+			},
+			{
+				target = "j_neck",
+				source = "j_neck"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_jaw_anim",
+				source = "j_jaw_anim"
+			}
+		}
+	},
 	dr_beard = {
 		slot_hat = {
 			{

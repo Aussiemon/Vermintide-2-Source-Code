@@ -22,7 +22,7 @@ local stats_list_size = {
 }
 local weapon_list_size = {
 	480,
-	850
+	800
 }
 local weapon_entry_size = {
 	390,
@@ -416,7 +416,7 @@ local scenegraph_definition = {
 		size = weapon_list_size,
 		position = {
 			60,
-			130,
+			180,
 			3
 		}
 	},

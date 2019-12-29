@@ -913,6 +913,51 @@ Paintings.hor_CurseOfTheVampireCoast_KeyArt = {
 		wood = true
 	}
 }
+Paintings.ver_TD033_BL_Drachenfels_newedition = {
+	sound_event = "painting_TD033_BL_Drachenfels_newedition_description",
+	rarity = "common",
+	display_name = "painting_TD033_BL_Drachenfels_newedition_name",
+	icon = "icon_painting_2",
+	frame = "painted",
+	description = "painting_TD033_BL_Drachenfels_newedition_description",
+	artist = "painting_TD033_BL_Drachenfels_newedition_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_PAS014C_Drachenfels = {
+	sound_event = "painting_PAS014C_Drachenfels_description",
+	rarity = "common",
+	display_name = "painting_PAS014C_Drachenfels_name",
+	icon = "icon_painting_2",
+	frame = "painted",
+	description = "painting_PAS014C_Drachenfels_description",
+	artist = "painting_PAS014C_Drachenfels_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_JB002_Drachenfel_Ogres_Tower = {
+	sound_event = "painting_JB002_Drachenfel_Ogres_Tower_description",
+	rarity = "common",
+	display_name = "painting_JB002_Drachenfel_Ogres_Tower_name",
+	icon = "icon_painting_2",
+	frame = "painted",
+	description = "painting_JB002_Drachenfel_Ogres_Tower_description",
+	artist = "painting_JB002_Drachenfel_Ogres_Tower_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",

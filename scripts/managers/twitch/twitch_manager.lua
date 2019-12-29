@@ -679,7 +679,10 @@ TwitchManager._handle_popup = function (self)
 
 		if result then
 			if result == "return_to_inn" then
-				Managers.state.game_mode:start_specific_level("inn_level")
+				local mechanism = Managers.mechanism:game_mechanism()
+				local inn_level_name = mechanism:get_hub_level_key()
+
+				Managers.state.game_mode:start_specific_level(inn_level_name)
 			else
 				Application.error(string.format("[TwitchManager] Unknown result: %s", result))
 			end

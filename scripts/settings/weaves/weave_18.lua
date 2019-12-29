@@ -1,26 +1,26 @@
 return {
 	wind_strength = 3,
-	wind = "light",
+	wind = "shadow",
 	seed = 548672,
-	terror_events = {
-		"objective_specials_raid",
-		"objective_event_beastmen",
-		"weave_spot_event_chaos_warriors",
-		"weave_spot_event_skaven_specials_small",
-		"capture_point_1_event_small"
-	},
 	objectives = {
 		{
 			display_name = "objective_sockets_name",
-			level_id = "dlc_scorpion_pit_light",
+			level_id = "dlc_scorpion_pit_shadow",
 			objective_type = "sockets",
 			conflict_settings = "weave_skaven_beastmen",
-			level_seed = 734621,
 			end_zone_name = "end_zone_01",
-			show_bar = true,
+			level_seed = 734621,
 			base_level_id = "dlc_scorpion_pit",
 			objective_start_flow_event = "weave_objective_sockets_start",
+			show_bar = true,
 			spawning_seed = 8973420,
+			terror_events = {
+				"objective_specials_raid",
+				"objective_event_beastmen",
+				"weave_spot_event_chaos_warriors",
+				"weave_spot_event_skaven_specials_small",
+				"capture_point_1_event_small"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
@@ -176,42 +176,15 @@ return {
 						percentage_spawn_offset = -20
 					}
 				}
-			},
-			mutator_item_config = {
-				mutator_item_spawner_002 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_010 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_006 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_011 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_016 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				}
 			}
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_light",
+			level_id = "dlc_scorpion_arena_void_shadow",
+			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 903475,
 			level_seed = 54987,
 			conflict_settings = "weave_disabled",
-			objective_start_flow_event = "weave_objective_waves_start",
 			system_seeds = {
 				pickups = 2308954
 			},
@@ -222,18 +195,6 @@ return {
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}
-				}
-			},
-			mutator_item_config = {
-				mutator_item_spawner = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_002 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
 				}
 			}
 		}

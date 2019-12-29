@@ -345,8 +345,6 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 				else
 					self:shoot_hit_check(unit, blackboard)
 				end
-			elseif data.stop_firing_t <= t then
-				self:_stop_beam_sfx(unit, blackboard, data)
 			elseif data.stop_firing_t <= t and blackboard.shoot_sfx_id then
 				WwiseWorld.stop_event(Managers.world:wwise_world(blackboard.world), blackboard.shoot_sfx_id)
 

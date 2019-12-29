@@ -101,7 +101,9 @@ end
 
 SlotAllocator.is_free = function (self, profile_index)
 	if self._is_server then
-		return self._profiles[profile_index].peer_id == SlotAllocator.INVALID_PEER
+		local profile_slot = self._profiles[profile_index]
+
+		return (profile_slot and profile_slot.peer_id == SlotAllocator.INVALID_PEER) or false
 	else
 		local lobby_data = self._lobby:get_stored_lobby_data()
 

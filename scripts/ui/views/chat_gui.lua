@@ -8,6 +8,9 @@ ChatGui.init = function (self, ui_context)
 	self.input_manager = ui_context.input_manager
 	self.ui_renderer = ui_context.ui_top_renderer
 	self.chat_manager = ui_context.chat_manager
+	self._render_settings = {
+		alpha_multiplier = 1
+	}
 	self.chat_message = ""
 	self.chat_index = 1
 	self.chat_mode = "insert"
@@ -24,7 +27,15 @@ ChatGui.init = function (self, ui_context)
 	self.chat_closed = true
 	self.chat_focused = false
 	self.chat_close_time = 0
+	local font_size = nil
 
+	if LEVEL_EDITOR_TEST then
+		font_size = DefaultUserSettings.get("user_settings", "chat_font_size")
+	else
+		font_size = Application.user_setting("chat_font_size")
+	end
+
+	self:set_font_size(font_size)
 	self:_set_chat_window_alpha(0)
 end
 
@@ -67,8 +78,26 @@ ChatGui.create_ui_elements = function (self)
 	self.chat_input_widget = UIWidget.init(definitions.chat_input_widget)
 	self.scrollbar_widget = UIWidget.init(definitions.chat_scrollbar_widget)
 	self.tab_widget = UIWidget.init(definitions.chat_tab_widget)
-	self.window_tabbed_position = -400
+	self._widgets = {}
+
+	for name, widget in pairs(definitions.widgets) do
+		self._widgets[name] = UIWidget.init(widget)
+	end
+
 	self.ui_animations.caret_pulse = self:animate_element_pulse(self.chat_input_widget.style.text.caret_color, 1, 60, 255, 2)
+
+	if RELOAD_CHAT_GUI then
+		local font_size = nil
+
+		if LEVEL_EDITOR_TEST then
+			font_size = DefaultUserSettings.get("user_settings", "chat_font_size")
+		else
+			font_size = Application.user_setting("chat_font_size")
+		end
+
+		self:set_font_size(font_size)
+	end
+
 	RELOAD_CHAT_GUI = false
 end
 
@@ -105,18 +134,24 @@ ChatGui.remove_ignore_peer_id = function (self, peer_id)
 end
 
 ChatGui.set_font_size = function (self, font_size)
-	Application.warning("CHAT FONT SIZE DISABLED")
-
-	return
-
-	self.chat_output_widget.style.text.font_size = font_size
-	self.chat_input_widget.style.text.font_size = font_size + 2
-	self.chat_input_widget.style.background.size[2] = definitions.CHAT_HEIGHT - 26 - (200 - (font_size + 4))
-	self.chat_input_widget.style.text.caret_size[2] = font_size + 6
 	local ui_scenegraph = self.ui_scenegraph
 	local scenegraph_definition = definitions.scenegraph_definition
-	ui_scenegraph[self.chat_input_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - (200 - (font_size + 4))
-	ui_scenegraph[self.chat_output_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - (font_size + 4)
+	local output_field_margin = 0
+	local input_field_size_padding = 20
+	local background_height = font_size + input_field_size_padding
+	ui_scenegraph.chat_input_text.size[2] = background_height
+	ui_scenegraph.chat_input_box.size[2] = background_height
+	self.chat_output_widget.style.text.font_size = font_size
+	self.chat_input_widget.style.text.font_size = font_size
+	self.chat_input_widget.style.channel_text.font_size = font_size
+	local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.text)
+	local font_type = self.chat_input_widget.style.text.font_type
+	local font_height, font_min, font_max = UIGetFontHeight(self.ui_renderer.gui, font_type, scaled_font_size)
+	local input_text_height_offset = (background_height / 2 + math.abs(font_min / 2)) - font_height / 2
+	self.chat_input_widget.style.text.offset[2] = input_text_height_offset
+	self.chat_input_widget.style.text.caret_size[2] = font_height
+	ui_scenegraph[self.chat_output_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - font_size - output_field_margin
+	ui_scenegraph[self.chat_output_widget.style.text.scenegraph_id].position[2] = output_field_margin * 0.5
 end
 
 ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock, chat_enabled)
@@ -275,9 +310,14 @@ ChatGui._update_chat_messages = function (self)
 
 				if new_message.is_system_message then
 					new_message_table.is_system = true
+					new_message_table.sender = new_message.message_sender .. ": "
 				else
 					if new_message.type == Irc.CHANNEL_MSG and new_message.data then
 						new_message_table.sender = "[" .. new_message.data.parameter .. "] " .. new_message.message_sender .. ": "
+						new_message_table.trimmed_sender = "[" .. new_message.data.parameter .. "] " .. string.sub(new_message.message_sender, 1, -11) .. ": "
+					elseif new_message.type == Irc.PRIVATE_MSG then
+						new_message_table.sender = new_message.message_sender .. ": "
+						new_message_table.trimmed_sender = string.sub(new_message.message_sender, 1, -11) .. ": "
 					else
 						new_message_table.sender = new_message.message_sender .. ": "
 					end
@@ -369,22 +409,9 @@ ChatGui.set_menu_transition_fraction = function (self, fraction)
 	local ui_scenegraph = self.ui_scenegraph
 	local scenegraph_definition = definitions.scenegraph_definition
 	local chat_window_widget = self.chat_window_widget
-	local window_content = chat_window_widget.content
-	local window_style = chat_window_widget.style
-	fraction = math.max(fraction, 0.11)
-	local uv_fraction = 1 - fraction
-	local frame_top_scenegraph_id = window_style.frame_top.scenegraph_id
-	local default_definition_frame_top = scenegraph_definition[frame_top_scenegraph_id]
-	window_content.frame_top.uvs[1][1] = uv_fraction
-	ui_scenegraph[frame_top_scenegraph_id].size[1] = default_definition_frame_top.size[1] * fraction
-	local frame_bottom_scenegraph_id = window_style.frame_bottom.scenegraph_id
-	local default_definition_frame_bottom = scenegraph_definition[frame_bottom_scenegraph_id]
-	window_content.frame_bottom.uvs[1][1] = uv_fraction
-	ui_scenegraph[frame_bottom_scenegraph_id].size[1] = default_definition_frame_bottom.size[1] * fraction
-	local background_scenegraph_id = window_style.background.scenegraph_id
-	local default_definition_background = scenegraph_definition[background_scenegraph_id]
-	window_content.background.uvs[1][1] = uv_fraction
-	ui_scenegraph[background_scenegraph_id].size[1] = default_definition_background.size[1] * fraction
+	local scenegraph_id = chat_window_widget.scenegraph_id
+	local default_definition_background = scenegraph_definition[scenegraph_id]
+	ui_scenegraph[scenegraph_id].size[1] = default_definition_background.size[1] * fraction
 end
 
 ChatGui.update_transition = function (self, dt)
@@ -494,7 +521,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			self.chat_index = 1
 			self.chat_mode = "insert"
 			local current_message_target_info = Managers.chat:current_message_target()
-			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "] "
+			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
 			local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
 			local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
 			self.chat_input_widget.content.channel_field = current_message_target
@@ -503,7 +530,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 			self:_apply_color_values(widget_channel_text_color, channel_text_color)
 
-			self.ui_scenegraph.chat_input_text.size[1] = self.ui_scenegraph.chat_input_text_ref.size[1] - text_width
+			self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
 			self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
 			self.chat_input_widget.content.caret_index = 1
 			self.chat_input_widget.content.text_index = 1
@@ -590,6 +617,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 					self.chat_message = recent_chat_messages[self.recent_message_index]
 					local text_table = KeystrokeHelper._build_utf8_table(self.chat_message)
 					self.chat_index = #text_table + 1
+					self.chat_input_widget.content.jump_to_end = true
 				end
 			elseif input_service:get("chat_previous_old_message") and GameSettingsDevelopment.allow_chat_input then
 				local recent_chat_messages = Managers.chat:get_recently_sent_messages()
@@ -608,6 +636,8 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 						self.recent_message_index = nil
 						self.old_chat_message = nil
 					end
+
+					self.chat_input_widget.content.jump_to_end = true
 				end
 			elseif GameSettingsDevelopment.use_global_chat and input_service:get("chat_switch_view") and GameSettingsDevelopment.allow_chat_input then
 				self:clear_messages()
@@ -623,7 +653,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				end
 
 				local current_message_target_info = Managers.chat:current_message_target()
-				local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "] "
+				local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
 				local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
 				local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
 				self.chat_input_widget.content.channel_field = current_message_target
@@ -631,7 +661,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 				self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
 
-				self.ui_scenegraph.chat_input_text.size[1] = self.ui_scenegraph.chat_input_text_ref.size[1] - text_width
+				self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
 				self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
 				self.chat_input_widget.content.caret_index = UTF8Utils.string_length(self.chat_message) + 1
 				self.chat_index = self.chat_input_widget.content.caret_index
@@ -671,11 +701,23 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 					self.chat_message = self.chat_message .. text_snippet
 					num_chars = num_chars + 1
 				end
-			elseif self.chat_index <= ChatGui.MAX_CHARS and GameSettingsDevelopment.allow_chat_input then
+			elseif GameSettingsDevelopment.allow_chat_input then
 				local keystrokes = Keyboard.keystrokes()
 				local ctrl_button_index = Keyboard.button_index("left ctrl")
 				local ctrl_held = Keyboard.pressed(ctrl_button_index) or Keyboard.button(ctrl_button_index) > 0
-				self.chat_message, self.chat_index, self.chat_mode = KeystrokeHelper.parse_strokes(self.chat_message, self.chat_index, self.chat_mode, keystrokes, ctrl_held)
+				local new_chat_message, new_chat_index, new_chat_mode = KeystrokeHelper.parse_strokes(self.chat_message, self.chat_index, self.chat_mode, keystrokes, ChatGui.MAX_CHARS)
+
+				if new_chat_index ~= self.chat_index then
+					if new_chat_index == 1 then
+						self.chat_input_widget.content.text_index = new_chat_index
+					elseif UTF8Utils.string_length(new_chat_message) < new_chat_index then
+						self.chat_input_widget.content.jump_to_end = true
+					end
+				end
+
+				self.chat_message = new_chat_message
+				self.chat_index = new_chat_index
+				self.chat_mode = new_chat_mode
 			end
 		elseif input_service:get("activate_chat_input") or (input_service:get("execute_chat_input") and GameSettingsDevelopment.allow_chat_input) then
 			if chat_enabled then
@@ -697,7 +739,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			self.recent_message_index = nil
 			self.old_chat_message = nil
 			local current_message_target_info = Managers.chat:current_message_target()
-			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "] "
+			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
 			local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
 			local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
 			self.chat_input_widget.content.channel_field = current_message_target
@@ -705,18 +747,88 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 			self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
 
-			self.ui_scenegraph.chat_input_text.size[1] = self.ui_scenegraph.chat_input_text_ref.size[1] - text_width
+			self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
 			self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
 			self.chat_input_widget.content.caret_index = 1
 			self.chat_input_widget.content.text_index = 1
 		end
 
+		local chat_input_widget_content = self.chat_input_widget.content
+		local enlarge_hotspot = chat_input_widget_content.enlarge_hotspot
+		local info_hotspot = chat_input_widget_content.info_hotspot
+		local filter_hotspot = chat_input_widget_content.filter_hotspot
+		local target_hotspot = chat_input_widget_content.target_hotspot
+
+		if enlarge_hotspot.on_release then
+			self:unblock_input()
+			Managers.state.event:trigger("ui_event_transition_with_fade", "chat_view_force")
+
+			chat_closed = true
+			chat_close_time = 0
+			chat_focused = false
+		elseif info_hotspot.on_release and false then
+			self:unblock_input()
+
+			chat_closed = true
+			chat_close_time = 0
+			chat_focused = false
+		elseif filter_hotspot.on_release then
+			self:clear_messages()
+			Managers.chat:switch_view()
+
+			local view_name, color = Managers.chat:current_view_and_color()
+			self.chat_input_widget.content.header_field = view_name
+
+			self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
+		elseif target_hotspot.on_release then
+			if Managers.chat:next_message_target() then
+				self:clear_messages()
+			end
+
+			local current_message_target_info = Managers.chat:current_message_target()
+			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
+			local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
+			local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
+			self.chat_input_widget.content.channel_field = current_message_target
+			local channel_text_color = IRC_CHANNEL_COLORS[current_message_target_info.message_target_type]
+
+			self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
+
+			self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
+			self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
+			self.chat_input_widget.content.caret_index = UTF8Utils.string_length(self.chat_message) + 1
+			self.chat_index = self.chat_input_widget.content.caret_index
+			local view_name, color = Managers.chat:current_view_and_color()
+			self.chat_input_widget.content.header_field = view_name
+
+			self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
+		end
+
+		local step_size = 0.025
 		local scroll_widget_content = scroll_widget.content
+		local scroll_value = nil
 
 		if input_service:get("chat_scroll_up") then
+			scroll_value = step_size
+		elseif input_service:get("chat_scroll_down") then
+			scroll_value = -step_size
+		end
+
+		local mouse_scroll_action = "chat_scroll"
+
+		if input_service:has(mouse_scroll_action) then
+			local scroll_axis = input_service:get(mouse_scroll_action)
+			local axis_input = scroll_axis.y
+
+			if axis_input ~= 0 then
+				scroll_value = step_size * axis_input
+			end
+		end
+
+		if scroll_value then
 			local ui_scenegraph = self.ui_scenegraph
 			local scroll_bottom_y_pos = ui_scenegraph[scroll_widget.scenegraph_id].position[2]
-			local chat_bottom_y_pos = ui_scenegraph[self.chat_window_widget.scenegraph_id].position[2]
+			local chat_bottom_y_pos = ui_scenegraph.chat_window_root.position[2]
 			local bottom_y_pos = scroll_bottom_y_pos + chat_bottom_y_pos
 			local scenegraph_id = scroll_widget.style.scrollbar.scenegraph_id
 			local bar_height = scroll_widget_content.scroll_bar_height
@@ -725,17 +837,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			local size = UISceneGraph.get_size(ui_scenegraph, scenegraph_id)
 			local current_position = math.clamp(y_pos, 0, size[2])
 			local max_value = math.min(current_position / size[2], 1)
-			scroll_widget_content.internal_scroll_value = scroll_widget_content.internal_scroll_value + 0.025
-
-			if max_value < scroll_widget_content.internal_scroll_value then
-				scroll_widget_content.internal_scroll_value = max_value
-			end
-		elseif input_service:get("chat_scroll_down") then
-			scroll_widget_content.internal_scroll_value = scroll_widget_content.internal_scroll_value - 0.025
-
-			if scroll_widget_content.internal_scroll_value < 0 then
-				scroll_widget_content.internal_scroll_value = 0
-			end
+			scroll_widget_content.internal_scroll_value = math.clamp(scroll_widget_content.internal_scroll_value + scroll_value, 0, max_value)
 		end
 	end
 
@@ -751,6 +853,7 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 		return
 	end
 
+	local render_settings = self._render_settings
 	local ui_scenegraph = self.ui_scenegraph
 	local ui_renderer = self.ui_renderer
 	local ui_animations = self.ui_animations
@@ -762,8 +865,9 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 	input_widget.content.text_field = self.chat_message
 	input_widget.content.caret_index = self.chat_index
 	output_widget.content.text_start_offset = 1 - scrollbar_widget.content.scroll_value
+	local alpha_multiplier = render_settings.alpha_multiplier
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	if not gamepad_active and menu_active and chat_enabled then
 		UIRenderer.draw_widget(ui_renderer, tab_widget)
@@ -802,24 +906,37 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 	if not self.chat_closed and not self.opening and not self.closing then
 		if self.chat_focused and chat_enabled then
 			UIRenderer.draw_widget(ui_renderer, input_widget)
+
+			render_settings.alpha_multiplier = self._output_text_alpha_multiplier or alpha_multiplier
+
+			UIRenderer.draw_widget(ui_renderer, output_widget)
+
+			render_settings.alpha_multiplier = alpha_multiplier
+
+			UIRenderer.draw_widget(ui_renderer, scrollbar_widget)
+
+			if output_widget.content.link_pressed then
+				local link_data = output_widget.content.link_pressed
+
+				Managers.invite:set_invited_lobby_data(link_data.lobby_id)
+
+				output_widget.content.link_pressed = nil
+
+				print("Link Pressed! -> joining game!")
+			end
 		end
 
-		UIRenderer.draw_widget(ui_renderer, output_widget)
-		UIRenderer.draw_widget(ui_renderer, scrollbar_widget)
-
-		if output_widget.content.link_pressed then
-			local link_data = output_widget.content.link_pressed
-
-			Managers.invite:set_invited_lobby_data(link_data.lobby_id)
-
-			output_widget.content.link_pressed = nil
-
-			print("Link Pressed! -> joining game!")
+		if chat_enabled then
+			for name, widget in pairs(self._widgets) do
+				UIRenderer.draw_widget(ui_renderer, widget)
+			end
 		end
 	end
 
 	self:_abort_hud_scale()
 	UIRenderer.end_pass(ui_renderer)
+
+	render_settings.alpha_multiplier = alpha_multiplier
 end
 
 ChatGui._update_hud_scale = function (self)
@@ -860,8 +977,6 @@ ChatGui._set_chat_window_alpha = function (self, progress)
 	local output_widget = self.chat_output_widget
 	local scrollbar_widget = self.scrollbar_widget
 	local style = window_widget.style
-	style.frame_top.color[1] = ui_settings.window_frame_top_alpha * progress
-	style.frame_bottom.color[1] = ui_settings.window_frame_bottom_alpha * progress
 	style.background.color[1] = ui_settings.window_background_alpha * progress
 	style = input_widget.style
 	style.background.color[1] = ui_settings.input_background_alpha * progress
@@ -869,10 +984,6 @@ ChatGui._set_chat_window_alpha = function (self, progress)
 	style.text.caret_color[1] = ui_settings.input_caret_alpha * progress
 	style = output_widget.style
 	style.background.color[1] = ui_settings.output_background_alpha * progress
-	style.text.text_color[1] = ui_settings.output_text_alpha * progress
-	style.text.name_color[1] = ui_settings.output_text_alpha * progress
-	style.text.name_color_dev[1] = ui_settings.output_text_alpha * progress
-	style.text.name_color_system[1] = ui_settings.output_text_alpha * progress
 	style = scrollbar_widget.style
 	style.background.color[1] = ui_settings.scrollbar_background_alpha * progress
 	local stroke_alpha = ui_settings.scrollbar_background_stroke_alpha * progress
@@ -884,6 +995,7 @@ ChatGui._set_chat_window_alpha = function (self, progress)
 	stroke_alpha = ui_settings.scrollbar_stroke_alpha * progress
 	style.scrollbar_stroke_top.color[1] = stroke_alpha
 	style.scrollbar_stroke_bottom.color[1] = stroke_alpha
+	self._output_text_alpha_multiplier = progress
 end
 
 ChatGui._apply_color_values = function (self, color, to_color)

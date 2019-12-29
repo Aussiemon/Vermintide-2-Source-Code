@@ -135,6 +135,10 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 
 		Unit.flow_event(character_unit, attachment_lua_event)
 
+		local vfx_lua_event = (visible and "lua_ui_vfx_unhidden") or "lua_ui_vfx_hidden"
+
+		Unit.flow_event(character_unit, vfx_lua_event)
+
 		local equipment_units = self._equipment_units
 
 		for slot_index, data in pairs(equipment_units) do

@@ -1,6 +1,6 @@
 Development._hardcoded_dev_params = {
 	package_debug = true,
-	use_beta_overlay = false,
+	use_beta_overlay = true,
 	disable_tutorial_at_start = false,
 	network_debug = true,
 	matchmaking_debug = true,

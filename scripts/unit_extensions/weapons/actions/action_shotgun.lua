@@ -91,8 +91,7 @@ ActionShotgun._start_shooting = function (self)
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local current_position = first_person_extension:current_position()
-	local current_rotation = first_person_extension:current_rotation()
+	local current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
 
 	if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 		local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")

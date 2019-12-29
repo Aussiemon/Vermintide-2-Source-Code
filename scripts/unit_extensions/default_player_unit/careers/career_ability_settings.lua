@@ -395,7 +395,7 @@ PassiveAbilitySettings = {
 		buffs = {
 			"victor_zealot_passive_increased_damage",
 			"victor_zealot_passive_uninterruptible_heavy",
-			"victor_zealot_invulnerability_cooldown",
+			"victor_zealot_gain_invulnerability_on_lethal_damage_taken",
 			"victor_zealot_ability_cooldown_on_hit",
 			"victor_zealot_ability_cooldown_on_damage_taken"
 		},

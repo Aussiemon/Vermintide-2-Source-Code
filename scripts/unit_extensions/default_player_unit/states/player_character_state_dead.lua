@@ -43,14 +43,16 @@ end
 
 PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 	local time_since_death = t - self.despawn_time_start
+	local player = Managers.player:unit_owner(unit)
+	local marked_for_despawn = player and not player:needs_despawn()
 
-	if not self.switched_to_observer_camera and self.dead_player_destroy_time < time_since_death + 1 then
+	if not self.switched_to_observer_camera and (marked_for_despawn or self.dead_player_destroy_time < time_since_death + 1) then
 		self.switched_to_observer_camera = true
 
 		CharacterStateHelper.change_camera_state(self.player, "observer")
 	end
 
-	if not self.items_dropped and self.drop_items_time < t then
+	if not self.items_dropped and (marked_for_despawn or self.drop_items_time < t) then
 		local override_item_drop_position = self.override_item_drop_position and self.override_item_drop_position:unbox()
 		local override_item_drop_direction = self.override_item_drop_direction and self.override_item_drop_direction:unbox()
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
@@ -60,10 +62,12 @@ PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 		self.items_dropped = true
 	end
 
-	if not self.despawned and self.dead_player_destroy_time < time_since_death then
-		local player = Managers.player:unit_owner(unit)
+	if not self.despawned and (marked_for_despawn or self.dead_player_destroy_time < time_since_death) then
+		print("state dead despawn")
 
-		Managers.state.spawn:delayed_despawn(player)
+		if not marked_for_despawn then
+			Managers.state.spawn:delayed_despawn(player)
+		end
 
 		self.despawned = true
 

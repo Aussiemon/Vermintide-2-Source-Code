@@ -598,8 +598,6 @@ end
 HeroViewStateAchievements._create_entries = function (self, entries, entry_type, data)
 	local quest_manager = self._quest_manager
 	local achievement_manager = self._achievement_manager
-	local achievement_widgets = {}
-	self._achievement_widgets = achievement_widgets
 	local widget_definition, manager = nil
 	local can_close = false
 
@@ -612,6 +610,8 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		manager = achievement_manager
 	end
 
+	local claimable_achievement_widgets = {}
+	local unclaimable_achievement_widgets = {}
 	local num_entries = #entries
 
 	for i = 1, num_entries, 1 do
@@ -637,6 +637,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		content.completed = unlocked and completed
 		content.claimed = unlocked and claimed
 		content.id = entry_id
+		content.original_order_index = i
 		local name = entry_data.name
 		local display_name = name
 		content.title = display_name
@@ -645,6 +646,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		content.description = description_text
 		local icon = entry_data.icon or "icons_placeholder"
 		content.icon = icon
+		content.is_illusion = false
 
 		if reward then
 			if type(reward) == "string" then
@@ -655,6 +657,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 				}
 				content.reward_item = fake_item
 				content.reward_icon = item_template.inventory_icon
+				content.reward_icon_background = UISettings.item_rarity_textures[item_template.rarity]
 			elseif type(reward) == "table" then
 				if reward.reward_type == "item" then
 					local item_key = reward.item_name
@@ -676,9 +679,11 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 					content.reward_item = fake_item
 					content.reward_icon = item_template.inventory_icon
+					content.reward_icon_background = UISettings.item_rarity_textures[fake_item.rarity or item_template.rarity]
 				elseif reward.reward_type == "keep_decoration_painting" then
 					local decoration_name = reward.decoration_name
 					local painting_data = Paintings[decoration_name]
+					local rarity = reward.rarity or painting_data.rarity or "plentiful"
 					local fake_item = {
 						data = {
 							item_type = "keep_decoration_painting",
@@ -702,7 +707,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 								"es_knight",
 								"es_mercenary"
 							},
-							rarity = reward.rarity or painting_data.rarity or "plentiful",
+							rarity = rarity,
 							display_name = painting_data.display_name,
 							description = painting_data.description
 						},
@@ -711,9 +716,11 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 					local icon = painting_data.icon
 					content.reward_item = fake_item
 					content.reward_icon = icon
+					content.reward_icon_background = UISettings.item_rarity_textures[rarity]
 				elseif reward.reward_type == "weapon_skin" then
 					local weapon_skin_name = reward.weapon_skin_name
 					local weapon_skin_data = WeaponSkins.skins[weapon_skin_name]
+					local rarity = weapon_skin_data.rarity or "plentiful"
 					local fake_item = {
 						data = {
 							item_type = "weapon_skin",
@@ -737,13 +744,15 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 								"es_knight",
 								"es_mercenary"
 							},
-							rarity = weapon_skin_data.rarity or "plentiful"
+							rarity = rarity
 						},
 						skin = weapon_skin_name
 					}
 					local icon = weapon_skin_data.inventory_icon
 					content.reward_item = fake_item
 					content.reward_icon = icon
+					content.is_illusion = true
+					content.reward_icon_background = UISettings.item_rarity_textures[rarity]
 				end
 			end
 		end
@@ -787,9 +796,33 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 			self:_set_color_intensity(style.side_detail_right.color, color_intensity_fraction)
 		end
 
-		achievement_widgets[i] = widget
+		if content.completed and not content.claimed then
+			claimable_achievement_widgets[#claimable_achievement_widgets + 1] = widget
+		else
+			unclaimable_achievement_widgets[#unclaimable_achievement_widgets + 1] = widget
+		end
 	end
 
+	if #unclaimable_achievement_widgets > 1 then
+		local function claimed_sort_function(a, b)
+			local a_content = a.content
+			local b_content = b.content
+
+			if a_content.claimed == b_content.claimed then
+				return a_content.original_order_index < b_content.original_order_index
+			elseif a_content.claimed then
+				return false
+			else
+				return true
+			end
+		end
+
+		table.sort(unclaimable_achievement_widgets, claimed_sort_function)
+	end
+
+	table.append(claimable_achievement_widgets, unclaimable_achievement_widgets)
+
+	self._achievement_widgets = claimable_achievement_widgets
 	self.scroll_value = nil
 
 	self:_update_achievements_scroll_height()
@@ -1379,6 +1412,7 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 			elseif reward_type == "weapon_skin" then
 				local weapon_skin_name = data.weapon_skin_name
 				local weapon_skin_data = WeaponSkins.skins[weapon_skin_name]
+				local rarity = weapon_skin_data.rarity or "plentiful"
 				local display_name = weapon_skin_data.display_name
 				local description = weapon_skin_data.description
 				local icon = weapon_skin_data.inventory_icon
@@ -1391,8 +1425,11 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 					value = description
 				}
 				entry[#entry + 1] = {
-					widget_type = "icon",
-					value = icon
+					widget_type = "weapon_skin",
+					value = {
+						icon = icon,
+						rarity = rarity
+					}
 				}
 				presentation_data[#presentation_data + 1] = entry
 			end

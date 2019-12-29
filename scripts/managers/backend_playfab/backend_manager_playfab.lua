@@ -493,6 +493,14 @@ BackendManagerPlayFab.update = function (self, dt)
 		return
 	end
 
+	if self:_are_profiles_loaded() and not self._profiles_loaded then
+		self._profiles_loaded = true
+
+		Managers.mechanism:backend_profiles_loaded()
+	elseif not self:_are_profiles_loaded() and self._profiles_loaded then
+		self._profiles_loaded = false
+	end
+
 	local settings = GameSettingsDevelopment.backend_settings
 	local signin = self._backend_signin
 	local mirror = self._backend_mirror
@@ -861,7 +869,7 @@ BackendManagerPlayFab.commit = function (self, skip_queue, commit_complete_callb
 
 		if PLATFORM == "win32" then
 			Managers.save:auto_save(self._local_backend_file_name, self._save_data, save_callback)
-		elseif PLATFORM == "ps4" then
+		elseif PLATFORM == "ps4" or PLATFORM == "xb1" then
 			Managers.save:auto_save(SaveFileName, SaveData, save_callback)
 		end
 	end
@@ -875,12 +883,16 @@ BackendManagerPlayFab.has_loaded = function (self)
 	return self._local_save_loaded
 end
 
-BackendManagerPlayFab.profiles_loaded = function (self)
+BackendManagerPlayFab._are_profiles_loaded = function (self)
 	local signin = self._backend_signin
 	local mirror = self._backend_mirror
 	local ready = (self._disable_backend or (signin and signin:authenticated() and mirror and mirror:ready())) and self:_interfaces_ready()
 
 	return ready
+end
+
+BackendManagerPlayFab.profiles_loaded = function (self)
+	return self._profiles_loaded
 end
 
 BackendManagerPlayFab.interfaces_ready = function (self)

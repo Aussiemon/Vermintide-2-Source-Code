@@ -125,8 +125,9 @@ AchievementTemplates.achievements.scorpion_victor_weapon_unlock = {
 	end
 }
 AchievementTemplates.achievements.scorpion_complete_crater_recruit = {
-	required_dlc = "scorpion",
+	ID_XB1 = 72,
 	name = "achv_scorpion_complete_crater_recruit_name",
+	required_dlc = "scorpion",
 	icon = "achievement_trophy_scorpion_complete_crater_recruit",
 	desc = "achv_scorpion_complete_crater_recruit_desc",
 	completed = function (statistics_db, stats_id)
@@ -215,8 +216,9 @@ AchievementTemplates.achievements.scorpion_complete_crater_cataclysm = {
 	end
 }
 AchievementTemplates.achievements.scorpion_crater_pendant = {
-	required_dlc = "scorpion",
+	ID_XB1 = 73,
 	name = "achv_scorpion_crater_pendant_name",
+	required_dlc = "scorpion",
 	display_completion_ui = true,
 	icon = "achievement_trophy_scorpion_crater_pendant",
 	desc = "achv_scorpion_crater_pendant_desc",
@@ -230,6 +232,7 @@ for i = 1, 3, 1 do
 	AchievementTemplates.achievements[id] = {
 		required_dlc = "scorpion",
 		display_completion_ui = true,
+		ID_XB1 = 73 + i,
 		name = "achv_scorpion_crater_dark_tongue_" .. i .. "_name",
 		desc = "achv_scorpion_crater_dark_tongue_" .. i .. "_desc",
 		icon = "achievement_trophy_scorpion_crater_dark_tongue_" .. i,
@@ -240,8 +243,9 @@ for i = 1, 3, 1 do
 end
 
 AchievementTemplates.achievements.scorpion_crater_detour = {
-	required_dlc = "scorpion",
+	ID_XB1 = 77,
 	name = "achv_scorpion_crater_detour_name",
+	required_dlc = "scorpion",
 	display_completion_ui = true,
 	icon = "achievement_trophy_scorpion_crater_detour",
 	desc = "achv_scorpion_crater_detour_desc",

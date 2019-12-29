@@ -406,10 +406,11 @@ GameNetworkManager.game_object_created_player = function (self, go_id, owner_pee
 		debug_print("PLAYER ADDED go_id = %d, peer_id = %s, self.peer_id = %s", go_id, peer_id, self.peer_id)
 
 		local player_controlled = GameSession.game_object_field(self.game_session, go_id, "player_controlled")
+		local account_id = GameSession.game_object_field(self.game_session, go_id, "account_id")
 
 		debug_print("ADDING REMOTE PLAYER FOR PEER %s", peer_id)
 
-		local player = player_manager:add_remote_player(peer_id, player_controlled, local_player_id)
+		local player = player_manager:add_remote_player(peer_id, player_controlled, local_player_id, nil, account_id)
 
 		player:set_game_object_id(go_id)
 		player:create_sync_data()

@@ -133,12 +133,6 @@ weapon_template.actions = {
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad
 			}
-		},
-		zoom_cancel = {
-			kind = "dummy",
-			weapon_action_hand = "left",
-			total_time = 0,
-			allowed_chain_actions = {}
 		}
 	},
 	action_two = {
@@ -173,13 +167,13 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},
 				{
 					sub_action = "zoomed_shot",
-					start_time = 0.3,
+					start_time = 0.15,
 					action = "action_one",
 					input = "action_one"
 				},

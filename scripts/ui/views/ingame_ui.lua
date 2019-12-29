@@ -341,6 +341,8 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 
 	local player_ready_for_game = self:is_local_player_ready_for_game()
 	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
+	local voting_manager = Managers.state.voting
+	local currently_voting = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
 	for input, mapping_data in pairs(hotkey_mapping) do
 		if current_view then
@@ -374,7 +376,7 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 		else
 			local disable_when_matchmaking = mapping_data.disable_when_matchmaking
 			local disable_when_matchmaking_ready = mapping_data.disable_when_matchmaking_ready
-			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking)
+			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking) or currently_voting
 			local new_view = views[mapping_data.view]
 			local can_interact_flag = mapping_data.can_interact_flag
 			local can_interact_func = mapping_data.can_interact_func
@@ -427,6 +429,10 @@ IngameUI.event_dlc_status_changed = function (self)
 	end
 
 	self:setup_specific_view("map_view", "ConsoleMapView")
+end
+
+IngameUI.update_loading_subtitle_gui = function (self, loading_subtitle_gui, dt)
+	loading_subtitle_gui:update(self.ui_top_renderer, dt)
 end
 
 IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)

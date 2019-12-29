@@ -1,5 +1,112 @@
 local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_difficulty
 local hero_level = AchievementTemplateHelper.hero_level
+local add_weapon_kill_challenge = AchievementTemplateHelper.add_weapon_kill_challenge
+local add_weapon_levels_challenge = AchievementTemplateHelper.add_weapon_levels_challenge
+local placeholder_icon = AchievementTemplateHelper.PLACEHOLDER_ICON
+
+local function _has_completed_weave_seasonal(statistics_db, stats_id, season_id, weave_id)
+	local complete = false
+	local season_name = ScorpionSeasonalSettings.get_season_name(season_id)
+
+	for player = 1, 4, 1 do
+		local stat_name = ScorpionSeasonalSettings.get_weave_score_stat_for_season(season_id, weave_id, player)
+		complete = statistics_db:get_persistent_stat(stats_id, season_name, stat_name) > 0
+
+		if complete then
+			break
+		end
+	end
+
+	return complete
+end
+
+local function _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
+	local complete = false
+	local counter = 0
+
+	for tier = from, to, 1 do
+		complete = _has_completed_weave_seasonal(statistics_db, stats_id, season_id, tier)
+
+		if not complete then
+			break
+		end
+
+		counter = counter + 1
+	end
+
+	return complete, counter
+end
+
+local seasonal_list_of_weaves_from_to = {
+	tier_1 = {
+		from = 1,
+		to = 40
+	},
+	tier_2 = {
+		from = 41,
+		to = 80
+	},
+	tier_3 = {
+		from = 81,
+		to = 120
+	}
+}
+local season_num = ScorpionSeasonalSettings.current_season_id
+local season_offset = 2
+
+for season_id = season_offset, season_num, 1 do
+	local season_name = ScorpionSeasonalSettings.get_season_name(season_id)
+
+	for tier, table in pairs(seasonal_list_of_weaves_from_to) do
+		local id = "scorpion_" .. tier .. "_season_" .. season_id
+		local from = table.from
+		local to = table.to
+		AchievementTemplates.achievements[id] = {
+			required_dlc = "scorpion",
+			name = "achv_scorpion_" .. tier .. "_seasonal_name",
+			desc = "achv_scorpion_" .. tier .. "_seasonal_desc",
+			icon = "achievement_trophy_scorpion_" .. tier .. "_season_2",
+			completed = function (statistics_db, stats_id)
+				local has_completed, _ = _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
+
+				return has_completed
+			end,
+			progress = function (statistics_db, stats_id)
+				local total = to - from + 1
+				local _, completed_amunt = _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
+
+				return {
+					completed_amunt,
+					total
+				}
+			end
+		}
+	end
+
+	local num_quickplay_weaves_required = 40
+	local quickplay_achievement_id = "scorpion_complete_unranked_weaves_season_" .. season_id
+	AchievementTemplates.achievements[quickplay_achievement_id] = {
+		ID_XB1 = 78,
+		name = "achv_scorpion_complete_unranked_weaves_name",
+		required_dlc = "scorpion",
+		icon = "achievement_trophy_scorpion_complete_unranked_weaves_season_2",
+		desc = "achv_scorpion_complete_unranked_weaves_desc",
+		completed = function (statistics_db, stats_id)
+			local weave_quickplay_wins = statistics_db:get_persistent_stat(stats_id, season_name, "weave_quickplay_wins")
+
+			return num_quickplay_weaves_required <= weave_quickplay_wins
+		end,
+		progress = function (statistics_db, stats_id)
+			local weave_quickplay_wins = statistics_db:get_persistent_stat(stats_id, season_name, "weave_quickplay_wins")
+
+			return {
+				weave_quickplay_wins,
+				num_quickplay_weaves_required
+			}
+		end
+	}
+end
+
 AchievementTemplates.achievements.scorpion_bardin_reach_level_35 = {
 	name = "achv_scorpion_bardin_reach_level_35_name",
 	icon = "achievement_trophy_scorpion_bardin_reach_level_35",
@@ -749,33 +856,76 @@ local function _weave_completed_career_rainbow(statistics_db, stats_id, career)
 	return complete, counter
 end
 
-AchievementTemplates.complete_weaves_list_season_1 = {
-	5,
-	10,
-	15,
-	20,
-	25,
-	30,
-	35,
-	40
+local wind_order = {
+	"life",
+	"metal",
+	"heavens",
+	"light",
+	"death",
+	"beasts",
+	"shadow",
+	"fire"
 }
+local num_weaves_per_wind = 5
 
-for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list_season_1) do
+for i = 1, #wind_order, 1 do
 	local id = "scorpion_weaves_" .. i .. "_season_1"
+	local wind = wind_order[i]
+	local weave_ids = WeaveSettings.weave_wind_ranges[wind]
 	AchievementTemplates.achievements[id] = {
 		required_dlc = "scorpion",
 		name = "achv_scorpion_weaves_" .. i .. "_season_1_name",
 		desc = "achv_scorpion_weaves_" .. i .. "_season_1_desc",
 		icon = "achievement_trophy_scorpion_weaves_" .. i .. "_season_1",
 		completed = function (statistics_db, stats_id)
-			local from = 1
-			local to = weave_number
+			local completed = true
 
-			return _has_completed_tier(statistics_db, stats_id, from, to)
+			for k = 1, num_weaves_per_wind, 1 do
+				local weave_id = weave_ids[k]
+				completed = completed and _has_completed_weave_seasonal(statistics_db, stats_id, ScorpionSeasonalSettings.current_season_id, weave_id)
+			end
+
+			return completed
+		end,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+
+			for k = 1, num_weaves_per_wind, 1 do
+				local weave_id = weave_ids[k]
+
+				if _has_completed_weave_seasonal(statistics_db, stats_id, ScorpionSeasonalSettings.current_season_id, weave_id) then
+					count = count + 1
+				end
+			end
+
+			return {
+				count,
+				num_weaves_per_wind
+			}
 		end
 	}
 end
 
+AchievementTemplates.achievements.scorpion_complete_unranked_weaves = {
+	ID_XB1 = 78,
+	name = "achv_scorpion_complete_unranked_weaves_name",
+	required_dlc = "scorpion",
+	icon = "icons_placeholder",
+	desc = "achv_scorpion_complete_unranked_weaves_desc",
+	completed = function (statistics_db, stats_id)
+		local weave_quickplay_wins = statistics_db:get_persistent_stat(stats_id, "season_1", "weave_quickplay_wins")
+
+		return weave_quickplay_wins >= 40
+	end,
+	progress = function (statistics_db, stats_id)
+		local weave_quickplay_wins = statistics_db:get_persistent_stat(stats_id, "season_1", "weave_quickplay_wins")
+
+		return {
+			weave_quickplay_wins,
+			40
+		}
+	end
+}
 AchievementTemplates.complete_weaves_list = {
 	5,
 	10,
@@ -788,6 +938,17 @@ AchievementTemplates.complete_weaves_list = {
 	80,
 	120
 }
+AchievementTemplates.xbox_achievement_ids = {
+	nil,
+	nil,
+	nil,
+	79,
+	nil,
+	nil,
+	nil,
+	80,
+	81
+}
 
 for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list) do
 	local id = "scorpion_complete_weaves_" .. i
@@ -797,12 +958,28 @@ for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list) do
 		desc = function ()
 			return string.format(Localize("achv_scorpion_complete_weaves_" .. i .. "_desc"), weave_number)
 		end,
+		ID_XB1 = AchievementTemplates.xbox_achievement_ids[i],
 		icon = "achievement_trophy_scorpion_complete_weaves_" .. i,
 		completed = function (statistics_db, stats_id)
 			local from = 1
 			local to = weave_number
+			local completed, count = _has_completed_tier(statistics_db, stats_id, from, to)
+			local weaves_won = statistics_db:get_persistent_stat(stats_id, "scorpion_weaves_won")
+			local num_completed_weaves = math.min(count + weaves_won, weave_number)
 
-			return _has_completed_tier(statistics_db, stats_id, from, to)
+			return weave_number <= num_completed_weaves
+		end,
+		progress = function (statistics_db, stats_id)
+			local from = 1
+			local to = weave_number
+			local completed, count = _has_completed_tier(statistics_db, stats_id, from, to)
+			local weaves_won = statistics_db:get_persistent_stat(stats_id, "scorpion_weaves_won")
+			local num_completed_weaves = math.min(count + weaves_won, weave_number)
+
+			return {
+				num_completed_weaves,
+				weave_number
+			}
 		end
 	}
 end
@@ -832,7 +1009,7 @@ for weave, table in pairs(AchievementTemplates._list_of_weaves_from_to) do
 		completed = function (statistics_db, stats_id)
 			local from = table.from
 			local to = table.to
-			local has_completed, _ = _has_completed_tier(statistics_db, stats_id, from, to)
+			local has_completed, _ = _has_completed_tier_seasonal(statistics_db, stats_id, ScorpionSeasonalSettings.current_season_id, from, to)
 
 			return has_completed
 		end,
@@ -840,7 +1017,7 @@ for weave, table in pairs(AchievementTemplates._list_of_weaves_from_to) do
 			local from = table.from
 			local to = table.to
 			local total = to - from + 1
-			local _, completed_amunt = _has_completed_tier(statistics_db, stats_id, from, to)
+			local _, completed_amunt = _has_completed_tier_seasonal(statistics_db, stats_id, ScorpionSeasonalSettings.current_season_id, from, to)
 
 			return {
 				completed_amunt,
@@ -1260,5 +1437,27 @@ AchievementTemplates.achievements.scorpion_cataclysm_unlock_kill_all_lords = {
 		}
 	end
 }
+local achievements = AchievementTemplates.achievements
+local auto_icon = nil
+
+add_weapon_kill_challenge(achievements, "scorpion_bardin_weapon_skin_1", "dr_1h_throwing_axes", 1000, auto_icon, "scorpion")
+add_weapon_kill_challenge(achievements, "scorpion_kerillian_weapon_skin_1", "we_1h_spears_shield", 1000, auto_icon, "scorpion")
+add_weapon_kill_challenge(achievements, "scorpion_markus_weapon_skin_1", "es_2h_heavy_spear", 1000, auto_icon, "scorpion")
+add_weapon_kill_challenge(achievements, "scorpion_sienna_weapon_skin_1", "bw_1h_flail_flaming", 1000, auto_icon, "scorpion")
+add_weapon_kill_challenge(achievements, "scorpion_victor_weapon_skin_1", "wh_2h_billhook", 1000, auto_icon, "scorpion")
+
+local s2_lord_levels = {
+	"warcamp",
+	"skaven_stronghold",
+	"ground_zero",
+	"skittergate"
+}
+local s2_lord_difficulty = "hardest"
+
+add_weapon_levels_challenge(achievements, "scorpion_bardin_weapon_skin_2", "dr_1h_throwing_axes", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
+add_weapon_levels_challenge(achievements, "scorpion_kerillian_weapon_skin_2", "we_1h_spears_shield", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
+add_weapon_levels_challenge(achievements, "scorpion_markus_weapon_skin_2", "es_2h_heavy_spear", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
+add_weapon_levels_challenge(achievements, "scorpion_sienna_weapon_skin_2", "bw_1h_flail_flaming", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
+add_weapon_levels_challenge(achievements, "scorpion_victor_weapon_skin_2", "wh_2h_billhook", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
 
 return

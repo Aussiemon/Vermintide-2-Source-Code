@@ -5711,11 +5711,16 @@ UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_
 		0,
 		0
 	}
+	local text_shadow_offset = text_style.shadow_offset or {
+		2,
+		2,
+		0
+	}
 	text_shadow_style_color[1] = text_color[1]
 	text_shadow_style.text_color = text_shadow_style_color
 	text_shadow_style.offset = {
-		text_offset[1] + 2,
-		text_offset[2] - 2,
+		text_offset[1] + text_shadow_offset[1],
+		text_offset[2] - text_shadow_offset[2],
 		text_offset[3] - 1
 	}
 

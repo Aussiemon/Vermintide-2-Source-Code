@@ -1,12 +1,11 @@
 return {
 	wind_strength = 3,
-	wind = "metal",
+	wind = "death",
 	seed = 23094,
-	terror_events = {},
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_swamp_metal",
+			level_id = "dlc_scorpion_swamp_death",
 			objective_type = "kill",
 			conflict_settings = "weave_skaven",
 			level_seed = 45982256,
@@ -33,7 +32,7 @@ return {
 				pickups = 239840
 			},
 			spawning_settings = {
-				terror_event_trickle = "trickle_event_armour",
+				terror_event_trickle = "trickle_event_skaven_small",
 				main_path_spawning = {
 					{
 						terror_event_name = "main_path_standard_skaven_small_short",
@@ -41,7 +40,7 @@ return {
 						percentage_spawn_offset = 0
 					},
 					{
-						terror_event_name = "main_path_theme_armored_skaven_short",
+						terror_event_name = "main_path_standard_skaven_medium_short",
 						percentage = 7,
 						percentage_spawn_offset = 0
 					},
@@ -141,7 +140,7 @@ return {
 						percentage_spawn_offset = 0
 					},
 					{
-						terror_event_name = "main_path_theme_armored_chaos_short",
+						terror_event_name = "main_path_theme_vanilla_chaos_medium",
 						percentage = 90,
 						percentage_spawn_offset = 0
 					},
@@ -155,7 +154,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_temple_metal",
+			level_id = "dlc_scorpion_arena_temple_death",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 450982,
 			level_seed = 795483,
@@ -166,7 +165,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "skaven_swarm_event",
+						terror_event_name = "chaos_swarm_event",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

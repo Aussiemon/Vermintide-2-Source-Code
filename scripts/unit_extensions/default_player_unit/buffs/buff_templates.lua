@@ -10,16 +10,16 @@ RangedBuffTypes = {
 	RANGED_ABILITY = true
 }
 StatBuffApplicationMethods = {
+	max_health = "stacking_multiplier",
 	reduced_spread_shot = "stacking_multiplier",
 	reduced_spread = "stacking_multiplier",
-	power_level_frenzy = "stacking_multiplier",
 	max_health_alive = "stacking_multiplier",
-	power_level_unarmoured = "stacking_multiplier",
+	power_level_large = "stacking_multiplier",
 	power_level_armoured = "stacking_multiplier",
 	curse_protection = "stacking_multiplier",
 	vent_damage = "stacking_multiplier",
 	increased_max_targets = "stacking_bonus",
-	damage_taken_kd = "stacking_multiplier",
+	first_melee_hit_damage = "stacking_multiplier",
 	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
 	not_consume_grenade = "proc",
 	damage_taken_to_overcharge = "stacking_multiplier",
@@ -28,31 +28,31 @@ StatBuffApplicationMethods = {
 	reduced_overcharge = "stacking_multiplier",
 	fatigue_regen = "stacking_multiplier",
 	faster_respawn = "stacking_multiplier",
-	power_level_large = "stacking_multiplier",
+	damage_taken = "stacking_multiplier",
 	damage_taken_elites = "stacking_multiplier",
 	protection_ratling_gunner = "stacking_multiplier",
 	increase_luck = "stacking_multiplier",
 	power_level_melee_cleave = "stacking_multiplier",
-	max_health = "stacking_multiplier",
+	damage_taken_kd = "stacking_multiplier",
 	projectile_bounces = "stacking_bonus",
 	extra_shot = "proc",
 	heal_self_on_heal_other = "proc",
 	faster_revive = "stacking_multiplier",
+	healing_received = "stacking_multiplier",
 	max_damage_taken = "stacking_bonus",
-	critical_strike_chance_ranged = "stacking_bonus",
 	block_cost = "stacking_multiplier",
-	block_angle = "stacking_multiplier",
+	critical_strike_effectiveness = "stacking_multiplier",
 	timed_block_cost = "stacking_multiplier",
 	vent_speed = "stacking_multiplier",
 	not_consume_potion = "proc",
 	clip_size = "stacking_multiplier",
-	counter_push_power = "stacking_multiplier",
+	block_angle = "stacking_multiplier",
 	critical_strike_chance = "stacking_bonus",
+	counter_push_power = "stacking_multiplier",
 	push_power = "stacking_multiplier",
-	critical_strike_effectiveness = "stacking_multiplier",
-	protection_chaos = "stacking_multiplier",
+	critical_strike_chance_ranged = "stacking_bonus",
 	max_overcharge = "stacking_multiplier",
-	healing_received = "stacking_multiplier",
+	protection_chaos = "stacking_multiplier",
 	reduced_non_burn_damage = "stacking_multiplier",
 	reload_speed = "stacking_multiplier",
 	stun_duration = "stacking_multiplier",
@@ -60,23 +60,24 @@ StatBuffApplicationMethods = {
 	activated_cooldown = "stacking_multiplier",
 	increased_weapon_damage_heavy_attack = "stacking_multiplier",
 	not_consume_pickup = "proc",
-	attack_intensity_decay = "stacking_multiplier",
+	shield_break_proc = "proc",
 	no_push_fatigue_cost = "proc",
 	power_level_chaos = "stacking_multiplier",
 	increased_burn_damage = "stacking_multiplier",
-	attack_intensity_reset = "stacking_multiplier",
+	attack_intensity_decay = "stacking_multiplier",
 	reduced_spread_moving = "stacking_multiplier",
-	unbalanced_damage_dealt = "stacking_multiplier",
+	attack_intensity_reset = "stacking_multiplier",
 	critical_strike_chance_melee = "stacking_bonus",
 	increased_weapon_damage_melee = "stacking_multiplier",
-	unbalanced_damage_taken = "stacking_bonus",
+	unbalanced_damage_dealt = "stacking_multiplier",
 	flat_power_level = "stacking_bonus",
 	power_level = "stacking_multiplier",
-	shield_break_proc = "proc",
+	unbalanced_damage_taken = "stacking_bonus",
+	power_level_frenzy = "stacking_multiplier",
 	full_charge_boost = "stacking_multiplier",
-	dummy_stagger = "stacking_bonus",
 	coop_stamina = "proc",
 	power_level_ranged = "stacking_multiplier",
+	dummy_stagger = "stacking_bonus",
 	headshot_multiplier = "stacking_multiplier",
 	protection_skaven = "stacking_multiplier",
 	power_level_melee = "stacking_multiplier",
@@ -92,7 +93,7 @@ StatBuffApplicationMethods = {
 	overcharge_damage_immunity = "proc",
 	max_fatigue = "stacking_bonus",
 	power_level_impact = "stacking_multiplier",
-	damage_taken = "stacking_multiplier",
+	power_level_unarmoured = "stacking_multiplier",
 	attack_speed = "stacking_multiplier",
 	increased_move_speed_while_aiming = "stacking_multiplier",
 	protection_pack_master = "stacking_multiplier",
@@ -136,6 +137,7 @@ ProcEvents = {
 	"on_kill_elite_special",
 	"on_boss_killed",
 	"on_special_killed",
+	"on_elite_killed",
 	"on_ping_target_killed",
 	"on_block",
 	"on_block_broken",
@@ -264,15 +266,6 @@ ProcFunctions = {
 			end
 
 			buff.current_stacks = current_stacks
-		end
-	end,
-	heal_permanent = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) and Managers.player.is_server then
-			local heal_amount = buff.bonus
-
-			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "bandage")
 		end
 	end,
 	heal_party = function (player, buff, params)
@@ -446,10 +439,9 @@ ProcFunctions = {
 		local breed = AiUtils.unit_breed(hit_unit)
 
 		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and damage_amount > 0 and target_number and target_number <= max_targets then
-			local heal_amount = 0.75
+			local heal_amount = 1
 
 			if target_number == 1 then
-				heal_amount = heal_amount / 2
 			end
 
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
@@ -603,16 +595,6 @@ ProcFunctions = {
 			end
 		end
 	end,
-	remove_wounded = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			local health_extension = ScriptUnit.extension(player_unit, "health_system")
-			local heal_amount = health_extension:current_temporary_health()
-
-			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "bandage")
-		end
-	end,
 	apply_burn_to_enemies = function (player, buff, params)
 		local player_unit = player.player_unit
 		local hit_unit = params[1]
@@ -639,6 +621,27 @@ ProcFunctions = {
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
 			buff_extension:add_buff("stamina_regen", buff_params)
+		end
+	end,
+	add_buff_on_charged_attack_hit = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local attack_type = params[2]
+		local template = buff.template
+		local buff_to_add = template.buff_to_add
+		local server_controlled = template.server_controlled
+
+		if attack_type ~= "heavy_attack" then
+			return
+		end
+
+		if Unit.alive(player_unit) and buff_to_add then
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			buff_system:add_buff(player_unit, buff_to_add, player_unit, server_controlled)
 		end
 	end,
 	sienna_unchained_regen_stamina_on_charged_attacks = function (player, buff, params)
@@ -1875,7 +1878,7 @@ ProcFunctions = {
 				local unit_object_id = network_manager:unit_game_object_id(player_unit)
 				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 				local t = Managers.time:time("game")
-				buff.restealth_delay = t + 1
+				buff.restealth_delay = t + 0.25
 
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
@@ -2624,15 +2627,6 @@ ProcFunctions = {
 			buff_extension:add_buff("kerillian_maidenguard_uninterruptible_on_block_broken_buff")
 		end
 	end,
-	gain_victor_zealot_uninterruptible_on_block_broken_buff = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-
-			buff_extension:add_buff("victor_zealot_uninterruptible_on_block_broken_buff")
-		end
-	end,
 	victor_bountyhunter_activate_passive_on_melee_kill = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -3121,7 +3115,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				name = "cooldown reduction buff",
-				multiplier = 15,
+				multiplier = 10,
 				stat_buff = "cooldown_regen",
 				duration = 5,
 				max_stacks = 1,
@@ -3572,7 +3566,7 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.75,
 				hit_zone = "neck",
-				max_stacks = 3,
+				max_stacks = 1,
 				update_func = "apply_dot_damage"
 			}
 		}
@@ -7516,6 +7510,12 @@ for _, dlc in pairs(DLCSettings) do
 
 	if buff_templates then
 		table.merge_recursive(BuffTemplates, buff_templates)
+	end
+
+	local proc_functions = dlc.proc_functions
+
+	if proc_functions then
+		table.merge_recursive(ProcFunctions, proc_functions)
 	end
 
 	local add_sub_buffs_to_core_buffs = dlc.add_sub_buffs_to_core_buffs

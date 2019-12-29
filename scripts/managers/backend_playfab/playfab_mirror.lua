@@ -442,6 +442,42 @@ PlayFabMirror.fix_inventory_data_2_request_cb = function (self, result)
 		self._read_only_data.weaves_career_progress = cjson.encode(weaves_career_progress)
 	end
 
+	self:_fix_excess_bogenhafen_chests()
+end
+
+PlayFabMirror._fix_excess_bogenhafen_chests = function (self)
+	local request = {
+		FunctionName = "removeExcessBogenhafenChests",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "_fix_excess_bogenhafen_chests_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror._fix_excess_bogenhafen_chests_cb = function (self)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:_fix_excess_duplicate_bogenhafen_cosmetics()
+end
+
+PlayFabMirror._fix_excess_duplicate_bogenhafen_cosmetics = function (self)
+	local request = {
+		FunctionName = "removeDuplicateBogenhafenCosmetics",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "_fix_excess_duplicate_bogenhafen_cosmetics_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror._fix_excess_duplicate_bogenhafen_cosmetics_cb = function (self)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	self:_request_read_only_data()
 end
 

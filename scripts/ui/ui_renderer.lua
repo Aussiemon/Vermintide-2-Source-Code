@@ -1245,18 +1245,27 @@ UIRenderer.draw_justified_text = function (self, text, font_material, font_size,
 	end
 end
 
-UIRenderer.word_wrap = function (self, text, font_material, size, width, option)
+UIRenderer.word_wrap = function (self, text, font_material, size, width, option, optional_font_name)
 	local whitespace = " \u3002\uff0c"
 	local soft_dividers = " -+&/*"
 	local return_dividers = "\n"
 	local reuse_global_table = true
 	local scale = RESOLUTION_LOOKUP.scale
 	local rows, return_indices = nil
+	local flags = 0
+
+	if optional_font_name then
+		local font = Fonts[optional_font_name]
+
+		if font then
+			flags = font[4] or 0
+		end
+	end
 
 	if option then
-		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width * scale, whitespace, soft_dividers, return_dividers, reuse_global_table, option)
+		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width * scale, whitespace, soft_dividers, return_dividers, reuse_global_table, option, flags)
 	else
-		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width * scale, whitespace, soft_dividers, return_dividers, reuse_global_table)
+		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width * scale, whitespace, soft_dividers, return_dividers, reuse_global_table, flags)
 	end
 
 	return rows, return_indices

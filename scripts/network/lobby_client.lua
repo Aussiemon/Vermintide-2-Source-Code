@@ -100,6 +100,10 @@ LobbyClient.lobby_data = function (self, key)
 	return self.lobby:data(key)
 end
 
+LobbyClient.has_user_name = function (self, peer_id)
+	return self.lobby:user_name(peer_id) ~= nil
+end
+
 LobbyClient.user_name = function (self, peer_id)
 	return string.gsub(self.lobby:user_name(peer_id), "%c", "")
 end

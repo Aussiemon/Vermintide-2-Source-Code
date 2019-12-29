@@ -1,12 +1,11 @@
 return {
 	wind_strength = 1,
-	wind = "life",
+	wind = "heavens",
 	seed = 459078,
-	terror_events = {},
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_wall_life",
+			level_id = "dlc_scorpion_wall_heavens",
 			objective_type = "kill",
 			conflict_settings = "default_weave_light",
 			level_seed = 45982256,
@@ -95,7 +94,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_life",
+			level_id = "dlc_scorpion_arena_void_heavens",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 23094,
 			level_seed = 389090,

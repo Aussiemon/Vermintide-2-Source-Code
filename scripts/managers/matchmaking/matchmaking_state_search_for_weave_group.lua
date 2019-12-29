@@ -429,7 +429,9 @@ MatchmakingStateSearchForWeaveGroup._find_suitable_lobby = function (self, lobbi
 				end
 			end
 
-			if not discard and lobby_data.level_key ~= "inn_level" then
+			local level_settings = LevelSettings[lobby_data.level_key]
+
+			if not discard and not level_settings.hub_level then
 				secondary_option = true
 			end
 

@@ -89,7 +89,7 @@ ActionBountyHunterHandgun._railgun_shoot = function (self)
 	end
 
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local rotation = first_person_extension:current_rotation()
+	local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 	local spread_extension = self.spread_extension
 	local spread_template_override = current_action.railgun_spread_template
 
@@ -107,7 +107,6 @@ ActionBountyHunterHandgun._railgun_shoot = function (self)
 
 	local angle = ActionUtils.pitch_from_rotation(rotation)
 	local speed = current_action.speed
-	local position = first_person_extension:current_position()
 	local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 	local lookup_data = current_action.lookup_data
 
@@ -128,8 +127,7 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 	end
 
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local current_position = first_person_extension:current_position()
-	local current_rotation = first_person_extension:current_rotation()
+	local current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
 	local num_shots = current_action.shot_count or 1
 
 	if not Managers.player:owner(owner_unit).bot_player then

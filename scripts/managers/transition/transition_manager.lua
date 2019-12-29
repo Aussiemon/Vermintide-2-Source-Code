@@ -253,11 +253,11 @@ TransitionManager._render_waiting_message = function (self, dt)
 	local font_size = font[2]
 	local font_material = font[3]
 	local color = Color(255, alpha, alpha, alpha)
-	local min, max = Gui.text_extents(self._gui, text, font_name, font_size)
+	local min, max = Gui.text_extents(self._gui, text, font_name, size_of_font)
 	local text_width = max.x - min.x
 	local position = Vector3(w * 0.5 - text_width * 0.5, h * 0.1, UILayer.transition + 1)
 
-	Gui.text(self._gui, text, font_name, font_size, font_material, position, color)
+	Gui.text(self._gui, text, font_name, size_of_font, font_material, position, color)
 
 	self._waiting_for_peers_timer = self._waiting_for_peers_timer + dt
 end

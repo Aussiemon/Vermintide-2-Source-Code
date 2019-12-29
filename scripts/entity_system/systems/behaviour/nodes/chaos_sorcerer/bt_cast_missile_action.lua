@@ -87,8 +87,9 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 			local up = Vector3.cross(target_dir, Vector3.up()) * (1 - 2 * math.random()) * 0.25
 			local right = Vector3.cross(target_dir, Vector3.right()) * (1 - 2 * math.random()) * 0.25
 			local target_dir = Vector3.normalize(target_dir + up + right)
+			local position_target = missile_data.target_ground and POSITION_LOOKUP[blackboard.target_unit]
 
-			self:launch_magic_missile(blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, nil, missile_data)
+			self:launch_magic_missile(blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, position_target, missile_data)
 		else
 			local angle = missile_data.angle
 			local speed = missile_data.speed

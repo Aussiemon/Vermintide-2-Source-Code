@@ -1,6 +1,6 @@
 local spacing = 2
 local num_visible_entries = 10
-local entry_height = 62
+local entry_height = 58
 local browser_width = 1200
 local details_width = 520
 local scroller_width = 15
@@ -227,6 +227,24 @@ local scenegraph_definition = {
 			-1
 		}
 	},
+	details_game_type = {
+		vertical_alignment = "bottom",
+		parent = "details_level_info",
+		horizontal_alignment = "right",
+		size = {
+			220,
+			50
+		}
+	},
+	details_status = {
+		vertical_alignment = "bottom",
+		parent = "details_level_info",
+		horizontal_alignment = "right",
+		size = {
+			220,
+			50
+		}
+	},
 	weave_details_base = {
 		vertical_alignment = "top",
 		parent = "lobby_browser_frame",
@@ -317,6 +335,24 @@ local scenegraph_definition = {
 			-1
 		}
 	},
+	weave_game_type = {
+		vertical_alignment = "bottom",
+		parent = "weave_details_level_info",
+		horizontal_alignment = "right",
+		size = {
+			220,
+			50
+		}
+	},
+	weave_status = {
+		vertical_alignment = "bottom",
+		parent = "weave_details_level_info",
+		horizontal_alignment = "right",
+		size = {
+			220,
+			50
+		}
+	},
 	wind_icon_bg = {
 		vertical_alignment = "bottom",
 		parent = "weave_details_level_frame",
@@ -397,7 +433,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-175,
+			-150,
 			1
 		}
 	},
@@ -406,12 +442,12 @@ local scenegraph_definition = {
 		parent = "wind_mutator_window",
 		horizontal_alignment = "left",
 		size = {
-			60,
-			60
+			28,
+			36
 		},
 		position = {
-			10,
-			-50,
+			25,
+			-75,
 			5
 		}
 	},
@@ -466,8 +502,8 @@ local scenegraph_definition = {
 			100
 		},
 		position = {
-			70,
-			0,
+			60,
+			15,
 			1
 		}
 	},
@@ -480,8 +516,8 @@ local scenegraph_definition = {
 			40
 		},
 		position = {
-			0,
-			-80,
+			-20,
+			-90,
 			3
 		}
 	},
@@ -595,6 +631,41 @@ local scenegraph_definition = {
 			element_settings.window_width / 4 * 3 + element_settings.spacing,
 			-element_settings.filter_height - element_settings.spacing,
 			1
+		}
+	}
+}
+local animation_definitions = {
+	on_enter = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.5,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeInCubic(progress)
+				params.render_settings.alpha_multiplier = anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				params.render_settings.alpha_multiplier = 1
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
 		}
 	}
 }
@@ -2855,10 +2926,16 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 	local level_image = "any_small_image"
 	local selected_level_name = lobby_data.selected_level_key
 
-	if game_mode == "weave" and weave_name then
+	if game_mode == "weave" and weave_name ~= "" then
+		level_image = "weaves_small_image"
 		local weave_template = WeaveSettings.templates[weave_name]
 		local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
-		selected_level_name = weave_index .. ". " .. Localize(weave_template.display_name)
+
+		if lobby_data.quick_game == "true" then
+			selected_level_name = (weave_template and Localize(weave_template.display_name)) or Localize("start_game_window_weave_quickplay_title")
+		else
+			selected_level_name = weave_index .. ". " .. Localize(weave_template.display_name)
+		end
 	elseif selected_level_name then
 		local level_settings = LevelSettings[selected_level_name]
 		selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
@@ -3588,7 +3665,7 @@ local function create_empty_lobby_entry_func(offset_y)
 	}
 end
 
-local function create_details_information(scenegraph_id)
+local function create_details_information(scenegraph_id, game_type_scenegraph_id, status_scenegraph_id)
 	return {
 		element = {
 			passes = {
@@ -3708,11 +3785,13 @@ local function create_details_information(scenegraph_id)
 				}
 			},
 			game_type = {
-				vertical_alignment = "bottom",
-				horizontal_alignment = "right",
-				localize = true,
 				font_size = 26,
+				localize = true,
+				horizontal_alignment = "right",
+				vertical_alignment = "bottom",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
+				scenegraph_id = game_type_scenegraph_id,
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					-75,
@@ -3721,11 +3800,13 @@ local function create_details_information(scenegraph_id)
 				}
 			},
 			status = {
-				vertical_alignment = "bottom",
-				horizontal_alignment = "right",
-				localize = true,
 				font_size = 26,
+				localize = true,
+				horizontal_alignment = "right",
+				vertical_alignment = "bottom",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
+				scenegraph_id = status_scenegraph_id,
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					-75,
@@ -3933,13 +4014,13 @@ local wind_name_style = {
 	}
 }
 local level_name_style = {
-	font_size = 32,
+	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	use_shadow = true,
-	word_wrap = true,
+	font_size = 32,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -3949,19 +4030,23 @@ local level_name_style = {
 	}
 }
 local weave_level_name_style = {
-	font_size = 32,
+	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	use_shadow = true,
-	word_wrap = true,
+	font_size = 32,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
 		0,
 		2
+	},
+	size = {
+		350,
+		scenegraph_definition.weave_details_level_name[2]
 	}
 }
 local locked_reason_style = {
@@ -4039,7 +4124,7 @@ local details_widget_definition = {
 	level_image = UIWidgets.create_simple_texture("level_image_any", "details_level_image"),
 	level_name = UIWidgets.create_simple_text(" ", "details_level_name", nil, nil, level_name_style),
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
-	details_information = create_details_information("details_level_info"),
+	details_information = create_details_information("details_level_info", "details_game_type", "details_status"),
 	hero_tabs = UIWidgets.create_icon_selector("details_hero_tabs", {
 		hero_entry_width,
 		hero_entry_height
@@ -4068,10 +4153,11 @@ local weave_details_widget_definition = {
 	objective_1 = create_objective("objective_1", scenegraph_definition.objective_1.size),
 	objective_2 = create_objective("objective_2", scenegraph_definition.objective_2.size),
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "weave_details_locked_reason", nil, nil, locked_reason_style),
-	details_information = create_details_information("weave_details_level_info")
+	details_information = create_details_information("weave_details_level_info", "weave_game_type", "weave_status")
 }
 
 return {
+	animation_definitions = animation_definitions,
 	scenegraph_definition = scenegraph_definition,
 	base_widget_definition = base_widget_definition,
 	details_widget_definition = details_widget_definition,

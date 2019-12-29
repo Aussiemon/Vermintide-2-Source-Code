@@ -163,6 +163,7 @@ ItemMasterList.es_dual_wield_hammer_sword_skin_02_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_emp_mace_05_t2/wpn_emp_mace_05_t2_runed_01",
 	template = "dual_wield_hammer_sword_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_weapons",
 	item_type = "weapon_skin",
 	matching_item_key = "es_dual_wield_hammer_sword",
 	can_wield = {
@@ -563,7 +564,7 @@ ItemMasterList.dw_dual_axe_skin_01 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -636,7 +637,7 @@ ItemMasterList.dw_dual_axe_skin_05 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_03_t1/wpn_dw_axe_03_t1",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -654,7 +655,7 @@ ItemMasterList.dw_dual_axe_skin_07 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_04_t1/wpn_dw_axe_04_t1",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -749,6 +750,7 @@ ItemMasterList.es_dual_wield_hammer_sword_skin_01 = {
 	right_hand_unit = "units/weapons/player/wpn_emp_mace_04_t2/wpn_emp_mace_04_t2",
 	template = "dual_wield_hammer_sword_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_weapons",
 	item_type = "weapon_skin",
 	matching_item_key = "es_dual_wield_hammer_sword",
 	can_wield = {
@@ -975,6 +977,7 @@ ItemMasterList.wh_dual_wield_axe_falchion_skin_02 = {
 	right_hand_unit = "units/weapons/player/wpn_axe_03_t2/wpn_axe_03_t2",
 	template = "dual_wield_axe_falchion_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/dual_wield_axe_falchion",
 	item_type = "weapon_skin",
 	matching_item_key = "wh_dual_wield_axe_falchion",
 	can_wield = {
@@ -1049,6 +1052,7 @@ ItemMasterList.we_1h_axe_skin_02_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_we_axe_03_t1/wpn_we_axe_03_t1_runed_01",
 	template = "we_one_hand_axe_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "we_1h_axe",
 	can_wield = {
@@ -1330,6 +1334,7 @@ ItemMasterList.we_1h_axe_skin_01 = {
 	right_hand_unit = "units/weapons/player/wpn_we_axe_01_t2/wpn_we_axe_01_t2",
 	template = "we_one_hand_axe_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "we_1h_axe",
 	can_wield = {
@@ -1730,6 +1735,7 @@ ItemMasterList.wh_dual_wield_axe_falchion_skin_01 = {
 	right_hand_unit = "units/weapons/player/wpn_axe_hatchet_t2/wpn_axe_hatchet_t2",
 	template = "dual_wield_axe_falchion_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/dual_wield_axe_falchion",
 	item_type = "weapon_skin",
 	matching_item_key = "wh_dual_wield_axe_falchion",
 	can_wield = {
@@ -2155,7 +2161,7 @@ ItemMasterList.dw_dual_axe_skin_02 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t2/wpn_dw_axe_01_t2",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -2192,7 +2198,7 @@ ItemMasterList.we_dual_sword_dagger_skin_02_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t2/wpn_we_sword_01_t2_runed_01",
 	template = "dual_wield_sword_dagger_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_weapons",
 	item_type = "weapon_skin",
 	matching_item_key = "we_dual_wield_sword_dagger",
 	can_wield = {
@@ -2212,7 +2218,7 @@ ItemMasterList.we_dual_sword_dagger_skin_02 = {
 	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t2/wpn_we_sword_01_t2",
 	template = "dual_wield_sword_dagger_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_weapons",
 	item_type = "weapon_skin",
 	matching_item_key = "we_dual_wield_sword_dagger",
 	can_wield = {
@@ -2539,6 +2545,7 @@ ItemMasterList.dr_dual_wield_hammers_skin_02_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t2/wpn_dw_hammer_01_t2_runed_01",
 	template = "dual_wield_axe_falchion_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_hammers",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_hammers",
 	can_wield = {
@@ -2884,6 +2891,7 @@ ItemMasterList.bw_1h_crowbill_skin_02 = {
 	right_hand_unit = "units/weapons/player/wpn_brw_crowbill_02/wpn_brw_crowbill_02",
 	template = "one_handed_crowbill",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_crowbills",
 	item_type = "weapon_skin",
 	matching_item_key = "bw_1h_crowbill",
 	can_wield = {
@@ -3671,6 +3679,7 @@ ItemMasterList.we_1h_axe_skin_02 = {
 	right_hand_unit = "units/weapons/player/wpn_we_axe_03_t1/wpn_we_axe_03_t1",
 	template = "we_one_hand_axe_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "we_1h_axe",
 	can_wield = {
@@ -4186,6 +4195,7 @@ ItemMasterList.wh_dual_wield_axe_falchion_skin_02_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_axe_03_t2/wpn_axe_03_t2_runed_01",
 	template = "dual_wield_axe_falchion_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/dual_wield_axe_falchion",
 	item_type = "weapon_skin",
 	matching_item_key = "wh_dual_wield_axe_falchion",
 	can_wield = {
@@ -4615,6 +4625,7 @@ ItemMasterList.bw_1h_crowbill_skin_02_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_brw_crowbill_02/wpn_brw_crowbill_02_runed_01",
 	template = "one_handed_crowbill",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_crowbills",
 	item_type = "weapon_skin",
 	matching_item_key = "bw_1h_crowbill",
 	can_wield = {
@@ -5354,7 +5365,7 @@ ItemMasterList.dw_dual_axe_skin_06 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_03_t2/wpn_dw_axe_03_t2",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -5583,7 +5594,7 @@ ItemMasterList.dw_dual_axe_skin_04 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_02_t2/wpn_dw_axe_02_t2",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -5809,6 +5820,7 @@ ItemMasterList.dr_dual_wield_hammers_skin_01 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_03_t1/wpn_dw_hammer_03_t1",
 	template = "dual_wield_axe_falchion_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_hammers",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_hammers",
 	can_wield = {
@@ -5903,7 +5915,7 @@ ItemMasterList.dw_dual_axe_skin_06_runed_02 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_03_t2/wpn_dw_axe_03_t2_runed_01",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -7148,7 +7160,7 @@ ItemMasterList.dw_dual_axe_skin_03 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_02_t1/wpn_dw_axe_02_t1",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -7643,6 +7655,7 @@ ItemMasterList.bw_1h_crowbill_skin_01 = {
 	right_hand_unit = "units/weapons/player/wpn_brw_crowbill_01/wpn_brw_crowbill_01",
 	template = "one_handed_crowbill",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_crowbills",
 	item_type = "weapon_skin",
 	matching_item_key = "bw_1h_crowbill",
 	can_wield = {
@@ -7662,6 +7675,7 @@ ItemMasterList.es_dual_wield_hammer_sword_skin_02 = {
 	right_hand_unit = "units/weapons/player/wpn_emp_mace_05_t2/wpn_emp_mace_05_t2",
 	template = "dual_wield_hammer_sword_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_weapons",
 	item_type = "weapon_skin",
 	matching_item_key = "es_dual_wield_hammer_sword",
 	can_wield = {
@@ -8402,7 +8416,7 @@ ItemMasterList.dw_dual_axe_skin_07_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_04_t1/wpn_dw_axe_04_t1_runed_01",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -8670,7 +8684,7 @@ ItemMasterList.dw_dual_axe_skin_06_runed_01 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_03_t2/wpn_dw_axe_03_t2_runed_01",
 	template = "dual_wield_axes_template_1",
 	hud_icon = "weapon_generic_icon_staff_3",
-	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_axes",
 	can_wield = {
@@ -8801,6 +8815,7 @@ ItemMasterList.dr_dual_wield_hammers_skin_02 = {
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t2/wpn_dw_hammer_01_t2",
 	template = "dual_wield_axe_falchion_template",
 	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_hammers",
 	item_type = "weapon_skin",
 	matching_item_key = "dr_dual_wield_hammers",
 	can_wield = {
@@ -8825,6 +8840,1196 @@ ItemMasterList.dw_crossbow_skin_02_runed_01 = {
 	can_wield = {
 		"dr_ironbreaker",
 		"dr_ranger"
+	}
+}
+ItemMasterList.wh_fencing_sword_skin_07_magic_01 = {
+	description = "wh_fencing_sword_skin_07_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_fencing_sword_skin_07_magic_01_name",
+	template = "fencing_sword_template_1",
+	inventory_icon = "icon_emp_pistol_03_t2_magic_01_emp_pistol_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_fencingsword_04_t2/wpn_fencingsword_04_t2_magic_01",
+	hud_icon = "weapon_generic_icon_fencing_sword",
+	display_unit = "units/weapons/weapon_display/display_fencing_swords",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_fencing_sword",
+	can_wield = {
+		"wh_bountyhunter",
+		"wh_captain",
+		"wh_zealot"
+	}
+}
+ItemMasterList.dw_handgun_skin_03_magic_01 = {
+	description = "dw_handgun_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_handgun_skin_03_magic_01_name",
+	template = "handgun_template_1",
+	inventory_icon = "icon_dw_handgun_02_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_handgun_02_t1/wpn_dw_handgun_02_t1_magic_01",
+	hud_icon = "weapon_generic_icon_units/weapons/weapon_display/display_rifle",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_handgun",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_ranger"
+	}
+}
+ItemMasterList.dw_dual_axe_skin_04_magic_01 = {
+	description = "dw_dual_axe_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_dual_axe_skin_04_magic_01_name",
+	template = "dual_wield_axes_template_1",
+	inventory_icon = "icon_dw_axe_02_t2_magic_01_dw_axe_02_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_axe_02_t2/wpn_dw_axe_02_t2_magic_01",
+	hud_icon = "weapon_generic_icon_axe1h",
+	display_unit = "units/weapons/weapon_display/display_dual_axes",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_dual_wield_axes",
+	can_wield = {
+		"dr_slayer"
+	}
+}
+ItemMasterList.bw_flamethrower_staff_skin_04_magic_01 = {
+	description = "bw_flamethrower_staff_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_flamethrower_staff_skin_04_magic_01_name",
+	template = "staff_flamethrower_template",
+	inventory_icon = "icon_brw_flame_staff_04_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_flame_staff_04/wpn_brw_flame_staff_04_magic_01",
+	hud_icon = "weapon_generic_icon_staff_5",
+	display_unit = "units/weapons/weapon_display/display_staff",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_skullstaff_flamethrower",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.bw_1h_crowbill_skin_01_magic_01 = {
+	description = "bw_1h_crowbill_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_1h_crowbill_skin_01_magic_01_name",
+	template = "one_handed_crowbill",
+	inventory_icon = "icon_brw_crowbill_01_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_crowbill_01/wpn_brw_crowbill_01_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_1h_crowbill",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.bw_1h_flaming_sword_skin_06_magic_01 = {
+	description = "bw_1h_flaming_sword_skin_06_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_1h_flaming_sword_skin_06_magic_01_name",
+	template = "flaming_sword_template_1",
+	inventory_icon = "icon_brw_sword_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_sword_03_t2/wpn_brw_sword_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_flaming_sword",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_flame_sword",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.we_shortbow_hagbane_skin_02_magic_01 = {
+	description = "we_shortbow_hagbane_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "we_shortbow_hagbane_skin_02_magic_01_name",
+	inventory_icon = "icon_we_bow_short_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_bow",
+	template = "shortbow_hagbane_template_1",
+	display_unit = "units/weapons/weapon_display/display_bow",
+	item_type = "weapon_skin",
+	matching_item_key = "we_shortbow_hagbane",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.bw_dagger_skin_02_magic_01 = {
+	description = "bw_dagger_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_dagger_skin_02_magic_01_name",
+	template = "one_handed_daggers_template_1",
+	inventory_icon = "icon_brw_dagger_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_02/wpn_brw_dagger_02_magic_01",
+	hud_icon = "weapon_generic_icon_sword",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_dagger",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.dw_1h_axe_shield_skin_04_magic_01 = {
+	description = "dw_1h_axe_shield_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_1h_axe_shield_skin_04_magic_01_name",
+	template = "one_hand_axe_shield_template_1",
+	inventory_icon = "icon_dw_axe_02_t2_magic_01_dw_shield_04_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_axe_02_t2/wpn_dw_axe_02_t2_magic_01",
+	hud_icon = "weapon_generic_icon_axe_and_sheild",
+	display_unit = "units/weapons/weapon_display/display_shield",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_shield_axe",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_ranger"
+	}
+}
+ItemMasterList.dr_dual_wield_hammers_skin_01_magic_01 = {
+	description = "dr_dual_wield_hammers_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "dr_dual_wield_hammers_skin_01_magic_01_name",
+	template = "dual_wield_hammers_template",
+	inventory_icon = "icon_dw_hammer_02_t1_magic_01_dw_hammer_02_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_hammer_02_t1/wpn_dw_hammer_02_t1_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_hammers",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_dual_wield_hammers",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger"
+	}
+}
+ItemMasterList.es_2h_sword_exe_skin_03_magic_01 = {
+	description = "es_2h_sword_exe_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "es_2h_sword_exe_skin_03_magic_01_name",
+	template = "two_handed_swords_executioner_template_1",
+	inventory_icon = "icon_emp_sword_exe_03_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_exe_03_t1/wpn_emp_sword_exe_03_t1_magic_01",
+	hud_icon = "weapon_generic_icon_sword",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_2h_sword_executioner",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.we_dual_dagger_skin_07_magic_01 = {
+	description = "we_dual_dagger_skin_07_magic_01_description",
+	rarity = "magic",
+	display_name = "we_dual_dagger_skin_07_magic_01_name",
+	template = "dual_wield_daggers_template_1",
+	inventory_icon = "icon_we_dagger_03_t2_magic_01_we_dagger_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_dagger_03_t2/wpn_we_dagger_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_daggers",
+	display_unit = "units/weapons/weapon_display/display_dual_daggers",
+	item_type = "weapon_skin",
+	matching_item_key = "we_dual_wield_daggers",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.es_2h_heavy_spear_skin_02_magic_01 = {
+	description = "es_2h_heavy_spear_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "es_2h_heavy_spear_skin_02_magic_01_name",
+	template = "two_handed_heavy_spears_template",
+	inventory_icon = "icon_emp_boar_spear_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_boar_spear_02/wpn_emp_boar_spear_02_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_2h_heavy_spear",
+	can_wield = {
+		"es_huntsman",
+		"es_mercenary"
+	}
+}
+ItemMasterList.we_1h_axe_skin_02_magic_01 = {
+	description = "we_1h_axe_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "we_1h_axe_skin_02_magic_01_name",
+	template = "we_one_hand_axe_template",
+	inventory_icon = "icon_we_axe_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_axe_03_t2/wpn_we_axe_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "we_1h_axe",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.we_crossbow_skin_01_magic_01 = {
+	description = "we_crossbow_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "we_crossbow_skin_01_magic_01_name",
+	inventory_icon = "icon_we_repeater_crossbow_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_repeating_crossbow",
+	template = "repeating_crossbow_elf_template",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "we_crossbow_repeater",
+	can_wield = {
+		"we_shade"
+	}
+}
+ItemMasterList.wh_2h_sword_skin_04_magic_01 = {
+	description = "wh_2h_sword_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_2h_sword_skin_04_magic_01_name",
+	template = "two_handed_swords_template_1",
+	inventory_icon = "icon_2h_sword_04_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_04_t2/wpn_2h_sword_04_t2_magic_01",
+	hud_icon = "weapon_generic_icon_sword",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_2h_sword",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.we_2h_axe_skin_03_magic_01 = {
+	description = "we_2h_axe_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "we_2h_axe_skin_03_magic_01_name",
+	template = "two_handed_axes_template_2",
+	inventory_icon = "icon_we_2h_axe_02_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_2h_axe_02_t1/wpn_we_2h_axe_02_t1_magic_01",
+	hud_icon = "weapon_generic_icon_elf_axe2h",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "we_2h_axe",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.es_2h_hammer_skin_02_magic_01 = {
+	description = "es_2h_hammer_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "es_2h_hammer_skin_02_magic_01_name",
+	template = "two_handed_hammers_template_1",
+	inventory_icon = "icon_2h_hammer_01_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_empire_2h_hammer_01_t2/wpn_2h_hammer_01_t2_magic_01",
+	hud_icon = "weapon_generic_icon_hammer2h",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_2h_hammer",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.es_repeating_handgun_skin_01_magic_01 = {
+	description = "es_repeating_handgun_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "es_repeating_handgun_skin_01_magic_01_name",
+	template = "repeating_handgun_template_1",
+	inventory_icon = "icon_emp_handgun_repeater_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1_magic_01",
+	hud_icon = "weapon_generic_icon_repeating_handgun",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "es_repeating_handgun",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.dr_1h_throwing_axes_skin_02_magic_01 = {
+	description = "dr_1h_throwing_axes_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "dr_1h_throwing_axes_skin_02_magic_01_name",
+	template = "one_handed_throwing_axes_template",
+	inventory_icon = "icon_dw_thrown_axe_01_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_invisible_weapon",
+	hud_icon = "weapon_generic_icon_falken",
+	is_ammo_weapon = true,
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_1h_throwing_axes",
+	can_wield = {
+		"dr_slayer",
+		"dr_ranger"
+	}
+}
+ItemMasterList.bw_1h_mace_skin_02_magic_01 = {
+	description = "bw_1h_mace_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_1h_mace_skin_02_magic_01_name",
+	template = "one_handed_hammer_wizard_template_1",
+	inventory_icon = "icon_brw_mace_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_mace_02/wpn_brw_mace_02_magic_01",
+	hud_icon = "weapon_generic_icon_mace",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_1h_mace",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.wh_1h_axe_skin_06_magic_01 = {
+	description = "wh_1h_axe_skin_06_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_1h_axe_skin_06_magic_01_name",
+	template = "one_hand_axe_template_1",
+	inventory_icon = "icon_axe_hatchet_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_axe_hatchet_t2/wpn_axe_hatchet_t2_magic_01",
+	hud_icon = "weapon_generic_icon_axe1h",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_1h_axe",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.bw_spear_staff_skin_05_magic_01 = {
+	description = "bw_spear_staff_skin_05_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_spear_staff_skin_05_magic_01_name",
+	template = "staff_spark_spear_template_1",
+	inventory_icon = "icon_brw_spear_staff_05_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_05/wpn_brw_spear_staff_05_magic_01",
+	hud_icon = "weapon_generic_icon_staff_5",
+	display_unit = "units/weapons/weapon_display/display_staff",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_skullstaff_spear",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.wh_repeating_pistol_skin_05_magic_01 = {
+	description = "wh_repeating_pistol_skin_05_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_repeating_pistol_skin_05_magic_01_name",
+	template = "repeating_pistol_template_1",
+	inventory_icon = "icon_empire_pistol_repeater_02_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater_02/wpn_empire_pistol_repeater_02_t2_magic_01",
+	hud_icon = "weapon_generic_icon_repeating_pistol",
+	display_unit = "units/weapons/weapon_display/display_pistols",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_repeating_pistols",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.wh_crossbow_skin_06_magic_01 = {
+	description = "wh_crossbow_skin_06_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_crossbow_skin_06_magic_01_name",
+	inventory_icon = "icon_empire_crossbow_tier2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_crossbow",
+	template = "crossbow_template_1",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_crossbow",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.es_2h_sword_skin_03_magic_01 = {
+	description = "es_2h_sword_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "es_2h_sword_skin_03_magic_01_name",
+	template = "two_handed_swords_template_1",
+	inventory_icon = "icon_2h_sword_03_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_03_t1/wpn_2h_sword_03_t1_magic_01",
+	hud_icon = "weapon_generic_icon_sword",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_2h_sword",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.we_shortbow_skin_02_magic_01 = {
+	description = "we_shortbow_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "we_shortbow_skin_02_magic_01_name",
+	inventory_icon = "icon_we_bow_short_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_bow",
+	template = "shortbow_template_1",
+	display_unit = "units/weapons/weapon_display/display_bow",
+	item_type = "weapon_skin",
+	matching_item_key = "we_shortbow",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.dw_1h_hammer_shield_skin_04_magic_01 = {
+	description = "dw_1h_hammer_shield_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_1h_hammer_shield_skin_04_magic_01_name",
+	template = "one_handed_hammer_shield_template_2",
+	inventory_icon = "icon_dw_hammer_02_t1_magic_01_dw_shield_04_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_hammer_02_t1/wpn_dw_hammer_02_t1_magic_01",
+	hud_icon = "weapon_generic_icon_hammer_and_sheild",
+	display_unit = "units/weapons/weapon_display/display_shield",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_shield_hammer",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_ranger"
+	}
+}
+ItemMasterList.wh_brace_of_pistols_skin_05_magic_01 = {
+	description = "wh_brace_of_pistols_skin_05_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_brace_of_pistols_skin_05_magic_01_name",
+	template = "brace_of_pistols_template_1",
+	inventory_icon = "icon_emp_pistol_03_t2_magic_01_emp_pistol_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_pistol_03_t2/wpn_emp_pistol_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_brace_of_pistol",
+	display_unit = "units/weapons/weapon_display/display_pistols",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_brace_of_pistols",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.bw_beam_staff_skin_02_magic_01 = {
+	description = "bw_beam_staff_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_beam_staff_skin_02_magic_01_name",
+	template = "staff_blast_beam_template_1",
+	inventory_icon = "icon_brw_beam_staff_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_beam_staff_02/wpn_brw_beam_staff_02_magic_01",
+	hud_icon = "weapon_generic_icon_staff_4",
+	display_unit = "units/weapons/weapon_display/display_staff",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_skullstaff_beam",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.dw_2h_hammer_skin_03_magic_01 = {
+	description = "dw_2h_hammer_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_2h_hammer_skin_03_magic_01_name",
+	template = "two_handed_hammers_template_1",
+	inventory_icon = "icon_dw_2h_hammer_02_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_2h_hammer_02_t1/wpn_dw_2h_hammer_02_t1_magic_01",
+	hud_icon = "weapon_generic_icon_hammer2h",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_2h_hammer",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger"
+	}
+}
+ItemMasterList.dw_2h_pick_skin_02_magic_01 = {
+	description = "dw_2h_pick_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_2h_pick_skin_02_magic_01_name",
+	template = "two_handed_picks_template_1",
+	inventory_icon = "icon_dw_pick_01_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_pick_01_t2/wpn_dw_pick_01_t2_magic_01",
+	hud_icon = "weapon_generic_icon_pick",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_2h_pick",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger"
+	}
+}
+ItemMasterList.we_spear_skin_02_magic_01 = {
+	description = "we_spear_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "we_spear_skin_02_magic_01_name",
+	template = "two_handed_spears_elf_template_1",
+	inventory_icon = "icon_we_spear_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_spear_02/wpn_we_spear_02_magic_01",
+	hud_icon = "weapon_generic_icon_hammer2h",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "we_spear",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.we_dual_sword_skin_06_magic_01 = {
+	description = "we_dual_sword_skin_06_magic_01_description",
+	rarity = "magic",
+	display_name = "we_dual_sword_skin_06_magic_01_name",
+	template = "dual_wield_swords_template_1",
+	inventory_icon = "icon_we_sword_03_t1_magic_01_e_sword_03_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_sword_03_t1/wpn_we_sword_03_t1_magic_01",
+	hud_icon = "weapon_generic_icon_dual_elf_sword",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "we_dual_wield_swords",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.bw_1h_flail_flaming_skin_02_magic_01 = {
+	description = "bw_1h_flail_flaming_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_1h_flail_flaming_skin_02_magic_01_name",
+	template = "one_handed_flails_flaming_template",
+	inventory_icon = "icon_brw_flaming_flail_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_flaming_flail_02/wpn_brw_flaming_flail_02_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_1h_flail_flaming",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.we_dual_sword_dagger_skin_07_magic_01 = {
+	description = "we_dual_sword_dagger_skin_07_magic_01_description",
+	rarity = "magic",
+	display_name = "we_dual_sword_dagger_skin_07_magic_01_name",
+	template = "dual_wield_sword_dagger_template_1",
+	inventory_icon = "icon_we_sword_03_t1_magic_01_we_dagger_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_sword_03_t1/wpn_we_sword_03_t1_magic_01",
+	hud_icon = "weapon_generic_icon_elf_sword_and_dagger",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "we_dual_wield_sword_dagger",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.es_dual_wield_hammer_sword_skin_02_magic_01 = {
+	description = "es_dual_wield_hammer_sword_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "es_dual_wield_hammer_sword_skin_02_magic_01_name",
+	template = "dual_wield_hammer_sword_template",
+	inventory_icon = "icon_emp_sword_06_t2_magic_01_emp_mace_04_t3_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_mace_04_t3/wpn_emp_mace_04_t3_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_dual_weapons",
+	item_type = "weapon_skin",
+	matching_item_key = "es_dual_wield_hammer_sword",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.wh_2h_billhook_skin_02_magic_01 = {
+	description = "wh_2h_billhook_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_2h_billhook_skin_02_magic_01_name",
+	template = "two_handed_billhooks_template",
+	inventory_icon = "icon_wh_billhook_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_wh_billhook_02/wpn_wh_billhook_02_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_2h_billhook",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.es_1h_flail_skin_04_magic_01 = {
+	description = "es_1h_flail_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "es_1h_flail_skin_04_magic_01_name",
+	template = "one_handed_flail_template_1",
+	inventory_icon = "icon_emp_flail_04_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_flail_04_t1/wpn_emp_flail_04_t1_magic_01",
+	hud_icon = "weapon_generic_icon_mace",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_1h_flail",
+	can_wield = {
+		"wh_zealot",
+		"wh_captain",
+		"wh_bountyhunter"
+	}
+}
+ItemMasterList.bw_conflagration_staff_skin_01_magic_01 = {
+	description = "bw_conflagration_staff_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_conflagration_staff_skin_01_magic_01_name",
+	template = "staff_fireball_geiser_template_1",
+	inventory_icon = "icon_brw_staff_03_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_staff_03/wpn_brw_staff_03_magic_01",
+	hud_icon = "weapon_generic_icon_staff_3",
+	display_unit = "units/weapons/weapon_display/display_staff",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_skullstaff_geiser",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.es_1h_sword_skin_04_magic_01 = {
+	description = "es_1h_sword_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "es_1h_sword_skin_04_magic_01_name",
+	template = "one_handed_swords_template_1",
+	inventory_icon = "icon_emp_sword_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_03_t2/wpn_emp_sword_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_sword",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_1h_sword",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.es_1h_mace_skin_05_magic_01 = {
+	description = "es_1h_mace_skin_05_magic_01_description",
+	rarity = "magic",
+	display_name = "es_1h_mace_skin_05_magic_01_name",
+	template = "one_handed_hammer_template_1",
+	inventory_icon = "icon_emp_mace_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_mace_03_t2/wpn_emp_mace_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_mace",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_1h_mace",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.dw_drake_pistol_skin_01_magic_01 = {
+	description = "dw_drake_pistol_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_drake_pistol_skin_01_magic_01_name",
+	template = "brace_of_drakefirepistols_template_1",
+	inventory_icon = "icon_dw_drake_pistol_01_t1_magic_01_dw_drake_pistol_01_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_drake_pistol_01_t1/wpn_dw_drake_pistol_01_t1_magic_01",
+	hud_icon = "weapon_generic_icon_drakefire_pistols",
+	display_unit = "units/weapons/weapon_display/display_pistols",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_drake_pistol",
+	can_wield = {
+		"dr_ironbreaker"
+	}
+}
+ItemMasterList.dw_grudge_raker_skin_03_magic_01 = {
+	description = "dw_grudge_raker_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_grudge_raker_skin_03_magic_01_name",
+	template = "grudge_raker_template_1",
+	inventory_icon = "icon_dw_rakegun_t3_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_rakegun_t3/wpn_dw_rakegun_t3_magic_01",
+	hud_icon = "weapon_generic_icon_grudgeraker",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_rakegun",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_ranger"
+	}
+}
+ItemMasterList.es_1h_mace_shield_skin_04_magic_01 = {
+	description = "es_1h_mace_shield_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "es_1h_mace_shield_skin_04_magic_01_name",
+	template = "one_handed_hammer_shield_template_1",
+	inventory_icon = "icon_emp_mace_03_t2_magic_01_emp_shield_04_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_mace_03_t2/wpn_emp_mace_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_mace_and_sheild",
+	display_unit = "units/weapons/weapon_display/display_shield",
+	item_type = "weapon_skin",
+	matching_item_key = "es_mace_shield",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.es_halberd_skin_03_magic_01 = {
+	description = "es_halberd_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "es_halberd_skin_03_magic_01_name",
+	template = "two_handed_halberds_template_1",
+	inventory_icon = "icon_wh_halberd_03_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_wh_halberd_03/wpn_wh_halberd_03_magic_01",
+	hud_icon = "weapon_generic_icon_hammer2h",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "es_halberd",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.es_longbow_skin_04_magic_01 = {
+	description = "es_longbow_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "es_longbow_skin_04_magic_01_name",
+	inventory_icon = "icon_emp_bow_04_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_bow",
+	template = "longbow_empire_template",
+	display_unit = "units/weapons/weapon_display/display_longbow",
+	item_type = "weapon_skin",
+	matching_item_key = "es_longbow",
+	can_wield = {
+		"es_huntsman"
+	}
+}
+ItemMasterList.dw_crossbow_skin_03_magic_01 = {
+	description = "dw_crossbow_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_crossbow_skin_03_magic_01_name",
+	inventory_icon = "icon_dw_xbow_02_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_crossbow",
+	template = "crossbow_template_1",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_crossbow",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_ranger"
+	}
+}
+ItemMasterList.es_handgun_skin_02_magic_01 = {
+	description = "es_handgun_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "es_handgun_skin_02_magic_01_name",
+	template = "handgun_template_1",
+	inventory_icon = "icon_empire_handgun_02_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_magic_01",
+	hud_icon = "weapon_generic_icon_units/weapons/weapon_display/display_rifle",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "es_handgun",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.dw_drakegun_skin_02_magic_01 = {
+	description = "dw_drakegun_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_drakegun_skin_02_magic_01_name",
+	template = "drakegun_template_1",
+	inventory_icon = "icon_dw_iron_drake_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_iron_drake_02/wpn_dw_iron_drake_02_magic_01",
+	hud_icon = "weapon_generic_icon_units/weapons/weapon_display/display_rifle",
+	display_unit = "units/weapons/weapon_display/display_drakegun",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_drakegun",
+	can_wield = {
+		"dr_ironbreaker"
+	}
+}
+ItemMasterList.es_blunderbuss_skin_01_magic_01 = {
+	description = "es_blunderbuss_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "es_blunderbuss_skin_01_magic_01_name",
+	template = "blunderbuss_template_1",
+	inventory_icon = "icon_empire_blunderbuss_02_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1_magic_01",
+	hud_icon = "weapon_generic_icon_blunderbuss",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "es_blunderbuss",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.dw_2h_axe_skin_02_magic_01 = {
+	description = "dw_2h_axe_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_2h_axe_skin_02_magic_01_name",
+	template = "two_handed_axes_template_1",
+	inventory_icon = "icon_dw_2h_axe_01_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_2h_axe_01_t2/wpn_dw_2h_axe_01_t2_magic_01",
+	hud_icon = "weapon_generic_icon_axe2h",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_2h_axe",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger"
+	}
+}
+ItemMasterList.wh_repeating_crossbow_skin_02_magic_01 = {
+	description = "wh_repeating_crossbow_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_repeating_crossbow_skin_02_magic_01_name",
+	inventory_icon = "icon_wh_repeater_crossbow_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_repeating_crossbow",
+	template = "repeating_crossbow_template_1",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_crossbow_repeater",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.bw_fireball_staff_skin_02_magic_01 = {
+	description = "bw_fireball_staff_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_fireball_staff_skin_02_magic_01_name",
+	template = "staff_fireball_fireball_template_1",
+	inventory_icon = "icon_brw_staff_05_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_staff_05/wpn_brw_staff_05_magic_01",
+	hud_icon = "weapon_generic_icon_staff_2",
+	display_unit = "units/weapons/weapon_display/display_staff",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_skullstaff_fireball",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.dw_1h_hammer_skin_03_magic_01 = {
+	description = "dw_1h_hammer_skin_03_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_1h_hammer_skin_03_magic_01_name",
+	template = "one_handed_hammer_template_2",
+	inventory_icon = "icon_dw_hammer_02_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_hammer_02_t1/wpn_dw_hammer_02_t1_magic_01",
+	hud_icon = "weapon_generic_icon_hammer1h",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_1h_hammer",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger"
+	}
+}
+ItemMasterList.we_2h_sword_skin_08_magic_01 = {
+	description = "we_2h_sword_skin_08_magic_01_description",
+	rarity = "magic",
+	display_name = "we_2h_sword_skin_08_magic_01_name",
+	template = "two_handed_swords_wood_elf_template",
+	inventory_icon = "icon_we_2h_sword_04_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_2h_sword_04_t2/wpn_we_2h_sword_04_t2_magic_01",
+	hud_icon = "weapon_generic_icon_elf_axe2h",
+	display_unit = "units/weapons/weapon_display/display_2h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "we_2h_sword",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.dw_1h_axe_skin_04_magic_01 = {
+	description = "dw_1h_axe_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "dw_1h_axe_skin_04_magic_01_name",
+	template = "one_hand_axe_template_2",
+	inventory_icon = "icon_dw_axe_02_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_axe_02_t2/wpn_dw_axe_02_t2_magic_01",
+	hud_icon = "weapon_generic_icon_axe1h",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_1h_axe",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger"
+	}
+}
+ItemMasterList.bw_1h_sword_skin_06_magic_01 = {
+	description = "bw_1h_sword_skin_06_magic_01_description",
+	rarity = "magic",
+	display_name = "bw_1h_sword_skin_06_magic_01_name",
+	template = "one_handed_swords_template_1",
+	inventory_icon = "icon_brw_sword_03_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_brw_sword_03_t2/wpn_brw_sword_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_sword",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_sword",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.es_1h_sword_shield_skin_04_magic_01 = {
+	description = "es_1h_sword_shield_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "es_1h_sword_shield_skin_04_magic_01_name",
+	template = "one_handed_sword_shield_template_1",
+	inventory_icon = "icon_emp_sword_03_t2_magic_01_emp_shield_04_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_03_t2/wpn_emp_sword_03_t2_magic_01",
+	hud_icon = "weapon_generic_icon_sword_and_sheild",
+	display_unit = "units/weapons/weapon_display/display_shield",
+	item_type = "weapon_skin",
+	matching_item_key = "es_sword_shield",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.wh_dual_wield_axe_falchion_skin_01_magic_01 = {
+	description = "wh_dual_wield_axe_falchion_skin_01_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_dual_wield_axe_falchion_skin_01_magic_01_name",
+	template = "dual_wield_axe_falchion_template",
+	inventory_icon = "icon_emp_sword_05_t2_magic_01_axe_hatchet_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_axe_hatchet_t2/wpn_axe_hatchet_t2_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/dual_wield_axe_falchion",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_dual_wield_axe_falchion",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.we_longbow_skin_02_magic_01 = {
+	description = "we_longbow_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "we_longbow_skin_02_magic_01_name",
+	inventory_icon = "icon_we_bow_01_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	hud_icon = "weapon_generic_icon_bow",
+	template = "longbow_template_1",
+	display_unit = "units/weapons/weapon_display/display_bow",
+	item_type = "weapon_skin",
+	matching_item_key = "we_longbow",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.wh_1h_falchion_skin_04_magic_01 = {
+	description = "wh_1h_falchion_skin_04_magic_01_description",
+	rarity = "magic",
+	display_name = "wh_1h_falchion_skin_04_magic_01_name",
+	template = "one_hand_falchion_template_1",
+	inventory_icon = "icon_emp_sword_05_t2_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_05_t2/wpn_emp_sword_05_t2_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_1h_falchion",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.we_1h_spears_shield_skin_02_magic_01 = {
+	description = "we_1h_spears_shield_skin_02_magic_01_description",
+	rarity = "magic",
+	display_name = "we_1h_spears_shield_skin_02_magic_01_name",
+	template = "one_handed_spears_shield_template",
+	inventory_icon = "icon_we_spear_02_magic_01_we_shield_02_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_spear_02/wpn_we_spear_02_magic_01",
+	hud_icon = "weapon_generic_icon_falken",
+	display_unit = "units/weapons/weapon_display/display_shield",
+	item_type = "weapon_skin",
+	matching_item_key = "we_1h_spears_shield",
+	can_wield = {
+		"we_maidenguard"
+	}
+}
+ItemMasterList.we_sword_skin_06_magic_01 = {
+	description = "we_sword_skin_06_magic_01_description",
+	rarity = "magic",
+	display_name = "we_sword_skin_06_magic_01_name",
+	template = "we_one_hand_sword_template_1",
+	inventory_icon = "icon_we_sword_03_t1_magic_01",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_we_sword_03_t1/wpn_we_sword_03_t1_magic_01",
+	hud_icon = "weapon_generic_icon_elf_sword",
+	display_unit = "units/weapons/weapon_display/display_1h_weapon",
+	item_type = "weapon_skin",
+	matching_item_key = "we_1h_sword",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
 	}
 }
 

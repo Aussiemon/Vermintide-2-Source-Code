@@ -16,7 +16,7 @@ if script_data.honduras_demo then
 			Managers.music:trigger_event("Play_console_menu_start_game")
 		end
 	}
-elseif script_data.settings.use_beta_overlay then
+elseif script_data.settings.use_beta_mode then
 	if script_data.settings.disable_tutorial_at_start then
 		menu_functions = {
 			function (this)

@@ -99,20 +99,20 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	}
 	local team_size_data = {
 		{
-			value = "season_1_weave_score_1_players",
-			text = Localize("menu_weave_leaderboard_filter_option_players_1")
+			text = Localize("menu_weave_leaderboard_filter_option_players_1"),
+			value = ScorpionSeasonalSettings.get_leaderboard_stat(1)
 		},
 		{
-			value = "season_1_weave_score_2_players",
-			text = Localize("menu_weave_leaderboard_filter_option_players_2")
+			text = Localize("menu_weave_leaderboard_filter_option_players_2"),
+			value = ScorpionSeasonalSettings.get_leaderboard_stat(2)
 		},
 		{
-			value = "season_1_weave_score_3_players",
-			text = Localize("menu_weave_leaderboard_filter_option_players_3")
+			text = Localize("menu_weave_leaderboard_filter_option_players_3"),
+			value = ScorpionSeasonalSettings.get_leaderboard_stat(3)
 		},
 		{
-			value = "season_1_weave_score_4_players",
-			text = Localize("menu_weave_leaderboard_filter_option_players_4")
+			text = Localize("menu_weave_leaderboard_filter_option_players_4"),
+			value = ScorpionSeasonalSettings.get_leaderboard_stat(4)
 		}
 	}
 	self._team_size_data = team_size_data
@@ -840,6 +840,7 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 	local input_manager = self._input_manager
 	local render_settings = self._render_settings
 	local gamepad_active = input_manager:is_device_active("gamepad")
+	local input_description = nil
 
 	if not self._gamepad_style_active then
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -902,6 +903,7 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 					local career_icon = entry.career_icon
 					local real_ranking = entry.real_ranking
 					local local_player = entry.local_player
+					local platform_user_id = entry.platform_user_id
 					content.name = name
 					content.score = score
 					content.weave = weave
@@ -924,6 +926,14 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 
 					render_settings.snap_pixel_positions = snap_pixel_positions
 					render_settings.alpha_multiplier = alpha_multiplier
+
+					if PLATFORM ~= "win32" and content.button_hotspot.is_hover then
+						input_description = generic_input_actions.open_profile
+
+						if input_service:get("refresh_press") then
+							self:_open_profile(platform_user_id)
+						end
+					end
 				end
 			end
 		end
@@ -937,8 +947,21 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 		UIRenderer.end_pass(ui_top_renderer)
 
 		if self._menu_input_description and not self.parent:active_view() then
+			self._menu_input_description:set_input_description(input_description)
 			self._menu_input_description:draw(ui_top_renderer, dt)
 		end
+	end
+end
+
+StartGameStateWeaveLeaderboard._open_profile = function (self, profile_id)
+	if not profile_id then
+		return
+	end
+
+	if PLATFORM == "xb1" then
+		XboxLive.show_gamercard(Managers.account:user_id(), profile_id)
+	elseif PLATFORM == "ps4" then
+		Managers.account:show_player_profile_with_account_id(profile_id)
 	end
 end
 
@@ -1007,7 +1030,8 @@ StartGameStateWeaveLeaderboard._create_list_entries = function (self, entries)
 			career_name = career_name,
 			career_icon = portrait_thumbnail,
 			local_player = entry.local_player,
-			real_ranking = entry.real_ranking
+			real_ranking = entry.real_ranking,
+			platform_user_id = entry.platform_user_id
 		}
 	end
 

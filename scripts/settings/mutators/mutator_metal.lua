@@ -58,12 +58,16 @@ return {
 	end,
 	client_start_function = function (context, data)
 		data.buff_challenge_counter = 0
+		data.buff_challenge_result = 0
 		data.player = Managers.player:local_player()
 		data.player_unit = nil
 		data.unit_buff_extension = nil
-		local statistics_db = Managers.player:statistics_db()
-		local stats_id = data.player:stats_id()
-		data.buff_challenge_result = statistics_db:get_persistent_stat(stats_id, "season_1", "scorpion_weaves_metal_season_1")
+
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			local statistics_db = Managers.player:statistics_db()
+			local stats_id = data.player:stats_id()
+			data.buff_challenge_result = statistics_db:get_persistent_stat(stats_id, "season_1", "scorpion_weaves_metal_season_1")
+		end
 	end,
 	player_has_metal_buff = function (data, unit)
 		if not data.unit_buff_extension then
@@ -85,21 +89,23 @@ return {
 				data.player_unit = data.player.player_unit
 			end
 
-			local has_buff = data.template.player_has_metal_buff(data, data.player_unit)
+			if ScorpionSeasonalSettings.current_season_id == 1 then
+				local has_buff = data.template.player_has_metal_buff(data, data.player_unit)
 
-			if has_buff then
-				data.buff_challenge_counter = data.buff_challenge_counter + dt
+				if has_buff then
+					data.buff_challenge_counter = data.buff_challenge_counter + dt
 
-				if QuestSettings.bladestorm_duration <= data.buff_challenge_counter then
-					local statistics_db = Managers.player:statistics_db()
-					local stats_id = data.player:stats_id()
+					if QuestSettings.bladestorm_duration <= data.buff_challenge_counter then
+						local statistics_db = Managers.player:statistics_db()
+						local stats_id = data.player:stats_id()
 
-					statistics_db:set_stat(stats_id, "season_1", "scorpion_weaves_metal_season_1", 1)
+						statistics_db:set_stat(stats_id, "season_1", "scorpion_weaves_metal_season_1", 1)
 
-					data.buff_challenge_result = 1
+						data.buff_challenge_result = 1
+					end
+				else
+					data.buff_challenge_counter = 0
 				end
-			else
-				data.buff_challenge_counter = 0
 			end
 		end
 	end

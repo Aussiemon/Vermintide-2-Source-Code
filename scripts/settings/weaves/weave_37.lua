@@ -1,25 +1,25 @@
 return {
 	wind_strength = 2,
-	wind = "fire",
+	wind = "metal",
 	seed = 45654,
-	terror_events = {
-		"weave_spot_event_boss_stormfiend",
-		"weave_spot_event_boss_rat_ogre",
-		"capture_point_1_event_medium",
-		"capture_point_2_event"
-	},
 	objectives = {
 		{
 			display_name = "objective_destroy_doom_wheels_name",
-			level_id = "dlc_scorpion_mine_fire",
+			level_id = "dlc_scorpion_mine_metal",
 			objective_type = "doom_wheels",
 			conflict_settings = "default_weave",
-			level_seed = 1896357,
 			end_zone_name = "end_zone_01",
-			show_bar = true,
+			level_seed = 1896357,
 			base_level_id = "dlc_scorpion_mine",
 			objective_start_flow_event = "weave_objective_doom_wheels_start",
+			show_bar = true,
 			spawning_seed = 216384,
+			terror_events = {
+				"weave_spot_event_boss_stormfiend",
+				"weave_spot_event_boss_rat_ogre",
+				"capture_point_1_event_medium",
+				"capture_point_2_event"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
@@ -94,7 +94,7 @@ return {
 				pickups = 118466
 			},
 			spawning_settings = {
-				terror_event_trickle = "trickle_event_chaos_medium",
+				terror_event_trickle = "trickle_event_armour",
 				main_path_spawning = {
 					{
 						terror_event_name = "main_path_standard_chaos_small_short",
@@ -107,7 +107,7 @@ return {
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_theme_archers_beastmen_medium",
+						terror_event_name = "main_path_theme_armored_beastmen_medium",
 						percentage = 5,
 						percentage_spawn_offset = 10
 					},
@@ -142,7 +142,7 @@ return {
 						percentage_spawn_offset = 15
 					},
 					{
-						terror_event_name = "main_path_theme_shields_chaos_medium",
+						terror_event_name = "main_path_theme_armored_chaos_medium",
 						percentage = 45,
 						percentage_spawn_offset = 15
 					},
@@ -156,7 +156,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_fire",
+			level_id = "dlc_scorpion_arena_castle_metal",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 11854541,
 			level_seed = 1268425,
@@ -167,7 +167,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "boss_05",
+						terror_event_name = "chaos_swarm_event",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

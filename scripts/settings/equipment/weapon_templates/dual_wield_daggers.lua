@@ -1328,79 +1328,6 @@ weapon_template.actions = {
 				}
 			}
 		},
-		light_attack_stab = {
-			damage_window_start = 0.26,
-			range_mod = 1.15,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "stab_hit_armour",
-			additional_critical_strike_chance = 0.1,
-			use_precision_sweep = true,
-			damage_profile = "light_fencer_stab",
-			attack_direction = "up",
-			hit_effect = "melee_hit_dagger",
-			aim_assist_ramp_multiplier = 0.2,
-			damage_window_end = 0.38,
-			impact_sound_event = "stab_hit",
-			aim_assist_max_ramp_multiplier = 0.8,
-			anim_end_event = "attack_finished",
-			aim_assist_ramp_decay_delay = 0.1,
-			reset_aim_on_attack = true,
-			dedicated_target_range = 2.75,
-			uninterruptible = true,
-			anim_event = "attack_swing_stab_lh",
-			hit_stop_anim = "attack_hit",
-			total_time = 2.1,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			anim_time_scale = time_mod * 1.7,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 1.3,
-					end_time = 0.2,
-					buff_name = "planted_fast_decrease_movement"
-				},
-				{
-					start_time = 0.2,
-					external_multiplier = 0.75,
-					end_time = 0.5,
-					buff_name = "planted_fast_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.45,
-					action = "action_one",
-					end_time = 1,
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 1,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "action_wield",
-					input = "action_wield"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				return input_extension:reset_release_input()
-			end,
-			impact_axis = Vector3Box(0, 0, 1)
-		},
 		push = {
 			damage_window_start = 0.05,
 			anim_end_event = "attack_finished",
@@ -1641,7 +1568,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "push",
-					start_time = 0.25,
+					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					input = "action_one",
@@ -1651,7 +1578,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.25,
+					start_time = 0.2,
 					action = "action_one",
 					release_required = "action_two_hold",
 					doubleclick_window = 0,
@@ -1659,7 +1586,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				}

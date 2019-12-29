@@ -1,10 +1,16 @@
 AdventureMechanism = class(AdventureMechanism)
 AdventureMechanism.name = "Adventure"
 
-AdventureMechanism.init = function (self, settings, prior_state)
+AdventureMechanism.init = function (self, settings)
+	self._hub_level_key = "inn_level"
+
+	self:reset(settings)
+end
+
+AdventureMechanism.reset = function (self, settings)
+	self._prior_state = self._state
 	self._state = "inn"
 	self._next_state = nil
-	self._prior_state = prior_state
 	self._hero_profiles = table.clone(PROFILES_BY_AFFILIATION.heroes)
 	self._tutorial_profiles = table.clone(PROFILES_BY_AFFILIATION.tutorial)
 	local party_data = {
@@ -21,7 +27,7 @@ end
 AdventureMechanism.choose_next_state = function (self, next_state)
 	local state = self._state
 
-	if state == "inn" then
+	if state == "inn" or state == "tutorial" then
 		local acceptable_states = {
 			weave = true,
 			ingame = true,
@@ -77,6 +83,12 @@ AdventureMechanism.set_current_state = function (self, state)
 	self._state = state
 end
 
+AdventureMechanism.backend_profiles_loaded = function (self)
+	local live_events_interface = Managers.backend:get_interface("live_events")
+	local inn_level_name = live_events_interface:get_inn_level_name()
+	self._hub_level_key = inn_level_name
+end
+
 AdventureMechanism.get_starting_level = function (self)
 	local weave_name = Development.parameter("weave_name")
 
@@ -88,7 +100,11 @@ AdventureMechanism.get_starting_level = function (self)
 		return level_key
 	end
 
-	return LevelSettings.default_start_level
+	return self._hub_level_key
+end
+
+AdventureMechanism.get_hub_level_key = function (self)
+	return self._hub_level_key
 end
 
 AdventureMechanism.allocate_slot = function (self, sender, profile)
@@ -118,13 +134,16 @@ AdventureMechanism.get_level_seed = function (self, level_seed, optional_system)
 end
 
 AdventureMechanism.game_round_ended = function (self, t, dt, reason)
+	local live_events_interface = Managers.backend:get_interface("live_events")
+	local inn_level_name = live_events_interface:get_inn_level_name()
+	self._hub_level_key = inn_level_name
 	local state = self._state
 	local level_key = nil
 
 	if state == "inn" then
 		level_key = self._level_transition_handler:get_next_level_key()
 	elseif state == "tutorial" then
-		level_key = "inn_level"
+		level_key = inn_level_name
 	elseif state == "weave" then
 		local weave_manager = Managers.weave
 		local next_objective_index = weave_manager:calculate_next_objective_index()
@@ -140,11 +159,11 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 
 			level_key = objective.level_id
 		else
-			level_key = "inn_level"
+			level_key = inn_level_name
 			self._next_state = "inn"
 		end
 	else
-		level_key = "inn_level"
+		level_key = inn_level_name
 	end
 
 	if reason == "start_game" then
@@ -258,6 +277,22 @@ end
 
 AdventureMechanism.get_state = function (self)
 	return self._state
+end
+
+AdventureMechanism.sync_game_mode_data_to_peer = function (self, network_transmit, peer_id)
+	local weave_manager = Managers.weave
+
+	if weave_manager then
+		local next_weave = weave_manager:get_next_weave()
+		local next_objective_index = weave_manager:get_next_objective()
+		local active_weave = weave_manager:get_active_weave()
+		local active_objective_index = weave_manager:get_active_objective()
+		local weave_name = next_weave or active_weave or "n/a"
+		local objective_index = next_objective_index or active_objective_index or 0
+		local weave_name_id = NetworkLookup.weave_names[weave_name]
+
+		network_transmit:send_rpc("rpc_sync_adventure_data_to_peer", peer_id, weave_name_id, objective_index)
+	end
 end
 
 local TEMP_LOBBY_DATA = {}

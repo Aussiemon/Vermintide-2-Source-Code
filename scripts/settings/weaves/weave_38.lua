@@ -1,26 +1,26 @@
 return {
 	wind_strength = 3,
-	wind = "fire",
+	wind = "metal",
 	seed = 45654,
-	terror_events = {
-		"capture_point_1_chaos",
-		"capture_point_1_event_large_skaven",
-		"capture_point_1_event_large",
-		"capture_point_2_event",
-		"capture_point_6_boss_event_skaven"
-	},
 	objectives = {
 		{
 			display_name = "objective_capture_points_name",
-			level_id = "dlc_scorpion_pit_fire",
+			level_id = "dlc_scorpion_pit_metal",
 			objective_type = "capture_points",
 			conflict_settings = "default_weave",
-			level_seed = 1896357,
 			end_zone_name = "end_zone_03",
-			show_bar = true,
+			level_seed = 1896357,
 			base_level_id = "dlc_scorpion_pit",
 			objective_start_flow_event = "weave_objective_capture_points_start",
+			show_bar = true,
 			spawning_seed = 216384,
+			terror_events = {
+				"capture_point_1_chaos",
+				"capture_point_1_event_large_skaven",
+				"capture_point_1_event_large",
+				"capture_point_2_event",
+				"capture_point_6_boss_event_skaven"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
@@ -109,10 +109,10 @@ return {
 				pickups = 118466
 			},
 			spawning_settings = {
-				terror_event_trickle = "trickle_event_05",
+				terror_event_trickle = "trickle_event_armour",
 				main_path_spawning = {
 					{
-						terror_event_name = "main_path_standard_skaven_small_short",
+						terror_event_name = "main_path_theme_armored_skaven_short",
 						percentage = 15,
 						percentage_spawn_offset = 0
 					},
@@ -137,7 +137,7 @@ return {
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_theme_shields_chaos_medium",
+						terror_event_name = "main_path_theme_armored_chaos_medium",
 						percentage = 40,
 						percentage_spawn_offset = 10
 					},
@@ -171,7 +171,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_void_fire",
+			level_id = "dlc_scorpion_arena_void_metal",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 11854541,
 			level_seed = 1268425,
@@ -182,7 +182,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "chaos_swarm_event",
+						terror_event_name = "skaven_swarm_event",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

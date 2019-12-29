@@ -7,6 +7,7 @@ local adventure_game_widget_definitions = definitions.adventure_game_widgets
 local event_game_widget_definitions = definitions.event_game_widgets
 local weave_game_widget_definitions = definitions.weave_game_widgets
 local weave_find_group_widget_definitions = definitions.weave_find_group_widgets
+local weave_quickplay_widget_definitions = definitions.weave_quickplay_widgets
 local twitch_mode_widget_funcs = definitions.twitch_mode_widget_funcs
 MissionVotingUI = class(MissionVotingUI)
 
@@ -122,6 +123,19 @@ MissionVotingUI.create_ui_elements = function (self)
 
 	self._weave_find_group_widgets = weave_find_group_widgets
 	self._weave_find_group_widgets_by_name = weave_find_group_widgets_by_name
+	local weave_quickplay_widgets = {}
+	local weave_quickplay_widgets_by_name = {}
+
+	for name, widget_definition in pairs(weave_quickplay_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			weave_quickplay_widgets[#weave_quickplay_widgets + 1] = widget
+			weave_quickplay_widgets_by_name[name] = widget
+		end
+	end
+
+	self._weave_quickplay_widgets = weave_quickplay_widgets
+	self._weave_quickplay_widgets_by_name = weave_quickplay_widgets_by_name
 	local adventure_game_widgets = {}
 	local adventure_game_widgets_by_name = {}
 
@@ -214,12 +228,20 @@ MissionVotingUI.start_vote = function (self, active_voting)
 
 		self:_set_event_game_presentation(difficulty, level_key, mutators)
 	elseif game_mode == "weave" then
-		local weave_name = vote_data.weave_name
-		local level_key = vote_data.level_key
-		local difficulty = vote_data.difficulty
-		local private_game = vote_data.private_game
+		local quick_game = vote_data.quick_game
 
-		self:_set_weave_presentation(difficulty, level_key, weave_name, private_game)
+		if quick_game then
+			local difficulty = vote_data.difficulty
+
+			self:_set_weave_quickplay_presentation(difficulty)
+		else
+			local weave_name = vote_data.weave_name
+			local level_key = vote_data.level_key
+			local difficulty = vote_data.difficulty
+			local private_game = vote_data.private_game
+
+			self:_set_weave_presentation(difficulty, level_key, weave_name, private_game)
+		end
 	elseif game_mode == "weave_find_group" then
 		self:_set_weave_find_group_presentation()
 	else
@@ -350,6 +372,19 @@ MissionVotingUI._get_selection_frame_by_difficulty_index = function (self, diffi
 	end
 
 	return completed_frame_texture
+end
+
+MissionVotingUI._set_weave_quickplay_presentation = function (self, difficulty)
+	local difficulty_settings = DifficultySettings[difficulty]
+	local difficulty_display_name = difficulty_settings.display_name
+	local difficulty_display_image = difficulty_settings.display_image
+	local difficulty_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
+	local weave_quickplay_widgets_by_name = self._weave_quickplay_widgets_by_name
+	local game_option_1 = weave_quickplay_widgets_by_name.game_option_1
+	game_option_1.content.option_text = Localize(difficulty_display_name)
+	game_option_1.content.icon = difficulty_display_image
+	game_option_1.content.icon_frame = difficulty_frame_texture
+	self._presentation_type = "weave_quickplay"
 end
 
 MissionVotingUI._set_adventure_presentation = function (self, difficulty)
@@ -746,6 +781,20 @@ MissionVotingUI.draw = function (self, dt)
 
 			for i = 1, #weave_game_widgets, 1 do
 				local widget = weave_game_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
+		elseif presentation_type == "weave_quickplay" then
+			local weave_quickplay_widgets = self._weave_quickplay_widgets
+
+			for i = 1, #weave_quickplay_widgets, 1 do
+				local widget = weave_quickplay_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
 					render_settings.snap_pixel_positions = widget.snap_pixel_positions

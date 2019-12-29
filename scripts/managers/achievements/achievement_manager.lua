@@ -53,7 +53,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	printf("[AchievementManager] Achievements using the %s platform", self.platform)
 	self:event_enable_achievements(true)
 
-	if template_count == 0 or script_data.settings.use_beta_overlay or Managers.state.game_mode:setting("disable_achievements") then
+	if template_count == 0 or script_data.settings.use_beta_mode or Managers.state.game_mode:setting("disable_achievements") then
 		self._enabled = false
 	end
 
@@ -540,7 +540,7 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		progress = progress,
 		requirements = requirements,
 		reward = reward,
-		claimed = claimed
+		claimed = claimed or false
 	}
 	self._achievement_data[achievement_id] = achievement_data
 end

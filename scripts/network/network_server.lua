@@ -776,8 +776,8 @@ NetworkServer._draw_peer_states = function (self)
 		return
 	end
 
-	local font = "foundation/fonts/debug"
-	local font_material = "debug"
+	local font = "materials/fonts/arial"
+	local font_material = "arial"
 	local text_height = 20
 	local row_height = 20
 	local margin = 32
@@ -790,7 +790,7 @@ NetworkServer._draw_peer_states = function (self)
 	local world = Application.debug_world()
 
 	if self._gui == nil then
-		self._gui = World.create_screen_gui(world, "immediate", "material", font)
+		self._gui = World.create_screen_gui(world, "immediate", "material", "materials/fonts/gw_fonts")
 	end
 
 	Gui.rect(self._gui, Vector2(0, 0), Vector2(margin * 2 + peer_width + state_width, height), background_color)
@@ -925,12 +925,24 @@ NetworkServer.are_all_peers_ingame = function (self, ignore_map)
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
 		local state_name = peer_state_machine.current_state.state_name
 
-		if ignore_map[peer_id] == nil and state_name ~= "InGame" and state_name ~= "InPostGame" and state_name ~= "Disconnected" then
+		if ignore_map[peer_id] == nil and state_name ~= "InGame" and state_name ~= "InPostGame" and state_name ~= "Disconnected" and state_name ~= "Disconnecting" then
 			return false
 		end
 	end
 
 	return true
+end
+
+NetworkServer.disconnect_joining_peers = function (self)
+	local peer_state_machines = self.peer_state_machines
+
+	for peer_id, peer_state_machine in pairs(peer_state_machines) do
+		local state_name = peer_state_machine.current_state.state_name
+
+		if state_name ~= "InGame" and state_name ~= "InPostGame" and state_name ~= "Disconnected" and state_name ~= "Disconnecting" then
+			self:disconnect_peer(peer_id, "host_left_game")
+		end
+	end
 end
 
 NetworkServer.is_peer_ingame = function (self, peer_id)

@@ -17,7 +17,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.hud
+			UILayer.interaction
 		},
 		size = {
 			1920,

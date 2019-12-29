@@ -146,6 +146,10 @@ local breed_data = {
 	run_on_despawn = AiBreedSnippets.on_storm_vermin_champion_despawn,
 	hot_join_sync = AiBreedSnippets.on_storm_vermin_hot_join_sync,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
+		if not blackboard.unit then
+			return stagger, duration, length
+		end
+
 		local t = Managers.time:time("game")
 
 		if t < blackboard.intro_timer then

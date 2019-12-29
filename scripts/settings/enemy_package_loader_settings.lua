@@ -38,6 +38,7 @@ EnemyPackageLoaderSettings.categories = {
 			"chaos_dummy_sorcerer",
 			"chaos_exalted_champion_warcamp",
 			"chaos_exalted_sorcerer",
+			"chaos_exalted_sorcerer_drachenfels",
 			"skaven_storm_vermin_warlord",
 			"skaven_storm_vermin_champion",
 			"chaos_plague_wave_spawner",
@@ -173,6 +174,7 @@ if category_changes then
 end
 
 EnemyPackageLoaderSettings.opt_lookup_breed_names = {
+	skaven_storm_vermin_with_shield = "skaven_storm_vermin_with_shield_opt",
 	chaos_raider = "chaos_raider_opt",
 	chaos_berzerker = "chaos_berzerker_opt",
 	skaven_clan_rat_with_shield = "skaven_clan_rat_with_shield_opt",

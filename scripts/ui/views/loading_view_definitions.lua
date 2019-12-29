@@ -82,20 +82,6 @@ local scenegraph_definition = {
 			2
 		}
 	},
-	subtitle_root = {
-		vertical_alignment = "bottom",
-		parent = "menu_root",
-		horizontal_alignment = "center",
-		size = {
-			600,
-			256
-		},
-		position = {
-			0,
-			300,
-			2
-		}
-	},
 	tip_title = {
 		vertical_alignment = "bottom",
 		parent = "background_image",
@@ -323,26 +309,6 @@ local scenegraph_definition = {
 		}
 	}
 }
-local NUM_SUBTITLE_ROWS = 5
-
-for i = 1, NUM_SUBTITLE_ROWS, 1 do
-	local scenegraph_id = "subtitle_row_" .. tostring(i)
-	scenegraph_definition[scenegraph_id] = {
-		vertical_alignment = "bottom",
-		parent = "subtitle_root",
-		horizontal_alignment = "center",
-		size = {
-			600,
-			50
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	}
-end
-
 local dead_space_filler = {
 	scenegraph_id = "dead_space_filler",
 	element = {
@@ -383,10 +349,10 @@ local press_to_continue_widget = {
 		color = Colors.get_color_table_with_alpha("white", 255)
 	}
 }
-slot6 = {}
+slot5 = {}
 
 if not text_style then
-	slot7 = {
+	slot6 = {
 		vertical_alignment = "bottom",
 		font_size = 28,
 		localize = true,
@@ -402,8 +368,8 @@ if not text_style then
 	}
 end
 
-slot6.text = slot7
-press_to_continue_widget.style = slot6
+slot5.text = slot6
+press_to_continue_widget.style = slot5
 press_to_continue_widget.offset = {
 	0,
 	0,
@@ -426,22 +392,6 @@ local background_image = {
 				pass_type = "texture",
 				style_id = "fade_texture",
 				texture_id = "fade_texture",
-				content_check_function = function (content)
-					return content.is_weave
-				end
-			},
-			{
-				style_id = "weave_name",
-				pass_type = "text",
-				text_id = "weave_name",
-				content_check_function = function (content)
-					return content.is_weave
-				end
-			},
-			{
-				style_id = "weave_name_shadow",
-				pass_type = "text",
-				text_id = "weave_name",
 				content_check_function = function (content)
 					return content.is_weave
 				end
@@ -506,15 +456,14 @@ local background_image = {
 	},
 	content = {
 		objective_icon = "loading_objective_icon",
-		weave_name = "",
+		mutator_name = "",
 		location_header = "loading_view_location",
-		mutator_description = "",
+		is_weave = false,
 		bg_texture = "to_be_set",
 		location_name = "",
 		fade_texture = "loading_screen_fade",
 		objective_text = " ",
-		is_weave = false,
-		mutator_name = ""
+		mutator_description = ""
 	},
 	style = {
 		bg_rect = {
@@ -548,44 +497,6 @@ local background_image = {
 			texture_size = {
 				1920,
 				599
-			}
-		},
-		weave_name = {
-			vertical_alignment = "top",
-			upper_case = true,
-			localize = true,
-			font_size = 26,
-			font_type = "hell_shark_header",
-			horizontal_alignment = "left",
-			text_color = {
-				255,
-				215,
-				215,
-				215
-			},
-			offset = {
-				130,
-				50,
-				6
-			}
-		},
-		weave_name_shadow = {
-			vertical_alignment = "top",
-			upper_case = true,
-			localize = true,
-			font_size = 26,
-			font_type = "hell_shark_header",
-			horizontal_alignment = "left",
-			text_color = {
-				255,
-				0,
-				0,
-				0
-			},
-			offset = {
-				130,
-				48,
-				5
 			}
 		},
 		location_header = {
@@ -728,70 +639,6 @@ local background_image = {
 		}
 	}
 }
-local subtitle = {
-	scenegraph_id = "subtitle",
-	element = {
-		passes = {
-			{
-				style_id = "text",
-				pass_type = "text",
-				text_id = "text"
-			}
-		}
-	},
-	content = {
-		text = ""
-	},
-	style = {
-		text = {
-			vertical_alignment = "center",
-			font_type = "hell_shark",
-			word_wrap = true,
-			font_size = 24,
-			horizontal_alignment = "center",
-			text_color = table.clone(Colors.color_definitions.white)
-		}
-	}
-}
-local subtitle_row_widgets = {}
-
-for i = 1, NUM_SUBTITLE_ROWS, 1 do
-	local scenegraph_id = "subtitle_row_" .. tostring(i)
-	local start_offset_y = -(i - 1) * 50
-	local subtitle_row_widget = {
-		element = {
-			passes = {
-				{
-					style_id = "text",
-					pass_type = "text",
-					text_id = "text"
-				}
-			}
-		},
-		content = {
-			text = ""
-		},
-		style = {
-			text = {
-				vertical_alignment = "center",
-				font_type = "hell_shark",
-				word_wrap = false,
-				font_size = 36,
-				horizontal_alignment = "center",
-				text_color = table.clone(Colors.color_definitions.white),
-				start_offset_y = start_offset_y,
-				offset = {
-					0,
-					start_offset_y,
-					0
-				}
-			}
-		},
-		scenegraph_id = scenegraph_id
-	}
-	subtitle_row_widgets[i] = subtitle_row_widget
-end
-
 local news_ticker_text_style = {
 	word_wrap = true,
 	font_size = 24,
@@ -812,9 +659,6 @@ local definitions = {
 	dead_space_filler = dead_space_filler,
 	background_image = background_image,
 	logo_image = logo_image,
-	subtitle = subtitle,
-	subtitle_row_widgets = subtitle_row_widgets,
-	NUM_SUBTITLE_ROWS = NUM_SUBTITLE_ROWS,
 	press_to_continue_widget = press_to_continue_widget,
 	act_name_widget = UIWidgets.create_simple_text("", "act_name", nil, nil, {
 		vertical_alignment = "center",
