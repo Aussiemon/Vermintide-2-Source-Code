@@ -52,7 +52,7 @@ end
 StormfiendBeamExtension.create_beam = function (self, node_name)
 	local unit = self.unit
 
-	if Unit.alive(unit) then
+	if Unit.alive(unit) and AiUtils.unit_alive(unit) then
 		local muzzle_node = Unit.node(unit, node_name)
 		self.muzzle_node = muzzle_node
 		local world = self.world

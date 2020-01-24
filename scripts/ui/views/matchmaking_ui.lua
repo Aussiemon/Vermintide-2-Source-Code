@@ -21,7 +21,7 @@ local function get_portrait_name_by_profile_index(profile_index, career_index)
 end
 
 local WIND_COLORS = {
-	default = Colors.get_color_table_with_alpha("font_button_normal", 255),
+	default = Colors.get_color_table_with_alpha("font_default", 255),
 	life = Colors.get_color_table_with_alpha("lime_green", 255),
 	metal = Colors.get_color_table_with_alpha("yellow", 255),
 	death = Colors.get_color_table_with_alpha("dark_magenta", 255),
@@ -335,19 +335,33 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 	local game_mode = matchmaking_info.game_mode
 
 	if game_mode == "weave" then
-		local weave_name = matchmaking_info.weave_name
-		local weave_templates = WeaveSettings.templates
-		local weave_template = weave_name and weave_templates[weave_name]
-		local weave_index = (weave_template and table.find(WeaveSettings.templates_ordered, weave_template)) or nil
-		local weave_display_name = (weave_template and weave_index .. ". " .. Localize(weave_template.display_name)) or Localize("level_display_name_unavailable")
+		local quick_game = matchmaking_info.quick_game
 
-		self:_set_detail_level_text(weave_display_name, false)
+		if quick_game then
+			local text = "start_game_window_weave_quickplay_title"
 
-		local wind = weave_template and weave_template.wind
-		local wind_settings = wind and WindSettings[wind]
-		local wind_display_name = (wind_settings and wind_settings.display_name) or ""
+			self:_set_detail_level_text(text, true)
 
-		self:_set_detail_difficulty_text(wind_display_name, WIND_COLORS[wind])
+			local difficulty = matchmaking_info.difficulty
+			local difficulty_setting = difficulty and DifficultySettings[difficulty]
+			local difficulty_display_name = (difficulty_setting and difficulty_setting.display_name) or "dlc1_2_difficulty_unavailable"
+
+			self:_set_detail_difficulty_text(difficulty_display_name, nil, false)
+		else
+			local weave_name = matchmaking_info.weave_name
+			local weave_templates = WeaveSettings.templates
+			local weave_template = weave_name and weave_templates[weave_name]
+			local weave_index = (weave_template and table.find(WeaveSettings.templates_ordered, weave_template)) or nil
+			local weave_display_name = (weave_template and weave_index .. ". " .. Localize(weave_template.display_name)) or Localize("level_display_name_unavailable")
+
+			self:_set_detail_level_text(weave_display_name, false)
+
+			local wind = weave_template and weave_template.wind
+			local wind_settings = wind and WindSettings[wind]
+			local wind_display_name = (wind_settings and wind_settings.display_name) or ""
+
+			self:_set_detail_difficulty_text(wind_display_name, WIND_COLORS[wind])
+		end
 	elseif game_mode == "weave_find_group" then
 		local text = ""
 		local dots = math.floor(t * 3) % 4
@@ -444,18 +458,29 @@ MatchmakingUI._update_mission_vote_status = function (self)
 	local weave_name = active_vote_data.weave_name
 
 	if game_mode == "weave" then
-		local weave_templates = WeaveSettings.templates
-		local weave_template = weave_name and weave_templates[weave_name]
-		local weave_index = (weave_template and table.find(WeaveSettings.templates_ordered, weave_template)) or nil
-		local weave_display_name = (weave_template and weave_index .. ". " .. Localize(weave_template.display_name)) or Localize("level_display_name_unavailable")
+		if quick_game then
+			local text = "start_game_window_weave_quickplay_title"
 
-		self:_set_detail_level_text(weave_display_name, false)
+			self:_set_detail_level_text(text, true)
 
-		local wind = weave_template and weave_template.wind
-		local wind_settings = wind and WindSettings[wind]
-		local wind_display_name = (wind_settings and wind_settings.display_name) or ""
+			local difficulty_setting = difficulty and DifficultySettings[difficulty]
+			local difficulty_display_name = (difficulty_setting and difficulty_setting.display_name) or "dlc1_2_difficulty_unavailable"
 
-		self:_set_detail_difficulty_text(wind_display_name, WIND_COLORS[wind])
+			self:_set_detail_difficulty_text(difficulty_display_name, nil, false)
+		else
+			local weave_templates = WeaveSettings.templates
+			local weave_template = weave_name and weave_templates[weave_name]
+			local weave_index = (weave_template and table.find(WeaveSettings.templates_ordered, weave_template)) or nil
+			local weave_display_name = (weave_template and weave_index .. ". " .. Localize(weave_template.display_name)) or Localize("level_display_name_unavailable")
+
+			self:_set_detail_level_text(weave_display_name, false)
+
+			local wind = weave_template and weave_template.wind
+			local wind_settings = wind and WindSettings[wind]
+			local wind_display_name = (wind_settings and wind_settings.display_name) or ""
+
+			self:_set_detail_difficulty_text(wind_display_name, WIND_COLORS[wind])
+		end
 	elseif game_mode == "weave_find_group" then
 		active_vote_name = "start_game_window_weave_find_group"
 

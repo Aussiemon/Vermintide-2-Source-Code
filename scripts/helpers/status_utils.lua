@@ -178,6 +178,10 @@ StatusUtils = {
 			local go_id = network_manager:unit_game_object_id(unit)
 			local peer_id = player:network_id()
 
+			if not go_id then
+				return
+			end
+
 			network_manager.network_transmit:send_rpc("rpc_set_catapulted", peer_id, go_id, catapulted, velocity or Vector.zero())
 		end
 	end,

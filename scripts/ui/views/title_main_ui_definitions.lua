@@ -1257,7 +1257,7 @@ local single_widget_definitions = {
 	}),
 	create_engage_prompt = create_engage_prompt,
 	info_icon = UIWidgets.create_simple_texture("info", "info_icon"),
-	info_icon_text = create_info_text(info_texts[1], "info_icon_text", 25)
+	info_icon_text = create_info_text(info_texts[1], "info_icon_text", 23)
 }
 local menu_item_index_lookup = {
 	store = 4,
@@ -1279,7 +1279,7 @@ if script_data.honduras_demo then
 	menu_button_definitions = {
 		create_menu_button("menu_option_1", "start_demo_menu_button_name", menu_button_font_size, "font_title")
 	}
-elseif script_data.settings.use_beta_overlay then
+elseif script_data.settings.use_beta_mode then
 	if script_data.settings.disable_tutorial_at_start then
 		menu_button_definitions = {
 			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),

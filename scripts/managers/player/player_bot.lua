@@ -9,7 +9,7 @@ local BOT_COLORS = {
 	empire_soldier = QuaternionBox(255, 220, 20, 60)
 }
 
-PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profile_index, career_index, local_player_id, unique_id, ui_id)
+PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profile_index, career_index, local_player_id, unique_id, ui_id, account_id)
 	self.player_name = player_name
 	self.bot_profile = PlayerBots[bot_profile_name]
 	self._profile_index = profile_index
@@ -27,6 +27,7 @@ PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profi
 	self._local_player_id = local_player_id
 	self._unique_id = unique_id
 	self._ui_id = ui_id
+	self._account_id = account_id
 	self._spawn_state = "despawned"
 end
 
@@ -97,7 +98,7 @@ PlayerBot.telemetry_id = function (self)
 	return self.bot_telemetry_id
 end
 
-PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade)
+PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int)
 	local profile_index = self._profile_index
 	local profile = SPProfiles[profile_index]
 	local career_index = self:career_index()
@@ -233,7 +234,8 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		career_system = {
 			player = self,
 			profile_index = profile_index,
-			career_index = career_index
+			career_index = career_index,
+			ability_cooldown_percent_int = ability_cooldown_percent_int
 		},
 		overcharge_system = {
 			overcharge_data = overcharge_data
@@ -278,7 +280,8 @@ PlayerBot.create_game_object = function (self)
 		player_controlled = false,
 		go_type = NetworkLookup.go_types.player,
 		network_id = self:network_id(),
-		local_player_id = self:local_player_id()
+		local_player_id = self:local_player_id(),
+		account_id = self.peer_id
 	}
 	local callback = callback(self, "cb_game_session_disconnect")
 	local game_object_id = Managers.state.network:create_player_game_object("bot_player", game_object_data_table, callback)

@@ -1,12 +1,11 @@
 return {
 	wind_strength = 1,
-	wind = "metal",
+	wind = "death",
 	seed = 23094,
-	terror_events = {},
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_field_metal",
+			level_id = "dlc_scorpion_field_death",
 			objective_type = "kill",
 			conflict_settings = "weave_skaven_light",
 			level_seed = 45982256,
@@ -18,13 +17,7 @@ return {
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								cataclysm = 0.35,
-								cataclysm_3 = 0.25,
-								normal = 0.55
-							}
-						}
+						kill_enemies = {}
 					}
 				}
 			},
@@ -36,12 +29,12 @@ return {
 				terror_event_trickle = "trickle_event_02",
 				main_path_spawning = {
 					{
-						terror_event_name = "main_path_theme_armored_skaven_medium",
+						terror_event_name = "main_path_standard_skaven_medium_medium",
 						percentage = 1,
 						percentage_spawn_offset = 3
 					},
 					{
-						terror_event_name = "main_path_theme_armored_skaven_medium",
+						terror_event_name = "main_path_theme_berzerkers_skaven_medium",
 						percentage = 6,
 						percentage_spawn_offset = 3
 					},
@@ -66,7 +59,7 @@ return {
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_theme_armored_chaos_medium",
+						terror_event_name = "main_path_theme_vanilla_chaos_medium",
 						percentage = 24,
 						percentage_spawn_offset = 0
 					},
@@ -91,7 +84,7 @@ return {
 						percentage_spawn_offset = 0
 					},
 					{
-						terror_event_name = "main_path_theme_armored_chaos_short",
+						terror_event_name = "main_path_theme_vanilla_chaos_short",
 						percentage = 52,
 						percentage_spawn_offset = 0
 					},
@@ -121,7 +114,7 @@ return {
 						percentage_spawn_offset = 0
 					},
 					{
-						terror_event_name = "main_path_theme_armored_skaven_medium",
+						terror_event_name = "main_path_theme_berzerkers_skaven_medium",
 						percentage = 65,
 						percentage_spawn_offset = 0
 					},
@@ -145,7 +138,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_metal",
+			level_id = "dlc_scorpion_arena_temple_death",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 450982,
 			level_seed = 795483,
@@ -156,7 +149,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "metal_bosses",
+						terror_event_name = "warriors_and_ratling_gunners",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

@@ -458,6 +458,20 @@ local scenegraph_definition = {
 			0,
 			1
 		}
+	},
+	no_placement_text = {
+		vertical_alignment = "center",
+		parent = "inner_window",
+		horizontal_alignment = "center",
+		size = {
+			1280,
+			100
+		},
+		position = {
+			8,
+			0,
+			10
+		}
 	}
 }
 local title_text_style = {
@@ -504,6 +518,27 @@ local refresh_text_style = {
 	font_size = 18,
 	horizontal_alignment = "left",
 	vertical_alignment = "bottom",
+	dynamic_font_size = true,
+	font_type = "hell_shark",
+	text_color = {
+		255,
+		120,
+		120,
+		120
+	},
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local no_placement_text_style = {
+	use_shadow = true,
+	upper_case = true,
+	localize = false,
+	font_size = 52,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
 	dynamic_font_size = true,
 	font_type = "hell_shark",
 	text_color = {
@@ -1121,9 +1156,10 @@ local widgets = {
 	title_text = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title"), "title_text", nil, nil, title_text_style),
 	option_tabs_divider = create_window_divider("option_tabs_divider", scenegraph_definition.option_tabs_divider.size),
 	list_title_rank = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_rank"), "list_title_rank", nil, nil, list_title_text_style),
-	list_title_name = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_player_name"), "list_title_name", nil, nil, list_title_text_style),
+	list_title_name = UIWidgets.create_simple_text((PLATFORM ~= "xb1" and Localize("menu_weave_leaderboard_title_player_name")) or Localize("menu_weave_leaderboard_title_gamertag"), "list_title_name", nil, nil, list_title_text_style),
 	list_title_weave = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_number"), "list_title_weave", nil, nil, list_title_text_style),
 	list_title_score = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_score"), "list_title_score", nil, nil, list_title_text_style),
+	no_placement_text = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_no_placement_text"), "no_placement_text", nil, nil, no_placement_text_style),
 	refresh_button = create_refresh_button("refresh_button", scenegraph_definition.refresh_button.size),
 	refresh_text = UIWidgets.create_simple_text(Localize("menu_description_refresh"), "refresh_text", nil, nil, refresh_text_style),
 	list_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "list_window", nil, nil, nil, -1),
@@ -1186,18 +1222,27 @@ local generic_input_actions = {
 	default = {
 		{
 			input_action = "special_1",
-			priority = 1,
+			priority = 3,
 			description_text = "menu_description_refresh"
 		},
 		{
 			input_action = "confirm",
-			priority = 2,
+			priority = 4,
 			description_text = "input_description_select"
 		},
 		{
 			input_action = "back",
-			priority = 3,
+			priority = 5,
 			description_text = "input_description_close"
+		}
+	},
+	open_profile = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 1,
+				description_text = "input_description_show_profile"
+			}
 		}
 	}
 }

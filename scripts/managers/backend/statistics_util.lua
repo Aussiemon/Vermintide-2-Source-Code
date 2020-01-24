@@ -2,6 +2,143 @@ local Unit_alive = Unit.alive
 local Unit_get_data = Unit.get_data
 StatisticsUtil = {}
 local StatisticsUtil = StatisticsUtil
+local _tracked_weapon_kill_stats = {
+	we_1h_axe = {
+		"holly"
+	},
+	bw_1h_crowbill = {
+		"holly"
+	},
+	wh_dual_wield_axe_falchion = {
+		"holly"
+	},
+	dr_dual_wield_hammers = {
+		"holly"
+	},
+	es_dual_wield_hammer_sword = {
+		"holly"
+	},
+	bw_1h_flail_flaming = {
+		"scorpion"
+	},
+	dr_1h_throwing_axes = {
+		"scorpion"
+	},
+	we_1h_spears_shield = {
+		"scorpion"
+	},
+	es_2h_heavy_spear = {
+		"scorpion"
+	},
+	wh_2h_billhook = {
+		"scorpion"
+	}
+}
+
+StatisticsUtil.generate_weapon_kill_stats_dlc = function (stat_player, dlc_name, template)
+	for weapon_name, dlcs in pairs(_tracked_weapon_kill_stats) do
+		if table.contains(dlcs, dlc_name) then
+			local entry = table.clone(template)
+			local stat_name = dlc_name .. "_kills_" .. weapon_name
+			entry.database_name = stat_name
+			stat_player[stat_name] = entry
+		end
+	end
+end
+
+local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_name)
+	local weapon_stats_dlcs = weapon_name and _tracked_weapon_kill_stats[weapon_name]
+
+	if weapon_stats_dlcs then
+		local dlc_manager = Managers.unlock
+
+		for dlc_id = 1, #weapon_stats_dlcs, 1 do
+			local dlc_name = weapon_stats_dlcs[dlc_id]
+
+			if dlc_manager:is_dlc_unlocked(dlc_name) then
+				statistics_db:increment_stat(stats_id, dlc_name .. "_kills_" .. weapon_name)
+			end
+		end
+	end
+end
+
+local _tracked_levels_complted_w_weapons_levels = {
+	warcamp = {
+		"scorpion"
+	},
+	skaven_stronghold = {
+		"scorpion"
+	},
+	ground_zero = {
+		"scorpion"
+	},
+	skittergate = {
+		"scorpion"
+	}
+}
+local _tracked_levels_complted_w_weapons_weapons = {
+	bw_1h_flail_flaming = {
+		"scorpion"
+	},
+	dr_1h_throwing_axes = {
+		"scorpion"
+	},
+	we_1h_spears_shield = {
+		"scorpion"
+	},
+	es_2h_heavy_spear = {
+		"scorpion"
+	},
+	wh_2h_billhook = {
+		"scorpion"
+	}
+}
+
+StatisticsUtil.generate_level_complete_with_weapon_stats_dlc = function (stat_player, dlc_name, template)
+	for level_name, level_dlcs in pairs(_tracked_levels_complted_w_weapons_levels) do
+		if table.contains(level_dlcs, dlc_name) then
+			for weapon_name, weapon_dlcs in pairs(_tracked_levels_complted_w_weapons_weapons) do
+				if table.contains(weapon_dlcs, dlc_name) then
+					local entry = table.clone(template)
+					local stat_name = dlc_name .. "_" .. level_name .. "_" .. weapon_name
+					entry.database_name = stat_name
+					stat_player[stat_name] = entry
+				end
+			end
+		end
+	end
+end
+
+local function _track_level_complete_with_weapon_stats(statistics_db, stats_id, level, weapon_name, difficulty)
+	local difficulty_settings = DifficultySettings[difficulty]
+
+	if not difficulty_settings then
+		return
+	end
+
+	local is_level_tracked = level and _tracked_levels_complted_w_weapons_levels[level]
+
+	if is_level_tracked then
+		local weapon_stats_dlcs = weapon_name and _tracked_levels_complted_w_weapons_weapons[weapon_name]
+
+		if weapon_stats_dlcs then
+			local dlc_manager = Managers.unlock
+
+			for dlc_id = 1, #weapon_stats_dlcs, 1 do
+				local dlc_name = weapon_stats_dlcs[dlc_id]
+
+				if dlc_manager:is_dlc_unlocked(dlc_name) then
+					local stat_name = dlc_name .. "_" .. level .. "_" .. weapon_name
+					local current_difficulty = statistics_db:get_persistent_stat(stats_id, stat_name)
+
+					if current_difficulty < difficulty_settings.rank then
+						statistics_db:set_stat(stats_id, stat_name, difficulty_settings.rank)
+					end
+				end
+			end
+		end
+	end
+end
 
 StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db, is_server)
 	local victim_health_extension = ScriptUnit.has_extension(victim_unit, "health_system")
@@ -27,16 +164,24 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 		if breed_killed then
 			local breed_killed_name = breed_killed.name
 
-			statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
-
-			if breed_killed.race and breed_killed.race == "critter" then
-				statistics_db:increment_stat(stats_id, "kills_critter_total")
+			if GameSettingsDevelopment.disable_carousel then
+				if Breeds[breed_killed_name] then
+					statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
+				end
+			else
+				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
 			end
 
-			local hit_zone = damage_data[DamageDataIndex.HIT_ZONE]
+			if breed_killed.race and breed_killed.race == "critter" then
+				local human_players = Managers.player:human_players()
 
-			if hit_zone == "head" then
-				statistics_db:increment_stat(stats_id, "headshots")
+				for _, player in pairs(human_players) do
+					local id = player:stats_id()
+
+					if id then
+						statistics_db:increment_stat(id, "kills_critter_total")
+					end
+				end
 			end
 
 			local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
@@ -51,19 +196,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 					statistics_db:increment_stat(stats_id, "kills_ranged")
 				end
 
-				if Managers.unlock:is_dlc_unlocked("holly") then
-					if damage_source == "we_1h_axe" then
-						statistics_db:increment_stat(stats_id, "holly_kills_we_1h_axe")
-					elseif damage_source == "bw_1h_crowbill" then
-						statistics_db:increment_stat(stats_id, "holly_kills_bw_1h_crowbill")
-					elseif damage_source == "wh_dual_wield_axe_falchion" then
-						statistics_db:increment_stat(stats_id, "holly_kills_wh_dual_wield_axe_falchion")
-					elseif damage_source == "dr_dual_wield_hammers" then
-						statistics_db:increment_stat(stats_id, "holly_kills_dr_dual_wield_hammers")
-					elseif damage_source == "es_dual_wield_hammer_sword" then
-						statistics_db:increment_stat(stats_id, "holly_kills_es_dual_wield_hammer_sword")
-					end
-				end
+				_track_weapon_kill_stats(statistics_db, stats_id, damage_source)
 			end
 		end
 	end
@@ -101,7 +234,13 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 					local stats_id = player:stats_id()
 					local breed_killed_name = breed_killed.name
 
-					statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
+					if GameSettingsDevelopment.disable_carousel then
+						if Breeds[breed_killed_name] then
+							statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
+						end
+					else
+						statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
+					end
 				end
 			end
 		end
@@ -329,6 +468,12 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 				else
 					statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
 				end
+
+				local hit_zone = damage_data[DamageDataIndex.HIT_ZONE]
+
+				if hit_zone == "head" then
+					statistics_db:increment_stat(stats_id, "headshots")
+				end
 			end
 		end
 	end
@@ -467,118 +612,142 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 
 	StatisticsUtil._register_completed_level_difficulty(statistics_db, level_id, career_name, difficulty_name)
 
-	if Managers.unlock:is_dlc_unlocked("holly") and difficulty_name == "hardest" and (level_id == "ground_zero" or level_id == "warcamp" or level_id == "skaven_stronghold" or level_id == "skittergate") then
-		local player_unit = local_player.player_unit
-		local weapon_names = {
-			"we_1h_axe",
-			"bw_1h_crowbill",
-			"wh_dual_wield_axe_falchion",
-			"dr_dual_wield_hammers",
-			"es_dual_wield_hammer_sword"
-		}
+	local item_interface = Managers.backend:get_interface("items")
+	local melee_backend_id = BackendUtils.get_loadout_item_id(career_name, "slot_melee")
+	local melee_item_name = melee_backend_id and item_interface:get_item_name(melee_backend_id)
+	local ranged_backend_id = BackendUtils.get_loadout_item_id(career_name, "slot_ranged")
+	local ranged_item_name = ranged_backend_id and item_interface:get_item_name(ranged_backend_id)
 
-		if Unit.alive(player_unit) then
-			local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+	_track_level_complete_with_weapon_stats(statistics_db, stats_id, level_id, melee_item_name, difficulty_name)
+	_track_level_complete_with_weapon_stats(statistics_db, stats_id, level_id, ranged_item_name, difficulty_name)
 
-			if inventory_extension then
-				local melee_item_name = inventory_extension:get_item_name("slot_melee")
-				local ranged_item_name = inventory_extension:get_item_name("slot_ranged")
-				local weapon_name = nil
+	if Managers.unlock:is_dlc_unlocked("holly") then
+		local min_difficulty_rank = DifficultySettings.hardest.rank
+		local completed_difficulty_rank = (DifficultySettings[difficulty_name] and DifficultySettings[difficulty_name].rank) or 0
+		local above_legend_difficulty = min_difficulty_rank <= completed_difficulty_rank
+		local is_lord_level = level_id == "ground_zero" or level_id == "warcamp" or level_id == "skaven_stronghold" or level_id == "skittergate"
 
-				if table.contains(weapon_names, melee_item_name) then
-					weapon_name = melee_item_name
-				elseif table.contains(weapon_names, ranged_item_name) then
-					weapon_name = ranged_item_name
-				end
+		if above_legend_difficulty and is_lord_level then
+			local weapon_names = {
+				"we_1h_axe",
+				"bw_1h_crowbill",
+				"wh_dual_wield_axe_falchion",
+				"dr_dual_wield_hammers",
+				"es_dual_wield_hammer_sword"
+			}
+			local weapon_name = nil
 
-				if weapon_name then
-					local stat_name = "holly_completed_level_" .. level_id .. "_with_" .. weapon_name
+			if table.contains(weapon_names, melee_item_name) then
+				weapon_name = melee_item_name
+			elseif table.contains(weapon_names, ranged_item_name) then
+				weapon_name = ranged_item_name
+			end
 
-					statistics_db:increment_stat(stats_id, stat_name)
-				end
+			if weapon_name then
+				local stat_name = "holly_completed_level_" .. level_id .. "_with_" .. weapon_name
+
+				statistics_db:increment_stat(stats_id, stat_name)
 			end
 		end
 	end
 end
 
-StatisticsUtil.register_weave_complete = function (statistics_db, player)
+StatisticsUtil.register_weave_complete = function (statistics_db, player, is_quick_game, difficulty_key)
+	local stats_id = player:stats_id()
 	local weave_manager = Managers.weave
 	local weave_tier = weave_manager:get_weave_tier()
 	local weave_name = weave_manager:get_active_weave()
 	local wind = weave_manager:get_active_wind()
 	local score = weave_manager:get_score()
 	local num_players = weave_manager:get_num_players()
-	local stat_name = "weave_score_weave_" .. weave_tier .. "_" .. num_players .. "_players"
-	local stats_id = player:stats_id()
 	local profile_index = player:profile_index()
 	local profile = SPProfiles[profile_index]
 	local career_index = player:career_index()
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
-	local career_stat_name = "weaves_complete_" .. career_name .. "_season_1"
-	local rainbow_stat_name = "weave_rainbow_" .. wind .. "_" .. career_name .. "_season_1"
 
-	statistics_db:set_stat(stats_id, "season_1", rainbow_stat_name, 1)
-	statistics_db:increment_stat(stats_id, "season_1", career_stat_name)
-	StatisticsUtil._register_mutator_challenges(statistics_db, stats_id, wind)
-	statistics_db:increment_stat(stats_id, "completed_weaves", weave_name)
-	statistics_db:increment_stat(stats_id, "season_1", "weave_won", weave_tier)
+	if is_quick_game then
+		local weave_quickplay_wins_stat_name = "weave_quickplay_wins"
 
-	local weave_won_count = statistics_db:get_persistent_stat(stats_id, "season_1", "weave_won", weave_tier)
-	local value = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name)
+		statistics_db:increment_stat(stats_id, ScorpionSeasonalSettings.current_season_name, weave_quickplay_wins_stat_name)
 
-	if value < score then
-		statistics_db:set_stat(stats_id, "season_1", stat_name, score)
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			local weave_quickplay_wins_difficulty_stat_name = "weave_quickplay_" .. difficulty_key .. "_wins"
+
+			statistics_db:increment_stat(stats_id, ScorpionSeasonalSettings.current_season_name, weave_quickplay_wins_difficulty_stat_name)
+		end
+	else
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			local rainbow_stat_name = "weave_rainbow_" .. wind .. "_" .. career_name .. "_season_1"
+
+			statistics_db:set_stat(stats_id, "season_1", rainbow_stat_name, 1)
+
+			local career_stat_name = "weaves_complete_" .. career_name .. "_season_1"
+
+			statistics_db:increment_stat(stats_id, "season_1", career_stat_name)
+			StatisticsUtil._register_mutator_challenges(statistics_db, stats_id, wind)
+			statistics_db:increment_stat(stats_id, "season_1", "weave_won", weave_tier)
+		end
+
+		statistics_db:increment_stat(stats_id, "completed_weaves", weave_name)
+		statistics_db:increment_stat(stats_id, "scorpion_weaves_won")
+
+		local stat_name = ScorpionSeasonalSettings.get_weave_score_stat(weave_tier, num_players)
+		local value = statistics_db:get_persistent_stat(stats_id, ScorpionSeasonalSettings.current_season_name, stat_name)
+
+		if value < score then
+			statistics_db:set_stat(stats_id, ScorpionSeasonalSettings.current_season_name, stat_name, score)
+		end
 	end
-
-	return weave_won_count
 end
 
 StatisticsUtil._register_mutator_challenges = function (statistics_db, stats_id, wind)
-	if wind == "life" then
-		local life_stat_id = "weave_life_stepped_in_bush"
-		local result = statistics_db:get_persistent_stat(stats_id, "season_1", life_stat_id)
+	if ScorpionSeasonalSettings.current_season_id == 1 then
+		if wind == "life" then
+			local life_stat_id = "weave_life_stepped_in_bush"
+			local result = statistics_db:get_persistent_stat(stats_id, "season_1", life_stat_id)
 
-		if result == 0 then
-			local id = "scorpion_weaves_life_season_1"
+			if result == 0 then
+				local id = "scorpion_weaves_life_season_1"
 
-			statistics_db:increment_stat(stats_id, "season_1", id)
-		end
-	elseif wind == "death" then
-		local death_stat_id = "weave_death_hit_by_spirit"
-		local result = statistics_db:get_persistent_stat(stats_id, "season_1", death_stat_id)
+				statistics_db:increment_stat(stats_id, "season_1", id)
+			end
+		elseif wind == "death" then
+			local death_stat_id = "weave_death_hit_by_spirit"
+			local result = statistics_db:get_persistent_stat(stats_id, "season_1", death_stat_id)
 
-		if result == 0 then
-			local id = "scorpion_weaves_death_season_1"
+			if result == 0 then
+				local id = "scorpion_weaves_death_season_1"
 
-			statistics_db:increment_stat(stats_id, "season_1", id)
-		end
-	elseif wind == "beasts" then
-		local beasts_stat_id = "weave_beasts_destroyed_totems"
-		local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
+				statistics_db:increment_stat(stats_id, "season_1", id)
+			end
+		elseif wind == "beasts" then
+			local beasts_stat_id = "weave_beasts_destroyed_totems"
+			local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
 
-		if result == 0 then
-			local id = "scorpion_weaves_beasts_season_1"
+			if result == 0 then
+				local id = "scorpion_weaves_beasts_season_1"
 
-			statistics_db:increment_stat(stats_id, "season_1", id)
-		end
-	elseif wind == "light" then
-		local beasts_stat_id = "weave_light_low_curse"
-		local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
+				statistics_db:increment_stat(stats_id, "season_1", id)
+			end
+		elseif wind == "light" then
+			local beasts_stat_id = "weave_light_low_curse"
+			local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
 
-		if result == 0 then
-			local id = "scorpion_weaves_light_season_1"
+			if result == 0 then
+				local id = "scorpion_weaves_light_season_1"
 
-			statistics_db:increment_stat(stats_id, "season_1", id)
-		end
-	elseif wind == "shadow" then
-		local beasts_stat_id = "weave_shadow_kill_no_shrouded"
-		local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
+				statistics_db:increment_stat(stats_id, "season_1", id)
+			end
+		elseif wind == "shadow" then
+			local beasts_stat_id = "weave_shadow_kill_no_shrouded"
+			local result = statistics_db:get_persistent_stat(stats_id, "season_1", beasts_stat_id)
 
-		if result == 0 then
-			local id = "scorpion_weaves_shadow_season_1"
+			if result == 0 then
+				local id = "scorpion_weaves_shadow_season_1"
 
-			statistics_db:increment_stat(stats_id, "season_1", id)
+				statistics_db:increment_stat(stats_id, "season_1", id)
+			end
 		end
 	end
 end

@@ -130,6 +130,14 @@ AIDebugger.update = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("j", "kill all but selected AI", "ai", "left shift") then
 		Managers.state.conflict:destroy_close_units(self.active_unit, 262144)
+	elseif DebugKeyHandler.key_pressed("j", "damage selected AI", "ai", "left alt") then
+		local kill_unit = self.active_unit
+
+		if not AiUtils.unit_alive(kill_unit) and self:closest_unit_in_aim_dir(in_free_flight) then
+			kill_unit = self.hot_unit
+		end
+
+		DamageUtils.debug_deal_damage(kill_unit, nil, nil, 500)
 	elseif DebugKeyHandler.key_pressed("j", "kill selected AI", "ai") then
 		local kill_unit = self.active_unit
 

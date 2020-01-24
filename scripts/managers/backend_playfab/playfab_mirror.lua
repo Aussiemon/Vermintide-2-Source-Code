@@ -82,26 +82,20 @@ PlayFabMirror.init = function (self, signin_result)
 		if value then
 			if tonumber(value) then
 				value = tonumber(value)
+			elseif value == "true" or value == "false" then
+				value = to_boolean(value)
 			end
 
 			user_data_values[key] = value
 		end
 	end
 
-	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
-	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(read_only_data_values)
-	local unlocked_keep_decorations_json = read_only_data_values.unlocked_keep_decorations or "{}"
-	self._unlocked_keep_decorations = cjson.decode(unlocked_keep_decorations_json)
 	self._user_data = user_data_values
 	self._user_data_mirror = table.clone(self._user_data)
 	self._commit_limit_timer = REDUCTION_INTERVAL
 	self._commit_limit_total = 1
 
-	if PLATFORM == "xb1" or PLATFORM == "ps4" then
-		self._claimed_console_dlc_rewards = self:_parse_claimed_console_dlc_rewards(read_only_data_values)
-	end
-
-	self:_execute_dlc_specific_logic_challenge()
+	self:_update_dlc_ownership()
 end
 
 PlayFabMirror._parse_claimed_achievements = function (self, read_only_data_values)
@@ -130,7 +124,13 @@ PlayFabMirror._parse_unlocked_weapon_skins = function (self, read_only_data_valu
 
 		if decoded then
 			for i = 1, #decoded, 1 do
-				unlocked_weapon_skins[decoded[i]] = true
+				local skin_name = decoded[i]
+				local item_data = rawget(ItemMasterList, skin_name)
+				local required_dlc = item_data and item_data.required_dlc
+
+				if not required_dlc or table.find(self._owned_dlcs, required_dlc) then
+					unlocked_weapon_skins[skin_name] = true
+				end
 			end
 		end
 	end
@@ -167,6 +167,20 @@ end
 
 PlayFabMirror.dlc_ownership_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local owned_dlcs = function_result.owned_dlcs
+	local platform_dlcs = function_result.platform_dlcs
+	self._owned_dlcs = owned_dlcs or {}
+	self._platform_dlcs = platform_dlcs
+	local read_only_data_values = self._read_only_data
+	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
+	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(read_only_data_values)
+	local unlocked_keep_decorations_json = read_only_data_values.unlocked_keep_decorations or "{}"
+	self._unlocked_keep_decorations = cjson.decode(unlocked_keep_decorations_json)
+
+	if PLATFORM == "xb1" or PLATFORM == "ps4" then
+		self._claimed_console_dlc_rewards = self:_parse_claimed_console_dlc_rewards(read_only_data_values)
+	end
 
 	self:_execute_dlc_specific_logic_challenge()
 end
@@ -242,6 +256,42 @@ PlayFabMirror.execute_dlc_logic_request_cb = function (self, result)
 
 			return
 		end
+
+		local new_rewards = function_result.item_grant_results
+		local user_data = self._user_data
+		local unseen_rewards = user_data.unseen_rewards
+		unseen_rewards = (unseen_rewards and cjson.decode(unseen_rewards)) or {}
+
+		for i = 1, #new_rewards, 1 do
+			local item = new_rewards[i]
+			local item_id = item.ItemId
+			local data = ItemMasterList[item_id]
+			local custom_data = item.CustomData
+			local rewarded_from = custom_data.rewarded_from
+
+			if data.bundle then
+				local bundled_currencies = data.bundle.BundledVirtualCurrencies
+
+				for currency_type, currency_amount in pairs(bundled_currencies) do
+					local reward = {
+						reward_type = "currency",
+						currency_type = currency_type,
+						currency_amount = currency_amount,
+						rewarded_from = rewarded_from
+					}
+					unseen_rewards[#unseen_rewards + 1] = reward
+				end
+			else
+				local reward = {
+					reward_type = "item",
+					backend_id = item.ItemInstanceId,
+					rewarded_from = rewarded_from
+				}
+				unseen_rewards[#unseen_rewards + 1] = reward
+			end
+		end
+
+		self:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
 	end
 
 	self:_set_up_additional_account_data()
@@ -442,6 +492,42 @@ PlayFabMirror.fix_inventory_data_2_request_cb = function (self, result)
 		self._read_only_data.weaves_career_progress = cjson.encode(weaves_career_progress)
 	end
 
+	self:_fix_excess_bogenhafen_chests()
+end
+
+PlayFabMirror._fix_excess_bogenhafen_chests = function (self)
+	local request = {
+		FunctionName = "removeExcessBogenhafenChests",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "_fix_excess_bogenhafen_chests_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror._fix_excess_bogenhafen_chests_cb = function (self)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:_fix_excess_duplicate_bogenhafen_cosmetics()
+end
+
+PlayFabMirror._fix_excess_duplicate_bogenhafen_cosmetics = function (self)
+	local request = {
+		FunctionName = "removeDuplicateBogenhafenCosmetics",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "_fix_excess_duplicate_bogenhafen_cosmetics_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror._fix_excess_duplicate_bogenhafen_cosmetics_cb = function (self)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	self:_request_read_only_data()
 end
 
@@ -539,7 +625,7 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 
 				local required_dlc = ItemMasterList[item.ItemId].required_dlc
 
-				if required_dlc and not Managers.unlock:is_dlc_unlocked(required_dlc) then
+				if required_dlc and not table.find(self._owned_dlcs, required_dlc) then
 					filter = true
 				end
 
@@ -1164,6 +1250,22 @@ end
 
 PlayFabMirror.get_unlocked_keep_decorations = function (self)
 	return self._unlocked_keep_decorations
+end
+
+PlayFabMirror.get_owned_dlcs = function (self)
+	return self._owned_dlcs
+end
+
+PlayFabMirror.get_platform_dlcs = function (self)
+	return self._platform_dlcs
+end
+
+PlayFabMirror.set_owned_dlcs = function (self, owned_dlcs)
+	self._owned_dlcs = owned_dlcs
+end
+
+PlayFabMirror.set_platform_dlcs = function (self, platform_dlcs)
+	self._platform_dlcs = platform_dlcs
 end
 
 PlayFabMirror.add_keep_decoration = function (self, decoration_name)

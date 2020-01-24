@@ -588,7 +588,7 @@ EnemyPackageLoader._get_directors_from_breed_budget = function (self, spawn_bree
 	return approved_directors
 end
 
-EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, failed_locked_functions)
+EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, failed_locked_functions, weave_objective_data)
 	local level_settings = LevelSettings[level_key]
 	local level_name = level_settings.level_name
 	local num_nested_levels = LevelResource.nested_level_count(level_name)
@@ -625,7 +625,8 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 		num_main_zones = altered_amount_num_main_zones
 	end
 
-	local default_conflict_settings_name = level_settings.conflict_settings or "default"
+	local default_conflict_settings_name = nil
+	default_conflict_settings_name = (not weave_objective_data or weave_objective_data.conflict_settings) and (level_settings.conflict_settings or "default")
 	local non_random_conflict_directors, num_random_conflict_directors = MainPathSpawningGenerator.get_unique_non_random_conflict_directors(default_conflict_settings_name, zones, num_main_zones)
 
 	for conflict_settings_name, _ in pairs(non_random_conflict_directors) do
@@ -635,28 +636,56 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 		table.merge(breed_lookup, contained_breeds)
 	end
 
-	local director_list = level_settings.conflict_director_set or DefaultConflictDirectorSet
-	local breed_cap = EnemyPackageLoaderSettings.max_loaded_breed_cap
-	self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, difficulty, non_random_conflict_directors, level_seed, failed_locked_functions)
+	if not weave_objective_data then
+		local director_list = level_settings.conflict_director_set or DefaultConflictDirectorSet
+		local breed_cap = level_settings.breed_cap_override or EnemyPackageLoaderSettings.max_loaded_breed_cap
+		self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, difficulty, non_random_conflict_directors, level_seed, failed_locked_functions)
+	end
+
+	local loop_breeds = true
+
+	while loop_breeds do
+		loop_breeds = false
+
+		for breed_name, _ in pairs(breed_lookup) do
+			local breed_data = Breeds[breed_name]
+
+			if breed_data.additional_breed_packages_to_load then
+				local additional_breeds = breed_data.additional_breed_packages_to_load(difficulty)
+
+				if additional_breeds then
+					for i = 1, #additional_breeds, 1 do
+						local additional_breed_name = additional_breeds[i]
+						local breed_added = breed_lookup[additional_breed_name]
+
+						if not breed_added and table.size(breed_lookup) < EnemyPackageLoaderSettings.max_loaded_breed_cap then
+							breed_lookup[additional_breed_name] = true
+							loop_breeds = true
+						end
+					end
+				end
+			end
+		end
+	end
 
 	return breed_lookup
 end
 
-EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed, failed_locked_functions)
+EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed, failed_locked_functions, weave_objective_data)
 	fassert(level_seed, "Cannot setup_startup_enemies without level_seed!")
 
 	local breeds_to_load_at_startup = self._breeds_to_load_at_startup
 	breeds_to_load_at_startup.initial_check_done = true
 
 	if not breeds_to_load_at_startup.loaded then
-		print("[EnemyPackageLoader] setup_startup_enemies")
+		print("[EnemyPackageLoader] setup_startup_enemies - level_key:", level_key, "- level_seed:", level_seed, "- weave:", weave_objective_data)
 
 		local level_settings = LevelSettings[level_key]
 
 		if level_settings.load_no_enemies then
 			print("[EnemyPackageLoader] Load no enemies on this level")
 		else
-			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions)
+			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions, weave_objective_data)
 			local breed_category_lookup = self._breed_category_lookup
 			local breeds_to_load_lookup = {}
 			local breed_categories = EnemyPackageLoaderSettings.categories
@@ -678,8 +707,8 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed
 			end
 
 			for breed_name, _ in pairs(startup_breeds) do
-				local is_dynamic = breed_category_lookup[breed_name]
 				breed_name = ALIAS_TO_BREED[breed_name] or breed_name
+				local is_dynamic = breed_category_lookup[breed_name]
 
 				if not is_dynamic and not breeds_to_load_lookup[breed_name] then
 					breeds_to_load_lookup[breed_name] = breed_name
@@ -711,6 +740,10 @@ EnemyPackageLoader._load_startup_enemy_packages = function (self)
 
 	for i = 1, num_entries, 1 do
 		local breed_name = breeds_to_load_at_startup[i]
+		local breed = Breeds[breed_name]
+
+		fassert(not breed.opt_base_unit or OPT_LOOKUP_BREED_NAMES[breed_name], "Breed %q has an optimized base unit but isn't setup correctly in %q", breed_name, "EnemyPackageLoaderSettings.opt_lookup_breed_names")
+
 		breeds_to_load_at_startup[breed_name] = true
 		local breed_package_name = BREED_PATH .. ((use_optimized and OPT_LOOKUP_BREED_NAMES[breed_name]) or breed_name)
 		package_state[breed_name] = "loading"
@@ -777,6 +810,8 @@ EnemyPackageLoader.unload_enemy_packages = function (self, force_unload_startup_
 
 		table.clear(data.loaded_breeds)
 	end
+
+	self.random_director_list = nil
 end
 
 EnemyPackageLoader._sync_dynamic_to_client = function (self, peer_id, connection_key)
@@ -807,7 +842,7 @@ EnemyPackageLoader.rpc_from_server_load_breeds_by_bitmask = function (self, send
 	local num_bitmasks = #bitmasks
 	self._unique_connection_key = connection_key
 
-	printf("[EnemyPackageLoader] New connection established (%s) (key=%s)", sender, connection_key)
+	printf("[EnemyPackageLoader] New connection established (%s) (key=%s) (num_bitmasks=%d)", sender, connection_key, num_bitmasks)
 
 	for i = 1, num_bitmasks, 1 do
 		local bitmask = bitmasks[i]

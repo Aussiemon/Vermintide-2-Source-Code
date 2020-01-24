@@ -68,6 +68,7 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	self:_start_transition_animation("on_enter", "on_enter")
 
 	self._hero_preview_skin = nil
+	self.use_user_skins = true
 	local hero_name = self._hero_name
 	local profile_id = params.profile_id
 
@@ -576,7 +577,7 @@ CharacterSelectionStateCharacter._spawn_hero_unit = function (self, hero_name)
 	local career_index = self._selected_career_index
 	local callback = callback(self, "cb_hero_unit_spawned", hero_name)
 
-	world_previewer:request_spawn_hero_unit(hero_name, career_index, true, callback, nil, 0.5)
+	world_previewer:request_spawn_hero_unit(hero_name, career_index, not self.use_user_skins, callback, nil, 0.5)
 end
 
 CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_name)
@@ -604,6 +605,20 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 
 		if preview_wield_slot then
 			world_previewer:wield_weapon_slot(preview_wield_slot)
+		end
+	end
+
+	if self.use_user_skins then
+		local career_name = career_settings.name
+		local item = BackendUtils.get_loadout_item(career_name, "slot_hat")
+
+		if item then
+			local item_data = item.data
+			local item_name = item_data.name
+			local backend_id = item.backend_id
+			local slot = InventorySettings.slots_by_name.slot_hat
+
+			world_previewer:equip_item(item_name, slot, backend_id)
 		end
 	end
 

@@ -1,12 +1,12 @@
 return {
+	description = "weaves_heavens_mutator_desc",
 	display_name = "weaves_heavens_mutator_name",
 	icon = "mutator_icon_heavens_lightning",
-	description = "weaves_heavens_mutator_desc",
 	spawn_lightning_strike_unit = function (data)
+		table.clear(data.units)
+
 		for _, player in pairs(Managers.player:players()) do
 			local player_unit = player.player_unit
-
-			table.clear(data.units)
 
 			if Unit.alive(player_unit) then
 				data.extension_init_data.area_damage_system.follow_unit = player_unit
@@ -24,6 +24,7 @@ return {
 			data.lock_played = false
 			data.charge_played = false
 			data.hit_played = false
+			data.bots_alerted = false
 		end
 	end,
 	server_start_function = function (context, data)
@@ -45,26 +46,38 @@ return {
 		}
 		data.boss_lightning_challenge = {}
 		data.boss_lightning_challenge_counter = 0
+		local ai_system = Managers.state.entity:system("ai_system")
+		data.ai_system = ai_system
+		data._nav_cost_map_id = data._nav_cost_map_id or ai_system:create_nav_cost_map("mutator_heavens_zone", 4)
+		data._nav_cost_volume_ids = {}
+		data._nav_cost_radius = mutator_settings.radius[difficulty_name][wind_strength]
+	end,
+	server_stop_function = function (context, data, is_destroy)
+		data._nav_cost_map_id = nil
 	end,
 	server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data, killing_blow_data)
-		if data.boss_lightning_challenge_counter > 0 then
-			local boss_killed_only_by_lightning = data.boss_lightning_challenge[killed_unit]
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			if data.boss_lightning_challenge_counter > 0 then
+				local boss_killed_only_by_lightning = data.boss_lightning_challenge[killed_unit]
 
-			if boss_killed_only_by_lightning then
-				local stat_group_name = "season_1"
-				local stat_name = "scorpion_weaves_heavens_season_1"
-				local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
-				local stat_name_index = NetworkLookup.statistics[stat_name]
-				local statistics_db = Managers.player:statistics_db()
-				local local_player = Managers.player:local_player()
-				local stats_id = local_player:stats_id()
+				if boss_killed_only_by_lightning then
+					local stat_group_name = "season_1"
+					local stat_name = "scorpion_weaves_heavens_season_1"
+					local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
+					local stat_name_index = NetworkLookup.statistics[stat_name]
+					local statistics_db = Managers.player:statistics_db()
+					local local_player = Managers.player:local_player()
+					local stats_id = local_player:stats_id()
 
-				statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
+					statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
 
-				data.boss_lightning_challenge_counter = 0
+					data.boss_lightning_challenge_counter = 0
 
-				Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+					Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+				end
 			end
+		else
+			data.boss_lightning_challenge_counter = 0
 		end
 	end,
 	server_ai_hit_by_player_function = function (context, data, hit_unit, attacker_unit, hit_data)
@@ -120,10 +133,34 @@ return {
 
 						if Unit.alive(unit) then
 							data.audio_system:play_audio_unit_event("Play_winds_heavens_gameplay_lock", unit)
+
+							if data._nav_cost_map_id then
+								local position = POSITION_LOOKUP[unit]
+								local nav_cost_map_volume_id = data.ai_system:add_nav_cost_map_sphere_volume(position, data._nav_cost_radius, data._nav_cost_map_id)
+
+								table.insert(data._nav_cost_volume_ids, nav_cost_map_volume_id)
+							end
 						end
 					end
 				end
 			elseif t < last_spawn_time + data.follow_time + data.time_to_explode then
+				if t > (last_spawn_time + data.follow_time + data.time_to_explode) - 3 and not data.bots_alerted then
+					local aoe_thread_size = Vector3(data._nav_cost_radius, data._nav_cost_radius, data._nav_cost_radius * 0.5)
+					local bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+
+					for i = 1, #data.units, 1 do
+						local unit = data.units[i]
+
+						if Unit.alive(unit) then
+							local position = POSITION_LOOKUP[unit]
+
+							bot_group_system:aoe_threat_created(position, "cylinder", aoe_thread_size, nil, 3)
+						end
+					end
+
+					data.bots_alerted = true
+				end
+
 				if t > (last_spawn_time + data.follow_time + data.time_to_explode) - 1.5 then
 					if not data.charge_played then
 						data.charge_played = true
@@ -154,6 +191,14 @@ return {
 						data.audio_system:play_audio_unit_event("Play_winds_heavens_gameplay_hit", unit)
 					end
 				end
+
+				for i = 1, #data._nav_cost_volume_ids, 1 do
+					local volume_id = data._nav_cost_volume_ids[i]
+
+					data.ai_system:remove_nav_cost_map_volume(volume_id, data._nav_cost_map_id)
+				end
+
+				table.clear(data._nav_cost_volume_ids)
 			end
 		end
 

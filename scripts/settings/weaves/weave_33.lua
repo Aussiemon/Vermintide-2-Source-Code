@@ -1,35 +1,28 @@
 return {
 	wind_strength = 3,
-	wind = "shadow",
+	wind = "fire",
 	seed = 571238,
-	terror_events = {
-		"weave_spot_event_special_mixed"
-	},
 	objectives = {
 		{
 			display_name = "objective_targets_name",
-			level_id = "dlc_scorpion_pit_shadow",
+			level_id = "dlc_scorpion_pit_fire",
 			objective_type = "targets",
 			conflict_settings = "weave_chaos",
-			level_seed = 789654,
 			end_zone_name = "end_zone_02",
-			show_bar = true,
+			level_seed = 789654,
 			base_level_id = "dlc_scorpion_pit",
 			objective_start_flow_event = "weave_objective_targets_start",
+			show_bar = true,
 			spawning_seed = 2156845,
+			terror_events = {
+				"weave_spot_event_special_mixed"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								hardest = 0.15,
-								cataclysm_3 = 0.1035,
-								cataclysm_2 = 0.108,
-								normal = 0.27
-							}
-						},
+						kill_enemies = {},
 						weave_target_spawner_001 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -37,7 +30,7 @@ return {
 							end
 						},
 						weave_target_spawner_005 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -45,7 +38,7 @@ return {
 							end
 						},
 						weave_target_spawner_009 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -53,7 +46,7 @@ return {
 							end
 						},
 						weave_target_spawner_013 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -61,7 +54,7 @@ return {
 							end
 						},
 						weave_target_spawner_011 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -69,7 +62,7 @@ return {
 							end
 						},
 						weave_target_spawner_012 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -77,7 +70,7 @@ return {
 							end
 						},
 						weave_target_spawner_022 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -85,7 +78,7 @@ return {
 							end
 						},
 						weave_target_spawner_028 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -93,7 +86,7 @@ return {
 							end
 						},
 						weave_target_spawner_016 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -101,7 +94,7 @@ return {
 							end
 						},
 						weave_target_spawner_015 = {
-							score = 7,
+							is_scored = true,
 							on_complete_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -188,7 +181,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_shadow",
+			level_id = "dlc_scorpion_arena_temple_fire",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

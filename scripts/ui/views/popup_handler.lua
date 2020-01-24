@@ -1394,8 +1394,11 @@ end
 
 PopupHandler.set_input_manager = function (self, input_manager)
 	self.input_manager = input_manager
+	local block_reasons = {
+		popup = true
+	}
 
-	input_manager:create_input_service("popup", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:create_input_service("popup", "IngameMenuKeymaps", "IngameMenuFilters", block_reasons)
 	input_manager:map_device_to_service("popup", "keyboard")
 	input_manager:map_device_to_service("popup", "mouse")
 	input_manager:map_device_to_service("popup", "gamepad")
@@ -1474,12 +1477,13 @@ end
 
 PopupHandler.release_input = function (self, ignore_cursor_stack)
 	local input_manager = self.input_manager
+	local block_reason = "popup"
 
 	input_manager:release_input({
 		"keyboard",
 		"gamepad",
 		"mouse"
-	}, 1, "popup", "PopupHandler")
+	}, 1, "popup", "PopupHandler", block_reason)
 
 	if not ignore_cursor_stack then
 		ShowCursorStack.pop()

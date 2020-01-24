@@ -255,6 +255,12 @@ local function create_icon_widget(texture, scenegraph_id)
 		},
 		style = {
 			texture_id = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					40,
+					40
+				},
 				color = {
 					255,
 					255,
@@ -344,6 +350,101 @@ local function create_item_widget(texture, scenegraph_id)
 				}
 			},
 			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			rarity_texture = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+local function create_weapon_skin_widget(texture, scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "rarity_texture",
+					style_id = "rarity_texture",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "illusion_overlay",
+					style_id = "illusion_overlay",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			frame = "reward_pop_up_item_frame",
+			rarity_texture = "icon_bg_plentiful",
+			illusion_overlay = "item_frame_illusion",
+			texture_id = texture
+		},
+		style = {
+			texture_id = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			illusion_overlay = {
 				color = {
 					255,
 					255,
@@ -522,48 +623,9 @@ local widget_definitions = {
 			0
 		}
 	},
-	icon = {
-		scenegraph_id = "item_root",
-		element = {
-			passes = {
-				{
-					texture_id = "texture_id",
-					style_id = "texture_id",
-					pass_type = "texture"
-				}
-			}
-		},
-		content = {
-			texture_id = "icons_placeholder"
-		},
-		style = {
-			texture_id = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				texture_size = {
-					40,
-					40
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					0,
-					0
-				}
-			}
-		},
-		offset = {
-			0,
-			0,
-			0
-		}
-	},
+	icon = create_icon_widget("icons_placeholder", "item_root"),
 	item = create_item_widget("icons_placeholder", "item_root"),
+	weapon_skin = create_weapon_skin_widget("icons_placeholder", "item_root"),
 	loot_chest = create_item_widget("icons_placeholder", "item_root"),
 	career = UIWidgets.create_simple_texture("icons_placeholder", "career_root"),
 	background_top = UIWidgets.create_simple_texture("reward_popup_panel", "background_top"),

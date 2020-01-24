@@ -12,6 +12,7 @@ RespawnHandler.init = function (self, profile_synchronizer)
 	self._respawn_units = {}
 	self._respawner_groups = {}
 	self._active_overridden_units = {}
+	self._delayed_respawn_queue = {}
 end
 
 RespawnHandler.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -180,7 +181,28 @@ RespawnHandler.recalc_respawner_dist_due_to_crossroads = function (self)
 	end
 end
 
-RespawnHandler.update = function (self, dt, t, slots)
+RespawnHandler.update = function (self, dt, t)
+	local respawn_queue = self._delayed_respawn_queue
+	local queue_size = #respawn_queue
+
+	for i = queue_size, 1, -1 do
+		local respawn_data = respawn_queue[i]
+		local player = respawn_data[1]
+
+		if player then
+			local player_unit = player.player_unit
+
+			if player_unit == nil or not Unit.alive(player_unit) then
+				self:_respawn_player(unpack(respawn_data))
+				table.swap_delete(respawn_queue, i)
+			end
+		else
+			table.swap_delete(respawn_queue, i)
+		end
+	end
+end
+
+RespawnHandler.server_update = function (self, dt, t, slots)
 	local profile_synchronizer = self._profile_synchronizer
 	local all_synced = profile_synchronizer:all_synced()
 
@@ -386,7 +408,12 @@ RespawnHandler.rpc_to_client_respawn_player = function (self, sender, local_play
 	local player_manager = Managers.player
 	local player = player_manager:local_player(local_player_id)
 
-	self:_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id])
+	if player:needs_despawn() or Unit.alive(player.player_unit) then
+		Managers.state.spawn:delayed_despawn(player)
+		self:_delayed_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id])
+	else
+		self:_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id])
+	end
 end
 
 RespawnHandler._respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade)
@@ -424,6 +451,20 @@ RespawnHandler.force_respawn_dead_players = function (self, party)
 		local data = status.game_mode_data
 		data.respawn_timer = 0
 	end
+end
+
+RespawnHandler._delayed_respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade)
+	local respawn_entry = {
+		player,
+		profile_index,
+		career_index,
+		respawn_unit,
+		health_kit,
+		potion,
+		grenade
+	}
+
+	table.insert(self._delayed_respawn_queue, respawn_entry)
 end
 
 return

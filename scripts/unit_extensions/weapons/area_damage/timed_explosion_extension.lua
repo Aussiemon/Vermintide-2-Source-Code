@@ -19,6 +19,7 @@ TimedExplosionExtension.init = function (self, extension_init_context, unit, ext
 		self._buildup_effect_delay = (self._time_to_explode + self._follow_time) - (explosion_template.explosion.buildup_effect_time or 0)
 	else
 		self._time_to_explode = explosion_template.time_to_explode or 0
+		self._scale = explosion_template.explosion.radius or 1
 		self._follow_time = explosion_template.follow_time or 0
 		self._power = explosion_template.explosion.power_level or 0
 		self._buildup_effect_delay = (self._time_to_explode + self._follow_time) - (explosion_template.explosion.buildup_effect_time or 0)

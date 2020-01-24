@@ -43,7 +43,7 @@ InteractionDefinitions._fullfill_requirements_for_weave_leaderboards = function 
 		return false
 	end
 
-	return true
+	return not Managers.account:offline_mode()
 end
 
 InteractionDefinitions.weave_level_select_access = InteractionDefinitions.weave_level_select_access or table.clone(InteractionDefinitions.smartobject)
@@ -82,7 +82,7 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 
 		if fulfill_requirements_for_weave_levels then
 			local transition_params = {
-				menu_sub_state_name = "weave",
+				menu_sub_state_name = "weave_quickplay",
 				menu_state_name = "play"
 			}
 
@@ -166,8 +166,6 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 
 			Managers.state.event:trigger("ui_event_transition_with_fade", "start_game_view_force", transition_params)
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
-		elseif PLATFORM ~= "win32" then
-			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.platform_not_supported)
 		else
 			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.requirements_not_met)
 		end
@@ -175,11 +173,19 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 end
 
 InteractionDefinitions.weave_leaderboard_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	if Managers.account:offline_mode() then
+		return false, "status_offline"
+	end
+
 	return true
 end
 
 InteractionDefinitions.weave_leaderboard_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
-	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
+	if fail_reason == "status_offline" then
+		return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "status_offline"
+	else
+		return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action"), nil, "test"
+	end
 end
 
 return

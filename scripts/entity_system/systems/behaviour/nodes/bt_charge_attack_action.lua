@@ -75,9 +75,12 @@ BTChargeAttackAction.enter = function (self, unit, blackboard, t)
 	local old_cost_table = blackboard.navigation_extension:get_navtag_layer_cost_table()
 	blackboard.old_navtag_layer_cost_table = old_cost_table
 	local charge_navtag_layer_cost_table = blackboard.charge_navtag_layer_cost_table
-	local traverse_logic = blackboard.navigation_extension:traverse_logic()
 
-	GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, charge_navtag_layer_cost_table)
+	if charge_navtag_layer_cost_table then
+		local traverse_logic = blackboard.navigation_extension:traverse_logic()
+
+		GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, charge_navtag_layer_cost_table)
+	end
 end
 
 BTChargeAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)

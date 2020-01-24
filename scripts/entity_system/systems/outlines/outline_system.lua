@@ -389,7 +389,6 @@ OutlineSystem.update = function (self, context, t)
 
 			local is_pinged = extension.pinged
 			local method = (is_pinged and extension.pinged_method) or extension.method
-			slot15 = extension.flag or true
 
 			if self[method](self, unit, extension) then
 				if not extension.outlined or extension.new_color or extension.reapply then

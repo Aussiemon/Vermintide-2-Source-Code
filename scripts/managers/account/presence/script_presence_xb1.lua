@@ -65,6 +65,7 @@ end
 local ACTIVE_PRESENCE_DATA = {}
 
 ScriptPresence.update_playing = function (self, user_id)
+	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local current_level = Managers.state.game_mode and Managers.state.game_mode:level_key()
 	local current_difficulty = Managers.state.difficulty and Managers.state.difficulty:get_difficulty()
 	local current_num_players = Managers.player and Managers.player:num_human_players()
@@ -84,7 +85,19 @@ ScriptPresence.update_playing = function (self, user_id)
 
 			self:_setup_stat_data(current_level, current_difficulty, current_num_players)
 
-			local presence_string = prefix .. "_" .. current_level .. "_" .. current_difficulty
+			local presence_string = nil
+
+			if game_mode_key == "weave" then
+				local is_quick_game = Managers.matchmaking:is_quick_game()
+
+				if is_quick_game then
+					presence_string = prefix .. "_" .. "weave_quick_game_" .. current_difficulty
+				else
+					presence_string = "playing_weave"
+				end
+			else
+				presence_string = prefix .. "_" .. current_level .. "_" .. current_difficulty
+			end
 
 			self:_set_presence(user_id, presence_string)
 

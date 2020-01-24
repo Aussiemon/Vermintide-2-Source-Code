@@ -390,7 +390,11 @@ EndZoneExtension._close = function (self, dt, t)
 end
 
 EndZoneExtension._check_end_mission_all_inside = function (self, dt, all_inside)
-	if all_inside and self:_check_joining_players() then
+	if self._is_start_waystone and not self:_all_players_joined() then
+		return
+	end
+
+	if all_inside then
 		self._state_data.end_zone_timer = math.clamp(self:end_time_left() - dt, 0, self:end_time())
 
 		if self:end_time_left() <= 0 and not self._disable_complete_level then
@@ -404,7 +408,7 @@ end
 EndZoneExtension._check_end_mission_any_inside = function (self, dt, all_inside, any_inside, players_outside_portal)
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 
-	if game_mode_key == "weave" or all_inside or self._is_start_waystone or not self:_check_joining_players() then
+	if game_mode_key == "weave" or all_inside or self._is_start_waystone then
 		return
 	end
 
@@ -526,7 +530,13 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 				end
 			end
 
-			if all_inside and self:_check_joining_players() then
+			if self._is_start_waystone then
+				if all_inside and self:_all_players_joined() then
+					self._state_data.end_zone_timer = math.clamp(self:end_time_left() - dt, 0, self:end_time())
+				else
+					self._state_data.end_zone_timer = self:end_time()
+				end
+			elseif all_inside then
 				self._state_data.end_zone_timer = math.clamp(self:end_time_left() - dt, 0, self:end_time())
 			else
 				self._state_data.end_zone_timer = self:end_time()
@@ -539,7 +549,7 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 	end
 end
 
-EndZoneExtension._check_joining_players = function (self)
+EndZoneExtension._all_players_joined = function (self)
 	if self._disable_check_joining_players then
 		return true
 	end

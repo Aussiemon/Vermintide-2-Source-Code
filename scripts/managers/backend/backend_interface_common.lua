@@ -461,7 +461,7 @@ local filter_macros = {
 		local item_data = item.data
 		local slot_type = item_data.slot_type
 
-		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" or slot_type == "hat" then
+		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items:get_item_rarity(backend_id)
 
@@ -604,6 +604,11 @@ local filter_macros = {
 		}, item_data.slot_type)
 
 		return is_cosmetic or (mechanisms and table.contains(mechanisms, current_mechanism)) or (not mechanisms and current_mechanism == "adventure")
+	end,
+	owned = function (item, backend_id)
+		local owned = item.owned
+
+		return owned
 	end,
 	is_fake_item = function (item, backend_id)
 		local item_interface = Managers.backend:get_interface("items")

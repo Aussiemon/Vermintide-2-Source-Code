@@ -78,7 +78,6 @@ weapon_template.actions = {
 			active_reload_time = 0.25,
 			hold_input = "action_two_hold",
 			anim_event = "attack_shoot",
-			scale_total_time_on_mastercrafted = true,
 			total_time = 0.8,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
@@ -133,12 +132,6 @@ weapon_template.actions = {
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad
 			}
-		},
-		zoom_cancel = {
-			kind = "dummy",
-			weapon_action_hand = "left",
-			total_time = 0,
-			allowed_chain_actions = {}
 		}
 	},
 	action_two = {
@@ -173,13 +166,13 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},
 				{
 					sub_action = "zoomed_shot",
-					start_time = 0.3,
+					start_time = 0.15,
 					action = "action_one",
 					input = "action_one"
 				},

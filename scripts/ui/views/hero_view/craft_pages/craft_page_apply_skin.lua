@@ -58,6 +58,7 @@ CraftPageApplySkin.on_enter = function (self, params, settings)
 	self._recipe_grid = ItemGridUI:new(category_settings, self._widgets_by_name.recipe_grid, self.hero_name, self.career_index)
 
 	self._recipe_grid:disable_item_drag()
+	self._recipe_grid:hide_slots(true)
 	self.super_parent:clear_disabled_backend_ids()
 	self:_weapon_slot_updated()
 	self:setup_recipe_requirements()
@@ -323,25 +324,22 @@ CraftPageApplySkin.reset = function (self)
 	item_grid:update_items_status()
 	item_grid_2:clear_locked_items()
 	item_grid_2:update_items_status()
-	self:_weapon_slot_updated()
 end
 
 CraftPageApplySkin.on_craft_completed = function (self)
 	local result = self._craft_result
 	local item_grid = self._item_grid
 	local item_grid_2 = self._item_grid_2
+	local ignore_sound = true
+	local craft_item_backend_id = self._craft_item
+	local skin_item_backend_id = self._skin_item
 
+	self:_remove_item(item_grid_2, skin_item_backend_id, ignore_sound)
+	self:_remove_item(item_grid, craft_item_backend_id, ignore_sound)
 	item_grid:clear_item_grid()
 	item_grid_2:clear_item_grid()
 	self.super_parent:clear_disabled_backend_ids()
 	self.super_parent:update_inventory_items()
-
-	local ignore_sound = true
-	local craft_item_backend_id = self._craft_item
-
-	self:_add_item(item_grid, craft_item_backend_id, ignore_sound)
-	item_grid:lock_item_by_id(craft_item_backend_id, true)
-	item_grid:update_items_status()
 	self:_set_craft_button_disabled(true)
 
 	self._craft_result = nil
@@ -349,6 +347,7 @@ CraftPageApplySkin.on_craft_completed = function (self)
 	self._skin_item = nil
 	self._presenting_reward = true
 
+	self:_weapon_slot_updated()
 	self:setup_recipe_requirements()
 end
 
@@ -430,11 +429,14 @@ CraftPageApplySkin._update_craft_items = function (self)
 	end
 end
 
-CraftPageApplySkin._remove_item = function (self, item_grid, backend_id)
+CraftPageApplySkin._remove_item = function (self, item_grid, backend_id, ignore_sound)
 	self.super_parent:set_disabled_backend_id(backend_id, false)
 	item_grid:add_item_to_slot_index(1, nil)
 	self:_set_craft_button_disabled(true)
-	self:_play_sound("play_gui_craft_item_drag")
+
+	if not ignore_sound then
+		self:_play_sound("play_gui_craft_item_drag")
+	end
 end
 
 CraftPageApplySkin._add_item = function (self, item_grid, backend_id, ignore_sound)

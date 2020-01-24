@@ -183,6 +183,8 @@ TerrorEventMixer.init_functions = {
 		local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
 		local breed_name = element.breed_name
 
+		print("terror_event_mixer->force_load_breed_package, breed_name=", breed_name)
+
 		if not enemy_package_loader.breed_processed[breed_name] then
 			local ignore_breed_limits = true
 

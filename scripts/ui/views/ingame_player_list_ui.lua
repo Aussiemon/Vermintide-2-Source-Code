@@ -305,13 +305,22 @@ end
 
 IngamePlayerListUI._setup_weave_display_info = function (self)
 	if Managers.state.game_mode:game_mode_key() == "weave" then
+		local lobby = Managers.state.network:lobby()
+		local quick_game = lobby and lobby:lobby_data("quick_game")
 		local weave_manager = Managers.weave
 
 		if weave_manager then
 			local weave_template = weave_manager:get_active_weave_template()
 
 			if weave_template then
-				local weave_display_name = weave_template.tier .. ". " .. Localize(weave_template.display_name)
+				local weave_display_name = nil
+
+				if quick_game == "true" then
+					weave_display_name = Localize(weave_template.display_name)
+				else
+					weave_display_name = weave_template.tier .. ". " .. Localize(weave_template.display_name)
+				end
+
 				local wind = weave_template.wind
 				local wind_settings = WindSettings[wind]
 				local wind_display_name = wind_settings.display_name
@@ -789,7 +798,7 @@ IngamePlayerListUI.update = function (self, dt)
 end
 
 IngamePlayerListUI.set_privacy_enabled = function (self, enabled, animate)
-	local text = (enabled and "map_screen_private_button") or "map_public_setting"
+	local text = "map_screen_private_button"
 	local widget = self.private_checkbox_widget
 	widget.content.checked = enabled
 	widget.content.setting_text = text

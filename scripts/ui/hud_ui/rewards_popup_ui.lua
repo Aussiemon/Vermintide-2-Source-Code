@@ -43,7 +43,7 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 		for _, data in ipairs(rewards) do
 			local reward_type = data.type
 
-			if reward_type == "item" then
+			if reward_type == "item" or reward_type == "frame" then
 				local backend_id = data.backend_id
 				local entry = {}
 				local reward_item = item_interface:get_item_from_id(backend_id)

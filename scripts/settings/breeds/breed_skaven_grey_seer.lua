@@ -73,6 +73,10 @@ local breed_data = {
 	run_on_death = AiBreedSnippets.on_grey_seer_death,
 	run_on_despawn = AiBreedSnippets.on_grey_seer_despawn,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
+		if not blackboard.unit then
+			return stagger, duration, length
+		end
+
 		local health_extension = ScriptUnit.extension(blackboard.unit, "health_system")
 		local hp = health_extension:current_health_percent()
 

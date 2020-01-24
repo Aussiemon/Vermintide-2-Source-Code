@@ -260,6 +260,7 @@ local function init_development_parameters()
 
 	script_data.honduras_demo = script_data.settings.honduras_demo or script_data["honduras-demo"]
 	script_data.settings.use_beta_overlay = script_data.settings.use_beta_overlay or script_data.use_beta_overlay
+	script_data.settings.use_beta_mode = script_data.settings.use_beta_mode or script_data.use_beta_mode
 end
 
 local function xb1_type_string()
@@ -421,6 +422,9 @@ Boot.booting_update = function (self, dt)
 
 		local state_machine_end = os.clock()
 		local script_init_end_time = os.clock()
+
+		Managers.auto_test:ready()
+
 		Boot.render = Boot.game_render
 		Boot.has_booted = true
 
@@ -441,7 +445,7 @@ end
 Boot._require_foundation_scripts = function (self)
 	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string")
 	base_require("debug", "table_trap")
-	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
+	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager", "auto_test/auto_test_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
 end
 
@@ -451,6 +455,7 @@ Boot._init_managers = function (self)
 	Managers.token = TokenManager:new()
 	Managers.state_machine = StateMachineManager:new()
 	Managers.url_loader = UrlLoaderManager:new()
+	Managers.auto_test = AutoTestManager:new()
 end
 
 Boot.game_render = function (self)
@@ -694,6 +699,10 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.curl:update(true)
 		Managers.irc:update(dt)
 		Managers.twitch:update(dt)
+
+		if rawget(_G, "Steam") then
+			Managers.steam:update()
+		end
 	elseif PLATFORM == "xb1" then
 		Managers.rest_transport:update(true, dt, t)
 
@@ -756,6 +765,7 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	end
 
+	Managers.auto_test:update(dt, t)
 	end_function_call_collection()
 	table.clear(Boot.flow_return_table)
 
@@ -784,6 +794,10 @@ Boot.shutdown = function (self, dt)
 	if Boot.has_booted then
 		self._machine:destroy(true)
 		Managers:destroy()
+	end
+
+	if Boot.world then
+		destroy_startup_world()
 	end
 
 	for package_name, handle in pairs(Boot.startup_package_handles) do
@@ -1252,6 +1266,10 @@ Game.require_game_scripts = function (self)
 
 	if PLATFORM == "win32" then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
+
+		if rawget(_G, "Steam") then
+			game_require("managers", "steam/steam_manager")
+		end
 	elseif PLATFORM == "xb1" then
 		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager", "twitch/mixer_manager")
 	elseif PLATFORM == "ps4" then
@@ -1265,6 +1283,7 @@ Game.require_game_scripts = function (self)
 	require("scripts/ui/views/level_end/level_end_view_wrapper")
 	require("scripts/ui/views/title_loading_ui")
 	require("scripts/network_lookup/network_lookup")
+	require("scripts/tests/actions")
 end
 
 Game._handle_win32_graphics_quality = function (self)
@@ -1443,6 +1462,10 @@ Game._init_managers = function (self)
 		Managers.curl = CurlManager:new()
 		Managers.twitch = TwitchManager:new()
 		Managers.unlock = UnlockManager:new()
+
+		if rawget(_G, "Steam") then
+			Managers.steam = SteamManager:new()
+		end
 	elseif PLATFORM == "xb1" then
 		Managers.xbox_events = XboxEventManager:new()
 		Managers.rest_transport_online = RestTransportManager:new()

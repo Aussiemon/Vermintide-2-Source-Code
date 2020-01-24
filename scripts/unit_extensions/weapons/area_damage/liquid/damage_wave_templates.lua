@@ -1,5 +1,69 @@
 DamageWaveTemplates = {
 	templates = {
+		plague_wave_teleport = {
+			fx_separation_dist = 1.5,
+			max_speed = 10,
+			wave_width = 0.8,
+			launch_animation = "wave_summon_release",
+			buff_wave_impact_name = "plague_wave_face_base",
+			overflow_dist = 5,
+			acceleration = 10,
+			fx_name_running = "fx/chaos_sorcerer_plauge_wave_01",
+			start_speed = 5,
+			particle_arrived_stop_mode = "stop",
+			fx_name_arrived = "fx/chaos_sorcerer_plague_wave_hit_01",
+			apply_buff_to_player = true,
+			create_bot_aoe_threat = true,
+			launch_wave_sound = "Play_magic_plague_wave",
+			apply_impact_buff_to_ai = false,
+			max_height = 2.5,
+			running_wave_sound = "Play_magic_plague_wave_loop",
+			impact_wave_sound = "Play_magic_plague_wave_hit",
+			apply_buff_to_ai = true,
+			time_of_life = 10,
+			stop_running_wave_sound = "Stop_magic_plague_wave_loop",
+			trigger_dialogue_on_impact = true,
+			fx_unit = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx",
+			use_nav_cost_map_volumes = false,
+			fx_name_impact = "fx/plague_wave_03",
+			nav_cost_map_cost_type = "plague_wave",
+			apply_impact_buff_to_player = true,
+			fx_name_init = "fx/chaos_sorcerer_plauge_wave_02",
+			immune_breeds = {
+				chaos_troll = true,
+				chaos_spawn = true,
+				skaven_grey_seer = true,
+				chaos_plague_sorcerer = true,
+				chaos_exalted_sorcerer = true,
+				skaven_rat_ogre = true,
+				skaven_stormfiend = true
+			},
+			ai_push_data = {
+				stagger_distance = 3,
+				push_along_wave_direction = true,
+				stagger_impact = {
+					6,
+					3,
+					0,
+					0,
+					6
+				},
+				stagger_duration = {
+					2.5,
+					1,
+					0,
+					0,
+					4
+				}
+			},
+			player_push_data = {
+				ahead_dist = 1.5,
+				push_forward_offset = 1.5,
+				push_width = 1.25,
+				player_pushed_speed = 20,
+				dodged_width = 0.5
+			}
+		},
 		plague_wave = {
 			fx_separation_dist = 1.5,
 			max_speed = 20,

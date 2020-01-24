@@ -23,21 +23,23 @@ return {
 		end
 	end,
 	update_challenge_statistics = function (player)
-		local stat_group_name = "season_1"
-		local stat_name = "weave_light_low_curse"
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			local stat_group_name = "season_1"
+			local stat_name = "weave_light_low_curse"
 
-		if player.local_player then
-			local statistics_db = Managers.player:statistics_db()
-			local local_player = Managers.player:local_player()
-			local stats_id = local_player:stats_id()
+			if player.local_player then
+				local statistics_db = Managers.player:statistics_db()
+				local local_player = Managers.player:local_player()
+				local stats_id = local_player:stats_id()
 
-			statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
-		else
-			local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
-			local stat_name_index = NetworkLookup.statistics[stat_name]
-			local peer_id = player:network_id()
+				statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
+			else
+				local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
+				local stat_name_index = NetworkLookup.statistics[stat_name]
+				local peer_id = player:network_id()
 
-			Managers.state.network.network_transmit:send_rpc("rpc_increment_stat_group", peer_id, stat_group_index, stat_name_index)
+				Managers.state.network.network_transmit:send_rpc("rpc_increment_stat_group", peer_id, stat_group_index, stat_name_index)
+			end
 		end
 	end,
 	update_curse = function (data, t)

@@ -72,8 +72,12 @@ StartGameWindowLobbyBrowserConsole.on_enter = function (self, params, offset)
 	Managers.account:get_friends(2000, callback(self, "cb_friends_collected"))
 end
 
+local EMPTY_DATA = {}
+
 StartGameWindowLobbyBrowserConsole.cb_friends_collected = function (self, friend_data)
 	table.clear(self._friend_names)
+
+	local friend_data = friend_data or EMPTY_DATA
 
 	for account_id, data in pairs(friend_data) do
 		self._friend_names[data.name] = true
@@ -140,7 +144,13 @@ StartGameWindowLobbyBrowserConsole._populate_lobby_list = function (self, auto_u
 	local lobby_count = 0
 
 	for _, lobby_data in pairs(lobbies) do
-		if tonumber(lobby_data.game_mode) < 12 then
+		local game_mode_id = lobby_data.game_mode
+
+		if PLATFORM == "ps4" then
+			game_mode_id = NetworkLookup.game_modes[game_mode_id]
+		end
+
+		if tonumber(game_mode_id) <= #NetworkLookup.game_modes then
 			if show_filter == "lb_show_joinable" then
 				if self:_valid_lobby(lobby_data) then
 					lobby_count = lobby_count + 1
@@ -321,7 +331,7 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 		}
 	end
 
-	if only_show_valid_lobbies and false then
+	if only_show_valid_lobbies then
 		requirements.filters.network_hash = {
 			value = lobby_finder:network_hash(),
 			comparison = LobbyComparison.EQUAL
@@ -447,6 +457,10 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	local difficulty = lobby_data.difficulty
 	local num_players = tonumber(lobby_data.num_players)
 
+	if Managers.matchmaking:is_game_matchmaking() then
+		return false, "cannot_join_while_matchmaking"
+	end
+
 	if not level_key or not difficulty or level_key == "n/a" then
 		return false, "dlc1_2_difficulty_unavailable"
 	end
@@ -485,7 +499,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 			local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
 
 			if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
-				return false, "DIfficulty requirements not met"
+				return false, "difficulty_requirements_not_met"
 			end
 		end
 
@@ -499,6 +513,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	local game_mode = (PLATFORM == "ps4" and game_mode_index) or game_mode_names[game_mode_index]
 	local game_mode_settings = GameModeSettings[game_mode]
 	local weave_name = lobby_data.weave_name
+	local quick_game = lobby_data.quick_game == "true"
 
 	if game_mode_settings and game_mode_settings.required_dlc then
 		required_dlcs[game_mode_settings.required_dlc] = true
@@ -511,15 +526,17 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	end
 
 	if game_mode_settings and game_mode_settings.extra_requirements_function and not game_mode_settings.extra_requirements_function() then
-		return false, "Game Mode requirements not met"
+		return false, "game_mode_requirements_not_met"
 	end
 
 	if game_mode == "weave" then
-		local ignore_dlc_check = false
-		local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
+		if weave_name ~= "false" and not quick_game then
+			local ignore_dlc_check = false
+			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
 
-		if not weave_unlocked then
-			return false, "Weave not unlocked"
+			if not weave_unlocked then
+				return false, "weave_not_unlocked"
+			end
 		end
 	else
 		local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)

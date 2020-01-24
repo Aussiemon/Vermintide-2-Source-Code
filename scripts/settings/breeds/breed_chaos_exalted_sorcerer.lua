@@ -55,6 +55,10 @@ local breed_data = {
 	max_health = BreedTweaks.max_health.exalted_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
+		if not blackboard.unit then
+			return stagger, duration, length
+		end
+
 		if blackboard.stagger_count >= 3 then
 			stagger = 0
 			blackboard.stagger_ignore_anim_cb = true
@@ -382,6 +386,16 @@ local action_data = {
 				10,
 				1,
 				0
+			},
+			{
+				12,
+				1,
+				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -407,6 +421,16 @@ local action_data = {
 			},
 			{
 				15,
+				0,
+				0
+			},
+			{
+				18,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			}
@@ -473,6 +497,16 @@ local action_data = {
 				10,
 				1,
 				0
+			},
+			{
+				12,
+				1,
+				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -498,6 +532,16 @@ local action_data = {
 			},
 			{
 				15,
+				0,
+				0
+			},
+			{
+				18,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			}
@@ -567,6 +611,16 @@ local action_data = {
 				10,
 				1,
 				0
+			},
+			{
+				12,
+				1,
+				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -592,6 +646,16 @@ local action_data = {
 			},
 			{
 				15,
+				0,
+				0
+			},
+			{
+				18,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			}
@@ -660,6 +724,16 @@ local action_data = {
 				10,
 				1,
 				0
+			},
+			{
+				12,
+				1,
+				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -685,6 +759,16 @@ local action_data = {
 			},
 			{
 				15,
+				0,
+				0
+			},
+			{
+				18,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			}

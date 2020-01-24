@@ -1,15 +1,12 @@
 return {
 	wind_strength = 2,
-	wind = "life",
+	wind = "heavens",
 	seed = 293048,
-	terror_events = {
-		"beastmen_charge_event_short"
-	},
 	objectives = {
 		{
 			objective_type = "kill",
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_field_life",
+			level_id = "dlc_scorpion_field_heavens",
 			show_bar = true,
 			conflict_settings = "default_weave",
 			level_seed = 8135394,
@@ -19,13 +16,7 @@ return {
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								cataclysm = 0.42930000000000007,
-								cataclysm_3 = 0.2997,
-								normal = 0.81
-							}
-						}
+						kill_enemies = {}
 					}
 				}
 			},
@@ -111,7 +102,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_temple_life",
+			level_id = "dlc_scorpion_arena_temple_heavens",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 23094,
 			level_seed = 389090,

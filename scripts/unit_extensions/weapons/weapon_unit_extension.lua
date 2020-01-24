@@ -306,11 +306,6 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local action_kind = current_action_settings.kind
 		local action = self.actions[action_kind]
 		local time_to_complete = current_action_settings.total_time
-
-		if current_action_settings.scale_total_time_on_mastercrafted and buff_extension then
-			time_to_complete = buff_extension:apply_buffs_to_value(time_to_complete, "reload_speed")
-		end
-
 		time_to_complete = time_to_complete / ActionUtils.get_action_time_scale(owner_unit, current_action_settings)
 		local event = current_action_settings.anim_event
 		local event_3p = current_action_settings.anim_event_3p or event

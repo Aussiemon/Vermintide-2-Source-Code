@@ -176,6 +176,21 @@ KeepDecorationSystem.painting_set = function (self, painting, asking_extension)
 	end
 end
 
+KeepDecorationSystem.is_painting_in_use = function (self, painting)
+	local painting_extensions = self._extensions
+
+	for i = 1, #painting_extensions, 1 do
+		local extension = painting_extensions[i]
+		local extension_painting = extension:get_selected_painting()
+
+		if extension_painting == painting then
+			return true
+		end
+	end
+
+	return false
+end
+
 KeepDecorationSystem.rpc_send_painting = function (self, sender, painting)
 	self:_add_client_painting(sender, painting)
 	self:_refresh_client_paintings()

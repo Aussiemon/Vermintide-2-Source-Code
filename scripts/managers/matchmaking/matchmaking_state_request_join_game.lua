@@ -302,9 +302,10 @@ end
 MatchmakingStateRequestJoinGame._gather_dlc_ids = function (self)
 	local unlocked_dlcs = {}
 	local dlcs = UnlockSettings[1].unlocks
+	local unlock_manager = Managers.unlock
 
 	for dlc_name, _ in pairs(dlcs) do
-		if Managers.unlock:is_dlc_unlocked(dlc_name) then
+		if unlock_manager:is_dlc_unlocked(dlc_name) and not unlock_manager:is_dlc_cosmetic(dlc_name) then
 			print(dlc_name)
 
 			unlocked_dlcs[#unlocked_dlcs + 1] = NetworkLookup.dlcs[dlc_name]

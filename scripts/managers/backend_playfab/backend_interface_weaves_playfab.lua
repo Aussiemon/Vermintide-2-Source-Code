@@ -211,17 +211,20 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 	local position = data.Position + 1
 	local profile = data.Profile
 	local linked_accounts = profile.LinkedAccounts
-	local name, position_text = nil
+	local name, position_text, platform_user_id = nil
 
 	for i = 1, #linked_accounts, 1 do
 		local account_data = linked_accounts[i]
 
 		if account_data.Platform == "Steam" then
 			name = account_data.Username
+			platform_user_id = account_data.PlatformUserId
 		elseif account_data.Platform == "XBoxLive" then
-			name = account_data.Usernameelse
+			name = account_data.Username
+			platform_user_id = account_data.PlatformUserId
 		elseif account_data.Platform == "PSN" then
 			name = account_data.Username
+			platform_user_id = account_data.PlatformUserId
 		end
 	end
 
@@ -239,7 +242,8 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 		real_ranking = position,
 		weave = tier,
 		score = score,
-		local_player = local_player
+		local_player = local_player,
+		platform_user_id = platform_user_id
 	}
 
 	return entry
@@ -416,12 +420,19 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player_cb = function (s
 
 	table.clear(self._leaderboard_entries)
 
+	local idx = 1
+
 	for i = 1, #leaderboard, 1 do
 		local data = leaderboard[i]
-		local previous_score = i > 1 and self._leaderboard_entries[i - 1].score
-		local previous_tier = i > 1 and self._leaderboard_entries[i - 1].weave
-		local entry = self:_create_leaderboard_entry(data, previous_tier, previous_score)
-		self._leaderboard_entries[i] = entry
+		local entry = nil
+
+		if data.StatValue ~= 0 then
+			local previous_score = idx > 1 and self._leaderboard_entries[idx - 1].score
+			local previous_tier = idx > 1 and self._leaderboard_entries[idx - 1].weave
+			local entry = self:_create_leaderboard_entry(data, previous_tier, previous_score)
+			self._leaderboard_entries[idx] = entry
+			idx = idx + 1
+		end
 
 		if data.Profile.PlayerId == self._backend_mirror:get_playfab_id() then
 			self._player_entry = entry

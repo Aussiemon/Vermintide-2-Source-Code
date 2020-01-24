@@ -1442,6 +1442,7 @@ local dev_name_array = {}
 local system_message_array = {}
 local formatted_emojis_array = {}
 local base_str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+local format_directive_color_string = "{#color(%d,%d,%d)}"
 UIPasses.text_area_chat = {
 	init = function (pass_definition)
 		assert(pass_definition.text_id)
@@ -1465,15 +1466,18 @@ UIPasses.text_area_chat = {
 
 		local w, h = Gui.resolution()
 		local current_format = w .. ":" .. h
-		local font_material, scaled_font_size, font_name = nil
+		local font_material, font_size, font_name = nil
 
 		if ui_style.font_type then
-			local font, size = UIFontByResolution(ui_style)
-			font_material, scaled_font_size, font_name = unpack(font)
-			scaled_font_size = size
+			local font, size_of_font = UIFontByResolution(ui_style)
+			font_name = font[3]
+			font_size = font[2]
+			font_material = font[1]
+			font_size = size_of_font
+			font_name = ui_style.font_type
 		end
 
-		local row_size = Vector3(size.x, scaled_font_size, size.z)
+		local row_size = Vector3(size.x, font_size, size.z)
 		local offset = ui_style.offset
 
 		if offset then
@@ -1491,6 +1495,11 @@ UIPasses.text_area_chat = {
 		local font, _ = UIFontByResolution(ui_style, inv_scale)
 		local inv_font_material = unpack(font)
 		local _, _, minimum = UIRenderer.text_size(ui_renderer, base_str, inv_font_material, ui_style.font_size)
+		local color_text = ui_style.text_color
+		local default_color = ui_style.default_color
+		local color_name = ui_style.name_color
+		local color_name_dev = ui_style.name_color_dev
+		local color_name_system = ui_style.name_color_system
 		local num_texts = 0
 
 		for i = 1, #ui_content.message_tables, 1 do
@@ -1498,7 +1507,7 @@ UIPasses.text_area_chat = {
 			local is_dev = message_table.is_dev
 			local is_bot = message_table.is_bot
 			local is_system = message_table.is_system
-			local sender = message_table.sender
+			local sender = message_table.trimmed_sender or message_table.sender
 			local message = message_table.message
 			local message_type = message_table.type
 			local link = message_table.link
@@ -1507,14 +1516,29 @@ UIPasses.text_area_chat = {
 
 			if formatted ~= current_format then
 				local message_text = ""
+				default_color = (not default_color or type(default_color) ~= "table" or string.format(format_directive_color_string, default_color[2], default_color[3], default_color[4])) and (default_color or string.format(format_directive_color_string, color_text[2], color_text[3], color_text[4]))
 
 				if is_system then
-					message_text = message
+					if color_name_system and type(color_name_system) == "table" then
+						color_name_system = string.format(format_directive_color_string, color_name_system[2], color_name_system[3], color_name_system[4])
+					end
+
+					message_text = color_name_system .. sender .. default_color .. message
+				elseif is_dev then
+					if color_name_dev and type(color_name_dev) == "table" then
+						color_name_dev = string.format(format_directive_color_string, color_name_dev[2], color_name_dev[3], color_name_dev[4])
+					end
+
+					message_text = color_name_dev .. sender .. default_color .. message
 				else
-					message_text = sender .. message
+					if color_name and type(color_name) == "table" then
+						color_name = string.format(format_directive_color_string, color_name[2], color_name[3], color_name[4])
+					end
+
+					message_text = color_name .. sender .. default_color .. message
 				end
 
-				local indicator = " "
+				local indicator = "${e};"
 				local text_to_split = message_text
 
 				if emojis then
@@ -1523,7 +1547,7 @@ UIPasses.text_area_chat = {
 					end
 				end
 
-				local split_message = UIRenderer.word_wrap(ui_renderer, text_to_split, font_material, scaled_font_size, size[1])
+				local split_message = UIRenderer.word_wrap(ui_renderer, text_to_split, font_material, font_size, size[1], nil, font_name)
 				local formatted_emojis = nil
 				local formatted_message_array = table.clone(split_message)
 
@@ -1536,7 +1560,7 @@ UIPasses.text_area_chat = {
 							local index, end_index = string.find(split_msg, indicator)
 
 							if index then
-								local substr = string.sub(split_msg, 1, math.max(index - 2, 1))
+								local substr = string.sub(split_msg, 0, math.max(index - 1, 0))
 
 								if not Utf8.valid(substr) then
 									print(string.format("%q is not a valid utf-8 string", substr))
@@ -1544,13 +1568,13 @@ UIPasses.text_area_chat = {
 									break
 								end
 
-								local blank_area = "       "
-								local width = UIRenderer.text_size(ui_renderer, substr .. ".", font_material, scaled_font_size)
-								local spacing_width = UIRenderer.text_size(ui_renderer, blank_area, font_material, scaled_font_size)
+								local blank_area = "      "
+								local str = string.gsub(substr, "{#.-}", "")
+								local width = UIUtils.get_text_width(ui_renderer, ui_style, str)
 								formatted_emojis[row] = formatted_emojis[row] or {}
 								formatted_emojis[row][#formatted_emojis[row] + 1] = {
 									data = emoji_data,
-									offset_x = (width + spacing_width * 0.5) - ui_style.emoji_size[1] * 0.5,
+									offset_x = width,
 									offset_y = -ui_style.emoji_size[2] * 0.3,
 									size = ui_style.emoji_size
 								}
@@ -1636,29 +1660,11 @@ UIPasses.text_area_chat = {
 		local start_index, discrepancy = math.modf((1 + num_texts_to_scale_on) * text_start_offset)
 		local stop_index = math.min(num_texts, start_index + num_texts_to_draw)
 		start_index = math.max(1, stop_index - num_texts_to_draw + 1)
-		local color_text = ui_style.text_color
-		local color_name = ui_style.name_color
-		local color_name_dev = ui_style.name_color_dev
-		local color_name_system = ui_style.name_color_system
 
 		for i = start_index, stop_index, 1 do
 			local text = message_array[i]
 
-			UIRenderer.draw_text(ui_renderer, text, font_material, scaled_font_size, font_name, position, color_text)
-
-			if system_message_array[i] then
-				UIRenderer.draw_text(ui_renderer, system_message_array[i], font_material, scaled_font_size, font_name, position, color_name_system)
-			end
-
-			if dev_name_array[i] then
-				UIRenderer.draw_text(ui_renderer, dev_name_array[i], font_material, scaled_font_size, font_name, position, color_name_dev)
-			elseif name_array[i] then
-				if name_color_array[i] then
-					UIRenderer.draw_text(ui_renderer, name_array[i], font_material, scaled_font_size, font_name, position, name_color_array[i])
-				else
-					UIRenderer.draw_text(ui_renderer, name_array[i], font_material, scaled_font_size, font_name, position, color_name)
-				end
-			end
+			UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position, color_text)
 
 			if link_array[i] then
 				local cursor = input_service:get("cursor") or NilCursor
@@ -1768,12 +1774,6 @@ UIPasses.text = {
 			font_material = font[1]
 			font_size = size_of_font
 			font_name = ui_style.font_type
-		else
-			local font = ui_style.font
-			font_name = font[3]
-			font_size = font[2]
-			font_material = font[1]
-			font_size = ui_style.font_size or font_size
 		end
 
 		local global_text_length = UTF8Utils.string_length(text)
@@ -1926,13 +1926,43 @@ UIPasses.text = {
 				end
 			end
 
-			local sub_string = UTF8Utils.sub_string(text, start_index, end_index)
-			local sub_string_width = UIRenderer.text_size(ui_renderer, sub_string, font_material, font_size, font_name)
+			local sub_string, sub_string_width = nil
+			local jump_to_end = ui_content.jump_to_end
 
-			while size[1] < sub_string_width do
-				end_index = end_index - 1
-				sub_string = UTF8Utils.sub_string(sub_string, 1, end_index)
+			if jump_to_end then
+				start_index = end_index
+				ui_content.jump_to_end = nil
+				sub_string_width = 0
+				local end_found = true
+
+				while sub_string_width < size[1] do
+					start_index = math.max(start_index - 1, 1)
+					sub_string = UTF8Utils.sub_string(text, start_index, end_index)
+					sub_string_width = UIRenderer.text_size(ui_renderer, sub_string, font_material, font_size, font_name)
+
+					if start_index == 1 then
+						end_found = false
+
+						break
+					end
+				end
+
+				if end_found then
+					start_index = start_index + 1
+					sub_string = UTF8Utils.sub_string(text, start_index, end_index)
+					sub_string_width = UIRenderer.text_size(ui_renderer, sub_string, font_material, font_size, font_name)
+				end
+
+				ui_content.text_index = start_index
+			else
+				sub_string = UTF8Utils.sub_string(text, start_index, end_index)
 				sub_string_width = UIRenderer.text_size(ui_renderer, sub_string, font_material, font_size, font_name)
+
+				while size[1] < sub_string_width do
+					end_index = end_index - 1
+					sub_string = UTF8Utils.sub_string(text, start_index, end_index)
+					sub_string_width = UIRenderer.text_size(ui_renderer, sub_string, font_material, font_size, font_name)
+				end
 			end
 
 			local caret_index = ui_content.caret_index
@@ -1947,8 +1977,8 @@ UIPasses.text = {
 
 			if caret_size then
 				local caret_offset = ui_style.caret_offset
-				local caret_sub_string = UTF8Utils.sub_string(sub_string, 1, ui_content.caret_index - start_index) .. " "
-				local caret_position_x = UIRenderer.text_size(ui_renderer, caret_sub_string .. " ", font_material, font_size, font_name) + 1
+				local caret_sub_string = UTF8Utils.sub_string(sub_string, 1, ui_content.caret_index - ui_content.text_index)
+				local caret_position_x = UIRenderer.text_size(ui_renderer, caret_sub_string, font_material, font_size, font_name)
 				local caret_position = position + Vector3(caret_position_x + caret_offset[1], caret_offset[2], caret_offset[3])
 				local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[1])
 				retained_id = UIRenderer.draw_text(ui_renderer, caret_sub_string, font_material, font_size, font_name, position, ui_style.text_color, retained_id, ui_style.color_override)
@@ -1964,7 +1994,7 @@ UIPasses.text = {
 				end
 
 				local offset = ui_style.offset
-				local rest_string = string.sub(sub_string, string.len(caret_sub_string), string.len(sub_string))
+				local rest_string = string.sub(sub_string, string.len(caret_sub_string) + 1, string.len(sub_string) + 1)
 				position[1] = position[1] + caret_position_x
 
 				UIRenderer.draw_text(ui_renderer, rest_string, font_material, font_size, font_name, position, ui_style.text_color, retained_id, ui_style.color_override)

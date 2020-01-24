@@ -7,10 +7,13 @@ BackendInterfaceLiveEventsPlayfab.init = function (self, backend_mirror)
 	self._last_id = 0
 	self._live_events = {}
 	self._completed_live_event_requests = {}
+	self._initial_request_id = self:request_live_events()
 end
 
 BackendInterfaceLiveEventsPlayfab.ready = function (self)
-	return true
+	local initial_request_complete = self:live_events_request_complete(self._initial_request_id)
+
+	return initial_request_complete
 end
 
 BackendInterfaceLiveEventsPlayfab.update = function (self, dt)
@@ -72,6 +75,20 @@ BackendInterfaceLiveEventsPlayfab.get_game_mode_data = function (self)
 			return event.game_mode_data
 		end
 	end
+end
+
+BackendInterfaceLiveEventsPlayfab.get_inn_level_name = function (self)
+	local live_events = self._live_events
+
+	for i = 1, #live_events, 1 do
+		local live_event = live_events[i]
+
+		if live_event.inn_override then
+			return live_event.inn_override
+		end
+	end
+
+	return "inn_level"
 end
 
 return

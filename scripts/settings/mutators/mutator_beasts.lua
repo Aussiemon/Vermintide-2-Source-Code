@@ -16,16 +16,18 @@ return {
 		end
 	end,
 	increment_challenge_stat = function ()
-		local stat_group_name = "season_1"
-		local stat_name = "weave_beasts_destroyed_totems"
-		local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
-		local stat_name_index = NetworkLookup.statistics[stat_name]
-		local statistics_db = Managers.player:statistics_db()
-		local local_player = Managers.player:local_player()
-		local stats_id = local_player:stats_id()
+		if ScorpionSeasonalSettings.current_season_id == 1 then
+			local stat_group_name = "season_1"
+			local stat_name = "weave_beasts_destroyed_totems"
+			local stat_group_index = NetworkLookup.statistics_group_name[stat_group_name]
+			local stat_name_index = NetworkLookup.statistics[stat_name]
+			local statistics_db = Managers.player:statistics_db()
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
 
-		statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+			statistics_db:increment_stat(stats_id, stat_group_name, stat_name)
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat_group", stat_group_index, stat_name_index)
+		end
 	end,
 	update_totems = function (context, data, dt, t)
 		data.update_timer = data.update_timer + dt

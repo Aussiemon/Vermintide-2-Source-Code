@@ -1534,7 +1534,7 @@ ConflictDirector.update_spawn_queue = function (self, t)
 		local breed = BLACKBOARDS[unit].breed
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
-		self:_post_spawn_unit(unit, go_id, breed, d[2]:unbox(), d[4], d[5], d[7])
+		self:_post_spawn_unit(unit, go_id, breed, d[2]:unbox(), d[4], d[5], d[7], d[6])
 	else
 		unit = self:_spawn_unit(d[1], d[2]:unbox(), d[3]:unbox(), d[4], d[5], d[6], d[7], d[8], d[10])
 	end
@@ -1674,12 +1674,12 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 
 	local ai_unit, go_id = Managers.state.unit_spawner:spawn_network_unit(base_unit_name, unit_template, extension_init_data, spawn_pose)
 
-	self:_post_spawn_unit(ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data)
+	self:_post_spawn_unit(ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type)
 
 	return ai_unit
 end
 
-ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data)
+ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type)
 	local blackboard = BLACKBOARDS[ai_unit]
 	optional_data = optional_data or {}
 
@@ -1688,6 +1688,9 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 	end
 
 	local breed_name = breed.name
+
+	Unit.set_data(ai_unit, "spawn_type", spawn_type)
+
 	local level_settings = self.level_settings
 	local climate_type = level_settings.climate_type or "default"
 
@@ -1926,6 +1929,12 @@ end
 
 ConflictDirector.destroy_unit = function (self, unit, blackboard, reason)
 	if ALIVE[unit] then
+		local game_mode_manager = Managers.state.game_mode
+
+		if game_mode_manager then
+			game_mode_manager:ai_destroyed(unit, blackboard, reason)
+		end
+
 		self:_remove_unit_from_spawned(unit, blackboard)
 		self:register_unit_destroyed(unit, reason)
 	end
@@ -3076,6 +3085,9 @@ ConflictDirector.level_flow_event = function (self, event_name)
 end
 
 ConflictDirector.update_server_debug = function (self, t, dt)
+	local side = self._hero_side
+	local player_positions = side and side.PLAYER_POSITIONS
+
 	if script_data.debug_zone_baker_on_screen then
 		self.spawn_zone_baker:draw_zone_info_on_screen()
 	end
@@ -3090,9 +3102,6 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("y", "test cover points", "ai", "left shift") then
 		if false then
-			local side = self._hero_side
-			local player_positions = side.PLAYER_POSITIONS
-
 			if not player_positions[1] then
 				return
 			end
@@ -3142,7 +3151,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 	end
 
 	if self.ik_tentacle then
-		self.ik_tentacle:set_target_pos(PLAYER_POSITIONS[1] + Vector3(0, 0, 1), 2)
+		self.ik_tentacle:set_target_pos(player_positions[1] + Vector3(0, 0, 1), 2)
 		self.ik_tentacle:solve(t, dt)
 	end
 
@@ -3162,8 +3171,8 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 		print("Creating tentacle")
 
-		local start_pos = PLAYER_POSITIONS[1] + Vector3(1, 0, 0)
-		local target_pos = PLAYER_POSITIONS[1] + Vector3(0, 0, 1)
+		local start_pos = player_positions[1] + Vector3(1, 0, 0)
+		local target_pos = player_positions[1] + Vector3(0, 0, 1)
 		local joints = {}
 
 		for i = 1, 30, 1 do
@@ -3274,12 +3283,10 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		self:debug_spawn_breed(t, false, self._debug_spawn_breed_pos:unbox())
 	end
 
-	if DebugKeyHandler.key_pressed("i", "unspawn all AIs", "ai") then
-		self:destroy_all_units(true)
-	end
-
 	if DebugKeyHandler.key_pressed("u", "unspawn close AIs", "ai") then
 		self:destroy_close_units(nil, 144)
+	elseif DebugKeyHandler.key_pressed("i", "unspawn all AIs", "ai") then
+		self:destroy_all_units(true)
 	end
 
 	if DebugKeyHandler.key_pressed("m", "unspawn all AI specials", "ai") then
@@ -3319,7 +3326,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 			end
 		elseif draw_all_zones == "last_naive" then
 			local main_paths = self.level_analysis:get_main_paths()
-			local index = MainPathUtils.zone_segment_on_mainpath(main_paths, PLAYER_POSITIONS[1])
+			local index = MainPathUtils.zone_segment_on_mainpath(main_paths, player_positions[1])
 
 			self.spawn_zone_baker:draw_zones(self.nav_world, index)
 			Debug.text("Draw Zone-segment: %d (last_naive)", index)
@@ -3367,8 +3374,6 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 			print("ASTAR")
 
 			local start, goal = self.level_analysis:get_start_and_finish()
-			local side = self._hero_side
-			local player_positions = side.PLAYER_POSITIONS
 			local tri1 = GwNavTraversal.get_seed_triangle(self.nav_world, player_positions[1])
 			local tri2 = GwNavTraversal.get_seed_triangle(self.nav_world, goal:unbox())
 
@@ -3430,9 +3435,6 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 	end
 
 	if script_data.debug_near_cover_points then
-		local side = self._hero_side
-		local player_positions = side.PLAYER_POSITIONS
-
 		ConflictUtils.hidden_cover_points(player_positions[1], player_positions, 1, 35, nil)
 	end
 
@@ -3460,7 +3462,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		local ahead_unit = main_path_info.ahead_unit
 		local dist_to_intervention = 0
 
-		for slot21, slot22 in pairs(self.main_path_player_info) do
+		for slot23, slot24 in pairs(self.main_path_player_info) do
 		end
 
 		if ahead_unit then

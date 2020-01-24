@@ -231,8 +231,13 @@ MatchmakingStateSearchGame._search_for_game = function (self, dt)
 	local game_mode = search_config.game_mode
 	local selected_level_key = search_config.level_key
 	local preferred_level_keys = search_config.preferred_level_keys
+	local any_level = search_config.any_level
 
-	if selected_level_key then
+	if any_level then
+		preferred_levels = {
+			"any"
+		}
+	elseif selected_level_key then
 		preferred_levels = {
 			selected_level_key
 		}
@@ -287,10 +292,13 @@ MatchmakingStateSearchGame._compare_first_prio_lobbies = function (self, current
 
 	local search_config = self.search_config
 	local quick_game = search_config.quick_game
+	local game_mode = search_config.game_mode
 	local current_level_key = current_lobby.selected_level_key
 	local new_level_key = new_lobby.selected_level_key
+	local current_level_settings = current_level_key and LevelSettings[current_level_key]
+	local new_level_settings = new_level_key and LevelSettings[new_level_key]
 
-	if quick_game and current_level_key and current_level_key ~= "inn_level" and new_level_key and new_level_key ~= "inn_level" then
+	if game_mode ~= "weave" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
 		local current_times_completed = self:_times_party_completed_level(current_level_key)
 		local new_times_completed = self:_times_party_completed_level(new_level_key)
 
@@ -309,10 +317,13 @@ MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, cur
 
 	local search_config = self.search_config
 	local quick_game = search_config.quick_game
+	local game_mode = search_config.game_mode
 	local current_level_key = current_lobby.selected_level_key
 	local new_level_key = new_lobby.selected_level_key
+	local current_level_settings = current_level_key and LevelSettings[current_level_key]
+	local new_level_settings = new_level_key and LevelSettings[new_level_key]
 
-	if quick_game and current_level_key and current_level_key ~= "inn_level" and new_level_key and new_level_key ~= "inn_level" then
+	if game_mode ~= "weave" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
 		local current_level_key = current_lobby.selected_level_key
 		local current_times_completed = self:_times_party_completed_level(current_level_key)
 		local new_level_key = current_lobby.selected_level_key
@@ -330,7 +341,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 	local selected_level_key = search_config.level_key
 	local difficulty = search_config.difficulty
 	local game_mode = search_config.game_mode
-	local weave_name = search_config.weave_name
+	local weave_name = search_config.weave_name or "false"
 	local act_key = search_config.act_key
 	local using_strict_matchmaking = search_config.strict_matchmaking
 	local reached_max_distance = self._current_distance_filter == MatchmakingSettings.max_distance_filter
@@ -383,7 +394,9 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 					end
 				end
 
-				if not discard and lobby_data.level_key ~= "inn_level" then
+				local level_settings = LevelSettings[lobby_data.level_key]
+
+				if not discard and not level_settings.hub_level then
 					if using_strict_matchmaking then
 						discard = true
 						discard_reason = "strict matchmaking"

@@ -372,7 +372,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 0.85,
+					start_time = 0.7,
 					action = "action_one",
 					end_time = 1.8,
 					input = "action_one"
@@ -398,7 +398,14 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0,
+					action = "action_wield",
+					end_time = 0.3,
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -476,6 +483,13 @@ weapon_template.actions = {
 					action = "action_two",
 					end_time = 0.3,
 					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_wield",
+					end_time = 0.3,
+					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -562,6 +576,13 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
+					start_time = 0,
+					action = "action_wield",
+					end_time = 0.3,
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
@@ -641,6 +662,13 @@ weapon_template.actions = {
 					action = "action_two",
 					end_time = 0.3,
 					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_wield",
+					end_time = 0.3,
+					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -751,6 +779,12 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
+					sub_action = "default",
+					start_time = 0.2,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
 					sub_action = "push",
 					start_time = 0.2,
 					action = "action_one",
@@ -767,12 +801,6 @@ weapon_template.actions = {
 					release_required = "action_two_hold",
 					doubleclick_window = 0,
 					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				}
 			}
 		}

@@ -395,7 +395,10 @@ ActionTemplates.action_inspect = {
 		total_time = 1,
 		condition_func = function (action_user, input_extension)
 			if Managers.input:is_device_active("gamepad") then
-				if Managers.state.game_mode:level_key() == "inn_level" and not MotionControlSettings.use_motion_controls then
+				local level_key = Managers.state.game_mode:level_key()
+				local level_settings = LevelSettings[level_key]
+
+				if level_settings.hub_level and not MotionControlSettings.use_motion_controls then
 					return true
 				else
 					return false

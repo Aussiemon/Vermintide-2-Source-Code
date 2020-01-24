@@ -12,6 +12,10 @@ local window_size = {
 }
 local window_text_width = window_size[1] - window_frame_width * 2
 local mutator_window_width = window_size[1] - 20
+local game_option_size = {
+	window_size[1],
+	194
+}
 local wheel_scale = 1.5
 local scenegraph_definition = {
 	root = {
@@ -88,90 +92,6 @@ local scenegraph_definition = {
 			6
 		}
 	},
-	top_glow = {
-		vertical_alignment = "top",
-		parent = "top_panel",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			500
-		},
-		position = {
-			0,
-			-83,
-			-1
-		}
-	},
-	player_1 = {
-		vertical_alignment = "center",
-		parent = "top_panel",
-		horizontal_alignment = "left",
-		size = {
-			60,
-			70
-		},
-		position = {
-			150,
-			2,
-			1
-		}
-	},
-	player_2 = {
-		vertical_alignment = "center",
-		parent = "player_1",
-		horizontal_alignment = "left",
-		size = {
-			60,
-			70
-		},
-		position = {
-			100,
-			0,
-			0
-		}
-	},
-	player_3 = {
-		vertical_alignment = "center",
-		parent = "player_2",
-		horizontal_alignment = "left",
-		size = {
-			60,
-			70
-		},
-		position = {
-			100,
-			0,
-			0
-		}
-	},
-	player_4 = {
-		vertical_alignment = "center",
-		parent = "player_3",
-		horizontal_alignment = "left",
-		size = {
-			60,
-			70
-		},
-		position = {
-			100,
-			0,
-			0
-		}
-	},
-	party_search_button = {
-		vertical_alignment = "center",
-		parent = "top_panel",
-		horizontal_alignment = "right",
-		size = {
-			330,
-			60
-		},
-		position = {
-			-110,
-			0,
-			1
-		}
-	},
 	title = {
 		vertical_alignment = "bottom",
 		parent = "top_panel",
@@ -214,65 +134,9 @@ local scenegraph_definition = {
 			2
 		}
 	},
-	background_wheel = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			math.floor(1022 * wheel_scale),
-			math.floor(1022 * wheel_scale)
-		},
-		position = {
-			0,
-			120,
-			1
-		}
-	},
-	wheel_ring_1 = {
-		vertical_alignment = "center",
-		parent = "background_wheel",
-		horizontal_alignment = "center",
-		size = {
-			math.floor(188 * wheel_scale),
-			math.floor(188 * wheel_scale)
-		},
-		position = {
-			0,
-			0,
-			0
-		}
-	},
-	wheel_ring_2 = {
-		vertical_alignment = "center",
-		parent = "background_wheel",
-		horizontal_alignment = "center",
-		size = {
-			math.floor(461 * wheel_scale),
-			math.floor(461 * wheel_scale)
-		},
-		position = {
-			0,
-			0,
-			0
-		}
-	},
-	wheel_ring_3 = {
-		vertical_alignment = "center",
-		parent = "background_wheel",
-		horizontal_alignment = "center",
-		size = {
-			math.floor(1074 * wheel_scale),
-			math.floor(1074 * wheel_scale)
-		},
-		position = {
-			0,
-			0,
-			0
-		}
-	},
 	wind_icon = {
 		vertical_alignment = "center",
-		parent = "background_wheel",
+		parent = "window",
 		horizontal_alignment = "center",
 		size = {
 			200,
@@ -280,7 +144,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			0,
+			120,
 			2
 		}
 	},
@@ -424,6 +288,20 @@ local scenegraph_definition = {
 			20
 		}
 	},
+	play_button_console = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1],
+			game_option_size[2]
+		},
+		position = {
+			0,
+			-0,
+			1
+		}
+	},
 	private_checkbox = {
 		vertical_alignment = "top",
 		parent = "play_button",
@@ -436,104 +314,6 @@ local scenegraph_definition = {
 			200,
 			45,
 			0
-		}
-	},
-	top_corner_left = {
-		vertical_alignment = "top",
-		parent = "window",
-		horizontal_alignment = "left",
-		size = {
-			110,
-			110
-		},
-		position = {
-			0,
-			0,
-			10
-		}
-	},
-	top_corner_right = {
-		vertical_alignment = "top",
-		parent = "window",
-		horizontal_alignment = "right",
-		size = {
-			110,
-			110
-		},
-		position = {
-			0,
-			0,
-			10
-		}
-	},
-	bottom_corner_left = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "left",
-		size = {
-			110,
-			110
-		},
-		position = {
-			0,
-			0,
-			10
-		}
-	},
-	bottom_corner_right = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "right",
-		size = {
-			110,
-			110
-		},
-		position = {
-			0,
-			0,
-			10
-		}
-	},
-	bottom_glow = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			window_size[2]
-		},
-		position = {
-			0,
-			0,
-			3
-		}
-	},
-	bottom_glow_short = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			500
-		},
-		position = {
-			0,
-			0,
-			4
-		}
-	},
-	bottom_glow_shortest = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			200
-		},
-		position = {
-			0,
-			0,
-			5
 		}
 	}
 }
@@ -837,7 +617,7 @@ local function create_objective_widget(scenegraph_id, size)
 	}
 end
 
-local function create_checkbox_button(scenegraph_id, size, text, font_size, tooltip_info)
+local function create_checkbox_button(scenegraph_id, size, text, font_size, tooltip_info, disable_with_gamepad)
 	local widget = {
 		element = {}
 	}
@@ -858,6 +638,7 @@ local function create_checkbox_button(scenegraph_id, size, text, font_size, tool
 			0
 		}
 	}
+	content.disable_with_gamepad = disable_with_gamepad
 	content[hotspot_name] = {}
 	local hotspot_content = content[hotspot_name]
 
@@ -2185,202 +1966,194 @@ function create_play_button(scenegraph_id, size, text, font_size, disable_with_g
 	}
 end
 
-local rating_texture_sizes = {}
-local rating_textures = {}
-local rating_bg_textures = {}
-
-for i = 1, 5, 1 do
-	rating_textures[i] = "icon_score_rating"
-	rating_bg_textures[i] = "icon_score_rating_empty"
-	rating_texture_sizes[i] = {
-		22,
-		22
+function create_start_game_console_play_button(scenegraph_id, text)
+	local passes = {}
+	local content = {}
+	local style = {}
+	local text_name = "text"
+	local text_name_shadow = text_name .. "_shadow"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = text_name,
+		style_id = text_name,
+		content_change_function = function (content, style)
+			if content.locked then
+				style.text_color = style.disabled_color
+			else
+				style.text_color = style.normal_color
+			end
+		end
 	}
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = text_name,
+		style_id = text_name_shadow
+	}
+	content[text_name] = text
+	local text_offset = {
+		0,
+		6,
+		1
+	}
+	local text_style = {
+		word_wrap = false,
+		upper_case = true,
+		localize = false,
+		font_size = 48,
+		horizontal_alignment = "center",
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+		disabled_color = Colors.get_color_table_with_alpha("dark_gray", 255),
+		normal_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = {
+			text_offset[1],
+			text_offset[2],
+			text_offset[3]
+		}
+	}
+	local text_shadow_style = table.clone(text_style)
+	text_shadow_style.text_color = {
+		255,
+		0,
+		0,
+		0
+	}
+	text_shadow_style.offset = {
+		text_offset[1] + 2,
+		text_offset[2] - 2,
+		text_offset[3] - 1
+	}
+	style[text_name] = text_style
+	style[text_name_shadow] = text_shadow_style
+	local divider_name = "divider"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		texture_id = divider_name,
+		style_id = divider_name
+	}
+	content[divider_name] = "divider_01_top"
+	style[divider_name] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		texture_size = {
+			264,
+			32
+		},
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = {
+			0,
+			-36,
+			1
+		}
+	}
+	local input_texture_name = "input_texture"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		texture_id = input_texture_name,
+		style_id = input_texture_name,
+		content_change_function = function (content, style)
+			if content.locked then
+				style.saturated = true
+			else
+				style.saturated = false
+			end
+		end
+	}
+	content[input_texture_name] = ""
+	style[input_texture_name] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		texture_size = {
+			64,
+			64
+		},
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = {
+			0,
+			-34,
+			2
+		}
+	}
+	local glow_name = "glow"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		texture_id = glow_name,
+		style_id = glow_name,
+		content_check_function = function (content)
+			return not content.locked
+		end
+	}
+	content[glow_name] = "play_glow_mask"
+	style[glow_name] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		texture_size = {
+			256,
+			126
+		},
+		color = Colors.get_color_table_with_alpha("font_title", 255),
+		offset = {
+			0,
+			33,
+			-1
+		}
+	}
+	local widget = {
+		element = {
+			passes = passes
+		},
+		content = content,
+		style = style,
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return widget
 end
 
-local background_color = {
-	255,
-	0,
-	0,
-	0
-}
-local bottom_glow_back_smoke_color = {
-	200,
-	138,
-	0,
-	147
-}
-local bottom_glow_front_smoke_color = {
-	255,
-	138,
-	0,
-	187
-}
-local bottom_glow_front_2_smoke_color = {
-	200,
-	128,
-	0,
-	217
-}
-local bottom_glow_back_ember_color = {
-	130,
-	255,
-	255,
-	255
-}
-local top_glow_back_smoke_color = {
-	200,
-	138,
-	0,
-	147
-}
-local wheel_color = {
-	255,
-	138,
-	0,
-	147
+local disable_with_gamepad = true
+local widgets = {
+	difficulty_title = UIWidgets.create_simple_text("n/a", "difficulty_title", nil, nil, difficulty_title_text_style),
+	difficulty_description = UIWidgets.create_simple_text("n/a", "difficulty_description", nil, nil, difficulty_description_text_style),
+	difficulty_selected = UIWidgets.create_simple_texture("icons_placeholder", "difficulty_selected"),
+	difficulty_selected_effect = UIWidgets.create_simple_texture("weave_difficulty_highlight_effect", "difficulty_selected_effect", nil, nil, {
+		255,
+		138,
+		0,
+		187
+	}),
+	play_button = create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34, disable_with_gamepad, {
+		title = Localize("start_game_weave_disabled_tooltip_title"),
+		description = Localize("start_game_weave_disabled_tooltip_description")
+	}, disable_with_gamepad),
+	play_button_console = create_start_game_console_play_button("play_button_console", Localize("start_game_window_play"))
 }
 local bottom_hdr_widgets = {
-	hdr_background_write_mask = UIWidgets.create_simple_texture("ui_write_mask", "window"),
-	hdr_background_wheel_1 = UIWidgets.create_simple_texture("athanor_skilltree_background_effect", "background_wheel", nil, nil, wheel_color, 5),
-	hdr_wheel_ring_1_1 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_effect_1", 0, {
-		math.floor(188 * wheel_scale) / 2,
-		math.floor(188 * wheel_scale) / 2
-	}, "wheel_ring_1", nil, nil, wheel_color),
-	hdr_wheel_ring_1_2 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_effect_2", 0, {
-		math.floor(461 * wheel_scale) / 2,
-		math.floor(461 * wheel_scale) / 2
-	}, "wheel_ring_2", nil, nil, wheel_color),
-	hdr_wheel_ring_1_3 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_effect_3", 0, {
-		math.floor(1074 * wheel_scale) / 2,
-		math.floor(1074 * wheel_scale) / 2
-	}, "wheel_ring_3", nil, nil, wheel_color),
-	hdr_wheel_ring_2_1 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_effect_1", 0, {
-		math.floor(188 * wheel_scale) / 2,
-		math.floor(188 * wheel_scale) / 2
-	}, "wheel_ring_1", nil, nil, wheel_color),
-	hdr_wheel_ring_2_2 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_effect_2", 0, {
-		math.floor(461 * wheel_scale) / 2,
-		math.floor(461 * wheel_scale) / 2
-	}, "wheel_ring_2", nil, nil, wheel_color),
-	hdr_wheel_ring_2_3 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_effect_3", 0, {
-		math.floor(1074 * wheel_scale) / 2,
-		math.floor(1074 * wheel_scale) / 2
-	}, "wheel_ring_3", nil, nil, wheel_color),
 	wind_icon = UIWidgets.create_simple_texture("weave_menu_wind_icon", "wind_icon")
 }
-local bottom_widgets = {
-	background_write_mask = UIWidgets.create_simple_texture("athanor_background_write_mask", "window"),
-	background_wheel_1 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_background", 0, {
-		math.floor(1022 * wheel_scale) / 2,
-		math.floor(1022 * wheel_scale) / 2
-	}, "background_wheel", nil, nil, wheel_color),
-	wheel_ring_1_1 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_1", 0, {
-		math.floor(188 * wheel_scale) / 2,
-		math.floor(188 * wheel_scale) / 2
-	}, "wheel_ring_1", nil, nil, wheel_color),
-	wheel_ring_1_2 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_2", 0, {
-		math.floor(461 * wheel_scale) / 2,
-		math.floor(461 * wheel_scale) / 2
-	}, "wheel_ring_2", nil, nil, wheel_color),
-	wheel_ring_1_3 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_3", 0, {
-		math.floor(1074 * wheel_scale) / 2,
-		math.floor(1074 * wheel_scale) / 2
-	}, "wheel_ring_3", nil, nil, wheel_color),
-	wheel_ring_2_1 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_1", 0, {
-		math.floor(188 * wheel_scale) / 2,
-		math.floor(188 * wheel_scale) / 2
-	}, "wheel_ring_1", nil, nil, wheel_color),
-	wheel_ring_2_2 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_2", 0, {
-		math.floor(461 * wheel_scale) / 2,
-		math.floor(461 * wheel_scale) / 2
-	}, "wheel_ring_2", nil, nil, wheel_color),
-	wheel_ring_2_3 = UIWidgets.create_simple_rotated_texture("athanor_skilltree_ring_3", 0, {
-		math.floor(1074 * wheel_scale) / 2,
-		math.floor(1074 * wheel_scale) / 2
-	}, "wheel_ring_3", nil, nil, wheel_color),
-	window_background = UIWidgets.create_simple_rect("window", background_color),
-	bottom_glow_smoke_1 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_smoke_1", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_glow", nil, nil, bottom_glow_back_smoke_color),
-	bottom_glow_smoke_2 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_smoke_2", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_glow_short", nil, nil, bottom_glow_front_smoke_color),
-	bottom_glow_smoke_3 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_embers_2", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_glow_shortest", nil, nil, bottom_glow_front_2_smoke_color),
-	bottom_glow_embers_1 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_embers_1", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_glow", nil, nil, bottom_glow_back_ember_color, 1),
-	bottom_glow_embers_3 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_embers_3", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_glow_short", nil, nil, bottom_glow_back_ember_color, 1),
-	top_glow_smoke_1 = UIWidgets.create_simple_uv_texture("forge_overview_top_glow_effect_smoke_1", {
-		{
-			0,
-			0
-		},
-		{
-			1,
-			1
-		}
-	}, "top_glow", nil, nil, top_glow_back_smoke_color, 0)
-}
+local bottom_widgets = {}
+local disable_with_gamepad = true
 local top_widgets = {
-	player_1 = create_player_widget("player_1", scenegraph_definition.player_1.size),
-	player_2 = create_player_widget("player_2", scenegraph_definition.player_2.size),
-	player_3 = create_player_widget("player_3", scenegraph_definition.player_3.size),
-	player_4 = create_player_widget("player_4", scenegraph_definition.player_4.size),
-	top_panel = UIWidgets.create_tiled_texture("top_panel", "athanor_panel_back", {
-		64,
-		84
-	}),
-	party_search_button = create_tooltip_button("party_search_button", scenegraph_definition.party_search_button.size, nil, nil, "Find Weave Party", 22, nil, "button_detail_02", nil, nil, {
-		title = Localize("weave_find_party_tooltip_title"),
-		description = Localize("weave_find_party_tooltip_description")
-	}, {
-		title = Localize("weave_find_party_disabled_tooltip_title"),
-		description = Localize("weave_find_party_disabled_tooltip_description")
-	}),
-	play_button = create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34, nil, {
+	play_button = create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34, disable_with_gamepad, {
 		title = Localize("start_game_weave_disabled_tooltip_title"),
 		description = Localize("start_game_weave_disabled_tooltip_description")
 	}),
+	play_button_console = create_start_game_console_play_button("play_button_console", Localize("start_game_window_play")),
 	title = UIWidgets.create_simple_text("n/a", "title", nil, nil, title_text_style),
 	mutator_icon = UIWidgets.create_simple_texture("icons_placeholder", "mutator_icon"),
 	mutator_title_text = UIWidgets.create_simple_text("n/a", "mutator_title_text", nil, nil, mutator_title_text_style),
@@ -2388,54 +2161,19 @@ local top_widgets = {
 	wind_title = UIWidgets.create_simple_text("n/a", "wind_title", nil, nil, wind_title_text_style),
 	level_title = UIWidgets.create_simple_text("n/a", "level_title", nil, nil, level_title_text_style),
 	objective_title_text = UIWidgets.create_simple_text(Localize("weave_objective_title"), "objective_title_text", nil, nil, objective_title_text_style),
-	objective_description_text = UIWidgets.create_simple_text(Localize("menu_weave_play_objective_sub_title"), "objective_description_text", nil, nil, objective_description_text_style),
-	private_checkbox = create_checkbox_button("private_checkbox", scenegraph_definition.private_checkbox.size, Localize("start_game_window_disallow_join"), 24, {
-		title = Localize("start_game_window_disallow_join"),
-		description = Localize("start_game_window_disallow_join_description")
-	}),
-	top_corner_left = UIWidgets.create_simple_texture("athanor_decoration_corner", "top_corner_left"),
-	top_corner_right = UIWidgets.create_simple_uv_texture("athanor_decoration_corner", {
-		{
-			1,
-			0
-		},
-		{
-			0,
-			1
-		}
-	}, "top_corner_right"),
-	bottom_corner_left = UIWidgets.create_simple_uv_texture("athanor_decoration_corner", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_corner_left"),
-	bottom_corner_right = UIWidgets.create_simple_uv_texture("athanor_decoration_corner", {
-		{
-			1,
-			1
-		},
-		{
-			0,
-			0
-		}
-	}, "bottom_corner_right")
+	objective_description_text = UIWidgets.create_simple_text(Localize("menu_weave_play_objective_sub_title"), "objective_description_text", nil, nil, objective_description_text_style)
 }
 local animation_definitions = {
 	on_enter = {
 		{
 			name = "fade_in",
 			start_progress = 0,
-			end_progress = 0.3,
+			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
+				local anim_progress = math.easeInCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)

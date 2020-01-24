@@ -150,8 +150,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 		end
 
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local current_position = first_person_extension:current_position()
-		local current_rotation = first_person_extension:current_rotation()
+		local current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
 		local direction = Quaternion.forward(current_rotation)
 		local physics_world = World.get_data(self.world, "physics_world")
 		local range = current_action.range or 30
@@ -198,74 +197,77 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 			end
 
 			if hit_unit then
-				if hit_unit ~= self.current_target then
-					self.ramping_interval = 0.4
-					self.damage_timer = 0
-					self._num_hits = 0
-				end
-
 				local health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
 
-				if self.damage_timer >= current_action.damage_interval * self.ramping_interval then
-					Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], 5)
-
-					self.damage_timer = 0
-
-					if health_extension then
-						self.ramping_interval = math.clamp(self.ramping_interval * 1.4, 0.45, 1.5)
+				if health_extension then
+					if hit_unit ~= self.current_target then
+						self.ramping_interval = 0.4
+						self.damage_timer = 0
+						self._num_hits = 0
 					end
-				end
 
-				if self.damage_timer == 0 then
-					local is_critical_strike = self._is_critical_strike
-					local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
+					if self.damage_timer >= current_action.damage_interval * self.ramping_interval then
+						Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], 5)
 
-					self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, nil, nil)
+						self.damage_timer = 0
 
-					if health_extension then
-						local override_damage_profile = nil
-						local power_level = self.power_level
-						power_level = power_level * self.ramping_interval
+						if health_extension then
+							self.ramping_interval = math.clamp(self.ramping_interval * 1.4, 0.45, 1.5)
+						end
+					end
 
-						if hit_unit ~= self.current_target then
-							self.consecutive_hits = 0
-							power_level = power_level * 0.5
-							override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
-						else
-							self.consecutive_hits = self.consecutive_hits + 1
+					if self.damage_timer == 0 then
+						local is_critical_strike = self._is_critical_strike
+						local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-							if self.consecutive_hits < 3 then
+						self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, nil, nil)
+
+						if health_extension then
+							local override_damage_profile = nil
+							local power_level = self.power_level
+							power_level = power_level * self.ramping_interval
+
+							if hit_unit ~= self.current_target then
+								self.consecutive_hits = 0
+								power_level = power_level * 0.5
 								override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
-							end
-						end
+							else
+								self.consecutive_hits = self.consecutive_hits + 1
 
-						first_person_extension:play_hud_sound_event("staff_beam_hit_enemy", nil, false)
-
-						local check_buffs = self._num_hits > 1
-
-						DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, check_buffs, nil, nil, self._is_critical_strike, power_level, override_damage_profile)
-
-						self._num_hits = self._num_hits + 1
-
-						if not Managers.player:owner(self.owner_unit).bot_player then
-							Managers.state.controller_features:add_effect("rumble", {
-								rumble_effect = "hit_character_light"
-							})
-						end
-
-						if health_extension:is_alive() then
-							local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
-
-							if is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
-								overcharge_amount = 0
+								if self.consecutive_hits < 3 then
+									override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
+								end
 							end
 
-							self.overcharge_extension:add_charge(overcharge_amount * self.ramping_interval)
+							first_person_extension:play_hud_sound_event("staff_beam_hit_enemy", nil, false)
+
+							local check_buffs = self._num_hits > 1
+
+							DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, check_buffs, nil, nil, self._is_critical_strike, power_level, override_damage_profile)
+
+							self._num_hits = self._num_hits + 1
+
+							if not Managers.player:owner(self.owner_unit).bot_player then
+								Managers.state.controller_features:add_effect("rumble", {
+									rumble_effect = "hit_character_light"
+								})
+							end
+
+							if health_extension:is_alive() then
+								local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
+
+								if is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
+									overcharge_amount = 0
+								end
+
+								self.overcharge_extension:add_charge(overcharge_amount * self.ramping_interval)
+							end
 						end
 					end
-				end
 
-				self.damage_timer = self.damage_timer + dt
+					self.damage_timer = self.damage_timer + dt
+					self.current_target = hit_unit
+				end
 			end
 		end
 
@@ -280,8 +282,6 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 			World.set_particles_variable(world, self.beam_effect_id, self.beam_effect_length_id, Vector3(0.3, distance, 0))
 			World.move_particles(world, self.beam_end_effect_id, beam_end_position, rotation)
 		end
-
-		self.current_target = hit_unit
 	end
 end
 

@@ -942,7 +942,10 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 				pass_type = "text",
 				text_id = amount_text_name,
 				style_id = amount_text_name,
-				content_id = hotspot_name
+				content_id = hotspot_name,
+				content_check_function = function (content)
+					return not content.hide_slot
+				end
 			}
 			style[amount_text_name] = {
 				vertical_alignment = "bottom",

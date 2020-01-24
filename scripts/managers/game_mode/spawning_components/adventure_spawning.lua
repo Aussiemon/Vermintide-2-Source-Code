@@ -173,6 +173,12 @@ end
 
 AdventureSpawning.update = function (self, t, dt)
 	if Managers.state.network:game() then
+		self._respawn_handler:update(dt, t)
+	end
+end
+
+AdventureSpawning.server_update = function (self, t, dt)
+	if Managers.state.network:game() then
 		local party = self._side.party
 		local occupied_slots = party.occupied_slots
 
@@ -181,7 +187,7 @@ AdventureSpawning.update = function (self, t, dt)
 		local allow_respawns = Managers.state.difficulty:get_difficulty_settings().allow_respawns
 
 		if self._respawns_enabled and allow_respawns then
-			self._respawn_handler:update(dt, t, occupied_slots)
+			self._respawn_handler:server_update(dt, t, occupied_slots)
 		end
 
 		self:_update_spawning(dt, t, occupied_slots)
@@ -336,7 +342,11 @@ AdventureSpawning._spawn_bot = function (self, status)
 	local bot_player = Managers.player:player(peer_id, local_player_id)
 
 	fassert(bot_player.bot_player, "Trying to spawn a player as a bot, status info isn't correct")
-	bot_player:spawn(position, rotation, is_initial_spawn, ammo.slot_melee, ammo.slot_ranged, consumables.slot_healthkit, consumables.slot_potion, consumables.slot_grenade)
+
+	local ability_cooldown_perentage = data.ability_cooldown_percentage or 1
+	local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
+
+	bot_player:spawn(position, rotation, is_initial_spawn, ammo.slot_melee, ammo.slot_ranged, consumables.slot_healthkit, consumables.slot_potion, consumables.slot_grenade, ability_cooldown_percent_int)
 
 	data.spawn_state = "spawned"
 end

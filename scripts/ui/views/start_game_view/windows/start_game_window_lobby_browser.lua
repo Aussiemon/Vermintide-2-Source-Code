@@ -402,7 +402,7 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 	local weave_template = WeaveSettings.templates[lobby_data.weave_name]
 	local weave_identifier = Localize("lb_unknown")
 
-	if lobby_data.weave_name then
+	if lobby_data.weave_name ~= "false" then
 		local weave_name_data = string.split(lobby_data.weave_name, "_")
 		weave_identifier = "Weave " .. weave_name_data[2]
 
@@ -907,6 +907,7 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 		local game_mode_names = table.clone(NetworkLookup.game_modes, true)
 		local game_mode = game_mode_names[game_mode_index]
 		local game_mode_settings = GameModeSettings[game_mode]
+		local quick_game = lobby_data.quick_game == "true"
 
 		if game_mode_settings and game_mode_settings.required_dlc then
 			required_dlcs[game_mode_settings.required_dlc] = true
@@ -923,11 +924,13 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 		end
 
 		if game_mode == "weave" then
-			local ignore_dlc_check = false
-			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
+			if weave_name ~= "false" and not quick_game then
+				local ignore_dlc_check = false
+				local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
 
-			if not weave_unlocked then
-				return false
+				if not weave_unlocked then
+					return false
+				end
 			end
 		else
 			local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)

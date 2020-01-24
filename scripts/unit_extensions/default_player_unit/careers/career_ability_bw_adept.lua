@@ -273,15 +273,9 @@ CareerAbilityBWAdept._run_ability = function (self)
 				event_function = function (this)
 					local unit_3p = this.unit
 					local career_ext = ScriptUnit.extension(unit_3p, "career_system")
-					local talent_ext = ScriptUnit.extension(unit_3p, "talent_system")
 					local position = POSITION_LOOKUP[unit_3p] or Unit.world_position(unit_3p, 0)
 					local rotation = Unit.local_rotation(unit_3p, 0)
 					local explosion_template = "sienna_adept_activated_ability_step_stagger"
-
-					if talent_ext:has_talent("sienna_adept_activated_ability_explosion") then
-						explosion_template = "sienna_adept_activated_ability_end_stagger_improved"
-					end
-
 					local scale = 1
 					local career_power_level = career_ext:get_career_power_level()
 					local area_damage_system = Managers.state.entity:system("area_damage_system")

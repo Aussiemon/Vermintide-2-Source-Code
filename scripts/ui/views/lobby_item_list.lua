@@ -465,13 +465,15 @@ local function lobby_level_display_name(lobby_data)
 	local game_mode_name = game_mode_index and game_mode_names[game_mode_index]
 
 	if game_mode_name == "weave" then
-		if lobby_data.weave_name then
+		if lobby_data.weave_name ~= "false" and lobby_data.quick_game == "false" then
 			local weave_name_data = string.split(lobby_data.weave_name, "_")
 			local weave_name = "Weave " .. weave_name_data[2]
 
 			return weave_name
+		elseif lobby_data.quick_game == "true" then
+			return Localize("start_game_window_weave_quickplay_title")
 		else
-			return "Unknown"
+			return Localize("lb_unknown")
 		end
 	else
 		local level_setting = level and LevelSettings[level]
@@ -537,12 +539,18 @@ function level_is_locked(lobby_data)
 	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
 	local game_mode = game_mode_names[game_mode_index]
 	local game_mode_settings = game_mode and GameModeSettings[game_mode]
+	local quick_game = lobby_data.quick_game == "true"
+	local private_game = lobby_data.is_private == "true"
+
+	if private_game then
+		return true
+	end
 
 	if game_mode_settings and game_mode_settings.extra_requirements_function and not game_mode_settings.extra_requirements_function() then
 		return true
 	end
 
-	if game_mode == "weave" then
+	if game_mode == "weave" and not quick_game then
 		local ignore_dlc_check = false
 		local weave_name = lobby_data.weave_name
 		local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check)

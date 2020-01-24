@@ -2337,7 +2337,7 @@ InteractionDefinitions.achievement_access.client.stop = function (world, interac
 end
 
 InteractionDefinitions.achievement_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	local has_access = not script_data.settings.use_beta_overlay
+	local has_access = not script_data.settings.use_beta_mode
 
 	return has_access
 end

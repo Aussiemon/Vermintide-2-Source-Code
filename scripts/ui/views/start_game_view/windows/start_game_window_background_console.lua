@@ -6,11 +6,14 @@ local animation_definitions = definitions.animation_definitions
 local camera_position_by_character = definitions.camera_position_by_character
 local loading_overlay_widget_definitions = definitions.loading_overlay_widgets
 local object_sets_per_layout = {
-	weave = {
-		weekly = true
+	weave_quickplay = {
+		quick_play = true
+	},
+	weave_ranked = {
+		custom_game = true
 	},
 	weave_find_group = {
-		quick_play = true
+		weekly = true
 	},
 	event = {
 		weekly = true

@@ -4,6 +4,18 @@ require("scripts/settings/difficulty_settings")
 require("scripts/managers/conflict_director/conflict_utils")
 require("scripts/settings/terror_event_blueprints")
 
+local total_required_essence = 100
+local max_objective_essence = 80
+local min_essence_from_enemies = 5
+local required_enemy_clear_rate = 0.8
+local include_terror_event_from_objectives = {
+	kill = true,
+	interactions = true,
+	targets = true,
+	sockets = true,
+	capture_points = false,
+	doom_wheels = true
+}
 WeaveSettings = WeaveSettings or {}
 WeaveSettings.damage_taken_score_weighting = 1
 WeaveSettings.time_score_weighting = 1
@@ -17,6 +29,11 @@ WeaveSettings.rating_values = {
 	6000,
 	3000,
 	0
+}
+WeaveSettings.roaming_multiplier = {
+	xb1 = 0.3,
+	win32 = 0.1,
+	ps4 = 0.3
 }
 WeaveSettings.enemies_score_multipliers = {
 	default = 1,
@@ -389,11 +406,22 @@ local weaves_to_add = {
 	"weave_39",
 	"weave_40"
 }
+WeaveSettings.weave_wind_ranges = {}
 
 for i = 1, #weaves_to_add, 1 do
 	local name = weaves_to_add[i]
 	local path = string.format("scripts/settings/weaves/%s", name)
 	local template = local_require(path)
+	local wind_name = template.wind
+
+	if not WeaveSettings.weave_wind_ranges[wind_name] then
+		WeaveSettings.weave_wind_ranges[wind_name] = {
+			i
+		}
+	else
+		table.insert(WeaveSettings.weave_wind_ranges[wind_name], i)
+	end
+
 	templates[#templates + 1] = template
 end
 
@@ -473,7 +501,7 @@ WeaveSettings.difficulty_increases = {
 		scaling_settings = {
 			diminishing_damage = {
 				0.6,
-				1
+				0.8
 			}
 		}
 	},
@@ -482,11 +510,7 @@ WeaveSettings.difficulty_increases = {
 		difficulty_key = "cataclysm_3",
 		scaling_settings = {
 			diminishing_damage = {
-				1,
-				1
-			},
-			enemy_damage = {
-				0,
+				0.8,
 				1
 			}
 		}
@@ -500,8 +524,8 @@ WeaveSettings.difficulty_increases = {
 				1
 			},
 			enemy_damage = {
-				1,
-				4
+				0,
+				0.25
 			}
 		}
 	},
@@ -514,7 +538,49 @@ WeaveSettings.difficulty_increases = {
 				1
 			},
 			enemy_damage = {
-				4,
+				0.25,
+				0.75
+			}
+		}
+	},
+	{
+		breakpoint = 130,
+		difficulty_key = "cataclysm_3",
+		scaling_settings = {
+			diminishing_damage = {
+				1,
+				1
+			},
+			enemy_damage = {
+				0.75,
+				2
+			}
+		}
+	},
+	{
+		breakpoint = 140,
+		difficulty_key = "cataclysm_3",
+		scaling_settings = {
+			diminishing_damage = {
+				1,
+				1
+			},
+			enemy_damage = {
+				2,
+				5
+			}
+		}
+	},
+	{
+		breakpoint = 150,
+		difficulty_key = "cataclysm_3",
+		scaling_settings = {
+			diminishing_damage = {
+				1,
+				1
+			},
+			enemy_damage = {
+				5,
 				9
 			}
 		}
@@ -646,6 +712,8 @@ for weave_name, weave_template in ipairs(WeaveSettings.templates_ordered) do
 	sort_objective_indices(weave_template)
 end
 
+local TO_SPAWN = {}
+
 local function calc_spawn_enemy(difficulty_rank, event)
 	local enemy_count = 0
 	local difficulty_required = event.difficulty_requirement
@@ -656,70 +724,255 @@ local function calc_spawn_enemy(difficulty_rank, event)
 
 	local breed_name = event.breed_name
 
-	if type(breed_name) == "table" then
+	if not breed_name then
+		table.dump(event, "TEST", 2)
+		assert(false)
+	elseif type(breed_name) == "table" then
 		enemy_count = #breed_name
+
+		for _, breed_name in pairs(breed_name) do
+			TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + 1
+		end
 	else
+		TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + 1
 		enemy_count = 1
 	end
 
 	return enemy_count
 end
 
-local function calculate_enemy_count(main_path_spawning, difficulty_key, weave_name)
-	local difficulty_rank = DifficultySettings[difficulty_key].rank
+local function calc_spawn_weave_special(event, difficulty_rank, seed)
+	local enemy_count = 0
+	local difficulty_required = event.difficulty_requirement
+
+	if not difficulty_required or difficulty_required <= difficulty_rank then
+		local check_name = event.breed_name
+		local num_to_spawn = event.amount or 1
+
+		for i = 1, num_to_spawn, 1 do
+			local breed_name, index = nil
+
+			if type(check_name) == "table" then
+				seed, index = Math.next_random(seed, 1, #check_name)
+				breed_name = check_name[index]
+				TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + 1
+			else
+				breed_name = check_name
+				TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + 1
+			end
+
+			enemy_count = enemy_count + 1
+		end
+	end
+
+	return enemy_count, seed
+end
+
+local function calc_spawn_weave_special_event(element, difficulty_key, seed)
+	local breed_name = nil
+	local check_name = element.breed_name
+	local num_to_spawn = element.amount or 1
+	local num_to_spawn_scaled = element.difficulty_amount
 	local enemy_count = 0
 
-	for _, event_data in ipairs(main_path_spawning) do
-		local terror_event_name = event_data.terror_event_name
-		local terror_event_blueprints = TerrorEventBlueprints.weaves
-		local terror_event = terror_event_blueprints[terror_event_name]
+	if num_to_spawn_scaled then
+		local chosen_amount = num_to_spawn_scaled[difficulty_key]
+		chosen_amount = chosen_amount or num_to_spawn_scaled.hardest
 
-		for i = 1, #terror_event, 1 do
-			local sub_event = terror_event[i]
-			local sub_event_name = sub_event[1]
+		if type(chosen_amount) == "table" then
+			local index = nil
+			seed, index = Math.next_random(seed, 1, #chosen_amount)
+			num_to_spawn = chosen_amount[index]
+		else
+			num_to_spawn = chosen_amount
+		end
+	elseif type(num_to_spawn) == "table" then
+		local index = nil
+		seed, index = Math.next_random(seed, 1, #num_to_spawn)
+		num_to_spawn = num_to_spawn[index]
+	end
 
-			if sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" or sub_event_name == "spawn_special" then
-				enemy_count = enemy_count + calc_spawn_enemy(difficulty_rank, event_data)
-			elseif sub_event_name == "event_horde" then
-				local event_composition_type = sub_event.composition_type
-				local difficulty_index = difficulty_rank - 1
-				local event_composition = HordeCompositions[event_composition_type][difficulty_index]
+	if type(check_name) == "table" then
+		local index = nil
+		seed, index = Math.next_random(seed, 1, #check_name)
+		breed_name = check_name[index]
+	else
+		breed_name = check_name
+	end
 
-				fassert(event_composition ~= nil, string.format("[WeaveSettings] No horde composition found for '%s' on difficulty '%s'", event_composition_type, difficulty_key))
+	enemy_count = num_to_spawn
+	TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + num_to_spawn
 
-				for j = 1, #event_composition, 1 do
-					local composition = event_composition[j]
-					local breeds = composition.breeds
+	return enemy_count, seed
+end
 
-					for k = 1, #breeds, 2 do
-						local breed_count = breeds[k + 1]
+local function calculate_enemy_count_from_terror_event(terror_event_name, difficulty_key, enemy_count, seed)
+	local difficulty_rank = DifficultySettings[difficulty_key].rank
+	local terror_event_blueprints = TerrorEventBlueprints.weaves
+	local terror_event = terror_event_blueprints[terror_event_name]
 
-						if type(breed_count) == "table" then
-							breed_count = breed_count[2]
-						end
+	for i = 1, #terror_event, 1 do
+		local sub_event = terror_event[i]
+		local sub_event_name = sub_event[1]
 
-						enemy_count = enemy_count + breed_count
+		if sub_event_name == "spawn_weave_special" then
+			local count = 0
+			count, seed = calc_spawn_weave_special(sub_event, difficulty_rank, seed)
+			enemy_count = enemy_count + count
+		elseif sub_event_name == "spawn_weave_special_event" then
+			local count = 0
+			count, seed = calc_spawn_weave_special_event(sub_event, difficulty_key, seed)
+			enemy_count = enemy_count + count
+		elseif sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" then
+			enemy_count = enemy_count + calc_spawn_enemy(difficulty_rank, sub_event)
+		elseif sub_event_name == "event_horde" or sub_event_name == "ambush_horde" then
+			local event_composition_type = sub_event.composition_type
+			local difficulty_index = difficulty_rank - 1
+			local event_composition = HordeCompositions[event_composition_type][difficulty_index]
+
+			fassert(event_composition ~= nil, string.format("[WeaveSettings] No horde composition found for '%s' on difficulty '%s'", event_composition_type, difficulty_key))
+
+			for j = 1, #event_composition, 1 do
+				local composition = event_composition[j]
+				local breeds = composition.breeds
+
+				for k = 1, #breeds, 2 do
+					local breed_name = breeds[k]
+					local breed_count = breeds[k + 1]
+
+					if type(breed_count) == "table" then
+						breed_count = breed_count[1]
 					end
+
+					enemy_count = enemy_count + breed_count
+					TO_SPAWN[breed_name] = (TO_SPAWN[breed_name] or 0) + breed_count
 				end
 			end
 		end
 	end
 
-	return enemy_count
+	return enemy_count, seed
 end
+
+local function calculate_enemy_count(main_path_spawning, difficulty_key, weave_name, enemy_count, seed)
+	for _, event_data in ipairs(main_path_spawning) do
+		local terror_event_name = event_data.terror_event_name
+		enemy_count, _ = calculate_enemy_count_from_terror_event(terror_event_name, difficulty_key, enemy_count, seed)
+	end
+
+	return enemy_count, seed
+end
+
+local function calculate_enemy_count_from_terror_events(terror_events, difficulty_key, weave_name, enemy_count, seed)
+	for _, terror_event_name in ipairs(terror_events) do
+		enemy_count, _ = calculate_enemy_count_from_terror_event(terror_event_name, difficulty_key, enemy_count, seed)
+	end
+
+	return enemy_count, seed
+end
+
+local function update_objective_template_data(objective, score_multipliers, score_per_objective)
+	local objective_settings = objective.objective_settings
+	local objective_lists = objective_settings and objective_settings.objective_lists
+
+	for _, objective_list in pairs(objective_lists) do
+		for objective_name, objective_data in pairs(objective_list) do
+			if objective_name == "kill_enemies" then
+				objective_data.score_multiplier = score_multipliers
+			end
+
+			if objective_data.is_scored then
+				objective_data.score = score_per_objective
+			end
+		end
+	end
+end
+
+local function get_scored_objective_count(objective)
+	local objective_settings = objective.objective_settings
+	local objective_lists = objective_settings and objective_settings.objective_lists
+	local num_scored_objectives = 0
+
+	for _, objective_list in pairs(objective_lists) do
+		for objective_name, objective_data in pairs(objective_list) do
+			if objective_data.is_scored then
+				num_scored_objectives = num_scored_objectives + 1
+			end
+		end
+	end
+
+	return num_scored_objectives
+end
+
+local function calculate_score_multipliers(objective, weave_name)
+	local objective_settings = objective.objective_settings
+	local objective_lists = objective_settings and objective_settings.objective_lists
+
+	if not objective_lists then
+		return
+	end
+
+	local num_scored_objectives = get_scored_objective_count(objective)
+	local bar_from_objectives = (num_scored_objectives == 0 and 0) or max_objective_essence
+	local bar_from_enemies = math.max(total_required_essence - bar_from_objectives, min_essence_from_enemies)
+	local score_per_objective = bar_from_objectives / num_scored_objectives
+	local enemies_to_spawn = objective.to_spawn
+	local total_enemies_score = {}
+
+	for difficulty_key, _ in pairs(DifficultySettings) do
+		for breed_name, count in pairs(enemies_to_spawn[difficulty_key]) do
+			local breed_score = WeaveSettings.enemies_score_multipliers[breed_name] or WeaveSettings.enemies_score_multipliers.default
+			total_enemies_score[difficulty_key] = (total_enemies_score[difficulty_key] or 0) + breed_score * count
+		end
+	end
+
+	local kill_score_multipliers = {}
+
+	for difficulty_key, enemy_score in pairs(total_enemies_score) do
+		kill_score_multipliers[difficulty_key] = bar_from_enemies / (enemy_score * required_enemy_clear_rate)
+	end
+
+	update_objective_template_data(objective, kill_score_multipliers, score_per_objective)
+end
+
+local SCRATCH = {}
+local time = os.clock()
 
 for weave_name, weave_template in pairs(WeaveSettings.templates) do
 	local objectives = weave_template.objectives
 
 	for idx, objective in ipairs(objectives) do
+		table.clear(SCRATCH)
+
+		local objective_type = objective.objective_type
+		local spawning_settings = objective.spawning_settings
+		local main_path_spawning = spawning_settings and spawning_settings.main_path_spawning
+		local objective_terror_events = objective.terror_events or SCRATCH
+
+		fassert(main_path_spawning, "[WeaveSettings] No main path spawning in %q on objective: %q", weave_name, idx)
+
+		local enemy_count = {}
+		local to_spawn = {}
+
+		for difficulty_key, difficulty_data in pairs(DifficultySettings) do
+			table.clear(TO_SPAWN)
+
+			local spawning_seed = objective.spawning_seed
+			local cnt = 0
+			cnt, _ = calculate_enemy_count(main_path_spawning, difficulty_key, weave_name, cnt, spawning_seed)
+
+			if objective_type and include_terror_event_from_objectives[objective_type] then
+				cnt, _ = calculate_enemy_count_from_terror_events(objective_terror_events, difficulty_key, weave_name, cnt, spawning_seed)
+			end
+
+			enemy_count[difficulty_key] = cnt
+			to_spawn[difficulty_key] = table.clone(TO_SPAWN)
+		end
+
+		objective.to_spawn = to_spawn
+		objective.enemy_count = enemy_count
+
 		if objective.conflict_settings == "weave_disabled" then
-			local spawning_settings = objective.spawning_settings
-			local main_path_spawning = spawning_settings and spawning_settings.main_path_spawning
-
-			fassert(main_path_spawning, "[WeaveSettings] No main path spawning in %q on objective: %q", weave_name, idx)
-
-			local enemy_count = calculate_enemy_count(main_path_spawning, weave_template.difficulty_key, weave_name)
-			objective.enemy_count = enemy_count
 			objective.track_kills = true
 			objective.bar_cutoff = 100
 			objective.bar_multiplier = 0.25
@@ -727,7 +980,11 @@ for weave_name, weave_template in pairs(WeaveSettings.templates) do
 			objective.bar_cutoff = 75
 			objective.bar_multiplier = 0.75
 		end
+
+		calculate_score_multipliers(objective, weave_name)
 	end
 end
+
+print("TIME: " .. os.clock() - time)
 
 return

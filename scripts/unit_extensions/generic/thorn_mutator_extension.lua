@@ -53,7 +53,7 @@ ThornMutatorExtension.update = function (self, unit, input, dt, context, t)
 		local life_time = self._life_time - self.despawn_time
 		local life_timer = self._life_timer
 
-		if life_timer < 1 then
+		if not self._despawning then
 			life_timer = math.clamp(life_timer + dt / life_time, 0, 1)
 
 			if life_timer == 1 and self._is_server then
@@ -67,6 +67,21 @@ ThornMutatorExtension.update = function (self, unit, input, dt, context, t)
 			end
 
 			self._life_timer = life_timer
+		end
+	end
+
+	if self._is_server then
+		local num_hits = self._area_damage_extension.num_hits
+
+		if num_hits > 0 and not self._despawning then
+			local network_manager = Managers.state.network
+			local unit_id = network_manager:unit_game_object_id(self._unit)
+
+			network_manager.network_transmit:send_rpc_clients("rpc_thorn_bush_trigger_despawn", unit_id)
+			WwiseUtils.trigger_unit_event(context.world, "Play_winds_life_gameplay_thorn_hit_player", unit, 0)
+			self:despawn()
+
+			self._despawn_done_time = t + DESPAWN_ANIM_TIME
 		end
 	end
 

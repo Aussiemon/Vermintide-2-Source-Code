@@ -1,38 +1,32 @@
 return {
 	wind_strength = 3,
-	wind = "light",
+	wind = "shadow",
 	seed = 548672,
-	terror_events = {
-		"objective_specials_raid",
-		"objective_event_beastmen",
-		"weave_spot_event_chaos_warriors",
-		"weave_spot_event_skaven_specials_small",
-		"capture_point_1_event_small"
-	},
 	objectives = {
 		{
 			display_name = "objective_sockets_name",
-			level_id = "dlc_scorpion_pit_light",
+			level_id = "dlc_scorpion_pit_shadow",
 			objective_type = "sockets",
 			conflict_settings = "weave_skaven_beastmen",
-			level_seed = 734621,
 			end_zone_name = "end_zone_01",
-			show_bar = true,
+			level_seed = 734621,
 			base_level_id = "dlc_scorpion_pit",
 			objective_start_flow_event = "weave_objective_sockets_start",
+			show_bar = true,
 			spawning_seed = 8973420,
+			terror_events = {
+				"objective_specials_raid",
+				"objective_event_beastmen",
+				"weave_spot_event_chaos_warriors",
+				"weave_spot_event_skaven_specials_small",
+				"capture_point_1_event_small"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								cataclysm = 0.19,
-								cataclysm_3 = 0.14,
-								hard = 0.27
-							}
-						},
+						kill_enemies = {},
 						weave_explosive_barrel_socket_001 = {
-							score = 20,
+							is_scored = true,
 							on_start_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -40,30 +34,18 @@ return {
 							end
 						},
 						weave_limited_item_track_spawner_004 = {
-							score = 0,
 							template_name = "gargoyle_head_spawner",
 							on_first_pickup_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
 								Managers.weave:start_terror_event("weave_spot_event_chaos_warriors", spawner_id)
-							end,
-							on_destroy_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("weave_spot_event_chaos_warriors", spawner_id)
 							end
 						}
 					},
 					{
-						kill_enemies = {
-							score_multiplier = {
-								cataclysm = 0.19,
-								cataclysm_3 = 0.14,
-								hard = 0.27
-							}
-						},
+						kill_enemies = {},
 						weave_explosive_barrel_socket_002 = {
-							score = 20,
+							is_scored = true,
 							on_start_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -71,44 +53,26 @@ return {
 							end
 						},
 						weave_limited_item_track_spawner_007 = {
-							score = 0,
 							template_name = "gargoyle_head_spawner",
 							on_first_pickup_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
 								Managers.weave:start_terror_event("weave_spot_event_skaven_specials_small", spawner_id)
-							end,
-							on_destroy_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("weave_spot_event_skaven_specials_small", spawner_id)
 							end
 						}
 					},
 					{
-						kill_enemies = {
-							score_multiplier = {
-								cataclysm = 0.23,
-								cataclysm_3 = 0.2,
-								hard = 0.3
-							}
-						},
+						kill_enemies = {},
 						weave_limited_item_track_spawner_006 = {
-							score = 0,
 							template_name = "gargoyle_head_spawner",
 							on_first_pickup_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
 								Managers.weave:start_terror_event("capture_point_1_event_small", spawner_id)
-							end,
-							on_destroy_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("capture_point_1_event_small", spawner_id)
 							end
 						},
 						weave_explosive_barrel_socket_003 = {
-							score = 20
+							is_scored = true
 						}
 					}
 				}
@@ -176,42 +140,15 @@ return {
 						percentage_spawn_offset = -20
 					}
 				}
-			},
-			mutator_item_config = {
-				mutator_item_spawner_002 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_010 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_006 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_011 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_016 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				}
 			}
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_light",
+			level_id = "dlc_scorpion_arena_void_shadow",
+			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 903475,
 			level_seed = 54987,
 			conflict_settings = "weave_disabled",
-			objective_start_flow_event = "weave_objective_waves_start",
 			system_seeds = {
 				pickups = 2308954
 			},
@@ -222,18 +159,6 @@ return {
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}
-				}
-			},
-			mutator_item_config = {
-				mutator_item_spawner = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
-				},
-				mutator_item_spawner_002 = {
-					unit_extension_template = "positioned_prop_unit",
-					unit_name = "units/test_unit/light_beacon",
-					extension_init_data = {}
 				}
 			}
 		}

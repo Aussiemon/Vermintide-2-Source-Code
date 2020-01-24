@@ -107,16 +107,18 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 		windows_settings = self._windows_settings,
 		input_service = fake_input_service,
 		layout_settings = self._layout_settings,
-		start_state = params.start_state
+		start_state = params.start_state,
+		use_gamepad_layout = self._gamepad_style_active
 	}
 
 	self:set_confirm_button_visibility(false)
-	self:_initial_windows_setups(window_params)
 
 	if self._gamepad_style_active then
+		self:_setup_gamepad_gui()
 		self:disable_player_world()
 	end
 
+	self:_initial_windows_setups(window_params)
 	self:_calculate_current_weave()
 end
 
@@ -151,8 +153,10 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 	local weave_name = weave_template.name
 	self._next_weave = weave_name
 
-	self:set_selected_weave_id(self._next_weave)
-	self:set_selected_weave_objective_index(1)
+	if not self._selected_weave_id then
+		self:set_selected_weave_id(self._next_weave)
+		self:set_selected_weave_objective_index(1)
+	end
 end
 
 StartGameStateSettingsOverview._setup_menu_layout = function (self)
@@ -229,6 +233,14 @@ StartGameStateSettingsOverview.hdr_renderer = function (self)
 	return self._ui_hdr_renderer
 end
 
+StartGameStateSettingsOverview.ui_renderer = function (self)
+	if self._gamepad_style_active then
+		return self._gui_data.bottom.renderer
+	else
+		return self.ui_renderer
+	end
+end
+
 StartGameStateSettingsOverview._create_video_players = function (self)
 	self:_destroy_video_players()
 
@@ -263,6 +275,53 @@ end
 
 StartGameStateSettingsOverview.get_video_player_by_name = function (self, name)
 	return self._video_players[name]
+end
+
+StartGameStateSettingsOverview._setup_gamepad_gui = function (self)
+	if self._is_in_inn then
+		local gui_data = {}
+		local world_name = "start_weave_gamepad"
+		local renderer, world, viewport_name = self:_setup_gamepad_renderer(world_name, 1, GameSettingsDevelopment.default_environment)
+		gui_data.bottom = {
+			renderer = renderer,
+			world = world,
+			viewport_name = viewport_name
+		}
+		self._gui_data = gui_data
+	end
+end
+
+StartGameStateSettingsOverview._setup_gamepad_renderer = function (self, name, layer, shading_environment)
+	local world_flags = {
+		Application.DISABLE_SOUND,
+		Application.DISABLE_ESRAM
+	}
+	local world_name = name
+	local viewport_name = name
+	local world = Managers.world:create_world(world_name, shading_environment, nil, layer, unpack(world_flags))
+	local viewport_type = "overlay"
+	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, 999)
+	local renderer = self._ingame_ui:create_ui_renderer(world, false, self._is_in_inn)
+
+	return renderer, world, viewport_name
+end
+
+StartGameStateSettingsOverview._destroy_gamepad_gui = function (self)
+	local gui_data = self._gui_data
+
+	if gui_data then
+		for _, data in pairs(gui_data) do
+			local renderer = data.renderer
+			local world = data.world
+			local viewport_name = data.viewport_name
+
+			UIRenderer.destroy(renderer, world)
+			ScriptWorld.destroy_viewport(world, viewport_name)
+			Managers.world:destroy_world(world)
+		end
+
+		self._gui_data = nil
+	end
 end
 
 StartGameStateSettingsOverview.disable_player_world = function (self)
@@ -398,6 +457,7 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 		self:set_strict_matchmaking_option_enabled(table.use_strict_matchmaking)
 		self:set_selected_level_id(table.level_id)
 		self:set_difficulty_option(table.difficulty_key)
+		self:set_selected_weave_id(table.weave_id)
 	else
 		self._layout_save_settings = nil
 	end
@@ -648,6 +708,7 @@ StartGameStateSettingsOverview.on_exit = function (self, params)
 	self:_destroy_video_players()
 
 	if self._gamepad_style_active then
+		self:_destroy_gamepad_gui()
 		self:enable_player_world()
 	end
 
@@ -835,6 +896,16 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 		local deed_backend_id, event_data = nil
 
 		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+	elseif game_mode_type == "weave_quick_play" then
+		local level_key = nil
+		local difficulty = self._selected_difficulty_key
+		local is_private = is_offline
+		local quick_game = true
+		local always_host = is_offline
+		local strict_matchmaking = false
+		local deed_backend_id, event_data = nil
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
 	elseif game_mode_type == "custom" then
 		local network_lobby = self._network_lobby
 		local num_members = #network_lobby:members():get_members()
@@ -956,6 +1027,12 @@ StartGameStateSettingsOverview.draw = function (self, input_service, dt)
 	end
 end
 
+StartGameStateSettingsOverview.draw_menu_input_description = function (self, input_service, dt)
+	local ui_top_renderer = self._ui_top_renderer
+
+	self._menu_input_description:draw(ui_top_renderer, dt)
+end
+
 StartGameStateSettingsOverview._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot or content.hotspot
@@ -998,7 +1075,13 @@ StartGameStateSettingsOverview.set_next_weave = function (self)
 end
 
 StartGameStateSettingsOverview.set_selected_weave_id = function (self, weave_name)
-	self._selected_weave_id = weave_name
+	if self._layout_save_settings then
+		self._layout_save_settings.weave_id = weave_name
+	end
+
+	if weave_name then
+		self._selected_weave_id = weave_name
+	end
 end
 
 StartGameStateSettingsOverview.set_selected_weave_objective_index = function (self, objective_index)
@@ -1045,13 +1128,17 @@ end
 
 StartGameStateSettingsOverview.get_selected_area_name = function (self)
 	if self._specific_area_name then
-		return self._specific_area_name
+		local specific_area_name = self._specific_area_name
+
+		if AreaSettings[specific_area_name] then
+			return self._specific_area_name
+		end
 	end
 
 	if self._layout_save_settings then
 		local area_name = self._layout_save_settings.area_name
 
-		if area_name then
+		if area_name and AreaSettings[area_name] then
 			return area_name
 		end
 	end
@@ -1216,35 +1303,35 @@ end
 
 StartGameStateSettingsOverview._can_add_adventrue = function (self)
 	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave"
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 
 	return not is_weave_menu
 end
 
 StartGameStateSettingsOverview._can_add_custom_game = function (self)
 	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave"
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 
 	return not is_weave_menu
 end
 
 StartGameStateSettingsOverview._can_add_heroic_deeds = function (self)
 	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave"
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 
 	return not is_weave_menu
 end
 
 StartGameStateSettingsOverview._can_add_weave_game_mode_option = function (self)
 	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave"
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 
 	return is_weave_menu
 end
 
 StartGameStateSettingsOverview._can_add_event_game_mode_option = function (self)
 	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave"
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 	local live_event_interface = Managers.backend:get_interface("live_events")
 	local game_mode_data = live_event_interface:get_game_mode_data()
 
@@ -1253,7 +1340,7 @@ end
 
 StartGameStateSettingsOverview._can_add_streaming_function = function (self)
 	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave"
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 
 	if PLATFORM == "ps4" then
 		local twitch_enabled = GameSettingsDevelopment.twitch_enabled
@@ -1263,6 +1350,20 @@ StartGameStateSettingsOverview._can_add_streaming_function = function (self)
 	else
 		return not is_weave_menu
 	end
+end
+
+StartGameStateSettingsOverview._can_add_lobby_browser_function = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
+
+	return not is_weave_menu and PLATFORM ~= "xb1"
+end
+
+StartGameStateSettingsOverview._can_add_weave_lobby_browser_option = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
+
+	return is_weave_menu and PLATFORM ~= "xb1"
 end
 
 StartGameStateSettingsOverview.setup_backend_image_material = function (self, gui, reference_name, texture_name, masked)

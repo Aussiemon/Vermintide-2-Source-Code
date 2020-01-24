@@ -266,7 +266,7 @@ CareerExtension.current_ability_cooldown = function (self, ability_id)
 	ability_id = ability_id or 1
 	local ability = self._abilities[ability_id]
 
-	return ability.cooldown, ability.max_cooldown
+	return ability.cooldown, (ability.max_cooldown > 0 and ability.max_cooldown) or 1
 end
 
 CareerExtension.current_ability_cooldown_percentage = function (self, ability_id)

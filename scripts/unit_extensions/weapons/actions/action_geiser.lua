@@ -103,7 +103,9 @@ ActionGeiser.fire = function (self, reason)
 	local network_manager = Managers.state.network
 	local start_pos = position + Vector3(0, 0, half_height)
 	local source_pos = position
-	local hit_actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", start_pos, "size", Vector3(radius, half_height + radius, radius), "rotation", Quaternion.look(Vector3.up(), Vector3.up()), "collision_filter", "filter_character_trigger", "use_global_table")
+	local capsule_half_height = half_height + radius
+	local shape = (capsule_half_height - radius > 0 and "capsule") or "sphere"
+	local hit_actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", start_pos, "size", Vector3(radius, capsule_half_height, radius), "rotation", Quaternion.look(Vector3.up(), Vector3.up()), "collision_filter", "filter_character_trigger", "use_global_table")
 	local charge_value = self.charge_value
 	local effect_name = current_action.particle_effect
 	local size = "_large"
@@ -161,6 +163,8 @@ ActionGeiser.fire = function (self, reason)
 	local side = side_manager.side_by_unit[owner_unit]
 
 	if num_actors > 0 then
+		local hit_index = 0
+
 		for i = 1, num_actors, 1 do
 			local hit_actor = hit_actors[i]
 			local hit_unit = Actor.unit(hit_actor)
@@ -198,12 +202,19 @@ ActionGeiser.fire = function (self, reason)
 					end
 
 					hit_units[hit_unit] = true
+					local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
+
+					if hit_unit_health_extension:is_alive() then
+						hit_index = hit_index + 1
+					end
+
 					local damage_data = {
 						hit_zone_name = "torso",
 						hit_unit = hit_unit,
 						damage_profile_name = damage_profile_name,
 						target_index = target_index,
-						allow_critical_proc = target_index == 1
+						allow_critical_proc = target_index == 1,
+						hit_index = hit_index
 					}
 					damage_buffer[#damage_buffer + 1] = damage_data
 				end
@@ -246,6 +257,7 @@ ActionGeiser._update_damage = function (self, current_action)
 			local target_index = damage_data.target_index
 			local hit_zone_name = damage_data.hit_zone_name
 			local allow_critical_proc = damage_data.allow_critical_proc
+			local hit_index = damage_data.hit_index
 
 			if not Unit.alive(hit_unit) then
 				break
@@ -253,11 +265,10 @@ ActionGeiser._update_damage = function (self, current_action)
 
 			local has_ranged_boost, ranged_boost_curve_multiplier = ActionUtils.get_ranged_boost(owner_unit)
 			local is_critical_strike = self._is_critical_strike or has_ranged_boost
-			local target_number = i
 			local send_to_server = true
 			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, buff_type)
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike and allow_critical_proc, hit_zone_name, hit_index, send_to_server, buff_type)
 
 			local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 

@@ -762,7 +762,9 @@ MatchmakingManager._get_level_key_from_level_weights = function (self, level_key
 		level_weights_by_index[chosen_index] = -1
 	end
 
-	preferred_levels[#preferred_levels + 1] = "inn_level"
+	local mechanism = Managers.mechanism:game_mechanism()
+	local inn_level_name = mechanism:get_hub_level_key()
+	preferred_levels[#preferred_levels + 1] = inn_level_name
 
 	return level_keys[result], preferred_levels
 end
@@ -888,7 +890,7 @@ MatchmakingManager.get_weighed_random_unlocked_level = function (self, ignore_dl
 	self:_remove_irrelevant_level_weights()
 
 	local ommit_dlc_levels = true
-	local has_full_game = not script_data.settings.use_beta_overlay
+	local has_full_game = not script_data.settings.use_beta_mode
 
 	if has_full_game then
 		ommit_dlc_levels = not self:_party_has_completed_act("act_4")
@@ -936,7 +938,7 @@ MatchmakingManager.set_matchmaking_data = function (self, next_level_key, diffic
 	lobby_data.host = Network.peer_id()
 	lobby_data.num_players = num_players
 	lobby_data.difficulty = difficulty
-	lobby_data.weave_name = weave_name
+	lobby_data.weave_name = weave_name or "false"
 	lobby_data.weave_index = weave_name and table.find(WeaveSettings.templates_ordered, WeaveSettings.templates[weave_name])
 	lobby_data.quick_game = (quick_game and "true") or "false"
 	lobby_data.country_code = (rawget(_G, "Steam") and Steam.user_country_code()) or Managers.account:region()
@@ -1113,6 +1115,7 @@ MatchmakingManager.cancel_matchmaking = function (self)
 		stored_lobby_data.matchmaking = "false"
 		stored_lobby_data.difficulty = "normal"
 		stored_lobby_data.selected_level_key = LevelHelper:current_level_settings().level_id
+		stored_lobby_data.weave_name = "false"
 		stored_lobby_data.game_mode = (PLATFORM ~= "ps4" and NetworkLookup.game_modes["n/a"]) or "n/a"
 
 		self.lobby:set_lobby_data(stored_lobby_data)
@@ -1129,6 +1132,7 @@ MatchmakingManager.cancel_matchmaking = function (self)
 
 		self.handshaker_host:send_rpc_to_clients("rpc_set_matchmaking", false, false, level_key_lookup, difficulty_lookup, quick_game)
 		self:reset_lobby_filters()
+		self:set_quick_game(false)
 
 		if not DEDICATED_SERVER then
 			party:set_leader(self.network_server.lobby_host:lobby_host())
@@ -1462,7 +1466,7 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 		return false, "in prologue"
 	end
 
-	if level_key then
+	if level_key and level_key ~= "any" then
 		local correct_level = false
 
 		if lobby_data.selected_level_key then
@@ -1492,7 +1496,7 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 			return false, "wrong game mode"
 		end
 
-		if game_mode == "weave" and weave_name and weave_name ~= lobby_data.weave_name then
+		if game_mode == "weave" and weave_name ~= "false" and weave_name ~= lobby_data.weave_name then
 			return false, "wrong weave name"
 		end
 	elseif game_mode == "weave_find_group" then
@@ -1830,6 +1834,7 @@ MatchmakingManager.hot_join_sync = function (self, peer_id)
 	end
 
 	RPC.rpc_set_client_game_privacy(peer_id, self:is_game_private())
+	RPC.rpc_set_quick_game(peer_id, self:is_quick_game())
 	RPC.rpc_matchmaking_request_quickplay_data(peer_id)
 end
 
@@ -2053,6 +2058,10 @@ MatchmakingManager.is_game_private = function (self)
 	return is_private
 end
 
+MatchmakingManager.set_local_quick_game = function (self, quick_game)
+	self._quick_game = quick_game
+end
+
 MatchmakingManager.set_quick_game = function (self, quick_game)
 	self._quick_game = quick_game
 
@@ -2128,7 +2137,8 @@ MatchmakingManager.search_info = function (self)
 				local difficulty = lobby:lobby_data("difficulty")
 				local game_mode = lobby:lobby_data("game_mode")
 				local weave_name = lobby:lobby_data("weave_name")
-				local quick_game = self:is_quick_game()
+				local lobby_quick_game = lobby:lobby_data("quick_game") == "true"
+				local quick_game = lobby_quick_game or self:is_quick_game()
 				info.level_key = level_key
 				info.difficulty = difficulty
 				info.quick_game = quick_game
@@ -2142,7 +2152,8 @@ MatchmakingManager.search_info = function (self)
 		local difficulty = lobby:lobby_data("difficulty")
 		local game_mode = lobby:lobby_data("game_mode")
 		local weave_name = lobby:lobby_data("weave_name")
-		local quick_game = self:is_quick_game()
+		local lobby_quick_game = lobby:lobby_data("quick_game") == "true"
+		local quick_game = lobby_quick_game or self:is_quick_game()
 		info.level_key = level_key
 		info.difficulty = difficulty
 		info.quick_game = quick_game

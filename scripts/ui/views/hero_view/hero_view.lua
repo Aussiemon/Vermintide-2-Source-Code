@@ -591,6 +591,10 @@ HeroView._set_loading_overlay_enabled = function (self, enabled, message)
 end
 
 HeroView.current_state = function (self)
+	if not self._machine then
+		return nil
+	end
+
 	return self._machine:state()
 end
 

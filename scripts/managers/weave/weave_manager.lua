@@ -161,25 +161,28 @@ WeaveManager.reset_statistics_for_challenges = function (self)
 	local statistics_db = Managers.player:statistics_db()
 	local player = Managers.player:local_player()
 	local stats_id = player:stats_id()
-	local stat_id = "weave_life_stepped_in_bush"
 
-	statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
+	if ScorpionSeasonalSettings.current_season_id == 1 then
+		local stat_id = "weave_life_stepped_in_bush"
 
-	stat_id = "weave_death_hit_by_spirit"
+		statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
 
-	statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
+		stat_id = "weave_death_hit_by_spirit"
 
-	stat_id = "weave_beasts_destroyed_totems"
+		statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
 
-	statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
+		stat_id = "weave_beasts_destroyed_totems"
 
-	stat_id = "weave_light_low_curse"
+		statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
 
-	statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
+		stat_id = "weave_light_low_curse"
 
-	stat_id = "weave_shadow_kill_no_shrouded"
+		statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
 
-	statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
+		stat_id = "weave_shadow_kill_no_shrouded"
+
+		statistics_db:set_stat(stats_id, "season_1", stat_id, 0)
+	end
 
 	self._has_reset_challenge_stats = true
 end
@@ -405,9 +408,10 @@ WeaveManager.get_active_wind_settings = function (self)
 end
 
 WeaveManager.get_scaling_value = function (self, scaling_value_key)
+	local quick_game = Managers.matchmaking:is_quick_game()
 	local template = WeaveSettings.templates[self._active_weave_name]
 	local scaling_settings = template.scaling_settings
-	local scaling_setting = scaling_settings and scaling_settings[scaling_value_key]
+	local scaling_setting = not quick_game and scaling_settings and scaling_settings[scaling_value_key]
 	local tier = template.tier
 	local previous_breakpoint = 0
 
@@ -611,19 +615,23 @@ end
 
 WeaveManager.start_terror_event = function (self, event_template_name, spawner_id)
 	local weave_settings = self:get_active_weave_template()
+	local objective_settings = self:get_active_objective_template()
+	local objective_index = self._active_objective_index
 
 	fassert(weave_settings ~= nil, "Tried to start terror event from WeaveManager without any active weave")
-	fassert(weave_settings.terror_events ~= nil, string.format("%q does not contain a terror_events table", weave_settings.name))
-	fassert(table.contains(weave_settings.terror_events, event_template_name), string.format("%q's terror_event table does not contain terror event '%q'", weave_settings.name, event_template_name))
+	fassert(objective_settings.terror_events ~= nil, string.format("%q does not contain a terror_events table for objective %s", weave_settings.name, objective_index))
+	fassert(table.contains(objective_settings.terror_events, event_template_name), string.format("%q's terror_event table does not contain terror event '%q'", weave_settings.name, event_template_name))
 	self._weave_spawner:start_terror_event_from_template(event_template_name, spawner_id)
 end
 
 WeaveManager.stop_terror_event = function (self, event_template_name, spawner_id)
 	local weave_settings = self:get_active_weave_template()
+	local objective_settings = self:get_active_objective_template()
+	local objective_index = self._active_objective_index
 
 	fassert(weave_settings ~= nil, "Tried to start terror event from WeaveManager without any active weave")
-	fassert(weave_settings.terror_events ~= nil, string.format("%q does not contain a terror_events table", weave_settings.name))
-	fassert(table.contains(weave_settings.terror_events, event_template_name), string.format("%q's terror_event table does not contain terror event '%q'", weave_settings.name, event_template_name))
+	fassert(objective_settings.terror_events ~= nil, string.format("%q does not contain a terror_events table for objective %s", weave_settings.name, objective_index))
+	fassert(table.contains(objective_settings.terror_events, event_template_name), string.format("%q's terror_event table does not contain terror event '%q'", weave_settings.name, event_template_name))
 
 	local new_terror_event_name = string.format("%s_%s", event_template_name, spawner_id)
 
@@ -787,8 +795,9 @@ WeaveManager._track_ai_killed = function (self, breed_name)
 		self._enemies_killed[breed_name] = self._enemies_killed[breed_name] or 0
 		self._enemies_killed[breed_name] = self._enemies_killed[breed_name] + 1
 		self._num_enemies_killed = self._num_enemies_killed + 1
+		local difficulty_key = Managers.state.difficulty:get_difficulty()
 		local current_objective_template = self:get_active_objective_template()
-		local enemy_count = current_objective_template.enemy_count
+		local enemy_count = current_objective_template.enemy_count[difficulty_key]
 		local amount = 1 / enemy_count * 100
 
 		self:increase_bar_score(amount)

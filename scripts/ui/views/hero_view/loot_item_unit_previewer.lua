@@ -1,18 +1,20 @@
 local DEFAULT_ANGLE = 0
 LootItemUnitPreviewer = class(LootItemUnitPreviewer)
 
-LootItemUnitPreviewer.init = function (self, item, spawn_position, background_world, background_viewport, unique_id, invert_start_rotation, display_unit_key)
+LootItemUnitPreviewer.init = function (self, item, spawn_position, background_world, background_viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels)
 	self._background_world = background_world
 	self._background_viewport = background_viewport
 	self._unique_id = unique_id
 	self._loaded_packages = {}
 	self._packages_to_load = {}
+	self._requested_all_mips_units = {}
 	self._camera_xy_angle_target = DEFAULT_ANGLE
 	self._camera_xy_angle_current = DEFAULT_ANGLE
 	self._invert_start_rotation = invert_start_rotation
 	self._display_unit_key = display_unit_key
 	self._spawn_position = spawn_position
 	self._item = item
+	self._use_highest_mip_levels = use_highest_mip_levels
 	self._link_unit = self:_spawn_link_unit(item)
 	self._units_to_spawn = self:_load_item_units(item)
 end
@@ -30,6 +32,7 @@ LootItemUnitPreviewer.destroy = function (self)
 	self:_unload_packages()
 	table.clear(self._loaded_packages)
 	table.clear(self._packages_to_load)
+	Renderer.set_automatic_streaming(true)
 end
 
 LootItemUnitPreviewer._destroy_units = function (self)
@@ -56,6 +59,17 @@ end
 
 LootItemUnitPreviewer.update = function (self, dt, t, input_service)
 	if self._items_spawned then
+		if self._request_show_settings and self:_update_manual_mip_streaming() then
+			local request_show_settings = self._request_show_settings
+			local item_key = request_show_settings.item_key
+			local ignore_spin = request_show_settings.ignore_spin
+			local visible = true
+
+			self:_enable_item_units_visibility(item_key, ignore_spin, visible)
+
+			self._request_show_settings = nil
+		end
+
 		if input_service then
 			local input_manager = Managers.input
 
@@ -366,7 +380,7 @@ LootItemUnitPreviewer._spawn_link_unit = function (self, item)
 
 	if item_type == "weapon_skin" then
 		local skin_template = WeaponSkins.skins[item_skin]
-		unit_name = skin_template[display_unit_key] or skin_template[default_display_unit_key]
+		unit_name = skin_template[display_unit_key] or skin_template[default_display_unit_key] or unit_name
 	elseif not unit_name then
 		local item_template = ItemHelper.get_template_by_item_name(item_key)
 		unit_name = item_template[display_unit_key] or item_template[default_display_unit_key]
@@ -407,6 +421,15 @@ LootItemUnitPreviewer._spawn_items = function (self)
 		local item_data = item.data
 		local item_key = item_data.key
 		local units = self:spawn_units(units_to_spawn)
+
+		if self._use_highest_mip_levels then
+			for i = 1, #units, 1 do
+				local spawned_unit = units[i]
+
+				self:_request_all_mips_for_unit(spawned_unit)
+			end
+		end
+
 		self._spawned_units = units
 	end
 
@@ -446,6 +469,17 @@ LootItemUnitPreviewer.spawn_units = function (self, spawn_data)
 end
 
 LootItemUnitPreviewer.present_item = function (self, item_key, ignore_spin)
+	if self._use_highest_mip_levels and not self:_update_manual_mip_streaming() then
+		self._request_show_settings = {
+			item_key = item_key,
+			ignore_spin = ignore_spin
+		}
+	else
+		self:_enable_item_units_visibility(item_key, ignore_spin, true)
+	end
+end
+
+LootItemUnitPreviewer._enable_item_units_visibility = function (self, item_key, ignore_spin, visible)
 	local spawned_units = self._spawned_units
 
 	if spawned_units then
@@ -453,32 +487,50 @@ LootItemUnitPreviewer.present_item = function (self, item_key, ignore_spin)
 
 		for _, unit in ipairs(spawned_units) do
 			if unit and Unit.alive(unit) then
-				Unit.set_unit_visibility(unit, true)
+				Unit.set_unit_visibility(unit, visible)
 
-				local item_unit_event = "lua_presentation"
-
-				self:_trigger_unit_flow_event(unit, item_unit_event)
+				if visible then
+					self:_trigger_unit_flow_event(unit, "lua_presentation")
+					self:_trigger_unit_flow_event(unit, "lua_wield")
+				end
 			end
 		end
 
-		if not ignore_spin then
+		if not ignore_spin and visible then
 			Unit.flow_event(link_unit, "lua_spin_no_fx")
 		end
 	end
 end
 
-LootItemUnitPreviewer._enable_item_units_visibility = function (self)
-	local spawned_units = self._spawned_units
+LootItemUnitPreviewer._request_all_mips_for_unit = function (self, unit)
+	local requested_units = self._requested_all_mips_units
+	requested_units[#requested_units + 1] = unit
 
-	for _, unit in ipairs(spawned_units) do
-		if unit and Unit.alive(unit) then
-			Unit.set_unit_visibility(unit, true)
+	Renderer.request_to_stream_all_mips_for_unit(unit)
+	Renderer.set_automatic_streaming(false)
+end
 
-			local item_unit_event = "lua_presentation"
+LootItemUnitPreviewer._update_manual_mip_streaming = function (self)
+	local mip_streaming_completed = true
+	local requested_units = self._requested_all_mips_units
+	local num_units_left = #requested_units
 
-			self:_trigger_unit_flow_event(unit, item_unit_event)
+	for i = num_units_left, 1, -1 do
+		local unit = requested_units[i]
+		local unit_mip_streaming_completed = Renderer.is_all_mips_loaded_for_unit(unit)
+
+		if unit_mip_streaming_completed then
+			table.swap_delete(requested_units, i)
+		else
+			mip_streaming_completed = false
 		end
 	end
+
+	if mip_streaming_completed then
+		Renderer.set_automatic_streaming(true)
+	end
+
+	return mip_streaming_completed
 end
 
 return

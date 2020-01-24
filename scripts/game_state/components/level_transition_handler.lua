@@ -82,14 +82,17 @@ LevelTransitionHandler.load_level = function (self, level_key)
 		self:release_level_resources(current_level)
 	end
 
-	local level_package_name = LevelSettings[level_key].package_name
+	local level_settings = LevelSettings[level_key]
+	local level_package_name = level_settings.package_name
 
 	if self.level_key ~= level_key or (not Managers.package:has_loaded(level_package_name, "LevelTransitionHandler") and not Managers.package:is_loading(level_package_name)) then
 		self:_load_dlc_level_packages(level_key)
+		self:_load_nested_level_packages(level_key)
+		self:_load_umbra_tome_package(level_key)
 
 		self.last_level_key = self.level_key
 		self.level_key = level_key
-		self.level_name = LevelSettings[level_key].level_name
+		self.level_name = level_settings.level_name
 
 		Print("Loading level: %q", self.level_key)
 		Print("Package name : %q", level_package_name)
@@ -122,6 +125,8 @@ LevelTransitionHandler.release_level_resources = function (self, level_key)
 		end
 
 		self:_unload_dlc_level_packages(level_key)
+		self:_unload_nested_level_packages(level_key)
+		self:_unload_umbra_tome_package(level_key)
 	end
 end
 
@@ -197,7 +202,7 @@ LevelTransitionHandler.update = function (self)
 		if package_manager:has_loaded(level_package_name) then
 			self.loaded_levels[level_name] = true
 
-			if self:_dlc_level_packages_loaded(level_name) then
+			if self:_dlc_level_packages_loaded(level_name) and self:_nested_level_packages_loaded(level_name) and self:_umbra_tome_package_loaded(level_name) then
 				self.loading_packages[level_name] = nil
 			end
 		end
@@ -304,6 +309,88 @@ LevelTransitionHandler._dlc_level_packages_loaded = function (self, level_key)
 				end
 			end
 		end
+	end
+
+	return true
+end
+
+LevelTransitionHandler._load_nested_level_packages = function (self, level_key)
+	local async = true
+	local package_manager = Managers.package
+	local reference_name = "nested_level_package_" .. level_key
+	local settings = LevelSettings[level_key]
+	local nested_level_package_names = settings.nested_level_package_names
+
+	if nested_level_package_names then
+		for _, package_path in ipairs(nested_level_package_names) do
+			package_manager:load(package_path, reference_name, nil, async)
+		end
+	end
+end
+
+LevelTransitionHandler._unload_nested_level_packages = function (self, level_key)
+	local reference_name = "nested_level_package_" .. level_key
+	local package_manager = Managers.package
+	local settings = LevelSettings[level_key]
+	local nested_level_package_names = settings.nested_level_package_names
+
+	if nested_level_package_names then
+		for _, package_path in ipairs(nested_level_package_names) do
+			if package_manager:has_loaded(package_path, reference_name) or package_manager:is_loading(package_path) then
+				package_manager:unload(package_path, reference_name)
+			end
+		end
+	end
+end
+
+LevelTransitionHandler._nested_level_packages_loaded = function (self, level_key)
+	local reference_name = "nested_level_package_" .. level_key
+	local package_manager = Managers.package
+	local settings = LevelSettings[level_key]
+	local nested_level_package_names = settings.nested_level_package_names
+
+	if nested_level_package_names then
+		for _, package_path in ipairs(nested_level_package_names) do
+			if not package_manager:has_loaded(package_path, reference_name) then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
+LevelTransitionHandler._load_umbra_tome_package = function (self, level_key)
+	local async = true
+	local package_manager = Managers.package
+	local reference_name = "tome_package_" .. level_key
+	local settings = LevelSettings[level_key]
+	local tome_package_name = settings.tome_package_name
+
+	if tome_package_name then
+		package_manager:load(tome_package_name, reference_name, nil, async)
+	end
+end
+
+LevelTransitionHandler._unload_umbra_tome_package = function (self, level_key)
+	local reference_name = "tome_package_" .. level_key
+	local package_manager = Managers.package
+	local settings = LevelSettings[level_key]
+	local tome_package_name = settings.tome_package_name
+
+	if tome_package_name and (package_manager:has_loaded(tome_package_name, reference_name) or package_manager:is_loading(tome_package_name)) then
+		package_manager:unload(tome_package_name, reference_name)
+	end
+end
+
+LevelTransitionHandler._umbra_tome_package_loaded = function (self, level_key)
+	local reference_name = "tome_package_" .. level_key
+	local package_manager = Managers.package
+	local settings = LevelSettings[level_key]
+	local tome_package_name = settings.tome_package_name
+
+	if tome_package_name and not package_manager:has_loaded(tome_package_name, reference_name) then
+		return false
 	end
 
 	return true

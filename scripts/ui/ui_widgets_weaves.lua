@@ -55,6 +55,11 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 	}
 	local passes = {
 		{
+			style_id = "name_frame",
+			pass_type = "hotspot",
+			content_id = "button_hotspot"
+		},
+		{
 			pass_type = "texture",
 			style_id = "ranking_background_local_player",
 			texture_id = "background",
@@ -63,11 +68,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			end
 		},
 		{
-			pass_type = "texture",
 			style_id = "ranking_background",
 			texture_id = "background",
+			pass_type = "texture",
 			content_check_function = function (content)
 				return not content.local_player
+			end,
+			content_change_function = function (content, style)
+				if PLATFORM == "win32" then
+					return
+				end
+
+				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
 			end
 		},
 		{
@@ -94,11 +106,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			end
 		},
 		{
-			pass_type = "texture",
 			style_id = "name_background",
 			texture_id = "background",
+			pass_type = "texture",
 			content_check_function = function (content)
 				return not content.local_player
+			end,
+			content_change_function = function (content, style)
+				if PLATFORM == "win32" then
+					return
+				end
+
+				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
 			end
 		},
 		{
@@ -133,11 +152,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			end
 		},
 		{
-			pass_type = "texture",
 			style_id = "weave_background",
 			texture_id = "background",
+			pass_type = "texture",
 			content_check_function = function (content)
 				return not content.local_player
+			end,
+			content_change_function = function (content, style)
+				if PLATFORM == "win32" then
+					return
+				end
+
+				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
 			end
 		},
 		{
@@ -164,11 +190,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			end
 		},
 		{
-			pass_type = "texture",
 			style_id = "score_background",
 			texture_id = "background",
+			pass_type = "texture",
 			content_check_function = function (content)
 				return not content.local_player
+			end,
+			content_change_function = function (content, style)
+				if PLATFORM == "win32" then
+					return
+				end
+
+				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
 			end
 		},
 		{
@@ -194,7 +227,9 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 		career_icon = "icons_placeholder",
 		ranking = "000",
 		local_player = false,
-		button_hotspot = {},
+		button_hotspot = {
+			allow_multi_hover = false
+		},
 		background = (masked and "rect_masked") or "simple_rect_texture",
 		frame = frame_settings.texture,
 		size = size
@@ -250,6 +285,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			size = {
 				ranking_size[1] - background_spacing,
 				ranking_size[2] - background_spacing
+			},
+			base_color = {
+				120,
+				0,
+				0,
+				0
+			},
+			selected_color = {
+				120,
+				128,
+				128,
+				128
 			},
 			color = {
 				120,
@@ -332,6 +379,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			size = {
 				name_size[1] - background_spacing,
 				name_size[2] - background_spacing
+			},
+			base_color = {
+				120,
+				0,
+				0,
+				0
+			},
+			selected_color = {
+				120,
+				128,
+				128,
+				128
 			},
 			color = {
 				120,
@@ -424,6 +483,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				weave_size[1] - background_spacing,
 				weave_size[2] - background_spacing
 			},
+			base_color = {
+				120,
+				0,
+				0,
+				0
+			},
+			selected_color = {
+				120,
+				128,
+				128,
+				128
+			},
 			color = {
 				120,
 				0,
@@ -499,6 +570,18 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			size = {
 				score_size[1] - background_spacing,
 				score_size[2] - background_spacing
+			},
+			base_color = {
+				120,
+				0,
+				0,
+				0
+			},
+			selected_color = {
+				120,
+				128,
+				128,
+				128
 			},
 			color = {
 				120,

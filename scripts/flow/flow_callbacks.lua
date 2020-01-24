@@ -1857,6 +1857,37 @@ function flow_is_carrying_explosive_barrel(params)
 	return flow_return_table
 end
 
+function flow_is_carrying_torch(params)
+	local player_unit = params.player_unit
+
+	if not unit_alive(player_unit) then
+		flow_return_table.has_torch = nil
+
+		return flow_return_table
+	end
+
+	local equipment = nil
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+
+	if inventory_extension then
+		equipment = inventory_extension:equipment()
+	else
+		equipment = Unit.get_data(player_unit, "equipment")
+	end
+
+	local weapon_unit = equipment.left_hand_wielded_unit or equipment.right_hand_wielded_unit
+
+	if weapon_unit then
+		local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
+		if weapon_extension.item_name == "torch" then
+			flow_return_table.has_torch = true
+		end
+	end
+
+	return flow_return_table
+end
+
 function flow_callback_teleport_unit(params)
 	local unit = params.unit
 	local position = params.position
@@ -2257,6 +2288,16 @@ function flow_callback_blood_ball_despawn(params)
 	end
 end
 
+function flow_callback_blood_enabled()
+	if Managers.state.blood then
+		flow_return_table.enabled = Managers.state.blood:get_blood_enabled()
+	else
+		flow_return_table.enabled = false
+	end
+
+	return flow_return_table
+end
+
 function flow_callback_enable_poison_wind(params)
 	local unit = params.unit
 	local enable = params.enable
@@ -2638,10 +2679,8 @@ function flow_callback_start_fade_chr_helmet(params)
 	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
 
 	if unit_inventory_extension ~= nil then
-		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
-
-		if helmet_unit ~= nil then
-			params.unit = helmet_unit
+		for i = 1, #unit_inventory_extension.inventory_item_helmet_units, 1 do
+			params.unit = unit_inventory_extension.inventory_item_helmet_units[i]
 
 			flow_callback_start_fade(params)
 		end
@@ -3133,6 +3172,21 @@ function flow_callback_barrel_explode(params)
 
 	health_extension:set_max_health(1)
 	health_extension:add_damage(unit, 1, "full", "grenade", Unit.world_position(unit, 0), Vector3(1, 0, 0))
+end
+
+function flow_callback_set_mutator_active(params)
+	local mutator_name = params.mutator
+	local active = params.active
+	local mutator_handler = Managers.state.game_mode._mutator_handler
+
+	if active then
+		mutator_handler:initialize_mutators({
+			mutator_name
+		})
+		mutator_handler:activate_mutator(mutator_name, nil, "activated_by_flow")
+	else
+		mutator_handler:deactivate_mutator(mutator_name)
+	end
 end
 
 function flow_callback_set_game_mode_variable(params)

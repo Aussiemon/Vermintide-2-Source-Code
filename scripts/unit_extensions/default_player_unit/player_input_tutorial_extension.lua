@@ -205,6 +205,12 @@ PlayerInputTutorialExtension.set_last_scroll_value = function (self, scroll_valu
 	self.wield_scroll_value = scroll_value
 end
 
+PlayerInputTutorialExtension.force_release_input = function (self, input)
+	self.has_released_input = true
+
+	return true
+end
+
 PlayerInputTutorialExtension.released_input = function (self, input)
 	if self.has_released_input then
 		return true

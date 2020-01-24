@@ -184,7 +184,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 		local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
 		if diminishing_damage_data and target_slot_extension then
-			local slots_n = target_slot_extension.num_occupied_slots
+			local slots_n = target_slot_extension.delayed_num_occupied_slots
 
 			if slots_n > 0 then
 				local diminishing_damage = diminishing_damage_data[math.min(slots_n, 9)].damage

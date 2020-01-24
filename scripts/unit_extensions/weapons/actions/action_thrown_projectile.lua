@@ -152,8 +152,7 @@ ActionThrownProjectile._fire = function (self, add_spread)
 	local owner_unit = self.owner_unit
 	local first_person_extension = self._first_person_extension
 	local speed = current_action.speed
-	local rotation = first_person_extension:current_rotation()
-	local position = first_person_extension:current_position()
+	local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 	local spread_extension = self._spread_extension
 
 	if spread_extension then

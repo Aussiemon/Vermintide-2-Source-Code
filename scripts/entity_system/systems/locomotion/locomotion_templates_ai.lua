@@ -279,10 +279,13 @@ LocomotionTemplates.AILocomotionExtension = {
 
 					if not extension._is_falling or dist_sq > 0.0625 then
 						local physics_world = World.get_data(extension._world, "physics_world")
-						local size = Vector3(0.5, 1.5, 0.5)
+						local radius = 0.5
+						local half_height = 1.5
+						local size = Vector3(radius, half_height, radius)
 						local rotation = Quaternion.look(Vector3(0, 0, 1))
 						local test_pos = final_position + Vector3(0, 0, -1)
-						local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", test_pos, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
+						local shape = (half_height - radius > 0 and "capsule") or "sphere"
+						local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", test_pos, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
 						extension._is_falling = num_hit_actors == 0
 
 						extension._last_fall_position:store(final_position)

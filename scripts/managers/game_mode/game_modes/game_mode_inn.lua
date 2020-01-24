@@ -53,10 +53,11 @@ end
 
 GameModeInn.update = function (self, t, dt)
 	self:_update_objectives()
+	self._adventure_spawning:update(t, dt)
 end
 
 GameModeInn.server_update = function (self, t, dt)
-	self._adventure_spawning:update(t, dt)
+	self._adventure_spawning:server_update(t, dt)
 end
 
 GameModeInn.evaluate_end_conditions = function (self, round_started)

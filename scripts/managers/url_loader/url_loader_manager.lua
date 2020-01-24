@@ -130,6 +130,8 @@ UrlLoaderManager._on_job_complete = function (self, job, success)
 			cache_key_references[reference_name] = nil
 		end
 
+		UrlLoader.unload(url_loader, url_job)
+
 		local url_jobs = self._url_jobs
 		url_jobs[cache_key] = nil
 	end

@@ -521,7 +521,7 @@ end
 HeroWindowPanelConsole._validate_product_owner = function (self)
 	local present_purchase_add = nil
 
-	if PLATFORM == "xb1" and script_data.settings.use_beta_overlay then
+	if PLATFORM == "xb1" and script_data.settings.use_beta_mode then
 		local owns_game = Managers.unlock:is_dlc_unlocked("vt2")
 		present_purchase_add = not owns_game
 	else

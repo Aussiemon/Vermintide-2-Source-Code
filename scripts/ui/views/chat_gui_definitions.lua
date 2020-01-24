@@ -1,5 +1,6 @@
-local CHAT_WIDTH = 600
-local CHAT_HEIGHT = 200
+local CHAT_WIDTH = 500
+local CHAT_HEIGHT = 250
+local CHAT_INPUT_TEXT_WIDTH = CHAT_WIDTH - 10
 
 if not rawget(_G, "Irc") then
 	Irc = {
@@ -75,12 +76,49 @@ local scenegraph_definition = {
 		parent = "chat_window_root",
 		position = {
 			0,
-			CHAT_HEIGHT - 4,
+			CHAT_HEIGHT,
 			2
 		},
 		size = {
 			CHAT_WIDTH,
 			4
+		}
+	},
+	chat_window_frame_top_info = {
+		vertical_alignment = "bottom",
+		parent = "chat_window_frame_top",
+		horizontal_alignment = "right",
+		size = {
+			24,
+			24
+		}
+	},
+	chat_window_frame_top_enlarge = {
+		vertical_alignment = "bottom",
+		parent = "chat_window_frame_top",
+		horizontal_alignment = "right",
+		position = {
+			-24,
+			0,
+			0
+		},
+		size = {
+			24,
+			24
+		}
+	},
+	chat_window_frame_top_filter = {
+		vertical_alignment = "bottom",
+		parent = "chat_window_frame_top",
+		horizontal_alignment = "right",
+		position = {
+			-48,
+			0,
+			0
+		},
+		size = {
+			24,
+			24
 		}
 	},
 	chat_window_frame_bottom = {
@@ -93,6 +131,20 @@ local scenegraph_definition = {
 		size = {
 			CHAT_WIDTH,
 			4
+		}
+	},
+	chat_window_frame_top_target = {
+		vertical_alignment = "bottom",
+		parent = "chat_window_frame_top",
+		horizontal_alignment = "right",
+		position = {
+			-72,
+			0,
+			0
+		},
+		size = {
+			24,
+			24
 		}
 	},
 	chat_tab_root = {
@@ -112,7 +164,7 @@ local scenegraph_definition = {
 	chat_scrollbar_root = {
 		parent = "chat_window_root",
 		position = {
-			CHAT_WIDTH - 54,
+			CHAT_WIDTH - 7,
 			6,
 			2
 		},
@@ -249,44 +301,36 @@ local scenegraph_definition = {
 			2
 		},
 		size = {
-			CHAT_WIDTH - 74,
+			CHAT_WIDTH - 15,
 			CHAT_HEIGHT - 26
 		}
 	},
-	chat_input_root = {
-		parent = "chat_window_root",
-		position = {
-			2,
-			4,
-			1
-		},
-		size = {
-			CHAT_WIDTH - 61,
-			24
-		}
-	},
-	chat_input_text_ref = {
-		parent = "chat_input_root",
+	chat_input_box = {
+		vertical_alignment = "top",
+		parent = "chat_window_background",
+		horizontal_alignment = "left",
 		position = {
 			0,
-			0,
-			2
+			-CHAT_HEIGHT,
+			5
 		},
 		size = {
-			CHAT_WIDTH - 74,
-			24
+			CHAT_WIDTH,
+			20
 		}
 	},
 	chat_input_text = {
-		parent = "chat_input_root",
+		vertical_alignment = "center",
+		parent = "chat_input_box",
+		horizontal_alignment = "left",
 		position = {
 			0,
 			0,
-			2
+			1
 		},
 		size = {
-			CHAT_WIDTH - 74,
-			CHAT_HEIGHT - 26 - 176
+			CHAT_WIDTH,
+			20
 		}
 	},
 	chat_mask = {
@@ -303,89 +347,131 @@ local scenegraph_definition = {
 	}
 }
 local chat_window_widget = {
-	scenegraph_id = "chat_window_root",
+	scenegraph_id = "chat_window_background",
 	element = {
 		passes = {
 			{
-				style_id = "frame_top",
-				pass_type = "texture_uv",
-				content_id = "frame_top"
-			},
-			{
-				style_id = "frame_bottom",
-				pass_type = "texture_uv",
-				content_id = "frame_bottom"
-			},
-			{
-				style_id = "background",
-				pass_type = "texture_uv",
-				content_id = "background"
+				pass_type = "rect",
+				style_id = "background"
 			}
 		}
 	},
-	content = {
-		background = {
-			texture_id = "infoslate_bg",
-			uvs = {
-				{
-					0,
-					0
-				},
-				{
-					1,
-					1
-				}
-			}
-		},
-		frame_top = {
-			texture_id = "infoslate_frame_02_horizontal",
-			uvs = {
-				{
-					0,
-					0
-				},
-				{
-					1,
-					1
-				}
-			}
-		},
-		frame_bottom = {
-			texture_id = "infoslate_frame_02_horizontal",
-			uvs = {
-				{
-					0,
-					0
-				},
-				{
-					1,
-					1
-				}
-			}
-		}
-	},
+	content = {},
 	style = {
-		frame_top = {
-			scenegraph_id = "chat_window_frame_top",
-			masked = false,
-			color = Colors.get_table("white")
-		},
-		frame_bottom = {
-			scenegraph_id = "chat_window_frame_bottom",
-			masked = false,
-			color = Colors.get_table("white")
-		},
 		background = {
-			scenegraph_id = "chat_window_background",
 			masked = false,
-			color = Colors.get_table("white")
+			color = {
+				180,
+				20,
+				20,
+				20
+			}
 		}
 	}
 }
 local chat_input_widget = {
-	scenegraph_id = "chat_input_root",
+	scenegraph_id = "chat_input_box",
 	element = {
 		passes = {
+			{
+				style_id = "info_hotspot",
+				pass_type = "hotspot",
+				content_id = "info_hotspot"
+			},
+			{
+				style_id = "info_hotspot",
+				pass_type = "rect",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end,
+				content_change_function = function (content, style)
+					style.color = (content.info_hotspot.is_hover and style.selected_color) or style.base_color
+				end
+			},
+			{
+				style_id = "info_icon",
+				pass_type = "rect",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end
+			},
+			{
+				style_id = "info_icon_text",
+				pass_type = "text",
+				text_id = "info_icon_text",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end,
+				content_change_function = function (content, style)
+					style.text_color = (content.info_hotspot.is_hover and style.selected_color) or style.base_color
+				end
+			},
+			{
+				style_id = "enlarge_hotspot",
+				pass_type = "hotspot",
+				content_id = "enlarge_hotspot"
+			},
+			{
+				style_id = "enlarge_hotspot",
+				pass_type = "rect",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end,
+				content_change_function = function (content, style)
+					style.color = (content.enlarge_hotspot.is_hover and style.selected_color) or style.base_color
+				end
+			},
+			{
+				style_id = "enlarge_icon",
+				pass_type = "rect",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end
+			},
+			{
+				style_id = "filter_hotspot",
+				pass_type = "hotspot",
+				content_id = "filter_hotspot"
+			},
+			{
+				style_id = "filter_hotspot",
+				pass_type = "rect",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end,
+				content_change_function = function (content, style)
+					style.color = (content.filter_hotspot.is_hover and style.selected_color) or style.base_color
+				end
+			},
+			{
+				style_id = "filter_icon",
+				pass_type = "triangle",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end
+			},
+			{
+				style_id = "target_hotspot",
+				pass_type = "hotspot",
+				content_id = "target_hotspot"
+			},
+			{
+				style_id = "target_hotspot",
+				pass_type = "rect",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end,
+				content_change_function = function (content, style)
+					style.color = (content.target_hotspot.is_hover and style.selected_color) or style.base_color
+				end
+			},
+			{
+				style_id = "target_icon",
+				pass_type = "triangle",
+				content_check_function = function (content)
+					return GameSettingsDevelopment.use_global_chat
+				end
+			},
 			{
 				pass_type = "rect",
 				style_id = "background"
@@ -425,25 +511,268 @@ local chat_input_widget = {
 		}
 	},
 	content = {
-		caret_index = 1,
 		header_field = "All",
 		channel_field = "Party",
+		caret_index = 1,
+		info_icon_text = "?",
+		text_field = "",
 		text_index = 1,
-		text_field = ""
+		info_hotspot = {},
+		enlarge_hotspot = {},
+		filter_hotspot = {},
+		target_hotspot = {}
 	},
 	style = {
 		background = {
-			color = Colors.get_table("black"),
-			size = {
-				CHAT_WIDTH - 61,
-				CHAT_HEIGHT - 26 - 176
+			color = {
+				200,
+				0,
+				0,
+				0
+			},
+			offset = {
+				0,
+				0,
+				1
+			}
+		},
+		info_hotspot = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_info",
+			horizontal_alignment = "right",
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			base_color = {
+				255,
+				0,
+				0,
+				0
+			},
+			selected_color = {
+				255,
+				255,
+				255,
+				255
+			},
+			texture_size = {
+				16,
+				16
+			},
+			offset = {
+				-4,
+				0,
+				2
+			}
+		},
+		info_icon_text = {
+			scenegraph_id = "chat_window_frame_top_info",
+			font_size = 14,
+			pixel_perfect = false,
+			horizontal_alignment = "right",
+			vertical_alignment = "center",
+			dynamic_font = true,
+			font_type = "arial",
+			text_color = Colors.get_table("white"),
+			base_color = {
+				255,
+				90,
+				90,
+				90
+			},
+			selected_color = Colors.get_table("white"),
+			offset = {
+				-8,
+				0,
+				5
+			}
+		},
+		info_icon = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_info",
+			horizontal_alignment = "right",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			texture_size = {
+				14,
+				14
+			},
+			offset = {
+				-5,
+				0,
+				5
+			}
+		},
+		enlarge_hotspot = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_enlarge",
+			horizontal_alignment = "right",
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			base_color = {
+				255,
+				90,
+				90,
+				90
+			},
+			selected_color = {
+				255,
+				255,
+				255,
+				255
+			},
+			texture_size = {
+				14,
+				14
+			},
+			offset = {
+				-4,
+				0,
+				2
+			}
+		},
+		enlarge_icon = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_enlarge",
+			horizontal_alignment = "right",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			texture_size = {
+				12,
+				12
+			},
+			offset = {
+				-5,
+				0,
+				2
+			}
+		},
+		filter_hotspot = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_filter",
+			horizontal_alignment = "right",
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			base_color = {
+				255,
+				90,
+				90,
+				90
+			},
+			selected_color = {
+				255,
+				255,
+				255,
+				255
+			},
+			texture_size = {
+				14,
+				14
+			},
+			offset = {
+				-4,
+				0,
+				2
+			}
+		},
+		filter_icon = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_filter",
+			horizontal_alignment = "right",
+			triangle_alignment = "top_left",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			texture_size = {
+				12,
+				12
+			},
+			offset = {
+				-5,
+				0,
+				2
+			}
+		},
+		target_hotspot = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_target",
+			horizontal_alignment = "right",
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			base_color = {
+				255,
+				90,
+				90,
+				90
+			},
+			selected_color = {
+				255,
+				255,
+				255,
+				255
+			},
+			texture_size = {
+				14,
+				14
+			},
+			offset = {
+				-4,
+				-0,
+				2
+			}
+		},
+		target_icon = {
+			vertical_alignment = "center",
+			scenegraph_id = "chat_window_frame_top_target",
+			horizontal_alignment = "right",
+			triangle_alignment = "top_right",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			texture_size = {
+				12,
+				12
+			},
+			offset = {
+				-5,
+				-0,
+				2
 			}
 		},
 		background_header = {
 			scenegraph_id = "chat_window_frame_top",
 			color = Colors.get_table("very_dark_gray"),
 			size = {
-				CHAT_WIDTH - 50,
+				CHAT_WIDTH,
 				24
 			}
 		},
@@ -451,7 +780,7 @@ local chat_input_widget = {
 			scenegraph_id = "chat_window_frame_top",
 			color = Colors.get_table("black"),
 			size = {
-				CHAT_WIDTH - 52,
+				CHAT_WIDTH - 2,
 				22
 			},
 			offset = {
@@ -461,17 +790,16 @@ local chat_input_widget = {
 			}
 		},
 		text = {
-			font_size = 22,
 			scenegraph_id = "chat_input_text",
+			font_size = 22,
 			horizontal_scroll = true,
 			pixel_perfect = false,
-			vertical_alignment = "top",
 			dynamic_font = true,
-			font_type = "hell_shark_arial",
+			font_type = "arial",
 			text_color = Colors.get_table("white"),
 			offset = {
-				8,
-				6,
+				10,
+				0,
 				3
 			},
 			caret_size = {
@@ -479,34 +807,33 @@ local chat_input_widget = {
 				26
 			},
 			caret_offset = {
-				-3,
-				-4,
+				0,
+				-6,
 				4
 			},
 			caret_color = Colors.get_table("white")
 		},
 		channel_text = {
-			vertical_alignment = "top",
-			dynamic_font = true,
+			horizontal_alignment = "left",
+			scenegraph_id = "chat_input_text",
 			font_size = 22,
 			pixel_perfect = false,
-			font_type = "hell_shark_arial",
-			scenegraph_id = "chat_input_text",
+			vertical_alignment = "center",
+			dynamic_font = true,
+			font_type = "arial",
 			text_color = Colors.get_table("medium_purple"),
 			offset = {
-				8,
 				6,
+				0,
 				3
 			}
 		},
 		header_text = {
-			horizontal_alignment = "left",
-			scenegraph_id = "chat_window_frame_top",
 			font_size = 18,
-			pixel_perfect = false,
-			vertical_alignment = "bottom",
 			dynamic_font = true,
-			font_type = "hell_shark_arial",
+			scenegraph_id = "chat_window_frame_top",
+			pixel_perfect = false,
+			font_type = "arial",
 			text_color = Colors.get_table("white"),
 			offset = {
 				8,
@@ -529,17 +856,18 @@ local chat_output_widget = {
 			color = Colors.get_table("black")
 		},
 		text = {
-			word_wrap = true,
-			scenegraph_id = "chat_output_text",
 			font_size = 20,
+			scenegraph_id = "chat_output_text",
 			pixel_perfect = false,
 			vertical_alignment = "top",
 			dynamic_font = true,
-			font_type = "hell_shark_arial",
+			word_wrap = true,
+			font_type = "chat_output_font",
 			text_color = Colors.get_table("white"),
+			default_color = Colors.get_table("white"),
 			name_color = Colors.get_table("sky_blue"),
 			name_color_dev = Colors.get_table("cheeseburger"),
-			name_color_system = Colors.get_table("white"),
+			name_color_system = Colors.get_table("gold"),
 			offset = {
 				0,
 				0,
@@ -824,13 +1152,34 @@ local function create_chat_button(scenegraph_id, size)
 	return widget
 end
 
+local widgets = {
+	chat_target_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_target", scenegraph_definition.chat_window_frame_top_filter.size, nil, {
+		title = Localize("chat_menu_tooltip_target_title"),
+		description = Localize("menu_chat_tooltip_target_description")
+	}, nil, nil, "top", nil),
+	chat_filter_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_filter", scenegraph_definition.chat_window_frame_top_filter.size, nil, {
+		title = Localize("chat_menu_tooltip_filter_title"),
+		description = Localize("menu_chat_tooltip_filter_description")
+	}, nil, nil, "top", nil),
+	chat_enlarge_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_enlarge", scenegraph_definition.chat_window_frame_top_enlarge.size, nil, {
+		title = Localize("chat_menu_tooltip_enlarge_title"),
+		description = Localize("menu_chat_tooltip_enlarge_description")
+	}, nil, nil, "top", nil),
+	chat_info_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_info", scenegraph_definition.chat_window_frame_top_info.size, nil, {
+		title = Localize("chat_menu_tooltip_info_title"),
+		description = Localize("menu_chat_tooltip_info_description")
+	}, nil, nil, "top", nil)
+}
+
 return {
 	CHAT_WIDTH = CHAT_WIDTH,
 	CHAT_HEIGHT = CHAT_HEIGHT,
+	CHAT_INPUT_TEXT_WIDTH = CHAT_INPUT_TEXT_WIDTH,
 	scenegraph_definition = scenegraph_definition,
 	chat_window_widget = chat_window_widget,
 	chat_output_widget = chat_output_widget,
 	chat_input_widget = chat_input_widget,
 	chat_scrollbar_widget = chat_scrollbar_widget,
-	chat_tab_widget = create_chat_button("chat_tab_root", scenegraph_definition.chat_tab_root.size)
+	chat_tab_widget = create_chat_button("chat_tab_root", scenegraph_definition.chat_tab_root.size),
+	widgets = widgets
 }

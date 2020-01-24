@@ -35,7 +35,8 @@ local rpcs = {
 	"rpc_set_current_mechanism_state",
 	"rpc_carousel_set_local_match",
 	"rpc_reserved_slots_count",
-	"rpc_force_start_dedicated_server"
+	"rpc_force_start_dedicated_server",
+	"rpc_sync_adventure_data_to_peer"
 }
 
 GameMechanismManager.init = function (self)
@@ -124,11 +125,11 @@ GameMechanismManager.generate_locked_director_functions = function (self, level_
 	return self._locked_director_functions, self._locked_director_function_ids
 end
 
-GameMechanismManager._reset = function (self)
+GameMechanismManager._reset = function (self, level_key)
 	local dev_param_mechanism = Development.parameter("mechanism")
 	local key = dev_param_mechanism or "adventure"
 
-	self:_init_mechanism(key)
+	self:_init_mechanism(key, level_key)
 end
 
 GameMechanismManager.destroy = function (self)
@@ -173,7 +174,7 @@ GameMechanismManager.is_server = function (self)
 	return self._is_server
 end
 
-GameMechanismManager.network_context_destroyed = function (self)
+GameMechanismManager.network_context_destroyed = function (self, level_key)
 	print("[GameMechanismManager] network_context_destroyed")
 
 	self._lobby = nil
@@ -181,7 +182,7 @@ GameMechanismManager.network_context_destroyed = function (self)
 	self._peer_id = nil
 	self._is_server = nil
 
-	self:_reset()
+	self:_reset(level_key)
 end
 
 GameMechanismManager.register_rpcs = function (self, network_event_delegate)
@@ -196,15 +197,19 @@ GameMechanismManager.unregister_rpcs = function (self)
 	self._network_event_delegate = nil
 end
 
-GameMechanismManager._init_mechanism = function (self, mechanism_key)
+GameMechanismManager._init_mechanism = function (self, mechanism_key, level_key)
 	print("initializing mechanism to:", mechanism_key)
 	fassert(MechanismSettings[mechanism_key], "[GameMechanismManager] Tried to set unknown mechanism %q", tostring(mechanism_key))
 
 	local settings = MechanismSettings[mechanism_key]
-	local class = rawget(_G, settings.class_name)
 	self._mechanism_key = mechanism_key
-	local old_state = self._game_mechanism and self._game_mechanism:get_state()
-	self._game_mechanism = class:new(settings, old_state)
+
+	if self._game_mechanism then
+		self._game_mechanism:reset(settings, level_key)
+	else
+		local class = rawget(_G, settings.class_name)
+		self._game_mechanism = class:new(settings, level_key)
+	end
 end
 
 GameMechanismManager.game_round_ended = function (self, t, dt, reason)
@@ -215,12 +220,13 @@ end
 
 GameMechanismManager.start_next_round = function (self, level_transition_handler)
 	self._level_transition_handler = level_transition_handler
+	local level_key = self._level_transition_handler:get_current_level_keys()
 
 	if not self._game_mechanism then
 		local dev_param_mechanism = Development.parameter("mechanism")
 		local key = dev_param_mechanism or "adventure"
 
-		self:_init_mechanism(key)
+		self:_init_mechanism(key, level_key)
 	end
 
 	local game_mode_key, side_compositions = self._game_mechanism:start_next_round(level_transition_handler)
@@ -298,6 +304,14 @@ GameMechanismManager.client_joined = function (self, peer_id)
 	end
 end
 
+GameMechanismManager.sync_game_mode_data_to_peer = function (self, network_transmit, peer_id)
+	local mechanism = self._game_mechanism
+
+	if mechanism and mechanism.sync_game_mode_data_to_peer then
+		mechanism:sync_game_mode_data_to_peer(network_transmit, peer_id)
+	end
+end
+
 GameMechanismManager.client_left = function (self, peer_id)
 	self._joined_peers[peer_id] = nil
 end
@@ -362,6 +376,12 @@ GameMechanismManager.set_lobby_max_members = function (self, max_members)
 	self._lobby:set_max_members(max_members)
 end
 
+GameMechanismManager.backend_profiles_loaded = function (self)
+	if self._game_mechanism.backend_profiles_loaded then
+		self._game_mechanism:backend_profiles_loaded()
+	end
+end
+
 GameMechanismManager.try_reserve_game_server_slots = function (self, reserver, peers)
 	if self._game_mechanism.try_reserve_game_server_slots then
 		return self._game_mechanism:try_reserve_game_server_slots(reserver, peers)
@@ -424,6 +444,16 @@ GameMechanismManager.rpc_force_start_dedicated_server = function (self, sender)
 
 	if self._game_mechanism.force_start_dedicated_server then
 		self._game_mechanism:force_start_dedicated_server()
+	end
+end
+
+GameMechanismManager.rpc_sync_adventure_data_to_peer = function (self, sender, next_weave_name_id, next_weave_objective_index)
+	local next_weave_name = NetworkLookup.weave_names[next_weave_name_id]
+	local weave_manager = Managers.weave
+
+	if next_weave_name ~= "n/a" then
+		weave_manager:set_next_weave(next_weave_name)
+		weave_manager:set_next_objective(next_weave_objective_index)
 	end
 end
 

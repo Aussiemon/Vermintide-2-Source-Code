@@ -63,6 +63,18 @@ LobbyInternal.lobby_data_network_lookups = {
 	secondary_region = "matchmaking_regions",
 	level_key = "level_keys"
 }
+LobbyInternal.default_lobby_data = {
+	level_key = "n/a",
+	quick_game = "false",
+	is_private = "false",
+	game_mode = "n/a",
+	weave_name = "false",
+	matchmaking = "false",
+	num_players = 1,
+	expansion_rule_index = 1,
+	selected_level_key = "n/a",
+	difficulty = "normal"
+}
 
 LobbyInternal.init_client = function (network_options)
 	if not LobbyInternal.client then
@@ -226,6 +238,13 @@ LobbyInternal.serialize_psn_data = function (data_table)
 	table.clear(conv_table)
 
 	local lobby_data_network_lookups = LobbyInternal.lobby_data_network_lookups
+	local default_lobby_values = LobbyInternal.default_lobby_data
+
+	for key, value in pairs(LobbyInternal.default_lobby_data) do
+		if not data_table[key] then
+			data_table[key] = value
+		end
+	end
 
 	for key, value in pairs(data_table) do
 		if lobby_data_network_lookups[key] then
@@ -235,6 +254,7 @@ LobbyInternal.serialize_psn_data = function (data_table)
 		end
 	end
 
+	local test = conv_table
 	local packed_data = PsnRoom.pack_room_data(conv_table)
 	local packed_data_size = string.len(packed_data)
 
@@ -483,8 +503,6 @@ PSNRoom.user_name = function (self, peer_id)
 	end
 
 	user_name = user_name or self._user_names[peer_id]
-
-	fassert(user_name ~= nil, "[PSNRoom]:user_name() No member with peer id(%s) in room(%d)", peer_id, room_id)
 
 	return user_name
 end

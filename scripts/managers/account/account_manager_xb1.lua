@@ -246,7 +246,7 @@ AccountManager._check_trigger_popups = function (self)
 		local cropped_profile = (wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile)) or "?"
 		local wrong_profile_str = string.format(Localize("controller_pairing"), cropped_profile)
 
-		self:_create_popup(wrong_profile_str, "controller_pairing_header", "verify_profile", "menu_retry", "restart", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
+		self:_create_popup(wrong_profile_str, "controller_pairing_header", "verify_profile", "menu_retry", "restart_network", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
 	end
 
 	if self._privilege_popup_id and not Managers.popup:has_popup_with_id(self._privilege_popup_id) then
@@ -396,7 +396,7 @@ AccountManager._verify_user_integrity = function (self)
 	end
 
 	if not self:user_exists(self._user_id) then
-		self._signout_popup_id = Managers.popup:queue_popup(Localize("profile_signed_out_header"), Localize("popup_xboxlive_profile_acquire_error_header"), "restart", Localize("menu_return_to_title_screen"))
+		self._signout_popup_id = Managers.popup:queue_popup(Localize("profile_signed_out_header"), Localize("popup_xboxlive_profile_acquire_error_header"), "restart_network", Localize("menu_return_to_title_screen"))
 	end
 end
 
@@ -425,7 +425,7 @@ AccountManager._verify_user_profile = function (self)
 		end
 
 		self:_verify_user_in_cache()
-		self:_create_popup(wrong_profile_str, "controller_pairing_header", "verify_profile", "menu_retry", "restart", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
+		self:_create_popup(wrong_profile_str, "controller_pairing_header", "verify_profile", "menu_retry", "restart_network", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
 	end
 end
 
@@ -541,14 +541,12 @@ local function show_wrong_profile_popup(account_manager)
 	local cropped_profile = Managers.popup:fit_text_width_to_popup(wanted_profile)
 	local wrong_profile_str = string.format(Localize("wrong_profile"), cropped_profile)
 
-	account_manager:_create_popup(wrong_profile_str, "wrong_profile_header", "verify_profile", "menu_retry", "restart", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
+	account_manager:_create_popup(wrong_profile_str, "wrong_profile_header", "verify_profile", "menu_retry", "restart_network", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
 end
 
 AccountManager._handle_popup_result = function (self, result)
 	if result == "verify_profile" then
 		self:verify_profile()
-	elseif result == "restart" then
-		self:initiate_leave_game()
 	elseif result == "acknowledged" then
 	elseif result == "restart_network" then
 		self._should_teardown_xboxlive = true

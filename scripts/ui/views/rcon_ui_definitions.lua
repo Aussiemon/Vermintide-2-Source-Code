@@ -481,11 +481,11 @@ local output_widget = {
 			pixel_perfect = false,
 			vertical_alignment = "bottom",
 			dynamic_font = true,
-			font_type = "hell_shark_arial",
+			font_type = "chat_output_font",
 			text_color = Colors.get_table("white"),
 			name_color = Colors.get_table("sky_blue"),
 			name_color_dev = Colors.get_table("cheeseburger"),
-			name_color_system = Colors.get_table("white"),
+			name_color_system = Colors.get_table("gold"),
 			offset = {
 				0,
 				0,

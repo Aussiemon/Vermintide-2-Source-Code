@@ -20,6 +20,9 @@ UnlockSettings = {
 			serpent_frame = {
 				class = "UnlockDlc",
 				id = "1040840"
+			},
+			penny = {
+				class = "AlwaysUnlocked"
 			}
 		}
 	}

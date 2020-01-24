@@ -167,6 +167,7 @@ require("scripts/unit_extensions/weaves/weave_socket_extension")
 require("scripts/unit_extensions/weaves/weave_item_extension")
 require("scripts/unit_extensions/weaves/weave_interaction_extension")
 require("scripts/unit_extensions/weaves/weave_kill_enemies_extension")
+require("scripts/unit_extensions/level/event_light_spawner_extension")
 
 for _, dlc in pairs(DLCSettings) do
 	local files = dlc.entity_extensions
@@ -273,7 +274,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 			"VersusInteractObjectiveExtension",
 			"VersusPayloadObjectiveExtension",
 			"VersusSocketObjectiveExtension",
-			"VersusTargetObjectiveExtension"
+			"VersusTargetObjectiveExtension",
+			"VersusMissionObjectiveExtension"
 		})
 	else
 		self:_add_system("versus_objective_system", VersusObjectiveSystem, entity_system_creation_context)
@@ -340,6 +342,9 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("payload_system", PayloadSystem, entity_system_creation_context)
 	self:_add_system("career_system", ExtensionSystemBase, entity_system_creation_context, {
 		"CareerExtension"
+	})
+	self:_add_system("event_spawner_system", ExtensionSystemBase, entity_system_creation_context, {
+		"EventLightSpawnerExtension"
 	})
 
 	if Managers.state.game_mode:settings().use_keep_decorations then

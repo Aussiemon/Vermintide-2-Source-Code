@@ -113,7 +113,7 @@ local buff_tweak_data = {
 		multiplier = 1.3
 	},
 	markus_knight_free_pushes_on_block_buff = {
-		duration = 2
+		duration = 1
 	},
 	markus_knight_damage_taken_ally_proximity_buff = {
 		max_stacks = 3,
@@ -1188,17 +1188,13 @@ TalentBuffTemplates.empire_soldier = {
 				icon = "markus_mercenary_crit_count",
 				dormant = true,
 				on_max_stacks_func = function (player, sub_buff_template)
-					if not Managers.state.network.is_server then
-						return
-					end
-
 					local player_unit = player.player_unit
 
 					if Unit.alive(player_unit) then
 						local buff_to_add = "markus_mercenary_crit_count_buff"
-						local buff_system = Managers.state.entity:system("buff_system")
+						local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-						buff_system:add_buff(player_unit, buff_to_add, player_unit, true)
+						buff_extension:add_buff(buff_to_add)
 					end
 				end
 			}
@@ -1243,10 +1239,11 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_passive_defence = {
 		buffs = {
 			{
+				refresh_durations = true,
+				stat_buff = "damage_taken",
 				max_stacks = 1,
 				icon = "markus_mercenary_passive_defence_on_proc",
-				dormant = true,
-				stat_buff = "damage_taken"
+				dormant = true
 			}
 		}
 	},
@@ -2167,7 +2164,6 @@ Talents.empire_soldier = {
 		description = "markus_mercenary_crit_count_desc",
 		name = "markus_mercenary_crit_count",
 		num_ranks = 1,
-		buffer = "server",
 		icon = "markus_mercenary_crit_count",
 		description_values = {
 			{

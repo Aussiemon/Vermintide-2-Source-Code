@@ -369,6 +369,8 @@ NetworkLookup.husks = {
 	"units/beings/enemies/chaos_tentacle_portal/chr_chaos_tentacle_portal",
 	"units/beings/enemies/chaos_sorcerer/chr_chaos_sorcerer",
 	"units/beings/enemies/chaos_sorcerer_boss/chr_chaos_sorcerer_boss",
+	"units/beings/enemies/chaos_sorcerer_boss_drachenfels/chr_chaos_sorcerer_boss_drachenfels",
+	"units/beings/enemies/chaos_dummy_sorcerer_boss_drachenfels/chr_chaos_dummy_sorcerer_boss_drachenfels",
 	"units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	"units/beings/enemies/chaos_sorcerer_tentacle/chr_chaos_sorcerer_tentacle",
 	"units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
@@ -487,6 +489,7 @@ NetworkLookup.husks = {
 	"units/hub_elements/objective_unit",
 	"units/props/lanterns/lantern_02/prop_lantern_02_blue_static",
 	"units/fx/vfx_animation_death_spirit_02",
+	"units/fx/vfx_animation_light_spirit_01",
 	"units/fx/essence_unit",
 	"units/decals/decal_heavens_01",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
@@ -591,7 +594,8 @@ NetworkLookup.go_types = {
 	"weave_interaction_unit",
 	"weave_doom_wheel_unit",
 	"weave_kill_enemies_unit",
-	"versus_volume_objective_unit"
+	"versus_volume_objective_unit",
+	"versus_mission_objective_unit"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1005,6 +1009,7 @@ NetworkLookup.damage_types = {
 	"pack_master_grab",
 	"overcharge",
 	"weapon_bleed_dot_dagger",
+	"weapon_bleed_dot_whc",
 	"weapon_bleed_dot_maidenguard",
 	"sync_health",
 	"killing_blow",
@@ -1024,7 +1029,9 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
-NetworkLookup.weave_names = create_lookup({}, WeaveSettings.templates)
+NetworkLookup.weave_names = create_lookup({
+	"n/a"
+}, WeaveSettings.templates)
 NetworkLookup.weave_objective_names = create_lookup({}, WeaveSettings.weave_objective_names)
 NetworkLookup.weave_item_template_names = create_lookup({}, WeaveItemTemplates)
 NetworkLookup.hit_react_types = {
@@ -1583,6 +1590,7 @@ NetworkLookup.ai_inventory = {
 	"chaos_sorcerer_vortex",
 	"chaos_mutator_sorcerer",
 	"chaos_exalted_sorcerer",
+	"chaos_exalted_sorcerer_drachenfels",
 	"mace",
 	"axe",
 	"warrior_axe",
@@ -1685,6 +1693,7 @@ NetworkLookup.dialogue_event_data_names = {
 	"grenade",
 	"grimoire",
 	"torch",
+	"mutator_torch",
 	"shadow_torch",
 	"grain_sack",
 	"beer_barrel",
@@ -2015,6 +2024,7 @@ NetworkLookup.weapon_skins = create_lookup({
 NetworkLookup.performance_titles = create_lookup({
 	"n/a"
 }, PerformanceTitles.titles)
+NetworkLookup.social_wheel_events = create_lookup({}, SocialWheelSettingsLookup)
 
 local function is_sync_statistics(stat)
 	if stat.value then

@@ -11,6 +11,10 @@ BloodManagerDummy.update = function (self, dt, t)
 	return
 end
 
+BloodManagerDummy.get_blood_enabled = function (self)
+	return
+end
+
 BloodManagerDummy.despawn_blood_ball = function (self, unit)
 	return
 end

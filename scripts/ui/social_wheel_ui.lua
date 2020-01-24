@@ -64,7 +64,7 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._wwise_world = ingame_ui_context.wwise_world
 
 	if PLATFORM ~= "win32" then
-		self._default_social_wheel_category = (ingame_ui_context.is_in_inn and "general_inn") or "general"
+		self._console_extension = (ingame_ui_context.is_in_inn and "_inn") or ""
 	end
 
 	self._current_context = nil
@@ -577,6 +577,8 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 		if use_gamepad_layout then
 			category = category .. "_gamepad"
 		end
+	else
+		category = category .. self._console_extension
 	end
 
 	for i = 1, #SocialWheelPriority, 1 do
@@ -897,7 +899,7 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 	end
 
 	if PLATFORM ~= "win32" then
-		self._default_social_wheel_category = (self._ingame_ui_context.is_in_inn and "general_inn") or "general"
+		self._console_extension = (self._ingame_ui_context.is_in_inn and "_inn") or ""
 	end
 
 	local gamepad_enabled = PLATFORM ~= "win32" or Managers.input:is_device_active("gamepad")

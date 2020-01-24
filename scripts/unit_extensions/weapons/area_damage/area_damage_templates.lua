@@ -491,24 +491,6 @@ AreaDamageTemplates.templates = {
 								local is_inside_radius = distance < radius
 
 								if is_inside_radius then
-									if slow_modifier then
-										local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-
-										if buff_extension then
-											local wind_settings = WindSettings.life
-											local weave_manager = Managers.weave
-											local wind_strength = weave_manager:get_wind_strength()
-											local difficulty = Managers.state.difficulty:get_difficulty()
-											local duration = wind_settings.thorns_buff_duration[difficulty][wind_strength]
-											local params = {
-												external_optional_duration = duration
-											}
-											local slowdown_buff_name = "mutator_life_poison"
-
-											buff_extension:add_buff(slowdown_buff_name, params)
-										end
-									end
-
 									local damage_data = {
 										area_damage_template = "mutator_life_poison",
 										unit = player_unit,
@@ -548,32 +530,12 @@ AreaDamageTemplates.templates = {
 						local is_inside_radius = distance_sq < radius * radius
 						local t = Managers.time:time("game")
 
-						if is_inside_radius and slow_modifier then
-							local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+						if ScorpionSeasonalSettings.current_season_id == 1 and is_inside_radius then
+							local statistics_db = Managers.player:statistics_db()
+							local player_stats_id = player:stats_id()
+							local life_stat_id = "weave_life_stepped_in_bush"
 
-							if buff_extension then
-								local slowdown_buff_name = "mutator_life_poison"
-								local has_buff = buff_extension:has_buff_type(slowdown_buff_name)
-
-								if not has_buff then
-									local wind_settings = WindSettings.life
-									local weave_manager = Managers.weave
-									local wind_strength = weave_manager:get_wind_strength()
-									local difficulty = Managers.state.difficulty:get_difficulty()
-									local duration = wind_settings.thorns_buff_duration[difficulty][wind_strength]
-									local params = {
-										external_optional_duration = duration
-									}
-
-									buff_extension:add_buff(slowdown_buff_name, params)
-
-									local statistics_db = Managers.player:statistics_db()
-									local player_stats_id = player:stats_id()
-									local life_stat_id = "weave_life_stepped_in_bush"
-
-									statistics_db:increment_stat(player_stats_id, "season_1", life_stat_id)
-								end
-							end
+							statistics_db:increment_stat(player_stats_id, "season_1", life_stat_id)
 						end
 
 						if is_inside_radius and not player_unit_particles[player_unit] then

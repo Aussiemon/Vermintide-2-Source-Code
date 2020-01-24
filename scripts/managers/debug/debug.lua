@@ -405,7 +405,13 @@ debug.load_level = function (level_name)
 end
 
 debug.level_loaded = function (level_name)
-	local game_mode_manager = Managers.state.game_mode
+	local state_managers = Managers.state
+
+	if not state_managers then
+		return false
+	end
+
+	local game_mode_manager = state_managers.game_mode
 
 	if not game_mode_manager then
 		return false

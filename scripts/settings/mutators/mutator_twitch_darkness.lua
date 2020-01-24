@@ -4,10 +4,23 @@ return {
 	icon = "mutator_icon_darkness",
 	server_update_function = function (context, data)
 		local side = Managers.state.side:get_side_from_name("heroes")
-		local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
+		local PLAYER_UNITS = side.PLAYER_UNITS
 
-		if #PLAYER_AND_BOT_UNITS > 0 and not data.has_spawned_torches then
-			local player_unit = PLAYER_AND_BOT_UNITS[1]
+		if #PLAYER_UNITS > 0 and not data.has_spawned_torches then
+			local player_unit = nil
+
+			for i = 1, #PLAYER_UNITS, 1 do
+				local status_extension = ScriptUnit.extension(PLAYER_UNITS[i], "status_system")
+				local disabled = status_extension:is_disabled()
+
+				if not disabled then
+					player_unit = PLAYER_UNITS[i]
+
+					break
+				end
+			end
+
+			player_unit = player_unit or PLAYER_UNITS[1]
 			local position = Unit.world_position(player_unit, 0) + Vector3.up()
 			local rotation = Quaternion.identity()
 			local network_position = AiAnimUtils.position_network_scale(position, true)
@@ -17,7 +30,7 @@ return {
 			local extension_init_data = {
 				pickup_system = {
 					has_physics = true,
-					pickup_name = "torch",
+					pickup_name = "mutator_torch",
 					spawn_type = "guaranteed"
 				},
 				projectile_locomotion_system = {
@@ -46,6 +59,12 @@ return {
 		darkness_system:set_player_light_intensity(0.15)
 	end,
 	client_stop_function = function (context, data, is_destroy)
+		if not is_destroy then
+			local darkness_system = Managers.state.entity:system("darkness_system")
+
+			darkness_system:remove_mutator_torches()
+		end
+
 		local world = Managers.world:world("level_world")
 
 		if world and not is_destroy then

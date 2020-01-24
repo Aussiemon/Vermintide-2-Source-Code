@@ -96,19 +96,18 @@ weapon_template.actions = {
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
 			fire_sound_event = "player_combat_weapon_imperial_bow_fire_heavy",
-			reload_event_delay_time = 0.3,
+			anim_end_event = "to_unzoom",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.55,
 			apply_recoil = true,
 			ammo_usage = 1,
 			override_reload_time = 0.5,
-			anim_end_event = "to_unzoom",
+			reload_event_delay_time = 0.3,
 			speed = 10000,
 			reload_animation_override = "reload",
 			hold_input = "action_two_hold",
 			anim_event = "attack_shoot",
-			scale_total_time_on_mastercrafted = true,
-			total_time = 0.85,
+			total_time = 2,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -118,13 +117,6 @@ weapon_template.actions = {
 					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.75,
-					action = "action_one",
-					release_required = "action_two_hold",
-					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -174,19 +166,18 @@ weapon_template.actions = {
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
 			fire_sound_event = "player_combat_weapon_imperial_bow_fire_heavy",
-			reload_event_delay_time = 0.3,
+			anim_end_event = "to_unzoom",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.6,
 			apply_recoil = true,
 			ammo_usage = 1,
 			override_reload_time = 0.5,
-			anim_end_event = "to_unzoom",
+			reload_event_delay_time = 0.3,
 			speed = 16000,
 			reload_animation_override = "reload",
 			hold_input = "action_two_hold",
 			anim_event = "attack_shoot",
-			scale_total_time_on_mastercrafted = true,
-			total_time = 0.85,
+			total_time = 2,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -196,13 +187,6 @@ weapon_template.actions = {
 					start_time = 0.25,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.85,
-					action = "action_one",
-					release_required = "action_two_hold",
-					input = "action_one"
 				},
 				{
 					sub_action = "default",

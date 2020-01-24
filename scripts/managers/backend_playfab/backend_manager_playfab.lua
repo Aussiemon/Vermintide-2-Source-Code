@@ -12,6 +12,7 @@ require("scripts/managers/backend_playfab/backend_interface_statistics_playfab")
 require("scripts/managers/backend_playfab/backend_interface_keep_decorations_playfab")
 require("scripts/managers/backend_playfab/backend_interface_live_events_playfab")
 require("scripts/managers/backend_playfab/backend_interface_cdn_resources_playfab")
+require("scripts/managers/backend_playfab/backend_interface_dlcs_playfab")
 require("scripts/managers/backend_playfab/backend_interfaces/backend_interface_motd_playfab")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_loot_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_statistics_benchmark")
@@ -179,6 +180,7 @@ BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	self:_create_live_events_interface(settings, force_local)
 	self:_create_cdn_resources_interface(settings, force_local)
 	self:_create_motd_interface(settings, force_local)
+	self:_create_dlcs_interface(settings, force_local)
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		self:_create_console_dlc_rewards_interface(settings, force_local)
@@ -491,6 +493,14 @@ BackendManagerPlayFab.update = function (self, dt)
 		self:disable()
 
 		return
+	end
+
+	if self:_are_profiles_loaded() and not self._profiles_loaded then
+		self._profiles_loaded = true
+
+		Managers.mechanism:backend_profiles_loaded()
+	elseif not self:_are_profiles_loaded() and self._profiles_loaded then
+		self._profiles_loaded = false
 	end
 
 	local settings = GameSettingsDevelopment.backend_settings
@@ -861,7 +871,7 @@ BackendManagerPlayFab.commit = function (self, skip_queue, commit_complete_callb
 
 		if PLATFORM == "win32" then
 			Managers.save:auto_save(self._local_backend_file_name, self._save_data, save_callback)
-		elseif PLATFORM == "ps4" then
+		elseif PLATFORM == "ps4" or PLATFORM == "xb1" then
 			Managers.save:auto_save(SaveFileName, SaveData, save_callback)
 		end
 	end
@@ -875,12 +885,16 @@ BackendManagerPlayFab.has_loaded = function (self)
 	return self._local_save_loaded
 end
 
-BackendManagerPlayFab.profiles_loaded = function (self)
+BackendManagerPlayFab._are_profiles_loaded = function (self)
 	local signin = self._backend_signin
 	local mirror = self._backend_mirror
 	local ready = (self._disable_backend or (signin and signin:authenticated() and mirror and mirror:ready())) and self:_interfaces_ready()
 
 	return ready
+end
+
+BackendManagerPlayFab.profiles_loaded = function (self)
+	return self._profiles_loaded
 end
 
 BackendManagerPlayFab.interfaces_ready = function (self)
@@ -1162,6 +1176,14 @@ BackendManagerPlayFab._create_console_dlc_rewards_interface = function (self, se
 		self._interfaces.console_dlc_rewards = BackendInterfaceConsoleDlcRewardsLocal:new(self._save_data)
 	else
 		self._interfaces.console_dlc_rewards = BackendInterfaceConsoleDlcRewardsPlayfab:new(self._backend_mirror)
+	end
+end
+
+BackendManagerPlayFab._create_dlcs_interface = function (self, settings, force_local)
+	if force_local then
+		self._interfaces.dlcs = BackendInterfaceDLCsLocal:new(self._save_data)
+	else
+		self._interfaces.dlcs = BackendInterfaceDLCsPlayfab:new(self._backend_mirror)
 	end
 end
 

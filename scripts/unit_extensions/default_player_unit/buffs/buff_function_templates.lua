@@ -398,7 +398,7 @@ BuffFunctionTemplates.functions = {
 		local wwise_world = Managers.world:wwise_world(world)
 		local fx = nil
 
-		if unit == local_player_unit then
+		if unit == local_player_unit or (is_server() and is_bot(unit)) then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local first_person_unit = first_person_extension.first_person_unit
 			fx = World.create_particles(world, "fx/magic_wind_metal_blade_dance_01_1p", POSITION_LOOKUP[first_person_unit])

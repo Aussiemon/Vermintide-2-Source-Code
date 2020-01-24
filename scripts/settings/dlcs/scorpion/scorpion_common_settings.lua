@@ -14,14 +14,14 @@ settings.unlock_settings_xb1 = {
 settings.unlock_settings_ps4 = {
 	CUSA13595_00 = {
 		scorpion = {
-			id = "46def96ff75e44669adc3bec30de70a3",
+			id = "39bf75fa504440fa967c4cdd16772fc6",
 			product_label = "V2MAPPACKUS00003",
 			class = "UnlockDlc"
 		}
 	},
 	CUSA13645_00 = {
 		scorpion = {
-			id = "e9ff7de07b5849f3b79ec4cd3fba5523",
+			id = "f649de4928ae4ca5831d8d06693c97a0",
 			product_label = "V2MAPPACKEU00003",
 			class = "UnlockDlc"
 		}
@@ -100,7 +100,8 @@ for i = 1, #level_names, 1 do
 		local wind_level_name = level_key .. "_" .. wind_name
 		local package_name = "resource_packages/levels/dlcs/scorpion/" .. level_name
 		settings.level_packages[wind_level_name] = {
-			package_name
+			package_name,
+			[2.0] = "resource_packages/dlcs/scorpion_ingame"
 		}
 	end
 end

@@ -106,8 +106,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		end
 
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local position = first_person_extension:current_position()
-		local rotation = first_person_extension:current_rotation()
+		local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 
 		if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")

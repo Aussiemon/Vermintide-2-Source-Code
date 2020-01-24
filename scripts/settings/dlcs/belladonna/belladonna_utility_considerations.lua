@@ -53,7 +53,7 @@ UtilityConsiderations.beastmen_ungor_attack = {
 		is_condition = true
 	},
 	distance_to_target_flat_sq = {
-		max_value = 20,
+		max_value = 15,
 		blackboard_input = "target_dist_xy_sq",
 		spline = {
 			0,
@@ -105,7 +105,7 @@ UtilityConsiderations.beastmen_ungor_attack = {
 }
 UtilityConsiderations.beastmen_ungor_running_attack = {
 	distance_to_target = {
-		max_value = 8,
+		max_value = 4,
 		blackboard_input = "target_dist",
 		spline = {
 			0,

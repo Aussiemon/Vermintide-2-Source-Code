@@ -69,13 +69,19 @@ ImguiBuffsDebug.update = function (self)
 
 		SHOULD_RELOAD = false
 	end
+
+	if self._current_unit and not Unit.alive(self._current_unit) then
+		self._current_unit = nil
+
+		self:_refresh_unit_list()
+	end
 end
 
-ImguiBuffsDebug.subwindow_count = function (self)
-	return 1
+ImguiBuffsDebug.is_persistent = function (self)
+	return true
 end
 
-ImguiBuffsDebug.update_subwindow = function (self)
+ImguiBuffsDebug.draw = function (self, is_open)
 	Imgui.Begin("Buff Debug")
 	self:_update_controls()
 

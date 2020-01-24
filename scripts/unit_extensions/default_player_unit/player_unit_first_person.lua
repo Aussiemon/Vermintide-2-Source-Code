@@ -483,6 +483,24 @@ PlayerUnitFirstPerson.camera_position_rotation = function (self)
 	return camera_position, camera_rotation
 end
 
+PlayerUnitFirstPerson.get_projectile_start_position_rotation = function (self)
+	local position = nil
+
+	if self:first_person_mode_active() then
+		local player = Managers.player:owner(self.unit)
+		local viewport_name = player.viewport_name
+		local viewport = ScriptWorld.viewport(self.world, viewport_name)
+		local camera = ScriptViewport.camera(viewport)
+		position = ScriptCamera.position(camera)
+	else
+		position = self:current_position()
+	end
+
+	local rotation = self:current_rotation()
+
+	return position, rotation
+end
+
 PlayerUnitFirstPerson.set_wanted_player_height = function (self, state, t, time_to_change)
 	local player_height_wanted = self:_player_height_from_name(state)
 	local player_height_movement_speed = 3

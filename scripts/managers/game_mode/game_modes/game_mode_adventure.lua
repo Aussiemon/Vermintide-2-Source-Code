@@ -67,10 +67,14 @@ GameModeAdventure.event_local_player_spawned = function (self, is_initial_spawn)
 	self._is_initial_spawn = is_initial_spawn
 end
 
+GameModeAdventure.update = function (self, t, dt)
+	self._adventure_spawning:update(t, dt)
+end
+
 GameModeAdventure.server_update = function (self, t, dt)
 	GameModeAdventure.super.server_update(self, t, dt)
 	self:_handle_bots(t, dt)
-	self._adventure_spawning:update(t, dt)
+	self._adventure_spawning:server_update(t, dt)
 end
 
 GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t, mutator_handler)

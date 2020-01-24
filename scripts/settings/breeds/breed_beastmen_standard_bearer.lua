@@ -287,7 +287,19 @@ local breed_data = {
 		j_spine = 0.3,
 		j_lefthand = 0.2,
 		j_rightforearm = 0.2
-	}
+	},
+	additional_breed_packages_to_load = function (difficulty)
+		local spawn_list = BreedTweaks.standard_bearer_spawn_list[difficulty]
+		local additional_breeds = {}
+
+		if spawn_list and #spawn_list > 0 then
+			for i = 1, #spawn_list, 1 do
+				additional_breeds[#additional_breeds + 1] = spawn_list[i]
+			end
+		end
+
+		return additional_breeds
+	end
 }
 Breeds.beastmen_standard_bearer = table.create_copy(Breeds.beastmen_standard_bearer, breed_data)
 local breed_data_crater = {

@@ -280,6 +280,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	local id = data.id
 	local items = function_result.items
 	local chips = function_result.chips
+	local currency_added = function_result.currency_added
 	local backend_mirror = self._backend_mirror
 	local rewards = {
 		quest_key = data.quest_key,
@@ -329,6 +330,22 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 			loot[#loot + 1] = {
 				type = "weapon_skin",
 				weapon_skin_name = weapon_skin_name
+			}
+		end
+	end
+
+	local rewarded_currency = {}
+
+	if currency_added then
+		for _, data in ipairs(currency_added) do
+			local code = data.code
+			local amount = data.amount
+			local current_amount = rewarded_currency[code]
+			rewarded_currency[code] = (current_amount and current_amount) or 0 + amount
+			loot[#loot + 1] = {
+				type = "currency",
+				currency_code = code,
+				amount = amount
 			}
 		end
 	end

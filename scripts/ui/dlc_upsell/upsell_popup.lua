@@ -10,6 +10,7 @@ UpsellPopup.init = function (self, ui_context, dlc_name)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self.input_acquired = false
 	self._dlc_name = dlc_name
 	self._animations = {}
 
@@ -96,6 +97,16 @@ UpsellPopup.update = function (self, dt)
 		return
 	end
 
+	if Managers.state and Managers.state.voting:vote_in_progress() then
+		if self.input_acquired then
+			self:_release_input()
+		end
+
+		return
+	elseif not self.input_acquired then
+		self:_acquire_input()
+	end
+
 	self:handle_input(dt)
 	self:update_animations(dt)
 	self:draw(dt)
@@ -141,6 +152,20 @@ UpsellPopup.show_store = function (self, dlc_name_override)
 		if url then
 			Steam.open_url(url)
 		end
+	elseif PLATFORM == "xb1" then
+		local unlock_settings = UnlockSettings[1].unlocks
+		local dlc_settings = unlock_settings[dlc_name]
+		local product_id = dlc_settings.id
+		local user_id = Managers.account:user_id()
+
+		XboxLive.show_product_details(user_id, product_id)
+	elseif PLATFORM == "ps4" then
+		local user_id = Managers.account:user_id()
+		local product_label = ProductLabels[dlc_name]
+
+		Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
+			product_label
+		})
 	end
 end
 
@@ -190,6 +215,8 @@ UpsellPopup._acquire_input = function (self)
 		"mouse"
 	}, 1, self._input_service_name, "UpsellPopup")
 	ShowCursorStack.push()
+
+	self.input_acquired = true
 end
 
 UpsellPopup._release_input = function (self)
@@ -201,6 +228,8 @@ UpsellPopup._release_input = function (self)
 		"mouse"
 	}, 1, self._input_service_name, "UpsellPopup")
 	ShowCursorStack.pop()
+
+	self.input_acquired = false
 end
 
 return

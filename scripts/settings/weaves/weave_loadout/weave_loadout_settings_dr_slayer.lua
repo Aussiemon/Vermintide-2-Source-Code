@@ -27,7 +27,7 @@ WeaveLoadoutSettings.dr_slayer = {
 			"bardin_slayer_push_on_dodge"
 		},
 		{
-			"bardin_slayer_activated_ability_leap_range",
+			"bardin_slayer_activated_ability_impact_damage",
 			"bardin_slayer_activated_ability_leap_damage",
 			"bardin_slayer_activated_ability_movement"
 		}

@@ -141,8 +141,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 	if required_aim_time <= self.aim_timer then
 		local physics_world = World.get_data(world, "physics_world")
 		local first_person_extension = self.first_person_extension
-		local player_rotation = first_person_extension:current_rotation()
-		local player_position = first_person_extension:current_position()
+		local player_position, player_rotation = first_person_extension:get_projectile_start_position_rotation()
 		local direction = Vector3.normalize(Quaternion.forward(player_rotation))
 		local results = PhysicsWorld.immediate_raycast_actors(physics_world, player_position, direction, "dynamic_collision_filter", "filter_ray_true_flight_ai_only", "dynamic_collision_filter", "filter_ray_true_flight_hitbox_only")
 		local hit_unit = nil
@@ -220,8 +219,7 @@ end
 
 ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_targets, is_bot)
 	local first_person_extension = self.first_person_extension
-	local own_position = first_person_extension:current_position()
-	local look_rotation = first_person_extension:current_rotation()
+	local own_position, look_rotation = first_person_extension:get_projectile_start_position_rotation()
 	local look_direction = Quaternion.forward(look_rotation)
 	local ai_system = Managers.state.entity:system("ai_system")
 	local ai_broadphase = ai_system.broadphase

@@ -60,6 +60,7 @@ dofile("scripts/settings/breeds/breed_chaos_spawn")
 dofile("scripts/settings/breeds/breed_chaos_dummy_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_exalted_champion")
 dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
+dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer_drachenfels")
 dofile("scripts/settings/breeds/breed_chaos_zombie")
 dofile("scripts/settings/breeds/breed_critters")
 dofile("scripts/settings/breeds/breed_players")
@@ -95,12 +96,13 @@ local DEFAULT_NAVTAG_LAYERS = {
 }
 local DEFAULT_NAV_COST_MAP_LAYERS = {
 	plague_wave = 20,
-	troll_bile = 20,
+	mutator_heavens_zone = 1,
 	lamp_oil_fire = 10,
 	warpfire_thrower_warpfire = 20,
 	vortex_near = 1,
 	stormfiend_warpfire = 30,
-	vortex_danger_zone = 1
+	vortex_danger_zone = 1,
+	troll_bile = 20
 }
 local available_nav_tag_layers = table.clone(DEFAULT_NAVTAG_LAYERS)
 local available_nav_cost_map_layers = table.clone(DEFAULT_NAV_COST_MAP_LAYERS)

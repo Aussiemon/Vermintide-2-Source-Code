@@ -183,23 +183,23 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 		network_transmit:send_rpc_clients("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level, false, owner_unit_go_id)
 	else
 		network_transmit:send_rpc_server("rpc_create_explosion", owner_unit_go_id, false, position, rotation, explosion_template_id, scale, damage_source_id, career_power_level, false, owner_unit_go_id)
+	end
 
-		if talent_extension:has_talent("victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit") then
-			local nearby_enemy_units = FrameTable.alloc_table()
-			local proximity_extension = Managers.state.entity:system("proximity_system")
-			local broadphase = proximity_extension.enemy_broadphase
+	if talent_extension:has_talent("victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit") then
+		local nearby_enemy_units = FrameTable.alloc_table()
+		local proximity_extension = Managers.state.entity:system("proximity_system")
+		local broadphase = proximity_extension.enemy_broadphase
 
-			Broadphase.query(broadphase, position, radius, nearby_enemy_units)
+		Broadphase.query(broadphase, position, radius, nearby_enemy_units)
 
-			local target_number = 1
-			local side_manager = Managers.state.side
+		local target_number = 1
+		local side_manager = Managers.state.side
 
-			for _, enemy_unit in pairs(nearby_enemy_units) do
-				if Unit.alive(enemy_unit) and side_manager:is_enemy(owner_unit, enemy_unit) then
-					DamageUtils.buff_on_attack(owner_unit, enemy_unit, "ability", false, "torso", target_number, false, "n/a")
+		for _, enemy_unit in pairs(nearby_enemy_units) do
+			if Unit.alive(enemy_unit) and side_manager:is_enemy(owner_unit, enemy_unit) then
+				DamageUtils.buff_on_attack(owner_unit, enemy_unit, "ability", false, "torso", target_number, false, "n/a")
 
-					target_number = target_number + 1
-				end
+				target_number = target_number + 1
 			end
 		end
 	end

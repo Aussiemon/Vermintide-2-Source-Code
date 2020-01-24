@@ -301,42 +301,20 @@ CraftPageRollTrait.on_craft_completed = function (self)
 	local result = self._craft_result
 	local item_grid = self._item_grid
 
-	table.clear(self._craft_items)
-
-	for i = 1, NUM_CRAFT_SLOTS, 1 do
-		self._craft_items[i] = nil
-	end
-
-	item_grid:clear_item_grid()
 	self.super_parent:clear_disabled_backend_ids()
 	self.super_parent:update_inventory_items()
-
-	local num_reward_items = 0
-
-	for index, data in pairs(result) do
-		num_reward_items = num_reward_items + 1
-	end
+	self:setup_recipe_requirements()
 
 	local ignore_sound = true
 
-	for index, data in pairs(result) do
-		local backend_id = data[1]
-		local amount = data[3]
+	for i = 1, NUM_CRAFT_SLOTS, 1 do
+		local backend_id = self._craft_items[i]
 
-		self:_add_craft_item(backend_id, index, ignore_sound)
+		self:_remove_craft_item(backend_id, i, ignore_sound)
+		self:_add_craft_item(backend_id, i, ignore_sound)
 	end
-
-	item_grid:clear_locked_items()
-
-	for _, backend_id in pairs(self._craft_items) do
-		item_grid:lock_item_by_id(backend_id, true)
-	end
-
-	item_grid:update_items_status()
 
 	self._craft_result = nil
-
-	self:setup_recipe_requirements()
 end
 
 CraftPageRollTrait._update_craft_items = function (self)
@@ -368,7 +346,7 @@ CraftPageRollTrait._update_craft_items = function (self)
 	end
 end
 
-CraftPageRollTrait._remove_craft_item = function (self, backend_id, slot_index)
+CraftPageRollTrait._remove_craft_item = function (self, backend_id, slot_index, ignore_sound)
 	local craft_items = self._craft_items
 
 	if slot_index then
@@ -396,7 +374,9 @@ CraftPageRollTrait._remove_craft_item = function (self, backend_id, slot_index)
 			self:_set_craft_button_disabled(true)
 		end
 
-		self:_play_sound("play_gui_craft_item_drag")
+		if ignore_sound then
+			self:_play_sound("play_gui_craft_item_drag")
+		end
 	end
 end
 

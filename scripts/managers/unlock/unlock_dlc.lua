@@ -1,10 +1,11 @@
 UnlockDlc = class(UnlockDlc)
 
-UnlockDlc.init = function (self, name, app_id, backend_reward_id, always_unlocked_game_app_ids)
+UnlockDlc.init = function (self, name, app_id, backend_reward_id, always_unlocked_game_app_ids, cosmetic)
 	self._name = name
 	self._id = app_id
 	self._backend_reward_id = backend_reward_id
 	self._unlocked = false
+	self._cosmetic = cosmetic
 
 	if rawget(_G, "Steam") then
 		if Steam.is_installed(app_id) then
@@ -41,6 +42,10 @@ end
 
 UnlockDlc.unlocked = function (self)
 	return self._unlocked
+end
+
+UnlockDlc.is_cosmetic = function (self)
+	return self._cosmetic
 end
 
 return

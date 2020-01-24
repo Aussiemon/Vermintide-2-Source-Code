@@ -29,7 +29,7 @@ WeaveSpawner.update = function (self, t, dt, objective_template)
 end
 
 WeaveSpawner.start_terror_event_from_template = function (self, event_template_name, spawner_id)
-	local seed = self.seed
+	local seed = self.original_seed
 
 	Managers.state.conflict:start_terror_event_from_template(event_template_name, spawner_id, seed)
 end
@@ -72,7 +72,7 @@ WeaveSpawner._update_main_path_spawning = function (self, t, dt, main_path_spawn
 
 				local data = {
 					main_path_trigger_distance = main_path_trigger_distance + offset_distance,
-					seed = self.seed
+					seed = self.original_seed
 				}
 
 				TerrorEventMixer.start_event(terror_event, data)
@@ -87,6 +87,7 @@ WeaveSpawner.set_seed = function (self, seed)
 	fassert(seed and type(seed) == "number", "Bad seed input!")
 
 	self.seed = seed
+	self.original_seed = seed
 end
 
 WeaveSpawner._random = function (self, ...)

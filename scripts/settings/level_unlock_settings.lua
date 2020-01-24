@@ -66,15 +66,17 @@ local function validate_level_data(level_key, level_data)
 			return false
 		end
 
+		local level_settings = LevelSettings[level_key]
+
 		if only_release then
 			local unlockable = level_data.unlockable
 			local available = is_level_available_on_disk(level_data)
 
-			return level_key ~= "inn_level" and unlockable and available and not debug_level
+			return not level_settings.hub_level and unlockable and available and not debug_level
 		else
 			local unlockable = level_data.unlockable
 
-			return level_key ~= "inn_level" and unlockable
+			return not level_settings.hub_level and unlockable
 		end
 	end
 end
@@ -345,13 +347,14 @@ LevelUnlockUtils.current_weave = function (statistics_db, player_stats_id, ignor
 	return weave_template.name
 end
 
-LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weave_name, ignore_dlc_check)
+LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weave_name, ignore_dlc_check, num_players)
 	if script_data.unlock_all_levels then
 		return true
 	end
 
+	local weave_data = WeaveSettings.templates[weave_name]
+
 	if not ignore_dlc_check then
-		local weave_data = WeaveSettings.templates[weave_name]
 		local dlc_name = weave_data.dlc_name
 
 		if dlc_name and not Managers.unlock:is_dlc_unlocked(dlc_name) then
@@ -359,7 +362,25 @@ LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weav
 		end
 	end
 
-	return statistics_db:get_persistent_stat(player_stats_id, "completed_weaves", weave_name) > 0
+	local weave_tier = weave_data.tier
+	local completed_ever = weave_tier <= 40 and statistics_db:get_persistent_stat(player_stats_id, "completed_weaves", weave_name) > 0
+	local completed_season = false
+
+	if not completed_ever then
+		local min_players = (num_players and math.max(num_players, 1)) or 1
+		local max_players = (num_players and math.max(num_players, 4)) or 4
+
+		for i = min_players, max_players, 1 do
+			local stat_name = ScorpionSeasonalSettings.get_weave_score_stat(weave_tier, i)
+			completed_season = statistics_db:get_persistent_stat(player_stats_id, ScorpionSeasonalSettings.current_season_name, stat_name) > 0
+
+			if completed_season then
+				break
+			end
+		end
+	end
+
+	return completed_ever or completed_season
 end
 
 LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, level_key, ignore_dlc_check)

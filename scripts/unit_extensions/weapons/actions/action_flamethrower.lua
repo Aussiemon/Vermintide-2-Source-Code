@@ -167,19 +167,8 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 						if breed then
 							buff_target_number = buff_target_number + 1
-							local rand = math.random()
-							local chance = 1 / #NODES
-							local cumalative_value = 0
-
-							for j = 1, #NODES, 1 do
-								cumalative_value = cumalative_value + chance
-
-								if rand <= cumalative_value then
-									node = NODES[j]
-
-									break
-								end
-							end
+							local rand = math.round(Math.random_range(1, #NODES))
+							node = NODES[rand]
 						end
 
 						local target_position = Unit.world_position(current_target, Unit.node(current_target, node))
@@ -352,7 +341,7 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 	local player_rotation = Unit.world_rotation(first_person_unit, 0)
 	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
-	local start_point = player_position + player_direction * POSITION_TWEAK + player_direction * SPRAY_RADIUS
+	local start_point = player_position + player_direction * POSITION_TWEAK
 	local broadphase_radius = 6
 	local blackboard = BLACKBOARDS[owner_unit]
 	local side = blackboard.side

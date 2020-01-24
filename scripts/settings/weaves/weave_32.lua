@@ -1,12 +1,11 @@
 return {
 	wind_strength = 2,
-	wind = "shadow",
+	wind = "fire",
 	seed = 571238,
-	terror_events = {},
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_wall_shadow",
+			level_id = "dlc_scorpion_wall_fire",
 			objective_type = "kill",
 			conflict_settings = "default_weave",
 			level_seed = 789654,
@@ -18,14 +17,7 @@ return {
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								hardest = 0.42,
-								cataclysm_3 = 0.294,
-								cataclysm_2 = 0.3024,
-								normal = 0.9
-							}
-						}
+						kill_enemies = {}
 					}
 				}
 			},
@@ -141,7 +133,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_castle_shadow",
+			level_id = "dlc_scorpion_arena_castle_fire",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

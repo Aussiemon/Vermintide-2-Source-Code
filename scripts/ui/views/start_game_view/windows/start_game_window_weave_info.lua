@@ -5,11 +5,6 @@ local bottom_widget_definitions = definitions.bottom_widgets
 local bottom_hdr_widget_definitions = definitions.bottom_hdr_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-local environment_icons = {
-	environment_template_01 = "trials_icon_day",
-	environment_template_03 = "trials_icon_evening",
-	environment_template_02 = "trials_icon_night"
-}
 local DO_RELOAD = false
 local WIND_ICON_ANIMATION_DURATION = 1.5
 StartGameWindowWeaveInfo = class(StartGameWindowWeaveInfo)
@@ -47,7 +42,16 @@ StartGameWindowWeaveInfo.on_enter = function (self, params, offset)
 	self._ui_animations = {}
 
 	self:_create_ui_elements(params, offset)
-	self:_play_sound("menu_wind_level_open")
+	self:_start_transition_animation("on_enter")
+end
+
+StartGameWindowWeaveInfo._start_transition_animation = function (self, animation_name)
+	local params = {
+		render_settings = self._render_settings
+	}
+	local widgets = self._widgets_by_name
+	local anim_id = self._ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	self._animations[animation_name] = anim_id
 end
 
 StartGameWindowWeaveInfo._create_ui_elements = function (self, params, offset)
@@ -84,21 +88,31 @@ StartGameWindowWeaveInfo._create_ui_elements = function (self, params, offset)
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
-	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 	widgets_by_name.play_button.content.button_hotspot.disable_button = true
-	local private_game = self._parent:is_private_option_enabled()
-	widgets_by_name.private_checkbox.content.button_hotspot.is_selected = private_game
 
-	self:_set_background_wheel_visibility(true)
-	self:_align_private_checkbox()
+	self:_setup_input_buttons()
+end
+
+StartGameWindowWeaveInfo._setup_input_buttons = function (self)
+	local input_service = self._parent:window_input_service()
+	local start_game_input_data = UISettings.get_gamepad_input_texture_data(input_service, "refresh_press", true)
+	local widgets_by_name = self._widgets_by_name
+	local play_button_console = widgets_by_name.play_button_console
+	local input_texture_style = play_button_console.style.input_texture
+	input_texture_style.horizontal_alignment = "center"
+	input_texture_style.vertical_alignment = "center"
+	input_texture_style.texture_size = {
+		start_game_input_data.size[1],
+		start_game_input_data.size[2]
+	}
+	play_button_console.content.input_texture = start_game_input_data.texture
 end
 
 StartGameWindowWeaveInfo.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowWeaveInfo")
 
-	self.ui_animator = nil
-
-	self:_play_sound("menu_wind_level_close")
+	self._ui_animator = nil
 end
 
 StartGameWindowWeaveInfo.update = function (self, dt, t)
@@ -108,11 +122,64 @@ StartGameWindowWeaveInfo.update = function (self, dt, t)
 		self:_create_ui_elements()
 	end
 
+	self:_update_can_play()
+	self:_handle_gamepad_activity()
 	self:_update_selected_weave()
 	self:_update_animations(dt)
 	self:_update_party_status(dt)
 	self:_handle_input(dt, t)
 	self:draw(dt)
+end
+
+StartGameWindowWeaveInfo._handle_gamepad_activity = function (self)
+	local force_update = self.gamepad_active_last_frame == nil
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active then
+		if not self.gamepad_active_last_frame or force_update then
+			self.gamepad_active_last_frame = true
+			local widgets_by_name = self._widgets_by_name
+			widgets_by_name.play_button.content.visible = false
+			widgets_by_name.play_button_console.content.visible = true
+		end
+	elseif self.gamepad_active_last_frame or force_update then
+		self.gamepad_active_last_frame = false
+		local widgets_by_name = self._widgets_by_name
+		widgets_by_name.play_button.content.visible = true
+		widgets_by_name.play_button_console.content.visible = false
+	end
+end
+
+StartGameWindowWeaveInfo._update_can_play = function (self)
+	local widgets_by_name = self._widgets_by_name
+	local is_matchmaking = Managers.matchmaking:is_game_matchmaking()
+	local was_matchmaking = self._is_matchmaking
+	self._is_matchmaking = is_matchmaking
+
+	if is_matchmaking ~= was_matchmaking then
+		if is_matchmaking then
+			widgets_by_name.play_button.content.button_hotspot.disable_button = true
+
+			self._parent:set_input_description("cancel_matchmaking")
+		else
+			self._parent:set_input_description("play_available")
+		end
+	end
+
+	local play_button_console = self._widgets_by_name.play_button_console
+
+	if is_matchmaking then
+		play_button_console.content.text = Localize("cancel_matchmaking")
+
+		if self._is_server then
+			play_button_console.content.locked = false
+		else
+			play_button_console.content.locked = true
+		end
+	else
+		play_button_console.content.locked = false
+		play_button_console.content.text = Localize("start_game_window_play")
+	end
 end
 
 StartGameWindowWeaveInfo.post_update = function (self, dt, t)
@@ -122,7 +189,7 @@ end
 StartGameWindowWeaveInfo._update_animations = function (self, dt)
 	local ui_animations = self._ui_animations
 	local animations = self._animations
-	local ui_animator = self.ui_animator
+	local ui_animator = self._ui_animator
 
 	for name, animation in pairs(ui_animations) do
 		UIAnimation.update(animation, dt)
@@ -142,114 +209,11 @@ StartGameWindowWeaveInfo._update_animations = function (self, dt)
 		end
 	end
 
-	self:_animate_wind_effects(dt)
-
-	if self._draw_background_wheel then
-		self:_update_background_animations(dt)
-	end
-
 	self:_update_wind_icon_animation(dt)
 
 	local widgets_by_name = self._widgets_by_name
 
-	UIWidgetUtils.animate_default_checkbox_button(widgets_by_name.private_checkbox, dt)
-	UIWidgetUtils.animate_default_button(widgets_by_name.party_search_button, dt)
 	UIWidgetUtils.animate_default_button(widgets_by_name.play_button, dt)
-end
-
-StartGameWindowWeaveInfo._set_background_wheel_visibility = function (self, visible)
-	local widgets_by_name = self._widgets_by_name
-	local background_wheel_1 = widgets_by_name.background_wheel_1
-	local hdr_background_wheel_1 = widgets_by_name.hdr_background_wheel_1
-	background_wheel_1.content.visible = visible
-	hdr_background_wheel_1.content.visible = visible
-
-	for i = 1, 2, 1 do
-		local wheel_ring_1 = widgets_by_name["wheel_ring_" .. i .. "_1"]
-		local wheel_ring_2 = widgets_by_name["wheel_ring_" .. i .. "_2"]
-		local wheel_ring_3 = widgets_by_name["wheel_ring_" .. i .. "_3"]
-		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
-		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
-		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
-		wheel_ring_1.content.visible = visible
-		wheel_ring_2.content.visible = visible
-		wheel_ring_3.content.visible = visible
-		hdr_wheel_ring_1.content.visible = visible
-		hdr_wheel_ring_2.content.visible = visible
-		hdr_wheel_ring_3.content.visible = visible
-	end
-
-	self._draw_background_wheel = visible
-end
-
-StartGameWindowWeaveInfo._update_background_animations = function (self, dt)
-	local widgets_by_name = self._widgets_by_name
-
-	for i = 1, 2, 1 do
-		local wheel_ring_1 = widgets_by_name["wheel_ring_" .. i .. "_1"]
-		local wheel_ring_2 = widgets_by_name["wheel_ring_" .. i .. "_2"]
-		local wheel_ring_3 = widgets_by_name["wheel_ring_" .. i .. "_3"]
-		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
-		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
-		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
-		local degrees = 360
-		local radians = math.degrees_to_radians(degrees)
-		local speed_1 = dt * 0.01
-		local speed_2 = dt * 0.008
-		local speed_3 = dt * 0.006
-		wheel_ring_1.style.texture_id.angle = (wheel_ring_1.style.texture_id.angle + radians * speed_1) % radians
-		wheel_ring_2.style.texture_id.angle = (wheel_ring_2.style.texture_id.angle - radians * speed_2) % -radians
-		wheel_ring_3.style.texture_id.angle = (wheel_ring_3.style.texture_id.angle + radians * speed_3) % radians
-		hdr_wheel_ring_1.style.texture_id.angle = wheel_ring_1.style.texture_id.angle
-		hdr_wheel_ring_2.style.texture_id.angle = wheel_ring_2.style.texture_id.angle
-		hdr_wheel_ring_3.style.texture_id.angle = wheel_ring_3.style.texture_id.angle
-	end
-
-	local matchmaking_manager = Managers.matchmaking
-	local is_game_matchmaking = matchmaking_manager:is_game_matchmaking()
-	local speed = (is_game_matchmaking and 4) or 2.5
-	local progress = 0.5 + math.sin(Application.time_since_launch() * speed) * 0.5
-
-	self:_set_background_bloom_intensity(progress, is_game_matchmaking)
-end
-
-StartGameWindowWeaveInfo._set_background_bloom_intensity = function (self, fraction, is_game_matchmaking)
-	local min = 1.39
-	local max = (is_game_matchmaking and 10) or 2
-	local value = min + math.clamp(fraction, 0, 1) * max
-	local ui_hdr_renderer = self._ui_hdr_renderer
-	local gui = ui_hdr_renderer.gui
-	local widgets_by_name = self._widgets_by_name
-	local hdr_background_wheel_1 = widgets_by_name.hdr_background_wheel_1
-	local texture_background_wheel_1 = hdr_background_wheel_1.content.texture_id
-	local gui_material_background_wheel_1 = Gui.material(gui, texture_background_wheel_1)
-
-	Material.set_scalar(gui_material_background_wheel_1, "noise_intensity", value)
-
-	for i = 1, 2, 1 do
-		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
-		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
-		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
-		local texture_wheel_ring_1 = hdr_wheel_ring_1.content.texture_id
-		local texture_wheel_ring_2 = hdr_wheel_ring_2.content.texture_id
-		local texture_wheel_ring_3 = hdr_wheel_ring_3.content.texture_id
-		local gui_material_wheel_ring_1 = Gui.material(gui, texture_wheel_ring_1)
-		local gui_material_wheel_ring_2 = Gui.material(gui, texture_wheel_ring_2)
-		local gui_material_wheel_ring_3 = Gui.material(gui, texture_wheel_ring_3)
-
-		Material.set_scalar(gui_material_wheel_ring_1, "noise_intensity", value)
-		Material.set_scalar(gui_material_wheel_ring_2, "noise_intensity", value)
-		Material.set_scalar(gui_material_wheel_ring_3, "noise_intensity", value)
-	end
-end
-
-StartGameWindowWeaveInfo._animate_wind_effects = function (self, dt)
-	local speed = 0.08
-	local wind_effect_progress = self._wind_effect_progress or 0
-	wind_effect_progress = (wind_effect_progress + dt * speed) % 1
-	self._wind_effect_progress = wind_effect_progress
-	local angle = math.degrees_to_radians(360 * wind_effect_progress)
-	local widgets_by_name = self._widgets_by_name
 end
 
 StartGameWindowWeaveInfo._is_button_pressed = function (self, widget)
@@ -317,19 +281,9 @@ StartGameWindowWeaveInfo._handle_input = function (self, dt, t)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local input_service = self._parent:window_input_service()
 	local play_button = widgets_by_name.play_button
-	local private_checkbox = widgets_by_name.private_checkbox
-	local party_search_button = widgets_by_name.party_search_button
 
-	if self:_is_button_hover_enter(private_checkbox) or self:_is_button_hover_enter(play_button) or self:_is_button_hover_enter(party_search_button) then
+	if self:_is_button_hover_enter(play_button) then
 		self:_play_sound("Play_hud_hover")
-	end
-
-	if self:_is_button_released(private_checkbox) then
-		local content = private_checkbox.content
-		content.button_hotspot.is_selected = not content.button_hotspot.is_selected
-
-		parent:set_private_option_enabled(content.button_hotspot.is_selected)
-		self:_play_sound("play_gui_lobby_button_play")
 	end
 
 	local play_pressed = gamepad_active and self._enable_play and input_service:get("refresh_press")
@@ -337,15 +291,6 @@ StartGameWindowWeaveInfo._handle_input = function (self, dt, t)
 	if self:_is_button_released(play_button) or play_pressed then
 		parent:play(t, "weave")
 		self:_play_sound("menu_wind_level_choose_wind")
-	end
-
-	if self:_is_button_released(party_search_button) then
-		if self._is_matchmaking_for_weave then
-			self:_play_sound("play_gui_lobby_button_play")
-			parent:cancel_matchmaking()
-		else
-			parent:play(t, "weave_find_group")
-		end
 	end
 end
 
@@ -362,67 +307,11 @@ StartGameWindowWeaveInfo._update_party_status = function (self, dt)
 	local is_searching_for_weave = active_game_mode and active_game_mode == "weave"
 	local is_searching = is_game_matchmaking and (is_searching_for_weave_party or is_searching_for_weave)
 	self._is_matchmaking_for_weave = is_searching
-	local lobby = Managers.state.network:lobby()
-	local lobby_members = lobby:members()
-	local members = lobby_members:get_members()
-	local num_players = #members
-	local max_players = 4
-	local is_full_party = num_players >= max_players
 	local widgets_by_name = self._widgets_by_name
-	local party_button_widget = widgets_by_name.party_search_button
-	local party_button_widget_content = party_button_widget.content
-	local party_button_hotspot = party_button_widget_content.button_hotspot
-	party_button_hotspot.disable_button = is_full_party or (not self._is_server and self._is_matchmaking_for_weave)
-	party_button_widget_content.title_text = (self._is_matchmaking_for_weave and party_find_button_texts[2]) or party_find_button_texts[1]
 	local play_button_widget = widgets_by_name.play_button
 	local play_button_widget_content = play_button_widget.content
 	local play_button_hotspot = play_button_widget_content.button_hotspot
 	play_button_hotspot.disable_button = is_searching
-	local private_checkbox_widget = widgets_by_name.private_checkbox
-	local private_checkbox_widget_content = private_checkbox_widget.content
-	local private_checkbox_hotspot = private_checkbox_widget_content.button_hotspot
-	private_checkbox_hotspot.disable_button = is_searching
-	local breed_textures = UISettings.breed_textures
-	local player_manager = Managers.player
-	local my_player = self._my_player
-	local my_peer_id = my_player:network_id()
-	local my_local_peer_id = my_player:local_player_id()
-	local party = Managers.party:get_party_from_player_id(my_peer_id, my_local_peer_id)
-	local occupied_slots = party and party.occupied_slots
-
-	for i = 1, max_players, 1 do
-		local widget = widgets_by_name["player_" .. i]
-		local content = widget.content
-		content.searching = is_searching
-		local player_icon = "small_unit_frame_portrait_default"
-		local occupied = false
-		local status = occupied_slots and occupied_slots[i]
-
-		if status then
-			local player_peer_id = status.peer_id
-			local local_player_id = status.local_player_id
-			local player = player_manager:player(player_peer_id, local_player_id)
-
-			if player then
-				local player_ui_id = player:ui_id()
-				local own_player = player == my_player
-				occupied = true
-				local player_unit = player.player_unit
-
-				if player_unit then
-					local career_extension = ScriptUnit.extension(player_unit, "career_system")
-					local career_name = career_extension:career_name()
-					local career = CareerSettings[career_name]
-					local breed = career.breed
-					local breed_name = breed.name
-					player_icon = breed_textures[breed_name]
-				end
-			end
-		end
-
-		content.occupied = occupied
-		content.player_icon = player_icon
-	end
 end
 
 StartGameWindowWeaveInfo._play_sound = function (self, event)
@@ -560,12 +449,6 @@ end
 StartGameWindowWeaveInfo._set_colors_by_wind = function (self, wind_name)
 	local color = Colors.get_color_table_with_alpha(wind_name, 255)
 	local widgets_by_name = self._widgets_by_name
-	local test_color = {
-		255,
-		255,
-		255,
-		0
-	}
 
 	self:_apply_color_values(widgets_by_name.wind_title.style.text.text_color, color)
 	self:_apply_color_values(widgets_by_name.wind_icon.style.texture_id.color, color)
@@ -581,30 +464,6 @@ StartGameWindowWeaveInfo._apply_color_values = function (self, target, source, c
 	target[2] = math.floor(source[2] * color_multiplier)
 	target[3] = math.floor(source[3] * color_multiplier)
 	target[4] = math.floor(source[4] * color_multiplier)
-end
-
-StartGameWindowWeaveInfo._align_private_checkbox = function (self)
-	local widgets_by_name = self._widgets_by_name
-	local widget_name = "private_checkbox"
-	local widget = widgets_by_name[widget_name]
-	local content = widget.content
-	local offset = widget.offset
-	local style = widget.style
-	local hotspot_content = content.button_hotspot
-	local hotspot_style = style.button_hotspot
-	local hotspot_size = hotspot_style.size
-	local text_style = style.text
-	local text_offset = text_style.offset
-	local text_width_offset = text_offset[1]
-	local ui_renderer = self._ui_renderer
-	local text_width = UIUtils.get_text_width(ui_renderer, text_style, hotspot_content.text)
-	local total_width = text_width_offset + text_width
-	offset[1] = -total_width / 2
-	local tooltip_style = style.additional_option_info
-	local tooltip_width = tooltip_style.max_width
-	local tooltip_offset = tooltip_style.offset
-	tooltip_offset[1] = -(tooltip_width / 2 - total_width / 2)
-	hotspot_size[1] = total_width
 end
 
 StartGameWindowWeaveInfo._assign_objective = function (self, widget, title_text, text, icon, spacing)

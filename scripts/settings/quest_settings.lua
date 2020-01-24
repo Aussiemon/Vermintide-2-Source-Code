@@ -63,84 +63,84 @@ QuestSettings = {
 	event_crawl_drink_all_ale_amount = 99,
 	event_celebration_collect_painting_scraps = 9,
 	weekly_complete_quickplay_missions = {
-		3,
-		6,
+		10,
+		10,
 		10
 	},
 	weekly_complete_weekly_event_missions = {
-		3,
-		6,
-		10
+		1,
+		1,
+		1
 	},
 	weekly_collect_tomes = {
-		9,
 		15,
-		24
+		15,
+		15
 	},
 	weekly_collect_grimoires = {
-		6,
 		8,
-		10
+		8,
+		8
 	},
 	weekly_collect_dice = {
-		10,
 		15,
-		20
+		15,
+		15
 	},
 	weekly_collect_painting_scrap = {
 		10,
-		20,
-		30
+		10,
+		10
 	},
 	weekly_kill_bosses = {
-		3,
 		6,
-		9
+		6,
+		6
 	},
 	weekly_kill_elites = {
-		25,
-		40,
+		55,
+		55,
 		55
 	},
 	weekly_complete_levels_hero_wood_elf = {
-		3,
 		6,
-		10
+		6,
+		6
 	},
 	weekly_complete_levels_hero_witch_hunter = {
-		3,
 		6,
-		10
+		6,
+		6
 	},
 	weekly_complete_levels_hero_dwarf_ranger = {
-		3,
 		6,
-		10
+		6,
+		6
 	},
 	weekly_complete_levels_hero_empire_soldier = {
-		3,
 		6,
-		10
+		6,
+		6
 	},
 	weekly_complete_levels_hero_bright_wizard = {
-		3,
 		6,
-		10
+		6,
+		6
 	},
 	weekly_kill_critters = {
-		5,
-		10,
+		15,
+		15,
 		15
 	},
 	weekly_score_headshots = {
-		50,
-		100,
+		150,
+		150,
 		150
 	},
 	weekly_daily_quests = {
-		1,
 		3,
-		5
+		3,
+		3
 	},
 	allowed_difficulties = {
 		elven_ruins_speed_event = {

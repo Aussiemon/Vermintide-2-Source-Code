@@ -202,12 +202,14 @@ CameraStateObserver._set_follow_unit = function (self, observed_player_id, follo
 	self.camera_extension:set_observed_player_id(observed_player_id)
 
 	if not self._is_server then
-		local player = Managers.player:player_from_unique_id(observed_player_id)
+		local player_to_observe = Managers.player:player_from_unique_id(observed_player_id)
 
-		if player then
-			local game_object_id = player.game_object_id
+		if player_to_observe then
+			local player_to_observe_go_id = player_to_observe.game_object_id
+			local local_player = Managers.player:local_player()
+			local local_player_go_id = local_player.game_object_id
 
-			self._network_transmit:send_rpc_server("rpc_set_observed_player_id", game_object_id)
+			self._network_transmit:send_rpc_server("rpc_set_observed_player_id", local_player_go_id, player_to_observe_go_id)
 		end
 	end
 end

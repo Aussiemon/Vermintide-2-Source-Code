@@ -572,6 +572,10 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 		buff_extension:trigger_procs("on_kill_elite_special", killing_blow, breed_killed, ai_unit)
 	end
 
+	if breed_killed.elite and buff_extension then
+		buff_extension:trigger_procs("on_elite_killed", killing_blow, breed_killed, ai_unit)
+	end
+
 	local side = side_manager.side_by_unit[ai_unit]
 
 	if breed_killed.boss then

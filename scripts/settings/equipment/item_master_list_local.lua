@@ -559,6 +559,33 @@ ItemMasterList.torch = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.mutator_torch = {
+	temporary_template = "mutator_torch",
+	right_hand_unit = "units/weapons/player/wpn_torch/wpn_torch",
+	rarity = "plentiful",
+	inventory_icon = "icons_placeholder",
+	slot_type = "healthkit",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.shadow_torch = {
 	temporary_template = "shadow_torch",
 	right_hand_unit = "units/weapons/player/wpn_shadow_torch/wpn_shadow_torch",

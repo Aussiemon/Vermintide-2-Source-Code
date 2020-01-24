@@ -14,6 +14,32 @@ local scenegraph_definition = {
 			UILayer.end_screen
 		}
 	},
+	dead_space_filler_mask = {
+		vertical_alignment = "center",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	dead_space_filler = {
+		scale = "fit",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	console_cursor = {
 		vertical_alignment = "center",
 		parent = "screen",
@@ -503,6 +529,48 @@ local scenegraph_definition = {
 			-40,
 			10
 		}
+	},
+	bottom_glow = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1280
+		},
+		position = {
+			0,
+			0,
+			-597
+		}
+	},
+	bottom_glow_short = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			375
+		},
+		position = {
+			0,
+			0,
+			-596
+		}
+	},
+	bottom_glow_shortest = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			200
+		},
+		position = {
+			0,
+			0,
+			-595
+		}
 	}
 }
 
@@ -687,6 +755,100 @@ local widgets_definitions = {
 		255,
 		0,
 		0
+	}),
+	dead_space_filler_mask = UIWidgets.create_simple_texture("mask_rect", "dead_space_filler", false, false, {
+		255,
+		255,
+		255,
+		255
+	}),
+	dead_space_filler_unmask = UIWidgets.create_simple_texture("mask_rect", "dead_space_filler_mask", false, false, {
+		1,
+		21,
+		21,
+		21
+	})
+}
+local bottom_glow_back_smoke_color = {
+	200,
+	138,
+	0,
+	147
+}
+local bottom_glow_front_smoke_color = {
+	255,
+	138,
+	0,
+	187
+}
+local bottom_glow_front_2_smoke_color = {
+	200,
+	128,
+	0,
+	217
+}
+local bottom_glow_back_ember_color = {
+	130,
+	255,
+	255,
+	255
+}
+local weave_widget_definitions = {
+	bottom_glow_smoke_1 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_smoke_1", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "bottom_glow", nil, nil, bottom_glow_back_smoke_color),
+	bottom_glow_smoke_2 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_smoke_2", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "bottom_glow_short", nil, nil, bottom_glow_front_smoke_color),
+	bottom_glow_smoke_3 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_embers_2", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "bottom_glow_shortest", nil, nil, bottom_glow_front_2_smoke_color),
+	bottom_glow_embers_1 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_embers_1", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "bottom_glow", nil, nil, bottom_glow_back_ember_color, 1),
+	bottom_glow_embers_3 = UIWidgets.create_simple_uv_texture("forge_overview_bottom_glow_effect_embers_3", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "bottom_glow_short", nil, nil, bottom_glow_back_ember_color, 1),
+	dead_space_filler = UIWidgets.create_simple_texture("rect_masked", "dead_space_filler", false, false, {
+		255,
+		0,
+		0,
+		0
 	})
 }
 local animations = {
@@ -777,6 +939,7 @@ return {
 	num_experience_entries = num_experience_entries,
 	scenegraph_definition = scenegraph_definition,
 	widgets_definitions = widgets_definitions,
+	weave_widget_definitions = weave_widget_definitions,
 	animations = animations,
 	generic_input_actions = generic_input_actions,
 	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")

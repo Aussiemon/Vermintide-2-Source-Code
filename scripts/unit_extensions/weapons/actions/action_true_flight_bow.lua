@@ -123,8 +123,7 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 	local owner_unit = self.owner_unit
 	local speed = current_action.speed
 	local first_person_extension = self.first_person_extension
-	local position = first_person_extension:current_position()
-	local rotation = first_person_extension:current_rotation()
+	local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 	local spread_extension = self.spread_extension
 	local num_projectiles = self.num_projectiles
 

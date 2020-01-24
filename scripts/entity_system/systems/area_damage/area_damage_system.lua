@@ -109,7 +109,7 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 	local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
-	local attacker_power_level = attacker_power_level or 0
+	local attacker_power_level = (attacker_power_level and math.clamp(attacker_power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)) or 0
 	local is_critical_strike = not not is_critical_strike
 	local source_attacker_unit_id = network_manager:unit_game_object_id(source_attacker_unit) or attacker_unit_id
 	local game = network_manager:game()
@@ -183,7 +183,7 @@ AreaDamageSystem._create_aoe_damage_buffer = function (self)
 	end
 end
 
-AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, full_power_level, actual_power_level, hit_direction, explosion_template_name, is_critical_strike, allow_critical_proc, source_attacker_unit)
+AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit, impact_position, shield_blocked, do_damage, hit_zone_name, damage_source, hit_distance, push_speed, radius, max_damage_radius, radius_min, radius_max, full_power_level, actual_power_level, hit_direction, explosion_template_name, is_critical_strike, allow_critical_proc, source_attacker_unit, target_number)
 	local aoe_damage_ring_buffer = self._aoe_damage_ring_buffer
 	local buffer = aoe_damage_ring_buffer.buffer
 	local read_index = aoe_damage_ring_buffer.read_index
@@ -225,6 +225,7 @@ AreaDamageSystem.add_aoe_damage_target = function (self, hit_unit, attacker_unit
 	aoe_damage_data.explosion_template_name = explosion_template_name
 	aoe_damage_data.is_critical_strike = is_critical_strike
 	aoe_damage_data.allow_critical_proc = allow_critical_proc
+	aoe_damage_data.target_number = target_number
 	size = size + 1
 	aoe_damage_ring_buffer.size = size
 	aoe_damage_ring_buffer.write_index = write_index % max_size + 1
@@ -275,6 +276,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 	local explosion_template_name = aoe_damage_data.explosion_template_name
 	local is_critical_strike = aoe_damage_data.is_critical_strike
 	local allow_critical_proc = aoe_damage_data.allow_critical_proc
+	local target_number = aoe_damage_data.target_number
 	local hit_unit_alive = unit_alive(hit_unit)
 
 	if not hit_unit_alive then
@@ -321,10 +323,10 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 				local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
 
-				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, (is_critical_strike and allow_critical_proc) or false, hit_zone_id, 1, buff_weapon_type_id)
-				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server, "n/a")
+				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, (is_critical_strike and allow_critical_proc) or false, hit_zone_id, target_number, buff_weapon_type_id)
+				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
 			elseif attacker_player then
-				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, 1, send_to_server, "n/a")
+				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
 			end
 
 			if not explosion_template.no_aggro and not breed.is_player then

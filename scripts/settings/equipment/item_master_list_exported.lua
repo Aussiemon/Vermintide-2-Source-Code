@@ -59,6 +59,7 @@ ItemMasterList.skin_dr_ranger_barak_varr = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"dr_ranger"
 	}
@@ -80,7 +81,7 @@ ItemMasterList.skin_dr_ranger_black_and_gold = {
 	}
 }
 ItemMasterList.skin_dr_ranger_brown_and_yellow = {
-	description = "skin_dr_ranger_description",
+	description = "description_skin_dr_ranger_brown_and_yellow",
 	temporary_template = "skin_dr_ranger_brown_and_yellow",
 	display_name = "skin_dr_ranger_brown_and_yellow",
 	name = "skin_dr_ranger_brown_and_yellow",
@@ -219,6 +220,7 @@ ItemMasterList.skin_dr_slayer_wing = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"dr_slayer"
 	}
@@ -283,6 +285,7 @@ ItemMasterList.skin_dr_ironbreaker_blue = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"dr_ironbreaker"
 	}
@@ -427,6 +430,7 @@ ItemMasterList.skin_es_knight_middenland = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"es_knight"
 	}
@@ -491,6 +495,7 @@ ItemMasterList.skin_es_huntsman_middenland = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"es_huntsman"
 	}
@@ -619,6 +624,7 @@ ItemMasterList.skin_es_mercenary_middenland = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"es_mercenary"
 	}
@@ -747,6 +753,7 @@ ItemMasterList.skin_ww_shade_midnight = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"we_shade"
 	}
@@ -827,6 +834,7 @@ ItemMasterList.skin_ww_maidenguard_elyrion = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"we_maidenguard"
 	}
@@ -939,6 +947,7 @@ ItemMasterList.skin_ww_waywatcher_atylwyth = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"we_waywatcher"
 	}
@@ -1067,6 +1076,7 @@ ItemMasterList.skin_wh_bountyhunter_middenland = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"wh_bountyhunter"
 	}
@@ -1163,6 +1173,7 @@ ItemMasterList.skin_wh_captain_middenland = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"wh_captain"
 	}
@@ -1275,6 +1286,7 @@ ItemMasterList.skin_wh_zealot_middenland = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"wh_zealot"
 	}
@@ -1339,6 +1351,7 @@ ItemMasterList.skin_bw_unchained_ash = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"bw_unchained"
 	}
@@ -1451,6 +1464,7 @@ ItemMasterList.skin_bw_scholar_ash = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"bw_scholar"
 	}
@@ -1563,6 +1577,7 @@ ItemMasterList.skin_bw_adept_ash = {
 	rarity = "exotic",
 	skin_type = "unit",
 	item_type = "skin",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"bw_adept"
 	}
@@ -4515,6 +4530,174 @@ ItemMasterList.frame_0081 = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_0084 = {
+	description = "frame_0084_description",
+	temporary_template = "frame_0084",
+	display_name = "frame_0084_name",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_0084",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0085 = {
+	description = "frame_0085_description",
+	temporary_template = "frame_0085",
+	display_name = "frame_0085_name",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_0085",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0086 = {
+	description = "frame_0086_description",
+	temporary_template = "frame_0086",
+	display_name = "frame_0086_name",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_0086",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0087 = {
+	description = "frame_0087_description",
+	temporary_template = "frame_0087",
+	display_name = "frame_0087_name",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_0087",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0089 = {
+	description = "frame_0089_description",
+	temporary_template = "frame_0089",
+	display_name = "frame_0089_name",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_0089",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0090 = {
+	description = "frame_0090_description",
+	temporary_template = "frame_0090",
+	display_name = "frame_0090_name",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_0090",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_0091 = {
 	description = "frame_0091_description",
 	temporary_template = "frame_0091",
@@ -4946,6 +5129,7 @@ ItemMasterList.unchained_hat_0001 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_02",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"bw_unchained"
 	}
@@ -5173,6 +5357,7 @@ ItemMasterList.adept_hat_0005 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_adept/headpiece/bw_a_hat_06",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"bw_adept"
 	}
@@ -5212,12 +5397,42 @@ ItemMasterList.adept_hat_0008 = {
 	rarity = "exotic",
 	display_name = "display_name_adept_hat_0008",
 	template = "bw_gates",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_adept_hat_0008",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_adept/headpiece/bw_a_hat_09",
+	can_wield = {
+		"bw_adept"
+	}
+}
+ItemMasterList.adept_hat_0009 = {
+	description = "description_adept_hat_0009",
+	rarity = "exotic",
+	display_name = "display_name_adept_hat_0009",
+	template = "bw_gates",
+	inventory_icon = "icon_adept_hat_0009",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_adept/headpiece/bw_a_hat_10",
+	can_wield = {
+		"bw_adept"
+	}
+}
+ItemMasterList.adept_hat_0010 = {
+	description = "description_adept_hat_0010",
+	rarity = "exotic",
+	display_name = "display_name_adept_hat_0010",
+	template = "bw_gates",
+	inventory_icon = "icon_adept_hat_0010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_adept/headpiece/bw_a_hat_11",
 	can_wield = {
 		"bw_adept"
 	}
@@ -5340,6 +5555,7 @@ ItemMasterList.scholar_hat_0006 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_07",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"bw_scholar"
 	}
@@ -5689,6 +5905,7 @@ ItemMasterList.ranger_hat_0013 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_07_green",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"dr_ranger"
 	}
@@ -5790,7 +6007,7 @@ ItemMasterList.ironbreaker_hat_0002 = {
 	rarity = "common",
 	display_name = "display_name_ironbreaker_hat_0002",
 	template = "dr_helmets_beard_ears",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_ironbreaker_hat_0002",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -5805,7 +6022,7 @@ ItemMasterList.ironbreaker_hat_0003 = {
 	rarity = "common",
 	display_name = "display_name_ironbreaker_hat_0003",
 	template = "dr_helmets_beard_ears",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_ironbreaker_hat_0003",
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
@@ -5931,6 +6148,7 @@ ItemMasterList.ironbreaker_hat_0011 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_12",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"dr_ironbreaker"
 	}
@@ -6144,6 +6362,7 @@ ItemMasterList.slayer_hat_0008 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_hat_06",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"dr_slayer"
 	}
@@ -6388,6 +6607,7 @@ ItemMasterList.huntsman_hat_0008 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/empire_soldier_huntsman/headpiece/es_h_hat_09",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"es_huntsman"
 	}
@@ -6465,6 +6685,7 @@ ItemMasterList.mercenary_hat_0002 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/empire_soldier_mercenary/headpiece/es_m_hat_03",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"es_mercenary"
 	}
@@ -6707,6 +6928,7 @@ ItemMasterList.knight_hat_0007 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/empire_soldier_knight/headpiece/es_k_hat_08",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"es_knight"
 	}
@@ -6908,6 +7130,7 @@ ItemMasterList.witchhunter_hat_0005 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_01",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"wh_captain"
 	}
@@ -7135,6 +7358,7 @@ ItemMasterList.zealot_hat_0008 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/chr_dummy_hat",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"wh_zealot"
 	}
@@ -7345,6 +7569,7 @@ ItemMasterList.bountyhunter_hat_0009 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/witch_hunter_bounty_hunter/headpiece/wh_bh_hat_10",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"wh_bountyhunter"
 	}
@@ -7556,6 +7781,7 @@ ItemMasterList.waywatcher_hat_0010 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/way_watcher_upgraded/headpiece/ww_u_hat_11",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"we_waywatcher"
 	}
@@ -7722,6 +7948,7 @@ ItemMasterList.shade_hat_0008 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/way_watcher_shade/headpiece/ww_s_hat_09",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"we_shade"
 	}
@@ -7888,6 +8115,7 @@ ItemMasterList.maidenguard_hat_0007 = {
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_08",
+	required_dlc = "bogenhafen",
 	can_wield = {
 		"we_maidenguard"
 	}
@@ -19346,216 +19574,6 @@ ItemMasterList.we_spear_skin = {
 		"we_waywatcher",
 		"we_maidenguard",
 		"we_shade"
-	}
-}
-ItemMasterList.shilling_bag_1 = {
-	description = "shilling_bag_1_description",
-	rarity = "common",
-	display_name = "shilling_bag_1_name",
-	inventory_icon = "icon_shillings_01",
-	slot_type = "chips",
-	information_text = "information_text_shilling",
-	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
-	bundle = {
-		BundledVirtualCurrencies = {
-			SM = 1
-		}
-	},
-	consumable = {
-		UsageCount = 1,
-		UsagePeriod = 3
-	}
-}
-ItemMasterList.shilling_bag_5 = {
-	description = "shilling_bag_5_description",
-	rarity = "common",
-	display_name = "shilling_bag_5_name",
-	inventory_icon = "icon_shillings_02",
-	slot_type = "chips",
-	information_text = "information_text_shilling",
-	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
-	bundle = {
-		BundledVirtualCurrencies = {
-			SM = 5
-		}
-	},
-	consumable = {
-		UsageCount = 1,
-		UsagePeriod = 3
-	}
-}
-ItemMasterList.shilling_bag_10 = {
-	description = "shilling_bag_10_description",
-	rarity = "common",
-	display_name = "shilling_bag_10_name",
-	inventory_icon = "icon_shillings_03",
-	slot_type = "chips",
-	information_text = "information_text_shilling",
-	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
-	bundle = {
-		BundledVirtualCurrencies = {
-			SM = 10
-		}
-	},
-	consumable = {
-		UsageCount = 1,
-		UsagePeriod = 3
-	}
-}
-ItemMasterList.shilling_bag_25 = {
-	description = "shilling_bag_25_description",
-	rarity = "common",
-	display_name = "shilling_bag_25_name",
-	inventory_icon = "icon_shillings_04",
-	slot_type = "chips",
-	information_text = "information_text_shilling",
-	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
-	bundle = {
-		BundledVirtualCurrencies = {
-			SM = 25
-		}
-	},
-	consumable = {
-		UsageCount = 1,
-		UsagePeriod = 3
-	}
-}
-ItemMasterList.shilling_bag_50 = {
-	description = "shilling_bag_50_description",
-	rarity = "common",
-	display_name = "shilling_bag_50_name",
-	inventory_icon = "icon_shillings_05",
-	slot_type = "chips",
-	information_text = "information_text_shilling",
-	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
-	bundle = {
-		BundledVirtualCurrencies = {
-			SM = 50
-		}
-	},
-	consumable = {
-		UsageCount = 1,
-		UsagePeriod = 3
-	}
-}
-ItemMasterList.shilling_bag_100 = {
-	description = "shilling_bag_100_description",
-	rarity = "common",
-	display_name = "shilling_bag_100_name",
-	inventory_icon = "icon_shillings_06",
-	slot_type = "chips",
-	information_text = "information_text_shilling",
-	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
-	bundle = {
-		BundledVirtualCurrencies = {
-			SM = 100
-		}
-	},
-	consumable = {
-		UsageCount = 1,
-		UsagePeriod = 3
 	}
 }
 

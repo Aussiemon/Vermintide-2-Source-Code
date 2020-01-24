@@ -1406,10 +1406,20 @@ ChatControllerSettings = {
 			"esc",
 			"pressed"
 		},
-		unallowed_activate_chat_input = {
+		chat_left_alt_held = {
 			"keyboard",
 			"left alt",
 			"held"
+		},
+		chat_left_alt_pressed = {
+			"keyboard",
+			"left alt",
+			"pressed"
+		},
+		chat_left_alt_released = {
+			"keyboard",
+			"left alt",
+			"released"
 		},
 		chat_scroll_up = {
 			"keyboard",
@@ -1508,10 +1518,20 @@ ChatControllerSettings = {
 			"esc",
 			"pressed"
 		},
-		unallowed_activate_chat_input = {
+		chat_left_alt_held = {
 			"keyboard",
 			"left alt",
 			"held"
+		},
+		chat_left_alt_pressed = {
+			"keyboard",
+			"left alt",
+			"pressed"
+		},
+		chat_left_alt_released = {
+			"keyboard",
+			"left alt",
+			"released"
 		},
 		cursor = {
 			"mouse",
@@ -1550,10 +1570,20 @@ ChatControllerSettings = {
 			"esc",
 			"pressed"
 		},
-		unallowed_activate_chat_input = {
+		chat_left_alt_held = {
 			"keyboard",
 			"left alt",
 			"held"
+		},
+		chat_left_alt_pressed = {
+			"keyboard",
+			"left alt",
+			"pressed"
+		},
+		chat_left_alt_released = {
+			"keyboard",
+			"left alt",
+			"released"
 		},
 		cursor = {
 			"mouse",
@@ -1579,6 +1609,14 @@ ChatControllerSettings = {
 }
 ChatControllerFilters = {
 	win32 = InputUtils.keymaps_key_approved("win32") and {
+		unallowed_activate_chat_input = {
+			filter_type = "or",
+			input_mappings = {
+				button_2 = "chat_left_alt_pressed",
+				button_3 = "chat_left_alt_released",
+				button_1 = "chat_left_alt_held"
+			}
+		},
 		execute_chat_input = {
 			filter_type = "or",
 			input_mappings = {
@@ -1599,9 +1637,24 @@ ChatControllerFilters = {
 				button_1 = "chat_left_ctrl",
 				button_2 = "chat_backspace_pressed"
 			}
+		},
+		chat_switch_view = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "chat_left_ctrl",
+				button_2 = "chat_tab_pressed"
+			}
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
+		unallowed_activate_chat_input = {
+			filter_type = "or",
+			input_mappings = {
+				button_2 = "chat_left_alt_pressed",
+				button_3 = "chat_left_alt_released",
+				button_1 = "chat_left_alt_held"
+			}
+		},
 		execute_chat_input = {
 			filter_type = "or",
 			input_mappings = {
@@ -1611,6 +1664,14 @@ ChatControllerFilters = {
 		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
+		unallowed_activate_chat_input = {
+			filter_type = "or",
+			input_mappings = {
+				button_2 = "chat_left_alt_pressed",
+				button_3 = "chat_left_alt_released",
+				button_1 = "chat_left_alt_held"
+			}
+		},
 		execute_chat_input = {
 			filter_type = "or",
 			input_mappings = {

@@ -55,7 +55,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		end
 
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local rotation = first_person_extension:current_rotation()
+		local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 		local spread_extension = self.spread_extension
 		local current_action = self.current_action
 
@@ -82,7 +82,6 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 				end
 
 				local angle = ActionUtils.pitch_from_rotation(fire_rotation)
-				local position = first_person_extension:current_position()
 				local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(fire_rotation)))
 				local lookup_data = current_action.lookup_data
 
@@ -131,7 +130,6 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 
 			local angle = ActionUtils.pitch_from_rotation(rotation)
 			local speed = current_action.speed
-			local position = first_person_extension:current_position()
 			local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 			local lookup_data = current_action.lookup_data
 

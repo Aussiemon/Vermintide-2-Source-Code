@@ -39,6 +39,8 @@ ActionBow.reload = function (self, current_action)
 		local play_reload_animation = current_action.play_reload_animation
 
 		self.ammo_extension:start_reload(play_reload_animation, current_action.override_reload_time)
+
+		self.time_to_reload = nil
 	end
 end
 
@@ -119,7 +121,11 @@ ActionBow.finish = function (self, reason, data)
 		self.state = "shot"
 
 		self:reload(current_action)
-	elseif self.state == "shot" and (reason == "stunned" or reason == "charged") then
+	elseif self.state == "shot" and (reason == "stunned" or reason == "charged" or reason == "interrupted") then
+		self:reload(current_action)
+	end
+
+	if self.time_to_reload then
 		self:reload(current_action)
 	end
 
@@ -140,8 +146,7 @@ ActionBow.fire = function (self, current_action, add_spread)
 	local owner_unit = self.owner_unit
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local speed = current_action.speed
-	local rotation = first_person_extension:current_rotation()
-	local position = first_person_extension:current_position()
+	local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 	local spread_extension = self.spread_extension
 
 	if spread_extension then

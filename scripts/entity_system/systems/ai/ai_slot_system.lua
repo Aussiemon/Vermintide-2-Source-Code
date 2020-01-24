@@ -1821,6 +1821,7 @@ local SLOT_STATUS_UPDATE_INTERVAL = 0.5
 local TOTAL_SLOTS_COUNT_UPDATE_INTERVAL = 1
 local DISABLED_SLOTS_COUNT_UPDATE_INTERVAL = 1
 local SLOT_SOUND_UPDATE_INTERVAL = 1
+local DELAYED_SLOT_COUT_DEGRADE_SPEED = 5
 local TARGET_STOPPED_MOVING_SPEED_SQ = 0.25
 
 AISlotSystem.physics_async_update = function (self, context, t)
@@ -1846,7 +1847,7 @@ AISlotSystem.physics_async_update = function (self, context, t)
 	end
 
 	if self.next_total_slot_count_update < t then
-		self:update_total_slots_count()
+		self:update_total_slots_count(t)
 
 		self.next_total_slot_count_update = t + TOTAL_SLOTS_COUNT_UPDATE_INTERVAL
 	end
@@ -2030,7 +2031,7 @@ AISlotSystem.update_target_slots = function (self, t, target_unit, target_units,
 	return false
 end
 
-AISlotSystem.update_total_slots_count = function (self)
+AISlotSystem.update_total_slots_count = function (self, t)
 	local target_units = self.target_units
 	local target_units_n = #target_units
 	local target_unit_extensions = self.unit_extension_data
@@ -2059,6 +2060,13 @@ AISlotSystem.update_total_slots_count = function (self)
 					num_occupied = num_occupied + 1
 				end
 			end
+		end
+
+		if target_unit_extension.delayed_num_occupied_slots <= num_occupied then
+			target_unit_extension.delayed_num_occupied_slots = num_occupied
+			target_unit_extension.delayed_slot_decay_t = t + DELAYED_SLOT_COUT_DEGRADE_SPEED
+		elseif target_unit_extension.delayed_slot_decay_t <= t then
+			target_unit_extension.delayed_num_occupied_slots = num_occupied
 		end
 
 		target_unit_extension.num_occupied_slots = num_occupied
@@ -2136,6 +2144,8 @@ AISlotSystem.on_add_extension = function (self, world, unit, extension_name, ext
 		extension.index = target_index
 		extension.debug_color_name = SLOT_COLORS[debug_color_index][1]
 		extension.num_occupied_slots = 0
+		extension.delayed_num_occupied_slots = 0
+		extension.delayed_slot_decay_t = 0
 		extension.full_slots_at_t = {}
 
 		create_target_slots(unit, extension, debug_color_index)
@@ -2489,14 +2499,22 @@ function debug_print_slots_count(target_units, unit_extension_data)
 
 		local debug_text = display_name .. "-> "
 		local all_slots = target_unit_extension.all_slots
+		local total_slots = 0
+		local total_enabled = 0
 
 		for slot_type, slot_data in pairs(all_slots) do
 			local disabled_slots_count = slot_data.disabled_slots_count
 			local occupied_slots = slot_data.slots_count
 			local total_slots_count = slot_data.total_slots_count
 			local enabled_slots_count = total_slots_count - disabled_slots_count
+			total_slots = total_slots + total_slots_count
+			total_enabled = total_enabled + enabled_slots_count
 			debug_text = debug_text .. string.format("%s: [%d|%d(%d)]. ", slot_type, occupied_slots, enabled_slots_count, total_slots_count)
 		end
+
+		local num_occupied_slots = target_unit_extension.num_occupied_slots
+		local delayed_occupied_slots = target_unit_extension.delayed_num_occupied_slots
+		debug_text = debug_text .. string.format("total: [%d(%d)|%d(%d)]. ", num_occupied_slots, delayed_occupied_slots, total_enabled, total_slots)
 
 		Debug.text(debug_text)
 	end

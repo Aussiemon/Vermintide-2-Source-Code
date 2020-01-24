@@ -619,18 +619,7 @@ local crafting_recipes = {
 		item_filter = "can_apply_skin and item_rarity ~= magic and not is_equipped",
 		description_text = "description_crafting_recipe_apply_weapon_skin",
 		display_icon_console = "console_crafting_recipe_icon_apply",
-		ingredients = {
-			{
-				amount = 10,
-				name = "crafting_material_scrap"
-			},
-			{
-				catergory = {
-					item_value = "slot_type",
-					category_table = "weapon_slot_types"
-				}
-			}
-		},
+		ingredients = {},
 		item_sort_func = function (item_1, item_2)
 			local item_data_1 = item_1.data
 			local item_data_2 = item_2.data

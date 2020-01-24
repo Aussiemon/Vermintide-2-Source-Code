@@ -20,8 +20,6 @@ weapon_template.actions = {
 			no_out_of_ammo_vo = true,
 			total_time = 0.85,
 			anim_end_event_condition_func = function (unit, end_reason, ammo_extension)
-				print(end_reason, ammo_extension:ammo_count() == 0)
-
 				return ammo_extension:ammo_count() == 0 and end_reason ~= "reload"
 			end,
 			buff_data = {
@@ -98,12 +96,12 @@ weapon_template.actions = {
 		},
 		throw_charged = {
 			reset_aim_on_attack = true,
-			anim_end_event = "to_noammo",
+			attack_template = "arrow_sniper_1",
 			kind = "thrown_projectile",
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "right",
-			attack_template = "arrow_sniper_1",
 			apply_recoil = true,
+			anim_end_event = "to_noammo",
 			minimum_hold_time = 0.4,
 			ammo_usage = 1,
 			fire_time = 0.2,
@@ -111,7 +109,6 @@ weapon_template.actions = {
 			hold_input = "action_two_hold",
 			anim_event = "attack_throw",
 			no_out_of_ammo_vo = true,
-			scale_total_time_on_mastercrafted = true,
 			total_time = 0.85,
 			anim_end_event_condition_func = function (unit, end_reason, ammo_extension)
 				return ammo_extension:ammo_count() == 0
@@ -209,7 +206,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield",
 					end_time = math.huge

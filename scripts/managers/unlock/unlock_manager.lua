@@ -31,6 +31,10 @@ UnlockManager.init = function (self)
 	self._reward_queue_id = 0
 end
 
+UnlockManager.set_ingame_ui = function (self, ingame_ui)
+	self._ingame_ui = ingame_ui
+end
+
 UnlockManager.enable_update_unlocks = function (self, enable)
 	self._update_unlocks = enable
 end
@@ -47,8 +51,9 @@ UnlockManager._init_unlocks = function (self)
 			local id = unlock_config.id
 			local backend_reward_id = unlock_config.backend_reward_id
 			local always_unlocked_game_app_ids = unlock_config.always_unlocked_game_app_ids
+			local cosmetic = unlock_config.cosmetic
 			local class = rawget(_G, class_name)
-			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids)
+			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids, cosmetic)
 			unlocks[unlock_name] = instance
 			unlocks_indexed[i][unlock_name] = instance
 		end
@@ -93,8 +98,12 @@ UnlockManager.update = function (self, dt)
 		elseif self._update_unlocks then
 			self:_update_console_backend_unlocks()
 		end
-	elseif PLATFORM == "ps4" and self._update_unlocks then
-		self:_update_console_backend_unlocks()
+	elseif PLATFORM == "ps4" then
+		if self._update_unlocks then
+			self:_update_console_backend_unlocks()
+		end
+	else
+		self:_update_backend_unlocks()
 	end
 end
 
@@ -286,6 +295,18 @@ UnlockManager.is_dlc_unlocked = function (self, name)
 	return unlock and unlock:unlocked()
 end
 
+UnlockManager.is_dlc_cosmetic = function (self, name)
+	local unlock = self._unlocks[name]
+
+	if PLATFORM ~= "win32" and not unlock then
+		return true
+	end
+
+	fassert(unlock, "No such unlock %q", name or "nil")
+
+	return unlock and unlock:is_cosmetic()
+end
+
 UnlockManager.dlc_id = function (self, name)
 	local unlock = self._unlocks[name]
 
@@ -377,6 +398,103 @@ UnlockManager.debug_remove_console_dlc_reward = function (self, reward_id)
 	unlock_interface:remove_reward(reward_id, remove_reward_cb)
 
 	self._state = "removing_reward"
+end
+
+UnlockManager._update_backend_unlocks = function (self)
+	if self._state == "query_unlocked" then
+		local backend_manager = Managers.backend
+
+		if backend_manager:interfaces_ready() then
+			if not backend_manager:available() then
+				self._state = "backend_not_available"
+
+				return
+			end
+
+			if backend_manager:is_tutorial_backend() then
+				return
+			end
+
+			if not self._unlocks_ready then
+				local all_ready = true
+
+				for name, instance in pairs(self._unlocks) do
+					if not instance:ready() then
+						all_ready = false
+
+						break
+					end
+				end
+
+				if all_ready then
+					self._unlocks_ready = true
+
+					print("[UnlockManager] All unlocks ready")
+				else
+					return
+				end
+			end
+
+			if rawget(_G, "Steam") then
+				local dlcs_interface = Managers.backend:get_interface("dlcs")
+
+				if not dlcs_interface:updating_dlc_ownership() then
+					local owned_dlcs = dlcs_interface:get_owned_dlcs()
+					local platform_dlcs = dlcs_interface:get_platform_dlcs()
+
+					for i = 1, #platform_dlcs, 1 do
+						local unlock_name = platform_dlcs[i]
+
+						if not table.find(owned_dlcs, unlock_name) then
+							local unlock = self._unlocks[unlock_name]
+							local id = unlock and unlock:id()
+
+							if id and Steam.is_installed(id) then
+								print("UNLOCKED", unlock_name)
+								dlcs_interface:update_dlc_ownership()
+							end
+						end
+					end
+				end
+			end
+
+			local is_in_store = false
+
+			if self._ingame_ui then
+				local current_view = self._ingame_ui.current_view
+
+				if current_view == "hero_view" then
+					local hero_view = self._ingame_ui.views.hero_view
+					local current_state = hero_view:current_state()
+
+					if current_state and current_state.NAME == "HeroViewStateStore" then
+						is_in_store = true
+					end
+				end
+			end
+
+			if not is_in_store then
+				local item_interface = backend_manager:get_interface("items")
+				local unseen_rewards = item_interface:get_unseen_item_rewards()
+
+				if unseen_rewards then
+					for i = 1, #unseen_rewards, 1 do
+						local reward = unseen_rewards[i]
+						local item = item_interface:get_item_from_id(reward.backend_id)
+
+						if item then
+							local item_data = item.data
+							local display_name = item_data.display_name
+
+							self:_add_reward({
+								item
+							}, display_name)
+						end
+					end
+				end
+			end
+		end
+	end
 end
 
 return

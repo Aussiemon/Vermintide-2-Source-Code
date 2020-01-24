@@ -3,6 +3,7 @@ require("scripts/ui/ui_widgets")
 require("scripts/ui/views/cutscene_overlay_ui")
 
 local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
+local penny_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_penny_intro")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -815,12 +816,13 @@ first_time_video = {
 	sound_stop = "Stop_vermintide_2_prologue_intro",
 	subtitle_template_settings = first_time_video_subtitle_settings
 }
-wom_intro_video = {
-	video_name = "video/vermintide_2_wom_intro",
-	sound_start = "cinematic_intro_wom",
+penny_intro_video = {
+	video_name = "video/vermintide_2_penny_intro",
+	sound_start = "cinematic_intro_penny",
 	scenegraph_id = "splash_video",
-	material_name = "vermintide_2_wom_intro",
-	sound_stop = "stop_cinematic_intro_wom"
+	material_name = "vermintide_2_penny_intro",
+	sound_stop = "stop_cinematic_intro_penny",
+	subtitle_template_settings = penny_intro_video_subtitle_settings
 }
 
 local function get_slider_progress(min, max, value)
@@ -902,7 +904,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 	Framerate.set_low_power()
 
 	if not params.is_prologue then
-		first_time_video = wom_intro_video
+		first_time_video = penny_intro_video
 	end
 
 	self.render_settings = {
@@ -930,7 +932,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 end
 
 TitleLoadingUI._setup_gui = function (self)
-	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_splash_screen", "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
+	self._ui_renderer = UIRenderer.create(self._world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", first_time_video.video_name, "material", "materials/fonts/gw_fonts")
 
 	self:_create_elements()
 end

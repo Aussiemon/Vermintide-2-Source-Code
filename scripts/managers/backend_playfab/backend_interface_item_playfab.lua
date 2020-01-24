@@ -31,6 +31,14 @@ end
 BackendInterfaceItemPlayfab._refresh_items = function (self)
 	local backend_mirror = self._backend_mirror
 	local items = backend_mirror:get_all_inventory_items()
+	local unlocked_weapon_skins = backend_mirror:get_unlocked_weapon_skins()
+
+	for _, item in pairs(items) do
+		if item.skin and not unlocked_weapon_skins[item.skin] then
+			item.skin = nil
+		end
+	end
+
 	self._items = items
 	local fake_items = backend_mirror:get_all_fake_inventory_items()
 	self._fake_items = fake_items
@@ -261,6 +269,39 @@ BackendInterfaceItemPlayfab.set_loadout_item = function (self, item_id, career_n
 	self._dirty = true
 end
 
+BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
+	local user_data = self._backend_mirror:get_user_data()
+	local unseen_rewards_json = user_data.unseen_rewards
+
+	if not unseen_rewards_json then
+		return nil
+	end
+
+	local unseen_rewards = cjson.decode(unseen_rewards_json)
+	local unseen_items = nil
+	local index = 1
+
+	while index <= #unseen_rewards do
+		local reward = unseen_rewards[index]
+		local reward_type = reward.reward_type
+
+		if reward_type == "item" then
+			unseen_items = unseen_items or {}
+			unseen_items[#unseen_items + 1] = reward
+
+			table.remove(unseen_rewards, index)
+		else
+			index = index + 1
+		end
+	end
+
+	if unseen_items then
+		self._backend_mirror:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
+	end
+
+	return unseen_items
+end
+
 BackendInterfaceItemPlayfab.remove_item = function (self, backend_id, ignore_equipped)
 	return
 end
@@ -321,6 +362,18 @@ BackendInterfaceItemPlayfab.has_item = function (self, item_key)
 
 	for backend_id, item in pairs(items) do
 		if item_key == item.key then
+			return true
+		end
+	end
+
+	return false
+end
+
+BackendInterfaceItemPlayfab.has_weapon_illusion = function (self, item_key)
+	local items = self:get_all_fake_backend_items()
+
+	for backend_id, item in pairs(items) do
+		if item_key == item.skin then
 			return true
 		end
 	end

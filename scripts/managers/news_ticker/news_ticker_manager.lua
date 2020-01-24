@@ -54,7 +54,12 @@ NewsTickerManager._load = function (self, url, callback)
 
 			if is_ok then
 				local start_idx, end_idx = string.find(message, "\r\n\r\n")
-				local formatted_message = string.sub(message, end_idx + 1)
+				local formatted_message = ""
+
+				if end_idx then
+					formatted_message = string.sub(message, end_idx + 1)
+				end
+
 				local info = {
 					done = true,
 					data = formatted_message

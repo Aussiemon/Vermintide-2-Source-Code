@@ -22,7 +22,7 @@ AccountManager.init = function (self)
 	self._web_api = ScriptWebApiPsn:new()
 	self._initial_user_id = PS4.initial_user_id()
 
-	if not script_data.settings.use_beta_overlay then
+	if not script_data.settings.use_beta_mode then
 		Trophies.create_context(self._initial_user_id)
 	end
 
@@ -398,7 +398,11 @@ AccountManager._notify_plus = function (self)
 		return
 	end
 
-	NpCheck.notify_plus(self:user_id(), NpCheck.REALTIME_MULTIPLAY)
+	local initial_user_id = self:user_id()
+
+	if PS4.signed_in(initial_user_id) then
+		NpCheck.notify_plus(initial_user_id, NpCheck.REALTIME_MULTIPLAY)
+	end
 end
 
 AccountManager.friends_list_initiated = function (self)

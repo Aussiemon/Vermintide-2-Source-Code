@@ -294,10 +294,6 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 			end
 
 			if temporary_health > 0 and state == "alive" then
-				if Managers.weave:get_active_wind() == "death" then
-					degen_amount = degen_amount * 2
-				end
-
 				local new_temporary_health = temporary_health - degen_amount
 				local min_temporary_health_left = (health <= 0 and 1) or 0
 				local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
@@ -865,6 +861,11 @@ PlayerUnitHealthExtension.health_degen_settings = function (self)
 			degen_delay = PlayerUnitStatusSettings.NINJA_DEGEN_DELAY
 			degen_start = PlayerUnitStatusSettings.NINJA_DEGEN_START
 		end
+	end
+
+	if Managers.weave:get_active_wind() == "death" then
+		degen_amount = degen_amount * 2
+		degen_start = 0
 	end
 
 	return degen_amount, degen_delay, degen_start

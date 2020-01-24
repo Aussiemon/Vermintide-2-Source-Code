@@ -396,6 +396,7 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 
 	if Managers.package:has_loaded("resource_packages/news_splash/news_splash", "state_splash_screen") then
 		Managers.package:unload("resource_packages/news_splash/news_splash", "state_splash_screen")
+		Managers.package:unload("resource_packages/start_menu_splash", "StateSplashScreen")
 	end
 
 	Managers.music:trigger_event("Stop_menu_screen_music")

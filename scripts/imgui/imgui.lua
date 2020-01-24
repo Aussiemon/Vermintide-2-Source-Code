@@ -3,22 +3,44 @@ require("scripts/imgui/imgui_combat_log")
 require("scripts/imgui/imgui_craft_item")
 require("scripts/imgui/imgui_weapon_debug")
 require("scripts/imgui/imgui_buffs_debug")
+require("scripts/imgui/imgui_ai_spawn_log")
 
 ImguiManager = class(ImguiManager)
+ImguiClassTemplate = class(ImguiClassTemplate)
+
+ImguiClassTemplate.init = function (self)
+	return
+end
+
+ImguiClassTemplate.update = function (self)
+	return
+end
+
+ImguiClassTemplate.draw = function (self)
+	return
+end
+
+ImguiClassTemplate.is_persistent = function (self)
+	return
+end
 
 ImguiManager.init = function (self)
 	self.open = false
-	self.persistant_sub_windows = 0
+	self.persistant_windows = 0
 	self.guis = {}
+	script_data.imgui = script_data.imgui or {}
 
 	self:add_gui(ImguiUmbraDebug:new(), "World", "Umbra")
 	self:add_gui(ImguiCombatLog:new(), "Gameplay", "Combat Log")
 	self:add_gui(ImguiCraftItem:new(), "Gameplay", "Craft Item")
 	self:add_gui(ImguiWeaponDebug:new(), "Gameplay", "Weapon Debug")
 	self:add_gui(ImguiBuffsDebug:new(), "Gameplay", "Buffs Debug")
+	self:add_gui(ImguiAISpawnLog:new(), "Gameplay", "AI Spawn Log")
 end
 
-ImguiManager.add_gui = function (self, gui, category, name)
+ImguiManager.add_gui = function (self, gui, category, name, enabled)
+	ApiVerification.ensure_public_api(ImguiClassTemplate, gui)
+
 	if not self.guis[category] then
 		self.guis[category] = {}
 	end
@@ -26,10 +48,10 @@ ImguiManager.add_gui = function (self, gui, category, name)
 	local category_table = self.guis[category]
 
 	table.insert(category_table, {
-		enabled = false,
 		initialized = false,
 		gui = gui,
-		name = name
+		name = name,
+		enabled = enabled
 	})
 end
 
@@ -41,7 +63,7 @@ ImguiManager.update = function (self)
 			Imgui.open_imgui()
 			self:_capture_input()
 		else
-			if self.persistant_sub_windows == 0 then
+			if self.persistant_windows == 0 then
 				Imgui.close_imgui()
 			end
 
@@ -65,12 +87,6 @@ ImguiManager.update_main_menu = function (self)
 
 					if Imgui.MenuItem(menu_item.name) then
 						menu_item.enabled = not menu_item.enabled
-
-						if menu_item.enabled and not menu_item.initialized then
-							menu_item.gui:init()
-
-							menu_item.initialized = true
-						end
 					end
 				end
 
@@ -83,7 +99,8 @@ ImguiManager.update_main_menu = function (self)
 end
 
 ImguiManager.update_guis = function (self)
-	self.persistant_sub_windows = 0
+	self.persistant_windows = 0
+	local is_open = self.open
 
 	for category_name, category_guis in pairs(self.guis) do
 		for i = 1, #category_guis, 1 do
@@ -92,17 +109,19 @@ ImguiManager.update_guis = function (self)
 			if menu_item.enabled then
 				local gui = menu_item.gui
 
-				if self.open then
-					gui:update()
+				if menu_item.enabled and not menu_item.initialized then
+					menu_item.gui:init()
+
+					menu_item.initialized = true
 				end
 
-				local sub_windows = gui:subwindow_count()
+				gui:update()
 
-				if sub_windows > 0 then
-					gui:update_subwindow()
+				if is_open or gui:is_persistent() then
+					gui:draw(is_open)
+
+					self.persistant_windows = self.persistant_windows + 1
 				end
-
-				self.persistant_sub_windows = self.persistant_sub_windows + sub_windows
 			end
 		end
 	end
@@ -119,7 +138,7 @@ ImguiManager._capture_input = function (self)
 		}, 1, "chat_input", "Imgui")
 	end
 
-	Window.set_mouse_focus(false)
+	ShowCursorStack.push()
 	Imgui.enable_imgui_input_system(Imgui.KEYBOARD)
 	Imgui.enable_imgui_input_system(Imgui.MOUSE)
 end
@@ -135,7 +154,7 @@ ImguiManager._release_input = function (self)
 		}, 1, "chat_input", "Imgui")
 	end
 
-	Window.set_mouse_focus(true)
+	ShowCursorStack.pop()
 	Imgui.disable_imgui_input_system(Imgui.KEYBOARD)
 	Imgui.disable_imgui_input_system(Imgui.MOUSE)
 end

@@ -13,11 +13,10 @@ WeaveProgressUI.init = function (self, parent, ingame_ui_context)
 	self._animation_callbacks = {}
 
 	self:_create_ui_elements()
-	Managers.state.event:register(self, "weave_objective_synced", "event_weave_objective_synced")
 end
 
 WeaveProgressUI.destroy = function (self)
-	Managers.state.event:unregister("weave_objective_synced", self)
+	return
 end
 
 WeaveProgressUI._create_ui_elements = function (self)
@@ -41,7 +40,7 @@ WeaveProgressUI._create_ui_elements = function (self)
 	DO_RELOAD = false
 end
 
-WeaveProgressUI.event_weave_objective_synced = function (self)
+WeaveProgressUI._sync_weave_objectives = function (self)
 	local objective_template = Managers.weave:get_active_objective_template()
 
 	if not objective_template then
@@ -86,9 +85,19 @@ WeaveProgressUI.event_weave_objective_synced = function (self)
 	end
 
 	content.bonus_time = bonus_time_text
+	self._initiated = true
+end
+
+WeaveProgressUI._sync_weave_data = function (self, dt, t)
+	if self._initiated then
+		return
+	end
+
+	self:_sync_weave_objectives()
 end
 
 WeaveProgressUI.update = function (self, dt, t)
+	self:_sync_weave_data(dt, t)
 	self:_update_bonus_objectives(dt, t)
 	self:_update_animations(dt, t)
 	self:_update_bar(dt, t)

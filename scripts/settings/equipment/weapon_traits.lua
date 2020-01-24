@@ -281,9 +281,10 @@ WeaponTraits.buff_templates = {
 	ranged_power_vs_unarmored = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
+				refresh_durations = true,
 				stat_buff = "power_level_unarmoured",
+				max_stacks = 1,
 				duration = 10
 			}
 		}
@@ -291,9 +292,10 @@ WeaponTraits.buff_templates = {
 	ranged_power_vs_armored = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
+				refresh_durations = true,
 				stat_buff = "power_level_armoured",
+				max_stacks = 1,
 				duration = 10
 			}
 		}
@@ -301,9 +303,10 @@ WeaponTraits.buff_templates = {
 	ranged_power_vs_large = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
+				refresh_durations = true,
 				stat_buff = "power_level_large",
+				max_stacks = 1,
 				duration = 10
 			}
 		}
@@ -311,9 +314,10 @@ WeaponTraits.buff_templates = {
 	ranged_power_vs_frenzy = {
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "ranged_increase_power_level_vs_armour_crit",
+				refresh_durations = true,
 				stat_buff = "power_level_frenzy",
+				max_stacks = 1,
 				duration = 10
 			}
 		}

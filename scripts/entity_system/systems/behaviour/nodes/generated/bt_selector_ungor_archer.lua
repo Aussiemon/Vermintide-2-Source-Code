@@ -183,7 +183,7 @@ BTSelector_ungor_archer.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local node_in_combat = children[8]
-	local condition_result = blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or (blackboard.target_dist and blackboard.target_dist < 7))
+	local condition_result = blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or (blackboard.target_dist and blackboard.target_dist < 5))
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_combat, "aborted")

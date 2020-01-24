@@ -66,6 +66,18 @@ Fonts = {
 		20,
 		"gw_head",
 		Gui.WriteMask
+	},
+	chat_output_font = {
+		"materials/fonts/arial",
+		14,
+		"arial",
+		Gui.MultiColor + Gui.ForceSuperSampling + Gui.FormatDirectives
+	},
+	chat_output_font_masked = {
+		"materials/fonts/arial",
+		14,
+		"arial",
+		Gui.MultiColor + Gui.ForceSuperSampling + Gui.FormatDirectives + Gui.Masked
 	}
 }
 local font_vertical_base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"

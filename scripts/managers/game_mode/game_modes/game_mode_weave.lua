@@ -21,7 +21,13 @@ GameModeWeave.init = function (self, settings, world, network_server, level_tran
 
 	self:_register_player_spawner(self._weave_spawning)
 
+	self._available_profiles = table.clone(PROFILES_BY_AFFILIATION.heroes)
+	self._bot_players = {}
+
+	self:_setup_bot_spawn_priority_lookup()
+
 	self._local_player_spawned = false
+	self._quick_play = Managers.matchmaking:is_quick_game()
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
@@ -42,9 +48,14 @@ GameModeWeave.event_local_player_spawned = function (self, is_initial_spawn)
 	self._is_initial_spawn = is_initial_spawn
 end
 
+GameModeWeave.update = function (self, t, dt)
+	self._weave_spawning:update(t, dt)
+end
+
 GameModeWeave.server_update = function (self, t, dt)
 	GameModeWeave.super.server_update(self, t, dt)
-	self._weave_spawning:update(t, dt)
+	self:_handle_bots(t, dt)
+	self._weave_spawning:server_update(t, dt)
 end
 
 GameModeWeave.evaluate_end_conditions = function (self, round_started, dt, t, mutator_handler)
@@ -135,6 +146,22 @@ GameModeWeave.ai_killed = function (self, killed_unit, killer_unit, death_data, 
 	weave_manager:ai_killed(killed_unit, killer_unit, death_data, killing_blow)
 end
 
+GameModeWeave.ai_destroyed = function (self, unit, blackboard, reason)
+	if reason == "far_away" and blackboard then
+		local spawn_type = Unit.get_data(unit, "spawn_type") or "unknown"
+
+		if spawn_type ~= "roam" then
+			local breed = blackboard.breed
+			local death_data = {
+				breed = breed
+			}
+			local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+
+			weave_objective_system:on_ai_killed(unit, nil, death_data)
+		end
+	end
+end
+
 GameModeWeave._is_time_up = function (self)
 	if LEVEL_EDITOR_TEST then
 		return false
@@ -159,6 +186,17 @@ GameModeWeave.player_entered_game_session = function (self, peer_id, local_playe
 
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
+	end
+
+	if #self._bot_players > 0 then
+		local profile_index = self._profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+		local removed = self:_remove_bot_by_profile(self._bot_players, profile_index)
+
+		if not removed then
+			local update_safe = false
+
+			self:_remove_bot(self._bot_players, #self._bot_players, update_safe)
+		end
 	end
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
@@ -305,6 +343,192 @@ GameModeWeave.local_player_game_starts = function (self, player, loading_context
 		weave_manager:reset_statistics_for_challenges()
 		weave_manager:start_timer()
 	end
+end
+
+GameModeWeave._get_first_available_bot_profile = function (self)
+	local available_profiles = self._available_profiles
+	local profile_synchronizer = self._profile_synchronizer
+	local available_profile_by_priority = {}
+
+	for i = 1, #available_profiles, 1 do
+		local profile_name = available_profiles[i]
+		local profile_index = FindProfileIndex(profile_name)
+		local owners = profile_synchronizer:owners(profile_index)
+
+		if table.is_empty(owners) then
+			available_profile_by_priority[#available_profile_by_priority + 1] = profile_index
+		end
+	end
+
+	local bot_profile_id_to_priority_id = self._bot_profile_id_to_priority_id
+
+	table.sort(available_profile_by_priority, function (a, b)
+		return (bot_profile_id_to_priority_id[a] or math.huge) < (bot_profile_id_to_priority_id[b] or math.huge)
+	end)
+
+	local profile_index = available_profile_by_priority[1]
+
+	if script_data.wanted_bot_profile then
+		local wanted_profile_index = FindProfileIndex(script_data.wanted_bot_profile)
+		local owners = profile_synchronizer:owners(wanted_profile_index)
+
+		if script_data.allow_same_bots or table.is_empty(owners) then
+			profile_index = wanted_profile_index
+		end
+	end
+
+	local profile = SPProfiles[profile_index]
+	local display_name = profile.display_name
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local career_index = hero_attributes:get(display_name, "career")
+
+	if script_data.wanted_bot_career_index then
+		career_index = script_data.wanted_bot_career_index
+	end
+
+	return profile_index, career_index
+end
+
+GameModeWeave._setup_bot_spawn_priority_lookup = function (self)
+	local saved_priority = PlayerData.bot_spawn_priority
+	local num_saved_priority = #saved_priority
+
+	if LAUNCH_MODE == "game" then
+		if num_saved_priority > 0 then
+			self._bot_profile_id_to_priority_id = {}
+
+			for i = 1, num_saved_priority, 1 do
+				local profile_id = saved_priority[i]
+				self._bot_profile_id_to_priority_id[profile_id] = i
+			end
+		else
+			self._bot_profile_id_to_priority_id = ProfileIndexToPriorityIndex
+		end
+	elseif LAUNCH_MODE == "attract_benchmark" then
+		self._bot_profile_id_to_priority_id = ProfileIndexToPriorityIndex
+	else
+		self._bot_profile_id_to_priority_id = ProfileIndexToPriorityIndex
+	end
+end
+
+GameModeWeave._handle_bots = function (self, t, dt)
+	local in_session = Managers.state.network ~= nil and not Managers.state.network.game_session_shutdown
+
+	if not in_session then
+		return
+	end
+
+	if script_data.ai_bots_disabled or (not self._quick_play and not Development.parameter("enable_bots_in_weaves")) then
+		if #self._bot_players > 0 then
+			local update_safe = true
+
+			self:_clear_bots(update_safe)
+		end
+
+		return
+	end
+
+	local party = Managers.party:get_party(1)
+	local num_slots = party.num_slots
+	local max_bots = num_slots
+
+	if script_data.cap_num_bots then
+		max_bots = math.min(max_bots, script_data.cap_num_bots)
+	end
+
+	local bot_players = self._bot_players
+	local num_bot_players = #bot_players
+	local delta = max_bots - num_bot_players
+
+	if delta > 0 then
+		local num_used_slots = party.num_used_slots
+		local open_slots = num_slots - num_used_slots
+		local num_bots_to_add = math.min(delta, open_slots)
+
+		for i = 1, num_bots_to_add, 1 do
+			self:_add_bot(bot_players)
+		end
+	elseif delta < 0 then
+		local num_bots_to_remove = math.abs(delta)
+
+		for i = 1, num_bots_to_remove, 1 do
+			local update_safe = true
+
+			self:_remove_bot(bot_players, #bot_players, update_safe)
+		end
+	end
+end
+
+GameModeWeave._add_bot = function (self, bot_players)
+	local party_id = 1
+	local party = Managers.party:get_party(party_id)
+	local profile_index, career_index = self:_get_first_available_bot_profile(party)
+
+	if LAUNCH_MODE == "attract_benchmark" then
+		career_index = 1
+	end
+
+	local bot_player = self:_add_bot_to_party(party_id, profile_index, career_index)
+	bot_players[#bot_players + 1] = bot_player
+end
+
+GameModeWeave._remove_bot = function (self, bot_players, index, update_safe)
+	local bot_player = bot_players[index]
+
+	fassert(bot_player, "No bot player at index (%s)", tostring(index))
+
+	if update_safe then
+		self:_remove_bot_update_safe(bot_player)
+	else
+		self:_remove_bot_instant(bot_player)
+	end
+
+	local last = #bot_players
+	bot_players[index] = bot_players[last]
+	bot_players[last] = nil
+end
+
+GameModeWeave._remove_bot_by_profile = function (self, bot_players, profile_index)
+	local bot_index = nil
+	local num_current_bots = #bot_players
+
+	for i = 1, num_current_bots, 1 do
+		local bot_player = bot_players[i]
+		local bot_profile_index = bot_player:profile_index()
+
+		if bot_profile_index == profile_index then
+			bot_index = i
+
+			break
+		end
+	end
+
+	local removed = false
+
+	if bot_index then
+		local update_safe = false
+
+		self:_remove_bot(bot_players, bot_index, update_safe)
+
+		removed = true
+	end
+
+	return removed
+end
+
+GameModeWeave._clear_bots = function (self, update_safe)
+	local bot_players = self._bot_players
+	local num_bot_players = #bot_players
+
+	for i = num_bot_players, 1, -1 do
+		self:_remove_bot(bot_players, i, update_safe)
+	end
+end
+
+GameModeWeave.cleanup_game_mode_units = function (self)
+	local update_safe = false
+
+	self:_clear_bots(update_safe)
 end
 
 return

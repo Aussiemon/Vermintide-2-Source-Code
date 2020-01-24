@@ -592,10 +592,11 @@ BTChampionAttackAction.anim_cb_damage = function (self, unit, blackboard)
 		self:_deal_damage(unit, blackboard, action, self_pos, hit_actors, actor_count, true)
 	elseif action.collision_type == "cylinder" then
 		local cylinder_center, size, rotation = self:_calculate_cylinder_collision(action, self_pos, self_rot)
+		local shape = (size.y - size.x > 0 and "capsule") or "sphere"
 
 		PhysicsWorld.prepare_actors_for_overlap(pw, cylinder_center, action.radius)
 
-		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", "capsule", "types", "dynamics", "collision_filter", action.collision_filter or "filter_player_hit_box_check", "use_global_table")
+		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", shape, "types", "dynamics", "collision_filter", action.collision_filter or "filter_player_hit_box_check", "use_global_table")
 
 		if Development.parameter("debug_ai_attack") then
 			local drawer = Managers.state.debug:drawer(debug_drawer_info)
@@ -627,7 +628,8 @@ BTChampionAttackAction._update_radial_cylinder = function (self, unit, blackboar
 	local self_rot = Unit.local_rotation(unit, 0)
 	local pw = World.get_data(blackboard.world, "physics_world")
 	local cylinder_center, size, rotation = self:_calculate_cylinder_collision(action, self_pos, self_rot)
-	local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", "capsule", "types", "dynamics", "collision_filter", action.collision_filter, "use_global_table")
+	local shape = (size.y - size.x > 0 and "capsule") or "sphere"
+	local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", shape, "types", "dynamics", "collision_filter", action.collision_filter, "use_global_table")
 
 	if Development.parameter("debug_ai_attack") then
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)

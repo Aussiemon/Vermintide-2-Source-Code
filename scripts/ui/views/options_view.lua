@@ -2298,6 +2298,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	self:apply_bot_spawn_priority_changes(bot_spawn_priority, show_bot_spawn_priority_popup)
 
 	if PLATFORM == "win32" then
+		Managers.save:auto_save(SaveFileName, SaveData)
 		Application.save_user_settings()
 	else
 		Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_done"))
@@ -2316,12 +2317,6 @@ OptionsView.apply_bot_spawn_priority_changes = function (self, new_priority_orde
 
 	for i = 1, #new_priority_order, 1 do
 		saved_priority[i] = new_priority_order[i]
-	end
-
-	if PLATFORM == "win32" then
-		Managers.save:auto_save(SaveFileName, SaveData)
-	else
-		Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_done"))
 	end
 
 	if show_popup then
@@ -2727,7 +2722,10 @@ OptionsView.handle_apply_popup_results = function (self, result)
 end
 
 OptionsView.restart = function (self)
-	self.level_transition_handler:set_next_level("inn_level")
+	local mechanism = Managers.mechanism:game_mechanism()
+	local inn_level_name = mechanism:get_hub_level_key()
+
+	self.level_transition_handler:set_next_level(inn_level_name)
 	self.ingame_ui:handle_transition("restart_game")
 end
 
@@ -9432,7 +9430,13 @@ OptionsView.cb_chat_enabled_setup = function (self)
 		default_option = 2
 	end
 
-	return selected_option, options, "menu_settings_chat_enabled", default_option
+	local setting_name = "menu_settings_chat_enabled"
+
+	if PLATFORM ~= "win32" then
+		setting_name = "menu_settings_chat_enabled_" .. PLATFORM
+	end
+
+	return selected_option, options, setting_name, default_option
 end
 
 OptionsView.cb_chat_enabled_saved_value = function (self, widget)

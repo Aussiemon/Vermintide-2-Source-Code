@@ -789,6 +789,7 @@ end
 HeroViewStateKeepDecorations._populate_list = function (self, layout)
 	local widgets = {}
 	local widget_definition = create_entry_widget()
+	local decoration_system = self._decoration_system
 	local num_entries = #layout
 
 	for i = 1, num_entries, 1 do
@@ -807,6 +808,7 @@ HeroViewStateKeepDecorations._populate_list = function (self, layout)
 		content.key = key
 		content.locked = locked
 		content.new = new
+		content.in_use = decoration_system:is_painting_in_use(key)
 	end
 
 	self._list_widgets = widgets
@@ -847,9 +849,11 @@ HeroViewStateKeepDecorations._update_equipped_widget = function (self)
 	local interactable_unit = self._interactable_unit
 	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 	local equipped_painting = keep_decoration_extension:get_selected_painting()
+	local decoration_system = self._decoration_system
 
 	for _, list_widget in pairs(self._list_widgets) do
 		local key = list_widget.content.key
+		list_widget.content.in_use = decoration_system:is_painting_in_use(key)
 		list_widget.content.equipped = equipped_painting == key
 	end
 end

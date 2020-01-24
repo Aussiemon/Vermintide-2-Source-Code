@@ -192,21 +192,25 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 	local position = POSITION_LOOKUP[unit]
 	local nav_world = blackboard.nav_world
 
-	if blackboard.hoist_time < t and self:can_hoist(unit, blackboard) and self:safe_to_hoist(unit, blackboard) then
-		if blackboard.hoist_pos then
-			if Vector3.distance_squared(position, blackboard.hoist_pos:unbox()) < 0.1 then
-				return "done"
-			end
+	if blackboard.hoist_time < t then
+		if self:can_hoist(unit, blackboard) and self:safe_to_hoist(unit, blackboard) then
+			if blackboard.hoist_pos then
+				if Vector3.distance_squared(position, blackboard.hoist_pos:unbox()) < 0.1 then
+					return "done"
+				end
 
-			return "running"
+				return "running"
+			else
+				local hoist_pos = self:find_hoist_pos(nav_world, unit, blackboard)
+
+				if hoist_pos then
+					blackboard.hoist_pos = Vector3Box(hoist_pos)
+
+					blackboard.navigation_extension:move_to(hoist_pos)
+				end
+			end
 		else
-			local hoist_pos = self:find_hoist_pos(nav_world, unit, blackboard)
-
-			if hoist_pos then
-				blackboard.hoist_pos = Vector3Box(hoist_pos)
-
-				blackboard.navigation_extension:move_to(hoist_pos)
-			end
+			blackboard.hoist_pos = nil
 		end
 	end
 

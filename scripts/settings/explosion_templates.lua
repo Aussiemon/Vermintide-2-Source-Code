@@ -330,6 +330,52 @@ ExplosionTemplates = {
 			}
 		}
 	},
+	huge_boss_explosion = {
+		explosion = {
+			radius = 25,
+			only_line_of_sight = true,
+			max_damage_radius = 2.5,
+			collision_filter = "filter_explosion_overlap",
+			sound_event_name = "Play_enemy_combat_warpfire_backpack_explode",
+			damage_profile = "huge_boss_explosion",
+			ignore_attacker_unit = true,
+			effect_name = "fx/warpfire_explosion_huge_01",
+			difficulty_power_level = {
+				easy = {
+					power_level_glance = 1000,
+					power_level = 1000
+				},
+				normal = {
+					power_level_glance = 1000,
+					power_level = 1000
+				},
+				hard = {
+					power_level_glance = 1000,
+					power_level = 1000
+				},
+				harder = {
+					power_level_glance = 1000,
+					power_level = 1000
+				},
+				hardest = {
+					power_level_glance = 1000,
+					power_level = 1000
+				},
+				cataclysm = {
+					power_level_glance = 1000,
+					power_level = 1000
+				},
+				cataclysm_2 = {
+					power_level_glance = 1000,
+					power_level = 1000
+				},
+				cataclysm_3 = {
+					power_level_glance = 1000,
+					power_level = 1000
+				}
+			}
+		}
+	},
 	overcharge_explosion_dwarf = {
 		explosion = {
 			always_hurt_players = false,
@@ -648,9 +694,9 @@ ExplosionTemplates.sienna_adept_activated_ability_start_stagger = {
 ExplosionTemplates.sienna_adept_activated_ability_step_stagger = {
 	explosion = {
 		use_attacker_power_level = true,
-		radius = 2,
+		radius = 4,
 		dot_template_name = "burning_1W_dot",
-		max_damage_radius = 1,
+		max_damage_radius = 2,
 		no_friendly_fire = true,
 		always_hurt_players = false,
 		alert_enemies = true,
@@ -682,9 +728,9 @@ ExplosionTemplates.sienna_adept_activated_ability_end_stagger = {
 ExplosionTemplates.sienna_adept_activated_ability_end_stagger_improved = {
 	explosion = {
 		use_attacker_power_level = true,
-		radius = 8,
+		radius = 5,
 		dot_template_name = "burning_dot",
-		max_damage_radius = 4,
+		max_damage_radius = 3,
 		no_friendly_fire = true,
 		always_hurt_players = false,
 		alert_enemies = true,
@@ -748,7 +794,7 @@ ExplosionTemplates.bardin_ironbreaker_gromril_stagger = {
 		use_attacker_power_level = true,
 		max_damage_radius = 2,
 		always_hurt_players = false,
-		alert_enemies = true,
+		alert_enemies = false,
 		alert_enemies_radius = 15,
 		attack_template = "drakegun",
 		damage_type = "grenade",
@@ -1032,6 +1078,33 @@ ExplosionTemplates.lightning_strike = {
 		}
 	}
 }
+ExplosionTemplates.lightning_strike_temp = {
+	time_to_explode = 5,
+	follow_time = 5,
+	explosion = {
+		trigger_on_server_only = true,
+		radius = 4,
+		alert_enemies = true,
+		alert_enemies_radius = 20,
+		attack_template = "grenade",
+		damage_interval = 0,
+		always_hurt_players = true,
+		buildup_effect_time = 1.5,
+		different_power_levels_for_players = true,
+		sound_event_name = "Play_mutator_enemy_split_large",
+		damage_profile = "heavens_lightning_strike",
+		power_level = 250,
+		buildup_effect_name = "fx/magic_wind_heavens_lightning_strike_02",
+		effect_name = "fx/magic_wind_heavens_lightning_strike_01",
+		camera_effect = {
+			near_distance = 5,
+			near_scale = 1,
+			shake_name = "lightning_strike",
+			far_scale = 0.15,
+			far_distance = 20
+		}
+	}
+}
 ExplosionTemplates.death_spirit_bomb = {
 	explosion = {
 		trigger_on_server_only = true,
@@ -1039,6 +1112,15 @@ ExplosionTemplates.death_spirit_bomb = {
 		wind_mutator = true,
 		power_level = 0,
 		effect_name = "fx/magic_wind_death_spirit_explosion_01"
+	}
+}
+ExplosionTemplates.bastion_light_spirit = {
+	explosion = {
+		trigger_on_server_only = true,
+		radius = 1,
+		wind_mutator = true,
+		power_level = 0,
+		effect_name = "fx/bastion_light_spirit_impact"
 	}
 }
 ExplosionTemplates.light_pulse = {

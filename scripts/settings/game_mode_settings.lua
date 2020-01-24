@@ -20,6 +20,7 @@ GameModeSettings.adventure.class_name = "GameModeAdventure"
 GameModeSettings.adventure.display_name = "dlc1_2_map_game_mode_adventure"
 GameModeSettings.adventure.description_text = "game_mode_description_adventure"
 GameModeSettings.adventure.object_sets = {
+	adventure = true,
 	gm_sp = true
 }
 GameModeSettings.adventure.lose_condition_time_dead = 4

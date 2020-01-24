@@ -164,7 +164,7 @@ TitleMainUI._reset_menu_buttons = function (self)
 		widget_style.icon.offset[1] = -width * 0.6 - widget_style.icon.texture_size[1]
 	end
 
-	if script_data.settings.use_beta_overlay and not GameSettingsDevelopment.allow_offline_mode_in_beta then
+	if script_data.settings.use_beta_mode and not GameSettingsDevelopment.allow_offline_mode_in_beta then
 		self._is_in_sub_menu = true
 		self._game_type = "online"
 		self._menu_widgets = self._sub_menu_widgets
@@ -287,7 +287,7 @@ TitleMainUI._handle_menu_input = function (self, dt, t)
 	local current_index = self._current_menu_index or 1
 	local input_service = self.input_manager:get_service("main_menu")
 	local force_menu_animation = false
-	local is_beta = script_data.settings.use_beta_overlay and not GameSettingsDevelopment.allow_offline_mode_in_beta
+	local is_beta = script_data.settings.use_beta_mode and not GameSettingsDevelopment.allow_offline_mode_in_beta
 	local navigation_allowed = self._show_menu
 
 	if navigation_allowed then
@@ -593,7 +593,7 @@ end
 TitleMainUI.show_menu = function (self, show, force)
 	self._show_menu = show
 	self._show_menu_when_ready = nil
-	local is_beta = script_data.settings.use_beta_overlay and not GameSettingsDevelopment.allow_offline_mode_in_beta
+	local is_beta = script_data.settings.use_beta_mode and not GameSettingsDevelopment.allow_offline_mode_in_beta
 
 	if not show then
 		local current_menu_index = self._current_menu_index

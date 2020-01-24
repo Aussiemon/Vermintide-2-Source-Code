@@ -145,7 +145,41 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 		local difficulty_manager = Managers.state.difficulty
 		local difficulty = difficulty_manager:get_difficulty()
 		local spawn_list = BreedTweaks.standard_bearer_spawn_list[difficulty]
-		local num_to_spawn = #spawn_list
+		local game_mode_manager = Managers.state.game_mode
+		local level_transition_handler = game_mode_manager.level_transition_handler
+		local enemy_package_loader = level_transition_handler.enemy_package_loader
+		local startup_breeds = enemy_package_loader:get_startup_breeds()
+		local replacement_breeds = BreedTweaks.standard_bearer_spawn_list_replacements
+		local new_spawn_list = {}
+
+		for i = 1, #spawn_list, 1 do
+			local breed_name = spawn_list[i]
+
+			if not startup_breeds[breed_name] then
+				local replacement = nil
+				local check_breeds = false
+
+				for j = 1, #replacement_breeds, 1 do
+					local replacement_breed = replacement_breeds[j]
+
+					if check_breeds and startup_breeds[replacement_breed] then
+						replacement = replacement_breed
+
+						break
+					elseif replacement_breed == breed_name then
+						check_breeds = true
+					end
+				end
+
+				if replacement then
+					new_spawn_list[#new_spawn_list + 1] = replacement
+				end
+			else
+				new_spawn_list[#new_spawn_list + 1] = breed_name
+			end
+		end
+
+		local num_to_spawn = #new_spawn_list
 		local above = 1
 		local below = 1
 
@@ -154,7 +188,7 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 			local offset = Vector3(-num_columns / 2 + i % num_columns, -num_columns / 2 + math.floor(i / num_columns), 0)
 			local spawn_pos = bearer_position + offset * 2
 			local spawn_pos_on_navmesh = LocomotionUtils.pos_on_mesh(nav_world, spawn_pos, above, below)
-			local breed = Breeds[spawn_list[i]]
+			local breed = Breeds[new_spawn_list[i]]
 
 			if spawn_pos_on_navmesh then
 				conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos_on_navmesh), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden")

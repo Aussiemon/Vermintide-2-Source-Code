@@ -6679,6 +6679,7 @@ Features that make player mechanics nicer to work with.
 		}
 	},
 	{
+		no_nil = false,
 		setting_name = "debug_hud_visibility_group",
 		description = "Force activate a specific HUD visibility group",
 		category = "HUD",

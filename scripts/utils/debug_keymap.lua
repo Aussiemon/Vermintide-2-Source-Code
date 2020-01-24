@@ -362,6 +362,11 @@ DebugKeymap.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"right_trigger",
 		"soft_button"
 	},
+	right_shoulder = {
+		"gamepad",
+		"right_shoulder",
+		"held"
+	},
 	left_trigger = {
 		"gamepad",
 		"left_trigger",
@@ -371,6 +376,11 @@ DebugKeymap.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"gamepad",
 		"left_trigger",
 		"soft_button"
+	},
+	left_shoulder = {
+		"gamepad",
+		"left_shoulder",
+		"held"
 	},
 	d_down = {
 		"gamepad",
@@ -485,6 +495,14 @@ DebugInputFilters.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 			left_thumb = "left_thumb"
 		}
 	},
+	u = {
+		filter_type = "and",
+		input_mappings = {
+			left_trigger = "left_trigger",
+			d_down = "d_down",
+			left_thumb = "left_thumb"
+		}
+	},
 	c = {
 		filter_type = "and",
 		input_mappings = {
@@ -554,6 +572,16 @@ DebugKeymap.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	r2 = {
 		"gamepad",
 		"r2",
+		"held"
+	},
+	l1 = {
+		"gamepad",
+		"l1",
+		"held"
+	},
+	r1 = {
+		"gamepad",
+		"r1",
 		"held"
 	},
 	l2_soft = {
@@ -675,6 +703,14 @@ DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		input_mappings = {
 			l3 = "l3",
 			down = "down"
+		}
+	},
+	u = {
+		filter_type = "and",
+		input_mappings = {
+			l3 = "l3",
+			down = "down",
+			l2 = "l2"
 		}
 	},
 	c = {

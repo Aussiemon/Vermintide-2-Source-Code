@@ -649,7 +649,7 @@ view_settings = {
 		},
 		hotkey_weave_play = {
 			can_interact_func = "weaves_requirements_fulfilled",
-			transition_sub_state = "weave",
+			transition_sub_state = "weave_quickplay",
 			in_transition = "start_game_view_force",
 			view = "start_game_view",
 			in_transition_menu = "start_game_view",

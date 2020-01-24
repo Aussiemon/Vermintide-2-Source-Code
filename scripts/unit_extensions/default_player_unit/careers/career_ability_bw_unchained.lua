@@ -196,6 +196,36 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	DamageUtils.create_explosion(self._world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, career_power_level, false, owner_unit)
 	career_extension:start_activated_ability_cooldown()
 
+	if talent_extension:has_talent("sienna_unchained_activated_ability_power_on_enemies_hit") then
+		local attack_type_id = NetworkLookup.buff_attack_types.ability
+		local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
+		local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
+		local hit_zone_id = NetworkLookup.hit_zones.torso
+		local radius = 10
+		local nearby_enemy_units = FrameTable.alloc_table()
+		local proximity_extension = Managers.state.entity:system("proximity_system")
+		local broadphase = proximity_extension.enemy_broadphase
+
+		Broadphase.query(broadphase, position, radius, nearby_enemy_units)
+
+		local target_number = 1
+		local side_manager = Managers.state.side
+
+		for _, enemy_unit in pairs(nearby_enemy_units) do
+			if Unit.alive(enemy_unit) then
+				local hit_unit_id = network_manager:unit_game_object_id(enemy_unit)
+
+				if side_manager:is_enemy(owner_unit, enemy_unit) then
+					if is_server then
+						network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, false, hit_zone_id, target_number, buff_weapon_type_id)
+					else
+						network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, false, hit_zone_id, target_number, buff_weapon_type_id)
+					end
+				end
+			end
+		end
+	end
+
 	local inventory_extension = ScriptUnit.has_extension(owner_unit, "inventory_system")
 	local lh_weapon_unit, rh_weapon_unit = inventory_extension:get_all_weapon_unit()
 	local lh_weapon_extension = lh_weapon_unit and ScriptUnit.has_extension(lh_weapon_unit, "weapon_system")

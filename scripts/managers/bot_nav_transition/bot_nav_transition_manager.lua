@@ -23,12 +23,13 @@ BotNavTransitionManager.TRANSITION_LAYERS = {
 }
 BotNavTransitionManager.NAV_COST_MAP_LAYERS = {
 	plague_wave = 30,
-	troll_bile = 30,
+	mutator_heavens_zone = 50,
 	lamp_oil_fire = 30,
 	warpfire_thrower_warpfire = 30,
 	vortex_near = 50,
 	stormfiend_warpfire = 50,
-	vortex_danger_zone = 75
+	vortex_danger_zone = 75,
+	troll_bile = 30
 }
 
 BotNavTransitionManager.init = function (self, world, physics_world, nav_world, is_server, network_event_delegate, using_editor)

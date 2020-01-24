@@ -541,7 +541,7 @@ TelemetryEvents.store_breadcrumbs_changed = function (self, widgets, product)
 		path_localized[#path_localized + 1] = widget.content.text
 	end
 
-	if product then
+	if product and path[#path] == "item_details" then
 		path[#path] = product.product_id
 	end
 

@@ -8,7 +8,7 @@ WeaveLoadoutSettings.bw_adept = {
 		},
 		{
 			"sienna_adept_power_level_on_full_charge",
-			"sienna_adept_attack_speed_on_enemies_hit",
+			"sienna_adept_increased_burn_damage_reduced_non_burn_damage",
 			"sienna_adept_infinite_burn"
 		},
 		{
@@ -24,10 +24,10 @@ WeaveLoadoutSettings.bw_adept = {
 		{
 			"sienna_adept_damage_reduction_on_ignited_enemy",
 			"sienna_adept_cooldown_reduction_on_burning_enemy_killed",
-			"sienna_adept_increased_burn_damage_reduced_non_burn_damage"
+			"sienna_adept_attack_speed_on_enemies_hit"
 		},
 		{
-			"sienna_adept_activated_ability_distance",
+			"sienna_adept_activated_ability_cooldown",
 			"sienna_adept_activated_ability_explosion",
 			"sienna_adept_ability_trail_double"
 		}

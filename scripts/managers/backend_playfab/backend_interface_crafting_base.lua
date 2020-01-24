@@ -226,7 +226,7 @@ BackendInterfaceCraftingBase.weapon_skin_application_validation_func = function 
 		end
 	end
 
-	if #valid_item_ids ~= 3 then
+	if #valid_item_ids ~= 2 then
 		return false
 	end
 

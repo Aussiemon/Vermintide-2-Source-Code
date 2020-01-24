@@ -34,6 +34,11 @@ end
 
 SpawnManager.destroy = function (self)
 	self.hero_spawner_handler:destroy()
+
+	if self._despawn_queue_size > 0 then
+		self:_update_despawns()
+	end
+
 	assert(self._despawn_queue_size == 0, "Players left to despawn when the spawn manager is destroyed")
 end
 

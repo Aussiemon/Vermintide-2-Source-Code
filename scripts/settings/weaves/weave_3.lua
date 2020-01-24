@@ -1,36 +1,30 @@
 return {
 	wind_strength = 3,
-	wind = "life",
+	wind = "heavens",
 	seed = 293048,
-	terror_events = {
-		"capture_point_3_event",
-		"capture_point_1_event_large",
-		"capture_point_1_event_small"
-	},
 	objectives = {
 		{
 			display_name = "objective_capture_points_name",
-			level_id = "dlc_scorpion_rubble_life",
+			level_id = "dlc_scorpion_rubble_heavens",
 			objective_type = "capture_points",
 			conflict_settings = "default_weave",
-			level_seed = 8435394,
 			end_zone_name = "end_zone_03",
-			show_bar = true,
+			level_seed = 8435394,
 			base_level_id = "dlc_scorpion_rubble",
 			objective_start_flow_event = "weave_objective_capture_points_start",
+			show_bar = true,
 			spawning_seed = 312093,
+			terror_events = {
+				"capture_point_3_event",
+				"capture_point_1_event_large",
+				"capture_point_1_event_small"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								cataclysm = 0.24300000000000002,
-								cataclysm_3 = 0.189,
-								normal = 0.54
-							}
-						},
+						kill_enemies = {},
 						capture_point_004 = {
-							score = 16,
+							is_scored = true,
 							on_start_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -43,7 +37,7 @@ return {
 							end
 						},
 						capture_point_002 = {
-							score = 16,
+							is_scored = true,
 							on_start_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -56,7 +50,7 @@ return {
 							end
 						},
 						capture_point_005 = {
-							score = 16,
+							is_scored = true,
 							on_start_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
@@ -123,7 +117,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_life",
+			level_id = "dlc_scorpion_arena_castle_heavens",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 23094,
 			level_seed = 389090,

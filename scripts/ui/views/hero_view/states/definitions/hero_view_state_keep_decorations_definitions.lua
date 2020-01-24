@@ -389,8 +389,9 @@ local function create_entry_widget()
 				local locked = content.locked
 				local equipped = content.equipped
 				local new = content.new
+				local in_use = content.in_use
 
-				return not locked and not equipped and not new
+				return not locked and not equipped and not new and not in_use
 			end
 		},
 		{
@@ -415,6 +416,14 @@ local function create_entry_widget()
 			texture_id = "equipped_texture",
 			content_check_function = function (content)
 				return content.equipped
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "in_use_texture",
+			texture_id = "equipped_texture",
+			content_check_function = function (content)
+				return content.in_use and not content.equipped
 			end
 		},
 		{
@@ -715,6 +724,21 @@ local function create_entry_widget()
 				-64,
 				0,
 				2
+			}
+		},
+		in_use_texture = {
+			vertical_alignment = "center",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				37,
+				31
+			},
+			color = Colors.get_color_table_with_alpha("gray", 255),
+			offset = {
+				4,
+				0,
+				3
 			}
 		}
 	}

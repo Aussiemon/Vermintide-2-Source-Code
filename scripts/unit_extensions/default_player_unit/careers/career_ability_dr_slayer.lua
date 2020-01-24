@@ -261,12 +261,13 @@ CareerAbilityDRSlayer._do_stomp = function (self, t)
 	local local_player = self._local_player
 	local career_extension = self._career_extension
 	local talent_extension = self._talent_extension
-	local rotation = Quaternion.identity()
-	local explosion_template = "bardin_slayer_activated_ability_landing_stagger"
-	local scale = 1
-	local career_power_level = career_extension:get_career_power_level()
-	local area_damage_system = Managers.state.entity:system("area_damage_system")
+	local has_impact_damage_buff = talent_extension:has_talent("bardin_slayer_activated_ability_impact_damage")
 	local position = POSITION_LOOKUP[owner_unit]
+	local rotation = Quaternion.identity()
+	local explosion_template = (has_impact_damage_buff and "bardin_slayer_activated_ability_landing_stagger_impact") or "bardin_slayer_activated_ability_landing_stagger"
+	local scale = 1
+	local career_power_level = career_extension:get_career_power_level() * ((has_impact_damage_buff and 2) or 1)
+	local area_damage_system = Managers.state.entity:system("area_damage_system")
 
 	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 

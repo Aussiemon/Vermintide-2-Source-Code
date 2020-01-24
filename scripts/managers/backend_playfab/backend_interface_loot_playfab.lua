@@ -99,7 +99,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	self._loot_requests[id] = loot
 end
 
-BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
+BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_progress, game_time, current_weave_index)
 	local id = self:_new_id()
 	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
 	local data = {
@@ -120,7 +120,6 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		remote_player_ids_and_characters = remote_player_ids_and_characters,
 		game_mode_key = game_mode_key,
 		weave_tier = weave_tier,
-		weave_won_count = weave_won_count,
 		weave_progress = weave_progress,
 		game_time = game_time,
 		current_weave_index = current_weave_index
@@ -232,7 +231,34 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 			end
 		end
 	elseif PLATFORM == "xb1" then
+		local human_players = Managers.player:human_players()
+
+		for _, player in pairs(human_players) do
+			if player.remote then
+				local peer_id = player:network_id()
+				local profile_index = player:profile_index()
+				local career_index = player:career_index()
+				local career_settings = SPProfiles[profile_index].careers[career_index]
+				local career_playfab_name = career_settings.playfab_name
+				local decimal_id = player:platform_id()
+				ids_and_characters[decimal_id] = career_playfab_name
+			end
+		end
 	elseif PLATFORM == "ps4" then
+		local human_players = Managers.player:human_players()
+
+		for _, player in pairs(human_players) do
+			if player.remote then
+				local peer_id = player:network_id()
+				local profile_index = player:profile_index()
+				local career_index = player:career_index()
+				local career_settings = SPProfiles[profile_index].careers[career_index]
+				local career_playfab_name = career_settings.playfab_name
+				local platform_id = player:platform_id()
+				local decimal_id = Application.hex64_to_dec(peer_id)
+				ids_and_characters[decimal_id] = career_playfab_name
+			end
+		end
 	end
 
 	return ids_and_characters

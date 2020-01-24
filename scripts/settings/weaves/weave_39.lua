@@ -1,12 +1,11 @@
 return {
 	wind_strength = 4,
-	wind = "fire",
+	wind = "metal",
 	seed = 45654,
-	terror_events = {},
 	objectives = {
 		{
 			display_name = "objective_sockets_name",
-			level_id = "dlc_scorpion_alleys_fire",
+			level_id = "dlc_scorpion_alleys_metal",
 			objective_type = "sockets",
 			conflict_settings = "default_weave",
 			level_seed = 1896357,
@@ -18,18 +17,11 @@ return {
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								hardest = 0.18,
-								cataclysm_3 = 0.14,
-								cataclysm_2 = 0.15
-							}
-						},
+						kill_enemies = {},
 						weave_explosive_barrel_socket_006 = {
-							score = 40
+							is_scored = true
 						},
 						weave_limited_item_track_spawner_003 = {
-							score = 0,
 							template_name = "gargoyle_head_spawner"
 						}
 					}
@@ -40,7 +32,7 @@ return {
 				pickups = 118466
 			},
 			spawning_settings = {
-				terror_event_trickle = "trickle_event_beastmen_small",
+				terror_event_trickle = "trickle_event_armour",
 				main_path_spawning = {
 					{
 						terror_event_name = "main_path_standard_skaven_small_medium",
@@ -103,7 +95,7 @@ return {
 						percentage_spawn_offset = 14
 					},
 					{
-						terror_event_name = "main_path_theme_archers_beastmen_long",
+						terror_event_name = "main_path_theme_armored_beastmen_long",
 						percentage = 60,
 						percentage_spawn_offset = 14
 					},
@@ -123,7 +115,7 @@ return {
 						percentage_spawn_offset = 5
 					},
 					{
-						terror_event_name = "main_path_standard_beastmen_large_long",
+						terror_event_name = "main_path_theme_armored_beastmen_long",
 						percentage = 95,
 						percentage_spawn_offset = -15
 					}
@@ -132,7 +124,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_temple_fire",
+			level_id = "dlc_scorpion_arena_temple_metal",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 11854541,
 			level_seed = 1268425,
@@ -143,7 +135,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "swarms_2_bosses_event",
+						terror_event_name = "metal_bosses_2",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

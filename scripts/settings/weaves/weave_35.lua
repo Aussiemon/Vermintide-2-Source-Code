@@ -1,60 +1,42 @@
 return {
 	wind_strength = 5,
-	wind = "shadow",
+	wind = "fire",
 	seed = 571238,
-	terror_events = {
-		"weave_spot_event_skaven_gutter_runner",
-		"objective_event_beastmen"
-	},
 	objectives = {
 		{
 			display_name = "objective_destroy_doom_wheels_name",
-			level_id = "dlc_scorpion_canyon_shadow",
+			level_id = "dlc_scorpion_canyon_fire",
 			objective_type = "doom_wheels",
 			conflict_settings = "weave_beastmen_light",
-			level_seed = 789654,
 			end_zone_name = "end_zone_03",
-			show_bar = true,
+			level_seed = 789654,
 			base_level_id = "dlc_scorpion_canyon",
 			objective_start_flow_event = "weave_objective_doom_wheels_start",
+			show_bar = true,
 			spawning_seed = 2156845,
+			terror_events = {
+				"weave_spot_event_skaven_gutter_runner",
+				"objective_event_beastmen"
+			},
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								hardest = 0.25,
-								cataclysm_3 = 0.18,
-								cataclysm_2 = 0.2,
-								normal = 0.6
-							}
-						},
+						kill_enemies = {},
 						weave_prop_skaven_doom_wheel_01_spawner_001 = {
-							score = 60,
 							timer = 10,
+							is_scored = true,
 							on_socket_start_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
 								Managers.weave:start_terror_event("weave_spot_event_skaven_gutter_runner", spawner_id)
-							end,
-							on_destroy_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("weave_spot_event_skaven_gutter_runner", spawner_id)
 							end
 						},
 						weave_limited_item_track_spawner_003 = {
-							score = 0,
 							template_name = "explosive_barrel_spawner",
 							on_first_pickup_func = function (unit)
 								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
 
 								Managers.weave:start_terror_event("objective_event_beastmen", spawner_id)
-							end,
-							on_destroy_func = function (unit)
-								local spawner_id = Unit.get_data(unit, "terror_event_spawner_id")
-
-								Managers.weave:stop_terror_event("objective_event_beastmen", spawner_id)
 							end
 						}
 					}
@@ -181,7 +163,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_temple_shadow",
+			level_id = "dlc_scorpion_arena_temple_fire",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

@@ -47,6 +47,12 @@ SimpleHuskInventoryExtension.get_weapon_unit = function (self)
 	return weapon_unit
 end
 
+SimpleHuskInventoryExtension.get_all_weapon_unit = function (self)
+	local equipment = self._equipment
+
+	return equipment.left_hand_wielded_unit_3p, equipment.right_hand_wielded_unit_3p
+end
+
 SimpleHuskInventoryExtension.drop_level_event_item = function (self, slot_data)
 	local item_template = self:get_item_template(slot_data)
 

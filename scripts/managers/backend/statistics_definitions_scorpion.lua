@@ -1,6 +1,40 @@
 require("scripts/settings/weave_settings")
+require("scripts/settings/dlcs/scorpion/scorpion_seasonal_settings")
 
 local player = StatisticsDefinitions.player
+local num_seasons = ScorpionSeasonalSettings.current_season_id
+local season_offset = 2
+local database_names_repeating = {
+	"weave_quickplay_wins"
+}
+
+for season_id = season_offset, num_seasons, 1 do
+	local season_name = "s" .. season_id
+	player[season_name] = {}
+	local season_table = player[season_name]
+
+	for db_name_id = 1, #database_names_repeating, 1 do
+		local name = database_names_repeating[db_name_id]
+		season_table[name] = {
+			value = 0,
+			source = "player_data",
+			database_name = name
+		}
+	end
+
+	for i = 1, 500, 1 do
+		for j = 1, 4, 1 do
+			local id = i .. "_" .. j
+			local db_name = season_name .. "_" .. id
+			season_table[id] = {
+				value = 0,
+				source = "player_data",
+				database_name = db_name
+			}
+		end
+	end
+end
+
 player.season_1 = {}
 
 for i = 1, 500, 1 do
@@ -39,6 +73,23 @@ for i = 1, #profiles, 1 do
 			player.season_1[id_rainbow].database_name = database_name_rainbow
 		end
 	end
+end
+
+player.season_1.weave_quickplay_wins = {
+	value = 0,
+	database_name = "season_1_weave_quickplay_wins",
+	source = "player_data"
+}
+local base_definitions = {
+	value = 0,
+	source = "player_data"
+}
+
+for difficulty, difficulty_data in pairs(DifficultySettings) do
+	local id_difficulty_quickplay_wins = "weave_quickplay_" .. difficulty .. "_wins"
+	local database_name_weave_quickplay_difficulty_wins = "season_1_" .. id_difficulty_quickplay_wins
+	player.season_1[id_difficulty_quickplay_wins] = table.clone(base_definitions)
+	player.season_1[id_difficulty_quickplay_wins].database_name = database_name_weave_quickplay_difficulty_wins
 end
 
 for _, wind in ipairs(WeaveSettings.winds) do
@@ -106,6 +157,11 @@ player.scorpion_ui_onboarding_state = {
 	database_name = "scorpion_ui_onboarding_state",
 	source = "player_data"
 }
+player.scorpion_weaves_won = {
+	value = 0,
+	database_name = "scorpion_weaves_won",
+	source = "player_data"
+}
 player.kill_chaos_exalted_champion_scorpion_hardest = {
 	value = 0,
 	database_name = "kill_chaos_exalted_champion_scorpion_hardest",
@@ -131,5 +187,14 @@ player.scorpion_onboarding_weave_first_fail_vo_played = {
 	database_name = "scorpion_onboarding_weave_first_fail_vo_played",
 	source = "player_data"
 }
+
+StatisticsUtil.generate_weapon_kill_stats_dlc(player, "scorpion", {
+	value = 0,
+	source = "player_data"
+})
+StatisticsUtil.generate_level_complete_with_weapon_stats_dlc(player, "scorpion", {
+	value = 0,
+	source = "player_data"
+})
 
 return

@@ -44,6 +44,10 @@ StateLoading.on_enter = function (self, param_block)
 		Application.set_kinect_enabled(true)
 	end
 
+	if PLATFORM ~= "win32" then
+		Managers.chat:set_chat_enabled(Application.user_setting("chat_enabled"))
+	end
+
 	Framerate.set_low_power()
 	Wwise.set_state("inside_waystone", "false")
 
@@ -80,10 +84,6 @@ StateLoading.on_enter = function (self, param_block)
 	elseif LAUNCH_MODE == "attract_benchmark" then
 		Managers.backend:start_benchmark()
 	end
-
-	self._has_requested_live_events = false
-
-	self:_request_live_events()
 
 	if self._lobby_client ~= nil and not self._lobby_client:is_dedicated_server() then
 		Managers.party:set_leader(self._lobby_client:lobby_host())
@@ -138,24 +138,6 @@ StateLoading.loadout_resync_state = function (self)
 	return self._loadout_resync_state
 end
 
-StateLoading._request_live_events = function (self)
-	if self._has_requested_live_events then
-		return
-	end
-
-	local backend = Managers.backend
-
-	if DEDICATED_SERVER and not backend:profiles_loaded() then
-		return
-	end
-
-	if not script_data.settings.use_beta_overlay then
-		local live_events_interface = Managers.backend:get_interface("live_events")
-		self._live_event_request_id = live_events_interface:request_live_events()
-		self._has_requested_live_events = true
-	end
-end
-
 StateLoading._setup_input = function (self)
 	local input_manager = InputManager:new()
 	Managers.input = input_manager
@@ -187,6 +169,7 @@ StateLoading._parse_loading_context = function (self)
 		self._level_end_view_context = loading_context.level_end_view_context
 		self._switch_to_tutorial_backend = loading_context.switch_to_tutorial_backend
 		self._wanted_tutorial_state = loading_context.wanted_tutorial_state
+		self._saved_scoreboard_stats = loading_context.saved_scoreboard_stats
 	end
 end
 
@@ -239,7 +222,9 @@ StateLoading._setup_first_time_ui = function (self)
 	local loading_context = self.parent.loading_context
 
 	if (loading_context.first_time or loading_context.gamma_correct or loading_context.play_trailer) and not GameSettingsDevelopment.disable_intro_trailer and not script_data.skip_intro_trailer then
-		local level_name = (Boot.loading_context and Boot.loading_context.level_key) or LevelSettings.default_start_level
+		local mechanism = Managers.mechanism:game_mechanism()
+		local inn_level_name = mechanism:get_hub_level_key()
+		local level_name = (Boot.loading_context and Boot.loading_context.level_key) or inn_level_name
 		local auto_skip = nil
 		local params = {}
 
@@ -258,7 +243,8 @@ StateLoading._setup_first_time_ui = function (self)
 			end
 
 			level_name = check_bool_string(Development.parameter("auto_host_level")) or level_name
-			auto_skip = level_name ~= LevelSettings.default_start_level
+			local level_settings = LevelSettings[level_name]
+			auto_skip = not level_settings.hub_level
 			auto_skip = loading_context.join_lobby_data or Development.parameter("auto_join") or auto_skip or Development.parameter("skip_splash")
 
 			if not auto_skip and Development.parameter("weave_name") then
@@ -270,7 +256,8 @@ StateLoading._setup_first_time_ui = function (self)
 			params.trailer = Application.user_setting("play_intro_cinematic")
 		elseif platform == "ps4" or platform == "xb1" then
 			level_name = check_bool_string(Development.parameter("auto_host_level")) or level_name
-			auto_skip = level_name ~= LevelSettings.default_start_level
+			local level_settings = LevelSettings[level_name]
+			auto_skip = not level_settings.hub_level
 			auto_skip = loading_context.join_lobby_data or Development.parameter("auto_join") or auto_skip or Development.parameter("skip_splash")
 
 			if not auto_skip and Development.parameter("weave_name") then
@@ -283,6 +270,8 @@ StateLoading._setup_first_time_ui = function (self)
 			if params.gamma or params.trailer then
 				auto_skip = false
 			end
+
+			params.is_prologue = level_name == "prologue"
 		end
 
 		print("[StateLoading] Auto Skip: ", auto_skip)
@@ -404,9 +393,9 @@ StateLoading.setup_loading_view = function (self, level_key)
 		if level_settings.game_mode == "weave" then
 			local weave_name = (self._lobby_client and self._lobby_client:lobby_data("weave_name")) or weave_name
 
-			if not weave_name then
+			if not weave_name or weave_name == "false" then
 				if PLATFORM == "xb1" and not self._lobby_client:is_updating_lobby_data() then
-					self._lobby_client:force_update_data()
+					self._lobby_client:force_update_lobby_data()
 				end
 
 				return
@@ -614,7 +603,6 @@ StateLoading.update = function (self, dt, t)
 
 	Network.update_receive(dt, self._network_event_delegate.event_table)
 	self:_update_network(dt)
-	self:_request_live_events()
 
 	if PLATFORM == "ps4" and not self._popup_id and not self._handled_psn_client_error and self._level_transition_handler:all_packages_loaded() and self._level_transition_handler.enemy_package_loader:loading_completed() and Managers.backend:profiles_loaded() and self:global_packages_loaded() then
 		local psn_client_error = Managers.account:psn_client_error()
@@ -645,18 +633,22 @@ StateLoading.update = function (self, dt, t)
 
 	if self._should_start_breed_loading and self._level_transition_handler:all_packages_loaded() then
 		local loading_context = self.parent.loading_context
-		local weave_name = (self._lobby_client and self._lobby_client:lobby_data("weave_name")) or Managers.weave:get_next_weave() or Development.parameter("weave_name")
+		local weave_name = Managers.weave:get_next_weave() or Development.parameter("weave_name")
+		local weave_objective_index = Managers.weave:get_next_objective() or 1
 		local weave_data = WeaveSettings.templates[weave_name]
 		local level_key = self._level_transition_handler.level_key
+		local weave_objective_data = nil
 
 		if weave_data then
-			ConflictUtils.patch_terror_events_with_weaves(level_key, weave_data)
+			weave_objective_data = weave_data.objectives[weave_objective_index]
+
+			ConflictUtils.patch_terror_events_with_weaves(level_key, weave_data, weave_objective_index)
 		end
 
 		local level_seed = Managers.mechanism:get_level_seed()
 		local locked_director_functions = Managers.mechanism:get_locked_director_functions()
 
-		self._level_transition_handler.enemy_package_loader:setup_startup_enemies(level_key, level_seed, locked_director_functions)
+		self._level_transition_handler.enemy_package_loader:setup_startup_enemies(level_key, level_seed, locked_director_functions, weave_objective_data)
 
 		self._should_start_breed_loading = nil
 	end
@@ -1307,45 +1299,6 @@ StateLoading._try_next_state = function (self, dt)
 			return
 		end
 
-		if self._live_event_request_id and not backend_manager:is_disconnected() and not self._teardown_network then
-			local live_events_interface = backend_manager:get_interface("live_events")
-
-			if not live_events_interface:live_events_request_complete(self._live_event_request_id) or not self._level_key then
-				return
-			else
-				local live_events = live_events_interface:get_live_events()
-				local live_event_packages = {}
-
-				for i = 1, #live_events, 1 do
-					local live_event = live_events[i]
-					local level_settings = live_event.level_settings and live_event.level_settings[self._level_key]
-
-					if level_settings then
-						local package_name = level_settings.sub_level_package_name
-
-						if package_name then
-							Managers.package:load(package_name, "live_events", nil, true)
-
-							live_event_packages[package_name] = true
-						end
-					end
-				end
-
-				self._live_event_packages = live_event_packages
-				self._live_event_request_id = nil
-			end
-		end
-
-		local live_event_packages = self._live_event_packages
-
-		if live_event_packages then
-			for package_name, _ in pairs(live_event_packages) do
-				if not Managers.package:has_loaded(package_name) then
-					return
-				end
-			end
-		end
-
 		local eac_allowed_to_play = true
 
 		if self._network_client then
@@ -1571,7 +1524,8 @@ StateLoading.on_exit = function (self, application_shutdown)
 			network_transmit = self._network_transmit,
 			checkpoint_data = self._checkpoint_data,
 			quickplay_bonus = self._quickplay_bonus,
-			level_end_view_wrappers = self._level_end_view_wrappers
+			level_end_view_wrappers = self._level_end_view_wrappers,
+			saved_scoreboard_stats = self._saved_scoreboard_stats
 		}
 
 		if self._lobby_host then
@@ -1645,6 +1599,10 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 
 	if self._loading_view then
+		if self.parent.loading_context then
+			self.parent.loading_context.subtitle_gui = self._loading_view:subtitle_gui()
+		end
+
 		self._loading_view:destroy()
 
 		self._loading_view = nil

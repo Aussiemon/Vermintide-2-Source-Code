@@ -153,6 +153,7 @@ IngameHud._update_component_visibility = function (self)
 	local visibility_groups = definitions.visibility_groups
 	local num_visibility_groups = #visibility_groups
 	local debug_visibility_group = script_data.debug_hud_visibility_group
+	local handle_debug = debug_visibility_group and debug_visibility_group ~= "none"
 
 	for i = 1, num_visibility_groups, 1 do
 		local visibility_group = visibility_groups[i]
@@ -160,7 +161,7 @@ IngameHud._update_component_visibility = function (self)
 		local validation_function = visibility_group.validation_function
 		local is_valid = false
 
-		if debug_visibility_group then
+		if handle_debug then
 			is_valid = group_name == debug_visibility_group
 		else
 			is_valid = validation_function(self)
@@ -191,7 +192,7 @@ IngameHud._update_component_visibility = function (self)
 		end
 	end
 
-	if debug_visibility_group then
+	if handle_debug then
 		Debug.text("HUD visibility group: " .. tostring(self._current_group_name or "none"))
 	end
 end

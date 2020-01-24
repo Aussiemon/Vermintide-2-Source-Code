@@ -298,7 +298,7 @@ local scenegraph_definition = {
 		parent = "passive_window",
 		horizontal_alignment = "left",
 		size = {
-			career_info_size[1] * 0.6,
+			career_info_size[1] * 0.65,
 			50
 		},
 		position = {

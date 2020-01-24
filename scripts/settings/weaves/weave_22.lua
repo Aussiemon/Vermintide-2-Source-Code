@@ -1,14 +1,13 @@
 return {
 	wind_strength = 2,
-	wind = "death",
+	wind = "beasts",
 	seed = 5923569,
-	terror_events = {},
 	objectives = {
 		{
 			display_name = "objective_targets_name",
-			level_id = "dlc_scorpion_alleys_death",
+			level_id = "dlc_scorpion_alleys_beasts",
 			objective_type = "targets",
-			conflict_settings = "default_weave",
+			conflict_settings = "weave_skaven_beastmen",
 			level_seed = 295720,
 			end_zone_name = "end_zone_03",
 			show_bar = true,
@@ -18,42 +17,36 @@ return {
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								harder = 0.27,
-								cataclysm_3 = 0.135,
-								cataclysm_2 = 0.14850000000000002
-							}
-						},
+						kill_enemies = {},
 						weave_target_spawner_006 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_040 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_010 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_041 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_011 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_045 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_020 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_024 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_030 = {
-							score = 7
+							is_scored = true
 						},
 						weave_target_spawner_032 = {
-							score = 7
+							is_scored = true
 						}
 					}
 				}
@@ -71,7 +64,7 @@ return {
 						percentage_spawn_offset = 5
 					},
 					{
-						terror_event_name = "main_path_specials_aoe_chaos_medium",
+						terror_event_name = "main_path_specials_buff_beastmen_medium",
 						percentage = 22,
 						percentage_spawn_offset = 15
 					},
@@ -86,7 +79,7 @@ return {
 						percentage_spawn_offset = 25
 					},
 					{
-						terror_event_name = "main_path_specials_random_mixed_short_cata",
+						terror_event_name = "main_path_specials_disablers_skaven_short_cata",
 						percentage = 28,
 						percentage_spawn_offset = 5
 					},
@@ -106,7 +99,7 @@ return {
 						percentage_spawn_offset = 15
 					},
 					{
-						terror_event_name = "main_path_specials_random_mixed_short_cata",
+						terror_event_name = "main_path_specials_ranged_skaven_short_cata",
 						percentage = 67,
 						percentage_spawn_offset = 10
 					},
@@ -126,15 +119,135 @@ return {
 						percentage_spawn_offset = 20
 					}
 				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_028 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_005 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_006 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_008 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_010 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_012 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_014 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_023 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_021 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				}
 			}
 		},
 		{
+			allow_mutator_item_respawning = true,
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_death",
-			objective_start_flow_event = "weave_objective_waves_start",
+			level_id = "dlc_scorpion_arena_temple_beasts",
 			spawning_seed = 549684,
 			level_seed = 5684648,
 			conflict_settings = "weave_disabled",
+			objective_start_flow_event = "weave_objective_waves_start",
 			system_seeds = {
 				pickups = 8721685
 			},
@@ -144,6 +257,47 @@ return {
 						terror_event_name = "eshin_swarm",
 						percentage = 0,
 						percentage_spawn_offset = 0
+					}
+				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_002 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
+					}
+				},
+				mutator_item_spawner_003 = {
+					unit_extension_template = "destructible_objective_unit",
+					unit_name = "units/weave/beasts/beast_totem_mutator",
+					extension_init_data = {
+						health_system = {
+							damage_cap_per_hit = 1,
+							health = 5
+						},
+						hit_reaction_system = {
+							hit_reaction_template = "level_object"
+						}
 					}
 				}
 			}

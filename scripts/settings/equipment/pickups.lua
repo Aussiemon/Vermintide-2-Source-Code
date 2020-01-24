@@ -175,6 +175,26 @@ Pickups.level_events.torch = {
 		end
 	end
 }
+Pickups.level_events.mutator_torch = {
+	only_once = true,
+	individual_pickup = false,
+	type = "inventory_item",
+	item_description = "interaction_torch",
+	spawn_weighting = 1e-06,
+	debug_pickup_category = "level_event",
+	teleport_time = 3.5,
+	slot_name = "slot_level_event",
+	item_name = "mutator_torch",
+	unit_name = "units/weapons/player/pup_torch/pup_torch",
+	unit_template_name = "pickup_torch_unit",
+	wield_on_pickup = true,
+	hud_description = "interaction_torch",
+	on_pick_up_func = function (world, interactor_unit, is_server)
+		if is_server then
+			LevelHelper:flow_event(world, "lua_torch_picked_up")
+		end
+	end
+}
 Pickups.level_events.shadow_torch = {
 	only_once = true,
 	individual_pickup = false,

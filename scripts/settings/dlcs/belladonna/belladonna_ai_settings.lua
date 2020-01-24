@@ -38,12 +38,6 @@ settings.health_extensions = {
 settings.enemy_package_loader_breed_categories = {
 	specials = {
 		"beastmen_standard_bearer"
-	},
-	always_loaded = {
-		"beastmen_gor",
-		"beastmen_ungor",
-		"beastmen_ungor_archer",
-		"beastmen_bestigor"
 	}
 }
 settings.alias_to_breed = {
@@ -496,52 +490,6 @@ settings.patrol_formations = {
 			}
 		}
 	}
-}
-local unit_alive = Unit.alive
-settings.bt_conditions = {
-	beastmen_standard_bearer_place_standard = function (blackboard)
-		return unit_alive(blackboard.target_unit) and not blackboard.has_placed_standard
-	end,
-	beastmen_standard_bearer_pickup_standard = function (blackboard)
-		if blackboard.ignore_standard_pickup then
-			return false
-		end
-
-		local target_distance_to_standard = blackboard.target_distance_to_standard
-
-		if blackboard.moving_to_pick_up_standard then
-			return true
-		else
-			return blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and AiUtils.unit_alive(blackboard.standard_unit) and target_distance_to_standard and blackboard.breed.pickup_standard_distance < target_distance_to_standard
-		end
-	end,
-	beastmen_standard_bearer_move_and_place_standard = function (blackboard)
-		local has_move_and_place_standard_position = blackboard.move_and_place_standard
-
-		return has_move_and_place_standard_position
-	end,
-	ungor_archer_enter_melee_combat = function (blackboard)
-		return blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or (blackboard.target_dist and blackboard.target_dist < 5))
-	end,
-	bestigor_at_smartobject = function (blackboard)
-		local in_charge_action = blackboard.charge_state ~= nil
-		local at_smartobject = not in_charge_action and BTConditions.at_smartobject(blackboard)
-
-		return at_smartobject
-	end,
-	confirmed_player_sighting_standard_bearer = function (blackboard)
-		return unit_alive(blackboard.target_unit) and blackboard.confirmed_player_sighting and blackboard.has_placed_standard
-	end,
-	standard_bearer_should_be_defensive = function (blackboard)
-		local pickup_standard_distance = blackboard.breed.pickup_standard_distance
-		local defensive_threshold_distance = blackboard.breed.defensive_threshold_distance
-		local in_combat = unit_alive(blackboard.target_unit) and blackboard.confirmed_player_sighting and blackboard.has_placed_standard
-		local target_distance_to_standard = blackboard.target_distance_to_standard
-		local target_is_within_range = target_distance_to_standard and defensive_threshold_distance <= target_distance_to_standard and target_distance_to_standard <= pickup_standard_distance
-		local not_attacking = blackboard.move_state ~= "attacking"
-
-		return in_combat and target_is_within_range and not_attacking
-	end
 }
 
 return

@@ -363,11 +363,14 @@ KeepDecorationPaintingExtension._load_painting_material = function (self, name, 
 end
 
 KeepDecorationPaintingExtension._apply_material_by_sub_path = function (self, subpath)
-	local material_path = "units/gameplay/keep_paintings/materials/" .. subpath .. "/" .. subpath
 	local painting_unit = self._painting_unit
-	local slot = self._slot
 
-	Unit.set_material(painting_unit, slot, material_path)
+	if Unit.alive(painting_unit) then
+		local material_path = "units/gameplay/keep_paintings/materials/" .. subpath .. "/" .. subpath
+		local slot = self._slot
+
+		Unit.set_material(painting_unit, slot, material_path)
+	end
 end
 
 KeepDecorationPaintingExtension._unload_painting_material = function (self, package_name)

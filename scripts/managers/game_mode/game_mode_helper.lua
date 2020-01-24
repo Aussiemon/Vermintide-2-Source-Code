@@ -28,7 +28,7 @@ GameModeHelper.side_is_disabled = function (side_name)
 		local data = status.game_mode_data
 		local health_state = data.health_state
 
-		if health_state == "alive" then
+		if not health_state or health_state == "alive" then
 			return false
 		end
 	end

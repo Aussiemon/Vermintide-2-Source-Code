@@ -3903,6 +3903,66 @@ UtilityConsiderations = {
 			blackboard_input = "target_unit"
 		}
 	},
+	chaos_exalted_sorcerer_drachenfels_defensive_aoe = {
+		time_since_last = {
+			max_value = 4,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				1,
+				1
+			}
+		},
+		recent_melee_attacker = {
+			is_condition = true,
+			invert = false,
+			blackboard_input = "recent_melee_attacker_unit"
+		}
+	},
+	defensive_magic_missile_drachenfels = {
+		time_since_last_missile_def = {
+			max_value = 10,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0.1,
+				0.66,
+				0.2,
+				1,
+				1
+			}
+		},
+		distance_to_target = {
+			max_value = 20,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				0.1,
+				0.6,
+				1,
+				1,
+				1
+			}
+		},
+		recent_attacker = {
+			is_condition = true,
+			invert = false,
+			blackboard_input = "recent_attacker_unit"
+		},
+		recent_melee_attacker = {
+			is_condition = true,
+			invert = true,
+			blackboard_input = "recent_melee_attacker_unit"
+		},
+		target_unit = {
+			is_condition = true,
+			invert = false,
+			blackboard_input = "target_unit"
+		}
+	},
 	defensive_seeking_bomb = {
 		time_since_last_bomb_def = {
 			max_value = 10,

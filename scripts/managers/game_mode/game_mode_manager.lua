@@ -180,6 +180,14 @@ GameModeManager.ai_killed = function (self, killed_unit, killer_unit, death_data
 	end
 end
 
+GameModeManager.ai_destroyed = function (self, unit, blackboard, reason)
+	local game_mode = self._game_mode
+
+	if game_mode.ai_destroyed then
+		game_mode:ai_destroyed(unit, blackboard, reason)
+	end
+end
+
 GameModeManager.level_object_killed = function (self, killed_unit, killing_blow)
 	self._mutator_handler:level_object_killed(killed_unit, killing_blow)
 end
@@ -675,8 +683,8 @@ GameModeManager.server_update = function (self, dt, t)
 			if ended then
 				local all_peers_ingame = self.network_server:are_all_peers_ingame()
 
-				if reason ~= "start_game" and not all_peers_ingame then
-					return
+				if not all_peers_ingame and reason ~= "start_game" then
+					self.network_server:disconnect_joining_peers()
 				end
 
 				game_mode:ended(reason)

@@ -176,6 +176,13 @@ PlayerBotUnitFirstPerson.camera_position_rotation = function (self)
 	return camera_position, camera_rotation
 end
 
+PlayerBotUnitFirstPerson.get_projectile_start_position_rotation = function (self)
+	local position = self:current_position()
+	local rotation = self:current_rotation()
+
+	return position, rotation
+end
+
 PlayerBotUnitFirstPerson.set_rotation = function (self, new_rotation)
 	Unit.set_local_rotation(self.first_person_unit, 0, new_rotation)
 	Unit.set_local_rotation(self.unit, 0, new_rotation)

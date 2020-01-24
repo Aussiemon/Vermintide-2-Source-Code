@@ -1,13 +1,12 @@
 return {
 	wind_strength = 4,
-	wind = "life",
+	wind = "heavens",
 	seed = 213048,
-	terror_events = {},
 	objectives = {
 		{
 			objective_type = "kill",
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_canyon_life",
+			level_id = "dlc_scorpion_canyon_heavens",
 			show_bar = true,
 			conflict_settings = "default_weave",
 			level_seed = 85394,
@@ -17,13 +16,7 @@ return {
 			objective_settings = {
 				objective_lists = {
 					{
-						kill_enemies = {
-							score_multiplier = {
-								cataclysm = 0.415,
-								cataclysm_3 = 0.332,
-								normal = 0.83
-							}
-						}
+						kill_enemies = {}
 					}
 				}
 			},
@@ -119,7 +112,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_life",
+			level_id = "dlc_scorpion_arena_void_heavens",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 23094,
 			level_seed = 3890,

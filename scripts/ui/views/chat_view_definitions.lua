@@ -14,8 +14,8 @@ local emoji_list_settings = {
 	emoji_height_spacing = 5,
 	emojis_per_row = 9,
 	emoji_size = {
-		32,
-		32
+		35,
+		35
 	},
 	emoji_offset = {
 		5,
@@ -82,11 +82,11 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			555,
+			625,
 			50
 		},
 		position = {
-			170,
+			150,
 			50,
 			2
 		}
@@ -97,7 +97,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		position = {
 			25,
-			60,
+			65,
 			12
 		},
 		size = {
@@ -273,7 +273,7 @@ local scenegraph_definition = {
 		parent = "popup_root",
 		horizontal_alignment = "left",
 		size = {
-			690,
+			730,
 			800
 		},
 		position = {
@@ -291,13 +291,27 @@ local scenegraph_definition = {
 			796
 		}
 	},
+	channel_tab_anchor = {
+		vertical_alignment = "top",
+		parent = "feed_area_top",
+		horizontal_alignment = "left",
+		size = {
+			167,
+			40
+		},
+		position = {
+			10,
+			40,
+			2
+		}
+	},
 	feed_area = {
 		vertical_alignment = "center",
 		parent = "feed_area_top",
 		horizontal_alignment = "center",
 		size = {
-			690 - chat_frame_edge_height * 2,
-			800 - chat_frame_edge_height * 2
+			690 - chat_frame_edge_height * 2 + 25,
+			800 - chat_frame_edge_height * 2 - 7.5
 		}
 	},
 	list_area = {
@@ -305,11 +319,11 @@ local scenegraph_definition = {
 		parent = "feed_area_edge",
 		horizontal_alignment = "right",
 		size = {
-			400,
+			370,
 			user_list_height
 		},
 		position = {
-			420,
+			380,
 			0,
 			1
 		}
@@ -319,7 +333,7 @@ local scenegraph_definition = {
 		parent = "list_area",
 		horizontal_alignment = "left",
 		size = {
-			400 - user_list_frame_height * 2,
+			400 - user_list_frame_height * 2 - 30,
 			user_list_entry_size
 		},
 		position = {
@@ -459,7 +473,7 @@ local scenegraph_definition = {
 		parent = "private_messages_button",
 		horizontal_alignment = "right",
 		position = {
-			140,
+			125,
 			0,
 			1
 		},
@@ -515,7 +529,7 @@ local scenegraph_definition = {
 		parent = "channels_button",
 		horizontal_alignment = "right",
 		position = {
-			140,
+			125,
 			0,
 			1
 		},
@@ -557,7 +571,7 @@ local scenegraph_definition = {
 		parent = "input_field",
 		horizontal_alignment = "left",
 		position = {
-			-60,
+			-50,
 			7.5,
 			1
 		},
@@ -571,7 +585,7 @@ local scenegraph_definition = {
 		parent = "commands_button",
 		horizontal_alignment = "left",
 		position = {
-			-60,
+			-50,
 			0,
 			0
 		},
@@ -933,7 +947,7 @@ local scenegraph_definition = {
 }
 
 local function create_window(scenegraph_id, size)
-	local background_texture = "menu_frame_bg_01"
+	local background_texture = "menu_frame_bg_03"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = UIFrameSettings.menu_frame_02
 	local inner_frame_settings = UIFrameSettings.menu_frame_06
@@ -941,6 +955,65 @@ local function create_window(scenegraph_id, size)
 		element = {}
 	}
 	local passes = {
+		{
+			style_id = "left_arrow_top",
+			pass_type = "triangle",
+			content_change_function = function (content, style)
+				style.color = (content.left_hotspot.is_hover and style.hover_color) or style.base_color
+			end
+		},
+		{
+			style_id = "left_arrow_bottom",
+			pass_type = "triangle",
+			content_change_function = function (content, style)
+				style.color = (content.left_hotspot.is_hover and style.hover_color) or style.base_color
+			end
+		},
+		{
+			style_id = "right_arrow_top",
+			pass_type = "triangle",
+			content_change_function = function (content, style)
+				style.color = (content.right_hotspot.is_hover and style.hover_color) or style.base_color
+			end
+		},
+		{
+			style_id = "right_arrow_bottom",
+			pass_type = "triangle",
+			content_change_function = function (content, style)
+				style.color = (content.right_hotspot.is_hover and style.hover_color) or style.base_color
+			end
+		},
+		{
+			pass_type = "rect",
+			style_id = "outer_tab_bg_left"
+		},
+		{
+			pass_type = "rect",
+			style_id = "inner_tab_bg_left"
+		},
+		{
+			pass_type = "rect",
+			style_id = "outer_tab_bg_right"
+		},
+		{
+			pass_type = "rect",
+			style_id = "inner_tab_bg_right"
+		},
+		{
+			style_id = "left_hotspot",
+			pass_type = "hotspot",
+			content_id = "left_hotspot"
+		},
+		{
+			style_id = "right_hotspot",
+			pass_type = "hotspot",
+			content_id = "right_hotspot"
+		},
+		{
+			pass_type = "texture",
+			style_id = "mask",
+			texture_id = "mask_id"
+		},
 		{
 			scenegraph_id = "input_field",
 			pass_type = "hotspot",
@@ -952,14 +1025,9 @@ local function create_window(scenegraph_id, size)
 			content_id = "screen_hotspot"
 		},
 		{
-			scenegraph_id = "down_arrow",
-			pass_type = "hotspot",
-			content_id = "channel_hotspot"
-		},
-		{
+			pass_type = "tiled_texture",
 			style_id = "background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			pass_type = "texture_frame",
@@ -978,20 +1046,6 @@ local function create_window(scenegraph_id, size)
 			pass_type = "texture",
 			style_id = "background_tint",
 			texture_id = "background_tint"
-		},
-		{
-			texture_id = "channel_arrow_id",
-			style_id = "channel_arrow",
-			pass_type = "texture",
-			content_check_function = function (content, style)
-				if content.channel_hotspot.is_hover then
-					style.color = Colors.get_table("cheeseburger")
-				else
-					style.color = Colors.get_table("white")
-				end
-
-				return true
-			end
 		},
 		{
 			style_id = "chat_text",
@@ -1036,21 +1090,9 @@ local function create_window(scenegraph_id, size)
 			end
 		},
 		{
-			style_id = "channel",
-			pass_type = "text",
-			text_id = "channel_name",
-			content_check_function = function (content)
-				if content.private_user_name then
-					return false
-				end
-
-				return true
-			end
-		},
-		{
 			style_id = "private_user_name",
 			pass_type = "text",
-			text_id = "private_user_name",
+			text_id = "trimmed_private_user_name",
 			content_check_function = function (content)
 				if not content.private_user_name then
 					return false
@@ -1062,12 +1104,13 @@ local function create_window(scenegraph_id, size)
 	}
 	local content = {
 		text_field_active = false,
-		chat_hint = "Press Enter to chat or / for commands",
-		caret_index = 1,
-		channel_name = " ",
 		text_start_offset = 0,
 		channel_arrow_id = "down_arrow",
 		text_index = 1,
+		chat_hint = "Press Enter to chat or / for commands",
+		channel_name = " ",
+		caret_index = 1,
+		mask_id = "mask_rect",
 		background_tint = "gradient_dice_game_reward",
 		frame = frame_settings.texture,
 		background = {
@@ -1083,15 +1126,238 @@ local function create_window(scenegraph_id, size)
 			},
 			texture_id = background_texture
 		},
+		background_id = background_texture,
 		text_input_hotspot = {},
 		screen_hotspot = {},
 		channel_hotspot = {},
+		left_hotspot = {},
+		right_hotspot = {},
 		chat_text = {
 			text = ""
 		}
 	}
 	local style = {
-		background = {
+		left_hotspot = {
+			color = {
+				50,
+				255,
+				255,
+				255
+			},
+			offset = {
+				50,
+				910,
+				100
+			},
+			size = {
+				28,
+				35
+			}
+		},
+		right_hotspot = {
+			color = {
+				50,
+				255,
+				255,
+				255
+			},
+			offset = {
+				750,
+				910,
+				100
+			},
+			size = {
+				28,
+				35
+			}
+		},
+		left_arrow_top = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			triangle_alignment = "bottom_right",
+			base_color = {
+				255,
+				105,
+				90,
+				70
+			},
+			hover_color = {
+				255,
+				210,
+				180,
+				140
+			},
+			texture_size = {
+				12,
+				12
+			},
+			offset = {
+				63,
+				-61,
+				100
+			}
+		},
+		left_arrow_bottom = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			triangle_alignment = "top_right",
+			base_color = {
+				255,
+				105,
+				90,
+				70
+			},
+			hover_color = {
+				255,
+				210,
+				180,
+				140
+			},
+			texture_size = {
+				12,
+				12
+			},
+			offset = {
+				63,
+				-73,
+				100
+			}
+		},
+		right_arrow_top = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			triangle_alignment = "bottom_left",
+			base_color = {
+				255,
+				105,
+				90,
+				70
+			},
+			hover_color = {
+				255,
+				210,
+				180,
+				140
+			},
+			texture_size = {
+				12,
+				12
+			},
+			offset = {
+				758,
+				-61,
+				100
+			}
+		},
+		right_arrow_bottom = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			triangle_alignment = "top_left",
+			base_color = {
+				255,
+				105,
+				90,
+				70
+			},
+			hover_color = {
+				255,
+				210,
+				180,
+				140
+			},
+			texture_size = {
+				12,
+				12
+			},
+			offset = {
+				758,
+				-73,
+				100
+			}
+		},
+		inner_tab_bg_left = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			color = {
+				255,
+				20,
+				20,
+				20
+			},
+			texture_size = {
+				21,
+				33
+			},
+			offset = {
+				60,
+				-57,
+				3
+			}
+		},
+		outer_tab_bg_left = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			texture_size = {
+				25,
+				35
+			},
+			offset = {
+				58,
+				-55,
+				2
+			}
+		},
+		inner_tab_bg_right = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			color = {
+				255,
+				20,
+				20,
+				20
+			},
+			texture_size = {
+				21,
+				33
+			},
+			offset = {
+				752,
+				-57,
+				3
+			}
+		},
+		outer_tab_bg_right = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			texture_size = {
+				25,
+				35
+			},
+			offset = {
+				750,
+				-55,
+				2
+			}
+		},
+		mask = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			texture_size = {
+				671,
+				35
+			},
 			color = {
 				255,
 				255,
@@ -1099,10 +1365,24 @@ local function create_window(scenegraph_id, size)
 				255
 			},
 			offset = {
+				79,
+				-55,
+				100
+			}
+		},
+		background = {
+			color = {
+				255,
+				60,
+				60,
+				60
+			},
+			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		frame = {
 			texture_size = frame_settings.texture_size,
@@ -1147,7 +1427,7 @@ local function create_window(scenegraph_id, size)
 				0
 			},
 			size = {
-				570,
+				625,
 				40
 			}
 		},
@@ -1165,7 +1445,7 @@ local function create_window(scenegraph_id, size)
 				0
 			},
 			size = {
-				566,
+				621,
 				36
 			}
 		},
@@ -1176,7 +1456,7 @@ local function create_window(scenegraph_id, size)
 			pixel_perfect = true,
 			horizontal_alignment = "left",
 			vertical_alignment = "bottom",
-			dynamic_font = true,
+			dynamic_font_size = true,
 			font_type = "hell_shark",
 			text_color = {
 				60,
@@ -1205,6 +1485,10 @@ local function create_window(scenegraph_id, size)
 				10,
 				20,
 				10
+			},
+			size = {
+				scenegraph_definition.input_field.size[1] - 10,
+				scenegraph_definition.input_field.size[2]
 			},
 			caret_size = {
 				2,
@@ -1366,7 +1650,12 @@ local function create_chat_output_widget(in_scenegraph_id, offset)
 				0,
 				0
 			},
-			color = Colors.get_table("black")
+			color = {
+				160,
+				0,
+				0,
+				0
+			}
 		},
 		text = {
 			font_size = 16,
@@ -1376,11 +1665,11 @@ local function create_chat_output_widget(in_scenegraph_id, offset)
 			vertical_alignment = "bottom",
 			dynamic_font = true,
 			word_wrap = true,
-			font_type = "hell_shark_arial",
+			font_type = "chat_output_font",
 			text_color = Colors.get_table("white"),
 			name_color = Colors.get_table("sky_blue"),
 			name_color_dev = Colors.get_table("cheeseburger"),
-			name_color_system = Colors.get_table("white"),
+			name_color_system = Colors.get_table("gold"),
 			emoji_size = {
 				24,
 				24
@@ -1492,7 +1781,7 @@ local function create_chat_user_list_widget(in_scenegraph_id, offset)
 			text_color = Colors.get_table("white"),
 			name_color = Colors.get_table("sky_blue"),
 			name_color_dev = Colors.get_table("cheeseburger"),
-			name_color_system = Colors.get_table("white"),
+			name_color_system = Colors.get_table("gold"),
 			offset = {
 				0,
 				offset,
@@ -1626,11 +1915,15 @@ local function create_user_entry(index)
 			},
 			title_text = {
 				vertical_alignment = "top",
-				font_size = 24,
 				horizontal_alignment = "left",
-				word_wrap = true,
+				dynamic_font_size = true,
+				font_size = 24,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				size = {
+					scenegraph_definition[scenegraph_id].size[1] - 70,
+					scenegraph_definition[scenegraph_id].size[2]
+				},
 				offset = {
 					size[2] + user_list_frame_height,
 					-10,
@@ -1639,11 +1932,15 @@ local function create_user_entry(index)
 			},
 			title_text_hover = {
 				vertical_alignment = "top",
-				font_size = 24,
 				horizontal_alignment = "left",
-				word_wrap = true,
+				dynamic_font_size = true,
+				font_size = 24,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				size = {
+					scenegraph_definition[scenegraph_id].size[1] - 70,
+					scenegraph_definition[scenegraph_id].size[2]
+				},
 				offset = {
 					size[2] + user_list_frame_height,
 					-10,
@@ -1735,14 +2032,14 @@ local channel_list_frame = {
 		}
 	},
 	content = {
-		frame = UIFrameSettings.menu_frame_05.texture,
+		frame = UIFrameSettings.menu_frame_06.texture,
 		hotspot = {},
 		screen_hotspot = {}
 	},
 	style = {
 		frame = {
-			texture_size = UIFrameSettings.menu_frame_05.texture_size,
-			texture_sizes = UIFrameSettings.menu_frame_05.texture_sizes,
+			texture_size = UIFrameSettings.menu_frame_06.texture_size,
+			texture_sizes = UIFrameSettings.menu_frame_06.texture_sizes,
 			color = {
 				255,
 				255,
@@ -1772,6 +2069,147 @@ local channel_list_frame = {
 		0
 	}
 }
+
+local function create_channel_tab(channel_name, index, current_channel_name)
+	local frame_settings = UIFrameSettings.button_frame_01
+	local widget = {
+		element = {}
+	}
+	local passes = {
+		{
+			texture_id = "frame",
+			style_id = "frame",
+			pass_type = "texture_frame"
+		},
+		{
+			pass_type = "texture",
+			style_id = "inner_tab",
+			texture_id = "texture_id"
+		},
+		{
+			pass_type = "hotspot",
+			content_id = "tab_hotspot"
+		},
+		{
+			style_id = "channel_name",
+			pass_type = "text",
+			text_id = "channel_name",
+			content_check_function = function (content, style)
+				if content.tab_hotspot.is_hover then
+					style.text_color = style.hover_color
+				elseif content.selected then
+					style.text_color = style.selected_color
+				else
+					style.text_color = style.base_color
+				end
+
+				return true
+			end
+		}
+	}
+	local content = {
+		texture_id = "rect_masked",
+		tab_hotspot = {},
+		exit_button_hotspot = {},
+		channel_name = channel_name,
+		frame = frame_settings.texture,
+		selected = current_channel_name == channel_name
+	}
+	local style = {
+		channel_name = {
+			font_size = 18,
+			pixel_perfect = false,
+			vertical_alignment = "center",
+			word_wrap = false,
+			horizontal_alignment = "center",
+			dynamic_font = true,
+			dynamic_font_size = true,
+			font_type = "hell_shark_arial_masked",
+			text_color = Colors.get_table("white"),
+			base_color = {
+				255,
+				128,
+				128,
+				128
+			},
+			selected_color = Colors.get_table("cheeseburger"),
+			hover_color = Colors.get_table("white"),
+			size = {
+				scenegraph_definition.channel_tab_anchor.size[1] - 10,
+				scenegraph_definition.channel_tab_anchor.size[2]
+			},
+			offset = {
+				0,
+				-5,
+				-1
+			}
+		},
+		tab = {
+			vertical_alignment = "top",
+			masked = true,
+			horizontal_alignment = "left",
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			texture_size = scenegraph_definition.channel_tab_anchor.size,
+			offset = {
+				0,
+				0,
+				-3
+			}
+		},
+		inner_tab = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			texture_size = {
+				scenegraph_definition.channel_tab_anchor.size[1] - 4,
+				scenegraph_definition.channel_tab_anchor.size[2] - 2
+			},
+			offset = {
+				2,
+				-2,
+				-2
+			}
+		},
+		frame = {
+			masked = true,
+			texture_size = frame_settings.texture_size,
+			texture_sizes = frame_settings.texture_sizes,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				-4,
+				0
+			}
+		}
+	}
+	widget.element.passes = passes
+	widget.content = content
+	widget.style = style
+	widget.offset = {
+		(index - 1) * scenegraph_definition.channel_tab_anchor.size[1],
+		0,
+		0
+	}
+	widget.scenegraph_id = "channel_tab_anchor"
+
+	return widget
+end
+
 local private_user_list_frame = {
 	scenegraph_id = "private_user_list",
 	element = {
@@ -1797,14 +2235,14 @@ local private_user_list_frame = {
 		}
 	},
 	content = {
-		frame = UIFrameSettings.menu_frame_05.texture,
+		frame = UIFrameSettings.menu_frame_06.texture,
 		hotspot = {},
 		screen_hotspot = {}
 	},
 	style = {
 		frame = {
-			texture_size = UIFrameSettings.menu_frame_05.texture_size,
-			texture_sizes = UIFrameSettings.menu_frame_05.texture_sizes,
+			texture_size = UIFrameSettings.menu_frame_06.texture_size,
+			texture_sizes = UIFrameSettings.menu_frame_06.texture_sizes,
 			color = {
 				255,
 				255,
@@ -1860,14 +2298,14 @@ local recent_channels_list_frame = {
 	},
 	content = {
 		num_recent_channels = 0,
-		frame = UIFrameSettings.menu_frame_05.texture,
+		frame = UIFrameSettings.menu_frame_06.texture,
 		hotspot = {},
 		screen_hotspot = {}
 	},
 	style = {
 		frame = {
-			texture_size = UIFrameSettings.menu_frame_05.texture_size,
-			texture_sizes = UIFrameSettings.menu_frame_05.texture_sizes,
+			texture_size = UIFrameSettings.menu_frame_06.texture_size,
+			texture_sizes = UIFrameSettings.menu_frame_06.texture_sizes,
 			color = {
 				255,
 				255,
@@ -1922,14 +2360,14 @@ local popular_channels_list_frame = {
 		}
 	},
 	content = {
-		frame = UIFrameSettings.menu_frame_05.texture,
+		frame = UIFrameSettings.menu_frame_06.texture,
 		hotspot = {},
 		screen_hotspot = {}
 	},
 	style = {
 		frame = {
-			texture_size = UIFrameSettings.menu_frame_05.texture_size,
-			texture_sizes = UIFrameSettings.menu_frame_05.texture_sizes,
+			texture_size = UIFrameSettings.menu_frame_06.texture_size,
+			texture_sizes = UIFrameSettings.menu_frame_06.texture_sizes,
 			color = {
 				255,
 				255,
@@ -2014,7 +2452,7 @@ function create_channel_entry(name, offset_y)
 	}
 	local style = {
 		channel_name = {
-			font_size = 28,
+			font_size = 18,
 			word_wrap = false,
 			pixel_perfect = false,
 			horizontal_alignment = "left",
@@ -2044,12 +2482,16 @@ function create_channel_entry(name, offset_y)
 			horizontal_alignment = "right",
 			offset = {
 				0,
-				offset_y,
+				offset_y - 3,
 				0
 			},
 			color = {
 				255,
 				255,
+				30,
+				30
+			},
+			texture_size = {
 				30,
 				30
 			}
@@ -2060,8 +2502,12 @@ function create_channel_entry(name, offset_y)
 			horizontal_alignment = "right",
 			offset = {
 				0,
-				offset_y,
+				offset_y - 3,
 				0
+			},
+			texture_size = {
+				30,
+				30
 			}
 		}
 	}
@@ -2286,6 +2732,7 @@ function create_private_user_entry(name, offset_y, new)
 	local widget = {
 		element = {}
 	}
+	local trimmed_name = string.sub(name, 1, -11)
 	local passes = {
 		{
 			style_id = "exit_button_hotspot",
@@ -2315,7 +2762,7 @@ function create_private_user_entry(name, offset_y, new)
 		{
 			style_id = "user_name",
 			pass_type = "text",
-			text_id = "user_name",
+			text_id = "trimmed_name",
 			content_check_function = function (content, style)
 				local selected_color = style.selected_color
 				local unselected_color = style.unselected_color
@@ -2345,6 +2792,7 @@ function create_private_user_entry(name, offset_y, new)
 		exit_texture_id = "tabs_icon_power",
 		user_hotspot = {},
 		user_name = name,
+		trimmed_name = trimmed_name,
 		exit_button_hotspot = {},
 		new = new
 	}
@@ -2442,14 +2890,14 @@ local commands_list_frame = {
 		}
 	},
 	content = {
-		frame = UIFrameSettings.menu_frame_05.texture,
+		frame = UIFrameSettings.menu_frame_06.texture,
 		hotspot = {},
 		screen_hotspot = {}
 	},
 	style = {
 		frame = {
-			texture_size = UIFrameSettings.menu_frame_05.texture_size,
-			texture_sizes = UIFrameSettings.menu_frame_05.texture_sizes,
+			texture_size = UIFrameSettings.menu_frame_06.texture_size,
+			texture_sizes = UIFrameSettings.menu_frame_06.texture_sizes,
 			color = {
 				255,
 				255,
@@ -2504,14 +2952,14 @@ local filtered_user_names_list_frame = {
 		}
 	},
 	content = {
-		frame = UIFrameSettings.menu_frame_05.texture,
+		frame = UIFrameSettings.menu_frame_06.texture,
 		hotspot = {},
 		screen_hotspot = {}
 	},
 	style = {
 		frame = {
-			texture_size = UIFrameSettings.menu_frame_05.texture_size,
-			texture_sizes = UIFrameSettings.menu_frame_05.texture_sizes,
+			texture_size = UIFrameSettings.menu_frame_06.texture_size,
+			texture_sizes = UIFrameSettings.menu_frame_06.texture_sizes,
 			color = {
 				255,
 				255,
@@ -2658,7 +3106,7 @@ function create_command_entry(command, description, parameter, description_offse
 	return widget
 end
 
-function create_private_button(scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture)
+function create_private_button(scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name)
 	local button_color_name = nil
 
 	if optional_color_name then
@@ -2671,9 +3119,6 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
-	local side_detail_texture = optional_detail_texture or "button_detail_01"
-	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
-	local side_detail_texture_size = side_detail_texture_settings.size
 
 	return {
 		element = {
@@ -2716,17 +3161,6 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 
 						return button_hotspot.disable_button
 					end
-				},
-				{
-					style_id = "side_detail_right",
-					pass_type = "texture_uv",
-					content_id = "side_detail"
-				},
-				{
-					texture_id = "texture_id",
-					style_id = "side_detail_left",
-					pass_type = "texture",
-					content_id = "side_detail"
 				},
 				{
 					style_id = "title_text",
@@ -2804,24 +3238,11 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 			}
 		},
 		content = {
-			message_number_text = "",
 			speech_bubble_id = "speech_bubble",
+			message_number_text = "",
 			num_private_messages = 0,
 			glass_top = "button_glass_01",
 			has_private_conversations = false,
-			side_detail = {
-				uvs = {
-					{
-						1,
-						0
-					},
-					{
-						0,
-						1
-					}
-				},
-				texture_id = side_detail_texture
-			},
 			hover_glow = (optional_color_name and "button_state_hover_" .. optional_color_name) or "button_state_hover",
 			glow = (optional_color_name and "button_state_normal_" .. optional_color_name) or "button_state_normal",
 			button_hotspot = {},
@@ -2985,40 +3406,6 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2] * 2)
 				}
 			},
-			side_detail_left = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-9,
-					size[2] / 2 - side_detail_texture_size[2] / 2,
-					8
-				},
-				size = {
-					side_detail_texture_size[1],
-					side_detail_texture_size[2]
-				}
-			},
-			side_detail_right = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					size[1] - side_detail_texture_size[1] + 9,
-					size[2] / 2 - side_detail_texture_size[2] / 2,
-					8
-				},
-				size = {
-					side_detail_texture_size[1],
-					side_detail_texture_size[2]
-				}
-			},
 			speech_bubble = {
 				vertical_alignment = "top",
 				horizontal_alignment = "right",
@@ -3095,9 +3482,13 @@ local function create_emoji()
 				masked = false,
 				color = Colors.get_color_table_with_alpha("font_button_normal", 128),
 				offset = {
-					0,
-					0,
+					7.5,
+					-2.5,
 					-1
+				},
+				size = {
+					37,
+					37
 				}
 			},
 			texture_id = {
@@ -3109,7 +3500,7 @@ local function create_emoji()
 					255
 				},
 				offset = {
-					0,
+					10,
 					0,
 					0
 				}
@@ -3124,7 +3515,7 @@ local function create_emoji()
 end
 
 local function create_emoji_frame()
-	local frame_settings = UIFrameSettings.menu_frame_05
+	local frame_settings = UIFrameSettings.menu_frame_06
 	local widget = {
 		element = {}
 	}
@@ -3212,12 +3603,11 @@ local function create_emoji_frame()
 			}
 		},
 		emoji_text = {
-			word_wrap = false,
-			font_size = 22,
-			pixel_perfect = true,
-			horizontal_alignment = "left",
 			vertical_alignment = "bottom",
-			dynamic_font = true,
+			font_size = 22,
+			word_wrap = false,
+			horizontal_alignment = "left",
+			pixel_perfect = true,
 			font_type = "hell_shark_arial",
 			text_color = Colors.get_table("white"),
 			offset = {
@@ -3297,7 +3687,7 @@ end
 
 local function create_channel_list_entry(scenegraph_id, frame_setting, selected_frame_setting)
 	local frame_settings = (frame_setting and UIFrameSettings[frame_setting]) or UIFrameSettings.menu_frame_06
-	local selected_frame_settings = (selected_frame_setting and UIFrameSettings[selected_frame_setting]) or UIFrameSettings.channel_selected_01
+	local selected_frame_settings = (selected_frame_setting and UIFrameSettings[selected_frame_setting]) or UIFrameSettings.frame_outer_glow_01
 	local widget = {
 		element = {}
 	}
@@ -3310,14 +3700,6 @@ local function create_channel_list_entry(scenegraph_id, frame_setting, selected_
 			pass_type = "texture_frame",
 			style_id = "frame",
 			texture_id = "frame_id"
-		},
-		{
-			pass_type = "texture_frame",
-			style_id = "selected_frame",
-			texture_id = "selected_frame_id",
-			content_check_function = function (content)
-				return content.channel_name == content.selected_channel
-			end
 		},
 		{
 			pass_type = "texture",
@@ -3341,6 +3723,14 @@ local function create_channel_list_entry(scenegraph_id, frame_setting, selected_
 				style.color = (content.hotspot.is_hover and style.hover_color) or style.base_color
 
 				return true
+			end
+		},
+		{
+			pass_type = "texture_frame",
+			style_id = "selected_frame",
+			texture_id = "selected_frame_id",
+			content_check_function = function (content)
+				return content.channel_name == content.selected_channel
 			end
 		}
 	}
@@ -3416,12 +3806,12 @@ local function create_channel_list_entry(scenegraph_id, frame_setting, selected_
 			},
 			offset = {
 				0,
-				0,
-				5
+				-5,
+				4
 			},
 			frame_margins = {
-				-17,
-				-17
+				-13,
+				-13
 			}
 		},
 		channel_name = {
@@ -3469,7 +3859,7 @@ local function create_channel_list_entry(scenegraph_id, frame_setting, selected_
 end
 
 local function create_channels_window(scenegraph_id, size)
-	local background_texture = "menu_frame_bg_01"
+	local background_texture = "menu_frame_bg_03"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = UIFrameSettings.menu_frame_02
 	local inner_frame_settings = UIFrameSettings.menu_frame_06
@@ -3528,9 +3918,9 @@ local function create_channels_window(scenegraph_id, size)
 			scenegraph_id = "channels_window_text_box"
 		},
 		{
+			pass_type = "tiled_texture",
 			style_id = "background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			pass_type = "texture_frame",
@@ -3594,9 +3984,9 @@ local function create_channels_window(scenegraph_id, size)
 			text_id = "channel_text_id"
 		},
 		{
+			pass_type = "tiled_texture",
 			style_id = "header_background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			style_id = "header_text",
@@ -3644,8 +4034,8 @@ local function create_channels_window(scenegraph_id, size)
 		header_id = "CHANNELS",
 		search_icon_id = "search_icon",
 		search_text_id = "Search",
-		close_text_id = "X",
 		connecting_icon = "matchmaking_connecting_icon",
+		close_text_id = "X",
 		text_index = 1,
 		info_id = "",
 		caret_index = 1,
@@ -3671,7 +4061,8 @@ local function create_channels_window(scenegraph_id, size)
 				}
 			},
 			texture_id = background_texture
-		}
+		},
+		background_id = background_texture
 	}
 	local style = {
 		connecting_icon = {
@@ -3702,15 +4093,16 @@ local function create_channels_window(scenegraph_id, size)
 		background = {
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		mask = {
 			offset = {
@@ -3892,7 +4284,7 @@ local function create_channels_window(scenegraph_id, size)
 			offset = {
 				0,
 				0,
-				1
+				10
 			}
 		},
 		header_frame = {
@@ -3915,15 +4307,16 @@ local function create_channels_window(scenegraph_id, size)
 			scenegraph_id = "channels_window_list_header",
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		close_text = {
 			word_wrap = false,
@@ -3986,7 +4379,7 @@ local function create_channels_window(scenegraph_id, size)
 end
 
 local function create_create_channel_window(scenegraph_id, size)
-	local background_texture = "menu_frame_bg_01"
+	local background_texture = "menu_frame_bg_03"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = UIFrameSettings.menu_frame_02
 	local inner_frame_settings = UIFrameSettings.menu_frame_06
@@ -4016,9 +4409,9 @@ local function create_create_channel_window(scenegraph_id, size)
 			content_id = "close_hotspot"
 		},
 		{
+			pass_type = "tiled_texture",
 			style_id = "background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			pass_type = "texture_frame",
@@ -4091,13 +4484,13 @@ local function create_create_channel_window(scenegraph_id, size)
 	}
 	local content = {
 		chat_text_id = "",
-		header_id = "CREATE CHANNEL",
 		text_start_offset = 0,
-		caret_index = 1,
-		text_index = 1,
 		channel_name_id = "Channel Name",
-		background_tint = "gradient_dice_game_reward",
+		header_id = "CREATE CHANNEL",
 		close_text_id = "X",
+		text_index = 1,
+		caret_index = 1,
+		background_tint = "gradient_dice_game_reward",
 		input_hotspot = {},
 		screen_hotspot = {},
 		widget_hotspot = {},
@@ -4117,21 +4510,23 @@ local function create_create_channel_window(scenegraph_id, size)
 				}
 			},
 			texture_id = background_texture
-		}
+		},
+		background_id = background_texture
 	}
 	local style = {
 		background = {
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		frame = {
 			texture_size = frame_settings.texture_size,
@@ -4268,7 +4663,7 @@ local function create_create_channel_window(scenegraph_id, size)
 			offset = {
 				0,
 				0,
-				1
+				10
 			}
 		},
 		header_frame = {
@@ -4291,9 +4686,9 @@ local function create_create_channel_window(scenegraph_id, size)
 			scenegraph_id = "create_channel_window_list_header",
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
@@ -4332,7 +4727,7 @@ local function create_create_channel_window(scenegraph_id, size)
 end
 
 local function create_send_invite_window(scenegraph_id, size)
-	local background_texture = "menu_frame_bg_01"
+	local background_texture = "menu_frame_bg_03"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = UIFrameSettings.menu_frame_02
 	local inner_frame_settings = UIFrameSettings.menu_frame_06
@@ -4362,9 +4757,9 @@ local function create_send_invite_window(scenegraph_id, size)
 			content_id = "close_hotspot"
 		},
 		{
+			pass_type = "tiled_texture",
 			style_id = "background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			pass_type = "texture_frame",
@@ -4391,9 +4786,9 @@ local function create_send_invite_window(scenegraph_id, size)
 			text_id = "channel_name_id"
 		},
 		{
+			pass_type = "tiled_texture",
 			style_id = "header_background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			style_id = "header_text",
@@ -4437,13 +4832,13 @@ local function create_send_invite_window(scenegraph_id, size)
 	}
 	local content = {
 		chat_text_id = "",
-		header_id = "POST INVITE LINK",
 		text_start_offset = 0,
-		caret_index = 1,
-		text_index = 1,
 		channel_name_id = "Description",
-		background_tint = "gradient_dice_game_reward",
+		header_id = "POST INVITE LINK",
 		close_text_id = "X",
+		text_index = 1,
+		caret_index = 1,
+		background_tint = "gradient_dice_game_reward",
 		input_hotspot = {},
 		screen_hotspot = {},
 		widget_hotspot = {},
@@ -4463,21 +4858,23 @@ local function create_send_invite_window(scenegraph_id, size)
 				}
 			},
 			texture_id = background_texture
-		}
+		},
+		background_id = background_texture
 	}
 	local style = {
 		background = {
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		frame = {
 			texture_size = frame_settings.texture_size,
@@ -4614,7 +5011,7 @@ local function create_send_invite_window(scenegraph_id, size)
 			offset = {
 				0,
 				0,
-				1
+				10
 			}
 		},
 		header_frame = {
@@ -4637,15 +5034,16 @@ local function create_send_invite_window(scenegraph_id, size)
 			scenegraph_id = "create_channel_window_list_header",
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		close_text = {
 			word_wrap = false,
@@ -4678,7 +5076,7 @@ local function create_send_invite_window(scenegraph_id, size)
 end
 
 local function create_recent_channels_window(scenegraph_id, size)
-	local background_texture = "menu_frame_bg_01"
+	local background_texture = "menu_frame_bg_03"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = UIFrameSettings.menu_frame_02
 	local inner_frame_settings = UIFrameSettings.menu_frame_06
@@ -4726,9 +5124,9 @@ local function create_recent_channels_window(scenegraph_id, size)
 			end
 		},
 		{
+			pass_type = "tiled_texture",
 			style_id = "background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			pass_type = "texture_frame",
@@ -4750,9 +5148,9 @@ local function create_recent_channels_window(scenegraph_id, size)
 			texture_id = "background_tint"
 		},
 		{
+			pass_type = "tiled_texture",
 			style_id = "header_background",
-			pass_type = "texture_uv",
-			content_id = "background"
+			texture_id = "background_id"
 		},
 		{
 			style_id = "header_text",
@@ -4784,8 +5182,8 @@ local function create_recent_channels_window(scenegraph_id, size)
 		text_start_offset = 0,
 		header_id = "RECENT CHANNELS",
 		channel_name_id = "Channel Name",
-		close_text_id = "X",
 		connecting_icon = "matchmaking_connecting_icon",
+		close_text_id = "X",
 		text_index = 1,
 		caret_index = 1,
 		background_tint = "gradient_dice_game_reward",
@@ -4808,7 +5206,8 @@ local function create_recent_channels_window(scenegraph_id, size)
 				}
 			},
 			texture_id = background_texture
-		}
+		},
+		background_id = background_texture
 	}
 	local style = {
 		connecting_icon = {
@@ -4839,15 +5238,16 @@ local function create_recent_channels_window(scenegraph_id, size)
 		background = {
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		frame = {
 			texture_size = frame_settings.texture_size,
@@ -4921,7 +5321,7 @@ local function create_recent_channels_window(scenegraph_id, size)
 			offset = {
 				0,
 				0,
-				1
+				10
 			}
 		},
 		header_frame = {
@@ -4944,15 +5344,16 @@ local function create_recent_channels_window(scenegraph_id, size)
 			scenegraph_id = "recent_channel_window_list_header",
 			color = {
 				255,
-				255,
-				255,
-				255
+				60,
+				60,
+				60
 			},
 			offset = {
 				0,
 				0,
 				1
-			}
+			},
+			texture_tiling_size = background_texture_settings.size
 		},
 		close_text = {
 			word_wrap = false,
@@ -4984,20 +5385,328 @@ local function create_recent_channels_window(scenegraph_id, size)
 	return widget
 end
 
+function create_default_button(scenegraph_id, size, frame_name, background_texture, text, font_size, disable_dynamic_font_size)
+	background_texture = background_texture or "button_bg_01"
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
+	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_width = frame_settings.texture_sizes.corner[1]
+
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "frame",
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame",
+					content_check_function = function (content)
+						return content.draw_frame
+					end
+				},
+				{
+					style_id = "background",
+					pass_type = "texture_uv",
+					content_id = "background"
+				},
+				{
+					texture_id = "background_fade",
+					style_id = "background_fade",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "hover_glow",
+					style_id = "hover_glow",
+					pass_type = "texture"
+				},
+				{
+					pass_type = "rect",
+					style_id = "clicked_rect"
+				},
+				{
+					style_id = "disabled_rect",
+					pass_type = "rect",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text_disabled",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					texture_id = "glass",
+					style_id = "glass_top",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "glass",
+					style_id = "glass_bottom",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			glass = "button_glass_02",
+			hover_glow = "button_state_default",
+			draw_frame = true,
+			background_fade = "button_bg_fade",
+			button_hotspot = {},
+			title_text = text or "n/a",
+			frame = frame_settings.texture,
+			background = {
+				uvs = {
+					{
+						0,
+						1 - size[2] / background_texture_settings.size[2]
+					},
+					{
+						size[1] / background_texture_settings.size[1],
+						1
+					}
+				},
+				texture_id = background_texture
+			}
+		},
+		style = {
+			background = {
+				color = {
+					255,
+					150,
+					150,
+					150
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			background_fade = {
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
+				offset = {
+					frame_width,
+					frame_width - 2,
+					2
+				},
+				size = {
+					size[1] - frame_width * 2,
+					size[2] - frame_width * 2
+				}
+			},
+			hover_glow = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					frame_width - 2,
+					3
+				},
+				size = {
+					size[1],
+					math.min(size[2] - 5, 80)
+				}
+			},
+			clicked_rect = {
+				color = {
+					0,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					7
+				}
+			},
+			disabled_rect = {
+				color = {
+					150,
+					20,
+					20,
+					20
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			title_text = {
+				upper_case = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				dynamic_font_size = not disable_dynamic_font_size,
+				font_size = font_size or 24,
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				select_text_color = Colors.get_color_table_with_alpha("white", 255),
+				size = {
+					size[1] - 40,
+					size[2]
+				},
+				offset = {
+					20,
+					-2,
+					6
+				}
+			},
+			title_text_disabled = {
+				upper_case = true,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				font_size = font_size or 24,
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
+				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
+				size = {
+					size[1] - 40,
+					size[2]
+				},
+				offset = {
+					20,
+					0,
+					6
+				}
+			},
+			title_text_shadow = {
+				upper_case = true,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark",
+				font_size = font_size or 24,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				size = {
+					size[1] - 40,
+					size[2]
+				},
+				offset = {
+					22,
+					-2,
+					5
+				}
+			},
+			frame = {
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					8
+				}
+			},
+			glass_top = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - (frame_width + 11),
+					4
+				},
+				size = {
+					size[1],
+					11
+				}
+			},
+			glass_bottom = {
+				color = {
+					100,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					frame_width - 9,
+					4
+				},
+				size = {
+					size[1],
+					11
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+end
+
 local widget_definitions = {
 	widgets = {
 		frame_widget = create_window("popup_root", scenegraph_definition.popup_root.size),
 		chat_output_widget = create_chat_output_widget("feed_area_edge", 0),
-		name_list_widget = UIWidgets.create_background_with_frame("list_area", scenegraph_definition.list_area.size, "menu_frame_bg_01", user_list_frame_name),
+		name_list_widget = UIWidgets.create_rect_with_frame("list_area", scenegraph_definition.list_area.size, {
+			160,
+			0,
+			0,
+			0
+		}, user_list_frame_name),
 		list_area_hotspot_widget = UIWidgets.create_simple_hotspot("list_area"),
-		private_messages_widget = create_private_button("private_messages_button", scenegraph_definition.private_messages_button.size, nil, nil, "Private", 20, nil, "button_detail_03"),
-		send_invite_widget = UIWidgets.create_default_button("channels_button", scenegraph_definition.channels_button.size, nil, nil, "Invite", 20, nil, "button_detail_03"),
-		channels_widget = UIWidgets.create_default_button("popular_channels_button", scenegraph_definition.popular_channels_button.size, nil, nil, "Channels", 20, nil, "button_detail_03"),
-		commands_widget = UIWidgets.create_default_button("commands_button", scenegraph_definition.commands_button.size, nil, nil, "?", 20, nil, "button_detail_03"),
-		emoji_widget = UIWidgets.create_default_button("emoji_button", scenegraph_definition.emoji_button.size, nil, nil, ":)", 20, nil, "button_detail_03")
+		private_messages_widget = create_private_button("private_messages_button", scenegraph_definition.private_messages_button.size, nil, nil, "Private", 20),
+		send_invite_widget = create_default_button("channels_button", scenegraph_definition.channels_button.size, nil, nil, "Invite", 20),
+		channels_widget = create_default_button("popular_channels_button", scenegraph_definition.popular_channels_button.size, nil, nil, "Channels", 20),
+		commands_widget = create_default_button("commands_button", scenegraph_definition.commands_button.size, nil, nil, "?", 20, true),
+		emoji_widget = create_default_button("emoji_button", scenegraph_definition.emoji_button.size, nil, nil, ":)", 20, true)
 	},
 	create_channel_entry_func = create_channel_entry,
 	channel_list_frame = channel_list_frame,
+	create_channel_tab = create_channel_tab,
 	create_private_user_entry_func = create_private_user_entry,
 	private_user_list_frame = private_user_list_frame,
 	create_recent_channel_entry_func = create_recent_channel_entry,
@@ -5011,16 +5720,16 @@ local widget_definitions = {
 	create_emoji_scroller_func = create_emoji_scroller_func,
 	channels_window = create_channels_window("channels_window_root", scenegraph_definition.channels_window_root.size),
 	channel_entry = create_channel_list_entry("channels_window_list_box_entry"),
-	join_channel_button = UIWidgets.create_default_button("join_channel_button", scenegraph_definition.join_channel_button.size, nil, nil, "Join", 20, nil, "button_detail_03"),
-	create_channel_button = UIWidgets.create_default_button("create_channel_button", scenegraph_definition.create_channel_button.size, nil, nil, "Create", 20, nil, "button_detail_03"),
-	recent_channels_button = UIWidgets.create_default_button("recent_channels_button", scenegraph_definition.recent_channels_button.size, nil, nil, "Recent", 20, nil, "button_detail_03"),
+	join_channel_button = create_default_button("join_channel_button", scenegraph_definition.join_channel_button.size, nil, nil, "Join", 20),
+	create_channel_button = create_default_button("create_channel_button", scenegraph_definition.create_channel_button.size, nil, nil, "Create", 20),
+	recent_channels_button = create_default_button("recent_channels_button", scenegraph_definition.recent_channels_button.size, nil, nil, "Recent", 20),
 	create_channel_window = create_create_channel_window("create_channels_window_root", scenegraph_definition.create_channels_window_root.size),
-	inner_create_channel_button = UIWidgets.create_default_button("inner_create_channel_button", scenegraph_definition.inner_create_channel_button.size, nil, nil, "Create", 20, nil, "button_detail_03"),
+	inner_create_channel_button = create_default_button("inner_create_channel_button", scenegraph_definition.inner_create_channel_button.size, nil, nil, "Create", 20),
 	recent_channels_window = create_recent_channels_window("recent_channels_window_root", scenegraph_definition.recent_channels_window_root.size),
-	recent_join_channel_button = UIWidgets.create_default_button("recent_join_channel_button", scenegraph_definition.join_channel_button.size, nil, nil, "Join", 20, nil, "button_detail_03"),
+	recent_join_channel_button = create_default_button("recent_join_channel_button", scenegraph_definition.join_channel_button.size, nil, nil, "Join", 20),
 	create_channel_list_entry_func = create_channel_list_entry,
 	send_invite_window = create_send_invite_window("create_channels_window_root", scenegraph_definition.create_channels_window_root.size),
-	send_invite_button = UIWidgets.create_default_button("send_invite_button", scenegraph_definition.send_invite_button.size, nil, nil, "Send Invite", 20, nil, "button_detail_03"),
+	send_invite_button = create_default_button("send_invite_button", scenegraph_definition.send_invite_button.size, nil, nil, "Send Invite", 20),
 	create_filtered_user_name_entry_func = create_filtered_user_name_entry,
 	filtered_user_names_list_frame = filtered_user_names_list_frame
 }

@@ -168,6 +168,7 @@ require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_tro
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_dummy_troll")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_dummy_sorcerer")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_exalted_sorcerer")
+require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_exalted_sorcerer_drachenfels")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_tentacle_sorcerer")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_vortex_sorcerer")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_plague_sorcerer")

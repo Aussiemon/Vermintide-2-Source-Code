@@ -190,20 +190,19 @@ end
 WeaveCapturePointExtension._server_update = function (self, dt, t)
 	local position = Unit.local_position(self._unit, 0)
 	local num_players_inside = 0
-	local players = Managers.player:human_players()
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 	local inside_radius = self._size * self._size
 	local num_players_disabled = 0
 
-	for _, player in pairs(players) do
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+	for _, unit in pairs(player_and_bot_units) do
+		if Unit.alive(unit) then
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
 			if status_extension:is_disabled() then
 				num_players_disabled = num_players_disabled + 1
 			else
-				local player_position = POSITION_LOOKUP[player_unit]
+				local player_position = POSITION_LOOKUP[unit]
 				local distance = Vector3.distance_squared(position, player_position)
 
 				if distance <= inside_radius then

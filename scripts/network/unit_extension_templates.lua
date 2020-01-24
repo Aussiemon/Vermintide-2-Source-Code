@@ -1208,6 +1208,26 @@ local unit_templates = {
 			}
 		}
 	},
+	ai_unit_chaos_exalted_sorcerer_drachenfels = {
+		base_template = "ai_unit_base",
+		go_type = "ai_lord_with_inventory_and_target",
+		self_owned_extensions = {
+			"AIInventoryExtension",
+			"PingTargetExtension"
+		},
+		husk_extensions = {
+			"AIInventoryExtension",
+			"PingTargetExtension"
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"PingTargetExtension"
+			},
+			husk_extensions = {
+				"PingTargetExtension"
+			}
+		}
+	},
 	ai_unit_chaos_dummy_sorcerer = {
 		go_type = "ai_unit_with_inventory",
 		self_owned_extensions = {
@@ -1601,6 +1621,15 @@ local unit_templates = {
 			"VersusVolumeObjectiveExtension"
 		}
 	},
+	versus_mission_objective_unit = {
+		go_type = "versus_mission_objective_unit",
+		self_owned_extensions = {
+			"VersusMissionObjectiveExtension"
+		},
+		husk_extensions = {
+			"VersusMissionObjectiveExtension"
+		}
+	},
 	weave_capture_point_unit = {
 		go_type = "weave_capture_point_unit",
 		self_owned_extensions = {
@@ -1907,6 +1936,17 @@ local unit_templates = {
 		},
 		husk_extensions = {
 			"UnitSynchronizationExtension"
+		}
+	},
+	position_synched_light_unit = {
+		go_type = "position_synched_dummy_unit",
+		self_owned_extensions = {
+			"UnitSynchronizationExtension",
+			"LightSourceExtension"
+		},
+		husk_extensions = {
+			"UnitSynchronizationExtension",
+			"LightSourceExtension"
 		}
 	},
 	buff_aoe_unit = {
