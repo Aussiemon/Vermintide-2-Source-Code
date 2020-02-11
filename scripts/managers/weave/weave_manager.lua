@@ -261,7 +261,7 @@ end
 WeaveManager.event_conflict_director_setup_done = function (self)
 	if self:get_active_weave() and self._is_server then
 		local objective_template = self:get_active_objective_template()
-		local spawning_seed = objective_template.spawning_seed
+		local spawning_seed = objective_template and objective_template.spawning_seed
 
 		if spawning_seed then
 			self._weave_spawner:set_seed(spawning_seed)

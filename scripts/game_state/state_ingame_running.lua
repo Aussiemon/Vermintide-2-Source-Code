@@ -698,6 +698,8 @@ end
 
 StateInGameRunning._submit_weave_scores = function (self, weave_tier, score, num_players)
 	local weave_interface = Managers.backend:get_interface("weaves")
+
+	weave_interface:submit_scores(weave_tier, score, num_players)
 end
 
 StateInGameRunning.on_checkpoint_vote_cancelled = function (self)

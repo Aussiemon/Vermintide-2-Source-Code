@@ -1352,10 +1352,6 @@ ConflictDirector.update = function (self, dt, t)
 		self.enemy_recycler:far_off_despawn(t, dt, recycler_positions, self._spawned)
 	end
 
-	if script_data.debug_enabled then
-		self:update_server_debug(t, dt)
-	end
-
 	if self._spline_groups_to_spawn then
 		for spline_name, group_data in pairs(self._spline_groups_to_spawn) do
 			local ai_group_system = Managers.state.entity:system("ai_group_system")

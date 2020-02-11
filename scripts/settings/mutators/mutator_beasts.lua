@@ -54,7 +54,7 @@ return {
 					local weave_manager = Managers.weave
 					local objective_template = weave_manager:get_active_objective_template()
 
-					if objective_template.allow_mutator_item_respawning then
+					if objective_template and objective_template.allow_mutator_item_respawning then
 						totem.respawn_time = totem.respawn_time - 1
 
 						if totem.respawn_time <= 0 then
