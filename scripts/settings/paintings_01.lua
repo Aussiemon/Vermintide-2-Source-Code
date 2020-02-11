@@ -958,6 +958,36 @@ Paintings.ver_JB002_Drachenfel_Ogres_Tower = {
 		wood = true
 	}
 }
+Paintings.ver_skaven_7th_edition_army_book_page_027 = {
+	sound_event = "painting_Skaven_7th_edition_army_book_Page_027_description",
+	rarity = "common",
+	display_name = "painting_Skaven_7th_edition_army_book_Page_027_name",
+	icon = "icon_painting_1",
+	frame = "painted",
+	description = "painting_Skaven_7th_edition_army_book_Page_027_description",
+	artist = "painting_Skaven_7th_edition_army_book_Page_027_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_skaven_7th_edition_army_book_page_037 = {
+	sound_event = "painting_Skaven_7th_edition_army_book_Page_037_description",
+	rarity = "common",
+	display_name = "painting_Skaven_7th_edition_army_book_Page_037_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_Skaven_7th_edition_army_book_Page_037_description",
+	artist = "painting_Skaven_7th_edition_army_book_Page_037_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1022,7 +1052,12 @@ local painting_order = {
 	"ver_beastmen_page_39",
 	"ver_beastmen_page_41",
 	"ver_beastmen_page_60",
-	"ver_beastmen_page_98"
+	"ver_beastmen_page_98",
+	"ver_skaven_7th_edition_army_book_page_027",
+	"ver_skaven_7th_edition_army_book_page_037",
+	"ver_TD033_BL_Drachenfels_newedition",
+	"ver_JB002_Drachenfel_Ogres_Tower",
+	"ver_PAS014C_Drachenfels"
 }
 PaintingOrder = PaintingOrder or {}
 

@@ -4999,7 +4999,7 @@ ConflictDirectors = {
 		pacing = PacingSettings.disabled,
 		boss = BossSettings.disabled,
 		specials = SpecialsSettings.disabled,
-		roaming = RoamingSettings.disabled,
+		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.disabled,
 		horde = HordeSettings.disabled
 	},
@@ -5214,95 +5214,5 @@ for name, pacing_setting in pairs(PacingSettings) do
 end
 
 DebugBreedSpawns = {}
-local category_lookup = {}
-
-for breed_name, breed in pairs(Breeds) do
-	local category_name = breed.debug_spawn_category or (breed.boss and "Boss") or (breed.special and "Specials") or "Roaming"
-	local category = category_lookup[category_name]
-
-	if not category then
-		local index = #DebugBreedSpawns + 1
-		category = {
-			name = category_name
-		}
-		DebugBreedSpawns[index] = category
-		category_lookup[category_name] = category
-	end
-
-	category[#category + 1] = {
-		breed_name
-	}
-end
-
-local function sort_category_alphabetically_func(a, b)
-	return a.name < b.name
-end
-
-table.sort(DebugBreedSpawns, sort_category_alphabetically_func)
-
-local function sort_breed_alphabetically_func(a, b)
-	return a[1] < b[1]
-end
-
-for k, category in ipairs(DebugBreedSpawns) do
-	table.sort(category, sort_breed_alphabetically_func)
-end
-
-DebugBreedSpawns[#DebugBreedSpawns + 1] = {
-	{
-		"Everything",
-		"debug_spawn_all_breeds",
-		{
-			skaven_dummy_clan_rat = true,
-			chaos_dummy_sorcerer = true,
-			chaos_exalted_sorcerer = true,
-			skaven_dummy_slave = true,
-			chaos_exalted_champion_warcamp = true,
-			skaven_storm_vermin_warlord = true,
-			chaos_plague_wave_spawner = true,
-			chaos_plague_sorcerer = true,
-			chaos_exalted_champion_norsca = true,
-			skaven_storm_vermin_champion = true,
-			chaos_tentacle = true,
-			chaos_mutator_sorcerer = true,
-			chaos_spawn_exalted_champion_norsca = true,
-			skaven_stormfiend_demo = true,
-			chaos_dummy_troll = true,
-			skaven_grey_seer = true,
-			chaos_tentacle_sorcerer = true,
-			chaos_zombie = true,
-			chaos_exalted_sorcerer_drachenfels = true,
-			skaven_stormfiend_boss = true,
-			chaos_vortex = true
-		}
-	},
-	{
-		"Dummies",
-		"debug_spawn_all_breeds",
-		{
-			chaos_dummy_sorcerer = true,
-			chaos_dummy_troll = true,
-			skaven_dummy_clan_rat = true,
-			skaven_dummy_slave = true
-		},
-		"spawn_the_list_above"
-	},
-	name = "Events"
-}
-local list = {
-	name = "Patrols"
-}
-
-for formation_name, data in pairs(PatrolFormationSettings) do
-	if type(data) == "table" and data.normal then
-		list[#list + 1] = {
-			formation_name,
-			"aim_patrol_spawning",
-			formation_name
-		}
-	end
-end
-
-DebugBreedSpawns[#DebugBreedSpawns + 1] = list
 
 return

@@ -28,6 +28,7 @@ AdventureMechanism.reset = function (self, settings, level_key)
 		}
 	}
 
+	Managers.weave:clear_weave_name()
 	Managers.party:register_parties(party_data)
 end
 

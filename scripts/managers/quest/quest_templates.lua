@@ -932,6 +932,92 @@ quest_templates.quests.event_skulls_warcamp_2019 = {
 		}
 	end
 }
+quest_templates.quests.quest_event_rat_weekly_event_2020 = {
+	name = "quest_event_rat_weekly_event_2020_name",
+	icon = "quest_book_year_of_the_rat",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = "complete_one_weekly_event",
+	stat_mappings = event_weekly_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+	end
+}
+local quest_event_rat_kill_skaven_2020_mapping = {
+	{
+		kills_per_race = {
+			skaven = true
+		}
+	}
+}
+quest_templates.quests.quest_event_rat_kill_skaven_2020 = {
+	name = "quest_event_rat_kill_skaven_2020_name",
+	icon = "quest_book_year_of_the_rat",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = function ()
+		return string.format(Localize("quest_event_rat_kill_skaven_2020_desc"), QuestSettings.quest_event_rat_kill_skaven_2020)
+	end,
+	stat_mappings = quest_event_rat_kill_skaven_2020_mapping,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.quest_event_rat_kill_skaven_2020 <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.quest_event_rat_kill_skaven_2020
+		}
+	end
+}
+local quest_event_rat_kill_skaven_lords_2020_mapping = {
+	{
+		completed_levels = {
+			[LevelSettings.skittergate.level_id] = true
+		}
+	},
+	{
+		completed_levels = {
+			[LevelSettings.skaven_stronghold.level_id] = true
+		}
+	}
+}
+quest_templates.quests.quest_event_rat_kill_skaven_lords_2020 = {
+	name = "quest_event_rat_kill_skaven_lords_2020_name",
+	icon = "quest_book_year_of_the_rat",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = "quest_event_rat_kill_skaven_lords_2020_desc",
+	stat_mappings = quest_event_rat_kill_skaven_lords_2020_mapping,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name_1 = QuestSettings.stat_mappings[quest_key][1]
+		local gray_seer_completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name_1) > 0
+		local stat_name_2 = QuestSettings.stat_mappings[quest_key][2]
+		local storm_vermin_completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name_2) > 0
+
+		return gray_seer_completed and storm_vermin_completed
+	end,
+	requirements = function (statistics_db, stats_id, quest_key)
+		local stat_name_1 = QuestSettings.stat_mappings[quest_key][1]
+		local gray_seer_completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name_1) > 0
+		local stat_name_2 = QuestSettings.stat_mappings[quest_key][2]
+		local storm_vermin_completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name_2) > 0
+
+		return {
+			{
+				name = "skaven_storm_vermin_warlord",
+				completed = storm_vermin_completed
+			},
+			{
+				name = "skaven_grey_seer",
+				completed = gray_seer_completed
+			}
+		}
+	end
+}
 local weekly_complete_quickplay_missions_mappings = {
 	{
 		played_levels_quickplay = {}

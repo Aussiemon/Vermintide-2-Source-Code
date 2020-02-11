@@ -415,6 +415,10 @@ UnlockManager._update_backend_unlocks = function (self)
 				return
 			end
 
+			if backend_manager:is_benchmark_backend() then
+				return
+			end
+
 			if not self._unlocks_ready then
 				local all_ready = true
 
@@ -475,6 +479,11 @@ UnlockManager._update_backend_unlocks = function (self)
 
 			if not is_in_store then
 				local item_interface = backend_manager:get_interface("items")
+
+				if not item_interface.get_unseen_item_rewards then
+					print("HEJ")
+				end
+
 				local unseen_rewards = item_interface:get_unseen_item_rewards()
 
 				if unseen_rewards then

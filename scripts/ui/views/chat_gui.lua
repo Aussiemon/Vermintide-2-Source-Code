@@ -759,49 +759,51 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		local filter_hotspot = chat_input_widget_content.filter_hotspot
 		local target_hotspot = chat_input_widget_content.target_hotspot
 
-		if enlarge_hotspot.on_release then
-			self:unblock_input()
-			Managers.state.event:trigger("ui_event_transition_with_fade", "chat_view_force")
+		if GameSettingsDevelopment.use_global_chat then
+			if enlarge_hotspot.on_release then
+				self:unblock_input()
+				Managers.state.event:trigger("ui_event_transition_with_fade", "chat_view_force")
 
-			chat_closed = true
-			chat_close_time = 0
-			chat_focused = false
-		elseif info_hotspot.on_release and false then
-			self:unblock_input()
+				chat_closed = true
+				chat_close_time = 0
+				chat_focused = false
+			elseif info_hotspot.on_release and false then
+				self:unblock_input()
 
-			chat_closed = true
-			chat_close_time = 0
-			chat_focused = false
-		elseif filter_hotspot.on_release then
-			self:clear_messages()
-			Managers.chat:switch_view()
-
-			local view_name, color = Managers.chat:current_view_and_color()
-			self.chat_input_widget.content.header_field = view_name
-
-			self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
-		elseif target_hotspot.on_release then
-			if Managers.chat:next_message_target() then
+				chat_closed = true
+				chat_close_time = 0
+				chat_focused = false
+			elseif filter_hotspot.on_release then
 				self:clear_messages()
+				Managers.chat:switch_view()
+
+				local view_name, color = Managers.chat:current_view_and_color()
+				self.chat_input_widget.content.header_field = view_name
+
+				self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
+			elseif target_hotspot.on_release then
+				if Managers.chat:next_message_target() then
+					self:clear_messages()
+				end
+
+				local current_message_target_info = Managers.chat:current_message_target()
+				local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
+				local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
+				local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
+				self.chat_input_widget.content.channel_field = current_message_target
+				local channel_text_color = IRC_CHANNEL_COLORS[current_message_target_info.message_target_type]
+
+				self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
+
+				self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
+				self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
+				self.chat_input_widget.content.caret_index = UTF8Utils.string_length(self.chat_message) + 1
+				self.chat_index = self.chat_input_widget.content.caret_index
+				local view_name, color = Managers.chat:current_view_and_color()
+				self.chat_input_widget.content.header_field = view_name
+
+				self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
 			end
-
-			local current_message_target_info = Managers.chat:current_message_target()
-			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
-			local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
-			local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
-			self.chat_input_widget.content.channel_field = current_message_target
-			local channel_text_color = IRC_CHANNEL_COLORS[current_message_target_info.message_target_type]
-
-			self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
-
-			self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
-			self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
-			self.chat_input_widget.content.caret_index = UTF8Utils.string_length(self.chat_message) + 1
-			self.chat_index = self.chat_input_widget.content.caret_index
-			local view_name, color = Managers.chat:current_view_and_color()
-			self.chat_input_widget.content.header_field = view_name
-
-			self:_apply_color_values(self.chat_input_widget.style.header_text.text_color, color)
 		end
 
 		local step_size = 0.025

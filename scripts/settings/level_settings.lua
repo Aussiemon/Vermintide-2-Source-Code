@@ -46,19 +46,20 @@ LevelSettings.editor_level = {
 	locations = {}
 }
 LevelSettings.inn_level = {
-	conflict_settings = "disabled",
+	conflict_settings = "inn_level",
 	tome_package_name = "resource_packages/levels/tomes/inn_tome",
+	package_name = "resource_packages/levels/inn",
 	player_aux_bus_name = "environment_reverb_outside",
-	environment_state = "interior",
 	display_name = "level_name_keep",
 	use_keep_decorations = true,
-	package_name = "resource_packages/levels/inn",
+	no_bots_allowed = true,
+	environment_state = "interior",
 	level_image = "level_icon_inn_level",
-	has_multiple_loading_images = true,
+	skip_generate_spawns = true,
 	hub_level = true,
 	ambient_sound_event = "silent_default_world_sound",
-	load_no_enemies = true,
-	no_bots_allowed = true,
+	load_no_enemies = false,
+	has_multiple_loading_images = true,
 	no_terror_events = true,
 	loading_ui_package_name = "loading_screen_15",
 	knocked_down_setting = "knocked_down",
@@ -67,6 +68,15 @@ LevelSettings.inn_level = {
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
+	breed_categories = {
+		{
+			id = "keep_rats",
+			dynamic_loading = false,
+			breeds = {
+				"critter_rat"
+			}
+		}
+	},
 	locations = {
 		"location_keep_armoury",
 		"location_keep_bardins_room",

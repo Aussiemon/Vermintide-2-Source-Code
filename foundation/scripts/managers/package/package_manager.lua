@@ -301,8 +301,10 @@ PackageManager.num_references = function (self, package_name)
 	local num_references = 0
 	local references = self._references[package_name]
 
-	for reference_name, reference_count in pairs(references) do
-		num_references = num_references + reference_count
+	if references then
+		for reference_name, reference_count in pairs(references) do
+			num_references = num_references + reference_count
+		end
 	end
 
 	return num_references

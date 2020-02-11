@@ -100,6 +100,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_year_of_the_rat = {
+		{
+			texture = "portrait_frame_year_of_the_rat",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_summer = {
 		{
 			texture = "portrait_frame_summer",

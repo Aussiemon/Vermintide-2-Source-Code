@@ -816,6 +816,13 @@ SimpleInventoryExtension.destroy_slot = function (self, slot_name, allow_destroy
 		end
 	end
 
+	local linked_pickup_type = slot_data.link_pickup_template_name
+	local pickup_system = Managers.state.entity:system("pickup_system")
+
+	if linked_pickup_type then
+		pickup_system:delete_limited_owned_pickup_type(self.player:network_id(), linked_pickup_type)
+	end
+
 	local go_id = Managers.state.unit_storage:go_id(self._unit)
 	local slot_id = NetworkLookup.equipment_slots[slot_name]
 	local network_manager = Managers.state.network

@@ -282,9 +282,11 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			game_won = game_won,
 			game_mode_key = game_mode_key,
 			difficulty = Managers.state.difficulty:get_difficulty(),
-			weave_personal_best_achieved = self._weave_personal_best_achieved
+			weave_personal_best_achieved = self._weave_personal_best_achieved,
+			completed_weave = self._completed_weave
 		}
 		self._weave_personal_best_achieved = nil
+		self._completed_weave = nil
 
 		if not self._booted_eac_untrusted then
 			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
@@ -556,6 +558,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			end
 
 			self._weave_personal_best_achieved = personal_best
+			self._completed_weave = weave_manager:get_active_weave()
 		elseif game_mode_key == "weave" then
 			local saved_scoreboard_stats = ScoreboardHelper.get_weave_stats(self.statistics_db, self.profile_synchronizer)
 			self.parent.parent.loading_context.saved_scoreboard_stats = saved_scoreboard_stats
@@ -583,6 +586,15 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	local screen_name, screen_config = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
 	local is_booted_unstrusted = self._booted_eac_untrusted
+	local is_game_mode_weave = game_mode_key == "weave"
+	local weave_tier, score, num_players, weave_progress = nil
+
+	if is_game_mode_weave then
+		weave_tier, score, num_players = self:_get_weave_scores()
+		weave_progress = Managers.weave:current_bar_score()
+
+		Managers.weave:store_saved_game_mode_data()
+	end
 
 	local function callback(status)
 		if status == "commit_error" then
@@ -591,12 +603,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			return
 		end
 
-		if game_mode_key == "weave" then
-			Managers.weave:store_saved_game_mode_data()
-
-			if not is_booted_unstrusted and game_won and is_final_objective and is_server and not self.is_quickplay then
-				self:_submit_weave_scores()
-			end
+		if is_game_mode_weave and not is_booted_unstrusted and game_won and is_final_objective and is_server and not self.is_quickplay then
+			self:_submit_weave_scores(weave_tier, score, num_players)
 		end
 
 		local game_mode_setting = GameModeSettings[game_mode_key]
@@ -604,7 +612,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 		if end_mission_rewards then
 			if not is_booted_unstrusted and (game_lost or is_final_objective) then
-				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key)
+				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key, weave_tier, weave_progress)
 			end
 
 			ingame_ui:activate_end_screen_ui(screen_name, screen_config)
@@ -618,6 +626,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		callback()
 	else
 		backend_manager:commit(true, callback)
+	end
+
+	if is_final_objective and is_game_mode_weave then
+		Managers.weave:clear_weave_name()
 	end
 
 	self.game_lost = game_lost
@@ -653,22 +665,13 @@ StateInGameRunning._current_weave_index = function (self, statistics_db, stats_i
 	return current_weave_index
 end
 
-StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, stats_id, game_won, difficulty_key)
+StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, stats_id, game_won, difficulty_key, weave_tier, weave_progress)
 	local profile_synchronizer = self.profile_synchronizer
 	local peer_id = Network.peer_id()
 	local local_player_id = self.local_player_id
 	local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 	local profile = SPProfiles[profile_index]
 	local hero_name = profile.display_name
-	local is_weave_game_mode = self.game_mode_key == "weave"
-	local weave_tier, weave_progress = nil
-
-	if is_weave_game_mode then
-		local weave_manager = Managers.weave
-		weave_tier = weave_manager:get_weave_tier()
-		weave_progress = weave_manager:current_bar_score()
-	end
-
 	local current_weave_index = self:_current_weave_index(statistics_db, stats_id)
 	local game_time = math.floor(Managers.time:time("game"))
 
@@ -684,14 +687,17 @@ StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, 
 	end
 end
 
-StateInGameRunning._submit_weave_scores = function (self)
+StateInGameRunning._get_weave_scores = function (self)
 	local weave_manager = Managers.weave
 	local weave_tier = weave_manager:get_weave_tier()
 	local score = weave_manager:get_score()
 	local num_players = weave_manager:get_num_players()
-	local weave_interface = Managers.backend:get_interface("weaves")
 
-	weave_interface:submit_scores(weave_tier, score, num_players)
+	return weave_tier, score, num_players
+end
+
+StateInGameRunning._submit_weave_scores = function (self, weave_tier, score, num_players)
+	local weave_interface = Managers.backend:get_interface("weaves")
 end
 
 StateInGameRunning.on_checkpoint_vote_cancelled = function (self)

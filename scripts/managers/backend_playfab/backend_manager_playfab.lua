@@ -304,6 +304,10 @@ BackendManagerPlayFab.is_tutorial_backend = function (self)
 	return self._is_tutorial_backend
 end
 
+BackendManagerPlayFab.is_benchmark_backend = function (self)
+	return self._benchmark_backend
+end
+
 BackendManagerPlayFab.start_benchmark = function (self)
 	fassert(self._benchmark_backend == nil, "Benchmark backend already started.")
 

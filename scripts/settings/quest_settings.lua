@@ -62,6 +62,7 @@ QuestSettings = {
 	event_mondstille_quickplay_legend_levels = 5,
 	event_crawl_drink_all_ale_amount = 99,
 	event_celebration_collect_painting_scraps = 9,
+	quest_event_rat_kill_skaven_2020 = 1000,
 	weekly_complete_quickplay_missions = {
 		10,
 		10,

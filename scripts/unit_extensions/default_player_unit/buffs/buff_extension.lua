@@ -367,7 +367,10 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 		local wind_strength = Managers.weave:get_wind_strength()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local wind_settings = Managers.weave:get_active_wind_settings()
-		multiplier = wind_settings[sub_buff_template.stat_buff][difficulty_name][wind_strength]
+
+		if wind_settings and difficulty_name and wind_strength then
+			multiplier = wind_settings[sub_buff_template.stat_buff][difficulty_name][wind_strength]
+		end
 	end
 
 	local index = nil
@@ -576,7 +579,10 @@ BuffExtension._remove_stat_buff = function (self, buff)
 		local wind_strength = Managers.weave:get_wind_strength()
 		local difficulty_name = Managers.state.difficulty:get_difficulty()
 		local wind_settings = Managers.weave:get_active_wind_settings()
-		multiplier = wind_settings[sub_buff_template.stat_buff][difficulty_name][wind_strength]
+
+		if wind_settings and difficulty_name and wind_strength then
+			multiplier = wind_settings[sub_buff_template.stat_buff][difficulty_name][wind_strength]
+		end
 	end
 
 	local index = buff.stat_buff_index

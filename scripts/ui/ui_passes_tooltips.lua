@@ -970,55 +970,58 @@ UITooltipPasses = {
 
 				for property_key, property_value in loop_func(properties) do
 					local property_data = WeaponProperties.properties[property_key]
-					local buff_name = property_data.buff_name
-					local buff_template = BuffTemplates[buff_name]
-					local buff_data = buff_template.buffs[1]
-					local has_multiplier = buff_data.variable_multiplier ~= nil
-					local text_id = "property_title_" .. index
-					local text_style = style.property_text
-					local text_pass_data = data.text_pass_data
-					text_pass_data.text_id = text_id
-					local property_name = property_data.display_name
-					local property_advanced_description = property_data.advanced_description
-					local text, advanced_description = UIUtils.get_property_description(property_key, property_value)
-					local additional_text_length = (advanced_description and UTF8Utils.string_length(advanced_description)) or 0
-					local default_text_length = (text and UTF8Utils.string_length(text)) or 0
-					text = text .. advanced_description
-					local color_override_table = text_style.color_override_table
-					color_override_table.start_index = default_text_length + 1
-					color_override_table.end_index = default_text_length + additional_text_length
-					text_style.color_override[1] = color_override_table
-					local text_size = data.text_size
-					text_size[2] = 0
-					local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
-					text_size[2] = text_height
-					position[2] = position[2] - text_height
-					local old_y_position = position[2]
-					content[text_id] = text
 
-					if draw then
-						local icon_pass_definition = data.icon_pass_definition
-						local icon_pass_data = data.icon_pass_data
-						local icon_style = style.icon
-						local icon_size = data.icon_size
-						local icon_color = icon_style.color
-						icon_color[1] = alpha
-						position[2] = (position[2] + text_height) - text_height / num_texts * 0.5 - (icon_size[2] * 0.5 + 2)
+					if property_data then
+						local buff_name = property_data.buff_name
+						local buff_template = BuffTemplates[buff_name]
+						local buff_data = buff_template.buffs[1]
+						local has_multiplier = buff_data.variable_multiplier ~= nil
+						local text_id = "property_title_" .. index
+						local text_style = style.property_text
+						local text_pass_data = data.text_pass_data
+						text_pass_data.text_id = text_id
+						local property_name = property_data.display_name
+						local property_advanced_description = property_data.advanced_description
+						local text, advanced_description = UIUtils.get_property_description(property_key, property_value)
+						local additional_text_length = (advanced_description and UTF8Utils.string_length(advanced_description)) or 0
+						local default_text_length = (text and UTF8Utils.string_length(text)) or 0
+						text = text .. advanced_description
+						local color_override_table = text_style.color_override_table
+						color_override_table.start_index = default_text_length + 1
+						color_override_table.end_index = default_text_length + additional_text_length
+						text_style.color_override[1] = color_override_table
+						local text_size = data.text_size
+						text_size[2] = 0
+						local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
+						text_size[2] = text_height
+						position[2] = position[2] - text_height
+						local old_y_position = position[2]
+						content[text_id] = text
 
-						UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
+						if draw then
+							local icon_pass_definition = data.icon_pass_definition
+							local icon_pass_data = data.icon_pass_data
+							local icon_style = style.icon
+							local icon_size = data.icon_size
+							local icon_color = icon_style.color
+							icon_color[1] = alpha
+							position[2] = (position[2] + text_height) - text_height / num_texts * 0.5 - (icon_size[2] * 0.5 + 2)
 
+							UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
+
+							position[2] = old_y_position
+							position[1] = position[1] + icon_size[1]
+							local text_color = text_style.text_color
+							text_color[1] = alpha
+
+							UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+							position[1] = position[1] - icon_size[1]
+						end
+
+						total_height = total_height + text_height
 						position[2] = old_y_position
-						position[1] = position[1] + icon_size[1]
-						local text_color = text_style.text_color
-						text_color[1] = alpha
-
-						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
-
-						position[1] = position[1] - icon_size[1]
 					end
-
-					total_height = total_height + text_height
-					position[2] = old_y_position
 				end
 
 				index = index + 1

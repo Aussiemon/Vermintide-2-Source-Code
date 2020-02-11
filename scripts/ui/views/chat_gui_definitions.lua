@@ -1152,20 +1152,69 @@ local function create_chat_button(scenegraph_id, size)
 	return widget
 end
 
+function create_additional_chat_tooltip(scenegraph_id, size, content_passes, tooltip_data, max_width, horizontal_alignment, vertical_alignment, grow_downwards, offset)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "tooltip",
+					additional_option_id = "tooltip",
+					pass_type = "additional_option_tooltip",
+					content_passes = content_passes or {
+						"additional_option_info"
+					},
+					content_check_function = function (content)
+						return content.tooltip and content.button_hotspot.is_hover and GameSettingsDevelopment.use_global_chat
+					end
+				}
+			}
+		},
+		content = {
+			tooltip = tooltip_data or nil,
+			button_hotspot = {
+				allow_multi_hover = true
+			}
+		},
+		style = {
+			tooltip = {
+				grow_downwards = grow_downwards,
+				max_width = max_width or 300,
+				horizontal_alignment = horizontal_alignment or "center",
+				vertical_alignment = vertical_alignment or "bottom",
+				offset = offset or {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local widgets = {
-	chat_target_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_target", scenegraph_definition.chat_window_frame_top_filter.size, nil, {
+	chat_target_tooltip = create_additional_chat_tooltip("chat_window_frame_top_target", scenegraph_definition.chat_window_frame_top_filter.size, nil, {
 		title = Localize("chat_menu_tooltip_target_title"),
 		description = Localize("menu_chat_tooltip_target_description")
 	}, nil, nil, "top", nil),
-	chat_filter_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_filter", scenegraph_definition.chat_window_frame_top_filter.size, nil, {
+	chat_filter_tooltip = create_additional_chat_tooltip("chat_window_frame_top_filter", scenegraph_definition.chat_window_frame_top_filter.size, nil, {
 		title = Localize("chat_menu_tooltip_filter_title"),
 		description = Localize("menu_chat_tooltip_filter_description")
 	}, nil, nil, "top", nil),
-	chat_enlarge_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_enlarge", scenegraph_definition.chat_window_frame_top_enlarge.size, nil, {
+	chat_enlarge_tooltip = create_additional_chat_tooltip("chat_window_frame_top_enlarge", scenegraph_definition.chat_window_frame_top_enlarge.size, nil, {
 		title = Localize("chat_menu_tooltip_enlarge_title"),
 		description = Localize("menu_chat_tooltip_enlarge_description")
 	}, nil, nil, "top", nil),
-	chat_info_tooltip = UIWidgets.create_additional_option_tooltip("chat_window_frame_top_info", scenegraph_definition.chat_window_frame_top_info.size, nil, {
+	chat_info_tooltip = create_additional_chat_tooltip("chat_window_frame_top_info", scenegraph_definition.chat_window_frame_top_info.size, nil, {
 		title = Localize("chat_menu_tooltip_info_title"),
 		description = Localize("menu_chat_tooltip_info_description")
 	}, nil, nil, "top", nil)

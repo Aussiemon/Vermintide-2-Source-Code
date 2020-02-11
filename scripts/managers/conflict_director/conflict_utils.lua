@@ -800,7 +800,7 @@ ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, d
 			local sub_event_name = sub_event[1]
 			local difficulty_requirement = sub_event.difficulty_requirement
 
-			if difficulty_requirement and difficulty_requirement < (difficulty_rank or 1) then
+			if difficulty_requirement and (difficulty_rank or DifficultySettings.normal.rank) < difficulty_requirement then
 				break
 			end
 

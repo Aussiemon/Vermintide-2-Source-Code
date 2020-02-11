@@ -163,6 +163,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 
 		if breed_killed then
 			local breed_killed_name = breed_killed.name
+			local killed_race_name = breed_killed.race
 
 			if GameSettingsDevelopment.disable_carousel then
 				if Breeds[breed_killed_name] then
@@ -172,14 +173,18 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
 			end
 
-			if breed_killed.race and breed_killed.race == "critter" then
-				local human_players = Managers.player:human_players()
+			if killed_race_name then
+				statistics_db:increment_stat(stats_id, "kills_per_race", killed_race_name)
 
-				for _, player in pairs(human_players) do
-					local id = player:stats_id()
+				if killed_race_name == "critter" then
+					local human_players = Managers.player:human_players()
 
-					if id then
-						statistics_db:increment_stat(id, "kills_critter_total")
+					for _, player in pairs(human_players) do
+						local id = player:stats_id()
+
+						if id then
+							statistics_db:increment_stat(id, "kills_critter_total")
+						end
 					end
 				end
 			end

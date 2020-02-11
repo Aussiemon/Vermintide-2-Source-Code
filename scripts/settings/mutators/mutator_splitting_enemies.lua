@@ -42,6 +42,7 @@ return {
 				"skaven_clan_rat",
 				"skaven_storm_vermin_commander",
 				"skaven_warpfire_thrower",
+				"skaven_rat_ogre",
 				"skaven_rat_ogre"
 			}
 		}

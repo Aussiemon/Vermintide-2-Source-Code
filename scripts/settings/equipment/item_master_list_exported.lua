@@ -2010,6 +2010,34 @@ ItemMasterList.frame_mondstille_03 = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_year_of_the_rat = {
+	description = "frame_rat_description",
+	temporary_template = "frame_year_of_the_rat",
+	display_name = "frame_rat_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_year_of_the_rat",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_bogenhafen_01 = {
 	description = "frame_bogenhafen_01_description",
 	temporary_template = "frame_bogenhafen_01",

@@ -2409,6 +2409,9 @@ Cosmetics = {
 	frame_skulls = {
 		icon = "unit_frame_02"
 	},
+	frame_year_of_the_rat = {
+		icon = "unit_frame_02"
+	},
 	frame_summer = {
 		icon = "unit_frame_02"
 	},

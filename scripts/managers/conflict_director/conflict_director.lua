@@ -133,11 +133,6 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	network_event_delegate:register(self, "rpc_terror_event_trigger_flow")
 
 	self.frozen_intensity_decay_until = 0
-
-	if not DEDICATED_SERVER then
-		self.debug_breed_picker = DebugListPicker:new(DebugBreedSpawns, "debug_breed")
-	end
-
 	self.threat_value = 0
 	self.num_aggroed = 0
 	local difficulty = Managers.state.difficulty:get_difficulty()
@@ -2221,8 +2216,12 @@ ConflictDirector.debug_spawn_breed_at_hidden_spawner = function (self, t)
 		local spawn_pos = Unit.local_position(spawner, 0)
 		local spawn_category = "debug_spawn"
 		local rot = Quaternion(Vector3.up(), math.degrees_to_radians(math.random(1, 360)))
+		local optional_data = {
+			ignore_breed_limits = true,
+			side_id = self.debug_spawn_side_id
+		}
 
-		self:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rot), spawn_category, nil)
+		self:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rot), spawn_category, nil, nil, optional_data)
 	end
 end
 
@@ -2399,6 +2398,8 @@ ConflictDirector.debug_spawn_tentacle_blob = function (self, breed, only_breed, 
 		end
 	end
 
+	optional_data.ignore_breed_limits = true
+
 	self:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rot), spawn_category, nil, nil, optional_data)
 end
 
@@ -2427,6 +2428,8 @@ ConflictDirector.aim_spawning_surface = function (self, breed, on_navmesh, optio
 			script_data.debug_unit = unit
 		end
 	end
+
+	optional_data.ignore_breed_limits = true
 
 	self:spawn_queued_unit(breed, Vector3Box(position), QuaternionBox(rot), spawn_category, nil, nil, optional_data)
 end
@@ -2666,6 +2669,7 @@ ConflictDirector.spawn_group = function (self, patrol_template_name, position, d
 	local spawn_category = "patrol"
 	local rot = Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360)))
 	local optional_data = {
+		ignore_breed_limits = true,
 		side_id = self.debug_spawn_side_id or data.side_id
 	}
 
@@ -2901,7 +2905,7 @@ ConflictDirector.generate_spawns = function (self)
 		return {}
 	end
 
-	if self.spawn_zone_baker.spawn_zones_available then
+	if self.spawn_zone_baker.spawn_zones_available and not self.level_settings.skip_generate_spawns then
 		local goal_density = 0.5
 		local conflict_settings_name = self.current_conflict_settings or "default"
 		local conflict_setting = ConflictDirectors[conflict_settings_name]
@@ -3701,6 +3705,7 @@ ConflictDirector.update_kill_tester = function (self)
 	local breed_name = breeds[kill_spawn_index]
 	local breed = Breeds[breed_name]
 	local optional_data = {
+		ignore_breed_limits = true,
 		spawned_func = function (ai_unit, breed, optional_data)
 			table.insert(self._kill_list, 1, ai_unit)
 		end

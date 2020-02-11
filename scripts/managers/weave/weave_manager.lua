@@ -42,10 +42,9 @@ WeaveManager._reset = function (self)
 	self._bar_filled = false
 	self._objective_ui_mission_name = nil
 	self._num_players = nil
-	self._active_weave_name = nil
-	self._next_weave_name = nil
-	self._active_objective_index = nil
-	self._next_objective_index = nil
+
+	self:clear_weave_name()
+
 	self._player_ids = {}
 	self._saved_game_mode_data = {}
 	self._remaining_time = WeaveSettings.starting_time
@@ -74,6 +73,13 @@ WeaveManager.clear_weave_data = function (self)
 	self._num_enemies_killed = 0
 
 	table.clear(self._enemies_killed)
+end
+
+WeaveManager.clear_weave_name = function (self)
+	self._active_weave_name = nil
+	self._next_weave_name = nil
+	self._active_objective_index = nil
+	self._next_objective_index = nil
 end
 
 WeaveManager._setup_data = function (self, world, is_server)
@@ -391,6 +397,10 @@ WeaveManager.set_active_weave_phase = function (self, phase)
 end
 
 WeaveManager.get_active_wind = function (self)
+	if not self._active_weave_name then
+		return
+	end
+
 	local template = WeaveSettings.templates[self._active_weave_name]
 
 	return template and template.wind
@@ -438,6 +448,10 @@ WeaveManager.start_timer = function (self)
 end
 
 WeaveManager.calculate_next_objective_index = function (self)
+	if not self._active_weave_name then
+		return
+	end
+
 	local active_objective_index = self._active_objective_index
 	local template = WeaveSettings.templates[self._active_weave_name]
 	local objectives = template.objectives

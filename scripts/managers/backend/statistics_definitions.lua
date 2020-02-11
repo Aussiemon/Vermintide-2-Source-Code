@@ -509,6 +509,7 @@ player.kills_critter_total = {
 	sync_on_hot_join = true
 }
 player.kills_per_breed = {}
+player.kills_per_race = {}
 player.kill_assists_per_breed = {}
 player.damage_taken = {
 	value = 0,
@@ -601,6 +602,14 @@ for breed_name, breed in pairs(Breeds) do
 		value = 0,
 		name = breed_name
 	}
+	local race = breed.race
+
+	if race and not player.kills_per_race[race] then
+		player.kills_per_race[race] = {
+			value = 0,
+			name = race
+		}
+	end
 end
 
 LevelDifficultyDBNames = {}

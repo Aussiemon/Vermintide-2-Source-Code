@@ -375,13 +375,8 @@ end
 
 KeepDecorationPaintingExtension._unload_painting_material = function (self, package_name)
 	local reference_name = self._decoration_settings_key
-	local num_references = Managers.package:num_references(package_name)
 
-	if num_references == 1 then
-		if Managers.package:can_unload(package_name) then
-			Managers.package:unload(package_name, reference_name)
-		end
-	else
+	if Managers.package:reference_count(package_name, reference_name) > 0 then
 		Managers.package:unload(package_name, reference_name)
 	end
 end

@@ -150,7 +150,7 @@ EnemyPackageLoader._pick_breed_from_processed_breeds = function (self, breeds, l
 	ferror("[EnemyPackageLoader:_pick_breed_from_processed_breeds] No breed found, this should not happen!")
 end
 
-EnemyPackageLoader.request_breed = function (self, breed_name, ignore_breed_limits)
+EnemyPackageLoader.request_breed = function (self, breed_name, ignore_breed_limits, spawn_category)
 	breed_name = ALIAS_TO_BREED[breed_name] or breed_name
 	local breed_category_data = self._breed_category_lookup[breed_name]
 	local current_packages = breed_category_data.current
@@ -173,6 +173,44 @@ EnemyPackageLoader.request_breed = function (self, breed_name, ignore_breed_limi
 	self:_load_package(breed_name, breed_category_data)
 
 	return true
+end
+
+local ELITE_REPLACEMENTS = {}
+local FALLBACK_REPLACEMENTS = {}
+
+EnemyPackageLoader._find_patrol_replacement = function (self)
+	table.clear(ELITE_REPLACEMENTS)
+	table.clear(FALLBACK_REPLACEMENTS)
+
+	local startup_breeds = self._breeds_to_load_at_startup
+
+	for _, breed_name in ipairs(startup_breeds) do
+		local potential_breed = Breeds[breed_name]
+
+		if potential_breed.patrol_passive_perception and potential_breed.patrol_passive_target_selection then
+			if potential_breed.elite then
+				ELITE_REPLACEMENTS[#ELITE_REPLACEMENTS + 1] = breed_name
+			elseif not potential_breed.boss and not potential_breed.special then
+				FALLBACK_REPLACEMENTS[#FALLBACK_REPLACEMENTS + 1] = breed_name
+			end
+		end
+	end
+
+	print("### REPLACING BREED IN PATROL")
+
+	local replacement_breed_name = nil
+
+	if table.size(ELITE_REPLACEMENTS) > 0 then
+		local elite_index = Math.random(#ELITE_REPLACEMENTS)
+		replacement_breed_name = ELITE_REPLACEMENTS[elite_index]
+	else
+		local fallback_index = Math.random(#FALLBACK_REPLACEMENTS)
+		replacement_breed_name = FALLBACK_REPLACEMENTS[fallback_index]
+	end
+
+	print(string.format(" - Replacement breed name %q", replacement_breed_name))
+
+	return replacement_breed_name
 end
 
 EnemyPackageLoader._set_breed_processed = function (self, breed_name, processed)
@@ -608,8 +646,10 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 	local difficulty_rank = DifficultySettings[difficulty].rank
 	local terror_events = TerrorEventBlueprints[level_key]
 
-	for event_name, event in pairs(terror_events) do
-		ConflictUtils.add_breeds_from_event(event_name, event, difficulty, difficulty_rank, breed_lookup, terror_events)
+	if terror_events then
+		for event_name, event in pairs(terror_events) do
+			ConflictUtils.add_breeds_from_event(event_name, event, difficulty, difficulty_rank, breed_lookup, terror_events)
+		end
 	end
 
 	local spawn_zone_data = table.clone(MainPathSpawningGenerator.load_spawn_zone_data(spawn_zone_path))
@@ -688,7 +728,7 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed
 			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions, weave_objective_data)
 			local breed_category_lookup = self._breed_category_lookup
 			local breeds_to_load_lookup = {}
-			local breed_categories = EnemyPackageLoaderSettings.categories
+			local breed_categories = level_settings.breed_categories or EnemyPackageLoaderSettings.categories
 			local num_breed_categories = #breed_categories
 
 			for i = 1, num_breed_categories, 1 do

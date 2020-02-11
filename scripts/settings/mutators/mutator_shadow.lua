@@ -171,7 +171,7 @@ return {
 		local linked_units_visibility = template.linked_units_visibility
 		local player_manager = Managers.player
 		local player_unit = player_manager:local_player().player_unit
-		data.light_radius = wind_settings.light_radius[difficulty_name][wind_strength]
+		data.light_radius = (wind_settings and wind_settings.light_radius[difficulty_name][wind_strength]) or 6
 
 		if player_unit and not data.light_spawned then
 			local position = Unit.local_position(player_unit, 0)

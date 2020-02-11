@@ -42,6 +42,7 @@ EndViewStateWeave.on_enter = function (self, params)
 	self.peer_id = context.peer_id
 	self.weave_personal_best_achieved = context.weave_personal_best_achieved
 	self.weave_personal_best_ranking = context.weave_personal_best_ranking
+	self._completed_weave = context.completed_weave
 	self._animations = {}
 	self._ui_animations = {}
 	self._player_count = Managers.weave:get_num_players()
@@ -464,7 +465,7 @@ end
 EndViewStateWeave._setup_score_panel = function (self)
 	local weave_manager = Managers.weave
 	local game_won = self.game_won
-	local weave_template = weave_manager:get_active_weave_template()
+	local weave_template = self._completed_weave and WeaveSettings.templates[self._completed_weave]
 	local weave_display_name = ""
 	local weave_number_display_name = ""
 

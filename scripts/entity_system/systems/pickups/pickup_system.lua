@@ -12,7 +12,8 @@ local RPCS = {
 	"rpc_force_use_pickup",
 	"rpc_delete_pickup",
 	"rpc_delete_limited_owned_pickup_unit",
-	"rpc_delete_limited_owned_pickups"
+	"rpc_delete_limited_owned_pickups",
+	"rpc_delete_limited_owned_pickup_type"
 }
 local extensions = {
 	"LifeTimePickupUnitExtension",
@@ -907,6 +908,35 @@ PickupSystem.event_delete_limited_owned_pickups = function (self, peer_id)
 	end
 end
 
+PickupSystem.delete_limited_owned_pickup_type = function (self, peer_id, type)
+	if self.is_server then
+		local limited_owned_pickups = self._limited_owned_pickups[peer_id]
+
+		if not limited_owned_pickups then
+			return
+		end
+
+		local pickup_units = limited_owned_pickups.units
+		local units_by_type = self._pickup_units_by_type[type]
+
+		if pickup_units and units_by_type then
+			for i = 1, #pickup_units, 1 do
+				local unit = pickup_units[i]
+
+				if table.index_of(units_by_type, unit) > 0 then
+					self:_delete_pickup(unit)
+				end
+			end
+
+			table.clear(pickup_units)
+		end
+	elseif Managers.state.network:in_game_session() then
+		local pickup_name_id = NetworkLookup.pickup_names[type]
+
+		self.network_transmit:send_rpc_server("rpc_delete_limited_owned_pickup_type", peer_id, pickup_name_id)
+	end
+end
+
 PickupSystem._update_life_time_pickups = function (self, dt, t)
 	for unit, data in pairs(self._life_time_pickups) do
 		if data.life_time < t and data.pickup_settings.on_life_over_func then
@@ -1187,6 +1217,12 @@ end
 
 PickupSystem.rpc_delete_limited_owned_pickups = function (self, sender, owner_peer_id)
 	self:event_delete_limited_owned_pickups(owner_peer_id)
+end
+
+PickupSystem.rpc_delete_limited_owned_pickup_type = function (self, sender, owner_peer_id, pickup_name_id)
+	local pickup_type = NetworkLookup.pickup_names[pickup_name_id]
+
+	self:delete_limited_owned_pickup_type(owner_peer_id, pickup_type)
 end
 
 PickupSystem.rpc_force_use_pickup = function (self, sender, pickup_name_id)
