@@ -20,6 +20,7 @@ KeepDecorationPaintingExtension.init = function (self, extension_init_context, u
 	self._slow_update_count = 0
 	self._slot = nil
 	self._loading_painting_material = nil
+	self._next_painting = {}
 	local settings_key = Unit.get_data(unit, "decoration_settings_key")
 	local settings = KeepDecorationSettings[settings_key]
 	self._settings = settings
@@ -187,6 +188,14 @@ KeepDecorationPaintingExtension.distributed_update = function (self)
 	end
 
 	self._slow_update_count = slow_update_count + 1
+
+	if not self._loading_painting_material and self._next_painting.name then
+		local name = self._next_painting.name
+		local cb_done = self._next_painting.cb_done
+
+		table.clear(self._next_painting)
+		self:_load_painting_material(name, cb_done)
+	end
 end
 
 KeepDecorationPaintingExtension.set_client_painting = function (self, painting)
@@ -349,7 +358,7 @@ KeepDecorationPaintingExtension._load_painting_material = function (self, name, 
 		end
 	end
 
-	if not self._loading_painting_material or self._is_client_painting then
+	if not self._loading_painting_material then
 		self._loading_painting_material = true
 		self._previous_package_name = self._current_package_name
 		self._current_package_name = package_name
@@ -359,6 +368,9 @@ KeepDecorationPaintingExtension._load_painting_material = function (self, name, 
 		else
 			Managers.package:load(package_name, reference_name, cb_package_loaded, true)
 		end
+	else
+		self._next_painting.name = name
+		self._next_painting.cb_done = cb_done
 	end
 end
 
