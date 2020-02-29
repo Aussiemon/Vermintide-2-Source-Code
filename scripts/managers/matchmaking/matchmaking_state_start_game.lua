@@ -160,6 +160,10 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		end
 	elseif game_mode == "weave" then
 		weave_name = search_config.weave_name
+
+		if not quick_game then
+			private_game = true
+		end
 	end
 
 	local eac_authorized = false
@@ -247,7 +251,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			weave_index = weave_index
 		}
 
-		self._lobby:enable_matchmaking(not search_config.private_game, ticket_params, 600, hopper_name)
+		self._lobby:enable_matchmaking(not private_game, ticket_params, 600, hopper_name)
 	end
 
 	if game_mode == "adventure" then

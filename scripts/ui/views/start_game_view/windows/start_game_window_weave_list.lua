@@ -137,23 +137,23 @@ StartGameWindowWeaveList._update_can_play = function (self)
 		if is_matchmaking then
 			if self._is_server then
 				if can_set_next_weave then
-					self._parent:set_input_description("cancel_available_set_next_weave_available")
+					self._parent:set_input_description("cancel_available_set_next_weave_available_lock")
 				else
-					self._parent:set_input_description("cancel_matchmaking")
+					self._parent:set_input_description("cancel_matchmaking_lock")
 				end
 			elseif can_set_next_weave then
-				self._parent:set_input_description("set_next_weave_available")
+				self._parent:set_input_description("set_next_weave_available_lock")
 			else
 				self._parent:set_input_description(nil)
 			end
 		elseif can_play then
 			if can_set_next_weave then
-				self._parent:set_input_description("play_available_set_next_weave_available")
+				self._parent:set_input_description("play_available_set_next_weave_available_lock")
 			else
-				self._parent:set_input_description("play_available")
+				self._parent:set_input_description("play_available_lock")
 			end
 		elseif can_set_next_weave then
-			self._parent:set_input_description("set_next_weave_available")
+			self._parent:set_input_description("set_next_weave_available_lock")
 		else
 			self._parent:set_input_description(nil)
 		end

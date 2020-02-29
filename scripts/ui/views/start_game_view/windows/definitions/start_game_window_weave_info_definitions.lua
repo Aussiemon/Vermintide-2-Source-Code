@@ -2160,6 +2160,10 @@ local top_widgets = {
 	mutator_description_text = UIWidgets.create_simple_text("n/a", "mutator_description_text", nil, nil, mutator_description_text_style),
 	wind_title = UIWidgets.create_simple_text("n/a", "wind_title", nil, nil, wind_title_text_style),
 	level_title = UIWidgets.create_simple_text("n/a", "level_title", nil, nil, level_title_text_style),
+	private_checkbox = create_checkbox_button("private_checkbox", scenegraph_definition.private_checkbox.size, Localize("start_game_window_disallow_join"), 24, {
+		title = Localize("start_game_window_disallow_join"),
+		description = Localize("start_game_window_disallow_join_description")
+	}),
 	objective_title_text = UIWidgets.create_simple_text(Localize("weave_objective_title"), "objective_title_text", nil, nil, objective_title_text_style),
 	objective_description_text = UIWidgets.create_simple_text(Localize("menu_weave_play_objective_sub_title"), "objective_description_text", nil, nil, objective_description_text_style)
 }

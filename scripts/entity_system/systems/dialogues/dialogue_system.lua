@@ -507,100 +507,103 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 				local currently_playing_dialogue = extension.currently_playing_dialogue
 
 				fassert(currently_playing_dialogue, "Dialogue for playing unit was nil!")
-				fassert(currently_playing_dialogue.dialogue_timer, "Dialogue timer for playing unit was nil!")
 
-				local is_currently_playing = currently_playing_dialogue.dialogue_timer - dt > 0
-
-				if not is_currently_playing then
-					if player_manager:owner(unit) ~= nil or Unit.has_data(unit, "dialogue_face_anim") then
-						function_command_queue:queue_function_command(Unit.animation_event, unit, "face_neutral")
-						function_command_queue:queue_function_command(Unit.animation_event, unit, "dialogue_end")
-					elseif Unit.has_data(unit, "enemy_dialogue_face_anim") and Unit.has_animation_state_machine(unit) then
-						function_command_queue:queue_function_command(Unit.animation_event, unit, "talk_end")
-					end
-
-					if Unit.has_data(unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(unit) then
-						function_command_queue:queue_function_command(Unit.animation_event, unit, "talk_body_end")
-					end
-
-					local sound_distance = currently_playing_dialogue.sound_distance
-					local used_query = currently_playing_dialogue.used_query
-					extension.currently_playing_dialogue = nil
-					currently_playing_dialogue.currently_playing_id = nil
-					currently_playing_dialogue.currently_playing_unit = nil
-					currently_playing_dialogue.used_query = nil
-					self.playing_dialogues[currently_playing_dialogue] = nil
+				if currently_playing_dialogue.dialogue_timer == nil then
 					playing_units[unit] = nil
+				else
+					local is_currently_playing = currently_playing_dialogue.dialogue_timer - dt > 0
 
-					if not self.is_server then
-						break
-					end
+					if not is_currently_playing then
+						if player_manager:owner(unit) ~= nil or Unit.has_data(unit, "dialogue_face_anim") then
+							function_command_queue:queue_function_command(Unit.animation_event, unit, "face_neutral")
+							function_command_queue:queue_function_command(Unit.animation_event, unit, "dialogue_end")
+						elseif Unit.has_data(unit, "enemy_dialogue_face_anim") and Unit.has_animation_state_machine(unit) then
+							function_command_queue:queue_function_command(Unit.animation_event, unit, "talk_end")
+						end
 
-					local result = used_query.result
+						if Unit.has_data(unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(unit) then
+							function_command_queue:queue_function_command(Unit.animation_event, unit, "talk_body_end")
+						end
 
-					if result then
-						local source = used_query.query_context.source
-						local success_rule = used_query.validated_rule
-						local on_done = success_rule.on_done
+						local sound_distance = currently_playing_dialogue.sound_distance
+						local used_query = currently_playing_dialogue.used_query
+						extension.currently_playing_dialogue = nil
+						currently_playing_dialogue.currently_playing_id = nil
+						currently_playing_dialogue.currently_playing_unit = nil
+						currently_playing_dialogue.used_query = nil
+						self.playing_dialogues[currently_playing_dialogue] = nil
+						playing_units[unit] = nil
 
-						if on_done then
-							for i = 1, #on_done, 1 do
-								local on_done_command = on_done[i]
-								local table_name = on_done_command[1]
-								local argument_name = on_done_command[2]
-								local op = on_done_command[3]
-								local argument = on_done_command[4]
+						if not self.is_server then
+							break
+						end
 
-								if table_name ~= "user_memory" and table_name ~= "faction_memory" then
-									table_name = "user_memory"
-									argument_name = on_done_command[1]
-									op = on_done_command[2]
-									argument = on_done_command[3]
-								end
+						local result = used_query.result
 
-								local user_contexts = unit_extension_data[source]
+						if result then
+							local source = used_query.query_context.source
+							local success_rule = used_query.validated_rule
+							local on_done = success_rule.on_done
 
-								if type(op) == "table" then
-									fassert(DialogueSystem.function_by_op[op], "Unknown operator: %q", tostring(op))
+							if on_done then
+								for i = 1, #on_done, 1 do
+									local on_done_command = on_done[i]
+									local table_name = on_done_command[1]
+									local argument_name = on_done_command[2]
+									local op = on_done_command[3]
+									local argument = on_done_command[4]
 
-									user_contexts[table_name][argument_name] = DialogueSystem.function_by_op[op](user_contexts[table_name][argument_name], argument)
-								else
-									fassert(op, "No such operator in on_done-command for rule %q", success_rule.name)
+									if table_name ~= "user_memory" and table_name ~= "faction_memory" then
+										table_name = "user_memory"
+										argument_name = on_done_command[1]
+										op = on_done_command[2]
+										argument = on_done_command[3]
+									end
 
-									user_contexts[table_name][argument_name] = op
+									local user_contexts = unit_extension_data[source]
+
+									if type(op) == "table" then
+										fassert(DialogueSystem.function_by_op[op], "Unknown operator: %q", tostring(op))
+
+										user_contexts[table_name][argument_name] = DialogueSystem.function_by_op[op](user_contexts[table_name][argument_name], argument)
+									else
+										fassert(op, "No such operator in on_done-command for rule %q", success_rule.name)
+
+										user_contexts[table_name][argument_name] = op
+									end
 								end
 							end
-						end
 
-						local speaker_name = "UNKNOWN"
-						local breed_data = Unit.get_data(source, "breed")
+							local speaker_name = "UNKNOWN"
+							local breed_data = Unit.get_data(source, "breed")
 
-						if breed_data and not breed_data.is_player then
-							speaker_name = breed_data.name
-						elseif ScriptUnit.has_extension(source, "dialogue_system") then
-							speaker_name = ScriptUnit.extension(source, "dialogue_system").context.player_profile
-						end
-
-						if currently_playing_dialogue.override_awareness then
-							local event_data = FrameTable.alloc_table()
-							event_data.dialogue_name_nopre = string.sub(result, 5)
-							event_data.dialogue_name = result
-							event_data.speaker = source
-							event_data.distance = 1
-							event_data.spaekar_name = speaker_name
-							event_data.sound_event = extension.last_query_sound_event
-
-							for unit, extension in pairs(self.unit_extension_data) do
-								extension.input:trigger_dialogue_event(currently_playing_dialogue.override_awareness, event_data)
+							if breed_data and not breed_data.is_player then
+								speaker_name = breed_data.name
+							elseif ScriptUnit.has_extension(source, "dialogue_system") then
+								speaker_name = ScriptUnit.extension(source, "dialogue_system").context.player_profile
 							end
-						else
-							self.entity_manager:system("surrounding_aware_system"):add_system_event(source, "heard_speak", sound_distance, "speaker", source, "speaker_name", speaker_name, "sound_event", extension.last_query_sound_event or "unknown", "dialogue_name", result, "dialogue_name_nopre", string.sub(result, 5))
-						end
 
-						extension.last_query_sound_event = nil
+							if currently_playing_dialogue.override_awareness then
+								local event_data = FrameTable.alloc_table()
+								event_data.dialogue_name_nopre = string.sub(result, 5)
+								event_data.dialogue_name = result
+								event_data.speaker = source
+								event_data.distance = 1
+								event_data.spaekar_name = speaker_name
+								event_data.sound_event = extension.last_query_sound_event
+
+								for unit, extension in pairs(self.unit_extension_data) do
+									extension.input:trigger_dialogue_event(currently_playing_dialogue.override_awareness, event_data)
+								end
+							else
+								self.entity_manager:system("surrounding_aware_system"):add_system_event(source, "heard_speak", sound_distance, "speaker", source, "speaker_name", speaker_name, "sound_event", extension.last_query_sound_event or "unknown", "dialogue_name", result, "dialogue_name_nopre", string.sub(result, 5))
+							end
+
+							extension.last_query_sound_event = nil
+						end
+					elseif currently_playing_dialogue.dialogue_timer then
+						currently_playing_dialogue.dialogue_timer = currently_playing_dialogue.dialogue_timer - dt
 					end
-				elseif currently_playing_dialogue.dialogue_timer then
-					currently_playing_dialogue.dialogue_timer = currently_playing_dialogue.dialogue_timer - dt
 				end
 			end
 		until true
@@ -1376,8 +1379,6 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 		end
 	end
 
-	dialogue.dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
-	self.playing_units[dialogue_actor_unit] = extension
 	dialogue.currently_playing_unit = dialogue_actor_unit
 	local speaker_name = nil
 	local breed_data = Unit.get_data(dialogue_actor_unit, "breed")
@@ -1390,7 +1391,9 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 
 	extension.last_query_sound_event = sound_event
 	dialogue.speaker_name = speaker_name
+	dialogue.dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index) or DialogueSettings.sound_event_default_length
 	extension.currently_playing_dialogue = dialogue
+	self.playing_units[dialogue_actor_unit] = extension
 	local dialogue_category = dialogue.category
 	local category_setting = dialogue_category_config[dialogue_category]
 	self.playing_dialogues[dialogue] = category_setting

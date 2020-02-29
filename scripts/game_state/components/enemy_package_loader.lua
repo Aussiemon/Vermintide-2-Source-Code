@@ -10,6 +10,56 @@ local BREED_TO_ALIASES = EnemyPackageLoaderSettings.breed_to_aliases
 local OPT_LOOKUP_BREED_NAMES = EnemyPackageLoaderSettings.opt_lookup_breed_names
 local UNLOAD_STARTUP_PACKAGES_BETWEEN_LEVELS = EnemyPackageLoaderSettings.unload_startup_packages_between_levels
 
+local function get_weighted_random_index(random, entries, entry_weight_map)
+	local range_start = 0
+	local num_entries = #entries
+
+	for i = 1, num_entries, 1 do
+		local entry = entries[i]
+		local weight = entry_weight_map[entry]
+		local range_end = range_start + weight
+
+		if range_start <= random and random < range_end then
+			return i
+		end
+
+		range_start = range_end
+	end
+
+	return num_entries
+end
+
+local function normalize_weight_map(list, list_weight_map, default_weight)
+	local total_weight = 0
+
+	for director_id = 1, #list, 1 do
+		local director = list[director_id]
+
+		if not list_weight_map[director] then
+			list_weight_map[director] = default_weight
+		end
+
+		total_weight = total_weight + list_weight_map[director]
+	end
+
+	for entry, weight in pairs(list_weight_map) do
+		list_weight_map[entry] = weight / total_weight
+	end
+
+	print("Updated list weights for random:")
+
+	local last_weight = 0
+
+	for i = 1, #list, 1 do
+		local current_entry = list[i]
+		local current_weight = list_weight_map[current_entry]
+
+		printf("\t %s, %.2f (%.2f-%.2f)", current_entry, current_weight, last_weight, last_weight + current_weight)
+
+		last_weight = last_weight + current_weight
+	end
+end
+
 EnemyPackageLoader.init = function (self)
 	self.network_event_delegate = nil
 	self.use_optimized = script_data.use_optimized_breed_units
@@ -517,17 +567,11 @@ EnemyPackageLoader._remove_locked_directors = function (self, director_list, fai
 	end
 end
 
-EnemyPackageLoader._get_directors_from_breed_budget = function (self, spawn_breed_hash, num_needed_directors, available_directors, breed_cap, difficulty_name, non_random_conflict_directors, seed, failed_locked_functions)
+EnemyPackageLoader._get_directors_from_breed_budget = function (self, spawn_breed_hash, num_needed_directors, director_list, breed_cap, difficulty_name, non_random_conflict_directors, seed)
 	local num_used_breeds = table.size(spawn_breed_hash)
 	local num_free = breed_cap - num_used_breeds
 
 	fassert(num_free >= 0, "Fail, too many breeds! ")
-
-	local director_list = table.shallow_copy(available_directors)
-
-	if not DEDICATED_SERVER then
-		self:_remove_locked_directors(director_list, failed_locked_functions)
-	end
 
 	local approved_directors = {}
 	local new_breeds = nil
@@ -626,6 +670,110 @@ EnemyPackageLoader._get_directors_from_breed_budget = function (self, spawn_bree
 	return approved_directors
 end
 
+EnemyPackageLoader._remove_directors_by_breed_budget = function (self, director_names_list, breeds_in_use, difficulty_name, breed_cap)
+	local new_breed_list = {}
+
+	for i = #director_names_list, 1, -1 do
+		local director_name = director_names_list[i]
+		local director = ConflictDirectors[director_name]
+		local breed_hash = director.contained_breeds[difficulty_name]
+		local new_breeds = 0
+
+		table.clear(new_breed_list)
+
+		for breed_name, breed in pairs(breed_hash) do
+			if not breeds_in_use[breed_name] then
+				new_breeds = new_breeds + 1
+				new_breed_list[breed_name] = breed
+
+				if breed_cap < new_breeds then
+					table.swap_delete(director_names_list, i)
+
+					break
+				end
+			end
+		end
+	end
+end
+
+EnemyPackageLoader._get_factions_from_directors = function (self, director_names_list)
+	local factions = {}
+
+	for director_name_id = 1, #director_names_list, 1 do
+		local director_name = director_names_list[director_name_id]
+		local director = ConflictDirectors[director_name]
+		local director_factions = director and director.factions
+
+		if director_factions then
+			for faction_id = 1, #director_factions, 1 do
+				local faction_to_add = director_factions[faction_id]
+
+				if table.index_of(factions, faction_to_add) == -1 then
+					table.insert(factions, faction_to_add)
+				end
+			end
+		end
+	end
+
+	return factions
+end
+
+EnemyPackageLoader._make_faction_list = function (self, available_factions, mandatory_factions, faction_weights, seed, preferred_num_faction)
+	local faction_list = nil
+
+	print("number of factions to include", preferred_num_faction)
+
+	if preferred_num_faction < #available_factions then
+		faction_list = table.shallow_copy(mandatory_factions)
+
+		table.array_remove_if(available_factions, function (faction)
+			return table.index_of(faction_list, faction) > 0
+		end)
+
+		local num_selected_factions = #faction_list
+
+		while preferred_num_faction > num_selected_factions do
+			normalize_weight_map(available_factions, faction_weights, DefaultConflictFactionWeight)
+
+			local random = 0
+			seed, random = Math.next_random(seed)
+			local random_faction_id = get_weighted_random_index(random, available_factions, faction_weights)
+			local faction_to_add = available_factions[random_faction_id]
+
+			print("Rolled random faction:", random, faction_to_add)
+			table.swap_delete(available_factions, random_faction_id)
+			table.insert(faction_list, faction_to_add)
+
+			num_selected_factions = num_selected_factions + 1
+		end
+	else
+		faction_list = table.shallow_copy(available_factions)
+	end
+
+	print("number of factions added", #faction_list)
+
+	return seed, faction_list
+end
+
+EnemyPackageLoader._remove_directors_not_in_factions = function (self, director_names_list, faction_list)
+	table.array_remove_if(director_names_list, function (director_name)
+		local director = ConflictDirectors[director_name]
+		local director_factions = director and director.factions
+
+		if director_factions then
+			for faction_id = 1, #director_factions, 1 do
+				local director_faction_name = director_factions[faction_id]
+
+				if table.index_of(faction_list, director_faction_name) == -1 then
+					return true
+				end
+			end
+		end
+
+		return false
+	end)
+end
+
 EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, failed_locked_functions, weave_objective_data)
 	local level_settings = LevelSettings[level_key]
 	local level_name = level_settings.level_name
@@ -677,9 +825,37 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 	end
 
 	if not weave_objective_data then
-		local director_list = level_settings.conflict_director_set or DefaultConflictDirectorSet
+		local director_list = table.shallow_copy(level_settings.conflict_director_set or DefaultConflictDirectorSet)
+		local faction_weights = table.shallow_copy(level_settings.conflict_faction_weights or DefaultConflictFactionSetWeights)
 		local breed_cap = level_settings.breed_cap_override or EnemyPackageLoaderSettings.max_loaded_breed_cap
-		self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, difficulty, non_random_conflict_directors, level_seed, failed_locked_functions)
+		local faction_count_roll = 0
+		level_seed, faction_count_roll = Math.next_random(level_seed)
+		local num_faction_chances = DefaultConflictPreferredFactionCountChances
+		local preferred_num_faction = 0
+
+		for i = 1, #num_faction_chances, 1 do
+			local required_roll = num_faction_chances[i]
+
+			if faction_count_roll <= required_roll then
+				preferred_num_faction = i
+			end
+		end
+
+		if not DEDICATED_SERVER then
+			self:_remove_locked_directors(director_list, failed_locked_functions)
+		end
+
+		self:_remove_directors_by_breed_budget(director_list, breed_lookup, difficulty, breed_cap)
+
+		local non_random_director_list = table.keys(non_random_conflict_directors)
+		local mandatory_factions = self:_get_factions_from_directors(non_random_director_list)
+		local available_factions = self:_get_factions_from_directors(director_list)
+		local faction_list = nil
+		level_seed, faction_list = self:_make_faction_list(available_factions, mandatory_factions, faction_weights, level_seed, preferred_num_faction)
+
+		self:_remove_directors_not_in_factions(director_list, faction_list)
+
+		self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, difficulty, non_random_conflict_directors, level_seed)
 	end
 
 	local loop_breeds = true

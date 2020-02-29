@@ -819,14 +819,57 @@ local function add_breeds_from_patrol_formation(formation, difficulty, output)
 	end
 end
 
-local function add_breed_or_breeds(breed_name, output)
+local function add_breeds_from_horde_composition(output, composition_type, difficulty)
+	local difficulty_index = DifficultySettings[difficulty].rank - 1
+	local event_composition = HordeCompositions[composition_type][difficulty_index]
+
+	fassert(event_composition ~= nil, string.format("No horde composition found for '%s' on difficulty '%s'", composition_type, difficulty))
+
+	for j = 1, #event_composition, 1 do
+		local composition = event_composition[j]
+		local breeds = composition.breeds
+
+		for k = 1, #breeds, 2 do
+			local breed_name = breeds[k]
+			output[breed_name] = true
+		end
+	end
+end
+
+local function add_breeds_from_breed_action(output, breed_name, difficulty)
+	local actions = BreedActions[breed_name]
+
+	if actions then
+		for _, action in pairs(actions) do
+			if action.difficulty_spawn_list or action.spawn_list then
+				local spawn_list = action.difficulty_spawn_list[difficulty] or action.spawn_list
+
+				for i = 1, #spawn_list, 1 do
+					output[spawn_list[i]] = true
+				end
+			end
+
+			if action.difficulty_spawn or action.spawn then
+				local composition_type = action.difficulty_spawn[difficulty] or action.spawn
+
+				add_breeds_from_horde_composition(output, composition_type, difficulty)
+			end
+		end
+	end
+end
+
+local function add_breed_or_breeds(output, breed_name, difficulty)
 	if type(breed_name) == "table" then
 		for i = 1, #breed_name, 1 do
 			local sub_breed_name = breed_name[i]
 			output[sub_breed_name] = true
+
+			add_breeds_from_breed_action(output, sub_breed_name, difficulty)
 		end
 	else
 		output[breed_name] = true
+
+		add_breeds_from_breed_action(output, breed_name, difficulty)
 	end
 end
 
@@ -842,7 +885,7 @@ ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, d
 			end
 
 			if sub_event_name == "spawn" or sub_event_name == "spawn_at_raw" or sub_event_name == "spawn_special" or sub_event_name == "spawn_weave_special" or sub_event_name == "spawn_weave_special_event" then
-				add_breed_or_breeds(sub_event.breed_name, output)
+				add_breed_or_breeds(output, sub_event.breed_name, difficulty)
 			elseif sub_event_name == "spawn_patrol" then
 				local formations = sub_event.formations
 
@@ -861,20 +904,8 @@ ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, d
 				end
 			elseif sub_event_name == "event_horde" or sub_event_name == "ambush_horde" then
 				local event_composition_type = sub_event.composition_type
-				local difficulty_index = DifficultySettings[difficulty].rank - 1
-				local event_composition = HordeCompositions[event_composition_type][difficulty_index]
 
-				fassert(event_composition ~= nil, string.format("No horde composition found for '%s' on difficulty '%s'", event_composition_type, difficulty))
-
-				for j = 1, #event_composition, 1 do
-					local composition = event_composition[j]
-					local breeds = composition.breeds
-
-					for k = 1, #breeds, 2 do
-						local breed_name = breeds[k]
-						output[breed_name] = true
-					end
-				end
+				add_breeds_from_horde_composition(output, event_composition_type, difficulty)
 			end
 		until true
 	end

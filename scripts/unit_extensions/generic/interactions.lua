@@ -2214,10 +2214,8 @@ end
 
 InteractionDefinitions.map_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
 	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
-	local voting_manager = Managers.state.voting
-	local currently_voting = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
 
-	return not is_game_matchmaking and not currently_voting
+	return not is_game_matchmaking
 end
 
 InteractionDefinitions.unlock_key_access = InteractionDefinitions.unlock_key_access or table.clone(InteractionDefinitions.smartobject)

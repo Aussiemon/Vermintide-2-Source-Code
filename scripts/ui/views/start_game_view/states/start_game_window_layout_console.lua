@@ -637,6 +637,20 @@ local generic_input_actions = {
 			}
 		}
 	},
+	play_available_lock = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "input_description_play"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 7,
+				description_text = "start_game_window_disallow_join"
+			}
+		}
+	},
 	search_available = {
 		actions = {
 			{
@@ -652,6 +666,20 @@ local generic_input_actions = {
 				input_action = "refresh",
 				priority = 6,
 				description_text = "cancel_matchmaking"
+			}
+		}
+	},
+	cancel_matchmaking_lock = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "cancel_matchmaking"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 7,
+				description_text = "start_game_window_disallow_join"
 			}
 		}
 	},
@@ -698,6 +726,72 @@ local generic_input_actions = {
 				input_action = "special_1",
 				priority = 1,
 				description_text = "input_description_set_next_weave"
+			}
+		}
+	},
+	set_next_weave_available_lock = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 1,
+				description_text = "input_description_play"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 7,
+				description_text = "start_game_window_disallow_join"
+			}
+		}
+	},
+	play_available_set_next_weave_available_lock = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "input_description_set_next_weave"
+			},
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "input_description_play"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 7,
+				description_text = "start_game_window_disallow_join"
+			}
+		}
+	},
+	cancel_available_set_next_weave_available_lock = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "input_description_set_next_weave"
+			},
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "cancel_matchmaking"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 7,
+				description_text = "start_game_window_disallow_join"
+			}
+		}
+	},
+	set_next_weave_available_lock = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
+				description_text = "input_description_set_next_weave"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 7,
+				description_text = "start_game_window_disallow_join"
 			}
 		}
 	},

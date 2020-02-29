@@ -89,8 +89,11 @@ StartGameWindowWeaveInfo._create_ui_elements = function (self, params, offset)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+	local private_game = self._parent:is_private_option_enabled()
+	widgets_by_name.private_checkbox.content.button_hotspot.is_selected = private_game
 	widgets_by_name.play_button.content.button_hotspot.disable_button = true
 
+	self:_align_private_checkbox()
 	self:_setup_input_buttons()
 end
 
@@ -160,9 +163,9 @@ StartGameWindowWeaveInfo._update_can_play = function (self)
 		if is_matchmaking then
 			widgets_by_name.play_button.content.button_hotspot.disable_button = true
 
-			self._parent:set_input_description("cancel_matchmaking")
+			self._parent:set_input_description("cancel_matchmaking_lock")
 		else
-			self._parent:set_input_description("play_available")
+			self._parent:set_input_description("play_available_lock")
 		end
 	end
 
@@ -214,6 +217,7 @@ StartGameWindowWeaveInfo._update_animations = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 
 	UIWidgetUtils.animate_default_button(widgets_by_name.play_button, dt)
+	UIWidgetUtils.animate_default_button(widgets_by_name.private_checkbox, dt)
 end
 
 StartGameWindowWeaveInfo._is_button_pressed = function (self, widget)
@@ -281,9 +285,20 @@ StartGameWindowWeaveInfo._handle_input = function (self, dt, t)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local input_service = self._parent:window_input_service()
 	local play_button = widgets_by_name.play_button
+	local private_checkbox = widgets_by_name.private_checkbox
 
 	if self:_is_button_hover_enter(play_button) then
 		self:_play_sound("Play_hud_hover")
+	end
+
+	local lock_party_size_pressed = gamepad_active and input_service:get("right_stick_press")
+
+	if self:_is_button_released(private_checkbox) or lock_party_size_pressed then
+		local content = private_checkbox.content
+		content.button_hotspot.is_selected = not content.button_hotspot.is_selected
+
+		parent:set_private_option_enabled(content.button_hotspot.is_selected)
+		self:_play_sound("play_gui_lobby_button_play")
 	end
 
 	local play_pressed = gamepad_active and self._enable_play and input_service:get("refresh_press")
@@ -452,6 +467,32 @@ StartGameWindowWeaveInfo._set_colors_by_wind = function (self, wind_name)
 
 	self:_apply_color_values(widgets_by_name.wind_title.style.text.text_color, color)
 	self:_apply_color_values(widgets_by_name.wind_icon.style.texture_id.color, color)
+end
+
+StartGameWindowWeaveInfo._align_private_checkbox = function (self)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local widgets_by_name = self._widgets_by_name
+	local widget_name = "private_checkbox"
+	local widget = widgets_by_name[widget_name]
+	local content = widget.content
+	local offset = widget.offset
+	local style = widget.style
+	local hotspot_content = content.button_hotspot
+	local hotspot_style = style.button_hotspot
+	local hotspot_size = hotspot_style.size
+	local text_style = style.text
+	local text_offset = text_style.offset
+	local text_width_offset = text_offset[1]
+	local ui_renderer = self._ui_renderer
+	local text_width = UIUtils.get_text_width(ui_renderer, text_style, hotspot_content.text)
+	local total_width = text_width_offset + text_width
+	offset[1] = -total_width / 2
+	offset[2] = (gamepad_active and 40) or 0
+	local tooltip_style = style.additional_option_info
+	local tooltip_width = tooltip_style.max_width
+	local tooltip_offset = tooltip_style.offset
+	tooltip_offset[1] = -(tooltip_width / 2 - total_width / 2)
+	hotspot_size[1] = total_width
 end
 
 StartGameWindowWeaveInfo._apply_color_values = function (self, target, source, color_multiplier, include_alpha)

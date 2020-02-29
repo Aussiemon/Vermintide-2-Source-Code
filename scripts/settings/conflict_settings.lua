@@ -4708,6 +4708,17 @@ DefaultConflictDirectorSet = {
 	"chaos_beastmen",
 	"default"
 }
+DefaultConflictPreferredFactionCountChances = {
+	1,
+	0.8,
+	0.2
+}
+DefaultConflictFactionWeight = 1
+DefaultConflictFactionSetWeights = {
+	chaos = 20,
+	skaven = 20,
+	beastmen = 8
+}
 ConflictDirectorLockedFunctions = {
 	beastmen = function (level_key)
 		if DEDICATED_SERVER then
@@ -4745,7 +4756,11 @@ ConflictDirectors = {
 		specials = SpecialsSettings.default,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
+		factions = {
+			"chaos",
+			"skaven"
+		}
 	},
 	default_light = {
 		debug_color = "maroon",
@@ -4756,7 +4771,11 @@ ConflictDirectors = {
 		specials = SpecialsSettings.default_light,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
+		factions = {
+			"chaos",
+			"skaven"
+		}
 	},
 	skaven = {
 		debug_color = "orange",
@@ -4767,7 +4786,10 @@ ConflictDirectors = {
 		specials = SpecialsSettings.skaven,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.skaven,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
+		factions = {
+			"skaven"
+		}
 	},
 	skaven_light = {
 		debug_color = "orange",
@@ -4778,7 +4800,10 @@ ConflictDirectors = {
 		specials = SpecialsSettings.skaven_light,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.skaven_light,
-		horde = HordeSettings.default
+		horde = HordeSettings.default,
+		factions = {
+			"skaven"
+		}
 	},
 	chaos = {
 		debug_color = "purple",
@@ -4789,7 +4814,10 @@ ConflictDirectors = {
 		specials = SpecialsSettings.chaos,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.chaos,
-		horde = HordeSettings.chaos
+		horde = HordeSettings.chaos,
+		factions = {
+			"chaos"
+		}
 	},
 	chaos_light = {
 		debug_color = "purple",
@@ -4800,7 +4828,10 @@ ConflictDirectors = {
 		specials = SpecialsSettings.chaos_light,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.chaos_light,
-		horde = HordeSettings.chaos
+		horde = HordeSettings.chaos,
+		factions = {
+			"chaos"
+		}
 	},
 	marauders_and_warriors = {
 		debug_color = "purple",
@@ -4811,7 +4842,10 @@ ConflictDirectors = {
 		specials = SpecialsSettings.chaos,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.chaos,
-		horde = HordeSettings.chaos
+		horde = HordeSettings.chaos,
+		factions = {
+			"chaos"
+		}
 	},
 	beastmen = {
 		debug_color = "purple",
@@ -4823,7 +4857,10 @@ ConflictDirectors = {
 		specials = SpecialsSettings.beastmen,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.beastmen,
-		horde = HordeSettings.beastmen
+		horde = HordeSettings.beastmen,
+		factions = {
+			"beastmen"
+		}
 	},
 	beastmen_light = {
 		debug_color = "purple",
@@ -4835,7 +4872,10 @@ ConflictDirectors = {
 		specials = SpecialsSettings.beastmen,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.beastmen,
-		horde = HordeSettings.beastmen
+		horde = HordeSettings.beastmen,
+		factions = {
+			"beastmen"
+		}
 	},
 	skaven_beastmen = {
 		debug_color = "orange",
@@ -4847,7 +4887,11 @@ ConflictDirectors = {
 		specials = SpecialsSettings.skaven_beastmen,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.skaven_beastmen,
-		horde = HordeSettings.beastmen
+		horde = HordeSettings.beastmen,
+		factions = {
+			"skaven",
+			"beastmen"
+		}
 	},
 	chaos_beastmen = {
 		debug_color = "orange",
@@ -4859,7 +4903,11 @@ ConflictDirectors = {
 		specials = SpecialsSettings.chaos_beastmen,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.chaos_beastmen,
-		horde = HordeSettings.beastmen
+		horde = HordeSettings.beastmen,
+		factions = {
+			"chaos",
+			"beastmen"
+		}
 	},
 	level_editor = {
 		debug_color = "maroon",
