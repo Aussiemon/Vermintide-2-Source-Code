@@ -34,7 +34,7 @@ MatchmakingStateHostFindWeaveGroup.on_enter = function (self, state_context)
 		local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
 		local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-		Managers.telemetry.events:matchmaking_hosting(player, time_taken)
+		Managers.telemetry.events:matchmaking_hosting(player, time_taken, self.search_config)
 
 		self.state_context.started_hosting_t = Managers.time:time("main")
 	end

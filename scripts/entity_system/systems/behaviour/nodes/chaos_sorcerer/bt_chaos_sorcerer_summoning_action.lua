@@ -33,7 +33,9 @@ BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 
 		local attack_animation = action.attack_anim
 
-		Managers.state.network:anim_event(unit, attack_animation)
+		if attack_animation then
+			Managers.state.network:anim_event(unit, attack_animation)
+		end
 
 		local init_func_name = action.init_func_name
 
@@ -98,6 +100,8 @@ BTChaosSorcererSummoningAction.leave = function (self, unit, blackboard, t, reas
 	blackboard.summon_target_unit = nil
 	blackboard.ready_to_summon = false
 	blackboard.summoning_finished = nil
+
+	QuickDrawerStay:reset()
 end
 
 BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
@@ -742,6 +746,191 @@ BTChaosSorcererSummoningAction.clean_up_plague_wave = function (self, unit, blac
 	local target_unit = blackboard.target_unit
 
 	Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, target_unit, "plague_wave")
+end
+
+local debug = false
+
+BTChaosSorcererSummoningAction.init_boss_rings = function (self, unit, blackboard, t)
+	blackboard.summoning_finished = true
+end
+
+BTChaosSorcererSummoningAction.spawn_boss_rings = function (self, unit, blackboard, t)
+	local action = blackboard.action
+	local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+	local wwise_world = Managers.world:wwise_world(blackboard.world)
+	blackboard.audio_source_id = WwiseWorld.make_manual_source(wwise_world, unit, dialogue_extension.voice_node)
+	local sound_event = action.start_ability_sound_event
+
+	if sound_event then
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:_play_event_with_source(wwise_world, sound_event, blackboard.audio_source_id)
+
+		blackboard.summoning_start_event_playing = true
+	end
+
+	return true
+end
+
+BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackboard, t, dt)
+	local world = blackboard.world
+	local action = blackboard.action
+	local ring_sequence = action.ring_sequence
+	local all_done = true
+	local colors = {
+		Color(255, 0, 0),
+		Color(255, 0, 0)
+	}
+
+	for i, ring in ipairs(ring_sequence) do
+		local done = ring.done
+
+		if not done then
+			ring.delay_time = ring.delay_time or ring.delay + t or t
+
+			if ring.delay_time <= t and not ring.damage_effect_time then
+				if debug and ring.delay > 0 then
+					QuickDrawerStay:reset()
+				end
+
+				local premonition_type = ring.premination
+				local ring_info = action.ring_info
+				local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
+				local ring_position = ring.position
+				local max_radius = ring_info[ring_position].max_radius
+				local min_radius = ring_info[ring_position].min_radius
+				local premonition_time = (premonition_type == "short" and 1) or (premonition_type == "medium" and 2) or (premonition_type == "long" and 3) or 0.75
+				local premonition_effect = (premonition_type == "short" and ring_info[ring_position].premonition_effect_name_short) or (premonition_type == "medium" and ring_info[ring_position].premonition_effect_name_medium) or (premonition_type == "long" and ring_info[ring_position].premonition_effect_name_long)
+
+				if premonition_effect then
+					Managers.state.network:rpc_play_particle_effect(nil, NetworkLookup.effects[premonition_effect], NetworkConstants.invalid_game_object_id, 0, origin_pos, Quaternion.identity(), false)
+				end
+
+				local vector_max = Vector3(max_radius, 0, 0)
+				local vector_min = Vector3(min_radius, 0, 0)
+
+				if debug then
+					for j = 1, 360, 1 do
+						vector_max = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, 1), vector_max)
+						vector_min = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, 1), vector_min)
+
+						QuickDrawerStay:line(origin_pos + vector_max + Vector3.up() * 0.6, origin_pos + vector_min + Vector3.up() * 0.1, colors[i % 2 + 1])
+					end
+				end
+
+				fassert(premonition_type, "No or invalid premonition type")
+
+				ring.damage_effect_time = t + premonition_time
+			elseif ring.damage_effect_time and ring.damage_effect_time <= t and not ring.premonition_time then
+				local ring_info = action.ring_info
+				local ring_position = ring.position
+				local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
+				local effect_name = ring_info[ring_position].damage_effect_name
+
+				if effect_name then
+					Managers.state.network:rpc_play_particle_effect(nil, NetworkLookup.effects[effect_name], NetworkConstants.invalid_game_object_id, 0, origin_pos, Quaternion.identity(), false)
+				end
+
+				ring.premonition_time = t
+			elseif ring.premonition_time and ring.premonition_time <= t then
+				local ring_position = ring.position
+				local ring_info = action.ring_info
+				local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
+				local inner_radius = ring_info[ring_position].min_radius
+				local outer_radius = ring_info[ring_position].max_radius
+				local audio_system = Managers.state.entity:system("audio_system")
+
+				audio_system:play_audio_position_event(action.damage_sound_event, origin_pos)
+
+				if blackboard.summoning_start_event_playing then
+					blackboard.summoning_start_event_playing = nil
+					local wwise_world = Managers.world:wwise_world(blackboard.world)
+
+					audio_system:_play_event_with_source(wwise_world, action.end_ability_sound_event, blackboard.audio_source_id)
+					WwiseWorld.destroy_manual_source(wwise_world, blackboard.audio_source_id)
+				end
+
+				local nearby_ais = {}
+				local side = Managers.state.side:get_side_from_name("heroes")
+				local player_units = side.PLAYER_AND_BOT_UNITS
+				local catapult_strength = ring.catapult_strength
+
+				AiUtils.broadphase_query(origin_pos, outer_radius, nearby_ais)
+
+				local inner_squared = inner_radius * inner_radius
+				local outer_squared = outer_radius * outer_radius
+
+				for _, hit_unit in ipairs(nearby_ais) do
+					local position = POSITION_LOOKUP[hit_unit]
+					local distance_squared = Vector3.distance_squared(position, origin_pos)
+
+					if inner_squared < distance_squared and hit_unit ~= unit then
+						local damage_profile_name = action.damage_profile_name
+						local damage_profile = DamageProfileTemplates[damage_profile_name]
+						local difficulty_rank = Managers.state.difficulty:get_difficulty()
+						local actual_power_level = action.power_level[difficulty_rank]
+
+						DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, hit_unit, unit, "torso", POSITION_LOOKUP[hit_unit], Vector3.up(), "undefined")
+					end
+				end
+
+				for _, player_unit in ipairs(player_units) do
+					local position = POSITION_LOOKUP[player_unit]
+					local distance_squared = Vector3.distance_squared(position, origin_pos)
+					local catapult_direction = ring.catapult_direction
+					local direction = (catapult_direction == "in" and origin_pos - position) or position - origin_pos
+					direction = Vector3.normalize(direction)
+
+					if distance_squared < outer_squared and inner_squared < distance_squared then
+						local damage_profile_name = action.damage_profile_name
+						local damage_profile = DamageProfileTemplates[damage_profile_name]
+						local difficulty_rank = Managers.state.difficulty:get_difficulty()
+						local player = Managers.player:owner(player_unit)
+						local is_bot = player and not player:is_player_controlled()
+						local actual_power_level = (is_bot and action.power_level[difficulty_rank] / 10) or action.power_level[difficulty_rank]
+
+						DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, player_unit, unit, "torso", POSITION_LOOKUP[player_unit], Vector3.up(), "undefined")
+
+						if catapult_strength then
+							StatusUtils.set_catapulted_network(player_unit, true, (direction + Vector3.up()) * catapult_strength)
+						end
+					end
+				end
+
+				ring.done = true
+			else
+				all_done = false
+
+				break
+			end
+
+			if not ring.done then
+				all_done = false
+			end
+		end
+	end
+
+	if all_done then
+		return true
+	end
+end
+
+BTChaosSorcererSummoningAction.clean_up_boss_rings = function (self, unit, blackboard, t)
+	for i, ring in ipairs(blackboard.action.ring_sequence) do
+		ring.delay_time = nil
+		ring.premonition_time = nil
+		ring.damage_effect_time = nil
+		ring.done = nil
+	end
+
+	if blackboard.summoning_start_event_playing then
+		blackboard.summoning_start_event_playing = nil
+		local audio_system = Managers.state.entity:system("audio_system")
+		local wwise_world = Managers.world:wwise_world(blackboard.world)
+
+		audio_system:_play_event_with_source(wwise_world, blackboard.action.end_ability_sound_event, blackboard.audio_source_id)
+		WwiseWorld.destroy_manual_source(wwise_world, blackboard.audio_source_id)
+	end
 end
 
 return

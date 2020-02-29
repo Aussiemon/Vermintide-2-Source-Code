@@ -575,6 +575,10 @@ BTChampionAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	local self_rot = Unit.local_rotation(unit, 0)
 	local pw = World.get_data(blackboard.world, "physics_world")
 
+	if action.effect_name then
+		Managers.state.network:rpc_play_particle_effect(nil, NetworkLookup.effects[action.effect_name], NetworkConstants.invalid_game_object_id, 0, POSITION_LOOKUP[unit], Quaternion.identity(), false)
+	end
+
 	if action.collision_type == "oobb" or not action.collision_type then
 		local oobb_pos, self_rot, size = self:_calculate_oobb_collision(action, self_pos, self_rot)
 		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", self_rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")

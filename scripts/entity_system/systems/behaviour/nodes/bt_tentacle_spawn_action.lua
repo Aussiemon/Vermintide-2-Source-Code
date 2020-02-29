@@ -9,7 +9,18 @@ end
 BTTentacleSpawnAction.name = "BTTentacleSpawnAction"
 
 BTTentacleSpawnAction.enter = function (self, unit, blackboard, t)
-	return
+	local action = self._tree_node.action_data
+	blackboard.action = action
+
+	if action and action.duration then
+		blackboard.spawn_finished_t = t + action.duration
+	end
+
+	local network_manager = Managers.state.network
+
+	if action and action.animation then
+		network_manager:anim_event(unit, action.animation)
+	end
 end
 
 BTTentacleSpawnAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -17,7 +28,19 @@ BTTentacleSpawnAction.leave = function (self, unit, blackboard, t, reason, destr
 end
 
 BTTentacleSpawnAction.run = function (self, unit, blackboard, t, dt)
-	return "done"
+	local action = blackboard.action
+
+	if action and action.duration then
+		if blackboard.spawn_finished_t < t then
+			blackboard.spawn_finished_t = nil
+
+			return "done"
+		end
+
+		return "running"
+	else
+		return "done"
+	end
 end
 
 return

@@ -11614,8 +11614,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
+						18,
+						20
 					}
 				}
 			},
@@ -11630,8 +11630,8 @@ HordeCompositions = {
 					},
 					"chaos_marauder",
 					{
-						6,
-						9
+						10,
+						12
 					}
 				}
 			},
@@ -11641,11 +11641,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						7,
-						8
+						10,
+						12
 					},
 					"chaos_warrior",
-					3
+					4
 				}
 			},
 			{
@@ -11654,11 +11654,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						8,
-						9
+						12,
+						14
 					},
 					"chaos_raider",
-					4
+					6
 				}
 			},
 			{
@@ -11667,11 +11667,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						5,
-						6
+						8,
+						10
 					},
 					"chaos_berzerker",
-					5
+					7
 				}
 			},
 			start_time = 0
@@ -11683,8 +11683,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
+						18,
+						20
 					}
 				}
 			},
@@ -11699,8 +11699,8 @@ HordeCompositions = {
 					},
 					"chaos_marauder",
 					{
-						6,
-						9
+						10,
+						12
 					}
 				}
 			},
@@ -11710,11 +11710,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						7,
-						8
+						10,
+						12
 					},
 					"chaos_warrior",
-					3
+					4
 				}
 			},
 			{
@@ -11723,11 +11723,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						8,
-						9
+						12,
+						14
 					},
 					"chaos_raider",
-					4
+					6
 				}
 			},
 			{
@@ -11736,17 +11736,17 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						5,
-						6
+						8,
+						10
 					},
 					"chaos_berzerker",
-					5
+					7
 				}
 			},
 			start_time = 0
 		}
 	},
-	sorcerer_drachenfels_boss_event_defensive = {
+	chaos_event_defensive = {
 		{
 			{
 				name = "wave_a",
@@ -11754,8 +11754,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						8,
-						10
+						16,
+						18
 					}
 				}
 			},
@@ -11765,10 +11765,138 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						5,
-						6
+						10,
+						12
 					},
 					"chaos_marauder",
+					{
+						5,
+						7
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						7,
+						9
+					},
+					"chaos_marauder",
+					{
+						7,
+						9
+					}
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 2,
+				breeds = {
+					"chaos_fanatic",
+					{
+						12,
+						14
+					},
+					"chaos_raider",
+					2
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						18,
+						20
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						12,
+						14
+					},
+					"chaos_marauder",
+					{
+						6,
+						8
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						10,
+						12
+					},
+					"chaos_marauder",
+					{
+						8,
+						10
+					}
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 2,
+				breeds = {
+					"chaos_fanatic",
+					{
+						14,
+						16
+					},
+					"chaos_raider",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						22,
+						24
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						14,
+						16
+					},
+					"chaos_marauder",
+					{
+						4,
+						5
+					},
+					"chaos_marauder_with_shield",
 					{
 						3,
 						4
@@ -11776,146 +11904,66 @@ HordeCompositions = {
 				}
 			},
 			{
-				name = "wave_d",
+				name = "wave_c",
 				weight = 4,
 				breeds = {
 					"chaos_fanatic",
+					{
+						6,
+						8
+					},
+					"chaos_marauder",
+					{
+						6,
+						8
+					},
+					"chaos_marauder_with_shield",
 					{
 						5,
 						6
-					},
-					"chaos_raider",
-					{
-						1,
-						2
-					}
-				}
-			},
-			end_time = 9999,
-			start_time = 0
-		},
-		{
-			{
-				name = "wave_a",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						10,
-						12
 					}
 				}
 			},
 			{
-				name = "wave_b",
-				weight = 4,
+				name = "wave_d",
+				weight = 2,
 				breeds = {
 					"chaos_fanatic",
 					{
-						7,
-						8
+						16,
+						18
 					},
 					"chaos_marauder",
 					{
 						4,
 						5
-					}
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						6,
-						7
 					},
 					"chaos_raider",
-					1
+					{
+						3,
+						4
+					}
 				}
 			},
 			{
 				name = "wave_e",
-				weight = 4,
+				weight = 2,
 				breeds = {
 					"chaos_fanatic",
 					{
-						6,
-						8
+						16,
+						18
 					},
-					"chaos_berzerker",
-					1
-				}
-			},
-			end_time = 9999,
-			start_time = 0
-		},
-		{
-			{
-				name = "wave_a",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						12,
-						14
-					}
-				}
-			},
-			{
-				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						6,
-						7
-					},
-					"chaos_marauder",
-					{
-						5,
-						6
-					}
-				}
-			},
-			{
-				name = "wave_c",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						5,
-						6
-					},
-					"chaos_warrior",
-					1
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						7,
-						8
-					},
-					"chaos_raider",
-					2
-				}
-			},
-			{
-				name = "wave_e",
-				weight = 4,
-				breeds = {
 					"chaos_marauder",
 					{
 						4,
 						5
 					},
 					"chaos_berzerker",
-					2
+					{
+						3,
+						4
+					}
 				}
 			},
 			end_time = 9999,
@@ -11928,94 +11976,29 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
+						26,
+						28
 					}
 				}
 			},
 			{
 				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						10,
-						12
-					},
-					"chaos_marauder",
-					{
-						6,
-						9
-					}
-				}
-			},
-			{
-				name = "wave_c",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					2
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						8,
-						9
-					},
-					"chaos_raider",
-					3
-				}
-			},
-			{
-				name = "wave_e",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						5,
-						6
-					},
-					"chaos_berzerker",
-					4
-				}
-			},
-			end_time = 9999,
-			start_time = 0
-		},
-		{
-			{
-				name = "wave_a",
 				weight = 4,
 				breeds = {
 					"chaos_fanatic",
 					{
 						18,
 						20
-					}
-				}
-			},
-			{
-				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						10,
-						12
 					},
 					"chaos_marauder",
 					{
-						10,
-						12
+						4,
+						5
+					},
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4
 					}
 				}
 			},
@@ -12023,39 +12006,99 @@ HordeCompositions = {
 				name = "wave_c",
 				weight = 4,
 				breeds = {
+					"chaos_fanatic",
+					{
+						6,
+						8
+					},
 					"chaos_marauder",
 					{
-						10,
-						12
+						6,
+						8
 					},
-					"chaos_warrior",
-					4
+					"chaos_marauder_with_shield",
+					{
+						5,
+						6
+					}
 				}
 			},
 			{
 				name = "wave_d",
-				weight = 4,
+				weight = 2,
 				breeds = {
 					"chaos_fanatic",
 					{
-						12,
-						14
+						18,
+						20
+					},
+					"chaos_marauder",
+					{
+						4,
+						5
+					},
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4
 					},
 					"chaos_raider",
-					6
+					{
+						4,
+						6
+					}
 				}
 			},
 			{
 				name = "wave_e",
-				weight = 4,
+				weight = 2,
 				breeds = {
+					"chaos_fanatic",
+					{
+						18,
+						20
+					},
 					"chaos_marauder",
 					{
-						8,
-						10
+						4,
+						5
+					},
+					"chaos_marauder_with_shield",
+					{
+						3,
+						4
 					},
 					"chaos_berzerker",
-					7
+					{
+						4,
+						6
+					}
+				}
+			},
+			{
+				name = "wave_f",
+				weight = 1,
+				breeds = {
+					"chaos_fanatic",
+					{
+						14,
+						16
+					},
+					"chaos_marauder",
+					{
+						6,
+						8
+					},
+					"chaos_marauder_with_shield",
+					{
+						5,
+						6
+					},
+					"chaos_warrior",
+					{
+						3,
+						4
+					}
 				}
 			},
 			end_time = 9999,
@@ -12068,8 +12111,18 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
+						22,
+						24
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						10,
+						12
 					}
 				}
 			},
@@ -12079,53 +12132,97 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						10,
-						12
+						14,
+						16
 					},
 					"chaos_marauder",
 					{
-						6,
-						9
+						14,
+						16
+					},
+					"chaos_marauder_with_shield",
+					{
+						14,
+						16
 					}
 				}
 			},
 			{
 				name = "wave_c",
-				weight = 4,
+				weight = 2,
 				breeds = {
+					"chaos_fanatic",
+					{
+						22,
+						24
+					},
 					"chaos_marauder",
 					{
-						7,
-						8
+						10,
+						12
 					},
-					"chaos_warrior",
-					3
+					"chaos_marauder_with_shield",
+					{
+						7,
+						9
+					},
+					"chaos_raider",
+					{
+						10,
+						12
+					}
 				}
 			},
 			{
 				name = "wave_d",
-				weight = 4,
+				weight = 2,
 				breeds = {
 					"chaos_fanatic",
 					{
-						8,
+						22,
+						24
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						7,
 						9
 					},
-					"chaos_raider",
-					4
+					"chaos_berzerker",
+					{
+						10,
+						12
+					}
 				}
 			},
 			{
 				name = "wave_e",
-				weight = 4,
+				weight = 1,
 				breeds = {
+					"chaos_fanatic",
+					{
+						18,
+						20
+					},
 					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
 					{
 						5,
 						6
 					},
-					"chaos_berzerker",
-					5
+					"chaos_warrior",
+					{
+						6,
+						8
+					}
 				}
 			},
 			end_time = 9999,
@@ -12138,8 +12235,18 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
+						22,
+						24
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						10,
+						12
 					}
 				}
 			},
@@ -12149,154 +12256,283 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						10,
-						12
+						14,
+						16
 					},
 					"chaos_marauder",
 					{
-						6,
-						9
+						14,
+						16
+					},
+					"chaos_marauder_with_shield",
+					{
+						14,
+						16
 					}
 				}
 			},
 			{
 				name = "wave_c",
-				weight = 4,
+				weight = 2,
 				breeds = {
+					"chaos_fanatic",
+					{
+						22,
+						24
+					},
 					"chaos_marauder",
 					{
-						7,
-						8
+						10,
+						12
 					},
-					"chaos_warrior",
-					3
+					"chaos_marauder_with_shield",
+					{
+						7,
+						9
+					},
+					"chaos_raider",
+					{
+						10,
+						12
+					}
 				}
 			},
 			{
 				name = "wave_d",
-				weight = 4,
+				weight = 2,
 				breeds = {
 					"chaos_fanatic",
 					{
-						8,
+						22,
+						24
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						7,
 						9
 					},
-					"chaos_raider",
-					4
+					"chaos_berzerker",
+					{
+						10,
+						12
+					}
 				}
 			},
 			{
 				name = "wave_e",
-				weight = 4,
+				weight = 1,
 				breeds = {
+					"chaos_fanatic",
+					{
+						18,
+						20
+					},
 					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
 					{
 						5,
 						6
 					},
+					"chaos_warrior",
+					{
+						6,
+						8
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						22,
+						24
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						10,
+						12
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						14,
+						16
+					},
+					"chaos_marauder",
+					{
+						14,
+						16
+					},
+					"chaos_marauder_with_shield",
+					{
+						14,
+						16
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 2,
+				breeds = {
+					"chaos_fanatic",
+					{
+						22,
+						24
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						7,
+						9
+					},
+					"chaos_raider",
+					{
+						10,
+						12
+					}
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 2,
+				breeds = {
+					"chaos_fanatic",
+					{
+						22,
+						24
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						7,
+						9
+					},
 					"chaos_berzerker",
-					5
+					{
+						10,
+						12
+					}
+				}
+			},
+			{
+				name = "wave_e",
+				weight = 1,
+				breeds = {
+					"chaos_fanatic",
+					{
+						18,
+						20
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_marauder_with_shield",
+					{
+						5,
+						6
+					},
+					"chaos_warrior",
+					{
+						6,
+						8
+					}
 				}
 			},
 			end_time = 9999,
 			start_time = 0
 		}
 	},
-	sorcerer_drachenfels_intense_boss_event_defensive = {
+	chaos_event_defensive_intense = {
 		{
 			{
 				name = "wave_a",
 				weight = 4,
 				breeds = {
-					"chaos_marauder",
+					"chaos_fanatic",
 					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					3
+						16,
+						18
+					}
 				}
 			},
 			{
 				name = "wave_b",
 				weight = 4,
 				breeds = {
+					"chaos_fanatic",
+					{
+						10,
+						12
+					},
+					"chaos_marauder",
+					{
+						5,
+						7
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						7,
+						9
+					},
 					"chaos_marauder",
 					{
 						7,
-						8
-					},
-					"chaos_warrior",
-					3
+						9
+					}
 				}
 			},
 			{
 				name = "wave_d",
-				weight = 4,
+				weight = 2,
 				breeds = {
-					"chaos_marauder",
+					"chaos_fanatic",
 					{
-						7,
-						8
+						12,
+						14
 					},
-					"chaos_warrior",
-					3
-				}
-			},
-			end_time = 9999,
-			start_time = 0
-		},
-		{
-			{
-				name = "wave_a",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					3
-				}
-			},
-			{
-				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					3
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					3
-				}
-			},
-			{
-				name = "wave_e",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					3
+					"chaos_raider",
+					2
 				}
 			},
 			end_time = 9999,
@@ -12309,11 +12545,672 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						12,
-						14
+						16,
+						18
 					}
 				}
 			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						10,
+						12
+					},
+					"chaos_marauder",
+					{
+						5,
+						7
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						7,
+						9
+					},
+					"chaos_marauder",
+					{
+						7,
+						9
+					}
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 2,
+				breeds = {
+					"chaos_fanatic",
+					{
+						12,
+						14
+					},
+					"chaos_raider",
+					2
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						24,
+						28
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						12,
+						14
+					},
+					"chaos_marauder",
+					{
+						10,
+						12
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_warrior",
+					2
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						14,
+						16
+					},
+					"chaos_raider",
+					4
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						28,
+						32
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						10,
+						12
+					},
+					"chaos_marauder",
+					{
+						12,
+						18
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						14,
+						16
+					},
+					"chaos_warrior",
+					4
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						16,
+						18
+					},
+					"chaos_raider",
+					12
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						32,
+						40
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						20,
+						24
+					},
+					"chaos_marauder",
+					{
+						20,
+						24
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						20,
+						24
+					},
+					"chaos_warrior",
+					8
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						24,
+						28
+					},
+					"chaos_raider",
+					12
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						32,
+						40
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						20,
+						24
+					},
+					"chaos_marauder",
+					{
+						20,
+						24
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						20,
+						24
+					},
+					"chaos_warrior",
+					8
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						24,
+						28
+					},
+					"chaos_raider",
+					12
+				}
+			},
+			{
+				name = "wave_e",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						16,
+						20
+					},
+					"chaos_berzerker",
+					14
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						32,
+						40
+					}
+				}
+			},
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						20,
+						24
+					},
+					"chaos_marauder",
+					{
+						20,
+						24
+					}
+				}
+			},
+			{
+				name = "wave_c",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						20,
+						24
+					},
+					"chaos_warrior",
+					8
+				}
+			},
+			{
+				name = "wave_d",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						24,
+						28
+					},
+					"chaos_raider",
+					12
+				}
+			},
+			{
+				name = "wave_e",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						16,
+						20
+					},
+					"chaos_berzerker",
+					14
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		}
+	},
+	chaos_event_offensive_small = {
+		{
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						2,
+						3
+					},
+					"chaos_fanatic",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						3,
+						4
+					},
+					"chaos_fanatic",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						4,
+						5
+					},
+					"chaos_fanatic",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						6,
+						7
+					},
+					"chaos_fanatic",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						9
+					},
+					"chaos_fanatic",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						9
+					},
+					"chaos_fanatic",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						9
+					},
+					"chaos_fanatic",
+					{
+						2,
+						3
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		}
+	},
+	chaos_event_offensive = {
+		{
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						2,
+						3
+					},
+					"chaos_fanatic",
+					{
+						4,
+						5
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						4,
+						5
+					},
+					"chaos_fanatic",
+					{
+						6,
+						7
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						7,
+						8
+					},
+					"chaos_fanatic",
+					{
+						9,
+						10
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						9,
+						10
+					},
+					"chaos_fanatic",
+					{
+						11,
+						12
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						9,
+						10
+					},
+					"chaos_fanatic",
+					{
+						11,
+						12
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						9,
+						10
+					},
+					"chaos_fanatic",
+					{
+						11,
+						12
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
+			{
+				name = "wave_a",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						9,
+						10
+					},
+					"chaos_fanatic",
+					{
+						11,
+						12
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		}
+	},
+	chaos_event_offensive_intense = {
+		{
+			{
+				name = "wave_b",
+				weight = 4,
+				breeds = {
+					"chaos_fanatic",
+					{
+						4,
+						5
+					}
+				}
+			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
 			{
 				name = "wave_b",
 				weight = 4,
@@ -12322,51 +13219,7 @@ HordeCompositions = {
 					{
 						6,
 						7
-					},
-					"chaos_marauder",
-					{
-						5,
-						6
 					}
-				}
-			},
-			{
-				name = "wave_c",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						5,
-						6
-					},
-					"chaos_warrior",
-					1
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						7,
-						8
-					},
-					"chaos_raider",
-					2
-				}
-			},
-			{
-				name = "wave_e",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						4,
-						5
-					},
-					"chaos_berzerker",
-					2
 				}
 			},
 			end_time = 9999,
@@ -12379,134 +13232,9 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
-					}
-				}
-			},
-			{
-				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						10,
-						12
-					},
-					"chaos_marauder",
-					{
-						6,
-						9
-					}
-				}
-			},
-			{
-				name = "wave_c",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					2
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						8,
-						9
-					},
-					"chaos_raider",
-					3
-				}
-			},
-			{
-				name = "wave_e",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						5,
-						6
-					},
-					"chaos_berzerker",
-					4
-				}
-			},
-			end_time = 9999,
-			start_time = 0
-		},
-		{
-			{
-				name = "wave_a",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						18,
-						20
-					}
-				}
-			},
-			{
-				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						10,
-						12
-					},
-					"chaos_marauder",
-					{
-						10,
-						12
-					}
-				}
-			},
-			{
-				name = "wave_c",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						10,
-						12
-					},
-					"chaos_warrior",
-					4
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						12,
-						14
-					},
-					"chaos_raider",
-					6
-				}
-			},
-			{
-				name = "wave_e",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						8,
+						9,
 						10
-					},
-					"chaos_berzerker",
-					7
+					}
 				}
 			},
 			end_time = 9999,
@@ -12519,64 +13247,9 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
-					}
-				}
-			},
-			{
-				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						10,
+						11,
 						12
-					},
-					"chaos_marauder",
-					{
-						6,
-						9
 					}
-				}
-			},
-			{
-				name = "wave_c",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					3
-				}
-			},
-			{
-				name = "wave_d",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						8,
-						9
-					},
-					"chaos_raider",
-					4
-				}
-			},
-			{
-				name = "wave_e",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						5,
-						6
-					},
-					"chaos_berzerker",
-					5
 				}
 			},
 			end_time = 9999,
@@ -12589,64 +13262,39 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						14,
-						16
-					}
-				}
-			},
-			{
-				name = "wave_b",
-				weight = 4,
-				breeds = {
-					"chaos_fanatic",
-					{
-						10,
+						11,
 						12
-					},
-					"chaos_marauder",
-					{
-						6,
-						9
 					}
 				}
 			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
 			{
-				name = "wave_c",
-				weight = 4,
-				breeds = {
-					"chaos_marauder",
-					{
-						7,
-						8
-					},
-					"chaos_warrior",
-					3
-				}
-			},
-			{
-				name = "wave_d",
+				name = "wave_a",
 				weight = 4,
 				breeds = {
 					"chaos_fanatic",
 					{
-						8,
-						9
-					},
-					"chaos_raider",
-					4
+						11,
+						12
+					}
 				}
 			},
+			end_time = 9999,
+			start_time = 0
+		},
+		{
 			{
-				name = "wave_e",
+				name = "wave_a",
 				weight = 4,
 				breeds = {
-					"chaos_marauder",
+					"chaos_fanatic",
 					{
-						5,
-						6
-					},
-					"chaos_berzerker",
-					5
+						11,
+						12
+					}
 				}
 			},
 			end_time = 9999,

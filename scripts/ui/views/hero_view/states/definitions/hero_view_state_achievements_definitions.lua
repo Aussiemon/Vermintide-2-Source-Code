@@ -424,7 +424,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			-30,
-			3
+			20
 		}
 	},
 	exit_button = {

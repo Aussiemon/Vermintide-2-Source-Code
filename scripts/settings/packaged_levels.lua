@@ -6,6 +6,7 @@ PACKAGED_LEVEL_PACKAGE_NAMES = {
 	["resource_packages/levels/dlcs/holly/forest_ambush"] = true,
 	["resource_packages/levels/dlcs/holly/magnus"] = true,
 	["resource_packages/levels/dlcs/holly/plaza"] = true,
+	["resource_packages/levels/dlcs/penny/dlc_bastion"] = true,
 	["resource_packages/levels/dlcs/penny/dlc_portals"] = true,
 	["resource_packages/levels/dlcs/scorpion/alleys"] = true,
 	["resource_packages/levels/dlcs/scorpion/alleys_beasts"] = true,

@@ -2772,6 +2772,19 @@ function flow_callback_breakable_object_destroyed(params)
 	end
 end
 
+function flow_callback_send_local_system_message(params)
+	local message = params.message
+	local pop_chat = true
+
+	Managers.chat:add_local_system_message(1, message, pop_chat)
+end
+
+function flow_callback_localize_string(params)
+	flow_return_table.value = Localize(params.string)
+
+	return flow_return_table
+end
+
 function flow_callback_increment_player_stat(params)
 	local player = Managers.player:local_player()
 

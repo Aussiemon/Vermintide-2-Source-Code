@@ -141,7 +141,12 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_empire_soldier_ground_zero",
 	"dialogues/generated/lookup_hero_conversations_ground_zero",
 	"dialogues/generated/lookup_hub_conversations",
-	"dialogues/generated/lookup_ping_dialogues_honduras"
+	"dialogues/generated/lookup_ping_dialogues_honduras",
+	"dialogues/generated/lookup_wood_elf_generic_vo",
+	"dialogues/generated/lookup_empire_soldier_generic_vo",
+	"dialogues/generated/lookup_bright_wizard_generic_vo",
+	"dialogues/generated/lookup_dwarf_ranger_generic_vo",
+	"dialogues/generated/lookup_witch_hunter_generic_vo"
 }
 NetworkLookup = {}
 
@@ -369,8 +374,6 @@ NetworkLookup.husks = {
 	"units/beings/enemies/chaos_tentacle_portal/chr_chaos_tentacle_portal",
 	"units/beings/enemies/chaos_sorcerer/chr_chaos_sorcerer",
 	"units/beings/enemies/chaos_sorcerer_boss/chr_chaos_sorcerer_boss",
-	"units/beings/enemies/chaos_sorcerer_boss_drachenfels/chr_chaos_sorcerer_boss_drachenfels",
-	"units/beings/enemies/chaos_dummy_sorcerer_boss_drachenfels/chr_chaos_dummy_sorcerer_boss_drachenfels",
 	"units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	"units/beings/enemies/chaos_sorcerer_tentacle/chr_chaos_sorcerer_tentacle",
 	"units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
@@ -399,6 +402,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/fireball_projectile/charged_fireball_projectile_3ps",
 	"units/weapons/projectile/insect_swarm_missile/insect_swarm_missile_01",
 	"units/weapons/projectile/strike_missile/strike_missile",
+	"units/weapons/projectile/strike_missile_drachenfels/strike_missile_drachenfels",
 	"units/weapons/projectile/warp_lightning_bolt/warp_lightning_bolt",
 	"units/weapons/enemy/wpn_overpowering_blob/wpn_overpowering_blob",
 	"units/weapons/player/wpn_dwarf_smoke_grenade_01/wpn_dwarf_smoke_grenade_01_3p",
@@ -489,7 +493,6 @@ NetworkLookup.husks = {
 	"units/hub_elements/objective_unit",
 	"units/props/lanterns/lantern_02/prop_lantern_02_blue_static",
 	"units/fx/vfx_animation_death_spirit_02",
-	"units/fx/vfx_animation_light_spirit_01",
 	"units/fx/essence_unit",
 	"units/decals/decal_heavens_01",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
@@ -918,6 +921,8 @@ NetworkLookup.damage_types = {
 	"knockdown_bleed",
 	"blade_storm",
 	"death_explosion",
+	"nurgle_ball",
+	"nurgle_geyser",
 	"light_slashing_linesman",
 	"light_slashing_linesman_hs",
 	"slashing_linesman",
@@ -1200,8 +1205,24 @@ NetworkLookup.effects = {
 	"fx/warp_lightning_bolt_impact",
 	"fx/chr_iron_breaker_ability_taunt",
 	"fx/chr_grey_seer_lightning_hit_02",
-	"fx/chr_chaos_sorcerer_boss_projectile_flies_impact"
+	"fx/chr_chaos_sorcerer_boss_projectile_flies_impact",
+	"fx/drachenfels_flies_impact"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local effects = dlc.effects
+
+	if effects then
+		for i = 1, #effects, 1 do
+			local name = effects[i]
+
+			if not table.contains(NetworkLookup.effects, name) then
+				NetworkLookup.effects[#NetworkLookup.effects + 1] = name
+			end
+		end
+	end
+end
+
 NetworkLookup.light_weight_projectile_effects = create_lookup({}, LightWeightProjectileEffects)
 NetworkLookup.flow_events = {
 	"arrow_left",
@@ -1590,7 +1611,6 @@ NetworkLookup.ai_inventory = {
 	"chaos_sorcerer_vortex",
 	"chaos_mutator_sorcerer",
 	"chaos_exalted_sorcerer",
-	"chaos_exalted_sorcerer_drachenfels",
 	"mace",
 	"axe",
 	"warrior_axe",
@@ -1621,6 +1641,21 @@ NetworkLookup.ai_inventory = {
 	"opt_beastmen_ungor_archer_bow_and_spear",
 	"beastmen_minotaur_dual_axes"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local ai_inventory = dlc.ai_inventory
+
+	if ai_inventory then
+		for i = 1, #ai_inventory, 1 do
+			local name = ai_inventory[i]
+
+			if not table.contains(NetworkLookup.ai_inventory, name) then
+				NetworkLookup.ai_inventory[#NetworkLookup.ai_inventory + 1] = name
+			end
+		end
+	end
+end
+
 NetworkLookup.connection_fails = {
 	"no_peer_data_on_join",
 	"no_peer_data_on_enter_game",

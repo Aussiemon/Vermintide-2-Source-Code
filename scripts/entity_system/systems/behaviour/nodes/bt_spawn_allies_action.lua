@@ -44,7 +44,10 @@ BTSpawnAllies.enter = function (self, unit, blackboard, t)
 	end
 
 	if stay_still then
-		Managers.state.network:anim_event(unit, randomize(action.animation))
+		if action.animation then
+			Managers.state.network:anim_event(unit, randomize(action.animation))
+		end
+
 		blackboard.navigation_extension:set_enabled(false)
 		blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 	else
@@ -309,7 +312,10 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 
 	loc_ext:set_wanted_velocity(Vector3.zero())
 	loc_ext:use_lerp_rotation(true)
-	loc_ext:set_wanted_rotation(Quaternion.look(data.spawn_forward:unbox(), Vector3.up()))
+
+	if not action.dont_rotate then
+		loc_ext:set_wanted_rotation(Quaternion.look(data.spawn_forward:unbox(), Vector3.up()))
+	end
 
 	local difficulty = Managers.state.difficulty:get_difficulty()
 
@@ -334,7 +340,9 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 		local strictly_not_close_to_players = true
 		local silent = true
 		local composition_type = action.difficulty_spawn[difficulty] or action.spawn
-		local limit_spawners = nil
+		local limit_spawners = action.limit_spawners
+		local use_closest_spawners = action.use_closest_spawners
+		local source_unit = unit
 		local terror_event_id = action.terror_event_id
 		local conflict_director = Managers.state.conflict
 		local group_template = {
@@ -342,7 +350,7 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 			template = "horde",
 			id = Managers.state.entity:system("ai_group_system"):generate_group_id()
 		}
-		local horde = conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players)
+		local horde = conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, nil, use_closest_spawners, source_unit)
 		blackboard.spawn_allies_horde = horde
 	end
 end

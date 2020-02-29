@@ -247,7 +247,8 @@ StateIngame.on_enter = function (self)
 			profile_synchronizer = self.profile_synchronizer,
 			statistics_db = self.statistics_db,
 			slot_allocator = (self.network_server and self.network_server.slot_allocator) or self.network_client.slot_allocator,
-			quick_game = loading_context.quickplay_bonus
+			quick_game = loading_context.quickplay_bonus,
+			local_quick_game = loading_context.local_quickplay_bonus
 		}
 		Managers.matchmaking = MatchmakingManager:new(matchmaking_params)
 	end
@@ -501,10 +502,13 @@ StateIngame.on_enter = function (self)
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local mutators = Managers.state.game_mode:activated_mutators()
 	local game_mode = Managers.state.game_mode:settings().key
+	local quick_game = Managers.matchmaking:is_quick_game()
 
 	Managers.telemetry.events:game_started({
 		player_id = player_id,
 		peer_type = self:peer_type(),
+		country_code = self:country_code(),
+		quick_game = quick_game,
 		game_mode = game_mode,
 		level_key = level_key,
 		difficulty = difficulty,
@@ -564,6 +568,16 @@ StateIngame.peer_type = function (self)
 		return "server"
 	else
 		return "client"
+	end
+end
+
+StateIngame.country_code = function (self)
+	if DEDICATED_SERVER then
+		return SteamGameServer.server_country_code()
+	elseif PLATFORM == "win32" and rawget(_G, "Steam") then
+		return Steam.user_country_code()
+	elseif PLATFORM == "xb1" or PLATFORM == "ps4" then
+		return Managers.account:region()
 	end
 end
 
@@ -1623,6 +1637,7 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.matchmaking_loading_context = Managers.matchmaking:loading_context()
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.quickplay_bonus = Managers.matchmaking:is_quick_game()
+			self.parent.loading_context.local_quickplay_bonus = Managers.matchmaking:is_local_quick_game()
 			self.parent.loading_context.previous_session_error = Managers.twitch and Managers.twitch:get_twitch_popup_message()
 
 			return StateLoading
@@ -1631,6 +1646,7 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.matchmaking_loading_context = Managers.matchmaking:loading_context()
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.quickplay_bonus = Managers.matchmaking:is_quick_game()
+			self.parent.loading_context.local_quickplay_bonus = Managers.matchmaking:is_local_quick_game()
 
 			return StateLoading
 		elseif exit_type == "restart_game" then

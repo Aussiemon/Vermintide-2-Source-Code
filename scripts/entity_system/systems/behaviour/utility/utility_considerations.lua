@@ -2721,6 +2721,50 @@ UtilityConsiderations = {
 			blackboard_input = "has_line_of_sight"
 		}
 	},
+	chaos_exalted_overhead_cleave_attack = {
+		distance_to_target = {
+			max_value = 8,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				1,
+				0.47333333333333333,
+				1,
+				0.5533333333333333,
+				1,
+				0.6066666666666666,
+				0,
+				1,
+				0
+			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
+		}
+	},
+	chaos_sorcerer_combo_swing_attack = {
+		distance_to_target = {
+			max_value = 12,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				1,
+				0.47333333333333333,
+				1,
+				0.5533333333333333,
+				1,
+				0.6066666666666666,
+				0,
+				1,
+				0
+			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
+		}
+	},
 	chaos_exalted_cleave_attack = {
 		distance_to_target = {
 			max_value = 7,
@@ -3255,6 +3299,36 @@ UtilityConsiderations = {
 		surrounding_players = {
 			max_value = 4,
 			blackboard_input = "surrounding_players",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				1,
+				1
+			}
+		}
+	},
+	dummy_defensive_seeking_bomb = {
+		time_since_last = {
+			max_value = 12,
+			min_value = 8,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.5,
+				0.5,
+				1,
+				1
+			}
+		}
+	},
+	swarm_players = {
+		time_since_last = {
+			max_value = 15,
+			min_value = 10,
+			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
@@ -3903,9 +3977,10 @@ UtilityConsiderations = {
 			blackboard_input = "target_unit"
 		}
 	},
-	chaos_exalted_sorcerer_drachenfels_defensive_aoe = {
+	teleport_attack = {
 		time_since_last = {
-			max_value = 4,
+			max_value = 15,
+			min_value = 10,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
@@ -3915,63 +3990,33 @@ UtilityConsiderations = {
 				1,
 				1
 			}
-		},
-		recent_melee_attacker = {
-			is_condition = true,
-			invert = false,
-			blackboard_input = "recent_melee_attacker_unit"
 		}
 	},
-	defensive_magic_missile_drachenfels = {
-		time_since_last_missile_def = {
-			max_value = 10,
+	defensive_sorcerer_trickle = {
+		time_since_last = {
+			max_value = 12,
+			min_value = 10,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
-				0.1,
-				0.66,
-				0.2,
-				1,
-				1
-			}
-		},
-		distance_to_target = {
-			max_value = 20,
-			blackboard_input = "target_dist",
-			spline = {
 				0,
-				0.1,
-				0.6,
-				1,
+				0.36,
+				0.4,
 				1,
 				1
 			}
-		},
-		recent_attacker = {
-			is_condition = true,
-			invert = false,
-			blackboard_input = "recent_attacker_unit"
-		},
-		recent_melee_attacker = {
-			is_condition = true,
-			invert = true,
-			blackboard_input = "recent_melee_attacker_unit"
-		},
-		target_unit = {
-			is_condition = true,
-			invert = false,
-			blackboard_input = "target_unit"
 		}
 	},
 	defensive_seeking_bomb = {
 		time_since_last_bomb_def = {
 			max_value = 10,
+			min_value = 6,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
-				0.1,
-				0.66,
-				0.2,
+				0,
+				0.5,
+				0.5,
 				1,
 				1
 			}

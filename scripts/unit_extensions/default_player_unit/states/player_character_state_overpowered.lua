@@ -8,6 +8,12 @@ PlayerCharacterStateOverpowered.on_enter = function (self, unit, input, dt, cont
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "overpowered")
 	CharacterStateHelper.stop_career_abilities(self.career_extension, "overpowered")
 
+	if params.start_sound_event then
+		local wwise_world = Managers.world:wwise_world(self.world)
+
+		WwiseWorld.trigger_event(wwise_world, params.start_sound_event)
+	end
+
 	local anim = "to_cloud_of_flies"
 
 	self.inventory_extension:check_and_drop_pickups("overpowererd")
@@ -17,6 +23,9 @@ PlayerCharacterStateOverpowered.on_enter = function (self, unit, input, dt, cont
 	local status_extension = self.status_extension
 
 	self.locomotion_extension:set_wanted_velocity(Vector3.zero())
+
+	self.params = params
+
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person")
 	self.first_person_extension:set_first_person_mode(false)
 
@@ -26,6 +35,12 @@ PlayerCharacterStateOverpowered.on_enter = function (self, unit, input, dt, cont
 end
 
 PlayerCharacterStateOverpowered.on_exit = function (self, unit, input, dt, context, t, next_state)
+	if self.params.end_sound_event then
+		local wwise_world = Managers.world:wwise_world(self.world)
+
+		WwiseWorld.trigger_event(wwise_world, self.params.end_sound_event)
+	end
+
 	local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 	if first_person_extension and self.onscreen_particle_id then

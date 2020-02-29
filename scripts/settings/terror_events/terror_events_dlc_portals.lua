@@ -116,6 +116,11 @@ local terror_event_blueprints = {
 			}
 		},
 		{
+			"event_horde",
+			spawner_id = "portals_temple_yard_specials",
+			composition_type = "chaos_warriors"
+		},
+		{
 			"delay",
 			duration = 5
 		},
@@ -140,10 +145,10 @@ local terror_event_blueprints = {
 			flow_event_name = "dlc_portals_temple_yard_done"
 		}
 	},
-	dlc_portals_temple_yard_specials = {
+	dlc_portals_temple_yard_exit = {
 		{
 			"spawn_at_raw",
-			spawner_id = "portals_temple_yard_specials",
+			spawner_id = "portals_temple_yard_exit",
 			breed_name = "skaven_ratling_gunner"
 		}
 	},
@@ -183,9 +188,9 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_warpfire_thrower",
+			breed_name = "skaven_pack_master",
 			spawner_id = "portals_end_event_specials",
-			amount = 1,
+			amount = 2,
 			difficulty_requirement = HARDER
 		},
 		{
@@ -249,9 +254,11 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_warpfire_thrower",
 			spawner_id = "portals_end_event_specials",
 			amount = 1,
+			breed_name = {
+				"skaven_ratling_gunner"
+			},
 			difficulty_requirement = HARDER
 		},
 		{
@@ -262,7 +269,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("chaos_marauder") < 4 and count_event_breed("chaos_fanatic") < 4 and count_event_breed("chaos_corruptor_sorcerer") < 1
+				return count_event_breed("chaos_marauder") < 4 and count_event_breed("chaos_fanatic") < 4
 			end
 		},
 		{
@@ -299,6 +306,16 @@ local terror_event_blueprints = {
 			"event_horde",
 			spawner_id = "portals_end_event",
 			composition_type = "plague_monks_medium"
+		},
+		{
+			"spawn_special",
+			spawner_id = "portals_end_event_specials",
+			amount = 1,
+			breed_name = {
+				"skaven_warpfire_thrower",
+				"skaven_ratling_gunner"
+			},
+			difficulty_requirement = HARDER
 		},
 		{
 			"delay",
@@ -344,7 +361,7 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "portals_end_event",
-			composition_type = "event_small"
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",
@@ -353,10 +370,10 @@ local terror_event_blueprints = {
 		{
 			"spawn_special",
 			spawner_id = "portals_end_event_specials",
-			amount = 1,
+			amount = 2,
 			breed_name = {
 				"chaos_corruptor_sorcerer",
-				"skaven_warpfire_thrower"
+				"skaven_ratling_gunner"
 			}
 		},
 		{
@@ -367,6 +384,12 @@ local terror_event_blueprints = {
 			"event_horde",
 			spawner_id = "portals_end_event",
 			composition_type = "event_chaos_extra_spice_medium"
+		},
+		{
+			"event_horde",
+			spawner_id = "portals_end_event",
+			composition_type = "plague_monks_small",
+			difficulty_requirement = HARDER
 		},
 		{
 			"delay",
@@ -437,13 +460,6 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			breed_name = "skaven_warpfire_thrower",
-			spawner_id = "portals_end_escape_specials",
-			amount = 1,
-			difficulty_requirement = HARDER
-		},
-		{
 			"event_horde",
 			spawner_id = "portals_end_escape_skaven",
 			composition_type = "event_small"
@@ -462,13 +478,20 @@ local terror_event_blueprints = {
 			duration = 6
 		},
 		{
+			"spawn_special",
+			breed_name = "skaven_warpfire_thrower",
+			spawner_id = "portals_end_escape_specials",
+			amount = 1,
+			difficulty_requirement = HARDER
+		},
+		{
 			"event_horde",
 			spawner_id = "portals_end_escape_skaven",
 			composition_type = "event_small"
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 7
 		},
 		{
 			"continue_when",
@@ -525,7 +548,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 7
 		},
 		{
 			"continue_when",
@@ -542,6 +565,13 @@ local terror_event_blueprints = {
 			"event_horde",
 			spawner_id = "portals_end_escape",
 			composition_type = "event_small_chaos"
+		},
+		{
+			"spawn_special",
+			breed_name = "skaven_ratling_gunner",
+			spawner_id = "portals_end_escape_specials",
+			amount = 1,
+			difficulty_requirement = HARDER
 		},
 		{
 			"event_horde",

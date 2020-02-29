@@ -5214,5 +5214,105 @@ for name, pacing_setting in pairs(PacingSettings) do
 end
 
 DebugBreedSpawns = {}
+local difficulty_lut = {
+	"normal",
+	"hard",
+	"harder",
+	"hardest",
+	"cataclysm",
+	"cataclysm_2",
+	"cataclysm_3"
+}
+local horde_composition_errors = false
+
+print("####### Testing HordeCompositions ########")
+
+for name, terror_event_data in pairs(HordeCompositions) do
+	for difficulty_idx, difficulty_data in ipairs(terror_event_data) do
+		for spawn_idx, data in ipairs(difficulty_data) do
+			local breed_list = data.breeds
+
+			for i = 1, #breed_list, 2 do
+				local breed_name = breed_list[i]
+				local amount = breed_list[i + 1]
+
+				if type(amount) == "table" then
+					local min_amount = amount[1]
+					local max_amount = amount[2]
+
+					if not min_amount then
+						print("Terror event:", name)
+						print("Difficulty:", difficulty_lut[difficulty_idx])
+						print("List index:", i)
+						print("Error:", "missing min amount\n")
+
+						horde_composition_errors = true
+					elseif not max_amount then
+						print("Terror event:", name)
+						print("Difficulty:", difficulty_lut[difficulty_idx])
+						print("List index:", i)
+						print("Error:", "missing max amount\n")
+
+						horde_composition_errors = true
+					elseif max_amount < min_amount then
+						print("Terror event:", name)
+						print("Difficulty:", difficulty_lut[difficulty_idx])
+						print("List index:", i)
+						print("Error:", "Min larger than max amount\n")
+
+						horde_composition_errors = true
+					end
+				end
+			end
+		end
+	end
+end
+
+print("####### Testing HordeCompositionsPacing ########")
+
+for name, terror_event_data in pairs(HordeCompositionsPacing) do
+	for difficulty_idx, difficulty_data in ipairs(terror_event_data) do
+		for spawn_idx, data in ipairs(difficulty_data) do
+			local breed_list = data.breeds
+
+			for i = 1, #breed_list, 2 do
+				local breed_name = breed_list[i]
+				local amount = breed_list[i + 1]
+
+				if type(amount) == "table" then
+					local min_amount = amount[1]
+					local max_amount = amount[2]
+
+					if not min_amount then
+						print("Terror event:", name)
+						print("Difficulty:", difficulty_lut[difficulty_idx])
+						print("List index:", i)
+						print("Error:", "missing min amount\n")
+
+						horde_composition_errors = true
+					elseif not max_amount then
+						print("Terror event:", name)
+						print("Difficulty:", difficulty_lut[difficulty_idx])
+						print("List index:", i)
+						print("Error:", "missing max amount\n")
+
+						horde_composition_errors = true
+					elseif max_amount < min_amount then
+						print("Terror event:", name)
+						print("Difficulty:", difficulty_lut[difficulty_idx])
+						print("List index:", i)
+						print("Error:", "Min larger than max amount\n")
+
+						horde_composition_errors = true
+					end
+				end
+			end
+		end
+	end
+end
+
+if horde_composition_errors then
+	assert(false, "Error in horde composions. See above")
+end
 
 return

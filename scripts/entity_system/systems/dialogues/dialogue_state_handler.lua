@@ -8,18 +8,18 @@ local function debug_printf(...)
 	end
 end
 
-DialogueStateHandler.init = function (self, world, wwise_world)
+DialogueStateHandler.init = function (self, world)
 	self._world = world
-	self._wwise_world = wwise_world
 	self._playing_dialogues = {}
 	self._current_index = 1
 end
 
-DialogueStateHandler.add_playing_dialogue = function (self, identifier, event_id, t)
+DialogueStateHandler.add_playing_dialogue = function (self, identifier, event_id, t, dialogue_duration)
 	self._playing_dialogues[#self._playing_dialogues + 1] = {
 		identifier = identifier,
 		event_id = event_id,
-		start_time = t
+		start_time = t,
+		expected_end = t + dialogue_duration
 	}
 end
 
@@ -38,9 +38,8 @@ DialogueStateHandler.update = function (self, t)
 
 	while true do
 		local dialogue_data = self._playing_dialogues[self._current_index]
-		local event_id = dialogue_data.event_id
 
-		if not WwiseWorld.is_playing(self._wwise_world, event_id) then
+		if dialogue_data.expected_end < t then
 			Level.set_flow_variable(level, "dialogue_identifier", dialogue_data.identifier)
 			Level.trigger_event(level, "dialogue_ended")
 

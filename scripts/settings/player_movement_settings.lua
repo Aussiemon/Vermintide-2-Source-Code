@@ -380,6 +380,10 @@ PlayerUnitMovementSettings.hit_react_settings = {
 }
 PlayerUnitMovementSettings.overpowered_templates = PlayerUnitMovementSettings.overpowered_templates or {}
 PlayerUnitMovementSettings.overpowered_templates.slow_bomb = {}
+PlayerUnitMovementSettings.overpowered_templates.fly_bomb = {
+	end_sound_event = "Stop_sorcerer_boss_flies_curse_loop",
+	start_sound_event = "Play_sorcerer_boss_flies_curse_loop"
+}
 PlayerUnitMovementSettings.gravity_acceleration = 11
 PlayerUnitMovementSettings.jump = PlayerUnitMovementSettings.jump or {}
 PlayerUnitMovementSettings.jump.stamina_cost = 0

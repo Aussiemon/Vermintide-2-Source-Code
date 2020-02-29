@@ -54,6 +54,7 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self:set_max_health(health)
 
 	self.unmodified_max_health = self.health
+	self._health_clamp_min = nil
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
 	self._damage_cap_per_hit = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit") or self.health
@@ -145,6 +146,10 @@ GenericHealthExtension.set_current_damage = function (self, damage)
 	self.damage = damage
 end
 
+GenericHealthExtension.set_health_clamp_min = function (self, health_clamp_min)
+	self._health_clamp_min = health_clamp_min
+end
+
 GenericHealthExtension.get_max_health = function (self)
 	return self.health
 end
@@ -230,6 +235,14 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
+
+	if self._health_clamp_min then
+		local health = self:current_health()
+		local predicted_health = health - damage_amount
+		local overkill_damage = math.max(0, self._health_clamp_min - predicted_health)
+		damage_amount = damage_amount - overkill_damage
+	end
+
 	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, backstab_multiplier)
 
 	fassert(damage_type, "No damage_type!")

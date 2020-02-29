@@ -1057,6 +1057,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 	if health_extension then
 		blackboard.current_health_percent = health_extension:current_health_percent()
+		blackboard.current_health = health_extension:current_health()
 	end
 
 	local current_position = POSITION_LOOKUP[unit]

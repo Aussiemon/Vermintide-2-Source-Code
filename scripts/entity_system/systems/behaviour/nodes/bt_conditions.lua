@@ -273,16 +273,92 @@ BTConditions.at_half_health = function (blackboard)
 	return blackboard.current_health_percent <= 0.5
 end
 
+BTConditions.at_one_third_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.33
+end
+
+BTConditions.at_two_thirds_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.66
+end
+
+BTConditions.at_one_fifth_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.2
+end
+
+BTConditions.at_three_fifths_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.6
+end
+
+BTConditions.at_one_health = function (blackboard)
+	return blackboard.current_health == 1
+end
+
 BTConditions.can_transition_half_health = function (blackboard)
-	return blackboard.current_health_percent <= 0.5 and not blackboard.transition_done
+	return blackboard.current_health_percent <= 0.5 and not blackboard.half_transition_done
+end
+
+BTConditions.can_transition_one_third_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.33 and not blackboard.one_third_transition_done
+end
+
+BTConditions.dummy_not_escaped = function (blackboard)
+	return not blackboard.anim_cb_escape_finished
+end
+
+BTConditions.can_transition_two_thirds_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.66 and not blackboard.two_thirds_transition_done
+end
+
+BTConditions.can_transition_one_fifth_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.2 and not blackboard.one_fifth_transition_done
+end
+
+BTConditions.can_transition_three_fifths_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.6 and not blackboard.three_fifths_transition_done
 end
 
 BTConditions.transitioned_half_health = function (blackboard)
-	return blackboard.current_health_percent <= 0.5 and blackboard.transition_done
+	return blackboard.current_health_percent <= 0.5 and blackboard.half_transition_done
+end
+
+BTConditions.transitioned_three_fifths_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.6 and blackboard.three_fifths_transition_done
+end
+
+BTConditions.transitioned_one_fifth_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.2 and blackboard.one_fifth_transition_done
+end
+
+BTConditions.transitioned_one_third_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.33 and blackboard.one_third_transition_done
+end
+
+BTConditions.transitioned_two_thirds_health = function (blackboard)
+	return blackboard.current_health_percent <= 0.66 and blackboard.two_thirds_transition_done
+end
+
+BTConditions.sorcerer_allow_tricke_spawn = function (blackboard)
+	return blackboard.sorcerer_allow_tricke_spawn
 end
 
 BTConditions.spawned_allies_dead = function (blackboard)
 	return blackboard.spawn_allies_horde and blackboard.spawn_allies_horde.is_dead
+end
+
+BTConditions.first_ring_summon = function (blackboard)
+	return blackboard.ring_summonings_finished == 0
+end
+
+BTConditions.ready_to_summon_rings = function (blackboard)
+	return blackboard.ring_cooldown == 0
+end
+
+BTConditions.ready_to_charge = function (blackboard)
+	return blackboard.charge_cooldown == 0
+end
+
+BTConditions.ready_to_teleport = function (blackboard)
+	return blackboard.teleport_cooldown == 0
 end
 
 BTConditions.ready_to_summon_wave = function (blackboard)

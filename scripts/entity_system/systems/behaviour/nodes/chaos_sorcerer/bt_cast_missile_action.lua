@@ -11,20 +11,28 @@ BTCastMissileAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
 	blackboard.active_node = BTCastMissileAction
-
-	Managers.state.network:anim_event(unit, action.cast_anim)
-
-	blackboard.cast_time_done = t + 1
+	blackboard.spell_count = blackboard.spell_count or 0
+	blackboard.cast_time_done = t + (action.cast_time or 1)
 	blackboard.summoning = true
 	blackboard.volleys = 0
 	local target_unit = blackboard.target_unit
+	local distance_to_target = nil
 	blackboard.cast_target_unit = target_unit
 
 	if Unit.alive(target_unit) then
+		distance_to_target = Vector3.distance_squared(POSITION_LOOKUP[target_unit], POSITION_LOOKUP[unit])
 		blackboard.target_position = Vector3Box(POSITION_LOOKUP[target_unit])
 	end
 
-	blackboard.navigation_extension:stop()
+	if action.target_close_anim and distance_to_target and distance_to_target < action.target_close_distance then
+		Managers.state.network:anim_event(unit, action.target_close_anim)
+	elseif action.cast_anim then
+		Managers.state.network:anim_event(unit, action.cast_anim)
+	end
+
+	if blackboard.navigation_extension then
+		blackboard.navigation_extension:stop()
+	end
 
 	if action.init_spell_func then
 		action.init_spell_func(blackboard)
@@ -39,7 +47,6 @@ BTCastMissileAction.leave = function (self, unit, blackboard, t, reason, destroy
 end
 
 BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
-	local action = blackboard.action
 	local cast_target_unit = blackboard.cast_target_unit
 
 	if Unit.alive(cast_target_unit) then
@@ -55,16 +62,15 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 	local target_position = blackboard.target_position:unbox()
 	local action = blackboard.action
 
-	if blackboard.cast_time_done < t or blackboard.anim_cb_throw then
+	if (not action.only_cb and blackboard.cast_time_done < t) or blackboard.anim_cb_throw then
 		blackboard.anim_cb_throw = false
-		local missile_data = blackboard.current_spell
+		local missile_data = blackboard.current_spell or action.spell_data
 		local throw_pos, target_dir = nil
 
 		if action.get_throw_position_func then
 			throw_pos, target_dir = action.get_throw_position_func(unit, blackboard, target_position)
 		else
 			local stored = missile_data.read_from_missile_data
-			throw_pos = stored and missile_data.throw_pos:unbox()
 
 			if stored then
 				throw_pos = missile_data.throw_pos:unbox()
@@ -86,7 +92,7 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 			target_dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(target_dir, Vector3.up()), angle), target_dir)
 			local up = Vector3.cross(target_dir, Vector3.up()) * (1 - 2 * math.random()) * 0.25
 			local right = Vector3.cross(target_dir, Vector3.right()) * (1 - 2 * math.random()) * 0.25
-			local target_dir = Vector3.normalize(target_dir + up + right)
+			target_dir = Vector3.normalize(target_dir + up + right)
 			local position_target = missile_data.target_ground and POSITION_LOOKUP[blackboard.target_unit]
 
 			self:launch_magic_missile(blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, position_target, missile_data)
@@ -100,14 +106,20 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.spell_count = blackboard.spell_count + 1
 		blackboard.volleys = blackboard.volleys + 1
 
-		if action.volleys <= blackboard.volleys then
+		if not action.only_cb and action.volleys <= blackboard.volleys then
 			return "done"
 		else
 			blackboard.cast_time_done = t + action.volley_delay
 		end
 	end
 
-	if action.face_target_while_casting then
+	if blackboard.attack_finished then
+		blackboard.attack_finished = false
+
+		return "done"
+	end
+
+	if action.face_target_while_casting and blackboard.locomotion_extension then
 		local rot = LocomotionUtils.look_at_position_flat(unit, target_position)
 
 		blackboard.locomotion_extension:set_wanted_rotation(rot)

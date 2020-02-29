@@ -21,6 +21,17 @@ BTQuickTeleportAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = action
 	blackboard.active_node = BTQuickTeleportAction
 	blackboard.quick_teleport_entrance_pos = Vector3Box(POSITION_LOOKUP[unit])
+
+	if action.sound_event then
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_audio_unit_event(action.sound_event, unit)
+	end
+
+	if blackboard.action.force_teleport then
+		blackboard.quick_teleport = true
+	end
+
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -28,7 +39,10 @@ BTQuickTeleportAction.enter = function (self, unit, blackboard, t)
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_enabled(false)
-	Managers.state.network:anim_event(unit, randomize(action.teleport_start_anim))
+
+	if action.teleport_start_anim then
+		Managers.state.network:anim_event(unit, randomize(action.teleport_start_anim))
+	end
 
 	if action.push_close_players then
 		blackboard.hit_units = {}
@@ -52,6 +66,14 @@ BTQuickTeleportAction.leave = function (self, unit, blackboard, t, reason, destr
 end
 
 BTQuickTeleportAction.run = function (self, unit, blackboard, t, dt)
+	if not blackboard.action.teleport_start_anim then
+		self:anim_cb_teleport_start_finished(unit, blackboard)
+	end
+
+	if not blackboard.action.teleport_end_anim then
+		self:anim_cb_teleport_end_finished(unit, blackboard)
+	end
+
 	if not blackboard.quick_teleport then
 		return "done"
 	end
@@ -99,6 +121,10 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 		teleport_position = blackboard.quick_teleport_exit_pos:unbox()
 	end
 
+	if not teleport_position then
+		return
+	end
+
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension:set_navbot_position(teleport_position)
@@ -108,6 +134,12 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 	locomotion_extension:teleport_to(teleport_position)
 	Managers.state.entity:system("ai_bot_group_system"):enemy_teleported(unit, teleport_position)
 	self:play_teleport_effect(unit, blackboard, entrance_position, teleport_position)
+
+	if blackboard.action.remove_pings then
+		local ping_system = Managers.state.entity:system("ping_system")
+
+		ping_system:remove_ping_from_unit(unit)
+	end
 
 	if blackboard.action.push_close_players then
 		local side = blackboard.side

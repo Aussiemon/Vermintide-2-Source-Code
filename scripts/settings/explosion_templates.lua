@@ -928,18 +928,91 @@ ExplosionTemplates.chaos_magic_missile = {
 }
 ExplosionTemplates.chaos_strike_missile_impact = {
 	explosion = {
-		always_hurt_players = true,
-		radius = 3.2,
-		alert_enemies = false,
+		radius = 2,
 		sound_event_name = "fireball_big_hit",
+		alert_enemies = false,
+		always_hurt_players = true,
 		damage_type_glance = "fire_grenade_glance",
 		max_damage_radius_min = 0.5,
 		attack_template = "chaos_magic_missile",
 		max_damage_radius_max = 1,
 		damage_type = "grenade",
 		damage_interval = 0,
-		power_level = 500,
 		effect_name = "fx/chr_chaos_sorcerer_boss_strike_missile_impact",
+		difficulty_power_level = {
+			easy = {
+				power_level_glance = 5,
+				power_level = 10
+			},
+			normal = {
+				power_level_glance = 10,
+				power_level = 20
+			},
+			hard = {
+				power_level_glance = 20,
+				power_level = 30
+			},
+			harder = {
+				power_level_glance = 30,
+				power_level = 40
+			},
+			hardest = {
+				power_level_glance = 40,
+				power_level = 50
+			},
+			cataclysm = {
+				power_level_glance = 40,
+				power_level = 50
+			}
+		},
+		immune_breeds = {
+			chaos_zombie = true,
+			chaos_exalted_sorcerer = true,
+			skaven_grey_seer = true,
+			skaven_stormfiend = true
+		}
+	}
+}
+ExplosionTemplates.chaos_drachenfels_strike_missile_impact = {
+	explosion = {
+		radius = 2,
+		damage_interval = 0,
+		sound_event_name = "fireball_big_hit",
+		alert_enemies = false,
+		damage_type_glance = "fire_grenade_glance",
+		max_damage_radius_min = 0.5,
+		attack_template = "chaos_magic_missile",
+		always_hurt_players = true,
+		max_damage_radius_max = 1,
+		damage_type = "cutting",
+		damage_profile = "nurgle_ball",
+		effect_name = "fx/drachenfels_gas_projectile_impact",
+		difficulty_power_level = {
+			easy = {
+				power_level_glance = 5,
+				power_level = 10
+			},
+			normal = {
+				power_level_glance = 10,
+				power_level = 20
+			},
+			hard = {
+				power_level_glance = 20,
+				power_level = 30
+			},
+			harder = {
+				power_level_glance = 30,
+				power_level = 40
+			},
+			hardest = {
+				power_level_glance = 40,
+				power_level = 50
+			},
+			cataclysm = {
+				power_level_glance = 40,
+				power_level = 50
+			}
+		},
 		immune_breeds = {
 			chaos_zombie = true,
 			chaos_exalted_sorcerer = true,
@@ -962,6 +1035,27 @@ ExplosionTemplates.chaos_slow_bomb_missile_missed = {
 		damage_interval = 0,
 		power_level = 500,
 		effect_name = "fx/chr_chaos_sorcerer_boss_projectile_flies_impact",
+		immune_breeds = {
+			chaos_zombie = true,
+			chaos_spawn = true,
+			skaven_grey_seer = true
+		}
+	}
+}
+ExplosionTemplates.chaos_slow_bomb_missile_missed_new = {
+	explosion = {
+		always_hurt_players = true,
+		radius = 3.2,
+		alert_enemies = false,
+		sound_event_name = "Play_enemy_boss_sorcerer_slow_bomb_hit",
+		damage_type_glance = "fire_grenade_glance",
+		max_damage_radius_min = 0.5,
+		attack_template = "chaos_magic_missile",
+		max_damage_radius_max = 1,
+		damage_type = "grenade",
+		damage_interval = 0,
+		power_level = 500,
+		effect_name = "fx/drachenfels_flies_impact",
 		immune_breeds = {
 			chaos_zombie = true,
 			chaos_spawn = true,
@@ -1014,6 +1108,36 @@ ExplosionTemplates.chaos_slow_bomb_missile = {
 		else
 			local blackboard = BLACKBOARDS[owner_unit]
 			local missed_explosion_template = ExplosionTemplates.chaos_slow_bomb_missile_missed
+
+			AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, missed_explosion_template)
+		end
+	end
+}
+ExplosionTemplates.chaos_slow_bomb_missile_new = {
+	server_hit_func = function (projectile_unit, damage_source, owner_unit, hit_position, recent_impacts, explosion_template)
+		local hit_unit = recent_impacts[ProjectileImpactDataIndex.UNIT]
+		local hit_player = false
+		local attacker_side = Managers.state.side.side_by_unit[owner_unit]
+
+		if attacker_side and attacker_side.VALID_ENEMY_PLAYERS_AND_BOTS[hit_unit] then
+			local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+
+			if status_extension and not status_extension:is_disabled() then
+				hit_player = true
+			end
+		end
+
+		if hit_player then
+			local projectile_locomotion_extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
+			local missile_template = projectile_locomotion_extension.true_flight_template
+			local blob_unit = AiUtils.spawn_overpowering_blob(Managers.state.network, hit_unit, missile_template.overpowered_blob_health, missile_template.attached_life_time)
+			local overpowered_template_name = "fly_bomb"
+
+			StatusUtils.set_overpowered_network(hit_unit, true, overpowered_template_name, blob_unit)
+			Managers.state.unit_spawner:mark_for_deletion(projectile_unit)
+		else
+			local blackboard = BLACKBOARDS[owner_unit]
+			local missed_explosion_template = ExplosionTemplates.chaos_slow_bomb_missile_missed_new
 
 			AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, missed_explosion_template)
 		end

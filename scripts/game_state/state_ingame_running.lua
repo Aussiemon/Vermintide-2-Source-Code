@@ -170,7 +170,7 @@ StateInGameRunning.on_enter = function (self, params)
 	self._loading_subtitle_gui = loading_context.subtitle_gui
 	loading_context.subtitle_gui = nil
 	self.game_mode_key = Managers.state.game_mode:game_mode_key()
-	local quickplay_bonus = loading_context.quickplay_bonus
+	local quickplay_bonus = loading_context.quickplay_bonus or loading_context.local_quickplay_bonus
 
 	if not quickplay_bonus and self.game_mode_key == "weave" then
 		local lobby = (self.is_server and self._lobby_host) or self._lobby_client
@@ -445,6 +445,8 @@ StateInGameRunning.wanted_transition = function (self)
 
 		data = self._invite_lobby_data
 		self._invite_lobby_data = nil
+
+		Managers.matchmaking:set_local_quick_game(false)
 	end
 
 	if not wanted_transition then
@@ -628,7 +630,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		backend_manager:commit(true, callback)
 	end
 
-	if is_final_objective and is_game_mode_weave then
+	if ((game_won and is_final_objective) or game_lost) and is_game_mode_weave then
 		Managers.weave:clear_weave_name()
 	end
 

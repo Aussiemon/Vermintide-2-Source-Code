@@ -309,7 +309,7 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 	return active_enemies
 end
 
-SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawners, side_id, group_template)
+SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit)
 	local total_amount = #spawn_list
 
 	if total_amount <= 0 then
@@ -321,8 +321,28 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 	table.shuffle(spawners)
 
 	if limit_spawners then
-		for i = limit_spawners + 1, num_spawners_to_use, 1 do
-			spawners[i] = nil
+		if use_closest_spawners then
+			local source_pos = POSITION_LOOKUP[source_unit]
+
+			while limit_spawners < #spawners do
+				local furthest_index = 1
+				local furthest_length = 0
+
+				for i = 1, #spawners, 1 do
+					local distance = Vector3.distance_squared(source_pos, Unit.local_position(spawners[i], 0))
+
+					if furthest_length < distance then
+						furthest_length = distance
+						furthest_index = i
+					end
+				end
+
+				table.swap_delete(spawners, furthest_index)
+			end
+		else
+			for i = limit_spawners + 1, num_spawners_to_use, 1 do
+				spawners[i] = nil
+			end
 		end
 
 		num_spawners_to_use = #spawners
@@ -360,7 +380,7 @@ local ok_spawner_breeds = {
 	skaven_slave = true
 }
 
-SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id)
+SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id, use_closest_spawners, source_unit)
 	local ConflictUtils = ConflictUtils
 	local must_use_hidden_spawners = variant.must_use_hidden_spawners
 	local spawners, hidden_spawners, event_spawn = nil
@@ -475,10 +495,10 @@ SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, varia
 
 	local count = 0
 	local hidden_count = 0
-	count = self:_fill_spawners(spawn_list, spawners, limit_spawners, side_id, group_template)
+	count = self:_fill_spawners(spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit)
 
 	if not event_spawn and must_use_hidden_spawners then
-		hidden_count = self:_fill_spawners(spawn_list_hidden, hidden_spawners, limit_spawners, side_id, group_template)
+		hidden_count = self:_fill_spawners(spawn_list_hidden, hidden_spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit)
 
 		if hidden_count > 0 then
 			return "success", count + hidden_count

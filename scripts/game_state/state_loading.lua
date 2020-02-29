@@ -166,6 +166,7 @@ StateLoading._parse_loading_context = function (self)
 		self._lobby_client = loading_context.lobby_client
 		self._checkpoint_data = loading_context.checkpoint_data
 		self._quickplay_bonus = loading_context.quickplay_bonus
+		self._local_quickplay_bonus = loading_context.local_quickplay_bonus
 		self._level_end_view_context = loading_context.level_end_view_context
 		self._switch_to_tutorial_backend = loading_context.switch_to_tutorial_backend
 		self._wanted_tutorial_state = loading_context.wanted_tutorial_state
@@ -1524,6 +1525,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 			network_transmit = self._network_transmit,
 			checkpoint_data = self._checkpoint_data,
 			quickplay_bonus = self._quickplay_bonus,
+			local_quickplay_bonus = self._local_quickplay_bonus,
 			level_end_view_wrappers = self._level_end_view_wrappers,
 			saved_scoreboard_stats = self._saved_scoreboard_stats
 		}

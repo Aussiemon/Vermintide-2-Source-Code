@@ -155,7 +155,7 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	end
 
 	local max_health = self:_calculate_buffed_max_health()
-	max_health = max_health * modifier
+	max_health = max_health * math.max(modifier, 0.01)
 
 	return max_health
 end
@@ -202,7 +202,6 @@ end
 
 PlayerUnitHealthExtension.update = function (self, dt, context, t)
 	local status_extension = self.status_extension
-	local game_object_id = self.health_game_object_id
 	local unit = self.unit
 
 	if self._shield_duration_left > 0 then
@@ -227,92 +226,96 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 		end
 
 		local game = self.game
-		local max_health = self:_calculate_max_health()
-		max_health = DamageUtils.networkify_health(max_health)
-		local uncursed_max_health = self:_calculate_buffed_max_health()
-		uncursed_max_health = DamageUtils.networkify_health(uncursed_max_health)
+		local game_object_id = self.health_game_object_id
 
-		GameSession.set_game_object_field(game, game_object_id, "max_health", max_health)
-		GameSession.set_game_object_field(game, game_object_id, "uncursed_max_health", uncursed_max_health)
+		if game or game_object_id then
+			local max_health = self:_calculate_max_health()
+			max_health = DamageUtils.networkify_health(max_health)
+			local uncursed_max_health = self:_calculate_buffed_max_health()
+			uncursed_max_health = DamageUtils.networkify_health(uncursed_max_health)
 
-		local state = self.state
-		local previous_state = self.previous_state
-		local previous_max_health = self.previous_max_health
-		local health = GameSession.game_object_field(game, game_object_id, "current_health")
-		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
+			GameSession.set_game_object_field(game, game_object_id, "max_health", max_health)
+			GameSession.set_game_object_field(game, game_object_id, "uncursed_max_health", uncursed_max_health)
 
-		if previous_state and state ~= previous_state then
-			if state == "knocked_down" then
-				health = 0
-				temporary_health = max_health
-			elseif state == "alive" then
-				health = 0
-				temporary_health = max_health / 2
-			end
-		elseif max_health ~= previous_max_health then
-			local previous_health_percentage, previous_temporary_health_percentage = nil
+			local state = self.state
+			local previous_state = self.previous_state
+			local previous_max_health = self.previous_max_health
+			local health = GameSession.game_object_field(game, game_object_id, "current_health")
+			local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 
-			if previous_max_health == 0 then
-				previous_health_percentage = 0
-				previous_temporary_health_percentage = 0
-			else
-				previous_health_percentage = health / previous_max_health
-				previous_temporary_health_percentage = temporary_health / previous_max_health
-			end
-
-			health = max_health * previous_health_percentage
-			temporary_health = max_health * previous_temporary_health_percentage
-		end
-
-		local set_health_percentage = self.set_health_percentage
-
-		if set_health_percentage then
-			health = max_health * set_health_percentage
-			self.set_health_percentage = nil
-		end
-
-		local set_temporary_health_percentage = self.set_temporary_health_percentage
-
-		if set_temporary_health_percentage then
-			temporary_health = max_health * set_temporary_health_percentage
-			self.set_temporary_health_percentage = nil
-		end
-
-		health = DamageUtils.networkify_health(health)
-		temporary_health = DamageUtils.networkify_health(temporary_health)
-
-		GameSession.set_game_object_field(game, game_object_id, "current_health", health)
-		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health)
-
-		if self.wounded_degen_timer <= t then
-			local wounded = status_extension:is_wounded()
-			local degen_amount = PlayerUnitStatusSettings.WOUNDED_DEGEN_AMOUNT
-			local degen_delay = PlayerUnitStatusSettings.WOUNDED_DEGEN_DELAY
-
-			if not wounded then
-				degen_amount, degen_delay = self:health_degen_settings()
-			end
-
-			if temporary_health > 0 and state == "alive" then
-				local new_temporary_health = temporary_health - degen_amount
-				local min_temporary_health_left = (health <= 0 and 1) or 0
-				local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
-
-				if damage > 0 then
-					DamageUtils.add_damage_network(unit, unit, damage, "torso", "temporary_health_degen", nil, Vector3(1, 0, 0), "temporary_health_degen")
+			if previous_state and state ~= previous_state then
+				if state == "knocked_down" then
+					health = 0
+					temporary_health = max_health
+				elseif state == "alive" then
+					health = 0
+					temporary_health = max_health / 2
 				end
+			elseif max_health ~= previous_max_health then
+				local previous_health_percentage, previous_temporary_health_percentage = nil
+
+				if previous_max_health == 0 then
+					previous_health_percentage = 0
+					previous_temporary_health_percentage = 0
+				else
+					previous_health_percentage = health / previous_max_health
+					previous_temporary_health_percentage = temporary_health / previous_max_health
+				end
+
+				health = max_health * previous_health_percentage
+				temporary_health = max_health * previous_temporary_health_percentage
 			end
 
-			self.wounded_degen_timer = t + degen_delay
-		end
+			local set_health_percentage = self.set_health_percentage
 
-		self.previous_state = state
-		self.previous_max_health = max_health
+			if set_health_percentage then
+				health = max_health * set_health_percentage
+				self.set_health_percentage = nil
+			end
 
-		if max_health <= 0 then
-			local death_system = Managers.state.entity:system("death_system")
+			local set_temporary_health_percentage = self.set_temporary_health_percentage
 
-			death_system:forced_kill(unit, "forced")
+			if set_temporary_health_percentage then
+				temporary_health = max_health * set_temporary_health_percentage
+				self.set_temporary_health_percentage = nil
+			end
+
+			health = DamageUtils.networkify_health(health)
+			temporary_health = DamageUtils.networkify_health(temporary_health)
+
+			GameSession.set_game_object_field(game, game_object_id, "current_health", health)
+			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health)
+
+			if self.wounded_degen_timer <= t then
+				local wounded = status_extension:is_wounded()
+				local degen_amount = PlayerUnitStatusSettings.WOUNDED_DEGEN_AMOUNT
+				local degen_delay = PlayerUnitStatusSettings.WOUNDED_DEGEN_DELAY
+
+				if not wounded then
+					degen_amount, degen_delay = self:health_degen_settings()
+				end
+
+				if temporary_health > 0 and state == "alive" then
+					local new_temporary_health = temporary_health - degen_amount
+					local min_temporary_health_left = (health <= 0 and 1) or 0
+					local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
+
+					if damage > 0 then
+						DamageUtils.add_damage_network(unit, unit, damage, "torso", "temporary_health_degen", nil, Vector3(1, 0, 0), "temporary_health_degen")
+					end
+				end
+
+				self.wounded_degen_timer = t + degen_delay
+			end
+
+			self.previous_state = state
+			self.previous_max_health = max_health
+
+			if max_health <= 0 then
+				local death_system = Managers.state.entity:system("death_system")
+
+				death_system:forced_kill(unit, "forced")
+			end
 		end
 	end
 end
@@ -478,39 +481,42 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 	if self.is_server then
 		local game = self.game
 		local game_object_id = self.health_game_object_id
-		local current_health = GameSession.game_object_field(game, game_object_id, "current_health")
-		local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
-		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		if status_extension:is_permanent_heal(heal_type) and not status_extension:is_knocked_down() then
-			local new_temporary_health = (current_temporary_health < heal_amount and 0) or current_temporary_health - heal_amount
+		if game and game_object_id then
+			local current_health = GameSession.game_object_field(game, game_object_id, "current_health")
+			local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
+			local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
+			if status_extension:is_permanent_heal(heal_type) and not status_extension:is_knocked_down() then
+				local new_temporary_health = (current_temporary_health < heal_amount and 0) or current_temporary_health - heal_amount
 
-			local new_health = (max_health < current_health + new_temporary_health + heal_amount and max_health) or current_health + heal_amount
+				GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 
-			GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)
-		else
-			local new_temporary_health = (max_health < current_health + current_temporary_health + heal_amount and max_health - current_health) or current_temporary_health + heal_amount
+				local new_health = (max_health < current_health + new_temporary_health + heal_amount and max_health) or current_health + heal_amount
 
-			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
-		end
+				GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)
+			else
+				local new_temporary_health = (max_health < current_health + current_temporary_health + heal_amount and max_health - current_health) or current_temporary_health + heal_amount
 
-		if heal_type ~= "career_passive" and not status_extension:is_wounded() then
-			local t = Managers.time:time("game")
-			local _, _, degen_start = self:health_degen_settings()
-			self.wounded_degen_timer = t + degen_start
-		end
+				GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
+			end
 
-		local unit_id = self.unit_storage:go_id(unit)
+			if heal_type ~= "career_passive" and not status_extension:is_wounded() then
+				local t = Managers.time:time("game")
+				local _, _, degen_start = self:health_degen_settings()
+				self.wounded_degen_timer = t + degen_start
+			end
 
-		if unit_id then
-			local network_transmit = self.network_transmit
-			local network_manager = Managers.state.network
-			local healer_unit_id, healer_is_level_unit = network_manager:game_object_or_level_id(healer_unit)
-			local heal_type_id = NetworkLookup.heal_types[heal_type]
+			local unit_id = self.unit_storage:go_id(unit)
 
-			network_transmit:send_rpc_clients("rpc_heal", unit_id, false, healer_unit_id, healer_is_level_unit, heal_amount, heal_type_id)
+			if unit_id then
+				local network_transmit = self.network_transmit
+				local network_manager = Managers.state.network
+				local healer_unit_id, healer_is_level_unit = network_manager:game_object_or_level_id(healer_unit)
+				local heal_type_id = NetworkLookup.heal_types[heal_type]
+
+				network_transmit:send_rpc_clients("rpc_heal", unit_id, false, healer_unit_id, healer_is_level_unit, heal_amount, heal_type_id)
+			end
 		end
 	end
 end
@@ -548,12 +554,14 @@ PlayerUnitHealthExtension.die = function (self, damage_type)
 		local game = self.game
 		local game_object_id = self.health_game_object_id
 
-		GameSession.set_game_object_field(game, game_object_id, "current_health", 0)
-		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", 0)
+		if game and game_object_id then
+			GameSession.set_game_object_field(game, game_object_id, "current_health", 0)
+			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", 0)
 
-		local death_system = Managers.state.entity:system("death_system")
+			local death_system = Managers.state.entity:system("death_system")
 
-		death_system:forced_kill(unit, damage_type)
+			death_system:forced_kill(unit, damage_type)
+		end
 	end
 end
 
@@ -570,10 +578,13 @@ PlayerUnitHealthExtension.reset = function (self)
 		self.state = "alive"
 		local game = self.game
 		local game_object_id = self.health_game_object_id
-		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		GameSession.set_game_object_field(game, game_object_id, "current_health", max_health)
-		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", 0)
+		if game and game_object_id then
+			local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
+
+			GameSession.set_game_object_field(game, game_object_id, "current_health", max_health)
+			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", 0)
+		end
 	end
 end
 

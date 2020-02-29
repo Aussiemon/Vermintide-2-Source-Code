@@ -436,7 +436,7 @@ HeroViewStateStore._initial_windows_setups = function (self, params)
 end
 
 HeroViewStateStore.window_input_service = function (self)
-	return (self._input_blocked and fake_input_service) or self:input_service()
+	return ((self._input_blocked or self._friends_list_active) and fake_input_service) or self:input_service()
 end
 
 HeroViewStateStore._close_window_at_index = function (self, window_index)
@@ -822,18 +822,7 @@ HeroViewStateStore.update = function (self, dt, t)
 		friends_component_ui:update(dt, self:input_service())
 	end
 
-	local friends_list_active = self:is_friends_list_active()
-
-	if friends_list_active ~= self._friends_list_active then
-		if friends_list_active then
-			self:block_input()
-		else
-			self:unblock_input()
-		end
-
-		self._friends_list_active = friends_list_active
-	end
-
+	self._friends_list_active = self:is_friends_list_active()
 	local input_service = self:window_input_service()
 
 	self._ui_animator:update(dt)

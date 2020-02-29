@@ -1238,8 +1238,8 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 				end
 			end
 
-			local actual_power_level = (is_glancing_hit and power_level_glance) or scaled_power_level or power_level
-			actual_power_level = actual_power_level and actual_power_level * distance_factor
+			local actual_power_level = (is_glancing_hit and power_level_glance) or scaled_power_level or power_level or 0
+			actual_power_level = actual_power_level * distance_factor
 			push_speed = push_speed and math.auto_lerp(max_damage_radius, radius, push_speed, 1, math.clamp(hit_distance, max_damage_radius, radius))
 			local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 

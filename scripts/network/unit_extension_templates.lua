@@ -1208,26 +1208,6 @@ local unit_templates = {
 			}
 		}
 	},
-	ai_unit_chaos_exalted_sorcerer_drachenfels = {
-		base_template = "ai_unit_base",
-		go_type = "ai_lord_with_inventory_and_target",
-		self_owned_extensions = {
-			"AIInventoryExtension",
-			"PingTargetExtension"
-		},
-		husk_extensions = {
-			"AIInventoryExtension",
-			"PingTargetExtension"
-		},
-		remove_when_killed = {
-			self_owned_extensions = {
-				"PingTargetExtension"
-			},
-			husk_extensions = {
-				"PingTargetExtension"
-			}
-		}
-	},
 	ai_unit_chaos_dummy_sorcerer = {
 		go_type = "ai_unit_with_inventory",
 		self_owned_extensions = {

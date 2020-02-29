@@ -38,7 +38,6 @@ EnemyPackageLoaderSettings.categories = {
 			"chaos_dummy_sorcerer",
 			"chaos_exalted_champion_warcamp",
 			"chaos_exalted_sorcerer",
-			"chaos_exalted_sorcerer_drachenfels",
 			"skaven_storm_vermin_warlord",
 			"skaven_storm_vermin_champion",
 			"chaos_plague_wave_spawner",

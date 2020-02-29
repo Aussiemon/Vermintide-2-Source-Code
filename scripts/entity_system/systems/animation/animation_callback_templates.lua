@@ -439,6 +439,11 @@ AnimationCallbackTemplates.server.anim_cb_attack_finished = function (unit, para
 	end
 end
 
+AnimationCallbackTemplates.server.anim_cb_escape_finished = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+	blackboard.anim_cb_escape_finished = true
+end
+
 AnimationCallbackTemplates.server.anim_cb_attack_cooldown = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
 	blackboard.anim_cb_attack_cooldown = true

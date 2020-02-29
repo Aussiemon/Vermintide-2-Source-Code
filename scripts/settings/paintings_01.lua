@@ -959,13 +959,13 @@ Paintings.ver_JB002_Drachenfel_Ogres_Tower = {
 	}
 }
 Paintings.ver_skaven_7th_edition_army_book_page_027 = {
-	sound_event = "painting_Skaven_7th_edition_army_book_Page_027_description",
+	sound_event = "painting_skaven_7th_edition_army_book_page_027_description",
 	rarity = "common",
-	display_name = "painting_Skaven_7th_edition_army_book_Page_027_name",
+	display_name = "painting_skaven_7th_edition_army_book_page_027_name",
 	icon = "icon_painting_1",
 	frame = "painted",
-	description = "painting_Skaven_7th_edition_army_book_Page_027_description",
-	artist = "painting_Skaven_7th_edition_army_book_Page_027_artist",
+	description = "painting_skaven_7th_edition_army_book_page_027_description",
+	artist = "painting_skaven_7th_edition_army_book_page_027_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,
@@ -974,13 +974,13 @@ Paintings.ver_skaven_7th_edition_army_book_page_027 = {
 	}
 }
 Paintings.ver_skaven_7th_edition_army_book_page_037 = {
-	sound_event = "painting_Skaven_7th_edition_army_book_Page_037_description",
+	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
 	rarity = "common",
-	display_name = "painting_Skaven_7th_edition_army_book_Page_037_name",
+	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
 	icon = "icon_painting_3",
 	frame = "painted",
-	description = "painting_Skaven_7th_edition_army_book_Page_037_description",
-	artist = "painting_Skaven_7th_edition_army_book_Page_037_artist",
+	description = "painting_skaven_7th_edition_army_book_page_037_description",
+	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,

@@ -341,6 +341,16 @@ BackendInterfacePeddlerPlayFab._exchange_chips_success_cb = function (self, exte
 		print(string.format("[BackendInterfacePeddlerPlayFab] Exchanged %s %s for %s", chip_amount, chip_type, item.ItemId))
 	end
 
+	local request = {
+		FunctionName = "storePurchaseMade",
+		FunctionParameter = {
+			items = items
+		}
+	}
+	local request_cb = callback(self, "_store_purchase_made_cb")
+	local request_queue = self._backend_mirror:request_queue()
+
+	request_queue:enqueue(request, request_cb, false)
 	external_cb(true, items)
 end
 
@@ -354,6 +364,30 @@ BackendInterfacePeddlerPlayFab._exchange_chips_error_cb = function (self, extern
 	else
 		Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR, error_code)
 		external_cb(false)
+	end
+end
+
+BackendInterfacePeddlerPlayFab._store_purchase_made_cb = function (self, result)
+	local function_result = result.FunctionResult
+	local updated_statistics = function_result.updated_statistics
+
+	if updated_statistics then
+		local player = Managers.player and Managers.player:local_player()
+		local statistics_db = Managers.player:statistics_db()
+
+		if not player or not statistics_db then
+			print("[BackendInterfacePeddlerPlayFab] Could not get statistics_db, skipping updating statistics...")
+		else
+			local player_stats_id = player:stats_id()
+
+			for key, value in pairs(updated_statistics) do
+				if not statistics_db.statistics[player_stats_id][key] then
+					Application.warning("[BackendInterfacePeddlerPlayFab] updated_statistics " .. key .. " doesn't exist.")
+				else
+					statistics_db:set_stat(player_stats_id, key, value)
+				end
+			end
+		end
 	end
 end
 

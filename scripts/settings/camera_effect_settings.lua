@@ -1392,6 +1392,13 @@ CameraEffectSettings = {
 			fade_out = 0.3,
 			octaves = 10
 		},
+		ring_explosion = {
+			persistance = 1.25,
+			amplitude = 0.5,
+			duration = 0.3,
+			fade_out = 0.3,
+			octaves = 6
+		},
 		bell_thunder_01 = {
 			persistance = 0.9,
 			fade_out = 0.3,

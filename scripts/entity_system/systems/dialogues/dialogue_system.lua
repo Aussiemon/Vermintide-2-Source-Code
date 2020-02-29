@@ -3,6 +3,8 @@ require("scripts/entity_system/systems/dialogues/tag_query")
 require("scripts/entity_system/systems/dialogues/tag_query_database")
 require("scripts/entity_system/systems/dialogues/tag_query_loader")
 require("scripts/entity_system/systems/dialogues/dialogue_state_handler")
+require("scripts/entity_system/systems/dialogues/dialogue_queries")
+require("scripts/entity_system/systems/dialogues/dialogue_flow_events")
 require("scripts/settings/dialogue_settings")
 
 script_data.dialogue_debug_all_contexts = script_data.dialogue_debug_all_contexts or Development.parameter("dialogue_debug_all_contexts")
@@ -104,9 +106,18 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 
 	local world = entity_system_creation_context.world
 	self.world = world
-	self.wwise_world = Managers.world:wwise_world(world)
+
+	if not DEDICATED_SERVER then
+		self.wwise_world = Managers.world:wwise_world(world)
+		DialogueSystem._flow_calls_implementation = DialogueSystemFlow:new(self.wwise_world, Managers.state.entity:system("hud_system"))
+	end
+
 	self.gui = World.create_screen_gui(world, "material", "materials/fonts/gw_fonts", "immediate")
-	self.dialogue_state_handler = DialogueStateHandler:new(self.world, self.wwise_world)
+
+	if self.is_server then
+		self.dialogue_state_handler = DialogueStateHandler:new(self.world)
+	end
+
 	self.input_event_queue = {}
 	self.input_event_queue_n = 0
 	self.faction_memories = {
@@ -230,6 +241,10 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			network_manager.network_transmit:send_rpc_server("rpc_trigger_dialogue_event", go_id, event_id, event_data_array_temp, event_data_array_temp_types)
 		end,
 		play_voice = function (self, sound_event, use_occlusion)
+			if DEDICATED_SERVER then
+				return
+			end
+
 			local wwise_source_id = WwiseUtils.make_unit_auto_source(dialogue_system.world, extension.play_unit, extension.voice_node)
 
 			if wwise_source_id ~= extension.wwise_source_id then
@@ -256,6 +271,10 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			end
 		end,
 		play_voice_debug = function (self, sound_event)
+			if DEDICATED_SERVER then
+				return
+			end
+
 			local wwise_source_id = WwiseUtils.make_unit_auto_source(dialogue_system.world, extension.play_unit, extension.voice_node)
 			local switch_name = extension.wwise_voice_switch_group
 			local switch_value = extension.wwise_voice_switch_value
@@ -436,7 +455,6 @@ DialogueSystem._cleanup_extension = function (self, unit, extension_name)
 	table.clear(context)
 
 	context.health = 1
-	extension.dialogue_timer = nil
 	local currently_playing_dialogue = extension.currently_playing_dialogue
 
 	if self.playing_dialogues[currently_playing_dialogue] then
@@ -477,7 +495,6 @@ DialogueSystem.function_by_op = DialogueSystem.function_by_op or {
 DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 	local function_command_queue = self.function_command_queue
 	local player_manager = Managers.player
-	local wwise_world = self.wwise_world
 	local unit_extension_data = self.unit_extension_data
 	local playing_units = self.playing_units
 	local unit_alive = Unit.alive
@@ -490,17 +507,9 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 				local currently_playing_dialogue = extension.currently_playing_dialogue
 
 				fassert(currently_playing_dialogue, "Dialogue for playing unit was nil!")
+				fassert(currently_playing_dialogue.dialogue_timer, "Dialogue timer for playing unit was nil!")
 
-				local dialogue_timer = extension.dialogue_timer
-				local is_currently_playing = nil
-
-				if dialogue_timer then
-					is_currently_playing = dialogue_timer - dt > 0
-				else
-					fassert(currently_playing_dialogue.currently_playing_id, "Missing event id for currently playing dialogue.")
-
-					is_currently_playing = WwiseWorld.is_playing(wwise_world, currently_playing_dialogue.currently_playing_id)
-				end
+				local is_currently_playing = currently_playing_dialogue.dialogue_timer - dt > 0
 
 				if not is_currently_playing then
 					if player_manager:owner(unit) ~= nil or Unit.has_data(unit, "dialogue_face_anim") then
@@ -527,7 +536,6 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 						break
 					end
 
-					extension.dialogue_timer = nil
 					local result = used_query.result
 
 					if result then
@@ -573,12 +581,26 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 							speaker_name = ScriptUnit.extension(source, "dialogue_system").context.player_profile
 						end
 
-						self.entity_manager:system("surrounding_aware_system"):add_system_event(source, "heard_speak", sound_distance, "speaker", source, "speaker_name", speaker_name, "sound_event", extension.last_query_sound_event or "unknown", "dialogue_name", result, "dialogue_name_nopre", string.sub(result, 5))
+						if currently_playing_dialogue.override_awareness then
+							local event_data = FrameTable.alloc_table()
+							event_data.dialogue_name_nopre = string.sub(result, 5)
+							event_data.dialogue_name = result
+							event_data.speaker = source
+							event_data.distance = 1
+							event_data.spaekar_name = speaker_name
+							event_data.sound_event = extension.last_query_sound_event
+
+							for unit, extension in pairs(self.unit_extension_data) do
+								extension.input:trigger_dialogue_event(currently_playing_dialogue.override_awareness, event_data)
+							end
+						else
+							self.entity_manager:system("surrounding_aware_system"):add_system_event(source, "heard_speak", sound_distance, "speaker", source, "speaker_name", speaker_name, "sound_event", extension.last_query_sound_event or "unknown", "dialogue_name", result, "dialogue_name_nopre", string.sub(result, 5))
+						end
 
 						extension.last_query_sound_event = nil
 					end
-				elseif dialogue_timer then
-					extension.dialogue_timer = dialogue_timer - dt
+				elseif currently_playing_dialogue.dialogue_timer then
+					currently_playing_dialogue.dialogue_timer = currently_playing_dialogue.dialogue_timer - dt
 				end
 			end
 		until true
@@ -587,45 +609,6 @@ end
 
 DialogueSystem.update = function (self, context, t)
 	return
-end
-
-local function get_dialogue_event(dialogue, index)
-	return dialogue.sound_events[index], dialogue.localization_strings[index], dialogue.face_animations[index], dialogue.dialogue_animations[index]
-end
-
-local temp_rand_table = {}
-
-local function get_dialogue_event_index(dialogue)
-	local randomize_indexes = dialogue.randomize_indexes
-
-	if randomize_indexes then
-		local sound_events_n = dialogue.sound_events_n
-		local randomize_indexes_n = dialogue.randomize_indexes_n
-
-		if randomize_indexes_n == 0 then
-			for i = 1, sound_events_n, 1 do
-				temp_rand_table[i] = i
-			end
-
-			for i = 1, sound_events_n, 1 do
-				local rand = math.random(1, (sound_events_n + 1) - i)
-				local val = table.remove(temp_rand_table, rand)
-				randomize_indexes[i] = val
-			end
-
-			dialogue.randomize_indexes_n = sound_events_n - 1
-			local index = randomize_indexes[sound_events_n]
-
-			return index
-		else
-			dialogue.randomize_indexes_n = randomize_indexes_n - 1
-			local index = randomize_indexes[randomize_indexes_n]
-
-			return index
-		end
-	else
-		return 1
-	end
 end
 
 DialogueSystem._handle_wwise_markers = function (self, dt, t)
@@ -772,135 +755,30 @@ DialogueSystem.physics_async_update = function (self, context, t)
 				end
 
 				if will_play then
-					local player_manager = Managers.player
 					local network_manager = Managers.state.network
-					local wwise_world = self.wwise_world
-					local function_command_queue = self.function_command_queue
-					local playing_units = self.playing_units
 
 					for interrupt_dialogue, _ in pairs(interrupt_dialogue_list) do
 						interrupt_dialogue_list[interrupt_dialogue] = nil
 						local playing_unit = interrupt_dialogue.currently_playing_unit
-						local playing_unit_extension = unit_extension_data[playing_unit]
-						local currently_playing_id = interrupt_dialogue.currently_playing_id
-
-						if currently_playing_id then
-							WwiseWorld.stop_event(wwise_world, currently_playing_id)
-
-							interrupt_dialogue.currently_playing_id = nil
-						end
-
-						if playing_unit_extension then
-							playing_unit_extension.dialogue_timer = nil
-							playing_unit_extension.currently_playing_dialogue = nil
-							playing_units[playing_unit] = nil
-						end
-
-						if player_manager:owner(dialogue_actor_unit) ~= nil or Unit.has_data(dialogue_actor_unit, "dialogue_face_anim") then
-							function_command_queue:queue_function_command(Unit.animation_event, dialogue_actor_unit, "face_neutral")
-							function_command_queue:queue_function_command(Unit.animation_event, dialogue_actor_unit, "dialogue_end")
-						elseif Unit.has_data(dialogue_actor_unit, "enemy_dialogue_face_anim") and Unit.has_animation_state_machine(dialogue_actor_unit) then
-							function_command_queue:queue_function_command(Unit.animation_event, dialogue_actor_unit, "talk_end")
-						end
-
-						if Unit.has_data(dialogue_actor_unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(dialogue_actor_unit) then
-							function_command_queue:queue_function_command(Unit.animation_event, dialogue_actor_unit, "talk_body_end")
-						end
-
 						local go_id, is_level_unit = network_manager:game_object_or_level_id(playing_unit)
 
-						network_manager.network_transmit:send_rpc_clients("rpc_interrupt_dialogue_event", go_id, is_level_unit)
-					end
-
-					local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
-
-					if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
-						extension.wwise_source_id = wwise_source_id
-
-						WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
-						WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
+						network_manager.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
 					end
 
 					local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)
-					local dialogue_index = get_dialogue_event_index(dialogue)
-					local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
-					local source_id, _ = self:_check_play_debug_sound(sound_event, subtitles_event)
-					source_id = source_id or WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
-
-					if source_id ~= 0 then
-						dialogue.currently_playing_id = source_id
-						local query_context = query.query_context
-
-						if query_context.identifier and query_context.identifier ~= "" then
-							self.dialogue_state_handler:add_playing_dialogue(query_context.identifier, source_id, t)
-						end
-
-						local dialogue_id = NetworkLookup.dialogues[result]
-
-						network_manager.network_transmit:send_rpc_clients("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
-					else
-						Application.warning("Unknown wwise event for dialogues: %q. Defined in rule %q.  Trying to fall back on first sound...", sound_event, result)
-
-						dialogue.randomize_indexes = nil
-						dialogue_index = get_dialogue_event_index(dialogue)
-						sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
-						source_id, _ = self:_check_play_debug_sound(sound_event, subtitles_event)
-						source_id = source_id or WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
-
-						if source_id ~= 0 then
-							dialogue.currently_playing_id = source_id
-							local query_context = query.query_context
-
-							if query_context.identifier and query_context.identifier ~= "" then
-								self.dialogue_state_handler:add_playing_dialogue(query_context.identifier, source_id, t)
-							end
-
-							local dialogue_id = NetworkLookup.dialogues[result]
-
-							network_manager.network_transmit:send_rpc_clients("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
-						else
-							dialogue.currently_playing_id = nil
-
-							Application.warning("Couldn't play fallback dialogue")
-
-							extension.dialogue_timer = 3
-						end
-					end
-
-					dialogue.currently_playing_unit = dialogue_actor_unit
+					local dialogue_index = DialogueQueries.get_dialogue_event_index(dialogue)
+					dialogue.currently_playing_id = dialogue.sound_events[dialogue_index]
+					dialogue.dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
 					dialogue.used_query = query
-					local speaker_name = nil
-					local breed_data = Unit.get_data(dialogue_actor_unit, "breed")
+					local query_context = query.query_context
 
-					if breed_data and not breed_data.is_player then
-						speaker_name = breed_data.name
-					else
-						speaker_name = extension.context.player_profile
+					if query_context.identifier and query_context.identifier ~= "" then
+						self.dialogue_state_handler:add_playing_dialogue(query_context.identifier, dialogue.currently_playing_id, t, dialogue.dialogue_timer)
 					end
 
-					extension.last_query_sound_event = sound_event
-					dialogue.speaker_name = speaker_name
-					dialogue.currently_playing_subtitle = subtitles_event
-					extension.currently_playing_dialogue = dialogue
-					playing_dialogues[dialogue] = category_setting
-					playing_units[dialogue_actor_unit] = extension
+					local dialogue_id = NetworkLookup.dialogues[result]
 
-					if source_id ~= 0 then
-						Managers.telemetry.events:vo_event_played(dialogue.category, result, sound_event, speaker_name)
-					end
-
-					if player_manager:owner(dialogue_actor_unit) ~= nil or Unit.has_data(dialogue_actor_unit, "dialogue_face_anim") then
-						function_command_queue:queue_function_command(Unit.animation_event, dialogue_actor_unit, anim_face_event)
-						function_command_queue:queue_function_command(Unit.animation_event, dialogue_actor_unit, anim_dialogue_event)
-					end
-
-					if Unit.has_data(dialogue_actor_unit, "enemy_dialogue_face_anim") and Unit.has_animation_state_machine(dialogue_actor_unit) then
-						function_command_queue:queue_function_command(Unit.animation_event, dialogue_actor_unit, "talk_loop")
-					end
-
-					if Unit.has_data(dialogue_actor_unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(dialogue_actor_unit) then
-						function_command_queue:queue_function_command(Unit.flow_event, dialogue_actor_unit, "action_talk_body")
-					end
+					network_manager.network_transmit:send_rpc_all("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
 				end
 			end
 		end
@@ -1304,54 +1182,20 @@ DialogueSystem._update_cutscene_subtitles = function (self, t)
 	end
 end
 
-local current_sound_event_subtitles = {}
-
 DialogueSystem.trigger_sound_event_with_subtitles = function (self, sound_event, subtitle_event, speaker_name, source_unit, unit_node)
-	local playing_event_with_subtitle = {
-		subtitle_event = subtitle_event,
-		speaker_name = speaker_name,
-		sound_event = sound_event,
-		source_unit = source_unit
-	}
-
-	if source_unit and unit_node and Unit.has_node(source_unit, unit_node) then
-		local unit_node_index = Unit.node(source_unit, unit_node)
-		playing_event_with_subtitle.unit_node_index = unit_node_index
-	else
-		playing_event_with_subtitle.unit_node_index = 0
+	if DEDICATED_SERVER then
+		return
 	end
 
-	current_sound_event_subtitles[#current_sound_event_subtitles + 1] = playing_event_with_subtitle
+	DialogueSystem._flow_calls_implementation:trigger_sound_event_with_subtitles(sound_event, subtitle_event, speaker_name, source_unit, unit_node)
 end
 
 DialogueSystem._update_sound_event_subtitles = function (self)
-	if #current_sound_event_subtitles > 0 then
-		local event = current_sound_event_subtitles[1]
-		local current_speaker = event.speaker_name
-		local subtitle_event = event.subtitle_event
-		local sound_event = event.sound_event
-		local source_unit = event.source_unit
-		local unit_node = event.unit_node
-		local hud_system = Managers.state.entity:system("hud_system")
-
-		if not event.has_started_playing then
-			hud_system:add_subtitle(current_speaker, subtitle_event)
-
-			local id = nil
-
-			if source_unit then
-				id = WwiseWorld.trigger_event(self.wwise_world, sound_event, source_unit, unit_node)
-			else
-				id = WwiseWorld.trigger_event(self.wwise_world, sound_event)
-			end
-
-			event.id = id
-			event.has_started_playing = true
-		elseif event.id and not WwiseWorld.is_playing(self.wwise_world, event.id) then
-			hud_system:remove_subtitle(current_speaker)
-			table.remove(current_sound_event_subtitles, 1)
-		end
+	if DEDICATED_SERVER then
+		return
 	end
+
+	DialogueSystem._flow_calls_implementation:update_sound_event_subtitles()
 end
 
 DialogueSystem.disable = function (self)
@@ -1508,32 +1352,31 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 
 	local dialogue_name = NetworkLookup.dialogues[dialogue_id]
 	local dialogue = self.dialogues[dialogue_name]
-
-	if dialogue.currently_playing_id then
-		return
-	end
-
 	local extension = self.unit_extension_data[dialogue_actor_unit]
-	local wwise_world = self.wwise_world
-	local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
+	local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = DialogueQueries.get_dialogue_event(dialogue, dialogue_index)
+	dialogue.currently_playing_subtitle = subtitles_event
 
-	if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
-		extension.wwise_source_id = wwise_source_id
+	if dialogue.intended_player_profile ~= nil and dialogue.intended_player_profile ~= get_local_sound_character() then
+		dialogue.currently_playing_subtitle = ""
+	elseif not DEDICATED_SERVER then
+		local wwise_world = self.wwise_world
+		local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
 
-		WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
-		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
+		if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
+			extension.wwise_source_id = wwise_source_id
+
+			WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
+			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
+		end
+
+		local playing_id, _ = self:_check_play_debug_sound(sound_event, subtitles_event)
+
+		if not playing_id then
+			playing_id, _ = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
+		end
 	end
 
-	local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = get_dialogue_event(dialogue, dialogue_index)
-	local playing_id, _ = self:_check_play_debug_sound(sound_event, subtitles_event)
-
-	if not playing_id then
-		playing_id, _ = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
-	end
-
-	fassert(playing_id, "Couldn't play sound event %s", sound_event)
-
-	dialogue.currently_playing_id = playing_id
+	dialogue.dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
 	self.playing_units[dialogue_actor_unit] = extension
 	dialogue.currently_playing_unit = dialogue_actor_unit
 	local speaker_name = nil
@@ -1547,7 +1390,6 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 
 	extension.last_query_sound_event = sound_event
 	dialogue.speaker_name = speaker_name
-	dialogue.currently_playing_subtitle = subtitles_event
 	extension.currently_playing_dialogue = dialogue
 	local dialogue_category = dialogue.category
 	local category_setting = dialogue_category_config[dialogue_category]
@@ -1592,6 +1434,7 @@ DialogueSystem.rpc_interrupt_dialogue_event = function (self, sender, go_id, is_
 		end
 
 		dialogue.currently_playing_id = nil
+		dialogue.dialogue_timer = nil
 		extension.currently_playing_dialogue = nil
 		self.playing_units[dialogue_actor_unit] = nil
 		local player_manager = Managers.player

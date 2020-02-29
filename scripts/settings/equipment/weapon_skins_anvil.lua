@@ -138,13 +138,13 @@ local skins = {
 	{
 		name = "we_1h_spears_shield_skin_01_runed_01",
 		data = {
-			description = "we_1h_spears_shield_skin_02_runed_01_description",
+			description = "we_1h_spears_shield_skin_01_runed_01_description",
 			rarity = "promo",
 			template = "one_handed_spears_shield_template",
 			hud_icon = "weapon_generic_icon_falken",
 			inventory_icon = "icon_we_spear_03_icon_we_shield_01_runed_01",
 			left_hand_unit = "units/weapons/player/wpn_we_shield_01/wpn_we_shield_01_runed_01",
-			display_name = "we_1h_spears_shield_skin_02_runed_01_name",
+			display_name = "we_1h_spears_shield_skin_01_runed_01_name",
 			right_hand_unit = "units/weapons/player/wpn_we_spear_03/wpn_we_spear_03"
 		}
 	},

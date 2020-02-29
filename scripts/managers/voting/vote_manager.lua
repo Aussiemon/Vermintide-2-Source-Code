@@ -655,6 +655,8 @@ VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data,
 		votes = {},
 		data = data
 	}
+
+	Managers.matchmaking:set_local_quick_game(false)
 end
 
 VoteManager.rpc_client_start_vote_peer_id = function (self, peer_id, vote_type_id, sync_data, voters)

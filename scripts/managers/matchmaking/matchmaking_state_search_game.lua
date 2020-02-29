@@ -126,22 +126,8 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	self._matchmaking_manager:send_system_chat_message(difficulty_display_name)
 
 	local player = Managers.player:local_player()
-	local game_mode = search_config.game_mode
-	local level_key = search_config.level_key
-	local difficulty = search_config.difficulty
-	local country_code = lobby_data.country_code
-	local quick_game = search_config.quick_game
-	local strict_matchmaking = self.search_config.strict_matchmaking
 
-	Managers.telemetry.events:matchmaking_search({
-		player = player,
-		game_mode = game_mode,
-		level_key = level_key,
-		difficulty = difficulty,
-		country_code = country_code,
-		quick_game = quick_game,
-		strict_matchmaking = strict_matchmaking
-	})
+	Managers.telemetry.events:matchmaking_search(player, self.search_config)
 end
 
 MatchmakingStateSearchGame.on_exit = function (self)
@@ -210,7 +196,7 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 		local time_taken = main_t - started_matchmaking_t
 		local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-		Managers.telemetry.events:matchmaking_search_timeout(player, time_taken)
+		Managers.telemetry.events:matchmaking_search_timeout(player, time_taken, self.search_config)
 
 		return MatchmakingStateHostGame, self.state_context
 	end

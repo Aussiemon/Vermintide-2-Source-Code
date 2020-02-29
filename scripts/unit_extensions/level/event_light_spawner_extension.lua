@@ -13,7 +13,6 @@ EventLightSpawnerExtension.init = function (self, extension_init_context, unit, 
 	self._spawn_pool_spawn_index = 1
 	self._spawn_pool_add_index = 1
 	self._num_raycasts = 0
-	self._num_units_per_player = extension_init_data.num_units_per_player or Unit.get_data(unit, "num_units_per_player") or 1
 	self._speed = extension_init_data.speed or Unit.get_data(unit, "speed") or 1
 	self._respawn_timer = extension_init_data.respawn_timer or Unit.get_data(unit, "respawn_timer") or 10
 	self._first_spawn_delay = extension_init_data.first_spawn_delay or Unit.get_data(unit, "first_spawn_delay") or 0
@@ -24,7 +23,7 @@ EventLightSpawnerExtension.init = function (self, extension_init_context, unit, 
 	Unit.set_unit_visibility(self.unit, false)
 
 	if self.is_server then
-		for i = 1, self._num_units_per_player * 4, 1 do
+		for i = 1, 4, 1 do
 			local spawn_unit = {
 				speed = self._speed,
 				id = i,
@@ -50,25 +49,21 @@ EventLightSpawnerExtension.update = function (self, unit, input, dt, context, t)
 
 	if self._active then
 		local units = self._units
-		local players = Managers.player:human_and_bot_players()
-		local light_unit_index = 1
+		local hero_side = Managers.state.side:get_side_from_name("heroes")
+		local players = hero_side.PLAYER_AND_BOT_UNITS
 
-		for _, _ in pairs(players) do
-			for i = 1, self._num_units_per_player, 1 do
-				local light_unit = units[light_unit_index]
+		for index, _ in pairs(players) do
+			local light_unit = units[index]
 
-				if not light_unit.unit then
-					light_unit.respawn_time = light_unit.respawn_time + dt
-					local player_unit = light_unit.chase_target
+			if not light_unit.unit then
+				light_unit.respawn_time = light_unit.respawn_time + dt
+				local player_unit = light_unit.chase_target
 
-					if self._respawn_timer <= light_unit.respawn_time and player_unit and Unit.alive(player_unit) then
-						self:_add_to_spawn_pool(light_unit.id)
+				if self._respawn_timer <= light_unit.respawn_time and player_unit and Unit.alive(player_unit) then
+					self:_add_to_spawn_pool(light_unit.id)
 
-						light_unit.respawn_time = 0
-					end
+					light_unit.respawn_time = 0
 				end
-
-				light_unit_index = light_unit_index + 1
 			end
 		end
 
@@ -84,54 +79,52 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 		local unit = light_unit and light_unit.unit
 		local player_unit = light_unit.chase_target
 
-		if unit and Unit.alive(unit) then
-			if player_unit and Unit.alive(player_unit) then
-				local unit_position = Unit.local_position(unit, 0)
-				local player_pos = player_unit and POSITION_LOOKUP[player_unit]
-				local physics_world = World.physics_world(context.world)
-				local direction = player_pos - unit_position
-				direction = Vector3.normalize(direction)
-				local length = 1.5
+		if not player_unit then
+			self:_sync_light_units()
+		end
 
-				PhysicsWorld.prepare_actors_for_raycast(physics_world, unit_position, direction, 0.1)
+		if player_unit and Unit.alive(player_unit) and unit and Unit.alive(unit) then
+			local unit_position = Unit.local_position(unit, 0)
+			local player_pos = player_unit and POSITION_LOOKUP[player_unit] + Vector3.up()
+			local physics_world = World.physics_world(context.world)
+			local direction = player_pos - unit_position
+			direction = (Vector3.length(direction) == 0 and Vector3.down()) or Vector3.normalize(direction)
+			local length = 1
 
-				local result = PhysicsWorld.immediate_raycast(physics_world, unit_position, direction, length, "all", "collision_filter", "filter_player_hit_box_and_static_check")
+			PhysicsWorld.prepare_actors_for_raycast(physics_world, unit_position, direction, 0.1)
 
-				if result then
-					local num_hits = #result
+			local result = PhysicsWorld.immediate_raycast(physics_world, unit_position, direction, length, "all", "collision_filter", "filter_player_hit_box_and_static_check")
 
-					for i = 1, num_hits, 1 do
-						local hit = result[i]
-						local hit_actor = hit[4]
-						local hit_unit = Actor.unit(hit_actor)
-						local unit_breed = AiUtils.unit_breed(hit_unit)
+			if result then
+				local num_hits = #result
 
-						if not unit_breed then
-							self:_explode_spirit(unit)
+				for i = 1, num_hits, 1 do
+					local hit = result[i]
+					local hit_actor = hit[4]
+					local hit_unit = Actor.unit(hit_actor)
+					local unit_breed = AiUtils.unit_breed(hit_unit)
 
-							light_unit.unit = nil
-						elseif hit_unit == player_unit then
-							local damage_profile = DamageProfileTemplates.warpfire_thrower_explosion
-							local power_level = 100
-							local hit_direction = unit_position - player_pos
-							hit_direction = Vector3.normalize(hit_direction)
-							local player = Managers.player:owner(player_unit)
-							local is_player = player and player:is_player_controlled()
+					if not unit_breed and i == num_hits then
+						self:_explode_spirit(unit)
 
-							if is_player then
-								DamageUtils.add_damage_network_player(damage_profile, nil, power_level, player_unit, unit, "full", player_pos, hit_direction, "undefined", nil, 0, false, nil, false, 0, 1)
-							end
+						light_unit.unit = nil
+					elseif hit_unit == player_unit then
+						local damage_profile = DamageProfileTemplates.warpfire_thrower_explosion
+						local power_level = 100
+						local hit_direction = unit_position - player_pos
+						hit_direction = Vector3.normalize(hit_direction)
+						local player = Managers.player:owner(player_unit)
+						local is_player = player and player:is_player_controlled()
 
-							self:_explode_spirit(unit)
-
-							light_unit.unit = nil
+						if is_player then
+							DamageUtils.add_damage_network_player(damage_profile, nil, power_level, player_unit, unit, "full", player_pos, hit_direction, "undefined", nil, 0, false, nil, false, 0, 1)
 						end
+
+						self:_explode_spirit(unit)
+
+						light_unit.unit = nil
 					end
 				end
-			else
-				self:_explode_spirit(unit)
-
-				light_unit.unit = nil
 			end
 		end
 	end
@@ -208,14 +201,11 @@ end
 
 EventLightSpawnerExtension._activate = function (self)
 	self._active = true
-	local players = Managers.player:human_and_bot_players()
-	local light_unit_index = 1
+	local hero_side = Managers.state.side:get_side_from_name("heroes")
+	local players = hero_side.PLAYER_AND_BOT_UNITS
 
-	for _, player in pairs(players) do
-		for i = 1, self._num_units_per_player, 1 do
-			self._units[light_unit_index].chase_target = player.player_unit
-			light_unit_index = light_unit_index + 1
-		end
+	for index, player in pairs(players) do
+		self._units[index].chase_target = player
 	end
 end
 
@@ -248,36 +238,42 @@ EventLightSpawnerExtension._explode_spirit = function (self, unit)
 	Managers.state.unit_spawner:mark_for_deletion(unit)
 end
 
-EventLightSpawnerExtension.hot_join_sync = function (self, sender)
+EventLightSpawnerExtension._sync_light_units = function (self)
 	if not self.is_server then
 		return
 	end
 
 	local units = self._units
-	local players = Managers.player:human_and_bot_players()
+	local hero_side = Managers.state.side:get_side_from_name("heroes")
+	local players = hero_side.PLAYER_AND_BOT_UNITS
 
-	for _, player in pairs(players) do
-		for i = 1, self._num_units_per_player, 1 do
-			local player_unit = player.player_unit
-			local potential_unit, is_target = nil
+	for _, light_unit in ipairs(units) do
+		if not light_unit.chase_target or not Unit.alive(light_unit.chase_target) then
+			light_unit.chase_target = nil
+		end
+	end
 
-			for _, light_unit in ipairs(units) do
-				if light_unit.chase_target then
-					if light_unit.chase_target == player_unit then
-						is_target = true
+	for _, player_unit in pairs(players) do
+		local available_unit, is_target = nil
 
-						break
-					end
-				else
-					potential_unit = potential_unit or light_unit
+		for _, light_unit in ipairs(units) do
+			if light_unit.chase_target then
+				if light_unit.chase_target == player_unit then
+					is_target = true
+
+					break
 				end
+			else
+				available_unit = available_unit or light_unit
 			end
+		end
 
-			if not is_target and potential_unit then
-				self:_add_to_spawn_pool(potential_unit.id)
+		if not is_target and available_unit then
+			self:_add_to_spawn_pool(available_unit.id)
 
-				potential_unit.chase_target = player_unit
-			end
+			available_unit.chase_target = player_unit
+
+			break
 		end
 	end
 end

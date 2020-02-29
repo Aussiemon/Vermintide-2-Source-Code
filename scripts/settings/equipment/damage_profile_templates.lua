@@ -3988,6 +3988,35 @@ DamageProfileTemplates.cannonball_impact = {
 		}
 	}
 }
+DamageProfileTemplates.nurgle_ball = {
+	charge_value = "grenade",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			3,
+			3,
+			1
+		},
+		impact = {
+			1,
+			0.5,
+			100,
+			1,
+			1
+		}
+	},
+	default_target = {
+		damage_type = "cutting",
+		attack_template = "nurgle_ball",
+		power_distribution = {
+			attack = 0.5,
+			impact = 2
+		}
+	}
+}
 DamageProfileTemplates.heavens_lightning_strike = {
 	charge_value = "grenade",
 	is_explosion = true,

@@ -25,9 +25,33 @@ BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 	end
 end
 
-BTLeaveHooks.wave_summoning_ends = function (unit, blackboard, t)
-	blackboard.is_summoning = false
-	blackboard.wave_cooldown = blackboard.wave_total_cooldown
+BTLeaveHooks.kill_unit = function (unit, blackboard, t)
+	if Unit.alive(unit) then
+		local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
+		if health_extension and health_extension:is_alive() then
+			health_extension:die("forced")
+		end
+	end
+end
+
+BTLeaveHooks.unclamp_health = function (unit, blackboard, t)
+	local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
+	health_extension:set_health_clamp_min(nil)
+end
+
+BTLeaveHooks.ring_summoning_ends = function (unit, blackboard, t)
+	blackboard.ring_summonings_finished = blackboard.ring_summonings_finished + 1
+	blackboard.ring_cooldown = blackboard.ring_total_cooldown
+end
+
+BTLeaveHooks.charge_ends = function (unit, blackboard, t)
+	blackboard.charge_cooldown = blackboard.charge_total_cooldown
+end
+
+BTLeaveHooks.teleport_ends = function (unit, blackboard, t)
+	blackboard.teleport_cooldown = blackboard.teleport_total_cooldown
 end
 
 BTLeaveHooks.summoning_ends = function (unit, blackboard, t)
@@ -44,22 +68,6 @@ BTLeaveHooks.sorcerer_next_phase = function (unit, blackboard, t)
 	else
 		blackboard.phase = "defensive_completed"
 	end
-end
-
-BTLeaveHooks.sorcerer_drachenfels_go_offensive = function (unit, blackboard, t)
-	blackboard.mode = "offensive"
-end
-
-BTLeaveHooks.sorcerer_drachenfels_go_defensive = function (unit, blackboard, t)
-	blackboard.mode = "defensive"
-	blackboard.phase = "defensive_starts"
-	blackboard.setup_done = true
-end
-
-BTLeaveHooks.sorcerer_drachenfels_re_enter_defensive = function (unit, blackboard, t)
-	blackboard.mode = "defensive"
-	blackboard.phase = "defensive_starts"
-	blackboard.transition_done = true
 end
 
 BTLeaveHooks.sorcerer_setup_done = function (unit, blackboard, t)
@@ -258,6 +266,16 @@ BTLeaveHooks.beastmen_standard_bearer_leave_move_and_plant_standard = function (
 	blackboard.stagger = nil
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	health_extension.is_invincible = false
+end
+
+for _, dlc in pairs(DLCSettings) do
+	local bt_leave_hooks = dlc.bt_leave_hooks
+
+	if bt_leave_hooks then
+		for hook_name, hook_func in pairs(bt_leave_hooks) do
+			BTLeaveHooks[hook_name] = hook_func
+		end
+	end
 end
 
 return

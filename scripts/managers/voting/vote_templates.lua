@@ -377,6 +377,7 @@ VoteTemplates = {
 					Managers.twitch:disconnect()
 				end
 
+				Managers.matchmaking:set_local_quick_game(quick_game)
 				Managers.mechanism:reset_choose_next_state()
 
 				local matchmaking_manager = Managers.matchmaking

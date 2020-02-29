@@ -25,6 +25,7 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_aborted = false
 	blackboard.target_speed = 0
 	blackboard.attack_token = true
+	blackboard.play_sound_delay = t + (action.sound_delay or 0)
 
 	if action.blocked_anim then
 		blackboard.blocked_anim = action.blocked_anim
@@ -212,6 +213,18 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 
 	if (blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t) or (not blackboard.attack_finished_t and blackboard.attack_finished) then
 		return "done"
+	end
+
+	if blackboard.play_sound_delay and blackboard.play_sound_delay < t then
+		local sound_event = blackboard.action.sound_event
+
+		if sound_event then
+			local audio_system = Managers.state.entity:system("audio_system")
+
+			audio_system:play_audio_unit_event(sound_event, unit)
+		end
+
+		blackboard.play_sound_delay = nil
 	end
 
 	if blackboard.moving_attack then

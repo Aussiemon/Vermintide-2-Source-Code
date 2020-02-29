@@ -19,6 +19,12 @@ BTDefensiveIdleAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.move_state = "idle"
 
+	if action.sound_event then
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_audio_unit_event(action.sound_event, unit)
+	end
+
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 

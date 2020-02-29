@@ -535,6 +535,43 @@ ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, s
 	return false
 end
 
+ConflictUtils.get_furthest_pos_from_pos_on_circle = function (nav_world, center_pos, dist, spread, tries, avoid_pos)
+	local positions = {}
+
+	for i = 1, tries, 1 do
+		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
+		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
+		pos = ConflictUtils.find_center_tri(nav_world, pos)
+
+		if pos then
+			positions[#positions + 1] = pos
+		end
+	end
+
+	local max_dist = (dist + 0.5 * spread + 1) * 2 * (dist + 0.5 * spread + 1) * 2
+	local furthest_pos = nil
+	local furthest_distance = 0
+
+	for i, pos in ipairs(positions) do
+		if not furthest_pos then
+			furthest_pos = pos
+		elseif pos then
+			local distance = Vector3.distance_squared(avoid_pos, pos)
+
+			if furthest_distance < distance and distance <= max_dist then
+				furthest_pos = pos
+				furthest_distance = distance
+			end
+		end
+	end
+
+	if furthest_pos then
+		return furthest_pos
+	end
+
+	return false
+end
+
 ConflictUtils.get_spawn_pos_on_circle_with_func = function (nav_world, center_pos, dist, spread, tries, filter_func, filter_data)
 	for i = 1, tries, 1 do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)

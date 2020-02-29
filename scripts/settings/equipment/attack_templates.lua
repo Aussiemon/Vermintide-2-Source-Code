@@ -720,6 +720,10 @@ AttackTemplates = {
 		stagger_value = 1,
 		damage_type = "death_explosion"
 	},
+	nurgle_ball = {
+		stagger_value = 1,
+		damage_type = "cutting"
+	},
 	blade_storm = {
 		sound_type = "light",
 		damage_type = "blade_storm"

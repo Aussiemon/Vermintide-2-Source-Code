@@ -131,6 +131,9 @@ MatchmakingManager.init = function (self, params)
 	self.party_owned_dlcs = {}
 	self._level_weights = {}
 	self._quick_game = params.quick_game
+
+	self:set_local_quick_game(params.local_quick_game)
+
 	self.handshaker_host = MatchmakingHandshakerHost:new(self.network_transmit)
 
 	if not DEDICATED_SERVER then
@@ -1046,6 +1049,7 @@ MatchmakingManager.find_game = function (self, search_config)
 end
 
 MatchmakingManager.cancel_matchmaking = function (self)
+	self:set_local_quick_game(false)
 	mm_printf("Cancelling matchmaking")
 
 	local is_matchmaking = self:is_game_matchmaking()
@@ -1080,7 +1084,7 @@ MatchmakingManager.cancel_matchmaking = function (self)
 			local time_taken = t - started_matchmaking_t
 			local using_strict_matchmaking = self.state_context.search_config.strict_matchmaking
 
-			Managers.telemetry.events:matchmaking_cancelled(player, time_taken)
+			Managers.telemetry.events:matchmaking_cancelled(player, time_taken, self.state_context.search_config)
 		end
 	end
 
@@ -1206,6 +1210,7 @@ MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, 
 
 			table.clear(self._host_matchmaking_data)
 			self:_change_state(MatchmakingStateIdle, self.params, {})
+			self:set_local_quick_game(false)
 		end
 	end
 end
@@ -2059,7 +2064,11 @@ MatchmakingManager.is_game_private = function (self)
 end
 
 MatchmakingManager.set_local_quick_game = function (self, quick_game)
-	self._quick_game = quick_game
+	self._local_quick_game = quick_game or false
+end
+
+MatchmakingManager.is_local_quick_game = function (self)
+	return self._local_quick_game
 end
 
 MatchmakingManager.set_quick_game = function (self, quick_game)

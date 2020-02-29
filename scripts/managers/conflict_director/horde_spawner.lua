@@ -86,7 +86,7 @@ HordeSpawner.execute_fallback = function (self, horde_type, side_id, fallback, r
 	end
 end
 
-HordeSpawner.execute_event_horde = function (self, t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings)
+HordeSpawner.execute_event_horde = function (self, t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
 	local composition = nil
 
 	fassert(side_id, "Missing side id in event horde")
@@ -113,7 +113,9 @@ HordeSpawner.execute_event_horde = function (self, t, terror_event_id, side_id, 
 		group_template = group_template,
 		group_id = group_template and group_template.id,
 		strictly = strictly_not_close_to_players,
+		use_closest_spawners = use_closest_spawners,
 		variant = variant,
+		source_unit = source_unit,
 		sound_settings = sound_settings,
 		side_id = side_id
 	}
@@ -1255,7 +1257,7 @@ end
 HordeSpawner.update_event_horde = function (self, horde, t)
 	if not horde.started then
 		if horde.start_time < t then
-			local success, amount = self.spawner_system:spawn_horde_from_terror_event_id(horde.terror_event_id, horde.variant, horde.limit_spawners, horde.group_template, horde.strictly, horde.side_id)
+			local success, amount = self.spawner_system:spawn_horde_from_terror_event_id(horde.terror_event_id, horde.variant, horde.limit_spawners, horde.group_template, horde.strictly, horde.side_id, horde.use_closest_spawners, horde.source_unit)
 
 			if success then
 				horde.started = true

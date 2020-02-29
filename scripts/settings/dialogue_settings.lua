@@ -7,7 +7,12 @@ DialogueSettings.auto_load_files = {
 	"dialogues/generated/empire_soldier_honduras",
 	"dialogues/generated/special_occasions_honduras",
 	"dialogues/generated/enemies",
-	"dialogues/generated/ping_dialogues_honduras"
+	"dialogues/generated/ping_dialogues_honduras",
+	"dialogues/generated/empire_soldier_generic_vo",
+	"dialogues/generated/wood_elf_generic_vo",
+	"dialogues/generated/bright_wizard_generic_vo",
+	"dialogues/generated/dwarf_ranger_generic_vo",
+	"dialogues/generated/witch_hunter_generic_vo"
 }
 DialogueSettings.level_specific_load_files = {
 	whitebox_climb = {
@@ -209,6 +214,7 @@ DialogueSettings.story_start_delay = 60
 DialogueSettings.story_tick_time = 10
 DialogueSettings.ambush_delay = 5
 DialogueSettings.vector_delay = 12
+DialogueSettings.sound_event_default_length = 3.4567
 DialogueSettings.breed_types_trigger_on_spawn = {
 	chaos_troll = true,
 	chaos_spawn = true,
@@ -710,6 +716,33 @@ DialogueSettings.dialogue_category_config = {
 			cut_scene = true,
 			seen_items = true,
 			cut_scene_interrupt_two = true,
+			player_alerts = true,
+			enemy_alerts_high = true
+		}
+	},
+	story_talk_must_reply = {
+		mutually_exclusive = false,
+		interrupted_by = {
+			level_talk_must_play = true,
+			player_alerts_boss = true
+		},
+		playable_during_category = {
+			enemy_alerts = true,
+			npc_talk = true,
+			help_talk = true,
+			knocked_down_override = true,
+			player_feedback = true,
+			guidance = true,
+			default = true,
+			casual_talk = true,
+			activate_ability = true,
+			story_talk = true,
+			level_talk = true,
+			enemy_basic_prio = true,
+			story_talk_vce = true,
+			enemy_high_prio = true,
+			npc_talk_interrupt_special = true,
+			seen_items = true,
 			player_alerts = true,
 			enemy_alerts_high = true
 		}

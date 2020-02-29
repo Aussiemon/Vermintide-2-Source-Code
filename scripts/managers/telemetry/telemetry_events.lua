@@ -35,6 +35,8 @@ TelemetryEvents.game_started = function (self, data)
 
 	params.player_id = data.player_id
 	params.peer_type = data.peer_type
+	params.country_code = data.country_code
+	params.quick_game = data.quick_game
 	params.game_mode = data.game_mode
 	params.level_key = data.level_key
 	params.difficulty = data.difficulty
@@ -101,8 +103,8 @@ TelemetryEvents.ai_despawned = function (self, breed, position, reason)
 	self.manager:register_event("ai_despawned", params)
 end
 
-TelemetryEvents.matchmaking_search = function (self, data)
-	if data.player.remote then
+TelemetryEvents.matchmaking_search = function (self, player, data)
+	if player.remote then
 		return
 	end
 
@@ -112,14 +114,14 @@ TelemetryEvents.matchmaking_search = function (self, data)
 	params.game_mode = data.game_mode
 	params.level_key = data.level_key
 	params.difficulty = data.difficulty
-	params.country_code = data.country_code
 	params.quick_game = data.quick_game
-	params.strict_matchmaking = data.strict_matchmaking
+	params.join_mode = data.join_mode
+	params.private_game = data.private_game
 
 	self.manager:register_event("matchmaking", params)
 end
 
-TelemetryEvents.matchmaking_search_timeout = function (self, player, time_taken)
+TelemetryEvents.matchmaking_search_timeout = function (self, player, time_taken, data)
 	if player.remote then
 		return
 	end
@@ -128,11 +130,17 @@ TelemetryEvents.matchmaking_search_timeout = function (self, player, time_taken)
 
 	params.state = "search_timeout"
 	params.time_taken = time_taken
+	params.game_mode = data.game_mode
+	params.level_key = data.level_key
+	params.difficulty = data.difficulty
+	params.quick_game = data.quick_game
+	params.join_mode = data.join_mode
+	params.private_game = data.private_game
 
 	self.manager:register_event("matchmaking", params)
 end
 
-TelemetryEvents.matchmaking_cancelled = function (self, player, time_taken)
+TelemetryEvents.matchmaking_cancelled = function (self, player, time_taken, data)
 	if player.remote then
 		return
 	end
@@ -141,11 +149,17 @@ TelemetryEvents.matchmaking_cancelled = function (self, player, time_taken)
 
 	params.state = "cancelled"
 	params.time_taken = time_taken
+	params.game_mode = data.game_mode
+	params.level_key = data.level_key
+	params.difficulty = data.difficulty
+	params.quick_game = data.quick_game
+	params.join_mode = data.join_mode
+	params.private_game = data.private_game
 
 	self.manager:register_event("matchmaking", params)
 end
 
-TelemetryEvents.matchmaking_hosting = function (self, player, time_taken)
+TelemetryEvents.matchmaking_hosting = function (self, player, time_taken, data)
 	if player.remote then
 		return
 	end
@@ -154,11 +168,17 @@ TelemetryEvents.matchmaking_hosting = function (self, player, time_taken)
 
 	params.state = "hosting"
 	params.time_taken = time_taken
+	params.game_mode = data.game_mode
+	params.level_key = data.level_key
+	params.difficulty = data.difficulty
+	params.quick_game = data.quick_game
+	params.join_mode = data.join_mode
+	params.private_game = data.private_game
 
 	self.manager:register_event("matchmaking", params)
 end
 
-TelemetryEvents.matchmaking_starting_game = function (self, player, time_taken)
+TelemetryEvents.matchmaking_starting_game = function (self, player, time_taken, data)
 	if player.remote then
 		return
 	end
@@ -167,11 +187,17 @@ TelemetryEvents.matchmaking_starting_game = function (self, player, time_taken)
 
 	params.state = "starting_game"
 	params.time_taken = time_taken
+	params.game_mode = data.game_mode
+	params.level_key = data.level_key
+	params.difficulty = data.difficulty
+	params.quick_game = data.quick_game
+	params.join_mode = data.join_mode
+	params.private_game = data.private_game
 
 	self.manager:register_event("matchmaking", params)
 end
 
-TelemetryEvents.matchmaking_player_joined = function (self, player, time_taken, is_friend)
+TelemetryEvents.matchmaking_player_joined = function (self, player, time_taken, data)
 	if player.remote then
 		return
 	end
@@ -180,7 +206,12 @@ TelemetryEvents.matchmaking_player_joined = function (self, player, time_taken, 
 
 	params.state = "player_joined"
 	params.time_taken = time_taken
-	params.is_friend = is_friend
+	params.game_mode = data.game_mode
+	params.level_key = data.level_key
+	params.difficulty = data.difficulty
+	params.quick_game = data.quick_game
+	params.join_mode = data.join_mode
+	params.private_game = data.private_game
 
 	self.manager:register_event("matchmaking", params)
 end
@@ -212,7 +243,7 @@ TelemetryEvents.player_ammo_depleted = function (self, player, weapon_name, posi
 
 	table.clear(params)
 
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.weapon_name = weapon_name
 	params.position = position
 
@@ -226,7 +257,7 @@ TelemetryEvents.player_ammo_refilled = function (self, player, weapon_name, posi
 
 	table.clear(params)
 
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.weapon_name = weapon_name
 	params.position = position
 
@@ -241,7 +272,7 @@ TelemetryEvents.player_damaged = function (self, player, damage_type, damage_sou
 	table.clear(params)
 
 	params.hero = player:profile_display_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.damage_type = damage_type
 	params.damage_source = damage_source
 	params.damage_amount = damage_amount
@@ -258,7 +289,7 @@ TelemetryEvents.player_died = function (self, player, damage_type, damage_source
 	table.clear(params)
 
 	params.hero = player:profile_display_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.damage_type = damage_type
 	params.damage_source = damage_source
 	params.position = position
@@ -274,9 +305,9 @@ TelemetryEvents.player_healed_ally = function (self, healer, target, position)
 	table.clear(params)
 
 	params.healer_hero = healer:profile_display_name()
-	params.healer_is_bot = healer.is_bot
+	params.healer_is_bot = healer.bot_player == true
 	params.target_hero = target:profile_display_name()
-	params.target_is_bot = target.is_bot
+	params.target_is_bot = target.bot_player == true
 	params.position = position
 
 	self.manager:register_event("player_healed_ally", params)
@@ -290,7 +321,7 @@ TelemetryEvents.player_healed_self = function (self, player, position)
 	table.clear(params)
 
 	params.hero = player:profile_display_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.position = position
 
 	self.manager:register_event("player_healed_self", params)
@@ -304,7 +335,7 @@ TelemetryEvents.player_jumped = function (self, player, position)
 	table.clear(params)
 
 	params.hero = player:profile_display_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.position = position
 
 	self.manager:register_event("player_jumped", params)
@@ -319,7 +350,7 @@ TelemetryEvents.player_killed_ai = function (self, player, player_position, vict
 
 	params.hero = player:profile_display_name()
 	params.career = player:career_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.player_position = player_position
 	params.victim_position = victim_position
 	params.breed = breed
@@ -339,7 +370,7 @@ TelemetryEvents.player_knocked_down = function (self, player, damage_type, posit
 
 	params.hero = player:profile_display_name()
 	params.career = player:career_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.damage_type = damage_type
 	params.position = position
 
@@ -355,7 +386,7 @@ TelemetryEvents.player_pickup = function (self, player, pickup_name, pickup_spaw
 
 	params.hero = player:profile_display_name()
 	params.career = player:career_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.pickup_name = pickup_name
 	params.pickup_spawn_type = pickup_spawn_type
 	params.position = position
@@ -371,9 +402,9 @@ TelemetryEvents.player_revived = function (self, reviver, revivee, position)
 	table.clear(params)
 
 	params.reviver_hero = reviver:profile_display_name()
-	params.reviver_is_bot = reviver.is_bot
+	params.reviver_is_bot = reviver.bot_player == true
 	params.revivee_hero = revivee:profile_display_name()
-	params.revivee_is_bot = revivee.is_bot
+	params.revivee_is_bot = revivee.bot_player == true
 	params.position = position
 
 	self.manager:register_event("player_revived", params)
@@ -388,7 +419,7 @@ TelemetryEvents.player_spawned = function (self, player)
 
 	params.hero = player:profile_display_name()
 	params.career = player:career_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	local career_system = ScriptUnit.extension(player.player_unit, "career_system")
 	params.power_level = career_system:get_career_power_level()
 	local inventory_system = ScriptUnit.extension(player.player_unit, "inventory_system")
@@ -416,7 +447,7 @@ TelemetryEvents.player_used_item = function (self, player, item_name, position)
 
 	params.hero = player:profile_display_name()
 	params.career = player:career_name()
-	params.is_bot = player.is_bot
+	params.is_bot = player.bot_player == true
 	params.item_name = item_name
 	params.position = position
 

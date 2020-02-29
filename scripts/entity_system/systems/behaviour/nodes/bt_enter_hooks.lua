@@ -205,33 +205,6 @@ BTEnterHooks.on_chaos_exalted_sorcerer_intro_enter = function (unit, blackboard,
 	dialogue_input:trigger_networked_dialogue_event("ebh_intro", event_data)
 end
 
-BTEnterHooks.on_chaos_exalted_sorcerer_drachenfels_intro_enter = function (unit, blackboard, t)
-	local level_analysis = Managers.state.conflict.level_analysis
-	local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_intro
-
-	if node_units then
-		local node_unit = node_units[1]
-		local pos = unit_local_position(node_unit, 0)
-		local rot = Unit.local_rotation(node_unit, 0)
-		blackboard.quick_teleport_exit_pos = Vector3Box(pos)
-		blackboard.quick_teleport = true
-
-		Unit.set_local_rotation(unit, 0, rot)
-
-		local health_extension = ScriptUnit.extension(unit, "health_system")
-		health_extension.is_invincible = true
-	else
-		print("Found no generic AI node (sorcerer_boss_intro) for lord intro, ", unit)
-
-		blackboard.intro_timer = nil
-	end
-
-	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-	local event_data = FrameTable.alloc_table()
-
-	dialogue_input:trigger_networked_dialogue_event("ebh_intro", event_data)
-end
-
 BTEnterHooks.on_skaven_warlord_intro_enter = function (unit, blackboard, t)
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.skaven_warlord_intro_move_to
@@ -323,25 +296,6 @@ BTEnterHooks.dont_face_target_while_summoning = function (unit, blackboard, t)
 	blackboard.face_target_while_summoning = false
 end
 
-BTEnterHooks.sorcerer_drachenfels_begin_defensive_mode = function (unit, blackboard, t)
-	local data = {
-		stay_still = true,
-		end_time = math.huge
-	}
-	local call_position = setup_sorcerer_boss_spawning(unit, blackboard, data)
-	blackboard.spawning_allies = data
-	blackboard.quick_teleport_exit_pos = Vector3Box(call_position)
-	blackboard.quick_teleport = true
-	data.call_position = blackboard.quick_teleport_exit_pos
-	blackboard.has_call_position = true
-	blackboard.teleport_health_percent = blackboard.health_extension:current_health_percent() - 0.1
-	blackboard.spell_count = 0
-	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-	local event_data = FrameTable.alloc_table()
-
-	dialogue_input:trigger_networked_dialogue_event("ebh_summon", event_data)
-end
-
 BTEnterHooks.sorcerer_re_enter_defensive_mode = function (unit, blackboard, t)
 	local data = {
 		stay_still = true,
@@ -362,6 +316,27 @@ BTEnterHooks.sorcerer_re_enter_defensive_mode = function (unit, blackboard, t)
 	local event_data = FrameTable.alloc_table()
 
 	dialogue_input:trigger_networked_dialogue_event("ebh_summon", event_data)
+end
+
+BTEnterHooks.target_furthest_player_in_sight = function (unit, blackboard, t)
+	local side = Managers.state.side:get_side_from_name("heroes")
+	local player_units = side.PLAYER_AND_BOT_UNITS
+	local physics_world = blackboard.physics_world or World.get_data(blackboard.world, "physics_world")
+	local pos = POSITION_LOOKUP[unit]
+	local furthest_unit = nil
+	local furthest_distance = 0
+
+	for _, player_unit in pairs(player_units) do
+		local has_line_of_sight = PerceptionUtils.raycast_spine_to_spine(unit, player_unit, physics_world)
+		local distance = Vector3.distance_squared(pos, POSITION_LOOKUP[player_unit])
+
+		if has_line_of_sight and furthest_distance < distance then
+			furthest_unit = player_unit
+			furthest_distance = distance
+		end
+	end
+
+	blackboard.target_unit = furthest_unit or blackboard.target_unit
 end
 
 BTEnterHooks.sorcerer_spawn_horde = function (unit, blackboard, t)
@@ -395,6 +370,10 @@ BTEnterHooks.teleport_to_center = function (unit, blackboard, t)
 
 		return
 	end
+end
+
+BTEnterHooks.quick_teleport = function (unit, blackboard, t)
+	blackboard.quick_teleport = true
 end
 
 BTEnterHooks.summoning_starts = function (unit, blackboard, t)

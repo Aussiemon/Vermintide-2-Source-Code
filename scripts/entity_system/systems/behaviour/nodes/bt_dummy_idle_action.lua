@@ -26,7 +26,7 @@ BTDummyIdleAction.enter = function (self, unit, blackboard, t)
 		animation = randomize(action.idle_animation)
 	end
 
-	if blackboard.move_state ~= "idle" then
+	if blackboard.move_state ~= "idle" and not action.no_anim then
 		network_manager:anim_event(unit, animation)
 
 		blackboard.move_state = "idle"

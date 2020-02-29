@@ -101,8 +101,10 @@ local Unit_alive = Unit.alive
 
 BTIdleAction.run = function (self, unit, blackboard, t, dt)
 	local target_unit = blackboard.target_unit
+	local action = blackboard.action
+	local should_not_face_target = action and action.dont_face_target
 
-	if Unit_alive(target_unit) then
+	if Unit_alive(target_unit) and not should_not_face_target then
 		local rot = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 
 		blackboard.locomotion_extension:set_wanted_rotation(rot)

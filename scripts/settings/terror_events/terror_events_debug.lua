@@ -158,6 +158,13 @@ local terror_event_blueprints = {
 			breed_name = "chaos_exalted_sorcerer"
 		}
 	},
+	test_spawn_exalted_sorcerer_drachenfels = {
+		{
+			"spawn_at_raw",
+			spawner_id = "exalted_sorcerer_drachenfels_spawner",
+			breed_name = "chaos_exalted_sorcerer_drachenfels"
+		}
+	},
 	test_spawn_skaven_warlord = {
 		{
 			"spawn_at_raw",

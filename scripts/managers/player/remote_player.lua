@@ -202,8 +202,12 @@ RemotePlayer.destroy = function (self)
 		self._player_sync_data:destroy()
 	end
 
-	if self.is_server and self.game_object_id then
-		self.network_manager:destroy_game_object(self.game_object_id)
+	if self.is_server then
+		if self.game_object_id then
+			self.network_manager:destroy_game_object(self.game_object_id)
+		end
+
+		Managers.state.event:trigger("delete_limited_owned_pickups", self.peer_id)
 	end
 end
 

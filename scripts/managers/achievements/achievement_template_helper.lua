@@ -273,11 +273,10 @@ AchievementTemplateHelper.add_weapon_levels_challenge = function (achievements, 
 	achievements[id] = template
 end
 
-AchievementTemplateHelper.add_event_challenge = function (achievements, id, icon, dlc, id_xb1, id_ps4)
-	achievements[id] = {
+AchievementTemplateHelper.add_event_challenge = function (achievements, id, icon, description_args, dlc, id_xb1, id_ps4)
+	local template = {
 		display_completion_ui = true,
 		name = "achv_" .. id .. "_name",
-		desc = "achv_" .. id .. "_desc",
 		icon = icon or "achievement_trophy_" .. id,
 		required_dlc = dlc,
 		ID_XB1 = id_xb1,
@@ -286,6 +285,17 @@ AchievementTemplateHelper.add_event_challenge = function (achievements, id, icon
 			return statistics_db:get_persistent_stat(stats_id, id) > 0
 		end
 	}
+	local desc_id = "achv_" .. id .. "_desc"
+
+	if description_args then
+		template.desc = function ()
+			return string.format(Localize(desc_id), unpack(description_args))
+		end
+	else
+		template.desc = desc_id
+	end
+
+	achievements[id] = template
 end
 
 AchievementTemplateHelper.add_levels_complete_challenge = function (achievements, id, levels, difficulty_rank, icon, dlc, id_xb1, id_ps4)
