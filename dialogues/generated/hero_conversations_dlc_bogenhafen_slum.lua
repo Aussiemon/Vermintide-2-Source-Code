@@ -2257,6 +2257,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.9458959102631
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_four_02"
 			}
@@ -2275,6 +2278,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.701812505722
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_twelve_03"
@@ -2295,6 +2301,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.2747292518616
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_seven_02"
 			}
@@ -2313,6 +2322,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 0.9911875128746
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_eight_01"
@@ -2333,6 +2345,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9171249866486
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_eight_01"
 			}
@@ -2351,6 +2366,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2771666049957
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_ten_02"
@@ -2371,6 +2389,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3376665115356
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_ten_01"
 			}
@@ -2389,6 +2410,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8882083892822
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_seven_01"
@@ -2409,6 +2433,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.6628541946411
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_three_01"
 			}
@@ -2427,6 +2454,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4317917823791
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_seven_02"
@@ -2447,6 +2477,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.4869375228882
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_six_01"
 			}
@@ -2465,6 +2498,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0140416622162
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_eleven_01"
@@ -2485,6 +2521,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.3885834217072
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_one_02"
 			}
@@ -2503,6 +2542,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.39297914505
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_twelve_02"
@@ -2523,6 +2565,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.815708398819
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_one_01"
 			}
@@ -2541,6 +2586,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0868124961853
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_four_01"
@@ -2561,6 +2609,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5505623817444
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_twelve_02"
 			}
@@ -2579,6 +2630,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.320770740509
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_two_01"
@@ -2599,6 +2653,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.9904999732971
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_eight_02"
 			}
@@ -2617,6 +2674,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3948333263397
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_one_02"
@@ -2637,6 +2697,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.747624874115
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_six_01"
 			}
@@ -2655,6 +2718,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3063335418701
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_five_01"
@@ -2675,6 +2741,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7927916049957
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_three_01"
 			}
@@ -2693,6 +2762,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1161458492279
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_eleven_02"
@@ -2713,6 +2785,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.7458748817444
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_eleven_01"
 			}
@@ -2731,6 +2806,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2968335151672
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_six_02"
@@ -2751,6 +2829,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.6445417404175
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_ten_02"
 			}
@@ -2769,6 +2850,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4000000953674
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_ten_01"
@@ -2789,6 +2873,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.4561877250671
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_nine_02"
 			}
@@ -2807,6 +2894,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3036665916443
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_nine_01"
@@ -2827,6 +2917,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.3647499084473
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_two_02"
 			}
@@ -2845,6 +2938,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8565626144409
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_three_01"
@@ -2865,6 +2961,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7324376106262
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_one_01"
 			}
@@ -2883,6 +2982,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.8478956222534
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_nine_01"
@@ -2903,6 +3005,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.3747081756592
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_three_01"
 			}
@@ -2921,6 +3026,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4518749713898
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_twelve_01"
@@ -2941,6 +3049,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.4991874694824
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_four_01"
 			}
@@ -2959,6 +3070,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3715000152588
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_slum_story_four_01"
@@ -2979,6 +3093,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8542709350586
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_two_02"
 			}
@@ -2997,6 +3114,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8032917976379
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_five_01"
@@ -3017,6 +3137,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.7289375066757
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_slum_story_five_01"
 			}
@@ -3035,6 +3158,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3549585342407
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_seven_01"
@@ -3055,6 +3181,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.3835000991821
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_slum_story_five_02"
 			}
@@ -3073,6 +3202,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 9.0761671066284
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_slum_story_two_01"
@@ -3093,6 +3225,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.1581041812897
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_twelve_01"
 			}
@@ -3111,6 +3246,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1567916870117
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_slum_story_six_02"

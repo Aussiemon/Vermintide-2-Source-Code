@@ -1908,6 +1908,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.7546665668488
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_four_01"
 			}
@@ -1926,6 +1929,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5626459121704
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_on_the_way_five_02"
@@ -1946,6 +1952,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.4620625972748
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_on_the_way_three_01"
 			}
@@ -1964,6 +1973,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2992084026337
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_on_the_way_two_02"
@@ -1984,6 +1996,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.5642499923706
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_nine_01"
 			}
@@ -2002,6 +2017,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2130000591278
 			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_eight_02"
@@ -2022,6 +2040,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.567271232605
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_nine_01"
 			}
@@ -2040,6 +2061,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7313957214356
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_on_the_way_one_02"
@@ -2060,6 +2084,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.3976874351502
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_on_the_way_one_02"
 			}
@@ -2078,6 +2105,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0330419540405
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_story_seven_02"
@@ -2098,6 +2128,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.7048540115356
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_on_the_way_one_01"
 			}
@@ -2116,6 +2149,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0683541297913
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_on_the_way_one_01"
@@ -2136,6 +2172,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0714998245239
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_on_the_way_two_01"
 			}
@@ -2154,6 +2193,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2088332176208
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_river_one_01"
@@ -2174,6 +2216,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.8752918243408
+			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_seven_01"
 			}
@@ -2192,6 +2237,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.249499797821
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_eight_01"
@@ -2212,6 +2260,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.0754792690277
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_river_one_02"
 			}
@@ -2230,6 +2281,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.562479019165
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_nine_02"
@@ -2250,6 +2304,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 9.3509168624878
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_eight_02"
 			}
@@ -2268,6 +2325,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.4885417222977
 			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_seven_03"
@@ -2288,6 +2348,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.5929789543152
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_on_the_way_five_02"
 			}
@@ -2306,6 +2369,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0198750495911
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_on_the_way_two_01"
@@ -2326,6 +2392,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9148958921433
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_on_the_way_five_01"
 			}
@@ -2344,6 +2413,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3658957481384
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_story_seven_03"
@@ -2364,6 +2436,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9908958673477
+			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_eight_01"
 			}
@@ -2382,6 +2457,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1050415039063
 			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_four_01"
@@ -2402,6 +2480,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.741229057312
+			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_four_02"
 			}
@@ -2420,6 +2501,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9789166450501
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_four_02"
@@ -2440,6 +2524,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.4567
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_story_on_the_way_three_02"
 			}
@@ -2458,6 +2545,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 9.8548545837402
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_on_the_way_three_02"
@@ -2478,6 +2568,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.6878333091736
+			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_on_the_way_three_01"
 			}
@@ -2496,6 +2589,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.3393541574478
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_six_02"
@@ -2516,6 +2612,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.2925000190735
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_river_one_02"
 			}
@@ -2534,6 +2633,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.6843538284302
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_river_one_03"
@@ -2554,6 +2656,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.0833120346069
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_story_six_02"
 			}
@@ -2572,6 +2677,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8703126907349
 			},
 			localization_strings = {
 				[1.0] = "pes_level_fort_story_seven_02"
@@ -2592,6 +2700,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 8.0789794921875
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_story_six_01"
 			}
@@ -2610,6 +2721,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4214792251587
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_on_the_way_two_02"
@@ -2630,6 +2744,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0516457557678
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_story_six_01"
 			}
@@ -2649,6 +2766,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.2733335494995
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_fort_story_on_the_way_five_01"
 			}
@@ -2667,6 +2787,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 1.2875624895096
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_story_river_one_01"

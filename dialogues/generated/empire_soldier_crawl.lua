@@ -1586,9 +1586,9 @@ return function ()
 	add_dialogues({
 		pes_crawl_cheers = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1609,6 +1609,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				5.8998970985413,
+				5.0097708702087,
+				3.5391249656677,
+				7.4641456604004
+			},
 			localization_strings = {
 				"pes_crawl_cheers_01",
 				"pes_crawl_cheers_02",
@@ -1619,9 +1625,9 @@ return function ()
 		},
 		pes_crawl_heard_us = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1636,6 +1642,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.27308344841,
+				[2.0] = 6.1093125343323
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_heard_us_02",
 				[2.0] = "pes_crawl_heard_us_03"
@@ -1644,9 +1654,9 @@ return function ()
 		},
 		pes_crawl_end_event_keep_quiet = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1660,6 +1670,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4045414924622,
+				[2.0] = 4.3557710647583
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_end_event_keep_quiet_01",
@@ -1682,15 +1696,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.2838957309723
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_loud_crash_reply_01"
 			}
 		},
 		pes_crawl_spot_first_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1705,6 +1722,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5192918777466,
+				[2.0] = 3.9707500934601
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_spot_first_pub_01",
 				[2.0] = "pes_crawl_spot_first_pub_03"
@@ -1713,9 +1734,9 @@ return function ()
 		},
 		pes_crawl_spot_third_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1730,6 +1751,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.6181039810181,
+				[2.0] = 6.9617085456848
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_spot_third_pub_03",
 				[2.0] = "pes_crawl_spot_third_pub_04"
@@ -1738,9 +1763,9 @@ return function ()
 		},
 		pes_crawl_spot_first_pub_closer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1755,6 +1780,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 3.0250000953674,
+				[2.0] = 5.2533960342407
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_spot_first_pub_closer_02",
 				[2.0] = "pes_crawl_spot_first_pub_closer_03"
@@ -1763,9 +1792,9 @@ return function ()
 		},
 		pes_crawl_end_event_find_good_beer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1780,6 +1809,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.9093332290649,
+				[2.0] = 4.1677498817444
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_end_event_find_good_beer_01",
 				[2.0] = "pes_crawl_end_event_find_good_beer_04"
@@ -1788,9 +1821,9 @@ return function ()
 		},
 		pes_level_crawl_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1804,6 +1837,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7551875114441,
+				[2.0] = 4.5842499732971
 			},
 			localization_strings = {
 				[1.0] = "pes_level_crawl_intro_c_01",
@@ -1826,15 +1863,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.034437417984
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_loud_crash_interact_01"
 			}
 		},
 		pes_crawl_get_into_third_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1849,6 +1889,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 7.4240832328796,
+				[2.0] = 4.2167291641235
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_get_into_third_pub_02",
 				[2.0] = "pes_crawl_get_into_third_pub_03"
@@ -1857,9 +1901,9 @@ return function ()
 		},
 		pes_crawl_end_event_tunnel = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1874,6 +1918,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9669375419617,
+				[2.0] = 2.8640208244324
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_end_event_tunnel_03",
 				[2.0] = "pes_crawl_end_event_tunnel_04"
@@ -1882,9 +1930,9 @@ return function ()
 		},
 		pes_level_crawl_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1899,6 +1947,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.7459373474121,
+				[2.0] = 4.6240835189819
+			},
 			localization_strings = {
 				[1.0] = "pes_level_crawl_intro_a_01",
 				[2.0] = "pes_level_crawl_intro_a_02"
@@ -1907,9 +1959,9 @@ return function ()
 		},
 		pes_crawl_head_for_third_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1924,6 +1976,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.5973334312439,
+				[2.0] = 7.4273543357849
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_head_for_third_pub_02",
 				[2.0] = "pes_crawl_head_for_third_pub_03"
@@ -1932,9 +1988,9 @@ return function ()
 		},
 		pes_crawl_pub_horde_end = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1949,6 +2005,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9799790382385,
+				[2.0] = 4.376437664032
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_pub_horde_end_01",
 				[2.0] = "pes_crawl_pub_horde_end_04"
@@ -1957,9 +2017,9 @@ return function ()
 		},
 		pes_level_crawl_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1974,6 +2034,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.1999998092651,
+				[2.0] = 1.9932291507721
+			},
 			localization_strings = {
 				[1.0] = "pes_level_crawl_intro_b_01",
 				[2.0] = "pes_level_crawl_intro_b_02"
@@ -1982,9 +2046,9 @@ return function ()
 		},
 		pes_crawl_get_out_soon = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1999,6 +2063,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6336040496826,
+				[2.0] = 2.511479139328
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_get_out_soon_01",
 				[2.0] = "pes_crawl_get_out_soon_02"
@@ -2007,9 +2075,9 @@ return function ()
 		},
 		pes_crawl_pub_door = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2024,6 +2092,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.2937707901001,
+				[2.0] = 4.4610624313355
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_pub_door_01",
 				[2.0] = "pes_crawl_pub_door_02"
@@ -2032,9 +2104,9 @@ return function ()
 		},
 		pes_crawl_pub_destroyed_reaction = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -2067,6 +2139,16 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.2906041145325,
+				1.0472291707993,
+				1.5232291221619,
+				1.8193541765213,
+				1.3826041221619,
+				1.2351458072662,
+				1.0828750133514,
+				1.6399999856949
+			},
 			localization_strings = {
 				"pes_curse_25",
 				"pes_curse_26",
@@ -2081,9 +2163,9 @@ return function ()
 		},
 		pes_crawl_old_path_blocked = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2097,6 +2179,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6227083206177,
+				[2.0] = 5.3544373512268
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_old_path_blocked_01",
@@ -2106,9 +2192,9 @@ return function ()
 		},
 		pes_crawl_pub_destroyed = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2122,6 +2208,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2061250209808,
+				[2.0] = 4.9464998245239
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_pub_destroyed_01",
@@ -2131,9 +2221,9 @@ return function ()
 		},
 		pes_crawl_head_for_second_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2147,6 +2237,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0247707366943,
+				[2.0] = 4.7900834083557
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_head_for_second_pub_01",
@@ -2156,9 +2250,9 @@ return function ()
 		},
 		pes_crawl_end_event_waystone = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2172,6 +2266,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5781874656677,
+				[2.0] = 5.1405210494995
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_end_event_waystone_01",
@@ -2181,9 +2279,9 @@ return function ()
 		},
 		pes_crawl_pub_district_sign = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2197,6 +2295,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6612915992737,
+				[2.0] = 7.3268332481384
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_pub_district_sign_03",
@@ -2206,9 +2308,9 @@ return function ()
 		},
 		pes_crawl_mid_level_banter = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2222,6 +2324,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4152498245239,
+				[2.0] = 6.034791469574
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_mid_level_banter_01",
@@ -2231,9 +2337,9 @@ return function ()
 		},
 		pes_crawl_spot_second_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2247,6 +2353,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.8308749198914,
+				[2.0] = 5.1720209121704
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_spot_second_pub_01",
@@ -2256,9 +2366,9 @@ return function ()
 		},
 		pes_crawl_end_event_keep_running = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2272,6 +2382,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.671041727066,
+				[2.0] = 2.8433332443237
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_end_event_keep_running_03",
@@ -2281,9 +2395,9 @@ return function ()
 		},
 		pes_crawl_loud_crash_end_reply = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2297,6 +2411,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3961458206177,
+				[2.0] = 3.0854375362396
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_loud_crash_end_reply_01",
@@ -2306,9 +2424,9 @@ return function ()
 		},
 		pes_crawl_head_for_first_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2322,6 +2440,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9991874694824,
+				[2.0] = 6.7519583702087
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_head_for_first_pub_02",
@@ -2331,9 +2453,9 @@ return function ()
 		},
 		pes_crawl_have_a_drink = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2347,6 +2469,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.279833316803,
+				[2.0] = 4.9051251411438
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_have_a_drink_01",
@@ -2356,9 +2482,9 @@ return function ()
 		},
 		pes_crawl_end_event_way_open = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2372,6 +2498,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2476665973663,
+				[2.0] = 2.674708366394
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_end_event_way_open_01",
@@ -2381,9 +2511,9 @@ return function ()
 		},
 		pes_crawl_slaughter = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2397,6 +2527,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0691251754761,
+				[2.0] = 4.0572290420532
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_slaughter_02",
@@ -2406,9 +2540,9 @@ return function ()
 		},
 		pes_crawl_pub_brazers = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2423,6 +2557,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 5.2848958969116,
+				[2.0] = 7.1754374504089
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_pub_brazers_01",
 				[2.0] = "pes_crawl_pub_brazers_03"
@@ -2431,9 +2569,9 @@ return function ()
 		},
 		pes_crawl_upstairs = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2448,6 +2586,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.5808124542236,
+				[2.0] = 2.6798958778381
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_upstairs_01",
 				[2.0] = "pes_crawl_upstairs_04"
@@ -2456,9 +2598,9 @@ return function ()
 		},
 		pes_crawl_shortcut = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2473,6 +2615,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.2820625305176,
+				[2.0] = 4.2898960113525
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_shortcut_02",
 				[2.0] = "pes_crawl_shortcut_03"
@@ -2481,9 +2627,9 @@ return function ()
 		},
 		pes_crawl_tunnel_passage = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2497,6 +2643,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7903957366943,
+				[2.0] = 5.4598956108093
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_tunnel_passage_02",

@@ -1046,9 +1046,9 @@ return function ()
 	add_dialogues({
 		pdr_level_ussingen_spotting_manor = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1069,6 +1069,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.5634167194366,
+				3.1163125038147,
+				1.7638541460037,
+				3.8906042575836
+			},
 			localization_strings = {
 				"pdr_level_ussingen_spotting_manor_01",
 				"pdr_level_ussingen_spotting_manor_02",
@@ -1079,9 +1085,9 @@ return function ()
 		},
 		pdr_level_ussingen_doomed_town = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1102,6 +1108,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				5.8272709846497,
+				4.4617915153503,
+				5.5458960533142,
+				6.198625087738
+			},
 			localization_strings = {
 				"pdr_level_ussingen_doomed_town_01",
 				"pdr_level_ussingen_doomed_town_02",
@@ -1112,9 +1124,9 @@ return function ()
 		},
 		pdr_level_ussingen_cart_full = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1135,6 +1147,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.6781249046326,
+				2.8271250724792,
+				1.6243333816528,
+				3.8389999866486
+			},
 			localization_strings = {
 				"pdr_level_ussingen_cart_full_01",
 				"pdr_level_ussingen_cart_full_02",
@@ -1145,9 +1163,9 @@ return function ()
 		},
 		pdr_level_ussingen_cellar = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1168,6 +1186,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.3910624980927,
+				2.9229373931885,
+				3.8186874389648,
+				2.9054584503174
+			},
 			localization_strings = {
 				"pdr_level_ussingen_cellar_01",
 				"pdr_level_ussingen_cellar_02",
@@ -1178,9 +1202,9 @@ return function ()
 		},
 		pdr_ussingen_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1195,6 +1219,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.4579792022705,
+				[2.0] = 3.2961459159851
+			},
 			localization_strings = {
 				[1.0] = "pdr_ussingen_intro_c_01",
 				[2.0] = "pdr_ussingen_intro_c_02"
@@ -1203,9 +1231,9 @@ return function ()
 		},
 		pdr_level_ussingen_stockpile_burned = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1225,6 +1253,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				6.3266458511353,
+				4.8766665458679,
+				4.1472082138061,
+				5.0050001144409
 			},
 			localization_strings = {
 				"pdr_level_ussingen_stockpile_burned_01",
@@ -1236,9 +1270,9 @@ return function ()
 		},
 		pdr_level_ussingen_at_last_end = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1259,6 +1293,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.6397500038147,
+				5.1974792480469,
+				6.0971665382385,
+				3.6214582920074
+			},
 			localization_strings = {
 				"pdr_level_ussingen_at_last_end_01",
 				"pdr_level_ussingen_at_last_end_02",
@@ -1269,9 +1309,9 @@ return function ()
 		},
 		pdr_level_ussingen_hurry = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1292,6 +1332,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.5336875915527,
+				2.0961875915527,
+				3.1228125095367,
+				3.0681042671204
+			},
 			localization_strings = {
 				"pdr_level_ussingen_hurry_01",
 				"pdr_level_ussingen_hurry_02",
@@ -1302,9 +1348,9 @@ return function ()
 		},
 		pdr_level_ussingen_find_way_around = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1324,6 +1370,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.7265207767487,
+				2.9422500133514,
+				1.6527916193008,
+				2.8772916793823
 			},
 			localization_strings = {
 				"pdr_level_ussingen_find_way_around_01",
@@ -1335,9 +1387,9 @@ return function ()
 		},
 		pdr_level_ussingen_marktplatz = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1357,6 +1409,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.303270816803,
+				5.7503957748413,
+				4.6616668701172,
+				3.7760207653046
 			},
 			localization_strings = {
 				"pdr_level_ussingen_markplatz_01",
@@ -1368,9 +1426,9 @@ return function ()
 		},
 		pdr_level_ussingen_wine_cellar = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1391,6 +1449,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.3335208892822,
+				5.0361042022705,
+				3.2044999599457,
+				5.2655000686645
+			},
 			localization_strings = {
 				"pdr_level_ussingen_wine_cellar_01",
 				"pdr_level_ussingen_wine_cellar_02",
@@ -1401,9 +1465,9 @@ return function ()
 		},
 		pdr_ussingen_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1418,6 +1482,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.5381460189819,
+				[2.0] = 6.2905416488647
+			},
 			localization_strings = {
 				[1.0] = "pdr_ussingen_intro_a_01",
 				[2.0] = "pdr_ussingen_intro_a_02"
@@ -1426,9 +1494,9 @@ return function ()
 		},
 		pdr_level_ussingen_caravan = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1448,6 +1516,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.6478126049042,
+				5.2621250152588,
+				2.5178124904633,
+				5.3874793052673
 			},
 			localization_strings = {
 				"pdr_level_ussingen_caravan_01",
@@ -1459,9 +1533,9 @@ return function ()
 		},
 		pdr_level_ussingen_wrong_way = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1482,6 +1556,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.4316873550415,
+				2.7276041507721,
+				4.5136041641235,
+				3.5691249370575
+			},
 			localization_strings = {
 				"pdr_level_ussingen_wrong_way_01",
 				"pdr_level_ussingen_wrong_way_02",
@@ -1492,9 +1572,9 @@ return function ()
 		},
 		pdr_level_ussingen_escape = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1515,6 +1595,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.1512916088104,
+				3.6418540477753,
+				2.4779374599457,
+				4.0699791908264
+			},
 			localization_strings = {
 				"pdr_level_ussingen_escape_01",
 				"pdr_level_ussingen_escape_02",
@@ -1525,9 +1611,9 @@ return function ()
 		},
 		pdr_level_ussingen_gatehouse = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1545,6 +1631,11 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.7434582710266,
+				4.444833278656,
+				2.030770778656
+			},
 			localization_strings = {
 				"pdr_level_ussingen_gatehouse_01",
 				"pdr_level_ussingen_gatehouse_02",
@@ -1554,9 +1645,9 @@ return function ()
 		},
 		pdr_level_ussingen_search_for_manor = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1574,6 +1665,11 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.044145822525,
+				1.6269166469574,
+				3.3365623950958
+			},
 			localization_strings = {
 				"pdr_level_ussingen_search_for_manor_01",
 				"pdr_level_ussingen_search_for_manor_02",
@@ -1583,9 +1679,9 @@ return function ()
 		},
 		pdr_level_ussingen_gate_closed = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1606,6 +1702,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.0815207958221,
+				2.8691248893738,
+				1.9839999675751,
+				1.9915000200272
+			},
 			localization_strings = {
 				"pdr_level_ussingen_gate_closed_01",
 				"pdr_level_ussingen_gate_closed_02",
@@ -1616,9 +1718,9 @@ return function ()
 		},
 		pdr_ussingen_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1633,6 +1735,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.972291469574,
+				[2.0] = 6.8022294044495
+			},
 			localization_strings = {
 				[1.0] = "pdr_ussingen_intro_b_01",
 				[2.0] = "pdr_ussingen_intro_b_02"
@@ -1641,9 +1747,9 @@ return function ()
 		},
 		pdr_level_ussingen_less_damaged = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1664,6 +1770,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.2458124160767,
+				2.1836042404175,
+				2.6800625324249,
+				2.6859583854675
+			},
 			localization_strings = {
 				"pdr_level_ussingen_less_damaged_01",
 				"pdr_level_ussingen_less_damaged_02",
@@ -1674,9 +1786,9 @@ return function ()
 		},
 		pdr_level_ussingen_devastation = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1697,6 +1809,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.6407084465027,
+				5.0147500038147,
+				3.994062423706,
+				7.2273335456848
+			},
 			localization_strings = {
 				"pdr_level_ussingen_devastation_01",
 				"pdr_level_ussingen_devastation_02",
@@ -1707,9 +1825,9 @@ return function ()
 		},
 		pdr_level_ussingen_thick_smoke = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1729,6 +1847,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				5.8109583854675,
+				2.5268957614899,
+				2.6669375896454,
+				5.6322083473206
 			},
 			localization_strings = {
 				"pdr_level_ussingen_thick_smoke_01",
@@ -1740,9 +1864,9 @@ return function ()
 		},
 		pdr_level_ussingen_way_through = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1763,6 +1887,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.2350416183472,
+				2.8331875801086,
+				4.1614789962769,
+				2.9020833969116
+			},
 			localization_strings = {
 				"pdr_level_ussingen_way_through_01",
 				"pdr_level_ussingen_way_through_02",
@@ -1773,9 +1903,9 @@ return function ()
 		},
 		pdr_level_ussingen_spotting_town = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1795,6 +1925,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.6807916164398,
+				2.2421667575836,
+				2.9439375400543,
+				2.5614790916443
 			},
 			localization_strings = {
 				"pdr_level_ussingen_spotting_town_01",

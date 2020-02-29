@@ -914,9 +914,9 @@ return function ()
 	add_dialogues({
 		pbw_objective_magnus_tower_up_stairs = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -931,6 +931,10 @@ return function ()
 				[1.0] = "face_pain",
 				[2.0] = "face_pain"
 			},
+			sound_events_duration = {
+				[1.0] = 0.93908333778381,
+				[2.0] = 1.609854221344
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_up_stairs_01",
 				[2.0] = "pbw_objective_magnus_tower_up_stairs_02"
@@ -939,9 +943,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_arriving_late = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -956,6 +960,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_happy"
 			},
+			sound_events_duration = {
+				[1.0] = 2.7953124046326,
+				[2.0] = 2.4423124790192
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_arriving_late_01",
 				[2.0] = "pbw_objective_magnus_tower_arriving_late_02"
@@ -964,9 +972,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_seeing_gate = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -986,6 +994,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.3657292127609,
+				2.170562505722,
+				3.4914374351502,
+				3.1268124580383
 			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_seeing_gate_01",
@@ -997,9 +1011,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_walking_streets = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1014,6 +1028,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_happy"
 			},
+			sound_events_duration = {
+				[1.0] = 3.8997292518616,
+				[2.0] = 3.636479139328
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_walking_streets_01",
 				[2.0] = "pbw_objective_magnus_tower_walking_streets_02"
@@ -1022,9 +1040,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_view_tower = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1045,6 +1063,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.855708360672,
+				3.2751874923706,
+				2.275229215622,
+				4.5406041145325
+			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_view_tower_01",
 				"pbw_objective_magnus_tower_view_tower_02",
@@ -1055,9 +1079,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_seeing_tavern = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1072,6 +1096,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_sadness"
 			},
+			sound_events_duration = {
+				[1.0] = 3.533041715622,
+				[2.0] = 2.6173748970032
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_seeing_tavern_01",
 				[2.0] = "pbw_objective_magnus_tower_seeing_tavern_02"
@@ -1080,9 +1108,9 @@ return function ()
 		},
 		pbw_magnus_tower_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1096,6 +1124,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7541251182556,
+				[2.0] = 3.8795626163483
 			},
 			localization_strings = {
 				[1.0] = "pbw_magnus_tower_intro_b_01",
@@ -1105,9 +1137,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_to_rooftops = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1122,6 +1154,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.8508125543594,
+				[2.0] = 1.6707916259766
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_to_rooftops_01",
 				[2.0] = "pbw_objective_magnus_tower_to_rooftops_02"
@@ -1130,9 +1166,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_finding_explosives = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1153,6 +1189,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				5.165958404541,
+				5.9296460151672,
+				3.865875005722,
+				3.7890207767487
+			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_finding_explosives_01",
 				"pbw_objective_magnus_tower_finding_explosives_02",
@@ -1163,9 +1205,9 @@ return function ()
 		},
 		pbw_magnus_tower_intro = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1180,6 +1222,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0632083415985,
+				[2.0] = 2.4788541793823
+			},
 			localization_strings = {
 				[1.0] = "pbw_magnus_tower_intro_a_01",
 				[2.0] = "pbw_magnus_tower_intro_a_02"
@@ -1188,9 +1234,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_reaching_top_of_magnus_tower = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1211,6 +1257,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				3.5075833797455,
+				3.2939584255219,
+				3.9860417842865,
+				3.1646666526794
+			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_reaching_top_of_magnus_tower_01",
 				"pbw_objective_magnus_tower_reaching_top_of_magnus_tower_02",
@@ -1221,9 +1273,9 @@ return function ()
 		},
 		pbw_magnus_tower_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1238,6 +1290,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0914998054504,
+				[2.0] = 3.8841457366943
+			},
 			localization_strings = {
 				[1.0] = "pbw_magnus_tower_intro_c_01",
 				[2.0] = "pbw_magnus_tower_intro_c_02"
@@ -1246,9 +1302,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_seeing_tower = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1263,6 +1319,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.0655833482742,
+				[2.0] = 1.3348125219345
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_seeing_tower_01",
 				[2.0] = "pbw_objective_magnus_tower_seeing_tower_02"
@@ -1271,9 +1331,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_seeing_guardhouse = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1288,6 +1348,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8384375572205,
+				[2.0] = 2.4577708244324
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_seeing_guardhouse_01",
 				[2.0] = "pbw_objective_magnus_tower_seeing_guardhouse_02"
@@ -1296,9 +1360,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_vista = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1312,6 +1376,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_happy"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0412917137146,
+				[2.0] = 5.4157085418701
 			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_vista_01",
@@ -1321,9 +1389,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_hint_blow_horn = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1338,6 +1406,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_happy"
 			},
+			sound_events_duration = {
+				[1.0] = 3.4000000953674,
+				[2.0] = 3.1338748931885
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_hint_blow_horn_01",
 				[2.0] = "pbw_objective_magnus_tower_hint_blow_horn_02"
@@ -1346,9 +1418,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_call_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1369,6 +1441,12 @@ return function ()
 				"face_contempt",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.2184374332428,
+				3.0919165611267,
+				2.6899790763855,
+				3.231062412262
+			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_call_elevator_01",
 				"pbw_objective_magnus_tower_call_elevator_02",
@@ -1379,9 +1457,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_entering_guardhouse = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1402,6 +1480,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.3435416221619,
+				4.8969583511353,
+				3.8086874485016,
+				4.7717289924622
+			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_entering_guardhouse_01",
 				"pbw_objective_magnus_tower_entering_guardhouse_02",
@@ -1412,9 +1496,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_crescendo_starting = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1435,6 +1519,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				4.3058123588562,
+				2.0471875667572,
+				2.4613542556763,
+				3.8064167499542
+			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_crescendo_starting_01",
 				"pbw_objective_magnus_tower_crescendo_starting_02",
@@ -1445,9 +1535,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_over_rooftops = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1462,6 +1552,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 1.0319583415985,
+				[2.0] = 1.6000000238419
+			},
 			localization_strings = {
 				[1.0] = "pbw_objective_magnus_tower_over_rooftops_01",
 				[2.0] = "pbw_objective_magnus_tower_over_rooftops_02"
@@ -1470,9 +1564,9 @@ return function ()
 		},
 		pbw_objective_magnus_tower_elevator_opens_door = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_magnus_tower",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1492,6 +1586,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				1.9026875495911,
+				1.8085625171661,
+				2.5054166316986,
+				4.3066458702087
 			},
 			localization_strings = {
 				"pbw_objective_magnus_tower_elevator_opens_door_01",

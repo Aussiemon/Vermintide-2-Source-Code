@@ -6991,9 +6991,9 @@ return function ()
 	add_dialogues({
 		pes_gameplay_hearing_a_chaos_wizard_wind_combat_no_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -7017,6 +7017,13 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.6115000247955,
+				2.1483957767487,
+				2.7521667480469,
+				2.0632083415985,
+				1.2982292175293
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_wizard_wind_combat_03",
 				"pes_gameplay_hearing_a_chaos_wizard_wind_combat_04",
@@ -7028,9 +7035,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_spawn_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7063,6 +7070,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.3194583654404,
+				0.90866667032242,
+				1.4846667051315,
+				1.168729186058,
+				1.5741875171661,
+				1.4272708892822,
+				1.423187494278,
+				2.574458360672
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_spawn_combat_01",
 				"pes_gameplay_hearing_a_chaos_spawn_combat_02",
@@ -7077,9 +7094,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_shield_stormvermin_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7112,6 +7129,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.9320833683014,
+				1.597895860672,
+				1.7263333797455,
+				2.1454374790192,
+				2.3747498989105,
+				2.7608542442322,
+				3.3124792575836,
+				3.8119790554047
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_shield_stormvermin_01",
 				"pes_gameplay_seeing_a_shield_stormvermin_02",
@@ -7126,9 +7153,9 @@ return function ()
 		},
 		pes_gameplay_witch_hunter_low_on_health_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -7152,6 +7179,13 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				0.93129163980484,
+				1.2634375095367,
+				2.9871666431427,
+				1.2771458625793,
+				1.7745624780655
+			},
 			localization_strings = {
 				"pes_gameplay_witch_hunter_low_on_health_01",
 				"pes_gameplay_witch_hunter_low_on_health_05",
@@ -7163,9 +7197,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_scr_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7198,6 +7232,16 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.7016667127609,
+				1.9116041660309,
+				0.83649998903275,
+				1.4907499551773,
+				1.6280208826065,
+				1.0646874904633,
+				2.3352916240692,
+				3.1080832481384
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_shield_clanrat_01",
 				"pes_gameplay_seeing_a_shield_clanrat_02",
@@ -7212,9 +7256,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_skaven_slaver_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7247,6 +7291,16 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				0.88443750143051,
+				0.94454169273376,
+				1.0481250286102,
+				1.186562538147,
+				1.029000043869,
+				1.6907708644867,
+				1.5038958787918,
+				2.1278958320618
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_skaven_slaver_01",
 				"pes_gameplay_seeing_a_skaven_slaver_02",
@@ -7274,15 +7328,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 0.66241252422333
+			},
 			localization_strings = {
 				[1.0] = "pes_hiccup"
 			}
 		},
 		pes_gameplay_spots_potion_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7303,6 +7360,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				2.2309582233429,
+				1.8664166927338,
+				2.0337707996368,
+				1.676854133606
+			},
 			localization_strings = {
 				"pes_crawl_drunk_spotted_liquid_01",
 				"pes_crawl_drunk_spotted_liquid_02",
@@ -7313,9 +7376,9 @@ return function ()
 		},
 		pes_crawl_drunk_buff_begins = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -7342,6 +7405,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.9882500171661,
+				1.4497708082199,
+				4.2527289390564,
+				3.6542291641235,
+				2.5132291316986,
+				3.9973125457764
+			},
 			localization_strings = {
 				"pes_crawl_drunk_buff_begins_01",
 				"pes_crawl_drunk_buff_begins_02",
@@ -7354,9 +7425,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_wind_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7377,6 +7448,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -7387,9 +7464,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_stormvermin_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7422,6 +7499,16 @@ return function ()
 				"face_neutral",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.8007292747498,
+				1.3295208215714,
+				1.1208958625793,
+				1.6428542137146,
+				1.8358124494553,
+				1.5434583425522,
+				1.5376875400543,
+				2.2200417518616
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_stormvermin_01",
 				"pes_gameplay_seeing_a_stormvermin_02",
@@ -7436,9 +7523,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_ratling_gun_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7459,6 +7546,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -7469,9 +7562,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_pm_in_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7504,6 +7597,16 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				0.86360418796539,
+				0.91787499189377,
+				1.2286458015442,
+				1.0827292203903,
+				1.7087082862854,
+				1.3619166612625,
+				1.6432917118073,
+				2.2044167518616
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_plague_monk_combat_01",
 				"pes_gameplay_hearing_a_plague_monk_combat_02",
@@ -7518,9 +7621,9 @@ return function ()
 		},
 		pes_gameplay_self_heal_drunk = {
 			sound_events_n = 10,
-			randomize_indexes_n = 0,
 			face_animations_n = 10,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 10,
 			sound_events = {
@@ -7559,6 +7662,18 @@ return function ()
 				"face_exhausted",
 				"face_exhausted"
 			},
+			sound_events_duration = {
+				1.4743958711624,
+				1.947104215622,
+				3.1814999580383,
+				1.9716875553131,
+				3.6535832881927,
+				2.8253126144409,
+				2.2543542385101,
+				1.3730208873749,
+				2.1076457500458,
+				2.2281665802002
+			},
 			localization_strings = {
 				"pes_gameplay_self_heal_06",
 				"pes_gameplay_self_heal_07",
@@ -7575,9 +7690,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_patrol_stormvermin_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7598,6 +7713,12 @@ return function ()
 				"face_concerned",
 				"face_nervous"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -7608,9 +7729,9 @@ return function ()
 		},
 		pes_gameplay_incoming_skaven_rat_ogre_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7643,6 +7764,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.3062916994095,
+				0.84112501144409,
+				1.7713333368301,
+				1.7835416793823,
+				2.2189583778381,
+				1.8093750476837,
+				1.3349167108536,
+				1.3237916231155
+			},
 			localization_strings = {
 				"pes_gameplay_incoming_skaven_rat_ogre_01",
 				"pes_gameplay_incoming_skaven_rat_ogre_05",
@@ -7657,9 +7788,9 @@ return function ()
 		},
 		pes_gameplay_helped_by_witch_hunter_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7679,6 +7810,12 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy"
+			},
+			sound_events_duration = {
+				0.675541639328,
+				0.87606251239777,
+				0.72977083921432,
+				1.5409582853317
 			},
 			localization_strings = {
 				"pes_gameplay_helped_by_witch_hunter_01",
@@ -7703,15 +7840,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 0.5538541674614
+			},
 			localization_strings = {
 				[1.0] = "pes_burp"
 			}
 		},
 		pes_activate_ability_mercenary_non_drunk = {
 			sound_events_n = 15,
-			randomize_indexes_n = 0,
 			face_animations_n = 15,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 15,
 			sound_events = {
@@ -7765,6 +7905,23 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				6.9235625267029,
+				4.1105833053589,
+				5.1145000457764,
+				4.2063331604004,
+				5.0917916297913,
+				4.7221665382385,
+				4.2292914390564,
+				4.079062461853,
+				3.319000005722,
+				2.9270625114441,
+				3.8017292022705,
+				1.2831041812897,
+				1.4261041879654,
+				1.1333541870117,
+				1.9232292175293
+			},
 			localization_strings = {
 				"pes_activate_ability_mercenary_01",
 				"pes_activate_ability_mercenary_02",
@@ -7786,9 +7943,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_chaos_wizard_tentacle_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -7815,6 +7972,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.2999999523163,
+				1.6017916202545,
+				2.5575625896454,
+				3.1151041984558,
+				3.4077498912811,
+				1.9730833768845
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_chaos_wizard_tentacle_01",
 				"pes_gameplay_killing_a_chaos_wizard_tentacle_02",
@@ -7827,9 +7992,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_Skaven_warpfire_thrower_combat_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -7856,6 +8021,14 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				0.92299997806549,
+				1.010645866394,
+				1.2624167203903,
+				2.1363332271576,
+				2.1128125190735,
+				1.5776666402817
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_Skaven_warpfire_thrower_combat_01",
 				"pes_gameplay_hearing_a_Skaven_warpfire_thrower_combat_02",
@@ -7868,9 +8041,9 @@ return function ()
 		},
 		pes_gameplay_friendly_fire_wood_elf_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -7897,6 +8070,14 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.4158124923706,
+				2.3131041526794,
+				1.8877708911896,
+				5.7091250419617,
+				2.1494166851044,
+				4.8829998970032
+			},
 			localization_strings = {
 				"pes_gameplay_friendly_fire_wood_elf_03",
 				"pes_gameplay_friendly_fire_wood_elf_05",
@@ -7909,9 +8090,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_plague_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7944,6 +8125,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.1721458435059,
+				4.4007081985474,
+				6.6871252059936,
+				1.8782708644867,
+				1.2085624933243,
+				1.5510833263397,
+				1.8734375238419,
+				3.707270860672
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_wizard_plague_01",
 				"pes_gameplay_hearing_a_chaos_wizard_plague_02",
@@ -7958,9 +8149,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_Skaven_warpfire_thrower_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7981,6 +8172,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -7991,9 +8188,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_spawn_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8013,6 +8210,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
 			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
@@ -8024,9 +8227,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_troll_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8047,6 +8250,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -8057,9 +8266,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_skaven_ratling_gun_no_drunk = {
 			sound_events_n = 7,
-			randomize_indexes_n = 0,
 			face_animations_n = 7,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 7,
 			sound_events = {
@@ -8089,6 +8298,15 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.0576041936874,
+				1.2963750362396,
+				1.5645208358765,
+				1.8267291784286,
+				1.8766458034515,
+				1.2735208272934,
+				2.3948957920074
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_skaven_ratling_gun_01",
 				"pes_gameplay_seeing_a_skaven_ratling_gun_02",
@@ -8102,9 +8320,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_ratling_gun_no_drunk = {
 			sound_events_n = 7,
-			randomize_indexes_n = 0,
 			face_animations_n = 7,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 7,
 			sound_events = {
@@ -8134,6 +8352,15 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				0.625,
+				1.6941041946411,
+				1.6342083215714,
+				2.7681250572205,
+				1.3431458473206,
+				3.3235623836517,
+				2.6470832824707
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_skaven_ratling_gun_04",
 				"pes_gameplay_hearing_a_skaven_ratling_gun_05",
@@ -8147,9 +8374,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_stormfiend_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8170,6 +8397,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -8180,9 +8413,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_skaven_patrol_stormvermin_no_drunk = {
 			sound_events_n = 7,
-			randomize_indexes_n = 0,
 			face_animations_n = 7,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 7,
 			sound_events = {
@@ -8212,6 +8445,15 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.505083322525,
+				1.0053541660309,
+				1.9318541288376,
+				2.0098333358765,
+				1.526166677475,
+				2.3296875953674,
+				2.2557916641235
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_skaven_patrol_stormvermin_01",
 				"pes_gameplay_seeing_a_skaven_patrol_stormvermin_02",
@@ -8225,9 +8467,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_rat_ogre_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -8254,6 +8496,14 @@ return function ()
 				"face_contempt",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.2632291316986,
+				1.7474166154861,
+				2.5326042175293,
+				2.2905833721161,
+				2.7921042442322,
+				2.3123958110809
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_skaven_rat_ogre_01",
 				"pes_gameplay_hearing_a_skaven_rat_ogre_04",
@@ -8266,9 +8516,9 @@ return function ()
 		},
 		pes_activate_ability_knight_non_drunk = {
 			sound_events_n = 12,
-			randomize_indexes_n = 0,
 			face_animations_n = 12,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 12,
 			sound_events = {
@@ -8313,6 +8563,20 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.9961667060852,
+				2.4541249275208,
+				1.118083357811,
+				1.5277500152588,
+				1.3519166707993,
+				1.6802916526794,
+				3.6310625076294,
+				1.7254375219345,
+				2.9519374370575,
+				3.6905000209808,
+				2.5241665840149,
+				2.1462082862854
+			},
 			localization_strings = {
 				"pes_activate_ability_knight_01",
 				"pes_activate_ability_knight_02",
@@ -8331,9 +8595,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_skaven_rat_ogre_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -8360,6 +8624,14 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.1322083473206,
+				1.5871666669846,
+				1.6288541555405,
+				2.2949166297913,
+				1.6217082738876,
+				1.6864166259766
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_skaven_rat_ogre_01",
 				"pes_gameplay_seeing_a_skaven_rat_ogre_04",
@@ -8372,9 +8644,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_globadier_no_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -8398,6 +8670,13 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.2363749742508,
+				1.2633957862854,
+				1.2277916669846,
+				2.2371459007263,
+				1.9596874713898
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_globadier_02",
 				"pes_gameplay_hearing_a_globadier_05",
@@ -8409,9 +8688,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_chaos_spawn_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -8443,6 +8722,16 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.6962289810181,
+				2.3624167442322,
+				2.9522292613983,
+				3.0198540687561,
+				3.6132500171661,
+				3.6184582710266,
+				2.7463126182556,
+				2.4739375114441
 			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_chaos_spawn_01",
@@ -8458,9 +8747,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_troll_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -8493,6 +8782,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.1530001163483,
+				1.3343333005905,
+				4.0587501525879,
+				5.7707915306091,
+				4.5772290229797,
+				5.556104183197,
+				3.772020816803,
+				3.4877707958221
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_troll_01",
 				"pes_gameplay_seeing_a_troll_02",
@@ -8507,9 +8806,9 @@ return function ()
 		},
 		pes_gameplay_friendly_fire_bright_wizard_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -8533,6 +8832,13 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.9725416898727,
+				2.5274999141693,
+				1.6631875038147,
+				1.7563333511352,
+				3.0621042251587
+			},
 			localization_strings = {
 				"pes_gameplay_friendly_fire_bright_wizard_05",
 				"pes_gameplay_friendly_fire_bright_wizard_06",
@@ -8544,9 +8850,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_wind_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -8579,6 +8885,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.7492291927338,
+				3.3764998912811,
+				2.8633332252502,
+				3.8016457557678,
+				1.4635624885559,
+				1.5411458015442,
+				1.6314791440964,
+				1.8511250019074
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_wizard_wind_01",
 				"pes_gameplay_hearing_a_chaos_wizard_wind_02",
@@ -8593,9 +8909,9 @@ return function ()
 		},
 		pes_gameplay_healing_draught_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8616,6 +8932,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				2.2309582233429,
+				1.8664166927338,
+				2.0337707996368,
+				1.676854133606
+			},
 			localization_strings = {
 				"pes_crawl_drunk_spotted_liquid_01",
 				"pes_crawl_drunk_spotted_liquid_02",
@@ -8626,9 +8948,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_stormfiend_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -8661,6 +8983,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.3533749580383,
+				1.5151666402817,
+				1.3053333759308,
+				1.7060208320618,
+				1.8576041460037,
+				2.1462292671204,
+				3.3650624752045,
+				1.2939791679382
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_stormfiend_combat_01",
 				"pes_gameplay_hearing_a_stormfiend_combat_02",
@@ -8675,9 +9007,9 @@ return function ()
 		},
 		pes_gameplay_healing_witch_hunter_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8698,6 +9030,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.4325624704361,
+				1.2238957881927,
+				1.1000000238419,
+				1.4418958425522
+			},
 			localization_strings = {
 				"pes_gameplay_healing_witch_hunter_01",
 				"pes_gameplay_healing_witch_hunter_02",
@@ -8708,9 +9046,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_spawn_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8731,6 +9069,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -8741,9 +9085,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_warrior_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -8775,6 +9119,16 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				1.1238541603088,
+				0.93924999237061,
+				1.6641666889191,
+				1.903416633606,
+				1.6903749704361,
+				1.5402708053589,
+				1.5673542022705,
+				2.2484583854675
 			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_warrior_combat_01",
@@ -8803,15 +9157,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.017635345459
+			},
 			localization_strings = {
 				[1.0] = "pes_drank"
 			}
 		},
 		pes_gameplay_hearing_a_skaven_rat_ogre_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8832,6 +9189,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -8842,9 +9205,9 @@ return function ()
 		},
 		pes_crawl_drunk_buff_begins_from_sick = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -8871,6 +9234,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.1672065258026,
+				2.318097114563,
+				3.5150983333588,
+				4.8492498397827,
+				7.0049166679382,
+				3.2052083015442
+			},
 			localization_strings = {
 				"pes_crawl_drunk_buff_begins_from_sick_01",
 				"pes_crawl_drunk_buff_begins_from_sick_02",
@@ -8883,9 +9254,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_chaos_wizard_plague_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -8912,6 +9283,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.4851458072662,
+				2.7062292098999,
+				2.0168333053589,
+				1.7163541316986,
+				1.0011041164398,
+				0.91879165172577
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_chaos_wizard_plague_01",
 				"pes_gameplay_killing_a_chaos_wizard_plague_02",
@@ -8924,9 +9303,9 @@ return function ()
 		},
 		pes_gameplay_friendly_fire_witch_hunter_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -8950,6 +9329,13 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.3645207881927,
+				4.1263751983643,
+				1.5597083568573,
+				2.154833316803,
+				2.6582083702087
+			},
 			localization_strings = {
 				"pes_gameplay_friendly_fire_witch_hunter_05",
 				"pes_gameplay_friendly_fire_witch_hunter_06",
@@ -8961,9 +9347,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_gutter_runner_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -8984,6 +9370,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -8994,9 +9386,9 @@ return function ()
 		},
 		pes_gameplay_helped_by_bright_wizard_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9017,6 +9409,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.6083958148956,
+				1.1209583282471,
+				0.69018751382828,
+				2.2362291812897
+			},
 			localization_strings = {
 				"pes_gameplay_helped_by_bright_wizard_05",
 				"pes_gameplay_helped_by_bright_wizard_06",
@@ -9027,9 +9425,9 @@ return function ()
 		},
 		pes_gameplay_healing_dwarf_ranger_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -9053,6 +9451,13 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.6958333253861,
+				1.7903333902359,
+				2.2813541889191,
+				2.7509999275208,
+				3.4129374027252
+			},
 			localization_strings = {
 				"pes_gameplay_healing_dwarf_ranger_03",
 				"pes_gameplay_healing_dwarf_ranger_04",
@@ -9064,9 +9469,9 @@ return function ()
 		},
 		pes_gameplay_friendly_fire_dwarf_ranger_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9087,6 +9492,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.2092916965485,
+				2.9716458320618,
+				2.2016041278839,
+				1.0587916374207
+			},
 			localization_strings = {
 				"pes_gameplay_friendly_fire_dwarf_ranger_01",
 				"pes_gameplay_friendly_fire_dwarf_ranger_02",
@@ -9097,9 +9508,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_gutter_runner_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -9126,6 +9537,14 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				2.1450624465942,
+				2.2076458930969,
+				1.6357707977295,
+				2.3065209388733,
+				1.5362499952316,
+				1.7144999504089
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_gutter_runner_01",
 				"pes_gameplay_hearing_a_gutter_runner_02",
@@ -9138,9 +9557,9 @@ return function ()
 		},
 		pes_gameplay_tips_wizard_wind_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9161,6 +9580,12 @@ return function ()
 				"face_surprise",
 				"face_surprise"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -9171,9 +9596,9 @@ return function ()
 		},
 		pes_gameplay_wood_elf_low_on_health_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9194,6 +9619,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.0590417385101,
+				1.786291718483,
+				1.6073958873749,
+				3.2092082500458
+			},
 			localization_strings = {
 				"pes_gameplay_wood_elf_low_on_health_05",
 				"pes_gameplay_wood_elf_low_on_health_06",
@@ -9204,9 +9635,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_globadier_combat_no_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -9230,6 +9661,13 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.7543958425522,
+				1.2000000476837,
+				0.71872913837433,
+				1.1677082777023,
+				2.0359375476837
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_globadier_combat_01",
 				"pes_gameplay_hearing_a_globadier_combat_02",
@@ -9241,9 +9679,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_gutter_runner_combat_no_drunk = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -9261,6 +9699,11 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				0.76243752241135,
+				1.0981458425522,
+				1.6357707977295
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_gutter_runner_combat_01",
 				"pes_gameplay_hearing_a_gutter_runner_combat_02",
@@ -9270,9 +9713,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_chaos_wizard_leech_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -9299,6 +9742,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.0725833177566,
+				1.4505833387375,
+				2.294041633606,
+				2.0655417442322,
+				1.4899791479111,
+				2.0367708206177
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_chaos_wizard_leech_01",
 				"pes_gameplay_killing_a_chaos_wizard_leech_02",
@@ -9311,9 +9762,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_leech_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9334,6 +9785,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.8361666202545,
+				2.608416557312,
+				2.0324583053589,
+				3.1651666164398
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_wizard_leech_01",
 				"pes_gameplay_hearing_a_chaos_wizard_leech_02",
@@ -9344,9 +9801,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_globadier_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -9373,6 +9830,14 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.0624375343323,
+				1.2897291183472,
+				0.86418747901917,
+				2.052791595459,
+				1.7604999542236,
+				1.0809999704361
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_globadier_01",
 				"pes_gameplay_seeing_a_globadier_03",
@@ -9385,9 +9850,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_plague_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -9420,6 +9885,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.4699167013168,
+				1.893458366394,
+				2.2542917728424,
+				1.8599375486374,
+				3.1629583835602,
+				2.499062538147,
+				2.5678749084473,
+				2.8775625228882
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_wizard_plague_combat_01",
 				"pes_gameplay_hearing_a_chaos_wizard_plague_combat_02",
@@ -9434,9 +9909,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_rat_ogre_combat_no_drunk_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -9463,6 +9938,14 @@ return function ()
 				"face_contempt",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.7920416593552,
+				1.1099166870117,
+				2.4898333549499,
+				1.7465624809265,
+				2.8192291259766,
+				1.2632291316986
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_skaven_rat_ogre_combat_01",
 				"pes_gameplay_hearing_a_skaven_rat_ogre_combat_02",
@@ -9475,9 +9958,9 @@ return function ()
 		},
 		pes_gameplay_bright_wizard_low_on_health_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9498,6 +9981,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.1317915916443,
+				1.7292499542236,
+				2.1368124485016,
+				2.0660624504089
+			},
 			localization_strings = {
 				"pes_gameplay_bright_wizard_low_on_health_05",
 				"pes_gameplay_bright_wizard_low_on_health_06",
@@ -9508,9 +9997,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_Skaven_warpfire_thrower_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -9543,6 +10032,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.1081874370575,
+				4.4323539733887,
+				2.9146873950958,
+				3.3966875076294,
+				3.1701874732971,
+				4.0842084884644,
+				3.5552916526794,
+				4.2286667823792
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_Skaven_warpfire_thrower_01",
 				"pes_gameplay_seeing_a_Skaven_warpfire_thrower_02",
@@ -9557,9 +10056,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_chaos_wizard_wind_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9580,6 +10079,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.7060832977295,
+				3.1529166698456,
+				3.6873958110809,
+				2.5999999046326
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_chaos_wizard_wind_01",
 				"pes_gameplay_seeing_a_chaos_wizard_wind_02",
@@ -9590,9 +10095,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_stormfiend_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -9619,6 +10124,14 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.8164999485016,
+				4.0240626335144,
+				3.1698334217072,
+				4.0655832290649,
+				2.1451041698456,
+				2.0393540859222
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_stormfiend_01",
 				"pes_gameplay_hearing_a_stormfiend_02",
@@ -9631,9 +10144,9 @@ return function ()
 		},
 		pes_gameplay_helped_by_wood_elf_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9654,6 +10167,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.2000000476837,
+				1.1828541755676,
+				1.829062461853,
+				2.6001040935516
+			},
 			localization_strings = {
 				"pes_gameplay_helped_by_wood_elf_02",
 				"pes_gameplay_helped_by_wood_elf_05",
@@ -9664,9 +10183,9 @@ return function ()
 		},
 		pes_activate_ability_huntsman_non_drunk = {
 			sound_events_n = 12,
-			randomize_indexes_n = 0,
 			face_animations_n = 12,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 12,
 			sound_events = {
@@ -9711,6 +10230,20 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				3.4831666946411,
+				2.8919792175293,
+				2.3422501087189,
+				2.9697291851044,
+				2.1768958568573,
+				3.663583278656,
+				2.0214791297913,
+				3.0589165687561,
+				2.4418542385101,
+				2.4608125686645,
+				2.9036042690277,
+				3.18004155159
+			},
 			localization_strings = {
 				"pes_activate_ability_huntsman_01",
 				"pes_activate_ability_huntsman_02",
@@ -9729,9 +10262,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_globadier_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9752,6 +10285,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -9762,9 +10301,9 @@ return function ()
 		},
 		pes_gameplay_dwarf_ranger_being_helped_drunk = {
 			sound_events_n = 9,
-			randomize_indexes_n = 0,
 			face_animations_n = 9,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 9,
 			sound_events = {
@@ -9800,6 +10339,17 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.1185417175293,
+				1.2692500352859,
+				1.9630625247955,
+				1.5223958492279,
+				2.3047499656677,
+				3.4669165611267,
+				2.3089792728424,
+				2.7057082653046,
+				1.8933750391007
+			},
 			localization_strings = {
 				"pes_gameplay_dwarf_ranger_being_helped_up_02",
 				"pes_gameplay_dwarf_ranger_being_helped_up_04",
@@ -9815,9 +10365,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_chaos_wizard_plague_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -9838,6 +10388,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.6139166355133,
+				3.447083234787,
+				1.9325416088104,
+				1.6720833778381
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_chaos_wizard_plague_01",
 				"pes_gameplay_seeing_a_chaos_wizard_plague_02",
@@ -9848,9 +10404,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_chaos_warrior_champion_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -9883,6 +10439,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.4119791984558,
+				3.8653957843781,
+				4.2404999732971,
+				3.362687587738,
+				3.1817708015442,
+				2.8816874027252,
+				3.77308344841,
+				4.5625
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_chaos_warrior_champion_combat_01",
 				"pes_gameplay_seeing_a_chaos_warrior_champion_combat_02",
@@ -9910,15 +10476,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.553270816803
+			},
 			localization_strings = {
 				[1.0] = "pes_drank_drunk"
 			}
 		},
 		pes_gameplay_wood_elf_being_helped_up_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -9951,6 +10520,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.0759999752045,
+				0.84172916412354,
+				1.7598541975021,
+				2.6215207576752,
+				2.9243957996368,
+				2.8300623893738,
+				1.1249375343323,
+				1.6879374980927
+			},
 			localization_strings = {
 				"pes_gameplay_wood_elf_being_helped_up_01",
 				"pes_gameplay_wood_elf_being_helped_up_02",
@@ -9965,9 +10544,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_chaos_warrior_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10000,6 +10579,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.319854259491,
+				2.3145000934601,
+				1.4906041622162,
+				2.0340416431427,
+				3.7763125896454,
+				2.6143124103546,
+				2.7025208473206,
+				2.3324792385101
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_chaos_warrior_01",
 				"pes_gameplay_seeing_a_chaos_warrior_02",
@@ -10014,9 +10603,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_troll_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10036,6 +10625,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
 			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
@@ -10047,9 +10642,9 @@ return function ()
 		},
 		pes_gameplay_incoming_skaven_rat_ogre_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10070,6 +10665,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -10080,9 +10681,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_chaos_wizard_wind_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -10109,6 +10710,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.6732708215714,
+				2.4189584255219,
+				1.4757708311081,
+				3.0437083244324,
+				2.903520822525,
+				2.4785416126251
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_chaos_wizard_wind_01",
 				"pes_gameplay_killing_a_chaos_wizard_wind_02",
@@ -10121,9 +10730,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_wind_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10144,6 +10753,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -10154,9 +10769,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_chaos_warrior_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10189,6 +10804,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.8720208406448,
+				1.5387916564941,
+				1.9371875524521,
+				2.5409166812897,
+				2.1196041107178,
+				2.1526665687561,
+				3.5430417060852,
+				1.2760624885559
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_chaos_warrior_01",
 				"pes_gameplay_killing_a_chaos_warrior_02",
@@ -10203,9 +10828,9 @@ return function ()
 		},
 		pes_gameplay_spots_bomb_drunk = {
 			sound_events_n = 14,
-			randomize_indexes_n = 0,
 			face_animations_n = 14,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 14,
 			sound_events = {
@@ -10256,6 +10881,22 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				0.59333330392838,
+				3.1451041698456,
+				2.477395772934,
+				1.4434374570847,
+				1.6692708730698,
+				2.3425834178925,
+				1.2113749980927,
+				1.9523124694824,
+				1.2056875228882,
+				2.5682709217072,
+				1.3494374752045,
+				3.270604133606,
+				1.9287707805634,
+				1.3463541269302
+			},
 			localization_strings = {
 				"pes_gameplay_spots_bomb_05",
 				"pes_gameplay_spots_bomb_09",
@@ -10276,9 +10917,9 @@ return function ()
 		},
 		pes_gameplay_hears_incoming_horde_drunk = {
 			sound_events_n = 7,
-			randomize_indexes_n = 0,
 			face_animations_n = 7,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 7,
 			sound_events = {
@@ -10308,6 +10949,15 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				2.3610000610352,
+				2.193416595459,
+				1.3607083559036,
+				1.8708332777023,
+				1.9906666278839,
+				2.3609583377838,
+				2.0683958530426
+			},
 			localization_strings = {
 				"pes_gameplay_hears_incoming_horde_11",
 				"pes_gameplay_hears_incoming_horde_12",
@@ -10321,9 +10971,9 @@ return function ()
 		},
 		pes_gameplay_hearing_marauder_berserker_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10356,6 +11006,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				0.90152084827423,
+				1.717812538147,
+				1.0566458702087,
+				1.3105208873749,
+				1.7610416412354,
+				1.6983333826065,
+				1.0968542098999,
+				2.6166040897369
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_marauder_berserker_combat_01",
 				"pes_gameplay_hearing_marauder_berserker_combat_02",
@@ -10370,9 +11030,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_gutter_runner_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10393,6 +11053,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -10403,9 +11069,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_troll_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10438,6 +11104,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				0.97335416078568,
+				1.3664166927338,
+				1.3004167079925,
+				1.8553124666214,
+				1.2836666107178,
+				1.3773332834244,
+				1.7371666431427,
+				1.7669583559036
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_troll_combat_01",
 				"pes_gameplay_hearing_a_troll_combat_02",
@@ -10452,9 +11128,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_rat_ogre_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10475,6 +11151,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -10485,9 +11167,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_tentacle_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10519,6 +11201,16 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.4063124656677,
+				2.429229259491,
+				3.9542708396912,
+				3.6744375228882,
+				1.2816041707993,
+				1.9255625009537,
+				1.3128957748413,
+				1.1866874694824
 			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_wizard_tentacle_01",
@@ -10534,9 +11226,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_Skaven_warpfire_thrower_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -10563,6 +11255,14 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.5845415592194,
+				4.754979133606,
+				2.586874961853,
+				3.0988750457764,
+				1.8821666240692,
+				1.3387916088104
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_Skaven_warpfire_thrower_01",
 				"pes_gameplay_hearing_a_Skaven_warpfire_thrower_02",
@@ -10575,9 +11275,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_wizard_tentacle_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10610,6 +11310,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.1859999895096,
+				1.8530000448227,
+				1.3426666259766,
+				2.2252707481384,
+				2.0570833683014,
+				2.3985209465027,
+				2.3434791564941,
+				2.5833957195282
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_wizard_tentacle_combat_01",
 				"pes_gameplay_hearing_a_chaos_wizard_tentacle_combat_02",
@@ -10624,9 +11334,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_troll_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -10653,6 +11363,14 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.7747292518616,
+				4.4051666259766,
+				3.7769582271576,
+				3.2501873970032,
+				2.1605207920074,
+				3.7060625553131
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_troll_01",
 				"pes_gameplay_hearing_a_troll_02",
@@ -10665,9 +11383,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_stormfiend_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10700,6 +11418,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.3641458749771,
+				1.6720416545868,
+				2.7783124446869,
+				2.6464583873749,
+				2.9873332977295,
+				2.1358957290649,
+				3.4507501125336,
+				1.8140208721161
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_stormfiend_01",
 				"pes_gameplay_killing_a_stormfiend_02",
@@ -10714,9 +11442,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_chaos_spawn_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10749,6 +11477,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.2102084159851,
+				5.580020904541,
+				4.0981874465942,
+				3.6888542175293,
+				1.9125624895096,
+				1.8865000009537,
+				1.6497083902359,
+				2.068416595459
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_chaos_spawn_01",
 				"pes_gameplay_hearing_a_chaos_spawn_02",
@@ -10763,9 +11501,9 @@ return function ()
 		},
 		pes_gameplay_knocked_down_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10786,6 +11524,12 @@ return function ()
 				"face_angry",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.8985624313355,
+				3.2740416526794,
+				3.4814813137054,
+				3.6090624332428
+			},
 			localization_strings = {
 				"pes_crawl_drunk_knocked_down_01",
 				"pes_crawl_drunk_knocked_down_02",
@@ -10796,9 +11540,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_chaos_wizard_tentacle_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10819,6 +11563,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.8580833673477,
+				2.8627500534058,
+				3.1139376163483,
+				2.7561249732971
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_chaos_wizard_tentacle_01",
 				"pes_gameplay_seeing_a_chaos_wizard_tentacle_02",
@@ -10829,9 +11579,9 @@ return function ()
 		},
 		pes_gameplay_player_pounced_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10852,6 +11602,12 @@ return function ()
 				"face_angry",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.8985624313355,
+				3.2740416526794,
+				3.4814813137054,
+				3.6090624332428
+			},
 			localization_strings = {
 				"pes_crawl_drunk_knocked_down_01",
 				"pes_crawl_drunk_knocked_down_02",
@@ -10862,9 +11618,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_pm_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10897,6 +11653,16 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.4447500705719,
+				2.0614583492279,
+				2.5426459312439,
+				2.9318749904633,
+				2.209041595459,
+				2.6277499198914,
+				1.7398542165756,
+				2.305520772934
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_plague_monk_01",
 				"pes_gameplay_seeing_a_plague_monk_02",
@@ -10911,9 +11677,9 @@ return function ()
 		},
 		pes_gameplay_healing_wood_elf_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -10934,6 +11700,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.6994166374207,
+				1.4035625457764,
+				1.4770624637604,
+				1.6429582834244
+			},
 			localization_strings = {
 				"pes_gameplay_healing_wood_elf_01",
 				"pes_gameplay_healing_wood_elf_02",
@@ -10944,9 +11716,9 @@ return function ()
 		},
 		pes_gameplay_witch_hunter_being_helped_up_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -10979,6 +11751,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				0.94325000047684,
+				1.0562916994095,
+				2.4766666889191,
+				3.4977917671204,
+				1.2993541955948,
+				2.3256874084473,
+				1.4220833778381,
+				3.9317500591278
+			},
 			localization_strings = {
 				"pes_gameplay_witch_hunter_being_helped_up_01",
 				"pes_gameplay_witch_hunter_being_helped_up_04",
@@ -10993,9 +11775,9 @@ return function ()
 		},
 		pes_gameplay_ambush_horde_spawned_drunk = {
 			sound_events_n = 7,
-			randomize_indexes_n = 0,
 			face_animations_n = 7,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 7,
 			sound_events = {
@@ -11025,6 +11807,15 @@ return function ()
 				"face_surprise",
 				"face_surprise"
 			},
+			sound_events_duration = {
+				0.77812498807907,
+				1.0866249799728,
+				0.6659791469574,
+				1.795041680336,
+				2.5153748989105,
+				1.3851875066757,
+				2.4151875972748
+			},
 			localization_strings = {
 				"pes_gameplay_ambush_horde_spawned_02",
 				"pes_gameplay_ambush_horde_spawned_03",
@@ -11038,9 +11829,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_skaven_warpfire_thrower_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -11073,6 +11864,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.291375041008,
+				1.1993124485016,
+				2.6884167194366,
+				1.4978125095367,
+				1.9841250181198,
+				2.6246249675751,
+				2.8504374027252,
+				2.067125082016
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_Skaven_warpfire_thrower_01",
 				"pes_gameplay_killing_a_Skaven_warpfire_thrower_02",
@@ -11087,9 +11888,9 @@ return function ()
 		},
 		pes_gameplay_spots_health_drunk = {
 			sound_events_n = 12,
-			randomize_indexes_n = 0,
 			face_animations_n = 12,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 12,
 			sound_events = {
@@ -11134,6 +11935,20 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.276270866394,
+				1.0624582767487,
+				1.145708322525,
+				0.982541680336,
+				1.4442917108536,
+				1.8630833625793,
+				1.7280000448227,
+				1.418145775795,
+				2.4351458549499,
+				1.5250624418259,
+				1.72756254673,
+				2.0222916603088
+			},
 			localization_strings = {
 				"pes_gameplay_spots_health_01",
 				"pes_gameplay_spots_health_07",
@@ -11152,9 +11967,9 @@ return function ()
 		},
 		pes_gameplay_helped_by_dwarf_ranger_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -11175,6 +11990,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				0.99989581108093,
+				1.1915208101273,
+				2.7005624771118,
+				1.3275624513626
+			},
 			localization_strings = {
 				"pes_gameplay_helped_by_dwarf_ranger_05",
 				"pes_gameplay_helped_by_dwarf_ranger_06",
@@ -11185,9 +12006,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_patrol_stormvermin_no_drunk = {
 			sound_events_n = 7,
-			randomize_indexes_n = 0,
 			face_animations_n = 7,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 7,
 			sound_events = {
@@ -11217,6 +12038,15 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.4509791135788,
+				2.6708540916443,
+				1.7882291078568,
+				1.5687291622162,
+				2.0784583091736,
+				2.2767915725708,
+				2
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_skaven_patrol_stormvermin_01",
 				"pes_gameplay_hearing_a_skaven_patrol_stormvermin_02",
@@ -11230,9 +12060,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_stormfiend_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -11253,6 +12083,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -11263,9 +12099,9 @@ return function ()
 		},
 		pes_gameplay_bright_wizard_being_helped_up_drunk = {
 			sound_events_n = 9,
-			randomize_indexes_n = 0,
 			face_animations_n = 9,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 9,
 			sound_events = {
@@ -11301,6 +12137,17 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.3002083301544,
+				1.4221458435059,
+				1.8824167251587,
+				2.1931457519531,
+				2.5976667404175,
+				1.8385000228882,
+				2.1156666278839,
+				1.9369167089462,
+				1.1509791612625
+			},
 			localization_strings = {
 				"pes_gameplay_bright_wizard_being_helped_up_04",
 				"pes_gameplay_bright_wizard_being_helped_up_05",
@@ -11316,9 +12163,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_ratling_gun_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -11339,6 +12186,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -11349,9 +12202,9 @@ return function ()
 		},
 		pes_gameplay_healing_bright_wizard_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -11375,6 +12228,13 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.4577499628067,
+				2.1049375534058,
+				2.218291759491,
+				2.6545832157135,
+				4.4468955993652
+			},
 			localization_strings = {
 				"pes_gameplay_healing_bright_wizard_04",
 				"pes_gameplay_healing_bright_wizard_05",
@@ -11386,9 +12246,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_Skaven_warpfire_thrower_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -11409,6 +12269,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -11419,9 +12285,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_gutter_runner_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -11448,6 +12314,14 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.5134791135788,
+				1.6895625591278,
+				1.0027500391007,
+				1.245020866394,
+				1.3851875066757,
+				1.2981666326523
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_gutter_runner_01",
 				"pes_gameplay_seeing_a_gutter_runner_02",
@@ -11460,9 +12334,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_globadier_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -11483,6 +12357,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.6029374599457,
+				4.1897292137146,
+				2.4868333339691,
+				4.4993124008179
+			},
 			localization_strings = {
 				"pes_crawl_drunk_incoming_threat_01",
 				"pes_crawl_drunk_incoming_threat_02",
@@ -11493,9 +12373,9 @@ return function ()
 		},
 		pes_gameplay_killing_a_chaos_warrior_champion_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -11528,6 +12408,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.7217707633972,
+				3.1337082386017,
+				3.2511250972748,
+				1.8682708740234,
+				3.5334792137146,
+				4.1793541908264,
+				2.6062083244324,
+				2.3493750095367
+			},
 			localization_strings = {
 				"pes_gameplay_killing_a_chaos_warrior_champion_01",
 				"pes_gameplay_killing_a_chaos_warrior_champion_02",
@@ -11542,9 +12432,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_skaven_ratling_gun_combat_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -11565,6 +12455,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.2875833511352,
+				0.87272918224335,
+				1.274854183197,
+				1.0438541173935
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_skaven_ratling_gun_combat_01",
 				"pes_gameplay_hearing_a_skaven_ratling_gun_combat_02",
@@ -11575,9 +12471,9 @@ return function ()
 		},
 		pes_gameplay_hearing_a_pm_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -11610,6 +12506,16 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.1063542366028,
+				4.2329168319702,
+				2.8080625534058,
+				2.8716666698456,
+				1.2773958444595,
+				1.7499582767487,
+				2.4377708435059,
+				1.7516458034515
+			},
 			localization_strings = {
 				"pes_gameplay_hearing_a_plague_monk_01",
 				"pes_gameplay_hearing_a_plague_monk_02",
@@ -11624,9 +12530,9 @@ return function ()
 		},
 		pes_gameplay_low_on_health_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -11659,6 +12565,16 @@ return function ()
 				"face_exhausted",
 				"face_pain"
 			},
+			sound_events_duration = {
+				2.2957916259766,
+				2.2180833816528,
+				3.2766873836517,
+				1.8077708482742,
+				3.6779375076294,
+				2.3515000343323,
+				2.0228333473206,
+				1.5894792079925
+			},
 			localization_strings = {
 				"pes_gameplay_low_on_health_01",
 				"pes_gameplay_low_on_health_09",
@@ -11673,9 +12589,9 @@ return function ()
 		},
 		pes_gameplay_spots_ammo_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -11708,6 +12624,16 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				0.88322913646698,
+				1.2390208244324,
+				1.3858958482742,
+				1.4178750514984,
+				2.0729167461395,
+				1.6746250391007,
+				1.4186667203903,
+				2.6123125553131
+			},
 			localization_strings = {
 				"pes_gameplay_spots_ammo_01",
 				"pes_gameplay_spots_ammo_02",
@@ -11722,9 +12648,9 @@ return function ()
 		},
 		pes_gameplay_throwing_bomb_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -11748,6 +12674,13 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				0.97354167699814,
+				0.86779165267944,
+				1.5438541173935,
+				1.3927083015442,
+				1.0770000219345
+			},
 			localization_strings = {
 				"pes_gameplay_throwing_bomb_01",
 				"pes_gameplay_throwing_bomb_03",
@@ -11759,9 +12692,9 @@ return function ()
 		},
 		pes_crawl_drunk_buff_wears_off = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -11794,6 +12727,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.2560207843781,
+				3.0604791641235,
+				1.392874956131,
+				1.8339791297913,
+				3.0889375209808,
+				4.0957083702087,
+				3.9557499885559,
+				3.5801458358765
+			},
 			localization_strings = {
 				"pes_crawl_drunk_buff_wears_off_01",
 				"pes_crawl_drunk_buff_wears_off_02",
@@ -11808,9 +12751,9 @@ return function ()
 		},
 		pes_gameplay_dwarf_ranger_low_on_health_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -11831,6 +12774,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.5209999084473,
+				2.1845834255219,
+				2.240770816803,
+				1.6283333301544
+			},
 			localization_strings = {
 				"pes_gameplay_dwarf_ranger_low_on_health_05",
 				"pes_gameplay_dwarf_ranger_low_on_health_06",
@@ -11841,9 +12790,9 @@ return function ()
 		},
 		pes_gameplay_seeing_a_stormfiend_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -11876,6 +12825,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.2115833759308,
+				3.7311251163483,
+				2.6422083377838,
+				2.4455416202545,
+				2.5981457233429,
+				2.7933332920074,
+				2.470624923706,
+				3.7116665840149
+			},
 			localization_strings = {
 				"pes_gameplay_seeing_a_stormfiend_01",
 				"pes_gameplay_seeing_a_stormfiend_02",
@@ -11890,9 +12849,9 @@ return function ()
 		},
 		pes_gameplay_out_of_ammo_drunk = {
 			sound_events_n = 9,
-			randomize_indexes_n = 0,
 			face_animations_n = 9,
 			database = "empire_soldier_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 9,
 			sound_events = {
@@ -11927,6 +12886,17 @@ return function ()
 				"face_contempt",
 				"face_contempt",
 				"face_contempt"
+			},
+			sound_events_duration = {
+				1.4534167051315,
+				1.5814791917801,
+				1.2135416269302,
+				1.1613124608993,
+				1.1037708520889,
+				0.73227083683014,
+				2.3864374160767,
+				1.8904374837875,
+				1.6058541536331
 			},
 			localization_strings = {
 				"pes_gameplay_out_of_ammo_05",

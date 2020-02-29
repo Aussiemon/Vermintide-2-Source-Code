@@ -1985,6 +1985,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.1869374513626
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_three_02"
 			}
@@ -2003,6 +2006,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3214375972748
 			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_seven_02"
@@ -2023,6 +2029,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7317707538605
+			},
 			localization_strings = {
 				[1.0] = "pbw_crawl_conversation_three_01"
 			}
@@ -2041,6 +2050,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7598123550415
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_six_02"
@@ -2061,6 +2073,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.9627289772034
+			},
 			localization_strings = {
 				[1.0] = "pbw_crawl_conversation_six_01"
 			}
@@ -2079,6 +2094,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3595833778381
 			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_seven_02"
@@ -2099,6 +2117,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.5351247787476
+			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_ten_01"
 			}
@@ -2117,6 +2138,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.275812625885
 			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_four_01"
@@ -2137,6 +2161,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 8.8224582672119
+			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_two_01"
 			}
@@ -2155,6 +2182,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7935209274292
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_six_01"
@@ -2175,6 +2205,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.2339792251587
+			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_seven_03"
 			}
@@ -2193,6 +2226,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 10.144520759583
 			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_seven_01"
@@ -2213,6 +2249,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.762312412262
+			},
 			localization_strings = {
 				[1.0] = "pbw_crawl_conversation_two_01"
 			}
@@ -2231,6 +2270,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7851042747498
 			},
 			localization_strings = {
 				[1.0] = "pbw_crawl_conversation_six_02"
@@ -2251,6 +2293,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6574165821075
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_ten_02"
 			}
@@ -2269,6 +2314,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.5877914428711
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_four_02"
@@ -2289,6 +2337,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 14.767416954041
+			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_eight_01"
 			}
@@ -2307,6 +2358,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.6923751831055
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_ten_01"
@@ -2327,6 +2381,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5279583930969
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_one_02"
 			}
@@ -2345,6 +2402,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3469998836517
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_one_01"
@@ -2365,6 +2425,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.2924790382385
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_five_01"
 			}
@@ -2383,6 +2446,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5942709445953
 			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_one_01"
@@ -2403,6 +2469,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.2045207023621
+			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_nine_02"
 			}
@@ -2421,6 +2490,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.3614587783813
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_eight_02"
@@ -2441,6 +2513,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.522604227066
+			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_one_03"
 			}
@@ -2459,6 +2534,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3052084445953
 			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_ten_02"
@@ -2479,6 +2557,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5231251716614
+			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_eight_02"
 			}
@@ -2497,6 +2578,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2093749046326
 			},
 			localization_strings = {
 				[1.0] = "pwe_crawl_conversation_nine_01"
@@ -2517,6 +2601,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.3836040496826
+			},
 			localization_strings = {
 				[1.0] = "pbw_crawl_conversation_three_02"
 			}
@@ -2535,6 +2622,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3338332176209
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_five_02"
@@ -2555,6 +2645,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5683126449585
+			},
 			localization_strings = {
 				[1.0] = "pbw_crawl_conversation_nine_02"
 			}
@@ -2573,6 +2666,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6063122749329
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_eight_01"
@@ -2593,6 +2689,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.6771459579468
+			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_one_02"
 			}
@@ -2611,6 +2710,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8731665611267
 			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_three_01"
@@ -2631,6 +2733,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.4113330841065
+			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_two_02"
 			}
@@ -2649,6 +2754,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0065627098083
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_five_02"
@@ -2669,6 +2777,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.0358753204346
+			},
 			localization_strings = {
 				[1.0] = "pbw_crawl_conversation_nine_01"
 			}
@@ -2687,6 +2798,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4539585113525
 			},
 			localization_strings = {
 				[1.0] = "pwh_crawl_conversation_seven_01"
@@ -2707,6 +2821,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8873333930969
+			},
 			localization_strings = {
 				[1.0] = "pes_crawl_conversation_four_01"
 			}
@@ -2725,6 +2842,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3464164733887
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_conversation_five_01"

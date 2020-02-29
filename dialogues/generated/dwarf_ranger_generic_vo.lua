@@ -704,18 +704,12 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_generic_falling",
 		response = "pdr_generic_falling",
+		name = "pdr_generic_falling",
 		criterias = {
 			{
 				"query_context",
 				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
 				OP.EQ,
 				"generic_falling"
 			},
@@ -730,29 +724,15 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"generic_falling",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"generic_falling",
-				OP.ADD,
-				1
 			}
 		}
 	})
 	add_dialogues({
 		pdr_generic_reaction_sound = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -772,6 +752,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				0.58787500858307,
+				1.0847916603088,
+				0.89272916316986,
+				0.51360416412354
 			},
 			localization_strings = {
 				"pdr_generic_reaction_sound_01",
@@ -783,9 +769,9 @@ return function ()
 		},
 		pdr_generic_dark = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -805,6 +791,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.4258124828339,
+				2.3306250572205,
+				1.7216875553131,
+				1.7931666374207
 			},
 			localization_strings = {
 				"pdr_generic_dark_01",
@@ -816,9 +808,9 @@ return function ()
 		},
 		pdr_generic_door_locked = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -838,6 +830,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				0.87543749809265,
+				1.8372083902359,
+				1.2600208520889,
+				1.1479375362396
 			},
 			localization_strings = {
 				"pdr_generic_door_locked_01",
@@ -849,9 +847,9 @@ return function ()
 		},
 		pdr_generic_reaction_action = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -871,6 +869,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				0.41131249070168,
+				0.41977083683014,
+				1.2564166784286,
+				1.0444791316986
 			},
 			localization_strings = {
 				"pdr_generic_reaction_action_01",
@@ -882,9 +886,9 @@ return function ()
 		},
 		pdr_generic_rain = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -904,6 +908,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.4051041603088,
+				2.2421457767487,
+				3.6570000648499,
+				3.7942292690277
 			},
 			localization_strings = {
 				"pdr_generic_rain_01",
@@ -915,9 +925,9 @@ return function ()
 		},
 		pdr_generic_search_start = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -937,6 +947,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				0.96941667795181,
+				0.79262501001358,
+				1.2731666564941,
+				1.4391249418259
 			},
 			localization_strings = {
 				"pdr_generic_search_start_01",
@@ -948,9 +964,9 @@ return function ()
 		},
 		pdr_generic_getting_dark_outside = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -970,6 +986,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.4475417137146,
+				2.4507915973663,
+				3.2632083892822,
+				1.5408333539963
 			},
 			localization_strings = {
 				"pdr_generic_getting_dark_outside_01",
@@ -981,9 +1003,9 @@ return function ()
 		},
 		pdr_generic_cold_inside = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1003,6 +1025,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8282500505447,
+				2.044979095459,
+				1.8795416355133,
+				2.7462708950043
 			},
 			localization_strings = {
 				"pdr_generic_cold_inside_01",
@@ -1014,9 +1042,9 @@ return function ()
 		},
 		pdr_generic_path_blocked = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1036,6 +1064,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.6173332929611,
+				1.9639791250229,
+				1.6466250419617,
+				1.7541667222977
 			},
 			localization_strings = {
 				"pdr_generic_path_blocked_01",
@@ -1047,9 +1081,9 @@ return function ()
 		},
 		pdr_generic_cold_outside = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1069,6 +1103,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.6247708797455,
+				1.8080832958221,
+				2.9995000362396,
+				1.5468332767487
 			},
 			localization_strings = {
 				"pdr_generic_cold_outside_01",
@@ -1080,10 +1120,10 @@ return function ()
 		},
 		pdr_generic_falling = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
-			category = "level_talk",
+			randomize_indexes_n = 0,
+			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
 				"pdr_generic_falling_01",
@@ -1102,6 +1142,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.3424791097641,
+				1.6719791889191,
+				2.022125005722,
+				1.5072083473206
 			},
 			localization_strings = {
 				"pdr_generic_falling_01",
@@ -1113,9 +1159,9 @@ return function ()
 		},
 		pdr_generic_success = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1135,6 +1181,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0560207366943,
+				2.2943542003632,
+				1.8859167098999,
+				1.5572082996368
 			},
 			localization_strings = {
 				"pdr_generic_success_01",
@@ -1146,9 +1198,9 @@ return function ()
 		},
 		pdr_generic_unexpected_event_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1168,6 +1220,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.0296041965485,
+				2.1623332500458,
+				1.0525833368301,
+				1.1214791536331
 			},
 			localization_strings = {
 				"pdr_generic_unexpected_event_01",
@@ -1179,9 +1237,9 @@ return function ()
 		},
 		pdr_generic_assemble = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1201,6 +1259,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.0378541946411,
+				1.3906041383743,
+				1.0891666412354,
+				0.81197917461395
 			},
 			localization_strings = {
 				"pdr_generic_assemble_01",
@@ -1212,9 +1276,9 @@ return function ()
 		},
 		pdr_generic_search_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1235,6 +1299,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				1.2005208730698,
+				0.769291639328,
+				0.83379167318344,
+				1.6659791469574
+			},
 			localization_strings = {
 				"pdr_generic_search_complete_01",
 				"pdr_generic_search_complete_02",
@@ -1245,9 +1315,9 @@ return function ()
 		},
 		pdr_generic_search_progressing = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -1280,6 +1350,16 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				1.754979133606,
+				0.93802082538605,
+				1.2361249923706,
+				1.3378958702087,
+				1.7460416555405,
+				1.0507082939148,
+				1.0067708492279,
+				1.2944583892822
+			},
 			localization_strings = {
 				"pdr_generic_search_progressing_01",
 				"pdr_generic_search_progressing_02",
@@ -1294,9 +1374,9 @@ return function ()
 		},
 		pdr_generic_objective_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_generic_vo",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1316,6 +1396,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				0.83010417222977,
+				2.0123751163483,
+				2.1536250114441,
+				2.4004375934601
 			},
 			localization_strings = {
 				"pdr_generic_objective_complete_01",

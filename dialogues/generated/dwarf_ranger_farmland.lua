@@ -914,9 +914,9 @@ return function ()
 	add_dialogues({
 		pdr_level_farmlands_kill_the_brute_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -936,6 +936,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				6.0003747940064,
+				5.0049166679382,
+				3.4424166679382,
+				4.8049583435059
 			},
 			localization_strings = {
 				"pdr_level_farmlands_kill_the_brute_01",
@@ -947,9 +953,9 @@ return function ()
 		},
 		pdr_level_farmlands_monster_in_barn_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -969,6 +975,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.3102917671204,
+				3.0842292308807,
+				4.0271873474121,
+				5.2413334846497
 			},
 			localization_strings = {
 				"pdr_level_farmlands_monster_in_barn_01",
@@ -980,9 +992,9 @@ return function ()
 		},
 		pdr_level_farmlands_investigate_farm_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1002,6 +1014,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.0553750991821,
+				2.9460000991821,
+				4.7422289848328,
+				3.0882499217987
 			},
 			localization_strings = {
 				"pdr_level_farmlands_investigate_farm_01",
@@ -1013,9 +1031,9 @@ return function ()
 		},
 		pdr_level_farmlands_last_farm_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1035,6 +1053,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.8353543281555,
+				4.7928123474121,
+				5.4052081108093,
+				6.1900625228882
 			},
 			localization_strings = {
 				"pdr_level_farmlands_last_farm_01",
@@ -1046,9 +1070,9 @@ return function ()
 		},
 		pdr_level_farmlands_through_the_barn_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1068,6 +1092,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8895833492279,
+				1.8630000352859,
+				1.8515416383743,
+				5.2683334350586
 			},
 			localization_strings = {
 				"pdr_level_farmlands_through_the_barn_01",
@@ -1079,9 +1109,9 @@ return function ()
 		},
 		pdr_level_farmlands_fence_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1102,6 +1132,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				1.8428750038147,
+				2.6042499542236,
+				2.0174584388733,
+				3.1749792098999
+			},
 			localization_strings = {
 				"pdr_level_farmlands_fence_01",
 				"pdr_level_farmlands_fence_02",
@@ -1112,9 +1148,9 @@ return function ()
 		},
 		pdr_level_farmlands_no_prisoners_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1135,6 +1171,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				6.136353969574,
+				3.8411874771118,
+				4.7508540153503,
+				3.1497082710266
+			},
 			localization_strings = {
 				"pdr_level_farmlands_no_prisoners_01",
 				"pdr_level_farmlands_no_prisoners_02",
@@ -1145,9 +1187,9 @@ return function ()
 		},
 		pdr_farmlands_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1162,6 +1204,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9353332519531,
+				[2.0] = 4.9142918586731
+			},
 			localization_strings = {
 				[1.0] = "pdr_farmlands_intro_c_01",
 				[2.0] = "pdr_farmlands_intro_c_02"
@@ -1170,9 +1216,9 @@ return function ()
 		},
 		pdr_level_farmlands_cart_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1193,6 +1239,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				4.5978751182556,
+				1.9599583148956,
+				2.8542292118073,
+				1.8132083415985
+			},
 			localization_strings = {
 				"pdr_level_farmlands_cart_01",
 				"pdr_level_farmlands_cart_02",
@@ -1203,9 +1255,9 @@ return function ()
 		},
 		pdr_level_farmlands_prisoners_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1225,6 +1277,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.9417500495911,
+				2.9075417518616,
+				3.6526041030884,
+				3.4025626182556
 			},
 			localization_strings = {
 				"pdr_level_farmlands_prisoners_01",
@@ -1236,9 +1294,9 @@ return function ()
 		},
 		pdr_level_farmlands_deserted_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1258,6 +1316,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.5661458969116,
+				2.6438958644867,
+				2.8723750114441,
+				4.3191876411438
 			},
 			localization_strings = {
 				"pdr_level_farmlands_deserted_01",
@@ -1269,9 +1333,9 @@ return function ()
 		},
 		pdr_level_farmlands_smoke_plume_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1291,6 +1355,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.8307085037231,
+				4.5639581680298,
+				5.0969581604004,
+				3.4567
 			},
 			localization_strings = {
 				"pdr_level_farmlands_smoke_plume_01",
@@ -1302,9 +1372,9 @@ return function ()
 		},
 		pdr_level_farmlands_end_level_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1325,6 +1395,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.6758332252502,
+				2.0434999465942,
+				3.3850834369659,
+				7.7023539543152
+			},
 			localization_strings = {
 				"pdr_level_farmlands_end_level_01",
 				"pdr_level_farmlands_end_level_02",
@@ -1335,9 +1411,9 @@ return function ()
 		},
 		pdr_level_farmlands_next_farm_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1358,6 +1434,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.8051249980927,
+				2.9531667232513,
+				3.3287291526794,
+				3.7240624427795
+			},
 			localization_strings = {
 				"pdr_level_farmlands_next_farm_01",
 				"pdr_level_farmlands_next_farm_02",
@@ -1368,9 +1450,9 @@ return function ()
 		},
 		pdr_level_farmlands_unlocking_the_cage_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1391,6 +1473,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.963666677475,
+				2.2269582748413,
+				2.3253540992737,
+				1.8982917070389
+			},
 			localization_strings = {
 				"pdr_level_farmlands_unlocking_the_cage_01",
 				"pdr_level_farmlands_unlocking_the_cage_02",
@@ -1401,9 +1489,9 @@ return function ()
 		},
 		pdr_level_farmland_stick_to_the_road_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1424,6 +1512,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.5881876945496,
+				2.6668541431427,
+				2.6469790935516,
+				4.9362502098083
+			},
 			localization_strings = {
 				"pdr_level_farmland_stick_to_the_road_01",
 				"pdr_level_farmland_stick_to_the_road_02",
@@ -1434,9 +1528,9 @@ return function ()
 		},
 		pdr_farmlands_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1451,6 +1545,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.7805624008179,
+				[2.0] = 5.0056667327881
+			},
 			localization_strings = {
 				[1.0] = "pdr_farmlands_intro_a_01",
 				[2.0] = "pdr_farmlands_intro_a_02"
@@ -1459,9 +1557,9 @@ return function ()
 		},
 		pdr_level_farmlands_portal_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1482,6 +1580,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.4517498016357,
+				3.590437412262,
+				5.167396068573,
+				4.095187664032
+			},
 			localization_strings = {
 				"pdr_level_farmlands_portal_01",
 				"pdr_level_farmlands_portal_02",
@@ -1492,9 +1596,9 @@ return function ()
 		},
 		pdr_farmlands_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1509,6 +1613,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.6740417480469,
+				[2.0] = 1.767041683197
+			},
 			localization_strings = {
 				[1.0] = "pdr_farmlands_intro_b_01",
 				[2.0] = "pdr_farmlands_intro_b_02"
@@ -1517,9 +1625,9 @@ return function ()
 		},
 		pdr_level_farmlands_locked_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1540,6 +1648,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.9201667308807,
+				2.7237501144409,
+				3.8112292289734,
+				3.3149790763855
+			},
 			localization_strings = {
 				"pdr_level_farmlands_locked_gate_01",
 				"pdr_level_farmlands_locked_gate_02",
@@ -1550,9 +1664,9 @@ return function ()
 		},
 		pdr_level_farmlands_move_on_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1572,6 +1686,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.451708316803,
+				3.5213124752045,
+				3.3913333415985,
+				1.88181245327
 			},
 			localization_strings = {
 				"pdr_level_farmlands_move_on_01",

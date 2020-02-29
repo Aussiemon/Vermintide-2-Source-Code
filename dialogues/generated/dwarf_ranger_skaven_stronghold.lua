@@ -1090,9 +1090,9 @@ return function ()
 	add_dialogues({
 		pdr_level_skaven_stronghold_barrier = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1113,6 +1113,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.8434998989105,
+				4.5661249160767,
+				3.6970207691193,
+				2.4998333454132
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_barrier_01",
 				"pdr_level_skaven_stronghold_barrier_02",
@@ -1123,9 +1129,9 @@ return function ()
 		},
 		pdr_gameplay_chieftain_tips_special_attack_cleave = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1146,6 +1152,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.158083319664,
+				1.2273541688919,
+				1.6189166307449,
+				1.555583357811
+			},
 			localization_strings = {
 				"pdr_gameplay_chieftain_tips_01",
 				"pdr_gameplay_chieftain_tips_02",
@@ -1156,9 +1168,9 @@ return function ()
 		},
 		pdr_skaven_stronghold_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1173,6 +1185,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.4916248321533,
+				[2.0] = 3.6360623836517
+			},
 			localization_strings = {
 				[1.0] = "pdr_skaven_stronghold_intro_a_01",
 				[2.0] = "pdr_skaven_stronghold_intro_a_02"
@@ -1181,9 +1197,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_waterwheel_move = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1203,6 +1219,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.6705417633057,
+				3.6952500343323,
+				4.6500835418701,
+				3.219208240509
 			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_waterwheel_move_01",
@@ -1214,9 +1236,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_waterwheel_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1236,6 +1258,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.7254791259766,
+				2.0680000782013,
+				1.6703958511352,
+				2.9344582557678
 			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_waterwheel_complete_01",
@@ -1247,9 +1275,9 @@ return function ()
 		},
 		pdr_skaven_stronghold_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1263,6 +1291,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8809583187103,
+				[2.0] = 3.2920207977295
 			},
 			localization_strings = {
 				[1.0] = "pdr_skaven_stronghold_intro_c_01",
@@ -1272,9 +1304,9 @@ return function ()
 		},
 		pdr_skaven_stronghold_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1289,6 +1321,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 7.0399374961853,
+				[2.0] = 7.1224999427795
+			},
 			localization_strings = {
 				[1.0] = "pdr_skaven_stronghold_intro_b_01",
 				[2.0] = "pdr_skaven_stronghold_intro_b_02"
@@ -1297,9 +1333,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_mission_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1319,6 +1355,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.4739375114441,
+				3.0779583454132,
+				3.2195000648499,
+				2.6280207633972
 			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_mission_complete_01",
@@ -1330,9 +1372,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_dead_warlord = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1352,6 +1394,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.2720415592194,
+				2.8939790725708,
+				4.1078124046326,
+				3.9009165763855
 			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_dead_warlord_01",
@@ -1363,9 +1411,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_warlord_nest = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1385,6 +1433,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.5605416297913,
+				4.7538957595825,
+				2.0523958206177,
+				3.3330624103546
 			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_warlord_nest_01",
@@ -1396,9 +1450,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_city_afire = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1419,6 +1473,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.3192706108093,
+				4.5118126869202,
+				4.2498331069946,
+				2.1400415897369
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_city_afire_01",
 				"pdr_level_skaven_stronghold_city_afire_02",
@@ -1429,9 +1489,9 @@ return function ()
 		},
 		pdr_gameplay_skaven_warlord_summoning_reply = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -1455,6 +1515,13 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.8234167098999,
+				3.8873958587647,
+				3.6184792518616,
+				2.9873332977295,
+				3.9112501144409
+			},
 			localization_strings = {
 				"pdr_gameplay_skaven_warlord_summoning_reply_01",
 				"pdr_gameplay_skaven_warlord_summoning_reply_02",
@@ -1466,9 +1533,9 @@ return function ()
 		},
 		pdr_gameplay_chieftain_tips_special_lunge_attack_2 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1489,6 +1556,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.158083319664,
+				1.2273541688919,
+				1.6189166307449,
+				1.555583357811
+			},
 			localization_strings = {
 				"pdr_gameplay_chieftain_tips_01",
 				"pdr_gameplay_chieftain_tips_02",
@@ -1499,9 +1572,9 @@ return function ()
 		},
 		pdr_gameplay_skaven_warlord_banter_reply = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -1528,6 +1601,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.9257707595825,
+				2.9788334369659,
+				2.7056457996368,
+				3.0612499713898,
+				2.7836248874664,
+				6.0525832176208
+			},
 			localization_strings = {
 				"pdr_gameplay_skaven_warlord_banter_reply_01",
 				"pdr_gameplay_skaven_warlord_banter_reply_02",
@@ -1540,9 +1621,9 @@ return function ()
 		},
 		pdr_gameplay_skaven_warlord_kill = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1563,6 +1644,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.503187417984,
+				1.6003333330154,
+				3.1426250934601,
+				1.7957082986832
+			},
 			localization_strings = {
 				"pdr_gameplay_skaven_warlord_kill_01",
 				"pdr_gameplay_skaven_warlord_kill_02",
@@ -1573,9 +1660,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_light_brazier = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1596,6 +1683,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.7053332328796,
+				2.4487917423248,
+				2.131979227066,
+				4.4021873474121
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_light_brazier_01",
 				"pdr_level_skaven_stronghold_light_brazier_02",
@@ -1606,9 +1699,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_exit = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1629,6 +1722,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.4691877365112,
+				2.7629375457764,
+				3.1596667766571,
+				3.5589165687561
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_exit_01",
 				"pdr_level_skaven_stronghold_exit_02",
@@ -1639,9 +1738,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1662,6 +1761,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				5.6560831069946,
+				6.561562538147,
+				5.8470416069031,
+				3.6711459159851
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_vista_01",
 				"pdr_level_skaven_stronghold_vista_02",
@@ -1672,9 +1777,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_patrol_lanes = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1695,6 +1800,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.785854101181,
+				2.6259167194366,
+				3.2836248874664,
+				4.3942708969116
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_patrol_lanes_01",
 				"pdr_level_skaven_stronghold_patrol_lanes_02",
@@ -1705,9 +1816,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_long_way_down = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1728,6 +1839,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.1674582958221,
+				3.6305000782013,
+				3.5361666679382,
+				3.0411667823791
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_long_way_down_01",
 				"pdr_level_skaven_stronghold_long_way_down_02",
@@ -1738,9 +1855,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_foundry_entered = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1761,6 +1878,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.5133957862854,
+				5.809166431427,
+				4.5926456451416,
+				5.8005418777466
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_foundry_entered_01",
 				"pdr_level_skaven_stronghold_foundry_entered_02",
@@ -1771,9 +1894,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1793,6 +1916,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.5664167404175,
+				1.4204374551773,
+				2.6370625495911,
+				2.5911874771118
 			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_elevator_01",
@@ -1817,15 +1946,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 1.7430624961853
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_skaven_stronghold_rat_ogre_rampage_01"
 			}
 		},
 		pdr_level_skaven_stronghold_taunt_warlord = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1846,6 +1978,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				7.984395980835,
+				5.9255418777466,
+				6.4093332290649,
+				6.2572917938232
+			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_taunt_warlord_01",
 				"pdr_level_skaven_stronghold_taunt_warlord_02",
@@ -1856,9 +1994,9 @@ return function ()
 		},
 		pdr_level_skaven_stronghold_downtown = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1878,6 +2016,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.0153541564941,
+				3.2082500457764,
+				4.4110627174377,
+				3.5990417003632
 			},
 			localization_strings = {
 				"pdr_level_skaven_stronghold_downtown_01",

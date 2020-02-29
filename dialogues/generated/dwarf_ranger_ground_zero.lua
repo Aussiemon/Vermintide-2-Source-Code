@@ -860,9 +860,9 @@ return function ()
 	add_dialogues({
 		pdr_level_ground_zero_precarious = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -883,6 +883,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.6556458473206,
+				1.610270857811,
+				2.3396666049957,
+				3.0833125114441
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_precarious_01",
 				"pdr_level_ground_zero_precarious_02",
@@ -893,9 +899,9 @@ return function ()
 		},
 		pdr_level_ground_zero_boss_near = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -916,6 +922,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.1434373855591,
+				4.8993539810181,
+				3.5315208435059,
+				5.2607498168945
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_boss_near_01",
 				"pdr_level_ground_zero_boss_near_02",
@@ -926,9 +938,9 @@ return function ()
 		},
 		ebh_level_ground_zero_lord_spawn_enemies = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
@@ -950,6 +962,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				4.180645942688,
+				13.026000022888,
+				8.7754373550415,
+				3.8321459293366
+			},
 			localization_strings = {
 				"ebh_level_ground_zero_lord_spawn_enemies_01",
 				"ebh_level_ground_zero_lord_spawn_enemies_02",
@@ -960,9 +978,9 @@ return function ()
 		},
 		pdr_level_ground_zero_corruption_everywhere = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -983,6 +1001,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				4.1829376220703,
+				4.500020980835,
+				3.9161458015442,
+				2.8967916965485
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_corruption_everywhere_01",
 				"pdr_level_ground_zero_corruption_everywhere_02",
@@ -993,9 +1017,9 @@ return function ()
 		},
 		pdr_ground_zero_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1010,6 +1034,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7427499294281,
+				[2.0] = 5.2160210609436
+			},
 			localization_strings = {
 				[1.0] = "pdr_ground_zero_intro_b_01",
 				[2.0] = "pdr_ground_zero_intro_b_02"
@@ -1018,9 +1046,9 @@ return function ()
 		},
 		pdr_level_ground_zero_the_hole_second_view = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1041,6 +1069,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.1652498245239,
+				4.5418124198914,
+				5.9802293777466,
+				5.4425206184387
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_the_hole_second_view_01",
 				"pdr_level_ground_zero_the_hole_second_view_02",
@@ -1051,9 +1085,9 @@ return function ()
 		},
 		pdr_ground_zero_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1067,6 +1101,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5770626068115,
+				[2.0] = 10.54829120636
 			},
 			localization_strings = {
 				[1.0] = "pdr_ground_zero_intro_c_01",
@@ -1076,9 +1114,9 @@ return function ()
 		},
 		pdr_ground_zero_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1093,6 +1131,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5831875801086,
+				[2.0] = 5.8600625991821
+			},
 			localization_strings = {
 				[1.0] = "pdr_ground_zero_intro_a_01",
 				[2.0] = "pdr_ground_zero_intro_a_02"
@@ -1101,9 +1143,9 @@ return function ()
 		},
 		pdr_level_ground_zero_crumbling = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1124,6 +1166,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.0456874370575,
+				2.3270416259766,
+				2.5764582157135,
+				4.5998749732971
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_crumbling_01",
 				"pdr_level_ground_zero_crumbling_02",
@@ -1134,9 +1182,9 @@ return function ()
 		},
 		pdr_level_ground_zero_canals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1157,6 +1205,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.1667289733887,
+				4.6100831031799,
+				3.9645416736603,
+				3.8008542060852
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_canals_01",
 				"pdr_level_ground_zero_canals_02",
@@ -1167,9 +1221,9 @@ return function ()
 		},
 		ebh_level_ground_zero_lord_insect_spell = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
@@ -1191,6 +1245,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				3.4226040840149,
+				3.0002708435059,
+				3.7621250152588,
+				5.1398539543152
+			},
 			localization_strings = {
 				"ebh_level_ground_zero_lord_insect_spell_01",
 				"ebh_level_ground_zero_lord_insect_spell_02",
@@ -1201,9 +1261,9 @@ return function ()
 		},
 		pdr_level_ground_zero_the_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1224,6 +1284,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.2102293968201,
+				3.8172917366028,
+				4.2842707633972,
+				5.1893539428711
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_the_hole_01",
 				"pdr_level_ground_zero_the_hole_02",
@@ -1234,9 +1300,9 @@ return function ()
 		},
 		ebh_level_ground_zero_lord_intro = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 2,
@@ -1252,6 +1318,10 @@ return function ()
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 19.150812149048,
+				[2.0] = 17.64560508728
+			},
 			localization_strings = {
 				[1.0] = "ebh_level_ground_zero_lord_intro_01",
 				[2.0] = "ebh_level_ground_zero_lord_intro_02"
@@ -1260,9 +1330,9 @@ return function ()
 		},
 		pdr_level_ground_zero_canal_crossing = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1283,6 +1353,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.5679166316986,
+				4.7077293395996,
+				4.5354166030884,
+				7.0530414581299
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_canal_crossing_01",
 				"pdr_level_ground_zero_canal_crossing_02",
@@ -1293,9 +1369,9 @@ return function ()
 		},
 		pdr_level_ground_zero_complete = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1313,6 +1389,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.2249999046326,
+				2.9873542785645,
+				1.6727499961853
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_complete_01",
 				"pdr_level_ground_zero_complete_02",
@@ -1322,9 +1403,9 @@ return function ()
 		},
 		pdr_level_ground_zero_boss_taunt_reply = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1342,6 +1423,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.6952083110809,
+				7.0825624465942,
+				8.596583366394
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_boss_taunt_reply_01",
 				"pdr_level_ground_zero_boss_taunt_reply_02",
@@ -1351,9 +1437,9 @@ return function ()
 		},
 		pdr_level_ground_zero_welcoming_committee = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1374,6 +1460,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				6.5436458587647,
+				3.8663125038147,
+				2.8951041698456,
+				5.0999999046326
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_welcoming_committee_01",
 				"pdr_level_ground_zero_welcoming_committee_02",
@@ -1384,9 +1476,9 @@ return function ()
 		},
 		ebh_level_ground_zero_lord_retaliation_missile = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
@@ -1408,6 +1500,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				5.7061457633972,
+				3.861249923706,
+				5.7626042366028,
+				4.9964165687561
+			},
 			localization_strings = {
 				"ebh_level_ground_zero_lord_retaliation_missile_01",
 				"ebh_level_ground_zero_lord_retaliation_missile_02",
@@ -1418,9 +1516,9 @@ return function ()
 		},
 		pdr_level_ground_zero_boss_spotted = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1435,6 +1533,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.927791595459,
+				[2.0] = 7.1275415420532
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_ground_zero_boss_spotted_03",
 				[2.0] = "pdr_level_ground_zero_boss_spotted_04"
@@ -1443,9 +1545,9 @@ return function ()
 		},
 		pdr_level_ground_zero_looking_for_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1466,6 +1568,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.6757497787476,
+				2.7618124485016,
+				3.0985624790192,
+				4.6270208358765
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_looking_for_elevator_01",
 				"pdr_level_ground_zero_looking_for_elevator_02",
@@ -1476,9 +1584,9 @@ return function ()
 		},
 		ebh_level_ground_zero_lord_banter = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
@@ -1500,6 +1608,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				8.340916633606,
+				10.945666313171,
+				10.867562294006,
+				4.8926248550415
+			},
 			localization_strings = {
 				"ebh_level_ground_zero_lord_banter_02",
 				"ebh_level_ground_zero_lord_banter_03",
@@ -1510,9 +1624,9 @@ return function ()
 		},
 		pdr_level_ground_zero_landslide = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1533,6 +1647,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.1670000553131,
+				4.6198539733887,
+				1.7452708482742,
+				4.1464581489563
+			},
 			localization_strings = {
 				"pdr_level_ground_zero_landslide_01",
 				"pdr_level_ground_zero_landslide_02",
@@ -1543,9 +1663,9 @@ return function ()
 		},
 		pdr_level_ground_zero_smell = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1565,6 +1685,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.4332292079926,
+				1.9591457843781,
+				7.6341457366943,
+				3.321270942688
 			},
 			localization_strings = {
 				"pdr_level_ground_zero_smell_01",

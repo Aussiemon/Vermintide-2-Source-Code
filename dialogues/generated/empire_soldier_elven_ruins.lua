@@ -962,9 +962,9 @@ return function ()
 	add_dialogues({
 		pes_level_elven_ruins_clearing = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -984,6 +984,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.1847290992737,
+				4.0415625572205,
+				3.926374912262,
+				3.6608126163483
 			},
 			localization_strings = {
 				"pes_level_elven_ruins_clearing_01",
@@ -995,9 +1001,9 @@ return function ()
 		},
 		pes_level_elven_ruins_broken_waystone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1017,6 +1023,12 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry"
+			},
+			sound_events_duration = {
+				1.9333750009537,
+				3.4000000953674,
+				3.5138750076294,
+				1.8037707805634
 			},
 			localization_strings = {
 				"pes_level_elven_ruins_broken_waystone_01",
@@ -1028,9 +1040,9 @@ return function ()
 		},
 		pes_level_elven_ruins_exit = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1050,6 +1062,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.1284792423248,
+				2.0723125934601,
+				1.6486458778381,
+				2.1561875343323
 			},
 			localization_strings = {
 				"pes_level_elven_ruins_exit_01",
@@ -1061,9 +1079,9 @@ return function ()
 		},
 		pes_elven_ruins_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1077,6 +1095,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2758333683014,
+				[2.0] = 2.7555000782013
 			},
 			localization_strings = {
 				[1.0] = "pes_elven_ruins_intro_b_01",
@@ -1086,9 +1108,9 @@ return function ()
 		},
 		pes_elven_ruins_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1103,6 +1125,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.5494999885559,
+				[2.0] = 4.6153335571289
+			},
 			localization_strings = {
 				[1.0] = "pes_elven_ruins_intro_a_01",
 				[2.0] = "pes_elven_ruins_intro_a_02"
@@ -1111,9 +1137,9 @@ return function ()
 		},
 		pes_level_elven_ruins_task_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1134,6 +1160,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.4585416316986,
+				4.2148542404175,
+				4.0107083320618,
+				6.3778123855591
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_task_complete_01",
 				"pes_level_elven_ruins_task_complete_02",
@@ -1144,9 +1176,9 @@ return function ()
 		},
 		pes_level_elven_ruins_skaven_banners = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1167,6 +1199,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.2857916355133,
+				3.2055416107178,
+				3.672333240509,
+				3.7665207386017
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_skaven_banners_01",
 				"pes_level_elven_ruins_skaven_banners_02",
@@ -1177,9 +1215,9 @@ return function ()
 		},
 		pes_level_elven_ruins_maze_interior = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1200,6 +1238,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.1585624217987,
+				1.510583281517,
+				2.0673749446869,
+				2.2402291297913
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_maze_interior_01",
 				"pes_level_elven_ruins_maze_interior_02",
@@ -1210,9 +1254,9 @@ return function ()
 		},
 		pes_level_elven_ruins_ravine_approach = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1232,6 +1276,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.6099998950958,
+				2.0155000686645,
+				1.9991874694824,
+				2.5118541717529
 			},
 			localization_strings = {
 				"pes_level_elven_ruins_ravine_approach_01",
@@ -1243,9 +1293,9 @@ return function ()
 		},
 		pes_level_elven_ruins_untouched = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1266,6 +1316,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				4.9708957672119,
+				6.2138543128967,
+				5.117208480835,
+				2.5554583072662
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_untouched_01",
 				"pes_level_elven_ruins_untouched_02",
@@ -1276,9 +1332,9 @@ return function ()
 		},
 		pes_level_elven_ruins_first_aligned_pleasant_feeling = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1299,6 +1355,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				6.2442083358765,
+				3.2999999523163,
+				3.754499912262,
+				3.7999999523163
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_first_aligned_pleasant_feeling_01",
 				"pes_level_elven_ruins_first_aligned_pleasant_feeling_02",
@@ -1309,9 +1371,9 @@ return function ()
 		},
 		pes_level_elven_ruins_cliff_edge = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1332,6 +1394,12 @@ return function ()
 				"face_contempt",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.321145772934,
+				3.755937576294,
+				2.8040208816528,
+				2.6163125038147
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_cliff_edge_01",
 				"pes_level_elven_ruins_cliff_edge_02",
@@ -1342,9 +1410,9 @@ return function ()
 		},
 		pes_level_elven_ruins_second_aligned = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1364,6 +1432,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.6863541603088,
+				1.5787500143051,
+				3.7585833072662,
+				3.4622707366943
 			},
 			localization_strings = {
 				"pes_level_elven_ruins_second_aligned_01",
@@ -1375,9 +1449,9 @@ return function ()
 		},
 		pes_level_elven_ruins_noisy_puzzle = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1398,6 +1472,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.9823541641235,
+				2.0301876068115,
+				3.25,
+				2.8185832500458
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_noisy_puzzle_01",
 				"pes_level_elven_ruins_noisy_puzzle_02",
@@ -1408,9 +1488,9 @@ return function ()
 		},
 		pes_level_elven_ruins_seeing_puzzle_crystals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1431,6 +1511,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.5299166440964,
+				4.6691250801086,
+				3.215562582016,
+				2.85191655159
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_seeing_puzzle_crystals_01",
 				"pes_level_elven_ruins_seeing_puzzle_crystals_02",
@@ -1441,9 +1527,9 @@ return function ()
 		},
 		pes_elven_ruins_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1458,6 +1544,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9645416736603,
+				[2.0] = 3.8037917613983
+			},
 			localization_strings = {
 				[1.0] = "pes_elven_ruins_intro_c_01",
 				[2.0] = "pes_elven_ruins_intro_c_02"
@@ -1466,9 +1556,9 @@ return function ()
 		},
 		pes_level_elven_ruins_big_tree = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1488,6 +1578,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.372750043869,
+				3.616250038147,
+				2.4063334465027,
+				2.5651042461395
 			},
 			localization_strings = {
 				"pes_level_elven_ruins_big_tree_01",
@@ -1499,9 +1595,9 @@ return function ()
 		},
 		pes_level_elven_ruins_shattered_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1522,6 +1618,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.700395822525,
+				2.9980416297913,
+				4.5706458091736,
+				5.1114583015442
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_shattered_temple_01",
 				"pes_level_elven_ruins_shattered_temple_02",
@@ -1532,9 +1634,9 @@ return function ()
 		},
 		pes_level_elven_ruins_great_glade = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1555,6 +1657,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				4.1007084846497,
+				2.7314791679382,
+				3.3926875591278,
+				2.1526875495911
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_great_glade_01",
 				"pes_level_elven_ruins_great_glade_02",
@@ -1565,9 +1673,9 @@ return function ()
 		},
 		pes_level_elven_ruins_seeing_puzzle = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1588,6 +1696,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.6220624446869,
+				2.0131249427795,
+				2.3350417613983,
+				3.2668333053589
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_seeing_puzzle_01",
 				"pes_level_elven_ruins_seeing_puzzle_02",
@@ -1598,9 +1712,9 @@ return function ()
 		},
 		pes_level_elven_ruins_maze_approach = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1621,6 +1735,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.5343542098999,
+				2.6702709197998,
+				0.99556249380112,
+				2.4887707233429
+			},
 			localization_strings = {
 				"pes_level_elven_ruins_maze_approach_01",
 				"pes_level_elven_ruins_maze_approach_02",
@@ -1631,9 +1751,9 @@ return function ()
 		},
 		pes_level_elven_ruins_entering_ruins = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1653,6 +1773,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.6710000038147,
+				2.5437290668488,
+				5.1385416984558,
+				3.358895778656
 			},
 			localization_strings = {
 				"pes_level_elven_ruins_entering_ruins_01",

@@ -2906,6 +2906,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 0.95168751478195
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_ten_01"
 			}
@@ -2924,6 +2927,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0301666259766
 			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_five_01"
@@ -2944,6 +2950,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.4405417442322
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_eleven_03"
 			}
@@ -2962,6 +2971,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3526043891907
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_eleven_03"
@@ -2982,6 +2994,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9099373817444
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_farmlands_story_five_01"
 			}
@@ -3000,6 +3015,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3693749904633
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_eleven_02"
@@ -3020,6 +3038,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.5045207738876
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_eleven_02"
 			}
@@ -3038,6 +3059,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4277708530426
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_three_01"
@@ -3058,6 +3082,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.6114373207092
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_two_01"
 			}
@@ -3076,6 +3103,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5187501907349
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_eight_03"
@@ -3096,6 +3126,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.8685626983643
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_eleven_01"
 			}
@@ -3114,6 +3147,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.477020740509
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_thirteen_02"
@@ -3134,6 +3170,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0402917861939
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_three_01"
 			}
@@ -3152,6 +3191,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.6913958787918
 			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_seven_01"
@@ -3172,6 +3214,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.6180624961853
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_eight_02"
 			}
@@ -3190,6 +3235,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4800832271576
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_farmlands_story_twelve_02"
@@ -3210,6 +3258,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.6083331108093
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_seven_01"
 			}
@@ -3228,6 +3279,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7648334503174
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_farmlands_story_twelve_01"
@@ -3248,6 +3302,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.3455834388733
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_three_02"
 			}
@@ -3266,6 +3323,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4439167976379
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_nine_01"
@@ -3286,6 +3346,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.420041680336
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_four_01"
 			}
@@ -3304,6 +3367,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4485833644867
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_farmlands_story_four_01"
@@ -3324,6 +3390,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0638332366943
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_ten_02"
 			}
@@ -3342,6 +3411,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6477084159851
 			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_four_01"
@@ -3362,6 +3434,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0848541259766
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_ten_03"
 			}
@@ -3380,6 +3455,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.2968120574951
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_farmlands_story_two_01"
@@ -3400,6 +3478,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.8891248703003
+			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_thirteen_01"
 			}
@@ -3418,6 +3499,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8288750648499
 			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_eight_02"
@@ -3438,6 +3522,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0865416526794
+			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_one_01"
 			}
@@ -3456,6 +3543,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.6213126182556
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_two_02"
@@ -3476,6 +3566,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.737104177475
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_farmlands_story_five_02"
 			}
@@ -3494,6 +3587,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2187085151672
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_ten_02"
@@ -3514,6 +3610,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.7117710113525
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_nine_02"
 			}
@@ -3532,6 +3631,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0625624656677
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_six_03"
@@ -3552,6 +3654,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.7480208873749
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_nine_01"
 			}
@@ -3570,6 +3675,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1332499980927
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_farmlands_story_four_02"
@@ -3590,6 +3698,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.5013332366943
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_one_01"
 			}
@@ -3608,6 +3719,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8210206031799
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_three_01"
@@ -3628,6 +3742,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.1850833892822
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_thirteen_03"
 			}
@@ -3646,6 +3763,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5535626411438
 			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_two_01"
@@ -3666,6 +3786,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.279354095459
+			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_eight_01"
 			}
@@ -3684,6 +3807,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7304372787476
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_one_01"
@@ -3704,6 +3830,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.1902918815613
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_eleven_01"
 			}
@@ -3722,6 +3851,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.541895866394
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_fourteen_02"
@@ -3742,6 +3874,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.3082499504089
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_twelve_02"
 			}
@@ -3760,6 +3895,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4418749809265
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_six_01"
@@ -3780,6 +3918,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7319166660309
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_twelve_01"
 			}
@@ -3798,6 +3939,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2353541851044
 			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_two_02"
@@ -3818,6 +3962,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3165001869202
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_nine_03"
 			}
@@ -3836,6 +3983,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9082500934601
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_seven_01"
@@ -3856,6 +4006,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5065832138061
+			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_one_02"
 			}
@@ -3874,6 +4027,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1339790821075
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_ten_03"
@@ -3894,6 +4050,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4721667766571
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_fourteen_01"
 			}
@@ -3912,6 +4071,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0913333892822
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_nine_02"
@@ -3932,6 +4094,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8461666107178
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_thirteen_02"
 			}
@@ -3950,6 +4115,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6055207252502
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_six_01"
@@ -3970,6 +4138,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3334794044495
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_two_03"
 			}
@@ -3988,6 +4159,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1341667175293
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_six_03"
@@ -4008,6 +4182,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.5635209083557
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_farmlands_story_six_02"
 			}
@@ -4026,6 +4203,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 0.97539585828781
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_six_02"
@@ -4046,6 +4226,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9623124599457
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_farmlands_story_ten_01"
 			}
@@ -4065,6 +4248,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.8675208091736
+			},
 			localization_strings = {
 				[1.0] = "pes_level_farmlands_story_fourteen_01"
 			}
@@ -4083,6 +4269,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2492499351502
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_five_01"

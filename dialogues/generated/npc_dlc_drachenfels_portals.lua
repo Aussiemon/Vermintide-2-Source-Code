@@ -240,9 +240,9 @@ return function ()
 	add_dialogues({
 		pwh_portals_crypt_event_demon_voice = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "npc_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -262,6 +262,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				7.2278752326965,
+				4.6356873512268,
+				4.5563125610352,
+				6.5775208473206
 			},
 			localization_strings = {
 				"pwh_portals_crypt_event_demon_voice_01",
@@ -273,9 +279,9 @@ return function ()
 		},
 		pdr_portals_crypt_event_demon_voice = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "npc_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -295,6 +301,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.9402289390564,
+				1.4783124923706,
+				3.3614583015442,
+				1.7735625505447
 			},
 			localization_strings = {
 				"pdr_portals_crypt_event_demon_voice_01",
@@ -306,9 +318,9 @@ return function ()
 		},
 		pes_portals_crypt_event_demon_voice = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "npc_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -329,6 +341,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.2156875133514,
+				0.89085417985916,
+				3.5248959064484,
+				1.0278958082199
+			},
 			localization_strings = {
 				"pes_portals_crypt_event_demon_voice_01",
 				"pes_portals_crypt_event_demon_voice_02",
@@ -339,9 +357,9 @@ return function ()
 		},
 		pwe_portals_crypt_event_demon_voice = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "npc_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "boss_talk",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -359,6 +377,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				0.63887500762939,
+				1.6103541851044,
+				2.9471459388733
+			},
 			localization_strings = {
 				"pwe_portals_crypt_event_demon_voice_01",
 				"pwe_portals_crypt_event_demon_voice_02",
@@ -368,9 +391,9 @@ return function ()
 		},
 		ngkd_portals_daemon_challenge = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "npc_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "boss_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -385,6 +408,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5272116661072,
+				[2.0] = 5.1037521362305
+			},
 			localization_strings = {
 				[1.0] = "ngkd_portals_daemon_challenge_01",
 				[2.0] = "ngkd_portals_daemon_challenge_03"
@@ -393,9 +420,9 @@ return function ()
 		},
 		pbw_portals_crypt_event_demon_voice = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "npc_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -415,6 +442,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.190687417984,
+				2.7134375572205,
+				3.2666459083557,
+				3.9763958454132
 			},
 			localization_strings = {
 				"pbw_portals_crypt_event_demon_voice_01",

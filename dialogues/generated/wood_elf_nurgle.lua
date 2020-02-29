@@ -216,9 +216,9 @@ return function ()
 	add_dialogues({
 		pwe_nurgle_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_nurgle",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -233,6 +233,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 7.7614164352417,
+				[2.0] = 8.7651872634888
+			},
 			localization_strings = {
 				[1.0] = "pwe_nurgle_intro_a_01",
 				[2.0] = "pwe_nurgle_intro_a_02"
@@ -241,9 +245,9 @@ return function ()
 		},
 		pwe_level_nurgle_spotting_objective = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_nurgle",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -263,6 +267,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.4518959522247,
+				3.3708124160767,
+				4.223249912262,
+				3.3921458721161
 			},
 			localization_strings = {
 				"pwe_level_nurgle_spotting_objective_01",
@@ -274,9 +284,9 @@ return function ()
 		},
 		pwe_level_nurgle_coming_down = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_nurgle",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -297,6 +307,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.6912498474121,
+				5.1840624809265,
+				6.0263748168945,
+				4.5843749046326
+			},
 			localization_strings = {
 				"pwe_level_nurgle_coming_down_01",
 				"pwe_level_nurgle_coming_down_02",
@@ -307,9 +323,9 @@ return function ()
 		},
 		pwe_nurgle_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_nurgle",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -324,6 +340,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 10.481687545776,
+				[2.0] = 9.5001878738403
+			},
 			localization_strings = {
 				[1.0] = "pwe_nurgle_intro_b_01",
 				[2.0] = "pwe_nurgle_intro_b_02"
@@ -332,9 +352,9 @@ return function ()
 		},
 		pwe_level_nurgle_swift_river = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_nurgle",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -354,6 +374,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.52889585495,
+				2.8746666908264,
+				3.9763333797455,
+				4.0714793205261
 			},
 			localization_strings = {
 				"pwe_level_nurgle_swift_river_01",

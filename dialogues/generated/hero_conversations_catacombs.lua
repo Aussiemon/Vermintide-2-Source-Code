@@ -2320,6 +2320,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.4216666221619
+			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_nine_01"
 			}
@@ -2338,6 +2341,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4097084999084
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_catacombs_story_ten_01"
@@ -2358,6 +2364,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.390166759491
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_five_01"
 			}
@@ -2376,6 +2385,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3098125457764
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_eleven_02"
@@ -2396,6 +2408,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.4566249847412
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_catacombs_story_four_03"
 			}
@@ -2414,6 +2429,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5661458969116
 			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_one_01"
@@ -2434,6 +2452,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3793959617615
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_catacombs_story_four_02"
 			}
@@ -2452,6 +2473,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9213333129883
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_catacombs_story_eight_03"
@@ -2472,6 +2496,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.5825414657593
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_nine_01"
 			}
@@ -2490,6 +2517,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5963957309723
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_five_01"
@@ -2510,6 +2540,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.3918124437332
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_five_02"
 			}
@@ -2528,6 +2561,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5850832462311
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_seven_02"
@@ -2548,6 +2584,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.660395860672
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_seven_01"
 			}
@@ -2566,6 +2605,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1527915000916
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_three_01"
@@ -2586,6 +2628,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.8697919845581
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_ten_03"
 			}
@@ -2604,6 +2649,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6924374103546
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_ten_01"
@@ -2624,6 +2672,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4395208358765
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_one_01"
 			}
@@ -2642,6 +2693,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0665626525879
 			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_four_02"
@@ -2662,6 +2716,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9698958396912
+			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_eleven_01"
 			}
@@ -2680,6 +2737,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 8.387749671936
 			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_six_01"
@@ -2700,6 +2760,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.464145898819
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_seven_01"
 			}
@@ -2718,6 +2781,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4231667518616
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_two_03"
@@ -2738,6 +2804,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.3255000114441
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_seven_02"
 			}
@@ -2756,6 +2825,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2169165611267
 			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_nine_02"
@@ -2776,6 +2848,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.179229259491
+			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_six_02"
 			}
@@ -2794,6 +2869,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3499999046326
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_catacombs_story_six_02"
@@ -2814,6 +2892,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9634166955948
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_catacombs_story_three_01"
 			}
@@ -2832,6 +2913,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7062706947327
 			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_three_01"
@@ -2852,6 +2936,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0349793434143
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_catacombs_story_two_02"
 			}
@@ -2870,6 +2957,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5999999046326
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_two_02"
@@ -2890,6 +2980,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7436666488648
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_catacombs_story_two_01"
 			}
@@ -2908,6 +3001,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9936666488648
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_two_01"
@@ -2928,6 +3024,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.8716249465942
+			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_eight_01"
 			}
@@ -2946,6 +3045,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 11.502854347229
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_five_02"
@@ -2966,6 +3068,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.2149999141693
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_catacombs_story_ten_01"
 			}
@@ -2984,6 +3089,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 5.7919373512268
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_eleven_02"
@@ -3004,6 +3112,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.972770690918
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_eleven_01"
 			}
@@ -3022,6 +3133,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6247081756592
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_eleven_01"
@@ -3042,6 +3156,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.7378540039063
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_catacombs_story_six_01"
 			}
@@ -3060,6 +3177,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.3735417127609
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_story_nine_02"
@@ -3080,6 +3200,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.7124376296997
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_catacombs_story_four_01"
 			}
@@ -3098,6 +3221,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5377292633057
 			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_four_01"
@@ -3118,6 +3244,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.5216250419617
+			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_one_02"
 			}
@@ -3136,6 +3265,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5752708911896
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_eight_01"
@@ -3156,6 +3288,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9482707977295
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_ten_02"
 			}
@@ -3174,6 +3309,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3439168930054
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_catacombs_story_eight_01"
@@ -3194,6 +3332,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.2941875457764
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_catacombs_story_eight_02"
 			}
@@ -3212,6 +3353,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.9745831489563
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_catacombs_story_one_02"
@@ -3232,6 +3376,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 9.717604637146
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_catacombs_story_seven_01"
 			}
@@ -3250,6 +3397,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5115625858307
 			},
 			localization_strings = {
 				[1.0] = "pes_level_catacombs_story_nine_03"

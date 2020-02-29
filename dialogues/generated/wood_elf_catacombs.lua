@@ -1232,9 +1232,9 @@ return function ()
 	add_dialogues({
 		pwe_level_catacombs_sewers_nurglefication_heavy = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1254,6 +1254,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				6.0590834617615,
+				2.1865208148956,
+				6.7826251983643,
+				5.8869581222534
 			},
 			localization_strings = {
 				"pwe_level_catacombs_sewers_nurglefication_heavy_01",
@@ -1265,9 +1271,9 @@ return function ()
 		},
 		pwe_catacombs_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1282,6 +1288,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.4868750572205,
+				[2.0] = 5.5628542900085
+			},
 			localization_strings = {
 				[1.0] = "pwe_catacombs_intro_c_01",
 				[2.0] = "pwe_catacombs_intro_c_02"
@@ -1290,9 +1300,9 @@ return function ()
 		},
 		pwe_level_catacombs_nurgle_water = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1312,6 +1322,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.6371250152588,
+				3.3706874847412,
+				5.1727709770203,
+				3.5268125534058
 			},
 			localization_strings = {
 				"pwe_level_catacombs_nurgle_water_01",
@@ -1323,9 +1339,9 @@ return function ()
 		},
 		pwe_level_catacombs_way_is_clear = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1345,6 +1361,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.3703334331513,
+				2.6285834312439,
+				3.6518957614899,
+				2.5363540649414
 			},
 			localization_strings = {
 				"pwe_level_catacombs_way_is_clear_01",
@@ -1356,9 +1378,9 @@ return function ()
 		},
 		pwe_level_catacombs_hear_chanting = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1378,6 +1400,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.6151876449585,
+				5.431583404541,
+				4.4946875572205,
+				5.5602498054504
 			},
 			localization_strings = {
 				"pwe_level_catacombs_hear_chanting_01",
@@ -1389,9 +1417,9 @@ return function ()
 		},
 		pwe_level_catacombs_one_sorcerer_dead = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1412,6 +1440,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				5.1470623016357,
+				3.0353751182556,
+				4.2307710647583,
+				4.1309375762939
+			},
 			localization_strings = {
 				"pwe_level_catacombs_one_sorcerer_dead_01",
 				"pwe_level_catacombs_one_sorcerer_dead_02",
@@ -1422,9 +1456,9 @@ return function ()
 		},
 		pwe_catacombs_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1439,6 +1473,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.7747292518616,
+				[2.0] = 2.8511667251587
+			},
 			localization_strings = {
 				[1.0] = "pwe_catacombs_intro_b_01",
 				[2.0] = "pwe_catacombs_intro_b_02"
@@ -1447,9 +1485,9 @@ return function ()
 		},
 		pwe_level_catacombs_tunnel_entrance = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1470,6 +1508,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				4.6077919006348,
+				6.3214583396912,
+				5.1646876335144,
+				2.9533333778381
+			},
 			localization_strings = {
 				"pwe_level_catacombs_tunnel_entrance_01",
 				"pwe_level_catacombs_tunnel_entrance_02",
@@ -1480,9 +1524,9 @@ return function ()
 		},
 		pwe_level_catacombs_jump_into_intestine_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1502,6 +1546,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.8474583625794,
+				3.4752917289734,
+				4.8614997863769,
+				4.5884790420532
 			},
 			localization_strings = {
 				"pwe_level_catacombs_jump_into_intestine_hole_01",
@@ -1513,9 +1563,9 @@ return function ()
 		},
 		pwe_level_catacombs_two_sorcerer_dead = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1535,6 +1585,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.8650417327881,
+				2.2475416660309,
+				2.3750624656677,
+				3.0828125476837
 			},
 			localization_strings = {
 				"pwe_level_catacombs_two_sorcerer_dead_01",
@@ -1546,9 +1602,9 @@ return function ()
 		},
 		pwe_level_catacombs_cultist_door = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1568,6 +1624,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.8548958301544,
+				2.8846666812897,
+				3.1665415763855,
+				2.77308344841
 			},
 			localization_strings = {
 				"pwe_level_catacombs_cultist_door_01",
@@ -1579,9 +1641,9 @@ return function ()
 		},
 		pwe_level_catacombs_correct_switch = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1601,6 +1663,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.8537082672119,
+				4.2388124465942,
+				4.1119790077209,
+				4.8818125724792
 			},
 			localization_strings = {
 				"pwe_level_catacombs_correct_switch_01",
@@ -1612,9 +1680,9 @@ return function ()
 		},
 		pwe_level_catacombs_slime_trail = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1635,6 +1703,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.6738543510437,
+				4.4672083854675,
+				4.7257709503174,
+				5.0291876792908
+			},
 			localization_strings = {
 				"pwe_level_catacombs_slime_trail_01",
 				"pwe_level_catacombs_slime_trail_02",
@@ -1645,9 +1719,9 @@ return function ()
 		},
 		pwe_level_catacombs_mausoleum_entrance = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1668,6 +1742,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.9545834064484,
+				4.2483124732971,
+				7.7503957748413,
+				2.4857499599457
+			},
 			localization_strings = {
 				"pwe_level_catacombs_mausoleum_entrance_01",
 				"pwe_level_catacombs_mausoleum_entrance_02",
@@ -1678,9 +1758,9 @@ return function ()
 		},
 		pwe_level_catacombs_sabotage_ritual = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1701,6 +1781,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.3121042251587,
+				6.2287707328796,
+				4.095187664032,
+				3.2999999523163
+			},
 			localization_strings = {
 				"pwe_level_catacombs_sabotage_ritual_01",
 				"pwe_level_catacombs_sabotage_ritual_02",
@@ -1711,9 +1797,9 @@ return function ()
 		},
 		pwe_level_catacombs_healing_ward = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1734,6 +1820,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.4115207195282,
+				3.8818333148956,
+				4.3331251144409,
+				3.1372709274292
+			},
 			localization_strings = {
 				"pwe_level_catacombs_healing_ward_01",
 				"pwe_level_catacombs_healing_ward_02",
@@ -1744,9 +1836,9 @@ return function ()
 		},
 		pwe_level_catacombs_ritual_exit_through_portal = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1767,6 +1859,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.370374917984,
+				3.6225624084473,
+				3.6851875782013,
+				2.6250417232513
+			},
 			localization_strings = {
 				"pwe_level_catacombs_ritual_exit_through_portal_01",
 				"pwe_level_catacombs_ritual_exit_through_portal_02",
@@ -1777,9 +1875,9 @@ return function ()
 		},
 		pwe_level_catacombs_switch_instructions = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1800,6 +1898,12 @@ return function ()
 				"face_contempt",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.8454166650772,
+				2.0218334197998,
+				2.7487916946411,
+				1.8325417041779
+			},
 			localization_strings = {
 				"pwe_level_catacombs_switch_instructions_01",
 				"pwe_level_catacombs_switch_instructions_02",
@@ -1810,9 +1914,9 @@ return function ()
 		},
 		pwe_catacombs_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1827,6 +1931,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0777916908264,
+				[2.0] = 3.7834167480469
+			},
 			localization_strings = {
 				[1.0] = "pwe_catacombs_intro_a_01",
 				[2.0] = "pwe_catacombs_intro_a_02"
@@ -1835,9 +1943,9 @@ return function ()
 		},
 		pwe_level_catacombs_sewers = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1858,6 +1966,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				3.4801666736603,
+				4.9911456108093,
+				5.6271042823792,
+				5.6808543205261
+			},
 			localization_strings = {
 				"pwe_level_catacombs_sewers_01",
 				"pwe_level_catacombs_sewers_02",
@@ -1868,9 +1982,9 @@ return function ()
 		},
 		pwe_level_catacombs_confinement_cells = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1890,6 +2004,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				5.4199376106262,
+				4.5808334350586,
+				4.5164585113525,
+				3.5770208835602
 			},
 			localization_strings = {
 				"pwe_level_catacombs_confinement_cells_01",
@@ -1901,9 +2021,9 @@ return function ()
 		},
 		pwe_level_catacombs_sewers_nurglefication_light = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1923,6 +2043,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.8038125038147,
+				6.1690001487732,
+				4.6833543777466,
+				6.4481248855591
 			},
 			localization_strings = {
 				"pwe_level_catacombs_sewers_nurglefication_light_01",
@@ -1934,9 +2060,9 @@ return function ()
 		},
 		pwe_level_catacombs_shield_of_flies = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1956,6 +2082,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.4871459007263,
+				2.0485417842865,
+				1.5760833024979,
+				2.909437417984
 			},
 			localization_strings = {
 				"pwe_level_catacombs_shield_of_flies_01",
@@ -1967,9 +2099,9 @@ return function ()
 		},
 		pwe_level_catacombs_whoa_wrong_switch = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1989,6 +2121,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.2728958129883,
+				2.6906042098999,
+				2.6174166202545,
+				6.4111251831055
 			},
 			localization_strings = {
 				"pwe_level_catacombs_whoa_wrong_switch_01",
@@ -2000,9 +2138,9 @@ return function ()
 		},
 		pwe_level_catacombs_spot_ritual = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2023,6 +2161,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.0257081985474,
+				4.1114168167114,
+				4.7112498283386,
+				4.2641668319702
+			},
 			localization_strings = {
 				"pwe_level_catacombs_spot_ritual_01",
 				"pwe_level_catacombs_spot_ritual_02",
@@ -2033,9 +2177,9 @@ return function ()
 		},
 		pwe_level_catacombs_apothercary_room = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2056,6 +2200,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.028416633606,
+				3.8178124427795,
+				4.8492708206177,
+				3.6100208759308
+			},
 			localization_strings = {
 				"pwe_level_catacombs_apothercary_room_01",
 				"pwe_level_catacombs_apothercary_room_02",
@@ -2066,9 +2216,9 @@ return function ()
 		},
 		pwe_level_catacombs_ritual_disrupted_ritual = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2088,6 +2238,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.8913333415985,
+				4.5901460647583,
+				4.1966876983643,
+				3.1539165973663
 			},
 			localization_strings = {
 				"pwe_level_catacombs_ritual_disrupted_ritual_01",

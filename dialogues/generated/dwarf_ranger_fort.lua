@@ -963,9 +963,9 @@ return function ()
 	add_dialogues({
 		pdr_level_fort_carriage = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -980,6 +980,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.1656875610352,
+				[2.0] = 1.5920000076294
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_carriage_01",
 				[2.0] = "pdr_level_fort_carriage_02"
@@ -988,9 +992,9 @@ return function ()
 		},
 		pdr_level_fort_skaven_everywhere = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1004,6 +1008,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 8.6992502212524,
+				[2.0] = 5.1227498054504
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_skaven_everywhere_01",
@@ -1013,9 +1021,9 @@ return function ()
 		},
 		pdr_level_fort_cross_here = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1029,6 +1037,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0488123893738,
+				[2.0] = 4.3117289543152
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_cross_here_01",
@@ -1038,9 +1050,9 @@ return function ()
 		},
 		pdr_level_fort_fire_cannon_second_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1054,6 +1066,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4185833930969,
+				[2.0] = 9.1484794616699
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_fire_cannon_second_hit_01",
@@ -1063,9 +1079,9 @@ return function ()
 		},
 		pdr_level_fort_getting_closer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1079,6 +1095,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.533979177475,
+				[2.0] = 4.6098127365112
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_getting_closer_01",
@@ -1088,9 +1108,9 @@ return function ()
 		},
 		pdr_level_fort_cannonballs = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1105,6 +1125,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6036667823791,
+				[2.0] = 3.5911250114441
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_cannonballs_01",
 				[2.0] = "pdr_level_fort_cannonballs_02"
@@ -1113,9 +1137,9 @@ return function ()
 		},
 		pdr_level_fort_cannons_silenced = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1136,6 +1160,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.7833957672119,
+				4.3523960113525,
+				7.5406250953674,
+				4.7842082977295
+			},
 			localization_strings = {
 				"pdr_level_fort_cannons_silenced_01",
 				"pdr_level_fort_cannons_silenced_02",
@@ -1146,9 +1176,9 @@ return function ()
 		},
 		pdr_level_fort_river = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1162,6 +1192,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 8.2281665802002,
+				[2.0] = 2.829916715622
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_river_01",
@@ -1171,9 +1205,9 @@ return function ()
 		},
 		pdr_level_fort_fire_cannon_first_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1187,6 +1221,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9608335494995,
+				[2.0] = 6.5361876487732
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_fire_cannon_first_hit_01",
@@ -1196,9 +1234,9 @@ return function ()
 		},
 		pdr_fort_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1212,6 +1250,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6482081413269,
+				[2.0] = 3.816166639328
 			},
 			localization_strings = {
 				[1.0] = "pdr_fort_intro_a_01",
@@ -1221,9 +1263,9 @@ return function ()
 		},
 		pdr_level_fort_plague_claw_shelling = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1237,6 +1279,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3344583511353,
+				[2.0] = 5.2028331756592
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_plague_claw_shelling_alert_01",
@@ -1246,9 +1292,9 @@ return function ()
 		},
 		pdr_level_fort_fire_cannon_final_fire = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1263,6 +1309,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3071041107178,
+				[2.0] = 3.9170207977295
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_fire_cannon_final_fire_01",
 				[2.0] = "pdr_level_fort_fire_cannon_final_fire_02"
@@ -1271,9 +1321,9 @@ return function ()
 		},
 		pdr_fort_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1288,6 +1338,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.4252290725708,
+				[2.0] = 1.7625416517258
+			},
 			localization_strings = {
 				[1.0] = "pdr_fort_intro_b_01",
 				[2.0] = "pdr_fort_intro_b_02"
@@ -1296,9 +1350,9 @@ return function ()
 		},
 		pdr_level_fort_gate_fallen = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1312,6 +1366,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1578540802002,
+				[2.0] = 2.8982291221619
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_gate_fallen_01",
@@ -1321,9 +1379,9 @@ return function ()
 		},
 		pdr_level_fort_fire_cannon_second = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1337,6 +1395,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9989790916443,
+				[2.0] = 6.5906457901001
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_fire_cannon_second_01",
@@ -1346,9 +1408,9 @@ return function ()
 		},
 		pdr_level_fort_fire_cannon_fuse_is_lit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1363,6 +1425,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 1.7607916593552,
+				[2.0] = 2.3094999790192
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_fire_cannon_fuse_is_lit_01",
 				[2.0] = "pdr_level_fort_fire_cannon_fuse_is_lit_02"
@@ -1371,9 +1437,9 @@ return function ()
 		},
 		pdr_level_fort_fire_cannon_first = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1387,6 +1453,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 6.6326456069946,
+				[2.0] = 4.3408126831055
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_fire_cannon_first_01",
@@ -1403,13 +1473,14 @@ return function ()
 			sound_events = {},
 			dialogue_animations = {},
 			face_animations = {},
+			sound_events_duration = {},
 			localization_strings = {}
 		},
 		pdr_level_fort_use_cannons = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1424,6 +1495,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 5.7153334617615,
+				[2.0] = 7.9000625610352
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_use_cannons_01",
 				[2.0] = "pdr_level_fort_use_cannons_02"
@@ -1432,9 +1507,9 @@ return function ()
 		},
 		pdr_level_fort_under_attack = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1449,6 +1524,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0784792900085,
+				[2.0] = 5.9916667938232
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_under_attack_01",
 				[2.0] = "pdr_level_fort_under_attack_02"
@@ -1457,9 +1536,9 @@ return function ()
 		},
 		pdr_level_fort_fire_cannon_final_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1474,6 +1553,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.422833442688,
+				[2.0] = 4.6810417175293
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_fire_cannon_final_hit_01",
 				[2.0] = "pdr_level_fort_fire_cannon_final_hit_02"
@@ -1482,9 +1565,9 @@ return function ()
 		},
 		pdr_fort_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1499,6 +1582,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.4843335151672,
+				[2.0] = 3.5754165649414
+			},
 			localization_strings = {
 				[1.0] = "pdr_fort_intro_c_01",
 				[2.0] = "pdr_fort_intro_c_02"
@@ -1507,9 +1594,9 @@ return function ()
 		},
 		pdr_level_fort_plague_claw_shelling_move = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1523,6 +1610,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6545832157135,
+				[2.0] = 2.830958366394
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_fort_plague_claw_shelling_move_01",

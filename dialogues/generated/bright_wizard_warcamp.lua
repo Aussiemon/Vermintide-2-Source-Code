@@ -1062,9 +1062,9 @@ return function ()
 	add_dialogues({
 		pbw_level_chaos_war_camp_camp_view_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1084,6 +1084,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.4492292404175,
+				2.9384167194366,
+				4.5131669044495,
+				2.5415000915527
 			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_camp_view_01",
@@ -1095,9 +1101,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_outer_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1118,6 +1124,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.1246042251587,
+				2.50816655159,
+				5.5915622711182,
+				2.5814583301544
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_outer_gate_01",
 				"pbw_level_chaos_war_camp_outer_gate_02",
@@ -1128,9 +1140,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_which_way = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1151,6 +1163,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				3.7198958396912,
+				3.9061458110809,
+				2.6866042613983,
+				3.6540832519531
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_which_way_01",
 				"pbw_level_chaos_war_camp_which_way_02",
@@ -1161,9 +1179,9 @@ return function ()
 		},
 		pbw_chaos_war_camp_challenge_reply_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1178,6 +1196,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8155207633972,
+				[2.0] = 2.4991874694824
+			},
 			localization_strings = {
 				[1.0] = "pbw_chaos_war_camp_challenge_reply_a_01",
 				[2.0] = "pbw_chaos_war_camp_challenge_reply_a_02"
@@ -1186,9 +1208,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_live_in_swamp = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1209,6 +1231,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.589604139328,
+				4.9180002212524,
+				5.6458539962769,
+				4.3270206451416
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_live_in_swamp_01",
 				"pbw_level_chaos_war_camp_live_in_swamp_02",
@@ -1219,9 +1247,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_arena_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1242,6 +1270,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				5.4471249580383,
+				1.9747500419617,
+				4.4695000648499,
+				5.2272706031799
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_arena_01",
 				"pbw_level_chaos_war_camp_arena_02",
@@ -1252,9 +1286,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_cabin = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1275,6 +1309,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.5075206756592,
+				4.8966250419617,
+				2.0161459445953,
+				4.6859583854675
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_cabin_01",
 				"pbw_level_chaos_war_camp_cabin_02",
@@ -1285,9 +1325,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_tree = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1307,6 +1347,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				5.024395942688,
+				4.4871459007263,
+				4.8664584159851,
+				4.3928542137146
 			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_tree_01",
@@ -1318,9 +1364,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_wall_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1341,6 +1387,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.9194169044495,
+				3.037291765213,
+				2.1322708129883,
+				4.1092915534973
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_wall_01",
 				"pbw_level_chaos_war_camp_wall_02",
@@ -1351,9 +1403,9 @@ return function ()
 		},
 		pbw_chaos_war_camp_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1368,6 +1420,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.453145980835,
+				[2.0] = 2.9767498970032
+			},
 			localization_strings = {
 				[1.0] = "pbw_chaos_war_camp_intro_c_01",
 				[2.0] = "pbw_chaos_war_camp_intro_c_02"
@@ -1376,9 +1432,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_ravine = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1398,6 +1454,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.5408959388733,
+				3.8839166164398,
+				1.650229215622,
+				3.3247082233429
 			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_ravine_01",
@@ -1409,9 +1471,9 @@ return function ()
 		},
 		pbw_level_chaos_war_surprise_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1432,6 +1494,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.5018749237061,
+				3.9176249504089,
+				4.6479997634888,
+				4.0102500915527
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_surprise_01",
 				"pbw_level_chaos_war_surprise_02",
@@ -1442,9 +1510,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_dead_champion = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1462,6 +1530,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.8590416908264,
+				4.3844585418701,
+				5.3462710380554
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_dead_champion_01",
 				"pbw_level_chaos_war_camp_dead_champion_02",
@@ -1471,9 +1544,9 @@ return function ()
 		},
 		pbw_chaos_war_camp_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1488,6 +1561,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.3362498283386,
+				[2.0] = 2.7710626125336
+			},
 			localization_strings = {
 				[1.0] = "pbw_chaos_war_camp_intro_b_01",
 				[2.0] = "pbw_chaos_war_camp_intro_b_02"
@@ -1496,9 +1573,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_battering_ram_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1519,6 +1596,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.2778332233429,
+				3.0701665878296,
+				3.5445415973663,
+				3.683354139328
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_battering_ram_01",
 				"pbw_level_chaos_war_camp_battering_ram_02",
@@ -1529,9 +1612,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_ghost_town_state = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1552,6 +1635,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				4.3880000114441,
+				4.5003957748413,
+				5.4198956489563,
+				4.3127708435059
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_ghost_town_state_01",
 				"pbw_level_chaos_war_camp_ghost_town_state_02",
@@ -1562,9 +1651,9 @@ return function ()
 		},
 		pbw_chaos_war_camp_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1579,6 +1668,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.4534375667572,
+				[2.0] = 3.8464584350586
+			},
 			localization_strings = {
 				[1.0] = "pbw_chaos_war_camp_intro_a_01",
 				[2.0] = "pbw_chaos_war_camp_intro_a_02"
@@ -1587,9 +1680,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_battering_ram_use_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1610,6 +1703,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3551042079926,
+				2.0651874542236,
+				2.418687582016,
+				2.7967290878296
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_battering_ram_use_01",
 				"pbw_level_chaos_war_camp_battering_ram_use_02",
@@ -1620,9 +1719,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_depart_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1642,6 +1741,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0766665935516,
+				3.9757082462311,
+				2.3970000743866,
+				4.6653542518616
 			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_depart_01",
@@ -1653,9 +1758,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_success_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1675,6 +1780,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.1722707748413,
+				5.0391459465027,
+				3.8974375724792,
+				5.2774167060852
 			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_success_01",
@@ -1686,9 +1797,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_dead_champion_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1708,6 +1819,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.8590416908264,
+				4.3844585418701,
+				5.3462710380554,
+				3.5911250114441
 			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_dead_champion_01",
@@ -1719,9 +1836,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_keep_fighting_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1742,6 +1859,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				6.1513748168945,
+				3.8312082290649,
+				4.4977707862854,
+				4.991229057312
+			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_keep_fighting_01",
 				"pbw_level_chaos_war_camp_keep_fighting_02",
@@ -1752,9 +1875,9 @@ return function ()
 		},
 		pbw_level_chaos_war_camp_islands_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1774,6 +1897,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.5649790763855,
+				4.6299376487732,
+				2.4221251010895,
+				2.1261041164398
 			},
 			localization_strings = {
 				"pbw_level_chaos_war_camp_islands_01",

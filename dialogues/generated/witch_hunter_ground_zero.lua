@@ -814,9 +814,9 @@ return function ()
 	add_dialogues({
 		pwh_ground_zero_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -831,6 +831,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.6448125839233,
+				[2.0] = 6.4144372940064
+			},
 			localization_strings = {
 				[1.0] = "pwh_ground_zero_intro_c_01",
 				[2.0] = "pwh_ground_zero_intro_c_02"
@@ -839,9 +843,9 @@ return function ()
 		},
 		pwh_level_ground_zero_landslide = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -862,6 +866,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.6949167251587,
+				4.3912916183472,
+				5.6304793357849,
+				3.5790417194366
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_landslide_01",
 				"pwh_level_ground_zero_landslide_02",
@@ -872,9 +882,9 @@ return function ()
 		},
 		pwh_level_ground_zero_cargo_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -895,6 +905,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.7168126106262,
+				4.3707914352417,
+				4.3195624351502,
+				4.8097710609436
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_cargo_elevator_01",
 				"pwh_level_ground_zero_cargo_elevator_02",
@@ -905,9 +921,9 @@ return function ()
 		},
 		pwh_level_ground_zero_the_hole_second_view = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -927,6 +943,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.8457293510437,
+				5.4154376983643,
+				5.0896873474121,
+				5.9994792938232
 			},
 			localization_strings = {
 				"pwh_level_ground_zero_the_hole_second_view_01",
@@ -938,9 +960,9 @@ return function ()
 		},
 		pwh_level_ground_zero_the_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -961,6 +983,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.7958750724792,
+				3.950875043869,
+				7.4584999084473,
+				6
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_the_hole_01",
 				"pwh_level_ground_zero_the_hole_02",
@@ -971,9 +999,9 @@ return function ()
 		},
 		pwh_ground_zero_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -988,6 +1016,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9620208740234,
+				[2.0] = 5
+			},
 			localization_strings = {
 				[1.0] = "pwh_ground_zero_intro_b_01",
 				[2.0] = "pwh_ground_zero_intro_b_02"
@@ -996,9 +1028,9 @@ return function ()
 		},
 		pwh_level_ground_zero_boss_spotted = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1019,6 +1051,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				10.861833572388,
+				10.720125198364,
+				9.6676454544067,
+				10.637166976929
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_boss_spotted_01",
 				"pwh_level_ground_zero_boss_spotted_02",
@@ -1029,9 +1067,9 @@ return function ()
 		},
 		pwh_level_ground_zero_boss_near = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1052,6 +1090,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.7334582805634,
+				5.3097500801086,
+				4.4543747901917,
+				2.7046666145325
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_boss_near_01",
 				"pwh_level_ground_zero_boss_near_02",
@@ -1062,9 +1106,9 @@ return function ()
 		},
 		pwh_level_ground_zero_welcoming_committee = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1085,6 +1129,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.0123541355133,
+				2.4983749389648,
+				5.3719372749329,
+				3.4680833816528
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_welcoming_committee_01",
 				"pwh_level_ground_zero_welcoming_committee_02",
@@ -1095,9 +1145,9 @@ return function ()
 		},
 		pwh_level_ground_zero_canals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1118,6 +1168,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.9273126125336,
+				4.8543124198914,
+				5.7131876945496,
+				4.3817291259766
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_canals_01",
 				"pwh_level_ground_zero_canals_02",
@@ -1128,9 +1184,9 @@ return function ()
 		},
 		pwh_level_ground_zero_precarious = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1151,6 +1207,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.898895740509,
+				4.1735415458679,
+				4.2525625228882,
+				3.3484792709351
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_precarious_01",
 				"pwh_level_ground_zero_precarious_02",
@@ -1161,9 +1223,9 @@ return function ()
 		},
 		pwh_level_ground_zero_boss_taunt_reply = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1178,6 +1240,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 12.05314540863,
+				[2.0] = 10.253375053406
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_ground_zero_boss_taunt_reply_01",
 				[2.0] = "pwh_level_ground_zero_boss_taunt_reply_02"
@@ -1186,9 +1252,9 @@ return function ()
 		},
 		pwh_level_ground_zero_canal_crossing = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1208,6 +1274,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.938333272934,
+				4.5730834007263,
+				5.7029581069946,
+				7.6355624198914
 			},
 			localization_strings = {
 				"pwh_level_ground_zero_canal_crossing_01",
@@ -1219,9 +1291,9 @@ return function ()
 		},
 		pwh_level_ground_zero_crumbling = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1242,6 +1314,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.426958322525,
+				3.837708234787,
+				3.7907917499542,
+				4.7285208702087
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_crumbling_01",
 				"pwh_level_ground_zero_crumbling_02",
@@ -1252,9 +1330,9 @@ return function ()
 		},
 		pwh_ground_zero_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1269,6 +1347,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.5108332633972,
+				[2.0] = 6.1245832443237
+			},
 			localization_strings = {
 				[1.0] = "pwh_ground_zero_intro_a_01",
 				[2.0] = "pwh_ground_zero_intro_a_02"
@@ -1277,9 +1359,9 @@ return function ()
 		},
 		pwh_level_ground_zero_looking_for_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1300,6 +1382,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.5999999046326,
+				4.4927501678467,
+				4.1862916946411,
+				3.8287291526794
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_looking_for_elevator_01",
 				"pwh_level_ground_zero_looking_for_elevator_02",
@@ -1310,9 +1398,9 @@ return function ()
 		},
 		pwh_level_ground_zero_complete = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1327,6 +1415,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 9.4588747024536,
+				[2.0] = 7.9904165267944
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_ground_zero_complete_01",
 				[2.0] = "pwh_level_ground_zero_complete_02"
@@ -1335,9 +1427,9 @@ return function ()
 		},
 		pwh_level_ground_zero_corruption_everywhere = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1358,6 +1450,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				3.6454792022705,
+				3.270124912262,
+				3.9699583053589,
+				4.4343957901001
+			},
 			localization_strings = {
 				"pwh_level_ground_zero_corruption_everywhere_01",
 				"pwh_level_ground_zero_corruption_everywhere_02",
@@ -1368,9 +1466,9 @@ return function ()
 		},
 		pwh_level_ground_zero_smell = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1390,6 +1488,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.1370625495911,
+				1.9509791135788,
+				2.9924166202545,
+				2.3666040897369
 			},
 			localization_strings = {
 				"pwh_level_ground_zero_smell_01",

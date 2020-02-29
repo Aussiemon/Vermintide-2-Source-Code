@@ -914,9 +914,9 @@ return function ()
 	add_dialogues({
 		pwh_level_farmlands_through_the_barn_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -936,6 +936,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.4098541736603,
+				1.5349583625793,
+				2.3297917842865,
+				6.5427293777466
 			},
 			localization_strings = {
 				"pwh_level_farmlands_through_the_barn_01",
@@ -947,9 +953,9 @@ return function ()
 		},
 		pwh_level_farmlands_portal_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -970,6 +976,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.4470834732056,
+				3.184291601181,
+				6.3612289428711,
+				5.2597708702087
+			},
 			localization_strings = {
 				"pwh_level_farmlands_portal_01",
 				"pwh_level_farmlands_portal_02",
@@ -980,9 +992,9 @@ return function ()
 		},
 		pwh_level_farmlands_no_prisoners_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1003,6 +1015,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.6452293395996,
+				4.1448125839233,
+				2.9170207977295,
+				2.8077707290649
+			},
 			localization_strings = {
 				"pwh_level_farmlands_no_prisoners_01",
 				"pwh_level_farmlands_no_prisoners_02",
@@ -1013,9 +1031,9 @@ return function ()
 		},
 		pwh_level_farmlands_deserted_01 = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1033,6 +1051,11 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.1858541965485,
+				5.3066248893738,
+				2.1565625667572
+			},
 			localization_strings = {
 				"pwh_level_farmlands_deserted_01",
 				"pwh_level_farmlands_deserted_03",
@@ -1042,9 +1065,9 @@ return function ()
 		},
 		pwh_level_farmlands_move_on_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1064,6 +1087,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0322709083557,
+				3.0835416316986,
+				4.068895816803,
+				3.6999790668488
 			},
 			localization_strings = {
 				"pwh_level_farmlands_move_on_01",
@@ -1075,9 +1104,9 @@ return function ()
 		},
 		pwh_level_farmlands_fence_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1098,6 +1127,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.1370415687561,
+				5.6511874198914,
+				2.8812708854675,
+				3.373229265213
+			},
 			localization_strings = {
 				"pwh_level_farmlands_fence_01",
 				"pwh_level_farmlands_fence_02",
@@ -1108,9 +1143,9 @@ return function ()
 		},
 		pwh_level_farmlands_unlocking_the_cage_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1131,6 +1166,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.4270000457764,
+				1.3858125209808,
+				2.8475208282471,
+				1.6347708702087
+			},
 			localization_strings = {
 				"pwh_level_farmlands_unlocking_the_cage_01",
 				"pwh_level_farmlands_unlocking_the_cage_02",
@@ -1141,9 +1182,9 @@ return function ()
 		},
 		pwh_level_farmlands_locked_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1163,6 +1204,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.9394583702087,
+				1.4533333778381,
+				2.6701874732971,
+				3.2535624504089
 			},
 			localization_strings = {
 				"pwh_level_farmlands_locked_gate_01",
@@ -1174,9 +1221,9 @@ return function ()
 		},
 		pwh_level_farmlands_next_farm_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1197,6 +1244,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.8505208492279,
+				4.5499167442322,
+				4.7715625762939,
+				5.0652499198914
+			},
 			localization_strings = {
 				"pwh_level_farmlands_next_farm_01",
 				"pwh_level_farmlands_next_farm_02",
@@ -1207,9 +1260,9 @@ return function ()
 		},
 		pwh_farmlands_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1223,6 +1276,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7506248950958,
+				[2.0] = 5.3684582710266
 			},
 			localization_strings = {
 				[1.0] = "pwh_farmlands_intro_b_01",
@@ -1232,9 +1289,9 @@ return function ()
 		},
 		pwh_farmlands_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1249,6 +1306,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 7.4507083892822,
+				[2.0] = 3.0328333377838
+			},
 			localization_strings = {
 				[1.0] = "pwh_farmlands_intro_c_01",
 				[2.0] = "pwh_farmlands_intro_c_02"
@@ -1257,9 +1318,9 @@ return function ()
 		},
 		pwh_level_farmlands_monster_in_barn_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1279,6 +1340,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.8004584312439,
+				4.3823957443237,
+				4.5765833854675,
+				3.8749582767487
 			},
 			localization_strings = {
 				"pwh_level_farmlands_monster_in_barn_01",
@@ -1290,9 +1357,9 @@ return function ()
 		},
 		pwh_level_farmlands_smoke_plume_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1312,6 +1379,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.6035208702087,
+				6.4923543930054,
+				7.4981665611267,
+				4.930624961853
 			},
 			localization_strings = {
 				"pwh_level_farmlands_smoke_plume_01",
@@ -1323,9 +1396,9 @@ return function ()
 		},
 		pwh_level_farmlands_end_level_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1346,6 +1419,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.8557500839233,
+				5.2916040420532,
+				5.2506666183472,
+				3.9552500247955
+			},
 			localization_strings = {
 				"pwh_level_farmlands_end_level_01",
 				"pwh_level_farmlands_end_level_02",
@@ -1356,9 +1435,9 @@ return function ()
 		},
 		pwh_level_farmlands_cart_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1379,6 +1458,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.7007501125336,
+				2.4132082462311,
+				3.345999956131,
+				4.7723956108093
+			},
 			localization_strings = {
 				"pwh_level_farmlands_cart_01",
 				"pwh_level_farmlands_cart_02",
@@ -1389,9 +1474,9 @@ return function ()
 		},
 		pwh_level_farmlands_prisoners_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1411,6 +1496,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.8763959407806,
+				6.2103333473206,
+				5.5903959274292,
+				6.1307706832886
 			},
 			localization_strings = {
 				"pwh_level_farmlands_prisoners_01",
@@ -1422,9 +1513,9 @@ return function ()
 		},
 		pwh_level_farmlands_kill_the_brute_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1445,6 +1536,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				1.8725208044052,
+				4.1184582710266,
+				3.9841666221619,
+				3.7639582157135
+			},
 			localization_strings = {
 				"pwh_level_farmlands_kill_the_brute_01",
 				"pwh_level_farmlands_kill_the_brute_02",
@@ -1455,9 +1552,9 @@ return function ()
 		},
 		pwh_farmlands_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1472,6 +1569,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0594792366028,
+				[2.0] = 3.8052709102631
+			},
 			localization_strings = {
 				[1.0] = "pwh_farmlands_intro_a_01",
 				[2.0] = "pwh_farmlands_intro_a_02"
@@ -1480,9 +1581,9 @@ return function ()
 		},
 		pwh_level_farmlands_investigate_farm_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1503,6 +1604,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.1321876049042,
+				2.5781042575836,
+				5.4887290000916,
+				4.0735206604004
+			},
 			localization_strings = {
 				"pwh_level_farmlands_investigate_farm_01",
 				"pwh_level_farmlands_investigate_farm_02",
@@ -1513,9 +1620,9 @@ return function ()
 		},
 		pwh_level_farmlands_last_farm_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1536,6 +1643,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				6.2063956260681,
+				6.3403539657593,
+				4.2860832214356,
+				5.8841252326965
+			},
 			localization_strings = {
 				"pwh_level_farmlands_last_farm_01",
 				"pwh_level_farmlands_last_farm_02",
@@ -1546,9 +1659,9 @@ return function ()
 		},
 		pwh_level_farmlands_ripe_with_heresy_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_farmland",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1568,6 +1681,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				7.460479259491,
+				6.0273332595825,
+				6.316999912262,
+				8.1665000915527
 			},
 			localization_strings = {
 				"pwh_level_farmlands_ripe_with_heresy_01",

@@ -928,9 +928,9 @@ return function ()
 	add_dialogues({
 		pwe_wind_death_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -944,6 +944,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1948957443237,
+				[2.0] = 1.7602291107178
 			},
 			localization_strings = {
 				[1.0] = "pwe_wind_death_intro_banter_a_01",
@@ -966,15 +970,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.3268959522247
+			},
 			localization_strings = {
 				[1.0] = "pwe_amethyst_weave_conversation_one_01"
 			}
 		},
 		pes_wind_death_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -989,6 +996,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.6432917118073,
+				[2.0] = 1.884604215622
+			},
 			localization_strings = {
 				[1.0] = "pes_wind_death_intro_banter_b_01",
 				[2.0] = "pes_wind_death_intro_banter_b_02"
@@ -997,9 +1008,9 @@ return function ()
 		},
 		pwh_wind_death_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1013,6 +1024,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1928749084473,
+				[2.0] = 3.116229057312
 			},
 			localization_strings = {
 				[1.0] = "pwh_wind_death_intro_banter_a_01",
@@ -1035,6 +1050,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4016041755676
+			},
 			localization_strings = {
 				[1.0] = "pbw_amethyst_weave_conversation_three_01"
 			}
@@ -1054,15 +1072,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9010000228882
+			},
 			localization_strings = {
 				[1.0] = "pwe_amethyst_weave_conversation_three_01"
 			}
 		},
 		pdr_wind_death_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1077,6 +1098,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.2407290935516,
+				[2.0] = 3.6853542327881
+			},
 			localization_strings = {
 				[1.0] = "pdr_wind_death_intro_banter_b_01",
 				[2.0] = "pdr_wind_death_intro_banter_b_02"
@@ -1085,9 +1110,9 @@ return function ()
 		},
 		pwe_wind_death_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1101,6 +1126,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2840623855591,
+				[2.0] = 1.791791677475
 			},
 			localization_strings = {
 				[1.0] = "pwe_wind_death_intro_banter_b_01",
@@ -1123,6 +1152,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.8485417366028
+			},
 			localization_strings = {
 				[1.0] = "pwh_amethyst_weave_conversation_one_01"
 			}
@@ -1141,6 +1173,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7727084159851
 			},
 			localization_strings = {
 				[1.0] = "pbw_amethyst_weave_conversation_three_02"
@@ -1161,15 +1196,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.9670414924622
+			},
 			localization_strings = {
 				[1.0] = "pwe_amethyst_weave_conversation_two_01"
 			}
 		},
 		pbw_wind_death_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1183,6 +1221,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.993124961853,
+				[2.0] = 2.8034791946411
 			},
 			localization_strings = {
 				[1.0] = "pbw_wind_death_intro_banter_b_01",
@@ -1205,15 +1247,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.753312587738
+			},
 			localization_strings = {
 				[1.0] = "pwh_amethyst_weave_conversation_three_01"
 			}
 		},
 		pwh_wind_death_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1228,6 +1273,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4731874465942,
+				[2.0] = 2.8698959350586
+			},
 			localization_strings = {
 				[1.0] = "pwh_wind_death_intro_banter_b_01",
 				[2.0] = "pwh_wind_death_intro_banter_b_02"
@@ -1236,9 +1285,9 @@ return function ()
 		},
 		pdr_wind_death_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1252,6 +1301,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.319375038147,
+				[2.0] = 2.5039792060852
 			},
 			localization_strings = {
 				[1.0] = "pdr_wind_death_intro_banter_a_01",
@@ -1274,15 +1327,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.529833316803
+			},
 			localization_strings = {
 				[1.0] = "pbw_amethyst_weave_conversation_two_01"
 			}
 		},
 		pbw_wind_death_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1296,6 +1352,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4742290973663,
+				[2.0] = 3.2407083511352
 			},
 			localization_strings = {
 				[1.0] = "pbw_wind_death_intro_banter_a_01",
@@ -1318,15 +1378,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.7140417098999
+			},
 			localization_strings = {
 				[1.0] = "pwh_amethyst_weave_conversation_two_01"
 			}
 		},
 		pes_wind_death_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_death",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1340,6 +1403,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8343749046326,
+				[2.0] = 2.6345000267029
 			},
 			localization_strings = {
 				[1.0] = "pes_wind_death_intro_banter_a_01",

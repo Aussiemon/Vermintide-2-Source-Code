@@ -1664,9 +1664,9 @@ return function ()
 	add_dialogues({
 		pwe_level_skittergate_dead_seer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1681,6 +1681,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 14.731729507446,
+				[2.0] = 17.755792617798
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_skittergate_dead_seer_01",
 				[2.0] = "pwe_level_skittergate_dead_seer_02"
@@ -1689,9 +1693,9 @@ return function ()
 		},
 		pwe_level_skittergate_docks_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1712,6 +1716,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.689270734787,
+				6.6352291107178,
+				5.2124581336975,
+				5.1118330955505
+			},
 			localization_strings = {
 				"pwe_level_skittergate_docks_gate_01",
 				"pwe_level_skittergate_docks_gate_02",
@@ -1722,9 +1732,9 @@ return function ()
 		},
 		pwe_level_skittergate_rasknitt_gate_reply = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1739,6 +1749,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5520000457764,
+				[2.0] = 7.4251666069031
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_skittergate_rasknitt_gate_reply_01",
 				[2.0] = "pwe_level_skittergate_rasknitt_gate_reply_02"
@@ -1747,9 +1761,9 @@ return function ()
 		},
 		pwe_level_skittergate_gate_activated_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1769,6 +1783,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.0686457157135,
+				1.68985414505,
+				3.994437456131,
+				4.2634372711182
 			},
 			localization_strings = {
 				"pwe_level_skittergate_gate_activated_01",
@@ -1780,9 +1800,9 @@ return function ()
 		},
 		pwe_level_skittergate_sabotage_cooling_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1802,6 +1822,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				6.1003956794739,
+				4.6984581947327,
+				5.3220415115356,
+				4.7321457862854
 			},
 			localization_strings = {
 				"pwe_level_skittergate_sabotage_cooling_01",
@@ -1813,9 +1839,9 @@ return function ()
 		},
 		pwe_level_skittergate_get_down_to_the_cooling_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1836,6 +1862,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.1307291984558,
+				5.4119791984558,
+				6.8079376220703,
+				8.6394376754761
+			},
 			localization_strings = {
 				"pwe_level_skittergate_get_down_to_the_cooling_01",
 				"pwe_level_skittergate_get_down_to_the_cooling_02",
@@ -1846,9 +1878,9 @@ return function ()
 		},
 		pwe_level_skittergate_dead_seer_01 = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1863,6 +1895,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 14.731729507446,
+				[2.0] = 17.755792617798
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_skittergate_dead_seer_01",
 				[2.0] = "pwe_level_skittergate_dead_seer_02"
@@ -1871,9 +1907,9 @@ return function ()
 		},
 		pwe_level_skittergate_run_for_the_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1894,6 +1930,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.3833541870117,
+				5.8696665763855,
+				2.397979259491,
+				3.3806457519531
+			},
 			localization_strings = {
 				"pwe_level_skittergate_run_for_the_gate_01",
 				"pwe_level_skittergate_run_for_the_gate_02",
@@ -1904,9 +1946,9 @@ return function ()
 		},
 		pwe_level_skittergate_cave_entrance_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1927,6 +1969,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				5.7189583778381,
+				5.7482914924622,
+				4.5811457633972,
+				11.342958450317
+			},
 			localization_strings = {
 				"pwe_level_skittergate_cave_entrance_01",
 				"pwe_level_skittergate_cave_entrance_02",
@@ -1937,9 +1985,9 @@ return function ()
 		},
 		pwe_level_skittergate_leave_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1959,6 +2007,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.6121459007263,
+				4.7583541870117,
+				4.0401873588562,
+				5.3488750457764
 			},
 			localization_strings = {
 				"pwe_level_skittergate_leave_01",
@@ -1970,9 +2024,9 @@ return function ()
 		},
 		pwe_level_skittergate_contol_panel_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1992,6 +2046,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.4594166278839,
+				3.9245417118073,
+				5.8410000801086,
+				7.1424584388733
 			},
 			localization_strings = {
 				"pwe_level_skittergate_contol_panel_01",
@@ -2003,9 +2063,9 @@ return function ()
 		},
 		pwe_level_skittergate_back_home_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2026,6 +2086,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.992687702179,
+				6.4027709960938,
+				5.1062917709351,
+				6.9180417060852
+			},
 			localization_strings = {
 				"pwe_level_skittergate_back_home_01",
 				"pwe_level_skittergate_back_home_02",
@@ -2036,9 +2102,9 @@ return function ()
 		},
 		pwe_level_skittergate_crater_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2059,6 +2125,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.8773331642151,
+				5.3016247749329,
+				6.5595831871033,
+				5.8561458587647
+			},
 			localization_strings = {
 				"pwe_level_skittergate_crater_01",
 				"pwe_level_skittergate_crater_02",
@@ -2069,9 +2141,9 @@ return function ()
 		},
 		pwe_level_skittergate_start_up_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2091,6 +2163,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				6.0999999046326,
+				9.2364997863769,
+				6.8502707481384,
+				7.5500001907349
 			},
 			localization_strings = {
 				"pwe_level_skittergate_start_up_gate_01",
@@ -2102,9 +2180,9 @@ return function ()
 		},
 		pwe_level_skittergate_searching_gatekeeper_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2124,6 +2202,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				6.2939376831055,
+				5.4058332443237,
+				4.9635834693909,
+				10.468853950501
 			},
 			localization_strings = {
 				"pwe_level_skittergate_searching_gatekeeper_01",
@@ -2135,9 +2219,9 @@ return function ()
 		},
 		pwe_level_skittergate_arrive_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2157,6 +2241,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.6077916622162,
+				2.96875,
+				6.4968957901001,
+				5.6947083473206
 			},
 			localization_strings = {
 				"pwe_level_skittergate_arrive_01",
@@ -2168,9 +2258,9 @@ return function ()
 		},
 		pwe_skittergate_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2185,6 +2275,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 8.3041038513184,
+				[2.0] = 7.4443335533142
+			},
 			localization_strings = {
 				[1.0] = "pwe_skittergate_intro_b_01",
 				[2.0] = "pwe_skittergate_intro_b_02"
@@ -2193,9 +2287,9 @@ return function ()
 		},
 		pwe_level_skittergate_through_the_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2216,6 +2310,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				7.2089581489563,
+				6.7862915992737,
+				7.7466459274292,
+				7.4402084350586
+			},
 			localization_strings = {
 				"pwe_level_skittergate_through_the_gate_01",
 				"pwe_level_skittergate_through_the_gate_02",
@@ -2226,9 +2326,9 @@ return function ()
 		},
 		pwe_level_skittergate_rasknitt_interrupt_and_focus = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2249,6 +2349,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.8111872673035,
+				4.8311667442322,
+				5.8376040458679,
+				5.1157083511353
+			},
 			localization_strings = {
 				"pwe_level_skittergate_rasknitt_interrupt_and_focus_01",
 				"pwe_level_skittergate_rasknitt_interrupt_and_focus_02",
@@ -2259,9 +2365,9 @@ return function ()
 		},
 		pwe_skittergate_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2276,6 +2382,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 7.8352918624878,
+				[2.0] = 9.6954164505005
+			},
 			localization_strings = {
 				[1.0] = "pwe_skittergate_intro_a_01",
 				[2.0] = "pwe_skittergate_intro_a_02"
@@ -2284,9 +2394,9 @@ return function ()
 		},
 		pwe_level_skittergate_rasknitt_dismounted_one = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2307,6 +2417,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.8721251487732,
+				3.9849998950958,
+				7.8361248970032,
+				3.467791557312
+			},
 			localization_strings = {
 				"pwe_level_skittergate_rasknitt_dismounted_one_01",
 				"pwe_level_skittergate_rasknitt_dismounted_one_02",
@@ -2317,9 +2433,9 @@ return function ()
 		},
 		pwe_level_skittergate_rasknitt_stormfiend_dead = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2334,6 +2450,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.0691456794739,
+				[2.0] = 3.3158957958221
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_skittergate_rasknitt_stormfiend_dead_01",
 				[2.0] = "pwe_level_skittergate_rasknitt_stormfiend_dead_02"
@@ -2342,9 +2462,9 @@ return function ()
 		},
 		pwe_level_skittergate_skittergate_found_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2365,6 +2485,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.6228749752045,
+				2.4307084083557,
+				2.3308959007263,
+				6.272500038147
+			},
 			localization_strings = {
 				"pwe_level_skittergate_skittergate_found_01",
 				"pwe_level_skittergate_skittergate_found_02",
@@ -2375,9 +2501,9 @@ return function ()
 		},
 		pwe_level_skittergate_tunnel_collapses_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2397,6 +2523,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				6.1988959312439,
+				4.3480625152588,
+				4.4272294044495,
+				6.6595001220703
 			},
 			localization_strings = {
 				"pwe_level_skittergate_tunnel_collapses_01",
@@ -2408,9 +2540,9 @@ return function ()
 		},
 		pwe_level_skittergate_activate_gate_01a = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2431,6 +2563,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.8981873989105,
+				5.7839374542236,
+				3.760062456131,
+				4.3261876106262
+			},
 			localization_strings = {
 				"pwe_level_skittergate_activate_gate_01a",
 				"pwe_level_skittergate_activate_gate_02a",
@@ -2441,9 +2579,9 @@ return function ()
 		},
 		pwe_level_skittergate_rasknitt_death_rattler_invulnerable = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2464,6 +2602,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.8425624370575,
+				3.7379167079926,
+				3.4602291584015,
+				3.42933344841
+			},
 			localization_strings = {
 				"pwe_level_skittergate_rasknitt_death_rattler_invulnerable_01",
 				"pwe_level_skittergate_rasknitt_death_rattler_invulnerable_02",
@@ -2474,9 +2618,9 @@ return function ()
 		},
 		pwe_skittergate_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2491,6 +2635,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.8842916488647,
+				[2.0] = 7.3324584960938
+			},
 			localization_strings = {
 				[1.0] = "pwe_skittergate_intro_c_01",
 				[2.0] = "pwe_skittergate_intro_c_02"
@@ -2499,9 +2647,9 @@ return function ()
 		},
 		pwe_level_skittergate_vacated_area_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2521,6 +2669,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.3811039924622,
+				7.5788331031799,
+				8.3506669998169,
+				6.8857498168945
 			},
 			localization_strings = {
 				"pwe_level_skittergate_vacated_area_01",
@@ -2532,9 +2686,9 @@ return function ()
 		},
 		pwe_level_skittergate_welcome_to_norsca_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2555,6 +2709,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.6043543815613,
+				5.8741040229797,
+				5.6520833969116,
+				5.4902081489563
+			},
 			localization_strings = {
 				"pwe_level_skittergate_welcome_to_norsca_01",
 				"pwe_level_skittergate_welcome_to_norsca_02",
@@ -2565,9 +2725,9 @@ return function ()
 		},
 		pwe_level_skittergate_elevator_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2588,6 +2748,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.7952499389648,
+				2.7318749427795,
+				3.1346666812897,
+				3.2339582443237
+			},
 			localization_strings = {
 				"pwe_level_skittergate_elevator_01",
 				"pwe_level_skittergate_elevator_02",
@@ -2598,9 +2764,9 @@ return function ()
 		},
 		pwe_level_skittergate_activate_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2620,6 +2786,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.530770778656,
+				4.0343956947327,
+				6.9089164733887,
+				4.0415835380554
 			},
 			localization_strings = {
 				"pwe_level_skittergate_activate_gate_01",
@@ -2631,9 +2803,9 @@ return function ()
 		},
 		pwe_level_skittergate_enter_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2653,6 +2825,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.4597916603088,
+				4.6157083511353,
+				6.7666873931885,
+				6.657666683197
 			},
 			localization_strings = {
 				"pwe_level_skittergate_enter_gate_01",
@@ -2664,9 +2842,9 @@ return function ()
 		},
 		pwe_level_skittergate_spotting_docks_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2686,6 +2864,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				5.4370832443237,
+				8.9299373626709,
+				3.0365834236145,
+				7.5680623054504
 			},
 			localization_strings = {
 				"pwe_level_skittergate_spotting_docks_01",
@@ -2697,9 +2881,9 @@ return function ()
 		},
 		pwe_level_skittergate_BOOM_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2719,6 +2903,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				7.7505626678467,
+				7.09920835495,
+				11.915458679199,
+				6.2723331451416
 			},
 			localization_strings = {
 				"pwe_level_skittergate_BOOM_01",
@@ -2730,9 +2920,9 @@ return function ()
 		},
 		pwe_level_skittergate_get_back_to_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2752,6 +2942,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				5.5763335227966,
+				3.5011875629425,
+				4.8888540267944,
+				6.7296457290649
 			},
 			localization_strings = {
 				"pwe_level_skittergate_get_back_to_gate_01",
@@ -2763,9 +2959,9 @@ return function ()
 		},
 		pwe_level_skittergate_ships_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2785,6 +2981,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.1156458854675,
+				5.162624835968,
+				6.597083568573,
+				4.0421252250671
 			},
 			localization_strings = {
 				"pwe_level_skittergate_ships_01",
@@ -2796,9 +2998,9 @@ return function ()
 		},
 		pwe_level_skittergate_gatekeeper_appear_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2819,6 +3021,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.2379999160767,
+				8.262583732605,
+				4.2960000038147,
+				2.9405207633972
+			},
 			localization_strings = {
 				"pwe_level_skittergate_gatekeeper_appear_01",
 				"pwe_level_skittergate_gatekeeper_appear_02",
@@ -2829,9 +3037,9 @@ return function ()
 		},
 		pwe_level_skittergate_vista_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_skittergate",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2851,6 +3059,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				6.8041667938232,
+				4.4887084960938,
+				5.948646068573,
+				6.9822292327881
 			},
 			localization_strings = {
 				"pwe_level_skittergate_vista_01",

@@ -1276,9 +1276,9 @@ return function ()
 	add_dialogues({
 		pes_level_helmgart_military_halfway_through_horde = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1298,6 +1298,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.5057708024979,
+				1.2655416727066,
+				1.2520416975021,
+				1.5326042175293
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_halfway_through_horde_01",
@@ -1309,9 +1315,9 @@ return function ()
 		},
 		pes_helmgart_military_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1325,6 +1331,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6195416450501,
+				[2.0] = 3.960104227066
 			},
 			localization_strings = {
 				[1.0] = "pes_helmgart_military_intro_a_01",
@@ -1334,9 +1344,9 @@ return function ()
 		},
 		pes_helmgart_military_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1351,6 +1361,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9281250238419,
+				[2.0] = 2.9882917404175
+			},
 			localization_strings = {
 				[1.0] = "pes_helmgart_military_intro_c_01",
 				[2.0] = "pes_helmgart_military_intro_c_02"
@@ -1359,9 +1373,9 @@ return function ()
 		},
 		pes_level_helmgart_military_fort_massacre = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1381,6 +1395,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.0517501831055,
+				2.9146249294281,
+				3.0434582233429,
+				5.9449167251587
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_fort_massacre_01",
@@ -1392,9 +1412,9 @@ return function ()
 		},
 		pes_helmgart_military_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1409,6 +1429,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.4581665992737,
+				[2.0] = 3.9500000476837
+			},
 			localization_strings = {
 				[1.0] = "pes_helmgart_military_intro_b_01",
 				[2.0] = "pes_helmgart_military_intro_b_02"
@@ -1417,9 +1441,9 @@ return function ()
 		},
 		pes_level_helmgart_military_spotting_portal = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1439,6 +1463,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.7534583806992,
+				2.7433958053589,
+				2.1429998874664,
+				3.738041639328
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_spotting_portal_01",
@@ -1450,9 +1480,9 @@ return function ()
 		},
 		pes_level_helmgart_military_empty_town = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1472,6 +1502,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.4623332023621,
+				3.794041633606,
+				3.3384375572205,
+				2.7131667137146
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_empty_town_01",
@@ -1483,9 +1519,9 @@ return function ()
 		},
 		pes_level_helmgart_military_oops = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1505,6 +1541,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.7393751144409,
+				3.0875208377838,
+				2.5625624656677,
+				2.5578334331513
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_oops_01",
@@ -1516,9 +1558,9 @@ return function ()
 		},
 		pes_level_helmgart_military_fort_help = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1538,6 +1580,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.920562505722,
+				3.0186667442322,
+				3.1230416297913,
+				4.2566041946411
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_fort_help_01",
@@ -1549,9 +1597,9 @@ return function ()
 		},
 		pes_level_helmgart_military_they_are_coming = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1571,6 +1619,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.9290624856949,
+				2.2434582710266,
+				2.1063332557678,
+				2.0568332672119
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_they_are_coming_01",
@@ -1582,9 +1636,9 @@ return function ()
 		},
 		pes_level_helmgart_military_armoury = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1604,6 +1658,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.546875,
+				2.5120208263397,
+				3.0443959236145,
+				3.0254583358765
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_armoury_01",
@@ -1615,9 +1675,9 @@ return function ()
 		},
 		pes_level_helmgart_military_spooky_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1637,6 +1697,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.2000000476837,
+				2.295104265213,
+				1.4128333330154,
+				3
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_spooky_temple_01",
@@ -1648,9 +1714,9 @@ return function ()
 		},
 		pes_level_helmgart_military_door_opens = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1670,6 +1736,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				5.9031872749329,
+				4.6379790306091,
+				5.7355208396912,
+				2.5504167079926
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_door_opens_01a",
@@ -1681,9 +1753,9 @@ return function ()
 		},
 		pes_level_helmgart_military_axebite_pass_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1703,6 +1775,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.7781248092651,
+				7.0944790840149,
+				5.0186877250671,
+				5.3822917938232
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_axebite_pass_vista_01",
@@ -1714,9 +1792,9 @@ return function ()
 		},
 		pes_level_helmgart_military_courtyard_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1736,6 +1814,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.0221667289734,
+				1.4870208501816,
+				2.0821874141693,
+				2.9092292785645
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_courtyard_event_01",
@@ -1747,9 +1831,9 @@ return function ()
 		},
 		pes_level_helmgart_military_prepare = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1769,6 +1853,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.987520813942,
+				3.4376249313355,
+				2.6674165725708,
+				1.0149999856949
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_prepare_01",
@@ -1780,9 +1870,9 @@ return function ()
 		},
 		pes_level_helmgart_military_ring_bell = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1802,6 +1892,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.0700623989105,
+				1.3692708015442,
+				3.3825833797455,
+				1.7938541173935
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_ring_bell_01",
@@ -1813,9 +1909,9 @@ return function ()
 		},
 		pes_level_helmgart_military_arriving_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1835,6 +1931,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.6907708644867,
+				2.019291639328,
+				2.5340209007263,
+				4.380437374115
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_arriving_temple_01",
@@ -1846,9 +1948,9 @@ return function ()
 		},
 		pes_level_helmgart_military_pilgrim_path = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1868,6 +1970,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.6423542499542,
+				1.8477292060852,
+				2.5705416202545,
+				2.5733542442322
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_pilgrim_path_01",
@@ -1879,9 +1987,9 @@ return function ()
 		},
 		pes_level_helmgart_military_locked_portcullis = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1901,6 +2009,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.7193332910538,
+				1.316583275795,
+				3.9468958377838,
+				1.7653125524521
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_locked_portcullis_01",
@@ -1912,9 +2026,9 @@ return function ()
 		},
 		pes_level_helmgart_military_helmgart_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1934,6 +2048,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.6853957176209,
+				3.3375625610352,
+				5.8107709884644,
+				3.3326876163483
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_helmgart_vista_01",
@@ -1945,9 +2065,9 @@ return function ()
 		},
 		pes_level_helmgart_military_fort_entrance = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1967,6 +2087,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.1697707176209,
+				2.3151249885559,
+				2.2312707901001,
+				2.6413333415985
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_fort_entrance_01",
@@ -1978,9 +2104,9 @@ return function ()
 		},
 		pes_level_helmgart_military_portcullis = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2000,6 +2126,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.7540624141693,
+				1.4147917032242,
+				1.4601666927338,
+				2.5481667518616
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_portcullis_01",
@@ -2011,9 +2143,9 @@ return function ()
 		},
 		pes_level_helmgart_military_temple_ahead = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2033,6 +2165,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.8191249370575,
+				1.5642708539963,
+				2.4742708206177,
+				1.9287291765213
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_temple_ahead_01",
@@ -2044,9 +2182,9 @@ return function ()
 		},
 		pes_level_helmgart_military_time_to_leave = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2066,6 +2204,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				5.4650206565857,
+				4.4015207290649,
+				3.6196041107178,
+				1.9530832767487
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_time_to_leave_01",
@@ -2077,9 +2221,9 @@ return function ()
 		},
 		pes_level_helmgart_military_turn_cannon = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2099,6 +2243,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.5670626163483,
+				2.4896667003632,
+				2.8720624446869,
+				3.5803959369659
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_turn_cannon_01",
@@ -2110,9 +2260,9 @@ return function ()
 		},
 		pes_level_helmgart_military_fort_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2133,6 +2283,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.7029999494553,
+				2.0194165706634,
+				2.652937412262,
+				2.5410625934601
+			},
 			localization_strings = {
 				"pes_level_helmgart_military_fort_elevator_01",
 				"pes_level_helmgart_military_fort_elevator_02",
@@ -2143,9 +2299,9 @@ return function ()
 		},
 		pes_level_helmgart_military_fire_cannon = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2165,6 +2321,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.4451251029968,
+				2.2653748989105,
+				2.016083240509,
+				1.7268542051315
 			},
 			localization_strings = {
 				"pes_level_helmgart_military_fire_cannon_01",

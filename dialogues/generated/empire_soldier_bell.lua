@@ -316,9 +316,9 @@ return function ()
 	add_dialogues({
 		pes_level_bell_horde_01 = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_bell",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -332,6 +332,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.045562505722,
+				[2.0] = 4.8086876869202
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bell_horde_01",
@@ -341,9 +345,9 @@ return function ()
 		},
 		pes_bell_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_bell",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -358,6 +362,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.2126460075378,
+				[2.0] = 5.7999377250671
+			},
 			localization_strings = {
 				[1.0] = "pes_bell_intro_a_01",
 				[2.0] = "pes_bell_intro_a_02"
@@ -366,9 +374,9 @@ return function ()
 		},
 		pes_level_bell_effect_01 = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_bell",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -383,6 +391,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.6985206604004,
+				[2.0] = 5.7538123130798
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bell_effect_01",
 				[2.0] = "pes_level_bell_effect_02"
@@ -391,9 +403,9 @@ return function ()
 		},
 		pes_level_bell_falling_01 = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_bell",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -408,6 +420,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.2652916908264,
+				[2.0] = 6.3294582366943
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bell_falling_01",
 				[2.0] = "pes_level_bell_falling_02"
@@ -416,9 +432,9 @@ return function ()
 		},
 		pes_bell_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_bell",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -432,6 +448,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0934791564941,
+				[2.0] = 5.7214374542236
 			},
 			localization_strings = {
 				[1.0] = "pes_bell_intro_b_01",
@@ -441,9 +461,9 @@ return function ()
 		},
 		pes_bell_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_bell",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -458,6 +478,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.7649374008179,
+				[2.0] = 5.614333152771
+			},
 			localization_strings = {
 				[1.0] = "pes_bell_intro_c_01",
 				[2.0] = "pes_bell_intro_c_02"
@@ -466,9 +490,9 @@ return function ()
 		},
 		pes_level_bell_chime_01 = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_bell",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -482,6 +506,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2704377174377,
+				[2.0] = 4.1613960266113
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bell_chime_01",

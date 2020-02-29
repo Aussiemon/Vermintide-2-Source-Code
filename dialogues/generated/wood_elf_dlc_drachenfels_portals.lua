@@ -1542,9 +1542,9 @@ return function ()
 	add_dialogues({
 		pwe_portals_secret_entrance_gate_opens = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1564,6 +1564,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.2120416164398,
+				0.90397918224335,
+				3.2133333683014,
+				2.7653334140778
 			},
 			localization_strings = {
 				"pwe_portals_secret_entrance_gate_opens_01",
@@ -1575,9 +1581,9 @@ return function ()
 		},
 		pwe_portals_the_map = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1597,6 +1603,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.2032709121704,
+				3.8303542137146,
+				4.124499797821,
+				2.2444999217987
 			},
 			localization_strings = {
 				"pwe_portals_the_map_01",
@@ -1608,9 +1620,9 @@ return function ()
 		},
 		pwe_portals_castle_gate = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1630,6 +1642,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.7792916297913,
+				2.1308124065399,
+				3.5695416927338,
+				5.0796041488647
 			},
 			localization_strings = {
 				"pwe_portals_pwe_castle_gate_01",
@@ -1641,9 +1659,9 @@ return function ()
 		},
 		pwe_portals_crypt_exit = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1663,6 +1681,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.2631249427795,
+				1.9362916946411,
+				3.1805000305176,
+				4.477041721344
 			},
 			localization_strings = {
 				"pwe_portals_crypt_exit_01",
@@ -1674,9 +1698,9 @@ return function ()
 		},
 		pwe_portals_temple_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1696,6 +1720,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.7472499608993,
+				1.9402083158493,
+				1.76327085495,
+				2.2204375267029
 			},
 			localization_strings = {
 				"pwe_portals_temple_event_01",
@@ -1707,9 +1737,9 @@ return function ()
 		},
 		pwe_portals_map_second_clue = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1729,6 +1759,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.8642082214356,
+				5.1522917747498,
+				3.9532916545868,
+				2.9082291126251
 			},
 			localization_strings = {
 				"pwe_portals_map_second_clue_01",
@@ -1740,9 +1776,9 @@ return function ()
 		},
 		pwe_portals_memory_portals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1762,6 +1798,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.7457292079926,
+				3.8787083625794,
+				4.8826041221619,
+				5.806604385376
 			},
 			localization_strings = {
 				"pwe_portals_memory_portals_01",
@@ -1773,9 +1815,9 @@ return function ()
 		},
 		pwe_portals_objective_recap = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1795,6 +1837,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.4856457710266,
+				2.7869582176209,
+				5.2405834197998,
+				4.4397501945496
 			},
 			localization_strings = {
 				"pwe_portals_objective_recap_01",
@@ -1806,9 +1854,9 @@ return function ()
 		},
 		pwe_portals_portal_interact_three = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1828,6 +1876,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0245208740234,
+				2.359375,
+				1.8841458559036,
+				3.6314375400543
 			},
 			localization_strings = {
 				"pwe_portals_portal_interact_three_01",
@@ -1839,9 +1893,9 @@ return function ()
 		},
 		pwe_portals_find_map = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1861,6 +1915,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.9181250333786,
+				3.1300625801086,
+				1.0488541126251,
+				2.8461666107178
 			},
 			localization_strings = {
 				"pwe_portals_find_map_01",
@@ -1872,9 +1932,9 @@ return function ()
 		},
 		pwe_portals_get_to_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1894,6 +1954,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.1558332443237,
+				4.3503751754761,
+				2.7902500629425,
+				3.3365623950958
 			},
 			localization_strings = {
 				"pwe_portals_get_to_temple_01",
@@ -1905,9 +1971,9 @@ return function ()
 		},
 		pwe_portals_find_survivors = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1927,6 +1993,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0011041164398,
+				2.2416458129883,
+				1.5236666202545,
+				1.3219374418259
 			},
 			localization_strings = {
 				"pwe_portals_find_survivors_01",
@@ -1938,9 +2010,9 @@ return function ()
 		},
 		pwe_portals_portal_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1960,6 +2032,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.5935416221619,
+				1.5957916975021,
+				1.8940416574478,
+				2.032562494278
 			},
 			localization_strings = {
 				"pwe_portals_portal_event_01",
@@ -1971,9 +2049,9 @@ return function ()
 		},
 		pwe_portals_crypt_event_blood = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1993,6 +2071,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.4981249570847,
+				3.1214792728424,
+				2.8750834465027,
+				2.4583749771118
 			},
 			localization_strings = {
 				"pwe_portals_crypt_event_blood_01",
@@ -2004,9 +2088,9 @@ return function ()
 		},
 		pwe_portals_intro_line_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2021,6 +2105,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.1418540477753,
+				[2.0] = 5.7314167022705
+			},
 			localization_strings = {
 				[1.0] = "pwe_portals_intro_line_c_01",
 				[2.0] = "pwe_portals_intro_line_c_02"
@@ -2029,9 +2117,9 @@ return function ()
 		},
 		pwe_portals_kidnapped_traces = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2051,6 +2139,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.9047083854675,
+				2.6137917041779,
+				3.9001250267029,
+				5.6527915000916
 			},
 			localization_strings = {
 				"pwe_portals_kidnapped_traces_01",
@@ -2062,9 +2156,9 @@ return function ()
 		},
 		pwe_portals_castle_road = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2084,6 +2178,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0077707767487,
+				5.6494793891907,
+				5.732458114624,
+				3.7306666374206
 			},
 			localization_strings = {
 				"pwe_portals_pwe_castle_road_01",
@@ -2095,9 +2195,9 @@ return function ()
 		},
 		pwe_portals_raid_trace = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2117,6 +2217,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.1723749637604,
+				2.7034165859222,
+				3.9037916660309,
+				3.8678958415985
 			},
 			localization_strings = {
 				"pwe_portals_raid_trace_01",
@@ -2128,9 +2234,9 @@ return function ()
 		},
 		pwe_portals_map_first_clue = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2150,6 +2256,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.1314792633057,
+				3.9909999370575,
+				2.8707499504089,
+				3.2762498855591
 			},
 			localization_strings = {
 				"pwe_portals_map_first_clue_01",
@@ -2161,9 +2273,9 @@ return function ()
 		},
 		pwe_portals_crypt_event_entering_crypt = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2183,6 +2295,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.3859167098999,
+				2.5757915973663,
+				4.7470002174377,
+				3.1459999084473
 			},
 			localization_strings = {
 				"pwe_portals_crypt_event_entering_crypt_01",
@@ -2194,9 +2312,9 @@ return function ()
 		},
 		pwe_portals_help_search = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2217,6 +2335,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.6249375343323,
+				1.8928124904633,
+				3.0145416259766,
+				3.7578332424164
+			},
 			localization_strings = {
 				"pwe_portals_help_search_01",
 				"pwe_portals_help_search_02",
@@ -2227,9 +2351,9 @@ return function ()
 		},
 		pwe_portals_enter_village = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2250,6 +2374,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.1811249256134,
+				2.654000043869,
+				3.3401458263397,
+				4.226062297821
+			},
 			localization_strings = {
 				"pwe_portals_enter_village_01",
 				"pwe_portals_enter_village_02",
@@ -2260,9 +2390,9 @@ return function ()
 		},
 		pwe_portals_follow_trail = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2283,6 +2413,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				1.3091249465942,
+				3.3275415897369,
+				3.1911041736603,
+				2.401750087738
+			},
 			localization_strings = {
 				"pwe_portals_follow_trail_01",
 				"pwe_portals_follow_trail_02",
@@ -2293,9 +2429,9 @@ return function ()
 		},
 		pwe_portals_intro_line_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2310,6 +2446,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3453960418701,
+				[2.0] = 4.1921248435974
+			},
 			localization_strings = {
 				[1.0] = "pwe_portals_intro_line_a_01",
 				[2.0] = "pwe_portals_intro_line_a_02"
@@ -2318,9 +2458,9 @@ return function ()
 		},
 		pwe_portals_temple_bell_tower = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2340,6 +2480,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.4567,
+				3.4567,
+				3.4567,
+				3.4567
 			},
 			localization_strings = {
 				"pwe_portals_temple_bell_tower_01",
@@ -2351,9 +2497,9 @@ return function ()
 		},
 		pwe_portals_portal_interact_one = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2373,6 +2519,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.2222292423248,
+				1.2027499675751,
+				1.335520863533,
+				3.5442082881927
 			},
 			localization_strings = {
 				"pwe_portals_portal_interact_one_01",
@@ -2384,9 +2536,9 @@ return function ()
 		},
 		pwe_portals_event_missing_gargoyle_heads = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2406,6 +2558,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.818895816803,
+				3.2076876163483,
+				2.5953750610352,
+				2.1370625495911
 			},
 			localization_strings = {
 				"pwe_portals_event_missing_gargoyle_heads_01",
@@ -2417,9 +2575,9 @@ return function ()
 		},
 		pwe_portals_pwe_castle_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2439,6 +2597,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.9330415725708,
+				3.7340416908264,
+				4.4295835494995,
+				6.5653123855591
 			},
 			localization_strings = {
 				"pwe_portals_pwe_castle_vista_01",
@@ -2450,9 +2614,9 @@ return function ()
 		},
 		pwe_portals_waystone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2472,6 +2636,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.1958541870117,
+				3.2594792842865,
+				3.4978332519531,
+				2.6540832519531
 			},
 			localization_strings = {
 				"pwe_portals_waystone_01",
@@ -2483,9 +2653,9 @@ return function ()
 		},
 		pwe_portals_stairs = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2505,6 +2675,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.9654166698456,
+				2.784562587738,
+				3.4744374752045,
+				2.4764165878296
 			},
 			localization_strings = {
 				"pwe_portals_stairs_01",
@@ -2516,9 +2692,9 @@ return function ()
 		},
 		pwe_portals_temple_locked = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2538,6 +2714,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.178750038147,
+				2.2464582920074,
+				2.9791457653046,
+				2.4209792613983
 			},
 			localization_strings = {
 				"pwe_portals_temple_locked_01",
@@ -2549,9 +2731,9 @@ return function ()
 		},
 		pwe_portals_portal_interact_two = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2571,6 +2753,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.9884791374207,
+				3.311666727066,
+				2.7113125324249,
+				1.6926250457764
 			},
 			localization_strings = {
 				"pwe_portals_portal_interact_two_01",
@@ -2582,9 +2770,9 @@ return function ()
 		},
 		pwe_portals_crypt_event_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2605,6 +2793,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.366729259491,
+				1.9148750305176,
+				1.1976457834244,
+				1.8161875009537
+			},
 			localization_strings = {
 				"pwe_portals_crypt_event_hole_01",
 				"pwe_portals_crypt_event_hole_02",
@@ -2615,9 +2809,9 @@ return function ()
 		},
 		pwe_portals_everyone_gone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2638,6 +2832,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.9192500114441,
+				2.5973541736603,
+				1.8488124608993,
+				3.0533957481384
+			},
 			localization_strings = {
 				"pwe_portals_everyone_gone_01",
 				"pwe_portals_everyone_gone_02",
@@ -2648,9 +2848,9 @@ return function ()
 		},
 		pwe_portals_intro_line_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2664,6 +2864,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5069582462311,
+				[2.0] = 3.8089792728424
 			},
 			localization_strings = {
 				[1.0] = "pwe_portals_intro_line_b_01",

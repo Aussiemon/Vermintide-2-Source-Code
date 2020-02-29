@@ -2487,6 +2487,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9796458482742
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_eleven_04"
 			}
@@ -2505,6 +2508,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9850208759308
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_eight_03"
@@ -2525,6 +2531,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.8480000495911
+			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_four_01"
 			}
@@ -2543,6 +2552,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7526249885559
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_four_02"
@@ -2563,6 +2575,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.6988542079926
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_eleven_03"
 			}
@@ -2581,6 +2596,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.4435625076294
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_eleven_02"
@@ -2601,6 +2619,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4205832481384
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_two_02"
 			}
@@ -2619,6 +2640,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5850207805634
 			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_nine_02"
@@ -2639,6 +2663,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0361874103546
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_five_02"
 			}
@@ -2657,6 +2684,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.5593128204346
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_seven_01"
@@ -2677,6 +2707,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.4912083148956
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_three_02"
 			}
@@ -2695,6 +2728,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9451875686645
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_seven_02"
@@ -2715,6 +2751,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.3811874389648
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_eleven_01"
 			}
@@ -2733,6 +2772,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1917915344238
 			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_seven_02"
@@ -2753,6 +2795,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.3024792671204
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_eleven_04"
 			}
@@ -2771,6 +2816,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9800834655762
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_two_01"
@@ -2791,6 +2839,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.1950001716614
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_four_01"
 			}
@@ -2809,6 +2860,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4198331832886
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_twelve_03"
@@ -2829,6 +2883,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.581666469574
+			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_seven_01"
 			}
@@ -2847,6 +2904,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8639376163483
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_elven_ruins_story_six_01"
@@ -2867,6 +2927,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.1801042556763
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_elven_ruins_story_nine_01"
 			}
@@ -2885,6 +2948,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8186874389648
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_eleven_03"
@@ -2905,6 +2971,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0540623664856
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_elven_ruins_story_nine_02"
 			}
@@ -2923,6 +2992,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.892541885376
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_three_02"
@@ -2943,6 +3015,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4844374656677
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_two_01"
 			}
@@ -2961,6 +3036,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3057084083557
 			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_nine_01"
@@ -2981,6 +3059,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.8415207862854
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_eight_01"
 			}
@@ -2999,6 +3080,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.8853330612183
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_one_01"
@@ -3019,6 +3103,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7363541126251
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_seven_01"
 			}
@@ -3037,6 +3124,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7380623817444
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_ten_01"
@@ -3057,6 +3147,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.8025207519531
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_eight_02"
 			}
@@ -3075,6 +3168,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3473958969116
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_eleven_01"
@@ -3095,6 +3191,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.588770866394
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_elven_ruins_story_one_01"
 			}
@@ -3113,6 +3212,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2375416755676
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_six_01"
@@ -3133,6 +3235,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.3347291946411
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_six_01"
 			}
@@ -3151,6 +3256,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3752293586731
 			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_twelve_01"
@@ -3171,6 +3279,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5434584617615
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_ten_02"
 			}
@@ -3189,6 +3300,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4914164543152
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_three_01"
@@ -3209,6 +3323,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.2994585037231
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_three_01"
 			}
@@ -3227,6 +3344,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 7.528416633606
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_five_01"
@@ -3247,6 +3367,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.2618751525879
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_five_01"
 			}
@@ -3265,6 +3388,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8910207748413
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_elven_ruins_story_ten_02"
@@ -3285,6 +3411,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 9.1235418319702
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_two_02"
 			}
@@ -3303,6 +3432,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.2718544006348
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_twelve_02"
@@ -3323,6 +3455,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9957709312439
+			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_four_03"
 			}
@@ -3341,6 +3476,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.4946041107178
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_elven_ruins_story_one_02"
@@ -3361,6 +3499,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 0.94999998807907
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_eight_02"
 			}
@@ -3379,6 +3520,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8919167518616
 			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_four_02"
@@ -3399,6 +3543,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.870374917984
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_elven_ruins_story_eight_01"
 			}
@@ -3417,6 +3564,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7037084102631
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_elven_ruins_story_eleven_02"
@@ -3437,6 +3587,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.5592291355133
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_elven_ruins_story_ten_01"
 			}
@@ -3455,6 +3608,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0324583053589
 			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_twelve_02"
@@ -3475,6 +3631,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5272707939148
+			},
 			localization_strings = {
 				[1.0] = "pes_level_elven_ruins_story_five_01"
 			}
@@ -3493,6 +3652,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3132500648499
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_elven_ruins_story_one_01"

@@ -770,9 +770,9 @@ return function ()
 	add_dialogues({
 		pes_level_ground_zero_precarious = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -793,6 +793,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.2663958072662,
+				2.9711875915527,
+				3.2054584026337,
+				4.1206459999084
+			},
 			localization_strings = {
 				"pes_level_ground_zero_precarious_01",
 				"pes_level_ground_zero_precarious_02",
@@ -803,9 +809,9 @@ return function ()
 		},
 		pes_ground_zero_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -819,6 +825,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9998540878296,
+				[2.0] = 5.8291873931885
 			},
 			localization_strings = {
 				[1.0] = "pes_ground_zero_intro_a_01",
@@ -828,9 +838,9 @@ return function ()
 		},
 		pes_ground_zero_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -845,6 +855,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.7882499694824,
+				[2.0] = 8.435396194458
+			},
 			localization_strings = {
 				[1.0] = "pes_ground_zero_intro_c_01",
 				[2.0] = "pes_ground_zero_intro_c_02"
@@ -853,9 +867,9 @@ return function ()
 		},
 		pes_level_ground_zero_corruption_everywhere = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -876,6 +890,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				3.3790416717529,
+				3.6476666927338,
+				6.5644583702087,
+				4.6164164543152
+			},
 			localization_strings = {
 				"pes_level_ground_zero_corruption_everywhere_01",
 				"pes_level_ground_zero_corruption_everywhere_02",
@@ -886,9 +906,9 @@ return function ()
 		},
 		pes_level_ground_zero_canals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -909,6 +929,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.5518958568573,
+				2.6656041145325,
+				2.2019166946411,
+				4.6565208435059
+			},
 			localization_strings = {
 				"pes_level_ground_zero_canals_01",
 				"pes_level_ground_zero_canals_02",
@@ -919,9 +945,9 @@ return function ()
 		},
 		pes_level_ground_zero_the_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -942,6 +968,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.3463749885559,
+				6.0751876831055,
+				5.6146664619446,
+				7.2241458892822
+			},
 			localization_strings = {
 				"pes_level_ground_zero_the_hole_01",
 				"pes_level_ground_zero_the_hole_02",
@@ -952,9 +984,9 @@ return function ()
 		},
 		pes_ground_zero_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -969,6 +1001,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.4172291755676,
+				[2.0] = 7.4405207633972
+			},
 			localization_strings = {
 				[1.0] = "pes_ground_zero_intro_b_01",
 				[2.0] = "pes_ground_zero_intro_b_02"
@@ -977,9 +1013,9 @@ return function ()
 		},
 		pes_level_ground_zero_canal_crossing = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -999,6 +1035,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.7639374732971,
+				2.8159375190735,
+				2.6757917404175,
+				3.0418124198914
 			},
 			localization_strings = {
 				"pes_level_ground_zero_canal_crossing_01",
@@ -1010,9 +1052,9 @@ return function ()
 		},
 		pes_level_ground_zero_crumbling = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1033,6 +1075,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.2160832881927,
+				3,
+				5.0997915267944,
+				4.4368958473206
+			},
 			localization_strings = {
 				"pes_level_ground_zero_crumbling_01",
 				"pes_level_ground_zero_crumbling_02",
@@ -1043,9 +1091,9 @@ return function ()
 		},
 		pes_level_ground_zero_landslide = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1066,6 +1114,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.606187582016,
+				3.5,
+				2.6655209064484,
+				4.4354166984558
+			},
 			localization_strings = {
 				"pes_level_ground_zero_landslide_01",
 				"pes_level_ground_zero_landslide_02",
@@ -1076,9 +1130,9 @@ return function ()
 		},
 		pes_level_ground_zero_cargo_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1099,6 +1153,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.2834167480469,
+				2.4035625457764,
+				3.0251667499542,
+				3.065333366394
+			},
 			localization_strings = {
 				"pes_level_ground_zero_cargo_elevator_01",
 				"pes_level_ground_zero_cargo_elevator_02",
@@ -1109,9 +1169,9 @@ return function ()
 		},
 		pes_level_ground_zero_welcoming_committee = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1132,6 +1192,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				6.9880833625794,
+				3.3226459026337,
+				4.2186665534973,
+				4.5
+			},
 			localization_strings = {
 				"pes_level_ground_zero_welcoming_committee_01",
 				"pes_level_ground_zero_welcoming_committee_02",
@@ -1142,9 +1208,9 @@ return function ()
 		},
 		pes_level_ground_zero_smell = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1165,6 +1231,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.6272501945496,
+				3.331312417984,
+				2.6627082824707,
+				4.6801042556763
+			},
 			localization_strings = {
 				"pes_level_ground_zero_smell_01",
 				"pes_level_ground_zero_smell_02",
@@ -1175,9 +1247,9 @@ return function ()
 		},
 		pes_level_ground_zero_the_hole_second_view = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1198,6 +1270,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				6.3555207252502,
+				5.4949584007263,
+				4.907666683197,
+				3.8080415725708
+			},
 			localization_strings = {
 				"pes_level_ground_zero_the_hole_second_view_01",
 				"pes_level_ground_zero_the_hole_second_view_02",
@@ -1208,9 +1286,9 @@ return function ()
 		},
 		pes_level_ground_zero_complete = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1225,6 +1303,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 7.3094372749329,
+				[2.0] = 7.0135002136231
+			},
 			localization_strings = {
 				[1.0] = "pes_level_ground_zero_complete_01",
 				[2.0] = "pes_level_ground_zero_complete_02"
@@ -1233,9 +1315,9 @@ return function ()
 		},
 		pes_level_ground_zero_boss_taunt_reply = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1250,6 +1332,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 7.738395690918,
+				[2.0] = 9.7863750457764
+			},
 			localization_strings = {
 				[1.0] = "pes_level_ground_zero_boss_taunt_reply_01",
 				[2.0] = "pes_level_ground_zero_boss_taunt_reply_02"
@@ -1258,9 +1344,9 @@ return function ()
 		},
 		pes_level_ground_zero_boss_spotted = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1278,6 +1364,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				6.8886251449585,
+				8.8464164733887,
+				9.1421041488647
+			},
 			localization_strings = {
 				"pes_level_ground_zero_boss_spotted_01",
 				"pes_level_ground_zero_boss_spotted_02",
@@ -1287,9 +1378,9 @@ return function ()
 		},
 		pes_level_ground_zero_looking_for_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1309,6 +1400,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				1.9454791545868,
+				2.770124912262,
+				2.5388751029968,
+				3.5882499217987
 			},
 			localization_strings = {
 				"pes_level_ground_zero_looking_for_elevator_01",

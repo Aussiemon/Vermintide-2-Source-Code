@@ -2590,6 +2590,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 0.72579169273376
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_wizard_down_a_01"
 			}
@@ -2608,6 +2611,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9927916526794
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_bardin_passing_two_01"
@@ -2628,6 +2634,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8380000591278
+			},
 			localization_strings = {
 				[1.0] = "pes_prologue_gate_opens_01"
 			}
@@ -2646,6 +2655,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4172291755676
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_prologue_skittergate_afar_01"
@@ -2666,6 +2678,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8150625228882
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_bardin_passing_one_01"
 			}
@@ -2684,6 +2699,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 9.2870206832886
 			},
 			localization_strings = {
 				[1.0] = "nfl_level_prologue_hello_kruber_03"
@@ -2704,15 +2722,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 7.8903183937073
+			},
 			localization_strings = {
 				[1.0] = "nfl_level_prologue_hello_kruber_02"
 			}
 		},
 		pwe_prologue_kerillian_fight_01 = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2726,6 +2747,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt",
 				[2.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 1.8511250019074,
+				[2.0] = 1.9170207977295
 			},
 			localization_strings = {
 				[1.0] = "pwe_prologue_kerillian_fight_01",
@@ -2748,6 +2773,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0002193450928
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_hello_kruber_01"
 			}
@@ -2766,6 +2794,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1856458187103
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_fighting_pit_01"
@@ -2786,6 +2817,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 11.840250015259
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_prologue_elevator_ride_02"
 			}
@@ -2804,6 +2838,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2952499389648
 			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_kerillian_fight_01"
@@ -2824,6 +2861,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.2999167442322
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_prologue_elevator_ride_01"
 			}
@@ -2842,6 +2882,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 9.2886877059937
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_elevator_ride_02"
@@ -2862,6 +2905,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 20.32356262207
+			},
 			localization_strings = {
 				[1.0] = "egs_prologue_dialogue_excuse"
 			}
@@ -2880,6 +2926,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3966875076294
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_first_payback_01"
@@ -2900,6 +2949,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.1547708511353
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_elevator_ride_02"
 			}
@@ -2918,6 +2970,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 12.173500061035
 			},
 			localization_strings = {
 				[1.0] = "egs_prologue_ranting_at_skavens"
@@ -2938,6 +2993,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.8339791297913
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_reached_surface_01"
 			}
@@ -2956,6 +3014,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 10.520792007446
 			},
 			localization_strings = {
 				[1.0] = "pwe_prologue_portal_01"
@@ -2976,6 +3037,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 13.418250083923
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_bardin_passing_one_00"
 			}
@@ -2994,6 +3058,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0483956336975
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_prologue_sienna_up_01"
@@ -3014,6 +3081,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 3.5763750076294
+			},
 			localization_strings = {
 				[1.0] = "pes_prologue_meeting_kerillian_01"
 			}
@@ -3032,6 +3102,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 4.344687461853
 			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_meeting_kerillian_01"
@@ -3052,6 +3125,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 3.237583398819
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_cage_see_weapon_01"
 			}
@@ -3070,6 +3146,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7840418815613
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_reached_surface_01"
@@ -3090,6 +3169,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 8.1883335113525
+			},
 			localization_strings = {
 				[1.0] = "nfl_prologue_portal_e_01"
 			}
@@ -3108,6 +3190,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 9.379958152771
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_prologue_seeing_crater_01"
@@ -3129,6 +3214,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.9052710533142
+			},
 			localization_strings = {
 				[1.0] = "pwh_prologue_portal_02"
 			}
@@ -3147,6 +3235,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2649166584015
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_freeing_bardin_01"
@@ -3167,6 +3258,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 1.7888749837875
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_freeing_bardin_01"
 			}
@@ -3185,6 +3279,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1853125095367
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_cage_land_01"
@@ -3205,6 +3302,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0529999732971
+			},
 			localization_strings = {
 				[1.0] = "pes_prologue_bardin_dazed_01"
 			}
@@ -3223,6 +3323,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1767916679382
 			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_bardin_revived_01"
@@ -3243,6 +3346,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3193960189819
+			},
 			localization_strings = {
 				[1.0] = "egs_prologue_intro_from_far"
 			}
@@ -3261,6 +3367,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7736248970032
 			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_heal_bardin_01"
@@ -3282,6 +3391,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 5.1975626945496
+			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_portal_01"
 			}
@@ -3300,6 +3412,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3783540725708
 			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_gate_opens_01"
@@ -3320,6 +3435,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9087915420532
+			},
 			localization_strings = {
 				[1.0] = "pes_prologue_portal_01"
 			}
@@ -3338,6 +3456,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1177084445953
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_bardin_passing_one_02"
@@ -3358,6 +3479,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 1.8084374666214
+			},
 			localization_strings = {
 				[1.0] = "pwe_prologue_meeting_kerillian_02"
 			}
@@ -3376,6 +3500,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 1.9700833559036
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_grab_weapon_01"
@@ -3396,6 +3523,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 16.003479003906
+			},
 			localization_strings = {
 				[1.0] = "egs_prologue_dialogue_bang"
 			}
@@ -3414,6 +3544,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 6.8933124542236
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_prologue_elevator_ride_02"
@@ -3434,6 +3567,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 9.2159366607666
+			},
 			localization_strings = {
 				[1.0] = "nfl_level_prologue_hello_kruber_01"
 			}
@@ -3452,6 +3588,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4416666030884
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_wizard_down_b_01"
@@ -3472,15 +3611,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 1.2356250286102
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_prologue_wizard_sound_01"
 			}
 		},
 		pes_level_prologue_supply = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3494,6 +3636,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5100626945496,
+				[2.0] = 2.3755624294281
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_supply_01",
@@ -3516,6 +3662,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9939583539963
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_cage_fall_01"
 			}
@@ -3535,15 +3684,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 3.1498749256134
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_got_bow_01"
 			}
 		},
 		pes_level_prologue_ability = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3557,6 +3709,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0712916851044,
+				[2.0] = 1.6363749504089
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_ability_01",
@@ -3566,9 +3722,9 @@ return function ()
 		},
 		pes_level_prologue_strong = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3582,6 +3738,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4305000305176,
+				[2.0] = 2.9029166698456
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_strong_01",
@@ -3591,9 +3751,9 @@ return function ()
 		},
 		pes_level_prologue_dodge = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3608,6 +3768,10 @@ return function ()
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 3.8727083206177,
+				[2.0] = 3.2869167327881
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_dodge_01",
 				[2.0] = "pes_level_prologue_dodge_02"
@@ -3616,9 +3780,9 @@ return function ()
 		},
 		pes_level_prologue_block = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3632,6 +3796,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 1.3343125581741,
+				[2.0] = 3.5953540802002
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_block_01",
@@ -3654,6 +3822,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.7281250953674
+			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_bardin_healed_01"
 			}
@@ -3672,6 +3843,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 8.6504583358765
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_elevator_ride_01"
@@ -3692,6 +3866,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 1.7419583797455
+			},
 			localization_strings = {
 				[1.0] = "pes_prologue_bardin_healed_01"
 			}
@@ -3710,6 +3887,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 2.745854139328
 			},
 			localization_strings = {
 				[1.0] = "pes_prologue_bardin_revived_01"
@@ -3730,15 +3910,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3787322044373
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_hello_kruber_03"
 			}
 		},
 		pes_level_prologue_travel = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3752,6 +3935,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3963124752045,
+				[2.0] = 3.7355833053589
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_travel_01",
@@ -3774,6 +3961,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9552500247955
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_elevator_ride_03"
 			}
@@ -3792,6 +3982,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 1.1619583368301
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_bardin_fallling_01"
@@ -3813,15 +4006,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 3.8199999332428
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_bardin_fallling_01"
 			}
 		},
 		pes_level_prologue_waking_up = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3835,6 +4031,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4113750457764,
+				[2.0] = 2.4771041870117
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_waking_up_01",
@@ -3857,6 +4057,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 9.0685625076294
+			},
 			localization_strings = {
 				[1.0] = "pwh_prologue_portal_02b"
 			}
@@ -3875,6 +4078,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0703959465027
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_prologue_sienna_up_01"
@@ -3895,6 +4101,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 7.5956249237061
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_seeing_crater_01"
 			}
@@ -3913,6 +4122,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 8.842791557312
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_prologue_seeing_crater_01"
@@ -3933,6 +4145,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 5.0440626144409
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_prologue_skittergate_afar_01"
 			}
@@ -3951,6 +4166,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2269167900085
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_bardin_passing_two_02"
@@ -3972,6 +4190,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6450834274292
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_sienna_up_01"
 			}
@@ -3990,6 +4211,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 8.6133337020874
 			},
 			localization_strings = {
 				[1.0] = "ecc_prologue_dialogue_answer_bang"
@@ -4010,6 +4234,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 4.7509164810181
+			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_bardin_dazed_01"
 			}
@@ -4028,6 +4255,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0113124847412
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_prologue_reached_surface_01"
@@ -4048,6 +4278,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 14.541291236877
+			},
 			localization_strings = {
 				[1.0] = "egs_level_prologue_skittergate_distance_01"
 			}
@@ -4066,6 +4299,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1193957328796
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_bardin_passing_one_01"
@@ -4086,6 +4322,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 4.7416458129883
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_prologue_reached_surface_01"
 			}
@@ -4104,6 +4343,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_angry"
+			},
+			sound_events_duration = {
+				[1.0] = 8.446249961853
 			},
 			localization_strings = {
 				[1.0] = "ecc_prologue_dialogue_answer_lack_of_patience"
@@ -4124,6 +4366,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 9.9780626296997
+			},
 			localization_strings = {
 				[1.0] = "egs_level_prologue_skittergate_distance_03"
 			}
@@ -4143,6 +4388,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 1.478395819664
+			},
 			localization_strings = {
 				[1.0] = "pes_prologue_meeting_kerillian_02"
 			}
@@ -4161,6 +4409,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5300209522247
 			},
 			localization_strings = {
 				[1.0] = "pdr_prologue_heal_bardin_take_time_02"
@@ -4182,6 +4433,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.1564168930054
+			},
 			localization_strings = {
 				[1.0] = "pwh_prologue_portal_01"
 			}
@@ -4200,6 +4454,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1837499141693
 			},
 			localization_strings = {
 				[1.0] = "pes_prologue_heal_bardin_01"
@@ -4220,6 +4477,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.8732085227966
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_elevator_ride_01"
 			}
@@ -4238,6 +4498,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 7.51016664505
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_seeing_crater_01"
@@ -4258,6 +4521,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 4.183958530426
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_skittergate_afar_01"
 			}
@@ -4276,6 +4542,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 1.1038144826889
 			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_hello_kruber_02"
@@ -4296,6 +4565,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 6.4856457710266
+			},
 			localization_strings = {
 				[1.0] = "pwe_prologue_meeting_kerillian_01"
 			}
@@ -4315,6 +4587,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 2.7523124217987
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_bardin_passing_two_03"
 			}
@@ -4333,6 +4608,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9253125190735
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_prologue_elevator_ride_01"
@@ -4354,6 +4632,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0069375038147
+			},
 			localization_strings = {
 				[1.0] = "pes_level_prologue_wizard_sound_01"
 			}
@@ -4373,15 +4654,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 9.0010204315185
+			},
 			localization_strings = {
 				[1.0] = "egs_level_prologue_skittergate_distance_02"
 			}
 		},
 		pes_level_prologue_fighting_pit_fight = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "conversations_prologue",
+			randomize_indexes_n = 0,
 			category = "level_talk_tutorial",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -4398,6 +4682,11 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry"
+			},
+			sound_events_duration = {
+				3.6084582805634,
+				4.198145866394,
+				3.7627770900726
 			},
 			localization_strings = {
 				"pes_level_prologue_fighting_pit_02",
@@ -4421,6 +4710,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 17.759729385376
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_bardin_passing_two_01"
 			}
@@ -4441,6 +4733,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_contempt"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4806041717529
+			},
 			localization_strings = {
 				[1.0] = "pes_prologue_kerillian_fight_01"
 			}
@@ -4459,6 +4754,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_contempt"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3247289657593
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_prologue_reached_surface_02"

@@ -1599,15 +1599,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.2360833883286
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_loud_crash_interact_01"
 			}
 		},
 		pdr_crawl_get_out_soon = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1622,6 +1625,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.7012708187103,
+				[2.0] = 4.2747292518616
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_get_out_soon_01",
 				[2.0] = "pdr_crawl_get_out_soon_03"
@@ -1630,9 +1637,9 @@ return function ()
 		},
 		pdr_crawl_pub_door = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1646,6 +1653,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9721250534058,
+				[2.0] = 6.9009790420532
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_pub_door_01",
@@ -1668,15 +1679,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9789583683014
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_loud_crash_end_reply_01"
 			}
 		},
 		pdr_level_crawl_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1691,6 +1705,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3706250190735,
+				[2.0] = 4.5522294044495
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_crawl_intro_a_01",
 				[2.0] = "pdr_level_crawl_intro_a_02"
@@ -1699,9 +1717,9 @@ return function ()
 		},
 		pdr_crawl_spot_second_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1715,6 +1733,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9793124198914,
+				[2.0] = 5.0759792327881
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_spot_second_pub_01",
@@ -1724,9 +1746,9 @@ return function ()
 		},
 		pdr_crawl_upstairs = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1740,6 +1762,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9110832214356,
+				[2.0] = 2.5364792346954
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_upstairs_01",
@@ -1749,9 +1775,9 @@ return function ()
 		},
 		pdr_crawl_end_event_way_open = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1766,6 +1792,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8242917060852,
+				[2.0] = 3.5048749446869
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_end_event_way_open_03",
 				[2.0] = "pdr_crawl_end_event_way_open_04"
@@ -1774,9 +1804,9 @@ return function ()
 		},
 		pdr_level_crawl_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1791,6 +1821,10 @@ return function ()
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3840417861939,
+				[2.0] = 4.236750125885
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_crawl_intro_c_01",
 				[2.0] = "pdr_level_crawl_intro_c_02"
@@ -1799,9 +1833,9 @@ return function ()
 		},
 		pdr_crawl_shortcut = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1816,6 +1850,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6580834388733,
+				[2.0] = 2.4305000305176
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_shortcut_01",
 				[2.0] = "pdr_crawl_shortcut_02"
@@ -1824,9 +1862,9 @@ return function ()
 		},
 		pdr_crawl_tunnel_passage = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1840,6 +1878,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9857709407806,
+				[2.0] = 4.3460001945496
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_tunnel_passage_03",
@@ -1849,9 +1891,9 @@ return function ()
 		},
 		pdr_crawl_mid_level_banter = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1866,6 +1908,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 10.84831237793,
+				[2.0] = 11.144166946411
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_mid_level_banter_03",
 				[2.0] = "pdr_crawl_mid_level_banter_04"
@@ -1874,9 +1920,9 @@ return function ()
 		},
 		pdr_crawl_old_path_blocked = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1890,6 +1936,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.116729259491,
+				[2.0] = 4.0610208511353
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_old_path_blocked_01",
@@ -1912,15 +1962,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.2066457271576
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_loud_crash_reply_01"
 			}
 		},
 		pdr_crawl_end_event_keep_quiet = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1935,6 +1988,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.8099374771118,
+				[2.0] = 4.9949374198914
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_end_event_keep_quiet_01",
 				[2.0] = "pdr_crawl_end_event_keep_quiet_02"
@@ -1943,9 +2000,9 @@ return function ()
 		},
 		pdr_crawl_have_a_drink = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1959,6 +2016,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5981042385101,
+				[2.0] = 4.2748126983643
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_have_a_drink_01",
@@ -1981,15 +2042,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 6.7291040420532
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_pub_destroyed_03"
 			}
 		},
 		pdr_crawl_spot_first_pub_closer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2004,6 +2068,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5879168510437,
+				[2.0] = 8.25306224823
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_spot_first_pub_closer_02",
 				[2.0] = "pdr_crawl_spot_first_pub_closer_04"
@@ -2012,9 +2080,9 @@ return function ()
 		},
 		pdr_crawl_pub_destroyed_reaction = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -2047,6 +2115,16 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.2289375066757,
+				3.2648749351502,
+				1.3074791431427,
+				1.2764999866486,
+				1.8557916879654,
+				0.83985418081284,
+				1.3999999761581,
+				0.99960416555405
+			},
 			localization_strings = {
 				"pdr_curse_01",
 				"pdr_curse_02",
@@ -2061,9 +2139,9 @@ return function ()
 		},
 		pdr_crawl_pub_brazers = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2077,6 +2155,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8596665859222,
+				[2.0] = 3.8733332157135
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_pub_brazers_01",
@@ -2086,9 +2168,9 @@ return function ()
 		},
 		pdr_crawl_end_event_waystone = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2103,6 +2185,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.9866874217987,
+				[2.0] = 2
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_end_event_waystone_03",
 				[2.0] = "pdr_crawl_end_event_waystone_04"
@@ -2111,9 +2197,9 @@ return function ()
 		},
 		pdr_crawl_slaughter = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2128,6 +2214,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.3197498321533,
+				[2.0] = 4.1354165077209
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_slaughter_03",
 				[2.0] = "pdr_crawl_slaughter_04"
@@ -2136,9 +2226,9 @@ return function ()
 		},
 		pdr_crawl_pub_district_sign = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2152,6 +2242,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7955832481384,
+				[2.0] = 6.9937500953674
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_pub_district_sign_01",
@@ -2161,9 +2255,9 @@ return function ()
 		},
 		pdr_crawl_get_into_third_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2177,6 +2271,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.191771030426,
+				[2.0] = 3.0338332653046
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_get_into_third_pub_02",
@@ -2186,9 +2284,9 @@ return function ()
 		},
 		pdr_crawl_heard_us = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2203,6 +2301,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7999999523163,
+				[2.0] = 1.9313958883286
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_heard_us_02",
 				[2.0] = "pdr_crawl_heard_us_03"
@@ -2211,9 +2313,9 @@ return function ()
 		},
 		pdr_crawl_pub_horde_end = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2228,6 +2330,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 6.0810832977295,
+				[2.0] = 3.616729259491
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_pub_horde_end_01",
 				[2.0] = "pdr_crawl_pub_horde_end_03"
@@ -2236,9 +2342,9 @@ return function ()
 		},
 		pdr_crawl_end_event_tunnel = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2253,6 +2359,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.938458442688,
+				[2.0] = 3.3756458759308
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_end_event_tunnel_03",
 				[2.0] = "pdr_crawl_end_event_tunnel_04"
@@ -2261,9 +2371,9 @@ return function ()
 		},
 		pdr_crawl_end_event_keep_running = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2278,6 +2388,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.5036041736603,
+				[2.0] = 1.3830208778381
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_end_event_keep_running_02",
 				[2.0] = "pdr_crawl_end_event_keep_running_04"
@@ -2286,9 +2400,9 @@ return function ()
 		},
 		pdr_level_crawl_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2303,6 +2417,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.2758541107178,
+				[2.0] = 2.3998959064484
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_crawl_intro_b_01",
 				[2.0] = "pdr_level_crawl_intro_b_02"
@@ -2311,9 +2429,9 @@ return function ()
 		},
 		pdr_crawl_head_for_second_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2328,6 +2446,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7137498855591,
+				[2.0] = 5.5003542900085
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_head_for_second_pub_01",
 				[2.0] = "pdr_crawl_head_for_second_pub_03"
@@ -2336,9 +2458,9 @@ return function ()
 		},
 		pdr_crawl_cheers = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2359,6 +2481,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.5999999046326,
+				2.235333442688,
+				2.1879374980927,
+				8.1012287139893
+			},
 			localization_strings = {
 				"pdr_crawl_cheers_01",
 				"pdr_crawl_cheers_02",
@@ -2369,9 +2497,9 @@ return function ()
 		},
 		pdr_crawl_end_event_find_good_beer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2385,6 +2513,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.220645904541,
+				[2.0] = 4.4336252212524
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_end_event_find_good_beer_01",
@@ -2394,9 +2526,9 @@ return function ()
 		},
 		pdr_crawl_spot_third_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2410,6 +2542,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5724999904633,
+				[2.0] = 4.2188124656677
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_spot_third_pub_01",
@@ -2419,9 +2555,9 @@ return function ()
 		},
 		pdr_crawl_head_for_third_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2436,6 +2572,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.75,
+				[2.0] = 5.7602915763855
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_head_for_third_pub_02",
 				[2.0] = "pdr_crawl_head_for_third_pub_04"
@@ -2444,9 +2584,9 @@ return function ()
 		},
 		pdr_crawl_head_for_first_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2461,6 +2601,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 12.849541664124,
+				[2.0] = 8.5335416793823
+			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_head_for_first_pub_01",
 				[2.0] = "pdr_crawl_head_for_first_pub_02"
@@ -2469,9 +2613,9 @@ return function ()
 		},
 		pdr_crawl_spot_first_pub = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_crawl",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2485,6 +2629,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8658332824707,
+				[2.0] = 6.4515419006348
 			},
 			localization_strings = {
 				[1.0] = "pdr_crawl_spot_first_pub_02",

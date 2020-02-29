@@ -970,9 +970,9 @@ return function ()
 	add_dialogues({
 		pwe_crater_tracking_camp = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -992,6 +992,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.4037292003632,
+				3.1702082157135,
+				3.376791715622,
+				4.0682916641235
 			},
 			localization_strings = {
 				"pwe_crater_tracking_camp_01",
@@ -1003,9 +1009,9 @@ return function ()
 		},
 		pwe_crater_wasteland_tree_push = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1025,6 +1031,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.8615000247955,
+				2.6576874256134,
+				2.5413959026337,
+				3.3381042480469
 			},
 			localization_strings = {
 				"pwe_crater_wasteland_tree_push_01",
@@ -1036,9 +1048,9 @@ return function ()
 		},
 		pwe_crater_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1053,6 +1065,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.810583114624,
+				[2.0] = 2.2092707157135
+			},
 			localization_strings = {
 				[1.0] = "pwe_crater_intro_banter_b_01",
 				[2.0] = "pwe_crater_intro_banter_b_02"
@@ -1061,9 +1077,9 @@ return function ()
 		},
 		pwe_crater_vista_reveal = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1083,6 +1099,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.8644585609436,
+				6.4122915267944,
+				6.3203125,
+				5.6758542060852
 			},
 			localization_strings = {
 				"pwe_crater_vista_reveal_01",
@@ -1094,9 +1116,9 @@ return function ()
 		},
 		pwe_crater_devastation = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1116,6 +1138,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.0624582767487,
+				6.3389792442322,
+				6.2087292671204,
+				2.6931457519531
 			},
 			localization_strings = {
 				"pwe_crater_devastation_01",
@@ -1127,9 +1155,9 @@ return function ()
 		},
 		pwe_crater_plan_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1144,6 +1172,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 8.1079587936401,
+				[2.0] = 7.9013123512268
+			},
 			localization_strings = {
 				[1.0] = "pwe_crater_plan_banter_a_01",
 				[2.0] = "pwe_crater_plan_banter_a_02"
@@ -1152,9 +1184,9 @@ return function ()
 		},
 		pwe_crater_arena_standard = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1174,6 +1206,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.157562494278,
+				2.2855000495911,
+				3.7975416183472,
+				2.8437917232513
 			},
 			localization_strings = {
 				"pwe_crater_arena_standard_01",
@@ -1185,9 +1223,9 @@ return function ()
 		},
 		pwe_crater_forest_ascent_top = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1207,6 +1245,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.789895772934,
+				5.3615417480469,
+				3.4935207366943,
+				2.5864791870117
 			},
 			localization_strings = {
 				"pwe_crater_forest_ascent_top_01",
@@ -1218,9 +1262,9 @@ return function ()
 		},
 		pwe_crater_climb_top = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1240,6 +1284,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.5689373016357,
+				4.9881043434143,
+				5.8683333396912,
+				4.4746251106262
 			},
 			localization_strings = {
 				"pwe_crater_climb_top_01",
@@ -1251,9 +1301,9 @@ return function ()
 		},
 		pwe_crater_rim_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1274,6 +1324,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				6.2036666870117,
+				6.3503751754761,
+				6.0255208015442,
+				6.2036876678467
+			},
 			localization_strings = {
 				"pwe_crater_rim_vista_01",
 				"pwe_crater_rim_vista_02",
@@ -1284,9 +1340,9 @@ return function ()
 		},
 		pwe_crater_plan_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1301,6 +1357,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 9.2531042098999,
+				[2.0] = 7.2620625495911
+			},
 			localization_strings = {
 				[1.0] = "pwe_crater_plan_banter_b_01",
 				[2.0] = "pwe_crater_plan_banter_b_02"
@@ -1309,9 +1369,9 @@ return function ()
 		},
 		pwe_crater_intro_banter_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1326,6 +1386,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.2600417137146,
+				[2.0] = 3.7180624008179
+			},
 			localization_strings = {
 				[1.0] = "pwe_crater_intro_banter_c_01",
 				[2.0] = "pwe_crater_intro_banter_c_02"
@@ -1334,9 +1398,9 @@ return function ()
 		},
 		pwe_crater_ambush_done = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1356,6 +1420,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.6938123703003,
+				5.4513335227966,
+				2.6583125591278,
+				5.792603969574
 			},
 			localization_strings = {
 				"pwe_crater_ambush_done_01",
@@ -1380,15 +1450,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 0.20000000298023
+			},
 			localization_strings = {
 				[1.0] = "dummy"
 			}
 		},
 		pwe_crater_arena_waystone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1408,6 +1481,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.9656040668488,
+				3.9042916297913,
+				3.5419790744781,
+				3.133270740509
 			},
 			localization_strings = {
 				"pwe_crater_arena_waystone_01",
@@ -1419,9 +1498,9 @@ return function ()
 		},
 		pwe_crater_bridge_sighted = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1441,6 +1520,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.4748749732971,
+				2.7449374198914,
+				3.5474584102631,
+				3.2741458415985
 			},
 			localization_strings = {
 				"pwe_crater_bridge_sighted_01",
@@ -1452,9 +1537,9 @@ return function ()
 		},
 		pwe_crater_arena_end = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1474,6 +1559,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.3742916584015,
+				3.7829999923706,
+				5.7635626792908,
+				4.7051458358765
 			},
 			localization_strings = {
 				"pwe_crater_arena_end_01",
@@ -1485,9 +1576,9 @@ return function ()
 		},
 		pwe_crater_ambush_interactable = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1507,6 +1598,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.9124999046326,
+				2.5774791240692,
+				3.2869582176209,
+				4.7418541908264
 			},
 			localization_strings = {
 				"pwe_crater_ambush_interactable_01",
@@ -1518,9 +1615,9 @@ return function ()
 		},
 		pwe_crater_wasteland_intro = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1541,6 +1638,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				7.040958404541,
+				7.4989581108093,
+				7.5348958969116,
+				7.6965417861939
+			},
 			localization_strings = {
 				"pwe_crater_wasteland_intro_01",
 				"pwe_crater_wasteland_intro_02",
@@ -1551,9 +1654,9 @@ return function ()
 		},
 		pwe_crater_plan_banter_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1568,6 +1671,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.8893122673035,
+				[2.0] = 7.021062374115
+			},
 			localization_strings = {
 				[1.0] = "pwe_crater_plan_banter_c_01",
 				[2.0] = "pwe_crater_plan_banter_c_02"
@@ -1576,9 +1683,9 @@ return function ()
 		},
 		pwe_crater_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1593,6 +1700,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.0351042747498,
+				[2.0] = 4.5802083015442
+			},
 			localization_strings = {
 				[1.0] = "pwe_crater_intro_banter_a_01",
 				[2.0] = "pwe_crater_intro_banter_a_02"
@@ -1601,9 +1712,9 @@ return function ()
 		},
 		pwe_crater_arena_standard_02 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_crater",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1623,6 +1734,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.0880417823791,
+				3.2508957386017,
+				3.6056249141693,
+				2.9368333816528
 			},
 			localization_strings = {
 				"pwe_crater_arena_standard_02_01",

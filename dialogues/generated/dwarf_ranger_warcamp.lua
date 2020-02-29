@@ -1474,9 +1474,9 @@ return function ()
 	add_dialogues({
 		pdr_gameplay_chaos_champion_summon_reply = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1496,6 +1496,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.649395942688,
+				5.7202291488647,
+				5.2218332290649,
+				4.949583530426
 			},
 			localization_strings = {
 				"pdr_gameplay_chaos_champion_summon_reply_01",
@@ -1507,9 +1513,9 @@ return function ()
 		},
 		pdr_gameplay_chaos_champion_charge_reply = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1530,6 +1536,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.2942500114441,
+				2.4058332443237,
+				3.4756667613983,
+				4.0238122940064
+			},
 			localization_strings = {
 				"pdr_gameplay_chaos_champion_charge_reply_01",
 				"pdr_gameplay_chaos_champion_charge_reply_02",
@@ -1540,9 +1552,9 @@ return function ()
 		},
 		pdr_chaos_war_camp_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1557,6 +1569,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 8.7922916412353,
+				[2.0] = 2.5459582805634
+			},
 			localization_strings = {
 				[1.0] = "pdr_chaos_war_camp_intro_c_01",
 				[2.0] = "pdr_chaos_war_camp_intro_c_02"
@@ -1565,9 +1581,9 @@ return function ()
 		},
 		ecc_chaos_war_camp_ground_summon = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 3,
@@ -1586,6 +1602,11 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				4.8450903892517,
+				2.9101133346558,
+				6.0107569694519
+			},
 			localization_strings = {
 				"ecc_chaos_war_camp_ground_summon_01",
 				"ecc_chaos_war_camp_ground_summon_02",
@@ -1595,9 +1616,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_arena_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1618,6 +1639,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.2947292327881,
+				4.7922706604004,
+				5.8421249389648,
+				1.624104142189
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_arena_01",
 				"pdr_level_chaos_war_camp_arena_02",
@@ -1628,9 +1655,9 @@ return function ()
 		},
 		pdr_chaos_war_camp_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1645,6 +1672,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7628540992737,
+				[2.0] = 3.2315833568573
+			},
 			localization_strings = {
 				[1.0] = "pdr_chaos_war_camp_intro_a_01",
 				[2.0] = "pdr_chaos_war_camp_intro_a_02"
@@ -1653,9 +1684,9 @@ return function ()
 		},
 		ecc_chaos_war_camp_throw_axe = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			sound_distance = 40,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
@@ -1677,6 +1708,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.0501254796982,
+				0.93938773870468,
+				0.66599905490875,
+				0.75691682100296
+			},
 			localization_strings = {
 				"ecc_chaos_war_camp_throw_axe_01",
 				"ecc_chaos_war_camp_throw_axe_02",
@@ -1687,9 +1724,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_keep_fighting_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1710,6 +1747,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				5.3370833396912,
+				3.2905416488648,
+				4.2092499732971,
+				5.3897500038147
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_keep_fighting_01",
 				"pdr_level_chaos_war_camp_keep_fighting_02",
@@ -1720,9 +1763,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_outer_gate_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1742,6 +1785,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.2255625724792,
+				2.8150832653046,
+				2.639687538147,
+				3.4623124599457
 			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_outer_gate_01",
@@ -1753,9 +1802,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_tree = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1776,6 +1825,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.299708366394,
+				3.6537499427795,
+				6.382791519165,
+				3.8817083835602
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_tree_01",
 				"pdr_level_chaos_war_camp_tree_02",
@@ -1786,9 +1841,9 @@ return function ()
 		},
 		pdr_chaos_war_camp_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1803,6 +1858,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5562705993652,
+				[2.0] = 5.1233124732971
+			},
 			localization_strings = {
 				[1.0] = "pdr_chaos_war_camp_intro_b_01",
 				[2.0] = "pdr_chaos_war_camp_intro_b_02"
@@ -1811,9 +1870,9 @@ return function ()
 		},
 		ecc_chaos_war_camp_charge = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			sound_distance = 40,
 			category = "boss_talk",
 			dialogue_animations_n = 2,
@@ -1829,6 +1888,10 @@ return function ()
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0345234870911,
+				[2.0] = 2.6689982414246
+			},
 			localization_strings = {
 				[1.0] = "ecc_chaos_war_camp_charge_05",
 				[2.0] = "ecc_chaos_war_camp_charge_06"
@@ -1837,9 +1900,9 @@ return function ()
 		},
 		pdr_chaos_war_camp_challenge_reply_ironbreaker = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1854,6 +1917,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.6755623817444,
+				[2.0] = 4.6228752136231
+			},
 			localization_strings = {
 				[1.0] = "pdr_chaos_war_camp_challenge_reply_b_01",
 				[2.0] = "pdr_chaos_war_camp_challenge_reply_b_02"
@@ -1862,9 +1929,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_dead_champion_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1884,6 +1951,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.1928749084473,
+				4.1272916793823,
+				5.3082914352417,
+				3.6596667766571
 			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_dead_champion_01",
@@ -1895,9 +1968,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_portal_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1918,6 +1991,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.5208125114441,
+				6.010187625885,
+				2.6907916069031,
+				1.7735832929611
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_portal_01",
 				"pdr_level_chaos_war_camp_portal_02",
@@ -1928,9 +2007,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_battering_ram_use_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1951,6 +2030,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				6.2393751144409,
+				5.421854019165,
+				6.4811248779297,
+				3.3101251125336
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_battering_ram_use_01",
 				"pdr_level_chaos_war_camp_battering_ram_use_02",
@@ -1961,9 +2046,9 @@ return function ()
 		},
 		pdr_level_chaos_war_surprise_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1984,6 +2069,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				7.0088748931885,
+				5.3991665840149,
+				2.7855417728424,
+				3.5601665973663
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_surprise_01",
 				"pdr_level_chaos_war_surprise_02",
@@ -1994,9 +2085,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_dead_champion = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -2014,6 +2105,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.1928749084473,
+				4.1272916793823,
+				5.3082914352417
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_dead_champion_01",
 				"pdr_level_chaos_war_camp_dead_champion_02",
@@ -2023,9 +2119,9 @@ return function ()
 		},
 		pdr_chaos_war_camp_taunt_payback_reply = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -2043,6 +2139,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				6.4716248512268,
+				7.0027709007263,
+				5.9319376945496
+			},
 			localization_strings = {
 				"pdr_chaos_war_camp_taunt_payback_reply_01",
 				"pdr_chaos_war_camp_taunt_payback_reply_02",
@@ -2052,9 +2153,9 @@ return function ()
 		},
 		pdr_chaos_war_camp_challenge_reply_slayer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2069,6 +2170,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.1458539962769,
+				[2.0] = 3.5618333816528
+			},
 			localization_strings = {
 				[1.0] = "pdr_chaos_war_camp_challenge_reply_a_01",
 				[2.0] = "pdr_chaos_war_camp_challenge_reply_a_02"
@@ -2077,9 +2182,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_live_in_swamp = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2100,6 +2205,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				6.2953958511353,
+				4.3743124008179,
+				4.7586874961853,
+				4.6501460075378
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_live_in_swamp_01",
 				"pdr_level_chaos_war_camp_live_in_swamp_02",
@@ -2110,9 +2221,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_islands_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2133,6 +2244,12 @@ return function ()
 				"face_fear",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.4183332920074,
+				3.3116250038147,
+				2.1881041526794,
+				3.6276874542236
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_islands_01",
 				"pdr_level_chaos_war_camp_islands_02",
@@ -2143,9 +2260,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_ravine = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2166,6 +2283,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				1.6120833158493,
+				2.4384999275208,
+				5.4414792060852,
+				2.6672291755676
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_ravine_01",
 				"pdr_level_chaos_war_camp_ravine_02",
@@ -2176,9 +2299,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_camp_view_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2199,6 +2322,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.2530832290649,
+				3.5898125171661,
+				1.2865417003632,
+				4.241687297821
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_camp_view_01",
 				"pdr_level_chaos_war_camp_camp_view_02",
@@ -2209,9 +2338,9 @@ return function ()
 		},
 		ecc_chaos_war_camp_taunt_payback = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 2,
@@ -2227,6 +2356,10 @@ return function ()
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 8.8785371780396,
+				[2.0] = 9.2046413421631
+			},
 			localization_strings = {
 				[1.0] = "ecc_chaos_war_camp_taunt_payback_01",
 				[2.0] = "ecc_chaos_war_camp_taunt_payback_02"
@@ -2235,9 +2368,9 @@ return function ()
 		},
 		pdr_gameplay_chaos_champion_throwing_axe = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2258,6 +2391,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.6778333187103,
+				3.0682291984558,
+				2.6660833358765,
+				4.2252497673035
+			},
 			localization_strings = {
 				"pdr_gameplay_chaos_champion_throwing_axe_01",
 				"pdr_gameplay_chaos_champion_throwing_axe_02",
@@ -2268,9 +2407,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_ghost_town_state = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2291,6 +2430,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.9200208187103,
+				2.3238332271576,
+				5.4277291297913,
+				5.356041431427
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_ghost_town_state_01",
 				"pdr_level_chaos_war_camp_ghost_town_state_02",
@@ -2301,9 +2446,9 @@ return function ()
 		},
 		pdr_chaos_war_camp_challenge_reply_ranger = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2318,6 +2463,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.6755623817444,
+				[2.0] = 4.6228752136231
+			},
 			localization_strings = {
 				[1.0] = "pdr_chaos_war_camp_challenge_reply_b_01",
 				[2.0] = "pdr_chaos_war_camp_challenge_reply_b_02"
@@ -2326,9 +2475,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_which_way = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2349,6 +2498,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.5066874027252,
+				5.4025001525879,
+				2.7901666164398,
+				3.2608542442322
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_which_way_01",
 				"pdr_level_chaos_war_camp_which_way_02",
@@ -2359,9 +2514,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_success_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2382,6 +2537,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				7.4482293128967,
+				4.5966248512268,
+				3.9997708797455,
+				3.5510001182556
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_success_01",
 				"pdr_level_chaos_war_camp_success_02",
@@ -2392,9 +2553,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_cabin = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2415,6 +2576,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.5488333702087,
+				4.4025416374206,
+				2.9634792804718,
+				9.0701665878296
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_cabin_01",
 				"pdr_level_chaos_war_camp_cabin_02",
@@ -2425,9 +2592,9 @@ return function ()
 		},
 		ecc_chaos_war_camp_ground_pound = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2448,6 +2615,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				1.1924643516541,
+				0.85249203443527,
+				1.9837415218353,
+				2.0614395141602
+			},
 			localization_strings = {
 				"ecc_chaos_war_camp_ground_pound_01",
 				"ecc_chaos_war_camp_ground_pound_02",
@@ -2458,9 +2631,9 @@ return function ()
 		},
 		ecc_chaos_war_camp_challenge = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 3,
@@ -2479,6 +2652,11 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				7.8709897994995,
+				7.3965692520142,
+				7.3138999938965
+			},
 			localization_strings = {
 				"ecc_chaos_war_camp_challenge_02",
 				"ecc_chaos_war_camp_challenge_04",
@@ -2488,9 +2666,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_depart_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2511,6 +2689,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.5352709293366,
+				3.1748125553131,
+				6.0558543205261,
+				3.7480208873749
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_depart_01",
 				"pdr_level_chaos_war_camp_depart_02",
@@ -2521,9 +2705,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_wall_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2544,6 +2728,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.7372708320618,
+				2.1937084197998,
+				2.1900417804718,
+				2.7162082195282
+			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_wall_01",
 				"pdr_level_chaos_war_camp_wall_02",
@@ -2554,9 +2744,9 @@ return function ()
 		},
 		pdr_level_chaos_war_camp_battering_ram_01 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_warcamp",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2576,6 +2766,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.9236042499542,
+				1.8214792013168,
+				3.0367915630341,
+				4.2989168167114
 			},
 			localization_strings = {
 				"pdr_level_chaos_war_camp_battering_ram_01",

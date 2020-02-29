@@ -4417,9 +4417,9 @@ return function ()
 	add_dialogues({
 		pbw_gameplay_spots_health_drunk = {
 			sound_events_n = 11,
-			randomize_indexes_n = 0,
 			face_animations_n = 11,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 11,
 			sound_events = {
@@ -4461,6 +4461,19 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.6213958263397,
+				1.730708360672,
+				2.8236875534058,
+				2.3509376049042,
+				1.5527917146683,
+				1.104333281517,
+				1.5285832881927,
+				1.5772082805634,
+				1.4914166927338,
+				1.7586041688919,
+				2.2575209140778
+			},
 			localization_strings = {
 				"pbw_gameplay_spots_health_06",
 				"pbw_gameplay_spots_health_07",
@@ -4478,9 +4491,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_shield_stormvermin_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -4513,6 +4526,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.7303333282471,
+				1.7015000581741,
+				1.3197083473206,
+				1.672770857811,
+				2.023916721344,
+				3.4452707767487,
+				2.9876041412353,
+				2.2380623817444
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_shield_stormvermin_01",
 				"pbw_gameplay_seeing_a_shield_stormvermin_02",
@@ -4527,9 +4550,9 @@ return function ()
 		},
 		pbw_gameplay_witch_hunter_low_on_health_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -4553,6 +4576,13 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.4746249914169,
+				1.6813333034515,
+				1.5315833091736,
+				1.7360208034515,
+				2.0402290821075
+			},
 			localization_strings = {
 				"pbw_gameplay_witch_hunter_low_on_health_05",
 				"pbw_gameplay_witch_hunter_low_on_health_06",
@@ -4564,9 +4594,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_scr_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -4599,6 +4629,16 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.1306041479111,
+				1.3849166631699,
+				2.4013750553131,
+				1.8164583444595,
+				2.0038332939148,
+				2.9868750572205,
+				3.5969791412353,
+				1.2484791278839
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_shield_clanrat_01",
 				"pbw_gameplay_seeing_a_shield_clanrat_02",
@@ -4613,9 +4653,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_skaven_ratling_gun_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -4636,6 +4676,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -4646,9 +4692,9 @@ return function ()
 		},
 		pbw_crawl_drunk_buff_begins_from_sick = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -4675,6 +4721,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				8.0668544769287,
+				5.5496249198914,
+				3.2480416297913,
+				4.3348751068115,
+				3.0060832500458,
+				4.1400418281555
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_buff_begins_from_sick_01",
 				"pbw_crawl_drunk_buff_begins_from_sick_02",
@@ -4687,9 +4741,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_chaos_wizard_wind_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -4710,6 +4764,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -4720,9 +4780,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_skaven_patrol_stormvermin_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -4742,6 +4802,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_nervous"
+			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
 			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
@@ -4766,15 +4832,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9468085765839
+			},
 			localization_strings = {
 				[1.0] = "pbw_drank"
 			}
 		},
 		pbw_crawl_drunk_buff_wears_off = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -4807,6 +4876,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.2181875705719,
+				1.7289999723434,
+				3.0194582939148,
+				1.8420000076294,
+				2.9552500247955,
+				2.9948332309723,
+				2.5056457519531,
+				1.7189791202545
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_buff_wears_off_01",
 				"pbw_crawl_drunk_buff_wears_off_02",
@@ -4821,9 +4900,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_troll_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -4856,6 +4935,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.5281250476837,
+				3.006500005722,
+				2.0891873836517,
+				3.1313126087189,
+				2.6326875686645,
+				3.6568124294281,
+				3.3017292022705,
+				2.5472083091736
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_troll_01",
 				"pbw_gameplay_seeing_a_troll_02",
@@ -4870,9 +4959,9 @@ return function ()
 		},
 		pbw_gameplay_friendly_fire_dwarf_ranger_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -4896,6 +4985,13 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.9248332977295,
+				2.7182083129883,
+				2.9121251106262,
+				2.2930417060852,
+				3.5499999523163
+			},
 			localization_strings = {
 				"pbw_gameplay_friendly_fire_dwarf_ranger_05",
 				"pbw_gameplay_friendly_fire_dwarf_ranger_06",
@@ -4907,9 +5003,9 @@ return function ()
 		},
 		pbw_gameplay_friendly_fire_wood_elf_drunk = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -4924,6 +5020,10 @@ return function ()
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
 			},
+			sound_events_duration = {
+				[1.0] = 1.2641667127609,
+				[2.0] = 2.1018540859222
+			},
 			localization_strings = {
 				[1.0] = "pbw_gameplay_friendly_fire_wood_elf_05",
 				[2.0] = "pbw_gameplay_friendly_fire_wood_elf_06"
@@ -4932,9 +5032,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_Skaven_warpfire_thrower_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -4955,6 +5055,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -4965,9 +5071,9 @@ return function ()
 		},
 		pbw_gameplay_killing_a_stormfiend_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -5000,6 +5106,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.228354215622,
+				3.391104221344,
+				2.8451249599457,
+				3.7110834121704,
+				2.3971457481384,
+				2.5882709026337,
+				4.0003957748413,
+				3.5962707996368
+			},
 			localization_strings = {
 				"pbw_gameplay_killing_a_stormfiend_01",
 				"pbw_gameplay_killing_a_stormfiend_02",
@@ -5014,9 +5130,9 @@ return function ()
 		},
 		pbw_gameplay_empire_soldier_low_on_health_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5037,6 +5153,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.1397082805634,
+				2.2135624885559,
+				2.5332915782928,
+				2.4681875705719
+			},
 			localization_strings = {
 				"pbw_gameplay_empire_soldier_low_on_health_05",
 				"pbw_gameplay_empire_soldier_low_on_health_06",
@@ -5047,9 +5169,9 @@ return function ()
 		},
 		pbw_gameplay_tips_wizard_wind_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5070,6 +5192,12 @@ return function ()
 				"face_surprise",
 				"face_surprise"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5080,9 +5208,9 @@ return function ()
 		},
 		pbw_gameplay_knocked_down_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5103,6 +5231,12 @@ return function ()
 				"face_angry",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.3251667022705,
+				2.5115416049957,
+				4.0078125,
+				3.9600417613983
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_knocked_down_01",
 				"pbw_crawl_drunk_knocked_down_02",
@@ -5113,9 +5247,9 @@ return function ()
 		},
 		pbw_gameplay_spots_potion_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5136,6 +5270,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				0.65104168653488,
+				2.877729177475,
+				4.5337080955505,
+				3.5209584236145
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_spotted_liquid_01",
 				"pbw_crawl_drunk_spotted_liquid_02",
@@ -5146,9 +5286,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_chaos_spawn_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5168,6 +5308,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
 			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
@@ -5179,9 +5325,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_troll_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5201,6 +5347,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
 			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
@@ -5212,9 +5364,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_Skaven_warpfire_thrower_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5235,6 +5387,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5245,9 +5403,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_chaos_spawn_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -5280,6 +5438,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.5718126296997,
+				2.5718123912811,
+				4.3003540039063,
+				4.5713334083557,
+				1.7646666765213,
+				2.6483750343323,
+				2.0226459503174,
+				3.8768124580383
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_chaos_spawn_01",
 				"pbw_gameplay_seeing_a_chaos_spawn_02",
@@ -5294,9 +5462,9 @@ return function ()
 		},
 		pbw_gameplay_wood_elf_low_on_health_drunk = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -5314,6 +5482,11 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.8882083892822,
+				1.7235416173935,
+				1.7451666593552
+			},
 			localization_strings = {
 				"pbw_gameplay_wood_elf_low_on_health_05",
 				"pbw_gameplay_wood_elf_low_on_health_06",
@@ -5323,9 +5496,9 @@ return function ()
 		},
 		pbw_gameplay_friendly_fire_witch_hunter_drunk = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -5343,6 +5516,11 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.15660405159,
+				2.424124956131,
+				2.6000833511352
+			},
 			localization_strings = {
 				"pbw_gameplay_friendly_fire_witch_hunter_05",
 				"pbw_gameplay_friendly_fire_witch_hunter_06",
@@ -5352,9 +5530,9 @@ return function ()
 		},
 		pbw_activate_ability_unchained_non_drunk = {
 			sound_events_n = 10,
-			randomize_indexes_n = 0,
 			face_animations_n = 10,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 10,
 			sound_events = {
@@ -5393,6 +5571,18 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				4.0252084732056,
+				2.4528958797455,
+				1.7375416755676,
+				5.0076665878296,
+				3.1394791603088,
+				1.6660833358765,
+				0.86472916603088,
+				1.5493124723434,
+				1.9696667194366,
+				2.3059582710266
+			},
 			localization_strings = {
 				"pbw_activate_ability_unchained_01",
 				"pbw_activate_ability_unchained_02",
@@ -5409,9 +5599,9 @@ return function ()
 		},
 		pbw_gameplay_spots_bomb_drunk = {
 			sound_events_n = 13,
-			randomize_indexes_n = 0,
 			face_animations_n = 13,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 13,
 			sound_events = {
@@ -5459,6 +5649,21 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.8770833015442,
+				2.6650416851044,
+				2.5662083625794,
+				1.6423541307449,
+				1.3711458444595,
+				1.1496249437332,
+				2.642395734787,
+				1.3044375181198,
+				0.91660416126251,
+				0.89635413885117,
+				0.96643751859665,
+				1.6388332843781,
+				1.248687505722
+			},
 			localization_strings = {
 				"pbw_gameplay_spots_bomb_06",
 				"pbw_gameplay_spots_bomb_07",
@@ -5478,9 +5683,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_chaos_wizard_wind_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5501,6 +5706,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5511,9 +5722,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_gutter_runner_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5534,6 +5745,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5544,9 +5761,9 @@ return function ()
 		},
 		pbw_gameplay_healing_dwarf_ranger_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -5573,6 +5790,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.5319792032242,
+				1.2002083063126,
+				1.9663749933243,
+				2.4315416812897,
+				2.7979791164398,
+				1.4670833349228
+			},
 			localization_strings = {
 				"pbw_gameplay_healing_dwarf_ranger_05",
 				"pbw_gameplay_healing_dwarf_ranger_06",
@@ -5585,9 +5810,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_chaos_warrior_champion_combat_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -5620,6 +5845,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.9866666793823,
+				3.6398541927338,
+				2.2180209159851,
+				3.4857499599457,
+				5.4154376983643,
+				4.2248959541321,
+				3.7869791984558,
+				4.0698957443237
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_chaos_warrior_champion_combat_01",
 				"pbw_gameplay_seeing_a_chaos_warrior_champion_combat_02",
@@ -5634,9 +5869,9 @@ return function ()
 		},
 		pbw_gameplay_dwarf_ranger_being_helped_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -5663,6 +5898,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.7536875009537,
+				1.7094583511352,
+				4.4726247787476,
+				2.2724583148956,
+				2.7722709178925,
+				2.1498749256134
+			},
 			localization_strings = {
 				"pbw_gameplay_dwarf_ranger_being_helped_up_05",
 				"pbw_gameplay_dwarf_ranger_being_helped_up_06",
@@ -5675,9 +5918,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_skaven_ratling_gun_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5698,6 +5941,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5708,9 +5957,9 @@ return function ()
 		},
 		pbw_gameplay_incoming_skaven_rat_ogre_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5731,6 +5980,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5741,9 +5996,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_Skaven_warpfire_thrower_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -5776,6 +6031,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.597062587738,
+				2.8307292461395,
+				2.0537707805634,
+				3.0204999446869,
+				5.4553127288818,
+				3.6602292060852,
+				4.3384790420532,
+				3.9912083148956
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_Skaven_warpfire_thrower_01",
 				"pbw_gameplay_seeing_a_Skaven_warpfire_thrower_02",
@@ -5790,9 +6055,9 @@ return function ()
 		},
 		pbw_gameplay_healing_draught_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5813,6 +6078,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				0.65104168653488,
+				2.877729177475,
+				4.5337080955505,
+				3.5209584236145
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_spotted_liquid_01",
 				"pbw_crawl_drunk_spotted_liquid_02",
@@ -5823,9 +6094,9 @@ return function ()
 		},
 		pbw_gameplay_killing_a_chaos_warrior_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -5858,6 +6129,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.0988750457764,
+				2.1317291259766,
+				2.5179166793823,
+				2.3296248912811,
+				2.3906042575836,
+				3.5757708549499,
+				4.008291721344,
+				2.7562708854675
+			},
 			localization_strings = {
 				"pbw_gameplay_killing_a_chaos_warrior_01",
 				"pbw_gameplay_killing_a_chaos_warrior_02",
@@ -5872,9 +6153,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_troll_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5895,6 +6176,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5905,9 +6192,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_globadier_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -5928,6 +6215,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -5938,9 +6231,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_pm_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -5973,6 +6266,16 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.1865208148956,
+				5.2673749923706,
+				4.4918751716614,
+				5.045437335968,
+				2.1971249580383,
+				2.5055208206177,
+				3.7887291908264,
+				3.8638124465942
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_plague_monk_01",
 				"pbw_gameplay_seeing_a_plague_monk_02",
@@ -5987,9 +6290,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_chaos_wizard_wind_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6010,6 +6313,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.8703956604004,
+				3.974312543869,
+				3.6810417175293,
+				3.7641041278839
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_chaos_wizard_wind_01",
 				"pbw_gameplay_seeing_a_chaos_wizard_wind_02",
@@ -6020,9 +6329,9 @@ return function ()
 		},
 		pbw_gameplay_wood_elf_being_helped_up_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -6049,6 +6358,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.2530000209808,
+				0.97527080774307,
+				2.3344376087189,
+				2.4717707633972,
+				2.7072501182556,
+				1.9368749856949
+			},
 			localization_strings = {
 				"pbw_gameplay_wood_elf_being_helped_up_05",
 				"pbw_gameplay_wood_elf_being_helped_up_06",
@@ -6061,9 +6378,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_skaven_rat_ogre_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6084,6 +6401,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -6094,9 +6417,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_gutter_runner_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6117,6 +6440,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -6127,9 +6456,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_chaos_wizard_tentacle_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6149,6 +6478,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.601541519165,
+				3.7303333282471,
+				2.7143542766571,
+				3.902937412262
 			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_chaos_wizard_tentacle_01",
@@ -6173,15 +6508,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 0.49342796206474
+			},
 			localization_strings = {
 				[1.0] = "pbw_burp"
 			}
 		},
 		pbw_gameplay_player_pounced_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6202,6 +6540,12 @@ return function ()
 				"face_angry",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.3251667022705,
+				2.5115416049957,
+				4.0078125,
+				3.9600417613983
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_knocked_down_01",
 				"pbw_crawl_drunk_knocked_down_02",
@@ -6212,9 +6556,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_chaos_wizard_plague_no_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6235,6 +6579,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				4.0935206413269,
+				3.9944999217987,
+				7.5737290382385,
+				4.461395740509
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_chaos_wizard_plague_01",
 				"pbw_gameplay_seeing_a_chaos_wizard_plague_02",
@@ -6245,9 +6595,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_chaos_warrior_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -6280,6 +6630,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.9117708206177,
+				3.3820416927338,
+				1.471895813942,
+				3.8545417785645,
+				4.156750202179,
+				3.0422291755676,
+				4.6971459388733,
+				3.5143542289734
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_chaos_warrior_01",
 				"pbw_gameplay_seeing_a_chaos_warrior_02",
@@ -6294,9 +6654,9 @@ return function ()
 		},
 		pbw_gameplay_killing_a_skaven_warpfire_thrower_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -6329,6 +6689,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.0427916049957,
+				4.0211043357849,
+				1.5100833177566,
+				3.0448124408722,
+				4.1617498397827,
+				5.5103335380554,
+				1.9893333911896,
+				5.0868124961853
+			},
 			localization_strings = {
 				"pbw_gameplay_killing_a_Skaven_warpfire_thrower_01",
 				"pbw_gameplay_killing_a_Skaven_warpfire_thrower_02",
@@ -6343,9 +6713,9 @@ return function ()
 		},
 		pbw_gameplay_killing_a_chaos_wizard_tentacle_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -6371,6 +6741,14 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.1643126010895,
+				2.7968125343323,
+				2.9404165744781,
+				2.1820833683014,
+				3.2365624904633,
+				1.39162504673
 			},
 			localization_strings = {
 				"pbw_gameplay_killing_a_chaos_wizard_tentacle_01",
@@ -6384,9 +6762,9 @@ return function ()
 		},
 		pbw_gameplay_killing_a_chaos_wizard_wind_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -6412,6 +6790,14 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.7983748912811,
+				1.8550624847412,
+				2.0462915897369,
+				3.3470833301544,
+				2.0906040668488,
+				2.0048542022705
 			},
 			localization_strings = {
 				"pbw_gameplay_killing_a_chaos_wizard_wind_01",
@@ -6425,9 +6811,9 @@ return function ()
 		},
 		pbw_gameplay_killing_a_chaos_wizard_plague_no_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -6454,6 +6840,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.588770866394,
+				2.754604101181,
+				4.9023957252502,
+				2.9250416755676,
+				1.2523958683014,
+				1.4528958797455
+			},
 			localization_strings = {
 				"pbw_gameplay_killing_a_chaos_wizard_plague_01",
 				"pbw_gameplay_killing_a_chaos_wizard_plague_02",
@@ -6466,9 +6860,9 @@ return function ()
 		},
 		pbw_gameplay_helped_by_dwarf_ranger_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6489,6 +6883,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.1928124427795,
+				1.1928124427795,
+				2.1330208778381,
+				1.4213750362396
+			},
 			localization_strings = {
 				"pbw_gameplay_helped_by_dwarf_ranger_03",
 				"pbw_gameplay_helped_by_dwarf_ranger_05",
@@ -6499,9 +6899,9 @@ return function ()
 		},
 		pbw_gameplay_helped_by_witch_hunter_drunk = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -6519,6 +6919,11 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.7616666555405,
+				1.93850004673,
+				2.2696459293366
+			},
 			localization_strings = {
 				"pbw_gameplay_helped_by_witch_hunter_05",
 				"pbw_gameplay_helped_by_witch_hunter_06",
@@ -6528,9 +6933,9 @@ return function ()
 		},
 		pbw_activate_ability_pyromancer_non_drunk = {
 			sound_events_n = 12,
-			randomize_indexes_n = 0,
 			face_animations_n = 12,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 12,
 			sound_events = {
@@ -6574,6 +6979,20 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy"
+			},
+			sound_events_duration = {
+				1.9312916994095,
+				1.5861874818802,
+				1.0180833339691,
+				2.31285405159,
+				3.9249374866486,
+				2.5165417194366,
+				3.1542084217072,
+				2.0076251029968,
+				2.5495417118073,
+				2.0251874923706,
+				3.8913333415985,
+				3.6621458530426
 			},
 			localization_strings = {
 				"pbw_activate_ability_pyromancer_01",
@@ -6593,9 +7012,9 @@ return function ()
 		},
 		pbw_gameplay_killing_a_chaos_warrior_champion_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -6627,6 +7046,16 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.5064165592194,
+				2.7337915897369,
+				2.9902708530426,
+				2.8949792385101,
+				2.8149375915527,
+				4.3797707557678,
+				2.718270778656,
+				2.6975834369659
 			},
 			localization_strings = {
 				"pbw_gameplay_killing_a_chaos_warrior_champion_01",
@@ -6642,9 +7071,9 @@ return function ()
 		},
 		pbw_gameplay_witch_hunter_being_helped_up_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -6671,6 +7100,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.9957499504089,
+				2.0191667079926,
+				2.6266667842865,
+				2.4006667137146,
+				1.8580207824707,
+				2.0957500934601
+			},
 			localization_strings = {
 				"pbw_gameplay_witch_hunter_being_helped_up_05",
 				"pbw_gameplay_witch_hunter_being_helped_up_06",
@@ -6683,9 +7120,9 @@ return function ()
 		},
 		pbw_crawl_drunk_buff_begins = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -6712,6 +7149,14 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.9531457424164,
+				3.2211041450501,
+				3.4400417804718,
+				3.7719583511352,
+				3.9760208129883,
+				2.9784998893738
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_buff_begins_01",
 				"pbw_crawl_drunk_buff_begins_02",
@@ -6724,9 +7169,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_stormfiend_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6746,6 +7191,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
 			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
@@ -6757,9 +7208,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_stormfiend_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6780,6 +7231,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -6790,9 +7247,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_skaven_rat_ogre_combat_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6813,6 +7270,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -6823,9 +7286,9 @@ return function ()
 		},
 		pbw_gameplay_seeing_a_stormfiend_no_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -6858,6 +7321,16 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.8489582538605,
+				3.3945000171661,
+				2.8553750514984,
+				3.3263957500458,
+				3.6858124732971,
+				3.4801666736603,
+				3.0999584197998,
+				3.0158958435059
+			},
 			localization_strings = {
 				"pbw_gameplay_seeing_a_stormfiend_01",
 				"pbw_gameplay_seeing_a_stormfiend_02",
@@ -6872,9 +7345,9 @@ return function ()
 		},
 		pbw_gameplay_hears_incoming_horde_drunk = {
 			sound_events_n = 6,
-			randomize_indexes_n = 0,
 			face_animations_n = 6,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
@@ -6901,6 +7374,14 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				1.4198541641235,
+				3.3412499427795,
+				2.4601874351502,
+				2.9245624542236,
+				4.6996250152588,
+				3.4326040744781
+			},
 			localization_strings = {
 				"pbw_gameplay_hears_incoming_horde_11",
 				"pbw_gameplay_hears_incoming_horde_12",
@@ -6913,9 +7394,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_globadier_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -6936,6 +7417,12 @@ return function ()
 				"face_contempt",
 				"face_contempt"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -6946,9 +7433,9 @@ return function ()
 		},
 		pbw_activate_ability_battle_wizard_non_drunk = {
 			sound_events_n = 12,
-			randomize_indexes_n = 0,
 			face_animations_n = 12,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 12,
 			sound_events = {
@@ -6993,6 +7480,20 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.8937499523163,
+				2.5130207538605,
+				2.3882083892822,
+				1.9769166707993,
+				1.2478125095367,
+				2.8103125095367,
+				1.5035208463669,
+				1.0926666259766,
+				1.9409999847412,
+				1.8511874675751,
+				2.3946666717529,
+				3.3020207881927
+			},
 			localization_strings = {
 				"pbw_activate_ability_battle_wizard_01",
 				"pbw_activate_ability_battle_wizard_02",
@@ -7011,9 +7512,9 @@ return function ()
 		},
 		pbw_gameplay_helped_by_wood_elf_drunk = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -7030,6 +7531,11 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy"
+			},
+			sound_events_duration = {
+				1.3215416669846,
+				1.2043333053589,
+				2.0004999637604
 			},
 			localization_strings = {
 				"pbw_gameplay_helped_by_wood_elf_05",
@@ -7053,15 +7559,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.5
+			},
 			localization_strings = {
 				[1.0] = "pbw_drank_drunk"
 			}
 		},
 		pbw_gameplay_spots_ammo_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "seen_items",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7094,6 +7603,16 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.8527708053589,
+				1.3273750543594,
+				2.4029583930969,
+				1.4858125448227,
+				1.9462916851044,
+				1.5837500095367,
+				2.2690207958221,
+				2.5338542461395
+			},
 			localization_strings = {
 				"pbw_gameplay_spots_ammo_06",
 				"pbw_gameplay_spots_ammo_07",
@@ -7108,9 +7627,9 @@ return function ()
 		},
 		pbw_gameplay_self_heal_drunk = {
 			sound_events_n = 10,
-			randomize_indexes_n = 0,
 			face_animations_n = 10,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 10,
 			sound_events = {
@@ -7149,6 +7668,18 @@ return function ()
 				"face_exhausted",
 				"face_exhausted"
 			},
+			sound_events_duration = {
+				1.0158958435059,
+				2.9664583206177,
+				1.9679374694824,
+				2.9622082710266,
+				3.7604374885559,
+				3.3597707748413,
+				2.89027094841,
+				3.3087084293366,
+				3.2199790477753,
+				3.3332290649414
+			},
 			localization_strings = {
 				"pbw_gameplay_self_heal_06",
 				"pbw_gameplay_self_heal_07",
@@ -7165,9 +7696,9 @@ return function ()
 		},
 		pbw_gameplay_empire_soldier_being_helped_up_drunk = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 8,
 			sound_events = {
@@ -7200,6 +7731,16 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				1.6042292118073,
+				2.303729057312,
+				2.6612915992737,
+				3.1944999694824,
+				2.6099791526794,
+				1.9544166326523,
+				1.705374956131,
+				2.0736041069031
+			},
 			localization_strings = {
 				"pbw_gameplay_empire_soldier_being_helped_up_05",
 				"pbw_gameplay_empire_soldier_being_helped_up_06",
@@ -7214,9 +7755,9 @@ return function ()
 		},
 		pbw_gameplay_friendly_fire_empire_soldier_drunk = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -7240,6 +7781,13 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.9984583854675,
+				1.8351041078568,
+				2.569854259491,
+				2.0312917232513,
+				4.5291252136231
+			},
 			localization_strings = {
 				"pbw_gameplay_friendly_fire_empire_soldier_05",
 				"pbw_gameplay_friendly_fire_empire_soldier_06",
@@ -7251,9 +7799,9 @@ return function ()
 		},
 		pbw_gameplay_hearing_a_chaos_spawn_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "enemy_alerts_high",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7274,6 +7822,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.3346667289734,
+				2.220624923706,
+				3.4197292327881,
+				4.4190831184387
+			},
 			localization_strings = {
 				"pbw_crawl_drunk_incoming_threat_01",
 				"pbw_crawl_drunk_incoming_threat_02",
@@ -7284,9 +7838,9 @@ return function ()
 		},
 		pbw_gameplay_helped_by_empire_soldier_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7307,6 +7861,12 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			sound_events_duration = {
+				1.2418541908264,
+				1.3056458234787,
+				1.4301458597183,
+				2.4242084026337
+			},
 			localization_strings = {
 				"pbw_gameplay_helped_by_empire_soldier_05",
 				"pbw_gameplay_helped_by_empire_soldier_06",
@@ -7317,9 +7877,9 @@ return function ()
 		},
 		pbw_gameplay_throwing_bomb_drunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -7340,6 +7900,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				0.776187479496,
+				2.3602917194366,
+				1.0254583358765,
+				2.1760833263397
+			},
 			localization_strings = {
 				"pbw_gameplay_throwing_bomb_06",
 				"pbw_gameplay_throwing_bomb_07",
@@ -7350,9 +7916,9 @@ return function ()
 		},
 		pbw_gameplay_dwarf_ranger_low_on_health_drunk = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "bright_wizard_game_play_crawl",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -7369,6 +7935,11 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.2264583110809,
+				2.80433344841,
+				1.534916639328
 			},
 			localization_strings = {
 				"pbw_gameplay_dwarf_ranger_low_on_health_05",

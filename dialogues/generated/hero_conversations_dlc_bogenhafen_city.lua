@@ -2152,6 +2152,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5711665153503
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_city_story_twelve_01"
 			}
@@ -2170,6 +2173,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5022082328796
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_city_story_three_01"
@@ -2190,6 +2196,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.3639998435974
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_four_02"
 			}
@@ -2208,6 +2217,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0925626754761
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_city_story_eight_01"
@@ -2228,6 +2240,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.1552081108093
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_five_01"
 			}
@@ -2246,6 +2261,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3220624923706
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_city_story_four_02"
@@ -2266,6 +2284,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4673957824707
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_eight_01"
 			}
@@ -2284,6 +2305,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8682293891907
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_seven_02"
@@ -2304,6 +2328,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.0330834388733
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_seven_01"
 			}
@@ -2322,6 +2349,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1277916431427
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_city_story_one_02"
@@ -2342,6 +2372,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.0674166679382
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_two_02"
 			}
@@ -2360,6 +2393,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9972290992737
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_one_01"
@@ -2380,6 +2416,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.7211875915527
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_three_01"
 			}
@@ -2398,6 +2437,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.139666557312
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_six_02"
@@ -2418,6 +2460,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.3082082271576
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_city_story_three_01"
 			}
@@ -2436,6 +2481,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1313543319702
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_city_story_six_01"
@@ -2456,6 +2504,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.769896030426
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_city_story_five_01"
 			}
@@ -2474,6 +2525,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7427082061768
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_ten_02"
@@ -2494,6 +2548,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0985417366028
+			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_city_story_one_01"
 			}
@@ -2512,6 +2569,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 11.878520965576
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_two_01"
@@ -2532,6 +2592,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.4743332862854
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_seven_01"
 			}
@@ -2550,6 +2613,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2303750514984
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_four_01"
@@ -2570,6 +2636,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.5808124542236
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_nine_01"
 			}
@@ -2588,6 +2657,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4808959960938
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_eight_01"
@@ -2608,6 +2680,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.2794585227966
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_six_01"
 			}
@@ -2626,6 +2701,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1280832290649
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_six_01"
@@ -2646,6 +2724,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.5469584465027
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_three_02"
 			}
@@ -2664,6 +2745,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7864375114441
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_city_story_four_01"
@@ -2684,6 +2768,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.2518539428711
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_twelve_02"
 			}
@@ -2702,6 +2789,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1776666641235
 			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_one_02"
@@ -2722,6 +2812,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.3341457843781
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_eleven_01"
 			}
@@ -2740,6 +2833,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4855625629425
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_twelve_01"
@@ -2760,6 +2856,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9970417022705
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_bogenhafen_city_story_two_01"
 			}
@@ -2778,6 +2877,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7088959217072
 			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_twelve_01"
@@ -2798,6 +2900,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.3827085494995
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_eleven_02"
 			}
@@ -2816,6 +2921,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 13.767312049866
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_nine_02"
@@ -2836,6 +2944,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.2548542022705
+			},
 			localization_strings = {
 				[1.0] = "pdr_level_bogenhafen_city_story_five_01"
 			}
@@ -2854,6 +2965,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8674583435059
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_city_story_ten_02"
@@ -2874,6 +2988,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.2485625743866
+			},
 			localization_strings = {
 				[1.0] = "pes_level_bogenhafen_city_story_nine_01"
 			}
@@ -2892,6 +3009,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0751667022705
 			},
 			localization_strings = {
 				[1.0] = "pwe_level_bogenhafen_city_story_ten_01"
@@ -2912,6 +3032,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.6510834693909
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_ten_01"
 			}
@@ -2931,6 +3054,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 10.440541267395
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_eleven_01"
 			}
@@ -2949,6 +3075,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0745625495911
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_eight_02"

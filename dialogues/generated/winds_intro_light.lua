@@ -879,9 +879,9 @@ return function ()
 	add_dialogues({
 		pwe_wind_light_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -896,6 +896,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.9171874523163,
+				[2.0] = 4.2813334465027
+			},
 			localization_strings = {
 				[1.0] = "pwe_wind_light_intro_banter_a_01",
 				[2.0] = "pwe_wind_light_intro_banter_a_02"
@@ -904,9 +908,9 @@ return function ()
 		},
 		pbw_wind_light_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -920,6 +924,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.7220417261124,
+				[2.0] = 3.7949583530426
 			},
 			localization_strings = {
 				[1.0] = "pbw_wind_light_intro_banter_a_01",
@@ -942,6 +950,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 8.1078128814697
+			},
 			localization_strings = {
 				[1.0] = "pwe_light_weave_conversation_three_01"
 			}
@@ -960,6 +971,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1942083835602
 			},
 			localization_strings = {
 				[1.0] = "pwe_light_weave_conversation_two_01"
@@ -980,15 +994,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 7.0750832557678
+			},
 			localization_strings = {
 				[1.0] = "pwh_light_weave_conversation_three_01"
 			}
 		},
 		pwh_wind_light_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1002,6 +1019,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.266583442688,
+				[2.0] = 3.2108125686645
 			},
 			localization_strings = {
 				[1.0] = "pwh_wind_light_intro_banter_b_01",
@@ -1024,6 +1045,9 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.9145832061768
+			},
 			localization_strings = {
 				[1.0] = "pwh_light_weave_conversation_one_01"
 			}
@@ -1042,6 +1066,9 @@ return function ()
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4364583492279
 			},
 			localization_strings = {
 				[1.0] = "pwe_light_weave_conversation_one_01"
@@ -1062,15 +1089,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.0715832710266
+			},
 			localization_strings = {
 				[1.0] = "pbw_light_weave_conversation_two_01"
 			}
 		},
 		pbw_wind_light_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1085,6 +1115,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7192709445953,
+				[2.0] = 3.8438541889191
+			},
 			localization_strings = {
 				[1.0] = "pbw_wind_light_intro_banter_b_01",
 				[2.0] = "pbw_wind_light_intro_banter_b_02"
@@ -1093,9 +1127,9 @@ return function ()
 		},
 		pdr_wind_light_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1109,6 +1143,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6773333549499,
+				[2.0] = 2.7929167747498
 			},
 			localization_strings = {
 				[1.0] = "pdr_wind_light_intro_banter_a_01",
@@ -1131,15 +1169,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 3.5476665496826
+			},
 			localization_strings = {
 				[1.0] = "pwe_light_weave_conversation_three_02"
 			}
 		},
 		pwe_wind_light_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1153,6 +1194,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1306457519531,
+				[2.0] = 3.1120417118073
 			},
 			localization_strings = {
 				[1.0] = "pwe_wind_light_intro_banter_b_01",
@@ -1162,9 +1207,9 @@ return function ()
 		},
 		pes_wind_light_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1178,6 +1223,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1822707653046,
+				[2.0] = 2.5562500953674
 			},
 			localization_strings = {
 				[1.0] = "pes_wind_light_intro_banter_b_01",
@@ -1187,9 +1236,9 @@ return function ()
 		},
 		pdr_wind_light_intro_banter_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1204,6 +1253,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.1380207538605,
+				[2.0] = 2.4526250362396
+			},
 			localization_strings = {
 				[1.0] = "pdr_wind_light_intro_banter_b_01",
 				[2.0] = "pdr_wind_light_intro_banter_b_02"
@@ -1212,9 +1265,9 @@ return function ()
 		},
 		pes_wind_light_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1228,6 +1281,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2866249084473,
+				[2.0] = 2.5171248912811
 			},
 			localization_strings = {
 				[1.0] = "pes_wind_light_intro_banter_a_01",
@@ -1250,15 +1307,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.2046041488648
+			},
 			localization_strings = {
 				[1.0] = "pbw_light_weave_conversation_two_02"
 			}
 		},
 		pwh_wind_light_intro_banter_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_light",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1272,6 +1332,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9979999065399,
+				[2.0] = 4.8533959388733
 			},
 			localization_strings = {
 				[1.0] = "pwh_wind_light_intro_banter_a_01",

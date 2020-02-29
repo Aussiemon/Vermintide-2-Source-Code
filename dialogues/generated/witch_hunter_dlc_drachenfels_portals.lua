@@ -1762,9 +1762,9 @@ return function ()
 	add_dialogues({
 		pwh_portals_objective_recap = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1784,6 +1784,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				6.0029997825623,
+				5.6416873931885,
+				4.9523334503174,
+				6.0191874504089
 			},
 			localization_strings = {
 				"pwh_portals_objective_recap_01",
@@ -1795,9 +1801,9 @@ return function ()
 		},
 		pwh_portals_the_map = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1817,6 +1823,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.2386667728424,
+				3.3366250991821,
+				3.611145734787,
+				4.8284792900085
 			},
 			localization_strings = {
 				"pwh_portals_the_map_01",
@@ -1828,9 +1840,9 @@ return function ()
 		},
 		pwh_portals_event_missing_gargoyle_heads = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1850,6 +1862,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.3987293243408,
+				3.4103124141693,
+				3.1481666564941,
+				5.0747499465942
 			},
 			localization_strings = {
 				"pwh_portals_event_missing_gargoyle_heads_01",
@@ -1861,9 +1879,9 @@ return function ()
 		},
 		["pwh_portals_trail_found "] = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1883,6 +1901,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.340916633606,
+				4.4475831985474,
+				3.7569375038147,
+				5.5126667022705
 			},
 			localization_strings = {
 				"pwh_portals_trail_found_01",
@@ -1894,9 +1918,9 @@ return function ()
 		},
 		pwh_portals_crypt_exit = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1916,6 +1940,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.2350416183472,
+				3.8825209140778,
+				3.0871458053589,
+				5.2542085647583
 			},
 			localization_strings = {
 				"pwh_portals_crypt_exit_01",
@@ -1927,9 +1957,9 @@ return function ()
 		},
 		pwh_portals_intro_line_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1944,6 +1974,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 6.0827293395996,
+				[2.0] = 5.9109373092651
+			},
 			localization_strings = {
 				[1.0] = "pwh_portals_intro_line_c_01",
 				[2.0] = "pwh_portals_intro_line_c_02"
@@ -1952,9 +1986,9 @@ return function ()
 		},
 		pwh_portals_portal_interact_two = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1974,6 +2008,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				0.79752081632614,
+				1.9959374666214,
+				3.6131875514984,
+				3.5204792022705
 			},
 			localization_strings = {
 				"pwh_portals_portal_interact_two_01",
@@ -1985,9 +2025,9 @@ return function ()
 		},
 		pwh_portals_pwh_castle_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2007,6 +2047,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				7.0090832710266,
+				7.7844376564026,
+				7.3464164733887,
+				8.2267913818359
 			},
 			localization_strings = {
 				"pwh_portals_pwh_castle_vista_01",
@@ -2018,9 +2064,9 @@ return function ()
 		},
 		pwh_portals_portal_interact_three = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2040,6 +2086,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.5370209217072,
+				3.0953750610352,
+				4.3771877288818,
+				3.6302292346954
 			},
 			localization_strings = {
 				"pwh_portals_portal_interact_three_01",
@@ -2051,9 +2103,9 @@ return function ()
 		},
 		pwh_portals_kidnapped_traces = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2073,6 +2125,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.4850206375122,
+				6.8569169044495,
+				5.7261877059936,
+				7.4929585456848
 			},
 			localization_strings = {
 				"pwh_portals_kidnapped_traces_01",
@@ -2084,9 +2142,9 @@ return function ()
 		},
 		pwh_portals_raid_trace = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2106,6 +2164,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.9985624551773,
+				2.5164375305176,
+				5.1844167709351,
+				4.547333240509
 			},
 			localization_strings = {
 				"pwh_portals_raid_trace_01",
@@ -2117,9 +2181,9 @@ return function ()
 		},
 		pwh_portals_find_map = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2139,6 +2203,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8208333253861,
+				2.5602083206177,
+				3.3359167575836,
+				2.4372916221619
 			},
 			localization_strings = {
 				"pwh_portals_find_map_01",
@@ -2150,9 +2220,9 @@ return function ()
 		},
 		pwh_portals_crypt_event_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2172,6 +2242,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.0520000457764,
+				4.043541431427,
+				1.7066874504089,
+				5.5903749465942
 			},
 			localization_strings = {
 				"pwh_portals_crypt_event_hole_01",
@@ -2183,9 +2259,9 @@ return function ()
 		},
 		pwh_portals_everyone_gone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2205,6 +2281,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.3667497634888,
+				4.5571875572205,
+				6.9361248016357,
+				4.9856247901917
 			},
 			localization_strings = {
 				"pwh_portals_everyone_gone_01",
@@ -2216,9 +2298,9 @@ return function ()
 		},
 		pwh_portals_get_out = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2238,6 +2320,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.5442708730698,
+				1.5499792098999,
+				2.2204792499542,
+				1.8751875162125
 			},
 			localization_strings = {
 				"pwh_portals_get_out_01",
@@ -2249,9 +2337,9 @@ return function ()
 		},
 		pwh_portals_follow_trail = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2271,6 +2359,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.9364376068115,
+				3.986145734787,
+				3.9284584522247,
+				5.1135416030884
 			},
 			localization_strings = {
 				"pwh_portals_follow_trail_01",
@@ -2282,9 +2376,9 @@ return function ()
 		},
 		pwh_portals_waystone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2304,6 +2398,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.0499792098999,
+				5.1082081794739,
+				5.7744374275208,
+				6.8675622940064
 			},
 			localization_strings = {
 				"pwh_portals_waystone_01",
@@ -2315,9 +2415,9 @@ return function ()
 		},
 		pwh_portals_crypt_event_entering_crypt = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2337,6 +2437,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.0800416469574,
+				2.7593541145325,
+				4.7061042785644,
+				3.6848332881927
 			},
 			localization_strings = {
 				"pwh_portals_crypt_event_entering_crypt_01",
@@ -2348,9 +2454,9 @@ return function ()
 		},
 		pwh_portals_portal_interact_one = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2370,6 +2476,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				0.96260416507721,
+				3.3717501163483,
+				1.6672500371933,
+				3.4067499637604
 			},
 			localization_strings = {
 				"pwh_portals_portal_interact_one_01",
@@ -2381,9 +2493,9 @@ return function ()
 		},
 		pwh_portals_map_second_clue = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2403,6 +2515,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				6.0358958244324,
+				4.9507918357849,
+				3.3068332672119,
+				3.626895904541
 			},
 			localization_strings = {
 				"pwh_portals_map_second_clue_01",
@@ -2414,9 +2532,9 @@ return function ()
 		},
 		pwh_portals_the_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2436,6 +2554,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.2565834522247,
+				2.3244376182556,
+				5.6753959655762,
+				4.7082915306091
 			},
 			localization_strings = {
 				"pwh_portals_the_temple_01",
@@ -2447,9 +2571,9 @@ return function ()
 		},
 		pwh_portals_stairs = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2469,6 +2593,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.0337710380554,
+				2.8540415763855,
+				4.7331457138061,
+				6.7638125419617
 			},
 			localization_strings = {
 				"pwh_portals_stairs_01",
@@ -2480,9 +2610,9 @@ return function ()
 		},
 		pwh_portals_temple_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2502,6 +2632,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.0549166202545,
+				4.1531248092651,
+				3.5516874790192,
+				3.0922083854675
 			},
 			localization_strings = {
 				"pwh_portals_temple_event_01",
@@ -2513,9 +2649,9 @@ return function ()
 		},
 		pwh_portals_castle_road = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2535,6 +2671,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.5297918319702,
+				2.3009791374206,
+				3.0650417804718,
+				5.041437625885
 			},
 			localization_strings = {
 				"pwh_portals_pwh_castle_road_01",
@@ -2546,9 +2688,9 @@ return function ()
 		},
 		pwh_portals_crypt_event_blood = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2568,6 +2710,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.7882499694824,
+				5.806104183197,
+				4.6284584999084,
+				5.0682706832886
 			},
 			localization_strings = {
 				"pwh_portals_crypt_event_blood_01",
@@ -2579,9 +2727,9 @@ return function ()
 		},
 		pwh_portals_secret_entrance_gate_opens = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2601,6 +2749,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.8600416183472,
+				5.8020210266113,
+				3.2937500476837,
+				5.1539583206177
 			},
 			localization_strings = {
 				"pwh_portals_secret_entrance_gate_opens_01",
@@ -2612,9 +2766,9 @@ return function ()
 		},
 		pwh_portals_village_raided = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2634,6 +2788,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.4394373893738,
+				4.8667707443237,
+				5.7151250839233,
+				5.1602082252502
 			},
 			localization_strings = {
 				"pwh_portals_village_raided_01",
@@ -2645,9 +2805,9 @@ return function ()
 		},
 		pwh_portals_temple_bell_tower = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2667,6 +2827,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.7105624675751,
+				3.0614583492279,
+				2.211416721344,
+				3.0877499580383
 			},
 			localization_strings = {
 				"pwh_portals_temple_bell_tower_01",
@@ -2678,9 +2844,9 @@ return function ()
 		},
 		pwh_portals_find_survivors = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2700,6 +2866,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.6490000486374,
+				4.2047710418701,
+				2.4162082672119,
+				1.8638750314713
 			},
 			localization_strings = {
 				"pwh_portals_find_survivors_01",
@@ -2711,9 +2883,9 @@ return function ()
 		},
 		pwh_portals_portal_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2733,6 +2905,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8643125295639,
+				3.8443124294281,
+				1.8586666584015,
+				3.2146248817444
 			},
 			localization_strings = {
 				"pwh_portals_portal_event_01",
@@ -2744,9 +2922,9 @@ return function ()
 		},
 		pwh_portals_help_search = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2766,6 +2944,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.3627917766571,
+				3.5397291183472,
+				1.9893333911896,
+				5.0587706565857
 			},
 			localization_strings = {
 				"pwh_portals_help_search_01",
@@ -2777,9 +2961,9 @@ return function ()
 		},
 		pwh_portals_map_first_clue = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2799,6 +2983,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.3425002098083,
+				2.2978959083557,
+				4.4994168281555,
+				5.1663541793823
 			},
 			localization_strings = {
 				"pwh_portals_map_first_clue_01",
@@ -2810,9 +3000,9 @@ return function ()
 		},
 		pwh_portals_memory_path = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2832,6 +3022,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.6110833883286,
+				3.6757707595825,
+				3.8970625400543,
+				5.2832498550415
 			},
 			localization_strings = {
 				"pwh_portals_memory_path_01",
@@ -2843,9 +3039,9 @@ return function ()
 		},
 		pwh_portals_temple_locked = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2866,6 +3062,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.6926040649414,
+				4.1475210189819,
+				2.8832082748413,
+				5.5915832519531
+			},
 			localization_strings = {
 				"pwh_portals_temple_locked_01",
 				"pwh_portals_temple_locked_02",
@@ -2876,9 +3078,9 @@ return function ()
 		},
 		pwh_portals_enter_village = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2898,6 +3100,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.8337917327881,
+				5.4171042442322,
+				4.6564168930054,
+				3.4182291030884
 			},
 			localization_strings = {
 				"pwh_portals_enter_village_01",
@@ -2909,9 +3117,9 @@ return function ()
 		},
 		pwh_portals_memory_portals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2931,6 +3139,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.7711458206177,
+				5.1845002174377,
+				4.3913750648499,
+				6.698145866394
 			},
 			localization_strings = {
 				"pwh_portals_memory_portals_01",
@@ -2942,9 +3156,9 @@ return function ()
 		},
 		pwh_portals_intro_line_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2959,6 +3173,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.4092707633972,
+				[2.0] = 4.6371459960938
+			},
 			localization_strings = {
 				[1.0] = "pwh_portals_intro_line_a_01",
 				[2.0] = "pwh_portals_intro_line_a_02"
@@ -2967,9 +3185,9 @@ return function ()
 		},
 		pwh_portals_castle_gate = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2990,6 +3208,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				5.3241872787476,
+				7.4765000343323,
+				7.2322502136231,
+				6.2392292022705
+			},
 			localization_strings = {
 				"pwh_portals_pwh_castle_gate_01",
 				"pwh_portals_pwh_castle_gate_02",
@@ -3000,9 +3224,9 @@ return function ()
 		},
 		pwh_portals_intro_line_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -3017,6 +3241,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6117291450501,
+				[2.0] = 2.3852083683014
+			},
 			localization_strings = {
 				[1.0] = "pwh_portals_intro_line_b_01",
 				[2.0] = "pwh_portals_intro_line_b_02"
@@ -3025,9 +3253,9 @@ return function ()
 		},
 		pwh_portals_get_to_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -3047,6 +3275,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				7.9653539657593,
+				5.9844789505005,
+				6.409562587738,
+				6.472291469574
 			},
 			localization_strings = {
 				"pwh_portals_get_to_temple_01",

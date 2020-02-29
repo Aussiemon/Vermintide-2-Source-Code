@@ -1046,9 +1046,9 @@ return function ()
 	add_dialogues({
 		pdr_level_mine_lost_cart = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1069,6 +1069,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.1602709293366,
+				2.1444165706634,
+				2.3684375286102,
+				2.0729374885559
+			},
 			localization_strings = {
 				"pdr_level_mine_lost_cart_01",
 				"pdr_level_mine_lost_cart_02",
@@ -1079,9 +1085,9 @@ return function ()
 		},
 		pdr_mine_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1096,6 +1102,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.0870625972748,
+				[2.0] = 3.5054790973663
+			},
 			localization_strings = {
 				[1.0] = "pdr_mine_intro_b_01",
 				[2.0] = "pdr_mine_intro_b_02"
@@ -1104,9 +1114,9 @@ return function ()
 		},
 		pdr_level_mine_troll_food_storage = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1127,6 +1137,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.9016041755676,
+				3.2365624904633,
+				4.2695207595825,
+				3.6899166107178
+			},
 			localization_strings = {
 				"pdr_level_mine_troll_food_storage_01",
 				"pdr_level_mine_troll_food_storage_02",
@@ -1137,9 +1153,9 @@ return function ()
 		},
 		pdr_level_mine_follow_tracks = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1160,6 +1176,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.2157917022705,
+				3.5490624904633,
+				4.4396457672119,
+				3.7969374656677
+			},
 			localization_strings = {
 				"pdr_level_mine_follow_tracks_01",
 				"pdr_level_mine_follow_tracks_02",
@@ -1170,9 +1192,9 @@ return function ()
 		},
 		pdr_level_mine_mine_cart_roll_down_back = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1192,6 +1214,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.1365833282471,
+				1.713250041008,
+				1.8866666555405,
+				1.9516041278839
 			},
 			localization_strings = {
 				"pdr_level_mine_mine_cart_roll_down_back_01",
@@ -1203,9 +1231,9 @@ return function ()
 		},
 		pdr_level_mine_bell_ringing = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1225,6 +1253,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.242645740509,
+				2.9944791793823,
+				2.0544791221619,
+				1.4229583740234
 			},
 			localization_strings = {
 				"pdr_level_mine_bell_ringing_01",
@@ -1236,9 +1270,9 @@ return function ()
 		},
 		pdr_level_mine_mine_cart_push_upwards = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1259,6 +1293,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.6026041507721,
+				1.7503541707993,
+				3.958104133606,
+				3.3438959121704
+			},
 			localization_strings = {
 				"pdr_level_mine_mine_cart_push_upwards_01",
 				"pdr_level_mine_mine_cart_push_upwards_02",
@@ -1269,9 +1309,9 @@ return function ()
 		},
 		pdr_level_mine_darkness = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1291,6 +1331,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				1.9317291975021,
+				4.0772500038147,
+				3.6716876029968,
+				3.1271250247955
 			},
 			localization_strings = {
 				"pdr_level_mine_darkness_01",
@@ -1315,15 +1361,18 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9352707862854
+			},
 			localization_strings = {
 				[1.0] = "pdr_objective_correct_path_bridge_01"
 			}
 		},
 		pdr_level_mine_troll_doors = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1343,6 +1392,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.0621666908264,
+				3.4729166030884,
+				4.5026459693909,
+				3.3411457538605
 			},
 			localization_strings = {
 				"pdr_level_mine_troll_doors_01",
@@ -1354,9 +1409,9 @@ return function ()
 		},
 		pdr_level_mine_mine_cart_drops_away = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1376,6 +1431,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.6631875038147,
+				3.4902083873749,
+				2.9715623855591,
+				2.6189374923706
 			},
 			localization_strings = {
 				"pdr_level_mine_mine_cart_drops_away_01",
@@ -1387,9 +1448,9 @@ return function ()
 		},
 		pdr_mine_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1403,6 +1464,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6116876602173,
+				[2.0] = 5.7574582099915
 			},
 			localization_strings = {
 				[1.0] = "pdr_mine_intro_c_01",
@@ -1412,9 +1477,9 @@ return function ()
 		},
 		pdr_mine_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1429,6 +1494,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.4790835380554,
+				[2.0] = 3.5715625286102
+			},
 			localization_strings = {
 				[1.0] = "pdr_mine_intro_a_01",
 				[2.0] = "pdr_mine_intro_a_02"
@@ -1437,9 +1506,9 @@ return function ()
 		},
 		pdr_level_mine_portal = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1459,6 +1528,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				1.5208333730698,
+				4.4732918739319,
+				3.7136042118073,
+				2.3756875991821
 			},
 			localization_strings = {
 				"pdr_level_mine_portal_01",
@@ -1470,9 +1545,9 @@ return function ()
 		},
 		pdr_level_mine_found_cart_troll_cave = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1493,6 +1568,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.9921040534973,
+				3.532208442688,
+				3.3631250858307,
+				3.2220833301544
+			},
 			localization_strings = {
 				"pdr_level_mine_found_cart_troll_cave_01",
 				"pdr_level_mine_found_cart_troll_cave_02",
@@ -1503,9 +1584,9 @@ return function ()
 		},
 		pdr_level_mine_ladder = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1526,6 +1607,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.8097081184387,
+				1.8506875038147,
+				3.0993332862854,
+				3.3432083129883
+			},
 			localization_strings = {
 				"pdr_level_mine_ladder_01",
 				"pdr_level_mine_ladder_02",
@@ -1536,9 +1623,9 @@ return function ()
 		},
 		pdr_level_mine_mine_cart_roll_down_forward = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1559,6 +1646,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.4181249141693,
+				1.8259375095367,
+				2.0453541278839,
+				4.2781457901001
+			},
 			localization_strings = {
 				"pdr_level_mine_mine_cart_roll_down_forward_01",
 				"pdr_level_mine_mine_cart_roll_down_forward_02",
@@ -1569,9 +1662,9 @@ return function ()
 		},
 		pdr_level_mine_mine_cart_remind = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1592,6 +1685,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.0988750457764,
+				2.9305832386017,
+				3.3357291221619,
+				2.1337292194366
+			},
 			localization_strings = {
 				"pdr_level_mine_mine_cart_remind_01",
 				"pdr_level_mine_mine_cart_remind_02",
@@ -1602,9 +1701,9 @@ return function ()
 		},
 		pdr_level_mine_warren = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1624,6 +1723,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.8159999847412,
+				5.2782082557678,
+				4.0168333053589,
+				4.3377289772034
 			},
 			localization_strings = {
 				"pdr_level_mine_warren_01",
@@ -1635,9 +1740,9 @@ return function ()
 		},
 		pdr_level_mine_find_explosives = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1657,6 +1762,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.7934167385101,
+				2.6813542842865,
+				2.4442708492279,
+				2.8680832386017
 			},
 			localization_strings = {
 				"pdr_level_mine_find_explosives_01",
@@ -1668,9 +1779,9 @@ return function ()
 		},
 		pdr_level_mine_mine_cart = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1691,6 +1802,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.1450417041779,
+				3.8961250782013,
+				2.4312915802002,
+				2.4114582538605
+			},
 			localization_strings = {
 				"pdr_level_mine_mine_cart_01",
 				"pdr_level_mine_mine_cart_02",
@@ -1701,9 +1818,9 @@ return function ()
 		},
 		pdr_level_mine_big_troll_cave = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1724,6 +1841,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				3.1014165878296,
+				5.819375038147,
+				3.2796041965485,
+				3.2574999332428
+			},
 			localization_strings = {
 				"pdr_level_mine_big_troll_cave_01",
 				"pdr_level_mine_big_troll_cave_02",
@@ -1734,9 +1857,9 @@ return function ()
 		},
 		pdr_level_mine_shoddy = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1757,6 +1880,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.615749835968,
+				8.4274997711182,
+				4.0286459922791,
+				5.2257289886475
+			},
 			localization_strings = {
 				"pdr_level_mine_shoddy_01",
 				"pdr_level_mine_shoddy_02",
@@ -1767,9 +1896,9 @@ return function ()
 		},
 		pdr_level_mine_impressive_cave = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_mines",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1789,6 +1918,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.2397084236145,
+				4.8200831413269,
+				5.5991668701172,
+				3.295937538147
 			},
 			localization_strings = {
 				"pdr_level_mine_impressive_cave_01",

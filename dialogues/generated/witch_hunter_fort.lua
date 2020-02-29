@@ -958,9 +958,9 @@ return function ()
 	add_dialogues({
 		pwh_fort_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -974,6 +974,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0910415649414,
+				[2.0] = 3.0151040554047
 			},
 			localization_strings = {
 				[1.0] = "pwh_fort_intro_c_01",
@@ -983,9 +987,9 @@ return function ()
 		},
 		pwh_level_fort_cross_here = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1000,6 +1004,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6317708492279,
+				[2.0] = 3.9215834140778
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_cross_here_01",
 				[2.0] = "pwh_level_fort_cross_here_02"
@@ -1008,9 +1016,9 @@ return function ()
 		},
 		pwh_fort_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1025,6 +1033,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0226664543152,
+				[2.0] = 3.6728541851044
+			},
 			localization_strings = {
 				[1.0] = "pwh_fort_intro_a_01",
 				[2.0] = "pwh_fort_intro_a_02"
@@ -1033,9 +1045,9 @@ return function ()
 		},
 		pwh_level_fort_river = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1049,6 +1061,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4788541793823,
+				[2.0] = 3.4685626029968
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_river_01",
@@ -1058,9 +1074,9 @@ return function ()
 		},
 		pwh_level_fort_fire_cannon_first_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1075,6 +1091,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 6.9782710075378,
+				[2.0] = 4.97891664505
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_fire_cannon_first_hit_01",
 				[2.0] = "pwh_level_fort_fire_cannon_first_hit_02"
@@ -1083,9 +1103,9 @@ return function ()
 		},
 		pwh_level_fort_under_attack = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1103,6 +1123,11 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				5.583104133606,
+				4.9067707061768,
+				3.4567
+			},
 			localization_strings = {
 				"pwh_level_fort_under_attack_01",
 				"pwh_level_fort_under_attack_02",
@@ -1112,9 +1137,9 @@ return function ()
 		},
 		pwh_level_fort_skaven_everywhere = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1128,6 +1153,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8615832328796,
+				[2.0] = 7.0202498435974
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_skaven_everywhere_01",
@@ -1137,9 +1166,9 @@ return function ()
 		},
 		pwh_level_fort_gate_fallen = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1153,6 +1182,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7230832576752,
+				[2.0] = 3.4166457653046
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_gate_fallen_01",
@@ -1162,9 +1195,9 @@ return function ()
 		},
 		pwh_level_fort_cannonballs = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1179,6 +1212,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 2.9701249599457,
+				[2.0] = 4.8348541259766
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_cannonballs_01",
 				[2.0] = "pwh_level_fort_cannonballs_02"
@@ -1187,9 +1224,9 @@ return function ()
 		},
 		pwh_fort_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1204,6 +1241,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.8164166212082,
+				[2.0] = 3.7455208301544
+			},
 			localization_strings = {
 				[1.0] = "pwh_fort_intro_b_01",
 				[2.0] = "pwh_fort_intro_b_02"
@@ -1212,9 +1253,9 @@ return function ()
 		},
 		pwh_level_fort_fire_cannon_second = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1228,6 +1269,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6289374828339,
+				[2.0] = 4.2535624504089
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_fire_cannon_second_01",
@@ -1237,9 +1282,9 @@ return function ()
 		},
 		pwh_level_fort_fire_cannon_final_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1253,6 +1298,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 7.6265830993652,
+				[2.0] = 5.8437914848328
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_fire_cannon_final_hit_01",
@@ -1262,9 +1311,9 @@ return function ()
 		},
 		pwh_level_fort_cannons_silenced = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1278,6 +1327,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6929168701172,
+				[2.0] = 2.6141457557678
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_cannons_silenced_01",
@@ -1287,9 +1340,9 @@ return function ()
 		},
 		pwh_level_fort_fire_cannon_second_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1303,6 +1356,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9750623703003,
+				[2.0] = 4.7232084274292
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_fire_cannon_second_hit_01",
@@ -1312,9 +1369,9 @@ return function ()
 		},
 		pwh_level_fort_plague_claw_shelling_move = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1328,6 +1385,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7643122673035,
+				[2.0] = 4.915979385376
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_plague_claw_shelling_move_01",
@@ -1337,9 +1398,9 @@ return function ()
 		},
 		pwh_level_fort_skaven_run = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1353,6 +1414,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6016664505005,
+				[2.0] = 7.0480208396912
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_skaven_run_01",
@@ -1362,9 +1427,9 @@ return function ()
 		},
 		pwh_level_fort_fire_cannon_final_fire = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1378,6 +1443,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6393957138061,
+				[2.0] = 5.3575415611267
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_fire_cannon_final_fire_01",
@@ -1387,9 +1456,9 @@ return function ()
 		},
 		pwh_level_fort_getting_closer = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1403,6 +1472,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8493750095367,
+				[2.0] = 2.1060416698456
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_getting_closer_01",
@@ -1412,9 +1485,9 @@ return function ()
 		},
 		pwh_level_fort_fire_cannon_fuse_is_lit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1428,6 +1501,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0002083778381,
+				[2.0] = 1.1738333702087
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_fire_cannon_fuse_is_lit_01",
@@ -1437,9 +1514,9 @@ return function ()
 		},
 		pwh_level_fort_fire_cannon_first = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1453,6 +1530,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4580206871033,
+				[2.0] = 5.0050001144409
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_fire_cannon_first_01",
@@ -1462,9 +1543,9 @@ return function ()
 		},
 		pwh_level_fort_use_cannons = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1479,6 +1560,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 7.273937702179,
+				[2.0] = 7.5773749351502
+			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_use_cannons_01",
 				[2.0] = "pwh_level_fort_use_cannons_02"
@@ -1487,9 +1572,9 @@ return function ()
 		},
 		pwh_level_fort_plague_claw_shelling = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "witch_hunter_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1503,6 +1588,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7327916622162,
+				[2.0] = 4.760187625885
 			},
 			localization_strings = {
 				[1.0] = "pwh_level_fort_plague_claw_shelling_alert_01",

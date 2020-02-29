@@ -1138,9 +1138,9 @@ return function ()
 	add_dialogues({
 		pes_level_catacombs_mausoleum_entrance = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1161,6 +1161,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.5159375667572,
+				3.8536667823791,
+				2.7899374961853,
+				3.9005625247955
+			},
 			localization_strings = {
 				"pes_level_catacombs_mausoleum_entrance_01",
 				"pes_level_catacombs_mausoleum_entrance_02",
@@ -1171,9 +1177,9 @@ return function ()
 		},
 		pes_level_catacombs_switch_instructions = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1194,6 +1200,12 @@ return function ()
 				"face_contempt",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.9294791221619,
+				2.2333750724792,
+				1.9984999895096,
+				3.5574791431427
+			},
 			localization_strings = {
 				"pes_level_catacombs_switch_instructions_01",
 				"pes_level_catacombs_switch_instructions_02",
@@ -1204,9 +1216,9 @@ return function ()
 		},
 		pes_level_catacombs_spot_ritual = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1226,6 +1238,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				1.3058333396912,
+				2.5131249427795,
+				2.6692917346954,
+				3.6512498855591
 			},
 			localization_strings = {
 				"pes_level_catacombs_spot_ritual_01",
@@ -1237,9 +1255,9 @@ return function ()
 		},
 		pes_level_catacombs_healing_ward = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1259,6 +1277,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.9525208473206,
+				3.1441874504089,
+				2.4224998950958,
+				2.0440626144409
 			},
 			localization_strings = {
 				"pes_level_catacombs_healing_ward_01",
@@ -1270,9 +1294,9 @@ return function ()
 		},
 		pes_level_catacombs_sewers_nurglefication_light = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1292,6 +1316,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.7312500476837,
+				3.6766042709351,
+				3.634229183197,
+				5.4353957176208
 			},
 			localization_strings = {
 				"pes_level_catacombs_sewers_nurglefication_light_01",
@@ -1303,9 +1333,9 @@ return function ()
 		},
 		pes_level_catacombs_ritual_disrupted_ritual = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1325,6 +1355,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				0.86764585971832,
+				1.8726667165756,
+				2.3579165935516,
+				2.4378333091736
 			},
 			localization_strings = {
 				"pes_level_catacombs_ritual_disrupted_ritual_01",
@@ -1336,9 +1372,9 @@ return function ()
 		},
 		pes_level_catacombs_nurgle_water = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1358,6 +1394,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.947562456131,
+				2.3215625286102,
+				3.0126249790192,
+				4.374499797821
 			},
 			localization_strings = {
 				"pes_level_catacombs_nurgle_water_01",
@@ -1369,9 +1411,9 @@ return function ()
 		},
 		pes_level_catacombs_correct_switch = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1392,6 +1434,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.1221458911896,
+				2.5607500076294,
+				1.996270775795,
+				3.5527291297913
+			},
 			localization_strings = {
 				"pes_level_catacombs_correct_switch_01",
 				"pes_level_catacombs_correct_switch_02",
@@ -1402,9 +1450,9 @@ return function ()
 		},
 		pes_level_catacombs_confinement_cells = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1425,6 +1473,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.1204373836517,
+				3.3368332386017,
+				2.9240207672119,
+				3.2964792251587
+			},
 			localization_strings = {
 				"pes_level_catacombs_confinement_cells_01",
 				"pes_level_catacombs_confinement_cells_02",
@@ -1435,9 +1489,9 @@ return function ()
 		},
 		pes_catacombs_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1452,6 +1506,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.8798542022705,
+				[2.0] = 3.2321875095367
+			},
 			localization_strings = {
 				[1.0] = "pes_catacombs_intro_c_01",
 				[2.0] = "pes_catacombs_intro_c_02"
@@ -1460,9 +1518,9 @@ return function ()
 		},
 		pes_level_catacombs_ritual_exit_through_portal = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1482,6 +1540,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.0393750667572,
+				1.1031458377838,
+				2.7058959007263,
+				3.7530832290649
 			},
 			localization_strings = {
 				"pes_level_catacombs_ritual_exit_through_portal_01",
@@ -1493,9 +1557,9 @@ return function ()
 		},
 		pes_level_catacombs_sewers_nurglefication_heavy = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1515,6 +1579,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				5.6138124465942,
+				5.5597915649414,
+				4.47891664505,
+				4.2625832557678
 			},
 			localization_strings = {
 				"pes_level_catacombs_sewers_nurglefication_heavy_01",
@@ -1526,9 +1596,9 @@ return function ()
 		},
 		pes_level_catacombs_jump_into_intestine_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1549,6 +1619,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				5.9116458892822,
+				4.9782710075378,
+				3.9168334007263,
+				2.3461458683014
+			},
 			localization_strings = {
 				"pes_level_catacombs_jump_into_intestine_hole_01",
 				"pes_level_catacombs_jump_into_intestine_hole_02",
@@ -1559,9 +1635,9 @@ return function ()
 		},
 		pes_level_catacombs_sewers = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1582,6 +1658,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				5.6850833892822,
+				4.5586252212524,
+				4.8475832939148,
+				2.8292708396912
+			},
 			localization_strings = {
 				"pes_level_catacombs_sewers_01",
 				"pes_level_catacombs_sewers_02",
@@ -1592,9 +1674,9 @@ return function ()
 		},
 		pes_level_catacombs_one_sorcerer_dead = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1614,6 +1696,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.5041666030884,
+				3.8010001182556,
+				4.9617290496826,
+				2.8433125019074
 			},
 			localization_strings = {
 				"pes_level_catacombs_one_sorcerer_dead_01",
@@ -1625,9 +1713,9 @@ return function ()
 		},
 		pes_level_catacombs_cultist_door = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1647,6 +1735,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.3284165859222,
+				2.601104259491,
+				2.0619375705719,
+				1.6844791173935
 			},
 			localization_strings = {
 				"pes_level_catacombs_cultist_door_01",
@@ -1658,9 +1752,9 @@ return function ()
 		},
 		pes_level_catacombs_slime_trail = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1680,6 +1774,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.0817708969116,
+				3.3615832328796,
+				2.0671458244324,
+				2.1222915649414
 			},
 			localization_strings = {
 				"pes_level_catacombs_slime_trail_01",
@@ -1691,9 +1791,9 @@ return function ()
 		},
 		pes_level_catacombs_hear_chanting = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1713,6 +1813,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.9375834465027,
+				2.5219166278839,
+				4.305145740509,
+				2.3561458587647
 			},
 			localization_strings = {
 				"pes_level_catacombs_hear_chanting_01",
@@ -1724,9 +1830,9 @@ return function ()
 		},
 		pes_level_catacombs_two_sorcerer_dead = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1746,6 +1852,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				1.9347916841507,
+				3.9619584083557,
+				2.1992082595825,
+				4.8529376983643
 			},
 			localization_strings = {
 				"pes_level_catacombs_two_sorcerer_dead_01",
@@ -1757,9 +1869,9 @@ return function ()
 		},
 		pes_catacombs_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1774,6 +1886,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.4507708549499,
+				[2.0] = 4.3256669044495
+			},
 			localization_strings = {
 				[1.0] = "pes_catacombs_intro_a_01",
 				[2.0] = "pes_catacombs_intro_a_02"
@@ -1782,9 +1898,9 @@ return function ()
 		},
 		pes_level_catacombs_sabotage_ritual = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1805,6 +1921,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.9338126182556,
+				4.092333316803,
+				5.2430210113525,
+				3.2695832252502
+			},
 			localization_strings = {
 				"pes_level_catacombs_sabotage_ritual_01",
 				"pes_level_catacombs_sabotage_ritual_02",
@@ -1815,9 +1937,9 @@ return function ()
 		},
 		pes_catacombs_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1832,6 +1954,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.5238332748413,
+				[2.0] = 2.6032917499542
+			},
 			localization_strings = {
 				[1.0] = "pes_catacombs_intro_b_01",
 				[2.0] = "pes_catacombs_intro_b_02"
@@ -1840,9 +1966,9 @@ return function ()
 		},
 		pes_level_catacombs_apothercary_room = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1863,6 +1989,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.2629165649414,
+				2.235208272934,
+				3.3191874027252,
+				2.4773333072662
+			},
 			localization_strings = {
 				"pes_level_catacombs_apothercary_room_01",
 				"pes_level_catacombs_apothercary_room_02",
@@ -1873,9 +2005,9 @@ return function ()
 		},
 		pes_level_catacombs_way_is_clear = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1896,6 +2028,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.1013958454132,
+				1.3999999761581,
+				2.1642291545868,
+				1.5562083721161
+			},
 			localization_strings = {
 				"pes_level_catacombs_way_is_clear_01",
 				"pes_level_catacombs_way_is_clear_02",
@@ -1906,9 +2044,9 @@ return function ()
 		},
 		pes_level_catacombs_whoa_wrong_switch = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_catacombs",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1928,6 +2066,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.1084792613983,
+				2.0731041431427,
+				1.3982499837875,
+				2.9395415782928
 			},
 			localization_strings = {
 				"pes_level_catacombs_whoa_wrong_switch_01",

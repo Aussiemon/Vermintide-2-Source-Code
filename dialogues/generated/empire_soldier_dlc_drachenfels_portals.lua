@@ -1762,9 +1762,9 @@ return function ()
 	add_dialogues({
 		pes_portals_castle_gate = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1784,6 +1784,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.6137917041779,
+				2.9426457881927,
+				2.7608957290649,
+				2.1520416736603
 			},
 			localization_strings = {
 				"pes_portals_pes_castle_gate_01",
@@ -1795,9 +1801,9 @@ return function ()
 		},
 		pes_portals_portal_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1817,6 +1823,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.3688541650772,
+				2.7437083721161,
+				1.8569999933243,
+				2.3892500400543
 			},
 			localization_strings = {
 				"pes_portals_portal_event_01",
@@ -1828,9 +1840,9 @@ return function ()
 		},
 		pes_portals_portal_interact_two = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1850,6 +1862,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.6765625476837,
+				2.0279166698456,
+				2.6119792461395,
+				1.836833357811
 			},
 			localization_strings = {
 				"pes_portals_portal_interact_two_01",
@@ -1861,9 +1879,9 @@ return function ()
 		},
 		pes_portals_temple_locked = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1883,6 +1901,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.842333316803,
+				2.1356875896454,
+				1.5652916431427,
+				3.2523541450501
 			},
 			localization_strings = {
 				"pes_portals_temple_locked_01",
@@ -1894,9 +1918,9 @@ return function ()
 		},
 		pes_portals_castle_road = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1916,6 +1940,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.3881249427795,
+				2.7681250572205,
+				1.7300833463669,
+				3.7454166412353
 			},
 			localization_strings = {
 				"pes_portals_pes_castle_road_01",
@@ -1927,9 +1957,9 @@ return function ()
 		},
 		pes_portals_memory_portals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1949,6 +1979,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.411229133606,
+				1.8528125286102,
+				4.0036873817444,
+				3.2008125782013
 			},
 			localization_strings = {
 				"pes_portals_memory_portals_01",
@@ -1960,9 +1996,9 @@ return function ()
 		},
 		pes_portals_pes_castle_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1982,6 +2018,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.6535835266113,
+				3.8447291851044,
+				4.3029584884644,
+				5.2277083396912
 			},
 			localization_strings = {
 				"pes_portals_pes_castle_vista_01",
@@ -1993,9 +2035,9 @@ return function ()
 		},
 		pes_portals_find_map = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2015,6 +2057,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8250833749771,
+				1.603354215622,
+				2.1428542137146,
+				2.318437576294
 			},
 			localization_strings = {
 				"pes_portals_find_map_01",
@@ -2026,9 +2074,9 @@ return function ()
 		},
 		pes_portals_map_second_clue = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2048,6 +2096,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.1353960037231,
+				3.9464166164398,
+				2.7651875019074,
+				4.601083278656
 			},
 			localization_strings = {
 				"pes_portals_map_second_clue_01",
@@ -2059,9 +2113,9 @@ return function ()
 		},
 		pes_portals_secret_entrance_gate_opens = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2081,6 +2135,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.583166718483,
+				2.7942500114441,
+				4.7796459197998,
+				3.3185000419617
 			},
 			localization_strings = {
 				"pes_portals_secret_entrance_gate_opens_01",
@@ -2092,9 +2152,9 @@ return function ()
 		},
 		pes_portals_temple_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2114,6 +2174,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.2543749809265,
+				1.5116457939148,
+				1.2841458320618,
+				2.0676457881927
 			},
 			localization_strings = {
 				"pes_portals_temple_event_01",
@@ -2125,9 +2191,9 @@ return function ()
 		},
 		pes_portals_waystone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2147,6 +2213,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.7353541851044,
+				3.4910209178925,
+				3.6686041355133,
+				4.264187335968
 			},
 			localization_strings = {
 				"pes_portals_waystone_01",
@@ -2158,9 +2230,9 @@ return function ()
 		},
 		["pes_portals_trail_found "] = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2180,6 +2252,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.7084791660309,
+				5.9158749580383,
+				3.1068124771118,
+				2.4146459102631
 			},
 			localization_strings = {
 				"pes_portals_trail_found_01",
@@ -2191,9 +2269,9 @@ return function ()
 		},
 		pes_portals_portal_interact_three = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2213,6 +2291,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0226666927338,
+				3.3077082633972,
+				2.8097083568573,
+				2.8186249732971
 			},
 			localization_strings = {
 				"pes_portals_portal_interact_three_01",
@@ -2224,9 +2308,9 @@ return function ()
 		},
 		pes_portals_help_search = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2246,6 +2330,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8278958797455,
+				1.5694999694824,
+				3.0624165534973,
+				4.2185206413269
 			},
 			localization_strings = {
 				"pes_portals_help_search_01",
@@ -2257,9 +2347,9 @@ return function ()
 		},
 		pes_portals_raid_trace = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2279,6 +2369,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.0231666564941,
+				3.0630624294281,
+				3.5234167575836,
+				5.0485625267029
 			},
 			localization_strings = {
 				"pes_portals_raid_trace_01",
@@ -2290,9 +2386,9 @@ return function ()
 		},
 		pes_portals_get_to_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2312,6 +2408,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.5826458930969,
+				3.2547500133514,
+				4.2058334350586,
+				2.7102084159851
 			},
 			localization_strings = {
 				"pes_portals_get_to_temple_01",
@@ -2323,9 +2425,9 @@ return function ()
 		},
 		pes_portals_crypt_event_hole = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2345,6 +2447,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.5861041545868,
+				1.2460625171661,
+				1.228875041008,
+				2.0278959274292
 			},
 			localization_strings = {
 				"pes_portals_crypt_event_hole_01",
@@ -2356,9 +2464,9 @@ return function ()
 		},
 		pes_portals_kidnapped_traces = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2378,6 +2486,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.6063125133514,
+				3.1078958511352,
+				5.2538747787476,
+				6.0233750343323
 			},
 			localization_strings = {
 				"pes_portals_kidnapped_traces_01",
@@ -2389,9 +2503,9 @@ return function ()
 		},
 		pes_portals_event_missing_gargoyle_heads = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2411,6 +2525,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.6597707271576,
+				1.8550208806992,
+				6.775333404541,
+				2.3813540935516
 			},
 			localization_strings = {
 				"pes_portals_event_missing_gargoyle_heads_01",
@@ -2422,9 +2542,9 @@ return function ()
 		},
 		pes_portals_find_survivors = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2444,6 +2564,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.1026250123978,
+				1.1799792051315,
+				2.369916677475,
+				1.1166249513626
 			},
 			localization_strings = {
 				"pes_portals_find_survivors_01",
@@ -2455,9 +2581,9 @@ return function ()
 		},
 		pes_portals_stairs = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2477,6 +2603,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				5.0141458511353,
+				4.519166469574,
+				5.2022085189819,
+				1.946624994278
 			},
 			localization_strings = {
 				"pes_portals_stairs_01",
@@ -2488,9 +2620,9 @@ return function ()
 		},
 		pes_portals_crypt_event_blood = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2510,6 +2642,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.3939790725708,
+				2.8158957958221,
+				1.8687916994095,
+				4.0618543624878
 			},
 			localization_strings = {
 				"pes_portals_crypt_event_blood_01",
@@ -2521,9 +2659,9 @@ return function ()
 		},
 		pes_portals_crypt_event_entering_crypt = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2543,6 +2681,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.5039167404175,
+				2.1358957290649,
+				2.2382917404175,
+				3.1650624275208
 			},
 			localization_strings = {
 				"pes_portals_crypt_event_entering_crypt_01",
@@ -2554,9 +2698,9 @@ return function ()
 		},
 		pes_portals_get_out = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2576,6 +2720,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.321624994278,
+				1.8895208835602,
+				1.5863332748413,
+				3.4001042842865
 			},
 			localization_strings = {
 				"pes_portals_get_out_01",
@@ -2587,9 +2737,9 @@ return function ()
 		},
 		pes_portals_the_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2609,6 +2759,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.2401875257492,
+				1.2502083778381,
+				1.0421249866486,
+				1.8466249704361
 			},
 			localization_strings = {
 				"pes_portals_the_temple_01",
@@ -2620,9 +2776,9 @@ return function ()
 		},
 		pes_portals_intro_line_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2637,6 +2793,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9582290649414,
+				[2.0] = 4.9979581832886
+			},
 			localization_strings = {
 				[1.0] = "pes_portals_intro_line_c_01",
 				[2.0] = "pes_portals_intro_line_c_02"
@@ -2645,9 +2805,9 @@ return function ()
 		},
 		pes_portals_enter_village = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2667,6 +2827,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8130208253861,
+				2.8776249885559,
+				5.0993123054504,
+				2.5949165821075
 			},
 			localization_strings = {
 				"pes_portals_enter_village_01",
@@ -2678,9 +2844,9 @@ return function ()
 		},
 		pes_portals_the_map = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2700,6 +2866,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.0474791526794,
+				2.3488125801086,
+				4.2508335113525,
+				2.8848125934601
 			},
 			localization_strings = {
 				"pes_portals_the_map_01",
@@ -2711,9 +2883,9 @@ return function ()
 		},
 		pes_portals_village_raided = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2733,6 +2905,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.4010000228882,
+				2.6698958873749,
+				2.1918542385101,
+				5.0015416145325
 			},
 			localization_strings = {
 				"pes_portals_village_raided_01",
@@ -2744,9 +2922,9 @@ return function ()
 		},
 		pes_portals_portal_interact_one = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2766,6 +2944,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.8357917070389,
+				1.7487083673477,
+				0.94720834493637,
+				1.2812708616257
 			},
 			localization_strings = {
 				"pes_portals_portal_interact_one_01",
@@ -2777,9 +2961,9 @@ return function ()
 		},
 		pes_portals_intro_line_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2794,6 +2978,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.3200623989105,
+				[2.0] = 3.8559792041779
+			},
 			localization_strings = {
 				[1.0] = "pes_portals_intro_line_a_01",
 				[2.0] = "pes_portals_intro_line_a_02"
@@ -2802,9 +2990,9 @@ return function ()
 		},
 		pes_portals_temple_bell_tower = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2824,6 +3012,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.1938749551773,
+				1.5760416984558,
+				1.8139375448227,
+				1.7616250514984
 			},
 			localization_strings = {
 				"pes_portals_temple_bell_tower_01",
@@ -2835,9 +3029,9 @@ return function ()
 		},
 		pes_portals_map_first_clue = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2858,6 +3052,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.3164167404175,
+				2.7548959255219,
+				2.7600417137146,
+				4.1272706985474
+			},
 			localization_strings = {
 				"pes_portals_map_first_clue_01",
 				"pes_portals_map_first_clue_02",
@@ -2868,9 +3068,9 @@ return function ()
 		},
 		pes_portals_crypt_exit = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2890,6 +3090,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				4.5378332138061,
+				2.3399167060852,
+				4.7101039886475,
+				3.9469375610352
 			},
 			localization_strings = {
 				"pes_portals_crypt_exit_01",
@@ -2901,9 +3107,9 @@ return function ()
 		},
 		pes_portals_objective_recap = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2924,6 +3130,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.2065417766571,
+				3.6052083969116,
+				3.4822707176209,
+				4.3544583320618
+			},
 			localization_strings = {
 				"pes_portals_objective_recap_01",
 				"pes_portals_objective_recap_02",
@@ -2934,9 +3146,9 @@ return function ()
 		},
 		pes_portals_intro_line_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -2951,6 +3163,10 @@ return function ()
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 2.8004999160767,
+				[2.0] = 1.7994999885559
+			},
 			localization_strings = {
 				[1.0] = "pes_portals_intro_line_b_01",
 				[2.0] = "pes_portals_intro_line_b_02"
@@ -2959,9 +3175,9 @@ return function ()
 		},
 		pes_portals_memory_path = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2981,6 +3197,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.3348333835602,
+				2.0351667404175,
+				3.3875207901001,
+				1.3869792222977
 			},
 			localization_strings = {
 				"pes_portals_memory_path_01",
@@ -2992,9 +3214,9 @@ return function ()
 		},
 		pes_portals_everyone_gone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -3015,6 +3237,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.3850002288818,
+				3.3027708530426,
+				4.0303335189819,
+				1.8933124542236
+			},
 			localization_strings = {
 				"pes_portals_everyone_gone_01",
 				"pes_portals_everyone_gone_02",
@@ -3025,9 +3253,9 @@ return function ()
 		},
 		pes_portals_follow_trail = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_dlc_drachenfels_portals",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -3047,6 +3275,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				1.3613333702087,
+				1.4367500543594,
+				1.8642708063126,
+				3.4308333396912
 			},
 			localization_strings = {
 				"pes_portals_follow_trail_01",

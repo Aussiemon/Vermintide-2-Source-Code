@@ -1232,9 +1232,9 @@ return function ()
 	add_dialogues({
 		pbw_level_helmgart_military_turn_cannon = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1254,6 +1254,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.913583278656,
+				4.4962291717529,
+				5.6284165382385,
+				4.2127709388733
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_turn_cannon_01",
@@ -1265,9 +1271,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_oops = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1287,6 +1293,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.7087082862854,
+				2.3971667289734,
+				4.7198543548584,
+				5.0475206375122
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_oops_01",
@@ -1298,9 +1310,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_fort_massacre = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1320,6 +1332,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				6.2155418395996,
+				3.5603125095367,
+				2.0381667613983,
+				4.7340207099915
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_fort_massacre_01",
@@ -1331,9 +1349,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_halfway_through_horde = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1353,6 +1371,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.0733749866486,
+				2.6832292079926,
+				2.2461042404175,
+				1.8004583120346
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_halfway_through_horde_01",
@@ -1364,9 +1388,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_ring_bell = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1386,6 +1410,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.3669376373291,
+				4.2549166679382,
+				1.5568749904633,
+				1.9238125085831
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_ring_bell_01",
@@ -1397,9 +1427,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_pilgrim_path = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1419,6 +1449,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.5292708873749,
+				4.9750623703003,
+				4.5577502250671,
+				2.907562494278
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_pilgrim_path_01",
@@ -1430,9 +1466,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_locked_portcullis = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1452,6 +1488,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.3462916612625,
+				3.0526041984558,
+				3.1770625114441,
+				4.1369376182556
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_locked_portcullis_01",
@@ -1463,9 +1505,9 @@ return function ()
 		},
 		pbw_helmgart_military_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1479,6 +1521,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6246042251587,
+				[2.0] = 5.397979259491
 			},
 			localization_strings = {
 				[1.0] = "pbw_helmgart_military_intro_b_01",
@@ -1488,9 +1534,9 @@ return function ()
 		},
 		pbw_helmgart_military_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1505,6 +1551,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9878749847412,
+				[2.0] = 3.292249917984
+			},
 			localization_strings = {
 				[1.0] = "pbw_helmgart_military_intro_a_01",
 				[2.0] = "pbw_helmgart_military_intro_a_02"
@@ -1513,9 +1563,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_axebite_pass_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1535,6 +1585,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.1762292385101,
+				5.1249165534973,
+				3.625958442688,
+				3.4755833148956
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_axebite_pass_vista_01",
@@ -1546,9 +1602,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_empty_town = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1568,6 +1624,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.8374166488648,
+				3.5300834178925,
+				4.3595623970032,
+				3.7443749904633
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_empty_town_01",
@@ -1579,9 +1641,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_spotting_portal = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1601,6 +1663,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.0724582672119,
+				2.7111041545868,
+				2.1253125667572,
+				4.3716249465942
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_spotting_portal_01",
@@ -1612,9 +1680,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_time_to_leave = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1634,6 +1702,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.0721039772034,
+				7.0354166030884,
+				1.9849582910538,
+				2.0610415935516
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_time_to_leave_01",
@@ -1645,9 +1719,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_armoury = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1667,6 +1741,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.8860833644867,
+				2.3318333625794,
+				2.6092708110809,
+				4.156750202179
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_armoury_01",
@@ -1678,9 +1758,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_door_opens = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1700,6 +1780,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.6056250333786,
+				1.4767291545868,
+				2.5077290534973,
+				3.2498126029968
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_door_opens_01",
@@ -1711,9 +1797,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_arriving_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1733,6 +1819,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.6715624332428,
+				3.4553124904633,
+				5.7298331260681,
+				3.5028958320618
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_arriving_temple_01",
@@ -1744,9 +1836,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_fort_entrance = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1766,6 +1858,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.8367500305176,
+				1.7638958692551,
+				4.8534164428711,
+				1.8301041126251
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_fort_entrance_01",
@@ -1777,9 +1875,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_spooky_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1799,6 +1897,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.5559165477753,
+				2.1598124504089,
+				4.3862290382385,
+				4.5402708053589
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_spooky_temple_01",
@@ -1810,9 +1914,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_they_are_coming = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1833,6 +1937,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.3129374980927,
+				2.6273748874664,
+				1.5969582796097,
+				4.8536667823792
+			},
 			localization_strings = {
 				"pbw_level_helmgart_military_they_are_coming_01",
 				"pbw_level_helmgart_military_they_are_coming_02",
@@ -1843,9 +1953,9 @@ return function ()
 		},
 		pbw_helmgart_military_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1860,6 +1970,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 5.7244377136231,
+				[2.0] = 3.167729139328
+			},
 			localization_strings = {
 				[1.0] = "pbw_helmgart_military_intro_c_01",
 				[2.0] = "pbw_helmgart_military_intro_c_02"
@@ -1868,9 +1982,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_temple_ahead = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1890,6 +2004,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.2029790878296,
+				4.7494792938232,
+				2.4829790592194,
+				4.0898957252502
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_temple_ahead_01",
@@ -1901,9 +2021,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_fort_elevator = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1923,6 +2043,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.0504999160767,
+				3.1458542346954,
+				1.6488749980927,
+				2.0196249485016
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_fort_elevator_01",
@@ -1934,9 +2060,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_fire_cannon = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1956,6 +2082,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				3.3581042289734,
+				1.5076458454132,
+				3.2410209178925,
+				3.3165833950043
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_fire_cannon_01",
@@ -1967,9 +2099,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_fort_help = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1989,6 +2121,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.7704374790192,
+				3.9541041851044,
+				4.4891457557678,
+				3.625833272934
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_fort_help_01",
@@ -2000,9 +2138,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_helmgart_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2022,6 +2160,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.8054165840149,
+				3.4456250667572,
+				3.4645209312439,
+				8.211874961853
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_helmgart_vista_01",
@@ -2033,9 +2177,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_courtyard_event = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2056,6 +2200,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				3.4025416374206,
+				2.5677917003632,
+				2.2261874675751,
+				5.051146030426
+			},
 			localization_strings = {
 				"pbw_level_helmgart_military_courtyard_event_01",
 				"pbw_level_helmgart_military_courtyard_event_02",
@@ -2066,9 +2216,9 @@ return function ()
 		},
 		pbw_level_helmgart_military_prepare = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_military",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -2088,6 +2238,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				1.6390416622162,
+				4.6281666755676,
+				1.8805416822434,
+				4.3815832138061
 			},
 			localization_strings = {
 				"pbw_level_helmgart_military_prepare_01",

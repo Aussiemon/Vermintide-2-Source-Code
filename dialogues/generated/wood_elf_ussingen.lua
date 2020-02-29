@@ -926,9 +926,9 @@ return function ()
 	add_dialogues({
 		pwe_level_ussingen_way_through = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -949,6 +949,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.5867917537689,
+				4.397958278656,
+				3.3800001144409,
+				2.8688333034515
+			},
 			localization_strings = {
 				"pwe_level_ussingen_way_through_01",
 				"pwe_level_ussingen_way_through_02",
@@ -959,9 +965,9 @@ return function ()
 		},
 		pwe_level_ussingen_search_for_manor = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -979,6 +985,11 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.147958278656,
+				3.8641457557678,
+				3.6222083568573
+			},
 			localization_strings = {
 				"pwe_level_ussingen_search_for_manor_01",
 				"pwe_level_ussingen_search_for_manor_02",
@@ -988,9 +999,9 @@ return function ()
 		},
 		pwe_level_ussingen_less_damaged = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1011,6 +1022,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.555520772934,
+				5.0170207023621,
+				6.5571455955505,
+				5.5162706375122
+			},
 			localization_strings = {
 				"pwe_level_ussingen_less_damaged_01",
 				"pwe_level_ussingen_less_damaged_02",
@@ -1021,9 +1038,9 @@ return function ()
 		},
 		pwe_level_ussingen_cart_full = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1044,6 +1061,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.3564791679382,
+				4.4048542976379,
+				5.8232707977295,
+				3.7360625267029
+			},
 			localization_strings = {
 				"pwe_level_ussingen_cart_full_01",
 				"pwe_level_ussingen_cart_full_02",
@@ -1054,9 +1077,9 @@ return function ()
 		},
 		pwe_level_ussingen_hurry = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1077,6 +1100,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.3478751182556,
+				2.7251875400543,
+				2.7378125190735,
+				2.0225625038147
+			},
 			localization_strings = {
 				"pwe_level_ussingen_hurry_01",
 				"pwe_level_ussingen_hurry_02",
@@ -1087,9 +1116,9 @@ return function ()
 		},
 		pwe_level_ussingen_spotting_town = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1110,6 +1139,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.4294166564941,
+				4.267520904541,
+				2.464250087738,
+				5.4693126678467
+			},
 			localization_strings = {
 				"pwe_level_ussingen_spotting_town_01",
 				"pwe_level_ussingen_spotting_town_02",
@@ -1120,9 +1155,9 @@ return function ()
 		},
 		pwe_level_ussingen_cellar = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1143,6 +1178,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.8633124828339,
+				3.1852707862854,
+				1.9753541946411,
+				5.5535416603088
+			},
 			localization_strings = {
 				"pwe_level_ussingen_cellar_01",
 				"pwe_level_ussingen_cellar_02",
@@ -1153,9 +1194,9 @@ return function ()
 		},
 		pwe_level_ussingen_thick_smoke = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1175,6 +1216,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.7643749713898,
+				4.9759583473206,
+				4.4845209121704,
+				6.0921874046326
 			},
 			localization_strings = {
 				"pwe_level_ussingen_thick_smoke_01",
@@ -1186,9 +1233,9 @@ return function ()
 		},
 		pwe_level_ussingen_doomed_town = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1208,6 +1255,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				6.7635416984558,
+				5.9404997825623,
+				6.0305209159851,
+				3.9647707939148
 			},
 			localization_strings = {
 				"pwe_level_ussingen_doomed_town_01",
@@ -1219,9 +1272,9 @@ return function ()
 		},
 		pwe_level_ussingen_escape = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1242,6 +1295,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				2.7202084064484,
+				4.7913751602173,
+				3.1119582653046,
+				1.9771875143051
+			},
 			localization_strings = {
 				"pwe_level_ussingen_escape_01",
 				"pwe_level_ussingen_escape_02",
@@ -1252,9 +1311,9 @@ return function ()
 		},
 		pwe_level_ussingen_devastation = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1274,6 +1333,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				2.3815417289734,
+				4.0616664886475,
+				4.9970417022705,
+				4.7785210609436
 			},
 			localization_strings = {
 				"pwe_level_ussingen_devastation_01",
@@ -1285,9 +1350,9 @@ return function ()
 		},
 		pwe_level_ussingen_caravan = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1308,6 +1373,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.1367917060852,
+				2.5155832767487,
+				3.088770866394,
+				4.9071459770203
+			},
 			localization_strings = {
 				"pwe_level_ussingen_caravan_01",
 				"pwe_level_ussingen_caravan_02",
@@ -1318,9 +1389,9 @@ return function ()
 		},
 		pwe_level_ussingen_stockpile_burned = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1341,6 +1412,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.4694166183472,
+				3.4552707672119,
+				1.9078541994095,
+				4.2831873893738
+			},
 			localization_strings = {
 				"pwe_level_ussingen_stockpile_burned_01",
 				"pwe_level_ussingen_stockpile_burned_02",
@@ -1351,9 +1428,9 @@ return function ()
 		},
 		pwe_level_ussingen_marktplatz = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1373,6 +1450,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.6443958282471,
+				4.0666041374206,
+				5.9973540306091,
+				5.6204166412353
 			},
 			localization_strings = {
 				"pwe_level_ussingen_marktplatz_01",
@@ -1384,9 +1467,9 @@ return function ()
 		},
 		pwe_level_ussingen_wine_cellar = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1406,6 +1489,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.6824791431427,
+				5.3216042518616,
+				5.2741250991821,
+				4.0282502174377
 			},
 			localization_strings = {
 				"pwe_level_ussingen_wine_cellar_01",
@@ -1417,9 +1506,9 @@ return function ()
 		},
 		pwe_level_ussingen_find_way_around = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1440,6 +1529,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				3.2821042537689,
+				2.9755208492279,
+				3.2833333015442,
+				2.4439165592194
+			},
 			localization_strings = {
 				"pwe_level_ussingen_find_way_around_01",
 				"pwe_level_ussingen_find_way_around_02",
@@ -1450,9 +1545,9 @@ return function ()
 		},
 		pwe_level_ussingen_cart_idea = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1473,6 +1568,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				5.8447499275208,
+				5.1698956489563,
+				4.7903332710266,
+				3.7925832271576
+			},
 			localization_strings = {
 				"pwe_level_ussingen_cart_idea_01",
 				"pwe_level_ussingen_cart_idea_02",
@@ -1483,9 +1584,9 @@ return function ()
 		},
 		pwe_level_ussingen_spotting_manor = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1506,6 +1607,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.6997082233429,
+				2.9278957843781,
+				2.7129166126251,
+				4.1907916069031
+			},
 			localization_strings = {
 				"pwe_level_ussingen_spotting_manor_01",
 				"pwe_level_ussingen_spotting_manor_02",
@@ -1516,9 +1623,9 @@ return function ()
 		},
 		pwe_level_ussingen_gatehouse = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1536,6 +1643,11 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.8412916660309,
+				5.4327707290649,
+				2.9232082366943
+			},
 			localization_strings = {
 				"pwe_level_ussingen_gatehouse_01",
 				"pwe_level_ussingen_gatehouse_02",
@@ -1545,9 +1657,9 @@ return function ()
 		},
 		pwe_level_ussingen_at_last_end = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1568,6 +1680,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.3180623054504,
+				4.4443335533142,
+				6.0562705993652,
+				5.477041721344
+			},
 			localization_strings = {
 				"pwe_level_ussingen_at_last_end_01",
 				"pwe_level_ussingen_at_last_end_02",
@@ -1578,9 +1696,9 @@ return function ()
 		},
 		pwe_level_ussingen_wrong_way = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_ussingen",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1600,6 +1718,12 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			sound_events_duration = {
+				3.5232501029968,
+				2.4895832538605,
+				3.5871875286102,
+				7.405749797821
 			},
 			localization_strings = {
 				"pwe_level_ussingen_wrong_way_01",

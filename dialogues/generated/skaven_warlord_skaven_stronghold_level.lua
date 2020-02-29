@@ -102,9 +102,9 @@ return function ()
 	add_dialogues({
 		ewl_gameplay_summoning_skaven = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "skaven_warlord_skaven_stronghold_level",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 8,
@@ -138,6 +138,16 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.622700214386,
+				2.8362584114075,
+				3.8207256793976,
+				4.6769843101502,
+				3.5978684425354,
+				3.4114513397217,
+				4.5472564697266,
+				4.0115194320679
+			},
 			localization_strings = {
 				"ewl_gameplay_summoning_skaven_01",
 				"ewl_gameplay_summoning_skaven_02",
@@ -152,9 +162,9 @@ return function ()
 		},
 		ewl_opening_line = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "skaven_warlord_skaven_stronghold_level",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "champion_opening",
 			dialogue_animations_n = 4,
@@ -176,6 +186,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				5.3708844184875,
+				6.1793651580811,
+				6.5120182037353,
+				6.8495693206787
+			},
 			localization_strings = {
 				"ewl_level_skaven_stronghold_taunt_reply_04",
 				"ewl_level_skaven_stronghold_taunt_reply_01",
@@ -186,9 +202,9 @@ return function ()
 		},
 		ewl_gameplay_banter = {
 			sound_events_n = 8,
-			randomize_indexes_n = 0,
 			face_animations_n = 8,
 			database = "skaven_warlord_skaven_stronghold_level",
+			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 8,
@@ -221,6 +237,16 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry"
+			},
+			sound_events_duration = {
+				5.2431292533875,
+				2.8268253803253,
+				4.9566440582275,
+				4.4730277061462,
+				2.1971049308777,
+				3.1397504806519,
+				3.5556688308716,
+				4.8628797531128
 			},
 			localization_strings = {
 				"ewl_gameplay_banter_08",

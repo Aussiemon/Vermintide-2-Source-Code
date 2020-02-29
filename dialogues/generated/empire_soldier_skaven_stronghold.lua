@@ -1002,9 +1002,9 @@ return function ()
 	add_dialogues({
 		pes_level_skaven_stronghold_waterwheel_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1025,6 +1025,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.8440624475479,
+				2.3817083835602,
+				1.2332916259766,
+				4.5667290687561
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_waterwheel_complete_01",
 				"pes_level_skaven_stronghold_waterwheel_complete_02",
@@ -1035,9 +1041,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_barrier = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1058,6 +1064,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				1.59475004673,
+				3.6160624027252,
+				2.0439999103546,
+				2.2620832920074
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_barrier_01",
 				"pes_level_skaven_stronghold_barrier_02",
@@ -1068,9 +1080,9 @@ return function ()
 		},
 		pes_gameplay_skaven_warlord_summoning_reply = {
 			sound_events_n = 5,
-			randomize_indexes_n = 0,
 			face_animations_n = 5,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 5,
 			sound_events = {
@@ -1094,6 +1106,13 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.8970625400543,
+				4.1611456871033,
+				4.9234375953674,
+				3.9286665916443,
+				6.330500125885
+			},
 			localization_strings = {
 				"pes_gameplay_skaven_warlord_summoning_reply_01",
 				"pes_gameplay_skaven_warlord_summoning_reply_02",
@@ -1105,9 +1124,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_long_way_down = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1128,6 +1147,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				2.6323750019074,
+				1.2218124866486,
+				2.3733749389648,
+				3.1619374752045
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_long_way_down_01",
 				"pes_level_skaven_stronghold_long_way_down_02",
@@ -1138,9 +1163,9 @@ return function ()
 		},
 		pes_gameplay_skaven_warlord_kill = {
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
 			sound_events = {
@@ -1158,6 +1183,11 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.2848749160767,
+				2.4396874904633,
+				4.4018750190735
+			},
 			localization_strings = {
 				"pes_gameplay_skaven_warlord_kill_01",
 				"pes_gameplay_skaven_warlord_kill_02",
@@ -1167,9 +1197,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_dead_warlord = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1189,6 +1219,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.7903542518616,
+				4.6926040649414,
+				2.2330832481384,
+				3.0801041126251
 			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_dead_warlord_01",
@@ -1200,9 +1236,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_mission_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1223,6 +1259,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				2.694854259491,
+				2.5978751182556,
+				1.8284583091736,
+				2.3450832366943
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_mission_complete_01",
 				"pes_level_skaven_stronghold_mission_complete_02",
@@ -1233,9 +1275,9 @@ return function ()
 		},
 		pes_gameplay_skaven_warlord_banter_reply = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1256,6 +1298,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.5088748931885,
+				5.9093751907349,
+				6.914083480835,
+				3.0216875076294
+			},
 			localization_strings = {
 				"pes_gameplay_skaven_warlord_banter_reply_01",
 				"pes_gameplay_skaven_warlord_banter_reply_02",
@@ -1266,9 +1314,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_city_afire = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1288,6 +1336,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.3991875648499,
+				2.3066041469574,
+				3.7311041355133,
+				3.2741458415985
 			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_city_afire_01",
@@ -1299,9 +1353,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_foundry_entered = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1321,6 +1375,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.3669166564941,
+				6.0256457328796,
+				5.7641458511353,
+				5.4477500915527
 			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_foundry_entered_01",
@@ -1332,9 +1392,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_warlord_nest = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1355,6 +1415,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.772541642189,
+				3.1013333797455,
+				3.2939999103546,
+				4.2113752365112
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_warlord_nest_01",
 				"pes_level_skaven_stronghold_warlord_nest_02",
@@ -1365,9 +1431,9 @@ return function ()
 		},
 		pes_skaven_stronghold_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1382,6 +1448,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.9729374647141,
+				[2.0] = 3.1163959503174
+			},
 			localization_strings = {
 				[1.0] = "pes_skaven_stronghold_intro_c_01",
 				[2.0] = "pes_skaven_stronghold_intro_c_02"
@@ -1390,9 +1460,9 @@ return function ()
 		},
 		pes_gameplay_chieftain_tips_special_lunge_attack_2 = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1413,6 +1483,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.7265625,
+				1.3058333396912,
+				1.1954582929611,
+				2.0548334121704
+			},
 			localization_strings = {
 				"pes_gameplay_chieftain_tips_01",
 				"pes_gameplay_chieftain_tips_02",
@@ -1423,9 +1499,9 @@ return function ()
 		},
 		pes_skaven_stronghold_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1440,6 +1516,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 6.0753960609436,
+				[2.0] = 3.2045209407806
+			},
 			localization_strings = {
 				[1.0] = "pes_skaven_stronghold_intro_b_01",
 				[2.0] = "pes_skaven_stronghold_intro_b_02"
@@ -1448,9 +1528,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_light_brazier = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1471,6 +1551,12 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			sound_events_duration = {
+				4.4577918052673,
+				2.7011876106262,
+				1.5967500209808,
+				5.7029581069946
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_light_brazier_01",
 				"pes_level_skaven_stronghold_light_brazier_02",
@@ -1481,9 +1567,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_patrol_lanes = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1504,6 +1590,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				1.9455416202545,
+				2.8093957901001,
+				3.123229265213,
+				3.5364999771118
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_patrol_lanes_01",
 				"pes_level_skaven_stronghold_patrol_lanes_02",
@@ -1514,9 +1606,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_vista = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1537,6 +1629,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				5.4487500190735,
+				5.279833316803,
+				6.076208114624,
+				5.0113959312439
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_vista_01",
 				"pes_level_skaven_stronghold_vista_02",
@@ -1547,9 +1645,9 @@ return function ()
 		},
 		pes_gameplay_chieftain_tips_special_attack_cleave = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1570,6 +1668,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				1.7265625,
+				1.3058333396912,
+				1.1954582929611,
+				2.0548334121704
+			},
 			localization_strings = {
 				"pes_gameplay_chieftain_tips_01",
 				"pes_gameplay_chieftain_tips_02",
@@ -1580,9 +1684,9 @@ return function ()
 		},
 		pes_skaven_stronghold_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1597,6 +1701,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 2.6208124160767,
+				[2.0] = 3.2975208759308
+			},
 			localization_strings = {
 				[1.0] = "pes_skaven_stronghold_intro_a_01",
 				[2.0] = "pes_skaven_stronghold_intro_a_02"
@@ -1605,9 +1713,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_waterwheel_move = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1627,6 +1735,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				2.326250076294,
+				2.6584792137146,
+				3.1890208721161,
+				5.4540209770203
 			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_waterwheel_move_01",
@@ -1638,9 +1752,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_taunt_warlord = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1660,6 +1774,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				3.8821666240692,
+				4.2435417175293,
+				2.616229057312,
+				5.8596873283386
 			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_taunt_warlord_01",
@@ -1671,9 +1791,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_downtown = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1694,6 +1814,12 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			sound_events_duration = {
+				5.0299372673035,
+				4.186541557312,
+				2.6621041297913,
+				2.7775416374206
+			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_downtown_01",
 				"pes_level_skaven_stronghold_downtown_02",
@@ -1704,9 +1830,9 @@ return function ()
 		},
 		pes_level_skaven_stronghold_exit = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_skaven_stronghold",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1726,6 +1852,12 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			sound_events_duration = {
+				4.1068539619446,
+				4.1938543319702,
+				2.8328750133514,
+				3.7025208473206
 			},
 			localization_strings = {
 				"pes_level_skaven_stronghold_exit_01",

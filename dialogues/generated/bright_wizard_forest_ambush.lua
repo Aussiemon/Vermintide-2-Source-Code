@@ -782,9 +782,9 @@ return function ()
 	add_dialogues({
 		pbw_forest_ambush_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -799,6 +799,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0587916374206,
+				[2.0] = 3.6333541870117
+			},
 			localization_strings = {
 				[1.0] = "pbw_forest_ambush_intro_c_01",
 				[2.0] = "pbw_forest_ambush_intro_c_02"
@@ -807,9 +811,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_finding_explosives = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -829,6 +833,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.3288125991821,
+				3.2849583625794,
+				2.7968542575836,
+				3.0481667518616
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_finding_explosives_01",
@@ -840,9 +850,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_broken_wagon = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -862,6 +872,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.7428333759308,
+				5.6222290992737,
+				2.3088126182556,
+				1.606229186058
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_broken_wagon_01",
@@ -873,9 +889,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_watch_tower = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -895,6 +911,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				1.9383541345596,
+				1.7897499799728,
+				1.962249994278,
+				1.5052708387375
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_watch_tower_01",
@@ -906,9 +928,9 @@ return function ()
 		},
 		pbw_forest_ambush_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -922,6 +944,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5725417137146,
+				[2.0] = 3.7097084522247
 			},
 			localization_strings = {
 				[1.0] = "pbw_forest_ambush_intro_b_01",
@@ -931,9 +957,9 @@ return function ()
 		},
 		pbw_forest_ambush_intro = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -948,6 +974,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.597895860672,
+				[2.0] = 3.1112084388733
+			},
 			localization_strings = {
 				[1.0] = "pbw_forest_ambush_intro_a_01",
 				[2.0] = "pbw_forest_ambush_intro_a_02"
@@ -956,9 +986,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_reaching_skaven_camp = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -978,6 +1008,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.2854790687561,
+				4.4578957557678,
+				5.1139998435974,
+				5.0067706108093
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_reaching_skaven_camp_01",
@@ -989,9 +1025,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_ruins = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1012,6 +1048,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.2501873970032,
+				3.6772916316986,
+				2.7187082767487,
+				2.5558125972748
+			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_ruins_01",
 				"pbw_objective_forest_ambush_spotting_ruins_02",
@@ -1022,9 +1064,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_ring_bell = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "player_feedback",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1045,6 +1087,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.0349583625794,
+				2.8488540649414,
+				1.5101041793823,
+				1.8621250391007
+			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_ring_bell_01",
 				"pbw_objective_forest_ambush_ring_bell_02",
@@ -1055,9 +1103,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_bridge = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1077,6 +1125,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				1.067583322525,
+				0.98008334636688,
+				1.0366458892822,
+				1.2558125257492
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_bridge_01",
@@ -1088,9 +1142,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_coaching_inn = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1110,6 +1164,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				0.77395832538605,
+				1.4033750295639,
+				1.1757708787918,
+				1.7560000419617
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_coaching_inn_01",
@@ -1121,9 +1181,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_lodge_ruins = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1143,6 +1203,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				9.466875076294,
+				5.1710414886475,
+				5.4357085227966,
+				3.2089583873749
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_lodge_ruins_01",
@@ -1154,9 +1220,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_doomwheel_objective_done = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1176,6 +1242,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.9454998970032,
+				2.2462916374206,
+				3.5333333015442,
+				4.4322500228882
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_doomwheel_objective_done_01",
@@ -1187,9 +1259,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_first_doomwheel = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1209,6 +1281,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.5699377059936,
+				7.3594584465027,
+				6.8246459960938,
+				3.3101041316986
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_first_doomwheel_01",
@@ -1220,9 +1298,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_boat_arrives = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1242,6 +1320,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				0.95202082395554,
+				2.0999999046326,
+				1.1334166526794,
+				0.97247916460037
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_boat_arrives_01",
@@ -1253,9 +1337,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_back_to_ferry = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1275,6 +1359,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.1769790649414,
+				3.3173332214356,
+				2.5887291431427,
+				2.8273541927338
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_back_to_ferry_01",
@@ -1286,9 +1376,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_crescendo_starting = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1309,6 +1399,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.9095833301544,
+				2.725145816803,
+				4.9809165000916,
+				2.7759582996368
+			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_crescendo_starting_01",
 				"pbw_objective_forest_ambush_crescendo_starting_02",
@@ -1319,9 +1415,9 @@ return function ()
 		},
 		pbw_objective_forest_ambush_spotting_trunk = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_forest_ambush",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1341,6 +1437,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.0399374961853,
+				4.9698123931885,
+				2.1591875553131,
+				2.1914374828339
 			},
 			localization_strings = {
 				"pbw_objective_forest_ambush_spotting_trunk_01",

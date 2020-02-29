@@ -354,9 +354,9 @@ return function ()
 	add_dialogues({
 		pbw_level_fort_fire_cannon_fuse_is_lit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -370,6 +370,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 1.0521249771118,
+				[2.0] = 1.0781667232513
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_fire_cannon_fuse_is_lit_01",
@@ -379,9 +383,9 @@ return function ()
 		},
 		pbw_level_fort_fire_cannon_final = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -395,6 +399,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1717081069946,
+				[2.0] = 4.5877914428711
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_fire_cannon_final_fire_01",
@@ -404,9 +412,9 @@ return function ()
 		},
 		pbw_level_fort_fire_cannon_first_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -420,6 +428,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5760416984558,
+				[2.0] = 3.648895740509
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_fire_cannon_first_hit_01",
@@ -429,9 +441,9 @@ return function ()
 		},
 		pbw_level_fort_fire_cannon_second = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -445,6 +457,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1053125858307,
+				[2.0] = 3.8245208263397
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_fire_cannon_second_01",
@@ -454,9 +470,9 @@ return function ()
 		},
 		pbw_level_fort_fire_cannon_first = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -470,6 +486,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9402916431427,
+				[2.0] = 2.3709375858307
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_fire_cannon_first_01",
@@ -479,9 +499,9 @@ return function ()
 		},
 		pbw_level_fort_cannonballs = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -495,6 +515,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9113540649414,
+				[2.0] = 3.4015834331513
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_cannonballs_01",
@@ -504,9 +528,9 @@ return function ()
 		},
 		pbw_level_fort_fire_cannon_second_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -521,6 +545,10 @@ return function ()
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.202166557312,
+				[2.0] = 7.9675416946411
+			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_fire_cannon_second_hit_01",
 				[2.0] = "pbw_level_fort_fire_cannon_second_hit_02"
@@ -529,9 +557,9 @@ return function ()
 		},
 		pbw_level_fort_fire_cannon_final_hit = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_fort",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -545,6 +573,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1717081069946,
+				[2.0] = 4.5877914428711
 			},
 			localization_strings = {
 				[1.0] = "pbw_level_fort_fire_cannon_final_fire_01",

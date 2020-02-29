@@ -1012,9 +1012,9 @@ return function ()
 	add_dialogues({
 		pwe_level_elven_ruins_great_glade = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1034,6 +1034,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				4.908625125885,
+				4.0461459159851,
+				4.3327083587647,
+				8.3667707443237
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_great_glade_01",
@@ -1045,9 +1051,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_ravine_approach = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1068,6 +1074,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				4.0869998931885,
+				3.3353750705719,
+				5.2165832519531,
+				4.2658333778381
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_ravine_approach_01",
 				"pwe_level_elven_ruins_ravine_approach_02",
@@ -1078,9 +1090,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_noisy_puzzle = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1101,6 +1113,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.8166041374206,
+				4.8951873779297,
+				2.3698749542236,
+				2.2693541049957
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_noisy_puzzle_01",
 				"pwe_level_elven_ruins_noisy_puzzle_02",
@@ -1111,9 +1129,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_cliff_edge = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1134,6 +1152,12 @@ return function ()
 				"face_contempt",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.5180208683014,
+				2.6875624656677,
+				4.8067498207092,
+				3.3533749580383
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_cliff_edge_01",
 				"pwe_level_elven_ruins_cliff_edge_02",
@@ -1144,9 +1168,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_second_aligned = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1166,6 +1190,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.1353125572205,
+				2.6021459102631,
+				2.6596040725708,
+				3.0942499637604
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_second_aligned_01",
@@ -1177,9 +1207,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_big_tree = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1199,6 +1229,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				4.6173124313355,
+				6.9906873703003,
+				7.8157291412353,
+				5.3315424919128
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_big_tree_01",
@@ -1210,9 +1246,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_maze_approach = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1232,6 +1268,12 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry"
+			},
+			sound_events_duration = {
+				5.6056666374206,
+				5.2449584007263,
+				5.8045835494995,
+				3.1039373874664
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_maze_approach_01",
@@ -1243,9 +1285,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_entering_ruins = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1265,6 +1307,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				3.2599792480469,
+				5.7018542289734,
+				5.8772916793823,
+				4.0381460189819
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_entering_ruins_01",
@@ -1276,9 +1324,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_broken_waystone = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1299,6 +1347,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				5.0930418968201,
+				2.8505415916443,
+				3.5897083282471,
+				6.8867917060852
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_broken_waystone_01",
 				"pwe_level_elven_ruins_broken_waystone_02",
@@ -1309,9 +1363,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_exit = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1331,6 +1385,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.2077083587647,
+				2.4056251049042,
+				1.8923958539963,
+				2.9351665973663
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_exit_01",
@@ -1342,9 +1402,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_skaven_banners = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1364,6 +1424,12 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			sound_events_duration = {
+				2.7958750724792,
+				4.312958240509,
+				4.5076251029968,
+				2.7218332290649
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_skaven_banners_01",
@@ -1375,9 +1441,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_task_complete = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1398,6 +1464,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				3.7635624408722,
+				2.8215625286102,
+				3.9272708892822,
+				4.8551874160767
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_task_complete_01",
 				"pwe_level_elven_ruins_task_complete_02",
@@ -1408,9 +1480,9 @@ return function ()
 		},
 		pwe_elven_ruins_intro_a = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1425,6 +1497,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.1409583091736,
+				[2.0] = 4.4510416984558
+			},
 			localization_strings = {
 				[1.0] = "pwe_elven_ruins_intro_a_01",
 				[2.0] = "pwe_elven_ruins_intro_a_02"
@@ -1433,9 +1509,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_untouched = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1456,6 +1532,12 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			sound_events_duration = {
+				6.0912709236145,
+				3.4207291603088,
+				6.5170001983643,
+				4.6549372673035
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_untouched_01",
 				"pwe_level_elven_ruins_untouched_02",
@@ -1466,9 +1548,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_first_aligned_pleasant_feeling = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1489,6 +1571,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				4.5438332557678,
+				3.6593959331513,
+				3.388729095459,
+				4.7251873016357
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_first_aligned_pleasant_feeling_01",
 				"pwe_level_elven_ruins_first_aligned_pleasant_feeling_02",
@@ -1499,9 +1587,9 @@ return function ()
 		},
 		pwe_elven_ruins_intro_b = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1515,6 +1603,10 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 5.940354347229,
+				[2.0] = 4.2336249351502
 			},
 			localization_strings = {
 				[1.0] = "pwe_elven_ruins_intro_b_01",
@@ -1524,9 +1616,9 @@ return function ()
 		},
 		pwe_elven_ruins_intro_c = {
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
@@ -1541,6 +1633,10 @@ return function ()
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 3.7547500133514,
+				[2.0] = 4.367666721344
+			},
 			localization_strings = {
 				[1.0] = "pwe_elven_ruins_intro_c_01",
 				[2.0] = "pwe_elven_ruins_intro_c_02"
@@ -1549,9 +1645,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_seeing_puzzle_crystals = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1572,6 +1668,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				2.2723333835602,
+				3.9061665534973,
+				3.6220624446869,
+				5.3328123092651
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_seeing_puzzle_crystals_01",
 				"pwe_level_elven_ruins_seeing_puzzle_crystals_02",
@@ -1582,9 +1684,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_maze_interior = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1605,6 +1707,12 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			sound_events_duration = {
+				2.1049165725708,
+				3.495395898819,
+				3.5055208206177,
+				2.3615417480469
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_maze_interior_01",
 				"pwe_level_elven_ruins_maze_interior_02",
@@ -1615,9 +1723,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_seeing_puzzle = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1637,6 +1745,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				2.7052083015442,
+				4.2687501907349,
+				4.0626459121704,
+				3.9306874275208
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_seeing_puzzle_01",
@@ -1648,9 +1762,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_shattered_temple = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1671,6 +1785,12 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			sound_events_duration = {
+				5.5849375724792,
+				5.0223956108093,
+				3.5611040592194,
+				4.5556874275208
+			},
 			localization_strings = {
 				"pwe_level_elven_ruins_shattered_temple_01",
 				"pwe_level_elven_ruins_shattered_temple_02",
@@ -1681,9 +1801,9 @@ return function ()
 		},
 		pwe_level_elven_ruins_clearing = {
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_elven_ruins",
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
@@ -1703,6 +1823,12 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events_duration = {
+				7.6038541793823,
+				5.9889373779297,
+				6.9608540534973,
+				6.8286876678467
 			},
 			localization_strings = {
 				"pwe_level_elven_ruins_clearing_01",
