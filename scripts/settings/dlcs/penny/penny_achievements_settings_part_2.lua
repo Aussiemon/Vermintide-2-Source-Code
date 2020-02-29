@@ -7,10 +7,6 @@ settings.achievement_outline = {
 				sorting = 5,
 				name = "area_selection_penny_name",
 				entries = {
-					"penny_portals_grapes",
-					"penny_portals_coop",
-					"penny_portals_careful",
-					"penny_portals_templerun",
 					"penny_bastion_journal",
 					"penny_bastion_overstay",
 					"penny_bastion_sprinter",
