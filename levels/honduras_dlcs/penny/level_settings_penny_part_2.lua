@@ -5,16 +5,16 @@ LevelSettings.dlc_bastion = {
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	act = "act_penny",
 	loading_ui_package_name = "loading_screen_25",
 	unlockable = true,
 	level_image = "level_image_bastion",
+	act = "act_penny",
 	use_mini_patrols = false,
 	act_presentation_order = 2,
-	description_text = "nik_bastion_briefing_02",
 	boss_spawning_method = "hand_placed",
-	dlc_name = "penny",
+	description_text = "nik_bastion_briefing_01",
 	default_surface_material = "stone",
+	dlc_name = "penny",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras_dlcs/penny/dlc_bastion/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
@@ -67,8 +67,7 @@ LevelSettings.dlc_bastion = {
 		}
 	},
 	loading_screen_wwise_events = {
-		"nik_bastion_briefing_01",
-		"nik_bastion_briefing_02"
+		"nik_bastion_briefing_01"
 	},
 	locations = {
 		"location_bastion_intro",
@@ -83,6 +82,11 @@ LevelSettings.dlc_bastion = {
 		"location_bastion_auditorium",
 		"location_bastion_ritual",
 		"location_bastion_tower"
+	},
+	conflict_director_set = {
+		"default",
+		"skaven",
+		"chaos"
 	},
 	mission_selection_offset = {
 		2,
