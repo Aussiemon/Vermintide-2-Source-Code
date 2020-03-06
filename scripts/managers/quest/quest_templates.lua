@@ -788,6 +788,17 @@ quest_templates.quests.event_mondstille_quickplay_console = {
 		}
 	end
 }
+quest_templates.quests.event_celebration_complete_2020 = {
+	name = "quest_celebration_01_name",
+	icon = "quest_book_event_celebration",
+	desc = "quest_celebration_01_desc",
+	stat_mappings = event_weekly_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+	end
+}
 local event_celebration_collected_painting_scraps_2019_mappings = {
 	{
 		collected_painting_scraps_unlimited = true

@@ -1383,6 +1383,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_0094 = {
+		{
+			texture = "portrait_frame_0094",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_0095 = {
 		{
 			texture = "portrait_frame_0095",

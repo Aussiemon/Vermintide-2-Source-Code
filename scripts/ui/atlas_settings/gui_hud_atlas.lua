@@ -349,7 +349,7 @@ hud_atlas = {
 			0.814697
 		}
 	},
-	unit_frame_ammo_empty = {
+	overchargecircle_white_divider = {
 		size = {
 			32,
 			32
@@ -377,7 +377,7 @@ hud_atlas = {
 			0.128906
 		}
 	},
-	hud_icon_left = {
+	unit_frame_ammo_low = {
 		size = {
 			32,
 			32
@@ -419,7 +419,7 @@ hud_atlas = {
 			0.111328
 		}
 	},
-	overchargecircle_white_divider = {
+	hud_icon_right_glow = {
 		size = {
 			32,
 			32
@@ -433,7 +433,7 @@ hud_atlas = {
 			0.807617
 		}
 	},
-	unit_frame_ammo_low = {
+	unit_frame_ammo_empty = {
 		size = {
 			32,
 			32
@@ -447,7 +447,7 @@ hud_atlas = {
 			0.798828
 		}
 	},
-	hud_icon_right_glow = {
+	hud_icon_left = {
 		size = {
 			32,
 			32
@@ -587,49 +587,7 @@ hud_atlas = {
 			0.074951
 		}
 	},
-	portrait_kruber_huntsman_thumbnail = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.960938,
-			0.289551
-		},
-		uv11 = {
-			0.970703,
-			0.299316
-		}
-	},
-	weaves_icon_boss = {
-		size = {
-			27,
-			40
-		},
-		uv00 = {
-			0.992188,
-			0.01123
-		},
-		uv11 = {
-			0.998779,
-			0.020996
-		}
-	},
-	portrait_kruber_knight_thumbnail = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.945313,
-			0.290039
-		},
-		uv11 = {
-			0.955078,
-			0.299805
-		}
-	},
-	portrait_victor_zealot_thumbnail = {
+	portrait_sienna_scholar_thumbnail = {
 		size = {
 			40,
 			40
@@ -643,7 +601,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	hud_inventory_slot_bg_01 = {
+	portrait_kruber_knight_thumbnail = {
 		size = {
 			40,
 			40
@@ -657,7 +615,21 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_sienna_scholar_thumbnail = {
+	weaves_icon_boss_greyscale = {
+		size = {
+			27,
+			40
+		},
+		uv00 = {
+			0.992188,
+			0.01123
+		},
+		uv11 = {
+			0.998779,
+			0.020996
+		}
+	},
+	hud_inventory_slot_bg_01 = {
 		size = {
 			40,
 			40
@@ -671,7 +643,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_kerillian_shade_thumbnail = {
+	portrait_kerillian_waywatcher_thumbnail = {
 		size = {
 			40,
 			40
@@ -685,7 +657,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_bardin_slayer_thumbnail = {
+	portrait_bardin_ironbreaker_thumbnail = {
 		size = {
 			40,
 			40
@@ -699,7 +671,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_bardin_ironbreaker_thumbnail = {
+	portrait_kruber_huntsman_thumbnail = {
 		size = {
 			40,
 			40
@@ -713,7 +685,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_kruber_mercenary_thumbnail = {
+	portrait_kerillian_maidenguard_thumbnail = {
 		size = {
 			40,
 			40
@@ -727,7 +699,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_sienna_adept_thumbnail = {
+	portrait_bardin_ranger_thumbnail = {
 		size = {
 			40,
 			40
@@ -755,7 +727,21 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_kerillian_waywatcher_thumbnail = {
+	speaking_icon = {
+		size = {
+			40,
+			30
+		},
+		uv00 = {
+			0.237305,
+			0.992188
+		},
+		uv11 = {
+			0.24707,
+			0.999512
+		}
+	},
+	portrait_kruber_mercenary_thumbnail = {
 		size = {
 			40,
 			40
@@ -769,7 +755,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_victor_captain_thumbnail = {
+	portrait_sienna_adept_thumbnail = {
 		size = {
 			40,
 			40
@@ -783,7 +769,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_kerillian_maidenguard_thumbnail = {
+	portrait_kerillian_shade_thumbnail = {
 		size = {
 			40,
 			40
@@ -797,7 +783,7 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	portrait_bardin_ranger_thumbnail = {
+	portrait_victor_zealot_thumbnail = {
 		size = {
 			40,
 			40
@@ -811,10 +797,10 @@ hud_atlas = {
 			0.299805
 		}
 	},
-	speaking_icon = {
+	portrait_bardin_slayer_thumbnail = {
 		size = {
 			40,
-			30
+			40
 		},
 		uv00 = {
 			0.726563,
@@ -822,10 +808,10 @@ hud_atlas = {
 		},
 		uv11 = {
 			0.736328,
-			0.297363
+			0.299805
 		}
 	},
-	weaves_icon_boss_greyscale = {
+	weaves_icon_boss = {
 		size = {
 			27,
 			40
@@ -845,40 +831,26 @@ hud_atlas = {
 			40
 		},
 		uv00 = {
-			0.238281,
-			0.983643
-		},
-		uv11 = {
-			0.248047,
-			0.993408
-		}
-	},
-	hud_inventory_icon_potion = {
-		size = {
-			45,
-			45
-		},
-		uv00 = {
 			0.710938,
 			0.290039
 		},
 		uv11 = {
-			0.721924,
-			0.301025
+			0.720703,
+			0.299805
 		}
 	},
-	hud_inventory_icon_bomb = {
+	portrait_victor_captain_thumbnail = {
 		size = {
-			45,
-			45
+			40,
+			40
 		},
 		uv00 = {
 			0.695313,
 			0.290039
 		},
 		uv11 = {
-			0.706299,
-			0.301025
+			0.705078,
+			0.299805
 		}
 	},
 	hud_inventory_icon_potion_speed = {
@@ -909,10 +881,10 @@ hud_atlas = {
 			0.301025
 		}
 	},
-	player_consumable_input_bg = {
+	hud_inventory_icon_potion = {
 		size = {
 			45,
-			39
+			45
 		},
 		uv00 = {
 			0.648438,
@@ -920,7 +892,21 @@ hud_atlas = {
 		},
 		uv11 = {
 			0.659424,
-			0.299561
+			0.301025
+		}
+	},
+	player_consumable_input_bg = {
+		size = {
+			45,
+			39
+		},
+		uv00 = {
+			0.987793,
+			0.229248
+		},
+		uv11 = {
+			0.998779,
+			0.23877
 		}
 	},
 	hud_inventory_icon_ranged = {
@@ -937,6 +923,20 @@ hud_atlas = {
 			0.301025
 		}
 	},
+	hud_inventory_icon_bomb = {
+		size = {
+			45,
+			45
+		},
+		uv00 = {
+			0.237305,
+			0.980225
+		},
+		uv11 = {
+			0.248291,
+			0.991211
+		}
+	},
 	hud_inventory_icon_grimoire = {
 		size = {
 			45,
@@ -944,67 +944,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.237305,
-			0.965576
+			0.962158
 		},
 		uv11 = {
 			0.248291,
-			0.976563
-		}
-	},
-	hud_inventory_icon_melee = {
-		size = {
-			45,
-			45
-		},
-		uv00 = {
-			0.237305,
-			0.94751
-		},
-		uv11 = {
-			0.248291,
-			0.958496
-		}
-	},
-	hud_inventory_icon_heal_02 = {
-		size = {
-			45,
-			45
-		},
-		uv00 = {
-			0.237305,
-			0.929443
-		},
-		uv11 = {
-			0.248291,
-			0.94043
-		}
-	},
-	hud_inventory_icon_heal_01 = {
-		size = {
-			45,
-			45
-		},
-		uv00 = {
-			0.237305,
-			0.911377
-		},
-		uv11 = {
-			0.248291,
-			0.922363
-		}
-	},
-	hud_inventory_icon_potion_strength = {
-		size = {
-			45,
-			45
-		},
-		uv00 = {
-			0.237305,
-			0.893311
-		},
-		uv11 = {
-			0.248291,
-			0.904297
+			0.973145
 		}
 	},
 	hud_inventory_icon_potion_cooldown_reduction = {
@@ -1014,11 +958,53 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.237305,
-			0.875244
+			0.944092
 		},
 		uv11 = {
 			0.248291,
-			0.88623
+			0.955078
+		}
+	},
+	hud_inventory_icon_heal_01 = {
+		size = {
+			45,
+			45
+		},
+		uv00 = {
+			0.237305,
+			0.926025
+		},
+		uv11 = {
+			0.248291,
+			0.937012
+		}
+	},
+	hud_inventory_icon_potion_strength = {
+		size = {
+			45,
+			45
+		},
+		uv00 = {
+			0.237305,
+			0.907959
+		},
+		uv11 = {
+			0.248291,
+			0.918945
+		}
+	},
+	hud_inventory_icon_heal_02 = {
+		size = {
+			45,
+			45
+		},
+		uv00 = {
+			0.237305,
+			0.889893
+		},
+		uv11 = {
+			0.248291,
+			0.900879
 		}
 	},
 	hud_inventory_icon_tome = {
@@ -1028,11 +1014,25 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.237305,
-			0.857178
+			0.871826
 		},
 		uv11 = {
 			0.248291,
-			0.868164
+			0.882813
+		}
+	},
+	hud_inventory_icon_melee = {
+		size = {
+			45,
+			45
+		},
+		uv00 = {
+			0.987793,
+			0.217285
+		},
+		uv11 = {
+			0.998779,
+			0.228271
 		}
 	},
 	enemy_defense_indication_icon_partial = {
@@ -1069,15 +1069,15 @@ hud_atlas = {
 			46
 		},
 		uv00 = {
-			0.237305,
-			0.839111
+			0.987793,
+			0.205078
 		},
 		uv11 = {
-			0.248535,
-			0.850342
+			0.999023,
+			0.216309
 		}
 	},
-	hud_difficulty_unlocked_part_03 = {
+	hud_difficulty_unlocked_icon = {
 		size = {
 			50,
 			50
@@ -1091,7 +1091,7 @@ hud_atlas = {
 			0.302246
 		}
 	},
-	hud_difficulty_unlocked_part_05 = {
+	hud_difficulty_unlocked_part_03 = {
 		size = {
 			50,
 			50
@@ -1105,7 +1105,7 @@ hud_atlas = {
 			0.302246
 		}
 	},
-	hud_difficulty_unlocked_part_04 = {
+	hud_difficulty_unlocked_part_05 = {
 		size = {
 			50,
 			50
@@ -1119,7 +1119,7 @@ hud_atlas = {
 			0.302246
 		}
 	},
-	hud_difficulty_unlocked_part_06 = {
+	hud_difficulty_unlocked_part_02 = {
 		size = {
 			50,
 			50
@@ -1133,7 +1133,7 @@ hud_atlas = {
 			0.302246
 		}
 	},
-	hud_difficulty_unlocked_part_02 = {
+	hud_difficulty_unlocked_part_01 = {
 		size = {
 			50,
 			50
@@ -1147,7 +1147,7 @@ hud_atlas = {
 			0.129395
 		}
 	},
-	hud_difficulty_unlocked_icon = {
+	hud_difficulty_unlocked_part_06 = {
 		size = {
 			50,
 			50
@@ -1161,7 +1161,7 @@ hud_atlas = {
 			0.394287
 		}
 	},
-	hud_difficulty_unlocked_part_01 = {
+	hud_difficulty_unlocked_part_04 = {
 		size = {
 			50,
 			50
@@ -1308,11 +1308,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.281738,
-			0.651855
+			0.322266
 		},
 		uv11 = {
 			0.295654,
-			0.666016
+			0.336426
 		}
 	},
 	hud_icon_melee = {
@@ -1335,12 +1335,12 @@ hud_atlas = {
 			62
 		},
 		uv00 = {
-			0.281738,
-			0.635742
+			0.297363,
+			0.704102
 		},
 		uv11 = {
-			0.296875,
-			0.650879
+			0.3125,
+			0.719238
 		}
 	},
 	hud_ability_icon = {
@@ -1349,208 +1349,12 @@ hud_atlas = {
 			62
 		},
 		uv00 = {
-			0.281738,
-			0.619629
-		},
-		uv11 = {
-			0.296875,
-			0.634766
-		}
-	},
-	hud_icon_potion_strength_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.603027
-		},
-		uv11 = {
 			0.297363,
-			0.618652
-		}
-	},
-	hud_icon_grimoire = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.586426
+			0.687988
 		},
 		uv11 = {
-			0.297363,
-			0.602051
-		}
-	},
-	hud_icon_grimoire_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.569824
-		},
-		uv11 = {
-			0.297363,
-			0.585449
-		}
-	},
-	hud_icon_potion_cooldown_reduction = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.553223
-		},
-		uv11 = {
-			0.297363,
-			0.568848
-		}
-	},
-	hud_icon_potion_strength = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.536621
-		},
-		uv11 = {
-			0.297363,
-			0.552246
-		}
-	},
-	hud_icon_potion_cooldown_reduction_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.52002
-		},
-		uv11 = {
-			0.297363,
-			0.535645
-		}
-	},
-	hud_icon_heal_01 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.503418
-		},
-		uv11 = {
-			0.297363,
-			0.519043
-		}
-	},
-	hud_icon_bomb_01 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.486816
-		},
-		uv11 = {
-			0.297363,
-			0.502441
-		}
-	},
-	hud_icon_bomb_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.470215
-		},
-		uv11 = {
-			0.297363,
-			0.48584
-		}
-	},
-	voip_speaker_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.453613
-		},
-		uv11 = {
-			0.297363,
-			0.469238
-		}
-	},
-	hud_icon_potion_speed_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.437012
-		},
-		uv11 = {
-			0.297363,
-			0.452637
-		}
-	},
-	voip_speaker = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.42041
-		},
-		uv11 = {
-			0.297363,
-			0.436035
-		}
-	},
-	voip_wave = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.403809
-		},
-		uv11 = {
-			0.297363,
-			0.419434
-		}
-	},
-	hud_icon_bomb_01_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.387207
-		},
-		uv11 = {
-			0.297363,
-			0.402832
+			0.3125,
+			0.703125
 		}
 	},
 	hud_icon_potion_speed = {
@@ -1559,68 +1363,40 @@ hud_atlas = {
 			64
 		},
 		uv00 = {
-			0.281738,
-			0.370605
+			0.297363,
+			0.671387
 		},
 		uv11 = {
-			0.297363,
-			0.38623
+			0.312988,
+			0.687012
 		}
 	},
-	hud_icon_tome = {
+	hud_icon_heal_01 = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.281738,
-			0.354004
+			0.297363,
+			0.654785
 		},
 		uv11 = {
-			0.297363,
-			0.369629
+			0.312988,
+			0.67041
 		}
 	},
-	hud_icon_bomb_02_glow = {
+	hud_icon_grimoire = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.281738,
-			0.337402
+			0.297363,
+			0.638184
 		},
 		uv11 = {
-			0.297363,
-			0.353027
-		}
-	},
-	hud_icon_heal_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.320801
-		},
-		uv11 = {
-			0.297363,
-			0.336426
-		}
-	},
-	hud_icon_tome_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.281738,
-			0.304199
-		},
-		uv11 = {
-			0.297363,
-			0.319824
+			0.312988,
+			0.653809
 		}
 	},
 	portrait_frame_geheimnisnacht_03_moon = {
@@ -1629,12 +1405,152 @@ hud_atlas = {
 			64
 		},
 		uv00 = {
-			0.22168,
-			0.983643
+			0.297363,
+			0.621582
 		},
 		uv11 = {
-			0.237305,
-			0.999268
+			0.312988,
+			0.637207
+		}
+	},
+	hud_icon_potion_strength_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.60498
+		},
+		uv11 = {
+			0.312988,
+			0.620605
+		}
+	},
+	hud_icon_grimoire_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.588379
+		},
+		uv11 = {
+			0.312988,
+			0.604004
+		}
+	},
+	hud_icon_bomb_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.571777
+		},
+		uv11 = {
+			0.312988,
+			0.587402
+		}
+	},
+	hud_icon_heal_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.555176
+		},
+		uv11 = {
+			0.312988,
+			0.570801
+		}
+	},
+	voip_wave = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.538574
+		},
+		uv11 = {
+			0.312988,
+			0.554199
+		}
+	},
+	voip_speaker_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.521973
+		},
+		uv11 = {
+			0.312988,
+			0.537598
+		}
+	},
+	hud_icon_tome = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.505371
+		},
+		uv11 = {
+			0.312988,
+			0.520996
+		}
+	},
+	voip_speaker = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.48877
+		},
+		uv11 = {
+			0.312988,
+			0.504395
+		}
+	},
+	hud_icon_bomb_01 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.472168
+		},
+		uv11 = {
+			0.312988,
+			0.487793
+		}
+	},
+	hud_icon_bomb_01_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.455566
+		},
+		uv11 = {
+			0.312988,
+			0.471191
 		}
 	},
 	hud_icon_heal_02 = {
@@ -1643,12 +1559,96 @@ hud_atlas = {
 			64
 		},
 		uv00 = {
-			0.983887,
-			0.223145
+			0.297363,
+			0.438965
 		},
 		uv11 = {
-			0.999512,
-			0.23877
+			0.312988,
+			0.45459
+		}
+	},
+	hud_icon_bomb_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.422363
+		},
+		uv11 = {
+			0.312988,
+			0.437988
+		}
+	},
+	hud_icon_potion_cooldown_reduction = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.405762
+		},
+		uv11 = {
+			0.312988,
+			0.421387
+		}
+	},
+	hud_icon_tome_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.38916
+		},
+		uv11 = {
+			0.312988,
+			0.404785
+		}
+	},
+	hud_icon_potion_speed_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.372559
+		},
+		uv11 = {
+			0.312988,
+			0.388184
+		}
+	},
+	hud_icon_potion_cooldown_reduction_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.355957
+		},
+		uv11 = {
+			0.312988,
+			0.371582
+		}
+	},
+	hud_icon_potion_strength = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.297363,
+			0.339355
+		},
+		uv11 = {
+			0.312988,
+			0.35498
 		}
 	},
 	voip_wave_glow = {
@@ -1699,12 +1699,12 @@ hud_atlas = {
 			68
 		},
 		uv00 = {
-			0.978516,
-			0.271973
+			0.297363,
+			0.321777
 		},
 		uv11 = {
-			0.994873,
-			0.288574
+			0.313721,
+			0.338379
 		}
 	},
 	weapon_icon_glow = {
@@ -1713,15 +1713,57 @@ hud_atlas = {
 			68
 		},
 		uv00 = {
+			0.297363,
+			0.304199
+		},
+		uv11 = {
+			0.313965,
+			0.320801
+		}
+	},
+	portrait_enemy_packmaster_versus = {
+		size = {
+			60,
+			70
+		},
+		uv00 = {
+			0.281738,
+			0.304199
+		},
+		uv11 = {
+			0.296387,
+			0.321289
+		}
+	},
+	small_unit_frame_portrait_sienna_adept = {
+		size = {
+			60,
+			70
+		},
+		uv00 = {
+			0.976563,
+			0.271973
+		},
+		uv11 = {
+			0.991211,
+			0.289063
+		}
+	},
+	portrait_enemy_globadier_versus = {
+		size = {
+			60,
+			70
+		},
+		uv00 = {
 			0.960938,
 			0.271973
 		},
 		uv11 = {
-			0.977539,
-			0.288574
+			0.975586,
+			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_stormfiend = {
+	small_unit_frame_portrait_kerillian_shade = {
 		size = {
 			60,
 			70
@@ -1735,7 +1777,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_bardin_ranger = {
+	unit_frame_portrait_enemy_stormfiend = {
 		size = {
 			60,
 			70
@@ -1749,7 +1791,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_bardin_ironbreaker = {
+	unit_frame_portrait_enemy_warlord = {
 		size = {
 			60,
 			70
@@ -1763,7 +1805,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_sienna_scholar = {
+	small_unit_frame_portrait_bardin_ironbreaker = {
 		size = {
 			60,
 			70
@@ -1777,7 +1819,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_default = {
+	unit_frame_portrait_enemy_chaos_marauder = {
 		size = {
 			60,
 			70
@@ -1791,7 +1833,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_chaos_sorcerer = {
+	unit_frame_portrait_enemy_standard_bearer = {
 		size = {
 			60,
 			70
@@ -1805,7 +1847,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_warpfire = {
+	unit_frame_portrait_enemy_clanrat = {
 		size = {
 			60,
 			70
@@ -1819,7 +1861,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_bestigor = {
+	small_unit_frame_portrait_bardin_ranger = {
 		size = {
 			60,
 			70
@@ -1833,7 +1875,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	portrait_enemy_gutter_runner_versus = {
+	unit_frame_portrait_enemy_warpfire = {
 		size = {
 			60,
 			70
@@ -1847,7 +1889,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_chaos_warrior = {
+	unit_frame_portrait_enemy_chaos_troll = {
 		size = {
 			60,
 			70
@@ -1861,7 +1903,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_stormvermin = {
+	small_unit_frame_portrait_bardin_slayer = {
 		size = {
 			60,
 			70
@@ -1875,7 +1917,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_bardin_slayer = {
+	small_unit_frame_portrait_kruber_mercenary = {
 		size = {
 			60,
 			70
@@ -1889,7 +1931,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_chaos_spawn = {
+	unit_frame_portrait_enemy_savage = {
 		size = {
 			60,
 			70
@@ -1903,7 +1945,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_poison_wind = {
+	unit_frame_portrait_enemy_raider = {
 		size = {
 			60,
 			70
@@ -1917,7 +1959,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_kerillian_shade = {
+	portrait_enemy_warpfire_versus = {
 		size = {
 			60,
 			70
@@ -1931,7 +1973,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_kruber_knight = {
+	small_unit_frame_portrait_victor_bountyhunter = {
 		size = {
 			60,
 			70
@@ -1945,7 +1987,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_plague_monk = {
+	unit_frame_portrait_enemy_gutter_runner = {
 		size = {
 			60,
 			70
@@ -1959,7 +2001,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_lootrat = {
+	unit_frame_portrait_enemy_sorcerer_vortex = {
 		size = {
 			60,
 			70
@@ -1973,7 +2015,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_victor_captain = {
+	unit_frame_portrait_enemy_chaos_warrior = {
 		size = {
 			60,
 			70
@@ -1987,7 +2029,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_kruber_mercenary = {
+	unit_frame_portrait_enemy_plague_zombie = {
 		size = {
 			60,
 			70
@@ -2001,7 +2043,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_slave_rat = {
+	portrait_enemy_gutter_runner_versus = {
 		size = {
 			60,
 			70
@@ -2015,7 +2057,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_berserker = {
+	unit_frame_portrait_enemy_minotaur = {
 		size = {
 			60,
 			70
@@ -2029,7 +2071,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_minotaur = {
+	unit_frame_portrait_enemy_chaos_sorcerer = {
 		size = {
 			60,
 			70
@@ -2043,7 +2085,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_sienna_unchained = {
+	small_unit_frame_portrait_kerillian_waywatcher = {
 		size = {
 			60,
 			70
@@ -2057,7 +2099,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_rat_ogre = {
+	unit_frame_portrait_enemy_sorcerer_corruptor = {
 		size = {
 			60,
 			70
@@ -2071,7 +2113,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_kerillian_maidenguard = {
+	small_unit_frame_portrait_victor_captain = {
 		size = {
 			60,
 			70
@@ -2085,7 +2127,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	small_unit_frame_portrait_victor_bountyhunter = {
+	unit_frame_portrait_enemy_poison_wind = {
 		size = {
 			60,
 			70
@@ -2099,7 +2141,7 @@ hud_atlas = {
 			0.289063
 		}
 	},
-	unit_frame_portrait_enemy_sorcerer_boss = {
+	small_unit_frame_portrait_sienna_scholar = {
 		size = {
 			60,
 			70
@@ -2113,7 +2155,7 @@ hud_atlas = {
 			0.998047
 		}
 	},
-	small_unit_frame_portrait_sienna_adept = {
+	unit_frame_portrait_enemy_berserker = {
 		size = {
 			60,
 			70
@@ -2127,133 +2169,105 @@ hud_atlas = {
 			0.998047
 		}
 	},
-	unit_frame_portrait_enemy_plague_zombie = {
+	small_unit_frame_portrait_kerillian_maidenguard = {
 		size = {
 			60,
 			70
 		},
 		uv00 = {
 			0.22168,
-			0.965576
+			0.980225
 		},
 		uv11 = {
 			0.236328,
-			0.982666
+			0.997314
 		}
 	},
-	unit_frame_portrait_enemy_sorcerer_vortex = {
+	unit_frame_portrait_enemy_slave_rat = {
 		size = {
 			60,
 			70
 		},
 		uv00 = {
 			0.22168,
-			0.94751
+			0.962158
 		},
 		uv11 = {
 			0.236328,
-			0.9646
+			0.979248
 		}
 	},
-	small_unit_frame_portrait_kruber_huntsman = {
+	unit_frame_portrait_enemy_packmaster = {
 		size = {
 			60,
 			70
 		},
 		uv00 = {
 			0.22168,
-			0.929443
+			0.944092
 		},
 		uv11 = {
 			0.236328,
-			0.946533
+			0.961182
 		}
 	},
-	unit_frame_portrait_enemy_chaos_troll = {
+	unit_frame_portrait_enemy_chaos_spawn = {
 		size = {
 			60,
 			70
 		},
 		uv00 = {
 			0.22168,
-			0.911377
+			0.926025
 		},
 		uv11 = {
 			0.236328,
-			0.928467
+			0.943115
 		}
 	},
-	portrait_enemy_packmaster_versus = {
+	unit_frame_portrait_enemy_sorcerer_drachenfels = {
 		size = {
 			60,
 			70
 		},
 		uv00 = {
 			0.22168,
-			0.893311
+			0.907959
 		},
 		uv11 = {
 			0.236328,
-			0.9104
+			0.925049
 		}
 	},
-	unit_frame_portrait_enemy_savage = {
+	unit_frame_portrait_enemy_lootrat = {
 		size = {
 			60,
 			70
 		},
 		uv00 = {
 			0.22168,
-			0.875244
+			0.889893
 		},
 		uv11 = {
 			0.236328,
-			0.892334
+			0.906982
 		}
 	},
-	portrait_enemy_warpfire_versus = {
+	small_unit_frame_portrait_default = {
 		size = {
 			60,
 			70
 		},
 		uv00 = {
 			0.22168,
-			0.857178
+			0.871826
 		},
 		uv11 = {
 			0.236328,
-			0.874268
+			0.888916
 		}
 	},
-	portrait_enemy_globadier_versus = {
-		size = {
-			60,
-			70
-		},
-		uv00 = {
-			0.22168,
-			0.839111
-		},
-		uv11 = {
-			0.236328,
-			0.856201
-		}
-	},
-	unit_frame_portrait_enemy_gutter_runner = {
-		size = {
-			60,
-			70
-		},
-		uv00 = {
-			0.983887,
-			0.205078
-		},
-		uv11 = {
-			0.998535,
-			0.222168
-		}
-	},
-	unit_frame_portrait_enemy_sorcerer_corruptor = {
+	small_unit_frame_portrait_sienna_unchained = {
 		size = {
 			60,
 			70
@@ -2267,7 +2281,7 @@ hud_atlas = {
 			0.1875
 		}
 	},
-	unit_frame_portrait_enemy_standard_bearer = {
+	small_unit_frame_portrait_kruber_knight = {
 		size = {
 			60,
 			70
@@ -2281,7 +2295,7 @@ hud_atlas = {
 			0.152832
 		}
 	},
-	small_unit_frame_portrait_kerillian_waywatcher = {
+	unit_frame_portrait_enemy_rat_ogre = {
 		size = {
 			60,
 			70
@@ -2295,7 +2309,7 @@ hud_atlas = {
 			0.134277
 		}
 	},
-	unit_frame_portrait_enemy_ratling_gunner = {
+	small_unit_frame_portrait_kruber_huntsman = {
 		size = {
 			60,
 			70
@@ -2309,7 +2323,7 @@ hud_atlas = {
 			0.134277
 		}
 	},
-	unit_frame_portrait_enemy_chaos_marauder = {
+	unit_frame_portrait_enemy_rasknitt = {
 		size = {
 			60,
 			70
@@ -2323,7 +2337,7 @@ hud_atlas = {
 			0.134277
 		}
 	},
-	unit_frame_portrait_enemy_raider = {
+	unit_frame_portrait_enemy_bestigor = {
 		size = {
 			60,
 			70
@@ -2337,7 +2351,7 @@ hud_atlas = {
 			0.991699
 		}
 	},
-	unit_frame_portrait_enemy_warlord = {
+	unit_frame_portrait_enemy_sorcerer_boss = {
 		size = {
 			60,
 			70
@@ -2351,7 +2365,7 @@ hud_atlas = {
 			0.973633
 		}
 	},
-	unit_frame_portrait_enemy_fanatic = {
+	unit_frame_portrait_enemy_stormvermin = {
 		size = {
 			60,
 			70
@@ -2365,7 +2379,7 @@ hud_atlas = {
 			0.938965
 		}
 	},
-	unit_frame_portrait_enemy_clanrat = {
+	unit_frame_portrait_enemy_fanatic = {
 		size = {
 			60,
 			70
@@ -2379,7 +2393,7 @@ hud_atlas = {
 			0.91748
 		}
 	},
-	unit_frame_portrait_enemy_packmaster = {
+	unit_frame_portrait_enemy_plague_monk = {
 		size = {
 			60,
 			70
@@ -2393,7 +2407,7 @@ hud_atlas = {
 			0.899414
 		}
 	},
-	unit_frame_portrait_enemy_rasknitt = {
+	unit_frame_portrait_enemy_ratling_gunner = {
 		size = {
 			60,
 			70
@@ -2582,11 +2596,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.816162
+			0.848877
 		},
 		uv11 = {
 			0.243652,
-			0.838135
+			0.87085
 		}
 	},
 	fatigue_icon_03 = {
@@ -2596,11 +2610,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.793213
+			0.825928
 		},
 		uv11 = {
 			0.243652,
-			0.815186
+			0.8479
 		}
 	},
 	fatigue_icon_07 = {
@@ -2610,11 +2624,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.770264
+			0.802979
 		},
 		uv11 = {
 			0.243652,
-			0.792236
+			0.824951
 		}
 	},
 	fatigue_icon_06 = {
@@ -2624,11 +2638,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.747314
+			0.780029
 		},
 		uv11 = {
 			0.243652,
-			0.769287
+			0.802002
 		}
 	},
 	fatigue_icon_01 = {
@@ -2638,11 +2652,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.724365
+			0.75708
 		},
 		uv11 = {
 			0.243652,
-			0.746338
+			0.779053
 		}
 	},
 	fatigue_icon_04 = {
@@ -2652,11 +2666,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.701416
+			0.734131
 		},
 		uv11 = {
 			0.243652,
-			0.723389
+			0.756104
 		}
 	},
 	fatigue_icon_02 = {
@@ -2848,11 +2862,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.674805
+			0.70752
 		},
 		uv11 = {
 			0.247314,
-			0.700439
+			0.733154
 		}
 	},
 	hud_panel_ability_glow_01 = {
@@ -2862,11 +2876,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.648193
+			0.680908
 		},
 		uv11 = {
 			0.247314,
-			0.673828
+			0.706543
 		}
 	},
 	hud_panel_ability_frame = {
@@ -2876,11 +2890,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.621582
+			0.654297
 		},
 		uv11 = {
 			0.247314,
-			0.647217
+			0.679932
 		}
 	},
 	eor_empty_player = {
@@ -2890,11 +2904,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.594238
+			0.626953
 		},
 		uv11 = {
 			0.242676,
-			0.620605
+			0.65332
 		}
 	},
 	status_icon_needs_assist = {
@@ -2904,11 +2918,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
-			0.566895
+			0.599609
 		},
 		uv11 = {
 			0.242676,
-			0.593262
+			0.625977
 		}
 	},
 	portrait_frame_hero_selection = {
@@ -4136,6 +4150,20 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.22168,
+			0.566895
+		},
+		uv11 = {
+			0.248535,
+			0.598633
+		}
+	},
+	medium_unit_frame_portrait_bardin_slayer = {
+		size = {
+			110,
+			130
+		},
+		uv00 = {
+			0.22168,
 			0.53418
 		},
 		uv11 = {
@@ -4143,7 +4171,7 @@ hud_atlas = {
 			0.565918
 		}
 	},
-	medium_unit_frame_portrait_bardin_slayer = {
+	medium_unit_frame_portrait_kerillian_shade = {
 		size = {
 			110,
 			130
@@ -4157,7 +4185,7 @@ hud_atlas = {
 			0.533203
 		}
 	},
-	medium_unit_frame_portrait_kerillian_shade = {
+	medium_unit_frame_portrait_kerillian_waywatcher = {
 		size = {
 			110,
 			130
@@ -4171,7 +4199,7 @@ hud_atlas = {
 			0.500488
 		}
 	},
-	medium_unit_frame_portrait_kerillian_waywatcher = {
+	medium_unit_frame_portrait_kruber_huntsman = {
 		size = {
 			110,
 			130
@@ -4185,7 +4213,7 @@ hud_atlas = {
 			0.467773
 		}
 	},
-	medium_unit_frame_portrait_kruber_huntsman = {
+	medium_unit_frame_portrait_kruber_mercenary = {
 		size = {
 			110,
 			130
@@ -4199,7 +4227,7 @@ hud_atlas = {
 			0.435059
 		}
 	},
-	medium_unit_frame_portrait_kruber_mercenary = {
+	medium_unit_frame_portrait_globardier = {
 		size = {
 			110,
 			130
@@ -4213,7 +4241,7 @@ hud_atlas = {
 			0.402344
 		}
 	},
-	medium_unit_frame_portrait_globardier = {
+	medium_unit_frame_portrait_gutter_runner = {
 		size = {
 			110,
 			130
@@ -4227,7 +4255,7 @@ hud_atlas = {
 			0.369629
 		}
 	},
-	medium_unit_frame_portrait_gutter_runner = {
+	medium_unit_frame_portrait_packmaster = {
 		size = {
 			110,
 			130
@@ -4241,7 +4269,7 @@ hud_atlas = {
 			0.336914
 		}
 	},
-	medium_unit_frame_portrait_packmaster = {
+	medium_unit_frame_portrait_warpfire = {
 		size = {
 			110,
 			130
@@ -4255,7 +4283,7 @@ hud_atlas = {
 			0.304199
 		}
 	},
-	medium_unit_frame_portrait_warpfire = {
+	medium_unit_frame_portrait_bardin_ranger = {
 		size = {
 			110,
 			130
@@ -4269,31 +4297,17 @@ hud_atlas = {
 			0.271484
 		}
 	},
-	medium_unit_frame_portrait_bardin_ranger = {
-		size = {
-			110,
-			130
-		},
-		uv00 = {
-			0.956055,
-			0.205078
-		},
-		uv11 = {
-			0.98291,
-			0.236816
-		}
-	},
 	medium_unit_frame_portrait_sienna_adept = {
 		size = {
 			110,
 			130
 		},
 		uv00 = {
-			0.928223,
+			0.959961,
 			0.205078
 		},
 		uv11 = {
-			0.955078,
+			0.986816,
 			0.236816
 		}
 	},
@@ -4303,11 +4317,11 @@ hud_atlas = {
 			130
 		},
 		uv00 = {
-			0.900391,
+			0.932129,
 			0.205078
 		},
 		uv11 = {
-			0.927246,
+			0.958984,
 			0.236816
 		}
 	},
@@ -4317,11 +4331,11 @@ hud_atlas = {
 			130
 		},
 		uv00 = {
-			0.872559,
+			0.904297,
 			0.205078
 		},
 		uv11 = {
-			0.899414,
+			0.931152,
 			0.236816
 		}
 	},
@@ -4331,11 +4345,11 @@ hud_atlas = {
 			130
 		},
 		uv00 = {
-			0.844727,
+			0.876465,
 			0.205078
 		},
 		uv11 = {
-			0.871582,
+			0.90332,
 			0.236816
 		}
 	},
@@ -4345,11 +4359,11 @@ hud_atlas = {
 			130
 		},
 		uv00 = {
-			0.816895,
+			0.848633,
 			0.205078
 		},
 		uv11 = {
-			0.84375,
+			0.875488,
 			0.236816
 		}
 	},
@@ -4359,11 +4373,11 @@ hud_atlas = {
 			130
 		},
 		uv00 = {
-			0.789063,
+			0.820801,
 			0.205078
 		},
 		uv11 = {
-			0.815918,
+			0.847656,
 			0.236816
 		}
 	},
@@ -4373,11 +4387,11 @@ hud_atlas = {
 			130
 		},
 		uv00 = {
-			0.76123,
+			0.792969,
 			0.205078
 		},
 		uv11 = {
-			0.788086,
+			0.819824,
 			0.236816
 		}
 	},
@@ -4457,6 +4471,20 @@ hud_atlas = {
 			138
 		},
 		uv00 = {
+			0.76123,
+			0.205078
+		},
+		uv11 = {
+			0.791992,
+			0.23877
+		}
+	},
+	portrait_frame_0050 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
 			0.729492,
 			0.205078
 		},
@@ -4465,7 +4493,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0050 = {
+	portrait_frame_0048 = {
 		size = {
 			126,
 			138
@@ -4479,7 +4507,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0048 = {
+	portrait_frame_0059 = {
 		size = {
 			126,
 			138
@@ -4493,7 +4521,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0059 = {
+	portrait_frame_sienna = {
 		size = {
 			126,
 			138
@@ -4507,7 +4535,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_summer = {
+	portrait_frame_0055 = {
 		size = {
 			126,
 			138
@@ -4521,7 +4549,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0055 = {
+	portrait_frame_0049 = {
 		size = {
 			126,
 			138
@@ -4535,7 +4563,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0049 = {
+	portrait_frame_season_01_cataclysm_3 = {
 		size = {
 			126,
 			138
@@ -4549,7 +4577,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_season_01_chamon = {
+	portrait_frame_0051 = {
 		size = {
 			126,
 			138
@@ -4563,7 +4591,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0051 = {
+	portrait_frame_0052 = {
 		size = {
 			126,
 			138
@@ -4577,7 +4605,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0075 = {
+	portrait_frame_0016 = {
 		size = {
 			126,
 			138
@@ -4591,7 +4619,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0014 = {
+	portrait_frame_mondstille_01_base = {
 		size = {
 			126,
 			138
@@ -4605,7 +4633,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_mondstille_02_base = {
+	portrait_frame_0056 = {
 		size = {
 			126,
 			138
@@ -4619,7 +4647,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0056 = {
+	portrait_frame_0057 = {
 		size = {
 			126,
 			138
@@ -4633,7 +4661,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0057 = {
+	portrait_frame_0024 = {
 		size = {
 			126,
 			138
@@ -4647,7 +4675,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0023 = {
+	portrait_frame_0041 = {
 		size = {
 			126,
 			138
@@ -4661,7 +4689,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_drachenfels = {
+	portrait_frame_0060 = {
 		size = {
 			126,
 			138
@@ -4675,7 +4703,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0060 = {
+	portrait_frame_0061 = {
 		size = {
 			126,
 			138
@@ -4689,7 +4717,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_0061 = {
+	portrait_frame_0020 = {
 		size = {
 			126,
 			138
@@ -4703,7 +4731,7 @@ hud_atlas = {
 			0.966797
 		}
 	},
-	portrait_frame_0019 = {
+	portrait_frame_season_01_ghyran = {
 		size = {
 			126,
 			138
@@ -4717,7 +4745,7 @@ hud_atlas = {
 			0.932129
 		}
 	},
-	portrait_frame_season_01_ulgu = {
+	portrait_ubersreik_01 = {
 		size = {
 			126,
 			138
@@ -4731,7 +4759,7 @@ hud_atlas = {
 			0.897461
 		}
 	},
-	portrait_ubersreik_02 = {
+	portrait_frame_helmgart_cataclysm = {
 		size = {
 			126,
 			138
@@ -4745,7 +4773,7 @@ hud_atlas = {
 			0.862793
 		}
 	},
-	portrait_frame_0036 = {
+	portrait_frame_0028 = {
 		size = {
 			126,
 			138
@@ -4759,7 +4787,7 @@ hud_atlas = {
 			0.828125
 		}
 	},
-	portrait_frame_0027 = {
+	portrait_frame_0034 = {
 		size = {
 			126,
 			138
@@ -4773,7 +4801,7 @@ hud_atlas = {
 			0.793457
 		}
 	},
-	portrait_frame_0033 = {
+	portrait_frame_0071 = {
 		size = {
 			126,
 			138
@@ -4787,7 +4815,7 @@ hud_atlas = {
 			0.758789
 		}
 	},
-	portrait_frame_0071 = {
+	portrait_frame_0011 = {
 		size = {
 			126,
 			138
@@ -4801,7 +4829,7 @@ hud_atlas = {
 			0.724121
 		}
 	},
-	portrait_frame_0010 = {
+	portrait_frame_0079 = {
 		size = {
 			126,
 			138
@@ -4815,7 +4843,7 @@ hud_atlas = {
 			0.689453
 		}
 	},
-	portrait_frame_0079 = {
+	portrait_frame_season_01_aqshy = {
 		size = {
 			126,
 			138
@@ -4829,7 +4857,7 @@ hud_atlas = {
 			0.654785
 		}
 	},
-	portrait_frame_season_01_azyr = {
+	portrait_frame_0072 = {
 		size = {
 			126,
 			138
@@ -4843,7 +4871,7 @@ hud_atlas = {
 			0.620117
 		}
 	},
-	portrait_frame_0072 = {
+	portrait_frame_0007 = {
 		size = {
 			126,
 			138
@@ -4857,7 +4885,7 @@ hud_atlas = {
 			0.585449
 		}
 	},
-	portrait_frame_0006 = {
+	portrait_frame_0043 = {
 		size = {
 			126,
 			138
@@ -4871,7 +4899,7 @@ hud_atlas = {
 			0.550781
 		}
 	},
-	portrait_frame_0043 = {
+	portrait_frame_0066 = {
 		size = {
 			126,
 			138
@@ -4885,7 +4913,7 @@ hud_atlas = {
 			0.516113
 		}
 	},
-	portrait_frame_0066 = {
+	portrait_frame_0073 = {
 		size = {
 			126,
 			138
@@ -4899,7 +4927,7 @@ hud_atlas = {
 			0.481445
 		}
 	},
-	portrait_frame_0073 = {
+	portrait_frame_0003 = {
 		size = {
 			126,
 			138
@@ -4913,7 +4941,7 @@ hud_atlas = {
 			0.446777
 		}
 	},
-	portrait_frame_0041 = {
+	portrait_frame_0085 = {
 		size = {
 			126,
 			138
@@ -4927,7 +4955,7 @@ hud_atlas = {
 			0.412109
 		}
 	},
-	portrait_frame_0085 = {
+	portrait_frame_season_01_hysh = {
 		size = {
 			126,
 			138
@@ -4941,7 +4969,7 @@ hud_atlas = {
 			0.377441
 		}
 	},
-	portrait_frame_season_01_shyish = {
+	portrait_frame_0074 = {
 		size = {
 			126,
 			138
@@ -4955,7 +4983,7 @@ hud_atlas = {
 			0.342773
 		}
 	},
-	portrait_frame_0074 = {
+	portrait_frame_drachenfels = {
 		size = {
 			126,
 			138
@@ -4969,7 +4997,7 @@ hud_atlas = {
 			0.308105
 		}
 	},
-	portrait_frame_geheimnisnacht_01 = {
+	portrait_frame_season_01_cataclysm_2 = {
 		size = {
 			126,
 			138
@@ -4983,7 +5011,7 @@ hud_atlas = {
 			0.273438
 		}
 	},
-	portrait_frame_season_01_cataclysm_3 = {
+	portrait_frame_season_01_chamon = {
 		size = {
 			126,
 			138
@@ -4997,7 +5025,7 @@ hud_atlas = {
 			0.23877
 		}
 	},
-	portrait_frame_season_01_ghur = {
+	portrait_frame_streamer = {
 		size = {
 			126,
 			138
@@ -5025,7 +5053,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0038 = {
+	portrait_frame_0053 = {
 		size = {
 			126,
 			138
@@ -5039,7 +5067,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0053 = {
+	portrait_frame_0076 = {
 		size = {
 			126,
 			138
@@ -5053,7 +5081,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0076 = {
+	portrait_frame_0044 = {
 		size = {
 			126,
 			138
@@ -5067,7 +5095,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0044 = {
+	portrait_frame_0067 = {
 		size = {
 			126,
 			138
@@ -5081,7 +5109,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0067 = {
+	portrait_ubersreik_03 = {
 		size = {
 			126,
 			138
@@ -5095,7 +5123,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_ubersreik_04 = {
+	portrait_ubersreik_05 = {
 		size = {
 			126,
 			138
@@ -5109,7 +5137,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0035 = {
+	portrait_frame_0042 = {
 		size = {
 			126,
 			138
@@ -5123,7 +5151,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0042 = {
+	portrait_frame_0084 = {
 		size = {
 			126,
 			138
@@ -5137,7 +5165,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0084 = {
+	portrait_frame_season_01_ghur = {
 		size = {
 			126,
 			138
@@ -5151,7 +5179,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_season_01_ghyran = {
+	portrait_frame_0078 = {
 		size = {
 			126,
 			138
@@ -5165,7 +5193,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0078 = {
+	portrait_frame_mondstille_03_top = {
 		size = {
 			126,
 			138
@@ -5179,7 +5207,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_scorpion_complete_all_helmgart_level_achievements_cataclysm = {
+	portrait_frame_geheimnisnacht_01 = {
 		size = {
 			126,
 			138
@@ -5193,7 +5221,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_geheimnisnacht_02 = {
+	portrait_frame_geheimnisnacht_03 = {
 		size = {
 			126,
 			138
@@ -5207,7 +5235,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_helmgart_cataclysm = {
+	portrait_frame_0075 = {
 		size = {
 			126,
 			138
@@ -5221,7 +5249,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_geheimnisnacht_03 = {
+	portrait_frame_geheimnisnacht_02 = {
 		size = {
 			126,
 			138
@@ -5235,7 +5263,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_skulls = {
+	portrait_frame_0030 = {
 		size = {
 			126,
 			138
@@ -5249,7 +5277,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0029 = {
+	portrait_frame_0026 = {
 		size = {
 			126,
 			138
@@ -5263,7 +5291,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0025 = {
+	portrait_frame_0080 = {
 		size = {
 			126,
 			138
@@ -5277,7 +5305,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0080 = {
+	portrait_frame_season_01_cataclysm_1 = {
 		size = {
 			126,
 			138
@@ -5291,7 +5319,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_season_01_cataclysm_2 = {
+	portrait_frame_0058 = {
 		size = {
 			126,
 			138
@@ -5305,7 +5333,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0058 = {
+	portrait_frame_0081 = {
 		size = {
 			126,
 			138
@@ -5319,7 +5347,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0081 = {
+	portrait_frame_0086 = {
 		size = {
 			126,
 			138
@@ -5333,7 +5361,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_0086 = {
+	portrait_frame_season_01_ulgu = {
 		size = {
 			126,
 			138
@@ -5347,7 +5375,7 @@ hud_atlas = {
 			0.204102
 		}
 	},
-	portrait_frame_sienna = {
+	portrait_frame_season_01_shyish = {
 		size = {
 			126,
 			138
@@ -5375,7 +5403,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0052 = {
+	portrait_frame_0047 = {
 		size = {
 			126,
 			138
@@ -5389,7 +5417,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0047 = {
+	portrait_frame_0070 = {
 		size = {
 			126,
 			138
@@ -5403,7 +5431,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0070 = {
+	portrait_frame_0054 = {
 		size = {
 			126,
 			138
@@ -5417,7 +5445,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0054 = {
+	portrait_frame_0077 = {
 		size = {
 			126,
 			138
@@ -5431,7 +5459,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0077 = {
+	portrait_frame_0022 = {
 		size = {
 			126,
 			138
@@ -5445,7 +5473,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0021 = {
+	portrait_frame_0018 = {
 		size = {
 			126,
 			138
@@ -5459,7 +5487,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0017 = {
+	portrait_frame_0013 = {
 		size = {
 			126,
 			138
@@ -5473,7 +5501,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0012 = {
+	portrait_frame_0009 = {
 		size = {
 			126,
 			138
@@ -5487,7 +5515,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0008 = {
+	portrait_frame_0045 = {
 		size = {
 			126,
 			138
@@ -5501,7 +5529,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0045 = {
+	portrait_frame_0068 = {
 		size = {
 			126,
 			138
@@ -5515,7 +5543,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0068 = {
+	portrait_frame_0032 = {
 		size = {
 			126,
 			138
@@ -5529,7 +5557,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0031 = {
+	portrait_frame_0005 = {
 		size = {
 			126,
 			138
@@ -5543,7 +5571,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0004 = {
+	portrait_frame_0036 = {
 		size = {
 			126,
 			138
@@ -5557,7 +5585,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_mondstille_01_base = {
+	portrait_frame_mondstille_02_base = {
 		size = {
 			126,
 			138
@@ -5571,7 +5599,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_mondstille_03_top = {
+	portrait_frame_scorpion_complete_all_helmgart_level_achievements_cataclysm = {
 		size = {
 			126,
 			138
@@ -5585,7 +5613,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_season_01_aqshy = {
+	portrait_frame_season_01_azyr = {
 		size = {
 			126,
 			138
@@ -5599,7 +5627,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_season_01_cataclysm_1 = {
+	portrait_frame_0046 = {
 		size = {
 			126,
 			138
@@ -5613,7 +5641,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0046 = {
+	portrait_frame_0069 = {
 		size = {
 			126,
 			138
@@ -5627,7 +5655,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0069 = {
+	portrait_frame_0062 = {
 		size = {
 			126,
 			138
@@ -5641,7 +5669,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0062 = {
+	portrait_frame_0087 = {
 		size = {
 			126,
 			138
@@ -5655,7 +5683,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_season_01_hysh = {
+	portrait_frame_year_of_the_rat = {
 		size = {
 			126,
 			138
@@ -5669,7 +5697,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_0087 = {
+	portrait_frame_skulls = {
 		size = {
 			126,
 			138
@@ -5683,7 +5711,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_streamer = {
+	portrait_frame_0089 = {
 		size = {
 			126,
 			138
@@ -5697,7 +5725,7 @@ hud_atlas = {
 			0.169434
 		}
 	},
-	portrait_frame_celebration_1 = {
+	portrait_frame_0023 = {
 		size = {
 			126,
 			138
@@ -5709,286 +5737,6 @@ hud_atlas = {
 		uv11 = {
 			0.188965,
 			0.995605
-		}
-	},
-	portrait_frame_0030 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.961914
-		},
-		uv11 = {
-			0.157227,
-			0.995605
-		}
-	},
-	portrait_frame_0024 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.927246
-		},
-		uv11 = {
-			0.188965,
-			0.960938
-		}
-	},
-	portrait_frame_celebration_3 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.927246
-		},
-		uv11 = {
-			0.157227,
-			0.960938
-		}
-	},
-	portrait_frame_collectors_edition_preorder = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.892578
-		},
-		uv11 = {
-			0.188965,
-			0.92627
-		}
-	},
-	portrait_frame_0011 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.892578
-		},
-		uv11 = {
-			0.157227,
-			0.92627
-		}
-	},
-	portrait_ubersreik_01 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.85791
-		},
-		uv11 = {
-			0.188965,
-			0.891602
-		}
-	},
-	portrait_frame_bogenhafen_1 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.85791
-		},
-		uv11 = {
-			0.157227,
-			0.891602
-		}
-	},
-	portrait_frame_0020 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.823242
-		},
-		uv11 = {
-			0.188965,
-			0.856934
-		}
-	},
-	portrait_frame_collectors_edition = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.823242
-		},
-		uv11 = {
-			0.157227,
-			0.856934
-		}
-	},
-	portrait_frame_0016 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.788574
-		},
-		uv11 = {
-			0.188965,
-			0.822266
-		}
-	},
-	portrait_frame_bogenhafen_3 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.788574
-		},
-		uv11 = {
-			0.157227,
-			0.822266
-		}
-	},
-	portrait_frame_0089 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.753906
-		},
-		uv11 = {
-			0.188965,
-			0.787598
-		}
-	},
-	portrait_ubersreik_05 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.753906
-		},
-		uv11 = {
-			0.157227,
-			0.787598
-		}
-	},
-	portrait_frame_bear = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.719238
-		},
-		uv11 = {
-			0.188965,
-			0.75293
-		}
-	},
-	portrait_frame_0022 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.719238
-		},
-		uv11 = {
-			0.157227,
-			0.75293
-		}
-	},
-	portrait_frame_celebration_2 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.68457
-		},
-		uv11 = {
-			0.188965,
-			0.718262
-		}
-	},
-	portrait_frame_0091 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.68457
-		},
-		uv11 = {
-			0.157227,
-			0.718262
-		}
-	},
-	portrait_frame_year_of_the_rat = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.649902
-		},
-		uv11 = {
-			0.188965,
-			0.683594
-		}
-	},
-	portrait_frame_0032 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.649902
-		},
-		uv11 = {
-			0.157227,
-			0.683594
-		}
-	},
-	portrait_frame_0018 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.615234
-		},
-		uv11 = {
-			0.188965,
-			0.648926
 		}
 	},
 	portrait_frame_bogenhafen_2 = {
@@ -5998,123 +5746,11 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.126465,
-			0.615234
+			0.961914
 		},
 		uv11 = {
 			0.157227,
-			0.648926
-		}
-	},
-	portrait_ubersreik_03 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.580566
-		},
-		uv11 = {
-			0.188965,
-			0.614258
-		}
-	},
-	portrait_frame_0013 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.580566
-		},
-		uv11 = {
-			0.157227,
-			0.614258
-		}
-	},
-	portrait_frame_community_01 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.545898
-		},
-		uv11 = {
-			0.188965,
-			0.57959
-		}
-	},
-	portrait_frame_0095 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.545898
-		},
-		uv11 = {
-			0.157227,
-			0.57959
-		}
-	},
-	portrait_frame_0090 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.51123
-		},
-		uv11 = {
-			0.188965,
-			0.544922
-		}
-	},
-	portrait_frame_0028 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.51123
-		},
-		uv11 = {
-			0.157227,
-			0.544922
-		}
-	},
-	portrait_frame_bogenhafen_4 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.158203,
-			0.476563
-		},
-		uv11 = {
-			0.188965,
-			0.510254
-		}
-	},
-	portrait_frame_0026 = {
-		size = {
-			126,
-			138
-		},
-		uv00 = {
-			0.126465,
-			0.476563
-		},
-		uv11 = {
-			0.157227,
-			0.510254
+			0.995605
 		}
 	},
 	portrait_frame_bogenhafen_5 = {
@@ -6124,6 +5760,398 @@ hud_atlas = {
 		},
 		uv00 = {
 			0.158203,
+			0.927246
+		},
+		uv11 = {
+			0.188965,
+			0.960938
+		}
+	},
+	portrait_frame_0019 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.927246
+		},
+		uv11 = {
+			0.157227,
+			0.960938
+		}
+	},
+	portrait_frame_0014 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.892578
+		},
+		uv11 = {
+			0.188965,
+			0.92627
+		}
+	},
+	portrait_frame_community_01 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.892578
+		},
+		uv11 = {
+			0.157227,
+			0.92627
+		}
+	},
+	portrait_frame_0091 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.85791
+		},
+		uv11 = {
+			0.188965,
+			0.891602
+		}
+	},
+	portrait_frame_0033 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.85791
+		},
+		uv11 = {
+			0.157227,
+			0.891602
+		}
+	},
+	portrait_frame_celebration_2 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.823242
+		},
+		uv11 = {
+			0.188965,
+			0.856934
+		}
+	},
+	portrait_frame_0017 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.823242
+		},
+		uv11 = {
+			0.157227,
+			0.856934
+		}
+	},
+	portrait_frame_collectors_edition = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.788574
+		},
+		uv11 = {
+			0.188965,
+			0.822266
+		}
+	},
+	portrait_frame_0029 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.788574
+		},
+		uv11 = {
+			0.157227,
+			0.822266
+		}
+	},
+	portrait_frame_summer = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.753906
+		},
+		uv11 = {
+			0.188965,
+			0.787598
+		}
+	},
+	portrait_frame_0095 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.753906
+		},
+		uv11 = {
+			0.157227,
+			0.787598
+		}
+	},
+	portrait_frame_0035 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.719238
+		},
+		uv11 = {
+			0.188965,
+			0.75293
+		}
+	},
+	portrait_frame_celebration_1 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.719238
+		},
+		uv11 = {
+			0.157227,
+			0.75293
+		}
+	},
+	portrait_frame_0021 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.68457
+		},
+		uv11 = {
+			0.188965,
+			0.718262
+		}
+	},
+	portrait_ubersreik_02 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.68457
+		},
+		uv11 = {
+			0.157227,
+			0.718262
+		}
+	},
+	portrait_frame_0090 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.649902
+		},
+		uv11 = {
+			0.188965,
+			0.683594
+		}
+	},
+	portrait_frame_bogenhafen_1 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.649902
+		},
+		uv11 = {
+			0.157227,
+			0.683594
+		}
+	},
+	portrait_frame_celebration_3 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.615234
+		},
+		uv11 = {
+			0.188965,
+			0.648926
+		}
+	},
+	portrait_frame_0031 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.615234
+		},
+		uv11 = {
+			0.157227,
+			0.648926
+		}
+	},
+	portrait_frame_0094 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.580566
+		},
+		uv11 = {
+			0.188965,
+			0.614258
+		}
+	},
+	portrait_frame_collectors_edition_preorder = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.580566
+		},
+		uv11 = {
+			0.157227,
+			0.614258
+		}
+	},
+	portrait_frame_0012 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.545898
+		},
+		uv11 = {
+			0.188965,
+			0.57959
+		}
+	},
+	portrait_ubersreik_04 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.545898
+		},
+		uv11 = {
+			0.157227,
+			0.57959
+		}
+	},
+	portrait_frame_0038 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.51123
+		},
+		uv11 = {
+			0.188965,
+			0.544922
+		}
+	},
+	portrait_frame_bogenhafen_3 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.51123
+		},
+		uv11 = {
+			0.157227,
+			0.544922
+		}
+	},
+	portrait_frame_0027 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
+			0.476563
+		},
+		uv11 = {
+			0.188965,
+			0.510254
+		}
+	},
+	portrait_frame_bogenhafen_4 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.126465,
+			0.476563
+		},
+		uv11 = {
+			0.157227,
+			0.510254
+		}
+	},
+	portrait_frame_0025 = {
+		size = {
+			126,
+			138
+		},
+		uv00 = {
+			0.158203,
 			0.441895
 		},
 		uv11 = {
@@ -6131,7 +6159,7 @@ hud_atlas = {
 			0.475586
 		}
 	},
-	portrait_frame_0034 = {
+	portrait_frame_bear = {
 		size = {
 			126,
 			138
@@ -6145,7 +6173,7 @@ hud_atlas = {
 			0.475586
 		}
 	},
-	portrait_frame_crater_01 = {
+	portrait_frame_0010 = {
 		size = {
 			126,
 			138
@@ -6159,7 +6187,7 @@ hud_atlas = {
 			0.440918
 		}
 	},
-	portrait_frame_0009 = {
+	portrait_frame_crater_01 = {
 		size = {
 			126,
 			138
@@ -6173,7 +6201,7 @@ hud_atlas = {
 			0.440918
 		}
 	},
-	portrait_frame_0003 = {
+	portrait_frame_crater_04 = {
 		size = {
 			126,
 			138
@@ -6243,7 +6271,7 @@ hud_atlas = {
 			0.336914
 		}
 	},
-	portrait_frame_crater_05 = {
+	portrait_frame_0037 = {
 		size = {
 			126,
 			138
@@ -6257,7 +6285,7 @@ hud_atlas = {
 			0.336914
 		}
 	},
-	portrait_frame_0037 = {
+	portrait_frame_crater_05 = {
 		size = {
 			126,
 			138
@@ -6299,7 +6327,7 @@ hud_atlas = {
 			0.267578
 		}
 	},
-	portrait_frame_crater_03 = {
+	portrait_frame_0006 = {
 		size = {
 			126,
 			138
@@ -6313,7 +6341,7 @@ hud_atlas = {
 			0.23291
 		}
 	},
-	portrait_frame_crater_02 = {
+	portrait_frame_0008 = {
 		size = {
 			126,
 			138
@@ -6327,7 +6355,7 @@ hud_atlas = {
 			0.23291
 		}
 	},
-	portrait_frame_0005 = {
+	portrait_frame_crater_03 = {
 		size = {
 			126,
 			138
@@ -6355,7 +6383,7 @@ hud_atlas = {
 			0.955566
 		}
 	},
-	portrait_frame_crater_04 = {
+	portrait_frame_0004 = {
 		size = {
 			126,
 			138
@@ -6369,7 +6397,7 @@ hud_atlas = {
 			0.916016
 		}
 	},
-	portrait_frame_0007 = {
+	portrait_frame_crater_02 = {
 		size = {
 			126,
 			138
