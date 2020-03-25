@@ -1217,10 +1217,11 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_passive_power_level = {
 		buffs = {
 			{
+				refresh_durations = true,
+				stat_buff = "power_level",
 				max_stacks = 1,
 				icon = "markus_mercenary_passive_power_level_on_proc",
-				dormant = true,
-				stat_buff = "power_level"
+				dormant = true
 			}
 		}
 	},

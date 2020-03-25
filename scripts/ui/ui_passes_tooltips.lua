@@ -1176,60 +1176,63 @@ UITooltipPasses = {
 
 				for index, trait_key in loop_func(traits) do
 					local trait_data = WeaponTraits.traits[trait_key]
-					local text_id = "trait_title_" .. index
-					local text_style = style.trait_title
-					local text_pass_data = data.text_pass_data
-					text_pass_data.text_id = text_id
-					local trait_name = trait_data.display_name
-					local trait_advanced_description = trait_data.advanced_description
-					local trait_icon = trait_data.icon
-					local title_text = Localize(trait_name)
-					local description_text = ""
-					local icon_pass_definition = data.icon_pass_definition
-					local icon_pass_data = data.icon_pass_data
-					local icon_style = data.style.icon
-					local icon_size = data.icon_size
-					content.icon = trait_icon or data.default_icon
 
-					if trait_advanced_description then
-						description_text = UIUtils.get_trait_description(trait_key)
-					end
+					if trait_data then
+						local text_id = "trait_title_" .. index
+						local text_style = style.trait_title
+						local text_pass_data = data.text_pass_data
+						text_pass_data.text_id = text_id
+						local trait_name = trait_data.display_name
+						local trait_advanced_description = trait_data.advanced_description
+						local trait_icon = trait_data.icon
+						local title_text = Localize(trait_name)
+						local description_text = ""
+						local icon_pass_definition = data.icon_pass_definition
+						local icon_pass_data = data.icon_pass_data
+						local icon_style = data.style.icon
+						local icon_size = data.icon_size
+						content.icon = trait_icon or data.default_icon
 
-					local text = title_text .. "\n" .. description_text
-					local text_size = data.text_size
-					text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
-					text_size[2] = 0
-					local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
-					text_size[2] = text_height
-					local old_x_position = position[1]
-					local old_y_position = position[2]
-					content[text_id] = text
+						if trait_advanced_description then
+							description_text = UIUtils.get_trait_description(trait_key)
+						end
 
-					if draw then
-						local icon_color = icon_style.color
-						icon_color[1] = alpha
-						position[2] = old_y_position - icon_size[2]
-						position[1] = old_x_position
+						local text = title_text .. "\n" .. description_text
+						local text_size = data.text_size
+						text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
+						text_size[2] = 0
+						local text_height = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
+						text_size[2] = text_height
+						local old_x_position = position[1]
+						local old_y_position = position[2]
+						content[text_id] = text
 
-						UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
+						if draw then
+							local icon_color = icon_style.color
+							icon_color[1] = alpha
+							position[2] = old_y_position - icon_size[2]
+							position[1] = old_x_position
 
-						position[2] = old_y_position - text_height
-						position[1] = old_x_position + icon_size[1] + frame_margin
-						local text_color = text_style.text_color
-						local line_colors = text_style.line_colors
-						text_color[1] = alpha
-						line_colors[1][1] = alpha
-						line_colors[2][1] = alpha
+							UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
-						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
-					end
+							position[2] = old_y_position - text_height
+							position[1] = old_x_position + icon_size[1] + frame_margin
+							local text_color = text_style.text_color
+							local line_colors = text_style.line_colors
+							text_color[1] = alpha
+							line_colors[1][1] = alpha
+							line_colors[2][1] = alpha
 
-					total_height = total_height + text_height
+							UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+						end
 
-					if index ~= #traits then
-						total_height = total_height + trait_spacing
-						position[2] = old_y_position - (text_height + trait_spacing)
-						position[1] = old_x_position
+						total_height = total_height + text_height
+
+						if index ~= #traits then
+							total_height = total_height + trait_spacing
+							position[2] = old_y_position - (text_height + trait_spacing)
+							position[1] = old_x_position
+						end
 					end
 				end
 
@@ -1812,7 +1815,7 @@ UITooltipPasses = {
 			local font_material = font[1]
 			local font_size = font[2]
 			local font_name = font[3]
-			local text_width, _, _ = UIRenderer.text_size(ui_renderer, content.text, font_material, font_size, font_name)
+			local text_width, _, _ = UIRenderer.text_size(ui_renderer, content.text, font_material, size_of_font, font_name)
 			text_size[2] = text_height
 			position[2] = position[2] - text_height
 

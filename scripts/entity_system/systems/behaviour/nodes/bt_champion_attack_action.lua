@@ -66,7 +66,13 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 		LocomotionUtils.set_animation_translation_scale(unit, Vector3(scale, scale, scale))
 	end
 
-	Managers.state.network:anim_event(unit, randomize(anim))
+	if anim then
+		Managers.state.network:anim_event(unit, randomize(anim))
+	else
+		self:anim_cb_damage(unit, blackboard)
+
+		blackboard.attack_finished = true
+	end
 
 	local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.attacking_target)
 	blackboard.attack_rotation = QuaternionBox(rotation)

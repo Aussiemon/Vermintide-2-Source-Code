@@ -10,8 +10,9 @@ settings.unlock_settings = {
 }
 settings.unlock_settings_xb1 = {
 	bogenhafen = {
-		class = "UnlockDlc",
-		id = "3E0F5C11-261E-4165-A610-176131574B84"
+		id = "3E0F5C11-261E-4165-A610-176131574B84",
+		backend_reward_id = "bogenhafen",
+		class = "UnlockDlc"
 	}
 }
 settings.unlock_settings_ps4 = {
@@ -19,14 +20,16 @@ settings.unlock_settings_ps4 = {
 		bogenhafen = {
 			id = "2b2fc2291fbf4eafb7289a0586ae3994",
 			product_label = "V2MAPPACKUS00001",
-			class = "UnlockDlc"
+			class = "UnlockDlc",
+			backend_reward_id = "bogenhafen"
 		}
 	},
 	CUSA13645_00 = {
 		bogenhafen = {
 			id = "78b2c8d131d84d7a9796bb28186ea6b6",
 			product_label = "V2MAPPACKEU00001",
-			class = "UnlockDlc"
+			class = "UnlockDlc",
+			backend_reward_id = "bogenhafen"
 		}
 	}
 }

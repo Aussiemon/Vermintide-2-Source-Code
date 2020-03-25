@@ -321,7 +321,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "background_price",
 			texture_id = "background_price",
 			content_check_function = function (content)
-				return not content.owned
+				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
 			end
 		},
 		{
@@ -329,7 +329,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "background_price_center",
 			texture_id = "background_price_center",
 			content_check_function = function (content)
-				return not content.owned
+				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
 			end
 		},
 		{
@@ -337,7 +337,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "background_price_right",
 			texture_id = "background_price_right",
 			content_check_function = function (content)
-				return not content.owned
+				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
 			end
 		},
 		{
@@ -353,7 +353,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			pass_type = "text",
 			text_id = "price_text",
 			content_check_function = function (content)
-				return not content.owned
+				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
 			end
 		},
 		{
@@ -412,35 +412,126 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			texture_id = "pulse_frame"
 		},
 		{
+			style_id = "loading_icon",
+			pass_type = "rotated_texture",
+			texture_id = "loading_icon",
+			content_check_function = function (content)
+				return not content.icon
+			end,
+			content_change_function = function (content, style, _, dt)
+				local progress = style.progress or 0
+				progress = (progress + dt) % 1
+				local angle = math.pow(2, math.smoothstep(progress, 0, 1)) * math.pi * 2
+				style.angle = angle
+				style.progress = progress
+			end
+		},
+		{
 			pass_type = "texture",
 			style_id = "icon",
 			texture_id = "icon",
 			content_check_function = function (content)
-				return content.icon
+				return content.icon and not content.rendering_loading_icon
 			end
 		},
 		{
 			pass_type = "texture",
 			style_id = "type_tag_icon",
 			texture_id = "type_tag_icon"
+		},
+		{
+			pass_type = "texture",
+			style_id = "psplus_icon",
+			texture_id = "psplus_icon",
+			content_check_function = function (content)
+				return content.show_ps4_plus and PLATFORM == "ps4" and content.real_currency
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "ps4_background_rect_bottom",
+			texture_id = "ps4_background_rect",
+			content_check_function = function (content)
+				return PLATFORM == "ps4" and content.real_currency
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "ps4_background_rect_top",
+			texture_id = "ps4_background_rect",
+			content_check_function = function (content)
+				return PLATFORM == "ps4" and content.real_currency and content.ps4_secondary_price_text ~= ""
+			end
+		},
+		{
+			texture_id = "ps4_secondary_price_stroke",
+			style_id = "ps4_secondary_price_stroke",
+			pass_type = "texture",
+			content_check_function = function (content)
+				return content.show_secondary_stroke and PLATFORM == "ps4" and content.real_currency
+			end
+		},
+		{
+			texture_id = "ps4_third_price_stroke",
+			style_id = "ps4_third_price_stroke",
+			pass_type = "texture",
+			content_check_function = function (content)
+				return content.show_third_stroke and PLATFORM == "ps4" and content.real_currency
+			end
+		},
+		{
+			style_id = "ps4_first_price_text",
+			pass_type = "text",
+			text_id = "ps4_first_price_text",
+			content_check_function = function (content)
+				return PLATFORM == "ps4" and content.real_currency
+			end,
+			content_change_function = function (content, style)
+				style.text_color = (content.show_ps4_plus and style.ps_plus_color) or style.base_color
+			end
+		},
+		{
+			style_id = "ps4_secondary_price_text",
+			pass_type = "text",
+			text_id = "ps4_secondary_price_text",
+			content_check_function = function (content)
+				return content.ps4_secondary_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+			end
+		},
+		{
+			style_id = "ps4_third_price_text",
+			pass_type = "text",
+			text_id = "ps4_third_price_text",
+			content_check_function = function (content)
+				return content.ps4_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+			end
 		}
 	}
 	local content = {
 		expire_time_icon = "store_icon_hourglass",
 		price_icon = "store_icon_currency_ingame",
-		background_price = "store_thumbnail_pricetag_left",
+		psplus_icon = "psplus_logo",
 		owned_icon = "store_owned_sigil",
-		background_price_center = "store_thumbnail_pricetag_middle",
-		draw_price_icon = true,
 		price_text = "-",
-		type_tag_icon = "store_tag_icon_dlc",
+		draw_price_icon = true,
+		background_price_center = "store_thumbnail_pricetag_middle",
 		limited_time = false,
-		owned = false,
-		discount_bg = "store_thumbnail_sale",
+		show_secondary_stroke = false,
+		loading_icon = "loot_loading",
+		show_third_stroke = false,
 		has_expire_date = false,
+		ps4_secondary_price_text = "",
+		show_ps4_plus = false,
+		type_tag_icon = "store_tag_icon_dlc",
+		discount = false,
+		ps4_third_price_text = "",
+		background_price = "store_thumbnail_pricetag_left",
+		real_currency = false,
+		ps4_first_price_text = "",
+		owned = false,
 		owned_icon_bg = "store_owned_ribbon",
 		background_price_right = "store_thumbnail_pricetag_right",
-		discount = false,
+		discount_bg = "store_thumbnail_sale",
 		timer_icon = "store_owned_sigil",
 		hotspot = {},
 		discont_number_icons = {},
@@ -448,7 +539,10 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 		frame = frame_settings.texture,
 		hover_frame = hover_frame_settings.texture,
 		pulse_frame = pulse_frame_settings.texture,
-		size = size
+		size = size,
+		ps4_background_rect = (masked and "rect_masked") or "simple_rect_texture",
+		ps4_secondary_price_stroke = (masked and "rect_masked") or "simple_rect_texture",
+		ps4_third_price_stroke = (masked and "rect_masked") or "simple_rect_texture"
 	}
 	local style = {
 		hotspot = {
@@ -457,6 +551,29 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				0,
 				-size[2],
 				0
+			}
+		},
+		loading_icon = {
+			masked = true,
+			angle = 0,
+			pivot = {
+				50,
+				50
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				size[1] * 0.5 - 50,
+				size[2] * 0.5 - 50,
+				6
+			},
+			texture_size = {
+				100,
+				100
 			}
 		},
 		price_text = {
@@ -586,7 +703,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			offset = {
 				-6,
 				-(size[2] - 90),
-				10
+				11
 			}
 		},
 		background_price_center = {
@@ -610,7 +727,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			offset = {
 				58,
 				-(size[2] - 34),
-				10
+				11
 			}
 		},
 		background_price_right = {
@@ -634,12 +751,12 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			offset = {
 				58,
 				-(size[2] - 38),
-				10
+				11
 			},
 			default_offset = {
 				58,
 				-(size[2] - 38),
-				10
+				11
 			}
 		},
 		price_icon = {
@@ -712,12 +829,12 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			offset = {
 				5,
 				-(size[2] - 5),
-				11
+				12
 			},
 			default_offset = {
 				5,
 				-(size[2] - 5),
-				11
+				12
 			}
 		},
 		owned_icon_bg = {
@@ -741,12 +858,12 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			offset = {
 				15,
 				-(size[2] + 8),
-				10
+				11
 			},
 			default_offset = {
 				15,
 				-(size[2] + 8),
-				10
+				11
 			}
 		},
 		discount_bg = {
@@ -834,7 +951,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			offset = {
 				0,
 				0,
-				9
+				10
 			}
 		},
 		hover_frame = {
@@ -881,6 +998,160 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				0,
 				0,
 				12
+			}
+		},
+		ps4_background_rect_bottom = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				size[1],
+				-42.5
+			},
+			color = {
+				192,
+				0,
+				0,
+				0
+			},
+			offset = {
+				0,
+				-size[2],
+				9
+			}
+		},
+		ps4_background_rect_top = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				size[1],
+				-32.5
+			},
+			color = {
+				192,
+				0,
+				0,
+				0
+			},
+			offset = {
+				0,
+				-size[2] + 42.5,
+				9
+			}
+		},
+		ps4_first_price_text = {
+			upper_case = false,
+			localize = false,
+			font_size = 28,
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			dynamic_font_size = false,
+			size = {
+				45,
+				40
+			},
+			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			base_color = Colors.get_color_table_with_alpha("white", 255),
+			ps_plus_color = {
+				255,
+				255,
+				205,
+				0
+			},
+			offset = {
+				size[1],
+				-(size[2] - 4),
+				12
+			}
+		},
+		ps4_secondary_price_text = {
+			upper_case = false,
+			localize = false,
+			font_size = 28,
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			dynamic_font_size = false,
+			size = {
+				45,
+				40
+			},
+			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				size[1],
+				-(size[2] - 4 - 30),
+				12
+			}
+		},
+		ps4_third_price_text = {
+			upper_case = false,
+			localize = false,
+			font_size = 20,
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			dynamic_font_size = false,
+			size = {
+				45,
+				40
+			},
+			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				size[1],
+				-(size[2] - 4 - 30),
+				12
+			}
+		},
+		ps4_secondary_price_stroke = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				0,
+				2
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				size[1],
+				-(size[2] - 4 - 50),
+				13
+			}
+		},
+		ps4_third_price_stroke = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				0,
+				2
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				size[1],
+				-(size[2] - 4 - 50),
+				13
+			}
+		},
+		psplus_icon = {
+			vertical_alignment = "center",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				20,
+				20
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				size[1],
+				-size[2] + 25,
+				10
 			}
 		}
 	}
@@ -2156,7 +2427,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and content.title_text and (PLATFORM == "win32" or not content.real_currency)
 					end
 				},
 				{
@@ -2166,7 +2437,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return button_hotspot.disable_button and not content.owned
+						return button_hotspot.disable_button and not content.owned and content.title_text and (PLATFORM == "win32" or not content.real_currency)
 					end
 				},
 				{
@@ -2174,7 +2445,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					pass_type = "text",
 					text_id = "title_text",
 					content_check_function = function (content)
-						return not content.owned
+						return not content.owned and content.title_text and (PLATFORM == "win32" or not content.real_currency)
 					end
 				},
 				{
@@ -2184,7 +2455,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and content.title_text and (PLATFORM == "win32" or not content.real_currency)
 					end
 				},
 				{
@@ -2194,7 +2465,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and (PLATFORM == "win32" or not content.real_currency)
 					end
 				},
 				{
@@ -2232,23 +2503,93 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 
 						return not content.owned and content.present_currency and button_hotspot.disable_button
 					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "psplus_icon",
+					texture_id = "psplus_icon",
+					content_check_function = function (content)
+						return content.show_ps4_plus and PLATFORM == "ps4" and content.real_currency
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "ps4_background_rect",
+					texture_id = "ps4_background_rect",
+					content_check_function = function (content)
+						return PLATFORM == "ps4" and content.real_currency
+					end
+				},
+				{
+					texture_id = "ps4_secondary_price_stroke",
+					style_id = "ps4_secondary_price_stroke",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.show_secondary_stroke and PLATFORM == "ps4" and content.real_currency
+					end
+				},
+				{
+					texture_id = "ps4_third_price_stroke",
+					style_id = "ps4_third_price_stroke",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.show_third_stroke and PLATFORM == "ps4" and content.real_currency
+					end
+				},
+				{
+					style_id = "ps4_first_price_text",
+					pass_type = "text",
+					text_id = "ps4_first_price_text",
+					content_check_function = function (content)
+						return PLATFORM == "ps4" and content.real_currency
+					end,
+					content_change_function = function (content, style)
+						style.text_color = (content.show_ps4_plus and style.ps_plus_color) or style.base_color
+					end
+				},
+				{
+					style_id = "ps4_secondary_price_text",
+					pass_type = "text",
+					text_id = "ps4_secondary_price_text",
+					content_check_function = function (content)
+						return content.ps4_secondary_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+					end
+				},
+				{
+					style_id = "ps4_third_price_text",
+					pass_type = "text",
+					text_id = "ps4_third_price_text",
+					content_check_function = function (content)
+						return content.ps4_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+					end
 				}
 			}
 		},
 		content = {
-			owned_icon = "store_owned_sigil",
-			hover_glow = "button_state_default",
+			title_text_gradient = "text_gradient",
+			show_third_stroke = false,
 			owned_text_gradient = "store_button_bg_02",
-			currency_text = "",
 			glass = "game_options_fg",
+			owned_icon = "store_owned_sigil",
+			owned_text = "menu_store_purchase_button_owned",
+			ps4_secondary_price_text = "",
+			present_currency = false,
+			show_ps4_plus = false,
+			show_secondary_stroke = false,
+			background_fade = "button_bg_fade",
+			ps4_third_price_text = "",
+			currency_icon = "store_icon_currency_ingame_big",
+			hover_glow = "button_state_default",
+			real_currency = false,
+			ps4_first_price_text = "",
 			owned = false,
 			glass_top = "button_glass_02",
-			owned_text = "menu_store_purchase_button_owned",
+			ps4_third_price_stroke = "simple_rect_texture",
 			owned_icon_bg = "store_owned_ribbon",
-			present_currency = false,
-			title_text_gradient = "text_gradient",
-			background_fade = "button_bg_fade",
-			currency_icon = "store_icon_currency_ingame_big",
+			ps4_background_rect = "simple_rect_texture",
+			ps4_secondary_price_stroke = "simple_rect_texture",
+			psplus_icon = "psplus_logo",
+			currency_text = "",
 			button_hotspot = {
 				disable_button = false
 			},
@@ -2278,7 +2619,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 				},
 				texture_id = side_detail_texture
 			},
-			title_text = text or "n/a",
+			title_text = text,
 			frame = frame_settings.texture,
 			background = {
 				uvs = {
@@ -2294,7 +2635,8 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 				texture_id = background_texture
 			},
 			disable_with_gamepad = disable_with_gamepad,
-			frame_width = frame_width
+			frame_width = frame_width,
+			size = size
 		},
 		style = {
 			background = {
@@ -2725,6 +3067,118 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 				texture_size = {
 					side_detail_texture_size[1],
 					side_detail_texture_size[2]
+				}
+			},
+			ps4_background_rect = {
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			ps4_first_price_text = {
+				font_size = 28,
+				upper_case = false,
+				localize = false,
+				horizontal_alignment = "right",
+				vertical_alignment = "bottom",
+				dynamic_font_size = false,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				base_color = Colors.get_color_table_with_alpha("white", 255),
+				ps_plus_color = {
+					255,
+					255,
+					205,
+					0
+				},
+				offset = {
+					-45,
+					-2,
+					2
+				}
+			},
+			ps4_secondary_price_text = {
+				font_size = 28,
+				upper_case = false,
+				localize = false,
+				horizontal_alignment = "right",
+				vertical_alignment = "bottom",
+				dynamic_font_size = false,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					-45,
+					24,
+					2
+				}
+			},
+			ps4_third_price_text = {
+				font_size = 20,
+				upper_case = false,
+				localize = false,
+				horizontal_alignment = "right",
+				vertical_alignment = "bottom",
+				dynamic_font_size = false,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					29,
+					2
+				}
+			},
+			ps4_secondary_price_stroke = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
+					0,
+					2
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					44,
+					3
+				}
+			},
+			ps4_third_price_stroke = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
+					0,
+					2
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					44,
+					3
+				}
+			},
+			psplus_icon = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
+					20,
+					20
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					10,
+					50
 				}
 			}
 		},

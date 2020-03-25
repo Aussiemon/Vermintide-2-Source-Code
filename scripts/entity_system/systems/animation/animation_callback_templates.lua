@@ -30,6 +30,13 @@ AnimationCallbackTemplates.server = {
 		local blackboard = BLACKBOARDS[unit]
 		blackboard.blocked = nil
 	end,
+	anim_cb_tp_end_enter = function (unit, param)
+		local blackboard = BLACKBOARDS[unit]
+
+		if blackboard.active_node and blackboard.active_node.anim_cb_tp_end_enter then
+			blackboard.active_node:anim_cb_tp_end_enter(unit, blackboard)
+		end
+	end,
 	anim_cb_hesitate_finished = function (unit, param)
 		local blackboard = BLACKBOARDS[unit]
 

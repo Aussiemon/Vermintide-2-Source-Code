@@ -13,6 +13,7 @@ AdventureMechanism.reset = function (self, settings, level_key)
 
 	if level_settings.hub_level then
 		self._state = "inn"
+		self._hub_level_key = level_key or "inn_level"
 	else
 		self._state = "ingame"
 	end
@@ -197,10 +198,12 @@ AdventureMechanism.start_next_round = function (self, level_transition_handler)
 	local game_mode_key = nil
 
 	if state == "inn" then
-		local level_settings = LevelSettings[level_transition_handler:get_current_level_keys()]
+		local current_level_key = level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[current_level_key]
 
 		if level_settings.hub_level then
 			game_mode_key = "inn"
+			self._hub_level_key = current_level_key
 		else
 			game_mode_key = "adventure"
 		end

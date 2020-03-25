@@ -2724,18 +2724,8 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 			Unit.flow_event(unit_inventory_extension.stump_items[i], event)
 		end
 
-		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
-			Unit.flow_event(unit_inventory_extension.inventory_item_outfit_units[i], event)
-		end
-
-		for i = 1, #unit_inventory_extension.stump_items, 1 do
-			Unit.flow_event(unit_inventory_extension.stump_items[i], event)
-		end
-
-		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
-
-		if helmet_unit ~= nil then
-			Unit.flow_event(helmet_unit, event)
+		for i = 1, #unit_inventory_extension.inventory_item_units, 1 do
+			Unit.flow_event(unit_inventory_extension.inventory_item_units[i], event)
 		end
 	end
 end
@@ -2797,6 +2787,22 @@ function flow_callback_increment_player_stat(params)
 	local stat_name = params.stat_name
 
 	statistics_db:increment_stat(stats_id, stat_name)
+end
+
+function flow_callback_increment_all_players_stats(params)
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local statistics_db = Managers.player:statistics_db()
+	local stats_id = player:stats_id()
+	local stat_name = params.stat_name
+	local stat_name_index = NetworkLookup.statistics[stat_name]
+
+	statistics_db:increment_stat(stats_id, stat_name)
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
 end
 
 function flow_callback_set_player_stat(params)

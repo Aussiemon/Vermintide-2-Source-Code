@@ -6,7 +6,8 @@ local extensions = {
 	"PlayerVolumeExtension",
 	"BotVolumeExtension",
 	"AIVolumeExtension",
-	"PickupProjectileVolumeExtension"
+	"PickupProjectileVolumeExtension",
+	"LocalPlayerVolumeExtension"
 }
 
 VolumeSystem.init = function (self, context, name)
@@ -29,7 +30,7 @@ end
 local dummy_table = {}
 
 VolumeSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	fassert(self.is_server, "Volume Extensions are only allowed on server!")
+	fassert(self.is_server or extension_name == "LocalPlayerVolumeExtension", "Volume Extensions are only allowed on server!")
 	EngineOptimizedExtensions.volume_on_add_extension(self._volume_system, unit, extension_name)
 	ScriptUnit.set_extension(unit, self.name, dummy_table)
 

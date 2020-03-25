@@ -1338,7 +1338,7 @@ ActionSweep.finish = function (self, reason, data)
 	local current_action = self._current_action
 
 	if reason == "new_interupting_action" then
-		local current_time_in_action = self.current_time_in_action
+		local current_time_in_action = self.current_time_in_action or 0
 		local dt = self._dt
 		local t = Managers.time:time("game")
 

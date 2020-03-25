@@ -248,7 +248,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 				local respawn_unit_id = Managers.state.network:level_object_id(respawn_unit_to_use)
 				local network_consumables = SpawningHelper.netpack_consumables(data.consumables)
 
-				Managers.state.network.network_transmit:send_rpc("rpc_to_client_respawn_player", status.peer_id, status.local_player_id, status.profile_index, status.career_index, respawn_unit_id, unpack(network_consumables))
+				Managers.state.network.network_transmit:send_rpc("rpc_to_client_respawn_player", status.peer_id, status.local_player_id, status.profile_index, status.career_index, respawn_unit_id, i, unpack(network_consumables))
 
 				data.health_state = "respawning"
 				data.respawn_unit = respawn_unit_to_use
@@ -396,7 +396,7 @@ RespawnHandler.get_active_respawn_units = function (self)
 	return active_respawn_units
 end
 
-RespawnHandler.rpc_to_client_respawn_player = function (self, sender, local_player_id, profile_index, career_index, respawn_unit_id, health_kit_id, potion_id, grenade_id)
+RespawnHandler.rpc_to_client_respawn_player = function (self, sender, local_player_id, profile_index, career_index, respawn_unit_id, slot_index, health_kit_id, potion_id, grenade_id)
 	if not Managers.state.network:game() then
 		return
 	end
@@ -407,6 +407,20 @@ RespawnHandler.rpc_to_client_respawn_player = function (self, sender, local_play
 	local respawn_unit = network_manager:game_object_or_level_unit(respawn_unit_id, true)
 	local player_manager = Managers.player
 	local player = player_manager:local_player(local_player_id)
+
+	if not player then
+		local is_server = Managers.player.is_server
+
+		if is_server then
+			local party_index = 1
+			local party = Managers.party:get_party(party_index)
+			local occupied_slots = party.occupied_slots
+			local slot = occupied_slots[slot_index]
+			slot.game_mode_data.health_state = "dead"
+		end
+
+		return
+	end
 
 	if player:needs_despawn() or Unit.alive(player.player_unit) then
 		Managers.state.spawn:delayed_despawn(player)

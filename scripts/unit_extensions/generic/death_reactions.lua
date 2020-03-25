@@ -102,6 +102,31 @@ local function handle_military_event_achievement(damage_type, breed_name, statis
 	end
 end
 
+local function handle_castle_boss_achievement(killing_blow, unit)
+	local conflict_manager = Managers.state.conflict
+
+	if conflict_manager:count_units_by_breed_during_event("chaos_exalted_sorcerer_drachenfels") > 0 then
+		local player_manager = Managers.player
+		local victim_health_extension = ScriptUnit.has_extension(unit, "health_system")
+		local victim_damage_data = victim_health_extension.last_damage_data
+		local victim_player = player_manager:owner(unit)
+		local attacker_unique_id = victim_damage_data.attacker_unique_id
+		local attacker_player = player_manager:player_from_unique_id(attacker_unique_id)
+
+		if attacker_player and attacker_player ~= victim_player then
+			local boss_units = conflict_manager:alive_bosses()
+			local boss_unit = boss_units[1]
+
+			if boss_unit ~= unit then
+				local blackboard = BLACKBOARDS[boss_unit]
+				blackboard.no_kill_achievement = false
+
+				print("ACHIEVEMENT FAILED")
+			end
+		end
+	end
+end
+
 local function ai_default_unit_pre_start(unit, context, t, killing_blow)
 	local statistics_db = context.statistics_db
 	local blackboard = BLACKBOARDS[unit]
@@ -111,6 +136,7 @@ local function ai_default_unit_pre_start(unit, context, t, killing_blow)
 	StatisticsUtil.register_kill(unit, killing_blow, statistics_db, true)
 	handle_boss_difficulty_kill_achievement_tracking(breed, statistics_db)
 	handle_military_event_achievement(damage_type, breed.name, statistics_db)
+	handle_castle_boss_achievement(killing_blow, unit)
 
 	local killer_unit = killing_blow[DamageDataIndex.ATTACKER]
 	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
@@ -1380,7 +1406,12 @@ DeathReactions.templates = {
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
-				return
+				local player = Managers.player:owner(unit)
+				local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
+				local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
+				local position = Unit.local_position(unit, 0)
+
+				Managers.telemetry.events:player_died(player, damage_type, damage_source, position)
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				if not is_hot_join_sync(killing_blow) and ScriptUnit.has_extension(unit, "dialogue_system") then

@@ -61,12 +61,12 @@ StoreWindowItemList._create_ui_elements = function (self, params, offset)
 	self._scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
 end
 
-StoreWindowItemList.on_exit = function (self, params)
+StoreWindowItemList.on_exit = function (self, params, force_unload)
 	print("[HeroViewWindow] Exit Substate StoreWindowItemList")
 
 	self._ui_animator = nil
 
-	self:_destroy_product_widgets()
+	self:_destroy_product_widgets(force_unload)
 end
 
 StoreWindowItemList.update = function (self, dt, t)
@@ -179,10 +179,12 @@ StoreWindowItemList._draw = function (self, dt)
 		local list_widgets = self._list_widgets
 
 		if list_widgets then
-			self:_update_visible_list_entries()
+			local render_all = self:_update_visible_list_entries()
 
 			for _, widget in ipairs(list_widgets) do
-				UIRenderer.draw_widget(ui_top_renderer, widget)
+				if render_all or widget.content.visible then
+					UIRenderer.draw_widget(ui_top_renderer, widget)
+				end
 			end
 		end
 	end
@@ -497,7 +499,7 @@ StoreWindowItemList._create_product_widgets = function (self, layout)
 	end
 end
 
-StoreWindowItemList._destroy_product_widgets = function (self)
+StoreWindowItemList._destroy_product_widgets = function (self, force_unload)
 	local parent = self._parent
 	local layout = self._layout
 	local widgets = self._list_widgets
@@ -506,7 +508,7 @@ StoreWindowItemList._destroy_product_widgets = function (self)
 		for i, entry in ipairs(layout) do
 			local widget = widgets[i]
 
-			parent:destroy_product_widget(widget, entry)
+			parent:destroy_product_widget(widget, entry, force_unload)
 		end
 	end
 end
@@ -659,7 +661,7 @@ StoreWindowItemList._update_visible_list_entries = function (self)
 	local enabled = scrollbar_logic:enabled()
 
 	if not enabled then
-		return
+		return true
 	end
 
 	local scroll_percentage = scrollbar_logic:get_scroll_percentage()

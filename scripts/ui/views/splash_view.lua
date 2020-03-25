@@ -115,13 +115,13 @@ local scenegraph_definition = {
 			576
 		}
 	},
-	gw_splash = {
+	warhammer = {
 		vertical_alignment = "center",
 		parent = "background",
 		horizontal_alignment = "center",
 		size = {
-			589,
-			203
+			774,
+			417
 		}
 	},
 	bld_splash_partners = {
@@ -387,7 +387,7 @@ local splash_content = {
 		sound_stop = "Stop_fatshark_logo"
 	},
 	{
-		scenegraph_id = "gw_splash",
+		scenegraph_id = "warhammer",
 		type = "texture",
 		axis = 2,
 		time = 3,
@@ -401,7 +401,7 @@ local splash_content = {
 		font_type = "hell_shark",
 		localize = true,
 		font_size = 13,
-		material_name = "gw_splash",
+		material_name = "warhammer",
 		texts = {
 			"gw_legal_1",
 			"gw_legal_2",

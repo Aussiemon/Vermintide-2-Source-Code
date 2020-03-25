@@ -356,6 +356,10 @@ StateInGameRunning.check_invites = function (self)
 		return
 	end
 
+	if self.parent.exit_type ~= nil then
+		return
+	end
+
 	local platform = PLATFORM
 
 	if (platform == "xb1" or platform == "ps4") and (Managers.account:offline_mode() or Managers.account:has_fatal_error()) then

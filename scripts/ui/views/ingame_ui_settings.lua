@@ -78,7 +78,7 @@ local transitions = {
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
 		else
 			local text = Localize("exit_to_title_popup_text")
-			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_title_screen", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_title_screen_hero_view", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 		end
 	end,
 	return_to_demo_title_screen = function (self)
@@ -211,7 +211,42 @@ local transitions = {
 		end
 	end,
 	do_return_to_title_screen = function (self)
-		self.return_to_title_screen = true
+		self:_cancel_popup()
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
+		elseif Managers.matchmaking:is_joining_friend() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
+		else
+			self.input_manager:block_device_except_service(nil, "keyboard", 1)
+			self.input_manager:block_device_except_service(nil, "mouse", 1)
+			self.input_manager:block_device_except_service(nil, "gamepad", 1)
+
+			self.return_to_title_screen = true
+		end
+	end,
+	do_return_to_title_screen_hero_view = function (self)
+		self:_cancel_popup()
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server:are_all_peers_ingame() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		elseif Managers.matchmaking:is_joining_friend() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		else
+			self.input_manager:block_device_except_service(nil, "keyboard", 1)
+			self.input_manager:block_device_except_service(nil, "mouse", 1)
+			self.input_manager:block_device_except_service(nil, "gamepad", 1)
+
+			self.return_to_title_screen = true
+		end
 	end,
 	do_return_to_demo_title_screen = function (self)
 		self.return_to_demo_title_screen = true
@@ -236,6 +271,9 @@ local transitions = {
 		if network_server and not network_server:are_all_peers_ingame() then
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
+		elseif Managers.matchmaking:is_joining_friend() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
 		else
 			self.input_manager:block_device_except_service(nil, "keyboard", 1)
 			self.input_manager:block_device_except_service(nil, "mouse", 1)
@@ -252,6 +290,9 @@ local transitions = {
 		if network_server and not network_server:are_all_peers_ingame() then
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
+		elseif Managers.matchmaking:is_joining_friend() then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
 		else
 			self.input_manager:block_device_except_service(nil, "keyboard", 1)
 			self.input_manager:block_device_except_service(nil, "mouse", 1)

@@ -62,6 +62,17 @@ DLCSettings = DLCSettings or {
 			level = "scripts/settings/dlcs/penny/penny_level_settings_part_2"
 		}
 	},
+	penny_part_3 = {
+		package_name = "resource_packages/dlcs/penny_part_3",
+		additional_settings = {
+			common = "scripts/settings/dlcs/penny/penny_common_settings_part_3",
+			ai = "scripts/settings/dlcs/penny/penny_ai_settings_part_3",
+			sound = "scripts/settings/dlcs/penny/penny_sound_settings_part_3",
+			buff = "scripts/settings/dlcs/penny/penny_buff_settings_part_3",
+			achievements = "scripts/settings/dlcs/penny/penny_achievements_settings_part_3",
+			level = "scripts/settings/dlcs/penny/penny_level_settings_part_3"
+		}
+	},
 	steak = {
 		package_name = "resource_packages/dlcs/steak",
 		additional_settings = {

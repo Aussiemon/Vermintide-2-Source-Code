@@ -131,23 +131,39 @@ GameModeAdventure.player_entered_game_session = function (self, peer_id, local_p
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
 	end
 
+	if Network.peer_id() == peer_id then
+		self:remove_bot(peer_id, local_player_id)
+
+		local status = Managers.party:get_player_status(peer_id, local_player_id)
+
+		if status.party_id ~= 1 then
+			local party_id = 1
+
+			Managers.party:request_join_party(peer_id, local_player_id, party_id)
+		end
+	else
+		self._adventure_spawning:add_delayed_client(peer_id, local_player_id)
+	end
+end
+
+GameModeAdventure.player_left_game_session = function (self, peer_id, local_player_id)
+	GameModeAdventure.super.player_left_game_session(self, peer_id, local_player_id)
+	self._adventure_spawning:remove_delayed_client(peer_id, local_player_id)
+end
+
+GameModeAdventure.remove_bot = function (self, peer_id, local_player_id, update_safe)
 	if #self._bot_players > 0 then
 		local profile_index = self._profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-		local removed = self:_remove_bot_by_profile(self._bot_players, profile_index)
+		local removed, bot_player = self:_remove_bot_by_profile(self._bot_players, profile_index, update_safe)
 
 		if not removed then
-			local update_safe = false
+			local update_safe = update_safe or false
+			bot_player = self._bot_players[#self._bot_players]
 
 			self:_remove_bot(self._bot_players, #self._bot_players, update_safe)
 		end
-	end
 
-	local status = Managers.party:get_player_status(peer_id, local_player_id)
-
-	if status.party_id ~= 1 then
-		local party_id = 1
-
-		Managers.party:request_join_party(peer_id, local_player_id, party_id)
+		return bot_player
 	end
 end
 
@@ -375,7 +391,7 @@ GameModeAdventure._remove_bot = function (self, bot_players, index, update_safe)
 	bot_players[last] = nil
 end
 
-GameModeAdventure._remove_bot_by_profile = function (self, bot_players, profile_index)
+GameModeAdventure._remove_bot_by_profile = function (self, bot_players, profile_index, update_safe)
 	local bot_index = nil
 	local num_current_bots = #bot_players
 
@@ -390,17 +406,19 @@ GameModeAdventure._remove_bot_by_profile = function (self, bot_players, profile_
 		end
 	end
 
+	local bot_player = nil
 	local removed = false
 
 	if bot_index then
-		local update_safe = false
+		bot_player = bot_players[bot_index]
+		local update_safe = update_safe or false
 
 		self:_remove_bot(bot_players, bot_index, update_safe)
 
 		removed = true
 	end
 
-	return removed
+	return removed, bot_player
 end
 
 GameModeAdventure._clear_bots = function (self, update_safe)

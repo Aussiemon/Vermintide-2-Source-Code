@@ -127,8 +127,11 @@ if PLATFORM == "xb1" or PLATFORM == "ps4" or script_data.enemy_package_loader_po
 			dynamic_loading = true
 		},
 		specials = {
+			dynamic_loading = true,
 			limit = 3,
-			dynamic_loading = true
+			replacement_breed_override_funcs = {
+				patrol = "_find_patrol_replacement"
+			}
 		},
 		level_specific = {
 			dynamic_loading = true,

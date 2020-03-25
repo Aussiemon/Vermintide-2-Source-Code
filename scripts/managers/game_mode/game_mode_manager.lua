@@ -158,6 +158,10 @@ GameModeManager.player_entered_game_session = function (self, peer_id, local_pla
 	self._game_mode:player_entered_game_session(peer_id, local_player_id)
 end
 
+GameModeManager.remove_bot = function (self, peer_id, local_player_id, update_safe)
+	return self._game_mode:remove_bot(peer_id, local_player_id, update_safe)
+end
+
 GameModeManager.player_left_game_session = function (self, peer_id, local_player_id)
 	self._game_mode:player_left_game_session(peer_id, local_player_id)
 end
@@ -382,8 +386,9 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 
 		if Unit.has_data(unit, "LevelEditor", "is_gizmo_unit") then
 			local is_gizmo = Unit.get_data(unit, "LevelEditor", "is_gizmo_unit")
+			local is_reflection_probe = Unit.debug_name(unit) == "core/stingray_renderer/helper_units/reflection_probe/reflection_probe"
 
-			if is_gizmo then
+			if is_gizmo and not is_reflection_probe then
 				Unit.set_unit_visibility(unit, false)
 			else
 				Unit.set_unit_visibility(unit, new_state)
@@ -691,7 +696,10 @@ GameModeManager.server_update = function (self, dt, t)
 
 				local level_key = Managers.mechanism:game_round_ended(t, dt, reason)
 
-				Managers.mechanism:progress_state()
+				if reason ~= "reload" then
+					Managers.mechanism:progress_state()
+				end
+
 				self.network_server:enter_post_game()
 
 				self._end_conditions_met = true

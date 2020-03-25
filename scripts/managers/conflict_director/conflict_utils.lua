@@ -92,7 +92,7 @@ local max_cluster_score = {
 ConflictUtils.cluster_weight_and_loneliness = function (positions, min_dist)
 	local distance_squared = Vector3.distance_squared
 	min_dist = min_dist * min_dist
-	local num_positions = #positions
+	local num_positions = math.min(#positions, 4)
 
 	if num_positions == 1 then
 		return 1, 1, 100

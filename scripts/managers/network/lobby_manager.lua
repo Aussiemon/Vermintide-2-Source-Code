@@ -16,6 +16,14 @@ LobbyManager.init = function (self)
 	self._lobby_port_increment = 0
 end
 
+LobbyManager.network_hash = function (self)
+	local config_file_name = network_options.config_file_name
+	local project_hash = network_options.project_hash
+	local disable_print = true
+
+	return LobbyAux.create_network_hash(config_file_name, project_hash, disable_print, disable_print)
+end
+
 LobbyManager.network_options = function (self)
 	fassert(self._network_options, "Network options has not been set up yet.")
 
@@ -25,10 +33,12 @@ end
 LobbyManager.setup_network_options = function (self, increment_lobby_port)
 	printf("[LobbyManager] Setting up network options")
 
-	local development_port = script_data.server_port or script_data.settings.server_port or network_options.network_port
+	local development_port = script_data.server_port or script_data.settings.server_port or network_options.lobby_port
 
 	if PLATFORM == "win32" then
 		development_port = development_port + self._lobby_port_increment
+	else
+		development_port = network_options.lobby_port
 	end
 
 	if increment_lobby_port then

@@ -46,7 +46,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self._event_delegate = event_delegate
 
-	event_delegate:register(self, "rpc_play_particle_effect", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
+	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
 end
 
 GameNetworkManager.lobby = function (self)
@@ -761,6 +761,17 @@ GameNetworkManager.rpc_play_particle_effect = function (self, sender, effect_id,
 	local effect_name = NetworkLookup.effects[effect_id]
 
 	Managers.state.event:trigger("event_play_particle_effect", effect_name, unit, node_id, offset, rotation_offset, linked)
+end
+
+GameNetworkManager.rpc_play_particle_effect_no_rotation = function (self, sender, effect_id, go_id, node_id, offset, linked)
+	if self.is_server then
+		self.network_transmit:send_rpc_clients("rpc_play_particle_effect_no_rotation", effect_id, go_id, node_id, offset, linked)
+	end
+
+	local unit = self.unit_storage:unit(go_id)
+	local effect_name = NetworkLookup.effects[effect_id]
+
+	Managers.state.event:trigger("event_play_particle_effect", effect_name, unit, node_id, offset, Quaternion.identity(), linked)
 end
 
 GameNetworkManager._pack_percentages_completed_arrays = function (self, percentages_completed)

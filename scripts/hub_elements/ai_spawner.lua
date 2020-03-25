@@ -10,6 +10,7 @@ AISpawner.init = function (self, world, unit)
 	self._world = world
 	self._unit = unit
 	self._spawned_units = 0
+	self._next_spawn = 0
 	self._max_amount = 0
 
 	if Unit.has_data(unit, "spawner_settings") then
@@ -47,7 +48,6 @@ AISpawner.init = function (self, world, unit)
 				node = Unit.get_data(unit, "spawner_settings", spawner_name, "node"),
 				spawn_rate = Unit.get_data(unit, "spawner_settings", spawner_name, "spawn_rate")
 			}
-			self._next_spawn = 0
 		end
 	else
 		local terror_event_id = Unit.get_data(self._unit, "terror_event_id")
@@ -129,7 +129,6 @@ AISpawner.spawn_rate = function (self)
 end
 
 AISpawner.spawn_unit = function (self)
-	local breed_name = nil
 	local breed_list = self._breed_list
 	local last = #breed_list
 	local spawn_data = breed_list[last]
@@ -158,7 +157,6 @@ AISpawner.spawn_unit = function (self)
 	end
 
 	local spawn_animation = spawn_type == "horde" and animation_events[math.random(#animation_events)]
-	local spawner_name = self:get_spawner_name()
 	local side_id = spawn_data[1]
 	local optional_data = {
 		side_id = side_id

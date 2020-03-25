@@ -242,6 +242,9 @@ LobbyBrowserConsoleUI._update_animations = function (self, dt, t)
 			animations[animation_name] = nil
 		end
 	end
+
+	UIWidgetUtils.animate_default_button(self._widgets.join_button, dt)
+	UIWidgetUtils.animate_default_button(self._widgets.refresh_button, dt)
 end
 
 LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
@@ -455,6 +458,11 @@ LobbyBrowserConsoleUI._verify_selected_lobby_index = function (self)
 		local widget = self._widgets.frame
 		local widget_content = widget.content
 		local progress = self._wanted_pos / (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
+
+		if self:_is_nan(progress) then
+			progress = 0
+		end
+
 		self._ui_animations.scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
@@ -560,6 +568,11 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 		local widget = self._widgets.frame
 		local widget_content = widget.content
 		local progress = self._wanted_pos / (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
+
+		if self:_is_nan(progress) then
+			progress = 0
+		end
+
 		self._ui_animations.scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
@@ -601,10 +614,6 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 		end
 	end
 
-	if Managers.matchmaking:is_game_matchmaking() then
-		return
-	end
-
 	if input_service:get("left_press") then
 		local lobby_entry_widgets = self._lobby_entry_widgets
 
@@ -615,6 +624,40 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 				self._mouse_selected_index = idx
 
 				break
+			end
+		end
+	else
+		local join_button_widget = self._widgets.join_button
+		local join_button_widget_content = join_button_widget.content
+		local join_button_hotspot = join_button_widget_content.button_hotspot
+
+		if join_button_hotspot.on_pressed then
+			local widget = self._lobby_entry_widgets[self._selected_lobby_index]
+
+			if widget then
+				local widget_content = widget.content
+				local lobby_data = widget_content.lobby_data
+				local joinable = false
+
+				if lobby_data then
+					joinable = self._parent:is_lobby_joinable(lobby_data)
+
+					if joinable then
+						self._parent:_join(lobby_data)
+					end
+				end
+			end
+
+			return
+		else
+			local refresh_button_widget = self._widgets.refresh_button
+			local refresh_button_widget_content = refresh_button_widget.content
+			local refresh_button_hotspot = refresh_button_widget_content.button_hotspot
+
+			if refresh_button_hotspot.on_pressed then
+				self._parent:refresh()
+
+				return
 			end
 		end
 	end
@@ -656,8 +699,17 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 		local widget = self._widgets.frame
 		local widget_content = widget.content
 		local progress = self._wanted_pos / (self._num_lobbies * entry_size_y - num_visible_entries * entry_size_y)
+
+		if self:_is_nan(progress) then
+			progress = 0
+		end
+
 		self._ui_animations.scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
+end
+
+LobbyBrowserConsoleUI._is_nan = function (self, value)
+	return type(value) == "number" and value ~= value
 end
 
 LobbyBrowserConsoleUI._handle_filter_input = function (self, input_service, element_settings, dt, t)
@@ -809,6 +861,11 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 		local widget = self._level_filter_scroller
 		local widget_content = widget.content
 		local progress = (self._wanted_list_pos - self._list_base_pos_y) / (num_entries * entry_size_y - num_visible_entries * entry_size_y + entry_size_y)
+
+		if self:_is_nan(progress) then
+			progress = 0
+		end
+
 		self._ui_animations.list_scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
@@ -873,6 +930,11 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 		local widget = self._level_filter_scroller
 		local widget_content = widget.content
 		local progress = offset_num / (num_entries - num_visible_entries + 1)
+
+		if self:_is_nan(progress) then
+			progress = 0
+		end
+
 		self._ui_animations.list_scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
@@ -1324,14 +1386,19 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 	end
 
 	level_image_frame_widget_content.texture_id = level_frame
+	local join_button_widget = self._widgets.join_button
+	local join_button_widget_content = join_button_widget.content
+	local button_hotspot = join_button_widget_content.button_hotspot
 	local locked_reason_widget = details_widgets.locked_reason
 	local locked_reason_widget_content = locked_reason_widget.content
 
 	if lobby_data then
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
 		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
+		button_hotspot.disable_button = not joinable
 	else
 		locked_reason_widget_content.text = "tutorial_no_text"
+		button_hotspot.disable_button = true
 	end
 
 	local details_information_widget = details_widgets.details_information
@@ -1472,14 +1539,19 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 	local level_image_frame_widget_content = level_image_frame_widget.content
 	level_image_frame_widget_content.texture_id = "map_frame_weaves"
 	level_image_frame_widget.style.texture_id.color = wind_color
+	local join_button_widget = self._widgets.join_button
+	local join_button_widget_content = join_button_widget.content
+	local button_hotspot = join_button_widget_content.button_hotspot
 	local locked_reason_widget = details_widgets.locked_reason
 	local locked_reason_widget_content = locked_reason_widget.content
 
 	if lobby_data then
 		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
 		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
+		button_hotspot.disable_button = not joinable
 	else
 		locked_reason_widget_content.text = "tutorial_no_text"
+		button_hotspot.disable_button = true
 	end
 
 	local details_information_widget = details_widgets.details_information

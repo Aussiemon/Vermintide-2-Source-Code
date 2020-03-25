@@ -13,6 +13,7 @@ AdventureSpawning.init = function (self, profile_synchronizer, side, is_server, 
 	self._respawn_handler = RespawnHandler:new(profile_synchronizer)
 	self._spawn_points = {}
 	self._num_spawn_points_used = 0
+	self._delayed_clients = {}
 	self._saved_game_mode_data = saved_game_mode_data or {}
 
 	self:_setup_game_mode_data(side, self._saved_game_mode_data)
@@ -191,6 +192,7 @@ AdventureSpawning.server_update = function (self, t, dt)
 		end
 
 		self:_update_spawning(dt, t, occupied_slots)
+		self:_update_joining_clients(dt, t)
 	end
 end
 
@@ -303,6 +305,55 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots)
 					self:_spawn_player(status)
 				end
 			end
+		end
+	end
+end
+
+AdventureSpawning.add_delayed_client = function (self, peer_id, local_player_id)
+	self._delayed_clients[#self._delayed_clients + 1] = {
+		peer_id = peer_id,
+		local_player_id = local_player_id
+	}
+end
+
+AdventureSpawning.remove_delayed_client = function (self, peer_id, local_player_id)
+	for i = #self._delayed_clients, 1, -1 do
+		local peer_data = self._delayed_clients[i]
+
+		if peer_data.peer_id == peer_id and peer_data.local_player_id == local_player_id then
+			table.remove(self._delayed_clients, i)
+
+			return
+		end
+	end
+end
+
+AdventureSpawning._update_joining_clients = function (self, dt, t)
+	if self._spawning and self._profile_synchronizer:all_synced() then
+		local network_server = self._network_server
+
+		for i = #self._delayed_clients, 1, -1 do
+			local peer_data = self._delayed_clients[i]
+			local peer_id = peer_data.peer_id
+			local local_player_id = peer_data.local_player_id
+
+			if network_server:is_peer_ingame(peer_id) then
+				self:_add_client_to_party(peer_id, local_player_id)
+				table.remove(self._delayed_clients, i)
+			end
+		end
+	end
+end
+
+AdventureSpawning._add_client_to_party = function (self, peer_id, local_player_id)
+	if peer_id ~= Network.peer_id() then
+		local update_safe = true
+		local party_id = 1
+		local removed_bot_player = Managers.state.game_mode:remove_bot(peer_id, local_player_id, update_safe)
+		local status = Managers.party:get_player_status(peer_id, local_player_id)
+
+		if status.party_id ~= 1 then
+			Managers.party:request_join_party(peer_id, local_player_id, party_id, nil, removed_bot_player)
 		end
 	end
 end

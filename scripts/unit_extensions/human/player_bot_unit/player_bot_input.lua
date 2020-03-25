@@ -363,7 +363,7 @@ PlayerBotInput._obstacle_check = function (self, position, current_speed_sq, goa
 	local forward_offset = 0.25
 	local jump_range_check_epsilon = 0.05
 	local width = 0.4
-	local depth = math.min(0.5, Vector3.length(goal_vector) - jump_range_check_epsilon)
+	local depth = math.abs(math.min(0.5, Vector3.length(goal_vector) - jump_range_check_epsilon))
 	local height, half_extra_upper_depth, half_extra_upper_height = nil
 
 	if STUCK_JUMP_SPEED_THRESHOLD_SQ < current_speed_sq then

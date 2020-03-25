@@ -154,9 +154,14 @@ PlayFabMirror._parse_claimed_console_dlc_rewards = function (self, read_only_dat
 end
 
 PlayFabMirror._update_dlc_ownership = function (self)
+	local unlock_manager = Managers.unlock
+	local unlocked_dlcs = unlock_manager:get_unlocked_dlcs()
+	local json_string = cjson.encode(unlocked_dlcs)
 	local request = {
 		FunctionName = "updateDLCOwnership",
-		FunctionParameter = {}
+		FunctionParameter = {
+			unlocked_dlcs = json_string
+		}
 	}
 	local request_cb = callback(self, "dlc_ownership_request_cb")
 

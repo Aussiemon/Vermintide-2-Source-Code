@@ -150,32 +150,17 @@ LevelCountdownUI._get_start_time = function (self)
 end
 
 LevelCountdownUI._get_active_waystone_extension = function (self)
-	local world_manager = Managers.world
+	local entity_system = Managers.state.entity
 
-	if world_manager:has_world("level_world") then
-		local world = world_manager:world("level_world")
-		local mechanism = Managers.mechanism:game_mechanism()
-		local inn_level_name = mechanism:get_hub_level_key()
-		local level_settings = LevelSettings[inn_level_name]
-		local level_name = level_settings.level_name
-		local level = ScriptWorld.level(world, level_name)
+	if not entity_system then
+		return
+	end
 
-		if level then
-			local units = Level.units(level)
+	local extension_data = Managers.state.entity:get_entities("EndZoneExtension")
 
-			for i, unit in ipairs(units) do
-				if Unit.alive(unit) and Unit.has_data(unit, "waystone_type") then
-					local status_extension = ScriptUnit.extension(unit, "end_zone_system")
-
-					if status_extension then
-						local activated = status_extension:activated()
-
-						if activated then
-							return status_extension
-						end
-					end
-				end
-			end
+	for units, extension in pairs(extension_data) do
+		if extension:activated() then
+			return extension
 		end
 	end
 end
@@ -186,36 +171,29 @@ end
 
 LevelCountdownUI.set_waystone_activation_without_ui = function (enable, optional_waystone_type)
 	local waystone_unit = nil
-	local world_manager = Managers.world
+	local entity_system = Managers.state.entity
 
-	if world_manager:has_world("level_world") then
-		local world = world_manager:world("level_world")
-		local mechanism = Managers.mechanism:game_mechanism()
-		local inn_level_name = mechanism:get_hub_level_key()
-		local level_settings = LevelSettings[inn_level_name]
-		local level_name = level_settings.level_name
-		local level = ScriptWorld.level(world, level_name)
+	if not entity_system then
+		return
+	end
 
-		if level then
-			local units = Level.units(level)
+	local extension_data = Managers.state.entity:get_entities("EndZoneExtension")
 
-			for i, level_unit in ipairs(units) do
-				if Unit.has_data(level_unit, "waystone_type") then
-					if enable then
-						local waystone_type = Unit.get_data(level_unit, "waystone_type")
+	for unit, extension in pairs(extension_data) do
+		local waystone_type = Unit.get_data(unit, "waystone_type")
 
-						if waystone_type == optional_waystone_type then
-							Unit.flow_event(level_unit, "activate")
-							fassert(waystone_unit == nil, "[LevelCountdownUI] - Found multiple waystone units with the same type: %s", tostring(waystone_type))
+		if waystone_type then
+			if enable then
+				if waystone_type == optional_waystone_type then
+					Unit.flow_event(unit, "activate")
+					fassert(waystone_unit == nil, "[LevelCountdownUI] - Found multiple waystone units with the same type: %s", tostring(waystone_type))
 
-							waystone_unit = level_unit
-						else
-							Unit.flow_event(level_unit, "deactivate")
-						end
-					else
-						Unit.flow_event(level_unit, "deactivate")
-					end
+					waystone_unit = unit
+				else
+					Unit.flow_event(unit, "deactivate")
 				end
+			else
+				Unit.flow_event(unit, "deactivate")
 			end
 		end
 	end

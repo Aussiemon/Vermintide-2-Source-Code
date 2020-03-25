@@ -43,6 +43,8 @@ StoreWindowItemPreview.on_enter = function (self, params, offset)
 	local title_edge_length = scenegraph_definition.title_text.size[1] + 50
 
 	self:_set_title_edge_length(title_edge_length, 0.01)
+
+	self._current_generic_input_action = nil
 end
 
 StoreWindowItemPreview._set_window_expanded = function (self, expand)
@@ -194,13 +196,13 @@ StoreWindowItemPreview._create_ui_elements = function (self, params, offset)
 	self._viewport_widget_definition = self:_create_viewport_definition()
 end
 
-StoreWindowItemPreview.on_exit = function (self, params)
+StoreWindowItemPreview.on_exit = function (self, params, force_unload)
 	print("[HeroViewWindow] Exit Substate StoreWindowItemPreview")
 
 	self._ui_animator = nil
 	self._has_exited = true
 
-	self:_destroy_dlc_product_widgets()
+	self:_destroy_dlc_product_widgets(force_unload)
 	self:_destroy_previewers()
 
 	if self._viewport_widget then
@@ -533,12 +535,14 @@ StoreWindowItemPreview.draw = function (self, dt)
 		local dlc_list_widgets = self._dlc_list_widgets
 
 		if dlc_list_widgets then
-			self:_update_visible_list_entries()
+			local render_all = self:_update_visible_list_entries()
 
 			for _, widget in ipairs(dlc_list_widgets) do
-				render_settings.alpha_multiplier = self:_get_alpha_multiplier(widget, alpha_multiplier)
+				if render_all or widget.content.visible then
+					render_settings.alpha_multiplier = self:_get_alpha_multiplier(widget, alpha_multiplier)
 
-				UIRenderer.draw_widget(ui_top_renderer, widget)
+					UIRenderer.draw_widget(ui_top_renderer, widget)
+				end
 			end
 		end
 	end
@@ -641,6 +645,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 		self._selected_product = selected_product
 		local already_owned = false
 		local can_afford = true
+		local dlc_name = nil
 		local product_id = selected_product.product_id
 		local product_type = selected_product.type
 
@@ -648,6 +653,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 			local item = selected_product.item
 			local backend_items = Managers.backend:get_interface("items")
 			local item_key = item.key
+			dlc_name = item.dlc_name
 			already_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
 
 			if item.dlc_name then
@@ -657,9 +663,11 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 			end
 		elseif product_type == "dlc" then
 			local dlc_settings = selected_product.dlc_settings
-			local dlc_name = dlc_settings.dlc_name
+			dlc_name = dlc_settings.dlc_name
 			already_owned = Managers.unlock:is_dlc_unlocked(dlc_name)
 		end
+
+		self:_set_unlock_button_states(already_owned, can_afford)
 
 		if reset_presentation then
 			self._delayed_item_unit_presentation_delay = nil
@@ -682,10 +690,8 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				unlock_button_width_offset = -49
 			end
 
-			self:_update_unlock_button_width(unlock_button_width_offset, already_owned)
+			self:_update_unlock_button_width(unlock_button_width_offset, already_owned, dlc_name)
 		end
-
-		self:_set_unlock_button_states(already_owned, can_afford)
 	end
 end
 
@@ -701,14 +707,18 @@ StoreWindowItemPreview._present_dlc = function (self, settings, product_id)
 	self:_set_career_title_name("")
 	self:_set_disclaimer_text("")
 	self:_set_expire_timer_text("")
-	self:_set_price(nil)
+	self:_set_price(nil, dlc_name)
 
 	self._dlc_presentation_active = true
 	self._item_widgets_by_name.details_button.content.visible = false
 
 	if self:_owns_product() then
+		self._current_generic_input_action = "dlc_preview_owned"
+
 		self._parent:change_generic_actions(generic_input_actions.dlc_preview_owned)
 	else
+		self._current_generic_input_action = "dlc_preview_purchase"
+
 		self._parent:change_generic_actions(generic_input_actions.dlc_preview_purchase)
 	end
 
@@ -733,7 +743,7 @@ StoreWindowItemPreview._present_item = function (self, item)
 	local dlc_name = item.dlc_name
 
 	if dlc_name then
-		self:_set_price(nil)
+		self:_set_price(nil, dlc_name)
 	else
 		local currency_type = "SM"
 		local regular_prices = item.regular_prices
@@ -773,8 +783,12 @@ StoreWindowItemPreview._present_item = function (self, item)
 	self._delayed_item_unit_presentation_delay = 0.3
 
 	if self:_owns_product() then
+		self._current_generic_input_action = "item_preview_owned"
+
 		self._parent:change_generic_actions(generic_input_actions.item_preview_owned)
 	else
+		self._current_generic_input_action = "item_preview_purchase"
+
 		self._parent:change_generic_actions(generic_input_actions.item_preview_purchase)
 	end
 end
@@ -848,7 +862,7 @@ StoreWindowItemPreview._update_delayed_item_unit_presentation = function (self, 
 	end
 end
 
-StoreWindowItemPreview._set_price = function (self, price)
+StoreWindowItemPreview._set_price = function (self, price, dlc_name)
 	local widget = self._top_widgets_by_name.unlock_button
 	local content = widget.content
 
@@ -857,6 +871,109 @@ StoreWindowItemPreview._set_price = function (self, price)
 	end
 
 	content.present_currency = price ~= nil
+
+	if dlc_name and PLATFORM ~= "win32" then
+		self:_handle_platform_price_data(widget, dlc_name)
+	else
+		content.real_currency = false
+	end
+end
+
+StoreWindowItemPreview._handle_platform_price_data = function (self, widget, dlc_name)
+	local backend_store = Managers.backend:get_interface("peddler")
+	local price_data = backend_store:get_app_price(dlc_name)
+
+	if not price_data then
+		Application.warning(string.format("[StoreWindowItemPreview] Missing pricing info for %q", dlc_name))
+
+		return
+	end
+
+	if PLATFORM == "ps4" then
+		self:_setup_ps4_price_data(widget, price_data)
+	elseif PLATFORM == "xb1" then
+		self:_setup_xb1_price_data(widget, price_data)
+	end
+end
+
+StoreWindowItemPreview._setup_ps4_price_data = function (self, widget, price_data)
+	local content = widget.content
+	local style = widget.style
+	local spacing = 20
+	local size = content.size
+	local is_plus_price = price_data.is_plus_price
+	local has_ps_plus = Managers.account:has_access("playstation_plus")
+	local original_price = price_data.original_price
+	local display_original_price = price_data.display_original_price
+	local display_price = price_data.display_price
+	local display_plus_upsell_price = price_data.display_plus_upsell_price
+	local ps4_first_price_style = style.ps4_first_price_text
+	local ps4_secondary_price_style = style.ps4_secondary_price_text
+	local ps4_third_price_style = style.ps4_third_price_text
+	local psplus_icon_style = style.psplus_icon
+	local ps4_secondary_price_stroke_style = style.ps4_secondary_price_stroke
+	local ps4_third_price_stroke_style = style.ps4_third_price_stroke
+
+	if not original_price and not display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_original_price or display_price or "???"
+		content.ps4_secondary_price_text = ""
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = false
+		content.show_secondary_stroke = false
+		content.show_third_stroke = false
+	elseif original_price and not display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_price or "???"
+		content.ps4_secondary_price_text = display_original_price or "???"
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = false
+		content.show_secondary_stroke = true
+		content.show_third_stroke = false
+	elseif original_price and not display_plus_upsell_price and is_plus_price then
+		content.ps4_first_price_text = display_price or "???"
+		content.ps4_secondary_price_text = display_original_price or "???"
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = true
+		content.show_secondary_stroke = has_ps_plus
+		content.show_third_stroke = false
+	elseif not original_price and display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_plus_upsell_price or "???"
+		content.ps4_secondary_price_text = display_price or "???"
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = true
+		content.show_secondary_stroke = false
+		content.show_third_stroke = false
+	elseif original_price and display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_plus_upsell_price or "???"
+		content.ps4_secondary_price_text = display_price or "???"
+		content.ps4_third_price_text = display_original_price or "???"
+		content.show_ps4_plus = true
+		content.show_secondary_stroke = false
+		content.show_third_stroke = true
+	else
+		content.ps4_first_price_text = display_price or display_original_price or "???"
+		content.ps4_secondary_price_text = ""
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = false
+		content.show_secondary_stroke = false
+		content.show_third_stroke = false
+	end
+
+	local ps4_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_first_price_style, content.ps4_first_price_text)
+	local ps4_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_secondary_price_style, content.ps4_secondary_price_text)
+	local ps4_third_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_third_price_style, content.ps4_third_price_text)
+	ps4_third_price_style.offset[1] = -45 - ps4_secondary_price_text_length - spacing * 0.5
+	ps4_secondary_price_stroke_style.offset[1] = -45
+	ps4_secondary_price_stroke_style.texture_size = {
+		ps4_secondary_price_text_length,
+		1
+	}
+	ps4_third_price_stroke_style.offset[1] = -45 - ps4_secondary_price_text_length - spacing * 0.5
+	ps4_third_price_stroke_style.texture_size = {
+		ps4_third_price_text_length,
+		1
+	}
+	psplus_icon_style.offset[1] = -45 - ps4_first_price_text_length - spacing * 0.25
+	content.real_currency = true
 end
 
 StoreWindowItemPreview._set_unlock_button_states = function (self, already_owned, can_afford)
@@ -1217,6 +1334,14 @@ StoreWindowItemPreview._hide_detail_button_assets = function (self)
 	item_widgets_by_name.title_edge_detail.content.visible = false
 	item_widgets_by_name.title_edge.content.visible = false
 	self._detail_button_hidden = true
+
+	if self._current_generic_input_action then
+		local hide_detail_input_action = generic_input_actions[self._current_generic_input_action .. "_no_details"]
+
+		if hide_detail_input_action then
+			self._parent:change_generic_actions(hide_detail_input_action)
+		end
+	end
 end
 
 StoreWindowItemPreview._animate_detail_button = function (self, dt)
@@ -1301,7 +1426,7 @@ StoreWindowItemPreview._update_title_edge_animation = function (self, dt)
 	end
 end
 
-StoreWindowItemPreview._update_unlock_button_width = function (self, width_offset, already_owned)
+StoreWindowItemPreview._update_unlock_button_width = function (self, width_offset, already_owned, dlc_name)
 	local top_widgets_by_name = self._top_widgets_by_name
 	local widget = top_widgets_by_name.unlock_button
 	local content = widget.content
@@ -1309,9 +1434,14 @@ StoreWindowItemPreview._update_unlock_button_width = function (self, width_offse
 	local style = widget.style
 	local side_padding = 65
 	local frame_width = content.frame_width
-	local title_text = content.title_text
+	local title_text = (already_owned and Localize(content.owned_text)) or content.title_text
 	local title_text_style = style.title_text
 	local title_text_width = self:_get_text_width(title_text_style, title_text)
+
+	if PLATFORM ~= "win32" and dlc_name and not already_owned then
+		title_text_width = 140
+	end
+
 	title_text_style.offset[1] = side_padding
 	style.title_text_disabled.offset[1] = side_padding
 	style.title_text_write_mask.offset[1] = side_padding
@@ -1331,6 +1461,8 @@ StoreWindowItemPreview._update_unlock_button_width = function (self, width_offse
 	local total_width = currency_icon_width + title_text_width + currency_text_width + side_padding * 2
 	local ui_scenegraph = self._ui_scenegraph
 	ui_scenegraph.unlock_button.size[1] = total_width
+	content.size[1] = total_width - 20
+	content.size[2] = 50
 	style.glass_top.size[1] = total_width
 	style.hover_glow.size[1] = total_width
 	style.background_fade.size[1] = total_width - frame_width * 2
@@ -1399,7 +1531,7 @@ StoreWindowItemPreview._update_visible_list_entries = function (self)
 	local enabled = dlc_scrollbar_logic:enabled()
 
 	if not enabled then
-		return
+		return true
 	end
 
 	local scroll_percentage = dlc_scrollbar_logic:get_scroll_percentage()
@@ -1584,7 +1716,7 @@ StoreWindowItemPreview._create_dlc_product_widgets = function (self, layout)
 	self:_initialize_dlc_scrollbar()
 end
 
-StoreWindowItemPreview._destroy_dlc_product_widgets = function (self)
+StoreWindowItemPreview._destroy_dlc_product_widgets = function (self, force_unload)
 	local parent = self._parent
 	local layout = self._dlc_layout
 	local widgets = self._dlc_list_widgets
@@ -1593,7 +1725,7 @@ StoreWindowItemPreview._destroy_dlc_product_widgets = function (self)
 		for i, entry in ipairs(layout) do
 			local widget = widgets[i]
 
-			parent:destroy_product_widget(widget, entry)
+			parent:destroy_product_widget(widget, entry, force_unload)
 		end
 	end
 end

@@ -104,14 +104,14 @@ StoreWindowFeatured._create_ui_elements = function (self, params, offset)
 	self._ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 end
 
-StoreWindowFeatured.on_exit = function (self, params)
+StoreWindowFeatured.on_exit = function (self, params, force_unload)
 	print("[HeroViewWindow] Exit Substate StoreWindowFeatured")
 
 	self._ui_animator = nil
 	self._is_open = false
 
 	self:_reset_cloned_materials()
-	self:_destroy_product_widgets()
+	self:_destroy_product_widgets(force_unload)
 end
 
 StoreWindowFeatured.update = function (self, dt, t)
@@ -336,7 +336,7 @@ StoreWindowFeatured._create_product_widgets = function (self, layout)
 	self:_align_grid_widgets()
 end
 
-StoreWindowFeatured._destroy_product_widgets = function (self)
+StoreWindowFeatured._destroy_product_widgets = function (self, force_unload)
 	local parent = self._parent
 	local layout = self._layout
 	local widgets = self._grid_widgets
@@ -344,7 +344,7 @@ StoreWindowFeatured._destroy_product_widgets = function (self)
 	for i, entry in ipairs(layout) do
 		local widget = widgets[i]
 
-		parent:destroy_product_widget(widget, entry)
+		parent:destroy_product_widget(widget, entry, force_unload)
 	end
 end
 

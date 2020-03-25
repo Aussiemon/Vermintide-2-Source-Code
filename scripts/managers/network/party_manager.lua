@@ -175,7 +175,7 @@ PartyManager._slot_empty_in_party = function (self, party_id, slot_id)
 	return peer_id == nil
 end
 
-PartyManager.request_join_party = function (self, peer_id, local_player_id, party_id, optional_slot_id)
+PartyManager.request_join_party = function (self, peer_id, local_player_id, party_id, optional_slot_id, optional_bot_player)
 	if self._is_server then
 		local party = self._parties[party_id]
 		local slot_empty = true
@@ -190,7 +190,15 @@ PartyManager.request_join_party = function (self, peer_id, local_player_id, part
 			if party.num_used_slots < party.num_slots then
 				self:assign_peer_to_party(peer_id, local_player_id, party_id, optional_slot_id, is_bot)
 			elseif party.num_bots > 0 then
-				local status = self:_get_last_added_bot_for_party(party_id)
+				local status = nil
+
+				if optional_bot_player then
+					local bot_peer_id = optional_bot_player:network_id()
+					local bot_local_player_id = optional_bot_player:local_player_id()
+					status = Managers.party:get_player_status(bot_peer_id, bot_local_player_id)
+				else
+					status = self:_get_last_added_bot_for_party(party_id)
+				end
 
 				self:remove_peer_from_party(status.peer_id, status.local_player_id, status.party_id)
 				self:assign_peer_to_party(peer_id, local_player_id, party_id, optional_slot_id, is_bot)

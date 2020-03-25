@@ -3,12 +3,19 @@ local add_levels_complete_challenge = AchievementTemplateHelper.add_levels_compl
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
+local XB1_ACHIEVEMENT_ID = {
+	penny_portals_heads = 85,
+	penny_portals_vintage = 86
+}
+local PS4_ACHIEVEMENT_ID = {
+	penny_portals_vintage = "081"
+}
 
-add_event_challenge(achievements, "penny_portals_portal")
-add_event_challenge(achievements, "penny_portals_heads")
-add_event_challenge(achievements, "penny_portals_cleanser")
-add_event_challenge(achievements, "penny_portals_vintage")
-add_event_challenge(achievements, "penny_portals_hideout")
+add_event_challenge(achievements, "penny_portals_portal", nil, nil, nil, XB1_ACHIEVEMENT_ID.penny_portals_portal, PS4_ACHIEVEMENT_ID.penny_portals_portal)
+add_event_challenge(achievements, "penny_portals_heads", nil, nil, nil, XB1_ACHIEVEMENT_ID.penny_portals_heads, PS4_ACHIEVEMENT_ID.penny_portals_heads)
+add_event_challenge(achievements, "penny_portals_cleanser", nil, nil, nil, XB1_ACHIEVEMENT_ID.penny_portals_cleanser, PS4_ACHIEVEMENT_ID.penny_portals_cleanser)
+add_event_challenge(achievements, "penny_portals_vintage", nil, nil, nil, XB1_ACHIEVEMENT_ID.penny_portals_vintage, PS4_ACHIEVEMENT_ID.penny_portals_vintage)
+add_event_challenge(achievements, "penny_portals_hideout", nil, nil, nil, XB1_ACHIEVEMENT_ID.penny_portals_hideout, PS4_ACHIEVEMENT_ID.penny_portals_hideout)
 
 local portals = {
 	LevelSettings.dlc_portals
@@ -24,8 +31,9 @@ local difficulties = {
 for i = 1, #difficulties, 1 do
 	local difficulty_key = difficulties[i]
 	local difficulty_name = DifficultyMapping[difficulty_key]
+	local name = "penny_complete_portals_" .. difficulty_name
 
-	add_levels_complete_challenge(achievements, "penny_complete_portals_" .. difficulty_name, portals, DifficultySettings[difficulty_key].rank)
+	add_levels_complete_challenge(achievements, name, portals, DifficultySettings[difficulty_key].rank, nil, nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
 end
 
 add_meta_challenge(achievements, "penny_complete_portals", {

@@ -4,9 +4,11 @@ local PLAYER = "PlayerVolumeExtension"
 local BOT = "BotVolumeExtension"
 local AI = "AIVolumeExtension"
 local PICKUP_PROJECTILE = "PickupProjectileVolumeExtension"
+local LOCAL_PLAYER = "LocalPlayerVolumeExtension"
 VolumeSystemSettings = VolumeSystemSettings or {
 	updates_per_frame = {
 		[PLAYER] = 4,
+		[LOCAL_PLAYER] = 1,
 		[BOT] = 3,
 		[AI] = 10,
 		[PICKUP_PROJECTILE] = 1
@@ -104,6 +106,7 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 		},
 		generic_insta_kill = {
 			[PLAYER] = {},
+			[LOCAL_PLAYER] = {},
 			[BOT] = {
 				traversal_cost = "high"
 			},
@@ -113,6 +116,7 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 		},
 		player_insta_kill = {
 			[PLAYER] = {},
+			[LOCAL_PLAYER] = {},
 			[BOT] = {
 				traversal_cost = "high"
 			}
@@ -124,11 +128,13 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 		},
 		generic_insta_kill_no_cost = {
 			[PLAYER] = {},
+			[LOCAL_PLAYER] = {},
 			[BOT] = {},
 			[AI] = {}
 		},
 		player_insta_kill_no_cost = {
 			[PLAYER] = {},
+			[LOCAL_PLAYER] = {},
 			[BOT] = {}
 		},
 		ai_insta_kill_no_cost = {

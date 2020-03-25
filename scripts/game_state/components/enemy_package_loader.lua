@@ -75,6 +75,9 @@ EnemyPackageLoader.init = function (self)
 	self.breed_category_loaded_packages = {}
 
 	self:_create_dynamic_breed_lookups()
+
+	self._dynamic_breed_lookups = table.clone(self._breed_category_lookup)
+	self._dynamic_breed_category_loaded_packages = table.clone(self.breed_category_loaded_packages)
 end
 
 local rpcs = {
@@ -213,10 +216,18 @@ EnemyPackageLoader.request_breed = function (self, breed_name, ignore_breed_limi
 		if unused_breed_name then
 			self:_unload_package(unused_breed_name, breed_category_data)
 		else
-			local breeds = breed_category_data.breeds
-			local replacement_breed_name = self:_pick_breed_from_processed_breeds(breeds, package_limit)
+			local replacement_breed_override_func = breed_category_data.replacement_breed_override_funcs and breed_category_data.replacement_breed_override_funcs[spawn_category]
 
-			return false, replacement_breed_name
+			if replacement_breed_override_func then
+				local replacement_breed_name = self[replacement_breed_override_func](self)
+
+				return false, replacement_breed_name
+			else
+				local breeds = breed_category_data.breeds
+				local replacement_breed_name = self:_pick_breed_from_processed_breeds(breeds, package_limit)
+
+				return false, replacement_breed_name
+			end
 		end
 	end
 
@@ -257,8 +268,6 @@ EnemyPackageLoader._find_patrol_replacement = function (self)
 		local fallback_index = Math.random(#FALLBACK_REPLACEMENTS)
 		replacement_breed_name = FALLBACK_REPLACEMENTS[fallback_index]
 	end
-
-	print(string.format(" - Replacement breed name %q", replacement_breed_name))
 
 	return replacement_breed_name
 end
@@ -494,7 +503,25 @@ EnemyPackageLoader._add_breed_package_name = function (self, breed_list)
 	end
 end
 
-EnemyPackageLoader._create_breed_category_lookup = function (self, breed_list, category, limit)
+EnemyPackageLoader._add_missing_breeds_to_dynamic = function (self)
+	local category = "custom_event"
+	local limit = math.huge
+	local replacement_breed_override_funcs = nil
+	local breed_list = Script.new_array(32)
+	local breed_list_size = 0
+	local breed_category_lookup = self._breed_category_lookup
+
+	for breed_name, breed in pairs(Breeds) do
+		if not breed_category_lookup[breed_name] then
+			breed_list_size = breed_list_size + 1
+			breed_list[breed_list_size] = breed_name
+		end
+	end
+
+	self:_create_breed_category_lookup(breed_list, category, limit, replacement_breed_override_funcs)
+end
+
+EnemyPackageLoader._create_breed_category_lookup = function (self, breed_list, category, limit, replacement_breed_override_funcs)
 	local breed_category_loaded_packages = self.breed_category_loaded_packages
 
 	if breed_category_loaded_packages[category] == nil then
@@ -503,7 +530,8 @@ EnemyPackageLoader._create_breed_category_lookup = function (self, breed_list, c
 			name = category,
 			limit = limit,
 			loaded_breeds = {},
-			breeds = breed_list
+			breeds = breed_list,
+			replacement_breed_override_funcs = replacement_breed_override_funcs
 		}
 	end
 
@@ -525,11 +553,17 @@ EnemyPackageLoader._create_dynamic_breed_lookups = function (self)
 		if BUILD ~= data.forbidden_in_build and data.dynamic_loading then
 			local id = data.id
 			local breeds = data.breeds
+			local replacement_breed_override_funcs = data.replacement_breed_override_funcs
 
-			self:_create_breed_category_lookup(breeds, id, data.limit)
+			self:_create_breed_category_lookup(breeds, id, data.limit, replacement_breed_override_funcs)
 			self:_add_breed_package_name(breeds)
 		end
 	end
+end
+
+EnemyPackageLoader._reset_dynamic_breed_lookups = function (self)
+	self.breed_category_loaded_packages = table.clone(self._dynamic_breed_category_loaded_packages)
+	self._breed_category_lookup = table.clone(self._dynamic_breed_lookups)
 end
 
 function print_breed_hash(t, desc)
@@ -894,6 +928,7 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed
 	breeds_to_load_at_startup.initial_check_done = true
 
 	if not breeds_to_load_at_startup.loaded then
+		self:_reset_dynamic_breed_lookups()
 		print("[EnemyPackageLoader] setup_startup_enemies - level_key:", level_key, "- level_seed:", level_seed, "- weave:", weave_objective_data)
 
 		local level_settings = LevelSettings[level_key]
@@ -932,6 +967,7 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed
 				end
 			end
 
+			self:_add_missing_breeds_to_dynamic()
 			self:_add_breed_package_name(breeds_to_load_at_startup)
 			self:_load_startup_enemy_packages()
 		end

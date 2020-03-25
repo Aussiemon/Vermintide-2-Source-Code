@@ -267,7 +267,7 @@ ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer
 	assert(statistics_db, "Missing statistics_database reference.")
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
 
-	local bots_and_players = Managers.player:human_and_bot_players()
+	local bots_and_players = ScoreboardHelper.get_current_players()
 	local own_player_stats_id = nil
 	local player_list = {}
 
@@ -327,7 +327,7 @@ ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_
 	assert(statistics_db, "Missing statistics_database reference.")
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
 
-	local bots_and_players = Managers.player:human_and_bot_players()
+	local bots_and_players = ScoreboardHelper.get_current_players()
 	local own_player_stats_id = nil
 	local player_list = {}
 
@@ -448,7 +448,7 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 	assert(statistics_db, "Missing statistics_database reference.")
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
 
-	local bots_and_players = Managers.player:human_and_bot_players()
+	local bots_and_players = ScoreboardHelper.get_current_players()
 	local own_player_stats_id = nil
 	local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 	local player_list = {}
@@ -527,6 +527,47 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 	end
 
 	return player_list
+end
+
+local PLAYERS = {}
+local OCCUPIED_SLOTS = {}
+
+ScoreboardHelper.get_current_players = function ()
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local mechanism_settings = MechanismSettings[mechanism_name]
+	local max_members = mechanism_settings.max_members
+	local human_and_bot_players = Managers.player:human_and_bot_players()
+
+	if table.size(human_and_bot_players) <= max_members then
+		return human_and_bot_players
+	else
+		table.clear(PLAYERS)
+		table.clear(OCCUPIED_SLOTS)
+
+		local gathered_players = PLAYERS
+		local human_players = Managers.player:human_players()
+		local bot_players = Managers.player:bots()
+
+		for _, player in pairs(human_players) do
+			gathered_players[#gathered_players + 1] = player
+			local player_profile_index = player:profile_index()
+			OCCUPIED_SLOTS[player_profile_index] = true
+		end
+
+		for _, bot_player in pairs(bot_players) do
+			if max_members <= #gathered_players then
+				break
+			end
+
+			local bot_profile_index = bot_player:profile_index()
+
+			if not OCCUPIED_SLOTS[bot_profile_index] then
+				gathered_players[#gathered_players + 1] = bot_player
+			end
+		end
+
+		return gathered_players
+	end
 end
 
 ScoreboardHelper.debug_get_sorted_topic_statistics = function ()

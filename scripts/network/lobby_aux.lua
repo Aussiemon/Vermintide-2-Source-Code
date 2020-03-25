@@ -1,6 +1,17 @@
 LobbyAux = LobbyAux or {}
 
-LobbyAux.create_network_hash = function (config_file_name, project_hash)
+local function concatenate_dlcs()
+	local concatenate_dlcs_str = nil
+
+	for name, _ in pairs(DLCSettings) do
+		concatenate_dlcs_str = (concatenate_dlcs_str and concatenate_dlcs_str .. "__") or ""
+		concatenate_dlcs_str = concatenate_dlcs_str .. name
+	end
+
+	return concatenate_dlcs_str
+end
+
+LobbyAux.create_network_hash = function (config_file_name, project_hash, disable_print)
 	local network_hash = Network.config_hash(config_file_name)
 	local settings = Application.settings()
 	local trunk_revision = settings and settings.content_revision
@@ -8,17 +19,22 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash)
 	local engine_revision = (ignore_engine_revision and 0) or Application.build_identifier()
 	local combined_hash = nil
 	local use_trunk_revision = GameSettingsDevelopment.network_revision_check_enabled or (trunk_revision ~= nil and trunk_revision ~= "")
+	local concatenated_dlc_string = (GameSettingsDevelopment.network_concatenated_dlc_check_enabled and concatenate_dlcs()) or ""
 
 	if use_trunk_revision then
 		fassert(trunk_revision, "No trunk_revision even though it needs to exist!")
 
-		combined_hash = Application.make_hash(network_hash, trunk_revision, engine_revision, project_hash)
+		combined_hash = Application.make_hash(network_hash, trunk_revision, engine_revision, project_hash, concatenated_dlc_string)
 
-		printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, trunk_revision=%s, engine_revision=%s, project_hash=%s", tostring(combined_hash), tostring(network_hash), tostring(trunk_revision), tostring(engine_revision), tostring(project_hash))
+		if not disable_print then
+			printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, trunk_revision=%s, engine_revision=%s, project_hash=%s", tostring(combined_hash), tostring(network_hash), tostring(trunk_revision), tostring(engine_revision), tostring(project_hash))
+		end
 	else
-		combined_hash = Application.make_hash(network_hash, engine_revision, project_hash)
+		combined_hash = Application.make_hash(network_hash, engine_revision, project_hash, concatenated_dlc_string)
 
-		printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, engine_revision=%s, project_hash=%s", tostring(combined_hash), tostring(network_hash), tostring(engine_revision), tostring(project_hash))
+		if not disable_print then
+			printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, engine_revision=%s, project_hash=%s", tostring(combined_hash), tostring(network_hash), tostring(engine_revision), tostring(project_hash))
+		end
 	end
 
 	return combined_hash

@@ -135,6 +135,7 @@ HeroViewStateStore.on_enter = function (self, params)
 	self._cloned_materials_by_reference = {}
 	self._animations = {}
 	self._ui_animations = {}
+	self._unload_list = {}
 	self._unseen_product_reward_queue = {}
 
 	if PLATFORM == "win32" then
@@ -745,7 +746,9 @@ HeroViewStateStore.on_exit = function (self, params)
 		friends_component_ui:deactivate_friends_ui()
 	end
 
-	self:_close_active_windows()
+	local force_unload = true
+
+	self:_close_active_windows(force_unload)
 	UISettings.hero_fullscreen_menu_on_exit()
 	self:play_sound("Stop_hud_store_ambience")
 	self:_enable_player_world()
@@ -775,16 +778,17 @@ HeroViewStateStore.on_exit = function (self, params)
 		self._welcome_popup = nil
 	end
 
+	self:_clear_unload_list()
 	Managers.telemetry.events:store_closed()
 end
 
-HeroViewStateStore._close_active_windows = function (self)
+HeroViewStateStore._close_active_windows = function (self, force_unload)
 	local active_windows = self._active_windows
 	local params = self._window_params
 
 	for _, window in pairs(active_windows) do
 		if window.on_exit then
-			window:on_exit(params)
+			window:on_exit(params, force_unload)
 		end
 	end
 
@@ -859,6 +863,7 @@ HeroViewStateStore.update = function (self, dt, t)
 
 	self:_update_transition_timer(dt)
 	self:_windows_update(dt, t)
+	self:_update_unload(dt, t)
 
 	local transitioning = self._parent:transitioning()
 	local wanted_state = self:_wanted_state()
@@ -1198,7 +1203,7 @@ HeroViewStateStore._show_storepage = function (self, url, dlc_name)
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then
-			local product_id = Managers.unlock:dlc_id(dlc_name)
+			local product_id = Managers.unlock:dlc_exists(dlc_name) and Managers.unlock:dlc_id(dlc_name)
 
 			if product_id then
 				XboxLive.show_product_details(user_id, product_id)
@@ -1297,7 +1302,7 @@ HeroViewStateStore.populate_product_widget = function (self, widget, product)
 	end
 end
 
-HeroViewStateStore.destroy_product_widget = function (self, widget, product)
+HeroViewStateStore.destroy_product_widget = function (self, widget, product, force_unload)
 	local content = widget.content
 	local reference_name = content.reference_name
 
@@ -1306,17 +1311,17 @@ HeroViewStateStore.destroy_product_widget = function (self, widget, product)
 		local product_type = product.type
 
 		if product_type == "item" then
-			self:_unload_texture_by_reference(reference_name)
+			self:_unload_texture_by_reference(reference_name, force_unload)
 		elseif product_type == "dlc" then
-			self:_unload_texture_by_reference(reference_name)
+			self:_unload_texture_by_reference(reference_name, force_unload)
 		elseif product_type == "dlc_feature_horizontal" then
-			self:_unload_texture_by_reference(reference_name)
+			self:_unload_texture_by_reference(reference_name, force_unload)
 		elseif product_type == "dlc_feature_vertical" or product_type == "dlc_feature_vertical_long" then
-			self:_unload_texture_by_reference(reference_name)
+			self:_unload_texture_by_reference(reference_name, force_unload)
 		elseif product_type == "dlc_logo" then
-			self:_unload_texture_by_reference(reference_name)
+			self:_unload_texture_by_reference(reference_name, force_unload)
 		elseif product_type == "dlc_header_video" then
-			self:_destroy_video_player(widget, reference_name)
+			self:_destroy_video_player(widget, reference_name, force_unload)
 		end
 	end
 end
@@ -1393,7 +1398,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 	content.background = rarity_background
 	local end_time = item.end_time
 	content.has_expire_date = end_time ~= nil
-	local price_text, real_currency = nil
+	local price_text, real_currency, platform_price_data = nil
 	local dlc_name = item.dlc_name
 	content.dlc_name = dlc_name
 	local overlay_z = style.overlay.offset[3]
@@ -1403,7 +1408,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 
 	if dlc_name then
 		real_currency = true
-		price_text = self:get_dlc_price_text(dlc_name)
+		price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
 	else
 		local currency_type = "SM"
 		local regular_prices = item.regular_prices
@@ -1421,7 +1426,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 		price_text = UIUtils.comma_value(tostring(price))
 	end
 
-	self:_set_product_price_text(widget, price_text, real_currency)
+	self:_set_product_price_text(widget, price_text, real_currency, platform_price_data)
 
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
@@ -1439,6 +1444,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 
 	if package_available then
 		content.reference_name = reference_name
+		content.icon = nil
 		local new_material_name = (masked and texture_name .. "_masked") or texture_name
 		local template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
 
@@ -1460,11 +1466,12 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 	Application.warning("Icon package not accessable for product_id: (%s) and texture_name: (%s)", product_id, texture_name)
 end
 
-HeroViewStateStore._set_product_price_text = function (self, widget, price_text, real_currency)
+HeroViewStateStore._set_product_price_text = function (self, widget, price_text, real_currency, platform_price_data)
 	local content = widget.content
 	local style = widget.style
 	local text_style = nil
 	local extra_spacing = 0
+	content.real_currency = real_currency
 
 	if real_currency then
 		text_style = style.price_text
@@ -1489,23 +1496,127 @@ HeroViewStateStore._set_product_price_text = function (self, widget, price_text,
 	local tag_right_offset = price_tag_style_right.offset
 	local tag_right_default_offset = price_tag_style_right.default_offset
 	tag_right_offset[1] = tag_right_default_offset[1] + center_width
+
+	if real_currency and platform_price_data then
+		self:_handle_platform_price_data(widget, platform_price_data)
+	end
+end
+
+HeroViewStateStore._handle_platform_price_data = function (self, widget, price_data)
+	if PLATFORM == "ps4" then
+		self:_setup_ps4_price_data(widget, price_data)
+	elseif PLATFORM == "xb1" then
+		self:_setup_xb1_price_data(widget, price_data)
+	elseif PLATFORM == "win32" then
+		self:_setup_ps4_price_data(widget, price_data)
+	end
+end
+
+HeroViewStateStore._setup_ps4_price_data = function (self, widget, price_data)
+	local content = widget.content
+	local style = widget.style
+	local spacing = 20
+	local size = content.size
+	local is_plus_price = price_data.is_plus_price
+	local has_ps_plus = Managers.account:has_access("playstation_plus")
+	local original_price = price_data.original_price
+	local display_original_price = price_data.display_original_price
+	local display_price = price_data.display_price
+	local display_plus_upsell_price = price_data.display_plus_upsell_price
+
+	if not original_price and not display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_original_price or display_price or "???"
+		content.ps4_secondary_price_text = ""
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = false
+		content.show_secondary_stroke = false
+		content.show_third_stroke = false
+	elseif original_price and not display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_price or "???"
+		content.ps4_secondary_price_text = display_original_price or "???"
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = false
+		content.show_secondary_stroke = true
+		content.show_third_stroke = false
+	elseif original_price and not display_plus_upsell_price and is_plus_price then
+		content.ps4_first_price_text = display_price or "???"
+		content.ps4_secondary_price_text = display_original_price or "???"
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = true
+		content.show_secondary_stroke = has_ps_plus
+		content.show_third_stroke = false
+	elseif not original_price and display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_plus_upsell_price or "???"
+		content.ps4_secondary_price_text = display_price or "???"
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = true
+		content.show_secondary_stroke = false
+		content.show_third_stroke = false
+	elseif original_price and display_plus_upsell_price and not is_plus_price then
+		content.ps4_first_price_text = display_plus_upsell_price or "???"
+		content.ps4_secondary_price_text = display_price or "???"
+		content.ps4_third_price_text = display_original_price or "???"
+		content.show_ps4_plus = true
+		content.show_secondary_stroke = false
+		content.show_third_stroke = true
+	else
+		content.ps4_first_price_text = display_price or display_original_price or "???"
+		content.ps4_secondary_price_text = ""
+		content.ps4_third_price_text = ""
+		content.show_ps4_plus = false
+		content.show_secondary_stroke = false
+		content.show_third_stroke = false
+	end
+
+	local ps4_first_price_style = style.ps4_first_price_text
+	local ps4_secondary_price_style = style.ps4_secondary_price_text
+	local ps4_third_price_style = style.ps4_third_price_text
+	local psplus_icon_style = style.psplus_icon
+	local ps4_secondary_price_stroke_style = style.ps4_secondary_price_stroke
+	local ps4_third_price_stroke_style = style.ps4_third_price_stroke
+	local ps4_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_first_price_style, content.ps4_first_price_text)
+	local ps4_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_secondary_price_style, content.ps4_secondary_price_text)
+	local ps4_third_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_third_price_style, content.ps4_third_price_text)
+	ps4_first_price_style.offset[1] = size[1] - ps4_first_price_text_length - spacing
+	ps4_secondary_price_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing
+	ps4_third_price_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing * 0.5 - ps4_third_price_text_length - spacing
+	psplus_icon_style.offset[1] = size[1] - ps4_first_price_text_length - spacing - spacing * 0.25 - psplus_icon_style.texture_size[1]
+	ps4_secondary_price_stroke_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing
+	ps4_secondary_price_stroke_style.texture_size = {
+		ps4_secondary_price_text_length,
+		1
+	}
+	ps4_third_price_stroke_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing * 0.5 - ps4_third_price_text_length - spacing
+	ps4_third_price_stroke_style.texture_size = {
+		ps4_third_price_text_length,
+		1
+	}
+end
+
+HeroViewStateStore._setup_xb1_price_data = function (self, price_data)
+	return
 end
 
 HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)
-	local dlc_id = Managers.unlock:dlc_id(dlc_name)
+	local dlc_id = Managers.unlock:dlc_exists(dlc_name) and Managers.unlock:dlc_id(dlc_name)
 	local backend_store = Managers.backend:get_interface("peddler")
-	local price_data = backend_store:get_app_price(dlc_id)
+	local price_data = backend_store:get_app_price((PLATFORM == "win32" and dlc_id) or dlc_name)
 	local price_text = "???"
 
 	if price_data then
-		local currency = price_data.currency
-		local regular_price = price_data.regular_price
-		local current_price = price_data.current_price
-		local price = current_price or regular_price
-		price_text = currency .. " " .. string.format("%.2f", price * 0.01)
+		if PLATFORM == "win32" then
+			local currency = price_data.currency
+			local regular_price = price_data.regular_price
+			local current_price = price_data.current_price
+			local price = current_price or regular_price
+			price_text = currency .. " " .. string.format("%.2f", price * 0.01)
+		elseif PLATFORM == "ps4" then
+			price_text = price_data.display_price
+		elseif PLATFORM == "xb1" then
+		end
 	end
 
-	return price_text
+	return price_text, price_data
 end
 
 HeroViewStateStore._destroy_video_player = function (self, widget, reference_name)
@@ -1786,10 +1897,10 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	local currency_type = "SM"
 	local style = widget.style
 	local content = widget.content
-	local price_text = self:get_dlc_price_text(dlc_name)
+	local price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
 	local real_currency = true
 
-	self:_set_product_price_text(widget, price_text, real_currency)
+	self:_set_product_price_text(widget, price_text, real_currency, platform_price_data)
 
 	content.icon = texture
 	content.owned = Managers.unlock:is_dlc_unlocked(dlc_name)
@@ -1806,6 +1917,7 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 
 	if package_available then
 		content.reference_name = reference_name
+		content.icon = nil
 		local new_banner_material_name = (masked and "store_dlc_banner_masked_" .. product_id) or "store_dlc_banner_" .. product_id
 		local banner_template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
 
@@ -1939,15 +2051,21 @@ HeroViewStateStore._is_unique_reference_to_material = function (self, reference_
 	return true
 end
 
-HeroViewStateStore._unload_texture_by_reference = function (self, reference_name)
+HeroViewStateStore._unload_texture_by_reference = function (self, reference_name, force_unload)
 	local loaded_package_names = self._loaded_package_names
 	local cloned_materials_by_reference = self._cloned_materials_by_reference
 	local package_name = loaded_package_names[reference_name]
 
 	fassert(package_name, "[HeroViewStateStore] - Could not find a package to unload for reference name: (%s)", reference_name)
-	Managers.package:unload(package_name, reference_name)
 
-	loaded_package_names[reference_name] = nil
+	if force_unload or not GameSettingsDevelopment.use_store_unload_list then
+		Managers.package:unload(package_name, reference_name)
+
+		loaded_package_names[reference_name] = nil
+	else
+		self._unload_list[package_name] = self._unload_list[package_name] or {}
+		self._unload_list[package_name][reference_name] = (self._unload_list[package_name][reference_name] or 0) + 1
+	end
 
 	if self:_is_unique_reference_to_material(reference_name) then
 		local material_name = cloned_materials_by_reference[reference_name]
@@ -1961,10 +2079,41 @@ HeroViewStateStore._unload_texture_by_reference = function (self, reference_name
 end
 
 HeroViewStateStore._unload_all_textures = function (self)
+	local force_unload = true
 	local loaded_package_names = self._loaded_package_names
 
 	for reference_name, package_name in pairs(loaded_package_names) do
-		self:_unload_texture_by_reference(reference_name)
+		self:_unload_texture_by_reference(reference_name, force_unload)
+	end
+end
+
+HeroViewStateStore._clear_unload_list = function (self)
+	for package_name, reference_names in pairs(self._unload_list) do
+		for reference_name, num_references in pairs(reference_names) do
+			for i = 1, num_references, 1 do
+				Managers.package:unload(package_name, reference_name)
+			end
+
+			self._loaded_package_names[reference_name] = nil
+		end
+
+		self._unload_list[package_name] = nil
+	end
+end
+
+HeroViewStateStore._update_unload = function (self)
+	local package_name, reference_names = next(self._unload_list)
+
+	if package_name then
+		for reference_name, num_references in pairs(reference_names) do
+			for i = 1, num_references, 1 do
+				Managers.package:unload(package_name, reference_name)
+			end
+
+			self._loaded_package_names[reference_name] = nil
+		end
+
+		self._unload_list[package_name] = nil
 	end
 end
 

@@ -1411,7 +1411,7 @@ ConflictDirector.spawn_queued_unit = function (self, breed, boxed_spawn_pos, box
 
 	if not enemy_package_loader.breed_processed[breed.name] then
 		local ignore_breed_limits = optional_data and optional_data.ignore_breed_limits
-		local success, replacement_breed_name = enemy_package_loader:request_breed(breed.name, ignore_breed_limits)
+		local success, replacement_breed_name = enemy_package_loader:request_breed(breed.name, ignore_breed_limits, spawn_category)
 
 		if not success then
 			printf("[ConflictDirector] Replacing wanted breed (%s) with %s", breed.name, replacement_breed_name or "nil")

@@ -27,7 +27,7 @@ GenericVolumeTemplates.functions = {
 			on_enter = function (unit, dt, t, data)
 				local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				health_extension:die("volume_insta_kill")
+				health_extension:entered_kill_volume(t)
 			end
 		},
 		catacombs_corpse_pit = {

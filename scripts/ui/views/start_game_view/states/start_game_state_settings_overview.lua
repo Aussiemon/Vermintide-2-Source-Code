@@ -203,7 +203,7 @@ StartGameStateSettingsOverview._create_ui_elements = function (self, params)
 	local use_fullscreen_layout = self._gamepad_style_active
 
 	if self._generic_input_actions then
-		self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, input_service, 6, gui_layer, self._generic_input_actions.default, use_fullscreen_layout)
+		self._menu_input_description = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, input_service, 8, gui_layer, self._generic_input_actions.default, use_fullscreen_layout)
 
 		self._menu_input_description:set_input_description(nil)
 	end

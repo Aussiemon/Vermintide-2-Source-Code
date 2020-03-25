@@ -134,10 +134,9 @@ LevelSettings.inn_level_celebrate = {
 	locations = {}
 }
 LevelSettings.inn_level_halloween = {
-	no_bots_allowed = true,
 	conflict_settings = "disabled",
 	tome_package_name = "resource_packages/levels/tomes/inn_halloween_tome",
-	level_name = "levels/inn/event_decoration/halloween/world",
+	package_name = "resource_packages/levels/inn_halloween",
 	player_aux_bus_name = "environment_reverb_outside",
 	display_name = "level_name_keep",
 	use_keep_decorations = true,
@@ -148,9 +147,10 @@ LevelSettings.inn_level_halloween = {
 	ambient_sound_event = "silent_default_world_sound",
 	load_no_enemies = true,
 	no_terror_events = true,
+	no_bots_allowed = false,
 	loading_ui_package_name = "loading_screen_15",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/inn_halloween",
+	level_name = "levels/inn/event_decoration/halloween/world",
 	no_nav_mesh = false,
 	source_aux_bus_name = "environment_reverb_outside_source",
 	nested_level_package_names = {
@@ -158,7 +158,20 @@ LevelSettings.inn_level_halloween = {
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
-	locations = {}
+	locations = {},
+	loot_objectives = {},
+	pickup_settings = {
+		{
+			primary = {
+				grenades = 5,
+				ammo = 2,
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			}
+		}
+	}
 }
 LevelSettings.farmlands = {
 	act_unlock_order = 0,

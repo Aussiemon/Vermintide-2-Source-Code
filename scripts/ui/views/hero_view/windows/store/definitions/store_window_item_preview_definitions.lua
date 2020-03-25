@@ -982,6 +982,7 @@ local item_widgets = {
 		}
 	}
 }
+local disable_with_gamepad = false
 local top_widgets = {
 	smoke_effect = UIWidgets.create_simple_uv_texture("item_preview_smoke_01", {
 		{
@@ -1000,7 +1001,7 @@ local top_widgets = {
 	sub_title_text = UIWidgets.create_simple_text("", "sub_title_text", nil, nil, sub_title_text_style),
 	type_title_text = UIWidgets.create_simple_text("", "sub_title_text", nil, nil, type_title_text_style),
 	career_title_text = UIWidgets.create_simple_text("", "career_title_text", nil, nil, career_title_text_style),
-	unlock_button = UIWidgets.create_store_purchase_button("unlock_button", scenegraph_definition.unlock_button.size, Localize("menu_store_purchase_button_unlock"), 32, disable_with_gamepad),
+	unlock_button = UIWidgets.create_store_purchase_button("unlock_button", scenegraph_definition.unlock_button.size, (PLATFORM == "win32" and Localize("menu_store_purchase_button_unlock")) or "", 32, disable_with_gamepad),
 	viewport_button = UIWidgets.create_simple_hotspot("viewport")
 }
 local background_color = {
@@ -1019,7 +1020,7 @@ local background_frame_margins = {
 }
 local dlc_top_widgets = {
 	list = create_list_mask("list_window", "list", list_size, list_entry_size),
-	list_scrollbar = UIWidgets.create_chain_scrollbar("list_scrollbar", "list_window", scenegraph_definition.list_scrollbar.size, "gold"),
+	list_scrollbar = UIWidgets.create_chain_scrollbar("list_scrollbar", "list_window", scenegraph_definition.list_scrollbar.size, "gold", nil, true),
 	list_detail_top_left = UIWidgets.create_simple_uv_texture("divider_skull_left", {
 		{
 			1,
@@ -1201,12 +1202,30 @@ local generic_input_actions = {
 		{
 			input_action = "confirm",
 			priority = 2,
-			description_text = "interaction_action_unlock"
+			description_text = "menu_store_purchase_button_unlock"
 		},
 		{
 			input_action = "special_1",
 			priority = 4,
 			description_text = "input_description_toggle_hero_details"
+		},
+		{
+			input_action = "right_stick",
+			priority = 5,
+			description_text = "input_description_rotate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "back",
+			priority = 6,
+			description_text = "input_description_back"
+		}
+	},
+	item_preview_purchase_no_details = {
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "menu_store_purchase_button_unlock"
 		},
 		{
 			input_action = "right_stick",
@@ -1238,16 +1257,24 @@ local generic_input_actions = {
 			description_text = "input_description_back"
 		}
 	},
+	item_preview_owned_no_details = {
+		{
+			input_action = "right_stick",
+			priority = 5,
+			description_text = "input_description_rotate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "back",
+			priority = 6,
+			description_text = "input_description_back"
+		}
+	},
 	dlc_preview_purchase = {
 		{
 			input_action = "confirm",
 			priority = 2,
-			description_text = "interaction_action_unlock"
-		},
-		{
-			input_action = "special_1",
-			priority = 4,
-			description_text = "input_description_play"
+			description_text = (PLATFORM == "win32" and "interaction_action_unlock") or "dlc1_4_input_description_storepage"
 		},
 		{
 			input_action = "right_stick",
@@ -1262,11 +1289,6 @@ local generic_input_actions = {
 		}
 	},
 	dlc_preview_owned = {
-		{
-			input_action = "special_1",
-			priority = 4,
-			description_text = "input_description_play"
-		},
 		{
 			input_action = "right_stick",
 			priority = 5,

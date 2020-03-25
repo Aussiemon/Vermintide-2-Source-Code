@@ -90,6 +90,7 @@ for season_id = season_offset, season_num, 1 do
 		name = "achv_scorpion_complete_unranked_weaves_name",
 		required_dlc = "scorpion",
 		icon = "achievement_trophy_scorpion_complete_unranked_weaves_season_2",
+		ID_PS4 = "077",
 		desc = "achv_scorpion_complete_unranked_weaves_desc",
 		completed = function (statistics_db, stats_id)
 			local weave_quickplay_wins = statistics_db:get_persistent_stat(stats_id, season_name, "weave_quickplay_wins")
@@ -911,6 +912,7 @@ AchievementTemplates.achievements.scorpion_complete_unranked_weaves = {
 	name = "achv_scorpion_complete_unranked_weaves_name",
 	required_dlc = "scorpion",
 	icon = "icons_placeholder",
+	ID_PS4 = "077",
 	desc = "achv_scorpion_complete_unranked_weaves_desc",
 	completed = function (statistics_db, stats_id)
 		local weave_quickplay_wins = statistics_db:get_persistent_stat(stats_id, "season_1", "weave_quickplay_wins")
@@ -949,6 +951,17 @@ AchievementTemplates.xbox_achievement_ids = {
 	80,
 	81
 }
+AchievementTemplates.ps4_achievement_ids = {
+	nil,
+	nil,
+	nil,
+	"078",
+	nil,
+	nil,
+	nil,
+	"079",
+	"080"
+}
 
 for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list) do
 	local id = "scorpion_complete_weaves_" .. i
@@ -959,6 +972,7 @@ for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list) do
 			return string.format(Localize("achv_scorpion_complete_weaves_" .. i .. "_desc"), weave_number)
 		end,
 		ID_XB1 = AchievementTemplates.xbox_achievement_ids[i],
+		ID_PS4 = AchievementTemplates.ps4_achievement_ids[i],
 		icon = "achievement_trophy_scorpion_complete_weaves_" .. i,
 		completed = function (statistics_db, stats_id)
 			local from = 1

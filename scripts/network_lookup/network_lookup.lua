@@ -1206,7 +1206,8 @@ NetworkLookup.effects = {
 	"fx/chr_iron_breaker_ability_taunt",
 	"fx/chr_grey_seer_lightning_hit_02",
 	"fx/chr_chaos_sorcerer_boss_projectile_flies_impact",
-	"fx/drachenfels_flies_impact"
+	"fx/drachenfels_flies_impact",
+	"fx/drachenfels_boss_teleport_enter"
 }
 
 for _, dlc in pairs(DLCSettings) do

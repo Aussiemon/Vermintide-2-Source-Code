@@ -1346,10 +1346,18 @@ CameraEffectSettings = {
 			octaves = 8
 		},
 		castle_end_rumble = {
-			persistance = 0.7,
-			fade_out = 3,
+			persistance = 0.9,
+			fade_out = 4,
 			amplitude = 0.9,
-			duration = 12,
+			duration = 5,
+			fade_in = 1,
+			octaves = 9
+		},
+		castle_end_rumble_02 = {
+			persistance = 0.8,
+			fade_out = 4,
+			amplitude = 0.9,
+			duration = 5,
 			fade_in = 1,
 			octaves = 8
 		},
@@ -1536,6 +1544,29 @@ CameraEffectSettings = {
 			duration = 5000,
 			fade_in = 1.5,
 			no_rumble = true
+		},
+		drach_death_ending = {
+			persistance = 0.8,
+			fade_out = 1,
+			amplitude = 1.2,
+			duration = 4,
+			fade_in = 5,
+			octaves = 5
+		},
+		drach_death_explosion = {
+			persistance = 1,
+			fade_out = 0.3,
+			amplitude = 0.6,
+			duration = 0.25,
+			fade_in = 0.8,
+			octaves = 6
+		},
+		drach_teleport = {
+			persistance = 1,
+			amplitude = 0.5,
+			duration = 0.2,
+			fade_out = 0.5,
+			octaves = 3
 		}
 	}
 }

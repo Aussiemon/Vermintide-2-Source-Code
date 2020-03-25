@@ -151,4 +151,8 @@ AccountManager.region = function (self)
 	return
 end
 
+AccountManager.has_access = function (self)
+	return false
+end
+
 return

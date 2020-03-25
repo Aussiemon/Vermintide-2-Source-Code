@@ -614,7 +614,7 @@ local item_name_text_style = {
 		2
 	}
 }
-local disable_with_gamepad = false
+local disable_with_gamepad = true
 local static_widget_definitions = {
 	purchase_overlay = UIWidgets.create_simple_rect("purchase_overlay", {
 		50,
@@ -1024,7 +1024,7 @@ StoreItemPurchasePopup._create_gamepad_input_description = function (self, input
 			description_text = "input_description_close"
 		}
 	}
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self._purchase_ui_renderer, input_service, 6, nil, generic_input_actions, true)
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self._purchase_ui_renderer, input_service, 6, nil, generic_input_actions, false)
 
 	self._menu_input_description:set_input_description(nil)
 end

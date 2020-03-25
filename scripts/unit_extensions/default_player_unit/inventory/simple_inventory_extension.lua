@@ -248,6 +248,11 @@ SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 
 			if item_data.slot_to_use then
 				local override_slot_data = self._equipment.slots[item_data.slot_to_use]
+
+				if not override_slot_data then
+					break
+				end
+
 				local override_item_data = override_slot_data.item_data
 				item_data.left_hand_unit = override_item_data.left_hand_unit
 				item_data.right_hand_unit = override_item_data.right_hand_unit
@@ -259,7 +264,18 @@ SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 end
 
 SimpleInventoryExtension.destroy = function (self)
+	local pickup_system = Managers.state.entity:system("pickup_system")
+	local player_network_id = self.player:network_id()
+
 	for slot_id, slot_data in pairs(self._equipment.slots) do
+		if pickup_system then
+			local linked_pickup_type = slot_data.link_pickup_template_name
+
+			if linked_pickup_type then
+				pickup_system:delete_limited_owned_pickup_type(player_network_id, linked_pickup_type)
+			end
+		end
+
 		GearUtils.destroy_slot(self._world, self._unit, slot_data, self._equipment, true)
 	end
 

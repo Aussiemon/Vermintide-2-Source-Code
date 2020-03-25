@@ -20,7 +20,6 @@ BTQuickTeleportAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
 	blackboard.active_node = BTQuickTeleportAction
-	blackboard.quick_teleport_entrance_pos = Vector3Box(POSITION_LOOKUP[unit])
 
 	if action.sound_event then
 		local audio_system = Managers.state.entity:system("audio_system")
@@ -47,11 +46,14 @@ BTQuickTeleportAction.enter = function (self, unit, blackboard, t)
 	if action.push_close_players then
 		blackboard.hit_units = {}
 	end
+
+	if blackboard.action.teleport_start_function then
+		blackboard.action.teleport_start_function(unit, blackboard)
+	end
 end
 
 BTQuickTeleportAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.quick_teleport_exit_pos = nil
-	blackboard.quick_teleport_entrance_pos = nil
 	blackboard.active_node = nil
 	blackboard.quick_teleport = false
 	local navigation_extension = blackboard.navigation_extension
@@ -83,23 +85,35 @@ end
 
 BTQuickTeleportAction.play_teleport_effect = function (self, unit, blackboard, start_position, end_position)
 	local action = blackboard.action
-	local effect_name_id = NetworkLookup.effects[action.teleport_effect]
-	local node_id = 0
-	local rotation_offset = Quaternion.identity()
-	local network_manager = Managers.state.network
+	local teleport_effect = action.teleport_effect
 
-	network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, start_position, rotation_offset, false)
-	network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, end_position, rotation_offset, false)
+	if teleport_effect then
+		local effect_name_id = NetworkLookup.effects[teleport_effect]
+		local node_id = 0
+		local rotation_offset = Quaternion.identity()
+		local network_manager = Managers.state.network
+
+		network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, start_position, rotation_offset, false)
+
+		if not action.teleport_end_effect then
+			network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, end_position, rotation_offset, false)
+		end
+	end
 
 	local teleport_effect_trail = action.teleport_effect_trail
 
 	if teleport_effect_trail then
+		local network_manager = Managers.state.network
+		local node_id = 0
 		local dir = Vector3.normalize(start_position - end_position)
 		local trail_rotation_offset = Quaternion.look(dir, Vector3.up())
 		local trail_effect_name_id = NetworkLookup.effects[teleport_effect_trail]
 
 		network_manager:rpc_play_particle_effect(nil, trail_effect_name_id, NetworkConstants.invalid_game_object_id, node_id, start_position, trail_rotation_offset, false)
-		network_manager:rpc_play_particle_effect(nil, trail_effect_name_id, NetworkConstants.invalid_game_object_id, node_id, end_position, trail_rotation_offset, false)
+
+		if not action.teleport_end_effect then
+			network_manager:rpc_play_particle_effect(nil, trail_effect_name_id, NetworkConstants.invalid_game_object_id, node_id, end_position, trail_rotation_offset, false)
+		end
 	end
 
 	local breed = blackboard.breed
@@ -111,7 +125,7 @@ BTQuickTeleportAction.play_teleport_effect = function (self, unit, blackboard, s
 end
 
 BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, blackboard)
-	local entrance_position = blackboard.quick_teleport_entrance_pos:unbox()
+	local entrance_position = POSITION_LOOKUP[unit]
 	local teleport_position = nil
 	local teleport_pos_func = blackboard.action.teleport_pos_func
 
@@ -172,6 +186,20 @@ end
 
 BTQuickTeleportAction.anim_cb_teleport_end_finished = function (self, unit, blackboard)
 	blackboard.quick_teleport = false
+end
+
+BTQuickTeleportAction.anim_cb_tp_end_enter = function (self, unit, blackboard)
+	local action = blackboard.action
+
+	if action.teleport_end_effect then
+		local effect_name_id = NetworkLookup.effects[action.teleport_end_effect]
+		local node_id = 0
+		local rotation_offset = Quaternion.identity()
+		local position = POSITION_LOOKUP[unit]
+		local network_manager = Managers.state.network
+
+		network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, position, rotation_offset, false)
+	end
 end
 
 BTQuickTeleportAction.push_close_players = function (self, unit, blackboard, position, target_unit)

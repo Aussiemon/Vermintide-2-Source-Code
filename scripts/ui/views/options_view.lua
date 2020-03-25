@@ -2784,30 +2784,6 @@ OptionsView.update_apply_button = function (self)
 end
 
 OptionsView.handle_apply_changes = function (self)
-	if PLATFORM == "win32" then
-		self:_handle_apply_changes()
-	else
-		Managers.transition:show_loading_icon()
-
-		self.disable_all_input = true
-
-		Managers.save:auto_load(SaveFileName, callback(self, "cb_load_done"))
-	end
-end
-
-OptionsView.cb_load_done = function (self, result)
-	if result.error and result.error ~= "NOT_FOUND" then
-		self.save_data_error_popup_id = Managers.popup:queue_popup(Localize("ps4_save_error_broken"), Localize("popup_error_topic"), "delete", Localize("button_delete_save"), "back_to_title", Localize("button_back_to_title"))
-
-		Managers.transition:hide_loading_icon()
-
-		self.disable_all_input = false
-	else
-		self:_handle_apply_changes()
-	end
-end
-
-OptionsView._handle_apply_changes = function (self)
 	if self.changed_keymaps then
 		self:apply_keymap_changes(self.session_keymaps, true)
 	else
@@ -4972,6 +4948,8 @@ OptionsView.cb_gamma_saved_value = function (self, widget)
 	gamma = math.clamp(gamma, min, max)
 	content.internal_value = get_slider_value(min, max, gamma)
 	content.value = gamma
+
+	Application.set_render_setting("gamma", content.value)
 end
 
 OptionsView.cb_gamma = function (self, content)
@@ -9054,6 +9032,12 @@ end
 OptionsView.cb_fov_setup = function (self)
 	local min = 45
 	local max = 120
+
+	if PLATFORM ~= "win32" then
+		max = 90
+		min = 65
+	end
+
 	local base_fov = CameraSettings.first_person._node.vertical_fov
 
 	if not Application.user_setting("render_settings", "fov") then

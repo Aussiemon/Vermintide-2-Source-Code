@@ -682,9 +682,9 @@ function flow_callback_start_fade(params)
 	local index_offset = Script.index_offset()
 	local mesh = nil
 	local mesh_name = params.mesh_name
-	local start_fade_name = params.start_fade_name or nil
+	local start_fade_name = params.start_fade_value_name or nil
 	local start_fade_value = params.start_fade_value or nil
-	local end_fade_name = params.end_fade_name or nil
+	local end_fade_name = params.end_fade_value_name or nil
 	local end_fade_value = params.end_fade_value or nil
 
 	if mesh_name then
@@ -990,6 +990,12 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 
 	for i = 1, #shield_items, 1 do
 		Unit.flow_event(shield_items[i], event)
+	end
+
+	local other_items = Unit.get_data(unit, "other_items") or {}
+
+	for i = 1, #other_items, 1 do
+		Unit.flow_event(other_items[i], event)
 	end
 end
 

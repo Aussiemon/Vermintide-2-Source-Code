@@ -106,6 +106,7 @@ ItemMasterList.wh_2h_billhook = {
 	}
 }
 ItemMasterList.bw_1h_flail_flaming_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -118,6 +119,7 @@ ItemMasterList.bw_1h_flail_flaming_skin = {
 	}
 }
 ItemMasterList.dr_1h_throwing_axes_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -130,6 +132,7 @@ ItemMasterList.dr_1h_throwing_axes_skin = {
 	}
 }
 ItemMasterList.es_2h_heavy_spear_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -142,6 +145,7 @@ ItemMasterList.es_2h_heavy_spear_skin = {
 	}
 }
 ItemMasterList.we_1h_spears_shield_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -154,6 +158,7 @@ ItemMasterList.we_1h_spears_shield_skin = {
 	}
 }
 ItemMasterList.wh_2h_billhook_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",

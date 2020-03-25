@@ -31,6 +31,7 @@ GameSettingsDevelopment.release_levels_only = true
 GameSettingsDevelopment.use_engine_optimized_ai_locomotion = true
 GameSettingsDevelopment.allow_retry_weave = false
 GameSettingsDevelopment.disable_carousel = true
+GameSettingsDevelopment.use_store_unload_list = true
 local script_data = script_data
 script_data.debug_behaviour_trees = (script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees) or false
 GameSettingsDevelopment.use_backend = not Development.parameter("use_local_backend")

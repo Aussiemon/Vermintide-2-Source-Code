@@ -18937,6 +18937,7 @@ ItemMasterList.loot_chest_05_06 = {
 	}
 }
 ItemMasterList.wh_1h_axe_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -18949,6 +18950,7 @@ ItemMasterList.wh_1h_axe_skin = {
 	}
 }
 ItemMasterList.wh_crossbow_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -18961,6 +18963,7 @@ ItemMasterList.wh_crossbow_skin = {
 	}
 }
 ItemMasterList.es_1h_flail_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -18973,8 +18976,9 @@ ItemMasterList.es_1h_flail_skin = {
 	}
 }
 ItemMasterList.wh_brace_of_pistols_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_pistol_01_t1/wpn_emp_pistol_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_pistol_01_t1/wpn_emp_pistol_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -18986,8 +18990,9 @@ ItemMasterList.wh_brace_of_pistols_skin = {
 	}
 }
 ItemMasterList.wh_1h_falchion_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_sword_04_t1/wpn_emp_sword_04_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_04_t1/wpn_emp_sword_04_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -18999,8 +19004,9 @@ ItemMasterList.wh_1h_falchion_skin = {
 	}
 }
 ItemMasterList.wh_2h_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_02_t1/wpn_empire_2h_sword_02_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_02_t1/wpn_empire_2h_sword_02_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19012,8 +19018,9 @@ ItemMasterList.wh_2h_sword_skin = {
 	}
 }
 ItemMasterList.wh_repeating_pistols_skin = {
-	right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19025,8 +19032,9 @@ ItemMasterList.wh_repeating_pistols_skin = {
 	}
 }
 ItemMasterList.wh_fencing_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_fencingsword_01_t1/wpn_fencingsword_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_fencingsword_01_t1/wpn_fencingsword_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19038,6 +19046,7 @@ ItemMasterList.wh_fencing_sword_skin = {
 	}
 }
 ItemMasterList.wh_crossbow_repeater_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -19050,8 +19059,9 @@ ItemMasterList.wh_crossbow_repeater_skin = {
 	}
 }
 ItemMasterList.bw_dagger_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_dagger_01/wpn_brw_dagger_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_01/wpn_brw_dagger_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19063,8 +19073,9 @@ ItemMasterList.bw_dagger_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_flamethrower_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_flame_staff_01/wpn_brw_flame_staff_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_flame_staff_01/wpn_brw_flame_staff_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19076,8 +19087,9 @@ ItemMasterList.bw_skullstaff_flamethrower_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_spear_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19089,8 +19101,9 @@ ItemMasterList.bw_skullstaff_spear_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_beam_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_beam_staff_01/wpn_brw_beam_staff_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_beam_staff_01/wpn_brw_beam_staff_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19102,8 +19115,9 @@ ItemMasterList.bw_skullstaff_beam_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_geiser_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19115,8 +19129,9 @@ ItemMasterList.bw_skullstaff_geiser_skin = {
 	}
 }
 ItemMasterList.bw_skullstaff_fireball_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19128,8 +19143,9 @@ ItemMasterList.bw_skullstaff_fireball_skin = {
 	}
 }
 ItemMasterList.bw_1h_mace_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_mace_01/wpn_brw_mace_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_mace_01/wpn_brw_mace_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19141,8 +19157,9 @@ ItemMasterList.bw_1h_mace_skin = {
 	}
 }
 ItemMasterList.bw_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_sword_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_sword_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19154,8 +19171,9 @@ ItemMasterList.bw_sword_skin = {
 	}
 }
 ItemMasterList.bw_flame_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_flaming_sword_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_flaming_sword_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19167,8 +19185,9 @@ ItemMasterList.bw_flame_sword_skin = {
 	}
 }
 ItemMasterList.dr_2h_axe_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_2h_axe_01_t1/wpn_dw_2h_axe_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_2h_axe_01_t1/wpn_dw_2h_axe_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19180,8 +19199,9 @@ ItemMasterList.dr_2h_axe_skin = {
 	}
 }
 ItemMasterList.dr_2h_hammer_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_2h_hammer_01_t1/wpn_dw_2h_hammer_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_2h_hammer_01_t1/wpn_dw_2h_hammer_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19193,8 +19213,9 @@ ItemMasterList.dr_2h_hammer_skin = {
 	}
 }
 ItemMasterList.dr_1h_axe_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19206,8 +19227,9 @@ ItemMasterList.dr_1h_axe_skin = {
 	}
 }
 ItemMasterList.dr_dual_wield_axes_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19219,8 +19241,9 @@ ItemMasterList.dr_dual_wield_axes_skin = {
 	}
 }
 ItemMasterList.dr_shield_axe_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19232,8 +19255,9 @@ ItemMasterList.dr_shield_axe_skin = {
 	}
 }
 ItemMasterList.dr_drake_pistol_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_drake_pistol_01_t1/wpn_dw_drake_pistol_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_drake_pistol_01_t1/wpn_dw_drake_pistol_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19245,8 +19269,9 @@ ItemMasterList.dr_drake_pistol_skin = {
 	}
 }
 ItemMasterList.dr_1h_hammer_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19258,8 +19283,9 @@ ItemMasterList.dr_1h_hammer_skin = {
 	}
 }
 ItemMasterList.dr_shield_hammer_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19271,8 +19297,9 @@ ItemMasterList.dr_shield_hammer_skin = {
 	}
 }
 ItemMasterList.dr_handgun_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_handgun_01_t1/wpn_dw_handgun_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_handgun_01_t1/wpn_dw_handgun_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19284,8 +19311,9 @@ ItemMasterList.dr_handgun_skin = {
 	}
 }
 ItemMasterList.dr_drakegun_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_iron_drake_01/wpn_dw_iron_drake_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_iron_drake_01/wpn_dw_iron_drake_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19297,8 +19325,9 @@ ItemMasterList.dr_drakegun_skin = {
 	}
 }
 ItemMasterList.dr_2h_pick_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_pick_01_t1/wpn_dw_pick_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_pick_01_t1/wpn_dw_pick_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19310,8 +19339,9 @@ ItemMasterList.dr_2h_pick_skin = {
 	}
 }
 ItemMasterList.dr_rakegun_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_rakegun_t1/wpn_dw_rakegun_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_rakegun_t1/wpn_dw_rakegun_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19323,12 +19353,13 @@ ItemMasterList.dr_rakegun_skin = {
 	}
 }
 ItemMasterList.dr_crossbow_skin = {
-	right_hand_unit = "units/weapons/player/wpn_dw_xbox_01_t1/wpn_dw_xbox_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_dw_xbox_01_t1/wpn_dw_xbox_01_t1",
 	ammo_unit = "units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt",
-	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	item_type = "weapon_skin",
 	matching_item_key = "dr_crossbow",
 	can_wield = {
 		"dr_ironbreaker",
@@ -19337,8 +19368,9 @@ ItemMasterList.dr_crossbow_skin = {
 	}
 }
 ItemMasterList.es_repeating_handgun_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_handgun_repeater_t1/wpn_emp_handgun_repeater_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19350,8 +19382,9 @@ ItemMasterList.es_repeating_handgun_skin = {
 	}
 }
 ItemMasterList.es_1h_mace_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_mace_02_t1/wpn_emp_mace_02_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_mace_02_t1/wpn_emp_mace_02_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19363,8 +19396,9 @@ ItemMasterList.es_1h_mace_skin = {
 	}
 }
 ItemMasterList.es_mace_shield_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_mace_02_t1/wpn_emp_mace_02_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_mace_02_t1/wpn_emp_mace_02_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19376,8 +19410,9 @@ ItemMasterList.es_mace_shield_skin = {
 	}
 }
 ItemMasterList.es_1h_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19389,8 +19424,9 @@ ItemMasterList.es_1h_sword_skin = {
 	}
 }
 ItemMasterList.es_sword_shield_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19402,8 +19438,9 @@ ItemMasterList.es_sword_shield_skin = {
 	}
 }
 ItemMasterList.es_2h_sword_executioner_skin = {
-	right_hand_unit = "units/weapons/player/wpn_emp_sword_exe_01_t1/wpn_emp_sword_exe_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_emp_sword_exe_01_t1/wpn_emp_sword_exe_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19415,8 +19452,9 @@ ItemMasterList.es_2h_sword_executioner_skin = {
 	}
 }
 ItemMasterList.es_2h_hammer_skin = {
-	right_hand_unit = "units/weapons/player/wpn_empire_2h_hammer_01_t1/wpn_empire_2h_hammer_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_empire_2h_hammer_01_t1/wpn_empire_2h_hammer_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19428,8 +19466,9 @@ ItemMasterList.es_2h_hammer_skin = {
 	}
 }
 ItemMasterList.es_2h_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_01_t1/wpn_empire_2h_sword_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_01_t1/wpn_empire_2h_sword_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19441,8 +19480,9 @@ ItemMasterList.es_2h_sword_skin = {
 	}
 }
 ItemMasterList.es_blunderbuss_skin = {
-	right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19454,12 +19494,13 @@ ItemMasterList.es_blunderbuss_skin = {
 	}
 }
 ItemMasterList.es_longbow_skin = {
-	right_hand_unit = "units/weapons/player/wpn_empire_bow_tutorial/wpn_empire_bow_tutorial",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_empire_bow_tutorial/wpn_empire_bow_tutorial",
 	ammo_unit = "units/weapons/player/wpn_emp_arrows/wpn_es_arrow_t1",
-	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
+	item_type = "weapon_skin",
 	matching_item_key = "es_longbow",
 	can_wield = {
 		"es_mercenary",
@@ -19468,8 +19509,9 @@ ItemMasterList.es_longbow_skin = {
 	}
 }
 ItemMasterList.es_handgun_skin = {
-	right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t1/wpn_empire_handgun_02_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t1/wpn_empire_handgun_02_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19481,8 +19523,9 @@ ItemMasterList.es_handgun_skin = {
 	}
 }
 ItemMasterList.es_halberd_skin = {
-	right_hand_unit = "units/weapons/player/wpn_wh_halberd_01/wpn_wh_halberd_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_wh_halberd_01/wpn_wh_halberd_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19494,8 +19537,9 @@ ItemMasterList.es_halberd_skin = {
 	}
 }
 ItemMasterList.we_2h_axe_skin = {
-	right_hand_unit = "units/weapons/player/wpn_we_2h_axe_01_t1/wpn_we_2h_axe_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_we_2h_axe_01_t1/wpn_we_2h_axe_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19507,8 +19551,9 @@ ItemMasterList.we_2h_axe_skin = {
 	}
 }
 ItemMasterList.we_2h_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_we_2h_sword_01_t1/wpn_we_2h_sword_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_we_2h_sword_01_t1/wpn_we_2h_sword_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19520,6 +19565,7 @@ ItemMasterList.we_2h_sword_skin = {
 	}
 }
 ItemMasterList.we_crossbow_repeater_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -19532,6 +19578,7 @@ ItemMasterList.we_crossbow_repeater_skin = {
 	}
 }
 ItemMasterList.we_longbow_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -19544,6 +19591,7 @@ ItemMasterList.we_longbow_skin = {
 	}
 }
 ItemMasterList.we_shortbow_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -19556,6 +19604,7 @@ ItemMasterList.we_shortbow_skin = {
 	}
 }
 ItemMasterList.we_shortbow_hagbane_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -19568,8 +19617,9 @@ ItemMasterList.we_shortbow_hagbane_skin = {
 	}
 }
 ItemMasterList.we_dual_wield_daggers_skin = {
-	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19581,8 +19631,9 @@ ItemMasterList.we_dual_wield_daggers_skin = {
 	}
 }
 ItemMasterList.we_dual_wield_swords_skin = {
-	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19594,8 +19645,9 @@ ItemMasterList.we_dual_wield_swords_skin = {
 	}
 }
 ItemMasterList.we_1h_sword_skin = {
-	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19607,8 +19659,9 @@ ItemMasterList.we_1h_sword_skin = {
 	}
 }
 ItemMasterList.we_dual_wield_sword_dagger_skin = {
-	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
@@ -19620,8 +19673,9 @@ ItemMasterList.we_dual_wield_sword_dagger_skin = {
 	}
 }
 ItemMasterList.we_spear_skin = {
-	right_hand_unit = "units/weapons/player/wpn_we_spear_01/wpn_we_spear_01",
+	base_skin_item = true,
 	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_we_spear_01/wpn_we_spear_01",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",

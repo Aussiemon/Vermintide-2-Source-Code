@@ -100,14 +100,6 @@ InteractionDefinitions.player_generic = {
 	end
 }
 
-local function _add_heal_telemetry(healer_player, target_player, position)
-	if healer_player == target_player then
-		Managers.telemetry.events:player_healed_self(healer_player, position)
-	else
-		Managers.telemetry.events:player_healed_ally(healer_player, target_player, position)
-	end
-end
-
 local function _drop_pickup(interactor_unit, pickup_name)
 	local first_person_extension = ScriptUnit.extension(interactor_unit, "first_person_system")
 	local position = first_person_extension:current_position() + Vector3(math.random(-1, 1), math.random(-1, 1), 0) * 0.2
@@ -262,6 +254,15 @@ InteractionDefinitions.revive = {
 
 				if interactor_alive and interactable_alive then
 					StatisticsUtil.register_revive(interactor_unit, interactable_unit, data.statistics_db)
+
+					local player_manager = Managers.player
+					local interactor_player = player_manager:unit_owner(interactor_unit)
+					local interactable_player = player_manager:unit_owner(interactable_unit)
+					local interactable_pos = POSITION_LOOKUP[interactable_unit]
+
+					if not interactable_player.is_server then
+						Managers.telemetry.events:player_revived(interactor_player, interactable_player, interactable_pos)
+					end
 				end
 			elseif interactable_alive then
 				Unit.animation_event(interactable_unit, "revive_abort")
@@ -1638,9 +1639,7 @@ InteractionDefinitions.heal = {
 				local player_manager = Managers.player
 				local interactor_player = player_manager:unit_owner(interactor_unit)
 				local interactable_player = player_manager:unit_owner(interactable_unit)
-				local interactable_pos = POSITION_LOOKUP[interactable_unit]
-
-				_add_heal_telemetry(interactor_player, interactable_player, interactable_pos)
+				slot14 = POSITION_LOOKUP[interactable_unit]
 			end
 		end,
 		can_interact = function (interactor_unit, interactable_unit)

@@ -154,14 +154,14 @@ LobbyInternal.leave_lobby = function (psn_room)
 	Network.leave_psn_room(psn_room.room_id)
 end
 
-LobbyInternal.get_lobby = function (room_browser, index)
+LobbyInternal.get_lobby = function (room_browser, index, verify_lobby_data)
 	local network_psn_room_info = room_browser:lobby(index)
 	local data_string = network_psn_room_info.data
-	local data_table = LobbyInternal.unserialize_psn_data(data_string)
+	local data_table, verified = LobbyInternal.unserialize_psn_data(data_string, verify_lobby_data)
 	data_table.id = network_psn_room_info.id
 	data_table.name = network_psn_room_info.name
 
-	return data_table
+	return data_table, verified
 end
 
 LobbyInternal.lobby_browser = function ()
@@ -263,9 +263,20 @@ LobbyInternal.serialize_psn_data = function (data_table)
 	return packed_data
 end
 
-LobbyInternal.unserialize_psn_data = function (data_string)
+LobbyInternal.verify_lobby_data = function (lobby_data_table)
+	local my_network_hash = Managers.lobby:network_hash()
+	local lobby_network_hash = lobby_data_table.network_hash
+
+	return lobby_network_hash == my_network_hash
+end
+
+LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 	local t = PsnRoom.unpack_room_data(data_string)
 	local lobby_data_network_lookups = LobbyInternal.lobby_data_network_lookups
+
+	if verify_lobby_data and not LobbyInternal.verify_lobby_data(t) then
+		return t, false
+	end
 
 	for key, value in pairs(t) do
 		if lobby_data_network_lookups[key] then
@@ -273,7 +284,7 @@ LobbyInternal.unserialize_psn_data = function (data_string)
 		end
 	end
 
-	return t
+	return t, true
 end
 
 LobbyInternal.clear_filter_requirements = function ()

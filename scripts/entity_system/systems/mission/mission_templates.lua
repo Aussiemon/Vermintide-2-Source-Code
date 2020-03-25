@@ -278,6 +278,8 @@ MissionTemplates = {
 		end,
 		create_sync_data = function (data)
 			local sync_data = {}
+
+			return sync_data
 		end,
 		sync = function (data, sync_data)
 			return

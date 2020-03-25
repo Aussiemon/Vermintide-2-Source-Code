@@ -107,6 +107,7 @@ ItemMasterList.es_dual_wield_hammer_sword = {
 	}
 }
 ItemMasterList.we_1h_axe_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -119,6 +120,7 @@ ItemMasterList.we_1h_axe_skin = {
 	}
 }
 ItemMasterList.bw_1h_crowbill_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -131,6 +133,7 @@ ItemMasterList.bw_1h_crowbill_skin = {
 	}
 }
 ItemMasterList.dr_dual_wield_hammers_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -143,6 +146,7 @@ ItemMasterList.dr_dual_wield_hammers_skin = {
 	}
 }
 ItemMasterList.wh_dual_wield_axe_falchion_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -155,6 +159,7 @@ ItemMasterList.wh_dual_wield_axe_falchion_skin = {
 	}
 }
 ItemMasterList.es_dual_wield_hammer_sword_skin = {
+	base_skin_item = true,
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",

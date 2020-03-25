@@ -21,6 +21,7 @@ local unit_templates = {
 			"PlayerUnitAttachmentExtension",
 			"PlayerUnitCosmeticExtension",
 			"PlayerWhereaboutsExtension",
+			"LocalPlayerVolumeExtension",
 			"PlayerTutorialExtension",
 			"StatisticsExtension",
 			"ContextAwarePingExtension",

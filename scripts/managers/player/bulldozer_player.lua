@@ -100,6 +100,7 @@ BulldozerPlayer.despawn = function (self)
 
 	if Unit.alive(player_unit) then
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
+		Managers.telemetry.events:player_despawned(self)
 	elseif not Boot.is_controlled_exit then
 		ferror("bulldozer_player was already despawned. Should not happen.")
 	end

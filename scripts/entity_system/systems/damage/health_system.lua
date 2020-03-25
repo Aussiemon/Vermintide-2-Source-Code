@@ -25,7 +25,8 @@ local RPCS = {
 	"rpc_take_falling_damage",
 	"rpc_request_knock_down",
 	"rpc_request_heal_wounds",
-	"rpc_request_revive"
+	"rpc_request_revive",
+	"rpc_request_insta_kill"
 }
 local extensions = {
 	"ChaosTrollHealthExtension",
@@ -625,6 +626,26 @@ HealthSystem.rpc_request_revive = function (self, sender, revived_unit_go_id, re
 	local interactable_pos = POSITION_LOOKUP[revived_unit]
 
 	Managers.telemetry.events:player_revived(interactor_player, interactable_player, interactable_pos)
+end
+
+HealthSystem.rpc_request_insta_kill = function (self, sender, unit_id, damage_type_id)
+	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a insta kill from a client")
+
+	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	local health_extension = self.unit_extensions[unit]
+
+	if not health_extension then
+		return
+	end
+
+	local damage_type = NetworkLookup.damage_types[damage_type_id]
+
+	health_extension:die(damage_type)
 end
 
 return

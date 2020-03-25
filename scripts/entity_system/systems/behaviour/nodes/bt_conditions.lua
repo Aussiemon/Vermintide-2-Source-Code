@@ -341,8 +341,8 @@ BTConditions.sorcerer_allow_tricke_spawn = function (blackboard)
 	return blackboard.sorcerer_allow_tricke_spawn
 end
 
-BTConditions.spawned_allies_dead = function (blackboard)
-	return blackboard.spawn_allies_horde and blackboard.spawn_allies_horde.is_dead
+BTConditions.spawned_allies_dead_or_time = function (blackboard)
+	return (blackboard.spawn_allies_horde and blackboard.spawn_allies_horde.is_dead) or blackboard.defensive_phase_duration == 0
 end
 
 BTConditions.first_ring_summon = function (blackboard)

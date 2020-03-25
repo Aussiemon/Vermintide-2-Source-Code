@@ -203,6 +203,9 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 			if index > #self._unlocks_indexed then
 				self._state = "done"
+				local peddler_interface = Managers.backend:get_interface("peddler")
+
+				peddler_interface:refresh_chips()
 
 				return
 			end
@@ -305,6 +308,10 @@ UnlockManager.is_dlc_cosmetic = function (self, name)
 	fassert(unlock, "No such unlock %q", name or "nil")
 
 	return unlock and unlock:is_cosmetic()
+end
+
+UnlockManager.dlc_exists = function (self, name)
+	return self._unlocks[name] ~= nil
 end
 
 UnlockManager.dlc_id = function (self, name)

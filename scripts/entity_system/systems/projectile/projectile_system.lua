@@ -21,7 +21,9 @@ local RPCS = {
 	"rpc_client_spawn_light_weight_projectile",
 	"rpc_client_despawn_light_weight_projectile",
 	"rpc_client_create_aoe",
-	"rpc_spawn_globadier_globe"
+	"rpc_spawn_globadier_globe",
+	"rpc_clients_continuous_shoot_start",
+	"rpc_clients_continuous_shoot_stop"
 }
 local extensions = {
 	"GenericImpactProjectileUnitExtension",
@@ -29,6 +31,7 @@ local extensions = {
 	"PlayerProjectileHuskExtension"
 }
 local PLAYER_PROJECTILE_LIFETIME = 10
+local TWO_PI = math.pi * 2
 
 ProjectileSystem.init = function (self, entity_system_creation_context, system_name)
 	ProjectileSystem.super.init(self, entity_system_creation_context, system_name, extensions)
@@ -42,6 +45,7 @@ ProjectileSystem.init = function (self, entity_system_creation_context, system_n
 	self.player_projectile_units = {}
 	self.indexed_player_projectile_units = {}
 	self.owner_units_count = 0
+	self._current_id = 1
 
 	self.projectile_owner_destroy_callback = function (destroyed_projectile_owner_unit)
 		for owner_unit, projectiles in pairs(self.player_projectile_units) do
@@ -69,7 +73,8 @@ ProjectileSystem.init = function (self, entity_system_creation_context, system_n
 			projectiles = Script.new_array(max_index),
 			max_index = max_index,
 			owner_peer_id = Network.peer_id()
-		}
+		},
+		husk_shoot_list = {}
 	}
 	self._wwise_world = Managers.world:wwise_world(self.world)
 	self._projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
@@ -114,6 +119,7 @@ ProjectileSystem.update = function (self, context, t)
 
 	table.clear(projectiles_to_remove)
 	table.clear(projectile_owners)
+	self:_update_shooting(context.dt, t, self._light_weight.husk_shoot_list)
 	self:_update_light_weight_projectiles(context.dt, t, self._light_weight)
 end
 
@@ -664,15 +670,20 @@ ProjectileSystem.rpc_player_projectile_impact_dynamic = function (self, sender, 
 	end
 end
 
-ProjectileSystem.create_light_weight_projectile = function (self, damage_source, owner_unit, position, direction, speed, gravity, flat_speed, range, collision_filter, action_data, effect_name, owner_peer_id, is_husk)
+ProjectileSystem.create_light_weight_projectile = function (self, damage_source, owner_unit, position, direction, speed, gravity, flat_speed, range, collision_filter, action_data, effect_name, owner_peer_id, is_husk, skip_rpc, husk_projectile, projectile_list, id)
 	local world = self.world
 	local is_server = self.is_server
 	local rotation = Quaternion.look(direction, Vector3.up())
 	local owning_projectile = not is_husk
 	local data = nil
+	local projectile_id = id
 
-	if owning_projectile then
+	if projectile_list then
+		data = projectile_list
+	elseif owning_projectile then
 		data = self._light_weight.own_data
+		projectile_id = self._current_id
+		self._current_id = 1 + self._current_id % 65535
 	else
 		local husk_data = self._light_weight.husk_list[owner_peer_id]
 
@@ -695,7 +706,10 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 	local max_index = data.max_index
 
 	if max_index < new_index then
-		assert(is_server, "Client trying to spawn more projectiles light weight projectiles than there's room for.")
+		if not skip_rpc then
+			assert(is_server, "Client trying to spawn more projectiles light weight projectiles than there's room for.")
+		end
+
 		self:_remove_light_weight_projectile(data, Math.random(1, max_index))
 
 		new_index = max_index
@@ -712,7 +726,11 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 		owner_unit = owner_unit,
 		particle_settings = {},
 		sound_settings = {},
-		gravity = gravity or 0
+		gravity = gravity or 0,
+		skip_rpc = skip_rpc,
+		husk_projectile = husk_projectile,
+		projectile_list_reference = projectile_list,
+		identifier = projectile_id
 	}
 	local effect = LightWeightProjectileEffects[effect_name]
 
@@ -788,15 +806,17 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 
 		local owner_unit_id, owner_is_level_unit = self.network_manager:game_object_or_level_id(owner_unit)
 
-		if self.is_server then
-			self.network_transmit:send_rpc_clients("rpc_client_spawn_light_weight_projectile", NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, gravity or 0, flat_speed or 0, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id)
-		else
-			self.network_transmit:send_rpc_server("rpc_client_spawn_light_weight_projectile", NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, gravity or 0, flat_speed or 0, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id)
+		if not skip_rpc then
+			if self.is_server then
+				self.network_transmit:send_rpc_clients("rpc_client_spawn_light_weight_projectile", NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, gravity or 0, flat_speed or 0, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id, projectile.identifier)
+			else
+				self.network_transmit:send_rpc_server("rpc_client_spawn_light_weight_projectile", NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, gravity or 0, flat_speed or 0, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id, projectile.identifier)
+			end
 		end
-	elseif self.is_server then
+	elseif self.is_server and not skip_rpc then
 		local owner_unit_id, owner_is_level_unit = self.network_manager:game_object_or_level_id(owner_unit)
 
-		self.network_transmit:send_rpc_clients_except("rpc_client_spawn_light_weight_projectile", owner_peer_id, NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, gravity or 0, flat_speed or 0, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id)
+		self.network_transmit:send_rpc_clients_except("rpc_client_spawn_light_weight_projectile", owner_peer_id, NetworkLookup.damage_sources[damage_source], owner_unit_id, position, direction, speed, gravity or 0, flat_speed or 0, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id, projectile.identifier)
 	end
 
 	data.projectiles[new_index] = projectile
@@ -820,23 +840,157 @@ ProjectileSystem.hot_join_sync = function (self, joining_client)
 		local effect_name = projectile.effect_name
 		local gravity = projectile.gravity
 		local flat_speed = projectile.flat_speed
-		local owner_unit_id, owner_is_level_unit = network_manager:game_object_or_level_id(projectile.owner_unit)
+		local skip_rpc = projectile.skip_rpc
+		local identifier = projectile.identifier
 
-		transmit:send_rpc("rpc_client_spawn_light_weight_projectile", joining_client, NetworkLookup.damage_sources[projectile.damage_source], owner_unit_id, position, direction, speed, gravity, flat_speed, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id)
+		if not skip_rpc then
+			local owner_unit_id, owner_is_level_unit = network_manager:game_object_or_level_id(projectile.owner_unit)
+
+			transmit:send_rpc("rpc_client_spawn_light_weight_projectile", joining_client, NetworkLookup.damage_sources[projectile.damage_source], owner_unit_id, position, direction, speed, gravity, flat_speed, NetworkLookup.light_weight_projectile_effects[effect_name], owner_is_level_unit, owner_peer_id, identifier)
+		end
 	end
 end
 
-ProjectileSystem.rpc_client_spawn_light_weight_projectile = function (self, sender, damage_source_id, owner_unit_id, position, direction, speed, gravity, flat_speed, effect_id, owner_is_level_unit, owner_peer_id)
+ProjectileSystem.rpc_clients_continuous_shoot_start = function (self, sender, owner_unit_id, owner_is_level_unit, breed_id, breed_action_id, shoot_duration, owner_peer_id)
+	local owner_unit = Managers.state.network:game_object_or_level_unit(owner_unit_id, owner_is_level_unit)
+	local breed_name = NetworkLookup.breeds[breed_id]
+	local breed = Breeds[breed_name]
+	local inventory_template = breed.default_inventory_template
+	local inventory_extension = ScriptUnit.extension(owner_unit, "ai_inventory_system")
+	local ratling_gun_unit = inventory_extension:get_unit(inventory_template)
+	local time = Managers.time:time("game")
+	local breed_action_name = NetworkLookup.bt_action_names[breed_action_id]
+	local breed_actions = BreedActions[breed_name]
+	local breed_action = breed_actions[breed_action_name]
+	local light_weight_projectile_template_name = breed_action.light_weight_projectile_template_name
+	local light_weight_projectile_template = LightWeightProjectiles[light_weight_projectile_template_name]
+	local time_between_shots_at_start = 1 / breed_action.fire_rate_at_start
+	local time_between_shots_at_end = 1 / breed_action.fire_rate_at_end
+	local max_fire_rate_at_percentage_modifier = 1 / breed_action.max_fire_rate_at_percentage
+	local max_index = NetworkConstants.light_weight_projectile_index.max
+	local husk_shoot_list = self._light_weight.husk_shoot_list
+	husk_shoot_list[owner_unit_id] = {
+		shots_fired = 0,
+		owner_unit = owner_unit,
+		owner_unit_id = owner_unit_id,
+		light_weight_projectile_template = light_weight_projectile_template,
+		shoot_start = time,
+		shoot_duration = shoot_duration,
+		max_fire_rate_at_percentage_modifier = max_fire_rate_at_percentage_modifier,
+		time_between_shots_at_start = time_between_shots_at_start,
+		time_between_shots_at_end = time_between_shots_at_end,
+		ratling_gun_unit = ratling_gun_unit,
+		owner_peer_id = owner_peer_id,
+		breed = breed,
+		projectile_list = {
+			is_owner = false,
+			current_index = 0,
+			max_index = max_index,
+			projectiles = Script.new_array(max_index),
+			owner_peer_id = owner_peer_id
+		}
+	}
+end
+
+ProjectileSystem._update_shooting = function (self, dt, t, husk_shooting_data)
+	for owner_peer_id, data in pairs(husk_shooting_data) do
+		local unit = data.owner_unit
+		local time_in_shoot_action = t - data.shoot_start
+		local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.shoot_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
+		local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
+		local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
+		local light_weight_projectile_template = data.light_weight_projectile_template
+
+		for i = 1, shots_to_fire, 1 do
+			data.shots_fired = data.shots_fired + 1
+
+			self:_shoot(owner_peer_id, data, t, dt)
+		end
+	end
+end
+
+ProjectileSystem._fire_from_position_direction = function (self, ratling_gun_unit, go_id)
+	local fire_node = Unit.node(ratling_gun_unit, "p_fx")
+	local position = Unit.world_position(ratling_gun_unit, fire_node)
+	local game = Managers.state.network:game()
+	local aim_position = GameSession.game_object_field(game, go_id, "aim_position")
+	local direction = nil
+
+	if aim_position then
+		direction = aim_position - position
+	else
+		direction = Quaternion.forward(Unit.world_rotation(ratling_gun_unit, fire_node))
+	end
+
+	local fire_pos = position - Vector3.normalize(direction) * 0.25
+
+	return fire_pos, direction
+end
+
+ProjectileSystem._shoot = function (self, owner_peer_id, data, t, dt)
+	local from_position, direction = self:_fire_from_position_direction(data.ratling_gun_unit, data.owner_unit_id)
+	local light_weight_projectile_template = data.light_weight_projectile_template
+	local normalized_direction = Vector3.normalize(direction)
+	local spread_angle = Math.random() * light_weight_projectile_template.spread
+	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
+	local pitch = Quaternion(Vector3.right(), spread_angle)
+	local roll = Quaternion(Vector3.forward(), Math.random() * TWO_PI)
+	local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
+	local spread_direction = Quaternion.forward(spread_rot)
+	local collision_filter = "filter_enemy_player_afro_ray_projectile"
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local power_level = light_weight_projectile_template.attack_power_level[difficulty_rank]
+	local action_data = {
+		power_level = power_level,
+		damage_profile = light_weight_projectile_template.damage_profile,
+		hit_effect = light_weight_projectile_template.hit_effect,
+		player_push_velocity = Vector3Box(normalized_direction * light_weight_projectile_template.impact_push_speed),
+		projectile_linker = light_weight_projectile_template.projectile_linker,
+		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
+	}
+	local peer_id = data.peer_id
+	local skip_rpc = true
+	local husk_projectile = true
+
+	self:create_light_weight_projectile(data.breed.name, data.owner_unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id, nil, skip_rpc, husk_projectile, data.projectile_list)
+end
+
+ProjectileSystem.rpc_clients_continuous_shoot_stop = function (self, sender, owner_unit_id)
+	local husk_shoot_list = self._light_weight.husk_shoot_list
+	local owner_husk_shoot_list = husk_shoot_list[owner_unit_id]
+
+	if not owner_husk_shoot_list then
+		return
+	end
+
+	local num_projectiles = #owner_husk_shoot_list.projectile_list.projectiles
+
+	for i = num_projectiles, 1, -1 do
+		self:_remove_light_weight_projectile(owner_husk_shoot_list.projectile_list, i)
+	end
+
+	husk_shoot_list[owner_unit_id] = nil
+end
+
+ProjectileSystem.rpc_client_spawn_light_weight_projectile = function (self, sender, damage_source_id, owner_unit_id, position, direction, speed, gravity, flat_speed, effect_id, owner_is_level_unit, owner_peer_id, id)
 	local effect_name = NetworkLookup.light_weight_projectile_effects[effect_id]
 	local owner_unit = self.network_manager:game_object_or_level_unit(owner_unit_id, owner_is_level_unit)
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 	local is_husk = true
 
-	self:create_light_weight_projectile(damage_source, owner_unit, position, direction, speed, gravity, flat_speed, nil, nil, nil, effect_name, owner_peer_id, is_husk)
+	self:create_light_weight_projectile(damage_source, owner_unit, position, direction, speed, gravity, flat_speed, nil, nil, nil, effect_name, owner_peer_id, is_husk, nil, nil, nil, id)
 end
 
-ProjectileSystem.rpc_client_despawn_light_weight_projectile = function (self, sender, owner_peer_id, index)
+ProjectileSystem.rpc_client_despawn_light_weight_projectile = function (self, sender, owner_peer_id, index, id)
 	local data = self._light_weight.husk_list[owner_peer_id]
+
+	for idx, projectile_data in pairs(data.projectiles) do
+		if projectile_data.identifier == id then
+			index = idx
+
+			break
+		end
+	end
 
 	self:_remove_light_weight_projectile(data, index)
 end
@@ -856,6 +1010,7 @@ ProjectileSystem._remove_light_weight_projectile = function (self, data, index)
 	local projectiles = data.projectiles
 	local proj_to_remove = projectiles[index]
 	local current_index = data.current_index
+	local id = proj_to_remove.identifier
 
 	if index ~= current_index then
 		local last_proj = projectiles[current_index]
@@ -885,15 +1040,20 @@ ProjectileSystem._remove_light_weight_projectile = function (self, data, index)
 	projectiles[current_index] = nil
 	data.current_index = current_index - 1
 	local is_server = self.is_server
+	local skip_rpc = proj_to_remove.skip_rpc
+
+	if skip_rpc then
+		return
+	end
 
 	if data.is_owner then
 		if is_server then
-			Managers.state.network.network_transmit:send_rpc_clients("rpc_client_despawn_light_weight_projectile", data.owner_peer_id, index)
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_client_despawn_light_weight_projectile", data.owner_peer_id, index, id)
 		else
-			Managers.state.network.network_transmit:send_rpc_server("rpc_client_despawn_light_weight_projectile", data.owner_peer_id, index)
+			Managers.state.network.network_transmit:send_rpc_server("rpc_client_despawn_light_weight_projectile", data.owner_peer_id, index, id)
 		end
 	elseif is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_client_despawn_light_weight_projectile", data.owner_peer_id, data.owner_peer_id, index)
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_client_despawn_light_weight_projectile", data.owner_peer_id, data.owner_peer_id, index, id)
 	end
 end
 
@@ -908,29 +1068,35 @@ ProjectileSystem.physics_cb_light_weight_projectile_hit = function (self, projec
 		return
 	end
 
-	local action_data = projectile_data.action_data
-	local hit_data = DamageUtils.process_projectile_hit(self.world, projectile_data.damage_source, projectile_data.owner_unit, self.is_server, hits, action_data, projectile_data.direction:unbox(), false, nil, nil, false, action_data.power_level)
-
-	if hit_data.stop then
+	if projectile_data.projectile_list_reference then
+		self:_remove_light_weight_projectile(projectile_data.projectile_list_reference, projectile_data.index)
+	elseif projectile_data.husk_projectile then
 		self:_remove_light_weight_projectile(self._light_weight.own_data, projectile_data.index)
+	else
+		local action_data = projectile_data.action_data
+		local hit_data = DamageUtils.process_projectile_hit(self.world, projectile_data.damage_source, projectile_data.owner_unit, self.is_server, hits, action_data, projectile_data.direction:unbox(), false, nil, nil, false, action_data.power_level)
 
-		local hit_player = hit_data.hit_player
+		if hit_data.stop then
+			self:_remove_light_weight_projectile(self._light_weight.own_data, projectile_data.index)
 
-		if not hit_player and action_data.projectile_linker then
-			self:_link_projectile(hit_data, action_data.projectile_linker)
-		end
+			local hit_player = hit_data.hit_player
 
-		local hit_unit = hit_data.hit_unit
+			if not hit_player and action_data.projectile_linker then
+				self:_link_projectile(hit_data, action_data.projectile_linker)
+			end
 
-		if hit_unit and hit_player and action_data.first_person_hit_flow_events and not hit_data.shield_blocked then
-			local num_events = #action_data.first_person_hit_flow_events
-			local event_name = action_data.first_person_hit_flow_events[Math.random(num_events)]
-			local target_player = Managers.player:owner(hit_unit)
-			local peer_id = target_player:network_id()
-			local unit_id = Managers.state.unit_storage:go_id(hit_unit)
-			local event_id = NetworkLookup.flow_events[event_name]
+			local hit_unit = hit_data.hit_unit
 
-			Managers.state.network.network_transmit:send_rpc("rpc_first_person_flow_event", peer_id, unit_id, event_id)
+			if hit_unit and hit_player and action_data.first_person_hit_flow_events and not hit_data.shield_blocked then
+				local num_events = #action_data.first_person_hit_flow_events
+				local event_name = action_data.first_person_hit_flow_events[Math.random(num_events)]
+				local target_player = Managers.player:owner(hit_unit)
+				local peer_id = target_player:network_id()
+				local unit_id = Managers.state.unit_storage:go_id(hit_unit)
+				local event_id = NetworkLookup.flow_events[event_name]
+
+				Managers.state.network.network_transmit:send_rpc("rpc_first_person_flow_event", peer_id, unit_id, event_id)
+			end
 		end
 	end
 end
@@ -1024,6 +1190,33 @@ ProjectileSystem._update_light_weight_projectiles = function (self, dt, t, data)
 
 	for _, peer_data in pairs(self._light_weight.husk_list) do
 		self:_client_update_light_weight_projectiles(dt, t, peer_data)
+	end
+
+	for _, peer_data in pairs(self._light_weight.husk_shoot_list) do
+		self:_server_update_light_weight_projectiles(dt, t, peer_data.projectile_list)
+	end
+end
+
+ProjectileSystem._print_debug = function (self)
+	if Development.parameter("debug_light_weight_projectiles") then
+		Debug.text("Own projectiles: " .. tostring(table.size(self._light_weight.own_data.projectiles)))
+		Debug.text("Husk list: " .. tostring(table.size(self._light_weight.husk_list)))
+
+		local cnt = 0
+
+		for _, data in pairs(self._light_weight.husk_list) do
+			cnt = cnt + table.size(data.projectiles)
+		end
+
+		Debug.text("Husk projectiles: " .. tostring(cnt))
+
+		local cnt = 0
+
+		for _, data in pairs(self._light_weight.husk_shoot_list) do
+			cnt = cnt + table.size(data.projectile_list.projectiles)
+		end
+
+		Debug.text("Local husk projectiles: " .. tostring(cnt))
 	end
 end
 

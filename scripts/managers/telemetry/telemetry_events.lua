@@ -243,7 +243,7 @@ TelemetryEvents.player_ammo_depleted = function (self, player, weapon_name, posi
 
 	table.clear(params)
 
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.weapon_name = weapon_name
 	params.position = position
 
@@ -257,7 +257,7 @@ TelemetryEvents.player_ammo_refilled = function (self, player, weapon_name, posi
 
 	table.clear(params)
 
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.weapon_name = weapon_name
 	params.position = position
 
@@ -271,8 +271,7 @@ TelemetryEvents.player_damaged = function (self, player, damage_type, damage_sou
 
 	table.clear(params)
 
-	params.hero = player:profile_display_name()
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.damage_type = damage_type
 	params.damage_source = damage_source
 	params.damage_amount = damage_amount
@@ -288,43 +287,12 @@ TelemetryEvents.player_died = function (self, player, damage_type, damage_source
 
 	table.clear(params)
 
-	params.hero = player:profile_display_name()
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.damage_type = damage_type
 	params.damage_source = damage_source
 	params.position = position
 
 	self.manager:register_event("player_died", params)
-end
-
-TelemetryEvents.player_healed_ally = function (self, healer, target, position)
-	if healer.remote then
-		return
-	end
-
-	table.clear(params)
-
-	params.healer_hero = healer:profile_display_name()
-	params.healer_is_bot = healer.bot_player == true
-	params.target_hero = target:profile_display_name()
-	params.target_is_bot = target.bot_player == true
-	params.position = position
-
-	self.manager:register_event("player_healed_ally", params)
-end
-
-TelemetryEvents.player_healed_self = function (self, player, position)
-	if player.remote then
-		return
-	end
-
-	table.clear(params)
-
-	params.hero = player:profile_display_name()
-	params.is_bot = player.bot_player == true
-	params.position = position
-
-	self.manager:register_event("player_healed_self", params)
 end
 
 TelemetryEvents.player_jumped = function (self, player, position)
@@ -334,8 +302,7 @@ TelemetryEvents.player_jumped = function (self, player, position)
 
 	table.clear(params)
 
-	params.hero = player:profile_display_name()
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.position = position
 
 	self.manager:register_event("player_jumped", params)
@@ -348,9 +315,7 @@ TelemetryEvents.player_killed_ai = function (self, player, player_position, vict
 
 	table.clear(params)
 
-	params.hero = player:profile_display_name()
-	params.career = player:career_name()
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.player_position = player_position
 	params.victim_position = victim_position
 	params.breed = breed
@@ -368,9 +333,7 @@ TelemetryEvents.player_knocked_down = function (self, player, damage_type, posit
 
 	table.clear(params)
 
-	params.hero = player:profile_display_name()
-	params.career = player:career_name()
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.damage_type = damage_type
 	params.position = position
 
@@ -384,9 +347,7 @@ TelemetryEvents.player_pickup = function (self, player, pickup_name, pickup_spaw
 
 	table.clear(params)
 
-	params.hero = player:profile_display_name()
-	params.career = player:career_name()
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.pickup_name = pickup_name
 	params.pickup_spawn_type = pickup_spawn_type
 	params.position = position
@@ -395,19 +356,23 @@ TelemetryEvents.player_pickup = function (self, player, pickup_name, pickup_spaw
 end
 
 TelemetryEvents.player_revived = function (self, reviver, revivee, position)
-	if reviver.remote then
-		return
+	if not reviver.remote then
+		table.clear(params)
+
+		params.player_id = reviver:telemetry_id()
+		params.position = position
+
+		self.manager:register_event("player_revived_another_player", params)
 	end
 
-	table.clear(params)
+	if not revivee.remote then
+		table.clear(params)
 
-	params.reviver_hero = reviver:profile_display_name()
-	params.reviver_is_bot = reviver.bot_player == true
-	params.revivee_hero = revivee:profile_display_name()
-	params.revivee_is_bot = revivee.bot_player == true
-	params.position = position
+		params.player_id = revivee:telemetry_id()
+		params.position = position
 
-	self.manager:register_event("player_revived", params)
+		self.manager:register_event("player_revived", params)
+	end
 end
 
 TelemetryEvents.player_spawned = function (self, player)
@@ -417,9 +382,10 @@ TelemetryEvents.player_spawned = function (self, player)
 
 	table.clear(params)
 
+	params.player_id = player:telemetry_id()
 	params.hero = player:profile_display_name()
 	params.career = player:career_name()
-	params.is_bot = player.bot_player == true
+	params.human = player.local_player == true
 	local career_system = ScriptUnit.extension(player.player_unit, "career_system")
 	params.power_level = career_system:get_career_power_level()
 	local inventory_system = ScriptUnit.extension(player.player_unit, "inventory_system")
@@ -438,6 +404,18 @@ TelemetryEvents.player_spawned = function (self, player)
 	self.manager:register_event("player_spawned", params)
 end
 
+TelemetryEvents.player_despawned = function (self, player)
+	if player.remote then
+		return
+	end
+
+	table.clear(params)
+
+	params.player_id = player:telemetry_id()
+
+	self.manager:register_event("player_despawned", params)
+end
+
 TelemetryEvents.player_used_item = function (self, player, item_name, position)
 	if player.remote then
 		return
@@ -445,9 +423,7 @@ TelemetryEvents.player_used_item = function (self, player, item_name, position)
 
 	table.clear(params)
 
-	params.hero = player:profile_display_name()
-	params.career = player:career_name()
-	params.is_bot = player.bot_player == true
+	params.player_id = player:telemetry_id()
 	params.item_name = item_name
 	params.position = position
 
@@ -520,7 +496,6 @@ TelemetryEvents.player_stuck = function (self, player, level_key)
 
 	params.position = Unit.local_position(player.player_unit, 0)
 	params.rotation = Unit.local_rotation(player.player_unit, 0)
-	params.level_key = level_key
 
 	self.manager:register_event("player_stuck", params)
 end

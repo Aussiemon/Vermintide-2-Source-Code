@@ -170,10 +170,12 @@ StoreWindowCategoryList._draw = function (self, dt)
 		local list_widgets = self._list_widgets
 
 		if list_widgets then
-			self:_update_visible_list_entries()
+			local render_all = self:_update_visible_list_entries()
 
 			for _, widget in ipairs(list_widgets) do
-				UIRenderer.draw_widget(ui_top_renderer, widget)
+				if render_all or widget.content.visible then
+					UIRenderer.draw_widget(ui_top_renderer, widget)
+				end
 			end
 		end
 	end
@@ -655,7 +657,7 @@ StoreWindowCategoryList._update_visible_list_entries = function (self)
 	local enabled = scrollbar_logic:enabled()
 
 	if not enabled then
-		return
+		return true
 	end
 
 	local scroll_percentage = scrollbar_logic:get_scroll_percentage()

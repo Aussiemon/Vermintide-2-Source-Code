@@ -862,6 +862,18 @@ AccountManager.get_entitlement = function (self, entitlement_label, optional_ser
 	self._web_api:send_request(user_id, api_group, path, method, content, response_callback)
 end
 
+AccountManager.get_product_details = function (self, product_label, optional_service_label, response_callback)
+	local user_id = self:user_id()
+	local api_group = "sdk:commerce"
+	local service_label = optional_service_label or 0
+	local path = string.format("/v1/users/me/container/%s?flag=discounts&useCurrencySymbol=true&serviceLabel=%s", product_label, service_label)
+	local method = WebApi.GET
+	local content = nil
+	local response_format = WebApi.STRING
+
+	self._web_api:send_request(user_id, api_group, path, method, content, response_callback, response_format)
+end
+
 AccountManager._format_session_parameters = function (self, params)
 	local str = ""
 	str = str .. "{\r\n"

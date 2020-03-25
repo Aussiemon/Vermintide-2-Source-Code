@@ -318,12 +318,14 @@ WeaveManager.store_saved_game_mode_data = function (self)
 		return
 	end
 
-	local saved_game_mode_data = Managers.state.game_mode:get_saved_game_mode_data()
+	local saved_game_mode_data = Managers.state.game_mode and Managers.state.game_mode:get_saved_game_mode_data()
 
-	for _, slot_data in pairs(saved_game_mode_data) do
-		slot_data.spawn_state = nil
-		slot_data.position = nil
-		slot_data.rotation = nil
+	if saved_game_mode_data then
+		for _, slot_data in pairs(saved_game_mode_data) do
+			slot_data.spawn_state = nil
+			slot_data.position = nil
+			slot_data.rotation = nil
+		end
 	end
 
 	self._saved_game_mode_data = saved_game_mode_data
@@ -574,21 +576,24 @@ WeaveManager.increase_bar_score = function (self, amount)
 	fassert(self._is_server, "can't increase weave score as a client")
 
 	local objective_template = self:get_active_objective_template()
-	local bar_multiplier = objective_template.bar_multiplier
-	local bar_cutoff = objective_template.bar_cutoff
-	amount = amount * bar_multiplier
-	local game = Managers.state.network:game()
 
-	if game and self._go_id then
-		self._bar_score = math.min(math.max(self._bar_score + amount, 0), bar_cutoff)
+	if objective_template then
+		local bar_multiplier = objective_template.bar_multiplier
+		local bar_cutoff = objective_template.bar_cutoff
+		amount = amount * bar_multiplier
+		local game = Managers.state.network:game()
 
-		if self._bar_score == bar_cutoff then
-			local network_transmit = Managers.state.network.network_transmit
+		if game and self._go_id then
+			self._bar_score = math.min(math.max(self._bar_score + amount, 0), bar_cutoff)
 
-			network_transmit:send_rpc_clients("rpc_bar_cutoff_reached")
+			if self._bar_score == bar_cutoff then
+				local network_transmit = Managers.state.network.network_transmit
+
+				network_transmit:send_rpc_clients("rpc_bar_cutoff_reached")
+			end
+
+			GameSession.set_game_object_field(game, self._go_id, "bar_score", self._bar_score)
 		end
-
-		GameSession.set_game_object_field(game, self._go_id, "bar_score", self._bar_score)
 	end
 end
 

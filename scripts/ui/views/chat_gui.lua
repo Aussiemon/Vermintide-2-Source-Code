@@ -534,8 +534,9 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
 			self.chat_input_widget.content.caret_index = 1
 			self.chat_input_widget.content.text_index = 1
-			scroll_widget.content.internal_scroll_value = 0
 		end
+
+		scroll_widget.content.internal_scroll_value = 0
 	else
 		local menu_close_press_outside_area = false
 
@@ -810,20 +811,22 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		local scroll_widget_content = scroll_widget.content
 		local scroll_value = nil
 
-		if input_service:get("chat_scroll_up") then
-			scroll_value = step_size
-		elseif input_service:get("chat_scroll_down") then
-			scroll_value = -step_size
-		end
+		if chat_focused then
+			if input_service:get("chat_scroll_up") then
+				scroll_value = step_size
+			elseif input_service:get("chat_scroll_down") then
+				scroll_value = -step_size
+			end
 
-		local mouse_scroll_action = "chat_scroll"
+			local mouse_scroll_action = "chat_scroll"
 
-		if input_service:has(mouse_scroll_action) then
-			local scroll_axis = input_service:get(mouse_scroll_action)
-			local axis_input = scroll_axis.y
+			if input_service:has(mouse_scroll_action) then
+				local scroll_axis = input_service:get(mouse_scroll_action)
+				local axis_input = scroll_axis.y
 
-			if axis_input ~= 0 then
-				scroll_value = step_size * axis_input
+				if axis_input ~= 0 then
+					scroll_value = step_size * axis_input
+				end
 			end
 		end
 

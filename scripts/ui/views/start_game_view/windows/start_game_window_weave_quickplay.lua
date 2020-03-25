@@ -43,8 +43,8 @@ StartGameWindowWeaveQuickplay.on_enter = function (self, params, offset)
 		self._parent:set_difficulty_option(DefaultQuickPlayStartingDifficulty)
 	end
 
-	self._parent:change_generic_actions("default_weave_quick_play")
 	self._parent:set_input_description("play_available")
+	self._parent:change_generic_actions("default_weave_quick_play")
 end
 
 StartGameWindowWeaveQuickplay._start_transition_animation = function (self, animation_name)

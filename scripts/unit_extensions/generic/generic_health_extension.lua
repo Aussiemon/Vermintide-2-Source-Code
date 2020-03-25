@@ -326,6 +326,10 @@ GenericHealthExtension.die = function (self, damage_type)
 	end
 end
 
+GenericHealthExtension.entered_kill_volume = function (self, t)
+	self:die("volume_insta_kill")
+end
+
 GenericHealthExtension.set_dead = function (self)
 	self.damage = self.health
 	self.dead = true

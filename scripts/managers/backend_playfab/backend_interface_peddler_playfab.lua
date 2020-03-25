@@ -289,13 +289,68 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_steam_cb = function (self, ex
 end
 
 BackendInterfacePeddlerPlayFab._refresh_app_prices_psn = function (self, external_cb)
-	self._app_prices_ready = true
+	local product_label_lookup = {}
+	local product_labels_string = ""
+	local title_id = PS4.title_id()
 
-	if external_cb then
-		local success = true
+	table.clear(self._app_prices)
+
+	for name, dlc_data in pairs(DLCSettings) do
+		local unlock_settings_ps4 = dlc_data.unlock_settings_ps4
+
+		if unlock_settings_ps4 then
+			local regional_unlock_settings = unlock_settings_ps4[title_id] or {}
+
+			for name, unlock_settings in pairs(regional_unlock_settings) do
+				local product_label = unlock_settings.product_label
+
+				if product_label then
+					product_labels_string = product_labels_string .. unlock_settings.product_label .. ":"
+					product_label_lookup[product_label] = name
+				end
+			end
+		end
+	end
+
+	Managers.account:get_product_details(product_labels_string, 0, callback(self, "_refresh_app_prices_psn_cb", external_cb, product_label_lookup))
+end
+
+BackendInterfacePeddlerPlayFab._refresh_app_prices_psn_cb = function (self, external_cb, product_label_lookup, result_json)
+	if result_json then
+		local empty_table = {}
+		local result = cjson.decode(result_json)
+
+		for idx, product in pairs(result) do
+			local product_label = product.label
+			local skus = product.skus
+			local sku = (skus and skus[1]) or empty_table
+			local dlc_name = product_label_lookup[product_label]
+			self._app_prices[dlc_name] = {
+				name = product.name,
+				is_plus_price = sku.is_plus_price,
+				plus_upsell_price = sku.plus_upsell_price,
+				original_price = sku.original_price,
+				price = sku.price,
+				display_original_price = sku.display_original_price,
+				display_plus_upsell_price = sku.display_plus_upsell_price,
+				display_price = sku.display_price,
+				product_id = sku.product_id,
+				product_label = product_label
+			}
+		end
+
+		if external_cb then
+			local success = true
+
+			external_cb(success)
+		end
+	elseif external_cb then
+		local success = false
 
 		external_cb(success)
 	end
+
+	self._app_prices_ready = true
 end
 
 BackendInterfacePeddlerPlayFab._refresh_app_prices_xboxlive = function (self, external_cb)

@@ -30,7 +30,7 @@ StartGameWindowDifficultyConsole.on_enter = function (self, params, offset)
 	self:create_ui_elements(params, offset)
 	self:_setup_difficulties()
 
-	local difficulty_key = self.parent:get_difficulty_option() or Managers.state.difficulty:get_difficulty()
+	local difficulty_key = self:_verify_difficulty(self.parent:get_difficulty_option() or Managers.state.difficulty:get_difficulty())
 
 	self:_update_selected_difficulty_option(difficulty_key)
 
@@ -41,6 +41,20 @@ StartGameWindowDifficultyConsole.on_enter = function (self, params, offset)
 	end
 
 	self:_start_transition_animation("on_enter")
+end
+
+StartGameWindowDifficultyConsole._verify_difficulty = function (self, difficulty_key)
+	local difficulties = Managers.state.difficulty:get_level_difficulties()
+
+	for _, difficulty in pairs(difficulties) do
+		if difficulty == difficulty_key then
+			return difficulty_key
+		end
+	end
+
+	Application.warning(string.format("Difficulty %q is not valid - Defaulting to %q", difficulty_key, difficulties[1]))
+
+	return difficulties[1]
 end
 
 StartGameWindowDifficultyConsole._start_transition_animation = function (self, animation_name)

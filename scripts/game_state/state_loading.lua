@@ -638,9 +638,10 @@ StateLoading.update = function (self, dt, t)
 		local weave_objective_index = Managers.weave:get_next_objective() or 1
 		local weave_data = WeaveSettings.templates[weave_name]
 		local level_key = self._level_transition_handler.level_key
+		local is_hub_level = LevelSettings[level_key].hub_level
 		local weave_objective_data = nil
 
-		if weave_data then
+		if weave_data and not is_hub_level then
 			weave_objective_data = weave_data.objectives[weave_objective_index]
 
 			ConflictUtils.patch_terror_events_with_weaves(level_key, weave_data, weave_objective_index)

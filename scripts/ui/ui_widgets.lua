@@ -1467,7 +1467,7 @@ UIWidgets.create_menu_button_medium_with_timer = function (text_field_id, timer_
 	}
 end
 
-UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegraph_id, size, optional_style, disable_background)
+UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegraph_id, size, optional_style, disable_background, gamepad_always_hover)
 	local optional_thumb_suffix, optional_chain_suffix = nil
 
 	if optional_style == "gold" then
@@ -1642,14 +1642,15 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 		},
 		disable_background = disable_background,
 		scroll_bar_info = {
-			button_scroll_step = 0.1,
 			axis = 2,
 			value = 0,
-			bar_height_percentage = 1,
-			scroll_amount = 0,
 			allow_multi_hover = true,
+			scroll_amount = 0,
+			button_scroll_step = 0.1,
+			bar_height_percentage = 1,
 			scenegraph_id = scenegraph_id,
-			scroll_length = size[2]
+			scroll_length = size[2],
+			gamepad_always_hover = gamepad_always_hover
 		},
 		background = "chain_link_01" .. (optional_chain_suffix or ""),
 		thumb_top = "chain_scrollbutton_top" .. (optional_thumb_suffix or ""),
@@ -1752,10 +1753,13 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 				local axis_input = scroll_axis.y * -1
 				local parent_content = ui_content.parent
 				local scroll_bar_info = parent_content.scroll_bar_info
+				local gamepad_active = scroll_bar_info.gamepad_active
+				local axis_input = scroll_axis.y * -1 * ((gamepad_active and 0.2) or 1)
 				local total_scroll_height = scroll_bar_info.total_scroll_height
 				local scroll_amount = scroll_bar_info.scroll_amount
+				local gamepad_always_hover = gamepad_active and scroll_bar_info.gamepad_always_hover
 
-				if axis_input ~= 0 and ui_content.is_hover then
+				if axis_input ~= 0 and (ui_content.is_hover or gamepad_always_hover) then
 					scroll_bar_info.axis_input = axis_input
 					local previous_scroll_add = scroll_bar_info.scroll_add or 0
 					scroll_bar_info.scroll_add = previous_scroll_add + axis_input * scroll_amount

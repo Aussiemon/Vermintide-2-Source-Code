@@ -1,6 +1,6 @@
 TelemetrySettings = {
 	endpoint = "https://naot0wazba.execute-api.eu-north-1.amazonaws.com/prod/sessions",
-	version = 2,
+	version = 3,
 	enabled = not Development.parameter("telemetry-disable"),
 	title_id = GameSettingsDevelopment.backend_settings.title_id,
 	heartbeat = {

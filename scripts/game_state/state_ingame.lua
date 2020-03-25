@@ -364,7 +364,7 @@ StateIngame.on_enter = function (self)
 
 		local player = Managers.player:add_player(nil, viewport_name, self.world_name, i)
 
-		if loading_context.quickplay_bonus then
+		if loading_context.quickplay_bonus or loading_context.local_quickplay_bonus then
 			StatisticsUtil.register_played_quickplay_level(self.statistics_db, player, level_key)
 		end
 

@@ -20,6 +20,24 @@ BTEnterHooks.upright_on_enter = function (unit, blackboard, t)
 	end
 end
 
+BTEnterHooks.drop_items = function (unit, blackboard, t)
+	local ai_inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
+	local inventory_item_definitions = ai_inventory_extension.inventory_item_definitions
+	local reason = "death"
+	local network_transmit = Managers.state.network.network_transmit
+	local game_object_id = Managers.state.unit_storage:go_id(unit)
+	local reason_id = NetworkLookup.item_drop_reasons[reason]
+
+	for i = 1, #inventory_item_definitions, 1 do
+		local success, item = ai_inventory_extension:drop_single_item(i, reason)
+
+		if success then
+			network_transmit:send_rpc_clients("rpc_ai_drop_single_item", game_object_id, i, reason_id)
+			print("DROPPING ITEMS", i, item)
+		end
+	end
+end
+
 BTEnterHooks.crouch_or_upright_on_enter = function (unit, blackboard, t)
 	if blackboard.needs_to_crouch == nil then
 		PerceptionUtils.troll_crouch_check(unit, blackboard, t)

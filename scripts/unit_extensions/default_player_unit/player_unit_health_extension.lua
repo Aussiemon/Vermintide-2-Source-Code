@@ -1,17 +1,5 @@
 PlayerUnitHealthExtension = class(PlayerUnitHealthExtension, GenericHealthExtension)
 
-local function _add_player_damaged_telemetry(unit, damage_type, damage_source, damage_amount)
-	local player_manager = Managers.player
-	local owner = player_manager:owner(unit)
-
-	if owner then
-		local network_manager = Managers.state.network
-		local position = POSITION_LOOKUP[unit]
-
-		Managers.telemetry.events:player_damaged(owner, damage_type, damage_source, damage_amount, position)
-	end
-end
-
 PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	PlayerUnitHealthExtension.super.init(self, extension_init_context, unit, extension_init_data)
 
@@ -20,6 +8,7 @@ PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, e
 	local is_bot = not player:is_player_controlled()
 	self.player = player
 	self.is_bot = is_bot
+	self.is_local_player = is_local_player
 	self.network_manager = Managers.state.network
 	self.game = self.network_manager:game()
 	self.unit_storage = extension_init_context.unit_storage
@@ -379,7 +368,12 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		end
 	end
 
-	_add_player_damaged_telemetry(unit, damage_type, damage_source_name or "n/a", damage_amount)
+	if Script.type_name(damage_amount) == "number" then
+		local player = Managers.player:owner(unit)
+		local position = POSITION_LOOKUP[unit]
+
+		Managers.telemetry.events:player_damaged(player, damage_type, damage_source_name or "n/a", damage_amount, position)
+	end
 
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
@@ -561,6 +555,19 @@ PlayerUnitHealthExtension.die = function (self, damage_type)
 			local death_system = Managers.state.entity:system("death_system")
 
 			death_system:forced_kill(unit, damage_type)
+		end
+	end
+end
+
+PlayerUnitHealthExtension.entered_kill_volume = function (self, t)
+	if self.is_local_player then
+		local unit_id = self.unit_storage:go_id(self.unit)
+
+		if unit_id then
+			local network_transmit = self.network_transmit
+			local damage_type_id = NetworkLookup.damage_types.volume_insta_kill
+
+			network_transmit:send_rpc_server("rpc_request_insta_kill", unit_id, damage_type_id)
 		end
 	end
 end

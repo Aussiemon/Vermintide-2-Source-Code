@@ -3,6 +3,7 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 BTRatlingGunnerShootAction = class(BTRatlingGunnerShootAction, BTNode)
 local PI = math.pi
 local TWO_PI = PI * 2
+CLIENT_CONTROLLED_RATLING_GUN = true
 
 BTRatlingGunnerShootAction.init = function (self, ...)
 	BTRatlingGunnerShootAction.super.init(self, ...)
@@ -210,6 +211,10 @@ BTRatlingGunnerShootAction.stop_shooting = function (self, unit, data)
 		GwNavBoxObstacle.remove_from_world(data.line_of_fire_nav_obstacle)
 		GwNavBoxObstacle.remove_from_world(data.arc_of_sight_nav_obstacle)
 	end
+
+	if CLIENT_CONTROLLED_RATLING_GUN then
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_clients_continuous_shoot_stop", owner_unit_id)
+	end
 end
 
 BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, data, t, dt)
@@ -301,6 +306,18 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
 	ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
+
+	if CLIENT_CONTROLLED_RATLING_GUN then
+		local action = blackboard.action
+		local breed_name = blackboard.breed.name
+		local breed_id = NetworkLookup.breeds[breed_name]
+		local shoot_duration = data.shoot_duration
+		local breed_action_name = blackboard.action.name
+		local breed_action_id = NetworkLookup.bt_action_names[breed_action_name]
+		local owner_unit_id, owner_is_level_unit = Managers.state.network:game_object_or_level_id(unit)
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_clients_continuous_shoot_start", owner_unit_id, owner_is_level_unit, breed_id, breed_action_id, shoot_duration, data.peer_id)
+	end
 end
 
 local VIEW_CONE = 0.7071067
@@ -488,6 +505,14 @@ BTRatlingGunnerShootAction._aim_at_target = function (self, unit, blackboard, t,
 	data.aim_position_box:store(aim_position)
 	data.shoot_direction_box:store(aim_position - pivot)
 
+	local owner_unit_id, owner_is_level_unit = Managers.state.network:game_object_or_level_id(unit)
+
+	if not owner_is_level_unit then
+		local game = Managers.state.network:game()
+
+		GameSession.set_game_object_field(game, owner_unit_id, "aim_position", data.aim_position_box:unbox())
+	end
+
 	local realign = normalized_angle > PI / 3 or normalized_angle < -PI
 	local physics_world = World.get_data(blackboard.world, "physics_world")
 
@@ -562,8 +587,9 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	}
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local peer_id = data.peer_id
+	local skip_rpc = CLIENT_CONTROLLED_RATLING_GUN
 
-	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, peer_id)
+	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, peer_id, nil, skip_rpc)
 end
 
 return

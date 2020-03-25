@@ -632,6 +632,34 @@ local scenegraph_definition = {
 			-element_settings.filter_height - element_settings.spacing,
 			1
 		}
+	},
+	join_button = {
+		vertical_alignment = "bottom",
+		parent = "lobby_browser_window",
+		horizontal_alignment = "right",
+		size = {
+			200,
+			65
+		},
+		position = {
+			0,
+			-120,
+			1
+		}
+	},
+	refresh_button = {
+		vertical_alignment = "center",
+		parent = "join_button",
+		horizontal_alignment = "center",
+		size = {
+			200,
+			65
+		},
+		position = {
+			-225,
+			0,
+			1
+		}
 	}
 }
 local animation_definitions = {
@@ -3960,6 +3988,7 @@ local lobby_browser_description_style = {
 		2
 	}
 }
+local disable_with_gamepad = true
 local base_widget_definition = {
 	background = UIWidgets.create_simple_rect("lobby_browser_window", {
 		50,
@@ -3970,6 +3999,8 @@ local base_widget_definition = {
 	lobby_browser_background = UIWidgets.create_rect_with_outer_frame("lobby_browser_background", scenegraph_definition.lobby_browser_background.size, "frame_outer_fade_02", nil, UISettings.console_start_game_menu_rect_color),
 	lobby_browser_title = UIWidgets.create_simple_text(Localize("menu_title_lobby_browser"), "lobby_browser_background", nil, nil, lobby_browser_description_style),
 	custom_game_divider = UIWidgets.create_simple_texture("divider_01_top", "lobby_browser_divider"),
+	join_button = UIWidgets.create_default_button("join_button", scenegraph_definition.join_button.size, nil, nil, Localize("lb_join"), 28, nil, nil, nil, disable_with_gamepad),
+	refresh_button = UIWidgets.create_default_button("refresh_button", scenegraph_definition.refresh_button.size, nil, nil, Localize("menu_description_refresh"), 28, nil, nil, nil, disable_with_gamepad),
 	frame = create_lobby_browser_frame("lobby_browser_frame"),
 	filter_frame = create_filter_frame("filter_base")
 }

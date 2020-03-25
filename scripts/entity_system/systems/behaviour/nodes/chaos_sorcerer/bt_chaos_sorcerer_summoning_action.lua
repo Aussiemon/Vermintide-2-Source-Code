@@ -803,7 +803,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				local premonition_effect = (premonition_type == "short" and ring_info[ring_position].premonition_effect_name_short) or (premonition_type == "medium" and ring_info[ring_position].premonition_effect_name_medium) or (premonition_type == "long" and ring_info[ring_position].premonition_effect_name_long)
 
 				if premonition_effect then
-					Managers.state.network:rpc_play_particle_effect(nil, NetworkLookup.effects[premonition_effect], NetworkConstants.invalid_game_object_id, 0, origin_pos, Quaternion.identity(), false)
+					Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects[premonition_effect], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
 				end
 
 				local vector_max = Vector3(max_radius, 0, 0)
@@ -828,7 +828,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				local effect_name = ring_info[ring_position].damage_effect_name
 
 				if effect_name then
-					Managers.state.network:rpc_play_particle_effect(nil, NetworkLookup.effects[effect_name], NetworkConstants.invalid_game_object_id, 0, origin_pos, Quaternion.identity(), false)
+					Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects[effect_name], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
 				end
 
 				ring.premonition_time = t
@@ -894,6 +894,8 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 						if catapult_strength then
 							StatusUtils.set_catapulted_network(player_unit, true, (direction + Vector3.up()) * catapult_strength)
 						end
+
+						blackboard.hit_by_eruptions = true
 					end
 				end
 

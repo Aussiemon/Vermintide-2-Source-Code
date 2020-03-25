@@ -94,27 +94,28 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 		return false
 	end
 
-	local explosion_template = table.clone(ExplosionTemplates[explosion_template_name])
-	local difficulty_name = Managers.state.difficulty:get_difficulty()
-
-	if explosion_template.scaling then
-		explosion_template.explosion.radius = explosion_template.explosion.radius[difficulty_name]
-	end
-
-	local is_husk = false
-
-	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level, is_critical_strike)
-
 	local network_manager = Managers.state.network
-	local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
-	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
-	local damage_source_id = NetworkLookup.damage_sources[damage_source]
-	local attacker_power_level = (attacker_power_level and math.clamp(attacker_power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)) or 0
-	local is_critical_strike = not not is_critical_strike
-	local source_attacker_unit_id = network_manager:unit_game_object_id(source_attacker_unit) or attacker_unit_id
 	local game = network_manager:game()
 
 	if game then
+		local explosion_template = table.clone(ExplosionTemplates[explosion_template_name])
+		local difficulty_name = Managers.state.difficulty:get_difficulty()
+
+		if explosion_template.scaling then
+			explosion_template.explosion.radius = explosion_template.explosion.radius[difficulty_name]
+		end
+
+		local is_husk = false
+
+		DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level, is_critical_strike)
+
+		local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
+		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
+		local damage_source_id = NetworkLookup.damage_sources[damage_source]
+		local attacker_power_level = (attacker_power_level and math.clamp(attacker_power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)) or 0
+		local is_critical_strike = not not is_critical_strike
+		local source_attacker_unit_id = network_manager:unit_game_object_id(source_attacker_unit) or attacker_unit_id
+
 		if self.is_server then
 			self.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_id, scale, damage_source_id, attacker_power_level, is_critical_strike, source_attacker_unit_id)
 		else

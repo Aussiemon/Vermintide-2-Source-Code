@@ -7,8 +7,9 @@ settings.unlock_settings = {
 }
 settings.unlock_settings_xb1 = {
 	scorpion = {
-		class = "UnlockDlc",
-		id = "633879CB-F38D-409B-BBFE-48EA39EF3277"
+		id = "633879CB-F38D-409B-BBFE-48EA39EF3277",
+		backend_reward_id = "scorpion",
+		class = "UnlockDlc"
 	}
 }
 settings.unlock_settings_ps4 = {
@@ -16,14 +17,16 @@ settings.unlock_settings_ps4 = {
 		scorpion = {
 			id = "39bf75fa504440fa967c4cdd16772fc6",
 			product_label = "V2MAPPACKUS00003",
-			class = "UnlockDlc"
+			class = "UnlockDlc",
+			backend_reward_id = "scorpion"
 		}
 	},
 	CUSA13645_00 = {
 		scorpion = {
 			id = "f649de4928ae4ca5831d8d06693c97a0",
 			product_label = "V2MAPPACKEU00003",
-			class = "UnlockDlc"
+			class = "UnlockDlc",
+			backend_reward_id = "scorpion"
 		}
 	}
 }

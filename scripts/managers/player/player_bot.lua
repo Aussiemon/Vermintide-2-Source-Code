@@ -23,8 +23,8 @@ PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profi
 	self.viewport_name = player_name
 	local profile = SPProfiles[self._profile_index]
 	self.character_name = Localize(profile.character_name)
-	self.bot_telemetry_id = "Bot_" .. profile.display_name
 	self._local_player_id = local_player_id
+	self._telemetry_id = "Bot_" .. local_player_id
 	self._unique_id = unique_id
 	self._ui_id = ui_id
 	self._account_id = account_id
@@ -85,6 +85,7 @@ PlayerBot.despawn = function (self)
 
 	if Unit.alive(player_unit) then
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
+		Managers.telemetry.events:player_despawned(self)
 	else
 		print("player_bot was already despawned. Should not happen.")
 	end
@@ -95,7 +96,7 @@ PlayerBot.name = function (self)
 end
 
 PlayerBot.telemetry_id = function (self)
-	return self.bot_telemetry_id
+	return self._telemetry_id
 end
 
 PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int)
@@ -270,6 +271,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	end
 
 	self:_set_spawn_state("spawned")
+	Managers.telemetry.events:player_spawned(self)
 
 	return unit
 end

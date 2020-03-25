@@ -188,21 +188,21 @@ GameModeWeave.player_entered_game_session = function (self, peer_id, local_playe
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
 	end
 
-	if #self._bot_players > 0 then
-		local profile_index = self._profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-		local removed = self:_remove_bot_by_profile(self._bot_players, profile_index)
-
-		if not removed then
-			local update_safe = false
-
-			self:_remove_bot(self._bot_players, #self._bot_players, update_safe)
-		end
-	end
-
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
 	if status.party_id ~= 1 then
 		local party_id = 1
+
+		if #self._bot_players > 0 then
+			local profile_index = self._profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+			local removed = self:_remove_bot_by_profile(self._bot_players, profile_index)
+
+			if not removed then
+				local update_safe = false
+
+				self:_remove_bot(self._bot_players, #self._bot_players, update_safe)
+			end
+		end
 
 		Managers.party:request_join_party(peer_id, local_player_id, party_id)
 	end
