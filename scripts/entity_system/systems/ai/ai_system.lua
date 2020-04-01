@@ -791,6 +791,10 @@ AISystem.update_brains = function (self, t, dt)
 		elseif blackboard.target_unit and blackboard.confirmed_player_sighting then
 			number_ordinary_aggroed_enemies = number_ordinary_aggroed_enemies + 1
 		end
+
+		if breed.run_on_game_update then
+			breed.run_on_game_update(unit, blackboard, t, dt)
+		end
 	end
 
 	self.number_ordinary_aggroed_enemies = number_ordinary_aggroed_enemies

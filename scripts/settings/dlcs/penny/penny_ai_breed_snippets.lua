@@ -1,5 +1,47 @@
 AiBreedSnippets = AiBreedSnippets or {}
 
+local function check_for_recent_attackers_drachenfels(unit, blackboard, t, ranged_range)
+	local min_retaliation_dist_sqr = ranged_range or 100
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	local recent_damages, nr_damages = health_extension:recent_damages()
+
+	if nr_damages > 0 then
+		local attacking_unit = recent_damages[DamageDataIndex.ATTACKER]
+		local side = blackboard.side
+		local damage_source = recent_damages[DamageDataIndex.DAMAGE_SOURCE_NAME]
+		local master_list_item = rawget(ItemMasterList, damage_source)
+		local is_melee = master_list_item and master_list_item.slot_type == "melee"
+
+		if Unit.alive(attacking_unit) and side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_unit] then
+			local dist_sqr = Vector3.distance_squared(POSITION_LOOKUP[unit], POSITION_LOOKUP[attacking_unit])
+
+			if min_retaliation_dist_sqr < dist_sqr and not is_melee then
+				blackboard.recent_attacker_unit = attacking_unit
+				blackboard.recent_attacker_timer = t + 3
+				blackboard.recent_attacker = true
+				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+				local event_data = FrameTable.alloc_table()
+
+				dialogue_input:trigger_networked_dialogue_event("ebh_retaliation_missile", event_data)
+			elseif is_melee then
+				blackboard.recent_melee_attacker_unit = attacking_unit
+				blackboard.recent_melee_attacker_timer = t + 0.35
+				blackboard.recent_melee_attacker = true
+			end
+		end
+	elseif blackboard.recent_attacker then
+		if blackboard.recent_attacker_timer < t then
+			blackboard.recent_attacker_unit = nil
+			blackboard.recent_attacker_timer = math.huge
+			blackboard.recent_attacker = false
+		end
+	elseif blackboard.recent_melee_attacker and blackboard.recent_melee_attacker_timer < t then
+		blackboard.recent_melee_attacker_unit = nil
+		blackboard.recent_melee_attacker_timer = math.huge
+		blackboard.recent_melee_attacker = false
+	end
+end
+
 AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_spawn = function (unit, blackboard)
 	local t = Managers.time:time("game")
 	local breed = blackboard.breed
@@ -335,48 +377,6 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 			blackboard.ring_pulse_rate = t + 8
 			blackboard.sorcerer_allow_tricke_spawn = true
 		end
-	end
-end
-
-function check_for_recent_attackers_drachenfels(unit, blackboard, t, ranged_range)
-	local min_retaliation_dist_sqr = ranged_range or 100
-	local health_extension = ScriptUnit.extension(unit, "health_system")
-	local recent_damages, nr_damages = health_extension:recent_damages()
-
-	if nr_damages > 0 then
-		local attacking_unit = recent_damages[DamageDataIndex.ATTACKER]
-		local side = blackboard.side
-		local damage_source = recent_damages[DamageDataIndex.DAMAGE_SOURCE_NAME]
-		local master_list_item = rawget(ItemMasterList, damage_source)
-		local is_melee = master_list_item and master_list_item.slot_type == "melee"
-
-		if Unit.alive(attacking_unit) and side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_unit] then
-			local dist_sqr = Vector3.distance_squared(POSITION_LOOKUP[unit], POSITION_LOOKUP[attacking_unit])
-
-			if min_retaliation_dist_sqr < dist_sqr and not is_melee then
-				blackboard.recent_attacker_unit = attacking_unit
-				blackboard.recent_attacker_timer = t + 3
-				blackboard.recent_attacker = true
-				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-				local event_data = FrameTable.alloc_table()
-
-				dialogue_input:trigger_networked_dialogue_event("ebh_retaliation_missile", event_data)
-			elseif is_melee then
-				blackboard.recent_melee_attacker_unit = attacking_unit
-				blackboard.recent_melee_attacker_timer = t + 0.35
-				blackboard.recent_melee_attacker = true
-			end
-		end
-	elseif blackboard.recent_attacker then
-		if blackboard.recent_attacker_timer < t then
-			blackboard.recent_attacker_unit = nil
-			blackboard.recent_attacker_timer = math.huge
-			blackboard.recent_attacker = false
-		end
-	elseif blackboard.recent_melee_attacker and blackboard.recent_melee_attacker_timer < t then
-		blackboard.recent_melee_attacker_unit = nil
-		blackboard.recent_melee_attacker_timer = math.huge
-		blackboard.recent_melee_attacker = false
 	end
 end
 
