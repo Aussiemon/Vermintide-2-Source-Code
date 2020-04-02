@@ -62,49 +62,7 @@ BTSelector_chaos_exalted_sorcerer_drachenfels.run = function (self, unit, blackb
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_falling = children[3]
-	local condition_result = blackboard.is_falling or blackboard.fall_state ~= nil
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_falling, "aborted")
-
-		local result, evaluate = node_falling:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_falling == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_stagger = children[4]
-	local condition_result = nil
-
-	if blackboard.stagger then
-		condition_result = not blackboard.stagger_prohibited
-	end
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
-
-		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_stagger == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_smartobject = children[5]
+	local node_smartobject = children[3]
 	local condition_result = nil
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local smartobject_is_next = next_smart_object_data.next_smart_object_id ~= nil
@@ -145,7 +103,7 @@ BTSelector_chaos_exalted_sorcerer_drachenfels.run = function (self, unit, blackb
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_defensive_mode = children[6]
+	local node_defensive_mode = children[4]
 	local condition_result = blackboard.mode == "defensive" and not blackboard.is_summoning
 
 	if condition_result then
@@ -164,7 +122,7 @@ BTSelector_chaos_exalted_sorcerer_drachenfels.run = function (self, unit, blackb
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_has_target = children[7]
+	local node_has_target = children[5]
 	local condition_result = unit_alive(blackboard.target_unit)
 
 	if condition_result then
@@ -183,7 +141,7 @@ BTSelector_chaos_exalted_sorcerer_drachenfels.run = function (self, unit, blackb
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[8]
+	local node_idle = children[6]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 
