@@ -393,6 +393,8 @@ StoreWindowCategoryList._animate_list_entries = function (self, dt)
 
 		if hotspot.on_hover_enter then
 			self:_play_sound("Play_hud_store_button_hover")
+
+			hotspot.on_hover_enter = false
 		end
 
 		self:_animate_list_entry(content, style, dt, list_hovered)

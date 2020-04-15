@@ -25,9 +25,14 @@ BackendInterfaceDLCsPlayfab._new_id = function (self)
 end
 
 BackendInterfaceDLCsPlayfab.update_dlc_ownership = function (self)
+	local unlock_manager = Managers.unlock
+	local unlocked_dlcs = unlock_manager:get_unlocked_dlcs()
+	local json_string = cjson.encode(unlocked_dlcs)
 	local request = {
 		FunctionName = "updateDLCOwnership",
-		FunctionParameter = {}
+		FunctionParameter = {
+			unlocked_dlcs = json_string
+		}
 	}
 	local success_callback = callback(self, "_update_owned_dlcs_cb")
 	local request_queue = self._backend_mirror:request_queue()

@@ -37,7 +37,6 @@ ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_ac
 
 	self._damage_buffer_index = 1
 	self._check_buffs = true
-	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
 	self._is_critical_strike = is_critical_strike
 
 	if self.charge_value and self.charge_value >= 1 then
@@ -62,22 +61,18 @@ ActionGeiser.client_owner_post_update = function (self, dt, t, world, can_damage
 		local done = self:_update_damage(current_action)
 
 		if done then
+			self:_proc_spell_used(self.owner_buff_extension)
+
 			self.state = "shot"
 		end
-	end
-
-	self:_check_on_spell_used_proc(t)
-end
-
-ActionGeiser._check_on_spell_used_proc = function (self, t)
-	if self._spell_proc_time and self._spell_proc_time <= t then
-		self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
-
-		self._spell_proc_time = nil
 	end
 end
 
 ActionGeiser.finish = function (self, reason)
+	if self.state ~= "waiting_to_shoot" and self.state ~= "shot" then
+		self:_proc_spell_used(self.owner_buff_extension)
+	end
+
 	if self.targeting_effect_id then
 		World.destroy_particles(self.world, self.targeting_effect_id)
 	end
@@ -88,8 +83,6 @@ ActionGeiser.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
-
-	self:_check_on_spell_used_proc(math.huge)
 end
 
 ActionGeiser.fire = function (self, reason)

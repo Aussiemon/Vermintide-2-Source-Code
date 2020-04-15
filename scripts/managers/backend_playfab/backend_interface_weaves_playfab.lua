@@ -372,6 +372,11 @@ BackendInterfaceWeavesPlayFab.request_player_rank = function (self, stat_name, l
 			ShowLinkedAccounts = true
 		}
 	}
+
+	if PLATFORM == "xb1" then
+		player_rank_request.XboxToken = Managers.account:get_xsts_token()
+	end
+
 	local success_callback = callback(self, "player_rank_request_cb")
 	local fail_callback = callback(self, "player_rank_request_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
@@ -404,6 +409,11 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player = function (self
 			ShowLinkedAccounts = true
 		}
 	}
+
+	if PLATFORM == "xb1" then
+		request_leaderboard_around_player.XboxToken = Managers.account:get_xsts_token()
+	end
+
 	local success_callback = callback(self, "request_leaderboard_around_player_cb")
 	local fail_callback = callback(self, "request_leaderboard_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
@@ -455,6 +465,11 @@ BackendInterfaceWeavesPlayFab.request_leaderboard = function (self, stat_name, s
 		},
 		StartPosition = start_position
 	}
+
+	if PLATFORM == "xb1" then
+		leaderboard_request.XboxToken = Managers.account:get_xsts_token()
+	end
+
 	local success_callback = callback(self, "leaderboard_request_cb")
 	local fail_callback = callback(self, "request_leaderboard_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()

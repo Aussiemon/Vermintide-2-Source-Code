@@ -95,7 +95,7 @@ weapon_template.actions = {
 			hit_effect = "bullet_impact",
 			aim_assist_max_ramp_multiplier = 0.3,
 			aim_assist_auto_hit_chance = 0.75,
-			minimum_hold_time = 0.25,
+			minimum_hold_time = 0.2,
 			range = 100,
 			ammo_usage = 1,
 			fire_time = 0,
@@ -115,7 +115,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				},

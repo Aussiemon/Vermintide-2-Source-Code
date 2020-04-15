@@ -134,6 +134,23 @@ settings.achievement_outline = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	local weaves = settings.achievement_outline.weaves
+	local weave_entries = weaves.entries
+	local categories = weaves.categories
+
+	for i = #categories, 1, -1 do
+		local category = categories[i]
+
+		for _, entry in ipairs(category.entries) do
+			weave_entries[#weave_entries + 1] = entry
+		end
+	end
+
+	weaves.categories = {}
+end
+
 settings.achievement_template_file_names = {
 	"scripts/settings/dlcs/scorpion/scorpion_seasonal_settings",
 	"scripts/managers/achievements/achievement_templates_scorpion"

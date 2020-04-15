@@ -243,6 +243,8 @@ StoreWindowItemList._animate_list_entries = function (self, dt)
 
 		if hotspot.on_hover_enter then
 			self:_play_sound("Play_hud_store_button_hover")
+
+			hotspot.on_hover_enter = false
 		end
 
 		parent:animate_store_product(widget, dt, list_hovered)
@@ -315,8 +317,6 @@ StoreWindowItemList._update_item_list = function (self)
 			items = self:_get_all_items()
 		end
 
-		items = self:_sort_peddler_items_by_type(items)
-
 		for backend_id, item in pairs(items) do
 			layout[#layout + 1] = {
 				item = item,
@@ -324,6 +324,8 @@ StoreWindowItemList._update_item_list = function (self)
 				product_id = item.key
 			}
 		end
+
+		table.sort(layout, StoreLayoutConfig.sort.cmp_layout_item)
 	elseif product_type == "dlc" then
 		for index, dlc_name in ipairs(page_content) do
 			local dlc_settings = nil

@@ -201,6 +201,21 @@ IngameUI.unregister_rpcs = function (self)
 	self.network_event_delegate = nil
 end
 
+IngameUI.is_in_view_state = function (self, state_name)
+	if not self.current_view then
+		return false
+	end
+
+	local view = self.views[self.current_view]
+	local current_state = view.current_state and view:current_state()
+
+	if not current_state then
+		return false
+	end
+
+	return current_state.NAME == state_name
+end
+
 IngameUI.destroy = function (self)
 	self._player:set_hud(nil)
 

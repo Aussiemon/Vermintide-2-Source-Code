@@ -322,4 +322,100 @@ if not rawget(_G, "StoreLayoutConfig") then
 	}
 end
 
+local ORDER_RARITY = {
+	common = 2,
+	promo = 7,
+	magic = 5,
+	plentiful = 1,
+	exotic = 4,
+	rare = 3,
+	unique = 6
+}
+
+local function cmp_rarity(a, b)
+	local a_rarity = (a.data and a.data.rarity) or "plentiful"
+	local b_rarity = (b.data and b.data.rarity) or "plentiful"
+
+	return ORDER_RARITY[a_rarity] - ORDER_RARITY[b_rarity]
+end
+
+local function cmp_price(a, b)
+	local a_price = (a.current_prices and a.current_prices.SM) or 0
+	local b_price = (b.current_prices and b.current_prices.SM) or 0
+
+	return b_price - a_price
+end
+
+local function item_get_type_order_key(item)
+	local data = item.data
+	local item_type = nil
+
+	if data then
+		item_type = data.item_type
+
+		if item_type == "weapon_skin" then
+			return data.matching_item_key or "weapon_skin"
+		elseif item_type == "skin" then
+			return "1.skin"
+		elseif item_type == "hat" then
+			return "0.hat"
+		end
+	end
+
+	return item_type or "~.unknown"
+end
+
+local function cmp_type(a, b)
+	local a_type = item_get_type_order_key(a)
+	local b_type = item_get_type_order_key(b)
+
+	return (a_type < b_type and 1) or (b_type < a_type and -1) or 0
+end
+
+local function item_get_owned(item)
+	local backend_items = Managers.backend:get_interface("items")
+	local item_key = item.key
+
+	return backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
+end
+
+local function cmp_unowned(a, b)
+	return ((item_get_owned(b) and 1) or 0) - ((item_get_owned(a) and 1) or 0)
+end
+
+local function cmp_item(a, b)
+	local diff = cmp_unowned(a, b)
+
+	if diff ~= 0 then
+		return diff > 0
+	end
+
+	diff = cmp_type(a, b)
+
+	if diff ~= 0 then
+		return diff > 0
+	end
+
+	diff = cmp_price(a, b)
+
+	if diff ~= 0 then
+		return diff > 0
+	end
+
+	return cmp_rarity(a, b) > 0
+end
+
+local function cmp_layout_item(a, b)
+	return cmp_item(a.item, b.item)
+end
+
+StoreLayoutConfig.sort = {
+	cmp_rarity = cmp_rarity,
+	cmp_price = cmp_price,
+	cmp_type = cmp_type,
+	cmp_unowned = cmp_unowned,
+	cmp_item = cmp_item,
+	cmp_layout_item = cmp_layout_item
+}
+
 return

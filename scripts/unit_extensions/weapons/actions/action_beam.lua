@@ -332,7 +332,7 @@ ActionBeam.finish = function (self, reason)
 	self.status_extension:set_zooming(false)
 	self:_stop_client_vfx()
 	self:_stop_fx()
-	self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
+	self:_proc_spell_used(self.owner_buff_extension)
 
 	return {
 		beam_consecutive_hits = math.max(self.consecutive_hits - 1, 0)

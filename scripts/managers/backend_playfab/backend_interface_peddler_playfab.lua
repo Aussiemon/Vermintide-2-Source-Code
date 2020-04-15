@@ -354,13 +354,60 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn_cb = function (self, exte
 end
 
 BackendInterfacePeddlerPlayFab._refresh_app_prices_xboxlive = function (self, external_cb)
-	self._app_prices_ready = true
+	local product_id_lookup = {}
+	local product_ids = {}
+
+	table.clear(self._app_prices)
+
+	for name, dlc_data in pairs(DLCSettings) do
+		local unlock_settings_xb1 = dlc_data.unlock_settings_xb1 or {}
+
+		for name, unlock_settings in pairs(unlock_settings_xb1) do
+			local product_id = unlock_settings.id
+
+			if product_id then
+				product_ids[#product_ids + 1] = product_id
+				product_id_lookup[product_id] = name
+			end
+		end
+	end
+
+	if #product_ids < 0 then
+		local success = true
+
+		if external_cb(success) then
+			external_cb(success)
+		end
+
+		return
+	end
+
+	print("####### GET PRICING INFORMATION")
+	table.dump(product_ids, "PRODUCT_IDS", 5)
+	table.dump(product_id_lookup, "PRODUCT_ID_LOOKUP", 5)
+	Managers.account:get_product_details(product_ids, callback(self, "_refresh_app_prices_xboxlive_cb", external_cb, product_id_lookup))
+end
+
+BackendInterfacePeddlerPlayFab._refresh_app_prices_xboxlive_cb = function (self, external_cb, product_id_lookup, result)
+	if result.error then
+		Application.warning(result.error)
+	end
+
+	if result.product_details then
+		for product_id, catalog_item_details in pairs(result.product_details) do
+			local capitalized_product_id = string.upper(product_id)
+			local dlc_name = product_id_lookup[capitalized_product_id]
+			self._app_prices[dlc_name] = catalog_item_details
+		end
+	end
 
 	if external_cb then
-		local success = true
+		local success = result.error == nil
 
 		external_cb(success)
 	end
+
+	self._app_prices_ready = true
 end
 
 BackendInterfacePeddlerPlayFab.exchange_chips = function (self, item_id, chip_type, expected_chip_amount, external_cb)

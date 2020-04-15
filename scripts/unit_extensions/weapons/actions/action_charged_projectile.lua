@@ -37,7 +37,6 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 
 	self.time_to_shoot = t + new_action.fire_time
 	self.extra_buff_shot = false
-	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
 	local spread_template_override = new_action.spread_template_override
 
 	if spread_template_override then
@@ -72,16 +71,7 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 
 	if self.state == "shooting" then
 		self:_shoot(t)
-	end
-
-	self:_check_on_spell_used_proc(t)
-end
-
-ActionChargedProjectile._check_on_spell_used_proc = function (self, t)
-	if self._spell_proc_time and self._spell_proc_time <= t then
-		self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
-
-		self._spell_proc_time = nil
+		self:_proc_spell_used(self.owner_buff_extension)
 	end
 end
 
@@ -263,6 +253,7 @@ ActionChargedProjectile.finish = function (self, reason)
 
 	if self.state == "waiting_to_shoot" then
 		self:_shoot()
+		self:_proc_spell_used(self.owner_buff_extension)
 	end
 
 	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
@@ -278,8 +269,6 @@ ActionChargedProjectile.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
-
-	self:_check_on_spell_used_proc(math.huge)
 end
 
 return

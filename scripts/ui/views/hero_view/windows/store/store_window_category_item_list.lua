@@ -275,6 +275,8 @@ StoreWindowCategoryItemList._animate_list_entries = function (self, dt)
 
 		if hotspot.on_hover_enter then
 			self:_play_sound("Play_hud_store_button_hover")
+
+			hotspot.on_hover_enter = false
 		end
 
 		parent:animate_store_product(widget, dt, list_hovered)
@@ -334,6 +336,8 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 			product_id = item.key
 		}
 	end
+
+	table.sort(layout, StoreLayoutConfig.sort.cmp_layout_item)
 
 	self._layout = layout
 

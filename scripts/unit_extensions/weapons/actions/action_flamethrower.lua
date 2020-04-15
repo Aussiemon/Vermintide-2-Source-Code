@@ -244,7 +244,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		self.state = "shot"
 
 		self:_stop_fx()
-		self.buff_extension:trigger_procs("on_spell_used", current_action)
+		self:_proc_spell_used(self.buff_extension)
 	end
 end
 
@@ -300,7 +300,7 @@ ActionFlamethrower.finish = function (self, reason)
 	self:_clear_targets()
 
 	if self.state ~= "shot" then
-		self.buff_extension:trigger_procs("on_spell_used", self.current_action)
+		self:_proc_spell_used(self.buff_extension)
 	end
 
 	self:_stop_fx()

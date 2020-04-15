@@ -174,6 +174,22 @@ ItemMasterList.zealot_hat_1001 = {
 		"wh_zealot"
 	}
 }
+ItemMasterList.zealot_hat_1003 = {
+	description = "description_zealot_hat_1003",
+	rarity = "promo",
+	display_name = "display_name_zealot_hat_1003",
+	template = "wh_hats",
+	inventory_icon = "icon_zealot_hat_1003",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	dlc_name = "vz_1003",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_09",
+	can_wield = {
+		"wh_zealot"
+	}
+}
 ItemMasterList.bountyhunter_hat_1001 = {
 	description = "description_bountyhunter_hat_1001",
 	rarity = "promo",

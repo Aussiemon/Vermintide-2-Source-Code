@@ -140,7 +140,7 @@ end
 
 TalentExtension.has_talent = function (self, talent_name)
 	if Managers.state.game_mode:has_activated_mutator("whiterun") then
-		return
+		return false
 	end
 
 	local talent_ids = self:_get_talent_ids()

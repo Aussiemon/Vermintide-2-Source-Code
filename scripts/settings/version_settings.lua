@@ -1,5 +1,5 @@
 VersionSettings = {
-	version = "2.3"
+	version = "2.4"
 }
 
 return

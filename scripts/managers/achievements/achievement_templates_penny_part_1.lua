@@ -4,8 +4,8 @@ local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local XB1_ACHIEVEMENT_ID = {
-	penny_portals_heads = 85,
-	penny_portals_vintage = 86
+	penny_portals_heads = 86,
+	penny_portals_vintage = 87
 }
 local PS4_ACHIEVEMENT_ID = {
 	penny_portals_vintage = "081"

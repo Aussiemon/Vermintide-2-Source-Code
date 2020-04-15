@@ -100,10 +100,58 @@ UnlockManager.update = function (self, dt)
 		end
 	elseif PLATFORM == "ps4" then
 		if self._update_unlocks then
+			self:_check_ps4_dlc_status()
 			self:_update_console_backend_unlocks()
 		end
 	else
 		self:_update_backend_unlocks()
+	end
+end
+
+UnlockManager._check_ps4_dlc_status = function (self)
+	if self._state ~= "done" then
+		return
+	end
+
+	if not PS4DLC.has_fetched_dlcs() then
+		return
+	end
+
+	if not self._updating_ps4_entitlements then
+		if PS4.entitlements_dirty() then
+			print("************************************************")
+			print("*************** DETECTED NEW DLC ***************")
+			print("************************************************")
+			PS4DLC.fetch_owned_dlcs()
+
+			self._updating_ps4_entitlements = true
+		end
+	else
+		local dlcs_interface = Managers.backend:get_interface("dlcs")
+
+		if not dlcs_interface:updating_dlc_ownership() then
+			local owned_dlcs = dlcs_interface:get_owned_dlcs()
+			local platform_dlcs = dlcs_interface:get_platform_dlcs()
+
+			for i = 1, #platform_dlcs, 1 do
+				local unlock_name = platform_dlcs[i]
+
+				if not table.find(owned_dlcs, unlock_name) then
+					local unlock = self._unlocks[unlock_name]
+
+					if unlock.update_license then
+						unlock:update_license()
+					end
+
+					if unlock:unlocked() then
+						print("New DLC Unlocked: ", unlock_name)
+						self:_reinitialize_backend_dlc()
+					end
+				end
+			end
+
+			self._updating_ps4_entitlements = false
+		end
 	end
 end
 
@@ -202,7 +250,7 @@ UnlockManager._update_console_backend_unlocks = function (self)
 			local index = self._query_unlocked_index + 1
 
 			if index > #self._unlocks_indexed then
-				self._state = "done"
+				self._state = "update_backend_dlcs"
 				local peddler_interface = Managers.backend:get_interface("peddler")
 
 				peddler_interface:refresh_chips()
@@ -238,6 +286,41 @@ UnlockManager._update_console_backend_unlocks = function (self)
 				end
 			end
 		end
+	elseif self._state == "update_backend_dlcs" then
+		local dlcs_interface = Managers.backend:get_interface("dlcs")
+
+		if not dlcs_interface:updating_dlc_ownership() then
+			dlcs_interface:update_dlc_ownership()
+
+			self._state = "waiting_for_backend_dlc_update"
+		end
+	elseif self._state == "waiting_for_backend_dlc_update" then
+		local dlcs_interface = Managers.backend:get_interface("dlcs")
+
+		if not dlcs_interface:updating_dlc_ownership() then
+			self._state = "check_unseen_rewards"
+		end
+	elseif self._state == "check_unseen_rewards" and self._ingame_ui and not self._ingame_ui:is_in_view_state("HeroViewStateStore") then
+		local item_interface = Managers.backend:get_interface("items")
+		local unseen_rewards = item_interface:get_unseen_item_rewards()
+
+		if unseen_rewards then
+			for i = 1, #unseen_rewards, 1 do
+				local reward = unseen_rewards[i]
+				local item = item_interface:get_item_from_id(reward.backend_id)
+
+				if item then
+					local item_data = item.data
+					local display_name = item_data.display_name
+
+					self:_add_reward({
+						item
+					}, display_name)
+				end
+			end
+		end
+
+		self._state = "done"
 	end
 end
 

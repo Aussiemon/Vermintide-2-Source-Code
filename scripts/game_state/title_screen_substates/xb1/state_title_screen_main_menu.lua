@@ -633,7 +633,9 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	end
 
 	if level_key and loading_context.level_transition_handler then
-		loading_context.level_transition_handler:set_next_level(level_key)
+		local environment_variation_id = (LevelHelper.get_random_variation_id and LevelHelper:get_random_variation_id(level_key)) or nil
+
+		loading_context.level_transition_handler:set_next_level(level_key, environment_variation_id)
 	end
 
 	if level_key == "prologue" then
@@ -769,6 +771,7 @@ StateTitleScreenMainMenu._signin_to_backend = function (self)
 		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabXbox", "PlayFabMirror", "DataServerQueue")
 
 		Managers.backend:signin(self._xsts_result)
+		Managers.account:set_xsts_token(self._xsts_result)
 
 		self._xsts_result = nil
 	end

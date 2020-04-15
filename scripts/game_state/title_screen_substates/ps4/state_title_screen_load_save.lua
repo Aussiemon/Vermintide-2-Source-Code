@@ -104,7 +104,7 @@ StateTitleScreenLoadSave.cb_load_done = function (self, result)
 	if result.error and result.error ~= "NOT_FOUND" then
 		if result.error == "BROKEN" then
 			self._state = "check_popup"
-			self._popup_id = Managers.popup:queue_popup(Localize("popup_load_error"), Localize("popup_load_error_header"), "retry_load", Localize("menu_reload"), "reset_save", Localize("menu_reset"))
+			self._popup_id = Managers.popup:queue_popup(Localize("popup_load_error_consoles"), Localize("popup_load_error_header"), "retry_load", Localize("menu_reload"), "reset_save", Localize("menu_reset"))
 		elseif result.sce_error_code then
 			self:_show_error_dialog(result.sce_error_code)
 		else

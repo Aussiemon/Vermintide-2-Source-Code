@@ -1001,7 +1001,7 @@ local top_widgets = {
 	sub_title_text = UIWidgets.create_simple_text("", "sub_title_text", nil, nil, sub_title_text_style),
 	type_title_text = UIWidgets.create_simple_text("", "sub_title_text", nil, nil, type_title_text_style),
 	career_title_text = UIWidgets.create_simple_text("", "career_title_text", nil, nil, career_title_text_style),
-	unlock_button = UIWidgets.create_store_purchase_button("unlock_button", scenegraph_definition.unlock_button.size, (PLATFORM == "win32" and Localize("menu_store_purchase_button_unlock")) or "", 32, disable_with_gamepad),
+	unlock_button = UIWidgets.create_store_purchase_button("unlock_button", scenegraph_definition.unlock_button.size, (PLATFORM ~= "ps4" and Localize("menu_store_purchase_button_unlock")) or "", 32, disable_with_gamepad),
 	viewport_button = UIWidgets.create_simple_hotspot("viewport")
 }
 local background_color = {

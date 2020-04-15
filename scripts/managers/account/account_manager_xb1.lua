@@ -5,6 +5,7 @@ require("scripts/managers/account/script_user_profile_token")
 require("scripts/managers/account/smartmatch_cleaner")
 require("scripts/network/xbox_user_privileges")
 require("scripts/managers/account/qos/script_qos_token")
+require("scripts/managers/account/xbox_marketplace/script_xbox_marketplace")
 
 AccountManager = class(AccountManager)
 AccountManager.VERSION = "xb1"
@@ -23,10 +24,12 @@ AccountManager.init = function (self)
 	self._achievements = nil
 	self._initiated = false
 	self._offline_mode = nil
+	self._xsts_token = nil
 	self._lobbies_to_free = {}
 	self._gamertags = {}
 	self._smartmatch_cleaner = SmartMatchCleaner:new()
 	self._xbox_privileges = XboxUserPrivileges:new()
+	self._xbox_marketplace = ScriptXboxMarketplace:new()
 	self._presence = ScriptPresence:new()
 	self._leaderboards = ScriptLeaderboards:new()
 	self._query_bandwidth_timer = AccountManager.QUERY_BANDWIDTH_TIMER
@@ -208,6 +211,7 @@ AccountManager.update = function (self, dt)
 			self:_update_bandwidth_query(dt)
 			self:_update_social_manager(dt)
 			self._presence:update(dt)
+			self._xbox_marketplace:update(dt)
 		end
 	end
 
@@ -695,6 +699,14 @@ AccountManager._hard_sign_in = function (self, user_id, controller)
 	self:_on_user_signed_in()
 end
 
+AccountManager.set_xsts_token = function (self, xsts_token)
+	self._xsts_token = xsts_token
+end
+
+AccountManager.get_xsts_token = function (self)
+	return self._xsts_token
+end
+
 AccountManager._unmap_other_controllers = function (self)
 	Managers.input:set_exclusive_gamepad(self._active_controller)
 end
@@ -826,6 +838,7 @@ AccountManager.reset = function (self)
 	self._not_connected_to_xbox_live_popup_id = nil
 	self._privilege_popup_id = nil
 	self._controller_id = nil
+	self._xsts_token = nil
 	self._bandwidth_query_fails = 0
 	self._query_bandwidth_timer = AccountManager.QUERY_BANDWIDTH_TIMER
 	self._unlocked_achievements = {}
@@ -846,6 +859,7 @@ end
 AccountManager.destroy = function (self)
 	self:close_storage()
 	self._presence:destroy()
+	self._xbox_marketplace:destroy()
 
 	if Network.xboxlive_client_exists() then
 		Network.clean_sessions()
@@ -997,6 +1011,16 @@ AccountManager.show_player_profile = function (self, id)
 	if not self._user_detached then
 		XboxLive.show_gamercard(self._user_id, id)
 	end
+end
+
+AccountManager.get_product_details = function (self, product_ids, response_callback)
+	if not self._user_id or self._offline_mode or self._user_detached then
+		response_callback({
+			error = "Can't fetch marketplace information while being offline"
+		})
+	end
+
+	self._xbox_marketplace:get_product_details(self._user_id, product_ids, response_callback)
 end
 
 AccountManager.has_session = function (self)

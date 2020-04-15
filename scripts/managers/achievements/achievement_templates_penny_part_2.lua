@@ -4,8 +4,8 @@ local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local XB1_ACHIEVEMENT_ID = {
-	penny_bastion_sprinter = 88,
-	penny_bastion_torch = 87
+	penny_bastion_sprinter = 89,
+	penny_bastion_torch = 88
 }
 local PS4_ACHIEVEMENT_ID = {
 	penny_bastion_sprinter = "082"

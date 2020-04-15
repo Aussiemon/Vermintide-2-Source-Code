@@ -680,8 +680,9 @@ StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, 
 	local hero_name = profile.display_name
 	local current_weave_index = self:_current_weave_index(statistics_db, stats_id)
 	local game_time = math.floor(Managers.time:time("game"))
+	local kill_count = statistics_db:get_stat(stats_id, "kills_total")
 
-	self.rewards:award_end_of_level_rewards(game_won, hero_name, self._is_in_event_game_mode, weave_tier, weave_progress, game_time, current_weave_index)
+	self.rewards:award_end_of_level_rewards(game_won, hero_name, self._is_in_event_game_mode, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 
 	local chest_settings = LootChestData.chests_by_category[difficulty_key]
 

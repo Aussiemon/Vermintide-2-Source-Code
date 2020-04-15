@@ -20,7 +20,7 @@ BackendInterfaceLootBenchmark.loot_chest_rewards_request_cb = function (self, da
 	return
 end
 
-BackendInterfaceLootBenchmark.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index)
+BackendInterfaceLootBenchmark.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_won_count, weave_progress, game_time, current_weave_index, kill_count)
 	return 1
 end
 

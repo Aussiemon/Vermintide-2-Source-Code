@@ -1507,8 +1507,6 @@ HeroViewStateStore._handle_platform_price_data = function (self, widget, price_d
 		self:_setup_ps4_price_data(widget, price_data)
 	elseif PLATFORM == "xb1" then
 		self:_setup_xb1_price_data(widget, price_data)
-	elseif PLATFORM == "win32" then
-		self:_setup_ps4_price_data(widget, price_data)
 	end
 end
 
@@ -1525,83 +1523,152 @@ HeroViewStateStore._setup_ps4_price_data = function (self, widget, price_data)
 	local display_plus_upsell_price = price_data.display_plus_upsell_price
 
 	if not original_price and not display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_original_price or display_price or "???"
-		content.ps4_secondary_price_text = ""
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_original_price or display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = ""
+		content.console_third_price_text = ""
 		content.show_ps4_plus = false
 		content.show_secondary_stroke = false
 		content.show_third_stroke = false
 	elseif original_price and not display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_price or "???"
-		content.ps4_secondary_price_text = display_original_price or "???"
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_original_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = ""
 		content.show_ps4_plus = false
 		content.show_secondary_stroke = true
 		content.show_third_stroke = false
 	elseif original_price and not display_plus_upsell_price and is_plus_price then
-		content.ps4_first_price_text = display_price or "???"
-		content.ps4_secondary_price_text = display_original_price or "???"
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_original_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = ""
 		content.show_ps4_plus = true
 		content.show_secondary_stroke = has_ps_plus
 		content.show_third_stroke = false
 	elseif not original_price and display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_plus_upsell_price or "???"
-		content.ps4_secondary_price_text = display_price or "???"
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_plus_upsell_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = ""
 		content.show_ps4_plus = true
 		content.show_secondary_stroke = false
 		content.show_third_stroke = false
 	elseif original_price and display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_plus_upsell_price or "???"
-		content.ps4_secondary_price_text = display_price or "???"
-		content.ps4_third_price_text = display_original_price or "???"
+		content.console_first_price_text = display_plus_upsell_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = display_original_price or Localize("dlc_price_unavailable")
 		content.show_ps4_plus = true
 		content.show_secondary_stroke = false
 		content.show_third_stroke = true
 	else
-		content.ps4_first_price_text = display_price or display_original_price or "???"
-		content.ps4_secondary_price_text = ""
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_price or display_original_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = ""
+		content.console_third_price_text = ""
 		content.show_ps4_plus = false
 		content.show_secondary_stroke = false
 		content.show_third_stroke = false
 	end
 
-	local ps4_first_price_style = style.ps4_first_price_text
-	local ps4_secondary_price_style = style.ps4_secondary_price_text
-	local ps4_third_price_style = style.ps4_third_price_text
+	local console_first_price_style = style.console_first_price_text
+	local console_secondary_price_style = style.console_secondary_price_text
+	local console_third_price_style = style.console_third_price_text
 	local psplus_icon_style = style.psplus_icon
-	local ps4_secondary_price_stroke_style = style.ps4_secondary_price_stroke
-	local ps4_third_price_stroke_style = style.ps4_third_price_stroke
-	local ps4_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_first_price_style, content.ps4_first_price_text)
-	local ps4_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_secondary_price_style, content.ps4_secondary_price_text)
-	local ps4_third_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_third_price_style, content.ps4_third_price_text)
-	ps4_first_price_style.offset[1] = size[1] - ps4_first_price_text_length - spacing
-	ps4_secondary_price_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing
-	ps4_third_price_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing * 0.5 - ps4_third_price_text_length - spacing
-	psplus_icon_style.offset[1] = size[1] - ps4_first_price_text_length - spacing - spacing * 0.25 - psplus_icon_style.texture_size[1]
-	ps4_secondary_price_stroke_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing
-	ps4_secondary_price_stroke_style.texture_size = {
-		ps4_secondary_price_text_length,
+	local console_secondary_price_stroke_style = style.console_secondary_price_stroke
+	local console_third_price_stroke_style = style.console_third_price_stroke
+	local console_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_first_price_style, content.console_first_price_text)
+	local console_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_secondary_price_style, content.console_secondary_price_text)
+	local console_third_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_third_price_style, content.console_third_price_text)
+	console_first_price_style.offset[1] = size[1] - console_first_price_text_length - spacing
+	console_secondary_price_style.offset[1] = size[1] - console_secondary_price_text_length - spacing
+	console_third_price_style.offset[1] = size[1] - console_secondary_price_text_length - spacing * 0.5 - console_third_price_text_length - spacing
+	psplus_icon_style.offset[1] = size[1] - console_first_price_text_length - spacing - spacing * 0.25 - psplus_icon_style.texture_size[1]
+	console_secondary_price_stroke_style.offset[1] = size[1] - console_secondary_price_text_length - spacing
+	console_secondary_price_stroke_style.texture_size = {
+		console_secondary_price_text_length,
 		1
 	}
-	ps4_third_price_stroke_style.offset[1] = size[1] - ps4_secondary_price_text_length - spacing * 0.5 - ps4_third_price_text_length - spacing
-	ps4_third_price_stroke_style.texture_size = {
-		ps4_third_price_text_length,
+	console_third_price_stroke_style.offset[1] = size[1] - console_secondary_price_text_length - spacing * 0.5 - console_third_price_text_length - spacing
+	console_third_price_stroke_style.texture_size = {
+		console_third_price_text_length,
 		1
 	}
 end
 
-HeroViewStateStore._setup_xb1_price_data = function (self, price_data)
-	return
+HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
+	local content = widget.content
+	local style = widget.style
+	local spacing = 20
+	local size = content.size
+	local availability = (price_data.availabilities and price_data.availabilities[1]) or {}
+	local display_original_price = availability.DisplayListPrice
+	local display_price = availability.DisplayPrice
+
+	if display_price == display_original_price then
+		content.console_first_price_text = display_original_price or display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = ""
+		content.show_secondary_stroke = false
+	elseif display_price ~= display_original_price then
+		content.console_first_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_original_price or Localize("dlc_price_unavailable")
+		content.show_secondary_stroke = true
+	end
+
+	local console_first_price_style = style.console_first_price_text
+	local console_secondary_price_style = style.console_secondary_price_text
+	local console_secondary_price_stroke_style = style.console_secondary_price_stroke
+	local console_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_first_price_style, content.console_first_price_text)
+	local console_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_secondary_price_style, content.console_secondary_price_text)
+	console_first_price_style.offset[1] = size[1] - console_first_price_text_length - spacing
+	console_secondary_price_style.offset[1] = size[1] - console_secondary_price_text_length - spacing
+	console_secondary_price_stroke_style.offset[1] = size[1] - console_secondary_price_text_length - spacing - 5
+	console_secondary_price_stroke_style.texture_size = {
+		console_secondary_price_text_length + 10,
+		1
+	}
+
+	if content.show_secondary_stroke then
+		console_first_price_style.base_color = {
+			255,
+			255,
+			255,
+			0
+		}
+		console_secondary_price_stroke_style.color = {
+			255,
+			90,
+			90,
+			90
+		}
+		console_secondary_price_style.text_color = {
+			255,
+			90,
+			90,
+			90
+		}
+	else
+		console_first_price_style.base_color = {
+			255,
+			255,
+			255,
+			255
+		}
+		console_secondary_price_stroke_style.color = {
+			255,
+			255,
+			255,
+			255
+		}
+		console_secondary_price_style.text_color = {
+			255,
+			255,
+			255,
+			255
+		}
+	end
 end
 
 HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)
 	local dlc_id = Managers.unlock:dlc_exists(dlc_name) and Managers.unlock:dlc_id(dlc_name)
 	local backend_store = Managers.backend:get_interface("peddler")
-	local price_data = backend_store:get_app_price((PLATFORM == "win32" and dlc_id) or dlc_name)
-	local price_text = "???"
+	local price_data = backend_store:get_app_price((PLATFORM == "win32" and dlc_id) or dlc_name) or {}
+	local price_text = Localize("dlc_price_unavailable")
 
 	if price_data then
 		if PLATFORM == "win32" then
@@ -1609,10 +1676,16 @@ HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)
 			local regular_price = price_data.regular_price
 			local current_price = price_data.current_price
 			local price = current_price or regular_price
-			price_text = currency .. " " .. string.format("%.2f", price * 0.01)
+
+			if price then
+				price_text = currency .. " " .. string.format("%.2f", price * 0.01)
+			else
+				price_text = price_data.display_price or Localize("dlc_price_unavailable")
+			end
 		elseif PLATFORM == "ps4" then
-			price_text = price_data.display_price
+			price_text = price_data.display_price or Localize("dlc_price_unavailable")
 		elseif PLATFORM == "xb1" then
+			price_text = (price_data.availabilities and price_data.availabilities[1] and price_data.availabilities[1].DisplayPrice) or Localize("dlc_price_unavailable")
 		end
 	end
 

@@ -99,22 +99,50 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	}
 	local team_size_data = {
 		{
-			text = Localize("menu_weave_leaderboard_filter_option_players_1"),
-			value = ScorpionSeasonalSettings.get_leaderboard_stat(1)
+			value = 1,
+			text = Localize("menu_weave_leaderboard_filter_option_players_1")
 		},
 		{
-			text = Localize("menu_weave_leaderboard_filter_option_players_2"),
-			value = ScorpionSeasonalSettings.get_leaderboard_stat(2)
+			value = 2,
+			text = Localize("menu_weave_leaderboard_filter_option_players_2")
 		},
 		{
-			text = Localize("menu_weave_leaderboard_filter_option_players_3"),
-			value = ScorpionSeasonalSettings.get_leaderboard_stat(3)
+			value = 3,
+			text = Localize("menu_weave_leaderboard_filter_option_players_3")
 		},
 		{
-			text = Localize("menu_weave_leaderboard_filter_option_players_4"),
-			value = ScorpionSeasonalSettings.get_leaderboard_stat(4)
+			value = 4,
+			text = Localize("menu_weave_leaderboard_filter_option_players_4")
 		}
 	}
+	local season_stat_data = {}
+	local season_data = {}
+	local season_text = ""
+	local season_name = Localize("menu_weave_leaderboard_filter_sesason")
+	self._current_season_id = ScorpionSeasonalSettings.current_season_id
+
+	for i = 1, self._current_season_id, 1 do
+		season_stat_data[i] = {
+			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 1),
+			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 2),
+			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 3),
+			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 4)
+		}
+
+		if i == self._current_season_id then
+			season_text = Localize("menu_weave_leaderboard_current_season")
+		else
+			season_text = string.format(season_name, i)
+		end
+
+		season_data[i] = {
+			text = season_text,
+			value = i
+		}
+	end
+
+	self._season_data = season_data
+	self._season_stat_data = season_stat_data
 	self._team_size_data = team_size_data
 	self._filter_data = filter_data
 	self._leaderboard_tab_data = leaderboard_tab_data
@@ -123,13 +151,18 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	self:_select_tab_by_index(1)
 	self:_initialize_stepper(1, Localize("menu_weave_leaderboard_filter_title_position"), filter_data)
 	self:_initialize_stepper(2, Localize("menu_weave_leaderboard_filter_title_team_size"), team_size_data, #team_size_data)
+
+	if PLATFORM ~= "win32" then
+		self:_initialize_stepper(3, Localize("menu_weave_leaderboard_filter_season"), season_data, #season_data)
+	end
+
 	self:_restart_poll_queue(Application.time_since_launch())
 	self:_update_leaderboard_presentation()
 	Managers.input:enable_gamepad_cursor()
 	self:play_sound("menu_leaderboard_open")
 end
 
-StartGameStateWeaveLeaderboard._setup_poll_queue = function (self, leaderboard_type_data, filter_data, stat_names_data)
+StartGameStateWeaveLeaderboard._setup_poll_queue = function (self, leaderboard_type_data, filter_data, season_stat_data)
 	self._poll_queues = {}
 
 	for _, type_data in ipairs(leaderboard_type_data) do
@@ -138,24 +171,32 @@ StartGameStateWeaveLeaderboard._setup_poll_queue = function (self, leaderboard_t
 		for _, filter in ipairs(filter_data) do
 			local filter_value = filter.value
 
-			for i = #stat_names_data, 1, -1 do
-				local stat_data = stat_names_data[i]
-				local stat_name = stat_data.value
+			for i = #season_stat_data, 1, -1 do
+				local season_id = i
+				local stat_names_data = season_stat_data[i]
 
-				self:_add_poll_queue(filter_value, leaderboard_type, stat_name)
+				for j = #stat_names_data, 1, -1 do
+					local stat_name = stat_names_data[j]
+
+					self:_add_poll_queue(filter_value, leaderboard_type, stat_name, season_id)
+				end
 			end
 		end
 	end
 end
 
 StartGameStateWeaveLeaderboard._restart_poll_queue = function (self, t)
-	self._cashed_list_data = {}
+	self._cashed_list_season_data = {}
 
-	self:_setup_poll_queue(self._leaderboard_tab_data, self._filter_data, self._team_size_data)
+	self:_setup_poll_queue(self._leaderboard_tab_data, self._filter_data, self._season_stat_data)
 	self:_handle_next_poll_request(t)
 end
 
-StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, leaderboard_type, stat_name)
+StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, leaderboard_type, stat_name, season_id)
+	if PLATFORM == "win32" and season_id ~= self._current_season_id then
+		return
+	end
+
 	local leaderboard_tab_data = self._leaderboard_tab_data
 	local queue_index = nil
 
@@ -174,7 +215,8 @@ StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, l
 		poll_queue[#poll_queue + 1] = {
 			filter_value = filter_value,
 			leaderboard_type = leaderboard_type,
-			stat_name = stat_name
+			stat_name = stat_name,
+			season_id = season_id
 		}
 	end
 
@@ -231,6 +273,7 @@ StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
 	local filter_value = next_poll_request.filter_value
 	local leaderboard_type = next_poll_request.leaderboard_type
 	local stat_name = next_poll_request.stat_name
+	local season_id = next_poll_request.season_id
 	local weave_interface = Managers.backend:get_interface("weaves")
 
 	if filter_value == "top" then
@@ -243,13 +286,13 @@ StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
 		weave_interface:request_leaderboard_around_player(stat_name, leaderboard_type, max_result_count)
 	end
 
-	self._polling_callback = callback(self, "_cb_cashe_list_data", filter_value, leaderboard_type, stat_name)
+	self._polling_callback = callback(self, "_cb_cashe_list_data", filter_value, leaderboard_type, stat_name, season_id)
 	local time = Application.time_since_launch()
 	self._min_poll_time = time + MIN_TIME_BETWEEN_LEADERBOARD_REQUESTS
 end
 
 StartGameStateWeaveLeaderboard._update_leaderboard_presentation = function (self)
-	local stat_name, filter_value, leaderboard_type = nil
+	local stat_index, filter_value, season_index, leaderboard_type = nil
 	local stepper_settings = self._stepper_settings
 
 	if stepper_settings then
@@ -266,7 +309,11 @@ StartGameStateWeaveLeaderboard._update_leaderboard_presentation = function (self
 			end
 
 			if stepper_name == "setting_stepper_2" then
-				stat_name = read_value
+				stat_index = read_value
+			end
+
+			if stepper_name == "setting_stepper_3" then
+				season_index = read_value
 			end
 		end
 	end
@@ -274,10 +321,11 @@ StartGameStateWeaveLeaderboard._update_leaderboard_presentation = function (self
 	local selected_option_tab_index = self._selected_option_tab_index
 	local selected_option = self._leaderboard_tab_data[selected_option_tab_index]
 	leaderboard_type = selected_option.value
-	self._stat_name = stat_name
 	self._filter_value = filter_value
+	self._current_season_id = season_index or self._current_season_id
+	self._stat_name = self._season_stat_data[self._current_season_id][stat_index]
 	self._leaderboard_type = leaderboard_type
-	local cashed_list_data = self:_get_cashed_list_data(filter_value, leaderboard_type, stat_name)
+	local cashed_list_data = self:_get_cashed_list_data(filter_value, leaderboard_type, self._stat_name, self._current_season_id)
 	local waiting_for_list = cashed_list_data == nil
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.loading_icon.content.visible = waiting_for_list
@@ -320,24 +368,30 @@ StartGameStateWeaveLeaderboard._list_including_local_player = function (self, li
 	return false
 end
 
-StartGameStateWeaveLeaderboard._get_cashed_list_data = function (self, filter_value, leaderboard_type, stat_name)
-	local cashed_list_data = self._cashed_list_data
+StartGameStateWeaveLeaderboard._get_cashed_list_data = function (self, filter_value, leaderboard_type, stat_name, current_season_id)
+	local cashed_list_data = self._cashed_list_season_data[current_season_id]
 
-	if not cashed_list_data[filter_value] or not cashed_list_data[filter_value][leaderboard_type] then
-		return
+	if not cashed_list_data or not cashed_list_data[filter_value] or not cashed_list_data[filter_value][leaderboard_type] then
+		return nil
 	end
 
 	return cashed_list_data[filter_value][leaderboard_type][stat_name]
 end
 
-StartGameStateWeaveLeaderboard._cb_cashe_list_data = function (self, filter_value, leaderboard_type, stat_name, list_entries, request_failed)
+StartGameStateWeaveLeaderboard._cb_cashe_list_data = function (self, filter_value, leaderboard_type, stat_name, current_season_id, list_entries, request_failed)
 	if request_failed then
 		self:_add_poll_queue(filter_value, leaderboard_type, stat_name)
 
 		return
 	end
 
-	local cashed_list_data = self._cashed_list_data
+	local cashed_season_list_data = self._cashed_list_season_data
+
+	if not cashed_season_list_data[current_season_id] then
+		cashed_season_list_data[current_season_id] = {}
+	end
+
+	local cashed_list_data = cashed_season_list_data[current_season_id]
 
 	if not cashed_list_data[filter_value] then
 		cashed_list_data[filter_value] = {}

@@ -887,7 +887,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 						local difficulty_rank = Managers.state.difficulty:get_difficulty()
 						local player = Managers.player:owner(player_unit)
 						local is_bot = player and not player:is_player_controlled()
-						local actual_power_level = (is_bot and action.power_level[difficulty_rank] / 10) or action.power_level[difficulty_rank]
+						local actual_power_level = (is_bot and 0) or action.power_level[difficulty_rank]
 
 						DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, player_unit, unit, "torso", POSITION_LOOKUP[player_unit], Vector3.up(), "undefined")
 

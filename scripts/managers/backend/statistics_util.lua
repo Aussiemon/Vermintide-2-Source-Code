@@ -237,14 +237,17 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 
 				if player ~= attacker_player then
 					local stats_id = player:stats_id()
-					local breed_killed_name = breed_killed.name
 
-					if GameSettingsDevelopment.disable_carousel then
-						if Breeds[breed_killed_name] then
+					if statistics_db:is_registered(stats_id) then
+						local breed_killed_name = breed_killed.name
+
+						if GameSettingsDevelopment.disable_carousel then
+							if Breeds[breed_killed_name] then
+								statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
+							end
+						else
 							statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
 						end
-					else
-						statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
 					end
 				end
 			end
@@ -676,13 +679,13 @@ StatisticsUtil.register_weave_complete = function (statistics_db, player, is_qui
 
 		statistics_db:increment_stat(stats_id, ScorpionSeasonalSettings.current_season_name, weave_quickplay_wins_stat_name)
 
-		if ScorpionSeasonalSettings.current_season_id == 1 then
+		if ScorpionSeasonalSettings.current_season_id == 1 or PLATFORM ~= "win32" then
 			local weave_quickplay_wins_difficulty_stat_name = "weave_quickplay_" .. difficulty_key .. "_wins"
 
-			statistics_db:increment_stat(stats_id, ScorpionSeasonalSettings.current_season_name, weave_quickplay_wins_difficulty_stat_name)
+			statistics_db:increment_stat(stats_id, "season_1", weave_quickplay_wins_difficulty_stat_name)
 		end
 	else
-		if ScorpionSeasonalSettings.current_season_id == 1 then
+		if ScorpionSeasonalSettings.current_season_id == 1 or PLATFORM ~= "win32" then
 			local rainbow_stat_name = "weave_rainbow_" .. wind .. "_" .. career_name .. "_season_1"
 
 			statistics_db:set_stat(stats_id, "season_1", rainbow_stat_name, 1)
@@ -707,7 +710,7 @@ StatisticsUtil.register_weave_complete = function (statistics_db, player, is_qui
 end
 
 StatisticsUtil._register_mutator_challenges = function (statistics_db, stats_id, wind)
-	if ScorpionSeasonalSettings.current_season_id == 1 then
+	if ScorpionSeasonalSettings.current_season_id == 1 or PLATFORM ~= "win32" then
 		if wind == "life" then
 			local life_stat_id = "weave_life_stepped_in_bush"
 			local result = statistics_db:get_persistent_stat(stats_id, "season_1", life_stat_id)

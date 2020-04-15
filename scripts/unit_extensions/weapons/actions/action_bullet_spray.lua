@@ -9,6 +9,7 @@ local NODES = {
 	"j_rightshoulder",
 	"j_spine1"
 }
+local NUM_NODES = #NODES
 
 ActionBulletSpray.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionBulletSpray.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -30,14 +31,13 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 	self.power_level = power_level
 	self.current_action = new_action
 	self._target_index = 1
-	self.shot = false
+	self.state = "waiting_to_shoot"
 
 	if new_action.use_ammo_at_time then
 		self.use_ammo_time = t + new_action.use_ammo_at_time
 		self.used_ammo = false
 	end
 
-	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
 	local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
 	self.CONE_COS_ALPHA = SPRAY_RANGE / cone_hypotenuse
 	local overcharge_type = new_action.overcharge_type
@@ -61,12 +61,17 @@ end
 
 ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
-	local owner_unit_1p = self.first_person_unit
-	local player_position = POSITION_LOOKUP[owner_unit_1p]
-	local targets = self.targets
-	local target_index = self._target_index
 
-	if #targets == 0 and not self.shot then
+	if self.use_ammo_time and not self.used_ammo and self.use_ammo_time <= t then
+		self.used_ammo = true
+		local ammo_extension = self.ammo_extension
+
+		if ammo_extension then
+			ammo_extension:use_ammo(current_action.ammo_usage)
+		end
+	end
+
+	if self.state == "waiting_to_shoot" then
 		self:_select_targets(world, true)
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -75,79 +80,74 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 			})
 		end
 
-		local fire_sound_event = self.current_action.fire_sound_event
+		local fire_sound_event = current_action.fire_sound_event
 
 		if fire_sound_event then
-			local play_on_husk = self.current_action.fire_sound_on_husk
+			local play_on_husk = current_action.fire_sound_on_husk
 			local first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
 
 			first_person_extension:play_hud_sound_event(fire_sound_event, nil, play_on_husk)
 		end
+
+		self.state = "shooting"
 	end
 
-	if self.use_ammo_time and not self.used_ammo and self.use_ammo_time <= t then
-		self.used_ammo = true
-		local ammo_extension = self.ammo_extension
+	if self.state == "shooting" then
+		local owner_unit_1p = self.first_person_unit
+		local player_position = POSITION_LOOKUP[owner_unit_1p]
+		local targets = self.targets
+		local target_index = self._target_index
+		local current_target = targets[target_index]
 
-		if ammo_extension then
-			ammo_extension:use_ammo(self.current_action.ammo_usage)
-		end
-	end
+		if Unit.alive(current_target) then
+			local breed = Unit.get_data(current_target, "breed")
+			local node = "j_spine"
 
-	local current_target = targets[target_index]
+			if breed and not breed.is_hero then
+				local rand = math.random()
+				local chance = 1 / NUM_NODES
+				local cumalative_value = 0
 
-	if Unit.alive(current_target) then
-		local breed = Unit.get_data(current_target, "breed")
-		local node = "j_spine"
+				for i = 1, NUM_NODES, 1 do
+					cumalative_value = cumalative_value + chance
 
-		if breed and not breed.is_hero then
-			local rand = math.random()
-			local chance = 1 / #NODES
-			local cumalative_value = 0
+					if rand <= cumalative_value then
+						node = NODES[i]
 
-			for i = 1, #NODES, 1 do
-				cumalative_value = cumalative_value + chance
-
-				if rand <= cumalative_value then
-					node = NODES[i]
-
-					break
+						break
+					end
 				end
 			end
+
+			local target_position = Unit.world_position(current_target, Unit.node(current_target, node))
+			local direction = Vector3.normalize(target_position - player_position)
+			local result = self:raycast_to_target(world, player_position, direction, current_target)
+			local target = nil
+
+			if current_action.area_damage then
+				target = current_target
+			end
+
+			if result then
+				DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, self.is_server, result, current_action, direction, true, target, nil, self._is_critical_strike, self.power_level)
+			end
+
+			local weapon_unit = self.weapon_unit
+			local hit_position = (result and result[#result][1]) or player_position + direction * 100
+
+			Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
+			Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - player_position) * 0.1)
+			Unit.flow_event(weapon_unit, "lua_bullet_trail")
+			Unit.flow_event(weapon_unit, "lua_bullet_trail_set")
 		end
 
-		local target_position = Unit.world_position(current_target, Unit.node(current_target, node))
-		local direction = Vector3.normalize(target_position - player_position)
-		local result = self:raycast_to_target(world, player_position, direction, current_target)
-		local target = nil
+		self._target_index = target_index + 1
 
-		if current_action.area_damage then
-			target = current_target
+		if self._target_index > #targets then
+			self:_proc_spell_used(self.buff_extension)
+
+			self.state = "shot"
 		end
-
-		if result then
-			DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, self.is_server, result, current_action, direction, true, target, nil, self._is_critical_strike, self.power_level)
-		end
-
-		local weapon_unit = self.weapon_unit
-		local hit_position = (result and result[#result][1]) or player_position + direction * 100
-
-		Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
-		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - player_position) * 0.1)
-		Unit.flow_event(weapon_unit, "lua_bullet_trail")
-		Unit.flow_event(weapon_unit, "lua_bullet_trail_set")
-	end
-
-	self._target_index = target_index + 1
-
-	self:_check_on_spell_used_proc(t)
-end
-
-ActionBulletSpray._check_on_spell_used_proc = function (self, t)
-	if self._spell_proc_time and self._spell_proc_time <= t then
-		self.buff_extension:trigger_procs("on_spell_used", self.current_action)
-
-		self._spell_proc_time = nil
 	end
 end
 
@@ -168,7 +168,9 @@ ActionBulletSpray.finish = function (self, reason)
 		hud_extension.show_critical_indication = false
 	end
 
-	self:_check_on_spell_used_proc(math.huge)
+	if self.state ~= "waiting_to_shoot" and self.state ~= "shot" then
+		self:_proc_spell_used(self.buff_extension)
+	end
 end
 
 ActionBulletSpray._clear_targets = function (self)
@@ -255,8 +257,6 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 
 		Script.set_temp_count(v, q, m)
 	end
-
-	self.shot = true
 end
 
 ActionBulletSpray._check_within_cone = function (self, player_position, player_direction, target, player)

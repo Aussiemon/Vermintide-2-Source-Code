@@ -474,6 +474,52 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if PLATFORM ~= "win32" then
+	scenegraph_definition.setting_stepper_1 = {
+		vertical_alignment = "top",
+		parent = "list_window",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1] / 3.5,
+			85
+		},
+		position = {
+			list_window_size[1] / 3,
+			-(option_tabs_height + 13),
+			4
+		}
+	}
+	scenegraph_definition.setting_stepper_2 = {
+		vertical_alignment = "top",
+		parent = "list_window",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1] / 3.5,
+			85
+		},
+		position = {
+			0,
+			-(option_tabs_height + 13),
+			4
+		}
+	}
+	scenegraph_definition.setting_stepper_3 = {
+		vertical_alignment = "top",
+		parent = "list_window",
+		horizontal_alignment = "center",
+		size = {
+			list_window_size[1] / 3.5,
+			85
+		},
+		position = {
+			-list_window_size[1] / 3,
+			-(option_tabs_height + 13),
+			4
+		}
+	}
+end
+
 local title_text_style = {
 	use_shadow = true,
 	upper_case = true,
@@ -1182,6 +1228,11 @@ local widgets = {
 		"list_mask"
 	})
 }
+
+if PLATFORM ~= "win32" then
+	widgets.setting_stepper_3 = create_stepper("setting_stepper_3", scenegraph_definition.setting_stepper_3.size)
+end
+
 local animation_definitions = {
 	on_enter = {
 		{

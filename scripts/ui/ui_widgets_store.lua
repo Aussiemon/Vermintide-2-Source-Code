@@ -449,90 +449,90 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 		},
 		{
 			pass_type = "texture",
-			style_id = "ps4_background_rect_bottom",
-			texture_id = "ps4_background_rect",
+			style_id = "console_background_rect_bottom",
+			texture_id = "console_background_rect",
 			content_check_function = function (content)
-				return PLATFORM == "ps4" and content.real_currency
+				return PLATFORM ~= "win32" and content.real_currency
 			end
 		},
 		{
 			pass_type = "texture",
-			style_id = "ps4_background_rect_top",
-			texture_id = "ps4_background_rect",
+			style_id = "console_background_rect_top",
+			texture_id = "console_background_rect",
 			content_check_function = function (content)
-				return PLATFORM == "ps4" and content.real_currency and content.ps4_secondary_price_text ~= ""
+				return PLATFORM ~= "win32" and content.real_currency and content.console_secondary_price_text ~= ""
 			end
 		},
 		{
-			texture_id = "ps4_secondary_price_stroke",
-			style_id = "ps4_secondary_price_stroke",
+			texture_id = "console_secondary_price_stroke",
+			style_id = "console_secondary_price_stroke",
 			pass_type = "texture",
 			content_check_function = function (content)
-				return content.show_secondary_stroke and PLATFORM == "ps4" and content.real_currency
+				return content.show_secondary_stroke and PLATFORM ~= "win32" and content.real_currency
 			end
 		},
 		{
-			texture_id = "ps4_third_price_stroke",
-			style_id = "ps4_third_price_stroke",
+			texture_id = "console_third_price_stroke",
+			style_id = "console_third_price_stroke",
 			pass_type = "texture",
 			content_check_function = function (content)
 				return content.show_third_stroke and PLATFORM == "ps4" and content.real_currency
 			end
 		},
 		{
-			style_id = "ps4_first_price_text",
+			style_id = "console_first_price_text",
 			pass_type = "text",
-			text_id = "ps4_first_price_text",
+			text_id = "console_first_price_text",
 			content_check_function = function (content)
-				return PLATFORM == "ps4" and content.real_currency
+				return PLATFORM ~= "win32" and content.real_currency
 			end,
 			content_change_function = function (content, style)
 				style.text_color = (content.show_ps4_plus and style.ps_plus_color) or style.base_color
 			end
 		},
 		{
-			style_id = "ps4_secondary_price_text",
+			style_id = "console_secondary_price_text",
 			pass_type = "text",
-			text_id = "ps4_secondary_price_text",
+			text_id = "console_secondary_price_text",
 			content_check_function = function (content)
-				return content.ps4_secondary_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+				return content.console_secondary_price_text ~= "" and PLATFORM ~= "win32" and content.real_currency
 			end
 		},
 		{
-			style_id = "ps4_third_price_text",
+			style_id = "console_third_price_text",
 			pass_type = "text",
-			text_id = "ps4_third_price_text",
+			text_id = "console_third_price_text",
 			content_check_function = function (content)
-				return content.ps4_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+				return content.console_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
 			end
 		}
 	}
 	local content = {
 		expire_time_icon = "store_icon_hourglass",
 		price_icon = "store_icon_currency_ingame",
-		psplus_icon = "psplus_logo",
 		owned_icon = "store_owned_sigil",
 		price_text = "-",
 		draw_price_icon = true,
 		background_price_center = "store_thumbnail_pricetag_middle",
-		limited_time = false,
-		show_secondary_stroke = false,
-		loading_icon = "loot_loading",
+		console_first_price_text = "",
+		background_price = "store_thumbnail_pricetag_left",
 		show_third_stroke = false,
+		loading_icon = "loot_loading",
 		has_expire_date = false,
-		ps4_secondary_price_text = "",
+		console_third_price_text = "",
 		show_ps4_plus = false,
+		show_secondary_stroke = false,
 		type_tag_icon = "store_tag_icon_dlc",
 		discount = false,
-		ps4_third_price_text = "",
-		background_price = "store_thumbnail_pricetag_left",
 		real_currency = false,
-		ps4_first_price_text = "",
+		limited_time = false,
 		owned = false,
+		console_secondary_price_text = "",
 		owned_icon_bg = "store_owned_ribbon",
 		background_price_right = "store_thumbnail_pricetag_right",
 		discount_bg = "store_thumbnail_sale",
 		timer_icon = "store_owned_sigil",
+		psplus_icon = "psplus_logo",
 		hotspot = {},
 		discont_number_icons = {},
 		rect = (masked and "rect_masked") or "simple_rect_texture",
@@ -540,9 +540,9 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 		hover_frame = hover_frame_settings.texture,
 		pulse_frame = pulse_frame_settings.texture,
 		size = size,
-		ps4_background_rect = (masked and "rect_masked") or "simple_rect_texture",
-		ps4_secondary_price_stroke = (masked and "rect_masked") or "simple_rect_texture",
-		ps4_third_price_stroke = (masked and "rect_masked") or "simple_rect_texture"
+		console_background_rect = (masked and "rect_masked") or "simple_rect_texture",
+		console_secondary_price_stroke = (masked and "rect_masked") or "simple_rect_texture",
+		console_third_price_stroke = (masked and "rect_masked") or "simple_rect_texture"
 	}
 	local style = {
 		hotspot = {
@@ -1000,7 +1000,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				12
 			}
 		},
-		ps4_background_rect_bottom = {
+		console_background_rect_bottom = {
 			vertical_alignment = "top",
 			horizontal_alignment = "left",
 			masked = masked,
@@ -1020,7 +1020,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				9
 			}
 		},
-		ps4_background_rect_top = {
+		console_background_rect_top = {
 			vertical_alignment = "top",
 			horizontal_alignment = "left",
 			masked = masked,
@@ -1040,7 +1040,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				9
 			}
 		},
-		ps4_first_price_text = {
+		console_first_price_text = {
 			upper_case = false,
 			localize = false,
 			font_size = 28,
@@ -1066,7 +1066,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				12
 			}
 		},
-		ps4_secondary_price_text = {
+		console_secondary_price_text = {
 			upper_case = false,
 			localize = false,
 			font_size = 28,
@@ -1085,7 +1085,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				12
 			}
 		},
-		ps4_third_price_text = {
+		console_third_price_text = {
 			upper_case = false,
 			localize = false,
 			font_size = 20,
@@ -1104,7 +1104,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				12
 			}
 		},
-		ps4_secondary_price_stroke = {
+		console_secondary_price_stroke = {
 			vertical_alignment = "top",
 			horizontal_alignment = "left",
 			masked = masked,
@@ -1119,7 +1119,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				13
 			}
 		},
-		ps4_third_price_stroke = {
+		console_third_price_stroke = {
 			vertical_alignment = "top",
 			horizontal_alignment = "left",
 			masked = masked,
@@ -2514,80 +2514,80 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 				},
 				{
 					pass_type = "texture",
-					style_id = "ps4_background_rect",
-					texture_id = "ps4_background_rect",
+					style_id = "console_background_rect",
+					texture_id = "console_background_rect",
 					content_check_function = function (content)
-						return PLATFORM == "ps4" and content.real_currency
+						return PLATFORM ~= "win32" and content.real_currency
 					end
 				},
 				{
-					texture_id = "ps4_secondary_price_stroke",
-					style_id = "ps4_secondary_price_stroke",
+					texture_id = "console_secondary_price_stroke",
+					style_id = "console_secondary_price_stroke",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.show_secondary_stroke and PLATFORM == "ps4" and content.real_currency
+						return content.show_secondary_stroke and PLATFORM ~= "win32" and content.real_currency
 					end
 				},
 				{
-					texture_id = "ps4_third_price_stroke",
-					style_id = "ps4_third_price_stroke",
+					texture_id = "console_third_price_stroke",
+					style_id = "console_third_price_stroke",
 					pass_type = "texture",
 					content_check_function = function (content)
 						return content.show_third_stroke and PLATFORM == "ps4" and content.real_currency
 					end
 				},
 				{
-					style_id = "ps4_first_price_text",
+					style_id = "console_first_price_text",
 					pass_type = "text",
-					text_id = "ps4_first_price_text",
+					text_id = "console_first_price_text",
 					content_check_function = function (content)
-						return PLATFORM == "ps4" and content.real_currency
+						return PLATFORM ~= "win32" and content.real_currency
 					end,
 					content_change_function = function (content, style)
 						style.text_color = (content.show_ps4_plus and style.ps_plus_color) or style.base_color
 					end
 				},
 				{
-					style_id = "ps4_secondary_price_text",
+					style_id = "console_secondary_price_text",
 					pass_type = "text",
-					text_id = "ps4_secondary_price_text",
+					text_id = "console_secondary_price_text",
 					content_check_function = function (content)
-						return content.ps4_secondary_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+						return content.console_secondary_price_text ~= "" and PLATFORM ~= "win32" and content.real_currency
 					end
 				},
 				{
-					style_id = "ps4_third_price_text",
+					style_id = "console_third_price_text",
 					pass_type = "text",
-					text_id = "ps4_third_price_text",
+					text_id = "console_third_price_text",
 					content_check_function = function (content)
-						return content.ps4_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+						return content.console_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
 					end
 				}
 			}
 		},
 		content = {
-			title_text_gradient = "text_gradient",
-			show_third_stroke = false,
-			owned_text_gradient = "store_button_bg_02",
-			glass = "game_options_fg",
 			owned_icon = "store_owned_sigil",
+			console_third_price_stroke = "simple_rect_texture",
+			glass_top = "button_glass_02",
+			glass = "game_options_fg",
+			owned_text_gradient = "store_button_bg_02",
+			show_third_stroke = false,
 			owned_text = "menu_store_purchase_button_owned",
-			ps4_secondary_price_text = "",
+			console_third_price_text = "",
 			present_currency = false,
 			show_ps4_plus = false,
 			show_secondary_stroke = false,
 			background_fade = "button_bg_fade",
-			ps4_third_price_text = "",
 			currency_icon = "store_icon_currency_ingame_big",
+			console_secondary_price_stroke = "simple_rect_texture",
 			hover_glow = "button_state_default",
 			real_currency = false,
-			ps4_first_price_text = "",
 			owned = false,
-			glass_top = "button_glass_02",
-			ps4_third_price_stroke = "simple_rect_texture",
+			console_background_rect = "simple_rect_texture",
+			console_secondary_price_text = "",
 			owned_icon_bg = "store_owned_ribbon",
-			ps4_background_rect = "simple_rect_texture",
-			ps4_secondary_price_stroke = "simple_rect_texture",
+			title_text_gradient = "text_gradient",
+			console_first_price_text = "",
 			psplus_icon = "psplus_logo",
 			currency_text = "",
 			button_hotspot = {
@@ -3069,7 +3069,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					side_detail_texture_size[2]
 				}
 			},
-			ps4_background_rect = {
+			console_background_rect = {
 				color = {
 					255,
 					0,
@@ -3082,7 +3082,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					1
 				}
 			},
-			ps4_first_price_text = {
+			console_first_price_text = {
 				font_size = 28,
 				upper_case = false,
 				localize = false,
@@ -3104,7 +3104,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					2
 				}
 			},
-			ps4_secondary_price_text = {
+			console_secondary_price_text = {
 				font_size = 28,
 				upper_case = false,
 				localize = false,
@@ -3119,7 +3119,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					2
 				}
 			},
-			ps4_third_price_text = {
+			console_third_price_text = {
 				font_size = 20,
 				upper_case = false,
 				localize = false,
@@ -3134,7 +3134,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					2
 				}
 			},
-			ps4_secondary_price_stroke = {
+			console_secondary_price_stroke = {
 				vertical_alignment = "bottom",
 				horizontal_alignment = "right",
 				texture_size = {
@@ -3148,7 +3148,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					3
 				}
 			},
-			ps4_third_price_stroke = {
+			console_third_price_stroke = {
 				vertical_alignment = "bottom",
 				horizontal_alignment = "right",
 				texture_size = {

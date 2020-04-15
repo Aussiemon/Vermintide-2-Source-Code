@@ -817,6 +817,10 @@ AccountManager.send_session_invitation_multiple = function (self, to_account_ids
 end
 
 AccountManager.activity_feed_post_mission_completed = function (self, level_display_name, difficulty_display_name)
+	if not self:is_online() or not self._account_id then
+		return
+	end
+
 	local user_id = self:user_id()
 	local account_id = Application.hex64_to_dec(self._account_id)
 	local title_id = self._np_title_id

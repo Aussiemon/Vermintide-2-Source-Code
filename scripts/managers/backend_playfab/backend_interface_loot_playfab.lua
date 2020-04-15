@@ -99,7 +99,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	self._loot_requests[id] = loot
 end
 
-BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_progress, game_time, current_weave_index)
+BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 	local id = self:_new_id()
 	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
 	local data = {
@@ -122,7 +122,8 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		weave_tier = weave_tier,
 		weave_progress = weave_progress,
 		game_time = game_time,
-		current_weave_index = current_weave_index
+		current_weave_index = current_weave_index,
+		kill_count = kill_count
 	}
 	local generate_end_of_level_loot_request = {
 		FunctionName = "generateEndOfLevelLoot",

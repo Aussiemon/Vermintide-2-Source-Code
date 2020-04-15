@@ -120,8 +120,6 @@ local function handle_castle_boss_achievement(killing_blow, unit)
 			if boss_unit ~= unit then
 				local blackboard = BLACKBOARDS[boss_unit]
 				blackboard.no_kill_achievement = false
-
-				print("ACHIEVEMENT FAILED")
 			end
 		end
 	end

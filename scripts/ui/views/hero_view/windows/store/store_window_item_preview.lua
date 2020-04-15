@@ -13,6 +13,7 @@ local create_dlc_entry_definition = definitions.create_dlc_entry_definition
 local generic_input_actions = definitions.generic_input_actions
 local LIST_SPACING = 10
 local LIST_MAX_WIDTH = 800
+local CONSOLE_PRICE_WIDTH = 140
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 local DO_RELOAD = false
 StoreWindowItemPreview = class(StoreWindowItemPreview)
@@ -346,6 +347,8 @@ StoreWindowItemPreview._animate_dlc_list_entries = function (self, dt)
 
 		if hotspot and hotspot.on_hover_enter then
 			self:_play_sound("Play_hud_store_button_hover")
+
+			hotspot.on_hover_enter = false
 		end
 
 		parent:animate_store_product(widget, dt, list_hovered)
@@ -886,7 +889,7 @@ StoreWindowItemPreview._handle_platform_price_data = function (self, widget, dlc
 	if not price_data then
 		Application.warning(string.format("[StoreWindowItemPreview] Missing pricing info for %q", dlc_name))
 
-		return
+		price_data = {}
 	end
 
 	if PLATFORM == "ps4" then
@@ -907,72 +910,179 @@ StoreWindowItemPreview._setup_ps4_price_data = function (self, widget, price_dat
 	local display_original_price = price_data.display_original_price
 	local display_price = price_data.display_price
 	local display_plus_upsell_price = price_data.display_plus_upsell_price
-	local ps4_first_price_style = style.ps4_first_price_text
-	local ps4_secondary_price_style = style.ps4_secondary_price_text
-	local ps4_third_price_style = style.ps4_third_price_text
+	local console_first_price_style = style.console_first_price_text
+	local console_secondary_price_style = style.console_secondary_price_text
+	local console_third_price_style = style.console_third_price_text
 	local psplus_icon_style = style.psplus_icon
-	local ps4_secondary_price_stroke_style = style.ps4_secondary_price_stroke
-	local ps4_third_price_stroke_style = style.ps4_third_price_stroke
+	local console_secondary_price_stroke_style = style.console_secondary_price_stroke
+	local console_third_price_stroke_style = style.console_third_price_stroke
 
 	if not original_price and not display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_original_price or display_price or "???"
-		content.ps4_secondary_price_text = ""
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_original_price or display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = ""
+		content.console_third_price_text = ""
 		content.show_ps4_plus = false
 		content.show_secondary_stroke = false
 		content.show_third_stroke = false
 	elseif original_price and not display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_price or "???"
-		content.ps4_secondary_price_text = display_original_price or "???"
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_original_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = ""
 		content.show_ps4_plus = false
 		content.show_secondary_stroke = true
 		content.show_third_stroke = false
 	elseif original_price and not display_plus_upsell_price and is_plus_price then
-		content.ps4_first_price_text = display_price or "???"
-		content.ps4_secondary_price_text = display_original_price or "???"
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_original_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = ""
 		content.show_ps4_plus = true
 		content.show_secondary_stroke = has_ps_plus
 		content.show_third_stroke = false
 	elseif not original_price and display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_plus_upsell_price or "???"
-		content.ps4_secondary_price_text = display_price or "???"
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_plus_upsell_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = ""
 		content.show_ps4_plus = true
 		content.show_secondary_stroke = false
 		content.show_third_stroke = false
 	elseif original_price and display_plus_upsell_price and not is_plus_price then
-		content.ps4_first_price_text = display_plus_upsell_price or "???"
-		content.ps4_secondary_price_text = display_price or "???"
-		content.ps4_third_price_text = display_original_price or "???"
+		content.console_first_price_text = display_plus_upsell_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_third_price_text = display_original_price or Localize("dlc_price_unavailable")
 		content.show_ps4_plus = true
 		content.show_secondary_stroke = false
 		content.show_third_stroke = true
 	else
-		content.ps4_first_price_text = display_price or display_original_price or "???"
-		content.ps4_secondary_price_text = ""
-		content.ps4_third_price_text = ""
+		content.console_first_price_text = display_price or display_original_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = ""
+		content.console_third_price_text = ""
 		content.show_ps4_plus = false
 		content.show_secondary_stroke = false
 		content.show_third_stroke = false
 	end
 
-	local ps4_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_first_price_style, content.ps4_first_price_text)
-	local ps4_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_secondary_price_style, content.ps4_secondary_price_text)
-	local ps4_third_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, ps4_third_price_style, content.ps4_third_price_text)
-	ps4_third_price_style.offset[1] = -45 - ps4_secondary_price_text_length - spacing * 0.5
-	ps4_secondary_price_stroke_style.offset[1] = -45
-	ps4_secondary_price_stroke_style.texture_size = {
-		ps4_secondary_price_text_length,
+	local console_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_first_price_style, content.console_first_price_text)
+	local console_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_secondary_price_style, content.console_secondary_price_text)
+	local console_third_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_third_price_style, content.console_third_price_text)
+	local starting_point = CONSOLE_PRICE_WIDTH
+
+	if content.console_secondary_price_text == "" then
+		starting_point = starting_point - console_first_price_text_length * 0.5
+	elseif content.console_third_price_text == "" then
+		starting_point = starting_point - (console_secondary_price_text_length + spacing * 0.5) * 0.5
+	else
+		starting_point = starting_point - (console_secondary_price_text_length + spacing * 0.5 + console_third_price_text_length) * 0.5
+	end
+
+	console_third_price_style.offset[1] = -starting_point - console_secondary_price_text_length - spacing * 0.5
+	console_secondary_price_stroke_style.texture_size = {
+		console_secondary_price_text_length,
 		1
 	}
-	ps4_third_price_stroke_style.offset[1] = -45 - ps4_secondary_price_text_length - spacing * 0.5
-	ps4_third_price_stroke_style.texture_size = {
-		ps4_third_price_text_length,
+	console_third_price_stroke_style.offset[1] = -starting_point - console_secondary_price_text_length - spacing * 0.5
+	console_third_price_stroke_style.texture_size = {
+		console_third_price_text_length,
 		1
 	}
-	psplus_icon_style.offset[1] = -45 - ps4_first_price_text_length - spacing * 0.25
+	console_first_price_style.offset[1] = -starting_point
+	console_secondary_price_style.offset[1] = -starting_point
+	console_secondary_price_stroke_style.offset[1] = -starting_point
+	psplus_icon_style.offset[1] = -starting_point - console_first_price_text_length - spacing * 0.25
+
+	if content.console_secondary_price_text == "" then
+		console_first_price_style.vertical_alignment = "center"
+	else
+		console_first_price_style.vertical_alignment = "bottom"
+	end
+
+	content.real_currency = true
+end
+
+StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_data)
+	local content = widget.content
+	local style = widget.style
+	local spacing = 20
+	local size = content.size
+	local availability = (price_data.availabilities and price_data.availabilities[1]) or {}
+	local display_original_price = availability.DisplayListPrice
+	local display_price = availability.DisplayPrice
+
+	if display_price == display_original_price then
+		content.console_first_price_text = display_original_price or display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = ""
+		content.show_secondary_stroke = false
+	elseif display_price ~= display_original_price then
+		content.console_first_price_text = display_price or Localize("dlc_price_unavailable")
+		content.console_secondary_price_text = display_original_price or Localize("dlc_price_unavailable")
+		content.show_secondary_stroke = true
+	end
+
+	local console_first_price_style = style.console_first_price_text
+	local console_secondary_price_style = style.console_secondary_price_text
+	local console_secondary_price_stroke_style = style.console_secondary_price_stroke
+	local console_first_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_first_price_style, content.console_first_price_text)
+	local console_secondary_price_text_length = UIUtils.get_text_width(self._ui_top_renderer, console_secondary_price_style, content.console_secondary_price_text)
+	local starting_point = CONSOLE_PRICE_WIDTH
+
+	if content.show_secondary_stroke then
+		starting_point = starting_point - console_secondary_price_text_length * 0.5
+	else
+		starting_point = starting_point - console_first_price_text_length * 0.5
+	end
+
+	console_first_price_style.offset[1] = -starting_point
+	console_secondary_price_stroke_style.offset[1] = -starting_point
+	console_secondary_price_stroke_style.texture_size = {
+		console_secondary_price_text_length,
+		2
+	}
+	console_secondary_price_stroke_style.vertical_alignment = "bottom"
+	console_secondary_price_style.offset[1] = -starting_point
+	console_secondary_price_style.offset[2] = 25
+	console_secondary_price_style.vertical_alignment = "bottom"
+
+	if content.show_secondary_stroke then
+		console_first_price_style.vertical_alignment = "bottom"
+		console_first_price_style.base_color = {
+			255,
+			255,
+			255,
+			0
+		}
+		console_secondary_price_stroke_style.color = {
+			255,
+			90,
+			90,
+			90
+		}
+		console_secondary_price_style.text_color = {
+			255,
+			90,
+			90,
+			90
+		}
+	else
+		console_first_price_style.vertical_alignment = "center"
+		console_first_price_style.base_color = {
+			255,
+			255,
+			255,
+			255
+		}
+		console_secondary_price_stroke_style.color = {
+			255,
+			255,
+			255,
+			255
+		}
+		console_secondary_price_style.text_color = {
+			255,
+			255,
+			255,
+			255
+		}
+	end
+
 	content.real_currency = true
 end
 
@@ -1439,7 +1549,7 @@ StoreWindowItemPreview._update_unlock_button_width = function (self, width_offse
 	local title_text_width = self:_get_text_width(title_text_style, title_text)
 
 	if PLATFORM ~= "win32" and dlc_name and not already_owned then
-		title_text_width = 140
+		title_text_width = CONSOLE_PRICE_WIDTH
 	end
 
 	title_text_style.offset[1] = side_padding

@@ -23,7 +23,7 @@ Rewards.init = function (self, level_key, game_mode_key, quickplay_bonus)
 	self._quickplay_bonus = quickplay_bonus
 end
 
-Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_event_game_mode, weave_tier, weave_progress, game_time, current_weave_index)
+Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_event_game_mode, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 	local deed_manager = Managers.deed
 
 	if game_won and deed_manager:has_deed() and not deed_manager:is_deed_owner() then
@@ -36,7 +36,8 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_
 			weave_tier = weave_tier,
 			weave_progress = weave_progress,
 			game_time = game_time,
-			current_weave_index = current_weave_index
+			current_weave_index = current_weave_index,
+			kill_count = kill_count
 		}
 		local cb = callback(self, "cb_deed_consumed")
 
@@ -44,11 +45,11 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_
 	else
 		local loot_profile_name = (is_in_event_game_mode and "event") or "default"
 
-		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index)
+		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 	end
 end
 
-Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index)
+Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 	local backend_manager = Managers.backend
 	local hero_attributes = backend_manager:get_interface("hero_attributes")
 	local start_experience = hero_attributes:get(hero_name, "experience")
@@ -68,7 +69,7 @@ Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_
 	self._start_experience_pool = start_experience_pool
 	local level_end, end_experience = self:get_level_end()
 
-	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_progress, game_time, current_weave_index)
+	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 end
 
 Rewards._mission_results = function (self, game_won)
@@ -231,7 +232,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 	end
 end
 
-Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_progress, game_time, current_weave_index)
+Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty = difficulty_manager:get_difficulty()
 	local mission_system = Managers.state.entity:system("mission_system")
@@ -253,7 +254,7 @@ Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start
 		num_painting_scraps = (painting_scraps_mission_data and painting_scraps_mission_data.current_amount) or 0
 	end
 
-	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, self._game_mode_key, weave_tier, weave_progress, game_time, current_weave_index)
+	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, self._game_mode_key, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 end
 
 Rewards.cb_deed_consumed = function (self)
@@ -269,8 +270,9 @@ Rewards.cb_deed_consumed = function (self)
 	local weave_progress = end_of_level_info.weave_progress
 	local game_time = end_of_level_info.game_time
 	local current_weave_index = end_of_level_info.current_weave_index
+	local kill_count = end_of_level_info.kill_count
 
-	self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index)
+	self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
 end
 
 Rewards.rewards_generated = function (self)

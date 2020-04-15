@@ -92,10 +92,14 @@ CutsceneSystem.set_first_person_mode = function (self, enabled)
 	local player_unit = local_player.player_unit
 
 	if Unit.alive(player_unit) then
-		local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+		local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-		if enabled ~= first_person_extension.first_person_mode then
-			first_person_extension:set_first_person_mode(enabled)
+		if not enabled or not status_extension:is_disabled() then
+			local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+
+			if enabled ~= first_person_extension.first_person_mode then
+				first_person_extension:set_first_person_mode(enabled)
+			end
 		end
 	end
 end

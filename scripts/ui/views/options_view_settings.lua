@@ -1295,6 +1295,14 @@ local keybind_settings_definition = {
 		}
 	},
 	{
+		keybind_description = "hotkey_store",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_store"
+		}
+	},
+	{
 		keybind_description = "hotkey_weave_forge",
 		required_dlc = "scorpion",
 		keymappings_key = "IngameMenuKeymaps",

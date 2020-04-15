@@ -238,6 +238,42 @@ PlayFabMirror._execute_dlc_specific_logic = function (self, response)
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
+PlayFabMirror._sync_unseen_rewards = function (self, new_rewards)
+	local unseen_rewards = self._user_data.unseen_rewards
+	unseen_rewards = (unseen_rewards and cjson.decode(unseen_rewards)) or {}
+
+	for i = 1, #new_rewards, 1 do
+		local item = new_rewards[i]
+		local item_id = item.ItemId
+		local data = ItemMasterList[item_id]
+		local custom_data = item.CustomData
+		local rewarded_from = custom_data.rewarded_from
+
+		if data.bundle then
+			local bundled_currencies = data.bundle.BundledVirtualCurrencies
+
+			for currency_type, currency_amount in pairs(bundled_currencies) do
+				local reward = {
+					reward_type = "currency",
+					currency_type = currency_type,
+					currency_amount = currency_amount,
+					rewarded_from = rewarded_from
+				}
+				unseen_rewards[#unseen_rewards + 1] = reward
+			end
+		else
+			local reward = {
+				reward_type = "item",
+				backend_id = item.ItemInstanceId,
+				rewarded_from = rewarded_from
+			}
+			unseen_rewards[#unseen_rewards + 1] = reward
+		end
+	end
+
+	self:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
+end
+
 PlayFabMirror.execute_dlc_logic_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 	local function_result = result.FunctionResult
@@ -262,41 +298,7 @@ PlayFabMirror.execute_dlc_logic_request_cb = function (self, result)
 			return
 		end
 
-		local new_rewards = function_result.item_grant_results
-		local user_data = self._user_data
-		local unseen_rewards = user_data.unseen_rewards
-		unseen_rewards = (unseen_rewards and cjson.decode(unseen_rewards)) or {}
-
-		for i = 1, #new_rewards, 1 do
-			local item = new_rewards[i]
-			local item_id = item.ItemId
-			local data = ItemMasterList[item_id]
-			local custom_data = item.CustomData
-			local rewarded_from = custom_data.rewarded_from
-
-			if data.bundle then
-				local bundled_currencies = data.bundle.BundledVirtualCurrencies
-
-				for currency_type, currency_amount in pairs(bundled_currencies) do
-					local reward = {
-						reward_type = "currency",
-						currency_type = currency_type,
-						currency_amount = currency_amount,
-						rewarded_from = rewarded_from
-					}
-					unseen_rewards[#unseen_rewards + 1] = reward
-				end
-			else
-				local reward = {
-					reward_type = "item",
-					backend_id = item.ItemInstanceId,
-					rewarded_from = rewarded_from
-				}
-				unseen_rewards[#unseen_rewards + 1] = reward
-			end
-		end
-
-		self:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
+		self:_sync_unseen_rewards(function_result.item_grant_results)
 	end
 
 	self:_set_up_additional_account_data()
@@ -555,6 +557,25 @@ PlayFabMirror.read_only_data_request_cb = function (self, result)
 	self._achievement_rewards = cjson.decode(achievement_rewards)
 	local weaves_progression_settings = function_result.weaves_progression_settings
 	self._weaves_progression_settings = (weaves_progression_settings and cjson.decode(weaves_progression_settings)) or {}
+
+	self:_request_user_data()
+end
+
+PlayFabMirror._request_user_data = function (self)
+	local request = {}
+	local request_cb = callback(self, "user_data_request_cb")
+
+	PlayFabClientApi.GetUserData(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirror.user_data_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	for key, data in pairs(result.Data) do
+		self:set_user_data(key, data.Value)
+	end
 
 	self:_weaves_player_setup()
 end

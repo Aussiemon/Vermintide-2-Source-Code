@@ -21,6 +21,7 @@ ActionBase.init = function (self, world, item_name, is_server, owner_unit, damag
 end
 
 ActionBase.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
+	self.current_action = new_action
 	local buff_extension = ScriptUnit.has_extension(self.owner_unit, "buff_system")
 
 	buff_extension:trigger_procs("on_start_action", new_action, t, chain_action_data, power_level, action_init_data)
@@ -75,6 +76,14 @@ ActionBase._handle_fatigue = function (self, buff_extension, status_extension, n
 
 		status_extension:add_fatigue_points(cost)
 		status_extension:set_has_pushed(new_action.fatigue_regen_delay)
+	end
+end
+
+ActionBase._proc_spell_used = function (self, buff_extension)
+	local current_action = self.current_action
+
+	if buff_extension and current_action and current_action.is_spell then
+		buff_extension:trigger_procs("on_spell_used", current_action)
 	end
 end
 

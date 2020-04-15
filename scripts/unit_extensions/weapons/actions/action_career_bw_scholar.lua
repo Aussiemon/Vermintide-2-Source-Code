@@ -40,21 +40,10 @@ ActionCareerBWScholar.client_owner_start_action = function (self, new_action, t,
 	local inventory_extension = self.inventory_extension
 
 	inventory_extension:check_and_drop_pickups("career_ability")
-
-	self._spell_proc_time = new_action.spell_proc_time and t + new_action.spell_proc_time
 end
 
 ActionCareerBWScholar.client_owner_post_update = function (self, dt, t, world, can_damage)
 	ActionCareerBWScholar.super.client_owner_post_update(self, dt, t, world, can_damage)
-	self:_check_on_spell_used_proc(t)
-end
-
-ActionCareerBWScholar._check_on_spell_used_proc = function (self, t)
-	if self._spell_proc_time and self._spell_proc_time <= t then
-		self.owner_buff_extension:trigger_procs("on_spell_used", self.current_action)
-
-		self._spell_proc_time = nil
-	end
 end
 
 ActionCareerBWScholar.finish = function (self, reason)
@@ -64,7 +53,6 @@ ActionCareerBWScholar.finish = function (self, reason)
 		self.state = "shot"
 	end
 
-	self:_check_on_spell_used_proc(math.huge)
 	Unit.flow_event(self.owner_unit, "lua_force_stop")
 	Unit.flow_event(self.first_person_unit, "lua_force_stop")
 	ActionCareerBWScholar.super.finish(self, reason)

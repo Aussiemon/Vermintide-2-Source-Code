@@ -4810,6 +4810,34 @@ ItemMasterList.frame_0095 = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_0096 = {
+	description = "frame_0096_description",
+	temporary_template = "frame_0096",
+	display_name = "frame_0096_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_0096",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.crafting_material_scrap = {
 	description = "crafting_material_scrap_description",
 	rarity = "plentiful",
