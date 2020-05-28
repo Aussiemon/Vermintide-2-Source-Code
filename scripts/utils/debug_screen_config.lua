@@ -256,8 +256,9 @@ local settings = {
 		end,
 		func = function (options, index)
 			local level_name = options[index]
+			local level_settings = LevelSettings[level_name]
 
-			debug.load_level(level_name)
+			debug.load_level(level_name, level_settings.debug_environment_level_flow_event)
 		end
 	},
 	{

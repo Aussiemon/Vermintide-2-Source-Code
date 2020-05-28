@@ -539,4 +539,25 @@ if not Wwise then
 	end
 end
 
+M.dialogue_silence_unit = function (t)
+	local unit = t.Unit or t.unit
+	local new_silenced_value = t.set_silenced or false
+
+	if unit then
+		if Unit.alive(unit) then
+			local dialogue_extension = ScriptUnit.has_extension(unit, "dialogue_system")
+
+			if dialogue_extension then
+				dialogue_extension.input:set_silenced(new_silenced_value)
+			else
+				print("Warning: dialogue silence unit: can't find dialogue_system extension in ", unit)
+			end
+		else
+			print("Warning: dialogue silence unit: omit non alive unit ", unit)
+		end
+	else
+		print("Warning: dialogue silence unit: nil unit doing nothing.")
+	end
+end
+
 return

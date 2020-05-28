@@ -74,7 +74,7 @@ end
 StatisticsDatabase.destroy = function (self)
 	local stat_id = next(self.statistics)
 
-	assert(stat_id == nil, "Destroying stats manager without properly cleaning up first. Stat id %q not unregistered.", tostring(stat_id))
+	fassert(stat_id == nil, "Destroying stats manager without properly cleaning up first. Stat id %s not unregistered.", tostring(stat_id))
 end
 
 local RPCS = {

@@ -1327,10 +1327,19 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 		is_friend = LobbyInternal.is_friend(sender) or friend_join
 	end
 
+	local user_blocked = nil
+
+	if not DEDICATED_SERVER and PLATFORM == "win32" then
+		local relationship = Friends.relationship(sender)
+		user_blocked = relationship == 5 or relationship == 6
+	end
+
 	local missing_dlc = self:_missing_required_dlc(game_mode_key, difficulty_key, client_unlocked_dlcs) or self:_missing_required_dlc(lobby_game_mode, lobby_difficulty, client_unlocked_dlcs)
 
 	if not lobby_id_match then
 		reply = "lobby_id_mismatch"
+	elseif user_blocked then
+		reply = "user_blocked"
 	elseif is_game_mode_ended then
 		reply = "game_mode_ended"
 	elseif not DEDICATED_SERVER and not is_friend and not is_searching_for_players then
@@ -1453,6 +1462,25 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 
 	if lobby_data.host == player_peer_id then
 		return false, "players own lobby"
+	end
+
+	if PLATFORM == "win32" then
+		local party_members = {
+			lobby_data.player_slot_1,
+			lobby_data.player_slot_2,
+			lobby_data.player_slot_3,
+			lobby_data.player_slot_4,
+			lobby_data.player_slot_5
+		}
+
+		for i = 1, #party_members, 1 do
+			local relationship = Friends.relationship(party_members[i])
+			local user_blocked = relationship == 5 or relationship == 6
+
+			if user_blocked then
+				return false, "user blocked"
+			end
+		end
 	end
 
 	if lobby_data.twitch_enabled == "true" then

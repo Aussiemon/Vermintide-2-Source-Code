@@ -67,11 +67,9 @@ PlayerManager.rpc_to_client_spawn_player = function (self, sender, local_player_
 end
 
 PlayerManager.exit_ingame = function (self)
-	if self.is_server then
-		for _, player in pairs(self._players) do
-			if player.remote then
-				self:remove_player(player:network_id(), player:local_player_id())
-			end
+	for _, player in pairs(self._players) do
+		if player.remote then
+			self:remove_player(player:network_id(), player:local_player_id())
 		end
 	end
 

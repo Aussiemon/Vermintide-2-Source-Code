@@ -396,12 +396,20 @@ debug.spawn_hero = function (hero_name)
 	hero_spawner_handler:spawn_hero_request(player, hero_name)
 end
 
-debug.load_level = function (level_name)
+debug.load_level = function (level_name, debug_environment_level_flow_event)
 	local game_mode_manager = Managers.state.game_mode
 	local level_transition_handler = game_mode_manager.level_transition_handler
 
 	level_transition_handler:set_next_level(level_name)
 	level_transition_handler:level_completed()
+
+	if debug_environment_level_flow_event ~= nil then
+		StateIngame._level_flow_events = {
+			debug_environment_level_flow_event
+		}
+	else
+		StateIngame._level_flow_events = nil
+	end
 end
 
 debug.level_loaded = function (level_name)

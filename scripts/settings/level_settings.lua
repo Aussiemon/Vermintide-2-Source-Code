@@ -106,6 +106,47 @@ LevelSettings.inn_level = {
 		}
 	}
 }
+LevelSettings.inn_level_skulls = {
+	conflict_settings = "disabled",
+	tome_package_name = "resource_packages/levels/tomes/inn_skulls_tome",
+	debug_environment_level_flow_event = "keep_event_skulls",
+	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_keep",
+	use_keep_decorations = true,
+	environment_state = "interior",
+	level_image = "level_icon_inn_level",
+	has_multiple_loading_images = true,
+	hub_level = true,
+	ambient_sound_event = "silent_default_world_sound",
+	load_no_enemies = true,
+	no_terror_events = true,
+	no_bots_allowed = true,
+	package_name = "resource_packages/levels/inn_skulls",
+	loading_ui_package_name = "loading_screen_15",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/inn/event_decoration/skulls/world",
+	no_nav_mesh = false,
+	source_aux_bus_name = "environment_reverb_outside_source",
+	nested_level_package_names = {
+		"resource_packages/levels/inn"
+	},
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {},
+	loot_objectives = {},
+	pickup_settings = {
+		{
+			primary = {
+				grenades = 5,
+				ammo = 2,
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			}
+		}
+	}
+}
 LevelSettings.inn_level_celebrate = {
 	no_bots_allowed = true,
 	conflict_settings = "disabled",

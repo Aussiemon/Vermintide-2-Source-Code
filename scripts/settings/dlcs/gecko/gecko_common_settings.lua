@@ -7,6 +7,7 @@ settings.keep_decoration_file_names = {
 }
 settings.level_packages = {}
 local hub_levels = {
+	inn_level_skulls = true,
 	inn_level_celebrate = true,
 	inn_level = true,
 	inn_level_halloween = true

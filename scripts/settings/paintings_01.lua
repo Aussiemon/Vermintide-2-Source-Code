@@ -988,6 +988,66 @@ Paintings.ver_skaven_7th_edition_army_book_page_037 = {
 		wood = true
 	}
 }
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_007 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_007_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_007_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_016 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_016_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_016_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_019 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_019_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_019_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_030 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_030_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_030_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1055,6 +1115,10 @@ local painting_order = {
 	"ver_beastmen_page_98",
 	"ver_skaven_7th_edition_army_book_page_027",
 	"ver_skaven_7th_edition_army_book_page_037",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_007",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_016",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_019",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_030",
 	"ver_TD033_BL_Drachenfels_newedition",
 	"ver_JB002_Drachenfel_Ogres_Tower",
 	"ver_PAS014C_Drachenfels"

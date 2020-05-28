@@ -50,7 +50,7 @@ local function on_error(request_data, result, id, error_override)
 			for i = 1, #logs, 1 do
 				local log = logs[i]
 
-				if log.Message == "RetriableError" then
+				if log.Message == "RetriableError" or (log.Data and log.Data.error == "Timeout") then
 					retry = true
 
 					break

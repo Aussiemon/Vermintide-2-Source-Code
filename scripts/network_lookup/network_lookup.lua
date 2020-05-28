@@ -1975,7 +1975,8 @@ NetworkLookup.game_ping_reply = {
 	"lobby_has_active_deed",
 	"obsolete_request",
 	"cannot_join_weave",
-	"dlc_required"
+	"dlc_required",
+	"user_blocked"
 }
 NetworkLookup.sync_names = {
 	"ferry_lady",
