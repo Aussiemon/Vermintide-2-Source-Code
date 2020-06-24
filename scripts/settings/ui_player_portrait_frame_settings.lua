@@ -293,7 +293,7 @@ UIPlayerPortraitFrameSettings = {
 	},
 	frame_holly_04 = {
 		{
-			texture = "4",
+			texture = "portrait_ubersreik_04",
 			layer = 10,
 			color = {
 				255,

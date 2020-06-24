@@ -139,6 +139,8 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 			end
 		end
 	end
+
+	script_data["eac-untrusted"] = application_parameters["eac-untrusted"] ~= nil or application_parameters.eac_untrusted ~= nil
 end
 
 return

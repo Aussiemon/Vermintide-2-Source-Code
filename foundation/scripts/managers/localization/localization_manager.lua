@@ -1,13 +1,12 @@
 LocalizationManager = class(LocalizationManager)
 
-LocalizationManager.init = function (self)
+LocalizationManager.init = function (self, language_id)
 	self:_setup_localizers()
 
 	self._macros = {}
 	self._find_macro_callback_to_self = callback(self._find_macro, self)
 	local has_steam = rawget(_G, "Steam")
-	local language_id = Application.user_setting("language_id") or (has_steam and Steam:language()) or "en"
-	self._language_id = language_id
+	self._language_id = language_id or Application.user_setting("language_id") or (has_steam and Steam.language()) or "en"
 	self._backend_localizations = {}
 end
 

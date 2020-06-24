@@ -1,7 +1,7 @@
 local SIZE_X = 1920
 local SIZE_Y = 1080
 local QUEST_SIZE = {
-	200,
+	260,
 	75
 }
 local QUEST_PADDING = 20
@@ -37,7 +37,7 @@ local scenegraph_definition = {
 		parent = "pivot",
 		horizontal_alignment = "right",
 		position = {
-			0,
+			1,
 			0,
 			0
 		},
@@ -75,6 +75,26 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 				texture_id = "lily_id"
 			},
 			{
+				pass_type = "texture",
+				style_id = "progress",
+				texture_id = "progress_id"
+			},
+			{
+				pass_type = "texture",
+				style_id = "progress_bg",
+				texture_id = "progress_bg_id"
+			},
+			{
+				pass_type = "texture",
+				style_id = "reward_icon",
+				texture_id = "reward_icon"
+			},
+			{
+				style_id = "progress_text",
+				pass_type = "text",
+				text_id = "progress_text"
+			},
+			{
 				style_id = "challenge_name",
 				pass_type = "text",
 				text_id = "challenge_name"
@@ -97,16 +117,17 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 		}
 	},
 	content = {
-		alpha_multiplier = 1,
+		last_milestone = 0,
 		progress_bg_id = "challenge_ui_progress_arc_bg",
 		progress = 0,
 		challenge_name = "NO CHALLENGE NAME",
 		is_done = false,
+		progress_text = "0/0",
 		background_id = "challenge_ui_questingknight_bg",
-		last_milestone = 0,
 		reward_name = "NO REWARD NAME",
-		progress_id = "challenge_ui_progress_arc",
+		alpha_multiplier = 1,
 		max_progress = 0,
+		progress_id = "challenge_ui_progress_arc",
 		last_progress = 0,
 		lily_id = lily.texture_name,
 		corner_id = corner.texture_name
@@ -114,15 +135,15 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 	style = {
 		background_rect = {
 			color = {
-				140,
-				32,
-				32,
-				32
+				200,
+				0,
+				0,
+				0
 			}
 		},
 		background_lilies = {
 			color = {
-				200,
+				175,
 				255,
 				255,
 				255
@@ -179,64 +200,69 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 		progress = {
 			vertical_alignment = "center",
 			horizontal_alignment = "right",
-			color = {
-				255,
-				255,
-				200,
-				75
-			},
+			color = Colors.get_color_table_with_alpha("es_questingknight", 255),
 			offset = {
-				-20,
+				-5,
 				0,
 				1
 			},
 			texture_size = {
-				56,
-				56
+				70,
+				70
 			}
 		},
 		progress_bg = {
 			vertical_alignment = "center",
 			horizontal_alignment = "right",
 			color = {
-				255,
-				0,
-				0,
-				0
+				200,
+				200,
+				200,
+				200
 			},
 			offset = {
-				-20,
+				-5,
 				0,
 				0
 			},
 			texture_size = {
-				56,
-				56
+				70,
+				70
 			}
 		},
 		challenge_name = {
-			word_wrap = false,
+			font_size = 22,
 			upper_case = false,
 			localize = false,
-			font_size = 22,
+			word_wrap = false,
 			horizontal_alignment = "left",
-			vertical_alignment = "top",
+			vertical_alignment = "bottom",
+			dynamic_font_size = true,
 			font_type = "hell_shark_header",
+			size = {
+				QUEST_SIZE[1] - 95,
+				QUEST_SIZE[2] * 0.5
+			},
 			text_color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				20,
-				-11,
+				QUEST_SIZE[2] * 0.5,
 				1
 			}
 		},
 		challenge_name_shadow = {
-			word_wrap = false,
+			font_size = 22,
 			upper_case = false,
 			localize = false,
-			font_size = 22,
+			word_wrap = false,
 			horizontal_alignment = "left",
-			vertical_alignment = "top",
+			vertical_alignment = "bottom",
+			dynamic_font_size = true,
 			font_type = "hell_shark_header",
+			size = {
+				QUEST_SIZE[1] - 95,
+				QUEST_SIZE[2] * 0.5
+			},
 			text_color = {
 				255,
 				0,
@@ -245,33 +271,43 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 			},
 			offset = {
 				22,
-				-13,
+				QUEST_SIZE[2] * 0.5 - 2,
 				0
 			}
 		},
 		reward_name = {
-			word_wrap = false,
+			word_wrap = true,
 			upper_case = false,
 			localize = false,
+			dynamic_font_size_word_wrap = true,
 			font_size = 20,
 			horizontal_alignment = "left",
 			vertical_alignment = "top",
 			font_type = "hell_shark_header",
-			text_color = Colors.get_color_table_with_alpha("font_title", 255),
+			size = {
+				QUEST_SIZE[1] - 95,
+				QUEST_SIZE[2] * 0.5
+			},
+			text_color = Colors.get_color_table_with_alpha("es_questingknight", 255),
 			offset = {
 				20,
-				-36,
+				5,
 				1
 			}
 		},
 		reward_name_shadow = {
-			word_wrap = false,
+			word_wrap = true,
 			upper_case = false,
 			localize = false,
+			dynamic_font_size_word_wrap = true,
 			font_size = 20,
 			horizontal_alignment = "left",
 			vertical_alignment = "top",
 			font_type = "hell_shark_header",
+			size = {
+				QUEST_SIZE[1] - 95,
+				QUEST_SIZE[2] * 0.5
+			},
 			text_color = {
 				255,
 				0,
@@ -280,7 +316,7 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 			},
 			offset = {
 				22,
-				-38,
+				3,
 				0
 			}
 		},
@@ -288,14 +324,35 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 			vertical_alignment = "center",
 			horizontal_alignment = "right",
 			texture_size = {
-				61.599999999999994,
-				64.39999999999999
+				60,
+				60
 			},
-			color = Colors.get_color_table_with_alpha("font_title", 255),
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
 			offset = {
-				-16,
-				0,
+				-10,
+				7,
 				50
+			}
+		},
+		progress_text = {
+			font_size = 12,
+			upper_case = false,
+			localize = false,
+			word_wrap = false,
+			horizontal_alignment = "center",
+			vertical_alignment = "bottom",
+			dynamic_font_size = true,
+			font_type = "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				QUEST_SIZE[1] * 0.5 - 40,
+				10,
+				1
 			}
 		}
 	}
@@ -315,12 +372,25 @@ local function create_objective(challenge, gui, offset, index)
 	local content = widget.content
 	content.challenge = challenge
 	content.challenge_name = Localize(challenge:get_challenge_name())
+
+	if challenge:is_repeatable() then
+		widget.style.background_rect.color = {
+			200,
+			15,
+			10,
+			5
+		}
+		widget.style.background_lilies.color = {
+			200,
+			255,
+			255,
+			255
+		}
+	end
+
 	local reward = challenge:get_reward()
 	local reward_name = challenge:get_reward_name()
 	content.reward_name = UIUtils.format_localized_description(reward_name, reward.description_values)
-
-	table.dump(reward.description_values, reward_name)
-
 	content.reward_icon = reward.icon
 	local p, mp = challenge:get_progress()
 	content.progress = p
@@ -334,6 +404,7 @@ local function create_objective(challenge, gui, offset, index)
 	Gui.clone_material_from_template(gui, clone_id, template_id)
 
 	content.progress_id = clone_id
+	content.progress_text = tostring(mp - p)
 
 	return widget
 end
@@ -383,8 +454,11 @@ local animation_definitions = {
 			duration = 0.2,
 			init = function (ui_scenegraph, scenegraph_def, widget, params)
 				local content = widget.content
+				local p = content.progress
+				local mp = content.max_progress
 				content.start_anim_progress = content.start_anim_progress or 0
-				content.end_anim_progress = content.progress / content.max_progress
+				content.end_anim_progress = p / mp
+				content.progress_text = tostring(mp - p)
 			end,
 			update = function (ui_scenegraph, scenegraph_def, widget, progress, params)
 				local content = widget.content
@@ -464,6 +538,5 @@ return {
 	animation_definitions = animation_definitions,
 	scenegraph_definition = scenegraph_definition,
 	create_objective = create_objective,
-	header_templates = header_templates,
 	get_widget_position = get_widget_position
 }

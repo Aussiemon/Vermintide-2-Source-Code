@@ -13,6 +13,8 @@ require("scripts/imgui/imgui_lua_scratchpad")
 require("scripts/imgui/imgui_jit")
 require("scripts/imgui/imgui_ui_editor")
 require("scripts/imgui/imgui_unlock_override")
+require("scripts/imgui/imgui_sound_player")
+require("scripts/imgui/imgui_localization")
 
 ImguiManager = class(ImguiManager)
 ImguiKeymaps = {
@@ -45,6 +47,8 @@ ImguiManager.init = function (self)
 	self:add_gui(ImguiJIT:new(), "Debug", "JIT Debug")
 	self:add_gui(ImguiUIEditor:new(), "Tools", "Texture Viewer")
 	self:add_gui(ImguiUnlockOverride:new(), "Debug", "Unlock Override")
+	self:add_gui(ImguiSoundPlayer:new(), "Tools", "Sound Player")
+	self:add_gui(ImguiLocalization:new(), "Tools", "Localization")
 end
 
 ImguiManager.add_gui = function (self, gui, category, name, enabled)

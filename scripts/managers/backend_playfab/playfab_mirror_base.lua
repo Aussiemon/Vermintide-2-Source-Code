@@ -587,17 +587,7 @@ PlayFabMirrorBase.user_data_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 
 	for key, data in pairs(result.Data) do
-		local value = cjson.decode(data.Value)
-
-		if type(value) == "table" then
-			local existing_data = self:get_user_data()[key]
-			existing_data = cjson.decode(existing_data)
-
-			table.append(existing_data, value)
-			self:set_user_data(key, cjson.encode(existing_data))
-		else
-			self:set_user_data(key, data.Value)
-		end
+		self:set_user_data(key, data.Value)
 	end
 
 	self:_weaves_player_setup()

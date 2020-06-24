@@ -211,7 +211,7 @@ settings.proc_functions = {
 			local enemy_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 			local buff_template = buff.template
 			local breed = Unit.get_data(hit_unit, "breed")
-			local boss = breed.boss
+			local boss = breed and breed.boss
 			local damage_multiplier = buff_template.damage_multiplier
 
 			if boss then

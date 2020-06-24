@@ -6200,10 +6200,15 @@ OptionsView.reload_language = function (self, language_id)
 		Managers.package:unload("resource_packages/strings", "boot")
 	end
 
-	Application.set_resource_property_preference_order(language_id)
+	if language_id == "en" then
+		Application.set_resource_property_preference_order("en")
+	else
+		Application.set_resource_property_preference_order(language_id, "en")
+	end
+
 	Managers.package:load("resource_packages/strings", "boot")
 
-	Managers.localizer = LocalizationManager:new("localization/game", language_id)
+	Managers.localizer = LocalizationManager:new(language_id)
 
 	local function tweak_parser(tweak_name)
 		if not LocalizerTweakData[tweak_name] then

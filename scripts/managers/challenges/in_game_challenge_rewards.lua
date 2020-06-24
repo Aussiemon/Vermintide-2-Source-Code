@@ -97,7 +97,7 @@ InGameChallengeRewards.markus_questing_knight_passive_speed_potion = {
 	sound = "Play_hud_grail_knight_stamina",
 	pickup_type = "speed_boost_potion",
 	type = "pickup",
-	icon = "hud_icon_potion_speed",
+	icon = "icon_objective_potion",
 	target = "owner",
 	pickup_spawn_type = PickupSpawnType.DropIfFull
 }
@@ -105,7 +105,7 @@ InGameChallengeRewards.markus_questing_knight_passive_strength_potion = {
 	sound = "Play_hud_grail_knight_charge",
 	pickup_type = "damage_boost_potion",
 	type = "pickup",
-	icon = "hud_icon_potion_strength",
+	icon = "icon_objective_potion",
 	target = "owner",
 	pickup_spawn_type = PickupSpawnType.DropIfFull
 }
@@ -113,7 +113,7 @@ InGameChallengeRewards.markus_questing_knight_passive_concentration_potion = {
 	sound = "Play_hud_grail_knight_power",
 	pickup_type = "cooldown_reduction_potion",
 	type = "pickup",
-	icon = "hud_icon_potion_cooldown_reduction",
+	icon = "icon_objective_potion",
 	target = "owner",
 	pickup_spawn_type = PickupSpawnType.DropIfFull
 }
