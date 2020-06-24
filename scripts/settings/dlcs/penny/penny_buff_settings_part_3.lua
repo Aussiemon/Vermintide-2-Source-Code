@@ -3,8 +3,9 @@ settings.buff_templates = {
 	enemy_penny_curse_pulse = {
 		buffs = {
 			{
-				radius = 3,
 				update_func = "enemy_penny_curse_pulse",
+				name = "penny_curse_pulse",
+				radius = 3,
 				tick_rate = 0.5
 			}
 		}

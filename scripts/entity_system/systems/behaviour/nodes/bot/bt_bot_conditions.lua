@@ -1,4 +1,25 @@
 BTConditions.can_activate = BTConditions.can_activate or {}
+BTConditions.ability_check_categories = {
+	activate_ability = {
+		dr_ranger = true,
+		es_huntsman = true,
+		es_mercenary = true,
+		wh_captain = true,
+		we_maidenguard = true,
+		dr_slayer = true,
+		wh_zealot = true,
+		bw_adept = true,
+		es_knight = true,
+		dr_ironbreaker = true,
+		we_shade = true,
+		bw_unchained = true
+	},
+	shoot_ability = {
+		bw_scholar = true,
+		we_waywatcher = true,
+		wh_bountyhunter = true
+	}
+}
 local ScriptUnit = ScriptUnit
 
 BTConditions.can_activate.dr_ironbreaker = function (blackboard)
@@ -248,14 +269,14 @@ BTConditions.can_activate.es_knight = function (blackboard)
 	return false
 end
 
-BTConditions.can_activate.we_waywatcher = function (blackboard, can_use_ranged_shot_ability)
-	if not can_use_ranged_shot_ability then
-		return false
-	end
-
+BTConditions.can_activate.we_waywatcher = function (blackboard)
 	local target = blackboard.target_unit
 
 	if not ALIVE[target] then
+		return false
+	end
+
+	if not BLACKBOARDS[target] then
 		return false
 	end
 
@@ -407,14 +428,14 @@ BTConditions.can_activate.wh_captain = function (blackboard)
 	return false
 end
 
-BTConditions.can_activate.wh_bountyhunter = function (blackboard, can_use_ranged_shot_ability)
-	if not can_use_ranged_shot_ability then
-		return false
-	end
-
+BTConditions.can_activate.wh_bountyhunter = function (blackboard)
 	local target = blackboard.target_unit
 
 	if not ALIVE[target] then
+		return false
+	end
+
+	if not BLACKBOARDS[target] then
 		return false
 	end
 
@@ -516,14 +537,14 @@ BTConditions.can_activate.bw_adept = function (blackboard)
 	return false
 end
 
-BTConditions.can_activate.bw_scholar = function (blackboard, can_use_ranged_shot_ability)
-	if not can_use_ranged_shot_ability then
-		return false
-	end
-
+BTConditions.can_activate.bw_scholar = function (blackboard)
 	local target = blackboard.target_unit
 
 	if not ALIVE[target] then
+		return false
+	end
+
+	if not BLACKBOARDS[target] then
 		return false
 	end
 
@@ -581,15 +602,20 @@ BTConditions.can_activate_ability = function (blackboard, args)
 	local career_extension = blackboard.career_extension
 	local is_using_ability = blackboard.activate_ability_data.is_using_ability
 	local career_name = career_extension:career_name()
-	local can_use_ranged_shot_ability = args[1]
+	local ability_check_category_name = args[1]
+	local ability_check_category = BTConditions.ability_check_categories[ability_check_category_name]
 
-	if can_use_ranged_shot_ability and (not ALIVE[blackboard.target_unit] or not Unit.has_data(blackboard.target_unit, "breed")) then
+	if not ability_check_category or not ability_check_category[career_name] then
+		return false
+	end
+
+	if ability_check_category == "shoot_ability" and (not ALIVE[blackboard.target_unit] or not Unit.has_data(blackboard.target_unit, "breed")) then
 		return false
 	end
 
 	local condition_function = BTConditions.can_activate[career_name]
 
-	return is_using_ability or (career_extension:can_use_activated_ability() and condition_function and condition_function(blackboard, can_use_ranged_shot_ability))
+	return is_using_ability or (career_extension:can_use_activated_ability() and condition_function and condition_function(blackboard))
 end
 
 BTConditions.is_disabled = function (blackboard)
@@ -699,7 +725,7 @@ BTConditions.can_revive = function (blackboard)
 		end
 
 		local self_position = POSITION_LOOKUP[self_unit]
-		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
+		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard) or blackboard.is_transported
 		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
 
 		if can_interact_with_ally and ally_destination_reached then
@@ -1113,5 +1139,7 @@ BTConditions.should_drop_grimoire = function (blackboard)
 
 	return false
 end
+
+DLCUtils.require("bot_conditions")
 
 return

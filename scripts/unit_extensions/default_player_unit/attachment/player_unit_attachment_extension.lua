@@ -99,8 +99,10 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 	attachments.slots[slot_name] = slot_data
 	local item_data = slot_data.item_data
 	local item_template = BackendUtils.get_item_template(item_data)
+	local first_player_mode = ScriptUnit.extension(unit, "first_person_system").first_person_mode
+	local is_bot = self._player.bot_player
 
-	if not ScriptUnit.extension(unit, "first_person_system").first_person_mode then
+	if not first_player_mode or is_bot then
 		local show_attachments_event = item_template.show_attachments_event
 
 		if show_attachments_event then

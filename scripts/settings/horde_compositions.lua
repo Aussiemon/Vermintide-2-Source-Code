@@ -11614,8 +11614,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						18,
-						20
+						14,
+						16
 					}
 				}
 			},
@@ -11630,8 +11630,8 @@ HordeCompositions = {
 					},
 					"chaos_marauder",
 					{
-						10,
-						12
+						6,
+						9
 					}
 				}
 			},
@@ -11641,11 +11641,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						10,
-						12
+						7,
+						8
 					},
 					"chaos_warrior",
-					4
+					3
 				}
 			},
 			{
@@ -11654,11 +11654,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						12,
-						14
+						8,
+						9
 					},
 					"chaos_raider",
-					6
+					4
 				}
 			},
 			{
@@ -11667,11 +11667,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						8,
-						10
+						5,
+						6
 					},
 					"chaos_berzerker",
-					7
+					5
 				}
 			},
 			start_time = 0
@@ -11683,8 +11683,8 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						18,
-						20
+						14,
+						16
 					}
 				}
 			},
@@ -11699,8 +11699,8 @@ HordeCompositions = {
 					},
 					"chaos_marauder",
 					{
-						10,
-						12
+						6,
+						9
 					}
 				}
 			},
@@ -11710,11 +11710,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						10,
-						12
+						7,
+						8
 					},
 					"chaos_warrior",
-					4
+					3
 				}
 			},
 			{
@@ -11723,11 +11723,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_fanatic",
 					{
-						12,
-						14
+						8,
+						9
 					},
 					"chaos_raider",
-					6
+					4
 				}
 			},
 			{
@@ -11736,11 +11736,11 @@ HordeCompositions = {
 				breeds = {
 					"chaos_marauder",
 					{
-						8,
-						10
+						5,
+						6
 					},
 					"chaos_berzerker",
-					7
+					5
 				}
 			},
 			start_time = 0
@@ -12652,6 +12652,19 @@ HordeCompositions = {
 					4
 				}
 			},
+			{
+				name = "wave_e",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						8,
+						12
+					},
+					"chaos_berzerker",
+					4
+				}
+			},
 			end_time = 9999,
 			start_time = 0
 		},
@@ -12709,6 +12722,19 @@ HordeCompositions = {
 					12
 				}
 			},
+			{
+				name = "wave_e",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						10,
+						12
+					},
+					"chaos_berzerker",
+					8
+				}
+			},
 			end_time = 9999,
 			start_time = 0
 		},
@@ -12764,6 +12790,19 @@ HordeCompositions = {
 					},
 					"chaos_raider",
 					12
+				}
+			},
+			{
+				name = "wave_e",
+				weight = 4,
+				breeds = {
+					"chaos_marauder",
+					{
+						16,
+						20
+					},
+					"chaos_berzerker",
+					14
 				}
 			},
 			end_time = 9999,

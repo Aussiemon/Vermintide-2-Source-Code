@@ -224,6 +224,11 @@ if PLATFORM == "ps4" then
 					display_name = "options_menu_button_name"
 				},
 				{
+					fade = false,
+					transition = "leave_group",
+					display_name = "leave_game_menu_button_name"
+				},
+				{
 					transition = "return_to_title_screen",
 					display_name = quit_menu_button_text
 				}
@@ -464,6 +469,11 @@ elseif PLATFORM == "xb1" then
 					display_name = "options_menu_button_name"
 				},
 				{
+					fade = false,
+					transition = "leave_group",
+					display_name = "leave_game_menu_button_name"
+				},
+				{
 					transition = "return_to_title_screen",
 					display_name = quit_menu_button_text
 				}
@@ -691,6 +701,11 @@ else
 				{
 					transition = "options_menu",
 					display_name = "options_menu_button_name"
+				},
+				{
+					fade = false,
+					transition = "leave_group",
+					display_name = "leave_game_menu_button_name"
 				},
 				{
 					transition = "quit_game",

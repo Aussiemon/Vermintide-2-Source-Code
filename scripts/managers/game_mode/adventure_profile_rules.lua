@@ -94,6 +94,18 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 	end
 
 	if new_profile_index and new_career_index then
+		if not profile_synchronizer:profile_career_exists(new_profile_index, new_career_index) then
+			print("Career " .. new_career_index .. " does not exist, switching to career index 1")
+
+			new_career_index = 1
+		end
+
+		if not profile_synchronizer:profile_career_unlocked(new_profile_index, new_career_index) then
+			print("Missing career: " .. new_career_index .. " unlock requirements, switching to career index 1")
+
+			new_career_index = 1
+		end
+
 		profile_synchronizer:select_profile(peer_id, local_player_id, new_profile_index, new_career_index)
 	end
 end

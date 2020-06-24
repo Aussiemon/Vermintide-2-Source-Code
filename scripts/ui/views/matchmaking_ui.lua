@@ -17,7 +17,7 @@ local function get_portrait_name_by_profile_index(profile_index, career_index)
 	local career_settings = careers[career_index]
 	local portrait_image = career_settings.portrait_image
 
-	return "small_" .. portrait_image
+	return (portrait_image and "small_" .. portrait_image) or "icons_placeholder"
 end
 
 local WIND_COLORS = {
@@ -814,8 +814,7 @@ MatchmakingUI.large_window_set_player_portrait = function (self, index, peer_id)
 		local player_unit = player and player.player_unit
 
 		if Unit.alive(player_unit) then
-			local career_extension = ScriptUnit.extension(player_unit, "career_system")
-			local career_index = (career_extension and career_extension:career_index()) or player:career_index()
+			local career_index = player:career_index()
 			local profile_index = player:profile_index()
 
 			if career_index and profile_index then

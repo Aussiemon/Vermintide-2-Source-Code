@@ -924,7 +924,7 @@ MatchmakingManager._party_has_completed_act = function (self, act_name)
 	return true
 end
 
-MatchmakingManager.set_matchmaking_data = function (self, next_level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name)
+MatchmakingManager.set_matchmaking_data = function (self, next_level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name, environment_id)
 	local level_transition_handler = self.level_transition_handler
 	local current_level_key = level_transition_handler:get_current_level_keys()
 	local lobby_members = self.lobby:members()
@@ -949,8 +949,8 @@ MatchmakingManager.set_matchmaking_data = function (self, next_level_key, diffic
 	lobby_data.eac_authorized = (eac_authorized and "true") or "false"
 	lobby_data.mechanism = Managers.mechanism:current_mechanism_name()
 
-	print("[MATCHMAKING] - Hosting game on level:", current_level_key, next_level_key)
-	level_transition_handler:set_next_level(next_level_key)
+	print("[MATCHMAKING] - Hosting game on level:", current_level_key, next_level_key, environment_id)
+	level_transition_handler:set_next_level(next_level_key, environment_id)
 	self.lobby:set_lobby_data(lobby_data)
 end
 
@@ -1431,8 +1431,6 @@ end
 
 MatchmakingManager.hero_available_in_lobby_data = function (self, hero_index, lobby_data)
 	if SlotAllocator.is_free_in_lobby(hero_index, lobby_data) then
-		mm_printf("HERO %d IS AVAILABLE", hero_index)
-
 		return true
 	end
 
@@ -1442,12 +1440,8 @@ MatchmakingManager.hero_available_in_lobby_data = function (self, hero_index, lo
 	local owner_peer, owner_player_id = SlotAllocator.owner_in_lobby(hero_index, lobby_data)
 
 	if owner_peer == peer_id and owner_player_id == local_player_id then
-		mm_printf("HERO %d IS OWNED BY SELF", hero_index)
-
 		return true
 	end
-
-	mm_printf("HERO %d IS OWNED BY %s:%d", hero_index, owner_peer, owner_player_id)
 
 	return false
 end

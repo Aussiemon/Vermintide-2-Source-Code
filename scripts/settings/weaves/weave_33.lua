@@ -1,11 +1,11 @@
 return {
 	wind_strength = 3,
-	wind = "fire",
+	wind = "death",
 	seed = 571238,
 	objectives = {
 		{
 			display_name = "objective_targets_name",
-			level_id = "dlc_scorpion_pit_fire",
+			level_id = "dlc_scorpion_pit_death",
 			objective_type = "targets",
 			conflict_settings = "weave_chaos",
 			end_zone_name = "end_zone_02",
@@ -181,7 +181,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_fire",
+			level_id = "dlc_scorpion_arena_temple_death",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

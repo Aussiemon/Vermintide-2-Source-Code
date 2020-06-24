@@ -241,7 +241,7 @@ local breed_data = {
 		ledges_with_fence = 0,
 		doors = 1.5,
 		teleporters = 5,
-		bot_poison_wind = 0,
+		bot_poison_wind = 1.5,
 		fire_grenade = 1
 	}
 }

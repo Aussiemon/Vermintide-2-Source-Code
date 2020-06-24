@@ -2005,7 +2005,11 @@ Talents.witch_hunter = {
 		name = "victor_witchhunter_guaranteed_crit_on_timed_block",
 		num_ranks = 1,
 		icon = "victor_witchhunter_guaranteed_crit_on_timed_block",
-		description_values = {},
+		description_values = {
+			{
+				value = buff_tweak_data.victor_witchhunter_guaranteed_crit_on_timed_block_buff.duration
+			}
+		},
 		requirements = {},
 		buffs = {
 			"victor_witchhunter_guaranteed_crit_on_timed_block_add"

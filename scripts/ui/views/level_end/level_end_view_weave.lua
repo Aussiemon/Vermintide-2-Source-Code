@@ -107,6 +107,8 @@ LevelEndViewWeave.update = function (self, dt, t)
 
 		self:play_sound(self._start_music_event)
 	end
+
+	self:_poll_testify_requests()
 end
 
 LevelEndViewWeave.set_input_description = function (self, input_desc)
@@ -445,6 +447,12 @@ end
 
 LevelEndViewWeave.get_all_signaled_done = function (self)
 	return self._all_signaled_done
+end
+
+LevelEndViewWeave._poll_testify_requests = function (self)
+	if Testify:poll_request("make_game_ready_for_next_weave") and not self._started_exit then
+		self:exit_to_game()
+	end
 end
 
 return

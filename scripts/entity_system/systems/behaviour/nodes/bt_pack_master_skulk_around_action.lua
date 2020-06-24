@@ -32,6 +32,8 @@ end
 
 BTPackMasterSkulkAroundAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
+	blackboard.skulk_pos = nil
+	blackboard.skulk_around_dir = nil
 	blackboard.skulk_in_los = nil
 	blackboard.skulk_dogpile = nil
 	blackboard.skulk_debug_state = nil

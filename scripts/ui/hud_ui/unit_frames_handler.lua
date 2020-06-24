@@ -81,11 +81,11 @@ end
 
 local function get_portrait_name_by_profile_index(profile_index, career_index)
 	local profile_data = SPProfiles[profile_index]
-	local careers = profile_data.careers
-	local career_settings = careers[career_index]
-	local portrait_image = career_settings.portrait_image
+	local careers = profile_data and profile_data.careers
+	local career_settings = careers and careers[career_index]
+	local portrait_image = career_settings and career_settings.portrait_image
 
-	return portrait_image
+	return portrait_image or "unit_frame_portrait_kruber_mercenary"
 end
 
 UnitFramesHandler._create_player_unit_frame = function (self)
@@ -518,6 +518,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier
 		equipment = inventory_extension:equipment()
+		profile_index = career_extension:profile_index()
 		career_index = career_extension:career_index()
 
 		if game and go_id then

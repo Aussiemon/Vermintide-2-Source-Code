@@ -110,7 +110,6 @@ StateInGameRunning.on_enter = function (self, params)
 
 	if self.is_server then
 		Managers.state.event:trigger("game_started")
-		Managers.smoketest:report("enter_ingame")
 	end
 
 	self.network_event_delegate:register(self, unpack(RPCS))
@@ -588,6 +587,9 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 		self.parent.parent.loading_context.saved_scoreboard_stats = nil
 		self.checkpoint_available = checkpoint_available
+
+		StatisticsUtil.reset_mission_streak(player, statistics_db, stats_id)
+		stats_interface:save()
 	end
 
 	local screen_name, screen_config = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
@@ -794,6 +796,8 @@ StateInGameRunning.update = function (self, dt, t)
 	if self._benchmark_handler then
 		self._benchmark_handler:update(dt, t)
 	end
+
+	self:_poll_testify_requests()
 end
 
 StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
@@ -1214,6 +1218,10 @@ StateInGameRunning._game_actually_starts = function (self)
 			Managers.twitch:activate_twitch_game_mode(self.network_event_delegate, Managers.state.game_mode:game_mode_key())
 		end
 	end
+
+	if Testify:poll_request("wait_for_level_loaded") then
+		Testify:respond_to_request("wait_for_level_loaded")
+	end
 end
 
 local afk_warn_timer = 120
@@ -1366,6 +1374,22 @@ StateInGameRunning.rpc_follow_to_lobby = function (self, sender, lobby_type, lob
 	Managers.matchmaking:request_join_lobby(lobby_join_data, {
 		friend_join = true
 	})
+end
+
+StateInGameRunning._poll_testify_requests = function (self)
+	local end_screen_active = self.has_setup_end_of_level == true
+
+	if Testify:poll_request("level_end_screen_displayed") then
+		Testify:respond_to_request("level_end_screen_displayed", end_screen_active)
+	end
+
+	if Testify:poll_request("has_lost") then
+		Testify:respond_to_request("has_lost", self.game_lost)
+	end
+
+	if end_screen_active and (Testify:poll_request("set_camera_to_observe_first_bot") or Testify:poll_request("update_camera_to_follow_first_bot_rotation") or Testify:poll_request("set_player_unit_not_visible") or Testify:poll_request("calculate_best_point_on_main_path") or Testify:poll_request("teleport_player_on_best_point") or Testify:poll_request("teleport_blocked_bots_forward_on_main_path") or Testify:poll_request("end_of_the_level_reached") or Testify:poll_request("end_zone_activated") or Testify:poll_request("spawn_essence_on_first_bot_position") or Testify:poll_request("make_players_invicible") or Testify:poll_request("are_bots_blocked") or Testify:poll_request("make_player_and_one_bot_invicible") or Testify:poll_request("get_active_weave_phase") or Testify:poll_request("teleport_player_randomly_on_main_path") or Testify:poll_request("teleport_player_to_end_zone_position")) then
+		Testify:clear_all_requests()
+	end
 end
 
 return

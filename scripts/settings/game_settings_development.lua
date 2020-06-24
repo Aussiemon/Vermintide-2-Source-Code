@@ -42,6 +42,8 @@ if test_backend ~= nil then
 
 	GameSettingsDevelopment.backend_settings = BackendSettings[test_backend]
 else
+	print("Using internal backend")
+
 	GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
 end
 
@@ -87,8 +89,11 @@ end
 
 local settings = script_data.settings
 
-print(settings.steam)
-print(rawget(_G, "Steam"))
+print("settings.steam: " .. tostring(settings.steam))
+print("Steam: " .. tostring(rawget(_G, "Steam")))
+print("force_steam: " .. tostring(Development.parameter("force_steam")))
+print("BUILD: " .. tostring(BUILD))
+print("test_backend: " .. tostring(test_backend))
 
 if settings.steam or Development.parameter("force_steam") then
 	if rawget(_G, "Steam") or DEDICATED_SERVER then
@@ -99,6 +104,9 @@ if settings.steam or Development.parameter("force_steam") then
 		else
 			app_id = Steam.app_id()
 		end
+
+		print("DEDICATED_SERVER: " .. tostring(DEDICATED_SERVER))
+		print(string.format("Using app_id '%s' to define backend", app_id))
 
 		if not DEDICATED_SERVER and not Steam.owns_app(app_id) then
 			Crashify.print_exception("Game Settings", "Vermintide 2. You need to own game to play it.")
@@ -114,8 +122,10 @@ if settings.steam or Development.parameter("force_steam") then
 			GameSettingsDevelopment.backend_settings = BackendSettings.stage_steam_playfab
 		elseif app_id == 552500 then
 			GameSettingsDevelopment.backend_settings = BackendSettings.prod_steam_playfab
-		elseif app_id == 1085780 then
-			GameSettingsDevelopment.backend_settings = BackendSettings.beta_steam_playfab
+		elseif app_id == 1270350 then
+			GameSettingsDevelopment.backend_settings = BackendSettings.carousel_beta_steam_playfab
+		elseif app_id == 1026050 then
+			GameSettingsDevelopment.backend_settings = BackendSettings.carousel_beta_steam_playfab
 		end
 	else
 		Crashify.print_exception("Game Settings", "Vermintide 2. You need to have the Steam Client running to play the game.")
@@ -293,6 +303,7 @@ GameSettingsDevelopment.ignored_rpc_logs = {
 	"rpc_enemy_has_target",
 	"rpc_enemy_is_alerted",
 	"rpc_set_blocking",
+	"rpc_set_charge_blocking",
 	"rpc_status_change_bool",
 	"rpc_skinned_surface_mtr_fx",
 	"rpc_surface_mtr_fx",

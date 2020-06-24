@@ -289,6 +289,8 @@ local damage_sources = {
 	"knockdown_bleed",
 	"volume_insta_kill",
 	"career_ability",
+	"charge_ability_hit",
+	"charge_ability_hit_blast",
 	"corpse_explosion",
 	"buff"
 }
@@ -736,7 +738,8 @@ NetworkLookup.game_modes = {
 	"twitch",
 	"deed",
 	"weave",
-	"weave_find_group"
+	"weave_find_group",
+	"adventure_mode"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1265,6 +1268,7 @@ NetworkLookup.statuses = {
 	"pounced_down",
 	"dead",
 	"blocking",
+	"charge_blocking",
 	"wounded",
 	"revived",
 	"pushed",
@@ -2003,7 +2007,8 @@ NetworkLookup.matchmaking_regions = {
 	"south_asia",
 	"china",
 	"europe",
-	"africa"
+	"africa",
+	"default"
 }
 NetworkLookup.debug_commands = {
 	"load_patched_items_into_backend",
@@ -2062,6 +2067,23 @@ NetworkLookup.performance_titles = create_lookup({
 	"n/a"
 }, PerformanceTitles.titles)
 NetworkLookup.social_wheel_events = create_lookup({}, SocialWheelSettingsLookup)
+NetworkLookup.challenges = create_lookup({}, InGameChallengeTemplates)
+NetworkLookup.challenge_rewards = create_lookup({}, InGameChallengeRewards)
+NetworkLookup.challenge_categories = {}
+
+for _, dlc in pairs(DLCSettings) do
+	local challenge_categories = dlc.challenge_categories
+
+	if challenge_categories then
+		table.append(NetworkLookup.challenge_categories, challenge_categories)
+	end
+end
+
+NetworkLookup.boon_consume_types = {
+	"time",
+	"venture",
+	"charges"
+}
 
 local function is_sync_statistics(stat)
 	if stat.value then

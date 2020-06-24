@@ -20,6 +20,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.invisible = false
 	self.crouching = false
 	self.blocking = false
+	self.charge_blocking = false
 	self.catapulted = false
 	self.catapulted_direction = nil
 	self.pounced_down = false
@@ -47,11 +48,13 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.next_hanging_damage_time = 0
 	self.block_broken = false
 	self.block_broken_at_t = -math.huge
+	self.stagger_immune = false
 	self.pushed = false
 	self.pushed_at_t = -math.huge
 	self.push_cooldown = false
 	self.push_cooldown_timer = false
 	self.timed_block = nil
+	self.shield_block = nil
 	self.charged = false
 	self.charged_at_t = -math.huge
 	self.interrupt_cooldown = false
@@ -591,9 +594,11 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 			end
 
 			Unit.animation_event(first_person_unit, parry_reaction)
+			QuestSettings.handle_bastard_block(unit, attacking_unit, true)
 		else
 			blocking_unit = equipment.right_hand_wielded_unit_3p or equipment.left_hand_wielded_unit_3p
 
+			QuestSettings.handle_bastard_block(unit, attacking_unit, true)
 			self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
 			Unit.animation_event(unit, "parry_hit_reaction")
 		end
@@ -827,8 +832,12 @@ GenericStatusExtension.current_fatigue_points = function (self)
 	return (max_fatigue_points == 0 and 0) or math.ceil(self.fatigue / (max_fatigue / max_fatigue_points)), max_fatigue_points
 end
 
+GenericStatusExtension.set_stagger_immune = function (self, stagger_immune)
+	self.stagger_immune = stagger_immune
+end
+
 GenericStatusExtension.set_pushed = function (self, pushed, t)
-	if pushed and self.push_cooldown then
+	if pushed and (self.push_cooldown or self.stagger_immune) then
 		return
 	elseif pushed then
 		self.pushed = pushed
@@ -844,6 +853,10 @@ GenericStatusExtension.set_charged = function (self, charged, t)
 end
 
 GenericStatusExtension.set_pushed_no_cooldown = function (self, pushed, t)
+	if pushed and self.stagger_immune then
+		return
+	end
+
 	self.pushed = pushed
 
 	if pushed then
@@ -924,7 +937,7 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 		self.pouncer_unit = nil
 	end
 
-	self:set_outline_incapacitated(pounced_down or self:is_disabled(), pouncer_unit, true)
+	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled(), pouncer_unit, true)
 
 	if pounced_down then
 		SurroundingAwareSystem.add_event(unit, "pounced_down", DialogueSettings.pounced_down_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
@@ -981,7 +994,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 	local player = self.player
 	local is_server = self.is_server
 
-	self:set_outline_incapacitated(knocked_down)
+	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 
 	if knocked_down then
 		local dialogue_event = "knocked_down"
@@ -1133,11 +1146,28 @@ end
 
 GenericStatusExtension.set_blocking = function (self, blocking)
 	self.blocking = blocking
+	local inventory_extension = self.inventory_extension
+	local slot_name = inventory_extension:get_wielded_slot_name()
+	local slot_data = inventory_extension:get_slot_data(slot_name)
+
+	if slot_data then
+		local item_data = slot_data.item_data
+		local item_template = slot_data.item_template or BackendUtils.get_item_template(item_data)
+		self.shield_block = item_template.shield_block or false
+	end
 
 	if blocking then
 		local t = Managers.time:time("game")
 		self.raise_block_time = t
 	end
+end
+
+GenericStatusExtension.set_charge_blocking = function (self, charge_blocking)
+	self.charge_blocking = charge_blocking
+end
+
+GenericStatusExtension.set_stagger_immmune = function (self, stagger_immune)
+	self.stagger_immune = stagger_immune
 end
 
 GenericStatusExtension.set_slowed = function (self, slowed)
@@ -1297,7 +1327,7 @@ GenericStatusExtension.set_in_vortex = function (self, in_vortex, vortex_unit)
 	self.in_vortex = in_vortex
 	self.in_vortex_unit = (in_vortex and vortex_unit) or nil
 
-	self:set_outline_incapacitated(in_vortex or self:is_disabled())
+	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 end
 
 GenericStatusExtension.set_near_vortex = function (self, near_vortex, vortex_unit)
@@ -1400,7 +1430,7 @@ GenericStatusExtension.set_is_ledge_hanging = function (self, is_ledge_hanging, 
 		self.pulled_up = false
 	end
 
-	self:set_outline_incapacitated(is_ledge_hanging)
+	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 
 	if is_ledge_hanging then
 		SurroundingAwareSystem.add_event(unit, "ledge_hanging", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
@@ -1490,7 +1520,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 	local outline_grabbed_unit = grabbed_status ~= "pack_master_hanging"
 
-	self:set_outline_incapacitated(is_grabbed or self:is_disabled(), grabber_unit, outline_grabbed_unit)
+	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled(), grabber_unit, outline_grabbed_unit)
 
 	if grabbed_status == "pack_master_pulling" then
 		if not is_grabbed then
@@ -1615,7 +1645,7 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 	self.corruptor_unit = grabber_unit
 	self.corruptor_status = grabbed_status
 
-	self:set_outline_incapacitated(is_grabbed or self:is_disabled(), grabber_unit, is_grabbed)
+	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled(), grabber_unit, is_grabbed)
 
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
@@ -1761,7 +1791,7 @@ GenericStatusExtension.is_crouching = function (self)
 end
 
 GenericStatusExtension.is_blocking = function (self)
-	return self.blocking
+	return self.blocking, self.shield_block
 end
 
 GenericStatusExtension.is_wounded = function (self)
@@ -1974,11 +2004,11 @@ GenericStatusExtension.is_inspecting = function (self)
 end
 
 GenericStatusExtension.set_overpowered = function (self, overpowered, overpowered_template, overpowered_attacking_unit)
-	self:set_outline_incapacitated(overpowered)
-
 	self.overpowered = overpowered
 	self.overpowered_template = overpowered_template
 	self.overpowered_attacking_unit = overpowered_attacking_unit
+
+	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 end
 
 GenericStatusExtension.is_overpowered = function (self)

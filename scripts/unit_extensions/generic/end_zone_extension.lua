@@ -151,6 +151,7 @@ EndZoneExtension.update = function (self, unit, input, dt, context, t)
 	self:_reset_distances()
 	self:_check_proximity()
 	self:_update_state(dt, t)
+	self:_poll_testify_requests()
 end
 
 EndZoneExtension.activation_allowed = function (self, allowed)
@@ -391,6 +392,8 @@ end
 
 EndZoneExtension._check_end_mission_all_inside = function (self, dt, all_inside)
 	if self._is_start_waystone and not self:_all_players_joined() then
+		self._state_data.end_zone_timer = self:end_time()
+
 		return
 	end
 
@@ -561,6 +564,26 @@ EndZoneExtension._all_players_joined = function (self)
 	end
 
 	return true
+end
+
+EndZoneExtension._poll_testify_requests = function (self)
+	local end_zone_name = Testify:poll_request("end_zone_activated")
+
+	if end_zone_name and end_zone_name == self._activation_name then
+		Testify:respond_to_request("end_zone_activated", self._activated == true)
+	end
+
+	local end_zone_name = Testify:poll_request("teleport_player_to_end_zone_position")
+
+	if end_zone_name and end_zone_name == self._activation_name then
+		local end_zone_position = Unit.local_position(self._unit, 0)
+		local player_unit = Managers.player:local_player().player_unit
+		local player_mover = Unit.mover(player_unit)
+		end_zone_position.z = end_zone_position.z + 1
+
+		Mover.set_position(player_mover, end_zone_position)
+		Testify:respond_to_request("teleport_player_to_end_zone_position")
+	end
 end
 
 return

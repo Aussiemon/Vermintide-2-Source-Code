@@ -8,23 +8,7 @@ local item_master_list = {
 		gamepad_hud_icon = "consumables_icon_defence",
 		hud_icon = "consumables_icon_defence",
 		item_type = "inventory_item",
-		can_wield = {
-			"bw_scholar",
-			"bw_adept",
-			"bw_unchained",
-			"we_shade",
-			"we_maidenguard",
-			"we_waywatcher",
-			"dr_ironbreaker",
-			"dr_slayer",
-			"dr_ranger",
-			"wh_zealot",
-			"wh_bountyhunter",
-			"wh_captain",
-			"es_huntsman",
-			"es_knight",
-			"es_mercenary"
-		}
+		can_wield = CanWieldAllItemTemplates
 	}
 }
 

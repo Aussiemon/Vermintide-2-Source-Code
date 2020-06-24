@@ -7,7 +7,7 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
 			attack_hold_input = "action_one_hold",
-			anim_event_3p = "attack_swing_charge_left_diagonal",
+			anim_event_3p = "attack_swing_stab_charge",
 			anim_event = "attack_swing_charge_stab",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -70,7 +70,7 @@ weapon_template.actions = {
 		default_left = {
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
-			anim_event_3p = "attack_swing_stab_charge",
+			anim_event_3p = "attack_swing_charge_left_diagonal",
 			anim_event = "attack_swing_charge_down",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"

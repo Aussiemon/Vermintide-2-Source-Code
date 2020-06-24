@@ -1,4 +1,5 @@
 GearUtils = {}
+local unit_node = Unit.node
 
 GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
@@ -570,6 +571,82 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 	end
 
 	return buffs_table
+end
+
+local function _get_item_particle_link_target(fx, equipment, unit_3p, unit_1p, is_first_person)
+	local link_target = nil
+
+	if fx.link_target == "left_weapon" then
+		link_target = (is_first_person and equipment.left_hand_wielded_unit) or equipment.left_hand_wielded_unit_3p
+	elseif fx.link_target == "right_weapon" then
+		link_target = (is_first_person and equipment.right_hand_wielded_unit) or equipment.right_hand_wielded_unit_3p
+	elseif fx.link_target == "owner_3p" then
+		link_target = unit_3p
+	elseif fx.link_target == "owner_1p" then
+		link_target = unit_1p
+	end
+
+	return link_target
+end
+
+local function _get_item_particle_link_node(fx, link_target)
+	return (fx.link_node and unit_node(link_target, fx.link_node)) or 0
+end
+
+GearUtils.create_attached_particles = function (world, particle_fx, equipment, unit_3p, unit_1p, is_first_person)
+	if not world or not particle_fx or not equipment then
+		return nil
+	end
+
+	local stop_fx = {}
+	local destroy_fx = {}
+	local fx_ids = {
+		stop_fx = stop_fx,
+		destroy_fx = destroy_fx
+	}
+
+	for i = 1, #particle_fx, 1 do
+		local fx = particle_fx[i]
+
+		if (is_first_person and fx.first_person) or (not is_first_person and fx.third_person) then
+			local link_target = _get_item_particle_link_target(fx, equipment, unit_3p, unit_1p, is_first_person)
+
+			if link_target then
+				local node_id = _get_item_particle_link_node(fx, link_target)
+				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy)
+
+				if fx.destroy_policy == "stop_spawning" then
+					stop_fx[#stop_fx + 1] = fx_id
+				else
+					destroy_fx[#destroy_fx + 1] = fx_id
+				end
+			end
+		end
+	end
+
+	return fx_ids
+end
+
+GearUtils.destroy_attached_particles = function (world, fx_ids)
+	if fx_ids and world then
+		local destroy_fx = fx_ids.destroy_fx
+
+		if destroy_fx then
+			for i = 1, #destroy_fx, 1 do
+				World.destroy_particles(world, destroy_fx[i])
+			end
+		end
+
+		local stop_fx = fx_ids.stop_fx
+
+		if stop_fx then
+			for i = 1, #stop_fx, 1 do
+				World.stop_spawning_particles(world, stop_fx[i])
+			end
+		end
+	end
+
+	return nil
 end
 
 return

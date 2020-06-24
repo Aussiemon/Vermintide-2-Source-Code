@@ -865,7 +865,7 @@ HeroWindowWeaveForgeOverview._set_essence_upgrade_cost = function (self, essence
 	if essence_amount then
 		text_width_offset = 15
 		local max_width = 170
-		local value_string = WeaveUtils.comma_value(essence_amount)
+		local value_string = UIUtils.comma_value(essence_amount)
 		button_text = Localize("menu_weave_forge_upgrade_button") .. " " .. value_string
 		text_width = math.min(UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text), max_width)
 		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(button_content.price_icon)

@@ -936,12 +936,14 @@ InteractionDefinitions.pickup_object = {
 					if not slot_data or (slot_data and slot_data.item_data.name ~= item_data.name) then
 						if item_name == "wpn_side_objective_tome_01" then
 							Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_tome", player)
+							Managers.state.event:trigger("player_pickup_tome", player)
 
 							local message = string.format(Localize("system_chat_player_picked_up_tome"), interactor_name)
 
 							Managers.chat:add_local_system_message(1, message, pop_chat)
 						elseif item_name == "wpn_grimoire_01" then
 							Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_grimoire", player)
+							Managers.state.event:trigger("player_pickup_grimoire", player)
 
 							local message = string.format(Localize("system_chat_player_picked_up_grimoire"), interactor_name)
 

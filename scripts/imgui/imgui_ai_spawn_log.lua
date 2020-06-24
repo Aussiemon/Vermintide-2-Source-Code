@@ -18,6 +18,7 @@ ImguiAISpawnLog.init = function (self)
 	self._player_positions = {}
 	self._timeline_slice_size = 1
 	self._timeline_slice_end = 1
+	self._show_totals = false
 	self._visualize_locations = false
 	self._sticky_hover = false
 	self._keep_on_screen = false
@@ -32,6 +33,7 @@ ImguiAISpawnLog.init = function (self)
 	self._specials_only = false
 	self._drawer = nil
 	self._hero_side = nil
+	self._totals = {}
 	self._hovered_id = -1
 	self._hovered_time = -1
 
@@ -96,6 +98,11 @@ ImguiAISpawnLog.draw = function (self)
 
 	Imgui.Begin("AI Spawn Log")
 
+	if Imgui.Button("Export Log") then
+		self:_export_log_data()
+	end
+
+	self._show_totals = Imgui.Checkbox("Show Totals", self._show_totals)
 	self._keep_on_screen = Imgui.Checkbox("Keep On Screen", self._keep_on_screen)
 	self._visualize_locations = Imgui.Checkbox("Visualize Locaitons", self._visualize_locations)
 	self._sticky_hover = Imgui.Checkbox("Sticky Hover", self._sticky_hover)
@@ -109,6 +116,27 @@ ImguiAISpawnLog.draw = function (self)
 	self._timeline_slice_size = Imgui.SliderFloat("Capture Size", self._timeline_slice_size, 1, 120)
 	self._timeline_end = math.max(self._timeline_end, self._timeline_slice_size)
 	self._timeline_end = Imgui.SliderFloat("Capture Location", self._timeline_end, self._timeline_slice_size, game_time)
+
+	if self._show_totals then
+		Imgui.Begin("AI Spawn Totals")
+
+		if Imgui.Button("Export") then
+			self:_export_recap_data()
+		end
+
+		local arg_c = #self._event_type_names
+		local legend_format = "Legend -" .. string.rep(" %s,", arg_c)
+
+		Imgui.Text(string.format(legend_format, unpack(self._event_type_names)))
+
+		local format = "%32s -" .. string.rep(" %d,", arg_c)
+
+		for name, counts in pairs(self._totals) do
+			Imgui.Text(string.format(format, name, unpack(counts)))
+		end
+
+		Imgui.End()
+	end
 
 	if Imgui.Button("Clear") then
 		self:_clear()
@@ -212,12 +240,25 @@ ImguiAISpawnLog._log_event = function (self, event_type, boxed_location, breed, 
 		spawn_queue_id
 	}
 
+	if breed then
+		if not self._totals[breed.name] then
+			self._totals[breed.name] = {}
+
+			for i = 1, #self._event_type_names, 1 do
+				self._totals[breed.name][i] = 0
+			end
+		end
+
+		self._totals[breed.name][event_type] = self._totals[breed.name][event_type] + 1
+	end
+
 	table.insert(self._log, 1, entry)
 end
 
 ImguiAISpawnLog._clear = function (self)
 	self._log = {}
 	self._player_positions = {}
+	self._totals = {}
 end
 
 ImguiAISpawnLog._reset = function (self)
@@ -326,6 +367,47 @@ ImguiAISpawnLog._visualise_player_pos = function (self)
 			end
 		end
 	end
+end
+
+ImguiAISpawnLog._export_recap_data = function (self)
+	local output = "Breed,Faction,Count"
+
+	for name, counts in pairs(self._totals) do
+		local breed = Breeds[name]
+		local faction = (breed and breed.race) or "unknown"
+		output = output .. "\n"
+		output = output .. name .. ","
+		output = output .. faction .. ","
+		output = output .. tostring(counts[3])
+	end
+
+	Clipboard.put(output)
+end
+
+ImguiAISpawnLog._export_log_data = function (self)
+	local type_names = self._event_type_names
+	local output = "Breed,Faction,Spawn Category,Spawn Type"
+
+	for line_id = 1, #self._log, 1 do
+		local line = self._log[line_id]
+		local type_id = line[EVENT_TYPE_ID]
+		local type = type_names[type_id]
+
+		if type == "spawned" then
+			output = output .. "\n"
+			local breed = line[BREED_ID]
+			local breed_name = (breed and breed.name) or "unknown"
+			local faction = (breed and breed.race) or "unknown"
+			output = output .. breed_name .. ","
+			output = output .. faction .. ","
+			local spawn_category = line[SPAWN_CATEGORY_ID]
+			output = output .. tostring(spawn_category) .. ","
+			local spawn_type = line[SPAWN_TYPE_ID]
+			output = output .. tostring(spawn_type)
+		end
+	end
+
+	Clipboard.put(output)
 end
 
 return

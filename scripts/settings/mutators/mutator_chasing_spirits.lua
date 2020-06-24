@@ -1,13 +1,13 @@
 local MAX_RAYCASTS = 5
 
 return {
-	delay_time = 2,
-	display_name = "chasing_spirits_mutator_name",
-	chase_time = 5,
-	icon = "mutator_icon_death_spirits",
 	description = "chasing_spirits_mutator_desc",
+	chase_time = 5,
+	delay_time = 2,
 	chase_speed = 1,
 	spirit_power_level = 200,
+	icon = "mutator_icon_death_spirits",
+	display_name = "chasing_spirits_mutator_name",
 	spawn_spirit = function (data, spawn_unit, target_unit)
 		local spawn_position = Vector3.add(Unit.local_position(spawn_unit, 0), Vector3(0, 0, data.offset))
 		local spirit_unit = data.unit_spawner:spawn_network_unit(data.spirit_unit_name, "position_synched_dummy_unit", data.extension_init_data, spawn_position)
@@ -26,73 +26,46 @@ return {
 	end,
 	update_spirits = function (context, data, dt, t)
 		local spirits = data.spirits
+		local hit_distance = 1
+		local hit_distance_sqr = hit_distance * hit_distance
 
-		while data.num_raycasts <= MAX_RAYCASTS do
-			local current_unit = data.current_unit
-			local spirit, id = nil
-
-			if current_unit == nil or spirits[current_unit] then
-				id, spirit = next(spirits, current_unit)
-			end
-
+		for id, spirit in pairs(spirits) do
 			local unit = spirit and spirit.unit
 
 			if unit and spirit.delay_time == 0 then
-				local physics_world = World.physics_world(context.world)
 				local spirit_position = Unit.local_position(unit, 0)
 				local player_unit = spirit.follow_unit
 				local player_pos = POSITION_LOOKUP[player_unit]
-				local direction = player_pos - spirit_position
-				direction = Vector3.normalize(direction)
-				local length = 0.75
 
-				PhysicsWorld.prepare_actors_for_raycast(physics_world, spirit_position, direction, 0.1)
+				if player_pos then
+					player_pos = player_pos + Vector3.up()
+					local direction = player_pos - spirit_position
+					local distance_squared = Vector3.length_squared(direction)
+					direction = Vector3.normalize(direction)
 
-				local result = PhysicsWorld.immediate_raycast(physics_world, spirit_position, direction, length, "all", "collision_filter", "filter_player_hit_box_check")
+					if distance_squared <= hit_distance_sqr then
+						local damage_profile = DamageProfileTemplates.death_explosion
+						local power_level = data.spirit_power_level
 
-				if result then
-					local num_hits = #result
+						DamageUtils.add_damage_network_player(damage_profile, nil, power_level, player_unit, unit, "full", player_pos, direction, "undefined", nil, 0, false, nil, false, 0, 1)
 
-					for i = 1, num_hits, 1 do
-						local hit = result[i]
-						local hit_actor = hit[4]
-						local hit_unit = Actor.unit(hit_actor)
+						local rotation = Unit.world_rotation(unit, 0)
+						local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-						if hit_unit == spirit.follow_unit then
-							local damage_profile = DamageProfileTemplates.death_explosion
-							local power_level = data.spirit_power_level
-							local hit_direction = spirit_position - player_pos
-							hit_direction = Vector3.normalize(hit_direction)
+						area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
+						data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
+						Managers.state.unit_spawner:mark_for_deletion(unit)
 
-							DamageUtils.add_damage_network_player(damage_profile, nil, power_level, player_unit, unit, "full", player_pos, hit_direction, "undefined", nil, 0, false, nil, false, 0, 1)
-
-							local rotation = Unit.world_rotation(unit, 0)
-							local area_damage_system = Managers.state.entity:system("area_damage_system")
-
-							area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
-							data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
-							Managers.state.unit_spawner:mark_for_deletion(unit)
-
-							data.spirits[id] = nil
-						end
+						data.spirits[id] = nil
 					end
 				end
-
-				data.num_raycasts = data.num_raycasts + 1
-				data.current_unit = id
-			else
-				data.current_unit = nil
-
-				break
 			end
 		end
-
-		data.num_raycasts = 0
 
 		for id, spirit in pairs(spirits) do
 			local unit = spirit.unit
 
-			if Unit.alive(unit) then
+			if ALIVE[unit] then
 				if spirit.delay_time == 0 then
 					local spirit_position = Unit.local_position(unit, 0)
 					local player_unit = spirit.follow_unit
@@ -101,7 +74,7 @@ return {
 					if player_pos then
 						spirit.chase_time = math.max(spirit.chase_time - dt, 0)
 						local unit_position = Unit.local_position(unit, 0)
-						local chase_target_position = player_pos + Vector3(0, 0, 1)
+						local chase_target_position = player_pos + Vector3.up()
 						local direction_vector = chase_target_position - unit_position
 						direction_vector = Vector3.normalize(direction_vector)
 						local move_vector = direction_vector * dt * data.chase_speed
@@ -128,33 +101,11 @@ return {
 			end
 		end
 	end,
-	update_player_buff = function (context, data)
-		local players = Managers.player:players()
-
-		for _, player in pairs(players) do
-			if player.player_unit == nil then
-				return
-			end
-
-			local health_extension = ScriptUnit.extension(player.player_unit, "health_system")
-			local current_health_percent = health_extension:current_health_percent()
-			local buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
-			local unit_id = data.network_manager:unit_game_object_id(player.player_unit)
-			local has_buff = buff_extension:has_buff_type("death_attack_speed_buff")
-
-			if not has_buff then
-				if current_health_percent < 0.2 then
-					local buff_id = data.buff_system:add_buff(player.player_unit, "mutator_death_attack_speed_player_buff", player.player_unit, true)
-					data.player_buffs[unit_id] = buff_id
-				end
-			elseif current_health_percent >= 0.2 then
-				data.buff_system:remove_server_controlled_buff(player.player_unit, data.player_buffs[unit_id])
-
-				data.player_buffs[unit_id] = nil
-			end
-		end
-	end,
 	server_ai_hit_by_player_function = function (context, data, hit_unit, attacker_unit, hit_data)
+		if not data.can_spawn then
+			return
+		end
+
 		local breed = Unit.get_data(hit_unit, "breed")
 
 		if breed.boss then
@@ -188,7 +139,11 @@ return {
 		end
 	end,
 	server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data)
-		if not ScriptUnit.has_extension(killer_unit, "status_system") then
+		if not data.can_spawn then
+			return
+		end
+
+		if not DamageUtils.is_player_unit(killer_unit) then
 			return
 		end
 
@@ -206,31 +161,32 @@ return {
 		data.chase_time = data.template.chase_time
 		data.audio_system = Managers.state.entity:system("audio_system")
 		data.network_manager = Managers.state.network
-		data.buff_system = Managers.state.entity:system("buff_system")
 		data.unit_spawner = Managers.state.unit_spawner
 		data.boss_drop_timers = {}
 		data.boss_drop_cooldown = 2
-		data.player_buffs = {}
 		data.spirits = {}
 		data.spirit_unit_name = "units/fx/vfx_animation_death_spirit_02"
 		data.extension_init_data = {}
 		data.offset = 1
-		data.num_raycasts = 0
+		data.can_spawn = true
 	end,
 	server_stop_function = function (context, data)
 		local spirits = data.spirits
 
 		for id, spirit in pairs(spirits) do
 			local unit = spirit.unit
-			local spirit_position = Unit.local_position(unit, 0)
-			local rotation = Unit.world_rotation(unit, 0)
-			local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-			area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
-			data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
-			Managers.state.unit_spawner:mark_for_deletion(unit)
+			if ALIVE[unit] then
+				local spirit_position = Unit.local_position(unit, 0)
+				local rotation = Unit.world_rotation(unit, 0)
+				local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-			data.spirits[id] = nil
+				area_damage_system:create_explosion(unit, spirit_position, rotation, "death_spirit_bomb", 1, "undefined", 0, false)
+				data.audio_system:play_audio_unit_event("Play_winds_death_gameplay_spirit_explode", unit)
+				Managers.state.unit_spawner:mark_for_deletion(unit)
+
+				data.spirits[id] = nil
+			end
 		end
 	end,
 	server_update_function = function (context, data, dt, t)
@@ -242,6 +198,10 @@ return {
 
 		for _, boss in pairs(data.boss_drop_timers) do
 			boss.timer = boss.timer + dt
+		end
+
+		if data.can_spawn and t >= data.deactivate_at_t - 5 then
+			data.can_spawn = false
 		end
 
 		data.template.update_spirits(context, data, dt, t)

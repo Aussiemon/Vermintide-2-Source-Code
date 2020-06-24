@@ -43,6 +43,9 @@ if not rawget(_G, "StoreLayoutConfig") then
 						weapon_skins = "item_details",
 						hats = "item_details",
 						skins = "item_details"
+					},
+					questingknight = {
+						weapon_skins = "item_details"
 					}
 				},
 				kerillian = {
@@ -117,6 +120,8 @@ if not rawget(_G, "StoreLayoutConfig") then
 		display_name = "menu_store_panel_title_dlcs",
 		type = "dlc",
 		content = {
+			"lake",
+			"lake_upgrade",
 			"scorpion",
 			"holly",
 			"bogenhafen",
@@ -223,6 +228,14 @@ if not rawget(_G, "StoreLayoutConfig") then
 		item_filter = "can_wield_es_mercenary",
 		sort_order = 1,
 		category_button_texture = "store_category_icon_kruber_mercenary"
+	}
+	StoreLayoutConfig.pages.questingknight = {
+		sound_event_enter = "Play_hud_store_category_button",
+		layout = "category",
+		display_name = "es_questingknight",
+		item_filter = "can_wield_es_questingknight",
+		sort_order = 4,
+		category_button_texture = "store_category_icon_kruber_questingknight"
 	}
 	StoreLayoutConfig.pages.kerillian = {
 		sound_event_enter = "Play_hud_store_kerillian",

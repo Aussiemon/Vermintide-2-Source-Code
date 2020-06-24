@@ -3,9 +3,13 @@ return {
 	display_name = "weaves_light_mutator_name",
 	icon = "mutator_icon_light_beacons",
 	add_buff = function (data, buffs, buff_system, player_unit)
-		local is_server_controlled = true
-		local server_buff_id = buff_system:add_buff(player_unit, data.curse_buff_name, player_unit, is_server_controlled)
-		buffs[#buffs + 1] = server_buff_id
+		local num_buffs = #buffs
+
+		if num_buffs < data.max_stacks then
+			local is_server_controlled = true
+			local server_buff_id = buff_system:add_buff(player_unit, data.curse_buff_name, player_unit, is_server_controlled)
+			buffs[num_buffs + 1] = server_buff_id
+		end
 	end,
 	clear_buffs = function (data, buffs, buff_system, player)
 		local unit_buff_extension = ScriptUnit.has_extension(player.player_unit, "buff_system")
@@ -176,6 +180,7 @@ return {
 		data.beacons = {}
 		data.buffs = {}
 		data.curse_buff_name = "mutator_light_debuff"
+		data.max_stacks = math.ceil(math.abs(1.5 / data.curse_value))
 		data.players_in_proximity = {}
 		local mutator_item_config = objective.mutator_item_config
 		local mutator_item_system = Managers.state.entity:system("mutator_item_system")

@@ -44,6 +44,8 @@ PlayerInputExtension.init = function (self, extension_init_context, unit, extens
 	self.double_tap_dodge = Application.user_setting("double_tap_dodge")
 	self.toggle_crouch = Application.user_setting("toggle_crouch")
 	self.toggle_alternate_attack = Application.user_setting("toggle_alternate_attack")
+	self.input_buffer_user_setting = Application.user_setting("input_buffer")
+	self.priority_input_buffer_user_setting = Application.user_setting("priority_input_buffer")
 	self.priority_input = {
 		wield_2 = true,
 		wield_next = true,
@@ -74,7 +76,7 @@ PlayerInputExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self.new_input_buffer then
-		if t > self.last_added_buffer_time + (self.new_buffer_key_doubleclick_window or 0.2) then
+		if t > self.last_added_buffer_time + self.new_buffer_key_doubleclick_window then
 			self.input_buffer_timer = self.new_input_buffer_timer
 			self.input_buffer = self.new_input_buffer
 			self.buffer_key = self.new_buffer_key
@@ -274,7 +276,7 @@ PlayerInputExtension.reset_input_buffer = function (self)
 
 	if self.buffer_key == "action_one" and not self.input_service:get("action_one_hold") then
 		self.buffer_key = "action_one_release"
-		self.input_buffer_timer = 0.5
+		self.input_buffer_timer = self.input_buffer_user_setting
 
 		return
 	end
@@ -315,17 +317,17 @@ PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window,
 
 	if value then
 		if self.priority_input[input_key] then
-			self.input_buffer_timer = 1
+			self.input_buffer_timer = self.priority_input_buffer_user_setting
 			self.input_buffer = value
 			self.buffer_key = input_key
 		else
-			self.new_input_buffer_timer = 0.6
+			self.new_input_buffer_timer = self.input_buffer_user_setting
 			self.new_input_buffer = value
 
 			if self.buffer_key and self.buffer_key ~= input_key and (not action_one_variants[self.buffer_key] or not action_one_variants[input_key]) then
 				self.new_buffer_key_doubleclick_window = 0
 			else
-				self.new_buffer_key_doubleclick_window = doubleclick_window
+				self.new_buffer_key_doubleclick_window = doubleclick_window or 0.1
 			end
 
 			self.new_buffer_key = input_key
@@ -335,8 +337,8 @@ end
 
 PlayerInputExtension.add_stun_buffer = function (self, input_key)
 	self.added_stun_buffer = true
-	self.input_buffer_timer = 1
-	self.input_buffer = 1
+	self.input_buffer_timer = self.input_buffer_user_setting
+	self.input_buffer = self.input_buffer_user_setting
 	self.buffer_key = input_key
 end
 

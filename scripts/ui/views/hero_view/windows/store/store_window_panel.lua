@@ -220,9 +220,16 @@ StoreWindowPanel._handle_input = function (self, dt, t)
 	local input_made = false
 	local close_button = widgets_by_name.close_button
 	local back_button = widgets_by_name.back_button
+	local golden_key_button = self._top_widgets_by_name.golden_key_button
 
-	if self:_is_button_hover_enter(back_button) or self:_is_button_hover_enter(close_button) then
+	if self:_is_button_hover_enter(golden_key_button) or self:_is_button_hover_enter(back_button) or self:_is_button_hover_enter(close_button) then
 		self:_play_sound("Play_hud_hover")
+	end
+
+	if self:_is_button_pressed(golden_key_button) then
+		parent:open_golden_key_popup()
+
+		input_made = true
 	end
 
 	if not input_made and self:_is_button_pressed(close_button) then

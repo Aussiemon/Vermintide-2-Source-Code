@@ -399,7 +399,10 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 		Managers.package:unload("resource_packages/start_menu_splash", "StateSplashScreen")
 	end
 
-	Managers.music:trigger_event("Stop_menu_screen_music")
+	if not GameSettingsDevelopment.skip_start_screen then
+		Managers.music:trigger_event("Stop_menu_screen_music")
+	end
+
 	ShowCursorStack.pop()
 end
 

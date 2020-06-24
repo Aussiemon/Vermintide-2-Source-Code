@@ -56,6 +56,7 @@ WeaveObjectiveSystem.update = function (self, context, t)
 		return
 	end
 
+	self:_poll_testify_requests()
 	self.super.update(self, context, t)
 end
 
@@ -232,6 +233,21 @@ WeaveObjectiveSystem._collect_dropped_essence = function (self, dt)
 				data.life_time = remaining_time
 			end
 		end
+	end
+end
+
+WeaveObjectiveSystem._poll_testify_requests = function (self)
+	if Testify:poll_request("spawn_essence_on_first_bot_position") then
+		local first_bot_unit = Managers.player:bots()[1].player_unit
+
+		if first_bot_unit then
+			local player_position = Unit.local_position(first_bot_unit, 0) + Vector3(0, 0, 0.2)
+
+			self:spawn_essence_unit(player_position)
+			self:add_score(2)
+		end
+
+		Testify:respond_to_request("spawn_essence_on_first_bot_position")
 	end
 end
 

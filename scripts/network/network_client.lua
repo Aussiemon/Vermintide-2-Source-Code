@@ -166,7 +166,7 @@ NetworkClient.rpc_reload_level = function (self, sender, level_seed)
 	self:set_state("loading")
 end
 
-NetworkClient.rpc_load_level = function (self, sender, level_index, level_seed, difficulty_id, locked_director_functions_ids)
+NetworkClient.rpc_load_level = function (self, sender, level_index, level_seed, difficulty_id, locked_director_functions_ids, environment_variation_id)
 	local difficulty = NetworkLookup.difficulties[difficulty_id]
 	local mechanism_manager = Managers.mechanism
 
@@ -182,7 +182,7 @@ NetworkClient.rpc_load_level = function (self, sender, level_index, level_seed, 
 	end
 
 	self:set_state("loading")
-	self.level_transition_handler:prepare_load_level(level_index, level_seed)
+	self.level_transition_handler:prepare_load_level(level_index, level_seed, environment_variation_id)
 end
 
 NetworkClient.rpc_set_migration_host = function (self, sender, peer_id, do_migrate)
@@ -300,8 +300,11 @@ NetworkClient.update = function (self, dt)
 
 	local lobby_client = self.lobby_client
 	local lobby_members = lobby_client:members()
+	local lost_connection = lobby_client:lost_connection_to_lobby()
+	local suppress_messages = self._prev_lost_connection or lost_connection
+	self._prev_lost_connection = lost_connection
 
-	if lobby_members then
+	if lobby_members and not suppress_messages then
 		local members_joined = lobby_members:get_members_joined()
 
 		for i, peer_id in ipairs(members_joined) do

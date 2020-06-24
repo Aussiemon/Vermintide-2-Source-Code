@@ -13,13 +13,22 @@ for season_id = season_offset, num_seasons, 1 do
 	player[season_name] = {}
 	local season_table = player[season_name]
 
-	for db_name_id = 1, #database_names_repeating, 1 do
-		local name = database_names_repeating[db_name_id]
-		season_table[name] = {
+	if season_id == 2 then
+		season_table.weave_quickplay_wins = {
 			value = 0,
-			source = "player_data",
-			database_name = name
+			database_name = "weave_quickplay_wins",
+			source = "player_data"
 		}
+	else
+		for db_name_id = 1, #database_names_repeating, 1 do
+			local stat_name = database_names_repeating[db_name_id]
+			local database_name = season_name .. "_" .. stat_name
+			season_table[stat_name] = {
+				value = 0,
+				source = "player_data",
+				database_name = database_name
+			}
+		end
 	end
 
 	for i = 1, 500, 1 do

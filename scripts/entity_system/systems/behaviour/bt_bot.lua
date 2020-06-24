@@ -8,11 +8,6 @@ BotBehaviors.default = {
 		name = "disabled"
 	},
 	{
-		"BTNilAction",
-		condition = "is_transported",
-		name = "transported_idle"
-	},
-	{
 		"BTSelector",
 		{
 			"BTBotInventorySwitchAction",
@@ -30,6 +25,11 @@ BotBehaviors.default = {
 		},
 		condition = "can_revive",
 		name = "revive"
+	},
+	{
+		"BTNilAction",
+		condition = "is_transported",
+		name = "transported_idle"
 	},
 	{
 		"BTSelector",
@@ -215,7 +215,7 @@ BotBehaviors.default = {
 		name = "activate_normal_ability",
 		condition = "can_activate_ability",
 		condition_args = {
-			false
+			"activate_ability"
 		}
 	},
 	{
@@ -228,7 +228,7 @@ BotBehaviors.default = {
 		name = "activate_ranged_shot_ability",
 		condition = "can_activate_ability",
 		condition_args = {
-			true
+			"shoot_ability"
 		}
 	},
 	{

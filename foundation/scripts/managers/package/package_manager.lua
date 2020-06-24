@@ -1,8 +1,7 @@
 local function debug_print(format, ...)
-	if not script_data.package_debug then
+	if script_data.package_debug then
+		print(string.format("[PackageManager] " .. format, ...))
 	end
-
-	print(string.format("[PackageManager] " .. format, ...))
 end
 
 PackageManager = PackageManager or {}

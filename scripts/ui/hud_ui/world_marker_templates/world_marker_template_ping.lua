@@ -189,7 +189,7 @@ template.animation_update = function (ui_renderer, widget, settings, dt, t)
 
 	local arrow_style = style.arrow
 	arrow_style.angle = angle + math.pi * 0.5
-	content.text = (distance > 1 and tostring(WeaveUtils.comma_value(math.floor(distance))) .. "m") or ""
+	content.text = (distance > 1 and tostring(UIUtils.comma_value(math.floor(distance))) .. "m") or ""
 
 	return animating
 end

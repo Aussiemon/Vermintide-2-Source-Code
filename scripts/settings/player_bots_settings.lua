@@ -120,7 +120,12 @@ BotActions.default = {
 			}
 		},
 		dr_ranger = {
-			activation = {}
+			activation = {},
+			end_condition = {
+				is_slot_not_wielded = {
+					"slot_career_skill_weapon"
+				}
+			}
 		},
 		es_mercenary = {
 			activation = {}
@@ -137,6 +142,18 @@ BotActions.default = {
 		es_knight = {
 			activation = {
 				action = "aim_at_target"
+			}
+		},
+		es_questingknight = {
+			activation = {
+				max_distance_sq = 20,
+				action = "aim_at_target",
+				dynamic_target_unit = true
+			},
+			end_condition = {
+				is_slot_not_wielded = {
+					"slot_career_skill_weapon"
+				}
 			}
 		},
 		we_waywatcher = {},

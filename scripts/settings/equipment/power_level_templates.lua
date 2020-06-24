@@ -477,7 +477,7 @@ PowerLevelTemplates = {
 	},
 	targets_linesman_L = {
 		{
-			boost_curve_coefficient_headshot = 1,
+			boost_curve_coefficient_headshot = 1.5,
 			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient = 2,
 			attack_template = "light_slashing_linesman_hs",
@@ -488,7 +488,7 @@ PowerLevelTemplates = {
 		},
 		{
 			boost_curve_type = "linesman_curve",
-			boost_curve_coefficient_headshot = 1,
+			boost_curve_coefficient_headshot = 1.5,
 			attack_template = "light_slashing_linesman",
 			power_distribution = {
 				attack = 0.125,
@@ -515,6 +515,71 @@ PowerLevelTemplates = {
 			attack_template = "light_slashing_linesman",
 			power_distribution = {
 				attack = 0.125,
+				impact = 0.075
+			}
+		}
+	},
+	critical_strike_linesman_uppercut_L = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			2.5,
+			1,
+			1
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			0.5,
+			1,
+			1
+		}
+	},
+	cleave_distribution_linesman_uppercut_L = {
+		attack = 0.4,
+		impact = 0.25
+	},
+	armor_modifier_linesman_uppercut_L = {
+		attack = {
+			1,
+			0,
+			2,
+			1,
+			1
+		},
+		impact = {
+			1,
+			0.3,
+			0.5,
+			1,
+			1
+		}
+	},
+	default_target_linesman_uppercut_L = {
+		boost_curve_type = "linesman_curve",
+		attack_template = "light_slashing_linesman",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.05
+		}
+	},
+	targets_linesman_uppercut_L = {
+		{
+			boost_curve_coefficient_headshot = 1.5,
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient = 2,
+			attack_template = "light_slashing_linesman_hs",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.1
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient_headshot = 1,
+			attack_template = "light_slashing_linesman",
+			power_distribution = {
+				attack = 0.15,
 				impact = 0.075
 			}
 		}
@@ -760,7 +825,7 @@ PowerLevelTemplates = {
 	},
 	default_target_linesman_M = {
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient_headshot = 1,
+		boost_curve_coefficient_headshot = 1.5,
 		attack_template = "light_slashing_linesman",
 		power_distribution = {
 			attack = 0.075,
@@ -769,7 +834,7 @@ PowerLevelTemplates = {
 	},
 	targets_linesman_M = {
 		{
-			boost_curve_coefficient_headshot = 1,
+			boost_curve_coefficient_headshot = 1.5,
 			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient = 2,
 			attack_template = "slashing_linesman",
@@ -791,6 +856,79 @@ PowerLevelTemplates = {
 			attack_template = "light_slashing_linesman",
 			power_distribution = {
 				attack = 0.1,
+				impact = 0.1
+			}
+		}
+	},
+	critical_strike_linesman_uppercut_M = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			2,
+			1,
+			1
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			0.5,
+			1,
+			1
+		}
+	},
+	cleave_distribution_linesman_uppercut_M = {
+		attack = 0.45,
+		impact = 0.4
+	},
+	armor_modifier_linesman_uppercut_M = {
+		attack = {
+			1,
+			0,
+			1,
+			1,
+			1
+		},
+		impact = {
+			1,
+			0.5,
+			0.5,
+			1,
+			1
+		}
+	},
+	default_target_linesman_uppercut_M = {
+		boost_curve_type = "linesman_curve",
+		boost_curve_coefficient_headshot = 1.5,
+		attack_template = "light_slashing_linesman",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.05
+		}
+	},
+	targets_linesman_uppercut_M = {
+		{
+			boost_curve_coefficient_headshot = 1.5,
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient = 2,
+			attack_template = "slashing_linesman",
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.15
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			attack_template = "slashing_linesman",
+			power_distribution = {
+				attack = 0.2,
+				impact = 0.125
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			attack_template = "light_slashing_linesman",
+			power_distribution = {
+				attack = 0.15,
 				impact = 0.1
 			}
 		}

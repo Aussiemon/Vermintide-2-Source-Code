@@ -269,7 +269,7 @@ local scenegraph_definition = {
 		parent = "currency_area",
 		horizontal_alignment = "center",
 		size = {
-			212,
+			200,
 			70
 		},
 		position = {
@@ -306,32 +306,46 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	currency_area_detail_left = {
-		vertical_alignment = "center",
-		parent = "currency_area",
-		horizontal_alignment = "left",
-		size = {
-			84,
-			112
-		},
-		position = {
-			-40,
-			0,
-			10
-		}
-	},
-	currency_area_detail_right = {
-		vertical_alignment = "center",
-		parent = "currency_area",
+	golden_key_area = {
+		vertical_alignment = "bottom",
+		parent = "panel",
 		horizontal_alignment = "right",
 		size = {
-			84,
-			112
+			70,
+			70
 		},
 		position = {
-			40,
+			-8,
 			0,
-			10
+			20
+		}
+	},
+	golden_key_area_frame = {
+		vertical_alignment = "center",
+		parent = "golden_key_area",
+		horizontal_alignment = "center",
+		size = {
+			70,
+			70
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	golden_key_icon = {
+		vertical_alignment = "center",
+		parent = "golden_key_area",
+		horizontal_alignment = "center",
+		size = {
+			33,
+			46
+		},
+		position = {
+			-2,
+			0,
+			1
 		}
 	}
 }
@@ -492,7 +506,24 @@ local top_widgets = {
 		0,
 		-22,
 		0
-	})
+	}),
+	golden_key_button = {
+		scenegraph_id = "golden_key_area",
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				}
+			}
+		},
+		content = {
+			button_hotspot = {
+				disable_button = true
+			}
+		},
+		style = {}
+	}
 }
 local animation_definitions = {
 	on_enter = {

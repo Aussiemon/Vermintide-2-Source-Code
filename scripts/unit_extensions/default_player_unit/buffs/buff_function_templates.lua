@@ -2176,6 +2176,38 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 	end,
+	remove_aura_buff = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local template = buff.template
+		local buff_to_add = template.buff_to_add
+		local buff_system = Managers.state.entity:system("buff_system")
+		local side = Managers.state.side:get_side_from_name("heroes")
+
+		if side then
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+			local num_units = #player_and_bot_units
+
+			for i = 1, num_units, 1 do
+				local unit = player_and_bot_units[i]
+
+				if ALIVE[unit] then
+					local buff_extension = ScriptUnit.extension(unit, "buff_system")
+					local buff = buff_extension:get_non_stacking_buff(buff_to_add)
+
+					if buff then
+						local buff_id = buff.server_id
+
+						if buff_id then
+							buff_system:remove_server_controlled_buff(unit, buff_id)
+						end
+					end
+				end
+			end
+		end
+	end,
 	update_ascending_descending_buff_stacks_on_time = function (owner_unit, buff, params)
 		if not Unit.alive(owner_unit) then
 			return

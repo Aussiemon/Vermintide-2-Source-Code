@@ -509,8 +509,11 @@ BTRatlingGunnerShootAction._aim_at_target = function (self, unit, blackboard, t,
 
 	if not owner_is_level_unit then
 		local game = Managers.state.network:game()
+		local position_constant = NetworkConstants.position
+		local min = position_constant.min
+		local max = position_constant.max
 
-		GameSession.set_game_object_field(game, owner_unit_id, "aim_position", data.aim_position_box:unbox())
+		GameSession.set_game_object_field(game, owner_unit_id, "aim_position", Vector3.clamp(aim_position, min, max))
 	end
 
 	local realign = normalized_angle > PI / 3 or normalized_angle < -PI

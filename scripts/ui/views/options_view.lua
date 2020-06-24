@@ -2101,7 +2101,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 
 	local double_tap_dodge = user_settings.double_tap_dodge
 
-	if double_tap_dodge ~= nil then
+	if double_tap_dodge ~= nil and Managers.state.entity then
 		local units = Managers.state.entity:get_entities("PlayerInputExtension")
 
 		for unit, extension in pairs(units) do
@@ -2114,9 +2114,39 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		end
 	end
 
+	local input_buffer = user_settings.input_buffer
+
+	if input_buffer ~= nil and Managers.state.entity then
+		local units = Managers.state.entity:get_entities("PlayerInputExtension")
+
+		for unit, extension in pairs(units) do
+			local player = Managers.player:owner(unit)
+
+			if player.local_player and not player.bot_player then
+				local input_extension = ScriptUnit.extension(unit, "input_system")
+				input_extension.input_buffer_user_setting = input_buffer
+			end
+		end
+	end
+
+	local priority_input_buffer = user_settings.priority_input_buffer
+
+	if priority_input_buffer ~= nil and Managers.state.entity then
+		local units = Managers.state.entity:get_entities("PlayerInputExtension")
+
+		for unit, extension in pairs(units) do
+			local player = Managers.player:owner(unit)
+
+			if player.local_player and not player.bot_player then
+				local input_extension = ScriptUnit.extension(unit, "input_system")
+				input_extension.priority_input_buffer_user_setting = priority_input_buffer
+			end
+		end
+	end
+
 	local toggle_alternate_attack = user_settings.toggle_alternate_attack
 
-	if toggle_alternate_attack ~= nil then
+	if toggle_alternate_attack ~= nil and Managers.state.entity then
 		local units = Managers.state.entity:get_entities("PlayerInputExtension")
 
 		for unit, extension in pairs(units) do
@@ -2267,31 +2297,31 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 
 	local blood_enabled = user_settings.blood_enabled
 
-	if blood_enabled ~= nil then
+	if blood_enabled ~= nil and Managers.state.blood then
 		Managers.state.blood:update_blood_enabled(blood_enabled)
 	end
 
 	local num_blood_decals = user_settings.num_blood_decals
 
-	if num_blood_decals ~= nil then
+	if num_blood_decals ~= nil and Managers.state.blood then
 		Managers.state.blood:update_num_blood_decals(num_blood_decals)
 	end
 
 	local screen_blood_enabled = user_settings.screen_blood_enabled
 
-	if screen_blood_enabled ~= nil then
+	if screen_blood_enabled ~= nil and Managers.state.blood then
 		Managers.state.blood:update_screen_blood_enabled(screen_blood_enabled)
 	end
 
 	local dismemberment_enabled = user_settings.dismemberment_enabled
 
-	if dismemberment_enabled ~= nil then
+	if dismemberment_enabled ~= nil and Managers.state.blood then
 		Managers.state.blood:update_dismemberment_enabled(dismemberment_enabled)
 	end
 
 	local ragdoll_enabled = user_settings.ragdoll_enabled
 
-	if ragdoll_enabled ~= nil then
+	if ragdoll_enabled ~= nil and Managers.state.blood then
 		Managers.state.blood:update_ragdoll_enabled(ragdoll_enabled)
 	end
 
@@ -2724,8 +2754,9 @@ end
 OptionsView.restart = function (self)
 	local mechanism = Managers.mechanism:game_mechanism()
 	local inn_level_name = mechanism:get_hub_level_key()
+	local environment_variation_id = LevelHelper:get_environment_variation_id(inn_level_name)
 
-	self.level_transition_handler:set_next_level(inn_level_name)
+	self.level_transition_handler:set_next_level(inn_level_name, environment_variation_id)
 	self.ingame_ui:handle_transition("restart_game")
 end
 
@@ -4592,7 +4623,7 @@ OptionsView.cb_graphics_quality = function (self, content)
 			local content = widget.content
 
 			content.saved_value_cb(widget)
-			content:callback(true)
+			content:callback(widget.style, true)
 		end
 	end
 end
@@ -4612,6 +4643,18 @@ OptionsView.cb_resolutions_setup = function (self)
 				break
 			end
 		end
+	end
+
+	if DisplayAdapter.num_outputs(adapter_index) < 1 then
+		return 1, {
+			{
+				text = "1280x720 -- NO OUTPUTS",
+				value = {
+					1280,
+					720
+				}
+			}
+		}, "menu_settings_resolution"
 	end
 
 	local options = {}
@@ -4900,7 +4943,7 @@ OptionsView.cb_anti_aliasing_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_anti_aliasing = function (self, content, called_from_graphics_quality)
+OptionsView.cb_anti_aliasing = function (self, content, style, called_from_graphics_quality)
 	local selected_index = content.current_selection
 	local value = content.options_values[selected_index]
 
@@ -5024,7 +5067,7 @@ OptionsView.cb_sun_shadows_saved_value = function (self, widget)
 	widget.content.current_selection = selection
 end
 
-OptionsView.cb_sun_shadows = function (self, content, called_from_graphics_quality)
+OptionsView.cb_sun_shadows = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local sun_shadow_quality = nil
@@ -5178,7 +5221,7 @@ OptionsView.cb_scatter_density_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_scatter_density = function (self, content, called_from_graphics_quality)
+OptionsView.cb_scatter_density = function (self, content, style, called_from_graphics_quality)
 	if not content.options_values[content.current_selection] then
 		local value = 1
 	end
@@ -5277,7 +5320,7 @@ OptionsView.cb_maximum_shadow_casting_lights_saved_value = function (self, widge
 	content.value = max_shadow_casting_lights
 end
 
-OptionsView.cb_maximum_shadow_casting_lights = function (self, content, called_from_graphics_quality)
+OptionsView.cb_maximum_shadow_casting_lights = function (self, content, style, called_from_graphics_quality)
 	self.changed_render_settings.max_shadow_casting_lights = content.value
 
 	print("max_shadow_casting_lights", content.value)
@@ -5351,7 +5394,7 @@ OptionsView.cb_local_light_shadow_quality_saved_value = function (self, widget)
 	widget.content.current_selection = selection
 end
 
-OptionsView.cb_local_light_shadow_quality = function (self, content, called_from_graphics_quality)
+OptionsView.cb_local_light_shadow_quality = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	local local_light_shadow_quality = nil
 
@@ -5427,7 +5470,7 @@ OptionsView.cb_motion_blur_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_motion_blur = function (self, content, called_from_graphics_quality)
+OptionsView.cb_motion_blur = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.motion_blur_enabled = value
 
@@ -5472,7 +5515,7 @@ OptionsView.cb_dof_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_dof = function (self, content, called_from_graphics_quality)
+OptionsView.cb_dof = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.dof_enabled = value
 
@@ -5530,7 +5573,7 @@ OptionsView.cb_bloom_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_bloom = function (self, content, called_from_graphics_quality)
+OptionsView.cb_bloom = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.bloom_enabled = options_values[current_selection]
@@ -5589,7 +5632,7 @@ OptionsView.cb_light_shafts_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_light_shafts = function (self, content, called_from_graphics_quality)
+OptionsView.cb_light_shafts = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.light_shafts_enabled = options_values[current_selection]
@@ -5648,7 +5691,7 @@ OptionsView.cb_sun_flare_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_sun_flare = function (self, content, called_from_graphics_quality)
+OptionsView.cb_sun_flare = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.sun_flare_enabled = options_values[current_selection]
@@ -5707,7 +5750,7 @@ OptionsView.cb_sharpen_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_sharpen = function (self, content, called_from_graphics_quality)
+OptionsView.cb_sharpen = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local value = options_values[current_selection]
@@ -5767,7 +5810,7 @@ OptionsView.cb_lens_quality_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_lens_quality = function (self, content, called_from_graphics_quality)
+OptionsView.cb_lens_quality = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.lens_quality_enabled = options_values[current_selection]
@@ -5826,7 +5869,7 @@ OptionsView.cb_skin_shading_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_skin_shading = function (self, content, called_from_graphics_quality)
+OptionsView.cb_skin_shading = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.skin_material_enabled = options_values[current_selection]
@@ -5887,7 +5930,7 @@ OptionsView.cb_ssao_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_ssao = function (self, content, called_from_graphics_quality)
+OptionsView.cb_ssao = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.ao_quality = value
 	local ao_quality_settings = AmbientOcclusionQuality[value]
@@ -5950,7 +5993,7 @@ OptionsView.cb_char_texture_quality_saved_value = function (self, widget)
 	print("OptionsView:cb_char_texture_quality_saved_value", selected_option, char_texture_quality)
 end
 
-OptionsView.cb_char_texture_quality = function (self, content, called_from_graphics_quality)
+OptionsView.cb_char_texture_quality = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.char_texture_quality = value
 
@@ -6008,7 +6051,7 @@ OptionsView.cb_env_texture_quality_saved_value = function (self, widget)
 	print("OptionsView:cb_env_texture_quality_saved_value", selected_option, env_texture_quality)
 end
 
-OptionsView.cb_env_texture_quality = function (self, content, called_from_graphics_quality)
+OptionsView.cb_env_texture_quality = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.env_texture_quality = value
 
@@ -8046,6 +8089,76 @@ OptionsView.cb_overcharge_opacity = function (self, content)
 	self.changed_user_settings.overcharge_opacity = content.value
 end
 
+OptionsView.cb_input_buffer_setup = function (self)
+	local min = 0
+	local max = 1
+
+	if not Application.user_setting("input_buffer") then
+		local input_buffer = DefaultUserSettings.get("user_settings", "input_buffer")
+	end
+
+	local default_value = DefaultUserSettings.get("user_settings", "input_buffer")
+	local value = get_slider_value(min, max, input_buffer)
+
+	return value, min, max, 1, "menu_settings_input_buffer", default_value
+end
+
+OptionsView.cb_input_buffer_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+	slot5 = assigned
+	slot6 = self.changed_user_settings.input_buffer
+
+	if not Application.user_setting("input_buffer") then
+		slot7 = DefaultUserSettings.get("user_settings", "input_buffer")
+	end
+
+	local input_buffer = slot5(slot6, slot7)
+	input_buffer = math.clamp(input_buffer, min, max)
+	content.internal_value = get_slider_value(min, max, input_buffer)
+	content.value = input_buffer
+end
+
+OptionsView.cb_input_buffer = function (self, content)
+	self.changed_user_settings.input_buffer = content.value
+end
+
+OptionsView.cb_priority_input_buffer_setup = function (self)
+	local min = 0
+	local max = 2
+
+	if not Application.user_setting("priority_input_buffer") then
+		local priority_input_buffer = DefaultUserSettings.get("user_settings", "priority_input_buffer")
+	end
+
+	local default_value = DefaultUserSettings.get("user_settings", "priority_input_buffer")
+	local value = get_slider_value(min, max, priority_input_buffer)
+
+	return value, min, max, 1, "menu_settings_priority_input_buffer", default_value
+end
+
+OptionsView.cb_priority_input_buffer_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+	slot5 = assigned
+	slot6 = self.changed_user_settings.priority_input_buffer
+
+	if not Application.user_setting("priority_input_buffer") then
+		slot7 = DefaultUserSettings.get("user_settings", "priority_input_buffer")
+	end
+
+	local priority_input_buffer = slot5(slot6, slot7)
+	priority_input_buffer = math.clamp(priority_input_buffer, min, max)
+	content.internal_value = get_slider_value(min, max, priority_input_buffer)
+	content.value = priority_input_buffer
+end
+
+OptionsView.cb_priority_input_buffer = function (self, content)
+	self.changed_user_settings.priority_input_buffer = content.value
+end
+
 OptionsView.cb_weapon_scroll_type_setup = function (self)
 	local options = {
 		{
@@ -8554,7 +8667,7 @@ OptionsView.cb_particles_resolution_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_particles_resolution = function (self, content, called_from_graphics_quality)
+OptionsView.cb_particles_resolution = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.low_res_transparency = value
 
@@ -8618,7 +8731,7 @@ OptionsView.cb_particles_quality_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_particles_quality = function (self, content, called_from_graphics_quality)
+OptionsView.cb_particles_quality = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.particles_quality = value
 	local particle_quality_settings = ParticlesQuality[value]
@@ -8675,7 +8788,7 @@ OptionsView.cb_ambient_light_quality_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_ambient_light_quality = function (self, content, called_from_graphics_quality)
+OptionsView.cb_ambient_light_quality = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.ambient_light_quality = value
 	local ambient_light_quality_settings = AmbientLightQuality[value]
@@ -8713,7 +8826,7 @@ OptionsView.cb_auto_exposure_speed_saved_value = function (self, widget)
 	content.value = auto_exposure_speed
 end
 
-OptionsView.cb_auto_exposure_speed = function (self, content, called_from_graphics_quality)
+OptionsView.cb_auto_exposure_speed = function (self, content, style, called_from_graphics_quality)
 	self.changed_render_settings.eye_adaptation_speed = content.value
 
 	if not called_from_graphics_quality then
@@ -8776,7 +8889,7 @@ OptionsView.cb_volumetric_fog_quality_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_volumetric_fog_quality = function (self, content, called_from_graphics_quality)
+OptionsView.cb_volumetric_fog_quality = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.volumetric_fog_quality = value
 	local volumetric_fog_quality_settings = VolumetricFogQuality[value]
@@ -8840,7 +8953,7 @@ OptionsView.cb_physic_debris_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_physic_debris = function (self, content, called_from_graphics_quality)
+OptionsView.cb_physic_debris = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_physic_debris = options_values[current_selection]
@@ -9019,7 +9132,7 @@ OptionsView.cb_ssr_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_ssr = function (self, content, called_from_graphics_quality)
+OptionsView.cb_ssr = function (self, content, style, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.ssr_enabled = options_values[current_selection]
@@ -9852,7 +9965,7 @@ OptionsView.cb_blood_decals_saved_value = function (self, widget)
 	content.value = num_blood_decals
 end
 
-OptionsView.cb_blood_decals = function (self, content, called_from_graphics_quality)
+OptionsView.cb_blood_decals = function (self, content, style, called_from_graphics_quality)
 	self.changed_user_settings.num_blood_decals = content.value
 
 	if not called_from_graphics_quality then
@@ -10071,7 +10184,7 @@ OptionsView.cb_animation_lod_distance_saved_value = function (self, widget)
 	content.value = animation_lod_distance_multiplier
 end
 
-OptionsView.cb_animation_lod_distance = function (self, content, called_from_graphics_quality)
+OptionsView.cb_animation_lod_distance = function (self, content, style, called_from_graphics_quality)
 	self.changed_user_settings.animation_lod_distance_multiplier = content.value
 
 	if not called_from_graphics_quality then

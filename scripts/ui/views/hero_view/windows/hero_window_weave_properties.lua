@@ -1761,7 +1761,7 @@ HeroWindowWeaveProperties._set_essence_upgrade_cost = function (self, essence_am
 	local button_text = ""
 
 	if essence_amount then
-		local value_string = WeaveUtils.comma_value(essence_amount)
+		local value_string = UIUtils.comma_value(essence_amount)
 		button_text = Localize("menu_weave_forge_upgrade_loadout_button") .. " " .. value_string
 		local ui_renderer = self._ui_top_renderer
 		local text_width = UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text)

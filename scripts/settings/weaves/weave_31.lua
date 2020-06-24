@@ -1,11 +1,11 @@
 return {
 	wind_strength = 1,
-	wind = "fire",
+	wind = "death",
 	seed = 666183,
 	objectives = {
 		{
 			display_name = "objective_sockets_name",
-			level_id = "dlc_scorpion_field_fire",
+			level_id = "dlc_scorpion_field_death",
 			objective_type = "sockets",
 			conflict_settings = "default_weave",
 			level_seed = 153971,
@@ -137,7 +137,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_void_fire",
+			level_id = "dlc_scorpion_arena_void_death",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 165415,
 			level_seed = 683268,

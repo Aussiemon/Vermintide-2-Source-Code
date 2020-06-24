@@ -503,7 +503,8 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				buff_to_add = "kerillian_maidenguard_passive_stamina_regen_buff",
-				update_func = "activate_buff_on_distance"
+				update_func = "activate_buff_on_distance",
+				remove_buff_func = "remove_aura_buff"
 			}
 		}
 	},
@@ -1420,11 +1421,11 @@ Talents.wood_elf = {
 		icon = "kerillian_maidenguard_power_level_on_unharmed",
 		description_values = {
 			{
-				value_type = "percent",
-				value = buff_tweak_data.kerillian_maidenguard_power_level_on_unharmed.multiplier
+				value = buff_tweak_data.kerillian_maidenguard_power_level_on_unharmed_cooldown.duration
 			},
 			{
-				value = buff_tweak_data.kerillian_maidenguard_power_level_on_unharmed_cooldown.duration
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_maidenguard_power_level_on_unharmed.multiplier
 			}
 		},
 		requirements = {},

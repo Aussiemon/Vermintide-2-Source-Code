@@ -55,6 +55,20 @@ popup_atlas = {
 			0.949219
 		}
 	},
+	lake_upsell_popup_bg = {
+		size = {
+			454,
+			615
+		},
+		uv00 = {
+			0.575684,
+			0.001953
+		},
+		uv11 = {
+			0.797363,
+			0.602539
+		}
+	},
 	wom_upsell_popup_bg = {
 		size = {
 			454,

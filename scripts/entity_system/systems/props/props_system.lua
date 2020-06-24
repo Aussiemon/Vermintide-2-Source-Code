@@ -31,7 +31,19 @@ PropsSystem.on_add_extension = function (self, world, unit, extension_name, exte
 
 	if extension_name == "PerlinLightExtension" then
 		local flicker_config_name = Unit.get_data(unit, "flicker_config")
-		local light = Unit.light(unit, 0)
+		local light = nil
+
+		if Unit.has_data(unit, "perlin_light_node_name") then
+			local flicker_node = Unit.get_data(unit, "perlin_light_node_name")
+
+			if Unit.has_light(unit, flicker_node) then
+				light = Unit.light(unit, flicker_node)
+			end
+		end
+
+		if light == nil then
+			light = Unit.light(unit, 0)
+		end
 
 		Light.set_flicker_type(light, flicker_config_name)
 
@@ -69,6 +81,9 @@ end
 PropsSystem.rpc_thorn_bush_trigger_despawn = function (self, sender, unit_id)
 	local unit = Managers.state.unit_storage:unit(unit_id)
 	local script = ScriptUnit.extension(unit, "props_system")
+	local world = Managers.world:world("level_world")
+
+	WwiseUtils.trigger_unit_event(world, "Play_winds_life_gameplay_thorn_hit_player", unit, 0)
 
 	if script then
 		script:despawn()

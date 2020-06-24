@@ -763,6 +763,66 @@ Paintings.ver_warriors_of_chaos_page_30 = {
 		wood = true
 	}
 }
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_007 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_007_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_007_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_016 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_016_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_016_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_019 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_019_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_019_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_030 = {
+	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
+	rarity = "common",
+	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_030_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
+	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_030_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_034 = {
 	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_034_description",
 	rarity = "promo",
@@ -988,14 +1048,134 @@ Paintings.ver_skaven_7th_edition_army_book_page_037 = {
 		wood = true
 	}
 }
-Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_007 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
+Paintings.hor_AB615C_BretKoR_CMYK = {
+	sound_event = "painting_AB615C_BretKoR_CMYK_description",
 	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_007_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_007_description",
-	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_007_artist",
+	display_name = "painting_AB615C_BretKoR_CMYK_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_AB615C_BretKoR_CMYK_description",
+	artist = "painting_AB615C_BretKoR_CMYK_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_dg726_bretcourtscncmyk = {
+	sound_event = "painting_DG726_BretCourtScnCMYK_description",
+	rarity = "common",
+	display_name = "painting_DG726_BretCourtScnCMYK_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_DG726_BretCourtScnCMYK_description",
+	artist = "painting_DG726_BretCourtScnCMYK_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_KK279C_BretMenAtArms_CMYK = {
+	sound_event = "painting_KK279C_BretMenAtArms_CMYK_description",
+	rarity = "common",
+	display_name = "painting_KK279C_BretMenAtArms_CMYK_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_KK279C_BretMenAtArms_CMYK_description",
+	artist = "painting_KK279C_BretMenAtArms_CMYK_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_KK282C_BretBowmen_CMYK = {
+	sound_event = "painting_KK282C_BretBowmen_CMYK_description",
+	rarity = "common",
+	display_name = "painting_KK282C_BretBowmen_CMYK_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_KK282C_BretBowmen_CMYK_description",
+	artist = "painting_KK282C_BretBowmen_CMYK_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_pd237_bret_pegasus_knight_box = {
+	sound_event = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_description",
+	rarity = "common",
+	display_name = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_description",
+	artist = "painting_PD237_BRET_PEGASUS_KNIGHT_BOX_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_storm_of_magic_Page_007 = {
+	sound_event = "painting_storm_of_magic_page_007_description",
+	rarity = "promo",
+	display_name = "painting_storm_of_magic_page_007_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_storm_of_magic_page_007_description",
+	artist = "painting_storm_of_magic_page_007_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_storm_of_magic_Page_012 = {
+	sound_event = "painting_storm_of_magic_page_012_description",
+	rarity = "promo",
+	display_name = "painting_storm_of_magic_page_012_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_storm_of_magic_page_012_description",
+	artist = "painting_storm_of_magic_page_012_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_wfrp2_knights_of_the_grail_Page_017 = {
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_017_description",
+	rarity = "common",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_017_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_wfrp2_knights_of_the_grail_Page_017_description",
+	artist = "painting_wfrp2_knights_of_the_grail_Page_017_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_AB626C_BretFrontisPiece = {
+	sound_event = "painting_AB626C_BretFrontisPiece_description",
+	rarity = "common",
+	display_name = "painting_AB626C_BretFrontisPiece_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_AB626C_BretFrontisPiece_description",
+	artist = "painting_AB626C_BretFrontisPiece_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,
@@ -1003,14 +1183,14 @@ Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_007 = {
 		wood = true
 	}
 }
-Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_016 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
+Paintings.ver_skaven_7th_edition_army_book_page_027 = {
+	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
 	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_016_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_016_description",
-	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_016_artist",
+	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_skaven_7th_edition_army_book_page_037_description",
+	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,
@@ -1018,14 +1198,14 @@ Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_016 = {
 		wood = true
 	}
 }
-Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_019 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
+Paintings.ver_skaven_7th_edition_army_book_page_037 = {
+	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
 	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_019_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_019_description",
-	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_019_artist",
+	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_skaven_7th_edition_army_book_page_037_description",
+	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,
@@ -1033,14 +1213,149 @@ Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_019 = {
 		wood = true
 	}
 }
-Paintings.ver_daemons_of_chaos_8th_edition_army_book_page_030 = {
-	sound_event = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
+Paintings.ver_storm_of_magic_Page_019 = {
+	sound_event = "painting_storm_of_magic_page_019_description",
+	rarity = "promo",
+	display_name = "painting_storm_of_magic_page_019_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_storm_of_magic_page_019_description",
+	artist = "painting_storm_of_magic_page_019_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_storm_of_magic_Page_034 = {
+	sound_event = "painting_storm_of_magic_page_034_description",
+	rarity = "promo",
+	display_name = "painting_storm_of_magic_page_034_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_storm_of_magic_page_034_description",
+	artist = "painting_storm_of_magic_page_034_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_storm_of_magic_Page_035 = {
+	sound_event = "painting_storm_of_magic_page_035_description",
+	rarity = "promo",
+	display_name = "painting_storm_of_magic_page_035_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_storm_of_magic_page_035_description",
+	artist = "painting_storm_of_magic_page_035_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_wfrp2_knights_of_the_grail_Page_020 = {
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_020_description",
 	rarity = "common",
-	display_name = "painting_daemons_of_chaos_8th_edition_army_book_page_030_name",
-	icon = "icon_painting_2",
-	frame = "wood",
-	description = "painting_daemons_of_chaos_8th_edition_army_book_page_030_description",
-	artist = "painting_daemons_of_chaos_8th_edition_army_book_page_030_artist",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_020_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_wfrp2_knights_of_the_grail_Page_020_description",
+	artist = "painting_wfrp2_knights_of_the_grail_Page_020_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_wfrp2_knights_of_the_grail_Page_040 = {
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_040_description",
+	rarity = "common",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_040_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_wfrp2_knights_of_the_grail_Page_040_description",
+	artist = "painting_wfrp2_knights_of_the_grail_Page_040_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_wfrp2_knights_of_the_grail_Page_058 = {
+	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
+	rarity = "common",
+	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_skaven_7th_edition_army_book_page_037_description",
+	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_wfrp2_knights_of_the_grail_Page_070 = {
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_070_description",
+	rarity = "common",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_070_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_wfrp2_knights_of_the_grail_Page_070_description",
+	artist = "painting_wfrp2_knights_of_the_grail_Page_070_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_AB617_BretIntroPage_CMYK = {
+	sound_event = "painting_AB617_BretIntroPage_CMYK_description",
+	rarity = "promo",
+	display_name = "painting_AB617_BretIntroPage_CMYK_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_AB617_BretIntroPage_CMYK_description",
+	artist = "painting_AB617_BretIntroPage_CMYK_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_KK280_BretGrailDamsel_CMYK = {
+	sound_event = "painting_KK280_BretGrailDamsel_CMYK_description",
+	rarity = "promo",
+	display_name = "painting_KK280_BretGrailDamsel_CMYK_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_KK280_BretGrailDamsel_CMYK_description",
+	artist = "painting_KK280_BretGrailDamsel_CMYK_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_PD238_BretDuel_CMYK = {
+	sound_event = "painting_PD238_BretDuel_CMYK_description",
+	rarity = "promo",
+	display_name = "painting_PD238_BretDuel_CMYK_name",
+	icon = "icon_painting_3",
+	frame = "painted",
+	description = "painting_PD238_BretDuel_CMYK_description",
+	artist = "painting_PD238_BretDuel_CMYK_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,
@@ -1078,6 +1393,14 @@ local painting_order = {
 	"hor_beastmen_page_08",
 	"hor_wom",
 	"hor_CurseOfTheVampireCoast_KeyArt",
+	"hor_AB615C_BretKoR_CMYK",
+	"hor_dg726_bretcourtscncmyk",
+	"hor_KK279C_BretMenAtArms_CMYK",
+	"hor_KK282C_BretBowmen_CMYK",
+	"hor_pd237_bret_pegasus_knight_box",
+	"hor_storm_of_magic_Page_007",
+	"hor_storm_of_magic_Page_012",
+	"hor_wfrp2_knights_of_the_grail_Page_017",
 	"ver_none",
 	"ver_bw01",
 	"ver_khorne04",
@@ -1107,6 +1430,10 @@ local painting_order = {
 	"ver_manaan01",
 	"ver_warriors_of_chaos_page_35",
 	"ver_warriors_of_chaos_page_30",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_007",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_016",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_019",
+	"ver_daemons_of_chaos_8th_edition_army_book_page_030",
 	"ver_daemons_of_chaos_8th_edition_army_book_page_034",
 	"ver_beastmen_page_38",
 	"ver_beastmen_page_39",
@@ -1115,13 +1442,22 @@ local painting_order = {
 	"ver_beastmen_page_98",
 	"ver_skaven_7th_edition_army_book_page_027",
 	"ver_skaven_7th_edition_army_book_page_037",
-	"ver_daemons_of_chaos_8th_edition_army_book_page_007",
-	"ver_daemons_of_chaos_8th_edition_army_book_page_016",
-	"ver_daemons_of_chaos_8th_edition_army_book_page_019",
-	"ver_daemons_of_chaos_8th_edition_army_book_page_030",
 	"ver_TD033_BL_Drachenfels_newedition",
 	"ver_JB002_Drachenfel_Ogres_Tower",
-	"ver_PAS014C_Drachenfels"
+	"ver_PAS014C_Drachenfels",
+	"ver_AB626C_BretFrontisPiece",
+	"ver_skaven_7th_edition_army_book_page_027",
+	"ver_skaven_7th_edition_army_book_page_037",
+	"ver_storm_of_magic_Page_019",
+	"ver_storm_of_magic_Page_034",
+	"ver_storm_of_magic_Page_035",
+	"ver_wfrp2_knights_of_the_grail_Page_020",
+	"ver_wfrp2_knights_of_the_grail_Page_040",
+	"ver_wfrp2_knights_of_the_grail_Page_058",
+	"ver_wfrp2_knights_of_the_grail_Page_070",
+	"ver_AB617_BretIntroPage_CMYK",
+	"ver_KK280_BretGrailDamsel_CMYK",
+	"ver_PD238_BretDuel_CMYK"
 }
 PaintingOrder = PaintingOrder or {}
 

@@ -779,7 +779,7 @@ HeroWindowWeaveForgeWeapons._set_essence_upgrade_cost = function (self, essence_
 	local button_text = ""
 
 	if essence_cost then
-		local value_string = WeaveUtils.comma_value(essence_cost)
+		local value_string = UIUtils.comma_value(essence_cost)
 		button_text = Localize("menu_weave_forge_unlock_weapon_button") .. " " .. value_string
 		local ui_renderer = self._ui_top_renderer
 		local text_width = UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text)

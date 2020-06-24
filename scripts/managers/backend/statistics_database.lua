@@ -467,6 +467,22 @@ StatisticsDatabase.get_stat = function (self, id, ...)
 	return stat.value
 end
 
+StatisticsDatabase.has_stat = function (self, id, ...)
+	local stat = self.statistics[id]
+	local arg_n = select("#", ...)
+
+	for i = 1, arg_n, 1 do
+		local arg_value = select(i, ...)
+		stat = stat[arg_value]
+
+		if not stat then
+			return false
+		end
+	end
+
+	return true
+end
+
 StatisticsDatabase.get_persistent_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)

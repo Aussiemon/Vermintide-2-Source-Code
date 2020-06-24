@@ -83,6 +83,12 @@ local weighted_random_terror_events = {
 		1,
 		"military_courtyard_event_specials_05",
 		1
+	},
+	military_courtyard_event = {
+		"military_courtyard_event_01",
+		1,
+		"military_courtyard_event_02",
+		1
 	}
 }
 local terror_event_blueprints = {
@@ -92,7 +98,149 @@ local terror_event_blueprints = {
 			enable = false
 		}
 	},
-	military_courtyard_event = {
+	military_courtyard_event_01 = {
+		{
+			"control_hordes",
+			enable = false
+		},
+		{
+			"set_master_event_running",
+			name = "military_courtyard"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_chaos_stinger"
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "courtyard_hidden",
+			composition_type = "event_small_chaos"
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "courtyard",
+			composition_type = "event_small"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 60,
+			condition = function (t)
+				return spawned_during_event() < 8
+			end
+		},
+		{
+			"event_horde",
+			limit_spawners = 8,
+			spawner_id = "courtyard_hidden",
+			composition_type = "event_medium_chaos"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "courtyard",
+			composition_type = "event_extra_spice_medium"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 40,
+			condition = function (t)
+				return spawned_during_event() < 10
+			end
+		},
+		{
+			"event_horde",
+			limit_spawners = 8,
+			spawner_id = "courtyard_hidden",
+			composition_type = "storm_vermin_small",
+			difficulty_requirement = CATACLYSM
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "courtyard_hidden",
+			composition_type = "event_military_courtyard_plague_monks"
+		},
+		{
+			"event_horde",
+			limit_spawners = 8,
+			spawner_id = "courtyard_hidden",
+			composition_type = "event_small_chaos"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 100,
+			condition = function (t)
+				return count_event_breed("skaven_plague_monk") < 2 and count_event_breed("skaven_poison_wind_globadier") < 1 and count_event_breed("chaos_corruptor_sorcerer") < 1 and count_event_breed("skaven_warpfire_thrower") < 1
+			end
+		},
+		{
+			"event_horde",
+			limit_spawners = 8,
+			spawner_id = "courtyard",
+			composition_type = "event_large"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "courtyard",
+			composition_type = "event_extra_spice_medium"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 100,
+			condition = function (t)
+				return spawned_during_event() < 6
+			end
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "courtyard_hidden",
+			composition_type = "event_large_chaos"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 100,
+			condition = function (t)
+				return spawned_during_event() < 6
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "military_courtyard_event_done"
+		}
+	},
+	military_courtyard_event_02 = {
 		{
 			"control_hordes",
 			enable = false
@@ -267,8 +415,11 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_gutter_runner",
 			amount = 1,
+			breed_name = {
+				"skaven_gutter_runner",
+				"skaven_pack_master"
+			},
 			difficulty_requirement = HARDEST
 		},
 		{
@@ -333,8 +484,11 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_poison_wind_globadier",
 			amount = 1,
+			breed_name = {
+				"skaven_gutter_runner",
+				"skaven_poison_wind_globadier"
+			},
 			difficulty_requirement = HARDEST
 		},
 		{
@@ -440,8 +594,11 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "chaos_vortex_sorcerer",
 			amount = 1,
+			breed_name = {
+				"chaos_vortex_sorcerer",
+				"skaven_ratling_gunner"
+			},
 			difficulty_requirement = HARDEST
 		},
 		{
@@ -496,8 +653,11 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_gutter_runner",
 			amount = 1,
+			breed_name = {
+				"skaven_gutter_runner",
+				"skaven_pack_master"
+			},
 			difficulty_requirement = HARDEST
 		},
 		{

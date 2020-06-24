@@ -7,6 +7,7 @@ require("scripts/network_lookup/network_lookup")
 
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.TYPE = "psn"
+local USE_C_SERIALIZATION = false
 LobbyInternal.state_map = {
 	[PsnRoom.WAITING_TO_CREATE] = LobbyState.WAITING_TO_CREATE,
 	[PsnRoom.CREATING] = LobbyState.CREATING,
@@ -61,7 +62,33 @@ LobbyInternal.lobby_data_network_lookups = {
 	quick_game = "lobby_data_values",
 	selected_level_key = "level_keys",
 	secondary_region = "matchmaking_regions",
-	level_key = "level_keys"
+	level_key = "level_keys",
+	twitch_enabled = "lobby_data_values"
+}
+LobbyInternal.key_order = {
+	"difficulty",
+	"game_mode",
+	"is_private",
+	"level_key",
+	"selected_level_key",
+	"matchmaking",
+	"num_players",
+	"expansion_rule_index",
+	"quick_game",
+	"session_id",
+	"player_slot_1",
+	"player_slot_2",
+	"player_slot_3",
+	"player_slot_4",
+	"player_slot_5",
+	"time_of_search",
+	"network_hash",
+	"unique_server_name",
+	"host",
+	"country_code",
+	"twitch_enabled",
+	"weave_name",
+	"power_level"
 }
 LobbyInternal.default_lobby_data = {
 	level_key = "n/a",
@@ -73,7 +100,8 @@ LobbyInternal.default_lobby_data = {
 	num_players = 1,
 	expansion_rule_index = 1,
 	selected_level_key = "n/a",
-	difficulty = "normal"
+	difficulty = "normal",
+	twitch_enabled = "false"
 }
 
 LobbyInternal.init_client = function (network_options)
@@ -254,9 +282,24 @@ LobbyInternal.serialize_psn_data = function (data_table)
 		end
 	end
 
-	local test = conv_table
-	local packed_data = PsnRoom.pack_room_data(conv_table)
-	local packed_data_size = string.len(packed_data)
+	local packed_data, packed_data_size = nil
+
+	if USE_C_SERIALIZATION then
+		packed_data = PsnRoom.pack_room_data(conv_table)
+		packed_data_size = string.len(packed_data)
+	else
+		packed_data = ""
+
+		for idx, key in ipairs(LobbyInternal.key_order) do
+			if idx > 1 then
+				packed_data = packed_data .. "/"
+			end
+
+			packed_data = packed_data .. (conv_table[key] or "1")
+		end
+
+		packed_data_size = string.len(packed_data)
+	end
 
 	fassert(packed_data_size <= PSNRoom.room_data_max_size, "[PSNRoom] Tried to store %d characters in the PSN Room Data, maximum is 255 bytes", packed_data_size)
 
@@ -270,8 +313,27 @@ LobbyInternal.verify_lobby_data = function (lobby_data_table)
 	return lobby_network_hash == my_network_hash
 end
 
+LOBBY_DATA_TEMP_TABLE = {}
+
 LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
-	local t = PsnRoom.unpack_room_data(data_string)
+	local t = nil
+
+	if USE_C_SERIALIZATION then
+		t = PsnRoom.unpack_room_data(data_string)
+	else
+		table.clear(LOBBY_DATA_TEMP_TABLE)
+
+		local data_string_table = string.split(data_string, "/")
+
+		for i = 1, #data_string_table, 1 do
+			local key = LobbyInternal.key_order[i]
+			local value = data_string_table[i]
+			LOBBY_DATA_TEMP_TABLE[key] = value
+		end
+
+		t = LOBBY_DATA_TEMP_TABLE
+	end
+
 	local lobby_data_network_lookups = LobbyInternal.lobby_data_network_lookups
 
 	if verify_lobby_data and not LobbyInternal.verify_lobby_data(t) then
@@ -280,7 +342,7 @@ LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 
 	for key, value in pairs(t) do
 		if lobby_data_network_lookups[key] then
-			t[key] = NetworkLookup[lobby_data_network_lookups[key]][value]
+			t[key] = NetworkLookup[lobby_data_network_lookups[key]][tonumber(value)]
 		end
 	end
 
@@ -382,6 +444,7 @@ PSNRoom.update = function (self, dt)
 		local packed_data_size = string.len(self._serialized_room_data)
 
 		fassert(packed_data_size <= PSNRoom.room_data_max_size, "[PSNRoom] Tried to store %d characters in the PSN Room Data, maximum is 255 bytes", packed_data_size)
+		print("ROOM DATA", self._serialized_room_data)
 		PsnRoom.set_data(self.room_id, self._serialized_room_data)
 		PsnRoom.set_data_internal(self.room_id, self._serialized_room_data)
 

@@ -19,7 +19,7 @@ InteractionDefinitions.store_access.client.stop = function (world, interactor_un
 end
 
 InteractionDefinitions.store_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
-	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interact_talk"
 end
 
 return

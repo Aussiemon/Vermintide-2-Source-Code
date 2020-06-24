@@ -292,12 +292,12 @@ ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_
 
 	local modified_time_in_action = current_time_in_action - 2 * dt
 	local is_within_damage_window = self:_update_sweep(dt, t, current_action, modified_time_in_action)
-	local hud_extension = self._owner_hud_extension
+	self._started_damage_window = self._started_damage_window or is_within_damage_window
 
-	if hud_extension and self._is_critical_strike then
-		if is_within_damage_window and not self._started_damage_window then
-			self._started_damage_window = true
-		elseif not is_within_damage_window and hud_extension.show_critical_indication and self._started_damage_window then
+	if self._is_critical_strike then
+		local hud_extension = self._owner_hud_extension
+
+		if hud_extension and hud_extension.show_critical_indication and not is_within_damage_window and self._started_damage_window then
 			hud_extension.show_critical_indication = false
 		end
 	end
@@ -1230,6 +1230,14 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 		first_person_extension:play_hud_sound_event("Play_hud_melee_headshot", nil, false)
+	end
+
+	local on_hit_hud_sound_event = current_action.on_hit_hud_sound_event
+
+	if on_hit_hud_sound_event then
+		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
+		first_person_extension:play_hud_sound_event(on_hit_hud_sound_event, nil, false)
 	end
 
 	local target_health_extension = ScriptUnit.extension(hit_unit, "health_system")

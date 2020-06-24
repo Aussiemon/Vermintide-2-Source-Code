@@ -135,6 +135,7 @@ local function ai_default_unit_pre_start(unit, context, t, killing_blow)
 	handle_boss_difficulty_kill_achievement_tracking(breed, statistics_db)
 	handle_military_event_achievement(damage_type, breed.name, statistics_db)
 	handle_castle_boss_achievement(killing_blow, unit)
+	QuestSettings.handle_bastard_block_on_death(breed, unit, killing_blow, statistics_db)
 
 	local killer_unit = killing_blow[DamageDataIndex.ATTACKER]
 	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
@@ -567,7 +568,7 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 end
 
 local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
-	local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
+	local attacker_unit = killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT]
 
 	if not Unit.alive(attacker_unit) or not Unit.alive(ai_unit) then
 		return
@@ -585,6 +586,8 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	if not side_manager:is_enemy(attacker_unit, ai_unit) then
 		return
 	end
+
+	Managers.state.event:trigger("on_player_killed_enemy", killing_blow, breed_killed, ai_unit)
 
 	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 

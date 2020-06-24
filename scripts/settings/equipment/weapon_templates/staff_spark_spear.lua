@@ -2,20 +2,22 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			fire_time = 0.1,
+			hold_input = "action_one_hold",
 			fire_at_gaze_setting = "tobii_fire_at_gaze_spark_spear",
 			is_spell = true,
-			fire_sound_on_husk = true,
+			fire_sound_event = "weapon_staff_spark_spear",
 			kind = "charged_projectile",
 			fire_sound_event_parameter = "drakegun_charge_fire",
+			fire_sound_on_husk = true,
 			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_max_ramp_multiplier = 0.6,
 			hit_effect = "staff_spark",
-			aim_assist_ramp_decay_delay = 0.1,
+			aim_assist_max_ramp_multiplier = 0.6,
 			anim_time_scale = 1.5,
-			apply_recoil = true,
+			minimum_hold_time = 2,
 			overcharge_type = "spark",
-			fire_sound_event = "weapon_staff_spark_spear",
+			aim_assist_ramp_decay_delay = 0.1,
+			fire_time = 0.1,
+			apply_recoil = true,
 			speed = 9000,
 			uninterruptible = true,
 			anim_event = "attack_shoot_rapid_right",
@@ -39,13 +41,8 @@ weapon_template.actions = {
 					sub_action = "rapid_left",
 					start_time = 0.2,
 					action = "action_one",
+					hold_allowed = true,
 					input = "action_one"
-				},
-				{
-					sub_action = "rapid_left",
-					start_time = 0.2,
-					action = "action_one",
-					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -62,6 +59,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
+				input_extension:reset_release_input()
 				input_extension:clear_input_buffer()
 			end,
 			cleave_distribution = {

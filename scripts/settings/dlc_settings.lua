@@ -329,6 +329,22 @@ DLCSettings = DLCSettings or {
 			buff = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_buff_settings",
 			pickups = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_pickups_settings"
 		}
+	},
+	mutators_batch_04 = {
+		package_name = "resource_packages/dlcs/mutators_batch_04",
+		additional_settings = {
+			common = "scripts/settings/dlcs/mutators_batch_04/mutators_batch_04_common_settings"
+		}
+	},
+	lake = {
+		package_name = "resource_packages/dlcs/lake",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/lake/lake_equipment_settings",
+			ai = "scripts/settings/dlcs/lake/lake_ai_settings",
+			common = "scripts/settings/dlcs/lake/lake_common_settings",
+			buff = "scripts/settings/dlcs/lake/buff_settings_lake",
+			achievements = "scripts/settings/dlcs/lake/lake_achievements_settings"
+		}
 	}
 }
 

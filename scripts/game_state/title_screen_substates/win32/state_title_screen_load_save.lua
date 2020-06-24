@@ -41,7 +41,7 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 
 	local level_transition_handler = LevelTransitionHandler:new()
 
-	level_transition_handler:set_next_level("prologue")
+	level_transition_handler:set_next_level("prologue", 0)
 
 	self.parent.parent.loading_context.level_transition_handler = level_transition_handler
 	self.parent.parent.loading_context.switch_to_tutorial_backend = run_tutorial

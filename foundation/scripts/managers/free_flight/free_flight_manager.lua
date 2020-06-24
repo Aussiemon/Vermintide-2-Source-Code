@@ -538,6 +538,9 @@ FreeFlightManager._enter_free_flight = function (self, player, data)
 	local world_name = player.viewport_world_name
 	local viewport_name = player.viewport_name
 	local world = Managers.world:world(world_name)
+	local viewports = World.get_data(world, "viewports")
+	local cam = ScriptViewport.camera(viewports[viewport_name])
+	local cam_fov = Camera.vertical_fov(cam)
 	data.active = true
 	data.viewport_name = player.viewport_name
 	data.viewport_world_name = world_name
@@ -546,6 +549,8 @@ FreeFlightManager._enter_free_flight = function (self, player, data)
 	local tm = Camera.local_pose(cam)
 	local position = Matrix4x4.translation(tm)
 	local rotation = Matrix4x4.rotation(tm)
+
+	Camera.set_vertical_fov(cam, cam_fov)
 
 	if self._has_terrain then
 		data.terrain_decoration_observer = TerrainDecoration.create_observer(world, position)

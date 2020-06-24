@@ -386,7 +386,7 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 
 		if Unit.has_data(unit, "LevelEditor", "is_gizmo_unit") then
 			local is_gizmo = Unit.get_data(unit, "LevelEditor", "is_gizmo_unit")
-			local is_reflection_probe = Unit.debug_name(unit) == "core/stingray_renderer/helper_units/reflection_probe/reflection_probe"
+			local is_reflection_probe = Unit.is_a(unit, "core/stingray_renderer/helper_units/reflection_probe/reflection_probe")
 
 			if is_gizmo and not is_reflection_probe then
 				Unit.set_unit_visibility(unit, false)
@@ -584,7 +584,9 @@ GameModeManager.start_specific_level = function (self, level_key, time_until_sta
 			return
 		end
 
-		level_transition_handler:set_next_level(level_key)
+		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
+
+		level_transition_handler:set_next_level(level_key, environment_variation_id)
 		level_transition_handler:level_completed()
 	end
 end

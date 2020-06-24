@@ -230,7 +230,7 @@ ItemMasterList.skin_dr_slayer_skull = {
 	temporary_template = "skin_dr_slayer_skull",
 	display_name = "skin_dr_slayer_skullslayer",
 	name = "skin_dr_slayer_skull",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_slayer_skull",
 	slot_type = "skin",
 	information_text = "information_text_character_skin",
 	hud_icon = "career_dwarf_slayer",
@@ -1656,23 +1656,7 @@ ItemMasterList.frame_dev = {
 	information_text = "information_text_frame",
 	rarity = "common",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_bear = {
 	description = "frame_0088_description",
@@ -1684,23 +1668,7 @@ ItemMasterList.frame_bear = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_collectors_edition = {
 	description = "frame_collectors_edition_description",
@@ -1712,23 +1680,7 @@ ItemMasterList.frame_collectors_edition = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_collectors_edition_preorder = {
 	description = "frame_collectors_edition_preorder_description",
@@ -1740,23 +1692,7 @@ ItemMasterList.frame_collectors_edition_preorder = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_community_01 = {
 	description = "frame_community_01_description",
@@ -1768,23 +1704,7 @@ ItemMasterList.frame_community_01 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_skulls = {
 	description = "frame_skulls_description",
@@ -1796,23 +1716,7 @@ ItemMasterList.frame_skulls = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_geheimnisnacht_01 = {
 	description = "frame_geheimnisnacht_01_description",
@@ -1824,23 +1728,7 @@ ItemMasterList.frame_geheimnisnacht_01 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_geheimnisnacht_02 = {
 	description = "frame_geheimnisnacht_02_description",
@@ -1852,23 +1740,7 @@ ItemMasterList.frame_geheimnisnacht_02 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_geheimnisnacht_03 = {
 	description = "frame_geheimnisnacht_03_description",
@@ -1880,23 +1752,7 @@ ItemMasterList.frame_geheimnisnacht_03 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_summer = {
 	description = "frame_summer_description",
@@ -1908,23 +1764,7 @@ ItemMasterList.frame_summer = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_mondstille_01 = {
 	description = "frame_mondstille_01_description",
@@ -1936,23 +1776,7 @@ ItemMasterList.frame_mondstille_01 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_mondstille_02 = {
 	description = "frame_mondstille_02_description",
@@ -1964,23 +1788,7 @@ ItemMasterList.frame_mondstille_02 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_mondstille_03 = {
 	description = "frame_mondstille_03_description",
@@ -1992,23 +1800,7 @@ ItemMasterList.frame_mondstille_03 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_year_of_the_rat = {
 	description = "frame_rat_description",
@@ -2020,23 +1812,7 @@ ItemMasterList.frame_year_of_the_rat = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_bogenhafen_01 = {
 	description = "frame_bogenhafen_01_description",
@@ -2048,23 +1824,7 @@ ItemMasterList.frame_bogenhafen_01 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_bogenhafen_02 = {
 	description = "frame_bogenhafen_02_description",
@@ -2076,23 +1836,7 @@ ItemMasterList.frame_bogenhafen_02 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_bogenhafen_03 = {
 	description = "frame_bogenhafen_03_description",
@@ -2104,23 +1848,7 @@ ItemMasterList.frame_bogenhafen_03 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_bogenhafen_04 = {
 	description = "frame_bogenhafen_04_description",
@@ -2132,23 +1860,7 @@ ItemMasterList.frame_bogenhafen_04 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_holly_01 = {
 	description = "frame_holly_01_description",
@@ -2160,23 +1872,7 @@ ItemMasterList.frame_holly_01 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_holly_02 = {
 	description = "frame_holly_02_description",
@@ -2188,23 +1884,7 @@ ItemMasterList.frame_holly_02 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_holly_03 = {
 	description = "frame_holly_03_description",
@@ -2216,23 +1896,7 @@ ItemMasterList.frame_holly_03 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_holly_04 = {
 	description = "frame_holly_04_description",
@@ -2244,23 +1908,67 @@ ItemMasterList.frame_holly_04 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_drachenfels_01 = {
+	description = "frame_drachenfels_01_description",
+	temporary_template = "frame_drachenfels_01",
+	display_name = "frame_drachenfels_01_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_drachenfels_1",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_drachenfels_02 = {
+	description = "frame_drachenfels_02_description",
+	temporary_template = "frame_drachenfels_02",
+	display_name = "frame_drachenfels_02_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_drachenfels_2",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_drachenfels_03 = {
+	description = "frame_drachenfels_03_description",
+	temporary_template = "frame_drachenfels_03",
+	display_name = "frame_drachenfels_03_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_drachenfels_3",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_drachenfels_04 = {
+	description = "frame_drachenfels_04_description",
+	temporary_template = "frame_drachenfels_04",
+	display_name = "frame_drachenfels_04_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_drachenfels_4",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_drachenfels_05 = {
+	description = "frame_drachenfels_05_description",
+	temporary_template = "frame_drachenfels_05",
+	display_name = "frame_drachenfels_05_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_drachenfels_5",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0000 = {
 	description = "frame_0000_description",
@@ -2272,23 +1980,7 @@ ItemMasterList.frame_0000 = {
 	information_text = "information_text_frame",
 	rarity = "default",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0001 = {
 	description = "frame_0001_description",
@@ -2300,23 +1992,7 @@ ItemMasterList.frame_0001 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0002 = {
 	description = "frame_0002_description",
@@ -2328,23 +2004,7 @@ ItemMasterList.frame_0002 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0003 = {
 	description = "frame_0003_description",
@@ -2356,23 +2016,7 @@ ItemMasterList.frame_0003 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0004 = {
 	description = "frame_0004_description",
@@ -2384,23 +2028,7 @@ ItemMasterList.frame_0004 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0005 = {
 	description = "frame_0005_description",
@@ -2412,23 +2040,7 @@ ItemMasterList.frame_0005 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0006 = {
 	description = "frame_0006_description",
@@ -2440,23 +2052,7 @@ ItemMasterList.frame_0006 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0007 = {
 	description = "frame_0007_description",
@@ -2468,23 +2064,7 @@ ItemMasterList.frame_0007 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0008 = {
 	description = "frame_0008_description",
@@ -2496,23 +2076,7 @@ ItemMasterList.frame_0008 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0009 = {
 	description = "frame_0009_description",
@@ -2524,23 +2088,7 @@ ItemMasterList.frame_0009 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0010 = {
 	description = "frame_0010_description",
@@ -2552,23 +2100,7 @@ ItemMasterList.frame_0010 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0011 = {
 	description = "frame_0011_description",
@@ -2580,23 +2112,7 @@ ItemMasterList.frame_0011 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0012 = {
 	description = "frame_0012_description",
@@ -2608,23 +2124,7 @@ ItemMasterList.frame_0012 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0013 = {
 	description = "frame_0013_description",
@@ -2636,23 +2136,7 @@ ItemMasterList.frame_0013 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0014 = {
 	description = "frame_0014_description",
@@ -2664,23 +2148,7 @@ ItemMasterList.frame_0014 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0015 = {
 	description = "frame_0015_description",
@@ -2692,23 +2160,7 @@ ItemMasterList.frame_0015 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0016 = {
 	description = "frame_0016_description",
@@ -2720,23 +2172,7 @@ ItemMasterList.frame_0016 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0017 = {
 	description = "frame_0017_description",
@@ -2748,23 +2184,7 @@ ItemMasterList.frame_0017 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0018 = {
 	description = "frame_0018_description",
@@ -2776,23 +2196,7 @@ ItemMasterList.frame_0018 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0019 = {
 	description = "frame_0019_description",
@@ -2804,23 +2208,7 @@ ItemMasterList.frame_0019 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0020 = {
 	description = "frame_0020_description",
@@ -2832,23 +2220,7 @@ ItemMasterList.frame_0020 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0021 = {
 	description = "frame_0021_description",
@@ -2860,23 +2232,7 @@ ItemMasterList.frame_0021 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0022 = {
 	description = "frame_0022_description",
@@ -2888,23 +2244,7 @@ ItemMasterList.frame_0022 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0023 = {
 	description = "frame_0023_description",
@@ -2916,23 +2256,7 @@ ItemMasterList.frame_0023 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0024 = {
 	description = "frame_0024_description",
@@ -2944,23 +2268,7 @@ ItemMasterList.frame_0024 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0025 = {
 	description = "frame_0025_description",
@@ -2972,23 +2280,7 @@ ItemMasterList.frame_0025 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0026 = {
 	description = "frame_0026_description",
@@ -3000,23 +2292,7 @@ ItemMasterList.frame_0026 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0027 = {
 	description = "frame_0027_description",
@@ -3028,23 +2304,7 @@ ItemMasterList.frame_0027 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0028 = {
 	description = "frame_0028_description",
@@ -3056,23 +2316,7 @@ ItemMasterList.frame_0028 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0029 = {
 	description = "frame_0029_description",
@@ -3084,23 +2328,7 @@ ItemMasterList.frame_0029 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0030 = {
 	description = "frame_0030_description",
@@ -3112,23 +2340,7 @@ ItemMasterList.frame_0030 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0031 = {
 	description = "frame_0031_description",
@@ -3140,23 +2352,7 @@ ItemMasterList.frame_0031 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0032 = {
 	description = "frame_0032_description",
@@ -3168,23 +2364,7 @@ ItemMasterList.frame_0032 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0033 = {
 	description = "frame_0033_description",
@@ -3196,23 +2376,7 @@ ItemMasterList.frame_0033 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0034 = {
 	description = "frame_0034_description",
@@ -3224,23 +2388,7 @@ ItemMasterList.frame_0034 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0035 = {
 	description = "frame_0035_description",
@@ -3252,23 +2400,7 @@ ItemMasterList.frame_0035 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0036 = {
 	description = "frame_0036_description",
@@ -3280,23 +2412,7 @@ ItemMasterList.frame_0036 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0037 = {
 	description = "frame_0037_description",
@@ -3308,23 +2424,7 @@ ItemMasterList.frame_0037 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0038 = {
 	description = "frame_0038_description",
@@ -3336,23 +2436,7 @@ ItemMasterList.frame_0038 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0039 = {
 	description = "frame_0039_description",
@@ -3364,23 +2448,7 @@ ItemMasterList.frame_0039 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0040 = {
 	description = "frame_0040_description",
@@ -3392,23 +2460,7 @@ ItemMasterList.frame_0040 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0041 = {
 	description = "frame_0041_description",
@@ -3420,23 +2472,7 @@ ItemMasterList.frame_0041 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0042 = {
 	description = "frame_0042_description",
@@ -3448,23 +2484,7 @@ ItemMasterList.frame_0042 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0043 = {
 	description = "frame_0043_description",
@@ -3476,23 +2496,7 @@ ItemMasterList.frame_0043 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0044 = {
 	description = "frame_0044_description",
@@ -3504,23 +2508,7 @@ ItemMasterList.frame_0044 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0045 = {
 	description = "frame_0045_description",
@@ -3532,23 +2520,7 @@ ItemMasterList.frame_0045 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0046 = {
 	description = "frame_0046_description",
@@ -3560,23 +2532,7 @@ ItemMasterList.frame_0046 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0047 = {
 	description = "frame_0047_description",
@@ -3588,23 +2544,7 @@ ItemMasterList.frame_0047 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0048 = {
 	description = "frame_0048_description",
@@ -3616,23 +2556,7 @@ ItemMasterList.frame_0048 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0049 = {
 	description = "frame_0049_description",
@@ -3644,23 +2568,7 @@ ItemMasterList.frame_0049 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0050 = {
 	description = "frame_0050_description",
@@ -3672,23 +2580,7 @@ ItemMasterList.frame_0050 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0051 = {
 	description = "frame_0051_description",
@@ -3700,23 +2592,7 @@ ItemMasterList.frame_0051 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0052 = {
 	description = "frame_0052_description",
@@ -3728,23 +2604,7 @@ ItemMasterList.frame_0052 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0053 = {
 	description = "frame_0053_description",
@@ -3756,23 +2616,7 @@ ItemMasterList.frame_0053 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0054 = {
 	description = "frame_0054_description",
@@ -3784,23 +2628,7 @@ ItemMasterList.frame_0054 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0055 = {
 	description = "frame_0055_description",
@@ -3812,23 +2640,7 @@ ItemMasterList.frame_0055 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0056 = {
 	description = "frame_0056_description",
@@ -3840,23 +2652,7 @@ ItemMasterList.frame_0056 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0057 = {
 	description = "frame_0057_description",
@@ -3868,23 +2664,7 @@ ItemMasterList.frame_0057 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0058 = {
 	description = "frame_0058_description",
@@ -3896,23 +2676,7 @@ ItemMasterList.frame_0058 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0059 = {
 	description = "frame_0059_description",
@@ -3924,23 +2688,7 @@ ItemMasterList.frame_0059 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0060 = {
 	description = "frame_0060_description",
@@ -3952,23 +2700,7 @@ ItemMasterList.frame_0060 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0061 = {
 	description = "frame_0061_description",
@@ -3980,23 +2712,7 @@ ItemMasterList.frame_0061 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0062 = {
 	description = "frame_0062_description",
@@ -4008,23 +2724,7 @@ ItemMasterList.frame_0062 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0063 = {
 	description = "frame_0063_description",
@@ -4036,23 +2736,7 @@ ItemMasterList.frame_0063 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0064 = {
 	description = "frame_0064_description",
@@ -4064,23 +2748,7 @@ ItemMasterList.frame_0064 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0065 = {
 	description = "frame_0065_description",
@@ -4092,23 +2760,7 @@ ItemMasterList.frame_0065 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0066 = {
 	description = "frame_0066_description",
@@ -4120,23 +2772,7 @@ ItemMasterList.frame_0066 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0067 = {
 	description = "frame_0067_description",
@@ -4148,23 +2784,7 @@ ItemMasterList.frame_0067 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0068 = {
 	description = "frame_0068_description",
@@ -4176,23 +2796,7 @@ ItemMasterList.frame_0068 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0069 = {
 	description = "frame_0069_description",
@@ -4204,23 +2808,7 @@ ItemMasterList.frame_0069 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0070 = {
 	description = "frame_0070_description",
@@ -4232,23 +2820,7 @@ ItemMasterList.frame_0070 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0071 = {
 	description = "frame_0071_description",
@@ -4260,23 +2832,7 @@ ItemMasterList.frame_0071 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0072 = {
 	description = "frame_0072_description",
@@ -4288,23 +2844,7 @@ ItemMasterList.frame_0072 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0073 = {
 	description = "frame_0073_description",
@@ -4316,23 +2856,7 @@ ItemMasterList.frame_0073 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0074 = {
 	description = "frame_0074_description",
@@ -4344,23 +2868,7 @@ ItemMasterList.frame_0074 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0075 = {
 	description = "frame_0075_description",
@@ -4372,23 +2880,7 @@ ItemMasterList.frame_0075 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0076 = {
 	description = "frame_0076_description",
@@ -4400,23 +2892,7 @@ ItemMasterList.frame_0076 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0077 = {
 	description = "frame_0077_description",
@@ -4428,23 +2904,7 @@ ItemMasterList.frame_0077 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0078 = {
 	description = "frame_0078_description",
@@ -4456,23 +2916,7 @@ ItemMasterList.frame_0078 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0079 = {
 	description = "frame_0079_description",
@@ -4484,23 +2928,7 @@ ItemMasterList.frame_0079 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0080 = {
 	description = "frame_0080_description",
@@ -4512,23 +2940,7 @@ ItemMasterList.frame_0080 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0081 = {
 	description = "frame_0081_description",
@@ -4540,23 +2952,7 @@ ItemMasterList.frame_0081 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0084 = {
 	description = "frame_0084_description",
@@ -4568,23 +2964,7 @@ ItemMasterList.frame_0084 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0085 = {
 	description = "frame_0085_description",
@@ -4596,23 +2976,7 @@ ItemMasterList.frame_0085 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0086 = {
 	description = "frame_0086_description",
@@ -4624,23 +2988,7 @@ ItemMasterList.frame_0086 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0087 = {
 	description = "frame_0087_description",
@@ -4652,23 +3000,7 @@ ItemMasterList.frame_0087 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0089 = {
 	description = "frame_0089_description",
@@ -4680,23 +3012,7 @@ ItemMasterList.frame_0089 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0090 = {
 	description = "frame_0090_description",
@@ -4708,23 +3024,7 @@ ItemMasterList.frame_0090 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0091 = {
 	description = "frame_0091_description",
@@ -4736,23 +3036,7 @@ ItemMasterList.frame_0091 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0094 = {
 	description = "frame_0094_description",
@@ -4764,23 +3048,7 @@ ItemMasterList.frame_0094 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0095 = {
 	description = "frame_0095_description",
@@ -4792,23 +3060,7 @@ ItemMasterList.frame_0095 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0096 = {
 	description = "frame_0096_description",
@@ -4820,23 +3072,55 @@ ItemMasterList.frame_0096 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_03_quickplay = {
+	description = "portrait_frame_season_03_quickplay_description",
+	temporary_template = "frame_season_03_quickplay",
+	display_name = "portrait_frame_season_03_quickplay_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_03_quickplay",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_03_tier_1 = {
+	description = "portrait_frame_season_03_tier_1_description",
+	temporary_template = "frame_season_03_tier_1",
+	display_name = "portrait_frame_season_03_tier_1_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_03_tier_1",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_03_tier_2 = {
+	description = "portrait_frame_season_03_tier_2_description",
+	temporary_template = "frame_season_03_tier_2",
+	display_name = "portrait_frame_season_03_tier_2_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_03_tier_2",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_03_tier_3 = {
+	description = "portrait_frame_season_03_tier_3_description",
+	temporary_template = "frame_season_03_tier_3",
+	display_name = "portrait_frame_season_03_tier_3_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_03_tier_3",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_scrap = {
 	description = "crafting_material_scrap_description",
@@ -4849,23 +3133,7 @@ ItemMasterList.crafting_material_scrap = {
 	can_stack = true,
 	hud_icon = "token_icon_01",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_dust_1 = {
 	description = "crafting_material_dust_1_description",
@@ -4878,23 +3146,7 @@ ItemMasterList.crafting_material_dust_1 = {
 	can_stack = true,
 	hud_icon = "token_icon_02",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_dust_2 = {
 	description = "crafting_material_dust_2_description",
@@ -4907,23 +3159,7 @@ ItemMasterList.crafting_material_dust_2 = {
 	can_stack = true,
 	hud_icon = "token_icon_03",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_dust_3 = {
 	description = "crafting_material_dust_3_description",
@@ -4936,23 +3172,7 @@ ItemMasterList.crafting_material_dust_3 = {
 	can_stack = true,
 	hud_icon = "token_icon_04",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_dust_4 = {
 	description = "crafting_material_dust_4_description",
@@ -4965,23 +3185,7 @@ ItemMasterList.crafting_material_dust_4 = {
 	can_stack = true,
 	hud_icon = "token_icon_04",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_act_1 = {
 	description = "crafting_material_act_1_description",
@@ -4993,23 +3197,7 @@ ItemMasterList.crafting_material_act_1 = {
 	can_stack = true,
 	hud_icon = "rune_slot_square_large",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_act_2 = {
 	description = "crafting_material_act_2_description",
@@ -5021,23 +3209,7 @@ ItemMasterList.crafting_material_act_2 = {
 	can_stack = true,
 	hud_icon = "rune_slot_circle_large",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_act_3 = {
 	description = "crafting_material_act_3_description",
@@ -5049,23 +3221,7 @@ ItemMasterList.crafting_material_act_3 = {
 	can_stack = true,
 	hud_icon = "rune_slot_triangle_large",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_weapon = {
 	description = "crafting_material_weapon_description",
@@ -5078,23 +3234,7 @@ ItemMasterList.crafting_material_weapon = {
 	can_stack = true,
 	hud_icon = "forge_icon_wh_2h_sword",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_jewellery = {
 	description = "crafting_material_jewellery_description",
@@ -5107,23 +3247,7 @@ ItemMasterList.crafting_material_jewellery = {
 	can_stack = true,
 	hud_icon = "forge_icon_trinket",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.crafting_material_weapon_skin_tool = {
 	description = "crafting_material_weapon_skin_tool_description",
@@ -5135,23 +3259,7 @@ ItemMasterList.crafting_material_weapon_skin_tool = {
 	can_stack = true,
 	hud_icon = "forge_icon_trinket",
 	item_type = "crafting_material",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.bw_gate_0000 = {
 	description = "description_bw_gate_0001",
@@ -5265,7 +3373,7 @@ ItemMasterList.unchained_hat_0004 = {
 }
 ItemMasterList.unchained_hat_0005 = {
 	description = "description_unchained_hat_0005",
-	rarity = "unique",
+	rarity = "exotic",
 	display_name = "display_name_unchained_hat_0005",
 	template = "bw_hat",
 	inventory_icon = "icon_unchained_hat_0005",
@@ -5890,7 +3998,7 @@ ItemMasterList.ranger_hat_0006 = {
 }
 ItemMasterList.ranger_hat_0007 = {
 	description = "description_ranger_hat_0007",
-	rarity = "unique",
+	rarity = "exotic",
 	display_name = "display_name_ranger_hat_0007",
 	template = "dr_helmets_skinned_long",
 	inventory_icon = "icon_ranger_hat_0007",
@@ -6988,7 +5096,7 @@ ItemMasterList.knight_hat_0005 = {
 }
 ItemMasterList.knight_hat_0006 = {
 	description = "description_knight_hat_0006",
-	rarity = "unique",
+	rarity = "exotic",
 	display_name = "display_name_knight_hat_0006",
 	template = "es_hats_no_ear_moustache",
 	inventory_icon = "icon_knight_hat_0006",
@@ -7281,7 +5389,7 @@ ItemMasterList.witchhunter_hat_0009 = {
 }
 ItemMasterList.witchhunter_hat_0010 = {
 	description = "description_witchhunter_hat_0010",
-	rarity = "unique",
+	rarity = "exotic",
 	display_name = "display_name_witchhunter_hat_0010",
 	template = "wh_hats_skinned",
 	inventory_icon = "icon_witchhunter_hat_0010",
@@ -7373,7 +5481,7 @@ ItemMasterList.zealot_hat_0003 = {
 }
 ItemMasterList.zealot_hat_0004 = {
 	description = "description_zealot_hat_0004",
-	rarity = "unique",
+	rarity = "exotic",
 	display_name = "display_name_zealot_hat_0004",
 	template = "wh_z_hats_tattoo_00",
 	inventory_icon = "icon_zealot_hat_0004",
@@ -7872,7 +5980,7 @@ ItemMasterList.waywatcher_hat_0010 = {
 }
 ItemMasterList.waywatcher_hat_0011 = {
 	description = "description_waywatcher_hat_0011",
-	rarity = "unique",
+	rarity = "exotic",
 	display_name = "display_name_waywatcher_hat_0011",
 	template = "ww_hoods",
 	inventory_icon = "icon_waywatcher_hat_0011",
@@ -8206,7 +6314,7 @@ ItemMasterList.maidenguard_hat_0007 = {
 }
 ItemMasterList.maidenguard_hat_0008 = {
 	description = "description_maidenguard_hat_0008",
-	rarity = "unique",
+	rarity = "exotic",
 	display_name = "display_name_maidenguard_hat_0008",
 	template = "ww_helmet_mask",
 	inventory_icon = "icon_maidenguard_hat_0008",
@@ -9401,23 +7509,7 @@ ItemMasterList.ring = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_02 = {
 	description = "description_ring_02",
@@ -9431,23 +7523,7 @@ ItemMasterList.ring_02 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_03 = {
 	description = "description_ring_03",
@@ -9461,23 +7537,7 @@ ItemMasterList.ring_03 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_04 = {
 	description = "description_ring_04",
@@ -9491,23 +7551,7 @@ ItemMasterList.ring_04 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_05 = {
 	description = "description_ring_05",
@@ -9521,23 +7565,7 @@ ItemMasterList.ring_05 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_06 = {
 	description = "description_ring_06",
@@ -9551,23 +7579,7 @@ ItemMasterList.ring_06 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_07 = {
 	description = "description_ring_07",
@@ -9581,23 +7593,7 @@ ItemMasterList.ring_07 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_08 = {
 	description = "description_ring_08",
@@ -9611,23 +7607,7 @@ ItemMasterList.ring_08 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_09 = {
 	description = "description_ring_01",
@@ -9641,23 +7621,7 @@ ItemMasterList.ring_09 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.ring_10 = {
 	description = "description_ring_10",
@@ -9671,23 +7635,7 @@ ItemMasterList.ring_10 = {
 	property_table_name = "offence_accessory",
 	item_type = "ring",
 	trait_table_name = "offence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace = {
 	description = "description_necklace_09",
@@ -9701,23 +7649,7 @@ ItemMasterList.necklace = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_02 = {
 	description = "description_necklace_02",
@@ -9731,23 +7663,7 @@ ItemMasterList.necklace_02 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_03 = {
 	description = "description_necklace_03",
@@ -9761,23 +7677,7 @@ ItemMasterList.necklace_03 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_04 = {
 	description = "description_necklace_04",
@@ -9791,23 +7691,7 @@ ItemMasterList.necklace_04 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_05 = {
 	description = "description_necklace_05",
@@ -9821,23 +7705,7 @@ ItemMasterList.necklace_05 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_06 = {
 	description = "description_necklace_06",
@@ -9851,23 +7719,7 @@ ItemMasterList.necklace_06 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_07 = {
 	description = "description_necklace_07",
@@ -9881,23 +7733,7 @@ ItemMasterList.necklace_07 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_08 = {
 	description = "description_necklace_08",
@@ -9911,23 +7747,7 @@ ItemMasterList.necklace_08 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_09 = {
 	description = "description_necklace_01",
@@ -9941,23 +7761,7 @@ ItemMasterList.necklace_09 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.necklace_10 = {
 	description = "description_necklace_10",
@@ -9971,23 +7775,7 @@ ItemMasterList.necklace_10 = {
 	property_table_name = "defence_accessory",
 	item_type = "necklace",
 	trait_table_name = "defence_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket = {
 	description = "description_trinket_12",
@@ -10001,23 +7789,7 @@ ItemMasterList.trinket = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_02 = {
 	description = "description_trinket_02",
@@ -10031,23 +7803,7 @@ ItemMasterList.trinket_02 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_03 = {
 	description = "description_trinket_03",
@@ -10061,23 +7817,7 @@ ItemMasterList.trinket_03 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_04 = {
 	description = "description_trinket_04",
@@ -10091,23 +7831,7 @@ ItemMasterList.trinket_04 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_05 = {
 	description = "description_trinket_05",
@@ -10121,23 +7845,7 @@ ItemMasterList.trinket_05 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_06 = {
 	description = "description_trinket_06",
@@ -10151,23 +7859,7 @@ ItemMasterList.trinket_06 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_07 = {
 	description = "description_trinket_07",
@@ -10181,23 +7873,7 @@ ItemMasterList.trinket_07 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_08 = {
 	description = "description_trinket_08",
@@ -10211,23 +7887,7 @@ ItemMasterList.trinket_08 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_09 = {
 	description = "description_trinket_09",
@@ -10241,23 +7901,7 @@ ItemMasterList.trinket_09 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_10 = {
 	description = "description_trinket_10",
@@ -10271,23 +7915,7 @@ ItemMasterList.trinket_10 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_11 = {
 	description = "description_trinket_11",
@@ -10301,23 +7929,7 @@ ItemMasterList.trinket_11 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.trinket_12 = {
 	description = "description_trinket_01",
@@ -10331,23 +7943,7 @@ ItemMasterList.trinket_12 = {
 	property_table_name = "utility_accessory",
 	item_type = "trinket",
 	trait_table_name = "utility_accessory",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.deed = {
 	description = "description_deed_generic",
@@ -10357,23 +7953,7 @@ ItemMasterList.deed = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"player_dot"
@@ -10393,23 +7973,7 @@ ItemMasterList.collectors_deed_0001 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore"
 	},
@@ -10431,23 +7995,7 @@ ItemMasterList.collectors_deed_0002 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency"
 	},
@@ -10469,23 +8017,7 @@ ItemMasterList.collectors_deed_0003 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"player_dot"
 	},
@@ -10507,23 +8039,7 @@ ItemMasterList.deed_0001 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_pickups"
 	},
@@ -10542,23 +8058,7 @@ ItemMasterList.deed_0002 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_ammo"
 	},
@@ -10577,23 +8077,7 @@ ItemMasterList.deed_0003 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"player_dot"
 	},
@@ -10612,23 +8096,7 @@ ItemMasterList.deed_0004 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run"
 	},
@@ -10647,23 +8115,7 @@ ItemMasterList.deed_0005 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn"
 	},
@@ -10682,23 +8134,7 @@ ItemMasterList.deed_0006 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death"
 	},
@@ -10717,23 +8153,7 @@ ItemMasterList.deed_0007 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"whiterun"
 	},
@@ -10752,23 +8172,7 @@ ItemMasterList.deed_0008 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency"
 	},
@@ -10787,23 +8191,7 @@ ItemMasterList.deed_0009 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups"
@@ -10823,23 +8211,7 @@ ItemMasterList.deed_0010 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"player_dot"
@@ -10859,23 +8231,7 @@ ItemMasterList.deed_0011 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"no_pickups"
@@ -10895,23 +8251,7 @@ ItemMasterList.deed_0012 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot"
@@ -10931,23 +8271,7 @@ ItemMasterList.deed_0013 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death"
@@ -10967,23 +8291,7 @@ ItemMasterList.deed_0014 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_pickups"
@@ -11003,23 +8311,7 @@ ItemMasterList.deed_0015 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"player_dot"
@@ -11039,23 +8331,7 @@ ItemMasterList.deed_0016 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death"
@@ -11075,23 +8351,7 @@ ItemMasterList.deed_0017 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_respawn"
@@ -11111,23 +8371,7 @@ ItemMasterList.deed_0018 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_pickups"
@@ -11147,23 +8391,7 @@ ItemMasterList.deed_0019 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot"
@@ -11183,23 +8411,7 @@ ItemMasterList.deed_0020 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"instant_death"
@@ -11219,23 +8431,7 @@ ItemMasterList.deed_0021 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn"
@@ -11255,23 +8451,7 @@ ItemMasterList.deed_0022 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"elite_run"
@@ -11291,23 +8471,7 @@ ItemMasterList.deed_0023 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_pickups"
@@ -11327,23 +8491,7 @@ ItemMasterList.deed_0024 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -11363,23 +8511,7 @@ ItemMasterList.deed_0025 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -11399,23 +8531,7 @@ ItemMasterList.deed_0026 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"instant_death"
@@ -11435,23 +8551,7 @@ ItemMasterList.deed_0027 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_respawn"
@@ -11471,23 +8571,7 @@ ItemMasterList.deed_0028 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"elite_run"
@@ -11507,23 +8591,7 @@ ItemMasterList.deed_0029 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"specials_frequency"
@@ -11543,23 +8611,7 @@ ItemMasterList.deed_0030 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_pickups"
@@ -11579,23 +8631,7 @@ ItemMasterList.deed_0031 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"player_dot"
@@ -11615,23 +8651,7 @@ ItemMasterList.deed_0032 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"instant_death"
@@ -11651,23 +8671,7 @@ ItemMasterList.deed_0033 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_respawn"
@@ -11687,23 +8691,7 @@ ItemMasterList.deed_0034 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"elite_run"
@@ -11723,23 +8711,7 @@ ItemMasterList.deed_0035 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death",
@@ -11761,23 +8733,7 @@ ItemMasterList.deed_0036 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot",
@@ -11799,23 +8755,7 @@ ItemMasterList.deed_0037 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot",
@@ -11836,23 +8776,7 @@ ItemMasterList.deed_0038 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn",
@@ -11873,23 +8797,7 @@ ItemMasterList.deed_0039 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups",
@@ -11910,23 +8818,7 @@ ItemMasterList.deed_0040 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death",
@@ -11947,23 +8839,7 @@ ItemMasterList.deed_1001 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_pickups"
 	},
@@ -11982,23 +8858,7 @@ ItemMasterList.deed_1002 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_ammo"
 	},
@@ -12017,23 +8877,7 @@ ItemMasterList.deed_1003 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"player_dot"
 	},
@@ -12052,23 +8896,7 @@ ItemMasterList.deed_1004 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run"
 	},
@@ -12087,23 +8915,7 @@ ItemMasterList.deed_1005 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn"
 	},
@@ -12122,23 +8934,7 @@ ItemMasterList.deed_1006 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death"
 	},
@@ -12157,23 +8953,7 @@ ItemMasterList.deed_1007 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"whiterun"
 	},
@@ -12192,23 +8972,7 @@ ItemMasterList.deed_1008 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency"
 	},
@@ -12227,23 +8991,7 @@ ItemMasterList.deed_1009 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups"
@@ -12263,23 +9011,7 @@ ItemMasterList.deed_1010 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"player_dot"
@@ -12299,23 +9031,7 @@ ItemMasterList.deed_1011 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"no_pickups"
@@ -12335,23 +9051,7 @@ ItemMasterList.deed_1012 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot"
@@ -12371,23 +9071,7 @@ ItemMasterList.deed_1013 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death"
@@ -12407,23 +9091,7 @@ ItemMasterList.deed_1014 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_pickups"
@@ -12443,23 +9111,7 @@ ItemMasterList.deed_1015 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"player_dot"
@@ -12479,23 +9131,7 @@ ItemMasterList.deed_1016 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death"
@@ -12515,23 +9151,7 @@ ItemMasterList.deed_1017 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_respawn"
@@ -12551,23 +9171,7 @@ ItemMasterList.deed_1018 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_pickups"
@@ -12587,23 +9191,7 @@ ItemMasterList.deed_1019 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot"
@@ -12623,23 +9211,7 @@ ItemMasterList.deed_1020 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"instant_death"
@@ -12659,23 +9231,7 @@ ItemMasterList.deed_1021 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn"
@@ -12695,23 +9251,7 @@ ItemMasterList.deed_1022 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"elite_run"
@@ -12731,23 +9271,7 @@ ItemMasterList.deed_1023 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_pickups"
@@ -12767,23 +9291,7 @@ ItemMasterList.deed_1024 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -12803,23 +9311,7 @@ ItemMasterList.deed_1025 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -12839,23 +9331,7 @@ ItemMasterList.deed_1026 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"instant_death"
@@ -12875,23 +9351,7 @@ ItemMasterList.deed_1027 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_respawn"
@@ -12911,23 +9371,7 @@ ItemMasterList.deed_1028 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"elite_run"
@@ -12947,23 +9391,7 @@ ItemMasterList.deed_1029 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"specials_frequency"
@@ -12983,23 +9411,7 @@ ItemMasterList.deed_1030 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_pickups"
@@ -13019,23 +9431,7 @@ ItemMasterList.deed_1031 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"player_dot"
@@ -13055,23 +9451,7 @@ ItemMasterList.deed_1032 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"instant_death"
@@ -13091,23 +9471,7 @@ ItemMasterList.deed_1033 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_respawn"
@@ -13127,23 +9491,7 @@ ItemMasterList.deed_1034 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"elite_run"
@@ -13163,23 +9511,7 @@ ItemMasterList.deed_1035 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death",
@@ -13201,23 +9533,7 @@ ItemMasterList.deed_1036 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot",
@@ -13239,23 +9555,7 @@ ItemMasterList.deed_1037 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot",
@@ -13276,23 +9576,7 @@ ItemMasterList.deed_1038 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn",
@@ -13313,23 +9597,7 @@ ItemMasterList.deed_1039 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups",
@@ -13350,23 +9618,7 @@ ItemMasterList.deed_1040 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death",
@@ -13387,23 +9639,7 @@ ItemMasterList.deed_2001 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_pickups"
 	},
@@ -13422,23 +9658,7 @@ ItemMasterList.deed_2002 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_ammo"
 	},
@@ -13457,23 +9677,7 @@ ItemMasterList.deed_2003 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"player_dot"
 	},
@@ -13492,23 +9696,7 @@ ItemMasterList.deed_2004 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run"
 	},
@@ -13527,23 +9715,7 @@ ItemMasterList.deed_2005 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn"
 	},
@@ -13562,23 +9734,7 @@ ItemMasterList.deed_2006 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death"
 	},
@@ -13597,23 +9753,7 @@ ItemMasterList.deed_2007 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"whiterun"
 	},
@@ -13632,23 +9772,7 @@ ItemMasterList.deed_2008 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency"
 	},
@@ -13667,23 +9791,7 @@ ItemMasterList.deed_2009 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups"
@@ -13703,23 +9811,7 @@ ItemMasterList.deed_2010 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"player_dot"
@@ -13739,23 +9831,7 @@ ItemMasterList.deed_2011 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"no_pickups"
@@ -13775,23 +9851,7 @@ ItemMasterList.deed_2012 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot"
@@ -13811,23 +9871,7 @@ ItemMasterList.deed_2013 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death"
@@ -13847,23 +9891,7 @@ ItemMasterList.deed_2014 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_pickups"
@@ -13883,23 +9911,7 @@ ItemMasterList.deed_2015 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"player_dot"
@@ -13919,23 +9931,7 @@ ItemMasterList.deed_2016 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death"
@@ -13955,23 +9951,7 @@ ItemMasterList.deed_2017 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_respawn"
@@ -13991,23 +9971,7 @@ ItemMasterList.deed_2018 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_pickups"
@@ -14027,23 +9991,7 @@ ItemMasterList.deed_2019 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot"
@@ -14063,23 +10011,7 @@ ItemMasterList.deed_2020 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"instant_death"
@@ -14099,23 +10031,7 @@ ItemMasterList.deed_2021 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn"
@@ -14135,23 +10051,7 @@ ItemMasterList.deed_2022 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"elite_run"
@@ -14171,23 +10071,7 @@ ItemMasterList.deed_2023 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_pickups"
@@ -14207,23 +10091,7 @@ ItemMasterList.deed_2024 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -14243,23 +10111,7 @@ ItemMasterList.deed_2025 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -14279,23 +10131,7 @@ ItemMasterList.deed_2026 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"instant_death"
@@ -14315,23 +10151,7 @@ ItemMasterList.deed_2027 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_respawn"
@@ -14351,23 +10171,7 @@ ItemMasterList.deed_2028 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"elite_run"
@@ -14387,23 +10191,7 @@ ItemMasterList.deed_2029 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"specials_frequency"
@@ -14423,23 +10211,7 @@ ItemMasterList.deed_2030 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_pickups"
@@ -14459,23 +10231,7 @@ ItemMasterList.deed_2031 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"player_dot"
@@ -14495,23 +10251,7 @@ ItemMasterList.deed_2032 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"instant_death"
@@ -14531,23 +10271,7 @@ ItemMasterList.deed_2033 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_respawn"
@@ -14567,23 +10291,7 @@ ItemMasterList.deed_2034 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"elite_run"
@@ -14603,23 +10311,7 @@ ItemMasterList.deed_2035 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death",
@@ -14641,23 +10333,7 @@ ItemMasterList.deed_2036 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot",
@@ -14679,23 +10355,7 @@ ItemMasterList.deed_2037 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot",
@@ -14716,23 +10376,7 @@ ItemMasterList.deed_2038 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn",
@@ -14753,23 +10397,7 @@ ItemMasterList.deed_2039 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups",
@@ -14790,23 +10418,7 @@ ItemMasterList.deed_2040 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death",
@@ -14827,23 +10439,7 @@ ItemMasterList.deed_2041 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_specials",
 		"more_specials",
@@ -14866,23 +10462,7 @@ ItemMasterList.deed_2042 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"big_specials",
 		"more_specials",
@@ -14905,23 +10485,7 @@ ItemMasterList.deed_3001 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_pickups"
 	},
@@ -14940,23 +10504,7 @@ ItemMasterList.deed_3002 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_ammo"
 	},
@@ -14975,23 +10523,7 @@ ItemMasterList.deed_3003 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"player_dot"
 	},
@@ -15010,23 +10542,7 @@ ItemMasterList.deed_3004 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run"
 	},
@@ -15045,23 +10561,7 @@ ItemMasterList.deed_3005 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn"
 	},
@@ -15080,23 +10580,7 @@ ItemMasterList.deed_3006 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death"
 	},
@@ -15115,23 +10599,7 @@ ItemMasterList.deed_3007 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"whiterun"
 	},
@@ -15150,23 +10618,7 @@ ItemMasterList.deed_3008 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency"
 	},
@@ -15185,23 +10637,7 @@ ItemMasterList.deed_3009 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups"
@@ -15221,23 +10657,7 @@ ItemMasterList.deed_3010 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"player_dot"
@@ -15257,23 +10677,7 @@ ItemMasterList.deed_3011 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"no_pickups"
@@ -15293,23 +10697,7 @@ ItemMasterList.deed_3012 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot"
@@ -15329,23 +10717,7 @@ ItemMasterList.deed_3013 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death"
@@ -15365,23 +10737,7 @@ ItemMasterList.deed_3014 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_pickups"
@@ -15401,23 +10757,7 @@ ItemMasterList.deed_3015 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"player_dot"
@@ -15437,23 +10777,7 @@ ItemMasterList.deed_3016 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death"
@@ -15473,23 +10797,7 @@ ItemMasterList.deed_3017 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_respawn"
@@ -15509,23 +10817,7 @@ ItemMasterList.deed_3018 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_pickups"
@@ -15545,23 +10837,7 @@ ItemMasterList.deed_3019 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot"
@@ -15581,23 +10857,7 @@ ItemMasterList.deed_3020 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"instant_death"
@@ -15617,23 +10877,7 @@ ItemMasterList.deed_3021 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn"
@@ -15653,23 +10897,7 @@ ItemMasterList.deed_3022 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"elite_run"
@@ -15689,23 +10917,7 @@ ItemMasterList.deed_3023 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_pickups"
@@ -15725,23 +10937,7 @@ ItemMasterList.deed_3024 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -15761,23 +10957,7 @@ ItemMasterList.deed_3025 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -15797,23 +10977,7 @@ ItemMasterList.deed_3026 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"instant_death"
@@ -15833,23 +10997,7 @@ ItemMasterList.deed_3027 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_respawn"
@@ -15869,23 +11017,7 @@ ItemMasterList.deed_3028 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"elite_run"
@@ -15905,23 +11037,7 @@ ItemMasterList.deed_3029 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"specials_frequency"
@@ -15941,23 +11057,7 @@ ItemMasterList.deed_3030 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_pickups"
@@ -15977,23 +11077,7 @@ ItemMasterList.deed_3031 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"player_dot"
@@ -16013,23 +11097,7 @@ ItemMasterList.deed_3032 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"instant_death"
@@ -16049,23 +11117,7 @@ ItemMasterList.deed_3033 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_respawn"
@@ -16085,23 +11137,7 @@ ItemMasterList.deed_3034 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"elite_run"
@@ -16121,23 +11157,7 @@ ItemMasterList.deed_3035 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death",
@@ -16159,23 +11179,7 @@ ItemMasterList.deed_3036 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot",
@@ -16197,23 +11201,7 @@ ItemMasterList.deed_3037 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot",
@@ -16234,23 +11222,7 @@ ItemMasterList.deed_3038 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn",
@@ -16271,23 +11243,7 @@ ItemMasterList.deed_3039 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups",
@@ -16308,23 +11264,7 @@ ItemMasterList.deed_3040 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death",
@@ -16345,23 +11285,7 @@ ItemMasterList.deed_4001 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_pickups"
 	},
@@ -16380,23 +11304,7 @@ ItemMasterList.deed_4002 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_ammo"
 	},
@@ -16415,23 +11323,7 @@ ItemMasterList.deed_4003 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"player_dot"
 	},
@@ -16450,23 +11342,7 @@ ItemMasterList.deed_4004 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run"
 	},
@@ -16485,23 +11361,7 @@ ItemMasterList.deed_4005 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn"
 	},
@@ -16520,23 +11380,7 @@ ItemMasterList.deed_4006 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death"
 	},
@@ -16555,23 +11399,7 @@ ItemMasterList.deed_4007 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"whiterun"
 	},
@@ -16590,23 +11418,7 @@ ItemMasterList.deed_4008 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency"
 	},
@@ -16625,23 +11437,7 @@ ItemMasterList.deed_4009 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups"
@@ -16661,23 +11457,7 @@ ItemMasterList.deed_4010 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"player_dot"
@@ -16697,23 +11477,7 @@ ItemMasterList.deed_4011 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"no_pickups"
@@ -16733,23 +11497,7 @@ ItemMasterList.deed_4012 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot"
@@ -16769,23 +11517,7 @@ ItemMasterList.deed_4013 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death"
@@ -16805,23 +11537,7 @@ ItemMasterList.deed_4014 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_pickups"
@@ -16841,23 +11557,7 @@ ItemMasterList.deed_4015 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"player_dot"
@@ -16877,23 +11577,7 @@ ItemMasterList.deed_4016 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death"
@@ -16913,23 +11597,7 @@ ItemMasterList.deed_4017 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"no_respawn"
@@ -16949,23 +11617,7 @@ ItemMasterList.deed_4018 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_pickups"
@@ -16985,23 +11637,7 @@ ItemMasterList.deed_4019 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot"
@@ -17021,23 +11657,7 @@ ItemMasterList.deed_4020 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"instant_death"
@@ -17057,23 +11677,7 @@ ItemMasterList.deed_4021 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn"
@@ -17093,23 +11697,7 @@ ItemMasterList.deed_4022 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"elite_run"
@@ -17129,23 +11717,7 @@ ItemMasterList.deed_4023 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_pickups"
@@ -17165,23 +11737,7 @@ ItemMasterList.deed_4024 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -17201,23 +11757,7 @@ ItemMasterList.deed_4025 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"player_dot"
@@ -17237,23 +11777,7 @@ ItemMasterList.deed_4026 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"instant_death"
@@ -17273,23 +11797,7 @@ ItemMasterList.deed_4027 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"no_respawn"
@@ -17309,23 +11817,7 @@ ItemMasterList.deed_4028 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"elite_run"
@@ -17345,23 +11837,7 @@ ItemMasterList.deed_4029 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"hordes_galore",
 		"specials_frequency"
@@ -17381,23 +11857,7 @@ ItemMasterList.deed_4030 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_pickups"
@@ -17417,23 +11877,7 @@ ItemMasterList.deed_4031 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"player_dot"
@@ -17453,23 +11897,7 @@ ItemMasterList.deed_4032 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"instant_death"
@@ -17489,23 +11917,7 @@ ItemMasterList.deed_4033 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"no_respawn"
@@ -17525,23 +11937,7 @@ ItemMasterList.deed_4034 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"powerful_elites",
 		"elite_run"
@@ -17561,23 +11957,7 @@ ItemMasterList.deed_4035 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"elite_run",
 		"instant_death",
@@ -17599,23 +11979,7 @@ ItemMasterList.deed_4036 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"player_dot",
@@ -17637,23 +12001,7 @@ ItemMasterList.deed_4037 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"player_dot",
@@ -17674,23 +12022,7 @@ ItemMasterList.deed_4038 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"specials_frequency",
 		"no_respawn",
@@ -17711,23 +12043,7 @@ ItemMasterList.deed_4039 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"instant_death",
 		"no_pickups",
@@ -17748,23 +12064,7 @@ ItemMasterList.deed_4040 = {
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	mutators = {
 		"no_respawn",
 		"instant_death",
@@ -17791,25 +12091,9 @@ ItemMasterList.level_chest = {
 	display_unit = "chest_1",
 	item_type = "loot_chest",
 	chest_category = "level_up",
-	chest_sort_order = 1,
+	chest_sort_order = 0,
 	chest_tier = 1,
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.level_chest_02 = {
 	description = "level_chest_description_01",
@@ -17825,25 +12109,9 @@ ItemMasterList.level_chest_02 = {
 	display_unit = "chest_1",
 	item_type = "loot_chest",
 	chest_category = "level_up",
-	chest_sort_order = 1,
+	chest_sort_order = 0,
 	chest_tier = 1,
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.bogenhafen_chest = {
 	item_type = "loot_chest",
@@ -17858,27 +12126,11 @@ ItemMasterList.bogenhafen_chest = {
 	chest_tier = 1,
 	description = "bogenhafen_chest_description",
 	temporary_template = "",
-	chest_sort_order = 1,
+	chest_sort_order = 0,
 	inventory_icon = "icon_loot_chest_bgh",
 	display_unit = "chest_1",
 	info_text_box_text_id = "loot_opening_screen_non_specific_description",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.deed_chest = {
 	description = "deed_chest_description_02",
@@ -17896,23 +12148,7 @@ ItemMasterList.deed_chest = {
 	chest_category = "level_up",
 	chest_sort_order = 1,
 	chest_tier = 1,
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_01_01 = {
 	item_type = "loot_chest",
@@ -17931,23 +12167,7 @@ ItemMasterList.loot_chest_01_01 = {
 	chest_sort_order = 1,
 	inventory_icon = "icon_loot_chest_d1_t1",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_01_02 = {
 	item_type = "loot_chest",
@@ -17966,23 +12186,7 @@ ItemMasterList.loot_chest_01_02 = {
 	chest_sort_order = 1,
 	inventory_icon = "icon_loot_chest_d1_t2",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_01_03 = {
 	item_type = "loot_chest",
@@ -18001,23 +12205,7 @@ ItemMasterList.loot_chest_01_03 = {
 	chest_sort_order = 1,
 	inventory_icon = "icon_loot_chest_d1_t3",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_01_04 = {
 	item_type = "loot_chest",
@@ -18036,23 +12224,7 @@ ItemMasterList.loot_chest_01_04 = {
 	chest_sort_order = 1,
 	inventory_icon = "icon_loot_chest_d1_t4",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_01_05 = {
 	item_type = "loot_chest",
@@ -18071,23 +12243,7 @@ ItemMasterList.loot_chest_01_05 = {
 	chest_sort_order = 1,
 	inventory_icon = "icon_loot_chest_d1_t5",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_01_06 = {
 	item_type = "loot_chest",
@@ -18106,23 +12262,7 @@ ItemMasterList.loot_chest_01_06 = {
 	chest_sort_order = 1,
 	inventory_icon = "icon_loot_chest_d1_t6",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_02_01 = {
 	item_type = "loot_chest",
@@ -18141,23 +12281,7 @@ ItemMasterList.loot_chest_02_01 = {
 	chest_sort_order = 2,
 	inventory_icon = "icon_loot_chest_d2_t1",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_02_02 = {
 	item_type = "loot_chest",
@@ -18176,23 +12300,7 @@ ItemMasterList.loot_chest_02_02 = {
 	chest_sort_order = 2,
 	inventory_icon = "icon_loot_chest_d2_t2",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_02_03 = {
 	item_type = "loot_chest",
@@ -18211,23 +12319,7 @@ ItemMasterList.loot_chest_02_03 = {
 	chest_sort_order = 2,
 	inventory_icon = "icon_loot_chest_d2_t3",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_02_04 = {
 	item_type = "loot_chest",
@@ -18246,23 +12338,7 @@ ItemMasterList.loot_chest_02_04 = {
 	chest_sort_order = 2,
 	inventory_icon = "icon_loot_chest_d2_t4",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_02_05 = {
 	item_type = "loot_chest",
@@ -18281,23 +12357,7 @@ ItemMasterList.loot_chest_02_05 = {
 	chest_sort_order = 2,
 	inventory_icon = "icon_loot_chest_d2_t5",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_02_06 = {
 	item_type = "loot_chest",
@@ -18316,23 +12376,7 @@ ItemMasterList.loot_chest_02_06 = {
 	chest_sort_order = 2,
 	inventory_icon = "icon_loot_chest_d2_t6",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_03_01 = {
 	item_type = "loot_chest",
@@ -18351,23 +12395,7 @@ ItemMasterList.loot_chest_03_01 = {
 	chest_sort_order = 3,
 	inventory_icon = "icon_loot_chest_d3_t1",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_03_02 = {
 	item_type = "loot_chest",
@@ -18386,23 +12414,7 @@ ItemMasterList.loot_chest_03_02 = {
 	chest_sort_order = 3,
 	inventory_icon = "icon_loot_chest_d3_t2",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_03_03 = {
 	item_type = "loot_chest",
@@ -18421,23 +12433,7 @@ ItemMasterList.loot_chest_03_03 = {
 	chest_sort_order = 3,
 	inventory_icon = "icon_loot_chest_d3_t3",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_03_04 = {
 	item_type = "loot_chest",
@@ -18456,23 +12452,7 @@ ItemMasterList.loot_chest_03_04 = {
 	chest_sort_order = 3,
 	inventory_icon = "icon_loot_chest_d3_t4",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_03_05 = {
 	item_type = "loot_chest",
@@ -18491,23 +12471,7 @@ ItemMasterList.loot_chest_03_05 = {
 	chest_sort_order = 3,
 	inventory_icon = "icon_loot_chest_d3_t5",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_03_06 = {
 	item_type = "loot_chest",
@@ -18526,23 +12490,7 @@ ItemMasterList.loot_chest_03_06 = {
 	chest_sort_order = 3,
 	inventory_icon = "icon_loot_chest_d3_t6",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_04_01 = {
 	item_type = "loot_chest",
@@ -18561,23 +12509,7 @@ ItemMasterList.loot_chest_04_01 = {
 	chest_sort_order = 4,
 	inventory_icon = "icon_loot_chest_d4_t1",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_04_02 = {
 	item_type = "loot_chest",
@@ -18596,23 +12528,7 @@ ItemMasterList.loot_chest_04_02 = {
 	chest_sort_order = 4,
 	inventory_icon = "icon_loot_chest_d4_t2",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_04_03 = {
 	item_type = "loot_chest",
@@ -18631,23 +12547,7 @@ ItemMasterList.loot_chest_04_03 = {
 	chest_sort_order = 4,
 	inventory_icon = "icon_loot_chest_d4_t3",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_04_04 = {
 	item_type = "loot_chest",
@@ -18666,23 +12566,7 @@ ItemMasterList.loot_chest_04_04 = {
 	chest_sort_order = 4,
 	inventory_icon = "icon_loot_chest_d4_t4",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_04_05 = {
 	item_type = "loot_chest",
@@ -18701,23 +12585,7 @@ ItemMasterList.loot_chest_04_05 = {
 	chest_sort_order = 4,
 	inventory_icon = "icon_loot_chest_d4_t5",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_04_06 = {
 	item_type = "loot_chest",
@@ -18736,23 +12604,7 @@ ItemMasterList.loot_chest_04_06 = {
 	chest_sort_order = 4,
 	inventory_icon = "icon_loot_chest_d4_t6",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_05_01 = {
 	item_type = "loot_chest",
@@ -18771,23 +12623,7 @@ ItemMasterList.loot_chest_05_01 = {
 	chest_sort_order = 5,
 	inventory_icon = "icon_loot_chest_d4_t1",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_05_02 = {
 	item_type = "loot_chest",
@@ -18806,23 +12642,7 @@ ItemMasterList.loot_chest_05_02 = {
 	chest_sort_order = 5,
 	inventory_icon = "icon_loot_chest_d4_t2",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_05_03 = {
 	item_type = "loot_chest",
@@ -18841,23 +12661,7 @@ ItemMasterList.loot_chest_05_03 = {
 	chest_sort_order = 5,
 	inventory_icon = "icon_loot_chest_d4_t3",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_05_04 = {
 	item_type = "loot_chest",
@@ -18876,23 +12680,7 @@ ItemMasterList.loot_chest_05_04 = {
 	chest_sort_order = 5,
 	inventory_icon = "icon_loot_chest_d4_t4",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_05_05 = {
 	item_type = "loot_chest",
@@ -18911,23 +12699,7 @@ ItemMasterList.loot_chest_05_05 = {
 	chest_sort_order = 5,
 	inventory_icon = "icon_loot_chest_d4_t5",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.loot_chest_05_06 = {
 	item_type = "loot_chest",
@@ -18946,23 +12718,7 @@ ItemMasterList.loot_chest_05_06 = {
 	chest_sort_order = 5,
 	inventory_icon = "icon_loot_chest_d4_t6",
 	display_unit = "chest_1",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.wh_1h_axe_skin = {
 	base_skin_item = true,
@@ -19714,15 +13470,5 @@ ItemMasterList.we_spear_skin = {
 		"we_shade"
 	}
 }
-
-for _, dlc in pairs(DLCSettings) do
-	local file_names = dlc.item_master_list_file_names
-
-	if file_names then
-		for i, file_name in ipairs(file_names) do
-			require(file_name)
-		end
-	end
-end
 
 return

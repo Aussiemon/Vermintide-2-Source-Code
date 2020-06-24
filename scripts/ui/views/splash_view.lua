@@ -589,7 +589,7 @@ SplashView.init = function (self, input_manager, world)
 	}
 	self._world = world
 	self._current_index = 1
-	self.ui_renderer = UIRenderer.create(world, "material", "video/fatshark_splash", "material", "video/vermintide_2", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_splash_screen")
+	self.ui_renderer = UIRenderer.create(world, "material", "video/fatshark_splash", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_splash_screen")
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.dead_space_filler = UIWidget.init(dead_space_filler)
 	self._splash_widgets = {}

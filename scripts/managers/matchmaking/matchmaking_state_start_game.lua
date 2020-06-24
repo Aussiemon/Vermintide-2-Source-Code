@@ -258,7 +258,9 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		game_mode = "custom"
 	end
 
-	self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name)
+	local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
+
+	self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name, environment_variation_id)
 	Managers.state.difficulty:set_difficulty(difficulty)
 
 	self._game_parameters = {

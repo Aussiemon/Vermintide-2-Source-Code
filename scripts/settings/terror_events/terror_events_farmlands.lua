@@ -395,7 +395,11 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_poison_wind_globadier",
+			breed_name = {
+				"skaven_gutter_runner",
+				"skaven_pack_master",
+				"skaven_poison_wind_globadier"
+			},
 			difficulty_amount = {
 				hardest = 2,
 				hard = 1,
@@ -476,6 +480,15 @@ local terror_event_blueprints = {
 			composition_type = "event_small"
 		},
 		{
+			"spawn_special",
+			amount = 1,
+			breed_name = {
+				"skaven_gutter_runner",
+				"skaven_pack_master"
+			},
+			difficulty_requirement = HARDER
+		},
+		{
 			"delay",
 			duration = 10
 		},
@@ -534,7 +547,6 @@ local terror_event_blueprints = {
 			amount = 1,
 			breed_name = {
 				"skaven_gutter_runner",
-				"skaven_pack_master",
 				"skaven_warpfire_thrower",
 				"skaven_ratling_gunner"
 			},
@@ -755,8 +767,8 @@ local terror_event_blueprints = {
 			amount = 1,
 			breed_name = {
 				"skaven_poison_wind_globadier",
-				"skaven_warpfire_thrower",
-				"skaven_ratling_gunner"
+				"skaven_pack_master",
+				"skaven_gutter_runner"
 			},
 			difficulty_requirement = HARDER
 		},
@@ -824,6 +836,15 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
+		},
+		{
+			"spawn_special",
+			amount = 1,
+			breed_name = {
+				"skaven_gutter_runner",
+				"skaven_pack_master"
+			},
+			difficulty_requirement = HARDER
 		},
 		{
 			"control_pacing",

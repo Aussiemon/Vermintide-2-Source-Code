@@ -465,6 +465,8 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 		parent:product_purchase_request(selected_product)
 
 		input_handled = true
+	elseif confirm_press then
+		self:_play_sound("menu_leaderboard_close")
 	end
 
 	local special_press = input_service:get("special_1_press")
@@ -658,12 +660,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 			local item_key = item.key
 			dlc_name = item.dlc_name
 			already_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
-
-			if item.dlc_name then
-				can_afford = true
-			else
-				can_afford = self._parent:can_afford_item(item)
-			end
+			can_afford = self._parent:can_afford_item(item)
 		elseif product_type == "dlc" then
 			local dlc_settings = selected_product.dlc_settings
 			dlc_name = dlc_settings.dlc_name
@@ -701,10 +698,9 @@ end
 StoreWindowItemPreview._present_dlc = function (self, settings, product_id)
 	local dlc_name = settings.dlc_name
 	local title_text = settings.name
-	local sub_title_text = "dlc1_2_dlc_level_locked_tooltip"
 
 	self:_set_title_name(Localize(title_text))
-	self:_set_sub_title_name(Localize(sub_title_text))
+	self:_set_sub_title_name("")
 	self:_set_sub_title_alpha_multiplier(1)
 	self:_set_type_title_name("")
 	self:_set_career_title_name("")
@@ -742,10 +738,13 @@ StoreWindowItemPreview._present_item = function (self, item)
 	local item_type = item_data.item_type
 	local slot_type = item_data.slot_type
 	local can_wield = item_data.can_wield
+	local steam_itemdefid = item.steam_itemdefid
 	local end_time = item.end_time
 	local dlc_name = item.dlc_name
 
-	if dlc_name then
+	if steam_itemdefid then
+		self:_set_price(nil, nil, steam_itemdefid)
+	elseif dlc_name then
 		self:_set_price(nil, dlc_name)
 	else
 		local currency_type = "SM"
@@ -761,7 +760,8 @@ StoreWindowItemPreview._present_item = function (self, item)
 	local sub_title_text, career_title_text = self:_get_can_wield_display_text(can_wield)
 
 	if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
-		type_title_text = Localize(item_data.matching_item_key)
+		local matching_item_type = ItemMasterList[item_data.matching_item_key].item_type
+		type_title_text = Localize(matching_item_type)
 		disclaimer_text = Localize(item_type)
 	elseif slot_type == "hat" then
 		type_title_text = Localize(item_type)
@@ -865,7 +865,7 @@ StoreWindowItemPreview._update_delayed_item_unit_presentation = function (self, 
 	end
 end
 
-StoreWindowItemPreview._set_price = function (self, price, dlc_name)
+StoreWindowItemPreview._set_price = function (self, price, dlc_name, steam_itemdefid)
 	local widget = self._top_widgets_by_name.unlock_button
 	local content = widget.content
 
@@ -875,7 +875,10 @@ StoreWindowItemPreview._set_price = function (self, price, dlc_name)
 
 	content.present_currency = price ~= nil
 
-	if dlc_name and PLATFORM ~= "win32" then
+	if steam_itemdefid then
+		content.currency_text = self._parent:get_steam_item_price_text(steam_itemdefid)
+		content.real_currency = true
+	elseif dlc_name and PLATFORM ~= "win32" then
 		self:_handle_platform_price_data(widget, dlc_name)
 	else
 		content.real_currency = false

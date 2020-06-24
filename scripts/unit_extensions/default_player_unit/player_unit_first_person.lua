@@ -78,6 +78,13 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 
 	self._rig_update_timestep = 0.016666666666666666
 	self._show_selected_jump = Managers.state.game_mode:setting("show_selected_jump")
+	self._move_y = 0
+	self._move_x = 0
+	self._move_z = 0
+	self._look_delta_y = 0
+	self._look_delta_x = 0
+	self._look_target_y = 0
+	self._look_target_x = 0
 end
 
 PlayerUnitFirstPerson.reset = function (self)
@@ -163,6 +170,12 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 		CharacterStateHelper.change_camera_state(Managers.player:local_player(), "attract")
 		self:set_first_person_mode(false, true)
 	end
+
+	if self.first_person_unit then
+		self:_update_state_machine_variables(dt, t)
+	end
+
+	self:_poll_testify_requests()
 end
 
 PlayerUnitFirstPerson.update_aim_assist_multiplier = function (self, dt)
@@ -452,6 +465,14 @@ PlayerUnitFirstPerson.set_look_delta = function (self, look_delta)
 	end
 
 	self.look_delta = Vector3Box(look_delta)
+end
+
+PlayerUnitFirstPerson.set_weapon_sway_settings = function (self, weapon_sway_settings)
+	self._weapon_sway_settings = weapon_sway_settings
+	self._look_delta_y = 0
+	self._look_delta_x = 0
+	self._look_target_y = 0
+	self._look_target_x = 0
 end
 
 PlayerUnitFirstPerson.play_animation_event = function (self, anim_event)
@@ -971,6 +992,106 @@ PlayerUnitFirstPerson.play_camera_recoil = function (self, settings, t)
 		restore_function = settings.restore_function
 	}
 	self._current_recoil_data = Managers.state.camera:weapon_recoil(recoil_settings)
+end
+
+PlayerUnitFirstPerson._poll_testify_requests = function (self)
+	if Testify:poll_request("set_player_unit_not_visible") then
+		local unit = Managers.player:local_player().player_unit
+
+		self:hide_weapons("hide_weapons_snippet", true)
+		Unit.set_unit_visibility(self.first_person_attachment_unit, false)
+		Testify:respond_to_request("set_player_unit_not_visible")
+	end
+end
+
+local MOUSE_SCALE = 0.001
+local DEFAULT_WEAPON_SWAY_SETTINGS = {
+	look_sensitivity = 1,
+	recentering_lerp_speed = 1,
+	sway_range = 1,
+	lerp_speed = math.huge
+}
+
+PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
+	local weapon_sway_settings = self._weapon_sway_settings or DEFAULT_WEAPON_SWAY_SETTINGS
+	local input_extension = self.input_extension
+	local move_controller_input = input_extension:get("look_raw_controller") or Vector3(0, 0, 0)
+	local move_mouse_input = input_extension:get("look_raw") or Vector3(0, 0, 0)
+	local mouse_input = Vector3(move_mouse_input.x * MOUSE_SCALE, -move_mouse_input.y * MOUSE_SCALE, 0)
+	local look_delta = mouse_input + move_controller_input * dt
+	local look_target_x = self._look_target_x + look_delta.x * weapon_sway_settings.look_sensitivity
+	local look_target_y = self._look_target_y + look_delta.y * weapon_sway_settings.look_sensitivity
+	local lerp_speed = math.min(weapon_sway_settings.lerp_speed * dt, 1)
+	local look_delta_x = math.lerp(self._look_delta_x, look_target_x, lerp_speed)
+	local look_delta_y = math.lerp(self._look_delta_y, look_target_y, lerp_speed)
+	local sway_range = weapon_sway_settings.sway_range
+	look_delta_x = math.clamp(look_delta_x, -sway_range, sway_range)
+	look_delta_y = math.clamp(look_delta_y, -sway_range, sway_range)
+	local look_delta_x_variable = Unit.animation_find_variable(self.first_person_unit, "look_delta_x")
+
+	if look_delta_x_variable then
+		Unit.animation_set_variable(self.first_person_unit, look_delta_x_variable, look_delta_x)
+	end
+
+	local look_delta_y_variable = Unit.animation_find_variable(self.first_person_unit, "look_delta_y")
+
+	if look_delta_y_variable then
+		Unit.animation_set_variable(self.first_person_unit, look_delta_y_variable, look_delta_y)
+	end
+
+	local recentering_lerp_speed = math.min(weapon_sway_settings.recentering_lerp_speed * dt, 1)
+	self._look_target_x = math.clamp(math.lerp(look_target_x, 0, recentering_lerp_speed), -sway_range, sway_range)
+	self._look_target_y = math.clamp(math.lerp(look_target_y, 0, recentering_lerp_speed), -sway_range, sway_range)
+	self._look_delta_x = look_delta_x
+	self._look_delta_y = look_delta_y
+	local move_input = Vector3.normalize(move_mouse_input + move_controller_input)
+	local move_x = math.round(2 * move_input.x) * 0.5
+	local move_y = math.round(2 * move_input.y) * 0.5
+	local current_velocity = self.locomotion_extension:current_velocity()
+	local move_z = current_velocity.z
+	local lerp_z_speed = 10
+	local lerp_move_x = 0.05
+	local lerp_move_y = 0.05
+	local lerp_move_z = 0.05
+
+	if move_x <= 0.3 then
+		lerp_move_x = 0.075
+	end
+
+	if move_y <= 0.3 then
+		lerp_move_y = 0.075
+	end
+
+	if move_z <= 0.05 then
+		lerp_z_speed = 1
+	end
+
+	move_x = math.lerp(self._move_x, move_x, lerp_move_x)
+	move_y = math.lerp(self._move_y, move_y, lerp_move_y)
+	move_z = math.lerp(self._move_z, move_z, lerp_move_z)
+	move_x = math.min(1, math.abs(move_x)) * math.sign(move_x)
+	move_y = math.min(1, math.abs(move_y)) * math.sign(move_y)
+	move_z = math.min(lerp_z_speed, math.abs(move_z)) * math.sign(move_z)
+	self._move_y = move_y
+	self._move_x = move_x
+	self._move_z = move_z
+	local move_x_variable = Unit.animation_find_variable(self.first_person_unit, "move_x")
+
+	if move_x_variable then
+		Unit.animation_set_variable(self.first_person_unit, move_x_variable, move_x)
+	end
+
+	local move_y_variable = Unit.animation_find_variable(self.first_person_unit, "move_y")
+
+	if move_y_variable then
+		Unit.animation_set_variable(self.first_person_unit, move_y_variable, move_y)
+	end
+
+	local move_z_variable = Unit.animation_find_variable(self.first_person_unit, "move_z")
+
+	if move_z_variable then
+		Unit.animation_set_variable(self.first_person_unit, move_z_variable, move_z)
+	end
 end
 
 return

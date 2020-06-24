@@ -288,6 +288,15 @@ GameModeAdventure._get_first_available_bot_profile = function (self)
 	local display_name = profile.display_name
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(display_name, "career")
+	local career = profile.careers[career_index]
+	local hero_experience = hero_attributes:get(display_name, "experience") or 0
+	local hero_level = ExperienceSettings.get_level(hero_experience)
+
+	if not career.is_unlocked_function(display_name, hero_level) then
+		career_index = 1
+
+		hero_attributes:set(display_name, "career", career_index)
+	end
 
 	return profile_index, career_index
 end

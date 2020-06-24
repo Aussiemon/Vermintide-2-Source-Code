@@ -486,9 +486,9 @@ EndViewStateWeave._setup_score_panel = function (self)
 	widgets_by_name.total_time_value.content.text = string.format("%d %s %02d %s", minutes, Localize("weave_endscreen_min"), seconds, Localize("weave_endscreen_sec"))
 
 	if game_won then
-		widgets_by_name.time_score_value.content.text = WeaveUtils.comma_value(0)
-		widgets_by_name.damage_bonus_value.content.text = WeaveUtils.comma_value(0)
-		widgets_by_name.total_score_value.content.text = WeaveUtils.comma_value(0)
+		widgets_by_name.time_score_value.content.text = UIUtils.comma_value(0)
+		widgets_by_name.damage_bonus_value.content.text = UIUtils.comma_value(0)
+		widgets_by_name.total_score_value.content.text = UIUtils.comma_value(0)
 		self.score_count_queue = {
 			{
 				{
@@ -519,7 +519,7 @@ EndViewStateWeave._setup_score_panel = function (self)
 	else
 		widgets_by_name.time_score_value.content.text = "-"
 		widgets_by_name.damage_bonus_value.content.text = "-"
-		widgets_by_name.total_score_value.content.text = WeaveUtils.comma_value(total_score)
+		widgets_by_name.total_score_value.content.text = UIUtils.comma_value(total_score)
 	end
 end
 

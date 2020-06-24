@@ -1239,13 +1239,13 @@ local animation_definitions = {
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				local widget = params.widget
 				local content = widget.content
-				content.text = WeaveUtils.comma_value(params.start_value)
+				content.text = UIUtils.comma_value(params.start_value)
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local widget = params.widget
 				local content = widget.content
 				local value = math.floor(math.lerp(params.start_value, params.end_value, progress))
-				content.text = WeaveUtils.comma_value(value)
+				content.text = UIUtils.comma_value(value)
 
 				if params.wwise_world then
 					WwiseWorld.trigger_event(params.wwise_world, "play_gui_mission_summary_entry_count")

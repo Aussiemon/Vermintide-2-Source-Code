@@ -4,6 +4,7 @@ local definitions = local_require("scripts/ui/views/character_selection_view/sta
 local character_selection_widget_definitions = definitions.character_selection_widgets
 local widget_definitions = definitions.widgets
 local hero_widget_definition = definitions.hero_widget
+local empty_hero_widget_definition = definitions.empty_hero_widget
 local hero_icon_widget_definition = definitions.hero_icon_widget
 local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
@@ -177,7 +178,7 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 	self._hero_icon_widgets = hero_icon_widgets
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local num_max_rows = #SPProfilesAbbreviation
-	local num_max_columns = 0
+	self._num_hero_columns = {}
 
 	for i, profile_index in ipairs(ProfilePriority) do
 		local profile_settings = SPProfiles[profile_index]
@@ -185,7 +186,7 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
 		local hero_level = ExperienceSettings.get_level(hero_experience)
 		local careers = profile_settings.careers
-		num_max_columns = math.max(num_max_columns, #careers)
+		self._num_hero_columns[i] = #careers
 		local icon_widget = UIWidget.init(hero_icon_widget_definition)
 		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
 		local hero_icon_offset = icon_widget.offset
@@ -202,15 +203,32 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 			content.career_settings = career
 			local portrait_image = career.portrait_image
 			content.portrait = "medium_" .. portrait_image
-			local is_career_unlocked = career.is_unlocked_function(hero_name, hero_level)
+			local is_career_unlocked, reason, dlc_name = career.is_unlocked_function(hero_name, hero_level)
 			content.locked = not is_career_unlocked
+			content.locked_reason = reason
+			content.dlc_name = dlc_name
+
+			if dlc_name then
+				content.lock_texture = content.lock_texture .. "_gold"
+				content.frame = content.frame .. "_gold"
+			end
+
 			offset[1] = (j - 1) * 124
 			offset[2] = -((i - 1) * 144)
+		end
+
+		local widgets = self._widgets
+
+		for j = #careers + 1, 4, 1 do
+			local widget = UIWidget.init(empty_hero_widget_definition)
+			local offset = widget.offset
+			offset[1] = offset[1] + 124 * (j - 1)
+			offset[2] = offset[2] - 144 * (i - 1)
+			widgets[#widgets + 1] = widget
 		end
 	end
 
 	self._num_max_hero_rows = num_max_rows
-	self._num_max_hero_columns = num_max_columns
 end
 
 CharacterSelectionStateCharacter._update_available_profiles = function (self)
@@ -221,7 +239,6 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 	local own_player_profile_index = player ~= nil and player:profile_index()
 	local own_player_career_index = player ~= nil and player:career_index()
 	local widget_index = 1
-	local is_button_enabled = true
 	local selected_career_index = self._selected_career_index
 	local selected_profile_index = self._selected_profile_index
 	local mechanism_manager = Managers.mechanism
@@ -248,25 +265,24 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 			content.taken = not can_play_profile
 
 			if j == selected_career_index and selected_profile_index == profile_index then
-				is_button_enabled = can_play_profile and not is_career_locked
+				self:_set_select_button_enabled(can_play_profile and not is_career_locked, is_career_locked and content.dlc_name)
 			end
 
 			widget_index = widget_index + 1
 		end
 	end
-
-	self:_set_select_button_enabled(is_button_enabled)
 end
 
 CharacterSelectionStateCharacter._handle_mouse_selection = function (self)
 	local hero_widgets = self._hero_widgets
 	local num_max_rows = self._num_max_hero_rows
-	local num_max_columns = self._num_max_hero_columns
 	local selected_row = self._selected_hero_row
 	local selected_column = self._selected_hero_column
 	local widget_index = 1
 
 	for i = 1, num_max_rows, 1 do
+		local num_max_columns = self._num_hero_columns[i]
+
 		for j = 1, num_max_columns, 1 do
 			local widget = hero_widgets[widget_index]
 			local content = widget.content
@@ -287,10 +303,10 @@ CharacterSelectionStateCharacter._handle_mouse_selection = function (self)
 end
 
 CharacterSelectionStateCharacter._handle_gamepad_selection = function (self, input_service)
-	local num_max_rows = self._num_max_hero_rows
-	local num_max_columns = self._num_max_hero_columns
 	local selected_row = self._selected_hero_row
 	local selected_column = self._selected_hero_column
+	local num_max_rows = self._num_max_hero_rows
+	local num_max_columns = self._num_hero_columns[selected_row]
 
 	if selected_row and selected_column then
 		local modified = false
@@ -305,9 +321,16 @@ CharacterSelectionStateCharacter._handle_gamepad_selection = function (self, inp
 
 		if selected_row > 1 and input_service:get("move_up_hold_continuous") then
 			selected_row = selected_row - 1
+			num_max_columns = self._num_hero_columns[selected_row]
 			modified = true
 		elseif selected_row < num_max_rows and input_service:get("move_down_hold_continuous") then
 			selected_row = selected_row + 1
+			num_max_columns = self._num_hero_columns[selected_row]
+			modified = true
+		end
+
+		if num_max_columns < selected_column then
+			selected_column = num_max_columns
 			modified = true
 		end
 
@@ -341,7 +364,6 @@ CharacterSelectionStateCharacter._select_hero = function (self, profile_index, c
 
 	local hero_widgets = self._hero_widgets
 	local num_max_rows = self._num_max_hero_rows
-	local num_max_columns = self._num_max_hero_columns
 	self._spawn_hero = true
 	self._selected_career_index = career_index
 	self._selected_profile_index = profile_index
@@ -352,9 +374,10 @@ CharacterSelectionStateCharacter._select_hero = function (self, profile_index, c
 	self:_set_hero_icon_selected(self._selected_hero_row)
 
 	local widget_index = 1
-	local is_career_locked = false
 
 	for i = 1, num_max_rows, 1 do
+		local num_max_columns = self._num_hero_columns[i]
+
 		for j = 1, num_max_columns, 1 do
 			local is_selected = i == self._selected_hero_row and j == self._selected_hero_column
 			local widget = hero_widgets[widget_index]
@@ -362,21 +385,14 @@ CharacterSelectionStateCharacter._select_hero = function (self, profile_index, c
 			content.button_hotspot.is_selected = is_selected
 
 			if is_selected then
-				is_career_locked = content.locked
+				local locked_info_text_content = self._widgets_by_name.locked_info_text.content
+				locked_info_text_content.visible = content.locked
+				locked_info_text_content.text = content.locked_reason
 			end
 
 			widget_index = widget_index + 1
 		end
 	end
-
-	local locked_info_text = self._widgets_by_name.locked_info_text
-
-	if is_career_locked then
-		local required_level = career_settings.unlocked_at_level_function(hero_name)
-		locked_info_text.content.text = Localize("career_locked_info") .. " " .. tostring(required_level)
-	end
-
-	locked_info_text.content.visible = is_career_locked
 end
 
 CharacterSelectionStateCharacter._get_skin_item_data = function (self, index, career_index)
@@ -748,7 +764,9 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 	if self:_is_button_pressed(select_button) or confirm_pressed then
 		self:_play_sound("play_gui_start_menu_button_click")
 
-		if current_profile_index ~= self._selected_profile_index or current_career_index ~= self._selected_career_index then
+		if select_button.content.dlc_name then
+			Managers.state.event:trigger("ui_dlc_upsell", select_button.content.dlc_name)
+		elseif current_profile_index ~= self._selected_profile_index or current_career_index ~= self._selected_career_index then
 			self:_change_profile(self._selected_profile_index, self._selected_career_index)
 			self.parent:set_input_blocked(true)
 		else
@@ -766,14 +784,26 @@ CharacterSelectionStateCharacter._set_hero_info = function (self, hero_name, car
 	widgets_by_name.info_hero_level.content.text = level
 end
 
-CharacterSelectionStateCharacter._set_select_button_enabled = function (self, enabled)
+CharacterSelectionStateCharacter._set_select_button_enabled = function (self, enabled, required_dlc_name)
 	local button_content = self._widgets_by_name.select_button.content
-	button_content.title_text = (enabled and Localize("input_description_confirm")) or Localize("dlc1_2_difficulty_unavailable")
-	button_content.button_hotspot.disable_button = not enabled
 
 	if enabled then
+		button_content.title_text = Localize("input_description_confirm")
+		button_content.button_hotspot.disable_button = false
+		button_content.dlc_name = nil
+
 		self.menu_input_description:set_input_description(generic_input_actions.available)
+	elseif required_dlc_name then
+		button_content.title_text = Localize("menu_store_purchase_button_unlock")
+		button_content.button_hotspot.disable_button = false
+		button_content.dlc_name = required_dlc_name
+
+		self.menu_input_description:set_input_description(nil)
 	else
+		button_content.title_text = Localize("dlc1_2_difficulty_unavailable")
+		button_content.button_hotspot.disable_button = true
+		button_content.dlc_name = nil
+
 		self.menu_input_description:set_input_description(nil)
 	end
 end

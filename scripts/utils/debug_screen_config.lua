@@ -253,12 +253,44 @@ local settings = {
 					return false
 				end
 			end)
+
+			for i = #options, 1, -1 do
+				local level_name = options[i]
+				local level_settings = LevelSettings[level_name]
+				local variations = level_settings.environment_variations
+
+				if variations then
+					for variation_id = #variations, 1, -1 do
+						local combined_name = level_name .. "_" .. variations[variation_id]
+
+						table.insert(options, i + 1, combined_name)
+
+						options[combined_name] = {
+							level_name,
+							variation_id
+						}
+					end
+				end
+			end
 		end,
 		func = function (options, index)
 			local level_name = options[index]
+			local environment_id = 0
+			local combined_name = options[level_name]
+
+			if combined_name then
+				level_name = combined_name[1]
+				environment_id = combined_name[2]
+			end
+
 			local level_settings = LevelSettings[level_name]
 
-			debug.load_level(level_name, level_settings.debug_environment_level_flow_event)
+			if level_settings.hub_level then
+				Managers.mechanism._game_mechanism._debug_hub_level_key = level_name
+				Managers.mechanism._game_mechanism._hub_level_key = level_name
+			end
+
+			debug.load_level(level_name, environment_id, level_settings.debug_environment_level_flow_event)
 		end
 	},
 	{
@@ -943,6 +975,12 @@ Features that make player mechanics nicer to work with.
 		func = function ()
 			Managers.state.achievement:reset()
 		end
+	},
+	{
+		description = "Debug in game challenges",
+		is_boolean = true,
+		setting_name = "debug_in_game_challenges",
+		category = "Player mechanics"
 	},
 	{
 		description = "Debug info for missions",
@@ -1989,6 +2027,12 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "show_gamemode_debug",
 		category = "Gamemode/level"
+	},
+	{
+		description = "Disables the level introduction by Lohner / Olesya",
+		is_boolean = true,
+		setting_name = "disable_level_intro_dialogue",
+		category = "Visual/audio"
 	},
 	{
 		description = "Debug print Hit Effects Templates",

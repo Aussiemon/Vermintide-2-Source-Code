@@ -1,11 +1,11 @@
 return {
 	wind_strength = 2,
-	wind = "fire",
+	wind = "death",
 	seed = 571238,
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_wall_fire",
+			level_id = "dlc_scorpion_wall_death",
 			objective_type = "kill",
 			conflict_settings = "default_weave",
 			level_seed = 789654,
@@ -133,7 +133,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_castle_fire",
+			level_id = "dlc_scorpion_arena_castle_death",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

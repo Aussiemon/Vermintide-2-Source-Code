@@ -410,7 +410,11 @@ AccountManager.friends_list_initiated = function (self)
 end
 
 AccountManager.region = function (self)
-	return PS4.user_country(self._initial_user_id)
+	local country = PS4.user_country(self._initial_user_id)
+
+	print("Country: " .. country)
+
+	return country
 end
 
 AccountManager._update_matchmaking_data = function (self, dt)
@@ -546,6 +550,8 @@ AccountManager.get_friends = function (self, num_friends_to_fetch, response_call
 	local t = Managers.time:time("main")
 
 	if self._fetching_friend_list or t < self._next_friend_list_request then
+		response_callback(friend_data)
+	elseif not self._account_id then
 		response_callback(friend_data)
 	else
 		table.clear(friend_data)

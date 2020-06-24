@@ -292,12 +292,12 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 
 		if distance_filter == LobbyDistanceFilter.CLOSE then
 			requirements.filters.primary_region = {
-				value = MatchmakingRegionLookup.primary[user_region],
+				value = MatchmakingRegionLookup.primary[user_region] or MatchmakingRegionLookup.secondary[user_region] or "default",
 				comparison = LobbyComparison.EQUAL
 			}
 		elseif distance_filter == LobbyDistanceFilter.MEDIUM then
 			requirements.filters.secondary_region = {
-				value = MatchmakingRegionLookup.secondary[user_region],
+				value = MatchmakingRegionLookup.secondary[user_region] or MatchmakingRegionLookup.primary[user_region] or "default",
 				comparison = LobbyComparison.EQUAL
 			}
 		end

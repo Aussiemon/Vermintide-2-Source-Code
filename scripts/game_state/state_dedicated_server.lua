@@ -50,7 +50,7 @@ StateDedicatedServer._setup_level_transition = function (self)
 	else
 		self._level_transition_handler = LevelTransitionHandler:new()
 
-		self._level_transition_handler:set_next_level(self._level_transition_handler:default_level_key())
+		self._level_transition_handler:set_next_level(self._level_transition_handler:default_level_key(), self._level_transition_handler:default_environment_id())
 	end
 end
 
@@ -156,12 +156,13 @@ StateDedicatedServer.update = function (self, dt, t)
 
 		if start_game_params then
 			local level_key = start_game_params.level_key
+			local environment_variation_id = start_game_params.environment_variation_id or 0
 			local level_transition_handler = self._level_transition_handler
 
 			Managers.mechanism:generate_locked_director_functions(level_key)
 			Managers.mechanism:generate_level_seed()
-			level_transition_handler:set_next_level(level_key)
-			self._network_server:set_current_level(level_key)
+			level_transition_handler:set_next_level(level_key, environment_variation_id)
+			self._network_server:set_current_level(level_key, environment_variation_id)
 			level_transition_handler:level_completed()
 
 			self._wanted_state = StateLoading
@@ -181,12 +182,13 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 	self._game_server = game_server
 	local level_transition_handler = self._level_transition_handler
 	local initial_level = level_transition_handler:default_level_key()
+	local initial_environment = level_transition_handler:default_environment_id()
 	local loading_context = self.parent.loading_context
 
 	fassert(Managers.game_server == nil, "Already has a game server manager.")
 
 	Managers.game_server = GameServerManager:new(level_transition_handler)
-	self._network_server = NetworkServer:new(Managers.player, game_server, initial_level, nil, level_transition_handler, Managers.game_server)
+	self._network_server = NetworkServer:new(Managers.player, game_server, initial_level, initial_environment, nil, level_transition_handler, Managers.game_server)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -222,9 +224,9 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 
 	Managers.mechanism:generate_locked_director_functions(initial_level)
 	Managers.mechanism:generate_level_seed()
-	level_transition_handler:set_next_level(initial_level)
-	self._network_server:set_current_level(initial_level)
-	level_transition_handler:set_next_level(initial_level)
+	level_transition_handler:set_next_level(initial_level, initial_environment)
+	self._network_server:set_current_level(initial_level, initial_environment)
+	level_transition_handler:set_next_level(initial_level, initial_environment)
 	level_transition_handler:level_completed()
 end
 

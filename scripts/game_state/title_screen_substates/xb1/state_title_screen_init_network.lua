@@ -113,7 +113,8 @@ StateTitleScreenInitNetwork._join_session = function (self, dt, t)
 
 	local loading_context = self.parent.parent.loading_context
 	local initial_level = self._level_transition_handler:get_current_level_keys()
-	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, nil, self._level_transition_handler)
+	local initial_environment = self._level_transition_handler:get_current_environment_id()
+	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, initial_environment, nil, self._level_transition_handler)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)

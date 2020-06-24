@@ -1,12 +1,12 @@
 return {
 	wind_strength = 2,
-	wind = "heavens",
+	wind = "light",
 	seed = 293048,
 	objectives = {
 		{
 			objective_type = "kill",
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_field_heavens",
+			level_id = "dlc_scorpion_field_light",
 			show_bar = true,
 			conflict_settings = "default_weave",
 			level_seed = 8135394,
@@ -98,15 +98,37 @@ return {
 						percentage_spawn_offset = 10
 					}
 				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_003 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_008 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_013 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_023 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				}
 			}
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_temple_heavens",
-			objective_start_flow_event = "weave_objective_kill_bosses_start",
+			level_id = "dlc_scorpion_arena_temple_light",
 			spawning_seed = 23094,
 			level_seed = 389090,
 			conflict_settings = "weave_disabled",
+			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			system_seeds = {
 				pickups = 29843
 			},
@@ -117,6 +139,13 @@ return {
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}
+				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_003 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
 				}
 			}
 		}

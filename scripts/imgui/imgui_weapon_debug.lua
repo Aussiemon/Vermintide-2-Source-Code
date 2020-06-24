@@ -30,6 +30,8 @@ ImguiWeaponDebug.init = function (self)
 	self._weapon_unit_left = nil
 	self._weapon_unit_right = nil
 	self._current_weapon_extension = nil
+	self._current_inventory_extension = nil
+	self._previous_wield_slot = ""
 	self._current_actions = nil
 	self._damage_power_level = 200
 	self._damage_hit_zone_id = 0
@@ -74,7 +76,18 @@ ImguiWeaponDebug.update = function (self)
 		SHOULD_RELOAD = false
 	end
 
-	if (self._current_unit and not Unit.alive(self._current_unit)) or (self._weapon_unit_left and not Unit.alive(self._weapon_unit_left)) or (self._weapon_unit_right and not Unit.alive(self._weapon_unit_right)) or (self._weapon_unit_left == nil and self._weapon_unit_right == nil) then
+	local slot_changed = false
+
+	if self._current_inventory_extension then
+		local slot_name = self._current_inventory_extension:get_wielded_slot_name()
+
+		if self._previous_wield_slot ~= slot_name then
+			self._previous_wield_slot = slot_name
+			slot_changed = true
+		end
+	end
+
+	if (self._current_unit and not Unit.alive(self._current_unit)) or (self._weapon_unit_left and not Unit.alive(self._weapon_unit_left)) or (self._weapon_unit_right and not Unit.alive(self._weapon_unit_right)) or (self._weapon_unit_left == nil and self._weapon_unit_right == nil) or slot_changed then
 		self._current_unit = nil
 		self._current_weapon_extension = nil
 
@@ -197,6 +210,7 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 	self._weapon_unit_right = nil
 	self._weapon_extensions = {}
 	self._current_weapon_extension = nil
+	self._current_inventory_extension = nil
 	self._selected_weapon_extenstion_name = "any"
 	self._action_list = {}
 	self._sub_action_list = {}
@@ -208,6 +222,7 @@ ImguiWeaponDebug._initialize_unit = function (self, unit)
 
 	if unit then
 		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+		self._current_inventory_extension = inventory_extension
 		local lh_weapon_unit, rh_weapon_unit = inventory_extension:get_all_weapon_unit()
 		self._weapon_unit_left = lh_weapon_unit
 		self._weapon_unit_right = rh_weapon_unit
@@ -568,6 +583,11 @@ ImguiWeaponDebug.debug_draw_chain_data = function (self, current_time_in_action,
 		local chain_action = allowed_chain_actions[i]
 		local chain_action_name = tostring(chain_action.action) .. "/" .. tostring(chain_action.sub_action)
 		local input_name = (chain_action.auto_chain and "auto_chain") or tostring(chain_action.input)
+
+		if chain_action.hold_allowed then
+			input_name = input_name .. "(hold)"
+		end
+
 		local chain_start_time = chain_action.start_time / action_time_scale
 		local chain_end_time = (chain_action.end_time and chain_action.end_time / action_time_scale) or math.huge
 		local action_color = (clamped_time_in_action < chain_start_time and Colors.get("orange")) or (chain_end_time <= clamped_time_in_action and Colors.get("red")) or Colors.get("green")
@@ -680,14 +700,16 @@ end
 
 ImguiWeaponDebug._calculate_damage = function (self, unit, item, damage_profile, difficulty_settings, power_level, difficulty_level, hit_zone_name, breed, target_index, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
 	local damage_source = item.name
-	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
-	local boost_curve = BoostCurves[target_settings.boost_curve_type]
 	local boost_damage_multiplier = nil
 	local dropoff_scalar = 0
-	local dummy_unit_armor = 1
-	local armor_type, _, primary_armor_type, _ = ActionUtils.get_target_armor(hit_zone_name, breed, dummy_unit_armor)
-	local damage = DamageUtils.calculate_damage_tooltip(unit, damage_source, power_level, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, dropoff_scalar, has_power_boost, difficulty_level, armor_type, primary_armor_type)
-	damage = self:_add_stagger_damage(damage, difficulty_settings, damage_profile, stagger_level)
+
+	if damage_profile.no_stagger_damage_reduction_ranged then
+		local stagger_number_override = 1
+		stagger_level = math.max(stagger_number_override, stagger_level)
+	end
+
+	local damage = DamageUtils.custom_calculate_damage(unit, damage_source, power_level, damage_profile, target_index, dropoff_scalar, is_critical_strike, backstab_multiplier, has_power_boost, boost_damage_multiplier, breed, hit_zone_name, stagger_level, difficulty_level)
+	damage = DamageUtils.networkify_damage(damage)
 
 	return damage
 end
@@ -699,27 +721,6 @@ ImguiWeaponDebug._calculate_ai_stagger = function (self, unit, item, damage_prof
 	local type, duration, distance, value, strength = DamageUtils.calculate_stagger_player_tooltip(breed, unit, hit_zone_name, power_level, is_critical_strike, damage_profile, target_index, blocked, damage_source, difficulty_level, has_power_boost, dropoff_scalar)
 
 	return type, duration, distance, value, strength
-end
-
-ImguiWeaponDebug._add_stagger_damage = function (self, damage, difficulty_settings, damage_profile, stagger_number)
-	if damage_profile and difficulty_settings then
-		local min_stagger_damage_coefficient = difficulty_settings.min_stagger_damage_coefficient
-		local stagger_damage_multiplier = difficulty_settings.stagger_damage_multiplier
-
-		if stagger_damage_multiplier then
-			if damage_profile.no_stagger_damage_reduction_ranged then
-				local stagger_number_override = 1
-				stagger_number = math.max(stagger_number_override, stagger_number)
-			end
-
-			local bonus_damage_percentage = stagger_number * stagger_damage_multiplier
-			local stagger_damage = damage * (min_stagger_damage_coefficient + bonus_damage_percentage)
-
-			return stagger_damage
-		end
-	end
-
-	return damage
 end
 
 ImguiWeaponDebug._get_damage_profile_name = function (self, action, action_hand)

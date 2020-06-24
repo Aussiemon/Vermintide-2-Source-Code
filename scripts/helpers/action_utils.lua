@@ -486,15 +486,19 @@ ActionUtils.update_action_buff_data = function (action_buff_data, buff_data, own
 end
 
 ActionUtils.remove_action_buff_data = function (action_buff_data, buff_data, owner_unit)
-	local action_buffs_in_progress = action_buff_data.action_buffs_in_progress
-	local buff_identifiers = action_buff_data.buff_identifiers
+	if ALIVE[owner_unit] then
+		local action_buffs_in_progress = action_buff_data.action_buffs_in_progress
+		local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+		local buff_identifiers = action_buff_data.buff_identifiers
 
-	for index, buff_in_progress in ipairs(action_buffs_in_progress) do
-		if buff_in_progress then
-			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-			local id = buff_identifiers[index]
+		if buff_extension then
+			for index, buff_in_progress in ipairs(action_buffs_in_progress) do
+				if buff_in_progress then
+					local id = buff_identifiers[index]
 
-			buff_extension:remove_buff(id)
+					buff_extension:remove_buff(id)
+				end
+			end
 		end
 	end
 end
@@ -662,6 +666,24 @@ ActionUtils.redirect_shield_hit = function (hit_unit, hit_actor)
 	local new_hit_actor = unit_actor(potential_hit_unit_owner, unit_find_actor(potential_hit_unit_owner, "c_leftforearm"))
 
 	return potential_hit_unit_owner, new_hit_actor
+end
+
+ActionUtils.resolve_action_selector = function (action, talent_extension, buff_extension)
+	local next_action = action.default_action
+	local conditional_actions = action.conditional_actions
+
+	for i = 1, #conditional_actions, 1 do
+		if conditional_actions[i].condition(talent_extension, buff_extension) then
+			next_action = conditional_actions[i]
+
+			break
+		end
+	end
+
+	local next_action_name = next_action.action or action.lookup_data.action_name
+	local next_sub_action_name = next_action.sub_action
+
+	return next_action_name, next_sub_action_name
 end
 
 return

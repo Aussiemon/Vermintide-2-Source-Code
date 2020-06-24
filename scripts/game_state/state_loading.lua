@@ -506,8 +506,11 @@ StateLoading._trigger_sound_events = function (self, level_key)
 
 	if wwise_events ~= nil then
 		local wwise_event = wwise_events[math.random(1, #wwise_events)]
-		local wwise_playing_id, wwise_source_id = Managers.music:trigger_event(wwise_event)
-		self.wwise_playing_id = wwise_playing_id
+
+		if not script_data.disable_level_intro_dialogue then
+			local wwise_playing_id, wwise_source_id = Managers.music:trigger_event(wwise_event)
+			self.wwise_playing_id = wwise_playing_id
+		end
 
 		return wwise_event
 	end
@@ -550,8 +553,11 @@ StateLoading._trigger_weave_sound_events = function (self, weave_template, level
 	Managers.music:stop_event_queue("weave_loading_vo")
 
 	local delay = 0.5
-	local wwise_playing_id, wwise_source_id = Managers.music:trigger_event_queue("weave_loading_vo", wwise_events, delay)
-	self.wwise_playing_id = wwise_playing_id
+
+	if not script_data.disable_level_intro_dialogue then
+		local wwise_playing_id, wwise_source_id = Managers.music:trigger_event_queue("weave_loading_vo", wwise_events, delay)
+		self.wwise_playing_id = wwise_playing_id
+	end
 
 	return wwise_events
 end
@@ -1576,8 +1582,9 @@ StateLoading.on_exit = function (self, application_shutdown)
 			local current_weave_template = WeaveSettings.templates[current_weave]
 			local current_objective = current_weave_template.objectives[current_objective_index]
 			local level_key = current_objective.level_id
+			local environment_variation_id = 0
 
-			self._level_transition_handler:set_next_level(level_key)
+			self._level_transition_handler:set_next_level(level_key, environment_variation_id)
 			self._level_transition_handler:reload_level()
 		end
 
@@ -1936,7 +1943,7 @@ StateLoading._setup_level_transition = function (self)
 	else
 		self._level_transition_handler = LevelTransitionHandler:new()
 
-		self._level_transition_handler:set_next_level(self._level_transition_handler:default_level_key())
+		self._level_transition_handler:set_next_level(self._level_transition_handler:default_level_key(), self._level_transition_handler:default_environment_id())
 		Managers.account:set_level_transition_handler(self._level_transition_handler)
 	end
 end
@@ -2090,7 +2097,7 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback)
 
 	local network_options = Managers.lobby:network_options()
 	self._lobby_host = LobbyHost:new(network_options)
-	local level_key = self:get_next_level_key()
+	local level_key, environment_id = self:get_next_level_key()
 
 	if not self:loading_view_setup_done() then
 		self:setup_loading_view(level_key)
@@ -2106,13 +2113,14 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback)
 
 	Managers.mechanism:generate_locked_director_functions(level_key)
 	Managers.mechanism:generate_level_seed()
-	level_transition_handler:load_level(level_key)
+	level_transition_handler:load_level(level_key, environment_id)
 	self:should_start_breed_load_process()
 
 	if not wait_for_joined_callback then
 		local initial_level = level_transition_handler:get_current_level_keys()
+		local initial_environment = level_transition_handler:get_current_environment_id()
 		local wanted_profile_index = self.parent.loading_context.wanted_profile_index
-		self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, wanted_profile_index, level_transition_handler)
+		self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, initial_environment, wanted_profile_index, level_transition_handler)
 		self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
 
 		self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -2134,8 +2142,9 @@ end
 StateLoading.host_joined = function (self)
 	local loading_context = self.parent.loading_context
 	local initial_level = self._level_transition_handler:get_current_level_keys()
+	local initial_environment = self._level_transition_handler:get_current_environment_id()
 	local wanted_profile_index = self.parent.loading_context.wanted_profile_index
-	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, wanted_profile_index, self._level_transition_handler)
+	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, initial_environment, wanted_profile_index, self._level_transition_handler)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -2309,7 +2318,7 @@ StateLoading.get_current_level_keys = function (self)
 end
 
 StateLoading.get_next_level_key = function (self)
-	return self._level_transition_handler:get_next_level_key()
+	return self._level_transition_handler:get_next_level_key(), self._level_transition_handler:get_current_transition_environment()
 end
 
 StateLoading.set_lobby_host_data = function (self, level_key)

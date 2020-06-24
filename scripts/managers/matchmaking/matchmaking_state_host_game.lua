@@ -110,7 +110,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	local is_leader_on_dedicated_server = is_leader and is_dedicated_server
 
 	if not is_leader_on_dedicated_server then
-		self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name)
+		self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name, 0)
 		self._matchmaking_manager:set_game_privacy(private_game)
 	end
 

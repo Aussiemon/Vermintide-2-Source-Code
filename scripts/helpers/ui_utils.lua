@@ -1,34 +1,41 @@
 require("scripts/helpers/item_tooltip_helper")
 
 UIUtils = UIUtils or {}
+local VALUE_LIST = {}
 
-UIUtils.get_talent_description = function (talent_data)
-	local description_text = Localize(talent_data.description)
-	local description_values = talent_data.description_values
-	local values = {}
-	local text = nil
+UIUtils.format_localized_description = function (fmt_str, fmt_def)
+	local fmt_localized = Localize(fmt_str)
 
-	if description_values then
-		for i = 1, #description_values, 1 do
-			local data = description_values[i]
-			local value_type = data.value_type
-			local value = data.value
-
-			if value_type == "percent" then
-				values[#values + 1] = math.abs(100 * value)
-			elseif value_type == "baked_percent" then
-				values[#values + 1] = math.abs(100 * (value - 1))
-			else
-				values[#values + 1] = value
-			end
-		end
-
-		text = string.format(description_text, unpack(values))
-	else
-		text = description_text
+	if not fmt_def then
+		return fmt_localized
 	end
 
-	return text
+	local n = #fmt_def
+
+	for i = 1, n, 1 do
+		local value_data = fmt_def[i]
+		local value_type = value_data.value_type
+		local value_fmt = value_data.value_fmt
+		local value = value_data.value
+
+		if value_type == "percent" then
+			value = math.abs(100 * value)
+		elseif value_type == "baked_percent" then
+			value = math.abs(100 * (value - 1))
+		end
+
+		if value_fmt then
+			value = string.format(value_fmt, value)
+		end
+
+		VALUE_LIST[i] = value
+	end
+
+	return string.format(fmt_localized, unpack(VALUE_LIST, 1, n))
+end
+
+UIUtils.get_talent_description = function (talent_data)
+	return UIUtils.format_localized_description(talent_data.description, talent_data.description_values)
 end
 
 UIUtils.get_weave_property_description = function (property_name, property_data, mastery_costs, optional_amount)
@@ -342,12 +349,13 @@ UIUtils.is_button_hover_enter = function (widget)
 	return hotspot.on_hover_enter
 end
 
-UIUtils.comma_value = function (amount)
+UIUtils.comma_value = function (amount, comma)
 	local formatted = amount
 	local k = nil
+	local replacement = "%1" .. (comma or " ") .. "%2"
 
 	while true do
-		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1 %2")
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", replacement)
 
 		if k == 0 then
 			break

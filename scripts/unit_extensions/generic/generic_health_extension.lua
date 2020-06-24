@@ -243,12 +243,18 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		damage_amount = damage_amount - overkill_damage
 	end
 
+	if not source_attacker_unit then
+		local last_attacker_id = self.last_damage_data.attacker_unit_id
+		source_attacker_unit = last_attacker_id and Managers.state.unit_storage:unit(last_attacker_id)
+	end
+
 	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, backstab_multiplier)
 
 	fassert(damage_type, "No damage_type!")
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
+	self._recent_damage_source_name = damage_source_name
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
@@ -344,6 +350,10 @@ GenericHealthExtension.recent_damages = function (self)
 	local damage_queue = self.damage_buffers[previous_buffer_index]
 
 	return pdArray.data(damage_queue)
+end
+
+GenericHealthExtension.recent_damage_source = function (self)
+	return self._recent_damage_source_name
 end
 
 GenericHealthExtension.recently_damaged = function (self)

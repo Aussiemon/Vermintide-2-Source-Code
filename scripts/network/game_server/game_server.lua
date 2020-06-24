@@ -125,6 +125,10 @@ GameServer.get_stored_lobby_data = function (self)
 	return self._data_table
 end
 
+GameServer.attempting_reconnect = function (self)
+	return false
+end
+
 GameServer.lost_connection_to_lobby = function (self)
 	return false
 end

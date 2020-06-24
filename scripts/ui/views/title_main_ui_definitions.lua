@@ -1178,12 +1178,12 @@ if PLATFORM == "ps4" then
 end
 
 local attract_mode_video = {
-	video_name = "video/vermintide_2",
-	sound_start = "Play_v2_teaser_demo",
+	video_name = "video/fatshark_splash",
+	sound_start = "Play_fatshark_logo",
 	scenegraph_id = "splash_video",
 	loop = false,
-	material_name = "vermintide_2",
-	sound_stop = "Stop_v2_teaser_demo"
+	material_name = "fatshark_splash",
+	sound_stop = "Stop_fatshark_logo"
 }
 local engage_screen_video = {
 	video_name = "video/start_1",

@@ -207,6 +207,8 @@ WeaveManager.destroy = function (self)
 end
 
 WeaveManager.update = function (self, dt, t)
+	self:_poll_testify_requests()
+
 	if not self._initiated then
 		return
 	end
@@ -816,6 +818,11 @@ WeaveManager._track_ai_killed = function (self, breed_name)
 		self._num_enemies_killed = self._num_enemies_killed + 1
 		local difficulty_key = Managers.state.difficulty:get_difficulty()
 		local current_objective_template = self:get_active_objective_template()
+
+		if current_objective_template == nil then
+			return
+		end
+
 		local enemy_count = current_objective_template.enemy_count[difficulty_key]
 		local amount = 1 / enemy_count * 100
 
@@ -856,6 +863,34 @@ end
 
 WeaveManager.rpc_weave_final_objective_completed = function (self, sender)
 	self:final_objective_completed()
+end
+
+WeaveManager._poll_testify_requests = function (self)
+	local weave_name = Testify:poll_request("set_next_weave")
+
+	if weave_name then
+		self._remaining_time = WeaveSettings.starting_time
+
+		self:set_next_weave(weave_name)
+		self:set_next_objective(1)
+		Testify:respond_to_request("set_next_weave")
+	end
+
+	local weave_number = Testify:poll_request("get_weave_end_zone")
+
+	if weave_number then
+		local weave_template = WeaveSettings.templates_ordered[weave_number]
+
+		Testify:respond_to_request("get_weave_end_zone", weave_template.objectives[1].end_zone_name)
+	end
+
+	if Testify:poll_request("weave_remaining_time") then
+		Testify:respond_to_request("weave_remaining_time", self._remaining_time)
+	end
+
+	if Testify:poll_request("get_active_weave_phase") then
+		Testify:respond_to_request("get_active_weave_phase", self:get_active_weave_phase())
+	end
 end
 
 return

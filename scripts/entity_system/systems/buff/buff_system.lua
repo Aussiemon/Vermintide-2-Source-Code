@@ -93,6 +93,8 @@ BuffSystem._clean_up_server_controller_buffs = function (self, unit)
 		end
 
 		self.server_controlled_buffs[unit] = nil
+
+		Managers.state.event:trigger("on_clean_up_server_controlled_buffs", unit)
 	end
 end
 

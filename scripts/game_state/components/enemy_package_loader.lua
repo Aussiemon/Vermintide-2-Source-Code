@@ -269,6 +269,8 @@ EnemyPackageLoader._find_patrol_replacement = function (self)
 		replacement_breed_name = FALLBACK_REPLACEMENTS[fallback_index]
 	end
 
+	print(string.format(" - Replacement breed name %q", replacement_breed_name))
+
 	return replacement_breed_name
 end
 

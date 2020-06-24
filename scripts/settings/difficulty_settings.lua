@@ -362,5 +362,6 @@ DifficultyMapping = {
 }
 DefaultStartingDifficulty = "hard"
 DefaultQuickPlayStartingDifficulty = "normal"
+DefaultAdventureModeStartingDifficulty = "normal"
 
 return

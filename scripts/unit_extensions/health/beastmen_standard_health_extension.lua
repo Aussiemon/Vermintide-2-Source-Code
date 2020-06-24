@@ -23,6 +23,7 @@ end
 local white_listed_damage_sources = {
 	explosive_barrel = true,
 	grenade_frag_02 = true,
+	markus_questingknight_career_skill_weapon = true,
 	torch = true,
 	grenade_frag_01 = true,
 	shadow_torch = true

@@ -98,7 +98,8 @@ local hud_components = {
 	"SocialWheelUI",
 	"WeaveProgressUI",
 	"WeaveTimerUI",
-	"WorldMarkerUI"
+	"WorldMarkerUI",
+	"ChallengeTrackerUI"
 }
 SPProfiles = {
 	{
@@ -368,6 +369,35 @@ for profile_index, profile in pairs(SPProfiles) do
 	end
 end
 
+function FindProfileIndex(profile_name)
+	for i, profile_data in pairs(SPProfiles) do
+		if profile_data.display_name == profile_name then
+			return i
+		end
+	end
+end
+
+function GetHeroAffiliationIndex(profile_index)
+	local profile = SPProfiles[profile_index]
+	local hero_profiles = PROFILES_BY_AFFILIATION.heroes
+
+	for i = 1, #hero_profiles, 1 do
+		local hero_profile = hero_profiles[i]
+
+		if profile.display_name == hero_profile then
+			return i
+		end
+	end
+end
+
+function add_career_to_profile(profile_name, career)
+	local profile_idx = FindProfileIndex(profile_name)
+	local profile = SPProfiles[profile_idx]
+	local careers = profile.careers
+
+	table.insert(careers, career)
+end
+
 for _, dlc in pairs(DLCSettings) do
 	local profile_files = dlc.profile_files
 
@@ -457,27 +487,6 @@ for index, profile in ipairs(SPProfiles) do
 		career_settings.character_state_list = character_state_list
 
 		table.clear(character_state_names)
-	end
-end
-
-function FindProfileIndex(profile_name)
-	for i, profile_data in pairs(SPProfiles) do
-		if profile_data.display_name == profile_name then
-			return i
-		end
-	end
-end
-
-function GetHeroAffiliationIndex(profile_index)
-	local profile = SPProfiles[profile_index]
-	local hero_profiles = PROFILES_BY_AFFILIATION.heroes
-
-	for i = 1, #hero_profiles, 1 do
-		local hero_profile = hero_profiles[i]
-
-		if profile.display_name == hero_profile then
-			return i
-		end
 	end
 end
 

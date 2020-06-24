@@ -3,6 +3,7 @@ local item_master_list = {
 		description = "wpn_beer_bottle",
 		temporary_template = "beer_bottle",
 		right_hand_unit = "units/weapons/player/wpn_ale/wpn_ale",
+		is_local = true,
 		inventory_icon = "icons_placeholder",
 		slot_type = "potion",
 		description_type = "beer_bottle",
@@ -10,23 +11,7 @@ local item_master_list = {
 		gamepad_hud_icon = "icons_placeholder",
 		hud_icon = "icons_placeholder",
 		item_type = "potion",
-		can_wield = {
-			"bw_scholar",
-			"bw_adept",
-			"bw_unchained",
-			"we_shade",
-			"we_maidenguard",
-			"we_waywatcher",
-			"dr_ironbreaker",
-			"dr_slayer",
-			"dr_ranger",
-			"wh_zealot",
-			"wh_bountyhunter",
-			"wh_captain",
-			"es_huntsman",
-			"es_knight",
-			"es_mercenary"
-		}
+		can_wield = CanWieldAllItemTemplates
 	},
 	frame_celebration_01 = {
 		description = "frame_celebration_01_description",
@@ -38,23 +23,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		can_wield = {
-			"bw_scholar",
-			"bw_adept",
-			"bw_unchained",
-			"we_shade",
-			"we_maidenguard",
-			"we_waywatcher",
-			"dr_ironbreaker",
-			"dr_slayer",
-			"dr_ranger",
-			"wh_zealot",
-			"wh_bountyhunter",
-			"wh_captain",
-			"es_huntsman",
-			"es_knight",
-			"es_mercenary"
-		}
+		can_wield = CanWieldAllItemTemplates
 	},
 	frame_celebration_02 = {
 		description = "frame_celebration_02_description",
@@ -66,23 +35,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		can_wield = {
-			"bw_scholar",
-			"bw_adept",
-			"bw_unchained",
-			"we_shade",
-			"we_maidenguard",
-			"we_waywatcher",
-			"dr_ironbreaker",
-			"dr_slayer",
-			"dr_ranger",
-			"wh_zealot",
-			"wh_bountyhunter",
-			"wh_captain",
-			"es_huntsman",
-			"es_knight",
-			"es_mercenary"
-		}
+		can_wield = CanWieldAllItemTemplates
 	},
 	frame_celebration_03 = {
 		description = "frame_celebration_03_description",
@@ -94,23 +47,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		can_wield = {
-			"bw_scholar",
-			"bw_adept",
-			"bw_unchained",
-			"we_shade",
-			"we_maidenguard",
-			"we_waywatcher",
-			"dr_ironbreaker",
-			"dr_slayer",
-			"dr_ranger",
-			"wh_zealot",
-			"wh_bountyhunter",
-			"wh_captain",
-			"es_huntsman",
-			"es_knight",
-			"es_mercenary"
-		}
+		can_wield = CanWieldAllItemTemplates
 	}
 }
 

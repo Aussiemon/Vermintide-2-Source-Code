@@ -1933,10 +1933,12 @@ go_type_table = {
 					profile = profile
 				},
 				dialogue_system = {
+					wwise_career_switch_group = "player_career",
 					faction = "player",
 					wwise_voice_switch_group = "character",
 					profile = profile,
-					wwise_voice_switch_value = profile.character_vo
+					wwise_voice_switch_value = profile.character_vo,
+					wwise_career_switch_value = career_name
 				},
 				whereabouts_system = {
 					player = player
@@ -2068,10 +2070,12 @@ go_type_table = {
 					player = player
 				},
 				dialogue_system = {
+					wwise_career_switch_group = "player_career",
 					faction = "player",
 					wwise_voice_switch_group = "character",
 					profile = profile,
-					wwise_voice_switch_value = profile.character_vo
+					wwise_voice_switch_value = profile.character_vo,
+					wwise_career_switch_value = career_name
 				},
 				whereabouts_system = {
 					player = player

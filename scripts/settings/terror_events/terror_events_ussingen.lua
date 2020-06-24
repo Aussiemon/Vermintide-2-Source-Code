@@ -2,7 +2,18 @@ local function count_event_breed(breed_name)
 	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
 end
 
-local weighted_random_terror_events = nil
+local weighted_random_terror_events = {
+	ussingen_payload_event_loop = {
+		"ussingen_payload_event_loop_01",
+		1,
+		"ussingen_payload_event_loop_02",
+		1,
+		"ussingen_payload_event_loop_03",
+		1,
+		"ussingen_payload_event_loop_04",
+		1
+	}
+}
 local HARDER = 4
 local HARDEST = 5
 local CATACLYSM = 6
@@ -86,16 +97,6 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 5
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "ussingen_payload_start",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
 			duration = 8,
 			difficulty_requirement = HARDER
 		},
@@ -126,6 +127,12 @@ local terror_event_blueprints = {
 				return count_event_breed("chaos_fanatic") < 7 and count_event_breed("chaos_raider") < 5 and count_event_breed("chaos_marauder") < 8 and count_event_breed("chaos_marauder_with_shield") < 6
 			end
 		},
+		{
+			"flow_event",
+			flow_event_name = "ussingen_payload_event_01_done"
+		}
+	},
+	ussingen_payload_event_loop_01 = {
 		{
 			"event_horde",
 			limit_spawners = 2,
@@ -176,6 +183,12 @@ local terror_event_blueprints = {
 				return count_event_breed("chaos_fanatic") < 6 and count_event_breed("chaos_raider") < 6 and count_event_breed("chaos_marauder") < 6 and count_event_breed("chaos_marauder_with_shield") < 6
 			end
 		},
+		{
+			"flow_event",
+			flow_event_name = "ussingen_payload_event_loop_done"
+		}
+	},
+	ussingen_payload_event_loop_02 = {
 		{
 			"event_horde",
 			limit_spawners = 2,
@@ -229,6 +242,12 @@ local terror_event_blueprints = {
 			end
 		},
 		{
+			"flow_event",
+			flow_event_name = "ussingen_payload_event_loop_done"
+		}
+	},
+	ussingen_payload_event_loop_03 = {
+		{
 			"spawn_special",
 			amount = 1,
 			breed_name = {
@@ -270,6 +289,12 @@ local terror_event_blueprints = {
 				return count_event_breed("chaos_fanatic") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
 		},
+		{
+			"flow_event",
+			flow_event_name = "ussingen_payload_event_loop_done"
+		}
+	},
+	ussingen_payload_event_loop_04 = {
 		{
 			"event_horde",
 			limit_spawners = 2,
@@ -319,17 +344,13 @@ local terror_event_blueprints = {
 			condition = function (t)
 				return count_event_breed("chaos_fanatic") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "ussingen_payload_event_loop_done"
 		}
 	},
 	ussingen_payload_event_02 = {
-		{
-			"control_pacing",
-			enable = false
-		},
-		{
-			"control_specials",
-			enable = false
-		},
 		{
 			"set_freeze_condition",
 			max_active_enemies = 100
@@ -337,6 +358,11 @@ local terror_event_blueprints = {
 		{
 			"set_master_event_running",
 			name = "ussingen_payload_event"
+		},
+		{
+			"event_horde",
+			spawner_id = "ussingen_payload_square",
+			composition_type = "event_medium_chaos"
 		},
 		{
 			"delay",
@@ -409,8 +435,8 @@ local terror_event_blueprints = {
 			difficulty_requirement = HARDER
 		},
 		{
-			"control_specials",
-			enable = true
+			"flow_event",
+			flow_event_name = "ussingen_payload_event_02_done"
 		}
 	},
 	ussingen_payload_event_03 = {

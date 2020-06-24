@@ -317,7 +317,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "catch",
-					start_time = 0.45,
+					start_time = 0.55,
 					action = "weapon_reload",
 					input = "weapon_reload_hold"
 				}

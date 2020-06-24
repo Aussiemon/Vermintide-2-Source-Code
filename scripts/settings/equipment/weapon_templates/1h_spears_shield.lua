@@ -360,9 +360,9 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 1,
-					action = "action_two",
+					action = "action_one",
 					doubleclick_window = 0,
-					input = "action_two"
+					input = "action_one"
 				},
 				{
 					sub_action = "default",
@@ -1488,6 +1488,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_shield_spea
 weapon_template.wield_anim = "to_1h_spear_shield"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "SWORD_1H_SHIELD"
+weapon_template.shield_block = true
 weapon_template.max_fatigue_points = 10
 weapon_template.dodge_count = 3
 weapon_template.can_block_ranged_attacks = true

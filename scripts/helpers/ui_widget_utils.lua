@@ -603,4 +603,16 @@ UIWidgetUtils.animate_play_button = function (widget, dt)
 	hotspot.selection_progress = selection_progress
 end
 
+UIWidgetUtils.get_level_frame_by_difficulty_index = function (difficulty_index)
+	local completed_frame_texture = "map_frame_00"
+
+	if difficulty_index and difficulty_index > 0 then
+		local difficulty_key = DefaultDifficulties[difficulty_index]
+		local settings = DifficultySettings[difficulty_key]
+		completed_frame_texture = settings.completed_frame_texture
+	end
+
+	return completed_frame_texture
+end
+
 return

@@ -3,6 +3,7 @@ require("scripts/settings/area_settings")
 
 GameActs = {}
 MainGameLevels = {}
+HelmgartLevels = {}
 UnlockableLevels = {}
 UnlockableLevelsByGameMode = {}
 DLCProgressionOrder = {}
@@ -18,6 +19,7 @@ GameActsOrder = {
 	"act_3",
 	"act_4"
 }
+AdventureActStartId = 2
 MapPresentationActs = {
 	"act_1",
 	"act_2",
@@ -115,6 +117,20 @@ for level_key, level_data in pairs(LevelSettings) do
 	end
 end
 
+local prologue_index = nil
+
+for i = 1, #MainGameLevels, 1 do
+	if MainGameLevels[i] == "prologue" then
+		prologue_index = i
+	end
+end
+
+HelmgartLevels = table.clone(MainGameLevels)
+
+if prologue_index then
+	table.remove(HelmgartLevels, prologue_index)
+end
+
 for _, level_key in ipairs(UnlockableLevels) do
 	local level_data = LevelSettings[level_key]
 	local act_unlock_order = level_data.act_unlock_order
@@ -134,6 +150,12 @@ for _, level_key in ipairs(UnlockableLevels) do
 
 		RequiredLevelUnlocksByLevel[level_key] = required_levels
 	end
+end
+
+for _, act_data in pairs(GameActs) do
+	table.sort(act_data, function (a, b)
+		return LevelSettings[a].act_unlock_order < LevelSettings[b].act_unlock_order
+	end)
 end
 
 LevelUnlockUtils = {}
@@ -560,6 +582,26 @@ LevelUnlockUtils.set_all_acts_incompleted = function ()
 
 	statistics_db:generate_backend_stats(stats_id, backend_stats)
 	Managers.backend:set_stats(backend_stats)
+end
+
+LevelUnlockUtils.get_next_adventure_level = function (statistics_db, player_stats_id)
+	for act_id = AdventureActStartId, #GameActsOrder, 1 do
+		local act = GameActsOrder[act_id]
+
+		if not LevelUnlockUtils.act_completed(statistics_db, player_stats_id, act) then
+			local act_levels = GameActs[act]
+
+			for act_level_id = 1, #act_levels, 1 do
+				local act_level_key = act_levels[act_level_id]
+
+				if LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, act_level_key) <= 0 then
+					return act_level_key
+				end
+			end
+		end
+	end
+
+	return nil
 end
 
 LevelUnlockUtils.debug_set_completed_game_difficulty = function (difficulty)

@@ -297,6 +297,7 @@ AttackTemplates = {
 		damage_type = "blunt_tank"
 	},
 	heavy_blunt_tank = {
+		stagger_value = 2,
 		sound_type = "heavy",
 		damage_type = "heavy_blunt_tank"
 	},

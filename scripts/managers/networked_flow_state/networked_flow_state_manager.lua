@@ -46,6 +46,7 @@ NetworkedFlowStateManager.init = function (self, world, is_server, network_event
 	self._level = nil
 	self._story_lookup = {}
 	self._playing_stories = {}
+	self._canceled_stories = {}
 	self._object_states = {}
 	self._num_states = 0
 	self._max_states = 256
@@ -223,6 +224,15 @@ NetworkedFlowStateManager.flow_cb_stop_networked_story = function (self, params)
 	debug_print("Stopping story %q (server).", client_call_event_name)
 
 	local story = self._playing_stories[client_call_event_name]
+
+	if not story then
+		debug_print("Story canceled: called stop before play %q (server).", client_call_event_name)
+
+		self._canceled_stories[client_call_event_name] = params
+
+		return nil
+	end
+
 	local stop_time = self._storyteller:time(story.id)
 	story.stop_time = stop_time
 
@@ -288,6 +298,15 @@ NetworkedFlowStateManager.flow_cb_has_played_networked_story = function (self, p
 	local id = params.story_id
 	story.id = id
 	story.length = self._storyteller:length(id)
+
+	if self._canceled_stories[client_call_event_name] then
+		debug_print("stopping story due to cancel %q (server).", client_call_event_name)
+
+		local cancel_return = self:flow_cb_stop_networked_story(self._canceled_stories[client_call_event_name])
+		self._canceled_stories[client_call_event_name] = nil
+
+		return cancel_return
+	end
 end
 
 NetworkedFlowStateManager.hot_join_sync = function (self, peer)

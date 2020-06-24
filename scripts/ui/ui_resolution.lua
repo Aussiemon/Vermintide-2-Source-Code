@@ -64,7 +64,12 @@ local function determine_native_aspect_ratio_and_resolution()
 			end
 		end
 
-		local num_modes = DisplayAdapter.num_modes(adapter_index, fullscreen_output)
+		local num_modes = 0
+
+		if DisplayAdapter.num_outputs(adapter_index) > 0 then
+			num_modes = DisplayAdapter.num_modes(adapter_index, fullscreen_output)
+		end
+
 		local tmp = FrameTable.alloc_table()
 
 		if num_modes > 0 then

@@ -130,6 +130,16 @@ settings.achievement_outline = {
 					"scorpion_tier_2_season_2",
 					"scorpion_tier_3_season_2"
 				}
+			},
+			{
+				sorting = 98,
+				name = "achv_menu_season_3_scorpion_category_title",
+				entries = {
+					"scorpion_complete_unranked_weaves_season_3",
+					"scorpion_tier_1_season_3",
+					"scorpion_tier_2_season_3",
+					"scorpion_tier_3_season_3"
+				}
 			}
 		}
 	}

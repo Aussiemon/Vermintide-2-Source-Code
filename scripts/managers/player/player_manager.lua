@@ -103,6 +103,7 @@ PlayerManager.assign_unit_ownership = function (self, unit, player, is_player_un
 		local side = side_manager.side_by_party[party]
 
 		side_manager:add_player_unit_to_side(unit, side.side_id)
+		Managers.state.event:trigger("new_player_unit", player, unit)
 	end
 
 	Managers.state.unit_spawner:add_destroy_listener(unit, "player_manager", callback(self, "unit_destroy_callback"))

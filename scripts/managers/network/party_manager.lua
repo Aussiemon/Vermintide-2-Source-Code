@@ -247,6 +247,31 @@ PartyManager.get_party_from_name = function (self, party_name)
 	end
 end
 
+function update_status_profile_index(player_status)
+	local state = Managers.state
+
+	if not state then
+		return
+	end
+
+	local network = state.network
+
+	if not network then
+		return
+	end
+
+	local profile_synchronizer = network.profile_synchronizer
+
+	if not profile_synchronizer then
+		return
+	end
+
+	local profile_index, career_index = profile_synchronizer:profile_by_peer(player_status.peer_id, player_status.local_player_id)
+	player_status.profile_index = profile_index
+	player_status.career_index = career_index
+	player_status.profile_id = profile_index and SPProfiles[profile_index].display_name
+end
+
 PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wanted_party_id, optional_slot_id, is_bot)
 	is_bot = not not is_bot
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
@@ -268,6 +293,8 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 
 		self:_clear_slot_in_party(old_party, old_slot_id, old_is_bot)
 	end
+
+	update_status_profile_index(player_status)
 
 	local party = (wanted_party_id and self._parties[wanted_party_id]) or self._undecided_party
 	local party_id = wanted_party_id or 0
@@ -295,6 +322,10 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 		Managers.state.game_mode:player_joined_party(peer_id, local_player_id, party_id, slot_id)
 	end
 
+	if Managers.state.event then
+		Managers.state.event:trigger("on_player_joined_party", peer_id, local_player_id, party_id, slot_id)
+	end
+
 	return player_status
 end
 
@@ -311,6 +342,12 @@ PartyManager.remove_peer_from_party = function (self, peer_id, local_player_id, 
 		local slot_id = player_status.slot_id
 
 		Managers.state.game_mode:player_left_party(peer_id, local_player_id, party_id, slot_id)
+	end
+
+	if Managers.state.event then
+		local slot_id = player_status.slot_id
+
+		Managers.state.event:trigger("on_player_left_party", peer_id, local_player_id, party_id, slot_id)
 	end
 
 	self:_clear_slot_in_party(party, player_status.slot_id, player_status.is_bot)

@@ -74,6 +74,9 @@ StateLoadingRestartNetwork._init_network = function (self)
 				print("state_loading_restart_network JOIN VIA STEAM " .. invite_type)
 			else
 				rawset(_G, "Steam", nil)
+
+				HAS_STEAM = false
+
 				require("scripts/network/lobby_lan")
 
 				host_to_join = script_data.host_to_join

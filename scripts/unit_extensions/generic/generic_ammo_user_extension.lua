@@ -74,6 +74,14 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 	local player_manager = Managers.player
 	local owner_player = player_manager:owner(self.owner_unit)
 
+	if self._queued_reload then
+		if self:can_reload() then
+			self:start_reload(true)
+		end
+
+		self._queued_reload = false
+	end
+
 	if self._shots_fired > 0 then
 		self._current_ammo = self._current_ammo - self._shots_fired
 		self._shots_fired = 0
@@ -267,6 +275,8 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 end
 
 GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
+	local prev_available_ammo = self._available_ammo
+
 	if self._ammo_immediately_available then
 		self._current_ammo = math.min(self._max_ammo, self._current_ammo + amount)
 	else
@@ -286,6 +296,10 @@ GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
 		local event_id = NetworkLookup.proc_events.on_gained_ammo_from_no_ammo
 
 		Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+	end
+
+	if prev_available_ammo == 0 and self._current_ammo == 0 and self:can_reload() then
+		self._queued_reload = true
 	end
 end
 

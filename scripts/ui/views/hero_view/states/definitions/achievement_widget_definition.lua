@@ -1327,7 +1327,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			offset = {
 				0,
 				-13,
-				8
+				9
 			}
 		},
 		progress_text = {
@@ -1378,7 +1378,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			offset = {
 				size[1] / 2 - progress_bar_size[1] / 2,
 				4,
-				10
+				12
 			}
 		},
 		claimed_text_shadow = {
@@ -1395,7 +1395,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			offset = {
 				size[1] / 2 - progress_bar_size[1] / 2 + 2,
 				2,
-				9
+				11
 			}
 		},
 		locked_text = {

@@ -1,11 +1,11 @@
 return {
 	wind_strength = 5,
-	wind = "life",
+	wind = "heavens",
 	seed = 238947,
 	objectives = {
 		{
 			display_name = "objective_targets_name",
-			level_id = "dlc_scorpion_rubble_life",
+			level_id = "dlc_scorpion_rubble_heavens",
 			objective_type = "targets",
 			conflict_settings = "weave_skaven_beastmen",
 			end_zone_name = "end_zone_02",
@@ -165,7 +165,7 @@ return {
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_life",
+			level_id = "dlc_scorpion_arena_temple_heavens",
 			objective_start_flow_event = "weave_objective_waves_start",
 			spawning_seed = 492374,
 			level_seed = 403826,

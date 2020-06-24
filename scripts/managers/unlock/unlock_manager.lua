@@ -191,12 +191,17 @@ UnlockManager._check_licenses = function (self)
 		end
 	end
 
+	local is_in_store = self._ingame_ui and self._ingame_ui:is_in_view_state("HeroViewStateStore")
+
 	if new_licensed_dlc ~= "" then
 		if Managers.state.event then
 			Managers.state.event:trigger("event_dlc_status_changed")
 		end
 
-		self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(new_licensed_dlc, Localize("new_dlc_installed"), "ok", Localize("button_ok"))
+		if not is_in_store then
+			self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(new_licensed_dlc, Localize("new_dlc_installed"), "ok", Localize("button_ok"))
+		end
+
 		self._dlc_status_changed = true
 	elseif removed_dlc_licenses ~= "" then
 		if Managers.state.event then
@@ -569,17 +574,23 @@ UnlockManager._update_backend_unlocks = function (self)
 
 			if not is_in_store then
 				local item_interface = backend_manager:get_interface("items")
-
-				if not item_interface.get_unseen_item_rewards then
-					print("HEJ")
-				end
-
 				local unseen_rewards = item_interface:get_unseen_item_rewards()
 
 				if unseen_rewards then
 					for i = 1, #unseen_rewards, 1 do
 						local reward = unseen_rewards[i]
-						local item = item_interface:get_item_from_id(reward.backend_id)
+						local item = nil
+
+						if reward.item_type == "weapon_skin" then
+							local weapon_skin_data = WeaponSkins.skins[reward.item_id]
+							local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(reward.item_id)
+							item = {
+								data = weapon_skin_data,
+								backend_id = backend_id
+							}
+						else
+							item = item_interface:get_item_from_id(reward.backend_id)
+						end
 
 						if item then
 							local item_data = item.data

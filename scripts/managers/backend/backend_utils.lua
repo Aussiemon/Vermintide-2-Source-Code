@@ -230,6 +230,7 @@ local CAREER_ID_LOOKUP = {
 	"es_huntsman",
 	"es_mercenary",
 	"es_knight",
+	"es_questingknight",
 	"bw_adept",
 	"bw_scholar",
 	"bw_unchained",

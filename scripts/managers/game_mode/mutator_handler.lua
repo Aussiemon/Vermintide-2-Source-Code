@@ -399,6 +399,11 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 		template = template
 	}
 
+	if optional_duration then
+		local t = Managers.time:time("game")
+		mutator_data.deactivate_at_t = t + optional_duration
+	end
+
 	if self._is_server then
 		local server_template = template.server
 
@@ -413,11 +418,6 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 		if client_template.start_function then
 			client_template.start_function(mutator_context, mutator_data)
 		end
-	end
-
-	if optional_duration then
-		local t = Managers.time:time("game")
-		mutator_data.deactivate_at_t = t + optional_duration
 	end
 
 	active_mutators[name] = mutator_data

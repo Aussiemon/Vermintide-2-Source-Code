@@ -15,8 +15,7 @@ UISceneGraph.init_scenegraph_cached = function (scenegraph)
 		local children = scenegraph_object.children
 
 		if children then
-			local scene_graph_ref = EngineOptimized.scenegraph_cached_init(scenegraph_object.children)
-			scenegraph_object.scene_graph_ref = scene_graph_ref
+			scenegraph_object.scene_graph_ref = EngineOptimized.scenegraph_cached_init(children)
 		end
 	end
 end
@@ -29,7 +28,7 @@ UISceneGraph.init_scenegraph = function (scenegraph)
 	local num_scenegraph_objects = 0
 
 	for name, scene_object_data in pairs(scenegraph) do
-		is_static = is_static or scene_object_data.is_static or false
+		is_static = is_static or scene_object_data.is_static
 		scene_object_data.name = name
 		num_scenegraph_objects = num_scenegraph_objects + 1
 
@@ -99,9 +98,9 @@ UISceneGraph.init_scenegraph = function (scenegraph)
 
 	scenegraph.n_hierarchical_scenegraph = n_hierarchical_scenegraph
 	scenegraph.hierarchical_scenegraph = hierarchical_scenegraph
-	scenegraph.is_static = is_static
+	scenegraph.is_static = not not is_static
 
-	if scenegraph.is_static then
+	if is_static then
 		local w = RESOLUTION_LOOKUP.res_w
 		local h = RESOLUTION_LOOKUP.res_h
 		scenegraph.w = w
@@ -144,7 +143,6 @@ UISceneGraph.get_size = function (scenegraph, scenegraph_object_name)
 end
 
 local Vector3Aux_unbox = Vector3Aux.unbox
-local UISceneGraph_get_size = UISceneGraph.get_size
 local Vector3_x = Vector3.x
 local Vector3_y = Vector3.y
 local Vector3_set_x = Vector3.set_x
@@ -185,8 +183,6 @@ local function update_children(world_position, children, num_children, size_x, s
 	end
 end
 
-local dummy_size = {}
-
 UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, scenegraph_id)
 	local w = RESOLUTION_LOOKUP.res_w
 	local h = RESOLUTION_LOOKUP.res_h
@@ -202,27 +198,20 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 	local hierarchical_scenegraph = scenegraph.hierarchical_scenegraph
 	local scale = RESOLUTION_LOOKUP.scale
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	local root_scale_x = UISettings.root_scale[1]
+	local root_scale_x = w / (UIResolutionWidthFragments() * scale)
 	local root_scale_y = UISettings.root_scale[2]
-	root_scale_x = w / (UIResolutionWidthFragments() * scale)
-	local w_inverse_scale = w * inverse_scale
-	local h_inverse_scale = h * inverse_scale
 
 	for i = 1, scenegraph.n_hierarchical_scenegraph, 1 do
 		local scenegraph_object = hierarchical_scenegraph[i]
 		local current_world_position = nil
 		local size = scenegraph_object.size
-		local parent_size = dummy_size
 
 		if parent_scenegraph then
 			current_world_position = Vector3Aux_unbox(UISceneGraph.get_world_position(parent_scenegraph, scenegraph_id))
-			parent_size = UISceneGraph_get_size(parent_scenegraph, scenegraph_id)
 		else
 			current_world_position = Vector3Aux_unbox(scenegraph_object.local_position)
 		end
 
-		local parent_size_x = parent_size[1]
-		local parent_size_y = parent_size[2]
 		local size_x = size and size[1]
 		local size_y = size and size[2]
 
@@ -232,8 +221,8 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 			size_y = size_y * root_scale_y
 			local scaled_x = size_x * scale
 			local scaled_y = size_y * scale
-			local x = ((Vector3_x(current_world_position) + w / 2) - scaled_x / 2) * inverse_scale
-			local y = ((Vector3_y(current_world_position) + h / 2) - scaled_y / 2) * inverse_scale
+			local x = (Vector3_x(current_world_position) + (w - scaled_x) * 0.5) * inverse_scale
+			local y = (Vector3_y(current_world_position) + (h - scaled_y) * 0.5) * inverse_scale
 
 			Vector3_set_x(current_world_position, x)
 			Vector3_set_y(current_world_position, y)
@@ -247,7 +236,7 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 			size_x = size_x * root_scale_x
 			size_y = h * inverse_scale
 			local scaled_x = size_x * scale
-			local x = ((Vector3_x(current_world_position) + w / 2) - scaled_x / 2) * inverse_scale
+			local x = (Vector3_x(current_world_position) + (w - scaled_x) * 0.5) * inverse_scale
 
 			Vector3_set_x(current_world_position, x)
 			Vector3_set_y(current_world_position, 0)
@@ -413,10 +402,6 @@ UISceneGraph.screen_position_to_resolution_position = function (pos_x, pos_y, re
 	return new_x, new_y
 end
 
-local default_size = {
-	5,
-	5
-}
 local draw_color = Colors.get_color_table_with_alpha("maroon", 64)
 local draw_text_color = Colors.get_color_table_with_alpha("white", 255)
 local font_size = 10
@@ -425,9 +410,13 @@ local font_mtrl = "materials/fonts/" .. font_name
 
 local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph)
 	for i = 1, n_scenegraph, 1 do
-		local draw = true
 		local scenegraph_object = scenegraph[i]
-		local size = table.clone(scenegraph_object.size) or table.clone(default_size)
+		local pos = scenegraph_object.world_position
+		local size = table.clone(scenegraph_object.size) or {
+			5,
+			5
+		}
+		local draw = true
 
 		if scenegraph_object.scale == "fit" then
 			local inverse_scale = RESOLUTION_LOOKUP.inv_scale
@@ -449,20 +438,15 @@ local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph)
 			draw = false
 		end
 
-		local color = draw_color
-
-		if scenegraph_object.debug_mark then
-			color = Colors.get_color_table_with_alpha("green", 64)
-		end
-
 		if draw then
-			UIRenderer.draw_rect(ui_renderer, Vector3(unpack(scenegraph_object.world_position)), size, color)
-		end
+			local color = draw_color
 
-		local position = Vector3(scenegraph_object.world_position[1], scenegraph_object.world_position[2], scenegraph_object.world_position[3] + 1)
+			if scenegraph_object.debug_mark then
+				color = Colors.get_color_table_with_alpha("green", 64)
+			end
 
-		if draw then
-			UIRenderer.draw_text(ui_renderer, scenegraph_object.name, font_mtrl, font_size, font_name, position, draw_text_color)
+			UIRenderer.draw_rect(ui_renderer, pos, size, color)
+			UIRenderer.draw_text(ui_renderer, scenegraph_object.name, font_mtrl, font_size, font_name, pos, draw_text_color)
 		end
 
 		local children = scenegraph_object.children
@@ -474,7 +458,7 @@ local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph)
 end
 
 UISceneGraph.debug_render_scenegraph = function (ui_renderer, scenegraph)
-	debug_render_scenegraph(ui_renderer, scenegraph.hierarchical_scenegraph, scenegraph.n_hierarchical_scenegraph)
+	return debug_render_scenegraph(ui_renderer, scenegraph.hierarchical_scenegraph, scenegraph.n_hierarchical_scenegraph)
 end
 
 return

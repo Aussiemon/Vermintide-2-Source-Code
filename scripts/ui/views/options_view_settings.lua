@@ -606,6 +606,22 @@ local gameplay_settings_definition = {
 		widget_type = "stepper"
 	},
 	{
+		setup = "cb_input_buffer_setup",
+		saved_value = "cb_input_buffer_saved_value",
+		setting_name = "input_buffer",
+		callback = "cb_input_buffer",
+		tooltip_text = "tooltip_input_buffer",
+		widget_type = "slider"
+	},
+	{
+		setup = "cb_priority_input_buffer_setup",
+		saved_value = "cb_priority_input_buffer_saved_value",
+		setting_name = "priority_input_buffer",
+		callback = "cb_priority_input_buffer",
+		tooltip_text = "tooltip_priority_input_buffer",
+		widget_type = "slider"
+	},
+	{
 		setting_name = "give_on_defend",
 		widget_type = "stepper",
 		options = {

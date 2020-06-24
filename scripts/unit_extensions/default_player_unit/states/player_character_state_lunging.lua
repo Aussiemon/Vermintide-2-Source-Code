@@ -512,7 +512,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 					final_stagger_direction = attack_direction
 				end
 
-				local damage_source = "career_ability"
+				local damage_source = "charge_ability_hit"
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
 				local actual_hit_target_index = nil
 				local shield_break_procc = false
@@ -521,7 +521,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 				local can_damage = true
 				local can_stagger = true
 
-				buff_extension:trigger_procs("on_charge_ability_hit", hit_unit, buff_hit_target_index)
 				weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_unit_pos, final_stagger_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 
 				self._num_impacts = self._num_impacts + 1
@@ -588,7 +587,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 					local damage_profile_id, power_level, hit_zone_id, ignore_shield, allow_backstab = self:_parse_attack_data(blast_damage_data)
 					local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 					buff_hit_target_index = buff_hit_target_index + 1
-					local damage_source = "career_ability"
+					local damage_source = "charge_ability_hit_blast"
 					local damage_source_id = NetworkLookup.damage_sources[damage_source]
 					local target_position = POSITION_LOOKUP[hit_unit]
 					local attack_direction = Vector3.normalize(blast_pos - target_position)
@@ -600,7 +599,6 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 					local can_damage = true
 					local can_stagger = true
 
-					buff_extension:trigger_procs("on_charge_ability_hit_blast", hit_unit, buff_hit_target_index)
 					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, target_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", can_damage, "can_stagger", can_stagger)
 				end
 			end

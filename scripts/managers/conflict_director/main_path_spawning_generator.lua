@@ -262,15 +262,19 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, z
 
 	for i = 1, num_main_zones, 1 do
 		local zone_layer = zones[i]
-		local override_conflict_setting = zone_layer.roaming_set
+		local override_conflict_directors = zone_layer.roaming_set
 
-		if override_conflict_setting then
-			if override_conflict_setting == "random" then
-				override_conflict_setting = random_director_list[director_index].name
+		if override_conflict_directors then
+			override_conflict_directors = string.split(override_conflict_directors, "/")
+			local random_int = math.random(#override_conflict_directors)
+			local conflict_director_name = override_conflict_directors[random_int]
+
+			if conflict_director_name == "random" then
+				conflict_director_name = random_director_list[director_index].name
 				director_index = director_index + 1
 			end
 
-			conflict_director = ConflictDirectors[override_conflict_setting]
+			conflict_director = ConflictDirectors[conflict_director_name]
 			local pack_spawning = conflict_director.pack_spawning
 
 			if pack_spawning then
@@ -331,9 +335,13 @@ MainPathSpawningGenerator.get_unique_non_random_conflict_directors = function (d
 
 		for i = 1, num_main_zones, 1 do
 			local zone_layer = zones[i]
-			local conflict_director_name = zone_layer.roaming_set
+			local conflict_directors = zone_layer.roaming_set
 
-			if conflict_director_name then
+			if conflict_directors then
+				conflict_directors = string.split(conflict_directors, "/")
+				local random_int = math.random(#conflict_directors)
+				local conflict_director_name = conflict_directors[random_int]
+
 				if conflict_director_name == "random" then
 					num_random = num_random + 1
 				else

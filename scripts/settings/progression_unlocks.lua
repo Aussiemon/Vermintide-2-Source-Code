@@ -134,6 +134,14 @@ progression_unlocks.bw_unchained = {
 	unlock_type = "career"
 }
 
+for dlc_name, dlc in pairs(DLCSettings) do
+	local dlc_progression_unlocks = dlc.progression_unlocks
+
+	if dlc_progression_unlocks then
+		table.merge(progression_unlocks, dlc_progression_unlocks)
+	end
+end
+
 for unlock_name, template in pairs(progression_unlocks) do
 	template.name = unlock_name
 end
@@ -185,9 +193,13 @@ ProgressionUnlocks = {
 		return templates
 	end,
 	is_unlocked_for_profile = function (unlock_name, profile, level)
+		if Development.parameter("unlock_all_careers") then
+			return true
+		end
+
 		local profile_templates = profile_unlocks[profile]
 
-		assert(profile_templates, "No unlocks found for profile %s", profile)
+		fassert(profile_templates, "No unlocks found for profile %s", profile)
 
 		local template = profile_templates[unlock_name]
 
@@ -195,9 +207,11 @@ ProgressionUnlocks = {
 			return true
 		end
 
-		if template.level_requirement <= level then
-			return true
+		if level < template.level_requirement then
+			return false, Localize("career_locked_info") .. " " .. tostring(template.level_requirement)
 		end
+
+		return true
 	end,
 	get_quests_unlocked = function (level_key)
 		local level_settings = LevelSettings[level_key]

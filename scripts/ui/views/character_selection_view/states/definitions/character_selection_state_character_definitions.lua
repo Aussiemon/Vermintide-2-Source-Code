@@ -641,10 +641,9 @@ local locked_info_text_style = {
 }
 
 local function create_hero_widget(scenegraph_id, size)
-	local frame_style = "menu_frame_12"
-	local frame_settings = UIFrameSettings[frame_style]
-	local hover_frame_style = "frame_outer_glow_01"
-	local hover_frame_settings = UIFrameSettings[hover_frame_style]
+	local frame_settings = UIFrameSettings.menu_frame_12
+	local frame_premium_settings = UIFrameSettings.frame_corner_detail_01_gold
+	local hover_frame_settings = UIFrameSettings.frame_outer_glow_01
 	local hover_frame_width = hover_frame_settings.texture_sizes.horizontal[2]
 
 	return {
@@ -685,6 +684,14 @@ local function create_hero_widget(scenegraph_id, size)
 					texture_id = "frame"
 				},
 				{
+					pass_type = "texture_frame",
+					style_id = "frame_premium",
+					texture_id = "frame_premium",
+					content_check_function = function (content)
+						return content.is_premium
+					end
+				},
+				{
 					style_id = "overlay",
 					pass_type = "rect",
 					content_check_function = function (content)
@@ -713,13 +720,14 @@ local function create_hero_widget(scenegraph_id, size)
 			}
 		},
 		content = {
-			portrait = "icons_placeholder",
 			locked = false,
 			lock_texture = "hero_icon_locked",
+			portrait = "icons_placeholder",
 			taken = false,
 			taken_texture = "hero_icon_unavailable",
 			button_hotspot = {},
 			frame = frame_settings.texture,
+			frame_premium = frame_premium_settings.texture,
 			hover_frame = hover_frame_settings.texture
 		},
 		style = {
@@ -828,6 +836,21 @@ local function create_hero_widget(scenegraph_id, size)
 			frame = {
 				texture_size = frame_settings.texture_size,
 				texture_sizes = frame_settings.texture_sizes,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			frame_premium = {
+				texture_size = frame_premium_settings.texture_size,
+				texture_sizes = frame_premium_settings.texture_sizes,
 				color = {
 					255,
 					255,
@@ -1087,6 +1110,57 @@ local function create_career_perk_text(scenegraph_id)
 	}
 end
 
+local empty_hero_widget_size = {
+	110,
+	130
+}
+local empty_hero_widget = {
+	scenegraph_id = "hero_root",
+	offset = {
+		0,
+		0,
+		0
+	},
+	element = {
+		passes = {
+			{
+				pass_type = "texture",
+				style_id = "bg",
+				texture_id = "bg"
+			},
+			{
+				pass_type = "texture",
+				style_id = "icon",
+				texture_id = "icon"
+			}
+		}
+	},
+	content = {
+		icon = "icon_hourglass",
+		bg = "character_slot_empty"
+	},
+	style = {
+		bg = {
+			texture_size = empty_hero_widget_size,
+			offset = {
+				0,
+				0,
+				0
+			}
+		},
+		icon = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = UIAtlasHelper.get_atlas_settings_by_texture_name("icon_hourglass").size,
+			color = {
+				184,
+				255,
+				255,
+				255
+			}
+		}
+	}
+}
 local disable_with_gamepad = true
 local widgets = {
 	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("input_description_confirm"), nil, nil, nil, nil, disable_with_gamepad),
@@ -1208,6 +1282,7 @@ local animation_definitions = {
 return {
 	widgets = widgets,
 	hero_widget = create_hero_widget("hero_root", scenegraph_definition.hero_root.size),
+	empty_hero_widget = empty_hero_widget,
 	hero_icon_widget = create_hero_icon_widget("hero_icon_root", scenegraph_definition.hero_icon_root.size),
 	character_selection_widgets = widgets,
 	generic_input_actions = generic_input_actions,

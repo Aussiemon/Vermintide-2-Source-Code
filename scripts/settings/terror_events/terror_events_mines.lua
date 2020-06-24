@@ -3,6 +3,12 @@ local function count_event_breed(breed_name)
 end
 
 local weighted_random_terror_events = {
+	mines_end_event_loop_02 = {
+		"mines_end_event_loop_02_chaos",
+		1,
+		"mines_end_event_loop_02_skaven",
+		1
+	},
 	mines_end_event_specials = {
 		"mines_end_event_specials_01",
 		1,
@@ -107,72 +113,6 @@ local terror_event_blueprints = {
 			end
 		},
 		{
-			"set_master_event_running",
-			name = "end_event"
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_stinger"
-		},
-		{
-			"event_horde",
-			limit_spawners = 4,
-			spawner_id = "end_event",
-			composition_type = "event_small"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "end_event",
-			composition_type = "event_extra_spice_medium"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2
-			end
-		},
-		{
-			"play_stinger",
-			stinger_name = "enemy_horde_chaos_stinger"
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "end_event_chaos",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "end_event",
-			composition_type = "event_extra_spice_medium"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "end_event_chaos",
@@ -198,7 +138,7 @@ local terror_event_blueprints = {
 			flow_event_name = "mines_end_event_loop_done"
 		}
 	},
-	mines_end_event_loop_02 = {
+	mines_end_event_loop_02_chaos = {
 		{
 			"set_freeze_condition",
 			max_active_enemies = 100
@@ -209,7 +149,34 @@ local terror_event_blueprints = {
 		},
 		{
 			"play_stinger",
-			stinger_name = "enemy_horde_stinger"
+			stinger_name = "enemy_horde_chaos_stinger"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "end_event_chaos",
+			composition_type = "event_small_chaos"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 80,
+			condition = function (t)
+				return count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 3
+			end
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "end_event_chaos",
+			composition_type = "event_chaos_extra_spice_small"
+		},
+		{
+			"delay",
+			duration = 10
 		},
 		{
 			"event_horde",
@@ -227,6 +194,24 @@ local terror_event_blueprints = {
 			condition = function (t)
 				return count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "mines_end_event_loop_02_done"
+		}
+	},
+	mines_end_event_loop_02_skaven = {
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"set_master_event_running",
+			name = "end_event"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
 		},
 		{
 			"event_horde",
@@ -253,23 +238,6 @@ local terror_event_blueprints = {
 			duration = 80,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 2
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "end_event_chaos",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_marauder") < 2 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
 		},
 		{

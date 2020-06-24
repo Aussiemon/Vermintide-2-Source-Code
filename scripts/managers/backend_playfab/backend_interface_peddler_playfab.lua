@@ -15,11 +15,13 @@ BackendInterfacePeddlerPlayFab.init = function (self, backend_mirror)
 	self._stock_ready = false
 	self._chips_ready = false
 	self._app_prices_ready = false
+	self._steam_item_prices = {}
 
 	self:refresh_stock()
 	self:refresh_chips()
 	self:refresh_layout_override(true)
 	self:refresh_app_prices()
+	self:refresh_platform_item_prices()
 end
 
 BackendInterfacePeddlerPlayFab.ready = function (self)
@@ -52,6 +54,10 @@ end
 
 BackendInterfacePeddlerPlayFab.get_app_price = function (self, app_id)
 	return self._app_prices[app_id]
+end
+
+BackendInterfacePeddlerPlayFab.get_steam_item_price = function (self, steam_itemdefid)
+	return self._steam_item_prices[steam_itemdefid], self._steam_item_currency
 end
 
 BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
@@ -103,6 +109,33 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 	local peddler_stock = {}
 	local mirror = self._backend_mirror
 	local inventory_items = mirror:get_all_inventory_items()
+	local has_steam = HAS_STEAM
+	local unlock_manager = Managers.unlock
+
+	local function verify_item(data)
+		local required_dlc = data.required_dlc
+
+		if required_dlc and not unlock_manager:is_dlc_unlocked(required_dlc) then
+			return false
+		end
+
+		local steam_itemdefid = data.steam_itemdefid
+		local has_platform_id = steam_itemdefid ~= nil
+
+		if has_platform_id then
+			local platform_id_approved = false
+
+			if steam_itemdefid and has_steam then
+				platform_id_approved = true
+			end
+
+			if not platform_id_approved then
+				return false
+			end
+		end
+
+		return true
+	end
 
 	for i = 1, #stock, 1 do
 		local item = stock[i]
@@ -122,9 +155,7 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 				end
 			end
 
-			local required_dlc = data.required_dlc
-
-			if not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc) then
+			if verify_item(data) then
 				peddler_stock[i] = {
 					type = "item",
 					data = table.clone(data),
@@ -134,13 +165,14 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 					current_prices = item.VirtualCurrencyPrices,
 					end_time = item.CustomData.end_time,
 					owned = owned,
-					dlc_name = data.dlc_name
+					dlc_name = data.dlc_name,
+					steam_itemdefid = has_steam and data.steam_itemdefid
 				}
 			end
 		end
 	end
 
-	print(string.format("[BackendInterfacePeddlerPlayFab] Added %s item(s) to the peddler stock", #peddler_stock))
+	print(string.format("[BackendInterfacePeddlerPlayFab] _refresh_stock_cb -> Added %s item(s) to the peddler stock", #peddler_stock))
 
 	self._peddler_stock = peddler_stock
 	self._stock_ready = true
@@ -231,6 +263,21 @@ BackendInterfacePeddlerPlayFab._refresh_layout_override_cb = function (self, ext
 
 	mirror:set_title_data("store_layout_override", override)
 	self:refresh_layout_override(true, external_cb)
+end
+
+BackendInterfacePeddlerPlayFab.refresh_platform_item_prices = function (self)
+	if HAS_STEAM then
+		print("[BackendInterfacePeddlerPlayFab] refresh steam item prices")
+		Managers.steam:request_item_prices(callback(self, "_refresh_steam_item_prices_cb"))
+	end
+end
+
+BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, price_list, currency)
+	for i = 1, #price_list, 2 do
+		self._steam_item_prices[price_list[i]] = price_list[i + 1]
+	end
+
+	self._steam_item_currency = currency
 end
 
 BackendInterfacePeddlerPlayFab.refresh_app_prices = function (self, external_cb)
@@ -508,6 +555,33 @@ end
 BackendInterfacePeddlerPlayFab._refresh_layout_override_on_error_cb = function (self, external_cb)
 	Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR, nil)
 	external_cb(false)
+end
+
+local PlayFabClientApi_RedeemCoupon = require("PlayFab.PlayFabClientApi").RedeemCoupon
+
+BackendInterfacePeddlerPlayFab.redeem_coupon = function (self, coupon_code, resolve_cb, reject_cb)
+	local function success_handler(result)
+		local backend_mirror = self._backend_mirror
+		local items = result.GrantedItems
+
+		for i = 1, #items, 1 do
+			local item = items[i]
+
+			backend_mirror:add_item(item.ItemInstanceId, item)
+			printf("[BackendInterfacePeddlerPlayFab] Redeemed `%s`", item.ItemId)
+		end
+
+		self:refresh_chips()
+		resolve_cb(result.GrantedItems)
+	end
+
+	local function error_handler(result)
+		reject_cb(result.errorCode or result.code, result.error or "Unknown")
+	end
+
+	PlayFabClientApi_RedeemCoupon({
+		CouponCode = coupon_code
+	}, success_handler, error_handler)
 end
 
 return

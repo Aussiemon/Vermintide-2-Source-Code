@@ -1,10 +1,4 @@
 PopupJoinLobbyHandler = class(PopupJoinLobbyHandler)
-local hero_entry_width = 108
-local hero_entry_height = 108
-local hero_entry_spacing = 20
-local career_entry_width = 86
-local career_entry_height = 108
-local career_entry_spacing = 40
 local scenegraph_definition = {
 	screen = {
 		scale = "fit",
@@ -111,7 +105,7 @@ local scenegraph_definition = {
 			118
 		},
 		position = {
-			55,
+			205,
 			-130,
 			1
 		}
@@ -333,7 +327,7 @@ local window_sub_title_text_style = {
 }
 local hero_career_style = {
 	font_size = 40,
-	upper_case = true,
+	upper_case = false,
 	localize = false,
 	use_shadow = true,
 	word_wrap = true,
@@ -378,21 +372,6 @@ local hero_level_style = {
 		2
 	}
 }
-local locked_info_text_style = {
-	word_wrap = true,
-	font_size = 26,
-	localize = false,
-	use_shadow = true,
-	horizontal_alignment = "left",
-	vertical_alignment = "top",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("red", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
 local timer_text_style = {
 	font_size = 46,
 	upper_case = false,
@@ -423,18 +402,6 @@ local timer_title_text_style = {
 		0,
 		0,
 		1
-	}
-}
-local generic_input_actions = {
-	{
-		input_action = "confirm",
-		priority = 2,
-		description_text = "input_description_select"
-	},
-	{
-		input_action = "back",
-		priority = 3,
-		description_text = "popup_keep_searching"
 	}
 }
 
@@ -653,8 +620,6 @@ local function create_hero_widget(scenegraph_id, size)
 					style_id = "overlay_locked",
 					pass_type = "rect",
 					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
 						return content.locked
 					end
 				},
@@ -861,20 +826,17 @@ local widget_definitions = {
 		11
 	}, "hero_icon_edge_right")
 }
-local DO_RELOAD = true
 
 PopupJoinLobbyHandler.init = function (self, ingame_ui_context)
 	self.network_event_delegate = ingame_ui_context.network_event_delegate
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
-	self.world_manager = ingame_ui_context.world_manager
-	local world = self.world_manager:world("level_world")
-	self.wwise_world = Managers.world:wwise_world(world)
+	self.wwise_world = ingame_ui_context.wwise_world
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
-	self.peer_id = Network:peer_id()
+	self.peer_id = Network.peer_id()
 	local input_manager = ingame_ui_context.input_manager
 	self.input_manager = input_manager
 
@@ -883,29 +845,14 @@ PopupJoinLobbyHandler.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("popup_join_lobby_handler", "mouse")
 	input_manager:map_device_to_service("popup_join_lobby_handler", "gamepad")
 
-	local input_service = Managers.input:get_service("popup_join_lobby_handler")
-	local gui_layer = scenegraph_definition.window.position[3]
 	self._difficulty = nil
 
-	rawset(_G, "GLOBAL_MM_JL_UI", self)
 	self:create_ui_elements()
-
-	DO_RELOAD = false
 end
 
 PopupJoinLobbyHandler.create_ui_elements = function (self)
 	self._ui_animations = {}
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
+	self._widgets, self._widgets_by_name = UICommon.create_widgets(widget_definitions)
 
 	self:_setup_hero_selection_widgets()
 
@@ -920,8 +867,12 @@ PopupJoinLobbyHandler._setup_hero_selection_widgets = function (self)
 	local hero_icon_widgets = {}
 	self._hero_icon_widgets = hero_icon_widgets
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local num_max_rows = 0
 	local num_max_columns = #SPProfilesAbbreviation
+	local num_max_rows = 0
+
+	for i = 1, num_max_columns, 1 do
+		num_max_rows = math.max(num_max_rows, #SPProfiles[i].careers)
+	end
 
 	for i, profile_index in ipairs(ProfilePriority) do
 		local profile_settings = SPProfiles[profile_index]
@@ -929,7 +880,6 @@ PopupJoinLobbyHandler._setup_hero_selection_widgets = function (self)
 		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
 		local hero_level = ExperienceSettings.get_level(hero_experience)
 		local careers = profile_settings.careers
-		num_max_rows = math.max(num_max_rows, #careers)
 		local icon_widget = UIWidget.init(hero_icon_widget_definition)
 		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
 		local hero_icon_offset = icon_widget.offset
@@ -940,14 +890,20 @@ PopupJoinLobbyHandler._setup_hero_selection_widgets = function (self)
 
 		for j, career in ipairs(careers) do
 			local widget = UIWidget.init(hero_widget_definition)
-			hero_widgets[#hero_widgets + 1] = widget
+			hero_widgets[j + (i - 1) * num_max_rows] = widget
 			local offset = widget.offset
 			local content = widget.content
 			content.career_settings = career
 			local portrait_image = career.portrait_image
 			content.portrait = "medium_" .. portrait_image
-			local is_career_unlocked = career.is_unlocked_function(hero_name, hero_level)
+			local is_career_unlocked, _, dlc_name = career.is_unlocked_function(hero_name, hero_level)
 			content.locked = not is_career_unlocked
+
+			if dlc_name then
+				content.lock_texture = content.lock_texture .. "_gold"
+				content.frame = content.frame .. "_gold"
+			end
+
 			offset[1] = (i - 1) * 124
 			offset[2] = -(j - 1) * 144
 		end
@@ -962,18 +918,6 @@ PopupJoinLobbyHandler._get_widget = function (self, name)
 end
 
 PopupJoinLobbyHandler.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-
-		local profile_index = self._selected_hero_column or 1
-		local career_index = self._selected_hero_row or 1
-		local ignore_sound = true
-
-		self:_select_hero(profile_index, career_index, ignore_sound)
-	end
-
 	self:_update_occupied_profiles()
 	self:_update_gamepad_input_buttons()
 
@@ -994,15 +938,6 @@ PopupJoinLobbyHandler.update = function (self, dt, t)
 	end
 
 	self:_handle_input(dt, t)
-
-	for name, animation in pairs(self._ui_animations) do
-		UIAnimation.update(animation, dt)
-
-		if UIAnimation.completed(animation) then
-			animation = nil
-		end
-	end
-
 	self:draw(ui_top_renderer, input_service, dt)
 end
 
@@ -1049,9 +984,6 @@ PopupJoinLobbyHandler.input_service = function (self)
 end
 
 PopupJoinLobbyHandler.draw = function (self, ui_top_renderer, input_service, dt)
-	local swap_hero_active = self.swap_hero_active
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-
 	UIRenderer.begin_pass(ui_top_renderer, self.ui_scenegraph, input_service, dt, nil, self.render_settings)
 
 	local widgets = self._widgets
@@ -1060,7 +992,7 @@ PopupJoinLobbyHandler.draw = function (self, ui_top_renderer, input_service, dt)
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
-	for _, widget in ipairs(self._hero_widgets) do
+	for _, widget in pairs(self._hero_widgets) do
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
@@ -1086,7 +1018,6 @@ PopupJoinLobbyHandler.query_result = function (self)
 end
 
 PopupJoinLobbyHandler.destroy = function (self)
-	rawset(_G, "GLOBAL_MM_JL_UI", nil)
 	self.network_event_delegate:unregister(self)
 end
 
@@ -1129,20 +1060,23 @@ PopupJoinLobbyHandler._handle_mouse_selection = function (self)
 		for i = 1, num_max_columns, 1 do
 			for j = 1, num_max_rows, 1 do
 				local widget = hero_widgets[widget_index]
-				local content = widget.content
-				local button_hotspot = content.button_hotspot
 
-				if button_hotspot.on_hover_enter then
-					self:_play_sound("play_gui_hero_select_hero_hover")
-				end
+				if widget then
+					local content = widget.content
+					local button_hotspot = content.button_hotspot
 
-				if not content.taken and button_hotspot.on_pressed and (i ~= selected_column or j ~= selected_row) then
-					local profile_index = ProfilePriority[i]
-					local career_index = j
+					if button_hotspot.on_hover_enter then
+						self:_play_sound("play_gui_hero_select_hero_hover")
+					end
 
-					self:_select_hero(profile_index, career_index)
+					if not content.taken and button_hotspot.on_pressed and (i ~= selected_column or j ~= selected_row) then
+						local profile_index = ProfilePriority[i]
+						local career_index = j
 
-					return
+						self:_select_hero(profile_index, career_index)
+
+						return
+					end
 				end
 
 				widget_index = widget_index + 1
@@ -1186,12 +1120,13 @@ PopupJoinLobbyHandler._handle_gamepad_selection = function (self, input_service)
 end
 
 PopupJoinLobbyHandler._select_hero = function (self, profile_index, career_index, ignore_sound)
-	if not ignore_sound then
-		self:_play_sound("play_gui_hero_select_hero_click")
-	end
-
 	local profile_settings = SPProfiles[profile_index]
 	local career_settings = profile_settings.careers[career_index]
+
+	if not career_settings then
+		return
+	end
+
 	local hero_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
 	local career_name = career_settings.name
@@ -1217,21 +1152,23 @@ PopupJoinLobbyHandler._select_hero = function (self, profile_index, career_index
 	self:_set_hero_icon_selected(self._selected_hero_column)
 
 	local widget_index = 1
-	local is_career_locked = false
 
 	for i = 1, num_max_columns, 1 do
 		for j = 1, num_max_rows, 1 do
 			local is_selected = i == self._selected_hero_column and j == self._selected_hero_row
 			local widget = hero_widgets[widget_index]
-			local content = widget.content
-			content.button_hotspot.is_selected = is_selected
 
-			if is_selected then
-				is_career_locked = content.locked
+			if widget then
+				local content = widget.content
+				content.button_hotspot.is_selected = is_selected
 			end
 
 			widget_index = widget_index + 1
 		end
+	end
+
+	if not ignore_sound then
+		self:_play_sound("play_gui_hero_select_hero_click")
 	end
 end
 
@@ -1300,12 +1237,15 @@ PopupJoinLobbyHandler._update_occupied_profiles = function (self)
 
 		for j = 1, num_max_rows, 1 do
 			local widget = hero_widgets[widget_index]
-			local content = widget.content
-			local button_hotspot = content.button_hotspot
-			content.taken = occupied
 
-			if button_hotspot.is_selected then
-				is_button_enabled = not occupied and not content.locked
+			if widget then
+				local content = widget.content
+				local button_hotspot = content.button_hotspot
+				content.taken = occupied
+
+				if button_hotspot.is_selected then
+					is_button_enabled = not occupied and not content.locked
+				end
 			end
 
 			widget_index = widget_index + 1

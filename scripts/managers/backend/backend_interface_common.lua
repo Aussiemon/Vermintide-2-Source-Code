@@ -87,6 +87,27 @@ local filter_operators = {
 		end
 	}
 }
+
+local function make_filter_macro_can_wield_profile(profile_name)
+	return function (item, backend_id)
+		local careers = SPProfiles[FindProfileIndex(profile_name)].careers
+
+		for _, career in ipairs(careers) do
+			if table.contains(item.data.can_wield, career.name) then
+				return true
+			end
+		end
+
+		return false
+	end
+end
+
+local function make_filter_macro_can_wield_career(career_name)
+	return function (item, backend_id)
+		return table.contains(item.data.can_wield, career_name)
+	end
+end
+
 local filter_macros = {
 	item_key = function (item, backend_id)
 		local item_data = item.data
@@ -239,211 +260,27 @@ local filter_macros = {
 
 		return false
 	end,
-	can_wield_bright_wizard = function (item, backend_id)
-		local item_data = item.data
-		local can_wield = item_data.can_wield
-		local profile_name = "bright_wizard"
-		local profile_index = FindProfileIndex(profile_name)
-		local profile = SPProfiles[profile_index]
-		local careers = profile.careers
-		local num_careers = #careers
-
-		for i = 1, num_careers, 1 do
-			local career = careers[i]
-			local name = career.name
-
-			if table.contains(can_wield, name) then
-				return true
-			end
-		end
-
-		return false
-	end,
-	can_wield_bw_scholar = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "bw_scholar"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_bw_adept = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "bw_adept"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_bw_unchained = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "bw_unchained"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_dwarf_ranger = function (item, backend_id)
-		local item_data = item.data
-		local can_wield = item_data.can_wield
-		local profile_name = "dwarf_ranger"
-		local profile_index = FindProfileIndex(profile_name)
-		local profile = SPProfiles[profile_index]
-		local careers = profile.careers
-		local num_careers = #careers
-
-		for i = 1, num_careers, 1 do
-			local career = careers[i]
-			local name = career.name
-
-			if table.contains(can_wield, name) then
-				return true
-			end
-		end
-
-		return false
-	end,
-	can_wield_dr_ironbreaker = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "dr_ironbreaker"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_dr_slayer = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "dr_slayer"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_dr_ranger = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "dr_ranger"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_empire_soldier = function (item, backend_id)
-		local item_data = item.data
-		local can_wield = item_data.can_wield
-		local profile_name = "empire_soldier"
-		local profile_index = FindProfileIndex(profile_name)
-		local profile = SPProfiles[profile_index]
-		local careers = profile.careers
-		local num_careers = #careers
-
-		for i = 1, num_careers, 1 do
-			local career = careers[i]
-			local name = career.name
-
-			if table.contains(can_wield, name) then
-				return true
-			end
-		end
-
-		return false
-	end,
-	can_wield_es_huntsman = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "es_huntsman"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_es_knight = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "es_knight"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_es_mercenary = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "es_mercenary"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_witch_hunter = function (item, backend_id)
-		local item_data = item.data
-		local can_wield = item_data.can_wield
-		local profile_name = "witch_hunter"
-		local profile_index = FindProfileIndex(profile_name)
-		local profile = SPProfiles[profile_index]
-		local careers = profile.careers
-		local num_careers = #careers
-
-		for i = 1, num_careers, 1 do
-			local career = careers[i]
-			local name = career.name
-
-			if table.contains(can_wield, name) then
-				return true
-			end
-		end
-
-		return false
-	end,
-	can_wield_wh_captain = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "wh_captain"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_wh_bountyhunter = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "wh_bountyhunter"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_wh_zealot = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "wh_zealot"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_wood_elf = function (item, backend_id)
-		local item_data = item.data
-		local can_wield = item_data.can_wield
-		local profile_name = "wood_elf"
-		local profile_index = FindProfileIndex(profile_name)
-		local profile = SPProfiles[profile_index]
-		local careers = profile.careers
-		local num_careers = #careers
-
-		for i = 1, num_careers, 1 do
-			local career = careers[i]
-			local name = career.name
-
-			if table.contains(can_wield, name) then
-				return true
-			end
-		end
-
-		return false
-	end,
-	can_wield_we_waywatcher = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "we_waywatcher"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_we_maidenguard = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "we_maidenguard"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
-	can_wield_we_shade = function (item, backend_id)
-		local item_data = item.data
-		local hero_name = "we_shade"
-		local can_wield = item_data.can_wield
-
-		return table.contains(can_wield, hero_name)
-	end,
+	can_wield_bright_wizard = make_filter_macro_can_wield_profile("bright_wizard"),
+	can_wield_bw_scholar = make_filter_macro_can_wield_career("bw_scholar"),
+	can_wield_bw_adept = make_filter_macro_can_wield_career("bw_adept"),
+	can_wield_bw_unchained = make_filter_macro_can_wield_career("bw_unchained"),
+	can_wield_dwarf_ranger = make_filter_macro_can_wield_profile("dwarf_ranger"),
+	can_wield_dr_ironbreaker = make_filter_macro_can_wield_career("dr_ironbreaker"),
+	can_wield_dr_slayer = make_filter_macro_can_wield_career("dr_slayer"),
+	can_wield_dr_ranger = make_filter_macro_can_wield_career("dr_ranger"),
+	can_wield_empire_soldier = make_filter_macro_can_wield_profile("empire_soldier"),
+	can_wield_es_huntsman = make_filter_macro_can_wield_career("es_huntsman"),
+	can_wield_es_knight = make_filter_macro_can_wield_career("es_knight"),
+	can_wield_es_mercenary = make_filter_macro_can_wield_career("es_mercenary"),
+	can_wield_es_questingknight = make_filter_macro_can_wield_career("es_questingknight"),
+	can_wield_witch_hunter = make_filter_macro_can_wield_profile("witch_hunter"),
+	can_wield_wh_captain = make_filter_macro_can_wield_career("wh_captain"),
+	can_wield_wh_bountyhunter = make_filter_macro_can_wield_career("wh_bountyhunter"),
+	can_wield_wh_zealot = make_filter_macro_can_wield_career("wh_zealot"),
+	can_wield_wood_elf = make_filter_macro_can_wield_profile("wood_elf"),
+	can_wield_we_waywatcher = make_filter_macro_can_wield_career("we_waywatcher"),
+	can_wield_we_maidenguard = make_filter_macro_can_wield_career("we_maidenguard"),
+	can_wield_we_shade = make_filter_macro_can_wield_career("we_shade"),
 	player_owns_item_key = function (item, backend_id)
 		local item_data = item.data
 		local backend_items = Managers.backend:get_interface("items")

@@ -4,7 +4,12 @@ require("scripts/managers/telemetry/telemetry_events")
 require("scripts/managers/telemetry/telemetry_rpc_listener")
 require("scripts/managers/telemetry/telemetry_heartbeat")
 
-local DEBUG = Development.parameter("debug_telemetry")
+local function dprintf(...)
+	if Development.parameter("debug_telemetry") then
+		printf(...)
+	end
+end
+
 TelemetryManager = class(TelemetryManager)
 
 TelemetryManager.create = function ()
@@ -48,9 +53,7 @@ TelemetryManager.reset = function (self)
 end
 
 TelemetryManager.reload_settings = function (self)
-	if DEBUG then
-		printf("[TelemetryManager] Refreshing settings")
-	end
+	dprintf("[TelemetryManager] Refreshing settings")
 
 	self._title_id = TelemetrySettings.title_id
 	self._endpoint = TelemetrySettings.endpoint
@@ -67,9 +70,7 @@ local event_entry = {}
 
 TelemetryManager.register_event = function (self, event_type, event_params)
 	if self._blacklisted_events[event_type] then
-		if DEBUG then
-			printf("[TelemetryManager] Blacklisted event '%s'", event_type)
-		end
+		dprintf("[TelemetryManager] Skipping blacklisted event '%s'", event_type)
 
 		return
 	end
@@ -92,16 +93,11 @@ TelemetryManager.register_event = function (self, event_type, event_params)
 	local encoded_event = cjson.encode(event_entry)
 
 	table.insert(self._events_json, encoded_event)
-
-	if DEBUG then
-		printf("[TelemetryManager] Registering event '%s' %s", event_type, encoded_event)
-	end
+	dprintf("[TelemetryManager] Registering event '%s' %s", event_type, encoded_event)
 end
 
-TelemetryManager.send = function (self)
-	if DEBUG then
-		printf("[TelemetryManager] Sending session data")
-	end
+TelemetryManager.send = function (self, cb)
+	dprintf("[TelemetryManager] Sending session data")
 
 	local payload = "[" .. table.concat(self._events_json, ", \n") .. "]"
 
@@ -110,24 +106,26 @@ TelemetryManager.send = function (self)
 			string.format("title_id: %s", self._title_id)
 		}
 
-		Managers.curl:post(self._endpoint, payload, headers, callback(self, "cb_send"))
+		Managers.curl:post(self._endpoint, payload, headers, callback(self, "cb_send", cb))
 	else
 		local headers = {
 			"title_id",
 			self._title_id
 		}
 
-		Managers.rest_transport:post(self._endpoint, payload, headers, callback(self, "cb_send"))
+		Managers.rest_transport:post(self._endpoint, payload, headers, callback(self, "cb_send", cb))
 	end
 end
 
-TelemetryManager.cb_send = function (self, success, _, _, error)
+TelemetryManager.cb_send = function (self, cb, success, _, _, error)
 	if success then
-		if DEBUG then
-			print("[TelemetryManager] Data sent successfully")
-		end
-	elseif DEBUG then
-		print("[TelemetryManager] Error during transmission", error)
+		dprintf("[TelemetryManager] Data sent successfully")
+	else
+		dprintf("[TelemetryManager] Error during transmission", error)
+	end
+
+	if cb then
+		cb(success)
 	end
 end
 

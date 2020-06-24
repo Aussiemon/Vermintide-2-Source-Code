@@ -60,20 +60,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("dr_ironbreaker", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("dr_ironbreaker", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -150,20 +137,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("dr_slayer", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("dr_slayer", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -241,20 +215,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("dr_ranger", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("dr_ranger", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -330,20 +291,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("es_huntsman", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("es_huntsman", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -419,20 +367,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("es_knight", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("es_knight", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -508,20 +443,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("es_mercenary", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("es_mercenary", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -597,20 +519,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("we_shade", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("we_shade", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -686,20 +595,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("we_maidenguard", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("we_maidenguard", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -775,20 +671,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("we_waywatcher", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("we_waywatcher", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -864,20 +747,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("wh_zealot", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("wh_zealot", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -953,20 +823,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("wh_bountyhunter", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("wh_bountyhunter", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -1042,20 +899,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("wh_captain", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("wh_captain", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -1131,20 +975,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("bw_scholar", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("bw_scholar", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -1220,20 +1051,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("bw_adept", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("bw_adept", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -1309,20 +1127,7 @@ CareerSettings = {
 			}
 		},
 		is_unlocked_function = function (hero_name, hero_level)
-			if Development.parameter("unlock_all_careers") then
-				return true
-			end
-
 			return ProgressionUnlocks.is_unlocked_for_profile("bw_unchained", hero_name, hero_level)
-		end,
-		unlocked_at_level_function = function (hero_name)
-			if Development.parameter("unlock_all_careers") then
-				return 1
-			end
-
-			local template = ProgressionUnlocks.get_profile_unlock("bw_unchained", hero_name)
-
-			return template.level_requirement
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
@@ -1396,9 +1201,6 @@ CareerSettings = {
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			return true
-		end,
-		unlocked_at_level_function = function (hero_name)
-			return 1
 		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {

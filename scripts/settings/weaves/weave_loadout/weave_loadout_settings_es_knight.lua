@@ -1,89 +1,10 @@
 WeaveLoadoutSettings = WeaveLoadoutSettings or {}
+local profile_name = "empire_soldier"
+local talent_index = CareerSettings.es_knight.talent_tree_index
 WeaveLoadoutSettings.es_knight = {
-	talent_tree = {
-		{
-			"markus_knight_vanguard",
-			"markus_knight_reaper",
-			"markus_knight_heal_share"
-		},
-		{
-			"markus_knight_power_level_impact",
-			"markus_knight_power_level_on_stagger_elite",
-			"markus_knight_attack_speed_on_push"
-		},
-		{
-			"markus_knight_tank_unbalance",
-			"markus_knight_linesman_unbalance",
-			"markus_knight_power_level_unbalance"
-		},
-		{
-			"markus_knight_passive_block_cost_aura",
-			"markus_knight_improved_passive_defence_aura",
-			"markus_knight_passive_power_increase"
-		},
-		{
-			"markus_knight_movement_speed_on_incapacitated_allies",
-			"markus_knight_free_pushes_on_block",
-			"markus_knight_damage_taken_ally_proximity"
-		},
-		{
-			"markus_knight_ability_invulnerability",
-			"markus_knight_ability_hit_target_damage_taken",
-			"markus_knight_ability_attack_speed_enemy_hit"
-		}
-	},
-	properties = {
-		"weave_attack_speed",
-		"weave_crit_boost",
-		"weave_power_vs_skaven",
-		"weave_power_vs_chaos",
-		"weave_power_vs_unarmoured",
-		"weave_power_vs_armoured",
-		"weave_power_vs_large",
-		"weave_power_vs_frenzy",
-		"weave_stamina",
-		"weave_health",
-		"weave_push_block_arc",
-		"weave_block_cost",
-		"weave_protection_skaven",
-		"weave_protection_chaos",
-		"weave_protection_aoe",
-		"weave_crit_chance",
-		"weave_ability_cooldown_reduction",
-		"weave_curse_resistance",
-		"weave_respawn_speed",
-		"weave_revive_speed",
-		"weave_fatigue_regen",
-		"weave_movespeed"
-	},
-	traits = {
-		"weave_melee_attack_speed_on_crit",
-		"weave_melee_timed_block_cost",
-		"weave_melee_counter_push_power",
-		"weave_melee_reduce_cooldown_on_crit",
-		"weave_melee_increase_damage_on_block",
-		"weave_melee_shield_on_assist",
-		"weave_ranged_replenish_ammo_headshot",
-		"weave_ranged_restore_stamina_headshot",
-		"weave_ranged_reduced_overcharge",
-		"weave_ranged_reduce_cooldown_on_crit",
-		"weave_ranged_replenish_ammo_on_crit",
-		"weave_ranged_remove_overcharge_on_crit",
-		"weave_ranged_increase_power_level_vs_armour_crit",
-		"weave_ranged_consecutive_hits_increase_power",
-		"weave_ring_not_consume_potion",
-		"weave_ring_potion_spread",
-		"weave_ring_all_potions",
-		"weave_ring_potion_duration",
-		"weave_necklace_not_consume_healing",
-		"weave_necklace_heal_self_on_heal_other",
-		"weave_necklace_increased_healing_received",
-		"weave_necklace_no_healing_health_regen",
-		"weave_necklace_damage_taken_reduction_on_heal",
-		"weave_trinket_not_consume_grenade",
-		"weave_trinket_increase_grenade_radius",
-		"weave_trinket_grenade_damage_taken"
-	}
+	talent_tree = TalentTrees[profile_name][talent_index],
+	properties = {},
+	traits = {}
 }
 
 return

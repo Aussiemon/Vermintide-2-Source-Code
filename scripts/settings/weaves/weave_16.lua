@@ -1,11 +1,11 @@
 return {
 	wind_strength = 1,
-	wind = "shadow",
+	wind = "metal",
 	seed = 548672,
 	objectives = {
 		{
 			display_name = "objective_destroy_doom_wheels_name",
-			level_id = "dlc_scorpion_rubble_shadow",
+			level_id = "dlc_scorpion_rubble_metal",
 			objective_type = "doom_wheels",
 			conflict_settings = "weave_chaos",
 			end_zone_name = "end_zone_03",
@@ -66,61 +66,81 @@ return {
 				pickups = 350972
 			},
 			spawning_settings = {
-				terror_event_trickle = "trickle_event_chaos_medium",
+				terror_event_trickle = "trickle_event_armour",
 				main_path_spawning = {
 					{
-						terror_event_name = "main_path_standard_chaos_small_short",
-						percentage = 20,
+						terror_event_name = "main_path_specials_aoe_skaven_short",
+						percentage = 4,
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_theme_berzerkers_chaos_short",
-						percentage = 20,
+						terror_event_name = "main_path_theme_armored_skaven_short",
+						percentage = 4,
+						percentage_spawn_offset = 8
+					},
+					{
+						terror_event_name = "main_path_theme_shields_skaven_short",
+						percentage = 4,
+						percentage_spawn_offset = 8
+					},
+					{
+						terror_event_name = "main_path_specials_aoe_skaven_medium",
+						percentage = 18,
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_specials_aoe_chaos_short",
-						percentage = 20,
+						terror_event_name = "main_path_event_boss_stormfiend",
+						percentage = 18,
+						percentage_spawn_offset = 7
+					},
+					{
+						terror_event_name = "main_path_standard_skaven_small_medium",
+						percentage = 18,
+						percentage_spawn_offset = 13
+					},
+					{
+						terror_event_name = "main_path_specials_aoe_skaven_long",
+						percentage = 35,
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_specials_ranged_skaven_short_cata",
-						percentage = 30,
+						terror_event_name = "main_path_specials_disablers_skaven_medium",
+						percentage = 35,
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_standard_chaos_medium_medium",
-						percentage = 45,
-						percentage_spawn_offset = 0
+						terror_event_name = "main_path_theme_armored_skaven_short",
+						percentage = 35,
+						percentage_spawn_offset = 15
 					},
 					{
-						terror_event_name = "main_path_theme_armored_chaos_medium",
-						percentage = 45,
-						percentage_spawn_offset = 0
-					},
-					{
-						terror_event_name = "main_path_specials_disablers_mixed_medium",
-						percentage = 45,
+						terror_event_name = "main_path_specials_aoe_skaven_long",
+						percentage = 50,
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_specials_aoe_mixed_short_cata",
-						percentage = 60,
+						terror_event_name = "main_path_event_boss_stormfiend",
+						percentage = 50,
+						percentage_spawn_offset = 13
+					},
+					{
+						terror_event_name = "main_path_specials_ranged_skaven_short",
+						percentage = 50,
 						percentage_spawn_offset = 10
 					},
 					{
-						terror_event_name = "main_path_standard_skaven_medium_medium",
-						percentage = 85,
-						percentage_spawn_offset = 10
+						terror_event_name = "main_path_theme_armored_skaven_long",
+						percentage = 75,
+						percentage_spawn_offset = 12
 					},
 					{
-						terror_event_name = "main_path_theme_shields_skaven_medium",
-						percentage = 85,
-						percentage_spawn_offset = 10
+						terror_event_name = "main_path_specials_disablers_skaven_medium",
+						percentage = 75,
+						percentage_spawn_offset = 8
 					},
 					{
-						terror_event_name = "main_path_specials_aoe_mixed_medium",
-						percentage = 85,
+						terror_event_name = "main_path_specials_ranged_skaven_short",
+						percentage = 75,
 						percentage_spawn_offset = 10
 					}
 				}
@@ -128,7 +148,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_shadow",
+			level_id = "dlc_scorpion_arena_castle_metal",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 903475,
 			level_seed = 54987,
@@ -139,7 +159,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "boss_04",
+						terror_event_name = "metal_bosses",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

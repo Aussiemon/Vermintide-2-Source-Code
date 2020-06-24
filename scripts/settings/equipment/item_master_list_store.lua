@@ -6,23 +6,7 @@ ItemMasterList.shilling_bag_1 = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 1
@@ -41,23 +25,7 @@ ItemMasterList.shilling_bag_5 = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 5
@@ -76,23 +44,7 @@ ItemMasterList.shilling_bag_10 = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 10
@@ -111,23 +63,7 @@ ItemMasterList.shilling_bag_25 = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 25
@@ -146,23 +82,7 @@ ItemMasterList.shilling_bag_50 = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 50
@@ -181,23 +101,7 @@ ItemMasterList.shilling_bag_100 = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 100
@@ -216,23 +120,7 @@ ItemMasterList.shilling_bag_base = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 750
@@ -247,23 +135,7 @@ ItemMasterList.shilling_bag_collectors = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 400
@@ -278,23 +150,7 @@ ItemMasterList.shilling_bag_bogenhafen = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 250
@@ -309,23 +165,7 @@ ItemMasterList.shilling_bag_holly = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 250
@@ -340,23 +180,7 @@ ItemMasterList.shilling_bag_scorpion = {
 	slot_type = "chips",
 	information_text = "information_text_shilling",
 	item_type = "chips",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	},
+	can_wield = CanWieldAllItemTemplates,
 	bundle = {
 		BundledVirtualCurrencies = {
 			SM = 500

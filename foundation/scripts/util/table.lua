@@ -124,6 +124,22 @@ table.merge_recursive = function (dest, source)
 	end
 end
 
+table.append_recursive = function (dest, source)
+	for key, value in pairs(source) do
+		local is_table = type(value) == "table"
+
+		if is_table and type(dest[key]) == "table" then
+			table.append_recursive(dest[key], value)
+		elseif dest[key] == nil then
+			if is_table then
+				dest[key] = table.clone(value)
+			else
+				dest[key] = value
+			end
+		end
+	end
+end
+
 table.append = function (dest, source)
 	local dest_size = #dest
 
@@ -218,9 +234,13 @@ table.reverse = function (t)
 	end
 end
 
-table.clear = function (t)
-	for key, _ in pairs(t) do
-		t[key] = nil
+if pcall(require, "table.clear") then
+	table.clear = require("table.clear")
+else
+	table.clear = function (t)
+		for k in pairs(t) do
+			t[k] = nil
+		end
 	end
 end
 
@@ -275,8 +295,12 @@ table.dump = function (t, tag, max_depth, print_func)
 		print_func(string.format("<%s>", tag))
 	end
 
-	for key, value in pairs(t) do
-		table_dump(key, value, 0, max_depth or 0, print_func)
+	if t then
+		for key, value in pairs(t) do
+			table_dump(key, value, 0, max_depth or 0, print_func)
+		end
+	else
+		print_func("no table!")
 	end
 
 	if tag then
@@ -633,6 +657,28 @@ table.enum = function (...)
 	setmetatable(t, _enum_index_metatable)
 
 	return t
+end
+
+table.map = function (t, func)
+	local copy = {}
+
+	for k, v in pairs(t) do
+		copy[k] = func(v)
+	end
+
+	return copy
+end
+
+table.filter = function (t, func)
+	local copy = {}
+
+	for k, v in pairs(t) do
+		if func(v) == true then
+			copy[k] = v
+		end
+	end
+
+	return copy
 end
 
 return

@@ -15,6 +15,7 @@ HuskTalentExtension.init = function (self, extension_init_context, unit, extensi
 		0,
 		0
 	}
+	self._initial_talent_sync_completed = false
 end
 
 HuskTalentExtension.extensions_ready = function (self, world, unit)
@@ -31,6 +32,12 @@ end
 
 HuskTalentExtension.set_talent_ids = function (self, talent_ids)
 	self._talent_ids = talent_ids
+
+	if not self._initial_talent_sync_completed then
+		self._initial_talent_sync_completed = true
+
+		Managers.state.event:trigger("on_initial_talents_synced", self)
+	end
 end
 
 local params = {}
@@ -127,6 +134,10 @@ end
 
 HuskTalentExtension.destroy = function (self)
 	return
+end
+
+HuskTalentExtension.initial_talent_synced = function (self)
+	return self._initial_talent_sync_completed
 end
 
 return

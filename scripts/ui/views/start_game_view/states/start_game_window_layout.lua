@@ -58,6 +58,14 @@ local windows = {
 	area_selection = {
 		class_name = "StartGameWindowAreaSelection",
 		name = "area_selection"
+	},
+	adventure_mode = {
+		class_name = "StartGameWindowAdventureMode",
+		name = "adventure_mode"
+	},
+	adventure_mode_settings = {
+		class_name = "StartGameWindowAdventureModeSettings",
+		name = "adventure_mode_settings"
 	}
 }
 local window_layouts = {
@@ -239,10 +247,10 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
+local HUGE = math.huge
+
 table.sort(window_layouts, function (a, b)
-	if a.sorting and b.sorting then
-		return a.sorting < b.sorting
-	end
+	return (a.sorting or HUGE) < (b.sorting or HUGE)
 end)
 
 local MAX_ACTIVE_WINDOWS = 4

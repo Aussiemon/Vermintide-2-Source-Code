@@ -116,11 +116,15 @@ BackendInterfaceWeavesPlayFab._parse_loadouts = function (self, read_only_data)
 
 	for career_name, settings in pairs(CareerSettings) do
 		if settings.playfab_name and not settings.excluded_from_weave_loadouts then
-			local loadout_json = read_only_data["weaves_loadout_" .. career_name]
-			local loadout = loadout_json and cjson.decode(loadout_json)
-			loadouts[career_name] = loadout
+			local dlc_unlocked = settings.is_dlc_unlocked and settings.is_dlc_unlocked()
 
-			self:_validate_loadout(career_name, loadout)
+			if dlc_unlocked == nil or dlc_unlocked then
+				local loadout_json = read_only_data["weaves_loadout_" .. career_name]
+				local loadout = loadout_json and cjson.decode(loadout_json)
+				loadouts[career_name] = loadout
+
+				self:_validate_loadout(career_name, loadout)
+			end
 		end
 	end
 
@@ -670,6 +674,7 @@ local CAREER_ID_LOOKUP = {
 	"es_huntsman",
 	"es_mercenary",
 	"es_knight",
+	"es_questingknight",
 	"bw_adept",
 	"bw_scholar",
 	"bw_unchained",

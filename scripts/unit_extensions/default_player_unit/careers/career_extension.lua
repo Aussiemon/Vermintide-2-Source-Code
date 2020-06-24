@@ -46,6 +46,17 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 		}
 	end
 
+	local passive_ability_classes = career_data.passive_ability.passive_ability_classes
+	local num_passive_abilities = (passive_ability_classes and #passive_ability_classes) or 0
+	self._passive_abilities = {}
+	self._num_passive_abilities = num_passive_abilities
+
+	for i = 1, num_passive_abilities, 1 do
+		local ability_data = passive_ability_classes[i]
+		local ability_class = ability_data.ability_class
+		self._passive_abilities[i] = ability_class:new(extension_init_context, unit, extension_init_data, ability_data.init_data)
+	end
+
 	local breed = career_data.breed or profile.breed
 
 	Unit.set_data(unit, "breed", breed)
@@ -94,6 +105,14 @@ CareerExtension.extensions_ready = function (self, world, unit)
 		if activated_ability then
 			activated_ability:extensions_ready(world, unit)
 		end
+	end
+
+	local passive_abilities = self._passive_abilities
+
+	for i = 1, self._num_passive_abilities, 1 do
+		local ability = passive_abilities[i]
+
+		ability:extensions_ready(world, unit)
 	end
 
 	Managers.state.event:register(self, "ingame_menu_opened", "stop_ability")
@@ -176,7 +195,13 @@ CareerExtension._update_game_object_field = function (self, unit)
 end
 
 CareerExtension.destroy = function (self)
-	return
+	local passive_abilities = self._passive_abilities
+
+	for i = 1, self._num_passive_abilities, 1 do
+		local ability = passive_abilities[i]
+
+		ability:destroy()
+	end
 end
 
 CareerExtension.get_activated_ability_data = function (self, ability_id)
@@ -289,6 +314,10 @@ CareerExtension.current_ability_paused = function (self, ability_id)
 	local ability = self._abilities[ability_id]
 
 	return ability.cooldown_paused
+end
+
+CareerExtension.profile_index = function (self)
+	return self._profile_index
 end
 
 CareerExtension.career_index = function (self)

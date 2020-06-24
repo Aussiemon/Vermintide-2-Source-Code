@@ -3,6 +3,7 @@ local function count_event_breed(breed_name)
 end
 
 local weighted_random_terror_events = nil
+local HARDER = 4
 local HARDEST = 5
 local CATACLYSM = 6
 local terror_event_blueprints = {
@@ -10,6 +11,14 @@ local terror_event_blueprints = {
 		{
 			"set_master_event_running",
 			name = "canyon_bell_event"
+		},
+		{
+			"control_specials",
+			enable = false
+		},
+		{
+			"control_pacing",
+			enable = false
 		},
 		{
 			"set_time_challenge",
@@ -28,8 +37,18 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			spawner_id = "canyon_bell_event",
-			composition_type = "event_medium"
+			spawner_id = "canyon_bell_event_horde",
+			composition_type = "event_small"
+		},
+		{
+			"spawn_special",
+			amount = 1,
+			breed_name = {
+				"skaven_poison_wind_globadier",
+				"skaven_pack_master",
+				"skaven_gutter_runner"
+			},
+			difficulty_requirement = HARDER
 		},
 		{
 			"event_horde",
@@ -43,6 +62,11 @@ local terror_event_blueprints = {
 			duration = 5
 		},
 		{
+			"event_horde",
+			spawner_id = "canyon_bell_event_horde",
+			composition_type = "event_small"
+		},
+		{
 			"spawn_special",
 			amount = 1,
 			breed_name = {
@@ -54,17 +78,21 @@ local terror_event_blueprints = {
 			difficulty_requirement = HARDEST
 		},
 		{
-			"control_specials",
-			enable = true
+			"delay",
+			duration = 5
 		},
 		{
-			"control_pacing",
-			enable = false
+			"event_horde",
+			limit_spawners = 3,
+			spawner_id = "canyon_bell_event",
+			composition_type = "plague_monks_small",
+			difficulty_requirement = CATACLYSM
 		},
 		{
 			"continue_when",
+			duration = 100,
 			condition = function (t)
-				return count_event_breed("skaven_slave") < 6
+				return count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_clan_rat") < 5
 			end
 		},
 		{
@@ -109,19 +137,22 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "canyon_escape_event",
-			composition_type = "event_large"
+			composition_type = "event_small"
 		},
 		{
 			"delay",
 			duration = 5
 		},
 		{
-			"control_specials",
-			enable = true
+			"continue_when",
+			duration = 80,
+			condition = function (t)
+				return count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_clan_rat") < 5
+			end
 		},
 		{
-			"control_pacing",
-			enable = false
+			"flow_event",
+			flow_event_name = "canyon_escape_event_done"
 		}
 	},
 	canyon_escape_event_completion_check = {

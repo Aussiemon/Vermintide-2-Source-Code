@@ -143,11 +143,11 @@ BTBotShootAction._set_new_aim_target = function (self, self_unit, t, shoot_black
 	if shoot_blackboard.charging_shot then
 		projectile_info = shoot_blackboard.projectile_info_charged
 		projectile_speed = shoot_blackboard.projectile_speed_charged
-		aim_at_node = breed.override_bot_target_node or shoot_blackboard.aim_at_node_charged
+		aim_at_node = (breed and breed.override_bot_target_node) or shoot_blackboard.aim_at_node_charged
 	else
 		projectile_info = shoot_blackboard.projectile_info
 		projectile_speed = shoot_blackboard.projectile_speed
-		aim_at_node = breed.override_bot_target_node or shoot_blackboard.aim_at_node
+		aim_at_node = (breed and breed.override_bot_target_node) or shoot_blackboard.aim_at_node
 	end
 
 	local wanted_aim_rotation = self:_wanted_aim_rotation(self_unit, target_unit, camera_position, projectile_info, projectile_speed, aim_at_node)
@@ -177,7 +177,7 @@ local function draw_estimated_arc(max_steps, max_time, position, velocity, gravi
 end
 
 BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, current_position, projectile_info, projectile_speed, aim_at_node)
-	local target_node = Unit.node(target_unit, aim_at_node)
+	local target_node = (Unit.has_node(target_unit, aim_at_node) and Unit.node(target_unit, aim_at_node)) or 0
 	local target_pos = Unit.world_position(target_unit, target_node)
 	local target_locomotion_extension = ScriptUnit.has_extension(target_unit, "locomotion_system")
 	local target_current_velocity = (target_locomotion_extension and target_locomotion_extension:current_velocity()) or Vector3.zero()
@@ -212,11 +212,11 @@ BTBotShootAction._aim_position = function (self, dt, t, self_unit, current_posit
 	if shoot_blackboard.charging_shot then
 		projectile_info = shoot_blackboard.projectile_info_charged
 		projectile_speed = shoot_blackboard.projectile_speed_charged
-		aim_at_node = shoot_blackboard.target_breed.override_bot_target_node or shoot_blackboard.aim_at_node_charged
+		aim_at_node = (shoot_blackboard.target_breed and shoot_blackboard.target_breed.override_bot_target_node) or shoot_blackboard.aim_at_node_charged
 	else
 		projectile_info = shoot_blackboard.projectile_info
 		projectile_speed = shoot_blackboard.projectile_speed
-		aim_at_node = shoot_blackboard.target_breed.override_bot_target_node or shoot_blackboard.aim_at_node
+		aim_at_node = (shoot_blackboard.target_breed and shoot_blackboard.target_breed.override_bot_target_node) or shoot_blackboard.aim_at_node
 	end
 
 	local wanted_rotation, aim_position = self:_wanted_aim_rotation(self_unit, target_unit, current_position, projectile_info, projectile_speed, aim_at_node)

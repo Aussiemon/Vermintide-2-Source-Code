@@ -1,5 +1,6 @@
 require("scripts/ui/dlc_upsell/upsell_popup_settings")
 local_require("scripts/ui/dlc_upsell/upsell_popup_scorpion")
+local_require("scripts/ui/dlc_upsell/upsell_popup_lake")
 
 UpsellPopupHandler = class(UpsellPopupHandler)
 

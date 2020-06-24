@@ -22,8 +22,8 @@ require("scripts/settings/equipment/item_master_list")
 require("backend/error_codes")
 
 if PLATFORM == "win32" then
-	require("scripts/managers/backend_playfab/script_backend_playfab_dedicated")
 	require("scripts/managers/backend_playfab/script_backend_playfab")
+	DLCUtils.require("script_backend_playfab_files")
 elseif PLATFORM == "xb1" then
 	require("scripts/managers/backend_playfab/script_backend_playfab_xbox")
 	require("scripts/managers/backend_playfab/backend_interface_console_dlc_rewards_playfab")
@@ -62,7 +62,7 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 		local local_backend_data = (script_data.honduras_demo and DefaultDemoLocalBackendData) or DefaultLocalBackendData
 		local local_backend_save_version = (script_data.honduras_demo and DemoBackendSaveDataVersion) or BackendSaveDataVersion
 
-		fassert(self:_verify_data(local_backend_data), "Mismatch between (local) default equipment and ItemMasterList")
+		fassert(self:_verify_data(local_backend_data, local_backend_data), "Mismatch between (local) default equipment and ItemMasterList")
 
 		self._local_backend_file_name = "backend_local"
 
@@ -548,6 +548,7 @@ BackendManagerPlayFab.update = function (self, dt)
 	end
 
 	self:_update_error_handling(dt)
+	self:_poll_testify_requests()
 end
 
 BackendManagerPlayFab.playfab_api_error = function (self, result, error_code)
@@ -962,8 +963,10 @@ BackendManagerPlayFab._load_save_data = function (self, local_backend_data, loca
 				Application.warning("Local backend load error %q", info.error or "save data format has changed")
 
 				self._save_data = table.clone(local_backend_data)
-			elseif self:_verify_data(info.data) then
+			elseif self:_verify_data(info.data, local_backend_data) then
 				self._save_data = info.data
+
+				table.append_recursive(self._save_data, local_backend_data)
 			else
 				print("Broken (local) save, replacing with default")
 
@@ -993,7 +996,7 @@ BackendManagerPlayFab._load_save_data = function (self, local_backend_data, loca
 	end
 end
 
-BackendManagerPlayFab._verify_data = function (self, data)
+BackendManagerPlayFab._verify_data = function (self, data, local_backend_data)
 	local valid = true
 
 	for _, item in pairs(data.items) do
@@ -1004,6 +1007,25 @@ BackendManagerPlayFab._verify_data = function (self, data)
 
 			valid = false
 		end
+	end
+
+	local loadout = data.loadout
+
+	for key, value in pairs(local_backend_data.loadout) do
+		if loadout[key] == nil then
+			print("Save data missing loadout", key)
+
+			valid = false
+		end
+	end
+
+	local save_item_num = #data.items
+	local default_item_num = #local_backend_data.items
+
+	if save_item_num ~= default_item_num then
+		print("Save data item list size is missmatched", save_item_num, "~=", default_item_num)
+
+		valid = false
 	end
 
 	return valid
@@ -1258,6 +1280,22 @@ BackendManagerPlayFab.player_id = function (self)
 	local playfab_id = result.PlayFabId
 
 	return playfab_id
+end
+
+BackendManagerPlayFab._poll_testify_requests = function (self)
+	local career_name = Testify:poll_request("request_weapons_for_career")
+
+	if career_name then
+		local items = self:get_interface("items"):get_all_backend_items()
+		local weapons = table.filter(items, function (item)
+			local is_weapon = item.data.slot_type == "melee" or item.data.slot_type == "ranged"
+			local can_wield = table.contains(item.data.can_wield, career_name)
+
+			return is_weapon and can_wield
+		end)
+
+		Testify:respond_to_request("request_weapons_for_career", weapons)
+	end
 end
 
 return

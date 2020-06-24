@@ -85,9 +85,10 @@ OldTalentBuffTemplates = {
 	stamina_regen = {
 		buffs = {
 			{
-				refresh_durations = true,
+				name = "stamina_regen",
 				multiplier = 0.4,
 				stat_buff = "fatigue_regen",
+				refresh_durations = true,
 				max_stacks = 1,
 				duration = 2
 			}

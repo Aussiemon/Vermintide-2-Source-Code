@@ -2883,19 +2883,21 @@ BuffTemplates = {
 	twitch_power_boost_dismember = {
 		buffs = {
 			{
-				icon = "markus_huntsman_activated_ability",
+				name = "twitch_power_boost_dismember",
 				multiplier = 0.25,
 				stat_buff = "power_level",
-				perk = "bloody_mess",
+				duration = 60,
 				max_stacks = 1,
-				duration = 60
+				icon = "markus_huntsman_activated_ability",
+				perk = "bloody_mess"
 			}
 		}
 	},
 	heavy_attack_shield_break = {
 		buffs = {
 			{
-				perk = "shield_break"
+				perk = "shield_break",
+				name = "heavy_attack_shield_break"
 			}
 		}
 	},
@@ -4040,18 +4042,6 @@ BuffTemplates = {
 				event = "on_hit",
 				perk = "ninja_healing",
 				bonus = 2
-			}
-		}
-	},
-	bloodlust = {
-		buffs = {
-			{
-				multiplier = 0.2,
-				name = "bloodlust",
-				event_buff = true,
-				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
-				perk = "smiter_healing"
 			}
 		}
 	},
@@ -6321,21 +6311,21 @@ BuffTemplates = {
 						1,
 						1,
 						0,
-						1,
+						6,
 						1
 					},
 					cataclysm_2 = {
 						1,
 						1,
 						0,
-						2,
+						8,
 						1
 					},
 					cataclysm_3 = {
 						1,
 						1,
 						0,
-						4,
+						10,
 						1
 					}
 				}
@@ -7243,22 +7233,25 @@ BuffTemplates = {
 	weapon_trait_uninterruptible = {
 		buffs = {
 			{
-				perk = "uninterruptible"
+				perk = "uninterruptible",
+				name = "weapon_trait_uninterruptible"
 			}
 		}
 	},
 	weapon_trait_riposte = {
 		buffs = {
 			{
-				perk = "uninterruptible"
+				perk = "uninterruptible",
+				name = "weapon_trait_riposte"
 			}
 		}
 	},
 	weapon_trait_backstab = {
 		buffs = {
 			{
-				stat_buff = "backstab_multiplier",
-				multiplier = 0.5
+				multiplier = 0.5,
+				name = "weapon_trait_backstab",
+				stat_buff = "backstab_multiplier"
 			}
 		}
 	},
@@ -7283,14 +7276,16 @@ BuffTemplates = {
 	weapon_trait_scavenge = {
 		buffs = {
 			{
-				event = "on_hit",
-				bonus = 1,
+				name = "weapon_trait_scavenge_trigger",
 				event_buff = true,
-				buff_func = "replenish_ammo_on_headshot_ranged"
+				buff_func = "replenish_ammo_on_headshot_ranged",
+				event = "on_hit",
+				bonus = 1
 			},
 			{
-				stat_buff = "total_ammo",
-				multiplier = -0.5
+				multiplier = -0.5,
+				name = "weapon_trait_scavenge_buff",
+				stat_buff = "total_ammo"
 			}
 		}
 	},
@@ -7366,6 +7361,42 @@ BuffTemplates = {
 			}
 		}
 	},
+	twitch_mutator_buff_lightning_strike = {
+		buffs = {
+			{
+				icon = "mutator_icon_heavens_lightning",
+				duration = 33,
+				name = "twitch_mutator_buff_lightning_strike",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+				end
+			}
+		}
+	},
+	twitch_mutator_buff_chasing_spirits = {
+		buffs = {
+			{
+				icon = "mutator_icon_death_spirits",
+				duration = 25,
+				name = "twitch_mutator_buff_chasing_spirits",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+				end
+			}
+		}
+	},
+	twitch_mutator_buff_flames = {
+		buffs = {
+			{
+				icon = "mutator_icon_fire_burn",
+				duration = 30,
+				name = "twitch_mutator_buff_flames",
+				duration_modifier_func = function (buff_template, duration)
+					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+				end
+			}
+		}
+	},
 	bloodlust = {
 		buffs = {
 			{
@@ -7378,12 +7409,13 @@ BuffTemplates = {
 				refresh_durations = true
 			},
 			{
-				apply_buff_func = "apply_movement_buff",
-				multiplier = 1.2,
-				duration = 6,
-				refresh_durations = true,
-				max_stacks = 3,
 				remove_buff_func = "remove_movement_buff",
+				name = "bardin_slayer_frenzy_movement",
+				multiplier = 1.2,
+				max_stacks = 3,
+				duration = 6,
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
@@ -7494,6 +7526,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				icon = "victor_zealot_passive_invulnerability",
+				name = "twitch_vote_buff_invincibility",
 				duration = 10,
 				max_stacks = 1,
 				remove_buff_func = "remove_twitch_invincibility",

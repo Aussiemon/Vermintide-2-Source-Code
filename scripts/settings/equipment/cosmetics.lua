@@ -2397,6 +2397,12 @@ Cosmetics = {
 	frame_0096 = {
 		icon = "unit_frame_02"
 	},
+	frame_0097 = {
+		icon = "unit_frame_02"
+	},
+	frame_0098 = {
+		icon = "unit_frame_02"
+	},
 	frame_dev = {
 		icon = "unit_frame_02"
 	},
@@ -2452,6 +2458,21 @@ Cosmetics = {
 		icon = "unit_frame_02"
 	},
 	frame_holly_04 = {
+		icon = "unit_frame_02"
+	},
+	frame_drachenfels_01 = {
+		icon = "unit_frame_02"
+	},
+	frame_drachenfels_02 = {
+		icon = "unit_frame_02"
+	},
+	frame_drachenfels_03 = {
+		icon = "unit_frame_02"
+	},
+	frame_drachenfels_04 = {
+		icon = "unit_frame_02"
+	},
+	frame_drachenfels_05 = {
 		icon = "unit_frame_02"
 	},
 	frame_mondstille_01 = {
@@ -2539,6 +2560,18 @@ Cosmetics = {
 		icon = "unit_frame_02"
 	},
 	frame_scorpion_season_1_leaderboard_3 = {
+		icon = "unit_frame_02"
+	},
+	frame_season_03_quickplay = {
+		icon = "unit_frame_02"
+	},
+	frame_season_03_tier_1 = {
+		icon = "unit_frame_02"
+	},
+	frame_season_03_tier_2 = {
+		icon = "unit_frame_02"
+	},
+	frame_season_03_tier_3 = {
 		icon = "unit_frame_02"
 	}
 }

@@ -1,3 +1,5 @@
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 require("scripts/utils/strict_table")
 require("scripts/ui/ui_scenegraph")
 require("scripts/ui/ui_resolution")
@@ -69,7 +71,11 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 		texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	end
 
-	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
+	if not color then
+		color = Color(255 * alpha_multiplier, 255, 255, 255)
+	else
+		color = Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
+	end
 
 	if texture_settings then
 		local uv00_table = texture_settings.uv00
@@ -78,16 +84,16 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 		local uv11 = Vector2(uv11_table[1], uv11_table[2])
 		local material_name = nil
 
-		if masked then
-			if saturated then
-				material_name = texture_settings.masked_saturated_material_name
+		if not masked then
+			if not saturated then
+				material_name = texture_settings.material_name
 			else
-				material_name = texture_settings.masked_material_name
+				material_name = texture_settings.saturated_material_name
 			end
 		elseif saturated then
-			material_name = texture_settings.saturated_material_name
+			material_name = texture_settings.masked_saturated_material_name
 		else
-			material_name = texture_settings.material_name
+			material_name = texture_settings.masked_material_name
 		end
 
 		if retained_id then
@@ -344,16 +350,12 @@ UIRenderer.begin_pass = function (self, ui_scenegraph, input_service, dt, parent
 
 			if cursor_distance > 0 then
 				if math.abs(cursor.y - debug_startpoint[2]) < math.abs(cursor.x - debug_startpoint[1]) then
-					local current_endpos = Vector3(cursor.x, debug_startpoint[2], 999)
-
 					Gui.rect(self.gui, Vector3Aux.unbox(debug_startpoint), Vector2(cursor.x - debug_startpoint[1], 20), Color(128, 255, 255, 255))
 
 					local text = string.format("%d pixels.", cursor.x - debug_startpoint[1])
 
 					Gui.text(self.gui, text, "materials/fonts/arial", 14, "arial", Vector3Aux.unbox(debug_startpoint), Color(255, 255, 255, 255))
 				else
-					local current_endpos = Vector3(debug_startpoint[1], cursor.y, 999)
-
 					Gui.rect(self.gui, Vector3Aux.unbox(debug_startpoint), Vector2(20, cursor.y - debug_startpoint[2]), Color(128, 255, 255, 255))
 
 					local text = string.format("%d pixels.", cursor.y - debug_startpoint[2])
@@ -394,10 +396,6 @@ UIRenderer.draw_widget = function (self, ui_widget)
 	UIRenderer.draw_element(self, ui_widget.element, ui_widget.style, ui_widget.style_global, ui_widget.scenegraph_id, ui_widget.content, animations, ui_widget.offset)
 end
 
-local function nop()
-	return
-end
-
 UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global, scenegraph_id, ui_content, ui_animations, offset)
 	local ui_scenegraph = self.ui_scenegraph
 	local position = Vector3(unpack(UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)))
@@ -426,82 +424,70 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 	local UIPasses = UIPasses
 	local UISceneGraph_get_size_scaled = UISceneGraph.get_size_scaled
 	local UISceneGraph_get_world_position = UISceneGraph.get_world_position
-	local Vector3 = Vector3
-	local Vector2 = Vector2
+	local passes = ui_element.passes
 
-	for i, pass_info in ipairs(ui_element.passes) do
-		repeat
-			local pass_type = pass_info.pass_type
-			local content_id = pass_info.content_id
-			local element_content = (content_id and ui_content[content_id]) or ui_content
-			local visible = global_visible
+	for i = 1, #passes, 1 do
+		local pass_info = passes[i]
+		local pass_type = pass_info.pass_type
+		local content_id = pass_info.content_id
+		local element_content = (content_id and ui_content[content_id]) or ui_content
+		local visible = global_visible
 
-			if ui_content then
-				if ui_content.visible == false then
+		if ui_content then
+			if ui_content.visible == false then
+				visible = false
+			end
+
+			if content_id then
+				element_content.parent = ui_content
+
+				if element_content and element_content.visible == false then
 					visible = false
 				end
-
-				if visible and content_id and element_content and element_content.visible == false then
-					visible = false
-				end
-
-				if content_id then
-					element_content.parent = ui_content
-				end
 			end
+		end
 
-			local style_id = pass_info.style_id
-			local style_data = (style_id and ui_style[style_id]) or ui_style
+		local style_id = pass_info.style_id
+		local style_data = (style_id and ui_style[style_id]) or ui_style
 
-			assert(not style_id or (style_id and style_data), "No style data for style with id %s", style_id)
+		assert(not style_id or (style_id and style_data), "No style data for style with id %s", style_id)
 
-			if ui_style[style_id] then
-				style_data.parent = ui_style
+		if ui_style[style_id] then
+			style_data.parent = ui_style
+		end
+
+		local ui_pass = UIPasses[pass_type]
+
+		assert(ui_pass, "No such UI Pass: %s", pass_type)
+
+		local content_check_function = pass_info.content_check_function
+
+		if visible and content_check_function then
+			visible = not not content_check_function(element_content, style_data)
+		end
+
+		local content_change_function = pass_info.content_change_function
+
+		if visible and content_change_function then
+			content_change_function(element_content, style_data, ui_animations, dt)
+		end
+
+		local pass_data = pass_datas[i]
+
+		if ui_pass.update then
+			ui_pass.update(self, pass_data, ui_scenegraph, pass_info, style_data, element_content, input_service, dt, ui_style_global, visible)
+		end
+
+		if pass_info.retained_mode then
+
+			-- Decompilation error in this vicinity:
+			local visible_previous = pass_data.visible
+			pass_data.visible = visible
+
+			if not ui_element.dirty and not pass_data.dirty then
 			end
-
-			local ui_pass = UIPasses[pass_type]
-
-			assert(ui_pass, "No such UI Pass: %s", pass_type)
-
-			local content_check_function = pass_info.content_check_function
-
-			if visible and content_check_function then
-				visible = content_check_function(element_content, style_data)
-			end
-
-			local content_change_function = pass_info.content_change_function
-
-			if visible and content_change_function then
-				content_change_function(element_content, style_data, ui_animations, dt)
-			end
-
-			local pass_data = pass_datas[i]
-
-			if ui_pass.update then
-				ui_pass.update(self, pass_data, ui_scenegraph, pass_info, style_data, element_content, input_service, dt, ui_style_global, visible)
-			end
-
-			if pass_info.retained_mode then
-				local visible_previous = pass_data.visible
-				pass_data.visible = visible
-
-				if visible_previous and not visible then
-					ui_pass.destroy(self, pass_data, pass_info)
-
-					break
-				elseif not visible_previous and visible then
-					pass_data.dirty = true
-				end
-
-				if not ui_element.dirty and not pass_data.dirty then
-					break
-				end
-			end
-
-			if not visible then
-				break
-			end
-
+		elseif not visible then
+		else
 			local pass_size, pass_position = nil
 			local pass_scenegraph_id = (style_data and style_data.scenegraph_id) or pass_info.scenegraph_id
 
@@ -511,33 +497,28 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 				pass_position = Vector3(world_pos[1], world_pos[2], world_pos[3])
 			else
 				pass_size = size
-				pass_position = position
-			end
-
-			if ui_element.dirty then
+				pass_position = Vector3(position[1], position[2], position[3])
 			end
 
 			local style_data_size = style_data and style_data.size
 
 			if style_data_size then
-				pass_size = Vector2(style_data_size[1] or pass_size[1], style_data_size[2] or pass_size[2]) or pass_size
+				pass_size = Vector2(style_data_size[1] or pass_size[1], style_data_size[2] or pass_size[2])
 			end
 
 			local style_offset = style_data and style_data.offset
 
 			if style_offset then
-				pass_position = pass_position + Vector3(style_offset[1], style_offset[2], style_offset[3] or 0) or pass_position
+				pass_position = pass_position + Vector3(style_offset[1], style_offset[2], style_offset[3] or 0)
 			end
 
 			if widget_optional_scale then
-				pass_size[1] = pass_size[1] * widget_optional_scale
-				pass_size[2] = pass_size[2] * widget_optional_scale
-				pass_position[1] = pass_position[1] * widget_optional_scale
-				pass_position[2] = pass_position[2] * widget_optional_scale
+				pass_size = widget_optional_scale * pass_size
+				pass_position = widget_optional_scale * pass_position
 			end
 
 			ui_pass.draw(self, pass_data, ui_scenegraph, pass_info, style_data, element_content, pass_position, pass_size, input_service, dt, ui_style_global)
-		until true
+		end
 	end
 
 	ui_element.dirty = nil

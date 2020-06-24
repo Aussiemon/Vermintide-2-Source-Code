@@ -340,10 +340,11 @@ UISettings = {
 		hero_es_huntsman = "small_unit_frame_portrait_kruber_huntsman",
 		beastmen_ungor_archer = "unit_frame_portrait_enemy_standard_bearer",
 		hero_es_knight = "small_unit_frame_portrait_kruber_knight",
+		hero_es_questingknight = "small_unit_frame_portrait_kruber_questingknight",
 		beastmen_standard_bearer = "unit_frame_portrait_enemy_standard_bearer",
 		chaos_marauder_with_shield = "unit_frame_portrait_enemy_chaos_marauder",
-		hero_wh_captain = "small_unit_frame_portrait_victor_captain",
 		skaven_storm_vermin_commander = "unit_frame_portrait_enemy_stormvermin",
+		hero_wh_captain = "small_unit_frame_portrait_victor_captain",
 		beastmen_standard_bearer_crater = "unit_frame_portrait_enemy_standard_bearer"
 	},
 	chest_upgrade_score_topics = {
@@ -728,11 +729,8 @@ UISettings.item_type_store_icons = {
 	default = "store_tag_icon_dlc",
 	weapon_skin = "store_tag_icon_weapon",
 	hat = "store_tag_icon_hat",
-	bundle = "store_tag_icon_bundle",
-	frame = "store_tag_icon_frame",
-	skin = "store_tag_icon_skin",
 	dlc = "store_tag_icon_dlc",
-	currency = "store_tag_icon_currency"
+	skin = "store_tag_icon_skin"
 }
 
 for _, dlc in pairs(DLCSettings) do

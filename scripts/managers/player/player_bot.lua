@@ -190,10 +190,12 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 			profile = profile
 		},
 		dialogue_system = {
+			wwise_career_switch_group = "player_career",
 			faction = "player",
 			wwise_voice_switch_group = "character",
 			profile = profile,
-			wwise_voice_switch_value = profile.character_vo
+			wwise_voice_switch_value = profile.character_vo,
+			wwise_career_switch_value = career_name
 		},
 		first_person_system = {
 			profile = profile,
@@ -256,7 +258,6 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	ScriptUnit.extension(unit, "attachment_system"):show_attachments(true)
 	Unit.set_data(unit, "sound_character", career.sound_character)
 	Unit.create_actor(unit, "bot_collision", false)
-	Unit.flow_event(unit, "lua_spawn_attachments")
 
 	local level_settings = LevelHelper:current_level_settings()
 	local climate_type = level_settings.climate_type or "default"

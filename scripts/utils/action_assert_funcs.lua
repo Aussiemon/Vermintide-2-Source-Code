@@ -82,6 +82,46 @@ ActionAssertFuncs = {
 		local charge_time = action.charge_time
 
 		fassert(charge_time, "No charge time set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+	end,
+	action_selector = function (weapon_name, action_name, sub_action_name, action)
+		local actions = Weapons[weapon_name].actions
+		local conditional_actions = action.conditional_actions
+		local default_linked_action = action.default_action
+
+		fassert(conditional_actions, "No conditional_actions set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+		fassert(default_linked_action, "No default_action set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+		fassert(actions, "No default_action set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+
+		local default_action_name = default_linked_action.action or action_name
+		local default_action = actions[default_action_name]
+
+		fassert(default_action, "Linked to invalid default action [\"%s\"] for [\"%s.%s\"] in weapon [\"%s\"]", default_action_name, action_name, sub_action_name, weapon_name)
+
+		local default_sub_action_name = default_linked_action.sub_action
+		local default_sub_action = default_action[default_sub_action_name]
+
+		fassert(default_sub_action, "Linked to invalid default sub_action [\"%s.%s\"] for [\"%s.%s\"] in weapon [\"%s\"]", default_action_name, default_sub_action_name, action_name, sub_action_name, weapon_name)
+		fassert(default_sub_action.kind ~= "action_selector", "Recursive action_selector in [\"%s.%s\"] -> [\"%s.%s\"]  in weapon [\"%s\"]", action_name, sub_action_name, default_action_name, default_sub_action_name, weapon_name)
+
+		for i = 1, #conditional_actions, 1 do
+			local linked_sub_action = conditional_actions[i].sub_action
+
+			fassert(linked_sub_action, "No linked sub action set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+
+			local condition = conditional_actions[i].condition
+
+			fassert(condition, "No linked sub action condition set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+
+			local linked_action = conditional_actions[i].action or action_name
+			local action = actions[linked_action]
+
+			fassert(action, "Linked to invalid action [\"%s\"] for [\"%s.%s\"] in weapon [\"%s\"]", linked_action, action_name, sub_action_name, weapon_name)
+
+			local sub_action = action[linked_sub_action]
+
+			fassert(sub_action, "Linked to invalid sub_action [\"%s.%s\"] for [\"%s.%s\"] in weapon [\"%s\"]", linked_action, linked_sub_action, action_name, sub_action_name, weapon_name)
+			fassert(sub_action.kind ~= "action_selector", "Recursive action_selector in [\"%s.%s\"] -> [\"%s.%s\"]  in weapon [\"%s\"]", action_name, sub_action_name, linked_action, linked_sub_action, weapon_name)
+		end
 	end
 }
 

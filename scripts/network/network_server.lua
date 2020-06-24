@@ -18,7 +18,7 @@ end
 PeerState = PeerState or CreateStrictEnumTable("Broken", "Connecting", "Connected", "Disconnected", "Loading", "LoadingLevelComplete", "WaitingForEnter", "WaitingForGameObjectSync", "WaitingForSpawnPlayer", "InGame", "InPostGame")
 NetworkServer = class(NetworkServer)
 
-NetworkServer.init = function (self, player_manager, lobby_host, initial_level, wanted_profile_index, level_transition_handler, game_server_manager)
+NetworkServer.init = function (self, player_manager, lobby_host, initial_level, environment_variation_id, wanted_profile_index, level_transition_handler, game_server_manager)
 	self.peer_connections = {}
 	local my_peer_id = Network.peer_id()
 	self.my_peer_id = my_peer_id
@@ -35,7 +35,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	self.slot_allocator = SlotAllocator:new(is_server, self.lobby_host, NUM_PROFILES)
 	self._game_server_manager = game_server_manager
 
-	self:set_current_level(initial_level)
+	self:set_current_level(initial_level, environment_variation_id)
 
 	self.profile_synchronizer = ProfileSynchronizer:new(is_server, lobby_host, self)
 	self._profile_requester = ProfileRequester:new(is_server, self, self.profile_synchronizer)
@@ -58,7 +58,18 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 		if profile then
 			local hero_name = profile.display_name
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
-			self.wanted_career_index = hero_attributes:get(hero_name, "career") or 1
+			local wanted_career_index = hero_attributes:get(hero_name, "career") or 1
+			local hero_experience = hero_attributes:get(hero_name, "experience") or 0
+			local hero_level = ExperienceSettings.get_level(hero_experience)
+			local career = profile.careers[wanted_career_index]
+
+			if not career.is_unlocked_function(hero_name, hero_level) then
+				wanted_career_index = 1
+
+				hero_attributes:set(hero_name, "career", wanted_career_index)
+			end
+
+			self.wanted_career_index = wanted_career_index
 		end
 	end
 
@@ -104,6 +115,21 @@ NetworkServer.num_active_peers = function (self)
 		local is_active = state ~= PeerStates.Disconnecting and state ~= PeerStates.Disconnected
 
 		if is_active then
+			num_peers = num_peers + 1
+		end
+	end
+
+	return num_peers
+end
+
+NetworkServer.num_joining_peers = function (self)
+	local num_peers = 0
+
+	for peer_id, statemachine in pairs(self.peer_state_machines) do
+		local state = statemachine.current_state
+		local is_joining = state == PeerStates.Connecting
+
+		if is_joining then
 			num_peers = num_peers + 1
 		end
 	end
@@ -181,10 +207,11 @@ NetworkServer.rpc_to_client_spawn_player = function (self, sender, ...)
 	end
 end
 
-NetworkServer.set_current_level = function (self, level_key)
-	network_printf("Current level key %s", level_key)
+NetworkServer.set_current_level = function (self, level_key, environment_variation_id)
+	network_printf("Current level key %s", level_key, environment_variation_id)
 
 	self.level_key = level_key
+	self.environment_variation_id = environment_variation_id
 end
 
 NetworkServer.on_game_entered = function (self, game_network_manager)
@@ -518,9 +545,13 @@ NetworkServer.update = function (self, dt)
 
 		for i, peer_id in ipairs(members_joined) do
 			if peer_id ~= self.lobby_host:lobby_host() then
-				network_printf("Peer %s joined server lobby.", peer_id)
+				if peer_state_machines[peer_id] then
+					network_printf("Peer %s reconnected to the server lobby.", peer_id)
+				else
+					network_printf("Peer %s joined server lobby.", peer_id)
 
-				peer_state_machines[peer_id] = PeerStateMachine.create(self, peer_id)
+					peer_state_machines[peer_id] = PeerStateMachine.create(self, peer_id)
+				end
 			end
 		end
 	end

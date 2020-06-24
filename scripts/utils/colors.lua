@@ -1141,6 +1141,12 @@ Colors.color_definitions = {
 		84,
 		173
 	},
+	es_questingknight = {
+		ALPHA,
+		255,
+		191,
+		4
+	},
 	bw_adept = {
 		ALPHA,
 		255,

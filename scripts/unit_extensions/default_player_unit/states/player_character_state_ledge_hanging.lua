@@ -142,14 +142,11 @@ PlayerCharacterStateLedgeHanging.calculate_start_position = function (self)
 	local finger_box_rotation = Unit.world_rotation(ledge_unit, node)
 	local finger_box_scale = Unit.local_scale(ledge_unit, node)
 	local finger_box_right_vector = Quaternion.right(finger_box_rotation)
-	local player_hands_safe = 1 - 0.3 * 1 / global_unit_scale.x * 1 / finger_box_scale.x
-
-	if player_hands_safe <= math.abs(position_offset_amount) then
-		position_offset_amount = (position_offset_amount >= 0 and player_hands_safe) or -player_hands_safe
-	end
-
+	position_offset_amount = 1 - 0.3 * 1 / global_unit_scale.x * 1 / finger_box_scale.x
 	position_offset_amount = position_offset_amount * global_unit_scale.x * finger_box_scale.x
-	local new_position = finger_box_position + finger_box_right_vector * position_offset_amount
+	local left_point = finger_box_position - finger_box_right_vector * position_offset_amount
+	local right_point = finger_box_position + finger_box_right_vector * position_offset_amount
+	local new_position = Geometry.closest_point_on_line(current_position, left_point, right_point)
 	local distance = Vector3.distance(current_position, new_position)
 
 	self.lerp_start_position:store(current_position)

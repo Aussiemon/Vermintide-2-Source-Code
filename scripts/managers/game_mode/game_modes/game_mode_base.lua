@@ -94,10 +94,22 @@ GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career
 	bot_player:create_game_object()
 	self._profile_synchronizer:select_profile(local_peer_id, local_player_id, profile_index, career_index)
 
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:trigger("on_bot_added", bot_player)
+	end
+
 	return bot_player
 end
 
 GameModeBase._remove_bot_instant = function (self, bot_player)
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:trigger("on_bot_removed", bot_player)
+	end
+
 	if bot_player.player_unit then
 		bot_player:despawn()
 	end
@@ -123,6 +135,12 @@ GameModeBase._remove_bot_update_safe = function (self, bot_player)
 		self:_remove_bot_instant(bot_player)
 
 		return
+	end
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:trigger("on_bot_removed", bot_player)
 	end
 
 	self._num_pending_bot_remove = self._num_pending_bot_remove + 1

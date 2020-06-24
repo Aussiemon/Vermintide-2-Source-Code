@@ -1339,23 +1339,7 @@ ItemMasterList.frame_scorpion_complete_all_helmgart_levels_cataclysm = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_all_helmgart_level_achievements_cataclysm = {
 	description = "frame_scorpion_complete_all_helmgart_level_achievements_cataclysm_description",
@@ -1367,23 +1351,7 @@ ItemMasterList.frame_scorpion_complete_all_helmgart_level_achievements_cataclysm
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_bogenhafen_cataclysm = {
 	description = "frame_scorpion_complete_bogenhafen_cataclysm_description",
@@ -1395,23 +1363,7 @@ ItemMasterList.frame_scorpion_complete_bogenhafen_cataclysm = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_plaza_cataclysm = {
 	description = "frame_scorpion_complete_plaza_cataclysm_description",
@@ -1423,23 +1375,7 @@ ItemMasterList.frame_scorpion_complete_plaza_cataclysm = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_crater_recruit = {
 	description = "frame_scorpion_complete_crater_recruit_description",
@@ -1451,23 +1387,7 @@ ItemMasterList.frame_scorpion_complete_crater_recruit = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_crater_veteran = {
 	description = "frame_scorpion_complete_crater_veteran_description",
@@ -1479,23 +1399,7 @@ ItemMasterList.frame_scorpion_complete_crater_veteran = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_crater_champion = {
 	description = "frame_scorpion_complete_crater_champion_description",
@@ -1507,23 +1411,7 @@ ItemMasterList.frame_scorpion_complete_crater_champion = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_crater_legend = {
 	description = "frame_scorpion_complete_crater_legend_description",
@@ -1535,23 +1423,7 @@ ItemMasterList.frame_scorpion_complete_crater_legend = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_complete_crater_cataclysm = {
 	description = "frame_scorpion_complete_crater_cataclysm_description",
@@ -1563,23 +1435,7 @@ ItemMasterList.frame_scorpion_complete_crater_cataclysm = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_beasts = {
 	description = "frame_scorpion_season_1_beasts_description",
@@ -1591,23 +1447,7 @@ ItemMasterList.frame_scorpion_season_1_beasts = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_death = {
 	description = "frame_scorpion_season_1_death_description",
@@ -1619,23 +1459,7 @@ ItemMasterList.frame_scorpion_season_1_death = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_fire = {
 	description = "frame_scorpion_season_1_fire_description",
@@ -1647,23 +1471,7 @@ ItemMasterList.frame_scorpion_season_1_fire = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_heavens = {
 	description = "frame_scorpion_season_1_heavens_description",
@@ -1675,23 +1483,7 @@ ItemMasterList.frame_scorpion_season_1_heavens = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_life = {
 	description = "frame_scorpion_season_1_life_description",
@@ -1703,23 +1495,7 @@ ItemMasterList.frame_scorpion_season_1_life = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_light = {
 	description = "frame_scorpion_season_1_light_description",
@@ -1731,23 +1507,7 @@ ItemMasterList.frame_scorpion_season_1_light = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_metal = {
 	description = "frame_scorpion_season_1_metal_description",
@@ -1759,23 +1519,7 @@ ItemMasterList.frame_scorpion_season_1_metal = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_shadow = {
 	description = "frame_scorpion_season_1_shadow_description",
@@ -1787,23 +1531,7 @@ ItemMasterList.frame_scorpion_season_1_shadow = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_cataclysm_1 = {
 	description = "frame_scorpion_season_1_cataclysm_1_description",
@@ -1815,23 +1543,7 @@ ItemMasterList.frame_scorpion_season_1_cataclysm_1 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_cataclysm_2 = {
 	description = "frame_scorpion_season_1_cataclysm_2_description",
@@ -1843,23 +1555,7 @@ ItemMasterList.frame_scorpion_season_1_cataclysm_2 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_scorpion_season_1_cataclysm_3 = {
 	description = "frame_scorpion_season_1_cataclysm_3_description",
@@ -1871,23 +1567,7 @@ ItemMasterList.frame_scorpion_season_1_cataclysm_3 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained",
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher",
-		"dr_ironbreaker",
-		"dr_slayer",
-		"dr_ranger",
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain",
-		"es_huntsman",
-		"es_knight",
-		"es_mercenary"
-	}
+	can_wield = CanWieldAllItemTemplates
 }
 
 return

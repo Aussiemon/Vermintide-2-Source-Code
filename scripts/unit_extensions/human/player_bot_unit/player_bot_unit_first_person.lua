@@ -21,13 +21,11 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 	Unit.set_flow_variable(fp_unit, "sound_character", career.sound_character)
 	Unit.set_flow_variable(fp_unit, "is_bot", true)
 	Unit.flow_event(fp_unit, "character_vo_set")
+	Unit.flow_event(self.unit, "lua_spawn_attachments")
 
-	local flow_unit_attachments = Unit.get_data(self.unit, "flow_unit_attachments") or {}
+	self.flow_unit_attachments = Unit.get_data(self.unit, "flow_unit_attachments") or {}
 
-	Unit.set_data(self.unit, "flow_unit_attachments", flow_unit_attachments)
-
-	self.flow_unit_attachments = flow_unit_attachments
-
+	Unit.set_data(self.unit, "flow_unit_attachments", self.flow_unit_attachments)
 	AttachmentUtils.link(extension_init_context.world, fp_unit, self.first_person_attachment_unit, attachment_node_linking)
 
 	self.look_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
@@ -198,6 +196,10 @@ PlayerBotUnitFirstPerson.stop_force_look_rotation = function (self)
 end
 
 PlayerBotUnitFirstPerson.set_wanted_player_height = function (self, state, t, time_to_change)
+	return
+end
+
+PlayerBotUnitFirstPerson.set_weapon_sway_settings = function (self)
 	return
 end
 

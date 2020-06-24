@@ -34,6 +34,7 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 			slot_ranged = {}
 		}
 	}
+	self._weapon_fx = {}
 	self._items_to_spawn = {}
 	self.resync_ids = {}
 	self.recently_acquired_list = {}
@@ -280,6 +281,7 @@ SimpleInventoryExtension.destroy = function (self)
 	end
 
 	self:_despawn_attached_units()
+	self:_stop_all_weapon_fx()
 end
 
 SimpleInventoryExtension._unlink_unit = function (self, unit, reason, attachment_node_linking)
@@ -424,6 +426,7 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 		self.buff_extension:trigger_procs("on_unwield")
 	end
 
+	self:_stop_all_weapon_fx()
 	self:_despawn_attached_units()
 
 	local item_data = slot_data.item_data
@@ -478,6 +481,8 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	if slot_name == "slot_melee" or slot_name == "slot_ranged" or slot_name == "slot_grenade" or slot_name == "slot_healthkit" or slot_name == "slot_potion" then
 		self._previously_wielded_non_level_slot = slot_name
 	end
+
+	self:start_weapon_fx("wield")
 end
 
 SimpleInventoryExtension._despawn_attached_units = function (self)
@@ -1629,6 +1634,91 @@ SimpleInventoryExtension.get_equipped_item_names = function (self)
 	end
 
 	return equipped
+end
+
+SimpleInventoryExtension.testify_wield_weapon = function (self, weapon)
+	local backend_id = weapon.backend_id
+	local career_extension = ScriptUnit.extension(self._unit, "career_system")
+	local career_name = career_extension:career_name()
+	local slot_type = "slot_" .. weapon.data.slot_type
+
+	BackendUtils.set_loadout_item(backend_id, career_name, slot_type)
+	self:create_equipment_in_slot(slot_type, backend_id)
+end
+
+SimpleInventoryExtension.start_weapon_fx = function (self, fx_name, network_sync)
+	local equipment = self._equipment
+	local slot_name = equipment.wielded_slot
+	local slot_data = equipment.slots[slot_name]
+	local item_template = self:get_item_template(slot_data)
+	local item_particle_fx = item_template.particle_fx
+	local particle_fx = item_particle_fx and item_particle_fx[fx_name]
+
+	if particle_fx then
+		self._weapon_fx[fx_name] = GearUtils.create_attached_particles(self._world, particle_fx, equipment, self._unit, self._first_person_unit, not self.is_bot)
+
+		if network_sync then
+			local item_data = slot_data.item_data
+			local go_id = Managers.state.unit_storage:go_id(self._unit)
+			local item_id = NetworkLookup.item_names[item_data.name]
+			local fx_id = item_template.particle_fx_lookup[fx_name]
+
+			if go_id and item_id and fx_id then
+				local network_manager = Managers.state.network
+
+				if self.is_server then
+					network_manager.network_transmit:send_rpc_clients("rpc_start_weapon_fx", go_id, item_id, fx_id)
+				else
+					network_manager.network_transmit:send_rpc_server("rpc_start_weapon_fx", go_id, item_id, fx_id)
+				end
+			end
+		end
+	end
+end
+
+SimpleInventoryExtension.stop_weapon_fx = function (self, fx_name, network_sync)
+	local active_fx = self._weapon_fx[fx_name]
+
+	if active_fx then
+		self._weapon_fx[fx_name] = GearUtils.destroy_attached_particles(self._world, active_fx)
+
+		if network_sync then
+			local equipment = self._equipment
+			local slot_name = equipment.wielded_slot
+			local slot_data = equipment.slots[slot_name]
+			local item_template = self:get_item_template(slot_data)
+			local item_particle_fx = item_template and item_template.particle_fx
+			local particle_fx = item_particle_fx and item_particle_fx[fx_name]
+
+			if particle_fx then
+				local item_data = slot_data.item_data
+				local go_id = Managers.state.unit_storage:go_id(self._unit)
+				local item_id = NetworkLookup.item_names[item_data.name]
+				local fx_id = item_template.particle_fx_lookup[fx_name]
+
+				if go_id and item_id and fx_id then
+					local network_manager = Managers.state.network
+
+					if self.is_server then
+						network_manager.network_transmit:send_rpc_clients("rpc_stop_weapon_fx", go_id, item_id, fx_id)
+					else
+						network_manager.network_transmit:send_rpc_server("rpc_stop_weapon_fx", go_id, item_id, fx_id)
+					end
+				end
+			end
+		end
+	end
+end
+
+SimpleInventoryExtension._stop_all_weapon_fx = function (self)
+	local world = self._world
+	local weapon_fx = self._weapon_fx
+
+	for name, fx_ids in pairs(weapon_fx) do
+		GearUtils.destroy_attached_particles(world, fx_ids)
+
+		weapon_fx[name] = nil
+	end
 end
 
 return

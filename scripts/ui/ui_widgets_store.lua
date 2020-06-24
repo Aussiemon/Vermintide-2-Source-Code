@@ -554,6 +554,8 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			}
 		},
 		loading_icon = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
 			masked = true,
 			angle = 0,
 			pivot = {
@@ -568,7 +570,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			},
 			offset = {
 				size[1] * 0.5 - 50,
-				size[2] * 0.5 - 50,
+				-50,
 				6
 			},
 			texture_size = {

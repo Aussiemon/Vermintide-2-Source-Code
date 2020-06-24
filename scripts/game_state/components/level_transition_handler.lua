@@ -66,14 +66,19 @@ LevelTransitionHandler.default_level_key = function (self)
 	return level_name
 end
 
-LevelTransitionHandler.load_default_level = function (self)
-	local level_key = self:default_level_key()
-
-	self:load_level(level_key)
+LevelTransitionHandler.default_environment_id = function (self)
+	return 0
 end
 
-LevelTransitionHandler.load_level = function (self, level_key)
-	printf("[LevelTransitionHandler] load_level %s", level_key)
+LevelTransitionHandler.load_default_level = function (self)
+	local level_key = self:default_level_key()
+	local environment_id = self:default_environment_id()
+
+	self:load_level(level_key, environment_id)
+end
+
+LevelTransitionHandler.load_level = function (self, level_key, environment_variation_id)
+	printf("[LevelTransitionHandler] load_level %s %s", level_key, tostring(environment_variation_id))
 	fassert(LevelSettings[level_key], "The level named %q does not exist in LevelSettings.", tostring(level_key))
 
 	local current_level = self.level_key
@@ -85,13 +90,14 @@ LevelTransitionHandler.load_level = function (self, level_key)
 	local level_settings = LevelSettings[level_key]
 	local level_package_name = level_settings.package_name
 
-	if self.level_key ~= level_key or (not Managers.package:has_loaded(level_package_name, "LevelTransitionHandler") and not Managers.package:is_loading(level_package_name)) then
+	if self.level_key ~= level_key or self.environment_variation_id ~= environment_variation_id or (not Managers.package:has_loaded(level_package_name, "LevelTransitionHandler") and not Managers.package:is_loading(level_package_name)) then
 		self:_load_dlc_level_packages(level_key)
 		self:_load_nested_level_packages(level_key)
 		self:_load_umbra_tome_package(level_key)
 
 		self.last_level_key = self.level_key
 		self.level_key = level_key
+		self.environment_variation_id = environment_variation_id
 		self.level_name = level_settings.level_name
 
 		Print("Loading level: %q", self.level_key)
@@ -122,6 +128,7 @@ LevelTransitionHandler.release_level_resources = function (self, level_key)
 
 		if level_key == self.level_key then
 			self.level_key = nil
+			self.environment_variation_id = nil
 		end
 
 		self:_unload_dlc_level_packages(level_key)
@@ -142,6 +149,10 @@ LevelTransitionHandler.get_current_transition_level = function (self)
 	end
 end
 
+LevelTransitionHandler.get_current_transition_environment = function (self)
+	return self.picked_environment_id or self.environment_variation_id or 0
+end
+
 LevelTransitionHandler.get_next_level_key = function (self)
 	if self.picked_level_key then
 		return self.picked_level_key
@@ -153,17 +164,18 @@ LevelTransitionHandler.get_next_level_key = function (self)
 end
 
 LevelTransitionHandler.load_next_level = function (self)
-	printf("[LevelTransitionHandler] load_next_level - self.transition_type=[%s] self.picked_level_key=[%s]", tostring(self.transition_type), tostring(self.picked_level_key))
+	printf("[LevelTransitionHandler] load_next_level - self.transition_type=[%s] self.picked_level_key=[%s] self.picked_environment_id=[%s]", tostring(self.transition_type), tostring(self.picked_level_key), tostring(self.picked_environment_id))
 
 	if self.picked_level_key then
-		self:load_level(self.picked_level_key)
+		self:load_level(self.picked_level_key, self.picked_environment_id)
 
 		self.picked_level_key = nil
 	elseif self.transition_type ~= "reload_level" then
-		self:load_level(self.transition_type)
+		self:load_level(self.transition_type, self.picked_environment_id)
 	end
 
 	self.transition_type = nil
+	self.picked_environment_id = nil
 end
 
 LevelTransitionHandler.reload_level = function (self, checkpoint_data)
@@ -178,14 +190,33 @@ LevelTransitionHandler.level_completed = function (self)
 	end
 end
 
-LevelTransitionHandler.set_next_level = function (self, level_key)
-	printf("[LevelTransitionHandler] set_next_level( %s )", tostring(level_key))
+LevelTransitionHandler.set_next_level = function (self, level_key, environment_variation_id)
+	printf("[LevelTransitionHandler] set_next_level( %s, %s )", tostring(level_key), tostring(environment_variation_id))
 
 	self.picked_level_key = level_key
+	self.picked_environment_id = environment_variation_id or 0
 end
 
 LevelTransitionHandler.get_current_level_keys = function (self)
 	return self.level_key
+end
+
+LevelTransitionHandler.get_current_environment_id = function (self)
+	return self.environment_variation_id or 0
+end
+
+LevelTransitionHandler.get_current_environment_variation_name = function (self)
+	local variation_id = self.environment_variation_id
+	local level_key = self.level_key
+
+	if variation_id and level_key then
+		local settings = LevelSettings[level_key]
+		local variations = settings.environment_variations
+
+		return variations and variations[variation_id]
+	end
+
+	return nil
 end
 
 LevelTransitionHandler.all_packages_loaded = function (self)
@@ -215,24 +246,24 @@ LevelTransitionHandler.update = function (self)
 	end
 end
 
-LevelTransitionHandler.prepare_load_level = function (self, level_index, level_seed)
+LevelTransitionHandler.prepare_load_level = function (self, level_index, level_seed, environment_variation_id)
 	local level_name = NetworkLookup.level_keys[level_index]
 	self.transition_type = level_name
 
-	self:set_next_level(level_name)
+	self:set_next_level(level_name, environment_variation_id)
 
 	if self.level_key ~= level_name then
-		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i. New level, resetting package load status.", level_name, level_seed or -1)
+		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i environment %i. New level, resetting package load status.", level_name, level_seed or -1, environment_variation_id or 0)
 
 		self.has_loaded_all_packages = false
 	else
-		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i. Same level as previously, NOT resetting package load status.", level_name, level_seed or -1)
+		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i environment %i. Same level as previously, NOT resetting package load status.", level_name, level_seed or -1, environment_variation_id or 0)
 	end
 end
 
 LevelTransitionHandler.rpc_reload_level = function (self, sender, level_seed, locked_director_functions_ids)
 	self:reload_level()
-	printf("[LevelTransitionHandler] rpc_reload_level : %s seed: %i. Same level as previously, NOT resetting package load status.", self.level_key, level_seed or -1)
+	printf("[LevelTransitionHandler] rpc_reload_level : %s seed: %i environment %i. Same level as previously, NOT resetting package load status.", self.level_key, level_seed or -1, self.environment_variation_id or 0)
 	print("[LevelTransitionHandler] Setting level_seed: ", level_seed)
 	Managers.mechanism:set_level_seed(level_seed)
 	Managers.mechanism:set_locked_director_functions_from_ids(locked_director_functions_ids)

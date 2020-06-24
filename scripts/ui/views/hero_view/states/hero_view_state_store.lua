@@ -157,7 +157,7 @@ HeroViewStateStore.on_enter = function (self, params)
 		parent = self,
 		windows_settings = self._windows_settings,
 		input_service = fake_input_service,
-		start_state = params.start_state,
+		start_state = params.start_state or params.state_params.start_state,
 		layout_settings = self._layout_settings
 	}
 
@@ -819,24 +819,24 @@ HeroViewStateStore.update = function (self, dt, t)
 	end
 
 	local input_manager = self._input_manager
+	local input_service = self:input_service()
 	local friends_component_ui = self._friends_component_ui
 	local gamepad_active = input_manager:is_device_active("gamepad")
 
 	if friends_component_ui and not gamepad_active and Managers.account:is_online() then
-		friends_component_ui:update(dt, self:input_service())
+		friends_component_ui:update(dt, input_service)
 	end
 
 	self._friends_list_active = self:is_friends_list_active()
-	local input_service = self:window_input_service()
 
 	self._ui_animator:update(dt)
 	self:_update_animations(dt)
-	self:_draw(input_service, dt)
+	self:_draw(self:window_input_service(), dt)
 
 	local welcome_popup = self._welcome_popup
 
 	if welcome_popup then
-		welcome_popup:update(self:input_service(), dt, t)
+		welcome_popup:update(input_service, dt, t)
 
 		if welcome_popup:completed() then
 			welcome_popup:destroy()
@@ -849,10 +849,34 @@ HeroViewStateStore.update = function (self, dt, t)
 
 	self:_update_dlc_purchases()
 
+	local golden_key_popup = self._golden_key_popup
+
+	if golden_key_popup then
+		golden_key_popup:update(input_service, dt, t)
+
+		if golden_key_popup:is_complete() then
+			golden_key_popup:delete()
+
+			self._golden_key_popup = nil
+
+			self:unblock_input()
+		end
+	end
+
+	if self._fail_steam_item_purchase_popup_id then
+		local result = Managers.popup:query_result(self._fail_steam_item_purchase_popup_id)
+
+		if result then
+			Managers.popup:cancel_popup(self._fail_steam_item_purchase_popup_id)
+
+			self._fail_steam_item_purchase_popup_id = nil
+		end
+	end
+
 	local item_purchase_popup = self._item_purchase_popup
 
 	if item_purchase_popup then
-		item_purchase_popup:update(self:input_service(), dt, t)
+		item_purchase_popup:update(input_service, dt, t)
 
 		if item_purchase_popup:is_complete() then
 			self:_complete_item_purchase_request()
@@ -874,7 +898,7 @@ HeroViewStateStore.update = function (self, dt, t)
 				local ignore_sound_on_close_menu = true
 
 				self:close_menu(ignore_sound_on_close_menu)
-			elseif not self._item_purchase_popup and not self._welcome_popup then
+			elseif not self._item_purchase_popup and not self._welcome_popup and not self._golden_key_popup then
 				self:_handle_input(dt, t)
 			end
 		end
@@ -931,6 +955,10 @@ HeroViewStateStore._update_dlc_purchases = function (self)
 end
 
 HeroViewStateStore.can_afford_item = function (self, item)
+	if item.dlc_name or item.steam_itemdefid then
+		return true
+	end
+
 	local currency_type = "SM"
 	local regular_prices = item.regular_prices
 	local current_prices = item.current_prices
@@ -1179,8 +1207,28 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 	else
 		local item = product.item
 		local dlc_name = item.dlc_name
+		local steam_itemdefid = item.steam_itemdefid
 
-		if dlc_name then
+		if steam_itemdefid then
+			local function callback(result, item_list)
+				if result == 1 then
+					print("[HeroViewState] Purchase steam item: success!")
+
+					local backend_items = Managers.backend:get_interface("items")
+
+					backend_items:add_steam_items(item_list)
+					self:enqueue_acquired_product(product)
+				else
+					print("[HeroViewState] Purchase steam item: FAILED. result-code:", result)
+
+					self._fail_steam_item_purchase_popup_id = Managers.popup:queue_popup(string.format("Error-code: %s", tostring(result)), "Purchase failed!", "ok", Localize("button_ok"))
+				end
+			end
+
+			local amount = 1
+
+			Managers.steam:request_purchase_item(steam_itemdefid, amount, callback)
+		elseif dlc_name then
 			self:_show_storepage(nil, dlc_name)
 		else
 			self._item_purchase_popup = StoreItemPurchasePopup:new(self._ingame_ui, product)
@@ -1188,6 +1236,19 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 			self:block_input()
 		end
 	end
+end
+
+HeroViewStateStore.open_golden_key_popup = function (self)
+	self:play_sound("Play_hud_store_buy_window")
+
+	self._golden_key_popup = StoreGoldenKeyPopup:new(self, self._ui_top_renderer)
+
+	self:block_input()
+end
+
+HeroViewStateStore.enqueue_acquired_product = function (self, product)
+	local queue = self._unseen_product_reward_queue
+	queue[#queue + 1] = product
 end
 
 HeroViewStateStore._show_storepage = function (self, url, dlc_name)
@@ -1401,12 +1462,17 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 	local price_text, real_currency, platform_price_data = nil
 	local dlc_name = item.dlc_name
 	content.dlc_name = dlc_name
+	local steam_itemdefid = item.steam_itemdefid
+	content.steam_itemdefid = steam_itemdefid
 	local overlay_z = style.overlay.offset[3]
 	local icon_z = style.icon.offset[3]
 	style.icon.offset[3] = overlay_z
 	style.overlay.offset[3] = icon_z
 
-	if dlc_name then
+	if steam_itemdefid then
+		real_currency = true
+		price_text, platform_price_data = self:get_steam_item_price_text(steam_itemdefid)
+	elseif dlc_name then
 		real_currency = true
 		price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
 	else
@@ -1662,6 +1728,20 @@ HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
 			255
 		}
 	end
+end
+
+HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid)
+	local backend_store = Managers.backend:get_interface("peddler")
+	local price, currency = backend_store:get_steam_item_price(steam_itemdefid)
+	local price_text = nil
+
+	if price then
+		price_text = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
+	else
+		price_text = Localize("dlc_price_unavailable")
+	end
+
+	return price_text
 end
 
 HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)

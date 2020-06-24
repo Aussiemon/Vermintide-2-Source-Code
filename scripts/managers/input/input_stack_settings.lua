@@ -1,6 +1,12 @@
 DEFAULT_INPUT_GROUP = "GLOBAL"
 InputStackSettings = {
 	{
+		group_name = "input",
+		services = {
+			"text_input"
+		}
+	},
+	{
 		group_name = "chat",
 		services = {
 			"chat_input"
@@ -31,6 +37,24 @@ InputStackSettings = {
 		services = {
 			"Text",
 			"motd"
+		}
+	},
+	{
+		group_name = "options",
+		services = {
+			"options_menu"
+		}
+	},
+	{
+		group_name = "ingame_ui",
+		services = {
+			"ingame_menu"
+		}
+	},
+	{
+		group_name = "cutscene",
+		services = {
+			"cutscene"
 		}
 	}
 }

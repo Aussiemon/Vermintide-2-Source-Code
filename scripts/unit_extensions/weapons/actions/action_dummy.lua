@@ -3,6 +3,8 @@ ActionDummy = class(ActionDummy, ActionBase)
 ActionDummy.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionDummy.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
+	self._owner_unit = owner_unit
+
 	if ScriptUnit.has_extension(owner_unit, "status_system") then
 		self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	end

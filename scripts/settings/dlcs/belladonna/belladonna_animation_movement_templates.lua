@@ -82,7 +82,11 @@ AnimationMovementTemplates.beastmen_bestigor = {
 				local go_id = Managers.state.unit_storage:go_id(unit)
 
 				if game and go_id then
-					GameSession.set_game_object_field(game, go_id, "lean_target", lean_target_position)
+					local position_constant = NetworkConstants.position
+					local min = position_constant.min
+					local max = position_constant.max
+
+					GameSession.set_game_object_field(game, go_id, "lean_target", Vector3.clamp(lean_target_position, min, max))
 				end
 			end
 		end,

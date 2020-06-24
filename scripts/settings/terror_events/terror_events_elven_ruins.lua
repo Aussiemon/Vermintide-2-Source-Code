@@ -30,6 +30,10 @@ local terror_event_blueprints = {
 			enable = false
 		},
 		{
+			"control_specials",
+			enable = false
+		},
+		{
 			"play_stinger",
 			stinger_name = "enemy_horde_stinger"
 		},
@@ -56,7 +60,10 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_warpfire_thrower",
+			breed_name = {
+				"skaven_poison_wind_globadier",
+				"skaven_warpfire_thrower"
+			},
 			difficulty_amount = {
 				hardest = 2,
 				hard = 1,
@@ -134,7 +141,10 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_poison_wind_globadier",
+			breed_name = {
+				"skaven_poison_wind_globadier",
+				"skaven_warpfire_thrower"
+			},
 			difficulty_amount = {
 				hardest = 2,
 				hard = 1,
@@ -153,12 +163,20 @@ local terror_event_blueprints = {
 		{
 			"spawn_special",
 			amount = 1,
-			breed_name = "skaven_warpfire_thrower"
+			breed_name = {
+				"skaven_pack_master",
+				"skaven_gutter_runner"
+			}
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_pack_master",
 			amount = 1,
+			breed_name = {
+				"chaos_corruptor_sorcerer",
+				"chaos_vortex_sorcerer",
+				"skaven_ratling_gunner",
+				"skaven_warpfire_thrower"
+			},
 			difficulty_requirement = HARDEST
 		},
 		{
@@ -195,8 +213,8 @@ local terror_event_blueprints = {
 			"spawn_special",
 			amount = 1,
 			breed_name = {
-				"chaos_corruptor_sorcerer",
-				"chaos_vortex_sorcerer"
+				"skaven_pack_master",
+				"skaven_gutter_runner"
 			},
 			difficulty_requirement = HARDEST
 		},
@@ -231,6 +249,8 @@ local terror_event_blueprints = {
 			"spawn_special",
 			amount = 1,
 			breed_name = {
+				"chaos_corruptor_sorcerer",
+				"chaos_vortex_sorcerer",
 				"skaven_ratling_gunner",
 				"skaven_warpfire_thrower"
 			},
@@ -270,7 +290,10 @@ local terror_event_blueprints = {
 		{
 			"spawn_special",
 			amount = 1,
-			breed_name = "skaven_warpfire_thrower"
+			breed_name = {
+				"skaven_poison_wind_globadier",
+				"skaven_warpfire_thrower"
+			}
 		},
 		{
 			"delay",
@@ -281,8 +304,11 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_special",
-			breed_name = "skaven_gutter_runner",
 			amount = 1,
+			breed_name = {
+				"skaven_pack_master",
+				"skaven_gutter_runner"
+			},
 			difficulty_requirement = HARDEST
 		},
 		{
@@ -338,7 +364,8 @@ local terror_event_blueprints = {
 			amount = 1,
 			breed_name = {
 				"skaven_poison_wind_globadier",
-				"skaven_pack_master"
+				"skaven_pack_master",
+				"skaven_gutter_runner"
 			},
 			difficulty_requirement = HARDEST
 		},
@@ -395,7 +422,8 @@ local terror_event_blueprints = {
 			amount = 1,
 			breed_name = {
 				"skaven_poison_wind_globadier",
-				"skaven_pack_master"
+				"skaven_pack_master",
+				"skaven_gutter_runner"
 			},
 			difficulty_requirement = HARDEST
 		},
@@ -433,7 +461,10 @@ local terror_event_blueprints = {
 		{
 			"spawn_special",
 			amount = 1,
-			breed_name = "skaven_poison_wind_globadier"
+			breed_name = {
+				"skaven_poison_wind_globadier",
+				"skaven_warpfire_thrower"
+			}
 		},
 		{
 			"event_horde",
@@ -483,8 +514,10 @@ local terror_event_blueprints = {
 			"spawn_special",
 			amount = 1,
 			breed_name = {
+				"chaos_corruptor_sorcerer",
 				"chaos_vortex_sorcerer",
-				"chaos_corruptor_sorcerer"
+				"skaven_ratling_gunner",
+				"skaven_warpfire_thrower"
 			},
 			difficulty_requirement = HARDEST
 		},
@@ -582,8 +615,10 @@ local terror_event_blueprints = {
 			"spawn_special",
 			amount = 1,
 			breed_name = {
-				"skaven_warpfire_thrower",
-				"chaos_corruptor_sorcerer"
+				"chaos_corruptor_sorcerer",
+				"chaos_vortex_sorcerer",
+				"skaven_ratling_gunner",
+				"skaven_warpfire_thrower"
 			},
 			difficulty_requirement = HARDEST
 		},

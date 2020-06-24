@@ -78,6 +78,10 @@ BulldozerPlayer.profile_display_name = function (self)
 end
 
 BulldozerPlayer.despawn = function (self)
+	if self._spawn_state == "despawned" then
+		return
+	end
+
 	self:_set_spawn_state("despawned")
 
 	for mood, _ in pairs(MoodSettings) do
@@ -102,7 +106,7 @@ BulldozerPlayer.despawn = function (self)
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
 		Managers.telemetry.events:player_despawned(self)
 	elseif not Boot.is_controlled_exit then
-		ferror("bulldozer_player was already despawned. Should not happen.")
+		Application.warning("bulldozer_player unit was already despawned. Should not happen.")
 	end
 
 	Managers.state.event:trigger("delete_limited_owned_pickups", self.peer_id)
@@ -282,10 +286,12 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		},
 		dialogue_system = {
 			local_player = true,
+			wwise_career_switch_group = "player_career",
 			wwise_voice_switch_group = "character",
 			profile = profile,
 			faction = faction,
-			wwise_voice_switch_value = profile.character_vo
+			wwise_voice_switch_value = profile.character_vo,
+			wwise_career_switch_value = career_name
 		},
 		whereabouts_system = {
 			player = self

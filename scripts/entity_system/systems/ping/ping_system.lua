@@ -219,7 +219,9 @@ PingSystem.remove_ping = function (self, pinger_unit)
 		local party = Managers.party:get_party(data.party_id)
 		local pinged_unit_id = network_manager:unit_game_object_id(pinged_unit)
 
-		self.network_transmit:send_rpc_party_clients("rpc_remove_unit_ping", party, pinged_unit_id)
+		if pinged_unit_id then
+			self.network_transmit:send_rpc_party_clients("rpc_remove_unit_ping", party, pinged_unit_id)
+		end
 
 		local ping_extension = ScriptUnit.extension(pinged_unit, "ping_system")
 

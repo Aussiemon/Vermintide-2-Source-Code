@@ -39,6 +39,11 @@ LobbyClient.update = function (self, dt)
 			Managers.party:set_leader(host_peer_id)
 
 			self._lost_connection_to_lobby = false
+			self._reconnecting_to_lobby = nil
+			self._try_reconnecting = nil
+			self._reconnect_times = nil
+
+			print("[LobbyClient] connected to lobby, id:", self.stored_lobby_data.id)
 		end
 
 		if old_state == LobbyState.JOINED then
@@ -49,6 +54,11 @@ LobbyClient.update = function (self, dt)
 
 				self.has_sent_join = false
 			end
+		end
+
+		if self._reconnecting_to_lobby and new_state == LobbyState.FAILED then
+			self._reconnecting_to_lobby = false
+			self._try_reconnecting = not self._reconnect_times or self._reconnect_times < 10
 		end
 	end
 
@@ -63,10 +73,29 @@ LobbyClient.update = function (self, dt)
 
 			if peer_id == my_peer_id or peer_id == host_peer_id then
 				self._lost_connection_to_lobby = true
+				self._try_reconnecting = peer_id == my_peer_id
 
 				print("[LobbyClient] Lost connection to the lobby")
 			end
 		end
+	end
+
+	if HAS_STEAM and self._lost_connection_to_lobby and not self._reconnecting_to_lobby and self._try_reconnecting then
+		print("[LobbyClient] Attempting to rejoin lobby", self.stored_lobby_data.id, "Retries:", self._reconnect_times or 0)
+		LobbyInternal.leave_lobby(self.lobby)
+
+		self.lobby = LobbyInternal.join_lobby(self.stored_lobby_data)
+		self.state = nil
+
+		if self.lobby_members then
+			self.lobby_members:clear()
+
+			self.has_sent_join = false
+		end
+
+		self._reconnect_times = (self._reconnect_times or 0) + 1
+		self._reconnecting_to_lobby = true
+		self._try_reconnecting = false
 	end
 end
 
@@ -118,6 +147,10 @@ end
 
 LobbyClient.id = function (self)
 	return (LobbyInternal.lobby_id and LobbyInternal.lobby_id(self.lobby)) or "no_id"
+end
+
+LobbyClient.attempting_reconnect = function (self)
+	return self._reconnecting_to_lobby or self._try_reconnecting
 end
 
 LobbyClient.lost_connection_to_lobby = function (self)

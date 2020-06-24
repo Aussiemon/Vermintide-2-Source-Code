@@ -142,12 +142,21 @@ UpsellPopup.draw = function (self, dt)
 	end
 end
 
+local function find_steam_store_page_url(dlc_name)
+	for _, dlc_settings in pairs(StoreDlcSettings) do
+		if dlc_settings.dlc_name == dlc_name then
+			return dlc_settings.store_page_url
+		end
+	end
+
+	return nil
+end
+
 UpsellPopup.show_store = function (self, dlc_name_override)
 	local dlc_name = dlc_name_override or self._dlc_name
 
 	if PLATFORM == "win32" and rawget(_G, "Steam") then
-		local unlock_area = AreaSettings[dlc_name]
-		local url = unlock_area and unlock_area.store_page_url
+		local url = find_steam_store_page_url(dlc_name)
 
 		if url then
 			Steam.open_url(url)

@@ -356,6 +356,22 @@ ProfileSynchronizer.get_first_free_profile = function (self)
 	fassert(false, "Trying to get free profile when there are no free profiles.")
 end
 
+ProfileSynchronizer.profile_career_exists = function (self, profile_index, career_index)
+	local profile = SPProfiles[profile_index]
+	local careers = profile and profile.careers
+	local career = careers and careers[career_index]
+
+	return career ~= nil
+end
+
+ProfileSynchronizer.profile_career_unlocked = function (self, profile_index, career_index)
+	local profile = SPProfiles[profile_index]
+	local careers = profile and profile.careers
+	local career = careers and careers[career_index]
+
+	return career and career.is_unlocked_function(profile.display_name, ExperienceSettings.max_level)
+end
+
 ProfileSynchronizer.is_human_player = function (self, peer_id, local_player_id)
 	local player = self._player_manager:player(peer_id, local_player_id)
 

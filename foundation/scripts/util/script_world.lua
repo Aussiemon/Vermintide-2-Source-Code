@@ -352,7 +352,7 @@ ScriptWorld.load_level = function (world, name, object_sets, position, rotation,
 
 	fassert(levels[name] == nil, "Level %q already loaded", name)
 
-	local level = World.load_level_with_object_sets(world, name, object_sets or {}, {}, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), name, "force_render")
+	local level = World.load_level_with_object_sets(world, name, object_sets or {}, {}, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), true, name, "force_render")
 	local nested_levels = Level.nested_levels(level)
 	local logic_level = nested_levels[1] or level
 	levels[name] = {

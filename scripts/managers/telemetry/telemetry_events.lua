@@ -21,6 +21,7 @@ TelemetryEvents.header = function (self, engine_revision, content_revision)
 	params.build = BUILD
 	params.engine_revision = engine_revision
 	params.content_revision = content_revision
+	params.machine_id = (Application.machine_id and Application.machine_id()) or nil
 
 	self.manager:register_event("header", params)
 end
@@ -500,10 +501,11 @@ TelemetryEvents.player_stuck = function (self, player, level_key)
 	self.manager:register_event("player_stuck", params)
 end
 
-TelemetryEvents.fps = function (self, avg_fps)
+TelemetryEvents.fps = function (self, avg_fps, histogram)
 	table.clear(params)
 
 	params.avg_fps = avg_fps
+	params.histogram = histogram
 
 	self.manager:register_event("fps", params)
 end

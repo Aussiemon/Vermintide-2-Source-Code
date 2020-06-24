@@ -124,6 +124,8 @@ ProfileRequester.rpc_request_profile_reply = function (self, sender, local_playe
 			player:set_career_index(career_index)
 		end
 	end
+
+	Testify:respond_to_request("set_player_profile")
 end
 
 return

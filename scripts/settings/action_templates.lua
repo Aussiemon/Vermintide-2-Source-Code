@@ -424,17 +424,23 @@ ActionTemplates.action_inspect = {
 	action_inspect_hold = {
 		cooldown = 0.15,
 		minimum_hold_time = 0.3,
-		weapon_action_hand = "either",
 		anim_end_event = "inspect_end",
 		kind = "dummy",
 		can_abort_reload = false,
+		weapon_action_hand = "either",
 		hold_input = "action_inspect_hold",
 		anim_event = "inspect_start",
 		anim_end_event_condition_func = function (unit, end_reason)
 			return end_reason ~= "new_interupting_action"
 		end,
 		total_time = math.huge,
-		allowed_chain_actions = {}
+		allowed_chain_actions = {},
+		weapon_sway_settings = {
+			look_sensitivity = 1.5,
+			sway_range = 1,
+			lerp_speed = 10,
+			recentering_lerp_speed = 0
+		}
 	}
 }
 ActionTemplates.action_inspect_left = table.clone(ActionTemplates.action_inspect)
@@ -830,6 +836,16 @@ ActionTemplates.action_career_we_3_piercing = {
 		allowed_chain_actions = {}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local action_template_files = dlc.action_template_files
+
+	if action_template_files then
+		for _, action_template_file in ipairs(action_template_files) do
+			require(action_template_file)
+		end
+	end
+end
 
 for _, action_names in pairs(CareerActionNames) do
 	for i = 1, #action_names, 1 do

@@ -1,6 +1,7 @@
 require("scripts/unit_extensions/weapons/actions/action_base")
 require("scripts/unit_extensions/weapons/actions/action_charge")
 require("scripts/unit_extensions/weapons/actions/action_dummy")
+require("scripts/unit_extensions/weapons/actions/action_inspect")
 require("scripts/unit_extensions/weapons/actions/action_melee_start")
 require("scripts/unit_extensions/weapons/actions/action_wield")
 require("scripts/unit_extensions/weapons/actions/action_bounty_hunter_handgun")
@@ -50,6 +51,7 @@ local action_classes = {
 	career_true_flight_aim = ActionCareerTrueFlightAim,
 	charge = ActionCharge,
 	dummy = ActionDummy,
+	inspect = ActionInspect,
 	melee_start = ActionMeleeStart,
 	wield = ActionWield,
 	bounty_hunter_handgun = ActionBountyHunterHandgun,
@@ -186,6 +188,12 @@ end
 
 WeaponUnitExtension.destroy = function (self)
 	if self.current_action_settings then
+		local buff_data = self.current_action_settings.buff_data
+
+		if buff_data then
+			ActionUtils.remove_action_buff_data(self.action_buff_data, buff_data, self.owner_unit)
+		end
+
 		local action_kind = self.current_action_settings.kind
 		local attack_prev = self.actions[action_kind]
 
@@ -207,6 +215,7 @@ local interupting_action_data = {}
 WeaponUnitExtension.start_action = function (self, action_name, sub_action_name, actions, t, power_level, action_init_data)
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	local current_action_settings = self.current_action_settings
@@ -218,6 +227,13 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	if new_action then
 		local action_settings = self:get_action(new_action, new_sub_action, actions)
 		local action_kind = action_settings.kind
+
+		if action_kind == "action_selector" then
+			new_action, new_sub_action = ActionUtils.resolve_action_selector(action_settings, talent_extension, buff_extension)
+			action_settings = self:get_action(new_action, new_sub_action, actions)
+			action_kind = action_settings.kind
+		end
+
 		self.actions[action_kind] = self.actions[action_kind] or create_attack(self.item_name, action_kind, self.world, self.is_server, owner_unit, self.actual_damage_unit, self.first_person_unit, self.unit, self.weapon_system)
 	end
 
@@ -272,6 +288,8 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		local chain_action = current_action_settings ~= nil
 		current_action_settings = self:get_action(new_action, new_sub_action, actions)
+
+		first_person_extension:set_weapon_sway_settings(current_action_settings.weapon_sway_settings)
 
 		if not chain_action and current_action_settings.aim_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")

@@ -741,6 +741,10 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 		self.room_manager:hot_join_sync(peer_id)
 	end
 
+	if Managers.venture.challenge then
+		Managers.venture.challenge:hot_join_sync(peer_id)
+	end
+
 	if Managers.state.conflict then
 		Managers.state.conflict:hot_join_sync(peer_id)
 	end

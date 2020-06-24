@@ -1202,7 +1202,7 @@ ExplosionTemplates.lightning_strike = {
 		}
 	}
 }
-ExplosionTemplates.lightning_strike_temp = {
+ExplosionTemplates.lightning_strike_twitch = {
 	time_to_explode = 5,
 	follow_time = 5,
 	explosion = {
@@ -1214,7 +1214,6 @@ ExplosionTemplates.lightning_strike_temp = {
 		damage_interval = 0,
 		always_hurt_players = true,
 		buildup_effect_time = 1.5,
-		different_power_levels_for_players = true,
 		sound_event_name = "Play_mutator_enemy_split_large",
 		damage_profile = "heavens_lightning_strike",
 		power_level = 250,

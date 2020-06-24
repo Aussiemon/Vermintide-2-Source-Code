@@ -231,7 +231,7 @@ StartGameWindowDifficultyConsole._handle_input = function (self, dt, t)
 		local area_settings = AreaSettings[dlc_name]
 		local store_page_url = area_settings.store_page_url
 
-		self:_show_storepage(store_page_url)
+		self:_show_storepage(store_page_url, dlc_name)
 	end
 
 	local gamepad_confirm_pressed = gamepad_active and input_service:get(SELECTION_INPUT, true)
@@ -244,7 +244,7 @@ StartGameWindowDifficultyConsole._handle_input = function (self, dt, t)
 			local area_settings = AreaSettings[dlc_name]
 			local store_page_url = area_settings.store_page_url
 
-			self:_show_storepage(store_page_url)
+			self:_show_storepage(store_page_url, dlc_name)
 		end
 	end
 end
@@ -440,11 +440,41 @@ StartGameWindowDifficultyConsole._is_button_released = function (self, widget)
 	end
 end
 
-StartGameWindowDifficultyConsole._show_storepage = function (self, store_page_url)
+StartGameWindowDifficultyConsole._show_storepage = function (self, store_page_url, dlc_name)
 	local platform = PLATFORM
 
 	if platform == "win32" and rawget(_G, "Steam") then
 		Steam.open_url(store_page_url)
+	elseif platform == "xb1" then
+		local user_id = Managers.account:user_id()
+
+		if dlc_name then
+			local product_id = Managers.unlock:dlc_id(dlc_name)
+
+			if product_id then
+				XboxLive.show_product_details(user_id, product_id)
+			else
+				Application.error(string.format("[StartGameWindowAreaSelection:_show_storepage] No product_id for dlc: %s", dlc_name))
+			end
+		else
+			Application.error("[StartGameWindowAreaSelection:_show_storepage] No dlc name")
+		end
+	elseif platform == "ps4" then
+		local user_id = Managers.account:user_id()
+
+		if dlc_name then
+			local product_label = Managers.unlock:ps4_dlc_product_label(dlc_name)
+
+			if product_label then
+				Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
+					product_label
+				})
+			else
+				Application.error(string.format("[StartGameWindowAreaSelection:_show_storepage] No product_id for dlc: %s", dlc_name))
+			end
+		else
+			Application.error("[StartGameWindowAreaSelection:_show_storepage] No dlc name")
+		end
 	end
 end
 

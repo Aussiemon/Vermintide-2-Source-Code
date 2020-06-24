@@ -345,7 +345,7 @@ ChatGui._update_chat_messages = function (self)
 					ingame_display_name = (SPProfiles[profile_index] and SPProfiles[profile_index].ingame_short_display_name) or nil
 					name = player:name()
 				else
-					name = (HAS_STEAM and Steam.user_name(sender)) or tostring(sender)
+					name = (rawget(_G, "Steam") and Steam.user_name(sender)) or tostring(sender)
 				end
 
 				local message = new_message.message

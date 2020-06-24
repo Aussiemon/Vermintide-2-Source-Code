@@ -18,19 +18,4 @@ WeaveUtils.get_rating = function (score)
 	return rating
 end
 
-WeaveUtils.comma_value = function (amount)
-	local formatted = amount
-	local k = nil
-
-	while true do
-		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1 %2")
-
-		if k == 0 then
-			break
-		end
-	end
-
-	return formatted
-end
-
 return

@@ -31,6 +31,11 @@ PlayerWwiseDependencies = {
 			"wwise/player_foley_imperial_knight",
 			"wwise/player_mercenary_vo",
 			"wwise/player_soldier_vce"
+		},
+		breton = {
+			"wwise/player_foley_bretonnian_knight",
+			"wwise/player_mercenary_vo",
+			"wwise/player_soldier_vce"
 		}
 	},
 	kerillian = {

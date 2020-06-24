@@ -63,7 +63,7 @@ AchievementTemplateHelper.check_level_completed_difficulty = function (statistic
 	return difficulty_rank <= completed_rank
 end
 
-AchievementTemplateHelper.check_level_list_difficulty = function (statistics_db, stats_id, levels_to_complete, difficulty_rank, career)
+AchievementTemplateHelper.check_level_list_difficulty = function (statistics_db, stats_id, levels_to_complete, difficulty_rank, career, streak)
 	assert(type(levels_to_complete) == "table", "levels_to_complete needs to be a list of levels")
 
 	local difficulty_manager = Managers.state.difficulty
@@ -78,11 +78,15 @@ AchievementTemplateHelper.check_level_list_difficulty = function (statistics_db,
 		local difficulty_index = nil
 
 		if career then
-			for i, r in ipairs(difficulties) do
-				local wins = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level_id, r)
+			if streak then
+				difficulty_index = statistics_db:get_persistent_stat(stats_id, "mission_streak", career, level_id)
+			else
+				for i, r in ipairs(difficulties) do
+					local wins = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level_id, r)
 
-				if wins > 0 then
-					difficulty_index = i
+					if wins > 0 then
+						difficulty_index = i
+					end
 				end
 			end
 		else
@@ -141,7 +145,47 @@ AchievementTemplateHelper.equipped_items_of_rarity = function (statistics_db, st
 	return count
 end
 
-AchievementTemplateHelper.add_stat_count_challenge = function (achievements, id, stat_name, count, icon, dlc, id_xb1, id_ps4)
+AchievementTemplateHelper.add_stat_count_challenge = function (achievements, id, stat_name, count, career, icon, dlc, id_xb1, id_ps4)
+	achievements[id] = {
+		display_completion_ui = true,
+		name = "achv_" .. id .. "_name",
+		desc = function ()
+			local description = "achv_" .. id .. "_desc"
+
+			return string.format(Localize(description), count)
+		end,
+		icon = icon or "achievement_trophy_" .. id,
+		required_dlc = dlc,
+		ID_XB1 = id_xb1,
+		ID_PS4 = id_ps4,
+		completed = function (statistics_db, stats_id)
+			if career then
+				return count <= statistics_db:get_persistent_stat(stats_id, stat_name, career)
+			else
+				return count <= statistics_db:get_persistent_stat(stats_id, stat_name)
+			end
+		end,
+		progress = function (statistics_db, stats_id)
+			if career then
+				local completed = statistics_db:get_persistent_stat(stats_id, stat_name, career)
+
+				return {
+					completed,
+					count
+				}
+			else
+				local completed = statistics_db:get_persistent_stat(stats_id, stat_name)
+
+				return {
+					completed,
+					count
+				}
+			end
+		end
+	}
+end
+
+AchievementTemplateHelper.add_health_challenge = function (achievements, id, career, threshold, icon, dlc, id_xb1, id_ps4)
 	achievements[id] = {
 		display_completion_ui = true,
 		name = "achv_" .. id .. "_name",
@@ -151,13 +195,92 @@ AchievementTemplateHelper.add_stat_count_challenge = function (achievements, id,
 		ID_XB1 = id_xb1,
 		ID_PS4 = id_ps4,
 		completed = function (statistics_db, stats_id)
-			return count <= statistics_db:get_persistent_stat(stats_id, stat_name)
+			return threshold <= statistics_db:get_persistent_stat(stats_id, "min_health_completed", career)
+		end
+	}
+end
+
+AchievementTemplateHelper.add_weapon_kills_per_breeds_challenge = function (achievements, id, weapon, breeds_to_kill, count, icon, dlc, id_xb1, id_ps4)
+	assert(type(breeds_to_kill) == "table", "breeds_to_kill needs to be a list of breeds")
+
+	achievements[id] = {
+		display_completion_ui = true,
+		name = "achv_" .. id .. "_name",
+		desc = function ()
+			local description = "achv_" .. id .. "_desc"
+
+			return string.format(Localize(description), count)
+		end,
+		icon = icon or "achievement_trophy_" .. id,
+		required_dlc = dlc,
+		ID_XB1 = id_xb1,
+		ID_PS4 = id_ps4,
+		completed = function (statistics_db, stats_id)
+			local stat_name = "weapon_kills_per_breed"
+			local max_count = 0
+
+			for i = 1, #breeds_to_kill, 1 do
+				local test = statistics_db:get_persistent_stat(stats_id, stat_name, weapon, breeds_to_kill[i])
+				max_count = max_count + test
+			end
+
+			return count <= max_count
 		end,
 		progress = function (statistics_db, stats_id)
-			local completed = statistics_db:get_persistent_stat(stats_id, stat_name)
+			local stat_name = "weapon_kills_per_breed"
+			local max_count = 0
+
+			for i = 1, #breeds_to_kill, 1 do
+				max_count = max_count + statistics_db:get_persistent_stat(stats_id, stat_name, weapon, breeds_to_kill[i])
+			end
+
+			if count < max_count then
+				max_count = count
+			end
 
 			return {
-				completed,
+				max_count,
+				count
+			}
+		end
+	}
+end
+
+AchievementTemplateHelper.add_career_mission_count_challenge = function (achievements, id, stat_name, career_name, difficulty_ranks, count, min_health, icon, dlc, id_xb1, id_ps4)
+	achievements[id .. "_" .. career_name] = {
+		display_completion_ui = true,
+		name = "achv_" .. id .. "_" .. career_name .. "_name",
+		desc = "achv_" .. id .. "_" .. career_name .. "_desc",
+		icon = icon or "achievement_trophy_" .. id .. "_" .. career_name,
+		required_dlc = dlc,
+		ID_XB1 = id_xb1,
+		ID_PS4 = id_ps4,
+		completed = function (statistics_db, stats_id)
+			local max_count = 0
+
+			for i = 1, #difficulty_ranks, 1 do
+				for j = 1, #UnlockableLevels, 1 do
+					max_count = max_count + statistics_db:get_persistent_stat(stats_id, stat_name, career_name, UnlockableLevels[j], difficulty_ranks[i])
+				end
+			end
+
+			return count <= max_count
+		end,
+		progress = function (statistics_db, stats_id)
+			local max_count = 0
+
+			for i = 1, #difficulty_ranks, 1 do
+				for j = 1, #UnlockableLevels, 1 do
+					max_count = max_count + statistics_db:get_persistent_stat(stats_id, stat_name, career_name, UnlockableLevels[j], difficulty_ranks[i])
+				end
+			end
+
+			if count < max_count then
+				max_count = count
+			end
+
+			return {
+				max_count,
 				count
 			}
 		end
@@ -206,7 +329,7 @@ end
 AchievementTemplateHelper.add_weapon_kill_challenge = function (achievements, id, weapon, count, icon, dlc, id_xb1, id_ps4)
 	local stat_name = (dlc or "") .. "_kills_" .. weapon
 
-	AchievementTemplateHelper.add_stat_count_challenge(achievements, id, stat_name, count, icon, dlc, id_xb1, id_ps4)
+	AchievementTemplateHelper.add_stat_count_challenge(achievements, id, stat_name, count, nil, icon, dlc, id_xb1, id_ps4)
 end
 
 AchievementTemplateHelper.add_weapon_levels_challenge = function (achievements, id, weapon, levels, difficuty, icon, dlc, id_xb1, id_ps4)
@@ -353,6 +476,61 @@ AchievementTemplateHelper.add_levels_complete_challenge = function (achievements
 	end
 
 	achievements[id] = template
+end
+
+AchievementTemplateHelper.add_levels_complete_per_hero_challenge = function (achievements, id, levels, difficulty_rank, career_name, streak, icon, dlc, id_xb1, id_ps4)
+	fassert(CareerSettings[career_name] ~= nil, "No career with such name (%s)", career_name)
+
+	local num_levels = #levels
+	local template = {
+		name = "achv_" .. id .. "_" .. career_name .. "_name",
+		desc = "achv_" .. id .. "_" .. career_name .. "_desc",
+		icon = icon or "achievement_trophy_" .. id .. "_" .. career_name,
+		required_dlc = dlc,
+		ID_XB1 = id_xb1,
+		ID_PS4 = id_ps4,
+		completed = function (statistics_db, stats_id)
+			return AchievementTemplateHelper.check_level_list_difficulty(statistics_db, stats_id, levels, difficulty_rank, career_name, streak)
+		end
+	}
+
+	if num_levels > 1 then
+		template.progress = function (statistics_db, stats_id)
+			local num_completed = 0
+
+			for i = 1, num_levels, 1 do
+				if AchievementTemplateHelper.check_level_list_difficulty(statistics_db, stats_id, {
+					levels[i]
+				}, difficulty_rank, career_name, streak) then
+					num_completed = num_completed + 1
+				end
+			end
+
+			return {
+				num_completed,
+				num_levels
+			}
+		end
+
+		template.requirements = function (statistics_db, stats_id)
+			local out_table = {}
+
+			for i = 1, num_levels, 1 do
+				local entry = {
+					name = LevelSettings[levels[i]].display_name,
+					completed = AchievementTemplateHelper.check_level_list_difficulty(statistics_db, stats_id, {
+						levels[i]
+					}, difficulty_rank, career_name, streak)
+				}
+
+				table.insert(out_table, entry)
+			end
+
+			return out_table
+		end
+	end
+
+	achievements[id .. "_" .. career_name] = template
 end
 
 AchievementTemplateHelper.add_meta_challenge = function (achievements, id, achievement_ids, icon, dlc, id_xb1, id_ps4)

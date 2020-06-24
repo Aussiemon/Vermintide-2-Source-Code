@@ -1119,7 +1119,7 @@ PerceptionUtils.pick_bestigor_target_with_weights = function (unit, blackboard, 
 						score = score * weights.target_targeted_by_other_charge
 					end
 
-					if status_extension:is_charged() and not blackboard.target_unit == enemy_unit then
+					if status_extension:is_charged() and blackboard.target_unit ~= enemy_unit then
 						score = score * weights.target_is_charged
 					end
 

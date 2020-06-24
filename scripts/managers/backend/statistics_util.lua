@@ -46,8 +46,16 @@ StatisticsUtil.generate_weapon_kill_stats_dlc = function (stat_player, dlc_name,
 	end
 end
 
-local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_name)
-	local weapon_stats_dlcs = weapon_name and _tracked_weapon_kill_stats[weapon_name]
+local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_item)
+	local weapon_stats_dlcs = nil
+	local weapon_name = weapon_item.name
+	local rarity = weapon_item.rarity
+
+	if rarity == "magic" then
+		local base_weapon_name = weapon_item.required_unlock_item
+		weapon_stats_dlcs = _tracked_weapon_kill_stats[base_weapon_name]
+		weapon_name = base_weapon_name
+	end
 
 	if weapon_stats_dlcs then
 		local dlc_manager = Managers.unlock
@@ -57,6 +65,32 @@ local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_name)
 
 			if dlc_manager:is_dlc_unlocked(dlc_name) then
 				statistics_db:increment_stat(stats_id, dlc_name .. "_kills_" .. weapon_name)
+			end
+		end
+	end
+end
+
+local _tracked_weapon_kills_per_breed_stats = {}
+
+for _, dlc in pairs(DLCSettings) do
+	if dlc.tracked_weapon_kills_per_breed_stats then
+		for _, dlc_settings in pairs(dlc.tracked_weapon_kills_per_breed_stats) do
+			_tracked_weapon_kills_per_breed_stats[_] = dlc_settings
+		end
+	end
+end
+
+local function _track_weapon_kills_per_breed_stats(statistics_db, stats_id, weapon_name, target_breed)
+	local weapon_stats_dlcs = weapon_name and _tracked_weapon_kills_per_breed_stats[weapon_name]
+
+	if weapon_stats_dlcs then
+		local dlc_manager = Managers.unlock
+
+		for dlc_id = 1, #weapon_stats_dlcs, 1 do
+			local dlc_name = weapon_stats_dlcs[dlc_id]
+
+			if dlc_manager:is_dlc_unlocked(dlc_name) then
+				statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", weapon_name, target_breed)
 			end
 		end
 	end
@@ -201,7 +235,8 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 					statistics_db:increment_stat(stats_id, "kills_ranged")
 				end
 
-				_track_weapon_kill_stats(statistics_db, stats_id, damage_source)
+				_track_weapon_kill_stats(statistics_db, stats_id, master_list_item)
+				_track_weapon_kills_per_breed_stats(statistics_db, stats_id, damage_source, breed_killed.name)
 			end
 		end
 	end
@@ -442,6 +477,7 @@ end
 
 StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_db)
 	local damage_amount = damage_data[DamageDataIndex.DAMAGE_AMOUNT]
+	local damage_source_name = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
 	local player_manager = Managers.player
 	local victim_player = player_manager:owner(victim_unit)
 
@@ -449,6 +485,18 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 		local stats_id = victim_player:stats_id()
 
 		statistics_db:modify_stat_by_amount(stats_id, "damage_taken", damage_amount)
+
+		local health_extension = ScriptUnit.extension(victim_unit, "health_system")
+		local current_health = health_extension:current_health()
+		local max_health = health_extension:get_max_health()
+		local current_health_percentage = (current_health - damage_amount) / max_health
+		local career_extension = ScriptUnit.extension(victim_unit, "career_system")
+		local career_name = career_extension:career_name()
+		local min_health = statistics_db:get_stat(stats_id, "min_health_percentage", career_name)
+
+		if current_health_percentage < min_health then
+			statistics_db:set_stat(stats_id, "min_health_percentage", career_name, current_health_percentage)
+		end
 	end
 
 	local attacker_unit = damage_data[DamageDataIndex.ATTACKER]
@@ -485,8 +533,6 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 			end
 		end
 	end
-
-	local damage_source_name = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
 
 	if damage_source_name == "skaven_ratling_gunner" and victim_player then
 		local stats_id = victim_player:stats_id()
@@ -678,6 +724,7 @@ StatisticsUtil.register_weave_complete = function (statistics_db, player, is_qui
 		local weave_quickplay_wins_stat_name = "weave_quickplay_wins"
 
 		statistics_db:increment_stat(stats_id, ScorpionSeasonalSettings.current_season_name, weave_quickplay_wins_stat_name)
+		statistics_db:increment_stat(stats_id, "scorpion_weaves_won")
 
 		if ScorpionSeasonalSettings.current_season_id == 1 or PLATFORM ~= "win32" then
 			local weave_quickplay_wins_difficulty_stat_name = "weave_quickplay_" .. difficulty_key .. "_wins"
@@ -835,7 +882,23 @@ StatisticsUtil._register_completed_level_difficulty = function (statistics_db, l
 		statistics_db:set_stat(stats_id, "completed_levels_difficulty", level_difficulty_name, difficulty)
 	end
 
+	if statistics_db:has_stat(stats_id, "mission_streak", career_name) then
+		local current_streak_difficulty = statistics_db:get_persistent_stat(stats_id, "mission_streak", career_name, level_id)
+
+		if current_streak_difficulty < difficulty then
+			statistics_db:set_stat(stats_id, "mission_streak", career_name, level_id, difficulty)
+		end
+	end
+
 	statistics_db:increment_stat(stats_id, "completed_career_levels", career_name, level_id, difficulty_name)
+
+	local completed_percentage = statistics_db:get_stat(stats_id, "min_health_percentage", career_name)
+	local highest_completed_percentage = statistics_db:get_persistent_stat(stats_id, "min_health_completed", career_name)
+
+	if highest_completed_percentage and completed_percentage and highest_completed_percentage < completed_percentage then
+		statistics_db:set_stat(stats_id, "min_health_completed", career_name, completed_percentage)
+	end
+
 	statistics_db:increment_stat(stats_id, "played_difficulty", difficulty_name)
 end
 
@@ -879,6 +942,40 @@ StatisticsUtil._set_survival_stat = function (statistics_db, level_id, difficult
 	local stats_id = local_player:stats_id()
 
 	statistics_db:set_stat(stats_id, stat, value)
+end
+
+StatisticsUtil.reset_mission_streak = function (player, statistics_db, stats_id)
+	local profile_index = player:profile_index()
+	local profile = SPProfiles[profile_index]
+	local career_index = player:career_index()
+	local career_data = profile.careers[career_index]
+	local career_name = career_data.name
+	local level_settings = LevelHelper:current_level_settings()
+	local level_id = level_settings.level_id
+
+	if statistics_db:has_stat(stats_id, "mission_streak", career_name) then
+		for i = 1, 3, 1 do
+			local act_key = "act_" .. i
+			local act_levels = GameActs[act_key]
+			local do_reset = false
+
+			for i = 1, #act_levels, 1 do
+				local cleared = statistics_db:get_persistent_stat(stats_id, "mission_streak", career_name, act_levels[i])
+
+				if cleared == 0 then
+					do_reset = true
+
+					break
+				end
+			end
+
+			if do_reset and table.contains(act_levels, level_id) then
+				for i = 1, #act_levels, 1 do
+					statistics_db:set_stat(stats_id, "mission_streak", career_name, act_levels[i], 0)
+				end
+			end
+		end
+	end
 end
 
 StatisticsUtil._modify_survival_stat = function (statistics_db, level_id, difficulty, stat_name, value)

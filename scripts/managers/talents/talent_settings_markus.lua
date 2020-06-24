@@ -247,7 +247,8 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				buff_to_add = "markus_huntsman_passive_crit_aura_buff",
-				update_func = "activate_buff_on_distance"
+				update_func = "activate_buff_on_distance",
+				remove_buff_func = "remove_aura_buff"
 			}
 		}
 	},
@@ -759,7 +760,8 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				buff_to_add = "markus_knight_passive_defence_aura",
-				update_func = "markus_knight_proximity_buff_update"
+				update_func = "markus_knight_proximity_buff_update",
+				remove_buff_func = "remove_aura_buff"
 			}
 		}
 	},
@@ -888,6 +890,7 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				buff_to_add = "markus_knight_improved_passive_defence_aura_buff",
 				update_func = "activate_buff_on_distance",
+				remove_buff_func = "remove_aura_buff",
 				range = buff_tweak_data.markus_knight_passive.range
 			}
 		}

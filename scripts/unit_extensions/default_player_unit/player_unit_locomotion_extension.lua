@@ -27,6 +27,7 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 
 	self:reset()
 
+	self._move_speed_lerp_val = 0
 	self.move_speed_anim_var = Unit.animation_find_variable(unit, "move_speed")
 	self.collides_down = true
 	self.on_ground = true
@@ -206,6 +207,11 @@ end
 
 PlayerUnitLocomotionExtension.extensions_ready = function (self)
 	self.first_person_extension = ScriptUnit.extension(self.unit, "first_person_system")
+	local first_person_unit = self.first_person_extension and self.first_person_extension.first_person_unit
+
+	if first_person_unit then
+		self._move_speed_anim_var_1p = Unit.animation_find_variable(first_person_unit, "move_speed")
+	end
 end
 
 PlayerUnitLocomotionExtension.last_position_on_navmesh = function (self)
@@ -272,6 +278,26 @@ PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, con
 
 		Mover.set_position(mover, new_pos)
 		Unit.set_local_position(unit, 0, new_pos)
+	end
+
+	local first_person_unit = self.first_person_extension and self.first_person_extension.first_person_unit
+
+	if first_person_unit and self._move_speed_anim_var_1p then
+		local lerp_time = 0.3
+		local move_speed = Vector3.length(self.velocity_current:unbox())
+		local move_speed_lerp_val = self._move_speed_lerp_val
+
+		if move_speed_lerp_val < move_speed then
+			move_speed_lerp_val = math.clamp(move_speed_lerp_val + move_speed / lerp_time * dt, 0, move_speed)
+			self._move_speed_top = move_speed_lerp_val
+		else
+			local ms = self._move_speed_top or move_speed
+			move_speed_lerp_val = math.clamp(move_speed_lerp_val - ms / lerp_time * dt, 0, move_speed_lerp_val)
+		end
+
+		self._move_speed_lerp_val = move_speed_lerp_val
+
+		Unit.animation_set_variable(first_person_unit, self._move_speed_anim_var_1p, math.min(move_speed_lerp_val, 99.9999))
 	end
 end
 

@@ -37,11 +37,13 @@ StateLoadingMigrateHost._init_network = function (self)
 		network_printf("creating host for people to migrate to")
 
 		local level_to_load = host_migration_info.level_to_load
+		local environment_to_load = host_migration_info.environment_to_load
 
 		if level_to_load then
-			self._level_transition_handler:set_next_level(level_to_load)
+			self._level_transition_handler:set_next_level(level_to_load, environment_to_load)
 
 			loading_context.host_migration_level_to_load = nil
+			loading_context.environment_to_load = nil
 		end
 
 		self.parent:setup_lobby_host(callback(self, "cb_server_created"))

@@ -1120,7 +1120,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 
 		for i = 1, num_actors, 1 do
 			local hit_actor = actors[i]
-			local hit_unit = actor_unit(hit_actor)
+			local hit_unit = hit_actor and actor_unit(hit_actor)
 
 			if ScriptUnit.has_extension(hit_unit, "health_system") then
 				local ignore_damage = unit_get_data(hit_unit, "ignore_explosion_damage")
@@ -1535,6 +1535,8 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 	end
 end
 
+local ON_DAMAGE_DEALT_PROC_MODIFIABLE = {}
+
 DamageUtils.add_damage_network_player = function (damage_profile, target_index, power_level, hit_unit, attacker_unit, hit_zone_name, hit_position, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
 	local network_manager = Managers.state.network
 
@@ -1590,8 +1592,11 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 			local weapon_template = Weapons[weapon_template_name]
 			local buff_type = weapon_template.buff_type
 			local no_crit_headshot_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, "torso", power_level, boost_curve, boost_curve_multiplier, false, damage_profile, target_index, backstab_multiplier, damage_source)
+			ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount = damage_amount
 
-			buff_extension:trigger_procs("on_damage_dealt", hit_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index)
+			buff_extension:trigger_procs("on_damage_dealt", hit_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
+
+			damage_amount = ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount
 		end
 	end
 
@@ -3118,7 +3123,18 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 	end
 end
 
+local damage_source_procs = {
+	charge_ability_hit_blast = "on_charge_ability_hit_blast",
+	charge_ability_hit = "on_charge_ability_hit"
+}
+
 DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone_name, hit_position, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
+	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+	if buff_extension and damage_source_procs[damage_source] then
+		buff_extension:trigger_procs(damage_source_procs[damage_source], target_unit, target_index)
+	end
+
 	if not blocking then
 		local attack_power_level = power_level
 
@@ -3138,7 +3154,6 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 			end
 		end
 
-		local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 		local remove_dot_template = false
 
 		if buff_extension then
@@ -3233,6 +3248,71 @@ DamageUtils.apply_dot = function (damage_profile, target_index, power_level, tar
 	end
 
 	return applied_dot
+end
+
+DamageUtils.custom_calculate_damage = function (attacker_unit, damage_source, power_level, damage_profile, target_index, dropoff_scalar, is_critical_strike, backstab_multiplier, has_power_boost, boost_damage_multiplier, breed, hit_zone_name, stagger_level, difficulty_level)
+	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
+	local boost_curve = BoostCurves[target_settings.boost_curve_type]
+	local fallback_armor_type = 1
+	local armor_type, _, primary_armor_type, _ = ActionUtils.get_target_armor(hit_zone_name, breed, fallback_armor_type)
+	local difficulty_settings = DifficultySettings[difficulty_level]
+	local damage_output = DamageOutput
+	local dummy_unit_armor, is_dummy = nil
+	local static_base_damage = false
+	local is_player_friendly_fire = false
+	local has_crit_head_shot_killing_blow_perk = false
+	local has_crit_backstab_killing_blow_perk = false
+	local target_buff_extension, target_max_health = nil
+	local base_damage = do_damage_calculation(attacker_unit, damage_source, power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, armor_type, primary_armor_type, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, target_max_health)
+	local stagger_damage = base_damage * DamageUtils.calculate_stagger_multiplier(damage_profile, target_buff_extension, difficulty_settings, stagger_level)
+	local total_damage = base_damage + stagger_damage
+
+	return total_damage, base_damage, stagger_damage
+end
+
+DamageUtils.calculate_stagger_multiplier = function (damage_profile, target_buff_extension, difficulty_settings, stagger_number)
+	if difficulty_settings then
+		local min_stagger_damage_coefficient = difficulty_settings.min_stagger_damage_coefficient
+		local stagger_damage_multiplier = difficulty_settings.stagger_damage_multiplier
+
+		if stagger_damage_multiplier then
+			local bonus_damage_percentage = stagger_number * stagger_damage_multiplier
+
+			if target_buff_extension and not damage_profile.no_stagger_damage_reduction_ranged then
+				bonus_damage_percentage = target_buff_extension:apply_buffs_to_value(bonus_damage_percentage, "unbalanced_damage_taken")
+			end
+
+			local stagger_damage_mult = (min_stagger_damage_coefficient + bonus_damage_percentage) - 1
+
+			return stagger_damage_mult
+		end
+	end
+
+	return 0
+end
+
+DamageUtils.calculate_stagger_level = function (damage_profile, blackboard, target_buff_extension, is_dummy)
+	local stagger_level = 0
+
+	if blackboard then
+		local min_stagger_level = 0
+		local max_stagger_level = 2
+
+		if blackboard.is_climbing then
+			stagger_level = 2
+		else
+			stagger_level = math.min(blackboard.stagger or min_stagger_level, max_stagger_level)
+		end
+	elseif is_dummy and target_buff_extension then
+		stagger_level = target_buff_extension:apply_buffs_to_value(0, "dummy_stagger")
+	end
+
+	if damage_profile.no_stagger_damage_reduction_ranged then
+		local stagger_number_override = 1
+		stagger_level = math.max(stagger_number_override, stagger_level)
+	end
+
+	return stagger_level
 end
 
 return

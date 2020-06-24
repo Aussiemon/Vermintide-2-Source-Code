@@ -23,21 +23,23 @@ settings.buff_templates = {
 				refresh_durations = true
 			},
 			{
-				apply_buff_func = "apply_movement_buff",
-				multiplier = 1.05,
-				duration = 4,
-				refresh_durations = true,
-				max_stacks = 10,
 				remove_buff_func = "remove_movement_buff",
+				name = "mutator_bloodlust_movement",
+				multiplier = 1.05,
+				max_stacks = 10,
+				duration = 4,
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
 			},
 			{
 				duration = 4,
-				remove_buff_func = "remove_bloodlust",
-				max_stacks = 10,
+				name = "mutator_bloodlust_trigger",
 				refresh_durations = true,
+				max_stacks = 10,
+				remove_buff_func = "remove_bloodlust",
 				apply_buff_func = "apply_bloodlust"
 			}
 		}

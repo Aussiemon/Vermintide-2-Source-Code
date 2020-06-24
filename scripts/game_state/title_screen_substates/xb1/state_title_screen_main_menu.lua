@@ -633,7 +633,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	end
 
 	if level_key and loading_context.level_transition_handler then
-		local environment_variation_id = (LevelHelper.get_random_variation_id and LevelHelper:get_random_variation_id(level_key)) or nil
+		local environment_variation_id = (LevelHelper.get_environment_variation_id and LevelHelper:get_environment_variation_id(level_key)) or nil
 
 		loading_context.level_transition_handler:set_next_level(level_key, environment_variation_id)
 	end

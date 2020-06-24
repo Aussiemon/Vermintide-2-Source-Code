@@ -9,6 +9,7 @@ local RPCS = {
 	"rpc_leap_start",
 	"rpc_leap_finished",
 	"rpc_set_blocking",
+	"rpc_set_charge_blocking",
 	"rpc_player_blocked_attack",
 	"rpc_set_wounded",
 	"rpc_hooked_sync",
@@ -222,8 +223,9 @@ StatusSystem.rpc_status_change_int_and_unit = function (self, sender, status_id,
 
 	if status == "overpowered" then
 		local is_overpowered = status_int ~= 0
+		local overpowered_template = is_overpowered and NetworkLookup.overpowered_templates[status_int]
 
-		status_ext:set_overpowered(is_overpowered, status_int, other_unit)
+		status_ext:set_overpowered(is_overpowered, (is_overpowered and overpowered_template) or status_int, other_unit)
 	else
 		assert("Unhandled status %s", tostring(status))
 	end
@@ -299,6 +301,22 @@ StatusSystem.rpc_set_blocking = function (self, sender, game_object_id, blocking
 
 	if self.is_server then
 		self.network_transmit:send_rpc_clients_except("rpc_set_blocking", sender, game_object_id, blocking)
+	end
+end
+
+StatusSystem.rpc_set_charge_blocking = function (self, sender, game_object_id, charge_blocking)
+	local unit = self.unit_storage:unit(game_object_id)
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+
+	status_extension:set_charge_blocking(charge_blocking)
+
+	if self.is_server then
+		self.network_transmit:send_rpc_clients_except("rpc_set_charge_blocking", sender, game_object_id, charge_blocking)
 	end
 end
 

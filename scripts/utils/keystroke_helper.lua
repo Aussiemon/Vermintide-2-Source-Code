@@ -29,17 +29,11 @@ KeystrokeHelper.parse_strokes = function (text, index, mode, keystrokes, optiona
 		elseif stroke == Keyboard.ENTER then
 			break
 		elseif KeystrokeHelper[stroke] then
-			index, mode = KeystrokeHelper[stroke](text_table, index, mode)
+			index, mode = KeystrokeHelper[stroke](text_table, index, mode, optional_text_length_cap)
 		end
 	end
 
-	local new_text = ""
-
-	for _, text_snippet in ipairs(text_table) do
-		new_text = new_text .. text_snippet
-	end
-
-	return new_text, index, mode
+	return table.concat(text_table), index, mode
 end
 
 KeystrokeHelper._build_utf8_table = function (text, external_table)
@@ -49,7 +43,7 @@ KeystrokeHelper._build_utf8_table = function (text, external_table)
 	local length = string.len(text)
 
 	while index <= length do
-		local start_index, end_index = Utf8.location(text, index)
+		local _, end_index = Utf8.location(text, index)
 		text_table[character_index] = string.sub(text, index, end_index - 1)
 		character_index = character_index + 1
 		index = end_index
@@ -114,6 +108,24 @@ KeystrokeHelper[Keyboard.DELETE] = function (text_table, index, mode)
 	end
 
 	return index, mode
+end
+
+KeystrokeHelper[Keyboard.F9] = function (text_table, index, mode, max_length)
+	local clipboard = string.gsub(Clipboard.get() or "", "[^%g ]", "")
+	local n = #clipboard
+
+	if max_length then
+		n = math.min(max_length - #text_table)
+	end
+
+	index = index - 1
+	local sub = string.sub
+
+	for i = 1, n, 1 do
+		table.insert(text_table, index + i, sub(clipboard, i, i))
+	end
+
+	return index + n + 1, mode
 end
 
 return

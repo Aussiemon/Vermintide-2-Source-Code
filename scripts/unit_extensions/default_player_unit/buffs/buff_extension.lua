@@ -699,7 +699,7 @@ BuffExtension.trigger_procs = function (self, event, ...)
 
 	for i = 1, num_args, 1 do
 		local arg = select(i, ...)
-		params[#params + 1] = arg
+		params[i] = arg
 	end
 
 	for index, buff in pairs(event_buffs) do

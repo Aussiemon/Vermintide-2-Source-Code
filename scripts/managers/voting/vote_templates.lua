@@ -28,8 +28,9 @@ VoteTemplates = {
 			else
 				local mechanism = Managers.mechanism:game_mechanism()
 				local inn_level_name = mechanism:get_hub_level_key()
+				local environment_variation_id = LevelHelper:get_environment_variation_id(inn_level_name)
 
-				level_transition_handler:set_next_level(inn_level_name)
+				level_transition_handler:set_next_level(inn_level_name, environment_variation_id)
 				level_transition_handler:level_completed()
 			end
 		end,

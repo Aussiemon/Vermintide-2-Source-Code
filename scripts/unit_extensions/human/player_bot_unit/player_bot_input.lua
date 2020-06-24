@@ -32,6 +32,7 @@ PlayerBotInput.init = function (self, extension_init_context, unit, extension_in
 	self._interact_held = false
 	self._activate_ability = false
 	self._activate_ability_held = false
+	self._cancel_held_ability = false
 	self._weapon_reload = false
 	self._dodge = false
 	self._bot_in_attract_mode_focus = false
@@ -118,6 +119,13 @@ PlayerBotInput._update_actions = function (self)
 	elseif self._defend_held then
 		self._defend_held = false
 		input.action_two_release = true
+	end
+
+	if self._cancel_held_ability then
+		self._cancel_held_ability = false
+		self._activate_ability = false
+		self._activate_ability_held = false
+		input.action_two = true
 	end
 
 	if self._activate_ability then
@@ -247,6 +255,17 @@ end
 
 PlayerBotInput.activate_ability = function (self)
 	self._activate_ability = true
+	self._cancel_held_ability = false
+end
+
+PlayerBotInput.cancel_ability = function (self)
+	self._cancel_held_ability = true
+	self._activate_ability = false
+	self._activate_ability_held = false
+end
+
+PlayerBotInput.release_ability_hold = function (self)
+	self._activate_ability_held = true
 end
 
 PlayerBotInput.melee_push = function (self)

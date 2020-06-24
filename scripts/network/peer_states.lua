@@ -111,11 +111,13 @@ PeerStates.Connecting = {
 				if server_was_in_post_game then
 					self._has_been_notfied_of_post_game_state = nil
 				elseif self.has_received_rpc_notify_lobby_joined then
+					local num_joining_peers = self.server:num_joining_peers()
 					local num_peers = self.server:num_active_peers()
+					local peers_ingame = num_peers - num_joining_peers
 					local num_reserved_slots = self.server:num_reserved_slots()
 					local max_members = self.server.lobby_host:get_max_members()
 
-					if max_members < num_peers + num_reserved_slots then
+					if max_members < peers_ingame + num_reserved_slots then
 						if self.server:is_reserved(self.peer_id) then
 							self.server:remove_reserved_slot(self.peer_id)
 						else
@@ -173,6 +175,7 @@ PeerStates.Loading = {
 		mechanism_manager:sync_game_mode_data_to_peer(network_transmit, peer_id)
 
 		local level_key = self.server.level_key
+		local environment_variation_id = self.server.environment_variation_id
 		local level_seed = mechanism_manager:get_level_seed()
 		local difficulty = mechanism_manager:get_difficulty()
 		local difficulty_id = NetworkLookup.difficulties[difficulty]
@@ -184,8 +187,8 @@ PeerStates.Loading = {
 			level_seed = 0
 		end
 
-		print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", peer_id)
-		network_transmit:send_rpc("rpc_load_level", peer_id, NetworkLookup.level_keys[level_key], level_seed, difficulty_id, locked_director_function_ids)
+		print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", peer_id, level_key, environment_variation_id)
+		network_transmit:send_rpc("rpc_load_level", peer_id, NetworkLookup.level_keys[level_key], level_seed, difficulty_id, locked_director_function_ids, environment_variation_id)
 	end,
 	rpc_is_ingame = function (self)
 		print("[PSM] Got rpc_is_ingame in PeerStates.Loading, is that ok?")
@@ -339,6 +342,10 @@ PeerStates.WaitingForGameObjectSync = {
 
 			Managers.state.game_mode:player_entered_game_session(self.peer_id, 1)
 
+			if Managers.venture.challenge then
+				Managers.venture.challenge:player_entered_game_session(self.peer_id, 1)
+			end
+
 			return PeerStates.WaitingForPlayers
 		end
 	end,
@@ -467,6 +474,10 @@ PeerStates.Disconnected = {
 
 		if Managers.state.game_mode then
 			Managers.state.game_mode:player_left_game_session(peer_id, local_player_id)
+		end
+
+		if Managers.venture.challenge then
+			Managers.venture.challenge:player_left_game_session(peer_id, local_player_id)
 		end
 
 		profile_synchronizer:peer_left_session(peer_id)

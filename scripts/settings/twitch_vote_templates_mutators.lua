@@ -169,7 +169,7 @@ TwitchVoteTemplates.twitch_vote_activate_darkness = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("twitch_darkness") and not twitch_settings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("twitch_darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("night_mode") and not Managers.state.game_mode.level_transition_handler:get_current_environment_variation_name() and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then
@@ -209,6 +209,87 @@ TwitchVoteTemplates.twitch_vote_activate_ticking_bomb = {
 			})
 			mutator_handler:activate_mutator(mutator_name, duration, "activated_by_twitch")
 			add_buff_to_all_players("twitch_mutator_buff_ticking_bomb")
+		end
+	end
+}
+TwitchVoteTemplates.twitch_vote_activate_lightning_strike = {
+	text = "display_name_lightning_strike",
+	cost = 100,
+	texture_id = "twitch_icon_heavens_lightning",
+	description = "description_mutator_lightning_strike",
+	texture_size = {
+		60,
+		70
+	},
+	condition_func = function (current_vote)
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("lightning_strike") and not twitch_settings.disable_mutators
+	end,
+	on_success = function (is_server)
+		if is_server then
+			local mutator_handler = Managers.state.game_mode._mutator_handler
+			local mutator_name = "lightning_strike"
+			local duration = 33 * twitch_settings.mutator_duration_multiplier
+
+			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
+			mutator_handler:initialize_mutators({
+				mutator_name
+			})
+			mutator_handler:activate_mutator(mutator_name, duration, "activated_by_twitch")
+			add_buff_to_all_players("twitch_mutator_buff_lightning_strike")
+		end
+	end
+}
+TwitchVoteTemplates.twitch_vote_activate_chasing_spirits = {
+	text = "display_name_chasing_spirits",
+	cost = 100,
+	texture_id = "twitch_icon_death_spirits",
+	description = "description_mutator_chasing_spirits",
+	texture_size = {
+		60,
+		70
+	},
+	condition_func = function (current_vote)
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("chasing_spirits") and not twitch_settings.disable_mutators
+	end,
+	on_success = function (is_server)
+		if is_server then
+			local mutator_handler = Managers.state.game_mode._mutator_handler
+			local mutator_name = "chasing_spirits"
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
+
+			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
+			mutator_handler:initialize_mutators({
+				mutator_name
+			})
+			mutator_handler:activate_mutator(mutator_name, duration, "activated_by_twitch")
+			add_buff_to_all_players("twitch_mutator_buff_chasing_spirits")
+		end
+	end
+}
+TwitchVoteTemplates.twitch_vote_activate_flames = {
+	text = "display_name_flames",
+	cost = 100,
+	texture_id = "twitch_icon_fire_burn",
+	description = "description_mutator_flames",
+	texture_size = {
+		60,
+		70
+	},
+	condition_func = function (current_vote)
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("flames") and not twitch_settings.disable_mutators
+	end,
+	on_success = function (is_server)
+		if is_server then
+			local mutator_handler = Managers.state.game_mode._mutator_handler
+			local mutator_name = "flames"
+			local duration = 30 * twitch_settings.mutator_duration_multiplier
+
+			debug_print(string.format("[TWITCH VOTE] Activating mutator %s", mutator_name))
+			mutator_handler:initialize_mutators({
+				mutator_name
+			})
+			mutator_handler:activate_mutator(mutator_name, duration, "activated_by_twitch")
+			add_buff_to_all_players("twitch_mutator_buff_flames")
 		end
 	end
 }

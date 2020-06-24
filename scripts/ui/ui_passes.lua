@@ -4,6 +4,7 @@ require("scripts/settings/inventory_settings")
 require("scripts/settings/ui_frame_settings")
 require("scripts/utils/utf8_utils")
 require("scripts/ui/ui_passes_tooltips")
+require("scripts/ui/ui_common")
 
 local function get_line_color_override(line_index, line_length, line_global_start_index, global_text_length, ui_style)
 	local color_override = ui_style.color_override
@@ -519,7 +520,7 @@ UIPasses.texture = {
 		end
 	end,
 	destroy = function (ui_renderer, pass_data, pass_definition)
-		assert(pass_definition.retained_mode, "why u destroy immediate pass?")
+		assert(pass_definition.retained_mode, "Attempted to destroy an immediate mode pass")
 
 		if pass_data.retained_id then
 			UIRenderer.destroy_bitmap(ui_renderer, pass_data.retained_id)
@@ -528,37 +529,30 @@ UIPasses.texture = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local texture_name = ui_content[pass_definition.texture_id or "texture_id"]
+		local color, masked, saturated = nil
+
 		if ui_style then
 			local texture_size = ui_style.texture_size
 
 			if texture_size then
-				if ui_style.horizontal_alignment == "right" then
-					position[1] = (position[1] + size[1]) - texture_size[1]
-				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1]) / 2
-				end
-
-				local inv_scale = RESOLUTION_LOOKUP.inv_scale
-
-				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2]) / 2
-				elseif ui_style.vertical_alignment == "top" then
-					position[2] = (position[2] + size[2]) - texture_size[2]
-				end
-
+				position[1] = UICommon.align(ui_style.horizontal_alignment, position[1], size[1] - texture_size[1])
+				position[2] = UICommon.align(ui_style.vertical_alignment, position[2], size[2] - texture_size[2])
 				size = texture_size
 			end
+
+			color = ui_style.color
+			masked = ui_style.masked
+			saturated = ui_style.saturated
 		end
 
-		local texture_id = pass_definition.texture_id or "texture_id"
-
 		if pass_definition.retained_mode then
-			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
-			retained_id = UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated, retained_id)
-			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
+			local retained_id = pass_definition.retained_mode and (pass_data.retained_id or true)
+			retained_id = UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, retained_id)
+			pass_data.retained_id = retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer_draw_texture(ui_renderer, ui_content[texture_id], position, size, ui_style and ui_style.color, ui_style and ui_style.masked, ui_style and ui_style.saturated)
+			UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated)
 		end
 	end
 }
@@ -1016,20 +1010,8 @@ UIPasses.rect = {
 			local texture_size = ui_style.texture_size
 
 			if texture_size then
-				if ui_style.horizontal_alignment == "right" then
-					position[1] = (position[1] + size[1]) - texture_size[1]
-				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1]) / 2
-				end
-
-				local inv_scale = RESOLUTION_LOOKUP.inv_scale
-
-				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2]) / 2
-				elseif ui_style.vertical_alignment == "top" then
-					position[2] = (position[2] + size[2]) - texture_size[2]
-				end
-
+				position[1] = UICommon.align(ui_style.horizontal_alignment, position[1], size[1] - texture_size[1])
+				position[2] = UICommon.align(ui_style.vertical_alignment, position[2], size[2] - texture_size[2])
 				size = texture_size
 			end
 
@@ -4439,8 +4421,9 @@ UIPasses.keystrokes = {
 			local input_text = ui_content[pass_data.input_text_id]
 			local caret_index = ui_content.caret_index
 			local input_mode = ui_content.input_mode
+			local max_length = ui_content.max_length
 			local keystrokes = Keyboard.keystrokes()
-			local new_input_text, new_caret_index, new_input_mode = KeystrokeHelper.parse_strokes(input_text, caret_index, input_mode, keystrokes)
+			local new_input_text, new_caret_index, new_input_mode = KeystrokeHelper.parse_strokes(input_text, caret_index, input_mode, keystrokes, max_length)
 			ui_content[pass_data.input_text_id] = new_input_text
 			ui_content.caret_index = new_caret_index
 			ui_content.input_mode = new_input_mode

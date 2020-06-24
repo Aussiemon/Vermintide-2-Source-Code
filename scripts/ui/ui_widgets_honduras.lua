@@ -13802,7 +13802,7 @@ UIWidgets.create_page_dot_selector = function (scenegraph_id, amount)
 	return widget
 end
 
-UIWidgets.create_text_input_rect = function (scenegraph_id, size, text_offset)
+UIWidgets.create_text_input_rect = function (scenegraph_id, size, text_offset, max_length)
 	local passes = {
 		{
 			pass_type = "rect",
@@ -13827,10 +13827,11 @@ UIWidgets.create_text_input_rect = function (scenegraph_id, size, text_offset)
 		}
 	}
 	local content = {
-		text_index = 1,
-		caret_index = 1,
 		input_mode = "insert",
-		input = ""
+		caret_index = 1,
+		text_index = 1,
+		input = "",
+		max_length = max_length
 	}
 	local style = {
 		background = {

@@ -1168,55 +1168,58 @@ AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units
 	local radius = data.push_width * 1.5
 	local dodge_radius = data.dodged_width and data.dodged_width * 1.5
 	local forward_pos = self_pos + self_forward * 3
-	local side = Managers.state.side.side_by_unit[source_unit or unit]
-	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+	local side_unit = (AiUtils.unit_alive(source_unit) and source_unit) or (AiUtils.unit_alive(unit) and unit)
+	local side = Managers.state.side.side_by_unit[side_unit]
+	local enemy_player_and_bot_units = side and side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #enemy_player_and_bot_units, 1 do
-		local push_radius = radius
-		local hit_unit = enemy_player_and_bot_units[i]
+	if enemy_player_and_bot_units then
+		for i = 1, #enemy_player_and_bot_units, 1 do
+			local push_radius = radius
+			local hit_unit = enemy_player_and_bot_units[i]
 
-		if displaced_units[hit_unit] then
-			if displaced_units[hit_unit] < t then
-				displaced_units[hit_unit] = nil
-			end
-		else
-			local other_pos = POSITION_LOOKUP[hit_unit]
-			local to_target = other_pos - push_pos
-
-			if dodge_radius then
-				local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
-
-				if status_extension and status_extension:get_is_dodging() then
-					push_radius = dodge_radius
+			if displaced_units[hit_unit] then
+				if displaced_units[hit_unit] < t then
+					displaced_units[hit_unit] = nil
 				end
-			end
+			else
+				local other_pos = POSITION_LOOKUP[hit_unit]
+				local to_target = other_pos - push_pos
 
-			if Vector3.length(to_target) < push_radius then
-				local push_width_sqr = data.push_width * data.push_width
-				local pos_projected_on_forward_move_dir = Geometry.closest_point_on_line(other_pos, self_pos, forward_pos)
-				local side_vector = other_pos - pos_projected_on_forward_move_dir
+				if dodge_radius then
+					local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
-				if Vector3.length_squared(side_vector) < push_width_sqr then
-					local ahead_dist = Vector3.distance(self_pos, pos_projected_on_forward_move_dir)
+					if status_extension and status_extension:get_is_dodging() then
+						push_radius = dodge_radius
+					end
+				end
 
-					if ahead_dist < data.ahead_dist then
-						local target_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+				if Vector3.length(to_target) < push_radius then
+					local push_width_sqr = data.push_width * data.push_width
+					local pos_projected_on_forward_move_dir = Geometry.closest_point_on_line(other_pos, self_pos, forward_pos)
+					local side_vector = other_pos - pos_projected_on_forward_move_dir
 
-						if not target_status_extension.knocked_down then
-							if not displaced_units[hit_unit] then
-								local pushed_velocity = data.player_pushed_speed * Vector3.normalize(other_pos - self_pos)
-								local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
-								local push_scaler = 1 - ahead_dist / data.ahead_dist
-								push_scaler = push_scaler * push_scaler
+					if Vector3.length_squared(side_vector) < push_width_sqr then
+						local ahead_dist = Vector3.distance(self_pos, pos_projected_on_forward_move_dir)
 
-								locomotion_extension:add_external_velocity(pushed_velocity * push_scaler)
+						if ahead_dist < data.ahead_dist then
+							local target_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
-								if hit_func then
-									hit_func(hit_unit, unit, ...)
+							if not target_status_extension.knocked_down then
+								if not displaced_units[hit_unit] then
+									local pushed_velocity = data.player_pushed_speed * Vector3.normalize(other_pos - self_pos)
+									local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
+									local push_scaler = 1 - ahead_dist / data.ahead_dist
+									push_scaler = push_scaler * push_scaler
+
+									locomotion_extension:add_external_velocity(pushed_velocity * push_scaler)
+
+									if hit_func then
+										hit_func(hit_unit, unit, ...)
+									end
 								end
-							end
 
-							displaced_units[hit_unit] = t + 0.1
+								displaced_units[hit_unit] = t + 0.1
+							end
 						end
 					end
 				end

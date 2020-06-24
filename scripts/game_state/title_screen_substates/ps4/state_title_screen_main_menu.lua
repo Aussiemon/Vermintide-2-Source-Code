@@ -590,7 +590,9 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	end
 
 	if level_key and loading_context.level_transition_handler then
-		loading_context.level_transition_handler:set_next_level(level_key)
+		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
+
+		loading_context.level_transition_handler:set_next_level(level_key, environment_variation_id)
 	end
 
 	if level_key == "prologue" then

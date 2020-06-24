@@ -462,27 +462,28 @@ TwitchVoteUI._show_multiple_choice_vote = function (self)
 			local profile_index = player:profile_index()
 			local player_profile = SPProfiles[profile_index]
 
-			if not player_profile then
-				break
-			end
+			if player_profile and index <= PlayerManager.MAX_PLAYERS then
+				local widget_index = "hero_" .. index
+				local widget = self._widgets[widget_index]
 
-			local career_index = player:career_index()
-			local career_settings = player_profile.careers[career_index]
-			local base_portrait = career_settings.portrait_image .. "_twitch"
-			local masked_portrait = career_settings.portrait_image .. "_masked"
-			local widget_index = "hero_" .. index
-			local widget = self._widgets[widget_index]
-			local content = widget.content
-			content.portrait = base_portrait
-			content.masked_portrait = masked_portrait
-			content.profile_index = profile_index
-			local vote_widget_index = "hero_vote_" .. index
-			local vote_widget = self._widgets[vote_widget_index]
+				if widget then
+					local career_index = player:career_index()
+					local career_settings = player_profile.careers[career_index]
+					local base_portrait = career_settings.portrait_image .. "_twitch"
+					local masked_portrait = career_settings.portrait_image .. "_masked"
+					local content = widget.content
+					content.portrait = base_portrait
+					content.masked_portrait = masked_portrait
+					content.profile_index = profile_index
+					local vote_widget_index = "hero_vote_" .. index
+					local vote_widget = self._widgets[vote_widget_index]
 
-			if PLATFORM ~= "xb1" then
-				vote_widget.content.text = option_strings[profile_index]
-			else
-				vote_widget.content.text = vote_texts_definition.multiple_choice[index]
+					if PLATFORM ~= "xb1" then
+						vote_widget.content.text = option_strings[profile_index]
+					else
+						vote_widget.content.text = vote_texts_definition.multiple_choice[index]
+					end
+				end
 			end
 		until true
 	end

@@ -7,6 +7,14 @@ AdventureMechanism.init = function (self, settings, level_key)
 	self:reset(settings, level_key)
 end
 
+AdventureMechanism.on_venture_start = function (self)
+	return
+end
+
+AdventureMechanism.on_venture_end = function (self)
+	Managers.weave:clear_weave_name()
+end
+
 AdventureMechanism.reset = function (self, settings, level_key)
 	local level_settings = LevelSettings[level_key or "inn_level"]
 	self._prior_state = self._state
@@ -29,7 +37,6 @@ AdventureMechanism.reset = function (self, settings, level_key)
 		}
 	}
 
-	Managers.weave:clear_weave_name()
 	Managers.party:register_parties(party_data)
 end
 
@@ -95,7 +102,7 @@ end
 AdventureMechanism.backend_profiles_loaded = function (self)
 	local live_events_interface = Managers.backend:get_interface("live_events")
 	local inn_level_name = live_events_interface:get_inn_level_name()
-	self._hub_level_key = inn_level_name
+	self._hub_level_key = self._debug_hub_level_key or inn_level_name
 end
 
 AdventureMechanism.get_starting_level = function (self)
@@ -145,7 +152,7 @@ end
 AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 	local live_events_interface = Managers.backend:get_interface("live_events")
 	local inn_level_name = live_events_interface:get_inn_level_name()
-	self._hub_level_key = inn_level_name
+	self._hub_level_key = self._debug_hub_level_key or inn_level_name
 	local state = self._state
 	local level_key = nil
 
@@ -178,7 +185,9 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 	if reason == "start_game" then
 		self._level_transition_handler:level_completed()
 	elseif reason == "won" or reason == "lost" then
-		self._level_transition_handler:set_next_level(level_key)
+		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
+
+		self._level_transition_handler:set_next_level(level_key, environment_variation_id)
 	elseif reason == "reload" then
 		self._level_transition_handler:reload_level()
 	else

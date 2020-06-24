@@ -293,7 +293,67 @@ UIPlayerPortraitFrameSettings = {
 	},
 	frame_holly_04 = {
 		{
-			texture = "portrait_ubersreik_04",
+			texture = "4",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_drachenfels_01 = {
+		{
+			texture = "portrait_frame_drachenfels_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_drachenfels_02 = {
+		{
+			texture = "portrait_frame_drachenfels_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_drachenfels_03 = {
+		{
+			texture = "portrait_frame_drachenfels_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_drachenfels_04 = {
+		{
+			texture = "portrait_frame_drachenfels_4",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_drachenfels_05 = {
+		{
+			texture = "portrait_frame_drachenfels_5",
 			layer = 10,
 			color = {
 				255,
@@ -1419,6 +1479,30 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_0097 = {
+		{
+			texture = "portrait_frame_0097",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0098 = {
+		{
+			texture = "portrait_frame_0098",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_mondstille_01 = {
 		{
 			texture = "portrait_frame_mondstille_01_base",
@@ -1764,6 +1848,54 @@ UIPlayerPortraitFrameSettings = {
 	frame_scorpion_season_1_cataclysm_3 = {
 		{
 			texture = "portrait_frame_season_01_cataclysm_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_03_quickplay = {
+		{
+			texture = "portrait_frame_season_03_quickplay",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_03_tier_1 = {
+		{
+			texture = "portrait_frame_season_03_tier_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_03_tier_2 = {
+		{
+			texture = "portrait_frame_season_03_tier_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_03_tier_3 = {
+		{
+			texture = "portrait_frame_season_03_tier_3",
 			layer = 10,
 			color = {
 				255,

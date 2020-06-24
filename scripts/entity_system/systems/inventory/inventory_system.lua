@@ -11,7 +11,9 @@ local RPCS = {
 	"rpc_wield_equipment",
 	"rpc_destroy_slot",
 	"rpc_add_equipment_buffs",
-	"rpc_add_inventory_slot_item"
+	"rpc_add_inventory_slot_item",
+	"rpc_start_weapon_fx",
+	"rpc_stop_weapon_fx"
 }
 local extensions = {
 	"SimpleHuskInventoryExtension",
@@ -269,6 +271,13 @@ InventorySystem.rpc_add_inventory_slot_item = function (self, sender, go_id, slo
 	inventory_extension:destroy_slot(slot_name)
 	inventory_extension:add_equipment(slot_name, item_data)
 
+	local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+
+	if wielded_slot_name == slot_name then
+		CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+		inventory_extension:wield(slot_name)
+	end
+
 	if self.is_server then
 		self.network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_name_id, weapon_skin_id)
 	else
@@ -318,6 +327,48 @@ InventorySystem.rpc_wield_equipment = function (self, sender, go_id, slot_id)
 	local inventory = ScriptUnit.extension(unit, "inventory_system")
 
 	inventory:wield(slot_name)
+end
+
+InventorySystem.rpc_start_weapon_fx = function (self, sender, go_id, item_name_id, fx_id)
+	if self.is_server then
+		self.network_transmit:send_rpc_clients_except("rpc_start_weapon_fx", sender, go_id, item_name_id, fx_id)
+	end
+
+	local item_name = NetworkLookup.item_names[item_name_id]
+	local unit = self.unit_storage:unit(go_id)
+	local inventory = ScriptUnit.extension(unit, "inventory_system")
+	local wielded_slot_data = inventory:get_wielded_slot_data()
+	local wielded_item_data = wielded_slot_data and wielded_slot_data.item_data
+	local wielded_item_name = wielded_item_data and wielded_item_data.name
+
+	if item_name and item_name == wielded_item_name then
+		local item_data = ItemMasterList[item_name]
+		local item_template = BackendUtils.get_item_template(item_data)
+		local fx_name = item_template.particle_fx_lookup[fx_id]
+
+		inventory:start_weapon_fx(fx_name, false)
+	end
+end
+
+InventorySystem.rpc_stop_weapon_fx = function (self, sender, go_id, item_name_id, fx_id)
+	if self.is_server then
+		self.network_transmit:send_rpc_clients_except("rpc_stop_weapon_fx", sender, go_id, item_name_id, fx_id)
+	end
+
+	local item_name = NetworkLookup.item_names[item_name_id]
+	local unit = self.unit_storage:unit(go_id)
+	local inventory = ScriptUnit.extension(unit, "inventory_system")
+	local wielded_slot_data = inventory:get_wielded_slot_data()
+	local wielded_item_data = wielded_slot_data and wielded_slot_data.item_data
+	local wielded_item_name = wielded_item_data and wielded_item_data.name
+
+	if item_name and item_name == wielded_item_name then
+		local item_data = ItemMasterList[item_name]
+		local item_template = BackendUtils.get_item_template(item_data)
+		local fx_name = item_template.particle_fx_lookup[fx_id]
+
+		inventory:stop_weapon_fx(fx_name, false)
+	end
 end
 
 return

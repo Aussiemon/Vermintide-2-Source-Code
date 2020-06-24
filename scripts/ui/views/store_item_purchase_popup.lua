@@ -1078,6 +1078,8 @@ StoreItemPurchasePopup.destroy = function (self)
 	end
 
 	self:_destroy_renderers()
+
+	self._destroyed = true
 end
 
 StoreItemPurchasePopup._create_ui_elements = function (self, params)
@@ -1515,6 +1517,10 @@ StoreItemPurchasePopup._poll_result_on_enter = function (self)
 end
 
 StoreItemPurchasePopup._backend_result_callback = function (self, success, items)
+	if self._destroyed then
+		return
+	end
+
 	print("_backend_result_callback", success)
 
 	if success then
@@ -1554,26 +1560,40 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 	local currency_type = "SM"
 	local regular_prices = item.regular_prices
 	local current_prices = item.current_prices
-	local price = current_prices[currency_type] or regular_prices[currency_type]
-	local price_difference = regular_prices[currency_type] - current_prices[currency_type]
 
-	if price_difference ~= 0 then
-		local discount = price_difference / price * 100
+	if regular_prices or current_prices then
+		local price = current_prices[currency_type] or regular_prices[currency_type]
+		local price_difference = regular_prices[currency_type] - current_prices[currency_type]
 
-		self:_calculate_discount_textures(widget, discount)
+		if price_difference ~= 0 then
+			local discount = price_difference / price * 100
+
+			self:_calculate_discount_textures(widget, discount)
+		end
+
+		local real_currency = false
+		local price_text = UIUtils.comma_value(tostring(price))
+
+		self:_set_product_price_text(widget, price_text, real_currency)
 	end
-
-	local real_currency = false
-	local price_text = UIUtils.comma_value(tostring(price))
-
-	self:_set_product_price_text(widget, price_text, real_currency)
 
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
 	local item_owned = backend_items:has_item(item_key)
 	content.owned = display_as_owned or item_owned
-	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
-	content.type_tag_icon = (rarity and item_type_icon .. "_" .. rarity) or item_type_icon
+	local type_tag_icon = nil
+
+	if item_type == "hat" or item_type == "skin" or item_type == "weapon_skin" then
+		type_tag_icon = item_type_store_icons[item_type]
+
+		if rarity and rarity ~= "default" then
+			type_tag_icon = type_tag_icon .. "_" .. rarity
+		end
+	else
+		type_tag_icon = item_type_store_icons[item_type] or item_type_store_icons.default
+	end
+
+	content.type_tag_icon = type_tag_icon
 	local purchase_ui_renderer = self._purchase_ui_renderer
 	local gui = purchase_ui_renderer.gui
 	self._reference_id = (self._reference_id or 0) + 1
@@ -1590,6 +1610,10 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 		self:_create_material_instance(gui, new_material_name, template_material_name, reference_name)
 
 		local function callback()
+			if self._destroyed then
+				return
+			end
+
 			local texture_path = "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
 
 			self:_set_material_diffuse(gui, new_material_name, texture_path)

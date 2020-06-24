@@ -8,6 +8,14 @@ local HARDER = 4
 local HARDEST = 5
 local CATACLYSM = 6
 local weighted_random_terror_events = {
+	catacombs_end_event_02 = {
+		"catacombs_end_event_02a",
+		1,
+		"catacombs_end_event_02b",
+		1,
+		"catacombs_end_event_02c",
+		1
+	},
 	catacombs_end_event_specials = {
 		"catacombs_end_event_specials_01",
 		1,
@@ -297,7 +305,7 @@ local terror_event_blueprints = {
 			flow_event_name = "catacombs_end_event_01_done"
 		}
 	},
-	catacombs_end_event_02 = {
+	catacombs_end_event_02a = {
 		{
 			"set_freeze_condition",
 			max_active_enemies = 100
@@ -351,23 +359,44 @@ local terror_event_blueprints = {
 			duration = 10
 		},
 		{
+			"continue_when",
+			duration = 100,
+			condition = function (t)
+				return count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 3 and count_event_breed("chaos_warrior") < 2
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "catacombs_end_event_02_done"
+		}
+	},
+	catacombs_end_event_02b = {
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"set_master_event_running",
+			name = "catacombs_end_event"
+		},
+		{
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "end_event",
 			composition_type = "event_smaller"
 		},
 		{
-			"continue_when",
-			duration = 100,
-			condition = function (t)
-				return count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 3 and count_event_breed("chaos_warrior") < 2
-			end
+			"event_horde",
+			limit_spawners = 6,
+			spawner_id = "end_event",
+			composition_type = "chaos_warriors_small",
+			difficulty_requirement = HARDER
 		},
 		{
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "end_event",
-			composition_type = "event_small"
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",
@@ -387,9 +416,15 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 100,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 4 and count_event_breed("skaven_storm_vermin_commander") < 2
+				return count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2 and count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 3 and count_event_breed("chaos_warrior") < 2
 			end
 		},
+		{
+			"flow_event",
+			flow_event_name = "catacombs_end_event_02_done"
+		}
+	},
+	catacombs_end_event_02c = {
 		{
 			"event_horde",
 			limit_spawners = 6,
@@ -409,13 +444,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 100,
-			condition = function (t)
-				return count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 3 and count_event_breed("chaos_warrior") < 2
-			end
 		},
 		{
 			"event_horde",

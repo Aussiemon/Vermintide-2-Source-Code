@@ -218,17 +218,19 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 	local ids_and_characters = {}
 
 	if PLATFORM == "win32" then
-		local human_players = Managers.player:human_players()
+		if rawget(_G, "Steam") then
+			local human_players = Managers.player:human_players()
 
-		for _, player in pairs(human_players) do
-			if player.remote then
-				local peer_id = player:network_id()
-				local profile_index = player:profile_index()
-				local career_index = player:career_index()
-				local career_settings = SPProfiles[profile_index].careers[career_index]
-				local career_playfab_name = career_settings.playfab_name
-				local decimal_id = Steam.id_hex_to_dec(peer_id)
-				ids_and_characters[decimal_id] = career_playfab_name
+			for _, player in pairs(human_players) do
+				if player.remote then
+					local peer_id = player:network_id()
+					local profile_index = player:profile_index()
+					local career_index = player:career_index()
+					local career_settings = SPProfiles[profile_index].careers[career_index]
+					local career_playfab_name = career_settings.playfab_name
+					local decimal_id = Steam.id_hex_to_dec(peer_id)
+					ids_and_characters[decimal_id] = career_playfab_name
+				end
 			end
 		end
 	elseif PLATFORM == "xb1" then

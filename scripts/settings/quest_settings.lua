@@ -710,4 +710,101 @@ QuestSettings.check_killed_lord_as_last_player_standing = function (killer_unit)
 	end
 end
 
+QuestSettings.track_bastard_block_breeds = {}
+
+QuestSettings.handle_bastard_block = function (target_unit, attacker_unit, blocked)
+	local player_breed = Unit.get_data(target_unit, "breed")
+
+	if not player_breed or not QuestSettings.track_bastard_block_breeds[player_breed.name] then
+		return false
+	end
+
+	local boss_bb = BLACKBOARDS[attacker_unit]
+
+	if not boss_bb then
+		return false
+	end
+
+	if boss_bb.failed_boss then
+		return false
+	end
+
+	if not blocked then
+		boss_bb.bastard_block = 0
+		boss_bb.failed_boss = true
+
+		return false
+	end
+
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local charge_blocking = status_extension.charge_blocking
+
+	if charge_blocking then
+		local bastard_block_count = boss_bb.bastard_block or 0
+		boss_bb.bastard_block = bastard_block_count + 1
+	end
+end
+
+QuestSettings.handle_bastard_block_on_death = function (attacker_breed, attacker_unit, killing_blow, statistics_db)
+	if attacker_breed.boss then
+		local player_unit = killing_blow[3]
+		local boss_bb = BLACKBOARDS[attacker_unit]
+
+		if not boss_bb or not boss_bb.bastard_block then
+			return false
+		end
+
+		if not player_unit then
+			return false
+		end
+
+		local player_breed = Unit.get_data(player_unit, "breed")
+
+		if not player_breed or not QuestSettings.track_bastard_block_breeds[player_breed.name] then
+			return false
+		end
+
+		if boss_bb.bastard_block >= 3 then
+			local stat_name = "lake_bastard_block"
+
+			increment_stat(player_unit, stat_name)
+		end
+
+		boss_bb.failed_boss = nil
+		boss_bb.bastard_block = nil
+	end
+end
+
+QuestSettings.track_charge_stagger_breeds = {}
+
+QuestSettings.handle_charge_stagger = function (unit, blackboard, attacker_unit)
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	local career_extension = ScriptUnit.extension(attacker_unit, "career_system")
+	local career_name = career_extension:career_name()
+
+	if not QuestSettings.track_charge_stagger_breeds[career_name] then
+		return false
+	end
+
+	local recent_damage_type = health_extension:recent_damage_source()
+	local damage_type = career_extension:career_skill_weapon_name(nil)
+
+	if recent_damage_type == damage_type then
+		local blackboard = blackboard
+		local t = Managers.time:time("game")
+		local attack_started_t = blackboard.attack_started_at_t
+		local current_action = nil
+
+		if blackboard.action then
+			current_action = blackboard.action
+		end
+
+		if current_action and current_action.name == "charge" and t - attack_started_t > 2 then
+			local stat_name = "lake_charge_stagger"
+
+			increment_stat(attacker_unit, stat_name)
+		end
+	end
+end
+
 return

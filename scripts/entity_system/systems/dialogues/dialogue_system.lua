@@ -21,6 +21,28 @@ local enabled = true
 local debug_vo_by_file = nil
 DialogueSystem = class(DialogueSystem, ExtensionSystemBase)
 
+local function update_switch_group(wwise_world, wwise_source_id, extension)
+	if wwise_source_id ~= extension.wwise_source_id then
+		extension.wwise_source_id = wwise_source_id
+
+		if extension.wwise_voice_switch_group and extension.wwise_voice_switch_value then
+			WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
+		end
+
+		if extension.wwise_career_switch_group and extension.wwise_career_switch_value then
+			WwiseWorld.set_switch(wwise_world, extension.wwise_career_switch_group, extension.wwise_career_switch_value, wwise_source_id)
+		end
+
+		if extension.faction == "player" then
+			WwiseWorld.set_switch(wwise_world, "husk", tostring(not extension.local_player), wwise_source_id)
+		end
+
+		if extension.vo_center_percent then
+			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
+		end
+	end
+end
+
 DialogueSystem.init = function (self, entity_system_creation_context, system_name)
 	local entity_manager = entity_system_creation_context.entity_manager
 
@@ -134,9 +156,11 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 
 	self.wwise_voice_switch_value_indices = wwise_voice_switch_value_indices
 	local current_level = entity_system_creation_context.startup_data.level_key
+	local environment_variation_name = entity_system_creation_context.startup_data.environment_variation_name
 	self.statistics_db = entity_system_creation_context.statistics_db
 	self.global_context = {
-		current_level = current_level
+		current_level = current_level,
+		weather = environment_variation_name
 	}
 	local weave_manager = Managers.weave
 	local weave_template = weave_manager:get_active_weave_template()
@@ -173,6 +197,7 @@ end
 
 DialogueSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {
+		is_silenced = false,
 		user_memory = {},
 		context = {
 			health = 1
@@ -245,27 +270,14 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 				return
 			end
 
-			local wwise_source_id = WwiseUtils.make_unit_auto_source(dialogue_system.world, extension.play_unit, extension.voice_node)
+			local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(dialogue_system.world, extension.play_unit, extension.voice_node)
 
-			if wwise_source_id ~= extension.wwise_source_id then
-				extension.wwise_source_id = wwise_source_id
-				local switch_name = extension.wwise_voice_switch_group
-				local switch_value = extension.wwise_voice_switch_value
-
-				if switch_name and switch_value then
-					WwiseWorld.set_switch(dialogue_system.wwise_world, switch_name, switch_value, wwise_source_id)
-					WwiseWorld.set_source_parameter(dialogue_system.wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
-				end
-
-				if extension.faction == "player" then
-					WwiseWorld.set_switch(dialogue_system.wwise_world, "husk", NetworkUnit.is_husk_unit(unit), wwise_source_id)
-				end
-			end
+			update_switch_group(wwise_world, wwise_source_id, extension)
 
 			local playing_id, _ = dialogue_system:_check_play_debug_sound(sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
 
 			if not playing_id then
-				return WwiseWorld.trigger_event(dialogue_system.wwise_world, sound_event, use_occlusion, wwise_source_id)
+				return WwiseWorld.trigger_event(wwise_world, sound_event, use_occlusion, wwise_source_id)
 			else
 				return
 			end
@@ -275,21 +287,14 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 				return
 			end
 
-			local wwise_source_id = WwiseUtils.make_unit_auto_source(dialogue_system.world, extension.play_unit, extension.voice_node)
-			local switch_name = extension.wwise_voice_switch_group
-			local switch_value = extension.wwise_voice_switch_value
+			local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(dialogue_system.world, extension.play_unit, extension.voice_node)
 
-			if switch_name and switch_value then
-				WwiseWorld.set_source_parameter(dialogue_system.wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
-			end
-
-			if extension.faction == "player" then
-			end
+			update_switch_group(wwise_world, wwise_source_id, extension)
 
 			local playing_id, _ = dialogue_system:_check_play_debug_sound(sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
 
 			if not playing_id then
-				return WwiseWorld.trigger_event(dialogue_system.wwise_world, sound_event, wwise_source_id)
+				return WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 			else
 				return
 			end
@@ -298,6 +303,16 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			local concept, source, test_query, test_user_context_list, test_global_context = unpack(event_data)
 
 			dialogue_system.tagquery_database:debug_test_query(concept, source, test_query, test_user_context_list, test_global_context)
+		end,
+		set_silenced = function (self, new_is_silenced_value)
+			local safe_is_silenced = new_is_silenced_value or false
+
+			if extension.is_silenced ~= safe_is_silenced then
+				extension.is_silenced = safe_is_silenced
+			end
+		end,
+		is_silenced = function (self)
+			return extension.is_silenced
 		end
 	})
 	extension.input = input
@@ -343,6 +358,8 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 	elseif extension_init_data.wwise_voice_switch_group ~= nil then
 		extension.wwise_voice_switch_group = extension_init_data.wwise_voice_switch_group
 		extension.wwise_voice_switch_value = extension_init_data.wwise_voice_switch_value
+		extension.wwise_career_switch_group = extension_init_data.wwise_career_switch_group
+		extension.wwise_career_switch_value = extension_init_data.wwise_career_switch_value
 	end
 
 	return extension
@@ -602,7 +619,13 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 							extension.last_query_sound_event = nil
 						end
 					elseif currently_playing_dialogue.dialogue_timer then
-						currently_playing_dialogue.dialogue_timer = currently_playing_dialogue.dialogue_timer - dt
+						if extension.input:is_silenced() then
+							local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(unit)
+
+							Managers.state.network.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
+						else
+							currently_playing_dialogue.dialogue_timer = currently_playing_dialogue.dialogue_timer - dt
+						end
 					end
 				end
 			end
@@ -661,14 +684,9 @@ DialogueSystem._trigger_marker = function (self, marker_data)
 		if not extension then
 			Application.error("[DialogueSystem] Could not find any extension_data for profile %s", source_name)
 		else
-			local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
+			local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
 
-			if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
-				extension.wwise_source_id = wwise_source_id
-
-				WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
-				WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
-			end
+			update_switch_group(wwise_world, wwise_source_id, extension)
 
 			local source_id, _ = self:_check_play_debug_sound(sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
 			source_id = source_id or WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
@@ -757,6 +775,10 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					will_play = false
 				end
 
+				if extension.input:is_silenced() then
+					will_play = false
+				end
+
 				if will_play then
 					local network_manager = Managers.state.network
 
@@ -770,13 +792,12 @@ DialogueSystem.physics_async_update = function (self, context, t)
 
 					local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)
 					local dialogue_index = DialogueQueries.get_dialogue_event_index(dialogue)
-					dialogue.currently_playing_id = dialogue.sound_events[dialogue_index]
 					dialogue.dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
 					dialogue.used_query = query
 					local query_context = query.query_context
 
 					if query_context.identifier and query_context.identifier ~= "" then
-						self.dialogue_state_handler:add_playing_dialogue(query_context.identifier, dialogue.currently_playing_id, t, dialogue.dialogue_timer)
+						self.dialogue_state_handler:add_playing_dialogue(query_context.identifier, dialogue.sound_events[dialogue_index], t, dialogue.dialogue_timer)
 					end
 
 					local dialogue_id = NetworkLookup.dialogues[result]
@@ -964,14 +985,9 @@ DialogueSystem.trigger_attack = function (self, blackboard, player_unit, enemy_u
 
 	if Unit.alive(player_unit) and owner and ALIVE[enemy_unit] then
 		local dialogue_extension = ScriptUnit.extension(enemy_unit, "dialogue_system")
-		local switch_group = dialogue_extension.wwise_voice_switch_group
 		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, enemy_unit, dialogue_extension.voice_node)
 
-		if switch_group then
-			local switch_value = dialogue_extension.wwise_voice_switch_value
-
-			WwiseWorld.set_switch(wwise_world, switch_group, switch_value, wwise_source)
-		end
+		update_switch_group(wwise_world, wwise_source, dialogue_extension)
 
 		if not owner.bot_player then
 			local breed = blackboard.breed
@@ -1024,14 +1040,9 @@ DialogueSystem.trigger_backstab = function (self, player_unit, enemy_unit, black
 
 	if Unit.alive(player_unit) and owner and ALIVE[enemy_unit] then
 		local dialogue_extension = ScriptUnit.extension(enemy_unit, "dialogue_system")
-		local switch_group = dialogue_extension.wwise_voice_switch_group
 		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, enemy_unit, dialogue_extension.voice_node)
 
-		if switch_group then
-			local switch_value = dialogue_extension.wwise_voice_switch_value
-
-			WwiseWorld.set_switch(wwise_world, switch_group, switch_value, wwise_source)
-		end
+		update_switch_group(wwise_world, wwise_source, dialogue_extension)
 
 		if not owner.bot_player then
 			local breed = blackboard.breed
@@ -1321,15 +1332,9 @@ DialogueSystem.rpc_play_marker_event = function (self, sender, go_id, marker_id)
 
 	local marker_sound_event = NetworkLookup.markers[marker_id]
 	local extension = self.unit_extension_data[marker_unit]
-	local wwise_world = self.wwise_world
-	local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
+	local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
 
-	if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
-		extension.wwise_source_id = wwise_source_id
-
-		WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
-		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
-	end
+	update_switch_group(wwise_world, wwise_source_id, extension)
 
 	local playing_id, _ = self:_check_play_debug_sound(marker_sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
 
@@ -1362,20 +1367,15 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 	if dialogue.intended_player_profile ~= nil and dialogue.intended_player_profile ~= get_local_sound_character() then
 		dialogue.currently_playing_subtitle = ""
 	elseif not DEDICATED_SERVER then
-		local wwise_world = self.wwise_world
-		local wwise_source_id = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
+		local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, extension.play_unit, extension.voice_node)
 
-		if wwise_source_id ~= extension.wwise_source_id and extension.wwise_voice_switch_group then
-			extension.wwise_source_id = wwise_source_id
-
-			WwiseWorld.set_switch(wwise_world, extension.wwise_voice_switch_group, extension.wwise_voice_switch_value, wwise_source_id)
-			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
-		end
+		update_switch_group(wwise_world, wwise_source_id, extension)
 
 		local playing_id, _ = self:_check_play_debug_sound(sound_event, subtitles_event)
 
 		if not playing_id then
 			playing_id, _ = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
+			dialogue.currently_playing_id = playing_id
 		end
 	end
 

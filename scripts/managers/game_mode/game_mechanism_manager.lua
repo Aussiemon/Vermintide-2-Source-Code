@@ -2,15 +2,21 @@ require("scripts/managers/game_mode/mechanisms/adventure_mechanism")
 
 MechanismSettings = {
 	adventure = {
-		class_name = "AdventureMechanism",
 		max_members = 4,
 		server_universe = "vermintide2",
+		class_name = "AdventureMechanism",
 		tobii_available = true,
 		states = {
 			"inn",
 			"ingame",
 			"tutorial",
 			"weave"
+		},
+		venture_end_states_in = {
+			"inn"
+		},
+		venture_end_states_out = {
+			"inn"
 		}
 	}
 }
@@ -47,6 +53,7 @@ GameMechanismManager.init = function (self)
 	self._locked_director_function_ids = nil
 	self._joined_peers = {}
 	self._difficulty = script_data.current_difficulty_setting or "normal"
+	self._venture_started = false
 
 	self:_reset()
 end
@@ -395,6 +402,49 @@ end
 GameMechanismManager.game_server_slot_reservation_expired = function (self, peer_id)
 	if self._game_mechanism.game_server_slot_reservation_expired then
 		self._game_mechanism:game_server_slot_reservation_expired(peer_id)
+	end
+end
+
+GameMechanismManager._on_venture_start = function (self)
+	self._venture_started = true
+	local is_server = self._is_server
+	local statistics_db = StatisticsDatabase:new()
+	Managers.venture.statistics = statistics_db
+	Managers.venture.challenge = ChallengeManager:new(statistics_db, is_server)
+
+	Managers:on_venture_start()
+
+	if self._game_mechanism.on_venture_start then
+		self._game_mechanism:on_venture_start()
+	end
+end
+
+GameMechanismManager._on_venture_end = function (self)
+	Managers:on_venture_end()
+
+	if self._game_mechanism.on_venture_end then
+		self._game_mechanism:on_venture_end()
+	end
+
+	Managers.venture:destroy()
+
+	self._venture_started = false
+end
+
+GameMechanismManager.check_venture_start = function (self)
+	if not self._venture_started then
+		self:_on_venture_start()
+	end
+end
+
+GameMechanismManager.check_venture_end = function (self)
+	local state = self._game_mechanism:get_state()
+	local prior_state = self._game_mechanism:get_prior_state()
+	local venture_end_states_in = self:mechanism_setting("venture_end_states_in")
+	local venture_end_states_out = self:mechanism_setting("venture_end_states_out")
+
+	if self._venture_started and (table.contains(venture_end_states_in, state) or table.contains(venture_end_states_out, prior_state)) then
+		self:_on_venture_end()
 	end
 end
 

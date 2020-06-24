@@ -695,7 +695,7 @@ CharacterStateHelper.get_buffered_input = function (input_id, input_extension, n
 	return input, buffered
 end
 
-CharacterStateHelper._check_cooldown = function (self, weapon_extension, action, t)
+CharacterStateHelper._check_cooldown = function (weapon_extension, action, t)
 	local is_in_cooldown = false
 
 	if weapon_extension then
@@ -869,7 +869,7 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 	local softbutton_threshold = action_data.softbutton_threshold
 	local input, buffered = nil
 	local no_buffer = action_data.no_buffer
-	local doubleclick_window = action_data.doubleclick_window or 0.2
+	local doubleclick_window = action_data.doubleclick_window
 	local blocking_input = action_data.blocking_input
 	local blocked = false
 
@@ -915,7 +915,7 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 					condition_failed = not condition_func(unit, input_extension, ammo_extension)
 				end
 
-				local cooldown = CharacterStateHelper:_check_cooldown(current_action_extension, new_action, t)
+				local cooldown = CharacterStateHelper._check_cooldown(current_action_extension, new_action, t)
 
 				if action_settings and not condition_failed and not cooldown then
 					send_buffer = action_data.send_buffer
@@ -994,28 +994,24 @@ end
 
 local function validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, only_check_condition, ammo_extension, current_action_extension, t)
 	local input_id = action_settings.input_override or action_name
-	local skip_hold = action_settings.do_not_validate_with_hold
-	local hold_input = not skip_hold and action_settings.hold_input
-	local attack_hold_input = action_settings.attack_hold_input
-	local wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, input_id)
-	local buffered_input = input_extension:get_buffer(input_id)
-	local action_input = input_extension:get(input_id)
-	local action_hold_input = hold_input and input_extension:get(hold_input)
-	local attack_hold_input = attack_hold_input and input_extension:get(attack_hold_input)
+	local hold_input = not action_settings.do_not_validate_with_hold and action_settings.hold_input
 	local allow_toggle = action_settings.allow_hold_toggle and input_extension.toggle_alternate_attack
-	local hold_or_toggle_input = (allow_toggle and action_input) or (not allow_toggle and (action_input or action_hold_input))
+	local has_input = only_check_condition or input_extension:get(input_id) or input_extension:get_buffer(input_id) or input_extension:get(action_settings.attack_hold_input) or (not allow_toggle and input_extension:get(hold_input))
+	local wield_input, wield_input_init = nil
 
-	if only_check_condition or wield_input or buffered_input or hold_or_toggle_input or attack_hold_input then
+	if not has_input then
+		wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, input_id)
+		wield_input_init = true
+	end
+
+	if has_input or wield_input then
 		local condition_func = action_settings.condition_func
-		local condition_passed = true
 
-		if condition_func then
-			condition_passed = condition_func(unit, input_extension, ammo_extension)
-		end
+		if (not condition_func or condition_func(unit, input_extension, ammo_extension)) and not CharacterStateHelper._check_cooldown(current_action_extension, action_name, t) then
+			if not wield_input_init then
+				wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, input_id)
+			end
 
-		local cooldown = CharacterStateHelper:_check_cooldown(current_action_extension, action_name, t)
-
-		if condition_passed and not cooldown then
 			if not wield_input and not action_settings.keep_buffer then
 				input_extension:reset_input_buffer()
 			end
@@ -1180,17 +1176,20 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			end
 
 			local action_settings = item_template.actions[action_name].default
-			local weapon_action_hand = action_settings.weapon_action_hand or "right"
-			local action_priority = action_settings.action_priority or 1
 
-			if highest_priority_action < action_priority then
-				local weapon_extension = (weapon_action_hand == "right" and right_hand_weapon_extension) or left_hand_weapon_extension
-				local potential_new_action, potential_new_sub_action = validate_action(unit, action_name, "default", action_settings, input_extension, inventory_extension, false, ammo_extension, weapon_extension, t)
+			if action_settings then
+				local weapon_action_hand = action_settings.weapon_action_hand or "right"
+				local action_priority = action_settings.action_priority or 1
 
-				if potential_new_action and potential_new_sub_action then
-					new_action = potential_new_action
-					new_sub_action = potential_new_sub_action
-					highest_priority_action = action_priority
+				if highest_priority_action < action_priority then
+					local weapon_extension = (weapon_action_hand == "right" and right_hand_weapon_extension) or left_hand_weapon_extension
+					local potential_new_action, potential_new_sub_action = validate_action(unit, action_name, "default", action_settings, input_extension, inventory_extension, false, ammo_extension, weapon_extension, t)
+
+					if potential_new_action and potential_new_sub_action then
+						new_action = potential_new_action
+						new_sub_action = potential_new_sub_action
+						highest_priority_action = action_priority
+					end
 				end
 			end
 		end

@@ -250,6 +250,8 @@ LevelEndView.update = function (self, dt, t)
 	if not button_pressed and self._cursor_visible then
 		self:_update_gamepad_input(dt, t)
 	end
+
+	self:_poll_testify_requests()
 end
 
 LevelEndView._update_gamepad_input = function (self, dt, t)
@@ -438,6 +440,13 @@ end
 
 LevelEndView.input_enabled = function (self)
 	return not self._ready_button_widget.content.button_hotspot.disable_button
+end
+
+LevelEndView._poll_testify_requests = function (self)
+	if Testify:poll_request("close_level_end_screen") then
+		self:exit_to_game()
+		Testify:respond_to_request("close_level_end_screen")
+	end
 end
 
 return

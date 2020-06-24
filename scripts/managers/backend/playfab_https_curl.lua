@@ -11,15 +11,14 @@ local retry_codes = {
 	1287,
 	1127,
 	1131,
-	1214
+	1214,
+	1123
 }
 
 local function on_error(request_data, result, id, error_override)
 	local error_code = nil
 
-	if error_override then
-		error_code = error_override
-	elseif result.data and result.data.Error then
+	if result.data and result.data.Error then
 		local logs = result.data.Logs
 
 		if logs then
@@ -79,10 +78,15 @@ local function on_error(request_data, result, id, error_override)
 		Managers.curl:post(url, body, headers, request_cb, id, options)
 
 		request_data.retries = request_data.retries + 1
+		local override = (error_override and string.format(" | Error Override: %s", error_override)) or ""
 
-		print("[PLAYFAB HTTPS CURL] RESENDING REQUEST", id, error_code)
+		printf("[PLAYFAB HTTPS CURL] RESENDING REQUEST. Id: %s | Error Code: %s%s", id, error_code, override)
 		ScriptApplication.send_to_crashify("Backend_Error", "RESENDING REQUEST: %s", request_data)
 	else
+		if error_override then
+			error_code = error_override or error_code
+		end
+
 		Managers.backend:playfab_api_error(result, error_code)
 
 		PlayFabHttpsCurlData.active_requests[id] = nil

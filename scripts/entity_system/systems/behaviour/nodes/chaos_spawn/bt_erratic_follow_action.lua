@@ -190,6 +190,8 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 			move_anim = action.walk_anim
 		elseif breed.catch_up_speed and action.enter_catch_up_dist_sq < distance_sq and not blackboard.has_los_to_any_player then
 			navigation_extension:set_max_speed(breed.catch_up_speed)
+
+			move_anim = action.move_anim
 		elseif action.leave_walk_dist_sq <= distance_sq then
 			navigation_extension:set_max_speed(breed.run_speed)
 

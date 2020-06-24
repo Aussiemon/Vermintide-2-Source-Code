@@ -1,5 +1,7 @@
 require("scripts/ui/views/start_game_view/windows/start_game_window_adventure")
 require("scripts/ui/views/start_game_view/windows/start_game_window_adventure_settings")
+require("scripts/ui/views/start_game_view/windows/start_game_window_adventure_mode")
+require("scripts/ui/views/start_game_view/windows/start_game_window_adventure_mode_settings")
 require("scripts/ui/views/start_game_view/windows/start_game_window_game_mode")
 require("scripts/ui/views/start_game_view/windows/start_game_window_settings")
 require("scripts/ui/views/start_game_view/windows/start_game_window_mission")
@@ -886,7 +888,17 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 
 	local is_offline = Managers.account:offline_mode()
 
-	if game_mode_type == "adventure" then
+	if game_mode_type == "adventure_mode" then
+		local level_key = self:get_selected_level_id()
+		local difficulty = self._selected_difficulty_key
+		local is_private = true
+		local quick_game = false
+		local always_host = true
+		local strict_matchmaking = false
+		local deed_backend_id, event_data = nil
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+	elseif game_mode_type == "adventure" then
 		local level_key = nil
 		local difficulty = self._selected_difficulty_key
 		local is_private = is_offline
@@ -1364,6 +1376,14 @@ StartGameStateSettingsOverview._can_add_weave_lobby_browser_option = function (s
 	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 
 	return is_weave_menu and PLATFORM ~= "xb1"
+end
+
+StartGameStateSettingsOverview._can_add_adventure_mode_game_mode_option = function (self)
+	local on_enter_sub_state = self.parent:on_enter_sub_state()
+	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
+	local next_adventure_level = LevelUnlockUtils.get_next_adventure_level(self._statistics_db, self._stats_id)
+
+	return next_adventure_level ~= nil and not is_weave_menu
 end
 
 StartGameStateSettingsOverview.setup_backend_image_material = function (self, gui, reference_name, texture_name, masked)

@@ -204,6 +204,16 @@ BackendInterfaceItemPlayfab.get_item_from_key = function (self, item_key)
 	end
 end
 
+BackendInterfaceItemPlayfab.get_weapon_skin_from_skin_key = function (self, skin_key)
+	local items = self:get_all_fake_backend_items()
+
+	for id, item in pairs(items) do
+		if item.skin == skin_key then
+			return id, item
+		end
+	end
+end
+
 BackendInterfaceItemPlayfab.get_all_backend_items = function (self)
 	if self._dirty then
 		self:_refresh()
@@ -267,6 +277,11 @@ BackendInterfaceItemPlayfab.set_loadout_item = function (self, item_id, career_n
 	self._backend_mirror:set_character_data(career_name, slot_name, item_id)
 
 	self._dirty = true
+end
+
+BackendInterfaceItemPlayfab.add_steam_items = function (self, item_list)
+	self._backend_mirror:add_steam_items(item_list)
+	self:_refresh_items()
 end
 
 BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)

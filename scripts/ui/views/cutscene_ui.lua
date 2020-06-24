@@ -184,14 +184,18 @@ CutsceneUI.set_player_input_enabled = function (self, enabled)
 	local input_manager = self.input_manager
 
 	if enabled then
-		input_manager:device_unblock_all_services("keyboard")
-		input_manager:device_unblock_all_services("mouse")
-		input_manager:device_unblock_all_services("gamepad")
+		input_manager:release_input({
+			"keyboard",
+			"gamepad",
+			"mouse"
+		}, 1, "cutscene", "CutsceneUI")
 	else
 		self.ingame_ui:handle_transition("close_active")
-		input_manager:block_device_except_service("cutscene", "keyboard")
-		input_manager:block_device_except_service("cutscene", "mouse")
-		input_manager:block_device_except_service("cutscene", "gamepad")
+		input_manager:capture_input({
+			"keyboard",
+			"gamepad",
+			"mouse"
+		}, 1, "cutscene", "CutsceneUI")
 	end
 end
 

@@ -520,6 +520,7 @@ player.completed_levels = {}
 player.completed_levels_difficulty = {}
 player.completed_career_levels = {}
 player.played_difficulty = {}
+player.weapon_kills_per_breed = {}
 player.completed_daily_quests = {
 	value = 0,
 	database_name = "completed_daily_quests",
@@ -570,6 +571,26 @@ for career, _ in pairs(CareerSettings) do
 				end
 			end
 		end
+	end
+end
+
+player.min_health_percentage = {}
+player.min_health_completed = {}
+
+for career, _ in pairs(CareerSettings) do
+	local career_breed = CareerSettings[career].breed
+
+	if career_breed and career_breed.is_hero then
+		player.min_health_percentage[career] = {
+			value = 1,
+			sync_on_hot_join = true
+		}
+		database_name = "min_health_completed_" .. career
+		player.min_health_completed[career] = {
+			value = 0,
+			source = "player_data",
+			database_name = database_name
+		}
 	end
 end
 

@@ -1,11 +1,15 @@
-Crashify = {
+local Crashify = {
 	print_property = function (key, value)
 		if key == nil then
-			return Application.warning("[Crashify] Property key can't be nil")
+			Application.warning("[Crashify] Property key can't be nil")
+
+			return
 		end
 
 		if value == nil then
-			return Application.warning("[Crashify] Property value can't be nil")
+			Application.warning("[Crashify] Property value can't be nil")
+
+			return
 		end
 
 		local property = string.format("%s = %s", key, value)
@@ -19,7 +23,9 @@ Crashify = {
 	end,
 	print_breadcrumb = function (crumb)
 		if crumb == nil then
-			return Application.warning("[Crashify] Breadcrumb can't be nil")
+			Application.warning("[Crashify] Breadcrumb can't be nil")
+
+			return
 		end
 
 		local output = string.format([[
@@ -34,11 +40,15 @@ Crashify = {
 		Application.set_exit_code(1, "silent_limited")
 
 		if system == nil then
-			return Application.warning("[Crashify] System can't be nil")
+			Application.warning("[Crashify] System can't be nil")
+
+			return
 		end
 
 		if message == nil then
-			return Application.warning("[Crashify] Message can't be nil")
+			Application.warning("[Crashify] Message can't be nil")
+
+			return
 		end
 
 		local exception = string.format([[
@@ -52,4 +62,4 @@ Crashify = {
 	end
 }
 
-return
+return Crashify

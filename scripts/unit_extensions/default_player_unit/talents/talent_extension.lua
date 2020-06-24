@@ -77,10 +77,15 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 
 	local talent_buff_ids = self._talent_buff_ids
 	local is_server_bot = self.is_server and player.bot_player
+	local talents = Talents[hero_name]
+
+	if not talents then
+		return
+	end
 
 	for i = 1, #talent_ids, 1 do
 		local talent_id = talent_ids[i]
-		local talent_data = Talents[hero_name][talent_id]
+		local talent_data = talents[talent_id]
 
 		if talent_data then
 			local buffs = talent_data.buffs
@@ -102,9 +107,14 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 end
 
 TalentExtension.update_talent_weapon_index = function (self, talent_ids)
-	local hero_name = self._hero_name
-
 	if Managers.state.game_mode:has_activated_mutator("whiterun") then
+		return
+	end
+
+	local hero_name = self._hero_name
+	local talents = Talents[hero_name]
+
+	if not talents then
 		return
 	end
 
@@ -112,7 +122,7 @@ TalentExtension.update_talent_weapon_index = function (self, talent_ids)
 
 	for i = 1, #talent_ids, 1 do
 		local talent_id = talent_ids[i]
-		local talent_data = Talents[hero_name][talent_id]
+		local talent_data = talents[talent_id]
 
 		if talent_data and talent_data.talent_weapon_index then
 			self.talent_weapon_index = talent_data.talent_weapon_index
@@ -171,19 +181,28 @@ TalentExtension._get_talent_ids = function (self)
 	local talent_interface = Managers.backend:get_talents_interface()
 	local career_name = self._career_name
 	local talent_tree = talent_interface:get_talent_tree(career_name)
-	local talent_ids = {}
+	local talent_ids = {
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	}
 
 	if talent_tree then
 		local talents = talent_interface:get_talents(career_name)
 
-		for i = 1, #talents, 1 do
-			local column = talents[i]
+		if talents then
+			for i = 1, #talents, 1 do
+				local column = talents[i]
 
-			if column == 0 then
-				talent_ids[i] = 0
-			else
-				local talent_name = talent_tree[i][column]
-				talent_ids[i] = (TalentIDLookup[talent_name] and TalentIDLookup[talent_name].talent_id) or 0
+				if column == 0 then
+					talent_ids[i] = 0
+				else
+					local talent_name = talent_tree[i][column]
+					talent_ids[i] = (TalentIDLookup[talent_name] and TalentIDLookup[talent_name].talent_id) or 0
+				end
 			end
 		end
 	end
@@ -243,6 +262,10 @@ end
 
 TalentExtension.destroy = function (self)
 	return
+end
+
+TalentExtension.initial_talent_synced = function (self)
+	return true
 end
 
 return

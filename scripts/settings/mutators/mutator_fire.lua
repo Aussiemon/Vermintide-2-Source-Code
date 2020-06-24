@@ -132,24 +132,32 @@ return {
 	end,
 	server_ai_hit_by_player_function = function (context, data, hit_unit, attacker_unit, hit_data)
 		if hit_unit ~= attacker_unit then
-			local is_melee = data.template.check_melee(data, hit_data)
-			local wounded_dot = hit_data[DamageDataIndex.DAMAGE_TYPE] == "wounded_dot"
-			local pushed = hit_data[DamageDataIndex.DAMAGE_TYPE] == "push"
+			local damage_amount = hit_data[DamageDataIndex.DAMAGE_AMOUNT]
 
-			if is_melee and not wounded_dot and not pushed then
-				local data_template = data.template
+			if damage_amount > 0 then
+				local is_melee = data.template.check_melee(data, hit_data)
+				local wounded_dot = hit_data[DamageDataIndex.DAMAGE_TYPE] == "wounded_dot"
+				local pushed = hit_data[DamageDataIndex.DAMAGE_TYPE] == "push"
 
-				data_template.apply_buff(data, hit_unit, attacker_unit, true)
+				if is_melee and not wounded_dot and not pushed then
+					local data_template = data.template
+
+					data_template.apply_buff(data, hit_unit, attacker_unit, true)
+				end
 			end
 		end
 	end,
 	client_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
 		if hit_unit ~= attacker_unit then
-			local wounded_dot = hit_data[DamageDataIndex.DAMAGE_TYPE] == "wounded_dot"
-			local is_melee = data.template.check_melee(data, hit_data)
+			local damage_amount = hit_data[DamageDataIndex.DAMAGE_AMOUNT]
 
-			if is_melee and not wounded_dot then
-				data.template.apply_buff(data, hit_unit, attacker_unit, false)
+			if damage_amount > 0 then
+				local wounded_dot = hit_data[DamageDataIndex.DAMAGE_TYPE] == "wounded_dot"
+				local is_melee = data.template.check_melee(data, hit_data)
+
+				if is_melee and not wounded_dot then
+					data.template.apply_buff(data, hit_unit, attacker_unit, false)
+				end
 			end
 		end
 	end,

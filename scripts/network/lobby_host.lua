@@ -188,6 +188,10 @@ LobbyHost.get_stored_lobby_data = function (self)
 	return self.lobby_data_table
 end
 
+LobbyHost.attempting_reconnect = function (self)
+	return false
+end
+
 LobbyHost.lost_connection_to_lobby = function (self)
 	return self._lost_connection_to_lobby
 end

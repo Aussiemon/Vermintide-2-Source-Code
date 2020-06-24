@@ -14,6 +14,7 @@ SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit
 		slot_melee = {}
 	}
 	self.current_item_buffs = {}
+	self._weapon_fx = {}
 	self._show_third_person = true
 end
 
@@ -38,6 +39,7 @@ SimpleHuskInventoryExtension.destroy = function (self)
 
 	GearUtils.destroy_equipment(self._world, self._equipment)
 	self:_despawn_attached_units()
+	self:_stop_all_weapon_fx()
 end
 
 SimpleHuskInventoryExtension.get_weapon_unit = function (self)
@@ -243,6 +245,7 @@ end
 SimpleHuskInventoryExtension.wield = function (self, slot_name)
 	local equipment = self._equipment
 
+	self:_stop_all_weapon_fx()
 	self:_despawn_attached_units()
 	self:_wield_slot(self._world, equipment, slot_name, nil, self._unit)
 
@@ -269,6 +272,8 @@ SimpleHuskInventoryExtension.wield = function (self, slot_name)
 			if Managers.player.is_server and slot_buffs then
 				self:_apply_buffs(slot_buffs)
 			end
+
+			self:start_weapon_fx("wield")
 		end
 	end
 end
@@ -453,6 +458,13 @@ SimpleHuskInventoryExtension.get_item_template = function (self, slot_data)
 	return item_template
 end
 
+SimpleHuskInventoryExtension.get_wielded_slot_data = function (self)
+	local slot_name = self:get_wielded_slot_name()
+	local slot_data = self:get_slot_data(slot_name)
+
+	return slot_data
+end
+
 SimpleHuskInventoryExtension.get_wielded_slot_item_template = function (self)
 	local wielded_slot_name = self.wielded_slot
 	local equipment = self._equipment
@@ -607,6 +619,34 @@ end
 
 SimpleHuskInventoryExtension.is_showing_third_person_inventory = function (self)
 	return self._show_third_person
+end
+
+SimpleHuskInventoryExtension.start_weapon_fx = function (self, fx_name)
+	local equipment = self._equipment
+	local slot_name = equipment.wielded_slot
+	local slot_data = equipment.slots[slot_name]
+	local item_template = self:get_item_template(slot_data)
+	local item_particle_fx = item_template.particle_fx
+	local particle_fx = item_particle_fx and item_particle_fx[fx_name]
+
+	if particle_fx then
+		self._weapon_fx[fx_name] = GearUtils.create_attached_particles(self._world, particle_fx, equipment, self._unit, nil, false)
+	end
+end
+
+SimpleHuskInventoryExtension.stop_weapon_fx = function (self, fx_name)
+	self._weapon_fx[fx_name] = GearUtils.destroy_attached_particles(self._world, self._weapon_fx[fx_name])
+end
+
+SimpleHuskInventoryExtension._stop_all_weapon_fx = function (self)
+	local world = self._world
+	local weapon_fx = self._weapon_fx
+
+	for name, fx_ids in pairs(weapon_fx) do
+		GearUtils.destroy_attached_particles(world, fx_ids)
+
+		weapon_fx[name] = nil
+	end
 end
 
 return

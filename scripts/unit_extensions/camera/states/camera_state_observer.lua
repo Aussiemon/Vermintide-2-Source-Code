@@ -90,6 +90,7 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 
 	fassert(Vector3.is_valid(new_position), "Camera position invalid.")
 	Unit.set_local_position(unit, 0, new_position)
+	self:_poll_testify_requests()
 end
 
 CameraStateObserver._get_valid_players_to_observe = function (self)
@@ -211,6 +212,19 @@ CameraStateObserver._set_follow_unit = function (self, observed_player_id, follo
 
 			self._network_transmit:send_rpc_server("rpc_set_observed_player_id", local_player_go_id, player_to_observe_go_id)
 		end
+	end
+end
+
+CameraStateObserver._poll_testify_requests = function (self)
+	if Testify:poll_request("set_camera_to_observe_first_bot") then
+		local first_bot = Managers.player:bots()[1]
+		local players = self:_get_valid_players_to_observe()
+
+		if players[first_bot._unique_id] and self._observed_player_id ~= first_bot._unique_id then
+			self:follow_next_unit()
+		end
+
+		Testify:respond_to_request("set_camera_to_observe_first_bot")
 	end
 end
 

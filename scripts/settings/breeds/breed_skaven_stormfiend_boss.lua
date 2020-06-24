@@ -247,7 +247,7 @@ local breed_data = {
 		ledges_with_fence = 1.5,
 		doors = 1.5,
 		teleporters = 5,
-		bot_poison_wind = 0,
+		bot_poison_wind = 1.5,
 		fire_grenade = 15
 	},
 	nav_cost_map_allowed_layers = {
@@ -258,7 +258,10 @@ local breed_data = {
 		vortex_near = 1,
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
-	}
+	},
+	before_stagger_enter_function = function (unit, blackboard, attacker_unit, is_push)
+		QuestSettings.handle_charge_stagger(unit, blackboard, attacker_unit)
+	end
 }
 Breeds.skaven_stormfiend_boss = table.create_copy(Breeds.skaven_stormfiend_boss, breed_data)
 local AttackIntensityPerDifficulty = {

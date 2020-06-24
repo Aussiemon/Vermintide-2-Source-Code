@@ -299,7 +299,7 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button and content.option_text == ""
+						return not button_hotspot.disable_button and (content.option_text == "" or content.option_text == "n/a")
 					end
 				},
 				{
@@ -754,6 +754,10 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					frame_width + 5,
 					-55,
 					10
+				},
+				size = {
+					size[1] - icon_texture_size[1] - 60,
+					size[2]
 				}
 			},
 			option_text_shadow = {
@@ -770,6 +774,10 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					frame_width + 5 + 2,
 					-57,
 					9
+				},
+				size = {
+					size[1] - icon_texture_size[1] - 60,
+					size[2]
 				}
 			},
 			button_text = {
@@ -979,7 +987,9 @@ local function create_additional_settings_option(scenegraph_id, size, title_text
 		content = {
 			title_edge = "game_option_divider",
 			title_bg = "playername_bg_02",
-			button_hotspot = {},
+			button_hotspot = {
+				allow_multi_hover = true
+			},
 			frame = frame_settings.texture,
 			title_text = title_text or "n/a",
 			background = {
@@ -1156,8 +1166,8 @@ local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
 	play_button = UIWidgets.create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34),
-	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, "1. " .. Localize("start_game_window_mission"), Localize("start_game_window_change_mission"), nil, "game_options_bg_01"),
-	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, "2. " .. Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), Localize("start_game_window_change_mission"), nil, "game_options_bg_01"),
+	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -1168,7 +1178,7 @@ local widgets = {
 	})
 }
 local other_options_widgets = {
-	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, "3. " .. Localize("start_game_window_other_options_title"), "game_options_bg_03"),
+	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), "game_options_bg_03"),
 	private_frame = UIWidgets.create_frame("private_button_frame", scenegraph_definition.private_button_frame.size, window_frame, 1),
 	private_button = UIWidgets.create_default_checkbox_button("private_button", scenegraph_definition.private_button.size, Localize("start_game_window_other_options_private"), 24, {
 		title = Localize("start_game_window_other_options_private"),

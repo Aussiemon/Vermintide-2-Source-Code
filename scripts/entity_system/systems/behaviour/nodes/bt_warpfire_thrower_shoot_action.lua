@@ -367,12 +367,19 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 
 						if is_player_unit then
 							local target_status_extension = ScriptUnit.has_extension(blackboard.target_unit, "status_system")
+							local target_buff_extension = ScriptUnit.has_extension(blackboard.target_unit, "buff_system")
+							local target_power_block_perk = target_buff_extension:has_buff_perk("power_block")
+							local target_blocking, shield_block = target_status_extension:is_blocking()
 							local is_valid_player_status = target_status_extension and not target_status_extension:is_invisible()
 							local to_target_normalized = Vector3.normalize(to_target)
 							local dot = Vector3.dot(to_target_normalized, forward_normalized)
 							local is_valid_target = (dot > 0.99 or (distance < action.aim_rotation_override_distance and dot > 0.55)) and is_valid_player_status
 
-							if is_valid_target then
+							if target_power_block_perk and target_blocking and shield_block then
+								if is_valid_target and not DamageUtils.check_ranged_block(unit, hit_unit, dot, "blocked_berzerker") then
+									buff_system:add_buff(hit_unit, buff_name, unit)
+								end
+							elseif is_valid_target then
 								buff_system:add_buff(hit_unit, buff_name, unit)
 							end
 						elseif AiUtils.unit_alive(hit_unit) then

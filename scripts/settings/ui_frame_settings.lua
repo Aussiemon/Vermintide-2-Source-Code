@@ -787,6 +787,28 @@ UIFrameSettings = {
 			}
 		}
 	},
+	frame_corner_detail_01_gold = {
+		texture = "frame_corner_detail_01_gold",
+		only_corners = true,
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				28,
+				28
+			},
+			vertical = {
+				3,
+				8
+			},
+			horizontal = {
+				8,
+				3
+			}
+		}
+	},
 	item_tooltip_frame_01 = {
 		texture = "menu_frame_12",
 		texture_size = {

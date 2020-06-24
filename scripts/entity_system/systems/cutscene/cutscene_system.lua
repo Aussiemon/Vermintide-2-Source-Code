@@ -174,6 +174,10 @@ CutsceneSystem.flow_cb_deactivate_cutscene_logic = function (self, event_on_deac
 	self.event_on_skip = nil
 
 	pdArray.push_back2(self.ui_event_queue, "set_player_input_enabled", true)
+
+	if Testify:poll_request("wait_for_cutscene_to_finish") then
+		Testify:respond_to_request("wait_for_cutscene_to_finish")
+	end
 end
 
 CutsceneSystem.flow_cb_cutscene_effect = function (self, name, flow_params)

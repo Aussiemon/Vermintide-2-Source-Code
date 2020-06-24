@@ -3,6 +3,20 @@ local function count_event_breed(breed_name)
 end
 
 local weighted_random_terror_events = {
+	nurgle_end_event_loop = {
+		"nurgle_end_event_loop_01",
+		1,
+		"nurgle_end_event_loop_02",
+		1,
+		"nurgle_end_event_loop_03",
+		1,
+		"nurgle_end_event_loop_04",
+		1,
+		"nurgle_end_event_loop_05",
+		1,
+		"nurgle_end_event_loop_06",
+		1
+	},
 	nurgle_end_event_specials = {
 		"nurgle_end_event_specials_01",
 		1,
@@ -246,6 +260,236 @@ local terror_event_blueprints = {
 		{
 			"flow_event",
 			flow_event_name = "nurgle_end_event01_done"
+		}
+	},
+	nurgle_end_event_loop_01 = {
+		{
+			"set_master_event_running",
+			name = "nurgle_end_event"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			spawner_id = "nurgle_end_event",
+			composition_type = "event_large"
+		},
+		{
+			"delay",
+			duration = 8
+		},
+		{
+			"continue_when",
+			duration = 40,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 4
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "nurgle_end_event_loop_done"
+		}
+	},
+	nurgle_end_event_loop_02 = {
+		{
+			"set_master_event_running",
+			name = "nurgle_end_event"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "nurgle_end_event_chaos",
+			composition_type = "event_medium_chaos"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_chaos_stinger"
+		},
+		{
+			"delay",
+			duration = 8
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "nurgle_end_event_chaos",
+			composition_type = "event_chaos_extra_spice_small"
+		},
+		{
+			"continue_when",
+			duration = 40,
+			condition = function (t)
+				return count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 4
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "nurgle_end_event_loop_done"
+		}
+	},
+	nurgle_end_event_loop_03 = {
+		{
+			"set_master_event_running",
+			name = "nurgle_end_event"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			spawner_id = "nurgle_end_event",
+			composition_type = "event_medium"
+		},
+		{
+			"delay",
+			duration = 3
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "nurgle_end_event",
+			composition_type = "event_extra_spice_medium"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"continue_when",
+			duration = 40,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_storm_vermin_commander") < 3 and count_event_breed("skaven_slave") < 4
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "nurgle_end_event_loop_done"
+		}
+	},
+	nurgle_end_event_loop_04 = {
+		{
+			"set_master_event_running",
+			name = "nurgle_end_event"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "nurgle_end_event_chaos",
+			composition_type = "chaos_berzerkers_small"
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "nurgle_end_event",
+			composition_type = "event_extra_spice_medium"
+		},
+		{
+			"delay",
+			duration = 8
+		},
+		{
+			"continue_when",
+			duration = 40,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 4 and count_event_breed("skaven_slave") < 5 and count_event_breed("skaven_storm_vermin_commander") < 3 and count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_marauder") < 2
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "nurgle_end_event_loop_done"
+		}
+	},
+	nurgle_end_event_loop_05 = {
+		{
+			"set_master_event_running",
+			name = "nurgle_end_event"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "nurgle_end_event",
+			composition_type = "storm_vermin_medium"
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "nurgle_end_event",
+			composition_type = "event_small"
+		},
+		{
+			"delay",
+			duration = 8
+		},
+		{
+			"continue_when",
+			duration = 40,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_storm_vermin_commander") < 3 and count_event_breed("skaven_slave") < 3
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "nurgle_end_event_loop_done"
+		}
+	},
+	nurgle_end_event_loop_06 = {
+		{
+			"set_master_event_running",
+			name = "nurgle_end_event"
+		},
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "end_event",
+			composition_type = "event_extra_spice_medium"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"event_horde",
+			limit_spawners = 2,
+			spawner_id = "end_event_monk",
+			composition_type = "plague_monks_medium"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stingers_plague_monk"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"continue_when",
+			duration = 40,
+			condition = function (t)
+				return count_event_breed("skaven_plague_monk") < 2 and count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_slave") < 3 and count_event_breed("skaven_storm_vermin_commander") < 2
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "nurgle_end_event_loop_done"
 		}
 	},
 	nurgle_end_event_escape = {

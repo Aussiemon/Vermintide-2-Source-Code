@@ -1,4 +1,4 @@
-require("scripts/managers/backend_playfab/playfab_mirror")
+require("scripts/managers/backend_playfab/playfab_mirror_adventure")
 require("scripts/settings/version_settings")
 
 local IPlayFabHttps = require("PlayFab.IPlayFabHttps")
@@ -89,13 +89,12 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 	Crashify.print_property("playfab_id", playfab_id)
 	self:_update_telemetry_settings()
 
-	if result.NewlyCreated or not read_only_data.account_set_up then
-		self:_set_up_initial_account()
-	elseif not read_only_data.account_data_set_up then
-		self:_set_up_initial_account_data()
-	else
-		self:_validate_version()
-	end
+	local account_set_up = read_only_data.account_set_up
+	local initial_inventory_setup = read_only_data.initial_inventory_setup
+	self._setup_initial_account_needed = result.NewlyCreated or not account_set_up or account_set_up.Value == "false"
+	self._setup_initial_inventory_needed = not initial_inventory_setup or initial_inventory_setup.Value == "false"
+
+	self:_validate_version()
 
 	self._signed_in = true
 end
@@ -119,16 +118,23 @@ ScriptBackendPlayFab._validate_version = function (self)
 	local callback = callback(self, "_validate_version_cb")
 
 	PlayFabClientApi.ExecuteCloudScript(request, callback)
+
+	self._validating_version = true
 end
 
 ScriptBackendPlayFab._validate_version_cb = function (self, result)
 	local valid = result.FunctionResult and result.FunctionResult.valid_version
+	self._validating_version = nil
 
 	if valid ~= true then
 		self._signed_in = false
 		self._signin_result_error = {
 			errorCode = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_UNSUPPORTED_VERSION_ERROR
 		}
+	elseif self._setup_initial_account_needed then
+		self:_set_up_initial_account()
+	elseif self._setup_initial_inventory_needed then
+		self:_set_up_initial_inventory()
 	end
 end
 
@@ -144,28 +150,41 @@ ScriptBackendPlayFab._set_up_initial_account = function (self)
 end
 
 ScriptBackendPlayFab.initial_setup_request_cb = function (self, result)
-	self:_set_up_initial_account_data()
+	self:_set_up_initial_inventory()
 
 	self._setting_up_initial_account = false
+	self._setup_initial_account_needed = nil
 end
 
-ScriptBackendPlayFab._set_up_initial_account_data = function (self)
+ScriptBackendPlayFab._set_up_initial_inventory = function (self, start_index)
 	local initial_account_data_set_up = {
-		FunctionName = "initialAccountDataSetUp"
+		FunctionName = "initialInventorySetup",
+		FunctionParameter = {
+			start_index = start_index or 0
+		}
 	}
-	local initial_data_setup_request_cb = callback(self, "initial_data_setup_request_cb")
+	local initial_inventory_setup_request_cb = callback(self, "initial_inventory_setup_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(initial_account_data_set_up, initial_data_setup_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(initial_account_data_set_up, initial_inventory_setup_request_cb)
 
-	self._setting_up_initial_account_data = true
+	self._setting_up_initial_inventory = true
 end
 
-ScriptBackendPlayFab.initial_data_setup_request_cb = function (self, result)
-	self._setting_up_initial_account_data = false
+ScriptBackendPlayFab.initial_inventory_setup_request_cb = function (self, result)
+	local done = result.FunctionResult.done
+
+	if not done then
+		local new_start_index = result.FunctionResult.new_start_index
+
+		self:_set_up_initial_inventory(new_start_index)
+	else
+		self._setting_up_initial_inventory = false
+		self._setup_initial_inventory_needed = nil
+	end
 end
 
 ScriptBackendPlayFab.authenticated = function (self)
-	if self._setting_up_initial_account or self._setting_up_initial_account_data then
+	if self._validating_version or self._setting_up_initial_account or self._setting_up_initial_inventory then
 		return false
 	end
 

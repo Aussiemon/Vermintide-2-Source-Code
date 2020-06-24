@@ -238,7 +238,9 @@ IngameUI.destroy = function (self)
 	end
 
 	if current_view then
-		self.views[current_view]:on_exit()
+		local params = {}
+
+		self.views[current_view]:on_exit(params)
 
 		self.current_view = nil
 	end
@@ -547,7 +549,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 		local fade_active = Managers.transition:in_fade_active()
 
-		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not self:cutscene_active() and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not gdc_build and not self:unavailable_hero_popup_active() and input_service:get("toggle_menu", true) then
+		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not gdc_build and not self:unavailable_hero_popup_active() and input_service:get("toggle_menu", true) then
 			local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
 
 			if use_gamepad_layout then

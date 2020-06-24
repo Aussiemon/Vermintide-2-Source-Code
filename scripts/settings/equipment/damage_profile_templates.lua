@@ -128,6 +128,14 @@ DamageProfileTemplates.light_slashing_linesman = {
 	default_target = "default_target_linesman_L",
 	targets = "targets_linesman_L"
 }
+DamageProfileTemplates.light_slashing_linesman_uppercut = {
+	armor_modifier = "armor_modifier_linesman_uppercut_L",
+	critical_strike = "critical_strike_linesman_uppercut_L",
+	charge_value = "light_attack",
+	cleave_distribution = "cleave_distribution_linesman_uppercut_L",
+	default_target = "default_target_linesman_uppercut_L",
+	targets = "targets_linesman_uppercut_L"
+}
 DamageProfileTemplates.light_slashing_linesman_dual = {
 	armor_modifier = "armor_modifier_linesman_dual_L",
 	critical_strike = "critical_strike_linesman_dual_L",
@@ -175,6 +183,14 @@ DamageProfileTemplates.medium_slashing_linesman_executioner = {
 	cleave_distribution = "cleave_distribution_linesman_executioner_M",
 	default_target = "default_target_linesman_executioner_M",
 	targets = "targets_linesman_executioner_M"
+}
+DamageProfileTemplates.medium_slashing_linesman_uppercut = {
+	armor_modifier = "armor_modifier_linesman_M",
+	critical_strike = "critical_strike_linesman_M",
+	charge_value = "light_attack",
+	cleave_distribution = "cleave_distribution_linesman_uppercut_M",
+	default_target = "default_target_linesman_uppercut_M",
+	targets = "targets_linesman_uppercut_M"
 }
 
 new_template("light_slashing_linesman", nil, "medium_slashing_linesman_spear", nil)

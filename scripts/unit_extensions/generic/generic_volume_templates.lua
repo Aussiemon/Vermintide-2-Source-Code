@@ -189,6 +189,31 @@ GenericVolumeTemplates.functions = {
 				end
 			end
 		},
+		non_disabled_players_inside = {
+			on_enter = function (unit, dt, t, data)
+				local event = data.params.event_on_triggered
+				local should_trigger_enter_event = not data.params.player_entered
+
+				if event and should_trigger_enter_event then
+					Level.trigger_event(data.level, event)
+
+					data.params.player_entered = true
+				end
+			end,
+			on_exit = function (unit, data)
+				local volume_system = Managers.state.entity:system("volume_system")
+
+				if not volume_system:volume_has_units_inside(data.volume_name) then
+					local event = data.params.event_on_exit
+
+					if event then
+						Level.trigger_event(data.level, event)
+					end
+
+					data.params.player_entered = false
+				end
+			end
+		},
 		ai_inside = {
 			on_enter = function (unit, dt, t, data)
 				local event = data.params.event_on_triggered

@@ -488,6 +488,16 @@ local components = {
 
 			return game_mode_key ~= "tutorial"
 		end
+	},
+	{
+		use_hud_scale = true,
+		class_name = "ChallengeTrackerUI",
+		filename = "scripts/ui/hud_ui/challenge_tracker_ui",
+		visibility_groups = {
+			"game_mode_disable_hud",
+			"dead",
+			"alive"
+		}
 	}
 }
 

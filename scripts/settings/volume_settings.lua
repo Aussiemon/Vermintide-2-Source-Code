@@ -287,6 +287,11 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 				filter = GenericVolumeTemplates.filters.all_non_disabled_players_inside
 			}
 		},
+		non_disabled_players_inside = {
+			[PLAYER] = {
+				filter = GenericVolumeTemplates.filters.unit_not_disabled
+			}
+		},
 		ai_inside = {
 			[AI] = {}
 		},

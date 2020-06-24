@@ -672,17 +672,7 @@ function flow_callback_play_network_synched_particle_effect(params)
 end
 
 function flow_callback_output_debug_screen_text(params)
-	local text_size = params.text_size
-	local time = params.time
-	local color = params.color or Vector3(255, 255, 255)
-
-	if not params.text_id then
-		print("Missing text id at:", Script.callstack())
-
-		return
-	end
-
-	Managers.state.debug_text:output_screen_text(Localize(params.text_id), text_size, time, color)
+	return
 end
 
 function flow_callback_debug_crash_game(params)
@@ -1079,6 +1069,20 @@ function flow_callback_set_flow_object_set_enabled(params)
 	fassert(params.set, "[Flow Callback : Set Flow Object Set Enabled] No set set.")
 	fassert(params.enabled ~= nil, "[Flow Callback : Set Flow Object Set Enabled] No enabled set.")
 	Managers.state.game_mode:flow_cb_set_flow_object_set_enabled(params.set, params.enabled)
+end
+
+function flow_callback_set_flow_object_set_particles_enabled(params)
+	fassert(params.set, "[Flow Callback : Set Flow Object Set Particles Enabled] No set set.")
+	fassert(params.enabled ~= nil, "[Flow Callback : Set Flow Object Set Particles Enabled] No enabled set.")
+
+	local world = Application.flow_callback_context_world()
+	local level = LevelHelper:current_level(world)
+
+	if params.enabled then
+		Level.start_particle_effects_in_object_set(level, "flow_" .. params.set)
+	else
+		Level.stop_particle_effects_in_object_set(level, "flow_" .. params.set)
+	end
 end
 
 flow_cb_set_flow_object_set_enabled = flow_callback_set_flow_object_set_enabled
@@ -2386,16 +2390,19 @@ function flow_callback_force_unit_animation(params)
 end
 
 function flow_callback_synced_animation(params)
-	local unit = params.unit
-	local animation_event = params.animation_event
 	local game = Managers.state.network:game()
-	local unit_storage = Managers.state.unit_storage
-	local go_id = unit_storage:go_id(unit)
-	local animation_synced_unit_id = GameSession.game_object_field(game, go_id, "animation_synced_unit_id")
-	local target_unit = unit_storage:unit(animation_synced_unit_id)
 
-	if target_unit and animation_event and Unit.has_animation_event(target_unit, animation_event) then
-		Unit.animation_event(target_unit, animation_event)
+	if game then
+		local unit = params.unit
+		local animation_event = params.animation_event
+		local unit_storage = Managers.state.unit_storage
+		local go_id = unit_storage:go_id(unit)
+		local animation_synced_unit_id = GameSession.game_object_field(game, go_id, "animation_synced_unit_id")
+		local target_unit = unit_storage:unit(animation_synced_unit_id)
+
+		if target_unit and animation_event and Unit.has_animation_event(target_unit, animation_event) then
+			Unit.animation_event(target_unit, animation_event)
+		end
 	end
 end
 

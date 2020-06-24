@@ -133,6 +133,12 @@ CutsceneCamera.update_cutscene_camera = function (self)
 end
 
 CutsceneCamera._handle_input = function (self, pose)
+	local input_service = Managers.input:get_input_service("cutscene")
+
+	if input_service and input_service:is_blocked() then
+		return
+	end
+
 	local look_delta = nil
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 

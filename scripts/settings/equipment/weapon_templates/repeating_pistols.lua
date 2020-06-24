@@ -73,7 +73,7 @@ weapon_template.actions = {
 			}
 		},
 		bullet_spray = {
-			damage_window_start = 0.1,
+			damage_window_start = 0,
 			play_reload_animation = true,
 			fire_at_gaze_setting = "tobii_fire_at_gaze_repeating_pistol",
 			damage_profile = "shot_machinegun_shotgun",
@@ -92,7 +92,7 @@ weapon_template.actions = {
 			damage_window_end = 0,
 			range = 50,
 			ammo_usage = 1,
-			fire_time = 0.1,
+			fire_time = 0,
 			spread_template_override = "repeating_handgun_special",
 			shot_count = 8,
 			use_ammo_at_time = 0.3,

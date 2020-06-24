@@ -45,6 +45,7 @@ local function foundation_require(path, ...)
 end
 
 require("scripts/settings/dlc_settings")
+require("scripts/helpers/dlc_utils")
 
 Boot = Boot or {}
 Boot.flow_return_table = Script.new_map(32)
@@ -94,7 +95,9 @@ local function profile_end(t)
 end
 
 Boot.setup = function (self)
-	foundation_require("util", "crashify")
+	_G.Crashify = require("foundation/scripts/util/crashify")
+
+	foundation_require("util", "testify")
 	Script.set_index_offset(0)
 	print("Boot:setup() entered. time: ", 0, "os-clock: ", os.clock())
 
@@ -423,7 +426,7 @@ Boot.booting_update = function (self, dt)
 		local state_machine_end = os.clock()
 		local script_init_end_time = os.clock()
 
-		Managers.auto_test:ready()
+		Testify:ready()
 
 		Boot.render = Boot.game_render
 		Boot.has_booted = true
@@ -445,7 +448,7 @@ end
 Boot._require_foundation_scripts = function (self)
 	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string")
 	base_require("debug", "table_trap")
-	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager", "auto_test/auto_test_manager")
+	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
 end
 
@@ -455,7 +458,6 @@ Boot._init_managers = function (self)
 	Managers.token = TokenManager:new()
 	Managers.state_machine = StateMachineManager:new()
 	Managers.url_loader = UrlLoaderManager:new()
-	Managers.auto_test = AutoTestManager:new()
 end
 
 Boot.game_render = function (self)
@@ -701,7 +703,7 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.twitch:update(dt)
 
 		if rawget(_G, "Steam") then
-			Managers.steam:update()
+			Managers.steam:update(t, dt)
 		end
 	elseif PLATFORM == "xb1" then
 		Managers.rest_transport:update(true, dt, t)
@@ -726,7 +728,6 @@ Boot.game_update = function (self, real_world_dt)
 	end
 
 	Managers.telemetry:update(dt, t)
-	Managers.smoketest:update(dt)
 	Managers.invite:update(dt)
 	Managers.admin:update(dt)
 
@@ -765,7 +766,7 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	end
 
-	Managers.auto_test:update(dt, t)
+	Testify:update(dt, t)
 	end_function_call_collection()
 	table.clear(Boot.flow_return_table)
 
@@ -1262,7 +1263,7 @@ Game.require_game_scripts = function (self)
 	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
-	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "network/lobby_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "razer_chroma/razer_chroma_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "telemetry/telemetry_manager", "load_time/load_time_manager", "game_mode/game_mechanism_manager", "weave/weave_manager")
+	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "network/lobby_manager", "transition/transition_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "razer_chroma/razer_chroma_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "boon/boon_manager", "telemetry/telemetry_manager", "load_time/load_time_manager", "game_mode/game_mechanism_manager", "weave/weave_manager")
 
 	if PLATFORM == "win32" then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
@@ -1283,7 +1284,7 @@ Game.require_game_scripts = function (self)
 	require("scripts/ui/views/level_end/level_end_view_wrapper")
 	require("scripts/ui/views/title_loading_ui")
 	require("scripts/network_lookup/network_lookup")
-	require("scripts/tests/actions")
+	require("scripts/tests/cases")
 end
 
 Game._handle_win32_graphics_quality = function (self)
@@ -1486,13 +1487,13 @@ Game._init_managers = function (self)
 	Managers.telemetry = TelemetryManager.create()
 	Managers.player = PlayerManager:new()
 	Managers.free_flight = FreeFlightManager:new()
-	Managers.smoketest = SmoketestManager:new()
 	Managers.invite = InviteManager:new()
 	Managers.news_ticker = NewsTickerManager:new()
 	Managers.light_fx = LightFXManager:new()
 	Managers.razer_chroma = RazerChromaManager:new()
 	Managers.party = PartyManager:new()
 	Managers.deed = DeedManager:new()
+	Managers.boon = BoonManager:new()
 	Managers.load_time = LoadTimeManager:new()
 	Managers.mechanism = GameMechanismManager:new()
 	Managers.lobby = LobbyManager:new()
@@ -1513,12 +1514,17 @@ Game._init_managers = function (self)
 end
 
 Game._init_backend = function (self)
-	local backend = "ScriptBackendPlayFab"
-	local mirror = "PlayFabMirror"
+	local backend, mirror = nil
 
 	if DEDICATED_SERVER then
 		backend = "ScriptBackendPlayFabDedicated"
 		mirror = "PlayFabMirrorDedicated"
+	else
+		local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+		local mechanism_settings = MechanismSettings[mechanism_name]
+		backend = "ScriptBackendPlayFab"
+		local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
+		mirror = (playfab_mirror and playfab_mirror) or "PlayFabMirrorAdventure"
 	end
 
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")

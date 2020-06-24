@@ -21,6 +21,58 @@ require("scripts/settings/equipment/weave_properties")
 local talent_id_lookup = TalentIDLookup
 local weave_properties = WeaveProperties.properties
 local weave_traits = WeaveTraits.traits
+local default_properties = {
+	"weave_attack_speed",
+	"weave_crit_boost",
+	"weave_power_vs_skaven",
+	"weave_power_vs_chaos",
+	"weave_power_vs_unarmoured",
+	"weave_power_vs_armoured",
+	"weave_power_vs_large",
+	"weave_power_vs_frenzy",
+	"weave_stamina",
+	"weave_health",
+	"weave_push_block_arc",
+	"weave_block_cost",
+	"weave_protection_skaven",
+	"weave_protection_chaos",
+	"weave_protection_aoe",
+	"weave_crit_chance",
+	"weave_ability_cooldown_reduction",
+	"weave_curse_resistance",
+	"weave_respawn_speed",
+	"weave_revive_speed",
+	"weave_fatigue_regen",
+	"weave_movespeed"
+}
+local default_traits = {
+	"weave_melee_attack_speed_on_crit",
+	"weave_melee_timed_block_cost",
+	"weave_melee_counter_push_power",
+	"weave_melee_reduce_cooldown_on_crit",
+	"weave_melee_increase_damage_on_block",
+	"weave_melee_shield_on_assist",
+	"weave_ranged_replenish_ammo_headshot",
+	"weave_ranged_restore_stamina_headshot",
+	"weave_ranged_reduced_overcharge",
+	"weave_ranged_reduce_cooldown_on_crit",
+	"weave_ranged_replenish_ammo_on_crit",
+	"weave_ranged_remove_overcharge_on_crit",
+	"weave_ranged_increase_power_level_vs_armour_crit",
+	"weave_ranged_consecutive_hits_increase_power",
+	"weave_ring_not_consume_potion",
+	"weave_ring_potion_spread",
+	"weave_ring_all_potions",
+	"weave_ring_potion_duration",
+	"weave_necklace_not_consume_healing",
+	"weave_necklace_heal_self_on_heal_other",
+	"weave_necklace_increased_healing_received",
+	"weave_necklace_no_healing_health_regen",
+	"weave_necklace_damage_taken_reduction_on_heal",
+	"weave_trinket_not_consume_grenade",
+	"weave_trinket_increase_grenade_radius",
+	"weave_trinket_grenade_damage_taken"
+}
 local talents_by_career = {}
 local properties_by_career = {}
 local traits_by_career = {}
@@ -46,8 +98,9 @@ for career_name, settings in pairs(WeaveLoadoutSettings) do
 
 	talents_by_career[career_name] = career_talents
 	local career_properties = {}
+	local properties = table.merge(table.clone(default_properties), settings.properties)
 
-	for _, property_name in ipairs(settings.properties) do
+	for _, property_name in ipairs(properties) do
 		local property = weave_properties[property_name]
 
 		fassert(property, "Property %q in weave_loadout_settings_%s.lua does not exist", property_name, career_name)
@@ -57,8 +110,9 @@ for career_name, settings in pairs(WeaveLoadoutSettings) do
 
 	properties_by_career[career_name] = career_properties
 	local career_traits = {}
+	local traits = table.merge(table.clone(default_traits), settings.traits)
 
-	for _, trait_name in ipairs(settings.traits) do
+	for _, trait_name in ipairs(traits) do
 		local trait = weave_traits[trait_name]
 
 		fassert(trait, "Trait %q in weave_loadout_settings_%s.lua does not exist", trait_name, career_name)

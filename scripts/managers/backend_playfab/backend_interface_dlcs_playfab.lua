@@ -85,13 +85,15 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 			local bundled_currencies = data.bundle.BundledVirtualCurrencies
 
 			for currency_type, currency_amount in pairs(bundled_currencies) do
-				local reward = {
-					reward_type = "currency",
-					currency_type = currency_type,
-					currency_amount = currency_amount,
-					rewarded_from = rewarded_from
-				}
-				unseen_rewards[#unseen_rewards + 1] = reward
+				if rewarded_from then
+					local reward = {
+						reward_type = "currency",
+						currency_type = currency_type,
+						currency_amount = currency_amount,
+						rewarded_from = rewarded_from
+					}
+					unseen_rewards[#unseen_rewards + 1] = reward
+				end
 
 				if currency_type == "SM" then
 					local peddler_interface = Managers.backend:get_interface("peddler")
@@ -102,12 +104,15 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 			end
 		else
 			local backend_id = item.ItemInstanceId
-			local reward = {
-				reward_type = "item",
-				backend_id = backend_id,
-				rewarded_from = rewarded_from
-			}
-			unseen_rewards[#unseen_rewards + 1] = reward
+
+			if rewarded_from then
+				local reward = {
+					reward_type = "item",
+					backend_id = backend_id,
+					rewarded_from = rewarded_from
+				}
+				unseen_rewards[#unseen_rewards + 1] = reward
+			end
 
 			self._backend_mirror:add_item(backend_id, item)
 		end

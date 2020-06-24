@@ -669,13 +669,13 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 			local pacing_setting = CurrentPacing
 
 			if RecycleSettings.push_horde_in_time then
-				print("Pushing horde in time; too many units out")
+				print("HORDE: Pushing horde in time; too many units out " .. num_spawned)
 
 				self._next_horde_time = t + 5
 
 				pacing:annotate_graph("Pushed horde", "red")
 			else
-				print("Skipped horde; too many units out")
+				print("HORDE: Skipped horde; too many units out")
 
 				self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
 
@@ -781,6 +781,7 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 		}
 		local side_id = self.default_enemy_side_id
 
+		print("HORDE: Spawning hordes while " .. #self._spawned .. " other ai are spawned")
 		self.horde_spawner:horde(horde_type, extra_data, side_id, no_fallback)
 	end
 end
@@ -1158,6 +1159,8 @@ end
 
 ConflictDirector.update = function (self, dt, t)
 	self._time = t
+
+	self:_poll_testify_requests()
 
 	if self.level_analysis then
 		self.level_analysis:update(t, dt)
@@ -3726,6 +3729,41 @@ ConflictDirector.update_kill_tester = function (self)
 
 			DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, "debug")
 		end
+	end
+end
+
+ConflictDirector._poll_testify_requests = function (self)
+	if Testify:poll_request("end_of_the_level_reached") then
+		local end_of_level_reached = false
+		local player_unit = Managers.player:local_player().player_unit
+		local player_main_path_data = self:get_main_path_player_data(player_unit)
+
+		if player_main_path_data then
+			end_of_level_reached = EngineOptimized.main_path_total_length() < player_main_path_data.travel_dist + 21
+		end
+
+		Testify:respond_to_request("end_of_the_level_reached", end_of_level_reached)
+	end
+
+	local additional_distance = Testify:poll_request("calculate_best_point_on_main_path")
+
+	if additional_distance then
+		local players = Managers.player:players()
+		local best_point = 0
+
+		for _, player in pairs(players) do
+			local unit_main_path_data = self:get_main_path_player_data(player.player_unit)
+
+			if unit_main_path_data then
+				local unit_point = unit_main_path_data.travel_dist
+
+				if best_point < unit_point then
+					best_point = unit_point + additional_distance
+				end
+			end
+		end
+
+		Testify:respond_to_request("calculate_best_point_on_main_path", best_point)
 	end
 end
 
