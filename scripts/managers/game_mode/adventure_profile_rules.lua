@@ -100,7 +100,7 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 			new_career_index = 1
 		end
 
-		if not profile_synchronizer:profile_career_unlocked(new_profile_index, new_career_index) then
+		if Network.peer_id() == peer_id and not profile_synchronizer:profile_career_unlocked(new_profile_index, new_career_index) then
 			print("Missing career: " .. new_career_index .. " unlock requirements, switching to career index 1")
 
 			new_career_index = 1

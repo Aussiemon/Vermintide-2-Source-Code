@@ -239,6 +239,10 @@ PlayFabMirrorBase._execute_dlc_specific_logic = function (self, response)
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
+local function get_item_from_item_master_list(item_id)
+	return ItemMasterList[item_id]
+end
+
 PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 	if not new_rewards then
 		return
@@ -250,11 +254,11 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 	for i = 1, #new_rewards, 1 do
 		local item = new_rewards[i]
 		local item_id = item.ItemId
-		local data = ItemMasterList[item_id]
+		local data = get_item_from_item_master_list(item_id)
 		local custom_data = item.CustomData
 		local rewarded_from = custom_data.rewarded_from
 
-		if rewarded_from then
+		if data and rewarded_from then
 			if data.bundle then
 				local bundled_currencies = data.bundle.BundledVirtualCurrencies
 
@@ -268,7 +272,7 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 					unseen_rewards[#unseen_rewards + 1] = reward
 				end
 			else
-				local item_type = ItemMasterList[item.ItemId].item_type
+				local item_type = data.item_type
 				local reward = {
 					reward_type = "item",
 					backend_id = item.ItemInstanceId,
@@ -776,6 +780,13 @@ end
 
 PlayFabMirrorBase._verify_items_are_usable = function (self, broken_slots, character_data, career_name, slots_to_verify)
 	local career_settings = CareerSettings[career_name]
+
+	if not career_settings then
+		print("PlayfabMirror - Tried to verify items of career that doesn't exist:", career_name)
+
+		return
+	end
+
 	local item_slot_types_by_slot_name = career_settings.item_slot_types_by_slot_name
 
 	for i = 1, #slots_to_verify, 1 do

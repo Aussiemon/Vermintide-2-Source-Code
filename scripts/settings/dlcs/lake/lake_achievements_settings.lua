@@ -43,7 +43,6 @@ local function _handle_speed_quest(player, completed)
 		local stat_name = "lake_speed_quest"
 		local network_manager = Managers.state.network
 		local stat_id = NetworkLookup.statistics[stat_name]
-		speed_time = nil
 
 		network_manager.network_transmit:send_rpc("rpc_increment_stat", peer_id, stat_id)
 	end
@@ -57,12 +56,11 @@ local function _handle_timing_quest(player, completed)
 
 	if completed < 2 then
 		timing_time = t
-	elseif completed > 1 and t < timing_time + completion_margain then
+	elseif completed > 1 and timing_time and t < timing_time + completion_margain then
 		local peer_id = player:network_id()
 		local stat_name = "lake_timing_quest"
 		local network_manager = Managers.state.network
 		local stat_id = NetworkLookup.statistics[stat_name]
-		timing_time = nil
 
 		network_manager.network_transmit:send_rpc("rpc_increment_stat", peer_id, stat_id)
 	end

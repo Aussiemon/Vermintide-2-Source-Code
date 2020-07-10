@@ -178,6 +178,7 @@ ItemMasterList.es_bastard_sword = {
 	property_table_name = "melee",
 	item_type = "es_bastard_sword",
 	trait_table_name = "melee",
+	required_dlc = "lake",
 	can_wield = {
 		"es_huntsman",
 		"es_knight",
@@ -402,6 +403,7 @@ ItemMasterList.es_sword_shield_breton = {
 	item_type = "es_1h_sword_shield_breton",
 	left_hand_unit = "units/weapons/player/wpn_emp_gk_shield_03/wpn_emp_gk_shield_03",
 	trait_table_name = "melee",
+	required_dlc = "lake",
 	can_wield = {
 		"es_questingknight"
 	}

@@ -18,15 +18,7 @@ settings.inventory_package_list = {
 	"units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_10",
 	"units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_15",
 	"units/beings/player/bright_wizard_adept/headpiece/bw_a_hat_13",
-	"units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_12",
-	"units/beings/player/bright_wizard_adept/headpiece/bw_a_hat_12",
-	"units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_16",
-	"units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_13",
-	"units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_16",
-	"units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_hat_13",
-	"units/beings/player/empire_soldier_huntsman/headpiece/es_h_hat_16",
-	"units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_12",
-	"units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_08"
+	"units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_12"
 }
 
 return

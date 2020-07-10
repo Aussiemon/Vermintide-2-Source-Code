@@ -658,7 +658,17 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		local unlocked = not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)
 
 		if not unlocked then
-			content.locked_text = Localize("dlc1_2_dlc_level_locked_tooltip")
+			local locked_text = Localize("dlc_not_owned")
+
+			for _, store_dlc_settings in ipairs(StoreDlcSettings) do
+				if store_dlc_settings.dlc_name == required_dlc then
+					locked_text = locked_text .. ": " .. Localize(store_dlc_settings.name)
+
+					break
+				end
+			end
+
+			content.locked_text = locked_text
 		end
 
 		local requirements = entry_data.requirements

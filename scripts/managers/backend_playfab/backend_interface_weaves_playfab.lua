@@ -706,11 +706,17 @@ BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, ex
 		for i = 1, #CAREER_ID_LOOKUP, 1 do
 			local name = CAREER_ID_LOOKUP[i]
 			local progress = self._career_progress[name]
-			progress.magic_level = new_magic_level
+
+			if progress then
+				progress.magic_level = new_magic_level
+			end
 		end
 	else
 		local progress = self._career_progress[career_name]
-		progress.magic_level = new_magic_level
+
+		if progress then
+			progress.magic_level = new_magic_level
+		end
 	end
 
 	self._backend_mirror:set_essence(new_essence)

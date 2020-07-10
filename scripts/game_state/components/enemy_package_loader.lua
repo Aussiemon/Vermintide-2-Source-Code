@@ -72,6 +72,8 @@ EnemyPackageLoader.init = function (self)
 	self.breed_processed = Script.new_map(96)
 	self._currently_loading_breeds = {}
 	self._locked_breeds = {}
+	self.zone_conflict_directors = nil
+	self.random_director_list = nil
 	self.breed_category_loaded_packages = {}
 
 	self:_create_dynamic_breed_lookups()
@@ -851,7 +853,8 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 
 	local default_conflict_settings_name = nil
 	default_conflict_settings_name = (not weave_objective_data or weave_objective_data.conflict_settings) and (level_settings.conflict_settings or "default")
-	local non_random_conflict_directors, num_random_conflict_directors = MainPathSpawningGenerator.get_unique_non_random_conflict_directors(default_conflict_settings_name, zones, num_main_zones)
+	local non_random_conflict_directors, num_random_conflict_directors = nil
+	non_random_conflict_directors, num_random_conflict_directors, self.zone_conflict_directors, level_seed = MainPathSpawningGenerator.get_unique_non_random_conflict_directors(default_conflict_settings_name, zones, num_main_zones, level_seed)
 
 	for conflict_settings_name, _ in pairs(non_random_conflict_directors) do
 		local conflict_setting = ConflictDirectors[conflict_settings_name]
@@ -1066,6 +1069,7 @@ EnemyPackageLoader.unload_enemy_packages = function (self, force_unload_startup_
 	end
 
 	self.random_director_list = nil
+	self.zone_conflict_directors = nil
 end
 
 EnemyPackageLoader._sync_dynamic_to_client = function (self, peer_id, connection_key)

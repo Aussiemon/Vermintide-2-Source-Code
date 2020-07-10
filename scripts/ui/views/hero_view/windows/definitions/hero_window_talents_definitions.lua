@@ -205,7 +205,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_info_size[1] - 110,
-			career_info_size[2] - 90
+			career_info_size[2] - 50
 		},
 		position = {
 			90,
@@ -300,7 +300,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_info_size[1] - 110,
-			career_info_size[2] - 90
+			career_info_size[2] - 50
 		},
 		position = {
 			90,
@@ -507,12 +507,14 @@ local title_text_style = {
 	}
 }
 local description_text_style = {
-	word_wrap = true,
-	font_size = 18,
-	localize = false,
+	font_size = 17,
 	use_shadow = true,
+	localize = false,
+	dynamic_font_size_word_wrap = true,
+	word_wrap = true,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {

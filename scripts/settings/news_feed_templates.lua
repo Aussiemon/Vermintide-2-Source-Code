@@ -117,9 +117,11 @@ NewsFeedTemplates = {
 			local current_talents = talent_interface:get_talents(career_name)
 			local num_spent_talents = 0
 
-			for _, value in ipairs(current_talents) do
-				if value > 0 then
-					num_spent_talents = num_spent_talents + 1
+			if current_talents then
+				for _, value in ipairs(current_talents) do
+					if value > 0 then
+						num_spent_talents = num_spent_talents + 1
+					end
 				end
 			end
 

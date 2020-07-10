@@ -106,10 +106,13 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 			local backend_id = item.ItemInstanceId
 
 			if rewarded_from then
+				local item_type = ItemMasterList[item.ItemId].item_type
 				local reward = {
 					reward_type = "item",
 					backend_id = backend_id,
-					rewarded_from = rewarded_from
+					rewarded_from = rewarded_from,
+					item_type = item_type,
+					item_id = item_id
 				}
 				unseen_rewards[#unseen_rewards + 1] = reward
 			end

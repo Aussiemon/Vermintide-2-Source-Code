@@ -8,6 +8,1334 @@ local Credits = {
 			type = "header"
 		},
 		{
+			text = "es_questingknight",
+			localized = true,
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = "Fatshark",
+			type = "header"
+		},
+		{
+			text = "credits_ceo",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Martin Wahlund",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_cto",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Rikard Blomberg",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_coo",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Sven Folkesson",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_game_director",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Mårten Stormdal",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_executive_producer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Steven Bigras",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_producer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Christina Begerska",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_localization_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Luigi Andrea Di Domenico",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_design_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Victor Magnuson",
+			type = "person"
+		},
+		{
+			text = "Joakim Setterberg",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_lead_game_design",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Kasper Holmberg",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_game_design",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Radu Bogos",
+			type = "person"
+		},
+		{
+			text = "Markus Olsén",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_additional_game_design",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Karl Asp",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_creative_consultant",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Matthew Ward",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_level_design",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Mikael Sundvall",
+			type = "person"
+		},
+		{
+			text = "Rickard Drakborn",
+			type = "person"
+		},
+		{
+			text = "Pål Wallo",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_programming_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Hans Sjunnesson",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_technical_director",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Joakim Wahlström",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_gameplay_programmer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Gunnar Kollnitz",
+			type = "person"
+		},
+		{
+			text = "Pontus Nilsson",
+			type = "person"
+		},
+		{
+			text = "Ri\u010dardas Dukauskas",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_console_programmer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Patrik Wennersten",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_ui_programmer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Manny Blanc",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_engine_team_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Peder Nordenström",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_engine_programmer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Axel Kinner",
+			type = "person"
+		},
+		{
+			text = "Dmytro Vovk",
+			type = "person"
+		},
+		{
+			text = "Henrik Johansson",
+			type = "person"
+		},
+		{
+			text = "Jonas Hultén",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_tools_team_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Karl Werf",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_tools_programmer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Martin Tittenberger",
+			type = "person"
+		},
+		{
+			text = "Aleksandar Jankovic",
+			type = "person"
+		},
+		{
+			text = "Alex Sundström",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_art_team_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Arvid Nilsson",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_lead_artist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Robin Lundin",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_lead_concept_artist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Mattias Rousk",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_2d_artist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Johan Söderberg",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_character_team_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Madeleine Von Post",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_lead_animator",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Morris Belfrage",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_technical_art_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Mikael Hansson",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_technical_artist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Erik Lindqvist",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_visual_effects_artist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Alina Moskolenco",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_level_artist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Sara Sällemark",
+			type = "person"
+		},
+		{
+			text = "Kaneda Maskell",
+			type = "person"
+		},
+		{
+			text = "Tomas Holm",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_sound_design_team_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "David Wahlund",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_sound_design",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Jonas Hellberg",
+			type = "person"
+		},
+		{
+			text = "Ranga Illeperuma",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_music",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Jesper Kyd",
+			type = "person"
+		},
+		{
+			text = "Two Feathers",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_quality_assurance_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Otto Elggren",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_release_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Emilia Johansson Kiviaho",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_quality_assurance",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Eric Sernfalk",
+			type = "person"
+		},
+		{
+			text = "Joakim Vestin",
+			type = "person"
+		},
+		{
+			text = "Hussein Kadhum",
+			type = "person"
+		},
+		{
+			text = "Patrick Ahonen",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_qa_console_specialist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Ola Torung",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_community_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Leo Wakelin",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_pr_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Gunnar Johansson",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_graphic_designer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Hanna Holmgren",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_community_support",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Julia Currie",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_cinematic_director",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Tor Helmstein",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_video_editor",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Tim Jacobsson",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_content_specialist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Tuva Janhans",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_cfo",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Jonas Lundberg",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_head_of_administration",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Martin Karlsson",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_cio",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Johan Jonker",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_it_engineer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Frank Hammar",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_it_engineer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Fadi Akrawi",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_office_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Marta Olina",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_voice_actors",
+			localized = true,
+			type = "header"
+		},
+		{
+			text = "credits_omuk_london",
+			localized = true,
+			type = "header"
+		},
+		{
+			text = "credits_witch_hunter",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Tim Bentinck",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_bright_wizard",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Bethan Dixon Bate",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_sergeant",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Dan Mersh",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_waywatcher",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Alix Wilton Regan",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_dwarf_ranger",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "David Rintoul",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_innkeeper",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "David Shaw Parker",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_ferry_lady",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Nicolette McKenzie",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_board",
+			localized = true,
+			type = "header"
+		},
+		{
+			text = "Thomas Lindgren, Chairman of The Board",
+			type = "person"
+		},
+		{
+			text = "Stefan Lindberg, Board QA",
+			type = "person"
+		},
+		{
+			text = "Stina Vällfors",
+			type = "person"
+		},
+		{
+			text = "Helena Hernander",
+			type = "person"
+		},
+		{
+			text = "Erik Ringertz",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "MoGi Group",
+			localized = false,
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "GameSoar Studio",
+			localized = false,
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "Q-Loc",
+			localized = false,
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "Trace Studios",
+			localized = false,
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "Red Hot CG",
+			localized = false,
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "Suntech",
+			localized = false,
+			type = "header"
+		},
+		{
+			text = "Abhijeet Palem",
+			type = "person"
+		},
+		{
+			text = "Sainath Bakki",
+			type = "person"
+		},
+		{
+			text = "Dhiraj Shenoy",
+			type = "person"
+		},
+		{
+			text = "Ragavendra Vinod",
+			type = "person"
+		},
+		{
+			text = "Ronit Jena",
+			type = "person"
+		},
+		{
+			text = "Sainath Bakki(PC)",
+			type = "person"
+		},
+		{
+			text = "Abhishek Singh(PC)",
+			type = "person"
+		},
+		{
+			text = "Sabyasachi Rajguru(PC)",
+			type = "person"
+		},
+		{
+			text = "Somasekhar Chimmiri(XB1)",
+			type = "person"
+		},
+		{
+			text = "Shilpa Laxmana(XB1)",
+			type = "person"
+		},
+		{
+			text = "Laxman Kambala(XB1)",
+			type = "person"
+		},
+		{
+			text = "Chetan C",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = "credits_thanks",
+			localized = true,
+			type = "header"
+		},
+		{
+			text = "Nathaniel Blue",
+			type = "person"
+		},
+		{
+			text = "Chris Charla",
+			type = "person"
+		},
+		{
+			text = "Jonas Lundberg",
+			type = "person"
+		},
+		{
+			text = "Gustaf Ström",
+			type = "person"
+		},
+		{
+			text = "10 Chambers",
+			type = "person"
+		},
+		{
+			text = "Ervin Li",
+			type = "person"
+		},
+		{
+			text = "Kai Chan",
+			type = "person"
+		},
+		{
+			text = "Erik Blomberg",
+			type = "person"
+		},
+		{
+			text = "Harry Höglund",
+			type = "person"
+		},
+		{
+			text = "Elias Wahlund",
+			type = "person"
+		},
+		{
+			text = "Lelle",
+			type = "person"
+		},
+		{
+			text = "Molle",
+			type = "person"
+		},
+		{
+			text = "Maximilian 'Mulleboy' Delic",
+			type = "person"
+		},
+		{
+			text = "Emily Drameus",
+			type = "person"
+		},
+		{
+			text = "George Bain",
+			type = "person"
+		},
+		{
+			text = "Antoine Cohade",
+			type = "person"
+		},
+		{
+			text = "Charles Revillon",
+			type = "person"
+		},
+		{
+			text = "Luke Valentine",
+			type = "person"
+		},
+		{
+			text = "Ilkka Koho",
+			type = "person"
+		},
+		{
+			text = "Phil Scott",
+			type = "person"
+		},
+		{
+			text = "Xeddan",
+			type = "person"
+		},
+		{
+			text = "Kostas",
+			type = "person"
+		},
+		{
+			text = "Jsat",
+			type = "person"
+		},
+		{
+			text = "SneakyPanda",
+			type = "person"
+		},
+		{
+			text = "ThoughtA",
+			type = "person"
+		},
+		{
+			text = "Miles Peterson (Krindi)",
+			type = "person"
+		},
+		{
+			text = "SoftClub",
+			type = "person"
+		},
+		{
+			text = "Osquars",
+			type = "person"
+		},
+		{
+			text = "CCD Robin",
+			type = "person"
+		},
+		{
+			text = "CS1",
+			type = "person"
+		},
+		{
+			text = "MuffinMonster",
+			type = "person"
+		},
+		{
+			text = "AgainPyromancer",
+			type = "person"
+		},
+		{
+			text = "Eruyome",
+			type = "person"
+		},
+		{
+			text = "Henry Cowell Redwoods State Park",
+			type = "person"
+		},
+		{
+			text = "Bram Eulaers",
+			type = "person"
+		},
+		{
+			text = "Guillaume Aldebert",
+			type = "person"
+		},
+		{
+			text = "Kiara J. Lee",
+			type = "person"
+		},
+		{
+			text = "Simon Viklund",
+			type = "person"
+		},
+		{
+			text = "Peter Jemstedt",
+			type = "person"
+		},
+		{
+			text = "Staffan Gynnemo",
+			type = "person"
+		},
+		{
+			text = "Sofia",
+			type = "person"
+		},
+		{
+			text = "Rafael Boruta",
+			type = "person"
+		},
+		{
+			text = "Fabian Hårdberg",
+			type = "person"
+		},
+		{
+			text = "Niklas Ängelid",
+			type = "person"
+		},
+		{
+			text = "Erik Bystedt",
+			type = "person"
+		},
+		{
+			text = "Joel Boqvist",
+			type = "person"
+		},
+		{
+			text = "Anders Wickenberg",
+			type = "person"
+		},
+		{
+			text = "Jan Verhagen",
+			type = "person"
+		},
+		{
+			text = "Johan Marmén",
+			type = "person"
+		},
+		{
+			text = "Mira Olofsson",
+			type = "person"
+		},
+		{
+			text = "Jakob Sthillert",
+			type = "person"
+		},
+		{
+			text = "Martin Wennberg",
+			type = "person"
+		},
+		{
+			text = "Anette Wennberg",
+			type = "person"
+		},
+		{
+			text = "Janiv Adolfsson Mann",
+			type = "person"
+		},
+		{
+			text = "Pernilla Granfeldt",
+			type = "person"
+		},
+		{
+			text = "Linda Helin",
+			type = "person"
+		},
+		{
+			text = "Johan Åsberg",
+			type = "person"
+		},
+		{
+			text = "Rockelstad Slott",
+			type = "person"
+		},
+		{
+			text = "August Berglund",
+			type = "person"
+		},
+		{
+			text = "Niclas Hjälm",
+			type = "person"
+		},
+		{
+			text = "Fredrik Hujber",
+			type = "person"
+		},
+		{
+			text = "Emil Hagelin",
+			type = "person"
+		},
+		{
+			text = "Bingdong Qu",
+			type = "person"
+		},
+		{
+			text = "Dexter Warhammar Stormdal",
+			type = "person"
+		},
+		{
+			text = "Louie Warhammar Stormdal",
+			type = "person"
+		},
+		{
+			text = "Andy Law",
+			type = "person"
+		},
+		{
+			text = "Dominic McDowall",
+			type = "person"
+		},
+		{
+			text = "Padraig Murphy",
+			type = "person"
+		},
+		{
+			text = "Cubicle7",
+			type = "person"
+		},
+		{
+			text = "All the fantastic people in the Pond discord, you know who you are!",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_family",
+			localized = true,
+			type = "person"
+		},
+		{
+			text = "credits_fans",
+			localized = true,
+			type = "person"
+		},
+		{
+			text = "&",
+			type = "person"
+		},
+		{
+			text = "Games Workshop",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = " ",
+			type = "header"
+		},
+		{
+			text = "Vermintide 2:",
+			type = "header"
+		},
+		{
 			text = "area_selection_penny_name",
 			localized = true,
 			type = "header"

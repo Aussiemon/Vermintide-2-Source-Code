@@ -320,6 +320,17 @@ local ww_helmet_mask = {
 	buffs = {}
 }
 Attachments.ww_helmet_mask = table.clone(ww_helmet_mask)
+local ww_half_mask = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_head_default",
+	attachment_node_linking = AttachmentNodeLinking.ww_half_mask,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_half_mask = table.clone(ww_half_mask)
 local es_hats = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

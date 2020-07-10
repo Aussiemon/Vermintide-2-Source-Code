@@ -1983,6 +1983,7 @@ Talents.empire_soldier = {
 		description = "markus_knight_ability_attack_speed_enemy_hit_desc",
 		name = "markus_knight_ability_attack_speed_enemy_hit",
 		num_ranks = 1,
+		buffer = "server",
 		icon = "markus_knight_ability_attack_speed_enemy_hit",
 		description_values = {
 			{

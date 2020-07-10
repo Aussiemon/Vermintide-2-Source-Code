@@ -620,9 +620,11 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 						end
 					elseif currently_playing_dialogue.dialogue_timer then
 						if extension.input:is_silenced() then
-							local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(unit)
+							if self.is_server then
+								local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(unit)
 
-							Managers.state.network.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
+								Managers.state.network.network_transmit:send_rpc_all("rpc_interrupt_dialogue_event", go_id, is_level_unit)
+							end
 						else
 							currently_playing_dialogue.dialogue_timer = currently_playing_dialogue.dialogue_timer - dt
 						end
@@ -1362,7 +1364,22 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 	local dialogue = self.dialogues[dialogue_name]
 	local extension = self.unit_extension_data[dialogue_actor_unit]
 	local sound_event, subtitles_event, anim_face_event, anim_dialogue_event = DialogueQueries.get_dialogue_event(dialogue, dialogue_index)
-	dialogue.currently_playing_subtitle = subtitles_event
+	local modified_event = nil
+	local career_name = extension.context.player_career
+	local career_settings = CareerSettings[career_name]
+	local unique_subtitles = career_settings and career_settings.unique_subtitles
+
+	if unique_subtitles then
+		local prefix = unique_subtitles[1]
+		local insert_index = unique_subtitles[2]
+		modified_event = string.insert(subtitles_event, prefix, insert_index)
+	end
+
+	if modified_event and Managers.localizer:exists(modified_event) then
+		dialogue.currently_playing_subtitle = modified_event
+	else
+		dialogue.currently_playing_subtitle = subtitles_event
+	end
 
 	if dialogue.intended_player_profile ~= nil and dialogue.intended_player_profile ~= get_local_sound_character() then
 		dialogue.currently_playing_subtitle = ""

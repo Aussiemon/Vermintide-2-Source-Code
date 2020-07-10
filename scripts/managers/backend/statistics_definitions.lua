@@ -582,10 +582,9 @@ for career, _ in pairs(CareerSettings) do
 
 	if career_breed and career_breed.is_hero then
 		player.min_health_percentage[career] = {
-			value = 1,
-			sync_on_hot_join = true
+			value = 1
 		}
-		database_name = "min_health_completed_" .. career
+		local database_name = "min_health_completed_" .. career
 		player.min_health_completed[career] = {
 			value = 0,
 			source = "player_data",

@@ -2,7 +2,16 @@ AdventureMechanism = class(AdventureMechanism)
 AdventureMechanism.name = "Adventure"
 
 AdventureMechanism.init = function (self, settings, level_key)
-	self._hub_level_key = "inn_level"
+	local backend_manager = Managers.backend
+
+	if backend_manager:interfaces_ready() then
+		local live_events_interface = Managers.backend:get_interface("live_events")
+		self._hub_level_key = live_events_interface:get_inn_level_name()
+	else
+		self._hub_level_key = "inn_level"
+
+		print("[AdventureMechanism] Interfaces not ready, defaulting to inn_level")
+	end
 
 	self:reset(settings, level_key)
 end
@@ -16,12 +25,25 @@ AdventureMechanism.on_venture_end = function (self)
 end
 
 AdventureMechanism.reset = function (self, settings, level_key)
-	local level_settings = LevelSettings[level_key or "inn_level"]
+	if not level_key then
+		local backend_manager = Managers.backend
+
+		if backend_manager:interfaces_ready() then
+			local live_events_interface = Managers.backend:get_interface("live_events")
+			level_key = live_events_interface:get_inn_level_name()
+		else
+			level_key = "inn_level"
+
+			print("[AdventureMechanism] Interfaces not ready, defaulting to inn_level")
+		end
+	end
+
+	local level_settings = LevelSettings[level_key]
 	self._prior_state = self._state
 
 	if level_settings.hub_level then
 		self._state = "inn"
-		self._hub_level_key = level_key or "inn_level"
+		self._hub_level_key = level_key
 	else
 		self._state = "ingame"
 	end

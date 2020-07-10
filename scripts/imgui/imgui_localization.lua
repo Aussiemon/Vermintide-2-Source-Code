@@ -2,12 +2,13 @@ ImguiLocalization = class(ImguiLocalization)
 local LOCALES = {
 	"en",
 	"fr",
-	"pl",
-	"es",
-	"tr",
+	"it",
 	"de",
+	"es",
+	"pl",
 	"br-pt",
-	"ru"
+	"ru",
+	"tr"
 }
 
 ImguiLocalization.init = function (self)

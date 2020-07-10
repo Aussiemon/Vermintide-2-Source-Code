@@ -2933,6 +2933,30 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	ww_half_mask = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "j_spine2"
+			},
+			{
+				target = "j_spine2",
+				source = "j_spine2"
+			},
+			{
+				target = "j_neck",
+				source = "j_neck"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_jaw_anim",
+				source = "j_jaw_anim"
+			}
+		}
+	},
 	es_hat_skinned = {
 		slot_hat = {
 			{

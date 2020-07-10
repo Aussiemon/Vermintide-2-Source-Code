@@ -47,8 +47,8 @@ StatisticsUtil.generate_weapon_kill_stats_dlc = function (stat_player, dlc_name,
 end
 
 local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_item)
-	local weapon_stats_dlcs = nil
 	local weapon_name = weapon_item.name
+	local weapon_stats_dlcs = _tracked_weapon_kill_stats[weapon_name]
 	local rarity = weapon_item.rarity
 
 	if rarity == "magic" then
@@ -719,6 +719,12 @@ StatisticsUtil.register_weave_complete = function (statistics_db, player, is_qui
 	local career_index = player:career_index()
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
+	local completed_percentage = statistics_db:get_stat(stats_id, "min_health_percentage", career_name)
+	local highest_completed_percentage = statistics_db:get_persistent_stat(stats_id, "min_health_completed", career_name)
+
+	if highest_completed_percentage and completed_percentage and highest_completed_percentage <= completed_percentage then
+		statistics_db:set_stat(stats_id, "min_health_completed", career_name, completed_percentage)
+	end
 
 	if is_quick_game then
 		local weave_quickplay_wins_stat_name = "weave_quickplay_wins"

@@ -42,6 +42,10 @@ CareerSettings.es_questingknight = {
 		material_name = "es_questingknight",
 		resource = "video/career_videos/kruber/es_questingknight"
 	},
+	unique_subtitles = {
+		"gk_",
+		4
+	},
 	preview_items = {
 		{
 			item_name = "es_bastard_sword_preview"

@@ -7,13 +7,12 @@ BackendInterfaceLiveEventsPlayfab.init = function (self, backend_mirror)
 	self._last_id = 0
 	self._live_events = {}
 	self._completed_live_event_requests = {}
-	self._initial_request_id = self:request_live_events()
+	local live_events_string = Managers.backend:get_title_data("live_events")
+	self._live_events = (live_events_string and cjson.decode(live_events_string)) or {}
 end
 
 BackendInterfaceLiveEventsPlayfab.ready = function (self)
-	local initial_request_complete = self:live_events_request_complete(self._initial_request_id)
-
-	return initial_request_complete
+	return true
 end
 
 BackendInterfaceLiveEventsPlayfab.update = function (self, dt)

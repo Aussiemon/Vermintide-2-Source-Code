@@ -63,7 +63,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 			local hero_level = ExperienceSettings.get_level(hero_experience)
 			local career = profile.careers[wanted_career_index]
 
-			if not career.is_unlocked_function(hero_name, hero_level) then
+			if not career or not career.is_unlocked_function(hero_name, hero_level) then
 				wanted_career_index = 1
 
 				hero_attributes:set(hero_name, "career", wanted_career_index)

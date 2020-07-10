@@ -138,6 +138,18 @@ DialogueSettings.level_specific_load_files = {
 	inn_level = {
 		"dialogues/generated/hub_conversations"
 	},
+	inn_level_celebrate = {
+		"dialogues/generated/hub_conversations"
+	},
+	inn_level_halloween = {
+		"dialogues/generated/hub_conversations"
+	},
+	inn_level_skulls = {
+		"dialogues/generated/hub_conversations"
+	},
+	inn_level_sonnstill = {
+		"dialogues/generated/hub_conversations"
+	},
 	bell = {
 		"dialogues/generated/wood_elf_bell",
 		"dialogues/generated/empire_soldier_bell",
@@ -155,9 +167,13 @@ DialogueSettings.level_specific_load_files = {
 	}
 }
 DialogueSettings.blocked_auto_load_files = {
-	inn_level = true,
+	inn_level_sonnstill = true,
+	inn_level_celebrate = true,
 	prologue = true,
-	tutorial = true
+	tutorial = true,
+	inn_level_skulls = true,
+	inn_level_halloween = true,
+	inn_level = true
 }
 
 for _, dlc in pairs(DLCSettings) do

@@ -508,15 +508,22 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	local previous_completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key) or 0
 
 	ingame_ui:handle_transition("close_active")
+
+	if Managers.twitch then
+		Managers.twitch:deactivate_twitch_game_mode()
+	end
+
+	if ingame_ui.leave_game then
+		StatisticsUtil.reset_mission_streak(player, statistics_db, stats_id)
+
+		return
+	end
+
 	LoreBookHelper.save_new_pages()
 
 	local mission_system = Managers.state.entity:system("mission_system")
 
 	mission_system:set_percentage_completed(percentages_completed)
-
-	if Managers.twitch then
-		Managers.twitch:deactivate_twitch_game_mode()
-	end
 
 	local achievement_manager = Managers.state.achievement
 
@@ -608,6 +615,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		if status == "commit_error" then
 			Managers.backend:commit_error()
 
+			return
+		end
+
+		if ingame_ui.leave_game then
 			return
 		end
 

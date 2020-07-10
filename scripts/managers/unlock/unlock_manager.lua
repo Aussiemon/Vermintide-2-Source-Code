@@ -312,7 +312,20 @@ UnlockManager._update_console_backend_unlocks = function (self)
 		if unseen_rewards then
 			for i = 1, #unseen_rewards, 1 do
 				local reward = unseen_rewards[i]
-				local item = item_interface:get_item_from_id(reward.backend_id)
+				local item = nil
+
+				if reward.item_type == "weapon_skin" then
+					local item_id = reward.item_id
+					local weapon_skin_data = WeaponSkins.skins[item_id]
+					local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
+					item = {
+						data = weapon_skin_data,
+						backend_id = backend_id,
+						key = item_id
+					}
+				else
+					item = item_interface:get_item_from_id(reward.backend_id)
+				end
 
 				if item then
 					local item_data = item.data
@@ -540,6 +553,7 @@ UnlockManager._update_backend_unlocks = function (self)
 				if not dlcs_interface:updating_dlc_ownership() then
 					local owned_dlcs = dlcs_interface:get_owned_dlcs()
 					local platform_dlcs = dlcs_interface:get_platform_dlcs()
+					local new_dlc_unlocked = false
 
 					for i = 1, #platform_dlcs, 1 do
 						local unlock_name = platform_dlcs[i]
@@ -549,10 +563,15 @@ UnlockManager._update_backend_unlocks = function (self)
 							local id = unlock and unlock:id()
 
 							if id and Steam.is_installed(id) then
-								print("UNLOCKED", unlock_name)
-								dlcs_interface:update_dlc_ownership()
+								printf("UNLOCKED: %s", unlock_name)
+
+								new_dlc_unlocked = true
 							end
 						end
+					end
+
+					if new_dlc_unlocked then
+						dlcs_interface:update_dlc_ownership()
 					end
 				end
 			end
@@ -582,11 +601,13 @@ UnlockManager._update_backend_unlocks = function (self)
 						local item = nil
 
 						if reward.item_type == "weapon_skin" then
-							local weapon_skin_data = WeaponSkins.skins[reward.item_id]
-							local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(reward.item_id)
+							local item_id = reward.item_id
+							local weapon_skin_data = WeaponSkins.skins[item_id]
+							local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
 							item = {
 								data = weapon_skin_data,
-								backend_id = backend_id
+								backend_id = backend_id,
+								key = item_id
 							}
 						else
 							item = item_interface:get_item_from_id(reward.backend_id)

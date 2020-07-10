@@ -921,17 +921,33 @@ HeroViewStateStore._update_dlc_purchases = function (self)
 		for i = 1, #unseen_rewards, 1 do
 			local unseen_reward = unseen_rewards[i]
 			local backend_id = unseen_reward.backend_id
-			local item = item_interface:get_item_from_id(backend_id)
-			local item_key = item.key
-			local store_item = self:get_item_by_key(item_key)
+			local item = nil
 
-			if store_item then
-				local product = {
-					type = "item",
-					item = store_item,
-					product_id = item_key
+			if unseen_reward.item_type == "weapon_skin" then
+				local item_id = unseen_reward.item_id
+				local weapon_skin_data = WeaponSkins.skins[item_id]
+				local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
+				item = {
+					data = weapon_skin_data,
+					backend_id = backend_id,
+					key = item_id
 				}
-				self._unseen_product_reward_queue[#self._unseen_product_reward_queue + 1] = product
+			else
+				item = item_interface:get_item_from_id(unseen_reward.backend_id)
+			end
+
+			if item then
+				local item_key = item.key
+				local store_item = self:get_item_by_key(item_key)
+
+				if store_item then
+					local product = {
+						type = "item",
+						item = store_item,
+						product_id = item_key
+					}
+					self._unseen_product_reward_queue[#self._unseen_product_reward_queue + 1] = product
+				end
 			end
 		end
 	end

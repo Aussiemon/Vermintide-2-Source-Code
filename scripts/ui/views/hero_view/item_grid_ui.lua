@@ -14,6 +14,11 @@ ItemGridUI.init = function (self, category_settings, widget, hero_name, career_i
 	self._platform = PLATFORM
 	self._category_settings = category_settings
 	self._widget = widget
+
+	if career_index > #PROFILES_BY_NAME[hero_name].careers then
+		career_index = 1
+	end
+
 	self._hero_name = hero_name
 	self._career_index = career_index
 	self._locked_items = {}

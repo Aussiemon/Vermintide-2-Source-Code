@@ -258,23 +258,20 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, z
 	local pack_spawning_setting = conflict_director.pack_spawning
 	local initial_roaming_set = pack_spawning_setting.roaming_set
 	local random_director_list = Managers.state.conflict.enemy_package_loader.random_director_list
-	local director_index = 1
+	local zone_director_list = Managers.state.conflict.enemy_package_loader.zone_conflict_directors
+	local random_director_index = 1
 
 	for i = 1, num_main_zones, 1 do
 		local zone_layer = zones[i]
-		local override_conflict_directors = zone_layer.roaming_set
+		local override_conflict_setting = zone_director_list[i]
 
-		if override_conflict_directors then
-			override_conflict_directors = string.split(override_conflict_directors, "/")
-			local random_int = math.random(#override_conflict_directors)
-			local conflict_director_name = override_conflict_directors[random_int]
-
-			if conflict_director_name == "random" then
-				conflict_director_name = random_director_list[director_index].name
-				director_index = director_index + 1
+		if override_conflict_setting then
+			if override_conflict_setting == "random" then
+				override_conflict_setting = random_director_list[random_director_index].name
+				random_director_index = random_director_index + 1
 			end
 
-			conflict_director = ConflictDirectors[conflict_director_name]
+			conflict_director = ConflictDirectors[override_conflict_setting]
 			local pack_spawning = conflict_director.pack_spawning
 
 			if pack_spawning then
@@ -323,10 +320,10 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, z
 	return great_cycles
 end
 
-MainPathSpawningGenerator.get_unique_non_random_conflict_directors = function (default_conflict_director_name, zones, num_main_zones)
+MainPathSpawningGenerator.get_unique_non_random_conflict_directors = function (default_conflict_director_name, zones, num_main_zones, level_seed)
 	local non_random_conflict_directors = {}
+	local zone_conflict_directors = {}
 	local num_random = 0
-	local num_non_random = 0
 
 	if num_main_zones > 0 then
 		if zones[1].roaming_set == nil then
@@ -339,14 +336,15 @@ MainPathSpawningGenerator.get_unique_non_random_conflict_directors = function (d
 
 			if conflict_directors then
 				conflict_directors = string.split(conflict_directors, "/")
-				local random_int = math.random(#conflict_directors)
+				local random_int = 1
+				level_seed, random_int = Math.next_random(level_seed, 1, #conflict_directors)
 				local conflict_director_name = conflict_directors[random_int]
+				zone_conflict_directors[i] = conflict_director_name
 
 				if conflict_director_name == "random" then
 					num_random = num_random + 1
 				else
 					non_random_conflict_directors[conflict_director_name] = true
-					num_non_random = num_non_random + 1
 				end
 			end
 		end
@@ -354,7 +352,7 @@ MainPathSpawningGenerator.get_unique_non_random_conflict_directors = function (d
 		non_random_conflict_directors[default_conflict_director_name] = true
 	end
 
-	return non_random_conflict_directors, num_random, num_non_random
+	return non_random_conflict_directors, num_random, zone_conflict_directors, level_seed
 end
 
 return

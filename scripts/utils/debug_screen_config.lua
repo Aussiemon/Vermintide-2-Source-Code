@@ -7073,7 +7073,7 @@ Features that make player mechanics nicer to work with.
 	{
 		description = "Unlocks a Challenge by setting by incrementing the appropriate statistics.",
 		setting_name = "Unlock Challenges",
-		category = "Progress",
+		category = "Progression",
 		clear_when_selected = true,
 		item_source = {},
 		load_items_source_func = function (options)
@@ -7114,7 +7114,7 @@ Features that make player mechanics nicer to work with.
 	{
 		description = "Clears a Challenge by setting the appropriate statistics to 0.",
 		setting_name = "Clear Challenges",
-		category = "Progress",
+		category = "Progression",
 		clear_when_selected = true,
 		item_source = {},
 		load_items_source_func = function (options)
@@ -7152,7 +7152,7 @@ Features that make player mechanics nicer to work with.
 		description = "Sets all Okris challenges to be claimable in the UI",
 		is_boolean = true,
 		setting_name = "set_all_challenges_claimable",
-		category = "Progress"
+		category = "Progression"
 	},
 	{
 		description = "Show data for objectives in the current level",
@@ -7335,6 +7335,12 @@ Features that make player mechanics nicer to work with.
 
 			statistics_db:set_stat(stats_id, "scorpion_onboarding_weave_first_fail_vo_played", 0)
 		end
+	},
+	{
+		description = "Count owned DLCs as installed. Makes it easier to test DLCs through steam console with enable/disable_license",
+		is_boolean = true,
+		setting_name = "count_owned_dlc_as_installed",
+		category = "DLC"
 	}
 }
 
