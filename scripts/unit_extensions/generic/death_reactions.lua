@@ -645,29 +645,6 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 			end
 		end
 	end
-
-	local attacker_talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system")
-	local attacker_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
-	local is_server = Managers.state.network.is_server
-
-	if is_server and attacker_talent_extension and attacker_talent_extension:has_talent("sienna_unchained_exploding_burning_enemies") and attacker_buff_extension:has_buff_perk("sienna_unchained") then
-		local ai_buff_extension = ScriptUnit.has_extension(ai_unit, "buff_system")
-		local proc_chance = 0.35
-
-		if math.random() <= proc_chance and ai_buff_extension and ai_buff_extension:has_buff_perk("burning") then
-			local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
-			local area_damage_system = Managers.state.entity:system("area_damage_system")
-			local position = POSITION_LOOKUP[ai_unit]
-			local damage_source = "buff"
-			local explosion_template = "sienna_unchained_burning_enemies_explosion"
-			local rotation = Quaternion.identity()
-			local career_power_level = career_extension:get_career_power_level()
-			local scale = 1
-			local is_critical_strike = false
-
-			area_damage_system:create_explosion(attacker_unit, position, rotation, explosion_template, scale, damage_source, career_power_level, is_critical_strike)
-		end
-	end
 end
 
 local function kill_minotaur_under_oak_challenge(player, unit)

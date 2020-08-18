@@ -346,7 +346,7 @@ PassiveAbilitySettings = {
 			"kerillian_maidenguard_passive_dodge_speed",
 			"kerillian_maidenguard_passive_stamina_regen_aura",
 			"kerillian_maidenguard_passive_increased_stamina",
-			"kerillian_maidenguard_passive_uninterruptible_revive",
+			"kerillian_maidenguard_ress_time",
 			"kerillian_maidenguard_ability_cooldown_on_hit",
 			"kerillian_maidenguard_ability_cooldown_on_damage_taken"
 		},
@@ -357,7 +357,7 @@ PassiveAbilitySettings = {
 			},
 			{
 				display_name = "career_passive_name_we_2c",
-				description = "career_passive_desc_we_2c"
+				description = "career_passive_desc_we_2c_2"
 			}
 		}
 	},

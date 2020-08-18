@@ -101,7 +101,7 @@ weapon_template.actions = {
 			apply_recoil = true,
 			hit_effect = "fireball_impact",
 			damage_window_end = 0,
-			overcharge_type = "brace_of_drake_pistols_charged",
+			overcharge_type = "shotgun",
 			alert_sound_range_fire = 12,
 			fire_sound_event = "player_combat_weapon_drakepistol_fire",
 			anim_event = "attack_shoot_charged",
@@ -298,10 +298,10 @@ weapon_template.weapon_type = "DRAKEFIRE"
 weapon_template.dodge_count = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 0.85
+		external_optional_multiplier = 1
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 0.85
+		external_optional_multiplier = 1
 	}
 }
 weapon_template.wwise_dep_right_hand = {

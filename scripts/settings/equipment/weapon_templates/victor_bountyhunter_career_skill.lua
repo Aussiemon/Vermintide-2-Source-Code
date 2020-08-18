@@ -114,6 +114,7 @@ weapon_template.actions = {
 			alert_sound_range_fire = 12,
 			damage_profile_aoe = "shield_slam_aoe",
 			uninterruptible = true,
+			ignore_shield_hit = true,
 			total_time = 0.66,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"

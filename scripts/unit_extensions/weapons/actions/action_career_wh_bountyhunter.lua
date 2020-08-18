@@ -15,7 +15,7 @@ ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_actio
 	if talent_extension:has_talent("victor_bountyhunter_activated_ability_railgun") then
 		action_init_data.upper_barrel = "railgun"
 		action_init_data.lower_barrel = "railgun"
-	elseif talent_extension:has_talent("victor_bountyhunter_activated_ability_shotgun") then
+	elseif talent_extension:has_talent("victor_bountyhunter_activated_ability_blast_shotgun") then
 		action_init_data.upper_barrel = "shotgun"
 		action_init_data.lower_barrel = "shotgun"
 	else

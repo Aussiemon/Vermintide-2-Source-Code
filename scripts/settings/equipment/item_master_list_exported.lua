@@ -7080,6 +7080,20 @@ ItemMasterList.bw_skullstaff_flamethrower = {
 		"bw_unchained"
 	}
 }
+ItemMasterList.wpn_bardin_survival_ale = {
+	description = "wpn_beer_bottle",
+	temporary_template = "bardin_survival_ale",
+	right_hand_unit = "units/weapons/player/wpn_ale/wpn_ale",
+	is_local = true,
+	inventory_icon = "icons_placeholder",
+	slot_type = "potion",
+	description_type = "beer_bottle",
+	rarity = "plentiful",
+	gamepad_hud_icon = "icons_placeholder",
+	hud_icon = "icons_placeholder",
+	item_type = "potion",
+	can_wield = CanWieldAllItemTemplates
+}
 ItemMasterList.dr_1h_axe = {
 	description = "dw_1h_axe_skin_01_description",
 	rarity = "plentiful",

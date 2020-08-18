@@ -60,7 +60,13 @@ CareerAbilityESHuntsman._ability_available = function (self)
 	return can_use and not disabled and has_weapon
 end
 
-CareerAbilityESHuntsman._run_ability = function (self)
+CareerAbilityESHuntsman.force_trigger_ability = function (self)
+	local skip_cooldown = true
+
+	self:_run_ability(skip_cooldown)
+end
+
+CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 	local owner_unit = self.owner_unit
 	local is_server = self.is_server
 	local local_player = self.local_player
@@ -142,6 +148,21 @@ CareerAbilityESHuntsman._run_ability = function (self)
 		})
 	end
 
+	if talent_extension:has_talent("markus_huntsman_activated_ability_cooldown_2") then
+		local reference_buff = buff_extension:get_non_stacking_buff("markus_huntsman_passive")
+		local max_stacks = reference_buff.template.max_sub_buff_stacks
+
+		if not reference_buff.buff_list then
+			reference_buff.buff_list = {}
+		end
+
+		for i = 1, max_stacks, 1 do
+			if max_stacks > #reference_buff.buff_list then
+				table.insert(reference_buff.buff_list, buff_extension:add_buff("markus_huntsman_auto_headshot"))
+			end
+		end
+	end
+
 	local weapon_slot = "slot_ranged"
 	local slot_data = inventory_extension:get_slot_data(weapon_slot)
 	local right_unit_1p = slot_data.right_unit_1p
@@ -220,7 +241,10 @@ CareerAbilityESHuntsman._run_ability = function (self)
 		end
 	end
 
-	career_extension:start_activated_ability_cooldown()
+	if not skip_cooldown then
+		career_extension:start_activated_ability_cooldown()
+	end
+
 	self:_play_vo()
 end
 

@@ -436,7 +436,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.33,
@@ -500,7 +501,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_last = {
 			damage_window_start = 0.38,
@@ -510,7 +512,8 @@ weapon_template.actions = {
 			range_mod = 1.2,
 			use_precision_sweep = false,
 			width_mod = 25,
-			damage_profile = "light_blunt_tank_upper",
+			additional_critical_strike_chance = 0.1,
+			damage_profile = "light_blunt_smiter",
 			hit_effect = "melee_hit_hammers_1h",
 			damage_window_end = 0.52,
 			impact_sound_event = "blunt_hit",
@@ -569,7 +572,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_down = {
 			damage_window_start = 0.32,
@@ -703,7 +707,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		push = {
 			damage_window_start = 0.05,

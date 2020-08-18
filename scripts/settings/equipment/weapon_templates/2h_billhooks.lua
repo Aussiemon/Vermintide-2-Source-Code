@@ -868,23 +868,25 @@ weapon_template.actions = {
 			damage_window_start = 0.23,
 			push_radius = 3,
 			anim_end_event = "attack_finished",
-			range_mod = 1.35,
-			headshot_multiplier = 1.5,
-			first_person_hit_anim = "attack_hit_pull",
-			sweep_z_offset = 0.1,
-			width_mod = 20,
-			damage_window_end = 0.33,
-			hit_shield_stop_anim = "attack_hit",
-			hit_effect = "melee_hit_axes_2h",
+			fatigue_cost = "action_stun_push",
 			kind = "sweep",
-			additional_critical_strike_chance = 0,
+			first_person_hit_anim = "attack_hit_pull",
+			range_mod = 1.35,
+			width_mod = 20,
+			headshot_multiplier = 1.5,
+			hit_shield_stop_anim = "attack_hit",
+			damage_window_end = 0.33,
+			hit_effect = "melee_hit_axes_2h",
 			hit_time = 0.2,
-			impact_sound_event = "Play_weapon_billhook_grab",
-			damage_profile = "light_slashing_smiter_pull",
+			add_fatigue_on_hit = true,
+			sweep_z_offset = 0.1,
+			additional_critical_strike_chance = 0,
 			use_precision_sweep = true,
-			no_damage_impact_sound_event = "stab_hit_armour",
+			damage_profile = "light_slashing_smiter_pull",
 			dedicated_target_range = 4.8,
+			impact_sound_event = "Play_weapon_billhook_grab",
 			weapon_up_offset_mod = 0.25,
+			no_damage_impact_sound_event = "stab_hit_armour",
 			anim_event = "attack_swing_down",
 			height_mod = 4,
 			total_time = 1.5,
@@ -940,6 +942,11 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
+			end,
+			chain_condition_func = function (attacker_unit, input_extension)
+				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
+
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -961,17 +968,17 @@ weapon_template.wield_anim = "to_2h_billhook"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "POLEARM"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_count = 99
+weapon_template.dodge_count = 3
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.1
+		external_optional_multiplier = 1.15
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.1
+		external_optional_multiplier = 1.15
 	}
 }
 weapon_template.attack_meta_data = {

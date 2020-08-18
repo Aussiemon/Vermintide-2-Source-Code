@@ -600,35 +600,35 @@ SpreadTemplates = {
 	bounty_hunter_shotgun = {
 		continuous = {
 			still = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			},
 			moving = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			},
 			crouch_still = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			},
 			crouch_moving = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			},
 			zoomed_still = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			},
 			zoomed_moving = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			},
 			zoomed_crouch_still = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			},
 			zoomed_crouch_moving = {
-				max_yaw = 12,
+				max_yaw = 20,
 				max_pitch = 6
 			}
 		},

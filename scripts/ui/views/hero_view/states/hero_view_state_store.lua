@@ -812,6 +812,10 @@ HeroViewStateStore.input_service = function (self)
 end
 
 HeroViewStateStore.update = function (self, dt, t)
+	return
+end
+
+HeroViewStateStore._delayed_update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
@@ -1025,6 +1029,7 @@ HeroViewStateStore._has_active_level_vote = function (self)
 end
 
 HeroViewStateStore.post_update = function (self, dt, t)
+	self:_delayed_update(dt, t)
 	self:_windows_post_update(dt, t)
 
 	if self._new_state then

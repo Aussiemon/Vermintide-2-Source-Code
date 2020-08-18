@@ -33,7 +33,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack",
-					start_time = 0.45,
+					start_time = 0.4,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -92,7 +92,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_right",
-					start_time = 0.45,
+					start_time = 0.4,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -517,7 +517,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.15,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -580,7 +580,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.2,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -643,7 +643,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.3,
+			anim_time_scale = time_mod * 1.35,
 			buff_data = {
 				{
 					start_time = 0,
@@ -661,7 +661,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.9,
+					start_time = 0.75,
 					action = "action_one",
 					input = "action_one"
 				},
@@ -699,7 +699,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.15,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,

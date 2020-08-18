@@ -11,7 +11,7 @@ weapon_template.actions = {
 			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
-			anim_event = "attack_swing_charge_left",
+			anim_event = "attack_swing_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -33,7 +33,7 @@ weapon_template.actions = {
 					input = "action_one_release"
 				},
 				{
-					sub_action = "heavy_attack_left",
+					sub_action = "heavy_attack",
 					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
@@ -57,7 +57,7 @@ weapon_template.actions = {
 					input = "action_one_hold"
 				},
 				{
-					sub_action = "heavy_attack_left",
+					sub_action = "heavy_attack",
 					start_time = 0.7,
 					action = "action_one",
 					auto_chain = true
@@ -211,6 +211,65 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_left",
+					start_time = 0.5,
+					action = "action_one",
+					input = "action_one_release"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					start_time = 0.5,
+					blocker = true,
+					end_time = 1,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "heavy_attack_left",
+					start_time = 0.7,
+					action = "action_one",
+					auto_chain = true
+				}
+			}
+		},
+		default_right_bopp = {
+			aim_assist_ramp_multiplier = 0.2,
+			aim_assist_ramp_decay_delay = 0.1,
+			anim_end_event = "attack_finished",
+			kind = "melee_start",
+			aim_assist_max_ramp_multiplier = 0.4,
+			uninterruptible = true,
+			anim_event = "attack_swing_charge_pose",
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
+			end,
+			total_time = math.huge,
+			buff_data = {
+				{
+					start_time = 0,
+					external_multiplier = 0.5,
+					buff_name = "planted_charging_decrease_movement"
+				}
+			},
+			allowed_chain_actions = {
+				{
+					sub_action = "light_attack_last",
+					start_time = 0,
+					action = "action_one",
+					end_time = 0.3,
+					input = "action_one_release"
+				},
+				{
+					sub_action = "heavy_attack",
 					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
@@ -633,16 +692,15 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			width_mod = 25,
-			additional_critical_strike_chance = 0,
+			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
-			damage_profile = "light_blunt_tank_upper",
+			damage_profile = "light_blunt_smiter",
 			hit_effect = "melee_hit_hammers_2h",
 			damage_window_end = 0.34,
 			impact_sound_event = "blunt_hit",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2,
 			anim_event = "attack_swing_up_left",
-			hit_stop_anim = "attack_hit",
 			total_time = 1.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -690,7 +748,7 @@ weapon_template.actions = {
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.4,
-			range_mod = 1.2,
+			range_mod = 1.3,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -725,7 +783,7 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_left",
+					sub_action = "default_right_bopp",
 					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_two_hold",

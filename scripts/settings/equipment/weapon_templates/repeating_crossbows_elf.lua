@@ -232,7 +232,7 @@ weapon_template.actions = {
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
 weapon_template.ammo_data = {
-	max_ammo = 30,
+	max_ammo = 45,
 	ammo_per_reload = 15,
 	ammo_per_clip = 15,
 	play_reload_anim_on_wield_reload = true,

@@ -18,6 +18,7 @@ ActionBase.init = function (self, world, item_name, is_server, owner_unit, damag
 	self.is_server = is_server
 	self.is_bot = self.owner_player and self.owner_player.bot_player
 	self._is_critical_strike = false
+	self._fatigue_reset = true
 end
 
 ActionBase.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
@@ -25,6 +26,8 @@ ActionBase.client_owner_start_action = function (self, new_action, t, chain_acti
 	local buff_extension = ScriptUnit.has_extension(self.owner_unit, "buff_system")
 
 	buff_extension:trigger_procs("on_start_action", new_action, t, chain_action_data, power_level, action_init_data)
+
+	self._fatigue_reset = true
 end
 
 ActionBase._handle_critical_strike = function (self, is_critical_strike, buff_extension, hud_extension, first_person_extension, proc_type, hud_sound_event)
@@ -59,23 +62,27 @@ end
 ActionBase._handle_fatigue = function (self, buff_extension, status_extension, new_action, check_buffs)
 	local procced = nil
 
-	if check_buffs then
-		procced = buff_extension:has_buff_perk("no_push_fatigue_cost")
-	end
-
-	if not procced then
-		local cost = "action_push"
-
-		if new_action.fatigue_cost then
-			cost = new_action.fatigue_cost
+	if self._fatigue_reset then
+		if check_buffs then
+			procced = buff_extension:has_buff_perk("no_push_fatigue_cost")
 		end
 
-		if buff_extension:has_buff_perk("slayer_stamina") then
-			cost = "action_stun_push"
+		if not procced then
+			local cost = "action_push"
+
+			if new_action.fatigue_cost then
+				cost = new_action.fatigue_cost
+			end
+
+			if buff_extension:has_buff_perk("slayer_stamina") then
+				cost = "action_stun_push"
+			end
+
+			status_extension:add_fatigue_points(cost)
+			status_extension:set_has_pushed(new_action.fatigue_regen_delay)
 		end
 
-		status_extension:add_fatigue_points(cost)
-		status_extension:set_has_pushed(new_action.fatigue_regen_delay)
+		self._fatigue_reset = false
 	end
 end
 

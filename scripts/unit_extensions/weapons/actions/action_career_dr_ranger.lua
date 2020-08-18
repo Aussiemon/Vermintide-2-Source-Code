@@ -34,10 +34,11 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local buff_name = "bardin_ranger_activated_ability"
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
-	local has_extended_duration_talent = talent_extension:has_talent("bardin_ranger_activated_ability_duration", "dwarf_ranger", true)
+	local has_extended_duration_talent = talent_extension:has_talent("bardin_ranger_smoke_attack", "dwarf_ranger", true)
 
 	if has_extended_duration_talent then
-		buff_name = "bardin_ranger_activated_ability_duration"
+		buff_extension:add_buff("bardin_ranger_smoke_attack")
+		buff_extension:add_buff("bardin_ranger_smoke_heal")
 	end
 
 	local has_stealth_outside_of_smoke_talent = talent_extension:has_talent("bardin_ranger_activated_ability_stealth_outside_of_smoke", "dwarf_ranger", true)

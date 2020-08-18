@@ -125,24 +125,36 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
-	local buff_name = "kerillian_maidenguard_activated_ability"
+	local buff_names = {
+		"kerillian_maidenguard_activated_ability"
+	}
 
 	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_invis_duration", "wood_elf", true) then
-		buff_name = "kerillian_maidenguard_activated_ability_invis_duration"
+		buff_names = {
+			"kerillian_maidenguard_activated_ability_invis_duration"
+		}
+	end
+
+	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_insta_ress", "wood_elf", true) then
+		buff_names[#buff_names + 1] = "kerillian_maidenguard_insta_ress"
 	end
 
 	local unit_object_id = network_manager:unit_game_object_id(owner_unit)
-	local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
-	if is_server then
-		local buff_extension = self._buff_extension
+	for i = 1, #buff_names, 1 do
+		local buff_name = buff_names[i]
+		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
-		buff_extension:add_buff(buff_name, {
-			attacker_unit = owner_unit
-		})
-		network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
-	else
-		network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+		if is_server then
+			local buff_extension = self._buff_extension
+
+			buff_extension:add_buff(buff_name, {
+				attacker_unit = owner_unit
+			})
+			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+		else
+			network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+		end
 	end
 
 	if (is_server and bot_player) or local_player then

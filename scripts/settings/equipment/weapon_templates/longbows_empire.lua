@@ -236,7 +236,7 @@ weapon_template.actions = {
 			kind = "aim",
 			weapon_action_hand = "left",
 			aim_sound_event = "player_combat_weapon_bow_tighten_grip_loop",
-			aim_zoom_delay = 0.4,
+			aim_zoom_delay = 2,
 			spread_template_override = "empire_longbow",
 			aim_sound_delay = 0.1,
 			anim_end_event = "draw_cancel",
@@ -262,7 +262,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.0001,
+					external_multiplier = 0.25,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},

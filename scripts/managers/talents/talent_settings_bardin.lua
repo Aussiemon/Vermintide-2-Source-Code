@@ -34,21 +34,56 @@ local buff_tweak_data = {
 		max_stacks = 3,
 		multiplier = 0.05
 	},
-	bardin_ironbreaker_increased_overcharge = {
-		multiplier = 0.3
+	bardin_ironbreaker_decreased_overcharge = {
+		multiplier = -1
 	},
 	bardin_ironbreaker_increased_ranged_power = {
 		multiplier = 0.3
+	},
+	bardin_ironbreaker_increased_ranged_attack_speed = {
+		multiplier = 1
+	},
+	bardin_ironbreaker_party_power_on_blocked_attacks_buff = {
+		max_stacks = 5,
+		multiplier = 0.02,
+		duration = 10
+	},
+	bardin_ironbreaker_gromril_attack_speed = {
+		presentation_delay = 7,
+		multiplier = 0.08
+	},
+	bardin_ironbreaker_gromril_buff = {
+		bonus = -0.5
+	},
+	bardin_ironbreaker_drakefire_changing_attack_speed = {
+		multiplier = 1,
+		chunk_size = 3
+	},
+	bardin_ironbreaker_drakefire_attack_speed = {
+		multiplier = -0.15
+	},
+	bardin_ironbreaker_drakefire_changing_ranged_power = {
+		chunk_size = 3,
+		multiplier = -0.8
+	},
+	bardin_ironbreaker_drakefire_ranged_power = {
+		multiplier = 0.2
 	},
 	bardin_ironbreaker_power_on_blocked_attacks_buff = {
 		max_stacks = 5,
 		multiplier = 0.05
 	},
+	bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc = {
+		final_power = 1.2,
+		final_attack_speed = -1.5,
+		initial_attack_speed = 1,
+		inital_power = -0.8
+	},
 	bardin_ironbreaker_gromril_stamina_regen = {
 		multiplier = 0.5
 	},
 	bardin_ironbreaker_gromril_delay_short = {
-		duration = 13
+		duration = 10
 	},
 	bardin_ironbreaker_regen_stamina_on_charged_attacks_buff = {
 		duration = 2,
@@ -158,6 +193,12 @@ local buff_tweak_data = {
 	bardin_ranger_passive_consumeable_dupe_grenade = {
 		proc_chance = 0.1
 	},
+	bardin_survival_ale_buff_presentation = {
+		max_stacks = 3,
+		multiplier = 1.04,
+		duration = 5,
+		multiplier_2 = 0.03
+	},
 	bardin_ranger_passive_reload_speed = {
 		multiplier = -0.15
 	},
@@ -179,11 +220,11 @@ local buff_tweak_data = {
 	bardin_ranger_attack_speed = {
 		multiplier = 0.05
 	},
+	bardin_ranger_smoke_attack_buff = {
+		multiplier = 0.08
+	},
 	bardin_ranger_passive_improved_ammo = {
 		multiplier = 0.3
-	},
-	bardin_ranger_passive_ammo_on_ally_pickup = {
-		ammo_bonus_fraction = 0.1
 	},
 	bardin_ranger_passive_spawn_potions_or_bombs = {
 		display_multiplier = 0.2
@@ -192,7 +233,7 @@ local buff_tweak_data = {
 		multiplier = 1.1
 	},
 	bardin_ranger_reduced_damage_taken_headshot_buff = {
-		duration = 5,
+		duration = 7,
 		multiplier = -0.3
 	},
 	bardin_ranger_reload_speed_on_multi_hit_buff = {
@@ -202,11 +243,15 @@ local buff_tweak_data = {
 	bardin_ranger_reload_speed_on_multi_hit_add = {
 		target_number = 2
 	},
-	bardin_ranger_activated_ability_duration = {
-		duration = 15
-	},
-	bardin_ranger_ability_free_grenade_buff = {
+	bardin_ranger_smoke_attack = {
 		duration = 10
+	},
+	bardin_ranger_smoke_heal = {
+		duration = 10
+	},
+	bardin_ranger_smoke_heal_buff = {
+		time_between_heals = 1,
+		heal_amount = 3
 	}
 }
 TalentBuffTemplates = TalentBuffTemplates or {}
@@ -266,9 +311,19 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_refresh_gromril_armour = {
 		buffs = {
 			{
-				event = "on_gromril_armour_removed",
+				buff_to_add = "bardin_ironbreaker_gromril_buff",
+				buff_func = "add_gromril_delay",
 				event_buff = true,
-				buff_func = "add_gromril_delay"
+				event = "on_gromril_armour_removed",
+				base_duration = buff_tweak_data.bardin_ironbreaker_gromril_delay.duration
+			}
+		}
+	},
+	bardin_ironbreaker_gromril_buff = {
+		buffs = {
+			{
+				stat_buff = "gromril_cooldown",
+				max_stacks = 30
 			}
 		}
 	},
@@ -387,17 +442,85 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
-	bardin_ironbreaker_increased_overcharge = {
+	bardin_ironbreaker_drakefire_changing_attack_speed = {
 		buffs = {
 			{
-				stat_buff = "reduced_overcharge"
+				buff_to_add = "bardin_ironbreaker_drakefire_attack_speed",
+				update_func = "activate_buff_stacks_based_on_overcharge_chunks",
+				stat_buff = "attack_speed_drakefire",
+				max_stacks = 10,
+				perk = "overcharge_no_slow"
+			}
+		}
+	},
+	bardin_ironbreaker_drakefire_attack_speed = {
+		buffs = {
+			{
+				stat_buff = "attack_speed_drakefire"
+			}
+		}
+	},
+	bardin_ironbreaker_drakefire_changing_ranged_power = {
+		buffs = {
+			{
+				buff_to_add = "bardin_ironbreaker_drakefire_ranged_power",
+				update_func = "activate_server_buff_stacks_based_on_overcharge_chunks",
+				stat_buff = "power_level_ranged_drakefire",
+				max_sub_buff_stacks = 10
+			}
+		}
+	},
+	bardin_ironbreaker_drakefire_ranged_power = {
+		buffs = {
+			{
+				stat_buff = "power_level_ranged_drakefire"
+			}
+		}
+	},
+	bardin_ironbreaker_decreased_overcharge = {
+		buffs = {
+			{
+				stat_buff = "reduced_overcharge",
+				max_stacks = 1
 			}
 		}
 	},
 	bardin_ironbreaker_increased_ranged_power = {
 		buffs = {
 			{
-				stat_buff = "power_level_ranged_drakefire"
+				stat_buff = "power_level_ranged_drakefire",
+				max_stacks = 1
+			}
+		}
+	},
+	bardin_ironbreaker_increased_ranged_attack_speed = {
+		buffs = {
+			{
+				stat_buff = "attack_speed",
+				max_stacks = 1
+			}
+		}
+	},
+	bardin_ironbreaker_party_power_on_blocked_attacks_add = {
+		buffs = {
+			{
+				buff_to_add = "bardin_ironbreaker_party_power_on_blocked_attacks_buff",
+				chunk_size = 1,
+				event_buff = true,
+				buff_func = "add_buff_to_all_players",
+				event = "on_block",
+				max_stacks = 1,
+				max_sub_buff_stacks = 5
+			}
+		}
+	},
+	bardin_ironbreaker_party_power_on_blocked_attacks_buff = {
+		buffs = {
+			{
+				dormant = true,
+				icon = "bardin_ironbreaker_power_on_blocked_attacks",
+				stat_buff = "power_level_melee",
+				refresh_durations = true
 			}
 		}
 	},
@@ -405,12 +528,10 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_power_on_blocked_attacks_buff",
-				chunk_size = 1,
+				max_stacks = 1,
 				event_buff = true,
 				buff_func = "bardin_ironbreaker_add_power_buff_on_block",
-				event = "on_block",
-				max_stacks = 1,
-				max_sub_buff_stacks = 5
+				event = "on_block"
 			}
 		}
 	},
@@ -449,21 +570,41 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
-	bardin_ironbreaker_stamina_regen_during_gromril = {
+	bardin_ironbreaker_stacking_buff_gromril = {
 		buffs = {
 			{
-				buff_to_add = "bardin_ironbreaker_gromril_stamina_regen",
+				buff_on_pop = "bardin_ironbreaker_gromril_attack_speed",
 				activation_buff = "bardin_ironbreaker_gromril_armour",
-				update_func = "activate_buff_on_other_buff"
+				pulse_frequency = 7,
+				buff_to_add = "bardin_ironbreaker_gromril_rising_anger",
+				update_func = "bardin_ironbreaker_stacking_buff_gromril",
+				max_sub_buff_stacks = 5
+			}
+		}
+	},
+	bardin_ironbreaker_gromril_attack_speed = {
+		buffs = {
+			{
+				duration = 10,
+				icon = "bardin_ironbreaker_power_on_blocked_attacks",
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	bardin_ironbreaker_gromril_stamina_regen = {
 		buffs = {
 			{
-				max_stacks = 1,
+				max_stacks = 5,
 				icon = "bardin_ironbreaker_stamina_regen_during_gromril",
 				stat_buff = "fatigue_regen"
+			}
+		}
+	},
+	bardin_ironbreaker_gromril_rising_anger = {
+		buffs = {
+			{
+				max_stacks = 5,
+				icon = "bardin_ironbreaker_stamina_regen_during_gromril"
 			}
 		}
 	},
@@ -1021,15 +1162,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
-	bardin_ranger_passive_ammo_on_ally_pickup = {
-		buffs = {
-			{
-				event = "on_bardin_consumable_picked_up_any_player",
-				event_buff = true,
-				buff_func = "bardin_ranger_restore_ammo_on_ally_picked_up_ammo"
-			}
-		}
-	},
 	bardin_ranger_movement_speed = {
 		buffs = {
 			{
@@ -1083,20 +1215,33 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
-	bardin_ranger_activated_ability_duration = {
+	bardin_ranger_smoke_attack = {
 		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
-				continuous_effect = "fx/screenspace_ranger_skill_01",
-				name = "bardin_ranger_activated_ability_duration",
+				buff_to_add = "bardin_ranger_smoke_attack_buff",
+				name = "bardin_ranger_smoke_attack",
+				buff_area = true,
 				refresh_durations = true,
-				area_unit_name = "units/hub_elements/empty",
+				max_stacks = 1,
 				remove_buff_func = "end_ranger_activated_ability",
 				refresh_buff_area_position = true,
 				area_radius = 7,
-				buff_area = true,
+				continuous_effect = "fx/screenspace_ranger_skill_01",
+				area_unit_name = "units/hub_elements/empty",
+				update_func = "bardin_ranger_smoke_buff"
+			}
+		}
+	},
+	bardin_ranger_smoke_attack_buff = {
+		buffs = {
+			{
+				duration = 3,
+				refresh_durations = true,
+				stat_buff = "attack_speed",
+				continuous_effect = "fx/screenspace_ranger_skill_01",
 				max_stacks = 1,
-				icon = "bardin_ranger_activated_ability"
+				icon = "bardin_ranger_activated_ability_duration"
 			}
 		}
 	},
@@ -1114,6 +1259,35 @@ TalentBuffTemplates.dwarf_ranger = {
 				continuous_effect = "fx/screenspace_ranger_skill_01",
 				max_stacks = 1,
 				duration = 10
+			}
+		}
+	},
+	bardin_ranger_smoke_heal = {
+		deactivation_effect = "fx/screenspace_ranger_skill_02",
+		buffs = {
+			{
+				buff_to_add = "bardin_ranger_smoke_heal_buff",
+				name = "bardin_ranger_smoke_heal",
+				buff_area = true,
+				refresh_durations = true,
+				max_stacks = 1,
+				remove_buff_func = "end_ranger_activated_ability",
+				refresh_buff_area_position = true,
+				area_radius = 7,
+				continuous_effect = "fx/screenspace_ranger_skill_01",
+				area_unit_name = "units/hub_elements/empty",
+				update_func = "bardin_ranger_smoke_buff"
+			}
+		}
+	},
+	bardin_ranger_smoke_heal_buff = {
+		buffs = {
+			{
+				refresh_durations = true,
+				duration = 3,
+				continuous_effect = "fx/screenspace_ranger_skill_01",
+				max_stacks = 1,
+				update_func = "bardin_ranger_heal_smoke"
 			}
 		}
 	},
@@ -1147,9 +1321,9 @@ TalentTrees.dwarf_ranger = {
 			"bardin_ironbreaker_heal_share"
 		},
 		{
-			"bardin_ironbreaker_increased_overcharge_increased_range_power",
+			"bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed",
 			"bardin_ironbreaker_power_on_nearby_allies",
-			"bardin_ironbreaker_power_on_blocked_attacks"
+			"bardin_ironbreaker_party_power_on_blocked_attacks"
 		},
 		{
 			"bardin_ironbreaker_tank_unbalance",
@@ -1157,7 +1331,7 @@ TalentTrees.dwarf_ranger = {
 			"bardin_ironbreaker_power_level_unbalance"
 		},
 		{
-			"bardin_ironbreaker_stamina_regen_during_gromril",
+			"bardin_ironbreaker_rising_attack_speed",
 			"bardin_ironbreaker_gromril_stagger",
 			"bardin_ironbreaker_max_gromril_delay"
 		},
@@ -1221,7 +1395,7 @@ TalentTrees.dwarf_ranger = {
 			"bardin_ranger_power_level_unbalance"
 		},
 		{
-			"bardin_ranger_passive_ammo_on_ally_pickup",
+			"bardin_ranger_passive_ale",
 			"bardin_ranger_passive_improved_ammo",
 			"bardin_ranger_passive_spawn_potions_or_bombs"
 		},
@@ -1231,7 +1405,7 @@ TalentTrees.dwarf_ranger = {
 			"bardin_ranger_reload_speed_on_multi_hit"
 		},
 		{
-			"bardin_ranger_activated_ability_duration",
+			"bardin_ranger_smoke_attack",
 			"bardin_ranger_activated_ability_stealth_outside_of_smoke",
 			"bardin_ranger_ability_free_grenade"
 		}
@@ -1307,65 +1481,77 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ironbreaker_increased_overcharge_increased_range_power_desc",
-		name = "bardin_ironbreaker_increased_overcharge_increased_range_power",
+		description = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc",
+		name = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed",
 		num_ranks = 1,
 		buffer = "both",
 		icon = "bardin_ironbreaker_increased_overcharge_increased_range_power",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_increased_ranged_power.multiplier
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.inital_power
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_increased_overcharge.multiplier
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.final_power
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.initial_attack_speed
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.final_attack_speed
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bardin_ironbreaker_increased_overcharge",
-			"bardin_ironbreaker_increased_ranged_power"
+			"bardin_ironbreaker_drakefire_changing_attack_speed",
+			"bardin_ironbreaker_drakefire_changing_ranged_power"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bardin_ironbreaker_power_on_blocked_attacks_desc",
-		name = "bardin_ironbreaker_power_on_blocked_attacks",
+		description = "bardin_ironbreaker_party_power_on_blocked_attacks_desc",
+		name = "bardin_ironbreaker_party_power_on_blocked_attacks",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ironbreaker_power_on_blocked_attacks",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_power_on_blocked_attacks_buff.multiplier
+				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.multiplier
 			},
 			{
-				value = buff_tweak_data.bardin_ironbreaker_power_on_blocked_attacks_buff.max_stacks
+				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.duration
+			},
+			{
+				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.max_stacks
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bardin_ironbreaker_power_on_blocked_attacks_add",
-			"bardin_ironbreaker_power_on_blocked_attacks_remove_damage",
-			"bardin_ironbreaker_power_on_blocked_attacks_remove_stagger"
+			"bardin_ironbreaker_party_power_on_blocked_attacks_add"
 		},
 		buff_data = {}
 	},
 	{
-		description = "bardin_ironbreaker_stamina_regen_during_gromril_desc",
-		name = "bardin_ironbreaker_stamina_regen_during_gromril",
+		description = "bardin_ironbreaker_rising_attack_speed_desc",
+		name = "bardin_ironbreaker_rising_attack_speed",
 		num_ranks = 1,
 		icon = "bardin_ironbreaker_stamina_regen_during_gromril",
 		description_values = {
 			{
+				value = buff_tweak_data.bardin_ironbreaker_gromril_attack_speed.presentation_delay
+			},
+			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ironbreaker_gromril_stamina_regen.multiplier
+				value = buff_tweak_data.bardin_ironbreaker_gromril_attack_speed.multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"bardin_ironbreaker_stamina_regen_during_gromril"
+			"bardin_ironbreaker_stacking_buff_gromril"
 		},
 		buff_data = {}
 	},
@@ -2020,20 +2206,28 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ranger_passive_ammo_on_ally_pickup_desc",
-		name = "bardin_ranger_passive_ammo_on_ally_pickup",
+		description = "bardin_ranger_passive_ale_desc",
+		name = "bardin_ranger_passive_ale",
 		num_ranks = 1,
-		icon = "bardin_ranger_passive_ammo_on_ally_pickup",
+		icon = "buff_icon_mutator_icon_drunk",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_passive_ammo_on_ally_pickup.ammo_bonus_fraction
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.multiplier_2
+			},
+			{
+				value_type = "baked_percent",
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.multiplier
+			},
+			{
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.duration
+			},
+			{
+				value = buff_tweak_data.bardin_survival_ale_buff_presentation.max_stacks
 			}
 		},
 		requirements = {},
-		buffs = {
-			"bardin_ranger_passive_ammo_on_ally_pickup"
-		},
+		buffs = {},
 		buff_data = {}
 	},
 	{
@@ -2054,12 +2248,16 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ranger_reduced_damage_taken_headshot_desc",
+		description = "bardin_ranger_reduced_damage_taken_headshot_desc_2",
 		name = "bardin_ranger_reduced_damage_taken_headshot",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "bardin_ranger_reduced_damage_taken_headshot",
 		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.multiplier
+			},
 			{
 				value_type = "percent",
 				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.multiplier
@@ -2095,13 +2293,17 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_ranger_activated_ability_duration_desc",
-		name = "bardin_ranger_activated_ability_duration",
+		description = "bardin_ranger_smoke_attack_desc",
+		name = "bardin_ranger_smoke_attack",
 		num_ranks = 1,
 		icon = "bardin_ranger_activated_ability_duration",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_ranger_activated_ability_duration.duration
+				value_type = "percent",
+				value = buff_tweak_data.bardin_ranger_smoke_attack_buff.multiplier
+			},
+			{
+				value = buff_tweak_data.bardin_ranger_smoke_heal_buff.heal_amount
 			}
 		},
 		requirements = {},
@@ -2123,11 +2325,7 @@ Talents.dwarf_ranger = {
 		name = "bardin_ranger_ability_free_grenade",
 		num_ranks = 1,
 		icon = "bardin_ranger_ability_free_grenade",
-		description_values = {
-			{
-				value = buff_tweak_data.bardin_ranger_ability_free_grenade_buff.duration
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
 			"bardin_ranger_ability_free_grenade_remove"

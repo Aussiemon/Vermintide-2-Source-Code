@@ -220,14 +220,14 @@ weapon_template.actions = {
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
 weapon_template.ammo_data = {
-	max_ammo = 30,
+	max_ammo = 45,
 	ammo_per_reload = 15,
 	ammo_per_clip = 15,
 	play_reload_anim_on_wield_reload = true,
 	ammo_hand = "left",
 	destroy_when_out_of_ammo = false,
 	reload_on_ammo_pickup = false,
-	reload_time = 5,
+	reload_time = 4,
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.repeating_bolt
 }
 weapon_template.attack_meta_data = {
@@ -252,6 +252,7 @@ weapon_template.wield_anim_not_loaded = "to_repeating_crossbow"
 weapon_template.crosshair_style = "projectile"
 weapon_template.reload_event = "reload"
 weapon_template.buff_type = "RANGED"
+weapon_template.dodge_count = 3
 weapon_template.weapon_type = "REPEATING_CROSSBOW"
 weapon_template.buffs = {
 	change_dodge_distance = {

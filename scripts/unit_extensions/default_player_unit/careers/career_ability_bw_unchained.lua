@@ -86,7 +86,7 @@ CareerAbilityBWUnchained._start_priming = function (self)
 		local effect_name = self._priming_fx_name
 		local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
 
-		if talent_extension:has_talent("sienna_unchained_activated_ability_radius", "bright_wizard", true) then
+		if talent_extension:has_talent("sienna_unchained_activated_ability_power_on_enemies_hit", "bright_wizard", true) then
 			effect_name = "fx/chr_unchained_aoe_decal_large"
 		end
 
@@ -151,7 +151,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	local explosion_template_name = "explosion_bw_unchained_ability"
 	local scale = 1
 
-	if talent_extension:has_talent("sienna_unchained_activated_ability_radius", "bright_wizard", true) then
+	if talent_extension:has_talent("sienna_unchained_activated_ability_fire_aura", "bright_wizard", true) then
 		explosion_template_name = "explosion_bw_unchained_ability_increased_radius"
 	end
 
@@ -195,6 +195,34 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 
 	DamageUtils.create_explosion(self._world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, career_power_level, false, owner_unit)
 	career_extension:start_activated_ability_cooldown()
+
+	if talent_extension:has_talent("sienna_unchained_activated_ability_fire_aura") then
+		local buffs = {
+			"sienna_unchained_activated_ability_pulse"
+		}
+		local unit_object_id = network_manager:unit_game_object_id(owner_unit)
+
+		if is_server then
+			local buff_extension = self._buff_extension
+
+			for i = 1, #buffs, 1 do
+				local buff_name = buffs[i]
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				buff_extension:add_buff(buff_name, {
+					attacker_unit = owner_unit
+				})
+				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+			end
+		else
+			for i = 1, #buffs, 1 do
+				local buff_name = buffs[i]
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+			end
+		end
+	end
 
 	if talent_extension:has_talent("sienna_unchained_activated_ability_power_on_enemies_hit") then
 		local attack_type_id = NetworkLookup.buff_attack_types.ability

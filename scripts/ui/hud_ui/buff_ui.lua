@@ -1,6 +1,8 @@
 local definitions = local_require("scripts/ui/hud_ui/buff_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local ALIGNMENT_DURATION_TIME = 0.3
+local MAX_BUFF_ROWS = definitions.MAX_BUFF_ROWS
+local MAX_BUFF_COLUMNS = definitions.MAX_BUFF_COLUMNS
 local MAX_NUMBER_OF_BUFFS = definitions.MAX_NUMBER_OF_BUFFS
 local BUFF_SIZE = definitions.BUFF_SIZE
 local BUFF_SPACING = definitions.BUFF_SPACING
@@ -226,20 +228,25 @@ BuffUI._add_buff = function (self, buff, infinite, end_time)
 
 	self:_set_widget_time_progress(widget, 1, duration, is_cooldown)
 
-	num_buffs = #self._active_buffs
+	local n = #self._active_buffs
+	local i = (n - 1) % MAX_BUFF_COLUMNS
+	local j = math.floor((n - 1) / MAX_BUFF_COLUMNS)
 	local horizontal_spacing = BUFF_SIZE[1] + BUFF_SPACING
-	local total_length = num_buffs * horizontal_spacing - BUFF_SPACING
+	local vertical_spacing = BUFF_SIZE[2] + BUFF_SPACING
+	local total_length = n * horizontal_spacing - BUFF_SPACING
 	local start_position_x = total_length - horizontal_spacing
 	local widget_offset = widget.offset
 
-	if num_buffs > 1 then
+	if n > 1 then
 		local closest_buff_widget = data.widget
 		local closest_buff_offset = closest_buff_widget.offset
 		widget_offset[1] = closest_buff_offset[1] + horizontal_spacing
+		widget_offset[2] = j * vertical_spacing
 		data.target_position = start_position_x
 		data.target_distance = math.abs(widget_offset[1] - start_position_x)
 	else
 		widget_offset[1] = start_position_x
+		widget_offset[2] = j * vertical_spacing
 	end
 
 	return true
@@ -296,15 +303,19 @@ end
 
 BuffUI._align_widgets = function (self)
 	local horizontal_spacing = BUFF_SIZE[1] + BUFF_SPACING
+	local vertical_spacing = BUFF_SIZE[2] + BUFF_SPACING
 	local active_buffs = self._active_buffs
 
-	for i = 1, #active_buffs, 1 do
-		local data = active_buffs[i]
+	for n = 1, #active_buffs, 1 do
+		local i = (n - 1) % MAX_BUFF_COLUMNS
+		local j = math.floor((n - 1) / MAX_BUFF_COLUMNS)
+		local data = active_buffs[n]
 		local widget = data.widget
 		local widget_offset = widget.offset
-		local target_position = (i - 1) * horizontal_spacing
+		local target_position = i * horizontal_spacing
 		data.target_position = target_position
 		data.target_distance = math.abs(widget_offset[1] - target_position)
+		widget_offset[2] = j * vertical_spacing
 
 		self:_set_widget_dirty(widget)
 	end

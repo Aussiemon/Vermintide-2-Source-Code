@@ -281,6 +281,17 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 				Managers.state.entity:system("play_go_tutorial_system"):register_push(hit_unit)
 				buff_extension:trigger_procs("on_push", hit_unit, damage_source)
 
+				local player_manager = Managers.player
+				local owner_player = player_manager:owner(self.owner_unit)
+
+				if not LEVEL_EDITOR_TEST and not player_manager.is_server then
+					local peer_id = owner_player:network_id()
+					local local_player_id = owner_player:local_player_id()
+					local event_id = NetworkLookup.proc_events.on_push
+
+					Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+				end
+
 				hit_once = true
 			until true
 		end

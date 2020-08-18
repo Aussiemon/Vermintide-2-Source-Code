@@ -144,7 +144,7 @@ weapon_template.actions = {
 				wall_nail = true,
 				depth = 0.1,
 				targets = 1,
-				damage_profile = "arrow_carbine",
+				damage_profile = "arrow_carbine_shortbow",
 				link = true,
 				depth_offset = -0.6
 			},

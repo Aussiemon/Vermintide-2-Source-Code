@@ -148,9 +148,18 @@ DamageProfileTemplates.light_slashing_linesman_dual = {
 new_template("light_slashing_linesman", nil, "light_slashing_linesman_elf", nil, nil)
 
 DamageProfileTemplates.light_slashing_linesman_elf.armor_modifier = "armor_modifier_linesman_elf_L"
+DamageProfileTemplates.light_slashing_linesman_elf.targets = "targets_linesman_L_finesse"
+
+new_template("light_slashing_linesman", "_finesse", nil, nil, nil)
+
+DamageProfileTemplates.light_slashing_linesman_finesse.targets = "targets_linesman_L_finesse"
 
 new_template("light_slashing_linesman_dual", "_medium", nil, "heavy_attack")
+new_template("light_slashing_linesman_dual", "_swords", nil, nil, nil)
 
+DamageProfileTemplates.light_slashing_linesman_dual_swords.armor_modifier = "armor_modifier_linesman_dual_L_swords"
+DamageProfileTemplates.light_slashing_linesman_dual_swords.targets = "targets_linesman_dual_L_swords"
+DamageProfileTemplates.light_slashing_linesman_dual_swords.critical_strike = "critical_strike_linesman_dual_L_swords"
 DamageProfileTemplates.light_slashing_linesman_dual_medium.melee_boost_override = 3.5
 DamageProfileTemplates.light_slashing_linesman_dual_medium.armor_modifier = "armor_modifier_linesman_dual_M"
 DamageProfileTemplates.light_slashing_linesman_dual_medium.targets = "targets_linesman_dual_M"
@@ -198,7 +207,9 @@ new_template("light_slashing_linesman", nil, "medium_slashing_linesman_spear", n
 DamageProfileTemplates.medium_slashing_linesman_spear.targets = "targets_linesman_spear_M"
 
 new_template("medium_slashing_linesman", "_1h", nil, "heavy_attack")
+new_template("medium_slashing_linesman", "_finesse", nil, nil)
 
+DamageProfileTemplates.medium_slashing_linesman_finesse.targets = "targets_linesman_M_finesse"
 DamageProfileTemplates.heavy_slashing_linesman = {
 	armor_modifier = "armor_modifier_linesman_H",
 	critical_strike = "critical_strike_linesman_H",
@@ -285,6 +296,10 @@ new_template("medium_blunt_tank_1h", nil, "medium_slashing_tank_1h", "heavy_atta
 new_template("medium_blunt_tank_1h", nil, "medium_blunt_tank_dual", nil, nil)
 
 DamageProfileTemplates.medium_blunt_tank_dual.targets = "targets_tank_M_dual"
+
+new_template("medium_slashing_tank_1h", "_finesse", nil, nil, nil)
+
+DamageProfileTemplates.medium_slashing_tank_1h_finesse.targets = "targets_tank_M_1h_finesse"
 DamageProfileTemplates.medium_blunt_tank_spiked = {
 	stagger_duration_modifier = 1.5,
 	critical_strike = "critical_strike_tank_spiked_M",
@@ -307,6 +322,7 @@ DamageProfileTemplates.heavy_blunt_tank = {
 	armor_modifier = "armor_modifier_tank_H"
 }
 
+new_template("heavy_blunt_tank", nil, "heavy_blunt_tank_light", "light_attack", nil)
 new_template("heavy_blunt_tank", nil, "heavy_slashing_tank", "heavy_attack", "heavy_slashing_tank", "slashing_tank", "slashing_tank", "light_slashing_tank")
 
 DamageProfileTemplates.light_slashing_smiter = {
@@ -355,7 +371,10 @@ new_template("light_slashing_smiter", nil, "light_blunt_smiter", nil, "light_blu
 new_template("light_slashing_smiter_dual", nil, "light_blunt_smiter_dual", nil, "blunt_smiter")
 new_template("light_slashing_smiter_dual", nil, "light_blunt_smiter_dual_diag", nil, "blunt_linesman")
 new_template("light_slashing_smiter_dual", nil, "light_blunt_smiter_dual_flat", nil, "blunt_tank")
+new_template("light_slashing_smiter", "_finesse", nil, nil, nil)
 
+DamageProfileTemplates.light_slashing_smiter_finesse.default_target = "default_target_smiter_L_finesse"
+DamageProfileTemplates.light_slashing_smiter_finesse.targets = "targets_smiter_L_finesse"
 DamageProfileTemplates.medium_slashing_smiter = {
 	armor_modifier = "armor_modifier_smiter_M",
 	critical_strike = "critical_strike_smiter_M",
@@ -411,6 +430,16 @@ new_template("medium_blunt_smiter", nil, "medium_blunt_smiter_2h_hammer", nil, n
 
 DamageProfileTemplates.medium_blunt_smiter_2h_hammer.armor_modifier = "armor_modifier_blunt_smiter_2h_hammer_H"
 DamageProfileTemplates.medium_blunt_smiter_2h_hammer.critical_strike = "critical_strike_blunt_smiter_2h_hammer_H"
+
+new_template("medium_blunt_smiter", nil, "medium_blunt_smiter_heavy", "heavy_attack", nil)
+
+DamageProfileTemplates.medium_blunt_smiter_heavy.armor_modifier = "armor_modifier_blunt_smiter_2h_hammer_H"
+DamageProfileTemplates.medium_blunt_smiter_heavy.critical_strike = "critical_strike_blunt_smiter_2h_hammer_H"
+
+new_template("medium_slashing_smiter", nil, "medium_slashing_smiter_1h_axe", "heavy_attack", nil)
+
+DamageProfileTemplates.medium_slashing_smiter_1h_axe.armor_modifier = "armor_modifier_blunt_smiter_2h_hammer_H"
+DamageProfileTemplates.medium_slashing_smiter_1h_axe.critical_strike = "critical_strike_blunt_smiter_2h_hammer_H"
 DamageProfileTemplates.medium_blunt_smiter_burn = {
 	armor_modifier = "armor_modifier_smiter_M",
 	critical_strike = "critical_strike_smiter_M",
@@ -446,6 +475,12 @@ new_template("light_slashing_smiter_stab", "_burn", nil, nil)
 
 DamageProfileTemplates.light_slashing_smiter_stab_burn.targets = "targets_burning_stab_smiter_L"
 
+new_template("light_slashing_smiter_stab", "_swords", nil, nil)
+
+DamageProfileTemplates.light_slashing_smiter_stab_swords.targets = "targets_stab_smiter_L_swords"
+DamageProfileTemplates.light_slashing_smiter_stab_swords.critical_strike = "critical_strike_stab_smiter_L_swords"
+DamageProfileTemplates.light_slashing_smiter_stab_swords.armor_modifier = "armor_modifier_stab_smiter_L_swords"
+
 new_template("light_slashing_smiter_stab_burn", nil, "light_blunt_smiter_stab_burn", nil)
 
 DamageProfileTemplates.light_blunt_smiter_stab_burn.targets = "targets_burning_punch_smiter_L"
@@ -462,6 +497,10 @@ DamageProfileTemplates.medium_slashing_smiter_stab = {
 new_template("medium_slashing_smiter_stab", nil, "medium_spear_smiter_stab", "heavy_attack")
 
 DamageProfileTemplates.medium_spear_smiter_stab.default_target = "default_target_spear_stab_smiter_M"
+
+new_template("medium_slashing_smiter_stab", "_elf", nil, "heavy_attack")
+
+DamageProfileTemplates.medium_slashing_smiter_stab_elf.default_target = "default_target_stab_smiter_M_elf"
 
 new_template("medium_blunt_smiter_burn", nil, "medium_burning_smiter_stab_H", "heavy_attack")
 
@@ -969,7 +1008,7 @@ DamageProfileTemplates.longbow_empire = {
 			0.8,
 			1.5,
 			1,
-			0.5,
+			1,
 			0.25
 		},
 		impact_armor_power_modifer = {
@@ -987,7 +1026,7 @@ DamageProfileTemplates.longbow_empire = {
 			0.8,
 			1,
 			1,
-			0.5,
+			1,
 			0
 		},
 		impact = {
@@ -1005,7 +1044,7 @@ DamageProfileTemplates.longbow_empire = {
 			0.8,
 			1,
 			1,
-			0.5,
+			1,
 			0
 		},
 		impact = {
@@ -1095,8 +1134,8 @@ DamageProfileTemplates.crossbow_bolt_repeating = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.125,
-		impact = 0.125
+		attack = 0.2,
+		impact = 0.2
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1.5,
@@ -1279,7 +1318,7 @@ DamageProfileTemplates.shot_machinegun_shotgun = {
 			1,
 			1,
 			1,
-			0.125
+			0.175
 		},
 		impact_armor_power_modifer = {
 			1,
@@ -1715,8 +1754,8 @@ DamageProfileTemplates.shot_sniper = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.2,
-		impact = 0.2
+		attack = 0.3,
+		impact = 0.3
 	},
 	default_target = {
 		headshot_boost_boss = 0.5,
@@ -1957,7 +1996,7 @@ DamageProfileTemplates.throwing_axe = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			1,
+			1.3,
 			1,
 			0.75,
 			0.5
@@ -1975,7 +2014,7 @@ DamageProfileTemplates.throwing_axe = {
 		attack = {
 			1,
 			0.8,
-			1,
+			1.3,
 			1,
 			0.75,
 			0.25
@@ -1993,7 +2032,7 @@ DamageProfileTemplates.throwing_axe = {
 		attack = {
 			1,
 			0.6,
-			1,
+			1.3,
 			1,
 			0.75,
 			0.25
@@ -2035,7 +2074,7 @@ DamageProfileTemplates.throwing_axe_charged = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			1,
+			1.3,
 			1,
 			0.75,
 			0.5
@@ -2053,7 +2092,7 @@ DamageProfileTemplates.throwing_axe_charged = {
 		attack = {
 			1,
 			0.8,
-			1,
+			1.3,
 			1,
 			0.75,
 			0.25
@@ -2071,7 +2110,7 @@ DamageProfileTemplates.throwing_axe_charged = {
 		attack = {
 			1,
 			0.6,
-			1,
+			1.3,
 			1,
 			0.75,
 			0.25
@@ -2163,8 +2202,8 @@ DamageProfileTemplates.arrow_machinegun = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.1,
-		impact = 0.1
+		attack = 0.15,
+		impact = 0.15
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
@@ -2242,6 +2281,83 @@ DamageProfileTemplates.arrow_carbine = {
 	cleave_distribution = {
 		attack = 0.15,
 		impact = 0.15
+	},
+	default_target = {
+		boost_curve_coefficient_headshot = 1,
+		boost_curve_type = "ninja_curve",
+		boost_curve_coefficient = 1.25,
+		attack_template = "arrow_carbine",
+		power_distribution_near = {
+			attack = 0.4,
+			impact = 0.15
+		},
+		power_distribution_far = {
+			attack = 0.3,
+			impact = 0.1
+		},
+		range_dropoff_settings = carbine_dropoff_ranges
+	}
+}
+DamageProfileTemplates.arrow_carbine_shortbow = {
+	charge_value = "projectile",
+	no_stagger_damage_reduction_ranged = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1.3,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
+	armor_modifier_near = {
+		attack = {
+			1,
+			0.5,
+			1.3,
+			1,
+			1,
+			0
+		},
+		impact = {
+			1,
+			0.1,
+			1,
+			1,
+			1,
+			0
+		}
+	},
+	armor_modifier_far = {
+		attack = {
+			1,
+			0,
+			1.3,
+			1,
+			1,
+			0
+		},
+		impact = {
+			1,
+			0,
+			1,
+			1,
+			1,
+			0
+		}
+	},
+	cleave_distribution = {
+		attack = 0.2,
+		impact = 0.2
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
@@ -3841,6 +3957,38 @@ DamageProfileTemplates.fireball_charged_explosion_glance = table.clone(DamagePro
 DamageProfileTemplates.fireball_charged_explosion_glance.default_target.attack_template = "drakegun_glance"
 DamageProfileTemplates.fireball_charged_explosion_glance.default_target.damage_type = "drakegun_glance"
 DamageProfileTemplates.fireball_charged_explosion_glance.default_target.dot_template_name = "burning_1W_dot"
+DamageProfileTemplates.overcharge_explosion_strong_ability = {
+	charge_value = "ability",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1,
+			0.2,
+			1.5,
+			1,
+			0.75,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			100,
+			1,
+			0.75,
+			0.5
+		}
+	},
+	default_target = {
+		attack_template = "flame_blast",
+		dot_template_name = "burning_1W_dot",
+		damage_type = "burn_shotgun",
+		power_distribution = {
+			attack = 0.15,
+			impact = 0.75
+		}
+	}
+}
 DamageProfileTemplates.overcharge_explosion_ability = {
 	charge_value = "ability",
 	is_explosion = true,

@@ -644,7 +644,7 @@ weapon_template.actions = {
 			weapon_action_hand = "left",
 			width_mod = 30,
 			slide_armour_hit = true,
-			additional_critical_strike_chance = 0.2,
+			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_1h",
 			damage_profile = "light_slashing_axe_linesman",
 			damage_window_end = 0.35,
@@ -707,7 +707,7 @@ weapon_template.actions = {
 				}
 			},
 			impact_axis = Vector3Box(0, 0, 1),
-			hit_mass_count = HEAVY_LINESMAN_HIT_MASS_COUNT
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		push = {
 			damage_window_start = 0.05,
@@ -856,7 +856,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/dual_wield_axe_falc
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "AXE_1H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_count = 3
+weapon_template.dodge_count = 4
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
@@ -864,10 +864,10 @@ weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.sound_event_block_within_arc = "weapon_foley_blunt_1h_block_wood"
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 1.1
+		external_optional_multiplier = 1.2
 	},
 	change_dodge_speed = {
-		external_optional_multiplier = 1.1
+		external_optional_multiplier = 1.2
 	}
 }
 weapon_template.wield_anim = "to_dual_axe_sword_wh"

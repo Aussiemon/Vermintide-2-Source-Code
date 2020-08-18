@@ -186,10 +186,10 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			sweep_z_offset = 0.1,
 			width_mod = 25,
-			additional_critical_strike_chance = 0,
 			hit_shield_stop_anim = "attack_hit_shield",
-			use_precision_sweep = false,
+			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_axes_2h",
+			use_precision_sweep = false,
 			damage_profile = "medium_slashing_axe_linesman",
 			damage_window_end = 0.55,
 			impact_sound_event = "axe_1h_hit",
@@ -258,7 +258,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_left_upward = {
 			damage_window_start = 0.2,
@@ -269,12 +270,12 @@ weapon_template.actions = {
 			width_mod = 25,
 			no_damage_impact_sound_event = "blunt_hit_armour",
 			hit_shield_stop_anim = "attack_hit_shield",
-			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_axes_2h",
+			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "medium_slashing_axe_linesman",
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_1h_hit",
+			damage_profile = "medium_slashing_axe_linesman",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
@@ -343,7 +344,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.2,
@@ -808,7 +810,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_2h_axes_woo
 weapon_template.wield_anim = "to_2h_axe_we"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "AXE_2H"
-weapon_template.max_fatigue_points = 4
+weapon_template.max_fatigue_points = 6
 weapon_template.dodge_count = 3
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360

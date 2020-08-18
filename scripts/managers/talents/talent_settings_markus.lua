@@ -46,6 +46,23 @@ local buff_tweak_data = {
 	markus_huntsman_passive_temp_health_on_headshot = {
 		bonus = 2
 	},
+	markus_huntsman_reload_speed_passive_stacks_buff = {
+		multiplier = 0.05
+	},
+	markus_huntsman_power_on_headshot_buff = {
+		max_stacks = 4,
+		multiplier = 0.05,
+		duration = 10
+	},
+	markus_huntsman_defence_buff = {
+		max_stacks = 4
+	},
+	markus_huntsman_fast_passive = {
+		presentation_multiplier = 0.3
+	},
+	markus_huntsman_passive_melee_kills = {
+		max_sub_buff_stacks = 8
+	},
 	markus_huntsman_movement_speed = {
 		multiplier = 1.1
 	},
@@ -92,9 +109,16 @@ local buff_tweak_data = {
 	markus_knight_power_level_impact = {
 		multiplier = 0.35
 	},
+	markus_knight_power_level_on_stagger_elite = {
+		bonus = 0.05
+	},
 	markus_knight_power_level_on_stagger_elite_buff = {
 		duration = 10,
 		multiplier = 0.15
+	},
+	markus_knight_cooldown_buff = {
+		duration = 0.5,
+		multiplier = 2
 	},
 	markus_knight_attack_speed_on_push_buff = {
 		duration = 3,
@@ -108,6 +132,19 @@ local buff_tweak_data = {
 	},
 	markus_knight_passive_power_increase_buff = {
 		multiplier = 0.1
+	},
+	markus_knight_guard_buff = {
+		presentation_multiplier = 0.5,
+		multiplier = -0.5
+	},
+	markus_knight_guard = {
+		multiplier = 0.1
+	},
+	markus_knight_guard_defence = {
+		multiplier = -0.15
+	},
+	markus_knight_guard_defence_buff = {
+		multiplier = -0.5
 	},
 	markus_knight_movement_speed_on_incapacitated_allies_buff = {
 		multiplier = 1.3
@@ -187,11 +224,11 @@ local buff_tweak_data = {
 		multiplier = 0.3
 	},
 	markus_mercenary_activated_ability_cooldown_no_heal = {
-		multiplier = -0.45
+		multiplier = -0.2
 	},
 	markus_mercenary_activated_ability_damage_reduction = {
 		duration = 10,
-		multiplier = -0.4
+		multiplier = -0.25
 	}
 }
 TalentBuffTemplates = TalentBuffTemplates or {}
@@ -240,6 +277,40 @@ TalentBuffTemplates.empire_soldier = {
 				event = "on_hit",
 				event_buff = true,
 				buff_func = "markus_huntsman_passive_proc"
+			}
+		}
+	},
+	markus_huntsman_auto_headshot_remove = {
+		buffs = {
+			{
+				deletion_delay = 0.05,
+				event_buff = true,
+				buff_func = "mark_for_delayed_deletion",
+				event = "on_auto_headshot",
+				update_func = "delayed_buff_removal",
+				reference_buff = "markus_huntsman_passive"
+			}
+		}
+	},
+	markus_huntsman_passive_on_headshot = {
+		buffs = {
+			{
+				buff_to_add = "markus_huntsman_auto_headshot",
+				add_delay = 0.05,
+				event_buff = true,
+				buff_func = "add_buff_on_unmodified_headshot",
+				event = "on_hit",
+				update_func = "delayed_buff_add",
+				reference_buff = "markus_huntsman_passive"
+			}
+		}
+	},
+	markus_huntsman_auto_headshot = {
+		buffs = {
+			{
+				max_stacks = 10,
+				icon = "markus_huntsman_passive",
+				perk = "auto_headshot"
 			}
 		}
 	},
@@ -621,7 +692,11 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_increased_damage_to_wounded_enemies = {
 		buffs = {
 			{
-				stat_buff = "increased_weapon_damage_ranged_to_wounded"
+				buff_to_add = "defence_debuff_enemies",
+				stat_buff = "increased_weapon_damage_ranged_to_wounded",
+				event_buff = true,
+				buff_func = "on_hit_debuff_enemy_defence",
+				event = "on_hit"
 			}
 		}
 	},
@@ -629,6 +704,43 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				stat_buff = "headshot_multiplier"
+			}
+		}
+	},
+	markus_huntsman_headshot_no_ammo_count = {
+		buffs = {
+			{
+				event = "on_hit",
+				buff_to_add = "markus_huntsman_headshot_no_ammo_count_counter",
+				event_buff = true,
+				buff_func = "add_buff_on_first_target_hit_range"
+			}
+		}
+	},
+	markus_huntsman_headshot_no_ammo_count_counter = {
+		buffs = {
+			{
+				reset_on_max_stacks = true,
+				on_max_stacks_func = "add_remove_buffs",
+				dormant = true,
+				max_stacks = 3,
+				icon = "markus_huntsman_increased_damage_to_wounded_enemies",
+				max_stack_data = {
+					buffs_to_add = {
+						"markus_huntsman_headshot_no_ammo_count_buff"
+					}
+				}
+			}
+		}
+	},
+	markus_huntsman_headshot_no_ammo_count_buff = {
+		buffs = {
+			{
+				event = "on_ammo_used",
+				event_buff = true,
+				buff_func = "markus_huntsman_free_shot",
+				max_stacks = 1,
+				icon = "markus_huntsman_increased_damage_to_wounded_enemies"
 			}
 		}
 	},
@@ -684,14 +796,118 @@ TalentBuffTemplates.empire_soldier = {
 			}
 		}
 	},
+	markus_huntsman_reload_speed_passive_stacks = {
+		buffs = {
+			{
+				buff_to_add = "markus_huntsman_reload_speed_passive_stacks_buff",
+				update_func = "set_stacks_on_stacks",
+				parent_stacks_per_stack = 1,
+				buff_to_check = "markus_huntsman_auto_headshot"
+			}
+		}
+	},
+	markus_huntsman_reload_speed_passive_stacks_buff = {
+		buffs = {
+			{
+				stat_buff = "power_level_ranged",
+				icon = "markus_huntsman_passive_crit_buff_on_headshot"
+			}
+		}
+	},
+	markus_huntsman_power_on_headshot = {
+		buffs = {
+			{
+				event = "on_hit",
+				buff_to_add = "markus_huntsman_power_on_headshot_buff",
+				event_buff = true,
+				buff_func = "add_buff_on_first_target_hit_headshot"
+			}
+		}
+	},
+	markus_huntsman_power_on_headshot_buff = {
+		buffs = {
+			{
+				icon = "markus_huntsman_damage_reduction_on_monster_kill",
+				refresh_durations = true,
+				stat_buff = "power_level"
+			}
+		}
+	},
+	markus_huntsman_passive_on_crit = {
+		buffs = {
+			{
+				buff_to_add = "markus_huntsman_auto_headshot",
+				event_buff = true,
+				buff_func = "add_buff_stack_on_melee_critical_hit",
+				event = "on_hit",
+				remove_buff_func = "on_crit_passive_removed",
+				reference_buff = "markus_huntsman_passive"
+			}
+		}
+	},
+	markus_huntsman_passive_melee_kills = {
+		buffs = {
+			{
+				buff_to_add = "markus_huntsman_auto_headshot",
+				event_buff = true,
+				buff_func = "markus_huntsman_passive_on_melee_kills",
+				event = "on_kill",
+				counter_buff_to_add = "markus_huntsman_passive_melee_kills_counter",
+				reference_buff = "markus_huntsman_passive"
+			}
+		}
+	},
+	markus_huntsman_passive_melee_kills_counter = {
+		buffs = {
+			{
+				max_stacks = 8,
+				icon = "markus_huntsman_reduced_spread",
+				dormant = true,
+				reset_on_max_stacks = true
+			}
+		}
+	},
 	markus_huntsman_movement_speed = {
 		buffs = {
 			{
+				max_stacks = 1,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
+			}
+		}
+	},
+	markus_huntsman_stacking_damage_reduction_on_kills = {
+		buffs = {
+			{
+				buff_to_add = "markus_huntsman_defence_buff",
+				max_stacks = 1,
+				event_buff = true,
+				buff_func = "add_buff_stack_on_special_kill",
+				event = "on_kill",
+				max_sub_buff_stacks = 4
+			}
+		}
+	},
+	markus_huntsman_defence_buff = {
+		buffs = {
+			{
+				dormant = true,
+				icon = "markus_huntsman_damage_reduction_on_monster_kill",
+				stat_buff = "damage_taken",
+				multiplier = -0.1
+			}
+		}
+	},
+	markus_huntsman_defence_remove = {
+		buffs = {
+			{
+				event = "on_damage_taken",
+				buff_func = "remove_ref_buff_stack",
+				event_buff = true,
+				reference_buff = "markus_huntsman_stacking_damage_reduction_on_kills"
 			}
 		}
 	},
@@ -735,6 +951,43 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				stat_buff = "activated_cooldown"
+			}
+		}
+	},
+	markus_huntsman_ult_on_death = {
+		buffs = {
+			{
+				buff_to_add = "markus_huntsman_invuln_flash",
+				recharge_buff = "markus_huntsman_ult_on_death_delay",
+				event_buff = true,
+				buff_func = "markus_huntsman_ult_on_death",
+				event = "on_damage_taken",
+				icon = "markus_huntsman_damage_reduction_on_monster_kill"
+			}
+		}
+	},
+	markus_huntsman_invuln_flash = {
+		buffs = {
+			{
+				remove_buff_func = "remove_invulnd_flash",
+				perk = "invincibility",
+				apply_buff_func = "add_invulnd_flash",
+				duration = 1
+			}
+		}
+	},
+	markus_huntsman_ult_on_death_delay = {
+		buffs = {
+			{
+				max_stacks = 1,
+				name = "ult_on_death_delay",
+				icon = "markus_huntsman_activated_ability_duration",
+				refresh_durations = true,
+				dormant = true,
+				buff_after_delay = true,
+				is_cooldown = true,
+				duration = 120,
+				delayed_buff_name = "markus_huntsman_ult_on_death"
 			}
 		}
 	},
@@ -842,6 +1095,29 @@ TalentBuffTemplates.empire_soldier = {
 			}
 		}
 	},
+	markus_knight_cooldown_on_stagger_elite = {
+		buffs = {
+			{
+				buff_to_add = "markus_knight_cooldown_buff",
+				event_buff = true,
+				buff_func = "markus_knight_reduce_cooldown_on_stagger",
+				event = "on_stagger",
+				enemy_type = {
+					"elite"
+				}
+			}
+		}
+	},
+	markus_knight_cooldown_buff = {
+		buffs = {
+			{
+				max_stacks = 1,
+				name = "cooldown reduction buff",
+				stat_buff = "cooldown_regen",
+				refresh_durations = true
+			}
+		}
+	},
 	markus_knight_power_level_on_stagger_elite = {
 		buffs = {
 			{
@@ -908,7 +1184,7 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				buff_to_add = "markus_knight_passive_block_cost_aura_buff",
 				update_func = "activate_buff_on_distance",
-				range = buff_tweak_data.markus_knight_passive.range
+				range = buff_tweak_data.markus_knight_passive.range * 2
 			}
 		}
 	},
@@ -917,6 +1193,68 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				stat_buff = "block_cost",
 				max_stacks = 1
+			}
+		}
+	},
+	markus_knight_passive_range = {
+		buffs = {
+			{
+				buff_to_add = "markus_knight_passive_defence_aura_range",
+				update_func = "activate_buff_on_distance",
+				remove_buff_func = "remove_aura_buff",
+				range = buff_tweak_data.markus_knight_passive.range * 2
+			}
+		}
+	},
+	markus_knight_passive_defence_aura_range = {
+		buffs = {
+			{
+				max_stacks = 1,
+				icon = "markus_knight_passive",
+				stat_buff = "damage_taken"
+			}
+		}
+	},
+	markus_knight_guard_defence = {
+		buffs = {
+			{
+				buff_to_add = "markus_knight_guard_defence_buff",
+				stat_buff = "damage_taken",
+				update_func = "activate_buff_on_closest_distance",
+				remove_buff_func = "remove_aura_buff",
+				range = buff_tweak_data.markus_knight_passive.range
+			}
+		}
+	},
+	markus_knight_guard_defence_buff = {
+		buffs = {
+			{
+				stat_buff = "damage_taken",
+				max_stacks = 1
+			}
+		}
+	},
+	markus_knight_guard = {
+		buffs = {
+			{
+				buff_to_add = "markus_knight_passive_power_increase_buff",
+				stat_buff = "power_level",
+				remove_buff_func = "remove_aura_buff",
+				icon = "markus_knight_passive_power_increase",
+				update_func = "activate_buff_on_closest_distance",
+				range = buff_tweak_data.markus_knight_passive.range
+			}
+		}
+	},
+	markus_knight_guard_buff = {
+		buffs = {
+			{
+				stat_buff = "damage_taken",
+				max_stacks = 1,
+				event_buff = true,
+				buff_func = "markus_knight_guard_damage_taken",
+				event = "on_damage_taken",
+				icon = "markus_knight_passive_power_increase"
 			}
 		}
 	},
@@ -940,12 +1278,7 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_movement_speed_on_incapacitated_allies_buff = {
 		buffs = {
 			{
-				remove_buff_func = "remove_movement_buff",
-				apply_buff_func = "apply_movement_buff",
-				icon = "markus_knight_movement_speed_on_incapacitated_allies",
-				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
+				apply_buff_func = "markus_hero_time_reset"
 			}
 		}
 	},
@@ -975,10 +1308,11 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				buff_to_add = "markus_knight_damage_taken_ally_proximity_buff",
-				chunk_size = 1,
 				range = 5,
+				update_func = "activate_party_buff_stacks_on_ally_proximity",
+				chunk_size = 1,
 				max_stacks = 3,
-				update_func = "activate_buff_stacks_based_on_ally_proximity"
+				remove_buff_func = "remove_party_buff_stacks"
 			}
 		}
 	},
@@ -1187,19 +1521,15 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				reset_on_max_stacks = true,
+				on_max_stacks_func = "add_remove_buffs",
 				max_stacks = 5,
 				icon = "markus_mercenary_crit_count",
 				dormant = true,
-				on_max_stacks_func = function (player, sub_buff_template)
-					local player_unit = player.player_unit
-
-					if Unit.alive(player_unit) then
-						local buff_to_add = "markus_mercenary_crit_count_buff"
-						local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
-
-						buff_extension:add_buff(buff_to_add)
-					end
-				end
+				max_stack_data = {
+					buffs_to_add = {
+						"markus_mercenary_crit_count_buff"
+					}
+				}
 			}
 		}
 	},
@@ -1311,7 +1641,7 @@ TalentTrees.empire_soldier = {
 			"markus_huntsman_heal_share"
 		},
 		{
-			"markus_huntsman_increased_damage_to_wounded_enemies",
+			"markus_huntsman_third_shot_free",
 			"markus_huntsman_debuff_defence_on_crit",
 			"markus_huntsman_headshot_damage"
 		},
@@ -1327,7 +1657,7 @@ TalentTrees.empire_soldier = {
 		},
 		{
 			"markus_huntsman_ammo_on_special_kill",
-			"markus_huntsman_damage_reduction_on_monster_kill",
+			"markus_huntsman_movement_speed_2",
 			"markus_huntsman_movement_speed"
 		},
 		{
@@ -1354,17 +1684,17 @@ TalentTrees.empire_soldier = {
 		},
 		{
 			"markus_knight_passive_block_cost_aura",
-			"markus_knight_improved_passive_defence_aura",
-			"markus_knight_passive_power_increase"
+			"markus_knight_damage_taken_ally_proximity",
+			"markus_knight_guard"
 		},
 		{
-			"markus_knight_movement_speed_on_incapacitated_allies",
+			"markus_knight_charge_reset_on_incapacitated_allies",
 			"markus_knight_free_pushes_on_block",
-			"markus_knight_damage_taken_ally_proximity"
+			"markus_knight_cooldown_on_stagger_elite"
 		},
 		{
 			"markus_knight_ability_invulnerability",
-			"markus_knight_ability_hit_target_damage_taken",
+			"markus_knight_wide_charge",
 			"markus_knight_ability_attack_speed_enemy_hit"
 		}
 	},
@@ -1448,24 +1778,15 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_huntsman_increased_damage_to_wounded_enemies_desc",
-		name = "markus_huntsman_increased_damage_to_wounded_enemies",
+		description = "markus_huntsman_third_shot_free_desc",
+		name = "markus_huntsman_third_shot_free",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_huntsman_increased_damage_to_wounded_enemies",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.markus_huntsman_increased_damage_to_wounded_enemies.multiplier
-			},
-			{
-				value_type = "percent",
-				value = buff_tweak_data.markus_huntsman_increased_damage_to_wounded_enemies.display_health_threshold
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"markus_huntsman_increased_damage_to_wounded_enemies"
+			"markus_huntsman_headshot_no_ammo_count"
 		},
 		buff_data = {}
 	},
@@ -1532,6 +1853,7 @@ Talents.empire_soldier = {
 		description = "markus_huntsman_passive_crit_buff_on_headshot_desc",
 		name = "markus_huntsman_passive_crit_buff_on_headshot",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "markus_huntsman_passive_crit_buff_on_headshot",
 		description_values = {
 			{
@@ -1564,6 +1886,7 @@ Talents.empire_soldier = {
 		description = "markus_huntsman_movement_speed_desc",
 		name = "markus_huntsman_movement_speed",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "markus_huntsman_max_stamina",
 		description_values = {
 			{
@@ -1578,25 +1901,24 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_huntsman_damage_reduction_on_monster_kill_desc",
-		name = "markus_huntsman_damage_reduction_on_monster_kill",
+		description = "markus_huntsman_movement_speed_desc_2",
+		name = "markus_huntsman_movement_speed_2",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "markus_huntsman_damage_reduction_on_monster_kill",
 		description_values = {
 			{
-				value_type = "percent",
-				value = buff_tweak_data.markus_huntsman_damage_reduction_on_monster_kill_passive.multiplier
+				value_type = "baked_percent",
+				value = buff_tweak_data.markus_huntsman_movement_speed.multiplier
 			},
 			{
-				value_type = "percent",
-				value = buff_tweak_data.markus_huntsman_damage_reduction_on_monster_kill_buff.display_multiplier
+				value = buff_tweak_data.markus_huntsman_defence_buff.max_stacks
 			}
 		},
 		requirements = {},
 		buffs = {
-			"markus_huntsman_damage_reduction_on_monster_kill",
-			"markus_huntsman_damage_reduction_on_monster_kill_passive"
+			"markus_huntsman_stacking_damage_reduction_on_kills",
+			"markus_huntsman_defence_remove"
 		},
 		buff_data = {}
 	},
@@ -1796,6 +2118,27 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
+		description = "markus_knight_cooldown_on_stagger_elite_desc",
+		name = "markus_knight_cooldown_on_stagger_elite",
+		num_ranks = 1,
+		buffer = "both",
+		icon = "markus_knight_improved_passive_defence_aura",
+		description_values = {
+			{
+				value_type = "baked_percent",
+				value = buff_tweak_data.markus_knight_cooldown_buff.multiplier
+			},
+			{
+				value = buff_tweak_data.markus_knight_cooldown_buff.duration
+			}
+		},
+		requirements = {},
+		buffs = {
+			"markus_knight_cooldown_on_stagger_elite"
+		},
+		buff_data = {}
+	},
+	{
 		description = "markus_knight_power_level_on_stagger_elite_desc",
 		name = "markus_knight_power_level_on_stagger_elite",
 		num_ranks = 1,
@@ -1855,7 +2198,7 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_knight_passive_block_cost_aura_desc",
+		description = "markus_knight_passive_block_cost_aura_desc_2",
 		name = "markus_knight_passive_block_cost_aura",
 		num_ranks = 1,
 		buffer = "server",
@@ -1868,13 +2211,14 @@ Talents.empire_soldier = {
 		},
 		requirements = {},
 		buffs = {
-			"markus_knight_passive_block_cost_aura"
+			"markus_knight_passive_block_cost_aura",
+			"markus_knight_passive_range"
 		},
 		buff_data = {}
 	},
 	{
-		description = "markus_knight_passive_power_increase_desc",
-		name = "markus_knight_passive_power_increase",
+		description = "markus_knight_guard_desc",
+		name = "markus_knight_guard",
 		num_ranks = 1,
 		buffer = "both",
 		icon = "markus_knight_passive_power_increase",
@@ -1882,26 +2226,30 @@ Talents.empire_soldier = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.markus_knight_passive_power_increase_buff.multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.markus_knight_guard_buff.presentation_multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.markus_knight_passive_power_increase_buff.multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"markus_knight_passive_power_increase_buff"
+			"markus_knight_guard",
+			"markus_knight_guard_defence"
 		},
 		buff_data = {}
 	},
 	{
-		description = "markus_knight_movement_speed_on_incapacitated_allies_desc",
-		name = "markus_knight_movement_speed_on_incapacitated_allies",
+		description = "markus_knight_charge_reset_on_incapacitated_allies_desc",
+		name = "markus_knight_charge_reset_on_incapacitated_allies",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_movement_speed_on_incapacitated_allies",
-		description_values = {
-			{
-				value_type = "baked_percent",
-				value = buff_tweak_data.markus_knight_movement_speed_on_incapacitated_allies_buff.multiplier
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
 			"markus_knight_movement_speed_on_incapacitated_allies"
@@ -1925,7 +2273,7 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_knight_damage_taken_ally_proximity_desc",
+		description = "markus_knight_damage_taken_ally_proximity_desc_2",
 		name = "markus_knight_damage_taken_ally_proximity",
 		num_ranks = 1,
 		buffer = "server",
@@ -1958,25 +2306,14 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_knight_ability_hit_target_damage_taken_desc",
-		name = "markus_knight_ability_hit_target_damage_taken",
+		description = "markus_knight_wide_charge_desc",
+		name = "markus_knight_wide_charge",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "markus_knight_ability_hit_target_damage_taken",
-		description_values = {
-			{
-				value_type = "percent",
-				value = BuffTemplates.defence_debuff_enemies.buffs[1].multiplier
-			},
-			{
-				value = BuffTemplates.defence_debuff_enemies.buffs[1].duration
-			}
-		},
+		description_values = {},
 		requirements = {},
-		buffs = {
-			"markus_knight_ability_hit_target_damage_taken_blast",
-			"markus_knight_ability_hit_target_damage_taken_charge"
-		},
+		buffs = {},
 		buff_data = {}
 	},
 	{
@@ -2289,7 +2626,7 @@ Talents.empire_soldier = {
 		buff_data = {}
 	},
 	{
-		description = "markus_mercenary_activated_ability_cooldown_no_heal_desc",
+		description = "markus_mercenary_activated_ability_cooldown_no_heal_desc_2",
 		name = "markus_mercenary_activated_ability_cooldown_no_heal",
 		num_ranks = 1,
 		icon = "markus_mercenary_activated_ability_cooldown_no_heal",

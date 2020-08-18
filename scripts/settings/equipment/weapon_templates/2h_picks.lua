@@ -292,7 +292,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.3,
@@ -364,7 +365,8 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
-			critical_strike = {}
+			critical_strike = {},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		heavy_attack_left_charged = {
 			damage_window_start = 0.3,

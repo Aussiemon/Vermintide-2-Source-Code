@@ -17,6 +17,10 @@ local buff_tweak_data = {
 	kerillian_shade_activated_ability_quick_cooldown_buff = {
 		multiplier = -0.45
 	},
+	kerillian_shade_activated_ability_quick_cooldown_crit = {
+		duration = 4,
+		bonus = 1
+	},
 	kerillian_shade_regrowth = {},
 	kerillian_shade_bloodlust = {},
 	kerillian_shade_conqueror = {},
@@ -36,6 +40,9 @@ local buff_tweak_data = {
 	},
 	kerillian_shade_backstabs_replenishes_ammunition = {
 		bonus = 1
+	},
+	kerillian_shade_backstabs_replenishes_ammunition_cooldown = {
+		duration = 2
 	},
 	kerillian_shade_passive_stealth_on_backstab_kill_buff = {
 		duration = 3
@@ -100,16 +107,25 @@ local buff_tweak_data = {
 		max_stacks = 3,
 		multiplier = 0.15
 	},
+	kerillian_maidenguard_power_on_dodge = {
+		multiplier = 0.1
+	},
+	kerillian_maidenguard_speed_on_block_buff = {
+		multiplier = 0.3
+	},
+	kerillian_maidenguard_power_on_block_buff = {
+		multiplier = 0.1
+	},
 	kerillian_maidenguard_passive_attack_speed_on_dodge_buff = {
 		max_stacks = 3,
 		multiplier = 0.05,
 		duration = 6
 	},
 	kerillian_maidenguard_improved_dodge = {
-		multiplier = 1.2
+		multiplier = 1.201
 	},
 	kerillian_maidenguard_improved_dodge_speed = {
-		multiplier = 1.2
+		multiplier = 1.201
 	},
 	kerillian_maidenguard_max_ammo = {
 		multiplier = 0.4
@@ -126,10 +142,21 @@ local buff_tweak_data = {
 	kerillian_maidenguard_activated_ability_invis_duration = {
 		duration = 2
 	},
-	kerillian_maidenguard_activated_ability_buff_on_enemy_hit_buff = {
+	kerillian_maidenguard_activated_ability_crit_buff = {
 		max_stacks = 5,
+		multiplier = 0.05,
+		duration = 15
+	},
+	kerillian_maidenguard_insta_ress = {
 		duration = 10,
-		bonus = 0.05
+		multiplier = -20
+	},
+	kerillian_maidenguard_insta_ress_buff = {
+		duration = 0.5
+	},
+	kerillian_maidenguard_ress_buff = {
+		duration = 5,
+		bonus = 0.5
 	},
 	kerillian_waywatcher_ability_cooldown_on_hit = {
 		bonus = 0.35
@@ -327,8 +354,13 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_backstab",
 				event_buff = true,
-				buff_func = "ammo_gain"
+				buff_func = "shade_backstab_ammo_gain"
 			}
+		}
+	},
+	kerillian_shade_backstabs_replenishes_ammunition_cooldown = {
+		buffs = {
+			{}
 		}
 	},
 	kerillian_shade_passive_stealth_on_backstab_kill = {
@@ -346,7 +378,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				apply_buff_func = "apply_shade_activated_ability",
 				name = "kerillian_shade_activated_ability_short",
-				remove_buff_func = "end_shade_activated_ability",
+				remove_buff_func = "end_shade_activated_ability_short",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "kerillian_shade_passive_stealth_on_backstab_kill",
@@ -432,6 +464,16 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				stat_buff = "activated_cooldown"
+			}
+		}
+	},
+	kerillian_shade_activated_ability_quick_cooldown_crit = {
+		buffs = {
+			{
+				max_stacks = 1,
+				icon = "kerillian_shade_activated_ability_quick_cooldown",
+				stat_buff = "critical_strike_chance_melee",
+				refresh_durations = true
 			}
 		}
 	},
@@ -532,6 +574,21 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
+	kerillian_maidenguard_ress_time = {
+		buffs = {
+			{
+				multiplier = -0.5,
+				event_buff = true,
+				buff_func = "buff_defence_on_revived_target",
+				event = "on_revived_ally",
+				refresh_durations = true,
+				stat_buff = "faster_revive",
+				buff_to_add = {
+					"kerillian_maidenguard_insta_ress_buff"
+				}
+			}
+		}
+	},
 	kerillian_maidenguard_reaper = {
 		buffs = {
 			{
@@ -604,14 +661,105 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
-	kerillian_maidenguard_cooldown_on_nearby_allies = {
+	kerillian_maidenguard_speed_on_block = {
 		buffs = {
 			{
-				buff_to_add = "kerillian_maidenguard_cooldown_on_nearby_allies_buff",
+				buff_to_add = "kerillian_maidenguard_speed_on_block_dummy_buff",
+				amount_to_add = 2,
+				buff_func = "maidenguard_add_power_buff_on_block",
+				event = "on_block",
+				event_buff = true,
+				max_stacks = 1,
+				update_func = "maidenguard_attack_speed_on_block_update",
+				max_sub_buff_stacks = 2,
+				stat_increase_buffs = {
+					"kerillian_maidenguard_speed_on_block_buff",
+					"kerillian_maidenguard_power_on_block_buff"
+				}
+			}
+		}
+	},
+	kerillian_maidenguard_speed_on_push = {
+		buffs = {
+			{
+				buff_to_add = "kerillian_maidenguard_speed_on_block_dummy_buff",
+				amount_to_add = 2,
+				buff_func = "maidenguard_add_power_buff_on_block",
+				event = "on_push",
+				event_buff = true,
+				max_stacks = 1,
+				update_func = "maidenguard_attack_speed_on_block_update",
+				max_sub_buff_stacks = 2,
+				stat_increase_buffs = {
+					"kerillian_maidenguard_speed_on_block_buff",
+					"kerillian_maidenguard_power_on_block_buff"
+				}
+			}
+		}
+	},
+	kerillian_maidenguard_speed_on_block_dummy_buff = {
+		buffs = {
+			{
+				max_stacks = 2,
+				icon = "kerillian_maidenguard_power_level_on_unharmed"
+			}
+		}
+	},
+	kerillian_maidenguard_speed_on_block_buff = {
+		buffs = {
+			{
+				max_stacks = 1,
+				stat_buff = "attack_speed"
+			}
+		}
+	},
+	kerillian_maidenguard_power_on_block_buff = {
+		buffs = {
+			{
+				max_stacks = 1,
+				stat_buff = "power_level"
+			}
+		}
+	},
+	kerillian_maidenguard_power_on_blocked_attacks_remove_damage = {
+		buffs = {
+			{
+				event_buff = true,
 				chunk_size = 1,
-				range = 5,
-				max_stacks = 4,
-				update_func = "activate_buff_stacks_based_on_ally_proximity"
+				buff_to_remove = "kerillian_maidenguard_speed_on_block_dummy_buff",
+				buff_func = "maidenguard_remove_on_block_speed_buff",
+				event = "on_damage_dealt",
+				max_stacks = 1,
+				reference_buffs = {
+					"kerillian_maidenguard_speed_on_block",
+					"kerillian_maidenguard_speed_on_push"
+				}
+			}
+		}
+	},
+	kerillian_maidenguard_versatile_dodge = {
+		buffs = {
+			{
+				attack_buff_to_add = "kerillian_maidenguard_power_on_dodge",
+				event_buff = true,
+				buff_func = "maidenguard_footwork_buff",
+				event = "on_dodge",
+				dodge_buffs_to_add = {
+					"kerillian_maidenguard_improved_dodge",
+					"kerillian_maidenguard_improved_dodge_speed"
+				}
+			}
+		}
+	},
+	kerillian_maidenguard_power_on_dodge = {
+		buffs = {
+			{
+				icon = "kerillian_maidenguard_cooldown_on_nearby_allies",
+				refresh_durations = true,
+				stat_buff = "power_level",
+				max_stacks = 1,
+				duration = 2,
+				dormant = true
 			}
 		}
 	},
@@ -647,6 +795,9 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_improved_dodge = {
 		buffs = {
 			{
+				event_buff = true,
+				buff_func = "maidenguard_footwork_on_dodge_end",
+				event = "on_dodge_finished",
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -659,6 +810,9 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_improved_dodge_speed = {
 		buffs = {
 			{
+				event_buff = true,
+				buff_func = "maidenguard_footwork_on_dodge_end",
+				event = "on_dodge_finished",
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -724,19 +878,49 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_charge_ability_hit",
-				buff_to_add = "kerillian_maidenguard_activated_ability_buff_on_enemy_hit_buff",
+				buff_to_add = "kerillian_maidenguard_activated_ability_crit_buff",
 				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
 	},
-	kerillian_maidenguard_activated_ability_buff_on_enemy_hit_buff = {
+	kerillian_maidenguard_activated_ability_crit_buff = {
 		buffs = {
 			{
 				icon = "kerillian_maidenguard_activated_ability_buff_on_enemy_hit",
 				refresh_durations = true,
 				stat_buff = "critical_strike_chance",
 				dormant = true
+			}
+		}
+	},
+	kerillian_maidenguard_insta_ress = {
+		buffs = {
+			{
+				stat_buff = "faster_revive",
+				event_buff = true,
+				buff_func = "buff_defence_on_revived_target",
+				event = "on_revived_ally",
+				refresh_durations = true,
+				buff_to_add = {
+					"kerillian_maidenguard_insta_ress_buff"
+				}
+			}
+		}
+	},
+	kerillian_maidenguard_insta_ress_buff = {
+		buffs = {
+			{
+				heal_amount = 20,
+				remove_buff_func = "add_health_on_application"
+			}
+		}
+	},
+	kerillian_maidenguard_ress_buff = {
+		buffs = {
+			{
+				stat_buff = "critical_strike_chance",
+				icon = "kerillian_maidenguard_crit_chance"
 			}
 		}
 	},
@@ -982,7 +1166,7 @@ TalentTrees.wood_elf = {
 		{
 			"kerillian_maidenguard_power_level_on_unharmed",
 			"kerillian_maidenguard_crit_chance",
-			"kerillian_maidenguard_cooldown_on_nearby_allies"
+			"kerillian_maidenguard_speed_on_block"
 		},
 		{
 			"kerillian_maidenguard_smiter_unbalance",
@@ -991,7 +1175,7 @@ TalentTrees.wood_elf = {
 		},
 		{
 			"kerillian_maidenguard_passive_attack_speed_on_dodge",
-			"kerillian_maidenguard_improved_dodge",
+			"kerillian_maidenguard_versatile_dodge",
 			"kerillian_maidenguard_passive_noclip_dodge"
 		},
 		{
@@ -1195,6 +1379,9 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value = buff_tweak_data.kerillian_shade_backstabs_replenishes_ammunition.bonus
+			},
+			{
+				value = buff_tweak_data.kerillian_shade_backstabs_replenishes_ammunition_cooldown.duration
 			}
 		},
 		requirements = {},
@@ -1262,7 +1449,7 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_shade_activated_ability_quick_cooldown_desc",
+		description = "kerillian_shade_activated_ability_quick_cooldown_desc_2",
 		name = "kerillian_shade_activated_ability_quick_cooldown",
 		num_ranks = 1,
 		icon = "kerillian_shade_activated_ability_quick_cooldown",
@@ -1270,6 +1457,13 @@ Talents.wood_elf = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.kerillian_shade_activated_ability_quick_cooldown_buff.multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_shade_activated_ability_quick_cooldown_crit.bonus
+			},
+			{
+				value = buff_tweak_data.kerillian_shade_activated_ability_quick_cooldown_crit.duration
 			}
 		},
 		requirements = {},
@@ -1453,23 +1647,24 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_maidenguard_cooldown_on_nearby_allies_desc",
-		name = "kerillian_maidenguard_cooldown_on_nearby_allies",
+		description = "kerillian_maidenguard_versatile_dodge_desc",
+		name = "kerillian_maidenguard_versatile_dodge",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "kerillian_maidenguard_cooldown_on_nearby_allies",
 		description_values = {
 			{
-				value_type = "percent",
-				value = buff_tweak_data.kerillian_maidenguard_cooldown_on_nearby_allies_buff.multiplier
+				value_type = "baked_percent",
+				value = buff_tweak_data.kerillian_maidenguard_improved_dodge.multiplier
 			},
 			{
-				value = buff_tweak_data.kerillian_maidenguard_cooldown_on_nearby_allies_buff.max_stacks
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_maidenguard_power_on_dodge.multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"kerillian_maidenguard_cooldown_on_nearby_allies"
+			"kerillian_maidenguard_versatile_dodge"
 		},
 		buff_data = {}
 	},
@@ -1497,20 +1692,26 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_maidenguard_improved_dodge_desc",
-		name = "kerillian_maidenguard_improved_dodge",
+		description = "kerillian_maidenguard_speed_on_block_desc",
+		name = "kerillian_maidenguard_speed_on_block",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "kerillian_maidenguard_improved_dodge",
 		description_values = {
 			{
-				value_type = "baked_percent",
-				value = buff_tweak_data.kerillian_maidenguard_improved_dodge.multiplier
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_maidenguard_speed_on_block_buff.multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_maidenguard_power_on_block_buff.multiplier
 			}
 		},
 		requirements = {},
 		buffs = {
-			"kerillian_maidenguard_improved_dodge",
-			"kerillian_maidenguard_improved_dodge_speed"
+			"kerillian_maidenguard_speed_on_block",
+			"kerillian_maidenguard_speed_on_push",
+			"kerillian_maidenguard_power_on_blocked_attacks_remove_damage"
 		},
 		buff_data = {}
 	},
@@ -1599,12 +1800,7 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		buffer = "both",
 		icon = "kerillian_maidenguard_activated_ability_damage",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.kerillian_maidenguard_activated_ability_damage.multiplier
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {},
 		buff_data = {}
@@ -1618,13 +1814,13 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.kerillian_maidenguard_activated_ability_buff_on_enemy_hit_buff.bonus
+				value = buff_tweak_data.kerillian_maidenguard_activated_ability_crit_buff.multiplier
 			},
 			{
-				value = buff_tweak_data.kerillian_maidenguard_activated_ability_buff_on_enemy_hit_buff.duration
+				value = buff_tweak_data.kerillian_maidenguard_activated_ability_crit_buff.duration
 			},
 			{
-				value = buff_tweak_data.kerillian_maidenguard_activated_ability_buff_on_enemy_hit_buff.max_stacks
+				value = buff_tweak_data.kerillian_maidenguard_activated_ability_crit_buff.max_stacks
 			}
 		},
 		requirements = {},

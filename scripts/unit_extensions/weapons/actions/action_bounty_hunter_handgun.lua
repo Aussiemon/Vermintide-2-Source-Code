@@ -57,7 +57,7 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 	end
 end
 
-ActionBountyHunterHandgun.client_owner_post_update = function (self, dt, t, world, can_damage)
+ActionBountyHunterHandgun.client_owner_post_update = function (self, dt, t, world, can_damage, time_in_action)
 	if not self.upper_shot_done and self.time_to_shoot_upper <= t then
 		self:upper_shoot_function()
 
@@ -129,6 +129,13 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local current_position, current_rotation = first_person_extension:get_projectile_start_position_rotation()
 	local num_shots = current_action.shot_count or 1
+	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local damage_bonus = 0
+
+	if buff_extension:has_buff_type("victor_bounty_blast_streak_buff") then
+		damage_bonus = buff_extension:num_buff_type("victor_bounty_blast_streak_buff")
+		num_shots = num_shots + damage_bonus
+	end
 
 	if not Managers.player:owner(owner_unit).bot_player then
 		Managers.state.controller_features:add_effect("rumble", {

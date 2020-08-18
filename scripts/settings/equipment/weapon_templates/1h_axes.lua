@@ -32,7 +32,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_left",
-					start_time = 0.6,
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -90,7 +90,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_right",
-					start_time = 0.6,
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -148,7 +148,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "heavy_attack_left",
-					start_time = 0.6,
+					start_time = 0.5,
 					action = "action_one",
 					input = "action_one_release"
 				},
@@ -186,7 +186,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "attack_hit",
 			use_precision_sweep = true,
 			width_mod = 17.5,
-			damage_profile = "medium_slashing_smiter_1h",
+			damage_profile = "medium_slashing_smiter_1h_axe",
 			aim_assist_ramp_multiplier = 0.4,
 			aim_assist_max_ramp_multiplier = 0.6,
 			hit_effect = "melee_hit_axes_1h",
@@ -250,7 +250,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "attack_hit",
 			use_precision_sweep = true,
 			width_mod = 17.5,
-			damage_profile = "medium_slashing_smiter_1h",
+			damage_profile = "medium_slashing_smiter_1h_axe",
 			aim_assist_ramp_multiplier = 0.4,
 			aim_assist_max_ramp_multiplier = 0.6,
 			hit_effect = "melee_hit_axes_1h",
@@ -327,11 +327,11 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.05,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.8,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -392,11 +392,11 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.05,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.8,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -456,11 +456,11 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.05,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.75,
+					external_multiplier = 0.8,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -468,14 +468,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.85,
+					start_time = 0.75,
 					action = "action_one",
 					end_time = 1.25,
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.85,
+					start_time = 0.75,
 					action = "action_one",
 					end_time = 1.25,
 					input = "action_one_hold"
@@ -524,11 +524,11 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.25,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.8,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}

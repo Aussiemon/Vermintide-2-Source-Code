@@ -98,19 +98,46 @@ local buff_tweak_data = {
 	victor_bountyhunter_power_level_on_clip_size_buff = {
 		multiplier = 0.01
 	},
+	victor_bountyhunter_attack_speed_on_no_ammo_buff = {
+		duration = 15,
+		multiplier = 0.15
+	},
+	victor_bountyhunter_power_on_no_ammo_buff = {
+		duration = 15,
+		multiplier = 0.15
+	},
+	victor_bountyhunter_blessed_melee_damage_buff = {
+		presentation_stacks = 6,
+		multiplier = 0.15
+	},
+	victor_bountyhunter_blessed_ranged_damage_buff = {
+		presentation_stacks = 6,
+		multiplier = 0.15
+	},
 	victor_bountyhunter_passive_reduced_cooldown = {
 		duration = 6
 	},
-	victor_bountyhunter_movespeed_on_ranged_crit_buff = {
-		multiplier = 1.2,
+	victor_bountyhunter_party_movespeed_on_ranged_crit_buff = {
+		multiplier = 1.1,
 		duration = 10
 	},
 	victor_bountyhunter_restore_ammo_on_elite_kill = {
-		ammo_bonus_fraction = 0.3
+		ammo_bonus_fraction = 0.2
 	},
 	victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_buff = {
 		max_stacks = 30,
 		multiplier = -0.01
+	},
+	victor_bountyhunter_activated_ability_passive_cooldown_reduction = {
+		cooldown = 10,
+		multiplier = 0.2
+	},
+	victor_bountyhunter_activated_ability_blast_shotgun = {
+		required_target_number = 4,
+		multiplier = -0.25
+	},
+	victor_bountyhunter_activated_ability_railgun = {
+		multiplier = 0.4
 	},
 	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
 		multiplier = 0.02
@@ -118,17 +145,6 @@ local buff_tweak_data = {
 	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_buff = {
 		max_stacks = 25,
 		multiplier = 0.02
-	},
-	victor_bountyhunter_activated_ability_passive_cooldown_reduction = {
-		cooldown = 10,
-		multiplier = 0.15
-	},
-	victor_bountyhunter_activated_ability_shotgun = {
-		required_target_number = 4,
-		multiplier = -0.25
-	},
-	victor_bountyhunter_activated_ability_railgun = {
-		multiplier = 0.4
 	},
 	victor_witchhunter_ability_cooldown_on_hit = {
 		bonus = 0.5
@@ -350,19 +366,15 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				reset_on_max_stacks = true,
+				on_max_stacks_func = "add_remove_buffs",
 				max_stacks = 5,
 				icon = "victor_zealot_crit_count",
 				dormant = true,
-				on_max_stacks_func = function (player, sub_buff_template)
-					local player_unit = player.player_unit
-
-					if Unit.alive(player_unit) then
-						local buff_to_add = "markus_mercenary_crit_count_buff"
-						local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
-
-						buff_extension:add_buff(buff_to_add)
-					end
-				end
+				max_stack_data = {
+					buffs_to_add = {
+						"victor_zealot_crit_count_buff"
+					}
+				}
 			}
 		}
 	},
@@ -672,30 +684,34 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_increased_melee_damage_on_no_ammo_add = {
 		buffs = {
 			{
-				buff_to_add = "victor_bountyhunter_melee_damage_on_no_ammo_buff",
 				event = "on_last_ammo_used",
 				event_buff = true,
-				buff_func = "bardin_ranger_add_power_on_no_ammo_proc"
+				buff_func = "add_buff_on_out_of_ammo",
+				buffs_to_add = {
+					"victor_bountyhunter_attack_speed_on_no_ammo_buff",
+					"victor_bountyhunter_power_on_no_ammo_buff"
+				}
 			}
 		}
 	},
-	victor_bountyhunter_increased_melee_damage_on_no_ammo_remove = {
+	victor_bountyhunter_attack_speed_on_no_ammo_buff = {
 		buffs = {
 			{
-				event = "on_gained_ammo_from_no_ammo",
-				buff_to_remove = "victor_bountyhunter_melee_damage_on_no_ammo_buff",
-				event_buff = true,
-				buff_func = "bardin_ranger_remove_power_on_no_ammo_proc"
+				refresh_durations = true,
+				name = "bardin_slayer_frenzy",
+				stat_buff = "attack_speed",
+				max_stacks = 1,
+				icon = "victor_bountyhunter_melee_damage_on_no_ammo"
 			}
 		}
 	},
-	victor_bountyhunter_melee_damage_on_no_ammo_buff = {
+	victor_bountyhunter_power_on_no_ammo_buff = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "victor_bountyhunter_melee_damage_on_no_ammo",
-				priority_buff = true,
-				stat_buff = "power_level"
+				refresh_durations = true,
+				stat_buff = "power_level",
+				priority_buff = true
 			}
 		}
 	},
@@ -750,6 +766,54 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
+	victor_bountyhunter_weapon_swap_buff = {
+		buffs = {
+			{
+				melee_buff = "victor_bountyhunter_blessed_melee_buff",
+				event = "on_hit",
+				melee_buff_to_add = "victor_bountyhunter_blessed_melee_damage_buff",
+				buff_func = "victor_bountyhunter_blessed_combat",
+				ranged_buff_to_add = "victor_bountyhunter_blessed_ranged_damage_buff",
+				ranged_buff = "victor_bountyhunter_blessed_ranged_buff",
+				event_buff = true,
+				update_func = "victor_bountyhunter_blessed_combat_update",
+				melee_buff_ids = {},
+				ranged_buff_ids = {}
+			}
+		}
+	},
+	victor_bountyhunter_blessed_melee_buff = {
+		buffs = {
+			{
+				max_stacks = 6,
+				icon = "victor_bountyhunter_passive_infinite_ammo"
+			}
+		}
+	},
+	victor_bountyhunter_blessed_melee_damage_buff = {
+		buffs = {
+			{
+				stat_buff = "power_level_melee",
+				max_stacks = 1
+			}
+		}
+	},
+	victor_bountyhunter_blessed_ranged_buff = {
+		buffs = {
+			{
+				max_stacks = 6,
+				icon = "victor_bountyhunter_heal_on_critical_hit"
+			}
+		}
+	},
+	victor_bountyhunter_blessed_ranged_damage_buff = {
+		buffs = {
+			{
+				stat_buff = "power_level_ranged",
+				max_stacks = 1
+			}
+		}
+	},
 	victor_bountyhunter_passive_infinite_ammo = {
 		buffs = {
 			{
@@ -767,13 +831,22 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
-	victor_bountyhunter_movespeed_on_ranged_crit = {
+	victor_bountyhunter_party_movespeed_on_ranged_crit = {
 		buffs = {
 			{
 				event = "on_hit",
-				buff_to_add = "victor_bountyhunter_movespeed_on_ranged_crit_buff",
+				buff_to_add = "victor_bountyhunter_party_movespeed_on_ranged_crit_buff",
 				event_buff = true,
-				buff_func = "add_buff_on_ranged_critical_hit"
+				buff_func = "add_team_buff_on_ranged_critical_hit"
+			}
+		}
+	},
+	victor_bountyhunter_reload_on_kill = {
+		buffs = {
+			{
+				event = "on_kill",
+				event_buff = true,
+				buff_func = "victor_bounty_hunter_reload_on_kill"
 			}
 		}
 	},
@@ -786,7 +859,21 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
-	victor_bountyhunter_movespeed_on_ranged_crit_buff = {
+	victor_bountyhunter_restore_ammo_on_kill_buff = {
+		buffs = {
+			{
+				max_stacks = 1,
+				refresh_durations = true,
+				event_buff = true,
+				buff_func = "victor_bounty_hunter_ammo_regen",
+				event = "on_hit",
+				icon = "bardin_slayer_activated_ability",
+				priority_buff = true,
+				duration = 5
+			}
+		}
+	},
+	victor_bountyhunter_party_movespeed_on_ranged_crit_buff = {
 		buffs = {
 			{
 				remove_buff_func = "remove_movement_buff",
@@ -820,15 +907,6 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
-	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
-		buffs = {
-			{
-				event = "on_kill",
-				event_buff = true,
-				buff_func = "victor_bountyhunter_reduce_activated_ability_cooldown_ignore_paused_on_kill"
-			}
-		}
-	},
 	victor_bountyhunter_activated_ability_passive_cooldown_reduction = {
 		buffs = {
 			{
@@ -838,29 +916,34 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
-	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_buff = {
+	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
 		buffs = {
 			{
-				icon = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
-				dormant = true,
-				reset_on_max_stacks = true,
-				on_max_stacks_func = function (player, sub_buff_template)
-					local player_unit = player.player_unit
-
-					if Unit.alive(player_unit) then
-						local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
-
-						career_extension:set_activated_ability_cooldown_unpaused()
-						career_extension:reduce_activated_ability_cooldown_percent(1)
-					end
-				end
+				event = "on_kill",
+				event_buff = true,
+				buff_func = "victor_bountyhunter_reduce_activated_ability_cooldown_ignore_paused_on_kill"
 			}
 		}
 	},
-	victor_bountyhunter_activated_ability_shotgun = {
+	victor_bountyhunter_activated_ability_blast_shotgun = {
 		buffs = {
 			{
-				stat_buff = "activated_cooldown"
+				buff_to_add = "victor_bounty_blast_streak_buff",
+				stat_buff = "activated_cooldown",
+				event_buff = true,
+				buff_func = "victor_bounty_blast_streak_activation",
+				event = "on_kill"
+			}
+		}
+	},
+	victor_bounty_blast_streak_buff = {
+		buffs = {
+			{
+				max_stacks = 20,
+				event_buff = true,
+				buff_func = "victor_bounty_blast_streak_buff",
+				event = "on_hit",
+				icon = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks"
 			}
 		}
 	},
@@ -1201,7 +1284,7 @@ TalentTrees.witch_hunter = {
 		},
 		{
 			"victor_bountyhunter_debuff_defence_on_crit",
-			"victor_bountyhunter_melee_damage_on_no_ammo",
+			"victor_bountyhunter_power_burst_on_no_ammo",
 			"victor_bountyhunter_power_level_on_clip_size"
 		},
 		{
@@ -1210,19 +1293,19 @@ TalentTrees.witch_hunter = {
 			"victor_bounty_hunter_power_level_unbalance"
 		},
 		{
-			"victor_bountyhunter_activate_passive_on_melee_kill",
+			"victor_bountyhunter_weapon_swap_buff",
 			"victor_bountyhunter_passive_reduced_cooldown",
 			"victor_bountyhunter_passive_infinite_ammo"
 		},
 		{
-			"victor_bountyhunter_movespeed_on_ranged_crit",
-			"victor_bountyhunter_restore_ammo_on_elite_kill",
+			"victor_bountyhunter_party_movespeed_on_ranged_crit",
+			"victor_bountyhunter_reload_on_kill",
 			"victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill"
 		},
 		{
 			"victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
 			"victor_bountyhunter_activated_ability_railgun",
-			"victor_bountyhunter_activated_ability_shotgun"
+			"victor_bountyhunter_activated_ability_blast_shotgun"
 		}
 	},
 	{
@@ -1645,21 +1728,27 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_melee_damage_on_no_ammo_desc",
-		name = "victor_bountyhunter_melee_damage_on_no_ammo",
+		description = "victor_bountyhunter_power_burst_on_no_ammo_desc",
+		name = "victor_bountyhunter_power_burst_on_no_ammo",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "victor_bountyhunter_melee_damage_on_no_ammo",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_bountyhunter_melee_damage_on_no_ammo_buff.multiplier
+				value = buff_tweak_data.victor_bountyhunter_attack_speed_on_no_ammo_buff.multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.victor_bountyhunter_power_on_no_ammo_buff.multiplier
+			},
+			{
+				value = buff_tweak_data.victor_bountyhunter_attack_speed_on_no_ammo_buff.duration
 			}
 		},
 		requirements = {},
 		buffs = {
-			"victor_bountyhunter_increased_melee_damage_on_no_ammo_add",
-			"victor_bountyhunter_increased_melee_damage_on_no_ammo_remove"
+			"victor_bountyhunter_increased_melee_damage_on_no_ammo_add"
 		},
 		buff_data = {}
 	},
@@ -1703,14 +1792,30 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_activate_passive_on_melee_kill_desc",
-		name = "victor_bountyhunter_activate_passive_on_melee_kill",
+		description = "victor_bountyhunter_weapon_swap_buff_desc",
+		name = "victor_bountyhunter_weapon_swap_buff",
 		num_ranks = 1,
 		buffer = "both",
 		icon = "victor_bountyhunter_heal_on_critical_hit",
-		description_values = {},
+		description_values = {
+			{
+				value = buff_tweak_data.victor_bountyhunter_blessed_melee_damage_buff.presentation_stacks
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.victor_bountyhunter_blessed_melee_damage_buff.multiplier
+			},
+			{
+				value = buff_tweak_data.victor_bountyhunter_blessed_ranged_damage_buff.presentation_stacks
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.victor_bountyhunter_blessed_ranged_damage_buff.multiplier
+			}
+		},
 		requirements = {},
 		buffs = {
+			"victor_bountyhunter_weapon_swap_buff",
 			"victor_bountyhunter_activate_passive_on_melee_kill"
 		},
 		buff_data = {}
@@ -1741,28 +1846,28 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_movespeed_on_ranged_crit_desc",
-		name = "victor_bountyhunter_movespeed_on_ranged_crit",
+		description = "victor_bountyhunter_party_movespeed_on_ranged_crit_desc",
+		name = "victor_bountyhunter_party_movespeed_on_ranged_crit",
 		num_ranks = 1,
 		icon = "victor_bountyhunter_movespeed_on_ranged_crit",
 		description_values = {
 			{
 				value_type = "baked_percent",
-				value = buff_tweak_data.victor_bountyhunter_movespeed_on_ranged_crit_buff.multiplier
+				value = buff_tweak_data.victor_bountyhunter_party_movespeed_on_ranged_crit_buff.multiplier
 			},
 			{
-				value = buff_tweak_data.victor_bountyhunter_movespeed_on_ranged_crit_buff.duration
+				value = buff_tweak_data.victor_bountyhunter_party_movespeed_on_ranged_crit_buff.duration
 			}
 		},
 		requirements = {},
 		buffs = {
-			"victor_bountyhunter_movespeed_on_ranged_crit"
+			"victor_bountyhunter_party_movespeed_on_ranged_crit"
 		},
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_restore_ammo_on_elite_kill_desc",
-		name = "victor_bountyhunter_restore_ammo_on_elite_kill",
+		description = "victor_bountyhunter_reload_on_kill_desc",
+		name = "victor_bountyhunter_reload_on_kill",
 		num_ranks = 1,
 		icon = "victor_bountyhunter_restore_ammo_on_elite_kill",
 		description_values = {
@@ -1773,6 +1878,7 @@ Talents.witch_hunter = {
 		},
 		requirements = {},
 		buffs = {
+			"victor_bountyhunter_reload_on_kill",
 			"victor_bountyhunter_restore_ammo_on_elite_kill"
 		},
 		buff_data = {}
@@ -1816,22 +1922,22 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_activated_ability_shotgun_desc_2",
-		name = "victor_bountyhunter_activated_ability_shotgun",
+		description = "victor_bountyhunter_activated_ability_blast_shotgun_desc",
+		name = "victor_bountyhunter_activated_ability_blast_shotgun",
 		num_ranks = 1,
 		icon = "victor_bountyhunter_activated_ability_shotgun",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_bountyhunter_activated_ability_shotgun.multiplier
+				value = buff_tweak_data.victor_bountyhunter_activated_ability_blast_shotgun.multiplier
 			},
 			{
-				value = buff_tweak_data.victor_bountyhunter_activated_ability_shotgun.required_target_number
+				value = buff_tweak_data.victor_bountyhunter_activated_ability_blast_shotgun.required_target_number
 			}
 		},
 		requirements = {},
 		buffs = {
-			"victor_bountyhunter_activated_ability_shotgun"
+			"victor_bountyhunter_activated_ability_blast_shotgun"
 		},
 		buff_data = {}
 	},

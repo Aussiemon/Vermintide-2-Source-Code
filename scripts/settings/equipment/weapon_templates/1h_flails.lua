@@ -528,7 +528,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.44,
@@ -594,7 +595,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_last = {
 			damage_window_start = 0.4,

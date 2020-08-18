@@ -127,7 +127,8 @@ weapon_template.actions = {
 				climb_duration = 0.2,
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		}
 	},
 	action_two = {

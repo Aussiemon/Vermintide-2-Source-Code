@@ -6303,7 +6303,6 @@ OptionsView.cb_mouse_look_sensitivity_setup = function (self)
 
 	local default_value = DefaultUserSettings.get("user_settings", "mouse_look_sensitivity")
 	local value = get_slider_value(min, max, sensitivity)
-	sensitivity = math.clamp(sensitivity, min, max)
 	local platform_key = "win32"
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look.multiplier

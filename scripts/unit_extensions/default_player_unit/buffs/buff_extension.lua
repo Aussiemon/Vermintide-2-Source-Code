@@ -1,3 +1,5 @@
+require("scripts/helpers/pseudo_random_distribution")
+
 local bpc = dofile("scripts/settings/bpc")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
 BuffExtension = class(BuffExtension)
@@ -29,6 +31,7 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self.is_husk = extension_init_data.is_husk
 	self.id = 1
 	self.individual_stat_buff_index = 1
+	self._prd_states = {}
 end
 
 BuffExtension.extensions_ready = function (self, world, unit)
@@ -161,7 +164,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 				if has_max_stacks then
 					break
 				elseif stacks == max_stacks - 1 then
-					local on_max_stacks_func = sub_buff_template.on_max_stacks_func
+					local on_max_stacks_func = MaxStackFunctions[sub_buff_template.on_max_stacks_func]
 
 					if on_max_stacks_func then
 						local player = Managers.player:owner(self._unit)
@@ -385,7 +388,7 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 		}
 		self.individual_stat_buff_index = index + 1
 	else
-		index = 1
+		index = (application_method == "stacking_multiplier_multiplicative" and sub_buff_template.name) or 1
 
 		if not stat_buff[index] then
 			stat_buff[index] = {
@@ -396,7 +399,7 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 		elseif application_method == "stacking_bonus" then
 			local current_bonus = stat_buff[index].bonus
 			stat_buff[index].bonus = current_bonus + bonus
-		elseif application_method == "stacking_multiplier" then
+		elseif application_method == "stacking_multiplier" or application_method == "stacking_multiplier_multiplicative" then
 			local current_multiplier = stat_buff[index].multiplier
 			stat_buff[index].multiplier = current_multiplier + multiplier
 		elseif application_method == "stacking_bonus_and_multiplier" then
@@ -439,12 +442,18 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 			local update_func = template.update_func
 
 			if update_func then
-				local time_into_buff = t - buff.start_time
-				local time_left_on_buff = end_time and end_time - t
-				buff_extension_function_params.time_into_buff = time_into_buff
-				buff_extension_function_params.time_left_on_buff = time_left_on_buff
+				local next_update_t = buff._next_update_t
 
-				BuffFunctionTemplates.functions[update_func](unit, buff, buff_extension_function_params, world)
+				if not next_update_t or next_update_t < t then
+					local time_into_buff = t - buff.start_time
+					local time_left_on_buff = end_time and end_time - t
+					buff_extension_function_params.time_into_buff = time_into_buff
+					buff_extension_function_params.time_left_on_buff = time_left_on_buff
+
+					BuffFunctionTemplates.functions[update_func](unit, buff, buff_extension_function_params, world)
+
+					buff._next_update_t = t + (buff.template.update_frequency or 0)
+				end
 			end
 
 			i = i + 1
@@ -458,18 +467,22 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 	end
 end
 
-BuffExtension.update_stat_buff = function (self, stat_buff_type, difference)
+BuffExtension.update_stat_buff = function (self, stat_buff_type, difference, index)
 	local stat_buffs = self._stat_buffs
 	local stat_buff = stat_buffs[stat_buff_type]
 	local application_method = StatBuffApplicationMethods[stat_buff_type]
-	local index = 1
+	index = index or 1
 
 	if application_method == "stacking_bonus" then
 		local current_bonus = stat_buff[index].bonus
 		stat_buff[index].bonus = current_bonus + difference
-	elseif application_method == "stacking_multiplier" then
+
+		return stat_buff[index].bonus
+	elseif application_method == "stacking_multiplier" or application_method == "stacking_multiplier_multiplicative" then
 		local current_multiplier = stat_buff[index].multiplier
 		stat_buff[index].multiplier = current_multiplier + difference
+
+		return stat_buff[index].multiplier
 	else
 		fassert(false, "trying to update a stat with an incompatible application method")
 	end
@@ -592,7 +605,7 @@ BuffExtension._remove_stat_buff = function (self, buff)
 	elseif application_method == "stacking_bonus" then
 		local current_bonus = stat_buffs[index].bonus
 		stat_buffs[index].bonus = current_bonus - bonus
-	elseif application_method == "stacking_multiplier" then
+	elseif application_method == "stacking_multiplier" or application_method == "stacking_multiplier_multiplicative" then
 		local current_multiplier = stat_buffs[index].multiplier
 		stat_buffs[index].multiplier = current_multiplier - multiplier
 	elseif application_method == "stacking_bonus_and_multiplier" then
@@ -601,6 +614,21 @@ BuffExtension._remove_stat_buff = function (self, buff)
 		stat_buffs[index].bonus = current_bonus - bonus
 		stat_buffs[index].multiplier = current_multiplier - multiplier
 	end
+end
+
+BuffExtension.get_buff_type = function (self, buff_type)
+	local buffs = self._buffs
+	local num_buffs = #buffs
+
+	for i = 1, num_buffs, 1 do
+		local buff = buffs[i]
+
+		if buff.buff_type == buff_type then
+			return buff
+		end
+	end
+
+	return nil
 end
 
 BuffExtension.has_buff_type = function (self, buff_type)
@@ -684,6 +712,15 @@ BuffExtension.num_buff_type = function (self, buff_type)
 	return num_buff_type
 end
 
+BuffExtension.has_procced = function (self, proc_chance, key)
+	local prd_states = self._prd_states
+	local success = nil
+	local prev_state = prd_states[key]
+	success, prd_states[key] = PseudoRandomDistribution.flip_coin(prev_state, proc_chance)
+
+	return success
+end
+
 BuffExtension.trigger_procs = function (self, event, ...)
 	local event_buffs = self._event_buffs[event]
 	local num_event_buffs = table.size(event_buffs)
@@ -705,7 +742,7 @@ BuffExtension.trigger_procs = function (self, event, ...)
 	for index, buff in pairs(event_buffs) do
 		local proc_chance = buff.proc_chance or 1
 
-		if math.random() <= proc_chance then
+		if self:has_procced(proc_chance, buff) then
 			local buff_func = ProcFunctions[buff.buff_func]
 			local success = buff_func(player, buff, params)
 
@@ -734,7 +771,7 @@ BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 	for name, stat_buff_data in pairs(stat_buffs) do
 		local proc_chance = stat_buff_data.proc_chance
 
-		if math.random() <= proc_chance then
+		if self:has_procced(proc_chance, stat_buff) then
 			local bonus = stat_buff_data.bonus
 			local multiplier = stat_buff_data.multiplier
 

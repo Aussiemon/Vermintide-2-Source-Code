@@ -118,6 +118,21 @@ CareerExtension.extensions_ready = function (self, world, unit)
 	Managers.state.event:register(self, "ingame_menu_opened", "stop_ability")
 end
 
+CareerExtension.force_trigger_active_ability = function (self)
+	local player = self.player
+	local abilities = self._abilities
+
+	for i = 1, self._num_abilities, 1 do
+		local ability = abilities[i]
+
+		if ability.activated_ability and ability.activated_ability.force_trigger_ability and ((self.is_server and player.bot_player) or player.local_player) then
+			ability.activated_ability:force_trigger_ability()
+
+			break
+		end
+	end
+end
+
 CareerExtension.update = function (self, unit, input, dt, context, t)
 	local abilities = self._abilities
 	local was_ready = abilities[1].is_ready
@@ -356,7 +371,7 @@ end
 CareerExtension.has_ranged_boost = function (self)
 	local buff_extension = self._buff_extension
 	local has_murder_hobo_buff = buff_extension:has_buff_type("markus_huntsman_activated_ability") or buff_extension:has_buff_type("markus_huntsman_activated_ability_duration")
-	local has_ranger_buff = buff_extension:has_buff_type("bardin_ranger_activated_ability") or buff_extension:has_buff_type("bardin_ranger_activated_ability_duration") or buff_extension:has_buff_type("bardin_ranger_activated_ability_stealth_outside_of_smoke")
+	local has_ranger_buff = buff_extension:has_buff_type("bardin_ranger_activated_ability") or buff_extension:has_buff_type("bardin_ranger_smoke_attack") or buff_extension:has_buff_type("bardin_ranger_smoke_heal") or buff_extension:has_buff_type("bardin_ranger_activated_ability_stealth_outside_of_smoke")
 	local multiplier = (has_murder_hobo_buff and 1.5) or (has_ranger_buff and 1) or 0
 
 	return has_murder_hobo_buff or has_ranger_buff, multiplier

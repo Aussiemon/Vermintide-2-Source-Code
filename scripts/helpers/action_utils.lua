@@ -1,3 +1,5 @@
+require("scripts/helpers/pseudo_random_distribution")
+
 ActionUtils = ActionUtils or {}
 local unit_get_data = Unit.get_data
 local unit_actor = Unit.actor
@@ -424,7 +426,22 @@ ActionUtils.get_action_time_scale = function (unit, action_settings, is_animatio
 
 	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
+		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+		local wielded_slot_template = inventory_extension:get_wielded_slot_item_template()
+		local buff_type = wielded_slot_template.buff_type
+		local is_melee = MeleeBuffTypes[buff_type]
+		local is_ranged = RangedBuffTypes[buff_type]
+		local weapon_type = wielded_slot_template.weapon_type
+
+		if is_melee then
+			time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
+		elseif is_ranged then
+			time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
+		end
+
+		if weapon_type and weapon_type == "DRAKEFIRE" then
+			time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed_drakefire")
+		end
 
 		if action_settings.scale_chain_window_by_charge_time_buff or (action_settings.scale_anim_by_charge_time_buff and is_animation) then
 			local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
@@ -607,37 +624,31 @@ local last_attack_critical = false
 ActionUtils.is_critical_strike = function (unit, action, t)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local talent_extension = ScriptUnit.extension(unit, "talent_system")
-	local no_random_crits = talent_extension:has_talent_perk("no_random_crits") or nil
-	local guaranteed_crit = buff_extension:has_buff_perk("guaranteed_crit") or nil
-	local crit_chance = ActionUtils.get_critical_strike_chance(unit, action)
-	local rand = Math.random()
-	local critical_strike = guaranteed_crit or (rand < crit_chance and not no_random_crits)
+	local is_crit = false
 
 	if script_data.no_critical_strikes then
-		return false
+		is_crit = false
+	elseif script_data.always_critical_strikes then
+		is_crit = true
+	elseif script_data.alternating_critical_strikes then
+		last_attack_critical = not last_attack_critical
+		is_crit = last_attack_critical
+	elseif buff_extension:has_buff_perk("guaranteed_crit") then
+		is_crit = true
+	elseif talent_extension:has_talent_perk("no_random_crits") then
+		is_crit = false
+	else
+		local crit_chance = ActionUtils.get_critical_strike_chance(unit, action)
+		is_crit = buff_extension:has_procced(crit_chance, action or "ACTION_UNKNOWN")
 	end
 
-	if script_data.always_critical_strikes then
-		critical_strike = true
+	local action_kind = action.kind
+
+	if is_crit and action_kind ~= "push_stagger" then
+		buff_extension:trigger_procs("on_critical_action", action_kind)
 	end
 
-	if script_data.alternating_critical_strikes then
-		if last_attack_critical == true then
-			last_attack_critical = false
-			critical_strike = false
-		elseif last_attack_critical == false then
-			last_attack_critical = true
-			critical_strike = true
-		end
-	end
-
-	if critical_strike and action.kind ~= "push_stagger" then
-		local action_type = action.kind
-
-		buff_extension:trigger_procs("on_critical_action", action_type)
-	end
-
-	return critical_strike
+	return is_crit
 end
 
 ActionUtils.pitch_from_rotation = function (rotation)

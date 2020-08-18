@@ -2183,4 +2183,8 @@ GenericStatusExtension.is_staggered = function (self)
 	return false
 end
 
+GenericStatusExtension.breed_action = function (self)
+	return self._current_action
+end
+
 return

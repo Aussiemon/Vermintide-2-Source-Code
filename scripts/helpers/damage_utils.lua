@@ -549,7 +549,7 @@ local function do_stagger_calculation(stagger_table, breed, blackboard, attacker
 
 			if stagger_strength > 0 then
 				local no_light_threshold = finesse_hit
-				local stagger_threshold_light = (no_light_threshold and 0) or (breed.stagger_threshold_light and breed.stagger_threshold_light * stagger_resistance) or 0.25 * stagger_resistance
+				local stagger_threshold_light = (breed.stagger_threshold_light and breed.stagger_threshold_light * stagger_resistance) or 0.25 * stagger_resistance
 				local stagger_threshold_medium = (breed.stagger_threshold_medium and breed.stagger_threshold_medium * stagger_resistance) or 1 * stagger_resistance
 				local stagger_threshold_heavy = (breed.stagger_threshold_heavy and breed.stagger_threshold_heavy * stagger_resistance) or 2.5 * stagger_resistance
 
@@ -1688,7 +1688,7 @@ DamageUtils.get_item_buff_type = function (damage_source)
 	return buff_type or "n/a"
 end
 
-DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical, hit_zone_name, target_number, send_to_server, buff_type)
+DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical, hit_zone_name, target_number, send_to_server, buff_type, unmodified)
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 	if not buff_extension then
@@ -1709,7 +1709,7 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 	local hostile_unit = side_manager:is_enemy(unit, hit_unit)
 
 	if hostile_unit and attack_type ~= "wind_mutator" then
-		buff_extension:trigger_procs("on_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical)
+		buff_extension:trigger_procs("on_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified)
 	end
 
 	if is_critical and hostile_unit and attack_type ~= "wind_mutator" then
@@ -1812,6 +1812,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 
 					if new_damage < original_damage then
 						local damage_to_overcharge = original_damage - new_damage
+						damage_to_overcharge = buff_extension:apply_buffs_to_value(damage_to_overcharge, "reduced_overcharge_from_passive")
 						damage_to_overcharge = DamageUtils.networkify_damage(damage_to_overcharge)
 
 						if attacked_player.remote then
@@ -1885,6 +1886,16 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 			damage = damage / num_players_with_shared_health_pool
 		end
 
+		local talent_extension = ScriptUnit.has_extension(attacked_unit, "talent_system")
+
+		if talent_extension and talent_extension:has_talent("bardin_ranger_reduced_damage_taken_headshot") then
+			local has_position = POSITION_LOOKUP[attacker_unit]
+
+			if has_position and AiUtils.unit_is_flanking_player(attacker_unit, attacked_unit) and not buff_extension:has_buff_type("bardin_ranger_reduced_damage_taken_headshot_buff") then
+				damage = damage * (1 + BuffTemplates.bardin_ranger_reduced_damage_taken_headshot_buff.buffs[1].multiplier)
+			end
+		end
+
 		local is_invulnerable = buff_extension:has_buff_type("invulnerable")
 		local has_gromril_armor = buff_extension:has_buff_type("bardin_ironbreaker_gromril_armour")
 		local has_metal_mutator_gromril_armor = buff_extension:has_buff_type("metal_mutator_gromril_armour")
@@ -1953,7 +1964,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 				damage = buff_extension:apply_buffs_to_value(damage, "increased_weapon_damage_ranged")
 				local attacked_health_extension = ScriptUnit.extension(attacked_unit, "health_system")
 
-				if attacked_health_extension:current_health_percent() <= 0.5 or attacked_health_extension:current_max_health_percent() <= 0.5 then
+				if attacked_health_extension:current_health_percent() <= 0.9 or attacked_health_extension:current_max_health_percent() <= 0.9 then
 					damage = buff_extension:apply_buffs_to_value(damage, "increased_weapon_damage_ranged_to_wounded")
 				end
 			end
@@ -2259,7 +2270,7 @@ DamageUtils.check_block = function (attacking_unit, target_unit, fatigue_type, o
 				local is_player = blackboard.is_player and not ai_extension
 				local action = (is_player and status_extension:breed_action()) or blackboard.action
 
-				if action.no_block_stagger then
+				if action and action.no_block_stagger then
 				elseif not blackboard.stagger then
 					blackboard.blocked = true
 				end
@@ -2660,6 +2671,20 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 		hit_zone_name = current_action.hit_zone_override
 	end
 
+	local unmodified = true
+
+	if hit_zone_name ~= "head" and AiUtils.unit_alive(hit_unit) and breed and breed.hit_zones and breed.hit_zones.head then
+		local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+		local auto_headshot = owner_buff_extension and owner_buff_extension:has_buff_perk("auto_headshot")
+
+		if auto_headshot and hit_zone_name ~= "afro" then
+			hit_zone_name = "head"
+			unmodified = false
+
+			owner_buff_extension:trigger_procs("on_auto_headshot")
+		end
+	end
+
 	if breed and hit_zone_name == "head" and owner_player and not shield_blocked then
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 		local _, procced = owner_buff_extension:apply_buffs_to_value(0, "coop_stamina")
@@ -2716,7 +2741,7 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 		if owner_player and breed and check_buffs and not shield_blocked then
 			local send_to_server = true
 			local buff_type = DamageUtils.get_item_buff_type(damage_source)
-			local buffs_checked = DamageUtils.buff_on_attack(owner_unit, hit_unit, "instant_projectile", is_critical_strike, hit_zone_name, target_number or num_penetrations + 1, send_to_server, buff_type)
+			local buffs_checked = DamageUtils.buff_on_attack(owner_unit, hit_unit, "instant_projectile", is_critical_strike, hit_zone_name, target_number or num_penetrations + 1, send_to_server, buff_type, unmodified)
 			hit_data.buffs_checked = hit_data.buffs_checked or buffs_checked
 		end
 

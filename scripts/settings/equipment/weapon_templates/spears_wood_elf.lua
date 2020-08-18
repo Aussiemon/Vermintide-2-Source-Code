@@ -258,12 +258,12 @@ weapon_template.actions = {
 			range_mod_add = 0.25,
 			hit_shield_stop_anim = "attack_hit",
 			hit_effect = "melee_hit_sword_1h",
-			additional_critical_strike_chance = 0,
 			damage_window_end = 0.33,
 			impact_sound_event = "stab_hit",
-			damage_profile = "heavy_slashing_smiter_stab_polearm",
-			anim_end_event = "attack_finished",
 			use_precision_sweep = true,
+			anim_end_event = "attack_finished",
+			damage_profile = "heavy_slashing_smiter_stab_polearm",
+			additional_critical_strike_chance = 0,
 			no_damage_impact_sound_event = "stab_hit_armour",
 			dedicated_target_range = 2.8,
 			anim_event = "attack_swing_heavy",
@@ -330,6 +330,7 @@ weapon_template.actions = {
 			critical_strike = {
 				critical_damage_attack_template = "heavy_stab_fencer"
 			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
 			baked_sweep = {
 				{
 					0.20666666666666667,
@@ -412,15 +413,15 @@ weapon_template.actions = {
 			sweep_z_offset = 0.05,
 			width_mod = 25,
 			hit_shield_stop_anim = "attack_hit",
-			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_1h",
+			additional_critical_strike_chance = 0,
 			use_precision_sweep = false,
-			damage_profile = "heavy_slashing_linesman_polearm",
 			damage_window_end = 0.41,
 			impact_sound_event = "slashing_hit",
 			charge_value = "heavy_attack",
 			anim_end_event = "attack_finished",
 			no_damage_impact_sound_event = "slashing_hit_armour",
+			damage_profile = "heavy_slashing_linesman_polearm",
 			dedicated_target_range = 2.8,
 			weapon_up_offset_mod = 0.25,
 			anim_event = "attack_swing_heavy_right",
@@ -491,6 +492,7 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
 			baked_sweep = {
 				{
 					0.26666666666666666,
@@ -572,16 +574,16 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "stab_hit_armour",
 			sweep_z_offset = -0.05,
 			width_mod = 20,
-			additional_critical_strike_chance = 0,
 			hit_shield_stop_anim = "attack_hit",
-			use_precision_sweep = true,
+			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_1h",
-			damage_profile = "medium_slashing_smiter_stab",
-			aim_assist_ramp_multiplier = 0.5,
+			use_precision_sweep = true,
+			damage_profile = "medium_slashing_smiter_stab_elf",
 			damage_window_end = 0.35,
 			impact_sound_event = "stab_hit",
-			aim_assist_max_ramp_multiplier = 0.8,
+			aim_assist_ramp_multiplier = 0.5,
 			anim_end_event = "attack_finished",
+			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0.1,
 			dedicated_target_range = 2.8,
 			range_mod_add = 0.25,
@@ -643,6 +645,7 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
 			baked_sweep = {
 				{
 					0.27666666666666667,
@@ -728,15 +731,15 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			hit_effect = "melee_hit_sword_1h",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
 			damage_window_end = 0.35,
 			impact_sound_event = "slashing_hit",
-			damage_profile = "medium_slashing_linesman_spear",
+			use_precision_sweep = false,
 			anim_end_event = "attack_finished",
+			damage_profile = "medium_slashing_linesman_spear",
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.1,
 			dedicated_target_range = 2.8,
+			aim_assist_ramp_decay_delay = 0.1,
 			weapon_up_offset_mod = 0.25,
 			uninterruptible = true,
 			anim_event = "attack_swing_down_left",
@@ -799,6 +802,7 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
 			baked_sweep = {
 				{
 					0.21666666666666667,
@@ -882,7 +886,7 @@ weapon_template.actions = {
 			width_mod = 20,
 			use_precision_sweep = true,
 			hit_shield_stop_anim = "attack_hit",
-			damage_profile = "medium_slashing_smiter_stab",
+			damage_profile = "medium_slashing_smiter_stab_elf",
 			hit_effect = "melee_hit_sword_1h",
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
@@ -1033,7 +1037,7 @@ weapon_template.actions = {
 			width_mod = 20,
 			use_precision_sweep = true,
 			hit_shield_stop_anim = "attack_hit",
-			damage_profile = "medium_slashing_smiter_stab",
+			damage_profile = "medium_slashing_smiter_stab_elf",
 			hit_effect = "melee_hit_sword_1h",
 			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
@@ -1186,11 +1190,11 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			hit_effect = "melee_hit_sword_1h",
 			additional_critical_strike_chance = 0,
-			damage_profile = "medium_slashing_linesman_spear",
 			damage_window_end = 0.35,
 			impact_sound_event = "slashing_hit",
-			aim_assist_ramp_multiplier = 0.5,
+			damage_profile = "medium_slashing_linesman_spear",
 			anim_end_event = "attack_finished",
+			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0.1,
 			dedicated_target_range = 2.8,
@@ -1256,6 +1260,7 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
 			baked_sweep = {
 				{
 					0.19666666666666668,

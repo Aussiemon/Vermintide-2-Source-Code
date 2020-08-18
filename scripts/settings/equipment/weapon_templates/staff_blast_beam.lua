@@ -85,7 +85,7 @@ weapon_template.actions = {
 			area_damage = true,
 			alert_sound_range_hit = 2,
 			damage_window_end = 0,
-			overcharge_type = "beam_staff_shotgun",
+			overcharge_type = "shotgun",
 			alert_sound_range_fire = 12,
 			fire_time = 2,
 			anim_event = "attack_shoot_sparks",
@@ -106,7 +106,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.3,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -201,7 +201,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.2,
+					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
 				},

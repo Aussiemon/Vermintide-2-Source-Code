@@ -229,6 +229,15 @@ GenericAmmoUserExtension.start_reload_animation = function (self, reload_time)
 	end
 end
 
+GenericAmmoUserExtension.remove_ammo = function (self, amount)
+	if self._available_ammo == 0 and self._current_ammo == 0 then
+		return
+	end
+
+	local floored_ammo = math.floor(math.clamp(self._available_ammo - amount, 0, self._max_ammo))
+	self._available_ammo = floored_ammo
+end
+
 GenericAmmoUserExtension.add_ammo = function (self, amount)
 	if self._destroy_when_out_of_ammo then
 		return

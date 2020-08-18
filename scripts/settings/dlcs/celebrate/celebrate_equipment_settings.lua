@@ -3,7 +3,8 @@ settings.item_master_list_file_names = {
 	"scripts/settings/equipment/item_master_list_celebrate"
 }
 settings.weapon_template_file_names = {
-	"scripts/settings/equipment/weapon_templates/beer_bottle"
+	"scripts/settings/equipment/weapon_templates/beer_bottle",
+	"scripts/settings/equipment/weapon_templates/bardin_survival_ale"
 }
 settings.inventory_package_list = {
 	"units/weapons/player/wpn_ale/wpn_ale",

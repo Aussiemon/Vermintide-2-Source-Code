@@ -1079,7 +1079,8 @@ NetworkLookup.proc_events = {
 	"on_unwield",
 	"on_last_ammo_used",
 	"on_gained_ammo_from_no_ammo",
-	"on_bardin_consumable_picked_up_any_player"
+	"on_bardin_consumable_picked_up_any_player",
+	"on_push"
 }
 NetworkLookup.proc_functions = create_lookup({}, ProcFunctions)
 NetworkLookup.coop_feedback = {

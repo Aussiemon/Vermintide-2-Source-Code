@@ -6,7 +6,7 @@ weapon_template.actions = {
 		default = {
 			kind = "melee_start",
 			anim_end_event = "attack_finished",
-			anim_event = "attack_swing_charge_left",
+			anim_event = "attack_swing_charge_right",
 			attack_hold_input = "action_one_hold",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -28,7 +28,7 @@ weapon_template.actions = {
 					input = "action_one_release"
 				},
 				{
-					sub_action = "heavy_attack_left",
+					sub_action = "heavy_attack_stab",
 					start_time = 0.5,
 					action = "action_one",
 					force_release_input = "action_one_hold",
@@ -53,7 +53,7 @@ weapon_template.actions = {
 					input = "action_one_hold"
 				},
 				{
-					sub_action = "heavy_attack_left",
+					sub_action = "heavy_attack_stab",
 					start_time = 0.7,
 					action = "action_one",
 					auto_chain = true
@@ -63,7 +63,7 @@ weapon_template.actions = {
 		default_right = {
 			kind = "melee_start",
 			anim_end_event = "attack_finished",
-			anim_event = "attack_swing_charge_right",
+			anim_event = "attack_swing_charge_left",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -84,7 +84,7 @@ weapon_template.actions = {
 					input = "action_one_release"
 				},
 				{
-					sub_action = "heavy_attack_stab",
+					sub_action = "heavy_attack_left",
 					start_time = 0.5,
 					action = "action_one",
 					force_release_input = "action_one_hold",
@@ -109,7 +109,7 @@ weapon_template.actions = {
 					input = "action_one_hold"
 				},
 				{
-					sub_action = "heavy_attack_stab",
+					sub_action = "heavy_attack_left",
 					start_time = 0.7,
 					action = "action_one",
 					auto_chain = true
@@ -219,7 +219,7 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default",
+					sub_action = "default_right",
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -227,7 +227,7 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
-					sub_action = "default",
+					sub_action = "default_right",
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -302,7 +302,7 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "default_right",
+					sub_action = "default",
 					start_time = 0.6,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -310,7 +310,7 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
-					sub_action = "default_right",
+					sub_action = "default",
 					start_time = 0.6,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -339,7 +339,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = HEAVY_LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.3,
@@ -840,7 +841,7 @@ weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.buffs = {
 	change_dodge_distance = {
-		external_optional_multiplier = 0.95
+		external_optional_multiplier = 1
 	},
 	change_dodge_speed = {
 		external_optional_multiplier = 1

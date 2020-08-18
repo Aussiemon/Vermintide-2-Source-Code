@@ -325,6 +325,11 @@ CareerAbilityESKnight._run_ability = function (self)
 		}
 	}
 
+	if talent_extension:has_talent("markus_knight_wide_charge", "empire_soldier", true) then
+		status_extension.do_lunge.damage.width = 5
+		status_extension.do_lunge.damage.interrupt_on_max_hit_mass = false
+	end
+
 	career_extension:start_activated_ability_cooldown()
 	self:_play_vo()
 end

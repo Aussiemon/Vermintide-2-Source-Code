@@ -358,9 +358,23 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		local is_critical_strike = self._is_critical_strike
 		local owner_unit = self._owner_unit
 		local num_targets_hit = self._num_targets_hit + 1
+		local unmodified = true
+
+		if hit_zone_name ~= "head" and AiUtils.unit_alive(hit_unit) and breed and breed.hit_zones and breed.hit_zones.head then
+			local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+			local auto_headshot = owner_buff_extension and owner_buff_extension:has_buff_perk("auto_headshot")
+
+			if auto_headshot and hit_zone_name ~= "afro" then
+				hit_zone_name = "head"
+				unmodified = false
+
+				owner_buff_extension:trigger_procs("on_auto_headshot")
+			end
+		end
+
 		local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, buff_type)
+		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, buff_type, unmodified)
 
 		allow_link, shield_blocked = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
 	end
@@ -402,7 +416,6 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local node = Actor.node(hit_actor)
 	local hit_zone = breed.hit_zones_lookup[node]
 	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
-	local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 	local attack_direction = hit_direction
 	local was_alive = (is_server and AiUtils.unit_alive(hit_unit)) or AiUtils.client_predicted_unit_alive(hit_unit)
 
@@ -410,6 +423,18 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		self._num_targets_hit = self._num_targets_hit + 1
 	end
 
+	if hit_zone_name ~= "head" and AiUtils.unit_alive(hit_unit) and breed and breed.hit_zones and breed.hit_zones.head then
+		local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+		local auto_headshot = owner_buff_extension and owner_buff_extension:has_buff_perk("auto_headshot")
+
+		if auto_headshot and hit_zone_name ~= "afro" then
+			hit_zone_name = "head"
+
+			owner_buff_extension:trigger_procs("on_auto_headshot")
+		end
+	end
+
+	local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 	local power_level = self.power_level
 	local is_critical_strike = self._is_critical_strike
 	local target_settings = damage_profile.default_target

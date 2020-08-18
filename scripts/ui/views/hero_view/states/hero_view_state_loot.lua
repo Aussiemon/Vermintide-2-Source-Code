@@ -237,6 +237,12 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	self._loaded_package = nil
 	self._animations = {}
 	self._units = {}
+	self.waiting_for_post_update_enter = true
+end
+
+HeroViewStateLoot.post_update_on_enter = function (self)
+	self.waiting_for_post_update_enter = nil
+	local ingame_ui_context = self.ingame_ui_context
 	self.world_manager = ingame_ui_context.world_manager
 	local world = self.world_manager:create_world("loot_world", "environment/gui", nil, 980, Application.DISABLE_PHYSICS, Application.DISABLE_APEX_CLOTH)
 
@@ -252,7 +258,7 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.loot_ui_renderer, input_service, 4, gui_layer, generic_input_actions.default, true)
 
 	self.menu_input_description:set_input_description(generic_input_actions.chest_not_selected)
-	self:create_ui_elements(params)
+	self:create_ui_elements()
 
 	self.viewport_widget = UIWidget.init(viewport_widget_definition)
 
@@ -707,6 +713,10 @@ HeroViewStateLoot._update_transition_timer = function (self, dt)
 end
 
 HeroViewStateLoot.update = function (self, dt, t)
+	if self.waiting_for_post_update_enter then
+		return
+	end
+
 	if RELOAD_UI then
 		self:create_ui_elements()
 	end
@@ -755,6 +765,10 @@ HeroViewStateLoot.update = function (self, dt, t)
 end
 
 HeroViewStateLoot.post_update = function (self, dt, t)
+	if self.waiting_for_post_update_enter then
+		self:post_update_on_enter()
+	end
+
 	self.ui_animator:update(dt)
 
 	local animations = self._animations

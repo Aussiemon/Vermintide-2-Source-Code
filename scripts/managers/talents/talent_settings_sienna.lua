@@ -154,6 +154,9 @@ local buff_tweak_data = {
 	sienna_unchained_activated_ability = {
 		duration = 2
 	},
+	sienna_unchained_push_arc_buff = {
+		multiplier = 0.7
+	},
 	sienna_unchained_vanguard = {},
 	sienna_unchained_reaper = {},
 	sienna_unchained_conqueror = {},
@@ -177,28 +180,27 @@ local buff_tweak_data = {
 		multiplier = -0.05,
 		duration = 15
 	},
+	sienna_unchained_reduced_passive_overcharge_after_venting_buff = {
+		max_stacks = 3,
+		multiplier = -0.166,
+		duration = 15
+	},
 	sienna_unchained_burning_enemies_reduced_damage = {
 		multiplier = -0.3
-	},
-	sienna_unchained_vent_overheat_on_low_health = {
-		threshold = 0.5
-	},
-	sienna_unchained_vent_overheat_on_low_health_cooldown = {
-		duration = 60
 	},
 	sienna_unchained_reduced_overcharge = {
 		multiplier = -0.1
 	},
-	sienna_unchained_activated_ability_radius = {
-		multiplier = 0.5
-	},
-	sienna_unchained_activated_ability_power_on_enemies_hit_buff = {
-		max_stacks = 5,
-		multiplier = 0.05,
+	sienna_unchained_activated_ability_pulse = {
 		duration = 10
 	},
 	sienna_unchained_activated_ability_temp_health = {
 		display_bonus = 30
+	},
+	sienna_unchained_activated_ability_power_on_enemies_hit_buff = {
+		max_stacks = 5,
+		multiplier = 0.05,
+		duration = 15
 	}
 }
 TalentBuffTemplates = TalentBuffTemplates or {}
@@ -844,8 +846,33 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_unchained_burn_push = {
 		buffs = {
 			{
-				max_stacks = 1,
+				buff_to_add = "sienna_unchained_push_arc_buff",
+				event_buff = true,
+				buff_func = "sienna_burn_push_on_charged_attacks",
+				event = "on_hit",
 				perk = "sienna_unchained_burn_push"
+			}
+		}
+	},
+	sienna_unchained_push_arc_buff = {
+		buffs = {
+			{
+				stat_buff = "block_angle",
+				event = "on_push",
+				event_buff = true,
+				buff_func = "sienna_burn_push_on_charged_attacks_remove",
+				max_stacks = 1,
+				icon = "sienna_unchained_burn_push"
+			}
+		}
+	},
+	sienna_unchained_exploding_burning_enemies = {
+		buffs = {
+			{
+				event = "on_kill",
+				proc_chance = 0.4,
+				event_buff = true,
+				buff_func = "sienna_on_kill_explosion"
 			}
 		}
 	},
@@ -867,9 +894,12 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				buff_to_add = "sienna_unchained_reduced_damage_taken_after_venting_buff",
 				event_buff = true,
-				buff_func = "sienna_unchained_add_buff_on_vent_damage"
+				buff_func = "sienna_unchained_add_buff_on_vent_damage",
+				buffs_to_add = {
+					"sienna_unchained_reduced_damage_taken_after_venting_buff",
+					"sienna_unchained_reduced_passive_overcharge_after_venting_buff"
+				}
 			}
 		}
 	},
@@ -883,6 +913,15 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
+	sienna_unchained_reduced_passive_overcharge_after_venting_buff = {
+		buffs = {
+			{
+				dormant = true,
+				refresh_durations = true,
+				stat_buff = "reduced_overcharge_from_passive"
+			}
+		}
+	},
 	sienna_unchained_burning_enemies_reduced_damage = {
 		buffs = {
 			{
@@ -890,28 +929,22 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
-	sienna_unchained_vent_overheat_on_low_health_cooldown = {
+	sienna_unchained_health_to_ult = {
 		buffs = {
 			{
-				buff_after_delay = true,
-				max_stacks = 1,
-				refresh_durations = true,
-				is_cooldown = true,
-				icon = "sienna_unchained_vent_overheat_on_low_health",
-				delayed_buff_name = "sienna_unchained_vent_overheat_on_low_health"
+				buff_to_add = "sienna_unchained_health_to_cooldown_buff",
+				update_func = "activate_buff_stacks_based_on_overcharge_chunks",
+				chunk_size = 40,
+				max_stacks = 1
 			}
 		}
 	},
-	sienna_unchained_vent_overheat_on_low_health = {
+	sienna_unchained_health_to_cooldown_buff = {
 		buffs = {
 			{
-				buff_to_add = "sienna_unchained_vent_overheat_on_low_health_cooldown",
-				remove_on_proc = true,
-				event_buff = true,
-				buff_func = "sienna_unchained_vent_overheat_on_low_health",
-				event = "on_damage_taken",
-				icon = "sienna_unchained_vent_overheat_on_low_health",
-				max_stacks = 1
+				update_func = "sienna_unchained_health_to_cooldown_update",
+				icon = "sienna_unchained_attack_speed_on_high_overcharge",
+				frequency = 0.5
 			}
 		}
 	},
@@ -919,6 +952,18 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				stat_buff = "reduced_overcharge"
+			}
+		}
+	},
+	sienna_unchained_activated_ability_pulse = {
+		buffs = {
+			{
+				remove_buff_func = "sienna_unchained_activated_ability_pulse_remove",
+				update_func = "sienna_unchained_activated_ability_pulse_update",
+				pulse_frequency = 0.5,
+				refresh_durations = true,
+				max_stacks = 1,
+				icon = "sienna_unchained_activated_ability_power_on_enemies_hit"
 			}
 		}
 	},
@@ -1018,7 +1063,7 @@ TalentTrees.bright_wizard = {
 		},
 		{
 			"sienna_unchained_attack_speed_on_high_overcharge",
-			"sienna_unchained_burn_push",
+			"sienna_unchained_burn_push_2",
 			"sienna_unchained_exploding_burning_enemies"
 		},
 		{
@@ -1029,16 +1074,16 @@ TalentTrees.bright_wizard = {
 		{
 			"sienna_unchained_overcharged_blocks",
 			"sienna_unchained_increased_vent_speed",
-			"sienna_unchained_reduced_damage_taken_after_venting"
+			"sienna_unchained_reduced_damage_taken_after_venting_2"
 		},
 		{
 			"sienna_unchained_burning_enemies_reduced_damage",
-			"sienna_unchained_vent_overheat_on_low_health",
+			"sienna_unchained_health_to_ult",
 			"sienna_unchained_reduced_overcharge"
 		},
 		{
-			"sienna_unchained_activated_ability_radius",
 			"sienna_unchained_activated_ability_power_on_enemies_hit",
+			"sienna_unchained_activated_ability_fire_aura",
 			"sienna_unchained_activated_ability_temp_health"
 		}
 	}
@@ -1771,12 +1816,17 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_burn_push_desc",
-		name = "sienna_unchained_burn_push",
+		description = "sienna_unchained_burn_push_desc_2",
+		name = "sienna_unchained_burn_push_2",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "sienna_unchained_burn_push",
-		description_values = {},
+		description_values = {
+			{
+				value_type = "percent",
+				value = buff_tweak_data.sienna_unchained_push_arc_buff.multiplier
+			}
+		},
 		requirements = {},
 		buffs = {
 			"sienna_unchained_burn_push"
@@ -1791,7 +1841,9 @@ Talents.bright_wizard = {
 		icon = "sienna_unchained_exploding_burning_enemies",
 		description_values = {},
 		requirements = {},
-		buffs = {},
+		buffs = {
+			"sienna_unchained_exploding_burning_enemies"
+		},
 		buff_data = {}
 	},
 	{
@@ -1835,8 +1887,8 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_reduced_damage_taken_after_venting_desc",
-		name = "sienna_unchained_reduced_damage_taken_after_venting",
+		description = "sienna_unchained_reduced_damage_taken_after_venting_desc_2",
+		name = "sienna_unchained_reduced_damage_taken_after_venting_2",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "sienna_unchained_reduced_damage_taken_after_venting",
@@ -1844,6 +1896,10 @@ Talents.bright_wizard = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.sienna_unchained_reduced_damage_taken_after_venting_buff.multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.sienna_unchained_reduced_passive_overcharge_after_venting_buff.multiplier
 			},
 			{
 				value = buff_tweak_data.sienna_unchained_reduced_damage_taken_after_venting_buff.duration
@@ -1875,23 +1931,15 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_vent_overheat_on_low_health_desc",
-		name = "sienna_unchained_vent_overheat_on_low_health",
+		description = "sienna_unchained_health_to_ult_desc",
+		name = "sienna_unchained_health_to_ult",
 		num_ranks = 1,
 		buffer = "both",
 		icon = "sienna_unchained_vent_overheat_on_low_health",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.sienna_unchained_vent_overheat_on_low_health.threshold
-			},
-			{
-				value = buff_tweak_data.sienna_unchained_vent_overheat_on_low_health_cooldown.duration
-			}
-		},
+		description_values = {},
 		requirements = {},
 		buffs = {
-			"sienna_unchained_vent_overheat_on_low_health_cooldown"
+			"sienna_unchained_health_to_ult"
 		},
 		buff_data = {}
 	},
@@ -1913,26 +1961,10 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_activated_ability_radius_desc",
-		name = "sienna_unchained_activated_ability_radius",
-		num_ranks = 1,
-		icon = "sienna_unchained_activated_ability_radius",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.sienna_unchained_activated_ability_radius.multiplier
-			}
-		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
-	},
-	{
 		description = "sienna_unchained_activated_ability_power_on_enemies_hit_desc",
 		name = "sienna_unchained_activated_ability_power_on_enemies_hit",
 		num_ranks = 1,
-		buffer = "server",
-		icon = "sienna_unchained_activated_ability_power_on_enemies_hit",
+		icon = "sienna_unchained_activated_ability_radius",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1949,6 +1981,21 @@ Talents.bright_wizard = {
 		buffs = {
 			"sienna_unchained_activated_ability_power_on_enemies_hit"
 		},
+		buff_data = {}
+	},
+	{
+		description = "sienna_unchained_activated_ability_fire_aura_desc",
+		name = "sienna_unchained_activated_ability_fire_aura",
+		num_ranks = 1,
+		buffer = "server",
+		icon = "sienna_unchained_activated_ability_power_on_enemies_hit",
+		description_values = {
+			{
+				value = buff_tweak_data.sienna_unchained_activated_ability_pulse.duration
+			}
+		},
+		requirements = {},
+		buffs = {},
 		buff_data = {}
 	},
 	{

@@ -179,7 +179,7 @@ weapon_template.actions = {
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			sweep_z_offset = -0.05,
-			additional_critical_strike_chance = 0,
+			additional_critical_strike_chance = 0.1,
 			hit_shield_stop_anim = "attack_hit_shield",
 			use_precision_sweep = false,
 			hit_effect = "melee_hit_sword_2h",
@@ -195,7 +195,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.2,
+			anim_time_scale = time_mod * 1.26,
 			buff_data = {
 				{
 					start_time = 0,
@@ -333,7 +333,7 @@ weapon_template.actions = {
 			sweep_z_offset = -0.05,
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			hit_shield_stop_anim = "attack_hit_shield",
-			additional_critical_strike_chance = 0,
+			additional_critical_strike_chance = 0.1,
 			hit_effect = "melee_hit_sword_2h",
 			use_precision_sweep = false,
 			damage_profile = "medium_slashing_linesman",
@@ -348,7 +348,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.1,
+			anim_time_scale = time_mod * 1.26,
 			buff_data = {
 				{
 					start_time = 0,

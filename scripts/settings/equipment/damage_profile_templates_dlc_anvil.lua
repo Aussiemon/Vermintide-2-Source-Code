@@ -54,10 +54,9 @@ local damage_templates = {
 		},
 		default_target = {
 			attack_template = "drakegun",
-			dot_template_name = "burning_1W_dot",
 			damage_type = "drakegun",
 			power_distribution = {
-				attack = 0,
+				attack = 0.1,
 				impact = 0.5
 			}
 		}

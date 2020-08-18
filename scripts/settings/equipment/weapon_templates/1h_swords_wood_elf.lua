@@ -456,7 +456,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
-			damage_profile = "medium_slashing_axe_linesman_1h",
+			damage_profile = "medium_pointy_smiter_upper_1h",
 			hit_effect = "melee_hit_sword_1h",
 			aim_assist_max_ramp_multiplier = 0.6,
 			aim_assist_ramp_decay_delay = 0.1,
@@ -512,7 +512,7 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
 			end,
-			hit_mass_count = LINESMAN_HIT_MASS_COUNT,
+			hit_mass_count = NONE,
 			baked_sweep = {
 				{
 					0.33666666666666667,
@@ -878,7 +878,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			width_mod = 25,
 			use_precision_sweep = false,
-			damage_profile = "light_slashing_smiter_stab",
+			damage_profile = "light_slashing_smiter_stab_swords",
 			aim_assist_max_ramp_multiplier = 0.8,
 			hit_effect = "melee_hit_sword_1h",
 			aim_assist_ramp_decay_delay = 0.1,

@@ -1,5 +1,5 @@
 local push_radius = 2.25
-local time_mod = 0.85
+local time_mod = 0.75
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -532,7 +532,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			slide_armour_hit = true,
 			hit_effect = "melee_hit_sword_2h",
-			additional_critical_strike_chance = 0,
+			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
 			damage_window_end = 0.45,
 			impact_sound_event = "slashing_hit",

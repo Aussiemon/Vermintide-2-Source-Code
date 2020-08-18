@@ -242,7 +242,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.3,
@@ -310,7 +311,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.3,
@@ -463,8 +465,9 @@ weapon_template.actions = {
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit_alt_effect",
+			additional_critical_strike_chance = 0.1,
 			use_precision_sweep = false,
-			damage_profile = "medium_slashing_axe_linesman",
+			damage_profile = "medium_slashing_smiter_2h",
 			hit_effect = "melee_hit_axes_2h",
 			damage_window_end = 0.53,
 			impact_sound_event = "axe_2h_hit",
@@ -602,7 +605,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension:reset_release_input()
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		push = {
 			damage_window_start = 0.05,
@@ -749,7 +753,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_2h_axes"
 weapon_template.wield_anim = "to_2h_hammer"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "AXE_2H"
-weapon_template.max_fatigue_points = 5
+weapon_template.max_fatigue_points = 6
 weapon_template.dodge_count = 2
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
