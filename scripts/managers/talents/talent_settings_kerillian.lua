@@ -144,8 +144,8 @@ local buff_tweak_data = {
 	},
 	kerillian_maidenguard_activated_ability_crit_buff = {
 		max_stacks = 5,
-		multiplier = 0.05,
-		duration = 15
+		duration = 15,
+		bonus = 0.05
 	},
 	kerillian_maidenguard_insta_ress = {
 		duration = 10,
@@ -1814,7 +1814,7 @@ Talents.wood_elf = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.kerillian_maidenguard_activated_ability_crit_buff.multiplier
+				value = buff_tweak_data.kerillian_maidenguard_activated_ability_crit_buff.bonus
 			},
 			{
 				value = buff_tweak_data.kerillian_maidenguard_activated_ability_crit_buff.duration

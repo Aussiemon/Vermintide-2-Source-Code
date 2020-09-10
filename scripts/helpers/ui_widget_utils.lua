@@ -533,13 +533,13 @@ UIWidgetUtils.animate_icon_button = function (widget, dt)
 	end
 
 	local combined_progress = math.max(hover_progress, selection_progress)
-	style.texture_hover.color[1] = 255 * combined_progress
-	local texture_icon_style = style.texture_icon
-	local texture_icon_color = texture_icon_style.color
-	local texture_icon_default_color = texture_icon_style.default_color
-	local texture_icon_hover_color = texture_icon_style.hover_color
+	local texture_hover_style = style.texture_hover
 
-	Colors.lerp_color_tables(texture_icon_default_color, texture_icon_hover_color, combined_progress, texture_icon_color)
+	Colors.lerp_color_tables(texture_hover_style.default_color, texture_hover_style.hover_color, combined_progress, texture_hover_style.color)
+
+	local texture_icon_style = style.texture_icon
+
+	Colors.lerp_color_tables(texture_icon_style.default_color, texture_icon_style.hover_color, combined_progress, texture_icon_style.color)
 
 	hotspot.hover_progress = hover_progress
 	hotspot.selection_progress = selection_progress

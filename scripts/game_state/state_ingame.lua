@@ -1599,9 +1599,9 @@ StateIngame._check_exit = function (self, t)
 			host_migration_info.lobby_data = {
 				game_mode = game_mode_key,
 				is_private = is_private,
-				difficulty = difficulty
+				difficulty = difficulty,
+				current_level_key = Managers.mechanism:game_mechanism():get_hub_level_key()
 			}
-			host_migration_info.current_level_key = self.level_transition_handler:get_current_level_keys()
 			self.parent.loading_context.host_migration_info = host_migration_info
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.leave_lobby = true

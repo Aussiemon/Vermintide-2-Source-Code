@@ -562,6 +562,10 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	end
 end
 
+PlayerBotInput.is_input_blocked = function (self)
+	return false
+end
+
 PlayerBotInput.get = function (self, input_key)
 	if input_key == "look" then
 		return Vector3(self.look.x, self.look.y, 0)

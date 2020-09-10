@@ -11018,10 +11018,13 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size, d
 	}
 end
 
-UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, background_texture, text, font_size)
+UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, background_texture, icon_name)
 	background_texture = background_texture or "menu_frame_bg_06"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.menu_frame_06
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_name)
+	local icon_size = icon_settings.size
 
 	return {
 		element = {
@@ -11042,24 +11045,9 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 					content_id = "background"
 				},
 				{
-					style_id = "title_text",
-					pass_type = "text",
-					text_id = "title_text",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return not button_hotspot.disable_button
-					end
-				},
-				{
-					style_id = "title_text_disabled",
-					pass_type = "text",
-					text_id = "title_text",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return button_hotspot.disable_button
-					end
+					texture_id = "background_fade",
+					style_id = "background_fade",
+					pass_type = "texture"
 				},
 				{
 					texture_id = "glass_top",
@@ -11072,23 +11060,29 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 					pass_type = "texture"
 				},
 				{
-					texture_id = "glow",
-					style_id = "glow",
+					texture_id = "texture_hover",
+					style_id = "texture_hover",
 					pass_type = "texture",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
 						return not button_hotspot.disable_button and (button_hotspot.is_selected or button_hotspot.is_hover)
 					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_icon",
+					texture_id = "texture_icon"
 				}
 			}
 		},
 		content = {
-			glow = "tabs_glow",
+			background_fade = "button_bg_fade",
+			texture_hover = "button_state_default",
 			glass_top = "tabs_glass_top",
 			glass_bottom = "tabs_glass_bottom",
+			texture_icon = icon_name,
 			button_hotspot = {},
-			title_text = text or "n/a",
 			frame = frame_settings.texture,
 			background = {
 				uvs = {
@@ -11108,9 +11102,9 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 			background = {
 				color = {
 					255,
-					255,
-					255,
-					255
+					150,
+					150,
+					150
 				},
 				offset = {
 					0,
@@ -11118,30 +11112,21 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 					0
 				}
 			},
-			title_text = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				word_wrap = true,
-				font_type = "hell_shark",
-				font_size = font_size or 24,
-				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+			background_fade = {
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
 				offset = {
-					0,
-					0,
-					3
-				}
-			},
-			title_text_disabled = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				word_wrap = true,
-				font_type = "hell_shark",
-				font_size = font_size or 24,
-				text_color = Colors.get_color_table_with_alpha("gray", 255),
-				offset = {
-					0,
-					0,
-					3
+					frame_width,
+					frame_width - 2,
+					1
+				},
+				size = {
+					size[1] - frame_width * 2,
+					size[2] - frame_width * 2
 				}
 			},
 			frame = {
@@ -11156,11 +11141,23 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 				offset = {
 					0,
 					0,
-					4
+					6
 				}
 			},
-			glow = {
+			texture_hover = {
 				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				default_color = {
+					0,
+					255,
+					255,
+					255
+				},
+				hover_color = {
 					255,
 					255,
 					255,
@@ -11168,8 +11165,12 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 				},
 				offset = {
 					0,
-					0,
-					1
+					frame_width - 2,
+					3
+				},
+				size = {
+					size[1],
+					math.min(size[2] - 5, 80)
 				}
 			},
 			glass_top = {
@@ -11182,7 +11183,7 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 				offset = {
 					0,
 					size[2] - frame_settings.texture_sizes.horizontal[2] - 3,
-					3
+					5
 				},
 				size = {
 					size[1],
@@ -11199,11 +11200,39 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 				offset = {
 					0,
 					frame_settings.texture_sizes.horizontal[2],
-					3
+					5
 				},
 				size = {
 					size[1],
 					3
+				}
+			},
+			texture_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = icon_size,
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
+				default_color = {
+					200,
+					255,
+					255,
+					255
+				},
+				hover_color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					4
 				}
 			}
 		},
@@ -15476,6 +15505,18 @@ UIWidgets.create_weave_equipment_button = function (scenegraph_id)
 				},
 				color = {
 					0,
+					0,
+					0,
+					0
+				},
+				default_color = {
+					0,
+					255,
+					255,
+					255
+				},
+				hover_color = {
+					255,
 					255,
 					255,
 					255

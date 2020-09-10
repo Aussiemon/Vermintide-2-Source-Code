@@ -6,6 +6,7 @@ local category_settings = definitions.category_settings
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+local NUM_SALVAGE_SLOTS = 9
 CraftPageSalvage = class(CraftPageSalvage)
 CraftPageSalvage.NAME = "CraftPageSalvage"
 
@@ -34,6 +35,7 @@ CraftPageSalvage.on_enter = function (self, params, settings)
 	self.profile_index = params.profile_index
 	self.wwise_world = params.wwise_world
 	self.settings = settings
+	self._num_craft_items = 0
 	self._animations = {}
 
 	self:create_ui_elements(params)
@@ -114,6 +116,11 @@ CraftPageSalvage._update_animations = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 
 	UIWidgetUtils.animate_default_button(widgets_by_name.craft_button, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_plentiful, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_common, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_rare, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_exotic, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_clear, dt)
 end
 
 CraftPageSalvage._is_button_pressed = function (self, widget)
@@ -201,6 +208,74 @@ CraftPageSalvage._handle_input = function (self, dt, t)
 			self:_play_sound("play_gui_craft_forge_begin")
 		end
 	end
+
+	if not craft_input_accepted then
+		if self:_is_button_pressed(widgets_by_name.auto_fill_plentiful) then
+			self:_fill_by_rarity("plentiful")
+		end
+
+		if self:_is_button_pressed(widgets_by_name.auto_fill_common) then
+			self:_fill_by_rarity("common")
+		end
+
+		if self:_is_button_pressed(widgets_by_name.auto_fill_rare) then
+			self:_fill_by_rarity("rare")
+		end
+
+		if self:_is_button_pressed(widgets_by_name.auto_fill_exotic) then
+			self:_fill_by_rarity("exotic")
+		end
+
+		if self:_is_button_pressed(widgets_by_name.auto_fill_clear) then
+			self:clear_craft_items()
+		end
+	end
+end
+
+CraftPageSalvage._fill_by_rarity = function (self, rarity)
+	local recipe = self.parent:get_active_recipe()
+
+	if not recipe then
+		return
+	end
+
+	local num_slots_remaining = NUM_SALVAGE_SLOTS - self._num_craft_items
+
+	if num_slots_remaining <= 0 then
+		return
+	end
+
+	local item_interface = Managers.backend:get_interface("items")
+	local item_filter = recipe.item_filter .. " and item_rarity == " .. rarity
+	item_filter = "available_in_current_mechanism and ( " .. item_filter .. " )"
+	local items_1 = item_interface:get_filtered_items("can_wield_by_current_career and ( " .. item_filter .. " )")
+	local items_2 = item_interface:get_filtered_items("not can_wield_by_current_career and ( " .. item_filter .. " )")
+
+	local function is_already_selected(v)
+		return table.contains(self._craft_items, v.backend_id)
+	end
+
+	table.array_remove_if(items_1, is_already_selected)
+	table.array_remove_if(items_2, is_already_selected)
+	table.sort(items_1, recipe.item_sort_func)
+	table.sort(items_2, recipe.item_sort_func)
+
+	local valid_items = items_1
+
+	table.append(valid_items, items_2)
+
+	local num_items_to_add = math.min(num_slots_remaining, #valid_items)
+	local audio_triggered = false
+
+	for i = 1, num_items_to_add, 1 do
+		local item = valid_items[i]
+		local backend_id = item and item.backend_id
+
+		if backend_id then
+			local success = self:_add_craft_item(backend_id, nil, audio_triggered)
+			audio_triggered = audio_triggered or success
+		end
+	end
 end
 
 CraftPageSalvage._handle_craft_input_progress = function (self, progress)
@@ -219,6 +294,19 @@ CraftPageSalvage.craft_result = function (self, result, error, reset_slots)
 	end
 end
 
+CraftPageSalvage.clear_craft_items = function (self)
+	local audio_triggered = false
+
+	for _, backend_id in pairs(self._craft_items) do
+		local success = self:_remove_craft_item(backend_id, nil, audio_triggered)
+		audio_triggered = audio_triggered or success
+	end
+
+	self.super_parent:clear_disabled_backend_ids()
+	self.super_parent:update_inventory_items()
+	self:reset()
+end
+
 CraftPageSalvage.reset = function (self)
 	local item_grid = self._item_grid
 
@@ -232,7 +320,7 @@ CraftPageSalvage.on_craft_completed = function (self)
 
 	table.clear(self._craft_items)
 
-	for i = 1, NUM_CRAFT_SLOTS, 1 do
+	for i = 1, NUM_SALVAGE_SLOTS, 1 do
 		self._craft_items[i] = nil
 	end
 
@@ -303,7 +391,7 @@ CraftPageSalvage._update_craft_items = function (self)
 	end
 end
 
-CraftPageSalvage._remove_craft_item = function (self, backend_id, slot_index)
+CraftPageSalvage._remove_craft_item = function (self, backend_id, slot_index, ignore_sound)
 	local craft_items = self._craft_items
 
 	if slot_index then
@@ -331,8 +419,14 @@ CraftPageSalvage._remove_craft_item = function (self, backend_id, slot_index)
 			self:_set_craft_button_disabled(true)
 		end
 
-		self:_play_sound("play_gui_craft_item_drag")
+		if not ignore_sound then
+			self:_play_sound("play_gui_craft_item_drag")
+		end
+
+		return true
 	end
+
+	return false
 end
 
 CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignore_sound, specific_amount)
@@ -344,7 +438,7 @@ CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignor
 	local craft_items = self._craft_items
 
 	if not slot_index then
-		for i = 1, 9, 1 do
+		for i = 1, NUM_SALVAGE_SLOTS, 1 do
 			if not craft_items[i] then
 				slot_index = i
 
@@ -361,7 +455,7 @@ CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignor
 		self._item_grid:add_item_to_slot_index(slot_index, item, specific_amount)
 		self.super_parent:set_disabled_backend_id(backend_id, true)
 
-		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, 9)
+		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, NUM_SALVAGE_SLOTS)
 
 		if self._num_craft_items > 0 then
 			self:_set_craft_button_disabled(false)
@@ -370,7 +464,11 @@ CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignor
 		if backend_id and not ignore_sound then
 			self:_play_sound("play_gui_craft_item_drop")
 		end
+
+		return true
 	end
+
+	return false
 end
 
 CraftPageSalvage._set_craft_button_disabled = function (self, disabled)

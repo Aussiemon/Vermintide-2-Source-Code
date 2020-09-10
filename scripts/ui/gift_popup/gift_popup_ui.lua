@@ -48,26 +48,6 @@ GiftPopupUI.update = function (self, dt, t)
 	return
 end
 
-GiftPopupUI._block_all_input_services = function (self)
-	local input_manager = Managers.input
-
-	input_manager:block_device_except_service(nil, "gamepad", 1)
-	input_manager:block_device_except_service(nil, "keyboard", 1)
-	input_manager:block_device_except_service(nil, "mouse", 1)
-
-	self._input_blocked = true
-end
-
-GiftPopupUI._unblock_all_input_services = function (self)
-	local input_manager = Managers.input
-
-	input_manager:device_unblock_all_services("gamepad", 1)
-	input_manager:device_unblock_all_services("keyboard", 1)
-	input_manager:device_unblock_all_services("mouse", 1)
-
-	self._input_blocked = false
-end
-
 GiftPopupUI.post_update = function (self, dt, t)
 	local reward_popup = self._reward_popup
 	local presentation_queue = self._presentation_queue
@@ -75,7 +55,7 @@ GiftPopupUI.post_update = function (self, dt, t)
 	if self._poll_initialized and self._is_in_inn then
 		local next_poll_time = self._next_poll_time
 
-		if self._next_poll_time <= t then
+		if next_poll_time <= t then
 			self._next_poll_time = t + POLL_REWARDS_COOLDOWN
 			local reward_data = Managers.unlock:poll_rewards()
 
@@ -86,18 +66,12 @@ GiftPopupUI.post_update = function (self, dt, t)
 		end
 
 		if #presentation_queue > 0 and self:_can_present_reward() then
-			self:_block_all_input_services()
-
 			local presentation_data = table.remove(presentation_queue, 1)
 
 			reward_popup:display_presentation(presentation_data)
 		end
 
 		reward_popup:update(dt)
-	end
-
-	if self._input_blocked and #presentation_queue == 0 and not reward_popup:is_presentation_active() then
-		self:_unblock_all_input_services()
 	end
 end
 

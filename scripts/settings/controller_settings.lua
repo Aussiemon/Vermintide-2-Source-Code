@@ -4096,6 +4096,11 @@ if InputUtils.keymaps_key_approved("win32") then
 			"space",
 			"held"
 		},
+		skip_pressed = {
+			"keyboard",
+			"space",
+			"pressed"
+		},
 		cursor = {
 			"mouse",
 			"cursor",

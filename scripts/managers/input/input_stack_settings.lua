@@ -22,7 +22,8 @@ InputStackSettings = {
 		group_name = "game_popups",
 		services = {
 			"upsell_popup",
-			"weave_tutorial"
+			"weave_tutorial",
+			"rewards_popups"
 		}
 	},
 	{

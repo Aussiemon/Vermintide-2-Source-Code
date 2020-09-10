@@ -29,6 +29,11 @@ local tip_type_max_range = {
 	okri = 1,
 	tip = 89
 }
+local blocked_tip_type_indices = {
+	lore = {
+		1
+	}
+}
 local tip_type_list = {
 	"tip",
 	"lore",
@@ -38,6 +43,22 @@ local tip_type_list = {
 	"kerillian",
 	"okri"
 }
+local max_tips = 0
+local num_tip_types = #tip_type_list
+local tip_weight_list = {}
+
+for i = 1, num_tip_types, 1 do
+	local tip_type = tip_type_list[i]
+
+	fassert(tip_type_max_range[tip_type], "Missing max range of tip type %s", tip_type)
+
+	max_tips = (max_tips + tip_type_max_range[tip_type]) - ((blocked_tip_type_indices[tip_type] and #blocked_tip_type_indices[tip_type]) or 0)
+end
+
+for name, value in pairs(tip_type_max_range) do
+	tip_weight_list[name] = value / max_tips
+end
+
 local objective_texts = {
 	objective_sockets_name = "nfl_olesya_all_weave_objective_essence_refine_01",
 	objective_kill_enemies_name = "nfl_olesya_all_weave_objective_kill_02",
@@ -388,29 +409,42 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 		self.tip_text_prefix_widget.style.text.horizontal_alignment = "center"
 		self.tip_text_prefix_widget.style.text.word_wrap = true
 	else
-		local index_table = {}
+		if not tip_localization_key then
+			local tip_type_index = 1
+			local random = math.random()
+			local range_start = 0
 
-		if act_progression_index and act_progression_index < 4 then
-			local tip_count = 9 - act_progression_index * 2
+			for i = 1, num_tip_types, 1 do
+				local tip_type = tip_type_list[i]
+				local chance = tip_weight_list[tip_type]
+				local range_end = range_start + chance
 
-			for i = 1, tip_count, 1 do
-				index_table[i] = 3
+				if range_start <= random and random <= range_end then
+					tip_type_index = i
+
+					break
+				end
+
+				range_start = range_end
 			end
 
-			index_table[#index_table + 1] = 1
-		else
-			index_table[#index_table + 1] = 1
-		end
-
-		local tip_localization_key = tip_localization_key or nil
-
-		if not tip_localization_key then
-			local read_index = math.random(1, #index_table)
-			local tip_type_index = index_table[read_index]
 			local tip_type = tip_type_list[tip_type_index]
 			local tip_prefix = tip_type_prefix_list[tip_type]
 			local typ_max_range = tip_type_max_range[tip_type]
 			local tip_random_index = math.random(1, typ_max_range)
+			local blocked_list = blocked_tip_type_indices[tip_type]
+
+			if blocked_list then
+				local skip_counter = 0
+				local is_blocked = table.contains(blocked_list, tip_random_index)
+
+				while is_blocked and skip_counter < typ_max_range do
+					skip_counter = skip_counter + 1
+					tip_random_index = tip_random_index % typ_max_range + 1
+					is_blocked = table.contains(blocked_list, tip_random_index)
+				end
+			end
+
 			local tip_index = (tip_random_index < 10 and "0" .. tostring(tip_random_index)) or tostring(tip_random_index)
 			tip_localization_key = tip_prefix .. "_" .. tip_index
 		end

@@ -3,6 +3,9 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
 RewardPopupUI = class(RewardPopupUI)
 local DO_RELOAD = true
+local FAST_POPUP_SPEED_MULT_OPEN = 10
+local FAST_POPUP_SPEED_MULT_CLOSE = 2.5
+local INPUT_SERVICE_NAME = "rewards_popups"
 
 RewardPopupUI.init = function (self, level_end_view_context)
 	self.ui_renderer = level_end_view_context.ui_renderer
@@ -17,6 +20,7 @@ RewardPopupUI.init = function (self, level_end_view_context)
 
 	self:create_ui_elements()
 	rawset(_G, "reward_popup_ui", self)
+	self:_setup_input()
 end
 
 RewardPopupUI.create_ui_elements = function (self)
@@ -34,13 +38,18 @@ RewardPopupUI.create_ui_elements = function (self)
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 	self._animations = {}
 	self.is_visible = true
+	self._speed_up_popup = false
 end
 
 RewardPopupUI.set_input_manager = function (self, input_manager)
 	self.input_manager = input_manager
+
+	self:_setup_input()
 end
 
 RewardPopupUI.destroy = function (self)
+	self:_release_input()
+
 	self.ui_animator = nil
 
 	self:set_visible(false)
@@ -63,11 +72,35 @@ RewardPopupUI.update = function (self, dt)
 		self:create_ui_elements()
 	end
 
+	if self.input_acquired and self:is_presentation_complete() then
+		self:_release_input()
+	end
+
 	if not self.is_visible or not self.draw_widgets then
 		return
 	end
 
+	if not self._speed_up_popup then
+		local input_service = self.input_manager:get_service(INPUT_SERVICE_NAME)
+
+		if input_service:get("toggle_menu", true) or input_service:get("back", true) or input_service:get("skip_pressed", true) then
+			self._speed_up_popup = true
+		end
+	end
+
 	local is_dirty = self:_update_presentation_animation(dt)
+
+	if self._speed_up_popup then
+		local animation_data = self._animation_presentation_data
+
+		if animation_data then
+			if animation_data.end_animation_key then
+				dt = dt * FAST_POPUP_SPEED_MULT_CLOSE
+			else
+				dt = dt * FAST_POPUP_SPEED_MULT_OPEN
+			end
+		end
+	end
 
 	if self:_update_animations(dt) then
 		is_dirty = true
@@ -163,6 +196,9 @@ RewardPopupUI.display_presentation = function (self, data)
 	self:set_visible(true)
 
 	self._presentation_complete = false
+	self._speed_up_popup = false
+
+	self:_acquire_input()
 end
 
 RewardPopupUI.is_presentation_active = function (self)
@@ -482,6 +518,51 @@ RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, prog
 	end
 
 	self._fullscreen_effect_enabled = enabled
+end
+
+RewardPopupUI._setup_input = function (self)
+	local input_manager = self.input_manager
+
+	if input_manager and not self._input_set_up then
+		input_manager:create_input_service(INPUT_SERVICE_NAME, "IngameMenuKeymaps", "IngameMenuFilters")
+		input_manager:map_device_to_service(INPUT_SERVICE_NAME, "keyboard")
+		input_manager:map_device_to_service(INPUT_SERVICE_NAME, "mouse")
+		input_manager:map_device_to_service(INPUT_SERVICE_NAME, "gamepad")
+
+		self._input_set_up = true
+	end
+end
+
+RewardPopupUI._acquire_input = function (self)
+	if not self.input_acquired then
+		local input_manager = self.input_manager
+
+		if input_manager and self._input_set_up then
+			input_manager:capture_input({
+				"keyboard",
+				"gamepad",
+				"mouse"
+			}, 1, INPUT_SERVICE_NAME, "RewardPopupUI")
+		end
+
+		self.input_acquired = true
+	end
+end
+
+RewardPopupUI._release_input = function (self)
+	if self.input_acquired then
+		local input_manager = self.input_manager
+
+		if input_manager and self._input_set_up then
+			input_manager:release_input({
+				"keyboard",
+				"gamepad",
+				"mouse"
+			}, 1, INPUT_SERVICE_NAME, "RewardPopupUI")
+		end
+
+		self.input_acquired = false
+	end
 end
 
 return

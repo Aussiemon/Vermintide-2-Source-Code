@@ -62,6 +62,10 @@ CutsceneSystem.update = function (self)
 	self:handle_loading_icon()
 end
 
+CutsceneSystem.is_active = function (self)
+	return self.active_camera ~= nil
+end
+
 CutsceneSystem.handle_loading_icon = function (self)
 	if self.active_camera then
 		Managers.transition:show_loading_icon()

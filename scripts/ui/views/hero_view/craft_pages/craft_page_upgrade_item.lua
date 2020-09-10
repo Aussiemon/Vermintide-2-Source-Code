@@ -72,6 +72,10 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 			recipe_name = "upgrade_item_rarity_exotic"
 		elseif rarity == "exotic" then
 			recipe_name = "upgrade_item_rarity_unique"
+		else
+			self._has_all_requirements = false
+
+			return
 		end
 	end
 
@@ -337,15 +341,12 @@ CraftPageUpgradeItem.on_craft_completed = function (self)
 	self.super_parent:clear_disabled_backend_ids()
 	self.super_parent:update_inventory_items()
 
+	local ignore_sound = true
 	local num_reward_items = 0
+	self._num_craft_items = 0
 
 	for index, data in pairs(result) do
 		num_reward_items = num_reward_items + 1
-	end
-
-	local ignore_sound = true
-
-	for index, data in pairs(result) do
 		local backend_id = data[1]
 		local amount = data[3]
 
@@ -360,13 +361,13 @@ CraftPageUpgradeItem.on_craft_completed = function (self)
 
 	item_grid:update_items_status()
 
-	self._num_craft_items = 0
-
-	self:_set_craft_button_disabled(true)
-
 	self._craft_result = nil
 
 	self:setup_recipe_requirements()
+
+	local meets_requirements = self._num_craft_items > 0 and self._has_all_requirements
+
+	self:_set_craft_button_disabled(not meets_requirements)
 end
 
 CraftPageUpgradeItem._update_craft_items = function (self)

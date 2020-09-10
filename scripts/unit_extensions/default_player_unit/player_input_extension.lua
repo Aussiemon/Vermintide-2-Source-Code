@@ -1,21 +1,6 @@
 require("scripts/unit_extensions/generic/generic_state_machine")
 
-local is_windows_platform = PLATFORM == "win32"
 PlayerInputExtension = class(PlayerInputExtension)
-
-PlayerInputExtension.get_window_is_in_focus = function ()
-	local is_in_focus = false
-
-	if is_windows_platform then
-		if Window.has_focus() then
-			is_in_focus = true
-		end
-	else
-		is_in_focus = true
-	end
-
-	return is_in_focus
-end
 
 PlayerInputExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
@@ -132,10 +117,16 @@ PlayerInputExtension.was_double_tap = function (self, input_key, t, max_duration
 	return last_double_tap and t < last_double_tap + max_duration
 end
 
+local is_windows_platform = PLATFORM == "win32"
+
+PlayerInputExtension.is_input_blocked = function (self)
+	return (self.input_service:is_blocked() or (is_windows_platform and not Window.has_focus()) or (HAS_STEAM and Managers.steam:is_overlay_active())) and not DamageUtils.is_in_inn and not Managers.state.entity:system("cutscene_system"):is_active()
+end
+
 PlayerInputExtension.get = function (self, input_key, consume)
 	local value = self.input_service:get(input_key, consume)
 
-	if not self.enabled or not PlayerInputExtension.get_window_is_in_focus() then
+	if not self.enabled or self:is_input_blocked() then
 		local value_type = type(value)
 
 		if value_type == "userdata" then

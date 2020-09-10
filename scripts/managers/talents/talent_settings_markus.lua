@@ -103,6 +103,9 @@ local buff_tweak_data = {
 	markus_knight_activated_ability = {
 		duration = 1.7
 	},
+	markus_knight_passive_defence_aura_range = {
+		multiplier = -0.15
+	},
 	markus_knight_vanguard = {},
 	markus_knight_reaper = {},
 	markus_knight_conqueror = {},

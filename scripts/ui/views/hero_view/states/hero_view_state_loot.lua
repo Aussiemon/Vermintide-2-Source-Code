@@ -238,6 +238,8 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	self._animations = {}
 	self._units = {}
 	self.waiting_for_post_update_enter = true
+	self._camera_look_up_progress = 0
+	self._continue_button_progress = 0
 end
 
 HeroViewStateLoot.post_update_on_enter = function (self)
@@ -388,9 +390,16 @@ HeroViewStateLoot.populate_items = function (self)
 	end
 
 	self._item_grid = item_grid
-	local first_item = item_grid:get_item_in_slot(1, 1)
+	local item_to_select = nil
+	local last_selection = self._last_selected_item
 
-	self:_select_grid_item(first_item)
+	if last_selection and item_grid:has_item(last_selection) then
+		item_to_select = last_selection
+	else
+		item_to_select = item_grid:get_item_in_slot(1, 1)
+	end
+
+	self:_select_grid_item(item_to_select)
 end
 
 HeroViewStateLoot._get_items_by_filter = function (self, item_filter)
@@ -1293,20 +1302,49 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 			end
 		end
 
-		if self._rewards_presented and (self:_is_button_pressed(continue_button) or input_service:get("toggle_menu") or back_button_pressed) then
+		if not self._rewards_presented and (input_service:get("skip_pressed", true) or self._auto_open_rewards_on_complete) then
+			if not self._reward_option_animation_complete then
+				self._auto_open_rewards_on_complete = true
+			else
+				self._auto_open_rewards_on_complete = false
+				local widgets = self._option_widgets
+				local num_rewards = math.min(#widgets, #self._active_reward_options)
+
+				for i = 1, num_rewards, 1 do
+					local button_hotspot = widgets[i].content.button_hotspot
+
+					if not button_hotspot.disable_button then
+						self:open_reward_option(i)
+					end
+				end
+			end
+		end
+
+		local skip_reward_presentation = self._rewards_presented and self._continue_button_progress >= 1 and input_service:get("skip_pressed", true)
+
+		if self._rewards_presented and (self:_is_button_pressed(continue_button) or input_service:get("toggle_menu") or skip_reward_presentation or back_button_pressed) then
 			self:play_sound("play_gui_chest_opening_return")
 
+			self._enter_animation_duration = nil
+			self._chest_zoom_in_duration = nil
+			self._chest_open_wait_duration = nil
+			self._continue_button_animation_duration = nil
+			self._rewards_presented = false
 			self._opening_chest = nil
 			self._chest_presentation_active = nil
 			self._present_reward_options = nil
+			self._auto_open_rewards_on_complete = false
 			self._chest_zoom_out_duration = 0
-			self._camera_look_down_duration = 0
+			self._camera_look_down_duration = CHEST_PRESENTATION_LOOK_DOWN_TIME * (1 - self._camera_look_up_progress)
+			self._camera_look_up_progress = 0
 			self._reward_option_animation_complete = nil
+			self._camera_look_up_duration = nil
 
 			self:set_continue_button_animation_progress(0)
 			self:_reset_gamepad_tooltips()
 
 			self._console_selection_index = 1
+			local animations = self._animations
 			local active_reward_options = self._active_reward_options
 
 			if active_reward_options then
@@ -1314,6 +1352,15 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 					local widget = data.widget
 					local preview_widget = data.preview_widget
 					local background_widget = data.background_widget
+					local animation_name = data.animation_name
+					local animation_id = animations[animation_name]
+
+					if animation_id then
+						self.ui_animator:stop_animation(animation_id)
+
+						animations[animation_name] = nil
+					end
+
 					local item_previewer = data.item_previewer
 
 					if item_previewer then
@@ -1373,7 +1420,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 			self:_select_grid_item(item, t)
 		end
 
-		local open_button_pressed = gamepad_active and self._open_chests_enabled and input_service:get("confirm_press")
+		local open_button_pressed = self._open_chests_enabled and (input_service:get("confirm_press") or input_service:get("skip_pressed", true))
 
 		if (self:_is_button_pressed(open_button) or open_button_pressed) and self._selected_item then
 			if self:_can_open_chests() then
@@ -1481,8 +1528,9 @@ HeroViewStateLoot.open_reward_option = function (self, index)
 	local content = widget.content
 	local button_hotspot = content.button_hotspot
 	button_hotspot.disable_button = true
+	reward_option.animation_name = "open_loot_widget_" .. index
 
-	self:_start_animation("open_loot_widget", "open_loot_widget", widget, params)
+	self:_start_animation(reward_option.animation_name, "open_loot_widget", widget, params)
 
 	self._num_rewards_opened = self._num_rewards_opened + 1
 
@@ -1837,6 +1885,8 @@ end
 
 HeroViewStateLoot._open_chest = function (self, selected_item)
 	self:_reset_camera()
+	self:set_reward_options_height_progress(0)
+	self:set_continue_button_animation_progress(0)
 
 	local backend_loot = Managers.backend:get_interface("loot")
 	local hero_name = self.hero_name
@@ -1906,8 +1956,11 @@ HeroViewStateLoot._start_reward_presentation = function (self, loot)
 
 	self._chest_presentation_active = true
 	self._num_rewards_opened = 0
+	self._last_selected_item = self._selected_item
 	self._selected_item = nil
+	self._continue_button_animation_duration = 0
 
+	self:set_continue_button_animation_progress(0)
 	self:set_reward_options_height_progress(0)
 end
 
@@ -2069,6 +2122,7 @@ HeroViewStateLoot.set_continue_button_animation_progress = function (self, progr
 	local ui_scenegraph = self.ui_scenegraph
 	ui_scenegraph.continue_button.local_position[2] = -170 + 200 * progress
 	self._continue_button_alpha_multiplier = progress
+	self._continue_button_progress = progress
 end
 
 HeroViewStateLoot.set_chest_title_alpha_progress = function (self, progress)
@@ -2136,6 +2190,7 @@ HeroViewStateLoot._update_camera_look_up_time = function (self, dt, t)
 	local degrees = 60
 	local previous_angle = math.degrees_to_radians(degrees * previous_animation_progress)
 	local angle = math.degrees_to_radians(degrees * animation_progress)
+	self._camera_look_up_progress = progress
 	local animation_rotation = Quaternion(Vector3.right(), angle - previous_angle)
 	local current_rotation = self:get_camera_rotation()
 	local new_rotation = Quaternion.multiply(current_rotation, animation_rotation)
@@ -2180,6 +2235,7 @@ HeroViewStateLoot._update_camera_look_down_time = function (self, dt, t)
 
 	if progress == 1 then
 		self._camera_look_down_duration = nil
+		self._camera_look_up_progress = 0
 	else
 		self._camera_look_down_duration = camera_look_down_duration
 	end
@@ -2187,6 +2243,7 @@ end
 
 HeroViewStateLoot._reset_camera = function (self)
 	self._camera_look_down_duration = nil
+	self._camera_look_up_progress = 0
 	self.background_fade_widget.style.rect.color[1] = 0
 
 	self:_position_camera()

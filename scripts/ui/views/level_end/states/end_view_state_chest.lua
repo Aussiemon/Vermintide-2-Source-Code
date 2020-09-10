@@ -24,6 +24,7 @@ local chest_idle_animations = {
 }
 EndViewStateChest = class(EndViewStateChest)
 EndViewStateChest.NAME = "EndViewStateChest"
+EndViewStateChest.CAN_SPEED_UP = true
 
 EndViewStateChest.on_enter = function (self, params)
 	print("[PlayState] Enter Substate EndViewStateChest")

@@ -75,7 +75,7 @@ local buff_tweak_data = {
 	},
 	bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc = {
 		final_power = 1.2,
-		final_attack_speed = -1.5,
+		final_attack_speed = -0.5,
 		initial_attack_speed = 1,
 		inital_power = -0.8
 	},
@@ -2254,10 +2254,6 @@ Talents.dwarf_ranger = {
 		buffer = "server",
 		icon = "bardin_ranger_reduced_damage_taken_headshot",
 		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.multiplier
-			},
 			{
 				value_type = "percent",
 				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.multiplier

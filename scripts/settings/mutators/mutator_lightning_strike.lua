@@ -57,7 +57,9 @@ return {
 
 		if #data.units > 0 then
 			for k, unit in ipairs(data.units) do
-				Managers.state.unit_spawner:mark_for_deletion(unit)
+				if ALIVE[unit] then
+					Managers.state.unit_spawner:mark_for_deletion(unit)
+				end
 
 				data.units[k] = nil
 			end

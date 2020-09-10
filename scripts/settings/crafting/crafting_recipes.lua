@@ -52,7 +52,11 @@ local crafting_recipes = {
 								local _, item_name_1 = UIUtils.get_ui_information_from_item(item_1)
 								local _, item_name_2 = UIUtils.get_ui_information_from_item(item_2)
 
-								return Localize(item_name_1) < Localize(item_name_2)
+								if item_name_1 == item_name_2 then
+									return item_1_backend_id < item_2_backend_id
+								else
+									return Localize(item_name_1) < Localize(item_name_2)
+								end
 							else
 								return item_type_1 < item_type_2
 							end

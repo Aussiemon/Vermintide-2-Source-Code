@@ -3179,17 +3179,15 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 			end
 		end
 
-		local remove_dot_template = false
+		local custom_dot = nil
 
 		if buff_extension then
 			if (buff_extension:has_buff_perk("victor_witchhunter_bleed_on_critical_hit") and (damage_profile.charge_value == "light_attack" or damage_profile.charge_value == "heavy_attack")) or (buff_extension:has_buff_perk("kerillian_critical_bleed_dot") and damage_profile.charge_value == "projectile") then
-				damage_profile.dot_template_name = "weapon_bleed_dot_whc"
-				remove_dot_template = true
+				custom_dot = "weapon_bleed_dot_whc"
 			end
 
 			if buff_extension:has_buff_perk("sienna_unchained_burn_push") and damage_profile and damage_profile.is_push then
-				damage_profile.dot_template_name = "burning_1W_dot_unchained_push"
-				remove_dot_template = true
+				custom_dot = "burning_1W_dot_unchained_push"
 			end
 		end
 
@@ -3197,11 +3195,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 		local added_dot = nil
 
 		if not damage_profile.require_damage_for_dot or attack_power_level ~= 0 then
-			added_dot = DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, nil, source_attacker_unit)
-		end
-
-		if added_dot and remove_dot_template then
-			damage_profile.dot_template_name = nil
+			added_dot = DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, nil, source_attacker_unit, custom_dot)
 		end
 
 		DamageUtils.add_damage_network_player(damage_profile, target_index, attack_power_level, target_unit, attacker_unit, hit_zone_name, hit_position, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
@@ -3254,7 +3248,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 	end
 end
 
-DamageUtils.apply_dot = function (damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template, source_attacker_unit)
+DamageUtils.apply_dot = function (damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template, source_attacker_unit, custom_dot_template)
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local explosion = explosion_template and explosion_template.explosion
 	local explosion_template_dot = nil
@@ -3263,7 +3257,7 @@ DamageUtils.apply_dot = function (damage_profile, target_index, power_level, tar
 		explosion_template_dot = explosion and explosion.dot_template_name
 	end
 
-	local dot_template_name = target_settings.dot_template_name or damage_profile.dot_template_name or explosion_template_dot
+	local dot_template_name = custom_dot_template or target_settings.dot_template_name or damage_profile.dot_template_name or explosion_template_dot
 	local dot_type = DotTypeLookup[dot_template_name]
 	local applied_dot = false
 

@@ -123,6 +123,10 @@ PlayerInputTutorialExtension.was_double_tap = function (self, input_key, t, max_
 	return last_double_tap and t < last_double_tap + max_duration
 end
 
+PlayerInputTutorialExtension.is_input_blocked = function (self)
+	return false
+end
+
 PlayerInputTutorialExtension.get = function (self, input_key, consume)
 	local value = self.input_service:get(input_key, consume)
 

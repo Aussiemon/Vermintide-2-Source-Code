@@ -126,21 +126,20 @@ Dots = {
 			return false
 		end
 
-		local talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system")
+		local breed = AiUtils.unit_breed(target_unit)
 
-		if talent_extension then
-			local breed = AiUtils.unit_breed(target_unit)
-			local infinite_burn_talent = talent_extension:has_talent("sienna_adept_infinite_burn")
+		if breed and not breed.is_hero then
+			local talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system")
 
-			if infinite_burn_talent and breed and not breed.is_hero then
+			if talent_extension and talent_extension:has_talent("sienna_adept_infinite_burn") then
 				dot_template_name = InfiniteBurnDotLookup[dot_template_name]
 			end
-		end
 
-		local attacker_unit_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+			local attacker_unit_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 
-		if attacker_unit_buff_extension then
-			attacker_unit_buff_extension:trigger_procs("on_enemy_ignited", dot_template_name, damage_profile, target_index, target_unit, hit_zone_name, damage_source, is_critical_strike)
+			if attacker_unit_buff_extension then
+				attacker_unit_buff_extension:trigger_procs("on_enemy_ignited", dot_template_name, damage_profile, target_index, target_unit, hit_zone_name, damage_source, is_critical_strike)
+			end
 		end
 
 		add_dot_network_synced(dot_template_name, target_unit, attacker_unit, damage_source, power_level, source_attacker_unit)

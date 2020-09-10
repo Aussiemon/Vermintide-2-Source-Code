@@ -10,6 +10,8 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
+local SPEED_UP_MULT_MAX = 3
+local SPEED_UP_LERP_SPEED = 4
 local fake_input_service = {
 	get = function ()
 		return
@@ -45,6 +47,7 @@ LevelEndViewBase.init = function (self, context)
 	}
 	self._lobby = context.lobby
 	self.is_server = context.is_server
+	self._state_speed_mult = 1
 	local is_untrusted = script_data["eac-untrusted"]
 	self._is_untrusted = is_untrusted
 
@@ -116,7 +119,7 @@ LevelEndViewBase.start = function (self)
 end
 
 LevelEndViewBase.on_enter = function (self)
-	return
+	self._state_speed_mult = 1
 end
 
 LevelEndViewBase.on_exit = function (self)
@@ -216,6 +219,21 @@ LevelEndViewBase.update = function (self, dt, t)
 	self:_handle_queued_presentations()
 
 	if self._machine then
+		if self._state_can_speed_up then
+			local speed_up_target = 1
+			local input_service = self.input_manager:get_service("end_of_level")
+
+			if input_service:get("confirm_hold", true) or input_service:get("skip", true) then
+				speed_up_target = SPEED_UP_MULT_MAX
+			end
+
+			local current_speed_mult = self._state_speed_mult
+			current_speed_mult = math.lerp(current_speed_mult, speed_up_target, SPEED_UP_LERP_SPEED * dt)
+			current_speed_mult = math.clamp(current_speed_mult, 1, SPEED_UP_MULT_MAX)
+			dt = dt * current_speed_mult
+			self._state_speed_mult = current_speed_mult
+		end
+
 		self._machine:update(dt, t)
 
 		if self._new_state_name then
@@ -743,6 +761,7 @@ LevelEndViewBase._handle_state_exit = function (self)
 		self:_setup_state_machine(self._new_state_name)
 
 		self._new_state_name = nil
+		self._state_speed_mult = 1
 	end
 end
 
@@ -759,6 +778,7 @@ LevelEndViewBase._setup_state_machine = function (self, optional_start_state_nam
 	local profiling_debugging_enabled = false
 	local state_machine_params = self._state_machine_params
 	state_machine_params.initial_state = initial
+	self._state_can_speed_up = start_state.CAN_SPEED_UP
 	local direction = nil
 
 	if not initial then

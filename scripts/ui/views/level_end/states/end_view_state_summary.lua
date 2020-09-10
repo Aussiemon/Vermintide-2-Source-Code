@@ -14,6 +14,7 @@ local fake_input_service = {
 }
 EndViewStateSummary = class(EndViewStateSummary)
 EndViewStateSummary.NAME = "EndViewStateSummary"
+EndViewStateSummary.CAN_SPEED_UP = true
 
 EndViewStateSummary.on_enter = function (self, params)
 	print("[EndViewState] Enter Substate EndViewStateSummary")

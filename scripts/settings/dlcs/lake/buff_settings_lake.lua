@@ -107,7 +107,7 @@ settings.buff_templates = {
 				time_between_heal = 5,
 				update_func = "health_regen_update",
 				apply_buff_func = "health_regen_start",
-				heal_type = "health_regen"
+				heal_type = "career_passive"
 			}
 		}
 	},
@@ -121,7 +121,7 @@ settings.buff_templates = {
 				time_between_heal = 2.5,
 				update_func = "health_regen_update",
 				apply_buff_func = "health_regen_start",
-				heal_type = "health_regen"
+				heal_type = "career_passive"
 			}
 		}
 	}

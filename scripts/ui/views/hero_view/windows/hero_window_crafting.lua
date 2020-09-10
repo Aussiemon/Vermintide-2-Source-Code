@@ -322,6 +322,7 @@ HeroWindowCrafting._change_recipe_page = function (self, current_page)
 	local current_page_settings = page_settings[current_page]
 	local page_name = current_page_settings.name
 	local recipe = crafting_recipes_by_name[page_name]
+	self._active_recipe = recipe
 	local ingredients = recipe.ingredients
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.title_text.content.text = Localize(recipe.display_name)
@@ -509,6 +510,10 @@ HeroWindowCrafting._update_craft_end_time = function (self, dt, t)
 	else
 		self._craft_end_duration = craft_end_duration
 	end
+end
+
+HeroWindowCrafting.get_active_recipe = function (self)
+	return self._active_recipe
 end
 
 HeroWindowCrafting.craft = function (self, items, recipe_override)
