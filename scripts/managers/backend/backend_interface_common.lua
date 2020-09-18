@@ -352,25 +352,21 @@ local filter_macros = {
 			end
 
 			local backend_crafting = Managers.backend:get_interface("crafting")
-			local career_names = backend_items:equipped_by(backend_id)
+			local skin_combination_table_key = item_data.skin_combination_table
 
-			if #career_names == 0 then
-				local skin_combination_table_key = item_data.skin_combination_table
+			if skin_combination_table_key then
+				local weapon_skin_combinations_tables = WeaponSkins.skin_combinations[skin_combination_table_key]
+				local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
+				local default_skin = WeaponSkins.default_skins[item.ItemId]
 
-				if skin_combination_table_key then
-					local weapon_skin_combinations_tables = WeaponSkins.skin_combinations[skin_combination_table_key]
-					local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
-					local default_skin = WeaponSkins.default_skins[item.ItemId]
+				if unlocked_weapon_skins[default_skin] == true then
+					return true
+				end
 
-					if unlocked_weapon_skins[default_skin] == true then
-						return true
-					end
-
-					for _, weapon_skins in pairs(weapon_skin_combinations_tables) do
-						for _, skin in ipairs(weapon_skins) do
-							if unlocked_weapon_skins[skin] == true then
-								return true
-							end
+				for _, weapon_skins in pairs(weapon_skin_combinations_tables) do
+					for _, skin in ipairs(weapon_skins) do
+						if unlocked_weapon_skins[skin] == true then
+							return true
 						end
 					end
 				end

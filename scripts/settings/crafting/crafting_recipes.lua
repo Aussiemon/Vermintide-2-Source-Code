@@ -620,7 +620,7 @@ local crafting_recipes = {
 		validation_function = "weapon_skin_application_validation_func",
 		result_function_playfab = "craftingApplySkin2",
 		hero_specific_filter = true,
-		item_filter = "can_apply_skin and item_rarity ~= magic and not is_equipped",
+		item_filter = "can_apply_skin and item_rarity ~= magic",
 		description_text = "description_crafting_recipe_apply_weapon_skin",
 		display_icon_console = "console_crafting_recipe_icon_apply",
 		ingredients = {},

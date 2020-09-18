@@ -247,7 +247,7 @@ CraftPageSalvage._fill_by_rarity = function (self, rarity)
 
 	local item_interface = Managers.backend:get_interface("items")
 	local item_filter = recipe.item_filter .. " and item_rarity == " .. rarity
-	item_filter = "available_in_current_mechanism and ( " .. item_filter .. " )"
+	item_filter = "can_wield_by_current_hero and available_in_current_mechanism and ( " .. item_filter .. " )"
 	local items_1 = item_interface:get_filtered_items("can_wield_by_current_career and ( " .. item_filter .. " )")
 	local items_2 = item_interface:get_filtered_items("not can_wield_by_current_career and ( " .. item_filter .. " )")
 

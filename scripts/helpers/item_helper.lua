@@ -334,6 +334,14 @@ ItemHelper.is_favorite_backend_id = function (backend_id)
 	return favorite_item_ids and favorite_item_ids[backend_id]
 end
 
+ItemHelper.is_equiped_backend_id = function (backend_id, career)
+	local item_interface = Managers.backend:get_interface("items")
+	local career_names = item_interface:equipped_by(backend_id)
+	local num_equipped_careers = #career_names
+
+	return num_equipped_careers > 0 and (not career or table.contains(career_names, career)), career_names, num_equipped_careers
+end
+
 ItemHelper.mark_keep_decoration_as_new = function (keep_decoration_id)
 	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids or {}
 	new_keep_decoration_ids[keep_decoration_id] = true

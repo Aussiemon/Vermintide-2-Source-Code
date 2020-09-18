@@ -31,7 +31,9 @@ local tip_type_max_range = {
 }
 local blocked_tip_type_indices = {
 	lore = {
-		1
+		4,
+		8,
+		41
 	}
 }
 local tip_type_list = {

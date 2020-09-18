@@ -34,6 +34,9 @@ CraftPageApplySkin.on_enter = function (self, params, settings)
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+	local hero_data = SPProfiles[self.profile_index]
+	local career_data = hero_data.careers[self.career_index]
+	self.career_name = career_data.name
 	self.wwise_world = params.wwise_world
 	self.settings = settings
 	self._animations = {}
@@ -349,6 +352,20 @@ CraftPageApplySkin.on_craft_completed = function (self)
 
 	self:_weapon_slot_updated()
 	self:setup_recipe_requirements()
+
+	if craft_item_backend_id and ItemHelper.is_equiped_backend_id(craft_item_backend_id, self.career_name) then
+		local item_interface = Managers.backend:get_interface("items")
+		local craft_item = item_interface:get_item_from_id(craft_item_backend_id)
+
+		self.super_parent:_set_loadout_item(craft_item)
+
+		local item_data = craft_item.data
+		local slot_type = item_data.slot_type
+
+		if slot_type == "skin" then
+			self.super_parent:update_skin_sync()
+		end
+	end
 end
 
 CraftPageApplySkin._update_craft_items = function (self)
