@@ -715,28 +715,27 @@ end
 
 PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list)
 	if result == 1 then
-		print("[PlayFabMirror] -> retrieval of steam user inventory, SUCCESS")
-		table.dump(item_list, "ITEM_LIST")
+		print("[PlayFabMirrorBase] -> retrieval of steam user inventory, SUCCESS")
 
 		for i = 1, #item_list, 4 do
 			local steam_itemdefid = item_list[i]
 			local steam_backend_unique_id = item_list[i + 1]
-			local flags = item_list[i + 2]
-			local amount = item_list[i + 3]
 			local item_key = SteamitemdefidToMasterList[steam_itemdefid]
-			local item_data = ItemMasterList[item_key]
-			local backend_id = steam_backend_unique_id
-			local steam_item = {
-				ItemId = item_key,
-				ItemInstanceId = backend_id
-			}
 
-			self:_update_data(steam_item, backend_id)
+			if item_key then
+				local backend_id = steam_backend_unique_id
+				local steam_item = {
+					ItemId = item_key,
+					ItemInstanceId = backend_id
+				}
 
-			self._inventory_items[backend_id] = steam_item
+				self:_update_data(steam_item, backend_id)
+
+				self._inventory_items[backend_id] = steam_item
+			end
 		end
 	else
-		print("[PlayFabMirror] ERROR could not retrieve get steam user inventory. result-code:", result)
+		print("[PlayFabMirrorBase] ERROR could not retrieve get steam user inventory. result-code:", result)
 	end
 end
 
@@ -1545,6 +1544,9 @@ end
 PlayFabMirrorBase._setup_careers = function (self)
 	local read_only_data = self._read_only_data
 	local characters_data = cjson.decode(read_only_data[self._characters_data_key])
+	characters_data.spectator = {
+		careers = {}
+	}
 	self._career_data = {}
 	self._career_data_mirror = {}
 	self._career_lookup = {}
@@ -1553,19 +1555,22 @@ PlayFabMirrorBase._setup_careers = function (self)
 
 	for character_name, character_data in pairs(characters_data) do
 		local profile_index = FindProfileIndex(character_name)
-		local profile = SPProfiles[profile_index]
-		slots_to_verify = self._verify_slot_keys_per_affiliation[profile.affiliation]
 
-		for career_name, career_data in pairs(character_data.careers) do
-			self._career_data[career_name] = {}
-			self._career_data_mirror[career_name] = {}
-			local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
+		if profile_index then
+			local profile = SPProfiles[profile_index]
+			slots_to_verify = self._verify_slot_keys_per_affiliation[profile.affiliation]
 
-			if broken_slots then
-				broken_slots_data[career_name] = broken_slots
+			for career_name, career_data in pairs(character_data.careers) do
+				self._career_data[career_name] = {}
+				self._career_data_mirror[career_name] = {}
+				local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
 
-				print("Broken item slots for career", career_name)
-				table.dump(broken_slots)
+				if broken_slots then
+					broken_slots_data[career_name] = broken_slots
+
+					print("Broken item slots for career", career_name)
+					table.dump(broken_slots)
+				end
 			end
 		end
 	end

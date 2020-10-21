@@ -1488,10 +1488,8 @@ AIBotGroupSystem._update_pickups_near_player = function (self, player_unit, t)
 							else
 								allowed_to_take_ammo = true
 							end
-						elseif pickup_ammo_kind == "thrown" then
-							allowed_to_take_ammo = true
 						else
-							allowed_to_take_ammo = not pickup_data.only_once
+							allowed_to_take_ammo = (pickup_ammo_kind == "thrown" and true) or (bb.has_ammo_missing and (not pickup_data.only_once or bb.needs_ammo))
 						end
 
 						local ammo_condition = (dist < allowed_distance_to_self or (follow_pos and Vector3.distance(follow_pos, pickup_pos) < allowed_distance_to_follow_pos)) and (not current_pickup or dist - ((current_pickup == pickup_unit and ammo_stickiness) or 0) < data.ammo_dist)

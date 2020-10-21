@@ -66,6 +66,10 @@ ItemGridUI.set_item_page = function (self, page_index)
 	self._selected_page_index = page_index
 end
 
+ItemGridUI.items = function (self)
+	return self._items
+end
+
 ItemGridUI.get_page_info = function (self)
 	return self._selected_page_index, self._total_item_pages
 end
@@ -877,8 +881,9 @@ ItemGridUI.get_item_hovered = function (self)
 
 			if slot_hotspot.internal_is_hover then
 				local item = content["item" .. name_sufix]
+				local is_equipped = slot_hotspot.equipped
 
-				return item
+				return item, is_equipped
 			end
 		end
 	end

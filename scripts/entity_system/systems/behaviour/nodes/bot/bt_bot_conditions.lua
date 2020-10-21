@@ -842,7 +842,7 @@ BTConditions.can_loot = function (blackboard)
 	local max_dist = 3.2
 	local is_forced_pickup = blackboard.forced_pickup_unit == blackboard.interaction_unit
 	local loot_health = blackboard.health_pickup and blackboard.allowed_to_take_health_pickup and blackboard.health_pickup == blackboard.interaction_unit and (is_forced_pickup or blackboard.health_dist < max_dist)
-	local loot_ammo = blackboard.ammo_pickup and blackboard.needs_ammo and blackboard.ammo_pickup == blackboard.interaction_unit and (is_forced_pickup or blackboard.ammo_dist < max_dist)
+	local loot_ammo = blackboard.ammo_pickup and blackboard.has_ammo_missing and blackboard.ammo_pickup == blackboard.interaction_unit and (is_forced_pickup or blackboard.ammo_dist < max_dist)
 	local loot_mule = blackboard.mule_pickup and blackboard.mule_pickup == blackboard.interaction_unit and (is_forced_pickup or blackboard.mule_pickup_dist_squared < max_dist^2)
 
 	return loot_health or loot_ammo or loot_mule
@@ -850,15 +850,21 @@ end
 
 BTConditions.bot_should_heal = function (blackboard)
 	local self_unit = blackboard.unit
-	local force_use_health_pickup = blackboard.force_use_health_pickup
 	local inventory_extension = blackboard.inventory_extension
-	local buff_extension = ScriptUnit.extension(self_unit, "buff_system")
 	local health_slot_data = inventory_extension:get_slot_data("slot_healthkit")
 	local template = health_slot_data and inventory_extension:get_item_template(health_slot_data)
-	local has_no_permanent_health_from_item_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 	local can_heal_self = template and template.can_heal_self
 
-	if not can_heal_self or (has_no_permanent_health_from_item_buff and not force_use_health_pickup) then
+	if not can_heal_self then
+		return false
+	end
+
+	local buff_extension = ScriptUnit.extension(self_unit, "buff_system")
+	local has_no_permanent_health_from_item_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
+	local wounded = blackboard.status_extension:is_wounded()
+	local force_use_health_pickup = blackboard.force_use_health_pickup
+
+	if has_no_permanent_health_from_item_buff and not wounded and not force_use_health_pickup then
 		return false
 	end
 
@@ -866,7 +872,6 @@ BTConditions.bot_should_heal = function (blackboard)
 	local hurt = current_health_percent <= template.bot_heal_threshold
 	local target_unit = blackboard.target_unit
 	local is_safe = not target_unit or ((template.fast_heal or blackboard.is_healing_self) and #blackboard.proximite_enemies == 0) or (target_unit ~= blackboard.priority_target_enemy and target_unit ~= blackboard.urgent_target_enemy and target_unit ~= blackboard.proximity_target_enemy and target_unit ~= blackboard.slot_target_enemy)
-	local wounded = blackboard.status_extension:is_wounded()
 
 	return is_safe and (hurt or force_use_health_pickup or wounded)
 end

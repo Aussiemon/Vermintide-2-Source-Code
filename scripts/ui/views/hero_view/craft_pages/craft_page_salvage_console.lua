@@ -7,7 +7,6 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local NUM_CRAFT_SLOTS = definitions.NUM_CRAFT_SLOTS
 local DO_RELOAD = false
-local NUM_MAX_SALVAGE_ITEMS = 9
 CraftPageSalvageConsole = class(CraftPageSalvageConsole)
 CraftPageSalvageConsole.NAME = "CraftPageSalvageConsole"
 
@@ -72,7 +71,7 @@ CraftPageSalvageConsole.create_ui_elements = function (self, params)
 	self:_set_craft_button_disabled(true)
 	self:_handle_craft_input_progress(0)
 
-	widgets_by_name.max_counter_text.content.text = "/" .. tostring(NUM_MAX_SALVAGE_ITEMS)
+	widgets_by_name.max_counter_text.content.text = "/" .. tostring(CraftingSettings.NUM_SALVAGE_SLOTS)
 end
 
 CraftPageSalvageConsole.on_exit = function (self, params)
@@ -273,8 +272,26 @@ CraftPageSalvageConsole._update_craft_items = function (self)
 	if pressed_backend_id then
 		if self:_has_added_item_by_id(pressed_backend_id) then
 			self:_remove_craft_item(pressed_backend_id)
-		elseif (self._num_craft_items or 0) < NUM_MAX_SALVAGE_ITEMS then
+		elseif (self._num_craft_items or 0) < CraftingSettings.NUM_SALVAGE_SLOTS then
 			self:_add_craft_item(pressed_backend_id)
+		end
+	end
+
+	local selected_items_backend_ids = super_parent:get_selected_items_backend_ids()
+
+	if selected_items_backend_ids then
+		local item_added = false
+
+		for _, selected_backend_id in ipairs(selected_items_backend_ids) do
+			if not self:_has_added_item_by_id(selected_backend_id) and (self._num_craft_items or 0) < CraftingSettings.NUM_SALVAGE_SLOTS then
+				item_added = true
+
+				self:_add_craft_item(selected_backend_id, true)
+			end
+		end
+
+		if item_added then
+			self:_play_sound("play_gui_craft_item_drop")
 		end
 	end
 end

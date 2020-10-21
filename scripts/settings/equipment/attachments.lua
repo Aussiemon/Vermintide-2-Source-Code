@@ -91,6 +91,17 @@ local wh_hats_no_ears_skinned = {
 	buffs = {}
 }
 Attachments.wh_hats_no_ears_skinned = table.clone(wh_hats_no_ears_skinned)
+local wh_hats_face_skinned = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.wh_hats_face_skinned = table.clone(wh_hats_face_skinned)
 local wh_hats_no_ears_face_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -119,6 +130,23 @@ local wh_z_hats_tattoo_00 = {
 	}
 }
 Attachments.wh_z_hats_tattoo_00 = table.clone(wh_z_hats_tattoo_00)
+local wh_z_hats_tattoo_00_face_skinned = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {},
+	character_material_changes = {
+		package_name = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_face_00",
+		third_person = {
+			mtr_head = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_face_00"
+		}
+	}
+}
+Attachments.wh_z_hats_tattoo_00_face_skinned = table.clone(wh_z_hats_tattoo_00_face_skinned)
 local wh_z_hats_tattoo_01 = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -320,6 +348,39 @@ local ww_helmet_mask = {
 	buffs = {}
 }
 Attachments.ww_helmet_mask = table.clone(ww_helmet_mask)
+local ww_helmet_mask_jaw = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_helmet_mask",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_helmet_mask_jaw = table.clone(ww_helmet_mask_jaw)
+local ww_helmet_jaw_skinned = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_helmet",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_helmet_jaw_skinned = table.clone(ww_helmet_jaw_skinned)
+local ww_helmet_jaw_spine_skinned = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_helmet",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_helmet_jaw_spine_skinned = table.clone(ww_helmet_jaw_spine_skinned)
 local ww_half_mask = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -331,6 +392,17 @@ local ww_half_mask = {
 	buffs = {}
 }
 Attachments.ww_half_mask = table.clone(ww_half_mask)
+local ww_half_mask_jaw = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_mask",
+	attachment_node_linking = AttachmentNodeLinking.ww_half_mask,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_half_mask_jaw = table.clone(ww_half_mask_jaw)
 local es_hats = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -342,6 +414,17 @@ local es_hats = {
 	buffs = {}
 }
 Attachments.es_hats = table.clone(es_hats)
+local es_hats_jaw = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.es_hats_jaw = table.clone(es_hats_jaw)
 local es_hats_no_ear = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -485,6 +568,28 @@ local dr_helmets_no_ear = {
 	buffs = {}
 }
 Attachments.dr_helmets_no_ear = table.clone(dr_helmets_no_ear)
+local dr_helmets_hide_ears_skin_jaw = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_long,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.dr_helmets_hide_ears_skin_jaw = table.clone(dr_helmets_hide_ears_skin_jaw)
+local dr_helmets_hide_beard = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_beard",
+	attachment_node_linking = AttachmentNodeLinking.dr_beard,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.dr_helmets_hide_beard = table.clone(dr_helmets_hide_beard)
 local dr_helmets_beard_ears = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -513,6 +618,23 @@ local dr_hair_tattoo_00 = {
 	}
 }
 Attachments.dr_hair_tattoo_00 = table.clone(dr_hair_tattoo_00)
+local dr_hair_tattoo_00_hide_ears_skin_jaw = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_long,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {},
+	character_material_changes = {
+		package_name = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_face_00",
+		third_person = {
+			mtr_face = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_face_00"
+		}
+	}
+}
+Attachments.dr_hair_tattoo_00_hide_ears_skin_jaw = table.clone(dr_hair_tattoo_00_hide_ears_skin_jaw)
 local dr_hair_tattoo_01 = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -733,6 +855,17 @@ local bw_hat_no_hair = {
 	buffs = {}
 }
 Attachments.bw_hat_no_hair = table.clone(bw_hat_no_hair)
+local bw_hat_jaw_no_hair = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_hair",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.bw_hat_jaw_no_hair = table.clone(bw_hat_jaw_no_hair)
 local bw_hat_no_ears = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

@@ -1,3 +1,6 @@
+CraftingSettings = {
+	NUM_SALVAGE_SLOTS = 9
+}
 local crafting_recipes = {
 	{
 		result_function = "salvage_result_func",
@@ -74,6 +77,41 @@ local crafting_recipes = {
 			else
 				return true
 			end
+		end,
+		input_func = function (self, input_service)
+			local backend_ids = nil
+
+			if input_service:get("right_stick_press") then
+				local item_grid = self._item_grid
+				local item, is_equipped = item_grid:get_item_hovered()
+
+				if not item then
+					item, is_equipped = item_grid:selected_item()
+				end
+
+				backend_ids = {}
+
+				if item and not is_equipped then
+					local rarity = item.rarity
+					backend_ids[#backend_ids + 1] = item.backend_id
+					local items = item_grid:items()
+
+					for idx, item in ipairs(items) do
+						local backend_id = item.backend_id
+						local item_rarity = item.rarity
+
+						if item_rarity == rarity and not table.find(backend_ids, backend_id) then
+							backend_ids[#backend_ids + 1] = backend_id
+
+							if table.size(backend_ids) == CraftingSettings.NUM_SALVAGE_SLOTS then
+								break
+							end
+						end
+					end
+				end
+			end
+
+			self.parent:set_selected_items_backend_ids(backend_ids)
 		end
 	},
 	{

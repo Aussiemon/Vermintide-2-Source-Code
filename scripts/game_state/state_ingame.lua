@@ -508,6 +508,11 @@ StateIngame.on_enter = function (self)
 	local mutators = Managers.state.game_mode:activated_mutators()
 	local game_mode = Managers.state.game_mode:settings().key
 	local quick_game = Managers.matchmaking:is_quick_game()
+	local realm = "official"
+
+	if HAS_STEAM and script_data["eac-untrusted"] then
+		realm = "modded"
+	end
 
 	Managers.telemetry.events:game_started({
 		player_id = player_id,
@@ -517,7 +522,8 @@ StateIngame.on_enter = function (self)
 		game_mode = game_mode,
 		level_key = level_key,
 		difficulty = difficulty,
-		mutators = mutators
+		mutators = mutators,
+		realm = realm
 	})
 
 	if self.network_server then

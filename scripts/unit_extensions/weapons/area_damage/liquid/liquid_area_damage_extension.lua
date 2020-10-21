@@ -682,6 +682,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 	local damage_dir = self._damage_direction:unbox()
 	local damage_type = self._damage_type
 	local source_attacker_unit = self._source_attacker_unit
+	local is_player_attacker = source_attacker_unit and DamageUtils.is_player_unit(source_attacker_unit)
 	local do_direct_damage_player = self._do_direct_damage_player
 	local do_direct_damage_ai = self._do_direct_damage_ai
 	local damage_buff_template_name = self._damage_buff_name
@@ -696,6 +697,14 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 				local damage = damage_table[armor_category] or damage_table[1]
 
 				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, damage_dir, nil, nil, source_attacker_unit)
+
+				if is_player_attacker then
+					local breed = AiUtils.unit_breed(unit)
+
+					if breed and not breed.is_hero then
+						AiUtils.alert_unit_of_enemy(unit, source_attacker_unit)
+					end
+				end
 
 				if damage_buff_template_name then
 					local buff_extension = ScriptUnit.extension(unit, "buff_system")

@@ -176,6 +176,10 @@ PlayerManager.add_player = function (self, input_source, viewport_name, viewport
 	self._statistics_db:register(player:stats_id(), "player", stats)
 	Managers.party:register_player(player, unique_id)
 
+	if self.is_server and player:is_player_controlled() then
+		Managers.telemetry.events:player_joined(player)
+	end
+
 	return player
 end
 
@@ -194,6 +198,10 @@ PlayerManager.add_remote_player = function (self, peer_id, player_controlled, lo
 	if player_controlled then
 		self._num_human_players = self._num_human_players + 1
 		self._human_players[unique_id] = player
+	end
+
+	if self.is_server and player_controlled then
+		Managers.telemetry.events:player_joined(player)
 	end
 
 	local player_table = self._players_by_peer
@@ -301,6 +309,10 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 
 		if player:is_player_controlled() then
 			self._num_human_players = self._num_human_players - 1
+		end
+
+		if self.is_server and player:is_player_controlled() then
+			Managers.telemetry.events:player_left(player)
 		end
 
 		self._statistics_db:unregister(player:stats_id())

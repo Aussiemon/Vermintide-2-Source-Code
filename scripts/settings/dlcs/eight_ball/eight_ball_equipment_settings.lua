@@ -4,6 +4,13 @@ settings.item_master_list_file_names = {
 }
 settings.inventory_package_list = {
 	"units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_09",
+	"units/beings/player/bright_wizard_adept/headpiece/bw_a_fatshark_hat_01",
+	"units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_fatshark_hat_01",
+	"units/beings/player/empire_soldier_huntsman/headpiece/es_h_fatshark_hat_01",
+	"units/beings/player/way_watcher_shade/headpiece/ww_s_fatshark_hat_01",
+	"units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_fatshark_hat_01",
+	"units/beings/player/way_watcher_upgraded/headpiece/ww_u_fatshark_hat_01",
+	"units/beings/player/witch_hunter_bounty_hunter/headpiece/wh_bh_fatshark_hat_01",
 	"units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_12",
 	"units/beings/player/way_watcher_shade/headpiece/ww_s_hat_12",
 	"units/beings/player/way_watcher_upgraded/headpiece/ww_u_hat_13",

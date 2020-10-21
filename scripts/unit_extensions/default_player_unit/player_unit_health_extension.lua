@@ -370,7 +370,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		end
 	end
 
-	if Script.type_name(damage_amount) == "number" then
+	if Script.type_name(damage_amount) == "number" and damage_type ~= "temporary_health_degen" and damage_source_name ~= "temporary_health_degen" then
 		local player = Managers.player:owner(unit)
 		local position = POSITION_LOOKUP[unit]
 

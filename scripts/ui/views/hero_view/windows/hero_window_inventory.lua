@@ -41,6 +41,8 @@ HeroWindowInventory.on_enter = function (self, params, offset)
 
 	local inventory_sync_id = self.parent.inventory_sync_id
 	self._inventory_sync_id = inventory_sync_id
+
+	self.parent:set_inventory_grid(item_grid)
 end
 
 HeroWindowInventory.create_ui_elements = function (self, params, offset)

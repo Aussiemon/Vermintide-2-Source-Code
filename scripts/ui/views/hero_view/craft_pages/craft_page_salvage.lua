@@ -6,7 +6,6 @@ local category_settings = definitions.category_settings
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
-local NUM_SALVAGE_SLOTS = 9
 CraftPageSalvage = class(CraftPageSalvage)
 CraftPageSalvage.NAME = "CraftPageSalvage"
 
@@ -239,41 +238,31 @@ CraftPageSalvage._fill_by_rarity = function (self, rarity)
 		return
 	end
 
-	local num_slots_remaining = NUM_SALVAGE_SLOTS - self._num_craft_items
+	local num_slots_remaining = CraftingSettings.NUM_SALVAGE_SLOTS - self._num_craft_items
 
 	if num_slots_remaining <= 0 then
 		return
 	end
 
-	local item_interface = Managers.backend:get_interface("items")
-	local item_filter = recipe.item_filter .. " and item_rarity == " .. rarity
-	item_filter = "can_wield_by_current_hero and available_in_current_mechanism and ( " .. item_filter .. " )"
-	local items_1 = item_interface:get_filtered_items("can_wield_by_current_career and ( " .. item_filter .. " )")
-	local items_2 = item_interface:get_filtered_items("not can_wield_by_current_career and ( " .. item_filter .. " )")
-
-	local function is_already_selected(v)
-		return table.contains(self._craft_items, v.backend_id)
-	end
-
-	table.array_remove_if(items_1, is_already_selected)
-	table.array_remove_if(items_2, is_already_selected)
-	table.sort(items_1, recipe.item_sort_func)
-	table.sort(items_2, recipe.item_sort_func)
-
-	local valid_items = items_1
-
-	table.append(valid_items, items_2)
-
-	local num_items_to_add = math.min(num_slots_remaining, #valid_items)
 	local audio_triggered = false
+	local inventory_grid = self.super_parent:get_inventory_grid()
+	local craft_items = self._craft_items
+	local inventory_items = inventory_grid:items()
 
-	for i = 1, num_items_to_add, 1 do
-		local item = valid_items[i]
-		local backend_id = item and item.backend_id
+	for _, item in ipairs(inventory_items) do
+		local backend_id = item.backend_id
 
 		if backend_id then
-			local success = self:_add_craft_item(backend_id, nil, audio_triggered)
-			audio_triggered = audio_triggered or success
+			local item_rarity = item.rarity
+
+			if item_rarity == rarity and not table.find(craft_items, backend_id) then
+				local success = self:_add_craft_item(backend_id, nil, audio_triggered)
+				audio_triggered = audio_triggered or success
+
+				if table.size(craft_items) == CraftingSettings.NUM_SALVAGE_SLOTS then
+					break
+				end
+			end
 		end
 	end
 end
@@ -320,7 +309,7 @@ CraftPageSalvage.on_craft_completed = function (self)
 
 	table.clear(self._craft_items)
 
-	for i = 1, NUM_SALVAGE_SLOTS, 1 do
+	for i = 1, CraftingSettings.NUM_SALVAGE_SLOTS, 1 do
 		self._craft_items[i] = nil
 	end
 
@@ -438,7 +427,7 @@ CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignor
 	local craft_items = self._craft_items
 
 	if not slot_index then
-		for i = 1, NUM_SALVAGE_SLOTS, 1 do
+		for i = 1, CraftingSettings.NUM_SALVAGE_SLOTS, 1 do
 			if not craft_items[i] then
 				slot_index = i
 
@@ -455,7 +444,7 @@ CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignor
 		self._item_grid:add_item_to_slot_index(slot_index, item, specific_amount)
 		self.super_parent:set_disabled_backend_id(backend_id, true)
 
-		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, NUM_SALVAGE_SLOTS)
+		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, CraftingSettings.NUM_SALVAGE_SLOTS)
 
 		if self._num_craft_items > 0 then
 			self:_set_craft_button_disabled(false)

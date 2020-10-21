@@ -19,6 +19,10 @@ ActionHealingDraught.client_owner_post_update = function (self, dt, t, world, ca
 end
 
 ActionHealingDraught.finish = function (self, reason)
+	if reason == "dead" or reason == "knocked_down" then
+		return
+	end
+
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 	local network_manager = Managers.state.network

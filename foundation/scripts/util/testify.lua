@@ -3,6 +3,7 @@ local SIGNALS = {
 	ready = "ready"
 }
 Testify = {
+	active = false,
 	_requests = {},
 	_responses = {},
 	init = function (self)
@@ -13,6 +14,9 @@ Testify = {
 		printf("[Testify] Ready!")
 		self:_signal(SIGNALS.ready)
 	end,
+	ready_signal_received = function (self)
+		self._ready_signal_received = true
+	end,
 	reply = function (self, message)
 		self:_signal(SIGNALS.reply, message)
 	end,
@@ -22,6 +26,14 @@ Testify = {
 		self._thread = coroutine.create(func)
 	end,
 	update = function (self, dt, t)
+		if script_data.testify and not self._ready_signal_received then
+			self:_signal(SIGNALS.ready)
+		end
+
+		if Development.parameter("testify_time_scale") and not self._time_scaled then
+			self:_set_time_scale()
+		end
+
 		if self._thread then
 			local success, result = coroutine.resume(self._thread, dt, t)
 
@@ -79,6 +91,25 @@ Testify = {
 		printf("[Testify] Test case running? %s", self._thread ~= nil)
 		table.dump(self._requests, "[Testify] Requests", 2)
 		table.dump(self._responses, "[Testify] Responses", 2)
+	end,
+	_set_time_scale = function (self)
+		local debug_manager = Managers.state.debug
+
+		if not debug_manager then
+			return
+		end
+
+		local scale = Development.parameter("testify_time_scale")
+		local time_scale_index = table.index_of(debug_manager.time_scale_list, tonumber(scale))
+		self._time_scaled = true
+
+		if time_scale_index == -1 then
+			printf("[Testify] Time Scale %s is not supported. Please chose a value from the following list:%s", scale, table.dump_string(debug_manager.time_scale_list, 1))
+
+			return
+		end
+
+		debug_manager:set_time_scale(time_scale_index)
 	end,
 	_signal = function (self, signal, message)
 		if Application.console_send == nil then

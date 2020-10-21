@@ -131,6 +131,7 @@ PACKAGED_LEVEL_PACKAGE_NAMES = {
 	["resource_packages/levels/honduras/warcamp"] = true,
 	["resource_packages/levels/honduras_levels"] = true,
 	["resource_packages/levels/inn"] = true,
+	["resource_packages/levels/inn_halloween"] = true,
 	["resource_packages/levels/inn_skulls"] = true,
 	["resource_packages/levels/inn_sonnstill"] = true,
 	["resource_packages/levels/tomes/inn_halloween_tome"] = true,

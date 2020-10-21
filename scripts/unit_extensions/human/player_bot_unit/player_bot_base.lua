@@ -1137,6 +1137,7 @@ PlayerBotBase._update_pickups = function (self, dt, t)
 	local unit = self._unit
 	local blackboard = self._blackboard
 	blackboard.needs_ammo = false
+	blackboard.has_ammo_missing = false
 	local target_unit = blackboard.priority_target_enemy or blackboard.target_unit
 	local has_target = ALIVE[target_unit]
 	local ammo_percentage = (has_target and 0.1) or 0.9
@@ -1147,6 +1148,7 @@ PlayerBotBase._update_pickups = function (self, dt, t)
 		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 		local has_ammo_pickup_order = ai_bot_group_system:get_ammo_pickup_order_unit(unit) ~= nil
 		blackboard.needs_ammo = has_ammo_pickup_order or ammo_percentage > current / num_max
+		blackboard.has_ammo_missing = current ~= num_max
 	end
 end
 
@@ -1545,7 +1547,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				end
 			end
 
-			if not target_position and unit_alive(blackboard.ammo_pickup) and blackboard.needs_ammo and t < blackboard.ammo_pickup_valid_until then
+			if not target_position and unit_alive(blackboard.ammo_pickup) and blackboard.has_ammo_missing and t < blackboard.ammo_pickup_valid_until then
 				local ammo_position = POSITION_LOOKUP[blackboard.ammo_pickup]
 				local dir = Vector3.normalize(self_pos - ammo_position)
 				local above = 0.5

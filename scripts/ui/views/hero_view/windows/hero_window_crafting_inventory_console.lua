@@ -48,6 +48,7 @@ HeroWindowCraftingInventoryConsole.on_enter = function (self, params, offset)
 	self._inventory_sync_id = inventory_sync_id
 
 	self:_start_transition_animation("on_enter")
+	self.parent:set_inventory_grid(item_grid)
 end
 
 HeroWindowCraftingInventoryConsole._start_transition_animation = function (self, animation_name)
@@ -264,6 +265,18 @@ HeroWindowCraftingInventoryConsole._handle_input = function (self, dt, t)
 
 		item_grid:set_item_page(next_page_index)
 		self:_play_sound("play_gui_craft_inventory_next")
+	end
+
+	self:_handle_recipe_inputs(dt, t)
+end
+
+HeroWindowCraftingInventoryConsole._handle_recipe_inputs = function (self, dt, t)
+	local input_service = self:_input_service()
+	local local_crafting_recipes_by_name = crafting_recipes_by_name
+	local recipe = local_crafting_recipes_by_name[self._selected_craft_page_name]
+
+	if recipe and recipe.input_func then
+		recipe.input_func(self, input_service)
 	end
 end
 

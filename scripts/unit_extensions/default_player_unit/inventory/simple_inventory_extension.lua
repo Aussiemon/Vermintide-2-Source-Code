@@ -37,6 +37,7 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 	self._weapon_fx = {}
 	self._items_to_spawn = {}
 	self.resync_ids = {}
+	self.latest_slot_resync_ids = {}
 	self.recently_acquired_list = {}
 	self._loaded_projectile_settings = {}
 	self._selected_consumable_slot = nil
@@ -352,9 +353,17 @@ SimpleInventoryExtension._update_resync_loadout = function (self)
 		return
 	end
 
+	local latest_slot_resync_ids = self.latest_slot_resync_ids
+
 	if self.resync_loadout_needed then
-		for _, resynced_equipment_to_spawn in ipairs(self._items_to_spawn) do
-			self.resync_ids[#self.resync_ids + 1] = self:_resync_loadout(resynced_equipment_to_spawn)
+		for i = #self.resync_ids + 1, #self._items_to_spawn, 1 do
+			local item_to_spawn = self._items_to_spawn[i]
+
+			if item_to_spawn then
+				local resync_id = self:_resync_loadout(item_to_spawn)
+				self.resync_ids[#self.resync_ids + 1] = resync_id
+				latest_slot_resync_ids[item_to_spawn.slot_id] = resync_id
+			end
 		end
 
 		self.resync_loadout_needed = false
@@ -362,9 +371,14 @@ SimpleInventoryExtension._update_resync_loadout = function (self)
 	end
 
 	local _, resync_id = next(self.resync_ids)
+	local latest_slot_sync_id = latest_slot_resync_ids[equipment_to_spawn.slot_id]
+	local has_newer_item_pending = latest_slot_sync_id and resync_id < latest_slot_sync_id
 
-	if resync_id and self:all_clients_loaded_resource(resync_id) then
-		self:_spawn_resynced_loadout(equipment_to_spawn)
+	if resync_id and (has_newer_item_pending or self:all_clients_loaded_resource(resync_id)) then
+		if not has_newer_item_pending then
+			self:_spawn_resynced_loadout(equipment_to_spawn)
+		end
+
 		table.remove(self._items_to_spawn, 1)
 		table.remove(self.resync_ids, 1)
 	end
@@ -1037,7 +1051,16 @@ end
 SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, backend_id)
 	local item_data = BackendUtils.get_item_from_masterlist(backend_id)
 	local slot_data = self._equipment.slots[slot_id]
-	local weapon_already_equiped = slot_data.item_data == item_data
+	local weapon_already_equiped = nil
+
+	if not slot_data then
+		print("[SimpleInventoryExtension] create_equipment_in_slot called on " .. slot_id .. "that is empty")
+
+		weapon_already_equiped = false
+	else
+		weapon_already_equiped = slot_data.item_data == item_data
+	end
+
 	local item_units = BackendUtils.get_item_units(item_data)
 
 	if weapon_already_equiped then

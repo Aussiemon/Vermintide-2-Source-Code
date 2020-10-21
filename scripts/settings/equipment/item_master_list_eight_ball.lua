@@ -14,6 +14,148 @@ ItemMasterList.zealot_hat_1003 = {
 		"wh_zealot"
 	}
 }
+ItemMasterList.adept_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "bw_hat_jaw_no_hair",
+	inventory_icon = "icon_generic_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_adept/headpiece/bw_a_fatshark_hat_01",
+	can_wield = {
+		"bw_adept",
+		"bw_scholar",
+		"bw_unchained"
+	}
+}
+ItemMasterList.ranger_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "dr_helmets_hide_ears_skin_jaw",
+	inventory_icon = "icon_generic_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_fatshark_hat_01",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_ranger"
+	}
+}
+ItemMasterList.slayer_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "dr_hair_tattoo_00_hide_ears_skin_jaw",
+	inventory_icon = "icon_generic_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_fatshark_hat_01",
+	can_wield = {
+		"dr_slayer"
+	}
+}
+ItemMasterList.huntsman_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "es_hats_jaw",
+	inventory_icon = "icon_generic_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/empire_soldier_huntsman/headpiece/es_h_fatshark_hat_01",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary",
+		"es_questingknight"
+	}
+}
+ItemMasterList.shade_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "ww_helmet_mask_jaw",
+	inventory_icon = "icon_shade_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/way_watcher_shade/headpiece/ww_s_fatshark_hat_01",
+	can_wield = {
+		"we_shade"
+	}
+}
+ItemMasterList.waywatcher_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "ww_helmet_mask_jaw",
+	inventory_icon = "icon_waywatcher_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/way_watcher_upgraded/headpiece/ww_u_fatshark_hat_01",
+	can_wield = {
+		"we_waywatcher"
+	}
+}
+ItemMasterList.maidenguard_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "ww_half_mask_jaw",
+	inventory_icon = "icon_maidenguard_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_fatshark_hat_01",
+	can_wield = {
+		"we_maidenguard"
+	}
+}
+ItemMasterList.bountyhunter_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "wh_hats_face_skinned",
+	inventory_icon = "icon_generic_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_bounty_hunter/headpiece/wh_bh_fatshark_hat_01",
+	can_wield = {
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.zealot_hat_1010 = {
+	description = "description_huntsman_hat_1006",
+	rarity = "promo",
+	display_name = "display_name_huntsman_hat_1006",
+	template = "wh_z_hats_tattoo_00_face_skinned",
+	inventory_icon = "icon_generic_hat_1010",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_bounty_hunter/headpiece/wh_bh_fatshark_hat_01",
+	can_wield = {
+		"wh_zealot"
+	}
+}
 ItemMasterList.unchained_hat_1001 = {
 	description = "description_unchained_hat_1001",
 	rarity = "promo",

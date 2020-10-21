@@ -2901,6 +2901,62 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	hat_skinned_face_long = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "j_spine2"
+			},
+			{
+				target = "j_spine2",
+				source = "j_spine2"
+			},
+			{
+				target = "j_neck",
+				source = "j_neck"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_jaw_anim",
+				source = "j_jaw_anim"
+			}
+		}
+	},
+	hat_skinned_face_wide = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "j_spine2"
+			},
+			{
+				target = "j_spine2",
+				source = "j_spine2"
+			},
+			{
+				target = "j_leftshoulder",
+				source = "j_leftshoulder"
+			},
+			{
+				target = "j_rightshoulder",
+				source = "j_rightshoulder"
+			},
+			{
+				target = "j_neck",
+				source = "j_neck"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_jaw_anim",
+				source = "j_jaw_anim"
+			}
+		}
+	},
 	dr_beard = {
 		slot_hat = {
 			{

@@ -725,6 +725,14 @@ HeroViewStateOverview._start_transition_animation = function (self, key, animati
 	self._animations[key] = anim_id
 end
 
+HeroViewStateOverview.set_selected_items_backend_ids = function (self, backend_ids)
+	self._selected_items_backend_ids = backend_ids
+end
+
+HeroViewStateOverview.get_selected_items_backend_ids = function (self)
+	return self._selected_items_backend_ids
+end
+
 HeroViewStateOverview.set_pressed_item_backend_id = function (self, backend_id, is_drag_item)
 	self._pressed_item_backend_id = backend_id
 	self._pressed_item_by_drag = (backend_id and is_drag_item) or nil
@@ -759,6 +767,14 @@ end
 
 HeroViewStateOverview.get_pressed_item_backend_id = function (self)
 	return self._pressed_item_backend_id, self._pressed_item_by_drag
+end
+
+HeroViewStateOverview.get_inventory_grid = function (self)
+	return self._current_inventory_grid
+end
+
+HeroViewStateOverview.set_inventory_grid = function (self, inventory_grid)
+	self._current_inventory_grid = inventory_grid
 end
 
 HeroViewStateOverview.set_fullscreen_effect_enable_state = function (self, enabled)
@@ -830,10 +846,7 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 		return
 	end
 
-	local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
-	local resyncing_loadout = inventory_extension:resyncing_loadout()
-
-	if resyncing_loadout or not Managers.state.network:game() then
+	if not Managers.state.network:game() then
 		return
 	end
 
@@ -858,6 +871,8 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 	BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
 
 	if slot_type == "melee" or slot_type == "ranged" then
+		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+
 		inventory_extension:create_equipment_in_slot(slot_name, backend_id)
 	elseif slot_type == "hat" then
 		local attachment_extension = ScriptUnit.extension(unit, "attachment_system")

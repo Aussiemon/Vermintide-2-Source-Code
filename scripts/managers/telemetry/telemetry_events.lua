@@ -42,6 +42,7 @@ TelemetryEvents.game_started = function (self, data)
 	params.level_key = data.level_key
 	params.difficulty = data.difficulty
 	params.mutators = table.concat(mutator_names, ",")
+	params.realm = data.realm
 
 	self.manager:register_event("game_started", params)
 end
@@ -570,6 +571,22 @@ TelemetryEvents.store_product_purchased = function (self, product)
 	params.localized_name = product.item.data.localized_name
 
 	self.manager:register_event("store_product_purchased", params)
+end
+
+TelemetryEvents.player_joined = function (self, player)
+	table.clear(params)
+
+	params.player_id = player:telemetry_id()
+
+	self.manager:register_event("player_joined", params)
+end
+
+TelemetryEvents.player_left = function (self, player)
+	table.clear(params)
+
+	params.player_id = player:telemetry_id()
+
+	self.manager:register_event("player_left", params)
 end
 
 return
