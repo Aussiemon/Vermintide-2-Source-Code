@@ -93,7 +93,8 @@ LevelSettings.dlc_celebrate_crawl = {
 		dialogue_level_start_delay = 120,
 		story_tick_time = 10,
 		default_hear_distance = 10
-	}
+	},
+	loot_objectives = {}
 }
 
 return
