@@ -14,7 +14,7 @@ ProjectileLocomotionSystem.init = function (self, entity_system_creation_context
 	self._server_position_corrected_pickups = {}
 end
 
-ProjectileLocomotionSystem.rpc_set_projectile_state = function (self, sender, projectile_unit_id, state_id)
+ProjectileLocomotionSystem.rpc_set_projectile_state = function (self, channel_id, projectile_unit_id, state_id)
 	local projectile_unit = self.unit_storage:unit(projectile_unit_id)
 	local extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
 

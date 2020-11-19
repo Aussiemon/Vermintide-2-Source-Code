@@ -137,6 +137,16 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 			[LOCAL_PLAYER] = {},
 			[BOT] = {}
 		},
+		pactsworn_insta_kill_no_cost = {
+			[PLAYER] = {},
+			[LOCAL_PLAYER] = {},
+			[BOT] = {}
+		},
+		heroes_insta_kill_no_cost = {
+			[PLAYER] = {},
+			[LOCAL_PLAYER] = {},
+			[BOT] = {}
+		},
 		ai_insta_kill_no_cost = {
 			[AI] = {}
 		},

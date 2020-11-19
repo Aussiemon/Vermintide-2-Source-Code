@@ -85,13 +85,16 @@ BotActions.default = {
 		input = "charge_shot"
 	},
 	do_give_grenade = {
-		aim_node = "j_head"
+		aim_node = "j_head",
+		input = "defend"
 	},
 	do_give_potion = {
-		aim_node = "j_head"
+		aim_node = "j_head",
+		input = "defend"
 	},
 	do_give_heal_item = {
-		aim_node = "j_head"
+		aim_node = "j_head",
+		input = "defend"
 	},
 	rescue_hanging_from_hook = {
 		aim_node = "j_hips",
@@ -126,6 +129,10 @@ BotActions.default = {
 					"slot_career_skill_weapon"
 				}
 			}
+		},
+		dr_engineer = {
+			activation = {},
+			end_condition = {}
 		},
 		es_mercenary = {
 			activation = {}
@@ -229,6 +236,9 @@ BotConstants.default = {
 		},
 		cataclysm_3 = {
 			max_start_delay = 0
+		},
+		versus_base = {
+			max_start_delay = 0
 		}
 	},
 	OPPORTUNITY_TARGET_REACTION_TIMES = {
@@ -257,6 +267,10 @@ BotConstants.default = {
 			min = 0.2
 		},
 		cataclysm_3 = {
+			max = 0.65,
+			min = 0.2
+		},
+		versus_base = {
 			max = 0.65,
 			min = 0.2
 		}

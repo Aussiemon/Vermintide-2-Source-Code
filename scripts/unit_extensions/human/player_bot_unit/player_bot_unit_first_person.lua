@@ -249,6 +249,10 @@ PlayerBotUnitFirstPerson.unhide_weapons = function (self)
 	return
 end
 
+PlayerBotUnitFirstPerson.show_first_person_ammo = function (self, show)
+	return
+end
+
 PlayerBotUnitFirstPerson.animation_set_variable = function (self, variable_name, value)
 	if self.first_person_debug then
 		local variable = Unit.animation_find_variable(self.first_person_unit, variable_name)

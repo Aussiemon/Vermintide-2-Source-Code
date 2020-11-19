@@ -1467,16 +1467,15 @@ TutorialUI.update_health_bars = function (self, dt, player_unit)
 		end
 	end
 
-	local ui_renderer = self.ui_renderer
 	local health_bars = self.health_bars
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	local math_floor = math.floor
+	local Unit = Unit
 
 	for i = 1, definitions.NUMBER_OF_HEALTH_BARS, 1 do
 		local health_bar = health_bars[i]
+		local hb_unit = health_bar and health_bar.unit
 
-		if health_bar then
-			local hb_unit = health_bar.unit
+		if hb_unit and Unit.alive(hb_unit) then
 			local hb_node_name = Unit.get_data(hb_unit, "health_bar_node")
 			local hb_node = (hb_node_name and Unit.node(hb_unit, hb_node_name)) or 0
 			local world_position = Unit.world_position(hb_unit, hb_node)
@@ -1521,6 +1520,8 @@ TutorialUI.update_health_bars = function (self, dt, player_unit)
 			if health_bar.widget.content.visible ~= health_bar.visible then
 				health_bar.widget.content.visible = health_bar.visible
 			end
+		elseif health_bar then
+			health_bar.widget.content.visible = false
 		end
 	end
 end

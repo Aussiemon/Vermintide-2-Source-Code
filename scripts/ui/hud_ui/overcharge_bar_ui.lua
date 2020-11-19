@@ -23,6 +23,12 @@ OverchargeBarUI.init = function (self, parent, ingame_ui_context)
 		snap_pixel_positions = true
 	}
 	self._previous_overcharge_fraction = 0
+	self._is_spectator = false
+	self._spectated_player = nil
+	self._spectated_player_unit = nil
+	local event_manager = Managers.state.event
+
+	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 end
 
 local function get_overcharge_amount(player_unit)
@@ -32,6 +38,12 @@ local function get_overcharge_amount(player_unit)
 	local anim_blend_overcharge = overcharge_extension:get_anim_blend_overcharge()
 
 	return overcharge_fraction, threshold_fraction, 0.8, anim_blend_overcharge
+end
+
+OverchargeBarUI.on_spectator_target_changed = function (self, spectated_player_unit)
+	self._spectated_player_unit = spectated_player_unit
+	self._spectated_player = Managers.player:owner(spectated_player_unit)
+	self._is_spectator = true
 end
 
 OverchargeBarUI._set_player_extensions = function (self, player_unit)
@@ -104,8 +116,9 @@ OverchargeBarUI.update = function (self, dt, t, player)
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
 	local gamepad_active = input_manager:is_device_active("gamepad")
+	local actual_player = (self._is_spectator and self._spectated_player) or player
 
-	if self:_update_overcharge(player, dt) then
+	if self:_update_overcharge(actual_player, dt) then
 		local parent = self._parent
 		local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
 
@@ -176,7 +189,7 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, overcharge_fraction, m
 	style.max_threshold.offset[1] = 3 + max_threshold_fraction * bar_size[1]
 	local pulse_speed = 10
 	local pulse_global_fraction = math.min(math.max(overcharge_fraction - max_threshold_fraction, 0) / (1 - max_threshold_fraction) * 1.3, 1)
-	local pulse_fraction = 0.5 + math.sin(Application.time_since_launch() * pulse_speed) * 0.5
+	local pulse_fraction = 0.5 + math.sin(Managers.time:time("ui") * pulse_speed) * 0.5
 	local pulse_alpha = (100 + pulse_fraction * 155) * pulse_global_fraction
 	style.frame.color[1] = pulse_alpha
 	icon_color[1] = pulse_alpha
@@ -186,7 +199,7 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, overcharge_fraction, m
 end
 
 OverchargeBarUI.destroy = function (self)
-	return
+	Managers.state.event:unregister("on_spectator_target_changed", self)
 end
 
 OverchargeBarUI.set_alpha = function (self, alpha)

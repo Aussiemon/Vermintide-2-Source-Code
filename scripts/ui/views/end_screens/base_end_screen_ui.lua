@@ -2,6 +2,7 @@ BaseEndScreenUI = class(BaseEndScreenUI)
 
 BaseEndScreenUI.init = function (self, ingame_ui_context, input_service, definitions)
 	self._ui_renderer = ingame_ui_context.ui_top_renderer
+	self._ingame_ui_context = ingame_ui_context
 	local world_manager = ingame_ui_context.world_manager
 	local world = world_manager:world("level_world")
 	self._wwise_world = world_manager:wwise_world(world)
@@ -23,6 +24,14 @@ BaseEndScreenUI.destroy = function (self)
 	self:_destroy()
 end
 
+BaseEndScreenUI.on_fade_in = function (self)
+	self:_on_fade_in()
+end
+
+BaseEndScreenUI._on_fade_in = function (self)
+	return
+end
+
 BaseEndScreenUI._start = function (self)
 	return
 end
@@ -32,6 +41,10 @@ BaseEndScreenUI._update = function (self, dt)
 end
 
 BaseEndScreenUI._destroy = function (self)
+	return
+end
+
+BaseEndScreenUI._draw_widgets = function (self, render_settings)
 	return
 end
 
@@ -107,6 +120,8 @@ BaseEndScreenUI.draw = function (self, dt)
 
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
+
+	self:_draw_widgets(ui_renderer, render_settings)
 
 	render_settings.alpha_multiplier = 1
 

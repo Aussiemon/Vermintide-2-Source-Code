@@ -13,6 +13,7 @@ require("scripts/managers/backend_playfab/backend_interface_keep_decorations_pla
 require("scripts/managers/backend_playfab/backend_interface_live_events_playfab")
 require("scripts/managers/backend_playfab/backend_interface_cdn_resources_playfab")
 require("scripts/managers/backend_playfab/backend_interface_dlcs_playfab")
+require("scripts/managers/backend_playfab/backend_interface_boons_playfab")
 require("scripts/managers/backend_playfab/backend_interfaces/backend_interface_motd_playfab")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_loot_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_statistics_benchmark")
@@ -21,9 +22,9 @@ require("scripts/managers/backend/script_backend")
 require("scripts/settings/equipment/item_master_list")
 require("backend/error_codes")
 
-if PLATFORM == "win32" then
+if PLATFORM == "win32" or PLATFORM == "linux" then
 	require("scripts/managers/backend_playfab/script_backend_playfab")
-	DLCUtils.require("script_backend_playfab_files")
+	DLCUtils.require_list("script_backend_playfab_files")
 elseif PLATFORM == "xb1" then
 	require("scripts/managers/backend_playfab/script_backend_playfab_xbox")
 	require("scripts/managers/backend_playfab/backend_interface_console_dlc_rewards_playfab")
@@ -73,6 +74,7 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 	self._current_loadout_interface_override = nil
 	self._talents_interface_overrides = {}
 	self._current_talents_interface_override = nil
+	self._total_power_level_interface_overrides = {}
 end
 
 BackendManagerPlayFab.is_local = function (self)
@@ -181,6 +183,7 @@ BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	self:_create_cdn_resources_interface(settings, force_local)
 	self:_create_motd_interface(settings, force_local)
 	self:_create_dlcs_interface(settings, force_local)
+	self:_create_boons_interface(settings, force_local)
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		self:_create_console_dlc_rewards_interface(settings, force_local)
@@ -401,6 +404,25 @@ BackendManagerPlayFab.get_talents_interface = function (self)
 	return interface
 end
 
+BackendManagerPlayFab.set_total_power_level_interface_for_game_mode = function (self, game_mode, interface_name)
+	self._total_power_level_interface_overrides[game_mode] = interface_name
+end
+
+BackendManagerPlayFab.get_total_power_level = function (self, profile_name, career_name, game_mode_key)
+	local override_name = self._total_power_level_interface_overrides[game_mode_key]
+
+	if override_name then
+		local interface = self._interfaces[override_name]
+
+		return interface:get_total_power_level(profile_name, career_name)
+	end
+
+	local hero_power_level = BackendUtils.get_hero_power_level(profile_name)
+	local average_item_power_level = BackendUtils.get_average_item_power_level(career_name)
+
+	return hero_power_level + average_item_power_level
+end
+
 BackendManagerPlayFab._update_state = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 	local signin = self._backend_signin
@@ -534,6 +556,7 @@ BackendManagerPlayFab.update = function (self, dt)
 	self:_update_interface("talents", dt)
 	self:_update_interface("loot", dt)
 	self:_update_interface("quests", dt)
+	self:_update_interface("deus", dt)
 
 	if signin then
 		self:_update_state()
@@ -639,7 +662,8 @@ BackendManagerPlayFab.error_string = function (self)
 		return ""
 	else
 		local reason = self._errors[1].reason
-		local reason_key = self:_reason_localize_key(reason)
+		local details = self._errors[1].details
+		local reason_key = self:_reason_localize_key(reason, details)
 
 		return Localize(reason_key)
 	end
@@ -674,7 +698,9 @@ BackendManagerPlayFab._is_fatal = function (self, reason)
 	return not harmless
 end
 
-BackendManagerPlayFab._reason_localize_key = function (self, reason)
+BackendManagerPlayFab._reason_localize_key = function (self, reason, error_code)
+	local error_code = (error_code and tonumber(error_code)) or -1
+
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		if not self:profiles_loaded() then
 			if rawget(_G, "Backend") and reason == Backend.ERR_AUTH then
@@ -687,10 +713,20 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 				return "backend_err_signin_timeout"
 			elseif reason == BACKEND_LUA_ERRORS.ERR_REQUEST_TIMEOUT then
 				return "connection_timeout"
+			elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
+				if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
+					return ERROR_CODES[error_code]
+				end
+
+				return "backend_err_network"
 			else
 				return "backend_err_connecting"
 			end
-		else
+		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
+			if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
+				return ERROR_CODES[error_code]
+			end
+
 			return "backend_err_network"
 		end
 	elseif not self:profiles_loaded() then
@@ -701,6 +737,10 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 		elseif reason == BACKEND_LUA_ERRORS.ERR_PLATFORM_SPECIFIC_INTERFACE_MISSING then
 			return "backend_err_steam_not_running"
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
+			if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
+				return ERROR_CODES[error_code]
+			end
+
 			return "backend_err_playfab"
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
 			return "backend_err_playfab_eac"
@@ -713,7 +753,13 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 		else
 			return "backend_err_connecting"
 		end
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
+		if error_code == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_THIRD_PARTY_PROBLEM then
+			return ERROR_CODES[error_code]
+		end
+
+		return ERROR_CODES[reason]
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_COMMIT_TIMEOUT then
 		return ERROR_CODES[reason]
 	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR then
 		return ERROR_CODES[reason]
@@ -722,17 +768,17 @@ BackendManagerPlayFab._reason_localize_key = function (self, reason)
 	end
 end
 
-BackendManagerPlayFab._format_error_message_console = function (self, reason)
+BackendManagerPlayFab._format_error_message_console = function (self, reason, error_code)
 	local button = {
 		result = self._button_retry,
 		text = Localize("button_ok")
 	}
 
-	return self:_reason_localize_key(reason), button
+	return self:_reason_localize_key(reason, error_code), button
 end
 
-BackendManagerPlayFab._format_error_message_windows = function (self, reason, optional_url_button)
-	local error_text = self:_reason_localize_key(reason)
+BackendManagerPlayFab._format_error_message_windows = function (self, reason, error_code, optional_url_button)
+	local error_text = self:_reason_localize_key(reason, error_code)
 	local button_1, button_2, button_3 = nil
 
 	if not self:profiles_loaded() then
@@ -794,9 +840,9 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 	local error_text, button_1, button_2, button_3 = nil
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
-		error_text, button_1 = self:_format_error_message_console(reason)
+		error_text, button_1 = self:_format_error_message_console(reason, details_message)
 	else
-		error_text, button_1, button_2, button_3 = self:_format_error_message_windows(reason, optional_url_button)
+		error_text, button_1, button_2, button_3 = self:_format_error_message_windows(reason, details_message, optional_url_button)
 	end
 
 	local localized_error_text = error_text and Localize(error_text)
@@ -855,7 +901,7 @@ end
 BackendManagerPlayFab.available = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		return rawget(_G, "Steam") ~= nil or DEDICATED_SERVER
 	elseif PLATFORM == "xb1" then
 		return true
@@ -874,7 +920,7 @@ BackendManagerPlayFab.commit = function (self, skip_queue, commit_complete_callb
 			end
 		end
 
-		if PLATFORM == "win32" then
+		if PLATFORM == "win32" or PLATFORM == "linux" then
 			Managers.save:auto_save(self._local_backend_file_name, self._save_data, save_callback)
 		elseif PLATFORM == "ps4" or PLATFORM == "xb1" then
 			Managers.save:auto_save(SaveFileName, SaveData, save_callback)
@@ -955,7 +1001,7 @@ end
 BackendManagerPlayFab._load_save_data = function (self, local_backend_data, local_backend_save_version)
 	local platform = PLATFORM
 
-	if platform == "win32" then
+	if platform == "win32" or platform == "linux" then
 		local function load_callback(info)
 			local save_data_version = info.data and info.data.save_data_version
 
@@ -1213,6 +1259,14 @@ BackendManagerPlayFab._create_dlcs_interface = function (self, settings, force_l
 	end
 end
 
+BackendManagerPlayFab._create_boons_interface = function (self, settings, force_local)
+	if force_local then
+		self._interfaces.boons = BackendInterfaceBoonsLocal:new(self._save_data)
+	else
+		self._interfaces.boons = BackendInterfaceBoonsPlayFab:new(self._backend_mirror)
+	end
+end
+
 BackendManagerPlayFab._create_dlc_interfaces = function (self, settings, force_local)
 	local interfaces = self._interfaces
 	local save_data = self._save_data
@@ -1229,6 +1283,12 @@ BackendManagerPlayFab._create_dlc_interfaces = function (self, settings, force_l
 					local interface = nil
 
 					if force_local then
+						local file_name = interface_settings.local_file
+
+						if file_name then
+							require(file_name)
+						end
+
 						local class_name = interface_settings.local_class
 						local class = rawget(_G, class_name)
 						interface = class:new(save_data)
@@ -1282,6 +1342,18 @@ BackendManagerPlayFab.player_id = function (self)
 	return playfab_id
 end
 
+BackendManagerPlayFab.load_mechanism_loadout = function (self, mechanism_key)
+	if not self:is_local() then
+		self._backend_mirror:request_characters()
+	end
+end
+
+BackendManagerPlayFab.is_pending_request = function (self)
+	local mirror = self._backend_mirror
+
+	return (mirror and mirror:request_queue():is_pending_request()) or false
+end
+
 BackendManagerPlayFab._poll_testify_requests = function (self)
 	local career_name = Testify:poll_request("request_weapons_for_career")
 
@@ -1296,6 +1368,28 @@ BackendManagerPlayFab._poll_testify_requests = function (self)
 
 		Testify:respond_to_request("request_weapons_for_career", weapons)
 	end
+end
+
+local EMPTY_TABLE = {}
+
+BackendManagerPlayFab.get_level_variation_data = function (self)
+	if not self._backend_mirror then
+		return EMPTY_TABLE
+	end
+
+	local title_data = self._backend_mirror:get_title_data()
+	local level_variation_data = title_data.level_variation_data
+	local decoded_level_variation_data = level_variation_data and cjson.decode(level_variation_data)
+
+	return decoded_level_variation_data or EMPTY_TABLE
+end
+
+BackendManagerPlayFab.dlc_unlocked_at_signin = function (self, dlc_name)
+	if PLATFORM == "win32" or not self._backend_mirror then
+		return true
+	end
+
+	return self._backend_mirror:dlc_unlocked_at_signin(dlc_name)
 end
 
 return

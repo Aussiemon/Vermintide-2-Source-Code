@@ -272,10 +272,18 @@ ConsoleFriendsView._sorted_players = function (self)
 	end
 
 	local function sort_by_profile_index(player_a, player_b)
-		local profile_index_a = player_a:profile_index()
-		local profile_index_b = player_b:profile_index()
+		local profile_index_a = player_a:profile_index() or -1
+		local profile_index_b = player_b:profile_index() or -1
 
 		return profile_index_a < profile_index_b
+	end
+
+	local spectator_profile_index = FindProfileIndex("spectator")
+
+	if spectator_profile_index then
+		table.array_remove_if(players, function (player)
+			return player:profile_index() == spectator_profile_index
+		end)
 	end
 
 	table.sort(players, sort_by_profile_index)

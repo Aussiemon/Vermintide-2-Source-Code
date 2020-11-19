@@ -115,8 +115,8 @@ ProfileSynchronizer.destroy = function (self)
 	end
 end
 
-ProfileSynchronizer.inventory_package_synchronizer = function (self)
-	return self._inventory_package_synchronizer
+ProfileSynchronizer.inventory_package_synchronizer_all_loaded = function (self)
+	return self._inventory_package_synchronizer.all_loaded
 end
 
 ProfileSynchronizer._send_rpc_lobby_clients = function (self, rpc, ...)
@@ -126,7 +126,9 @@ ProfileSynchronizer._send_rpc_lobby_clients = function (self, rpc, ...)
 
 	for peer_id, _ in pairs(self._hot_join_synced_peers) do
 		if peer_id ~= my_peer_id then
-			RPC[rpc](peer_id, ...)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			RPC[rpc](channel_id, ...)
 		end
 	end
 end
@@ -369,7 +371,7 @@ ProfileSynchronizer.profile_career_unlocked = function (self, profile_index, car
 	local careers = profile and profile.careers
 	local career = careers and careers[career_index]
 
-	return career and career.is_unlocked_function(profile.display_name, ExperienceSettings.max_level)
+	return career and career:is_unlocked_function(profile.display_name, ExperienceSettings.max_level)
 end
 
 ProfileSynchronizer.is_human_player = function (self, peer_id, local_player_id)
@@ -454,8 +456,9 @@ end
 local inventory_list = {}
 local inventory_list_first_person = {}
 
-ProfileSynchronizer.rpc_client_select_inventory = function (self, sender, local_player_id, network_inventory_list, network_inventory_list_first_person, client_sync_id)
-	local profile_index = self:profile_by_peer(sender, local_player_id)
+ProfileSynchronizer.rpc_client_select_inventory = function (self, channel_id, local_player_id, network_inventory_list, network_inventory_list_first_person, client_sync_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local profile_index = self:profile_by_peer(peer_id, local_player_id)
 
 	if profile_index then
 		for i, package_id in ipairs(network_inventory_list) do
@@ -466,17 +469,21 @@ ProfileSynchronizer.rpc_client_select_inventory = function (self, sender, local_
 			inventory_list_first_person[i] = NetworkLookup.inventory_packages[package_id]
 		end
 
-		self:_profile_select_inventory(profile_index, inventory_list, inventory_list_first_person, sender, local_player_id, client_sync_id)
+		self:_profile_select_inventory(profile_index, inventory_list, inventory_list_first_person, peer_id, local_player_id, client_sync_id)
 	end
 end
 
-ProfileSynchronizer.rpc_server_assign_peer_to_profile = function (self, sender, peer_id, local_player_id, profile_index, career_index)
-	if sender ~= IS_LOCAL_CALL and sender ~= self._server_peer_id then
-		return
+ProfileSynchronizer.rpc_server_assign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index)
+	if channel_id ~= IS_LOCAL_CALL then
+		local sender_peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		if sender_peer_id ~= self._server_peer_id then
+			return
+		end
 	end
 
 	printf("ProfileSynchronizer:rpc_server_assign_peer_to_profile() peer_id(%s) local_player_id(%s) profile_index(%s) career_index(%s)", peer_id, local_player_id, profile_index, career_index)
-	fassert(not self._is_server or sender == IS_LOCAL_CALL, "rpc_server_assign_peer_to_profile was sent by another peer when we're server!")
+	fassert(not self._is_server or channel_id == IS_LOCAL_CALL, "rpc_server_assign_peer_to_profile was sent by another peer when we're server!")
 	fassert(peer_id and local_player_id, "Sanity check.")
 
 	local profile_owners = self._profile_owners[profile_index]
@@ -510,7 +517,10 @@ ProfileSynchronizer.rpc_server_assign_peer_to_profile = function (self, sender, 
 
 	if peer_id == self._peer_id then
 		self:_update_backend_selected_career(profile_index, career_index)
-		CosmeticUtils.sync_local_player_cosmetics(profile_index, career_index)
+
+		if profile_index ~= FindProfileIndex("spectator") then
+			CosmeticUtils.sync_local_player_cosmetics(profile_index, career_index)
+		end
 
 		local inventory_list, inventory_list_first_person = self._inventory_package_synchronizer:build_inventory_lists(profile_index, career_index)
 		local network_inventory_list = FrameTable.alloc_table()
@@ -524,6 +534,8 @@ ProfileSynchronizer.rpc_server_assign_peer_to_profile = function (self, sender, 
 	end
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
+	status.selected_profile_index = profile_index
+	status.selected_career_index = career_index
 	status.profile_index = profile_index
 	status.career_index = career_index
 	status.profile_id = SPProfiles[profile_index].display_name
@@ -532,6 +544,12 @@ ProfileSynchronizer.rpc_server_assign_peer_to_profile = function (self, sender, 
 		for loaded_local_player_id, _ in pairs(peer_table) do
 			peer_table[loaded_local_player_id] = false
 		end
+	end
+
+	Managers.mechanism:profile_changed(peer_id, local_player_id, profile_index, career_index)
+
+	if Managers.state and Managers.state.game_mode then
+		Managers.state.game_mode:profile_changed(peer_id, local_player_id, profile_index, career_index)
 	end
 
 	self._all_synced = false
@@ -545,21 +563,24 @@ ProfileSynchronizer._update_backend_selected_career = function (self, profile_in
 	hero_attributes:set(hero_name, "career", career_index)
 end
 
-ProfileSynchronizer.rpc_server_unassign_peer_to_profile = function (self, sender, peer_id, local_player_id, profile_index, career_index)
-	if sender ~= self._server_peer_id then
+ProfileSynchronizer.rpc_server_unassign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index)
+	local sender_peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if sender_peer_id ~= self._server_peer_id then
 		return
 	end
 
 	self:unassign_peer_to_profile(peer_id, local_player_id, profile_index, career_index)
 end
 
-ProfileSynchronizer.rpc_client_inventory_map_loaded = function (self, sender, inventory_sync_id)
+ProfileSynchronizer.rpc_client_inventory_map_loaded = function (self, channel_id, inventory_sync_id)
 	if inventory_sync_id == self._inventory_sync_id then
-		local peer_table = self._loaded_peers[sender]
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+		local peer_table = self._loaded_peers[peer_id]
 
 		if peer_table == nil then
 			peer_table = {}
-			self._loaded_peers[sender] = peer_table
+			self._loaded_peers[peer_id] = peer_table
 		end
 
 		for local_player_id, _ in pairs(peer_table) do
@@ -568,16 +589,20 @@ ProfileSynchronizer.rpc_client_inventory_map_loaded = function (self, sender, in
 	end
 end
 
-ProfileSynchronizer.rpc_server_inventory_all_synced = function (self, sender, inventory_sync_id)
-	if sender ~= self._server_peer_id then
+ProfileSynchronizer.rpc_server_inventory_all_synced = function (self, channel_id, inventory_sync_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id ~= self._server_peer_id then
 		return
 	end
 
 	self.last_inventory_sync_id = inventory_sync_id
 end
 
-ProfileSynchronizer.rpc_server_set_inventory_sync_id = function (self, sender, client_sync_id, inventory_sync_id)
-	if sender ~= self._server_peer_id then
+ProfileSynchronizer.rpc_server_set_inventory_sync_id = function (self, channel_id, client_sync_id, inventory_sync_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id ~= self._server_peer_id then
 		return
 	end
 
@@ -589,37 +614,58 @@ ProfileSynchronizer._draw_state = function (self)
 		return
 	end
 
-	local font = "foundation/fonts/debug"
-	local font_material = "debug"
+	local font = "materials/fonts/arial"
+	local font_material = "arial"
 	local text_height = 20
 	local row_height = 20
-	local margin = 32
-	local profile_width = 84
-	local owner_width = 196
-	local state_width = 96
-	local background_color = Color(128, 0, 0, 0)
-	local text_color = Color(255, 255, 255, 255)
+
+	Imgui.Begin("ProfileSynchronizer", "always_auto_resize")
+	Imgui.Text("ProfileOwners:")
+
+	for _, profile_owners in pairs(self._profile_owners) do
+		for _, owner_table in ipairs(profile_owners) do
+			Imgui.Text(string.format("peer_id: %s, local_player_id: %s, carrer_index: %s", owner_table.peer_id, owner_table.local_player_id, owner_table.career_index))
+		end
+	end
+
+	Imgui.Spacing()
+	Imgui.Text("LoadedPeers:")
+
 	local _, height = Gui.resolution()
 	local y = height - margin - text_height
 	local world = Application.debug_world()
 
 	if self._gui == nil then
-		self._gui = World.create_screen_gui(world, "immediate", "material", font)
+		self._gui = World.create_screen_gui(world, "immediate", "material", "materials/fonts/gw_fonts")
 	end
 
-	Gui.rect(self._gui, Vector2(0, 0), Vector2(margin * 2 + profile_width + owner_width + state_width, height), background_color)
+	for peer_id, peer_table in pairs(self._loaded_peers) do
+		Imgui.Text(string.format("peer_id: %s, peer_table: %s", peer_id, table.tostring(peer_table)))
+	end
 
+	Imgui.Spacing()
+	Imgui.Text("HotJoinSyncedPeers:")
+
+	for peer_id, synced in pairs(self._hot_join_synced_peers) do
+		Imgui.Text(string.format("peer_id: %s, synced: %s", peer_id, tostring(synced)))
+	end
+
+	Imgui.Spacing()
+	Imgui.Text("All Synced: " .. tostring(self._all_synced))
+	Imgui.End()
+
+	y = y - margin
 	local x = margin
 
-	Gui.text(self._gui, "Profile", font, text_height, font_material, Vector3(x, y, 0), text_color)
-
-	x = x + profile_width
-
-	Gui.text(self._gui, "Owner", font, text_height, font_material, Vector3(x, y, 0), text_color)
+	Gui.text(self._gui, "Peer", font, text_height, font_material, Vector3(x, y, 0), text_color)
 
 	x = x + owner_width
 
-	Gui.text(self._gui, "Type", font, text_height, font_material, Vector3(x, y, 0), text_color)
+	Gui.text(self._gui, "PID", font, text_height, font_material, Vector3(x, y, 0), text_color)
+
+	x = x + profile_width
+
+	Gui.text(self._gui, "Synced", font, text_height, font_material, Vector3(x, y, 0), text_color)
 
 	y = y - 4
 
@@ -627,17 +673,20 @@ ProfileSynchronizer._draw_state = function (self)
 
 	y = y - row_height
 
-	for index, profile_owners in pairs(self._profile_owners) do
-		for _, owner_table in ipairs(profile_owners) do
+	for peer_id, peer_table in pairs(self._loaded_peers) do
+		for local_player_id, is_synced in pairs(peer_table) do
 			x = margin
 
-			Gui.text(self._gui, tostring(index), font, text_height, font_material, Vector3(x, y, 0), text_color)
+			Gui.text(self._gui, peer_id, font, text_height, font_material, Vector3(x, y, 0), text_color)
+
+			x = x + owner_width
+
+			Gui.text(self._gui, tostring(local_player_id), font, text_height, font_material, Vector3(x, y, 0), text_color)
 
 			x = x + profile_width
 
-			Gui.text(self._gui, string.format("%s:%d", owner_table.peer_id, owner_table.local_player_id), font, text_height, font_material, Vector3(x, y, 0), text_color)
+			Gui.text(self._gui, tostring(is_synced), font, text_height, font_material, Vector3(x, y, 0), text_color)
 
-			x = x + owner_width
 			y = y - row_height
 		end
 	end

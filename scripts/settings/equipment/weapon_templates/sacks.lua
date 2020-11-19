@@ -127,8 +127,7 @@ weapon_template.actions = {
 			}
 		}
 	},
-	action_wield = ActionTemplates.wield_left,
-	action_career_skill = ActionTemplates.career_skill_dummy
+	action_wield = ActionTemplates.wield_left
 }
 weapon_template.ammo_data = {
 	ammo_hand = "left",

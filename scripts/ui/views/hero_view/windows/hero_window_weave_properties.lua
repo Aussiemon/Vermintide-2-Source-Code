@@ -1154,7 +1154,7 @@ HeroWindowWeaveProperties._update_background_animations = function (self, dt)
 	end
 
 	local pulse_speed = 2.5
-	local progress = 0.5 + math.sin(Application.time_since_launch() * pulse_speed) * 0.5
+	local progress = 0.5 + math.sin(Managers.time:time("ui") * pulse_speed) * 0.5
 
 	self:_set_background_bloom_intensity(progress)
 end
@@ -1306,7 +1306,7 @@ HeroWindowWeaveProperties._upgrade_magic_level = function (self)
 
 	self._parent:block_input()
 
-	local time = Application.time_since_launch()
+	local time = Managers.time:time("ui")
 	self._upgrade_magic_level_done_time = time + UPGRADE_REQUEST_LIMIT
 	self._upgrade_magic_level_response = nil
 	local widgets_by_name = self._widgets_by_name
@@ -2120,7 +2120,7 @@ HeroWindowWeaveProperties._animate_slot = function (self, slot, dt)
 
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local new_pulse_speed = 4
-	local new_progress = 0.5 + math.sin(Application.time_since_launch() * new_pulse_speed) * 0.5
+	local new_progress = 0.5 + math.sin(Managers.time:time("ui") * new_pulse_speed) * 0.5
 	style.highlight_texture.color[1] = 255 * highlight_progress
 	style.hover.color[1] = 255 * ((new and new_progress) or hover_progress)
 	local slot_locked_style = style.slot_locked

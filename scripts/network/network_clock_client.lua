@@ -201,7 +201,7 @@ NetworkClockClient._debug_stuff = function (self, dt)
 	end
 end
 
-NetworkClockClient.rpc_network_time_sync_response = function (self, sender, time_sent_request, server_time)
+NetworkClockClient.rpc_network_time_sync_response = function (self, channel_id, time_sent_request, server_time)
 	local current_time = self._clock
 	local client_latency_delta = (current_time - time_sent_request) / 2
 	local client_server_delta = server_time - current_time
@@ -222,7 +222,7 @@ NetworkClockClient.rpc_network_time_sync_response = function (self, sender, time
 	end
 end
 
-NetworkClockClient.rpc_network_current_server_time_response = function (self, sender, time_sent_request, server_time)
+NetworkClockClient.rpc_network_current_server_time_response = function (self, channel_id, time_sent_request, server_time)
 	local current_time = self._clock
 	local client_latency_delta = (current_time - time_sent_request) / 2
 	local client_server_delta = server_time - current_time

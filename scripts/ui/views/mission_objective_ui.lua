@@ -27,6 +27,7 @@ MissionObjectiveUI.init = function (self, parent, ingame_ui_context)
 		event_manager:register(self, "ui_event_add_mission_objective", "add_mission_objective")
 		event_manager:register(self, "ui_event_complete_mission", "complete_mission")
 		event_manager:register(self, "ui_event_update_mission", "update_mission")
+		event_manager:register(self, "ui_event_block_mission_ui", "block_mission_ui")
 	end
 end
 
@@ -50,14 +51,23 @@ MissionObjectiveUI.destroy = function (self)
 		event_manager:unregister("ui_event_add_mission_objective", self)
 		event_manager:unregister("ui_event_complete_mission", self)
 		event_manager:unregister("ui_event_update_mission", self)
+		event_manager:unregister("ui_event_block_mission_ui", self)
 	end
 
 	self.ui_animator = nil
 end
 
+MissionObjectiveUI.block_mission_ui = function (self, ui_blocked)
+	self._ui_blocked = ui_blocked
+end
+
 MissionObjectiveUI.update = function (self, dt)
 	if DO_RELOAD then
 		self:create_ui_elements()
+	end
+
+	if self._ui_blocked then
+		return
 	end
 
 	self:update_animations(dt)
@@ -152,7 +162,6 @@ MissionObjectiveUI.next_mission_objective = function (self, dt)
 	if not self.current_mission_objective and #self.saved_mission_objectives > 0 and not self._animations.mission_animation then
 		local current_mission_data = self.saved_mission_objectives[1]
 		self.current_mission_objective = current_mission_data.mission_name
-		local widget = self._mission_widget
 
 		self:_set_mission_text(current_mission_data.text)
 		self:_start_animation("mission_animation", "mission_start")

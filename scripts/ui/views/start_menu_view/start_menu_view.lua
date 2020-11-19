@@ -14,33 +14,10 @@ local function dprint(...)
 	print("[StartMenuView]", ...)
 end
 
-local platform = PLATFORM
-
-if platform ~= "ps4" or not {
-	LobbyDistanceFilter.CLOSE,
-	LobbyDistanceFilter.MEDIUM,
-	LobbyDistanceFilter.WORLD
-} then
-	local MapLobbyDistanceFilter = {
-		LobbyDistanceFilter.CLOSE,
-		LobbyDistanceFilter.MEDIUM,
-		LobbyDistanceFilter.FAR,
-		LobbyDistanceFilter.WORLD
-	}
-end
-
 local DO_RELOAD = true
 local debug_draw_scenegraph = false
 local debug_menu = true
 StartMenuView = class(StartMenuView)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 StartMenuView.init = function (self, ingame_ui_context)
 	self.world = ingame_ui_context.world
@@ -48,6 +25,7 @@ StartMenuView.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
+	self.voting_manager = ingame_ui_context.voting_manager
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
@@ -64,7 +42,7 @@ StartMenuView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("start_menu_view", "mouse")
 	input_manager:map_device_to_service("start_menu_view", "gamepad")
 
-	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context, UISettings.hero_selection_camera_position_by_character)
+	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context, UISettings.hero_selection_camera_position_by_character, "StartMenuView")
 
 	self.world_previewer:force_stream_highest_mip_levels()
 
@@ -74,7 +52,7 @@ StartMenuView.init = function (self, ingame_ui_context)
 		parent = self,
 		world_previewer = self.world_previewer,
 		settings_by_screen = settings_by_screen,
-		input_service = fake_input_service
+		input_service = FAKE_INPUT_SERVICE
 	}
 	self._state_machine_params = state_machine_params
 	self.units = {}
@@ -214,9 +192,20 @@ StartMenuView.post_update = function (self, dt, t)
 	self.world_previewer:post_update(dt, t)
 end
 
+StartMenuView._has_active_level_vote = function (self)
+	local voting_manager = self.voting_manager
+	local is_mission_vote = voting_manager:vote_in_progress() and voting_manager:is_mission_vote()
+
+	return is_mission_vote and not voting_manager:has_voted(Network.peer_id())
+end
+
 StartMenuView.update = function (self, dt, t)
 	if self.suspended or self.waiting_for_post_update_enter then
 		return
+	end
+
+	if self:_has_active_level_vote() then
+		self:close_menu(false)
 	end
 
 	local requested_screen_change_data = self._requested_screen_change_data
@@ -234,7 +223,7 @@ StartMenuView.update = function (self, dt, t)
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
-	local input_service = (input_blocked and not gamepad_active and fake_input_service) or input_manager:get_service("start_menu_view")
+	local input_service = (input_blocked and not gamepad_active and FAKE_INPUT_SERVICE) or input_manager:get_service("start_menu_view")
 	self._state_machine_params.input_service = input_service
 	local transitioning = self:transitioning()
 
@@ -281,7 +270,7 @@ StartMenuView.on_enter = function (self, params)
 	self.waiting_for_post_update_enter = true
 	self._on_enter_transition_params = params
 
-	self:play_sound("hud_in_inventory_state_on")
+	Managers.music:duck_sounds()
 	self:play_sound("play_gui_amb_start_screen_enter")
 	self:play_sound("play_gui_amb_hero_screen_loop_begin")
 	self:play_sound("Play_menu_screen_music")
@@ -496,7 +485,7 @@ StartMenuView.on_exit = function (self)
 	end
 
 	self:hide_hero_world()
-	self:play_sound("hud_in_inventory_state_off")
+	Managers.music:unduck_sounds()
 	self:play_sound("play_gui_amb_hero_screen_loop_end")
 	self:play_sound("Stop_menu_screen_music")
 	UISettings.hero_fullscreen_menu_on_exit()
@@ -511,8 +500,6 @@ StartMenuView.exit = function (self, return_to_game)
 
 	self.exiting = true
 	self._public_game_search_time = nil
-
-	LobbyInternal.clear_filter_requirements()
 end
 
 StartMenuView.transitioning = function (self)

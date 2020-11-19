@@ -1,5 +1,7 @@
+require("scripts/managers/challenges/boon_reactivation_rules")
+require("scripts/managers/challenges/pickup_spawn_type")
+
 InGameChallengeRewards = InGameChallengeRewards or {}
-local PickupSpawnType = CreateStrictEnumTable("DropIfFull", "AlwaysDrop", "NeverDrop", "Replace")
 InGameChallengeRewards.test_buff = {
 	target = "party",
 	type = "buff",
@@ -117,22 +119,6 @@ InGameChallengeRewards.markus_questing_knight_passive_concentration_potion = {
 	target = "owner",
 	pickup_spawn_type = PickupSpawnType.DropIfFull
 }
-local BoonReactivationRules = {
-	questing_knight = function (player_unique_id)
-		local status = Managers.party:get_status_from_unique_id(player_unique_id)
-
-		if status then
-			local profile_index = status.profile_index
-			local career_index = status.career_index
-			local profile = SPProfiles[profile_index]
-			local career_settings = profile and profile.careers[career_index]
-
-			return career_settings and career_settings == CareerSettings.es_questingknight
-		end
-
-		return false
-	end
-}
 InGameChallengeRewards.test_boon = {
 	reward_id = "test_pickup",
 	type = "boon",
@@ -242,28 +228,47 @@ InGameChallengeRewards.markus_questing_knight_passive_health_regen_improved = {
 	reactivation_rule = BoonReactivationRules.questing_knight
 }
 
-local function copy_buff_values(name, value_type)
-	InGameChallengeRewards[name].description_values = {
+for _, dlc in pairs(DLCSettings) do
+	local ingame_challenge_rewards = dlc.ingame_challenge_rewards
+
+	if ingame_challenge_rewards then
+		table.merge(InGameChallengeRewards, ingame_challenge_rewards)
+	end
+end
+
+local function copy_buff_values(reward_name, buff_name, value_type)
+	InGameChallengeRewards[reward_name].description_values = {
 		{
 			value_type = "percent",
 			value_fmt = "%+d%%",
-			value = BuffTemplates[name].buffs[1].multiplier
+			value = BuffTemplates[buff_name].buffs[1].multiplier
 		}
 	}
-	local name_improved = name .. "_improved"
-	InGameChallengeRewards[name_improved].description_values = {
+	local reward_name_improved = reward_name .. "_improved"
+	local buff_name_improved = buff_name .. "_improved"
+	InGameChallengeRewards[reward_name_improved].description_values = {
 		{
 			value_type = "percent",
 			value_fmt = "%+d%%",
-			value = BuffTemplates[name_improved].buffs[1].multiplier
+			value = BuffTemplates[buff_name_improved].buffs[1].multiplier
 		}
 	}
 end
 
-copy_buff_values("markus_questing_knight_passive_cooldown_reduction")
-copy_buff_values("markus_questing_knight_passive_attack_speed")
-copy_buff_values("markus_questing_knight_passive_power_level")
-copy_buff_values("markus_questing_knight_passive_damage_taken")
+copy_buff_values("markus_questing_knight_passive_cooldown_reduction", "markus_questing_knight_passive_cooldown_reduction")
+copy_buff_values("markus_questing_knight_passive_attack_speed", "markus_questing_knight_passive_attack_speed")
+copy_buff_values("markus_questing_knight_passive_power_level", "markus_questing_knight_passive_power_level")
+copy_buff_values("markus_questing_knight_passive_damage_taken", "markus_questing_knight_passive_damage_taken")
+
+for _, dlc in pairs(DLCSettings) do
+	local ingame_challenge_rewards_description = dlc.ingame_challenge_rewards_description
+
+	if ingame_challenge_rewards_description then
+		for reward_name, buff_name in pairs(ingame_challenge_rewards_description) do
+			copy_buff_values(reward_name, buff_name)
+		end
+	end
+end
 
 InGameChallengeRewardTypes = {
 	buff = function (reward_data, target_units, reward_instigator)

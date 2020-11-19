@@ -62,17 +62,7 @@ dofile("scripts/settings/breeds/breed_chaos_exalted_champion")
 dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_zombie")
 dofile("scripts/settings/breeds/breed_critters")
-dofile("scripts/settings/breeds/breed_players")
-
-for _, dlc in pairs(DLCSettings) do
-	local breeds = dlc.breeds
-
-	if breeds then
-		for _, breed in ipairs(breeds) do
-			dofile(breed)
-		end
-	end
-end
+DLCUtils.dofile_list("breeds")
 
 CHAOS = {}
 SKAVEN = {}
@@ -146,9 +136,11 @@ local function set_bot_threat_tweak_data(current_table, max_start_delay)
 	end
 end
 
-local function find_and_set_bot_threat_tweak_data(current_table, current_difficulty)
-	if current_table.bot_threat_difficulty_data then
-		local current_difficulty_data = current_table.bot_threat_difficulty_data[current_difficulty]
+local function find_and_set_bot_threat_tweak_data(current_table)
+	local bot_threat_difficulty_data = current_table.bot_threat_difficulty_data
+
+	if bot_threat_difficulty_data then
+		local current_difficulty_data = Managers.state.difficulty:get_difficulty_value_from_table(bot_threat_difficulty_data)
 		local max_start_delay = current_difficulty_data.max_start_delay
 
 		if current_table.bot_threats then
@@ -179,33 +171,39 @@ local function find_and_set_bot_threat_tweak_data(current_table, current_difficu
 	else
 		for _, data in pairs(current_table) do
 			if type(data) == "table" then
-				find_and_set_bot_threat_tweak_data(data, current_difficulty)
+				find_and_set_bot_threat_tweak_data(data)
 			end
 		end
 	end
 end
 
 function SET_BREED_DIFFICULTY()
-	local current_difficulty = (Managers and Managers.state.difficulty and Managers.state.difficulty:get_difficulty()) or "normal"
+	local difficulty_manager = Managers.state.difficulty
 
 	for _, breed_actions in pairs(BreedActions) do
 		for _, action_data in pairs(breed_actions) do
-			if action_data.difficulty_diminishing_damage then
-				local difficulty_diminishing_damage = action_data.difficulty_diminishing_damage[current_difficulty]
-				action_data.diminishing_damage = table.clone(difficulty_diminishing_damage)
+			local difficulty_diminishing_damage = action_data.difficulty_diminishing_damage
+
+			if difficulty_diminishing_damage then
+				local damage = difficulty_manager:get_difficulty_value_from_table(difficulty_diminishing_damage)
+				action_data.diminishing_damage = table.clone(damage)
 			end
 
-			if action_data.difficulty_damage then
-				local difficulty_damage = action_data.difficulty_damage[current_difficulty]
-				action_data.damage = difficulty_damage
+			local difficulty_damage = action_data.difficulty_damage
+
+			if difficulty_damage then
+				local damage = difficulty_manager:get_difficulty_value_from_table(difficulty_damage)
+				action_data.damage = damage
 			end
 
-			if action_data.blocked_difficulty_damage then
-				local blocked_difficulty_damage = action_data.blocked_difficulty_damage[current_difficulty]
-				action_data.blocked_damage = blocked_difficulty_damage
+			local blocked_difficulty_damage = action_data.blocked_difficulty_damage
+
+			if blocked_difficulty_damage then
+				local blocked_damage = difficulty_manager:get_difficulty_value_from_table(blocked_difficulty_damage)
+				action_data.blocked_damage = blocked_damage
 			end
 
-			find_and_set_bot_threat_tweak_data(action_data, current_difficulty)
+			find_and_set_bot_threat_tweak_data(action_data)
 		end
 	end
 end

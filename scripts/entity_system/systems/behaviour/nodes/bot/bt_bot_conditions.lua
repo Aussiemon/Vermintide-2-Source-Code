@@ -1,4 +1,5 @@
 BTConditions.can_activate = BTConditions.can_activate or {}
+BTConditions.reload_ability_weapon = BTConditions.reload_ability_weapon or {}
 BTConditions.ability_check_categories = {
 	activate_ability = {
 		dr_ranger = true,
@@ -609,13 +610,25 @@ BTConditions.can_activate_ability = function (blackboard, args)
 		return false
 	end
 
-	if ability_check_category == "shoot_ability" and (not ALIVE[blackboard.target_unit] or not Unit.has_data(blackboard.target_unit, "breed")) then
+	if ability_check_category_name == "shoot_ability" and (not ALIVE[blackboard.target_unit] or not Unit.has_data(blackboard.target_unit, "breed")) then
 		return false
 	end
 
 	local condition_function = BTConditions.can_activate[career_name]
 
+	if ability_check_category_name == "ranged_weapon" or ability_check_category_name == "melee_weapon" then
+		return condition_function and condition_function(blackboard)
+	end
+
 	return is_using_ability or (career_extension:can_use_activated_ability() and condition_function and condition_function(blackboard))
+end
+
+BTConditions.should_reload_ability_weapon = function (blackboard, args)
+	local career_extension = blackboard.career_extension
+	local career_name = career_extension:career_name()
+	local condition_function = BTConditions.reload_ability_weapon[career_name]
+
+	return condition_function and condition_function(blackboard, args)
 end
 
 BTConditions.is_disabled = function (blackboard)
@@ -888,6 +901,40 @@ BTConditions.is_slot_not_wielded = function (blackboard, args)
 	end
 end
 
+BTConditions.has_double_weapon_slots = function (blackboard, args)
+	return blackboard.double_weapons == args[1]
+end
+
+BTConditions.has_better_alt_weapon = function (blackboard, args)
+	local main_slot = args[1]
+
+	if blackboard.double_weapons == main_slot then
+		local weapon_scores = blackboard.weapon_scores
+
+		if weapon_scores then
+			local alt_slot = args[2]
+			local main_weapon_score = weapon_scores[main_slot].score or -1
+			local alt_weapon_score = weapon_scores[alt_slot].score or -1
+
+			return main_weapon_score < alt_weapon_score
+		end
+	end
+
+	return false
+end
+
+BTConditions.needs_weapon_swap = function (blackboard, args)
+	if BTConditions.has_double_weapon_slots(blackboard, args) and BTConditions.has_better_alt_weapon(blackboard, args) then
+		return BTConditions.is_slot_not_wielded(blackboard, {
+			args[2]
+		})
+	end
+
+	return BTConditions.is_slot_not_wielded(blackboard, {
+		args[1]
+	})
+end
+
 BTConditions.has_priority_or_opportunity_target = function (blackboard)
 	local target = blackboard.target_unit
 
@@ -1000,6 +1047,11 @@ end
 
 BTConditions.should_recall_throwing_axes = function (blackboard, args)
 	local inventory_extension = blackboard.inventory_extension
+
+	if not inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe") then
+		return false
+	end
+
 	local current, max = inventory_extension:current_ammo_status("slot_ranged")
 
 	if not current or not max then
@@ -1145,6 +1197,6 @@ BTConditions.should_drop_grimoire = function (blackboard)
 	return false
 end
 
-DLCUtils.require("bot_conditions")
+DLCUtils.require_list("bot_conditions")
 
 return

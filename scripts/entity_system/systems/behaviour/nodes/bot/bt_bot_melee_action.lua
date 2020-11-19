@@ -196,36 +196,18 @@ local DEFAULT_ATTACK_META_DATA = {
 }
 
 BTBotMeleeAction._choose_attack = function (self, blackboard, target_unit)
-	local num_enemies = #blackboard.proximite_enemies
-	local outnumbered = num_enemies > 1
-	local massively_outnumbered = num_enemies > 3
-	local target_breed = Unit.get_data(target_unit, "breed")
-	local target_armor = (target_breed and target_breed.armor_category) or 1
-	local item_template = blackboard.wielded_item_template
-	local weapon_meta_data = item_template.attack_meta_data or DEFAULT_ATTACK_META_DATA
-	local best_utility = -1
 	local best_attack_input, best_attack_meta_data = nil
+	local wielded_slot = blackboard.wielded_slot_name
+	local weapon_scores = wielded_slot and blackboard.weapon_scores
+	local equipped_weapon_data = weapon_scores and weapon_scores[wielded_slot]
 
-	for attack_input, attack_meta_data in pairs(weapon_meta_data) do
-		local utility = 0
-
-		if outnumbered and attack_meta_data.arc == 1 then
-			utility = utility + 1
-		elseif attack_meta_data.no_damage and massively_outnumbered and attack_meta_data.arc > 1 then
-			utility = utility + 2
-		elseif not attack_meta_data.no_damage and ((outnumbered and attack_meta_data.arc > 1) or (not outnumbered and attack_meta_data.arc == 0)) then
-			utility = utility + 4
-		end
-
-		if target_armor ~= 2 or attack_meta_data.penetrating then
-			utility = utility + 8
-		end
-
-		if best_utility < utility then
-			best_utility = utility
-			best_attack_input = attack_input
-			best_attack_meta_data = attack_meta_data
-		end
+	if equipped_weapon_data then
+		best_attack_input = equipped_weapon_data.input
+		best_attack_meta_data = equipped_weapon_data.meta
+	else
+		local combat_conditions = AiUtils.get_combat_conditions(blackboard)
+		local item_template = blackboard.wielded_item_template
+		best_attack_input, best_attack_meta_data = AiUtils.get_melee_weapon_score(combat_conditions, item_template)
 	end
 
 	return best_attack_input, best_attack_meta_data
@@ -444,6 +426,14 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 
 	if not AiUtils.unit_alive(target_unit) then
 		return true
+	end
+
+	if script_data.ai_bots_disable_player_melee_attacks then
+		local target_blackboard = BLACKBOARDS[target_unit]
+
+		if target_blackboard and target_blackboard.is_player then
+			return false
+		end
 	end
 
 	local aim_position = self:_aim_position(target_unit, blackboard)

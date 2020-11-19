@@ -41,18 +41,7 @@ MaterialEffectMappings = MaterialEffectMappings or {}
 
 require("scripts/settings/material_effect_mappings_skaven")
 require("scripts/settings/material_effect_mappings_chaos")
-
-for _, dlc in pairs(DLCSettings) do
-	local material_effect_mappings_file_names = dlc.material_effect_mappings_file_names
-
-	if material_effect_mappings_file_names then
-		for i = 1, #material_effect_mappings_file_names, 1 do
-			local file_name = material_effect_mappings_file_names[i]
-
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("material_effect_mappings_file_names")
 
 MaterialEffectMappings.melee_hit_piercing = MaterialEffectMappings.melee_hit_piercing or {
 	decal = {

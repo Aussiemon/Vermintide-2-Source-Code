@@ -403,13 +403,15 @@ StoreWindowFeatured._get_default_featured_slideshow_content = function (self)
 	local default_slideshow_content = {}
 
 	for index, dlc_settings in ipairs(StoreDlcSettings) do
-		default_slideshow_content[#default_slideshow_content + 1] = {
-			product_type = "dlc",
-			texture = dlc_settings.slideshow_texture,
-			description = dlc_settings.slideshow_text,
-			header = dlc_settings.name,
-			product_id = dlc_settings.dlc_name
-		}
+		if PLATFORM == "win32" or not dlc_settings.disable_on_consoles then
+			default_slideshow_content[#default_slideshow_content + 1] = {
+				product_type = "dlc",
+				texture = dlc_settings.slideshow_texture,
+				description = dlc_settings.slideshow_text,
+				header = dlc_settings.name,
+				product_id = dlc_settings.dlc_name
+			}
+		end
 	end
 
 	return default_slideshow_content

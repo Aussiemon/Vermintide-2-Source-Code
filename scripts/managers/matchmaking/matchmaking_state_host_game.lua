@@ -55,7 +55,9 @@ MatchmakingStateHostGame.on_exit = function (self)
 end
 
 MatchmakingStateHostGame.update = function (self, dt, t)
-	if self._skip_waystone then
+	if self._wait_to_start_game then
+		return MatchmakingStateWaitForCountdown, self.state_context
+	elseif self._skip_waystone then
 		return MatchmakingStateStartGame, self.state_context
 	else
 		return MatchmakingStateWaitForCountdown, self.state_context
@@ -77,7 +79,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	local quick_game = search_config.quick_game
 	local eac_authorized = false
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		if DEDICATED_SERVER then
 			local eac_server = Managers.matchmaking.network_server:eac_server()
 			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
@@ -98,7 +100,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 		audio_system:play_2d_audio_event("menu_wind_countdown_warning")
 	end
 
-	self._difficulty_manager:set_difficulty(difficulty)
+	self._difficulty_manager:set_difficulty(difficulty, 0)
 
 	local is_dedicated_server = self._lobby:is_dedicated_server()
 
@@ -115,9 +117,11 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	end
 
 	self._game_created = true
+	self._wait_to_start_game = self.search_config.wait_to_start_game
 	self._skip_waystone = self.search_config.skip_waystone
 
-	if not self._skip_waystone then
+	if self._wait_to_start_game then
+	elseif not self._skip_waystone then
 		local waystone_type = 1
 
 		if not quick_game and game_mode ~= "event" then

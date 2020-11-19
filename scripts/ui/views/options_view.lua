@@ -970,6 +970,7 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 	local widgets = {}
 	local widgets_n = 0
 	local definition_n = #definition
+	local unlock_manager = Managers.unlock
 
 	for i = 1, definition_n, 1 do
 		local element = definition[i]
@@ -983,7 +984,7 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 		local widget_type = element.widget_type
 		local required_dlc = element.required_dlc
 
-		if not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc) then
+		if not required_dlc or (unlock_manager:dlc_exists(required_dlc) and unlock_manager:is_dlc_unlocked(required_dlc)) then
 			if widget_type == "drop_down" then
 				widget = self:build_drop_down_widget(element, scenegraph_id_start, base_offset)
 			elseif widget_type == "option" then
@@ -1457,7 +1458,7 @@ OptionsView.set_widget_disabled = function (self, name, disable)
 	end
 end
 
-OptionsView.on_enter = function (self)
+OptionsView.on_enter = function (self, params)
 	ShowCursorStack.push()
 	self:_setup_text_buttons_width()
 	self:set_original_settings()
@@ -1467,6 +1468,7 @@ OptionsView.on_enter = function (self)
 	self.in_settings_sub_menu = false
 	self.gamepad_active_generic_actions_name = nil
 	self.gamepad_tooltip_available = nil
+	self._exit_transition = params and params.exit_transition
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 
@@ -1538,7 +1540,7 @@ end
 OptionsView.exit = function (self, return_to_game)
 	self:exit_reset_params()
 
-	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
+	local exit_transition = (return_to_game and "exit_menu") or self._exit_transition or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
 end
@@ -1697,18 +1699,13 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 
 	Framerate.set_playing()
 
-	local max_upload = user_settings.max_upload_speed
 	local network_manager = Managers.state.network
-
-	if max_upload and network_manager then
-		network_manager:set_max_upload_speed(max_upload)
-	end
 
 	if network_manager then
 		network_manager:set_small_network_packets(user_settings.small_network_packets)
 	end
 
-	MatchmakingSettings.max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and LobbyDistanceFilter.MEDIUM) or user_settings.max_quick_play_search_range
+	MatchmakingSettings.max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and "close") or user_settings.max_quick_play_search_range
 	local max_stacking_frames = user_settings.max_stacking_frames
 
 	if max_stacking_frames then
@@ -2218,73 +2215,44 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local twitch_vote_time = user_settings.twitch_vote_time
 
 	if twitch_vote_time then
-		if PLATFORM == "xb1" then
-			MixerSettings.default_vote_time = twitch_vote_time
-		else
-			TwitchSettings.default_vote_time = twitch_vote_time
-		end
+		TwitchSettings.default_vote_time = twitch_vote_time
 	end
 
 	local twitch_time_between_votes = user_settings.twitch_time_between_votes
 
 	if twitch_time_between_votes then
-		if PLATFORM == "xb1" then
-			MixerSettings.default_downtime = twitch_time_between_votes
-		else
-			TwitchSettings.default_downtime = twitch_time_between_votes
-		end
+		TwitchSettings.default_downtime = twitch_time_between_votes
 	end
 
 	local twitch_difficulty = user_settings.twitch_difficulty
 
 	if twitch_difficulty then
-		if PLATFORM == "xb1" then
-			MixerSettings.difficulty = twitch_difficulty
-		else
-			TwitchSettings.difficulty = twitch_difficulty
-		end
+		TwitchSettings.difficulty = twitch_difficulty
 	end
 
 	local twitch_disable_positive_votes = user_settings.twitch_disable_positive_votes
 
 	if twitch_disable_positive_votes then
-		if PLATFORM == "xb1" then
-			MixerSettings.disable_giving_items = twitch_disable_positive_votes == MixerSettings.positive_vote_options.disable_giving_items or twitch_disable_positive_votes == MixerSettings.positive_vote_options.disable_positive_votes
-			MixerSettings.disable_positive_votes = twitch_disable_positive_votes == MixerSettings.positive_vote_options.disable_positive_votes
-		else
-			TwitchSettings.disable_giving_items = twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_giving_items or twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_positive_votes
-			TwitchSettings.disable_positive_votes = twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_positive_votes
-		end
+		TwitchSettings.disable_giving_items = twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_giving_items or twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_positive_votes
+		TwitchSettings.disable_positive_votes = twitch_disable_positive_votes == TwitchSettings.positive_vote_options.disable_positive_votes
 	end
 
 	local twitch_disable_mutators = user_settings.twitch_disable_mutators
 
 	if twitch_disable_mutators ~= nil then
-		if PLATFORM == "xb1" then
-			MixerSettings.disable_mutators = twitch_disable_mutators
-		else
-			TwitchSettings.disable_mutators = twitch_disable_mutators
-		end
+		TwitchSettings.disable_mutators = twitch_disable_mutators
 	end
 
 	local twitch_spawn_amount = user_settings.twitch_spawn_amount
 
 	if twitch_spawn_amount then
-		if PLATFORM == "xb1" then
-			MixerSettings.spawn_amount_multiplier = twitch_spawn_amount
-		else
-			TwitchSettings.spawn_amount_multiplier = twitch_spawn_amount
-		end
+		TwitchSettings.spawn_amount_multiplier = twitch_spawn_amount
 	end
 
 	local twitch_mutator_duration = user_settings.twitch_mutator_duration
 
 	if twitch_mutator_duration then
-		if PLATFORM == "xb1" then
-			MixerSettings.mutator_duration_multiplier = twitch_mutator_duration
-		else
-			TwitchSettings.mutator_duration_multiplier = twitch_mutator_duration
-		end
+		TwitchSettings.mutator_duration_multiplier = twitch_mutator_duration
 	end
 
 	local use_razer_chroma = user_settings.use_razer_chroma
@@ -4669,6 +4637,15 @@ OptionsView.cb_resolutions_setup = function (self)
 			end
 
 			local text = tostring(width) .. "x" .. tostring(height)
+			local a = width
+			local b = height
+
+			while b ~= 0 do
+				b = a % b
+				a = b
+			end
+
+			text = text .. string.format("    [%d:%d]", width / a, height / a)
 			options[#options + 1] = {
 				text = text,
 				value = {
@@ -6792,8 +6769,8 @@ end
 OptionsView.cb_max_quick_play_search_range_setup = function (self)
 	local options = {
 		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
+			value = "close",
+			text = Localize("menu_settings_near")
 		},
 		{
 			value = "far",
@@ -10631,19 +10608,11 @@ OptionsView.cb_twitch_vote_time_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	if PLATFORM ~= "xb1" then
-		if not selected_option then
-			slot6 = default_option
-		end
-
-		return slot6, options, "menu_settings_twitch_vote_time", default_option
-	else
-		if not selected_option then
-			slot6 = default_option
-		end
-
-		return slot6, options, "menu_settings_mixer_vote_time", default_option
+	if not selected_option then
+		slot6 = default_option
 	end
+
+	return slot6, options, "menu_settings_twitch_vote_time", default_option
 end
 
 OptionsView.cb_twitch_vote_time_saved_value = function (self, widget)
@@ -10719,19 +10688,11 @@ OptionsView.cb_twitch_time_between_votes_setup = function (self)
 
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	if PLATFORM ~= "xb1" then
-		if not selected_option then
-			slot6 = default_option
-		end
-
-		return slot6, options, "menu_settings_twitch_time_between_votes", default_option
-	else
-		if not selected_option then
-			slot6 = default_option
-		end
-
-		return slot6, options, "menu_settings_mixer_time_between_votes", default_option
+	if not selected_option then
+		slot6 = default_option
 	end
+
+	return slot6, options, "menu_settings_twitch_time_between_votes", default_option
 end
 
 OptionsView.cb_twitch_time_between_votes_saved_value = function (self, widget)
@@ -10787,6 +10748,63 @@ end
 OptionsView.cb_twitch_difficulty = function (self, content)
 	local value = content.value
 	self.changed_user_settings.twitch_difficulty = value
+end
+
+OptionsView.cb_debug_enabled = function (self, content)
+	if content.current_selection ~= 1 then
+		slot2 = false
+	else
+		local bool = true
+	end
+
+	local input_manager = Managers.input
+
+	if bool then
+		input_manager:device_unblock_service("keyboard", 1, "DebugMenu")
+		input_manager:device_unblock_service("mouse", 1, "DebugMenu")
+		input_manager:device_unblock_service("gamepad", 1, "DebugMenu")
+		input_manager:device_unblock_service("keyboard", 1, "Debug")
+		input_manager:device_unblock_service("mouse", 1, "Debug")
+		input_manager:device_unblock_service("gamepad", 1, "Debug")
+	else
+		input_manager:device_block_service("keyboard", 1, "DebugMenu")
+		input_manager:device_block_service("mouse", 1, "DebugMenu")
+		input_manager:device_block_service("gamepad", 1, "DebugMenu")
+		input_manager:device_block_service("keyboard", 1, "Debug")
+		input_manager:device_block_service("mouse", 1, "Debug")
+		input_manager:device_block_service("gamepad", 1, "Debug")
+	end
+end
+
+OptionsView.cb_debug_enabled_setup = function (self)
+	if script_data.debug_enabled then
+		slot1 = 1
+	else
+		slot1 = 2
+	end
+
+	return slot1, {
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+	}, "debug_enabled", 1
+end
+
+OptionsView.cb_debug_enabled_saved_value = function (self, widget)
+	slot2 = widget.content
+
+	if script_data.debug_enabled then
+		slot3 = 1
+	else
+		slot3 = 2
+	end
+
+	slot2.current_selection = slot3
 end
 
 return

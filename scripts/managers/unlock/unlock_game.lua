@@ -36,4 +36,8 @@ UnlockGame.is_cosmetic = function (self)
 	return false
 end
 
+UnlockGame.requires_restart = function (self)
+	return false
+end
+
 return

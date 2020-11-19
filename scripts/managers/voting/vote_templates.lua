@@ -362,7 +362,7 @@ VoteTemplates = {
 				local game_mode = data.game_mode
 				local excluded_level_keys = data.excluded_level_keys
 				local search_config = {
-					dedicated_servers = false,
+					dedicated_server = false,
 					join_method = "solo",
 					level_key = level_key,
 					difficulty = difficulty,
@@ -530,7 +530,7 @@ VoteTemplates = {
 				local quick_game = false
 				local game_mode = "deed"
 				local search_config = {
-					dedicated_servers = false,
+					dedicated_server = false,
 					join_method = "solo",
 					level_key = level_key,
 					difficulty = difficulty,
@@ -647,7 +647,7 @@ VoteTemplates = {
 				local quick_game = false
 				local game_mode = "event"
 				local search_config = {
-					dedicated_servers = false,
+					dedicated_server = false,
 					join_method = "solo",
 					level_key = level_key,
 					difficulty = difficulty,
@@ -814,7 +814,7 @@ VoteTemplates = {
 				local quick_game = false
 				local game_mode = "weave"
 				local search_config = {
-					dedicated_servers = false,
+					dedicated_server = false,
 					level_key = level_key,
 					difficulty = difficulty,
 					private_game = private_game,
@@ -891,7 +891,7 @@ VoteTemplates = {
 				input = "ingame_vote_yes"
 			},
 			{
-				text = "matchmaking_surfix_continue_searching",
+				text = "matchmaking_suffix_continue_searching",
 				gamepad_input = "back",
 				vote = 2,
 				input = "ingame_vote_no"
@@ -911,7 +911,7 @@ VoteTemplates = {
 				local quick_game = false
 				local game_mode = "weave"
 				local search_config = {
-					dedicated_servers = false,
+					dedicated_server = false,
 					level_key = level_key,
 					difficulty = difficulty,
 					private_game = private_game,
@@ -1051,7 +1051,7 @@ VoteTemplates = {
 				local difficulty = data.difficulty
 				local game_mode = "weave_find_group"
 				local search_config = {
-					dedicated_servers = false,
+					dedicated_server = false,
 					level_key = level_key,
 					difficulty = difficulty,
 					private_game = private_game,
@@ -1173,7 +1173,7 @@ VoteTemplates = {
 				local search_config = {
 					any_level = true,
 					quick_game = true,
-					dedicated_servers = false,
+					dedicated_server = false,
 					game_mode = "weave",
 					difficulty = difficulty,
 					always_host = always_host,
@@ -1197,9 +1197,9 @@ VoteTemplates = {
 			local difficulty = NetworkLookup.difficulties[difficulty_id]
 			local data = {
 				private_game = false,
-				always_host = false,
+				dedicated_server = false,
 				quick_game = true,
-				dedicated_servers = false,
+				always_host = false,
 				game_mode = "weave",
 				difficulty = difficulty
 			}
@@ -1213,8 +1213,160 @@ VoteTemplates = {
 
 			return votes
 		end
+	},
+	change_game_mode = {
+		mission_vote = true,
+		ingame_vote = false,
+		timeout_vote_option = 2,
+		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
+		text = "vote_for_game_mode",
+		minimum_voter_percent = 1,
+		success_percent = 1,
+		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
+		duration = 300,
+		priority = 110,
+		min_required_voters = 1,
+		start_sound_event = "hud_dice_game_reward_sound",
+		vote_options = {
+			{
+				text = "popup_choice_accept",
+				vote = 1,
+				input = "ingame_vote_yes"
+			},
+			{
+				text = "dlc1_3_1_decline",
+				vote = 2,
+				input = "ingame_vote_no"
+			}
+		},
+		on_complete = function (vote_result, ingame_context, data)
+			if vote_result == 1 then
+				local mechanism_key = data.mechanism_key
+				local level_key = data.level_key
+
+				Managers.mechanism:switch_mechanism(mechanism_key)
+				Managers.matchmaking.level_transition_handler:set_next_level(level_key)
+				Managers.state.game_mode:game_mode():complete_level()
+			end
+		end,
+		pack_sync_data = function (data)
+			local sync_data = {
+				data.voter_peer_id,
+				NetworkLookup.mechanism_keys[data.mechanism_key],
+				NetworkLookup.level_keys[data.level_key]
+			}
+
+			return sync_data
+		end,
+		extract_sync_data = function (sync_data)
+			local voter_peer_id = sync_data[1]
+			local mechanism_key = NetworkLookup.mechanism_keys[tonumber(sync_data[2])]
+			local level_key = NetworkLookup.level_keys[tonumber(sync_data[3])]
+			local data = {
+				voter_peer_id = voter_peer_id,
+				mechanism_key = mechanism_key,
+				level_key = level_key
+			}
+
+			return data
+		end,
+		initial_vote_func = function (data)
+			local votes = {
+				[data.voter_peer_id] = 1
+			}
+
+			return votes
+		end
+	},
+	game_settings_vote_switch_mechanism = {
+		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
+		ingame_vote = false,
+		mission_vote = true,
+		gamepad_support = true,
+		text = "game_settings_goto_keep_vote",
+		minimum_voter_percent = 1,
+		success_percent = 1,
+		server_start_vote_rpc = "rpc_client_start_vote_lookup",
+		duration = 30,
+		priority = 110,
+		min_required_voters = 1,
+		gamepad_input_desc = "default_voting",
+		timeout_vote_option = 2,
+		requirement_failed_message_func = function (requirement_check_data)
+			local text = Localize("vote_requirement_failed")
+			local player_manager = Managers.player
+
+			for peer_id, success in pairs(requirement_check_data.results) do
+				if not success then
+					local player = player_manager:player_from_peer_id(peer_id)
+					local name = player:name()
+					text = text .. name .. "\n"
+				end
+			end
+
+			return text
+		end,
+		vote_options = {
+			{
+				text = "popup_choice_accept",
+				gamepad_input = "confirm",
+				vote = 1,
+				input = "ingame_vote_yes"
+			},
+			{
+				text = "dlc1_3_1_decline",
+				gamepad_input = "back",
+				vote = 2,
+				input = "ingame_vote_no"
+			}
+		},
+		on_start = function (ingame_context, data)
+			Managers.matchmaking:cancel_matchmaking()
+		end,
+		on_complete = function (vote_result, ingame_context, data)
+			if vote_result == 1 then
+				local level_key = data.level_key
+				local mechanism = data.mechanism
+
+				Managers.mechanism:switch_mechanism(mechanism)
+				Managers.mechanism:reset_choose_next_state()
+
+				local level_transition_handler = Managers.matchmaking.level_transition_handler
+
+				level_transition_handler:set_next_level(level_key)
+				level_transition_handler:level_completed()
+			end
+		end,
+		pack_sync_data = function (data)
+			local level_key = data.level_key
+			local mechanism = data.mechanism
+			local vote_data = {
+				NetworkLookup.level_keys[level_key],
+				NetworkLookup.mechanism_keys[mechanism]
+			}
+
+			return vote_data
+		end,
+		extract_sync_data = function (sync_data)
+			local level_key_id = sync_data[1]
+			local mechanism_id = sync_data[2]
+			local data = {
+				switch_mechanism = true,
+				level_key = NetworkLookup.level_keys[level_key_id],
+				mechanism = NetworkLookup.mechanism_keys[mechanism_id]
+			}
+
+			return data
+		end,
+		initial_vote_func = function (data)
+			local votes = {}
+
+			return votes
+		end
 	}
 }
+
+DLCUtils.require_list("vote_template_filenames")
 
 for name, template in pairs(VoteTemplates) do
 	template.name = name

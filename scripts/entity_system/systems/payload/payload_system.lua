@@ -64,7 +64,7 @@ PayloadSystem.init_payloads = function (self)
 	end
 end
 
-PayloadSystem.rpc_payload_flow_event = function (self, sender, payload_unit_id, spline_index)
+PayloadSystem.rpc_payload_flow_event = function (self, channel_id, payload_unit_id, spline_index)
 	local level = LevelHelper:current_level(self.world)
 	local unit = Level.unit_by_index(level, payload_unit_id)
 	local extension = ScriptUnit.extension(unit, "payload_system")

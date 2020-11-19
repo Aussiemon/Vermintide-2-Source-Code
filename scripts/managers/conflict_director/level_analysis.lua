@@ -125,7 +125,7 @@ LevelAnalysis.get_path_markers = function (self)
 	return self.path_markers
 end
 
-LevelAnalysis._add_path_marker_data = function (self, pos, marker_type, order, main_path_index, crossroads_string, roaming_set_string, nav_world, path_markers)
+LevelAnalysis._add_path_marker_data = function (self, pos, marker_type, order, main_path_index, crossroads_string, roaming_set_string, mutators_string, peak_boolean, nav_world, path_markers)
 	local kind = nil
 	local index = #path_markers + 1
 	local on_mesh = GwNavTraversal.get_seed_triangle(nav_world, pos)
@@ -161,7 +161,9 @@ LevelAnalysis._add_path_marker_data = function (self, pos, marker_type, order, m
 		order = order,
 		kind = kind,
 		crossroads = crossroads_string,
-		roaming_set = roaming_set_string
+		roaming_set = roaming_set_string,
+		mutators = mutators_string,
+		peak = peak_boolean
 	})
 
 	return kind == "good"
@@ -186,8 +188,11 @@ LevelAnalysis._initialize_path_markers_from_editor = function (self, path_marker
 			local pos = Unit_local_position(unit, index_offset)
 			local crossroads_string = Unit_get_data(unit, "crossroads")
 			local roaming_set_string = Unit_get_data(unit, "roaming_set")
+			local mutators_string = Unit_get_data(unit, "mutators")
+			local peak_boolean = Unit_get_data(unit, "peak") or nil
 			roaming_set_string = (roaming_set_string ~= "" and roaming_set_string) or nil
-			local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, nav_world, path_markers)
+			mutators_string = (mutators_string ~= "" and mutators_string) or nil
+			local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, mutators_string, peak_boolean, nav_world, path_markers)
 
 			if not entry_success then
 				success = false
@@ -213,8 +218,11 @@ LevelAnalysis._initialize_path_markers_from_ingame = function (self, path_marker
 		local marker_type = DynamicData_get(unit_data, "marker_type")
 		local crossroads_string = DynamicData_get(unit_data, "crossroads")
 		local roaming_set_string = DynamicData_get(unit_data, "roaming_set")
+		local mutators_string = DynamicData_get(unit_data, "mutators")
+		local peak_boolean = DynamicData_get(unit_data, "peak") or nil
+		mutators_string = (mutators_string ~= "" and mutators_string) or nil
 		roaming_set_string = (roaming_set_string ~= "" and roaming_set_string) or nil
-		local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, nav_world, path_markers)
+		local entry_success = self:_add_path_marker_data(pos, marker_type, order, 1, crossroads_string, roaming_set_string, mutators_string, peak_boolean, nav_world, path_markers)
 
 		if not entry_success then
 			success = false
@@ -224,7 +232,7 @@ LevelAnalysis._initialize_path_markers_from_ingame = function (self, path_marker
 	return success
 end
 
-LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_editor, drawer)
+LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_editor, drawer, use_level_reference)
 	if not path_markers then
 		path_markers = {}
 
@@ -233,9 +241,7 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 			level_name = LevelSettings[level_key].level_name
 		end
 
-		local num_nested_levels = LevelResource.nested_level_count(level_name)
-
-		if num_nested_levels > 0 then
+		if use_level_reference and LevelResource.nested_level_count(level_name) > 0 then
 			level_name = LevelResource.nested_level_resource_name(level_name, 0)
 		end
 
@@ -309,7 +315,7 @@ LevelAnalysis.generate_main_path = function (self, level_name, path_markers, in_
 			count = count + 1
 
 			if count < 2 then
-				return "If using breaks in main-path, then each sub-path needs at least 2 path markers. "
+				return "If using breaks in main-path, then each sub-path needs at least 2 path markers. Check path marker with order -> " .. tostring(path_marker.order)
 			end
 
 			count = 0
@@ -632,7 +638,7 @@ end
 
 LevelAnalysis.group_spawners = function (self, spawners, level_sections)
 	table.sort(spawners, function (a, b)
-		return a[2] < b[2]
+		return a[3] < b[3]
 	end)
 
 	local last_map_section_index = 0
@@ -661,7 +667,29 @@ LevelAnalysis.group_spawners = function (self, spawners, level_sections)
 	for i = 1, num_sections, 1 do
 		local level_section = level_sections[i]
 
-		if not level_sections then
+		if not level_section then
+			for j = i + 1, num_sections, 1 do
+				local spawner_replacement = level_sections[j]
+
+				if spawner_replacement and not level_sections[i] then
+					level_sections[i] = spawner_replacement
+				end
+			end
+
+			for k = i - 1, 1, -1 do
+				local spawner_replacement = level_sections[k]
+
+				if spawner_replacement and not level_sections[i] then
+					level_sections[i] = spawner_replacement
+				end
+			end
+		end
+	end
+
+	for i = 1, num_sections, 1 do
+		local level_section = level_sections[i]
+
+		if not level_section then
 			table.dump(level_sections, "LEVEL_SECTIONS ERROR-----------------------", 3)
 			error()
 		end
@@ -726,6 +754,41 @@ LevelAnalysis.get_boss_spline_travel_distance = function (self, waypoints_table)
 	table.dump(waypoints_table)
 
 	return final_travel_dist
+end
+
+LevelAnalysis.get_possible_events = function (self)
+	local events = {}
+	local boss_waypoints = self.boss_waypoints
+
+	for _, section_table in ipairs(boss_waypoints) do
+		for _, waypoints_table in ipairs(section_table) do
+			local travel_dist = self:get_boss_spline_travel_distance(waypoints_table)
+			events[#events + 1] = {
+				kind = "event_patrol",
+				travel_dist = travel_dist,
+				waypoints_table = waypoints_table
+			}
+		end
+	end
+
+	local data = self.terror_spawners.event_boss
+	local spawners = data.spawners
+
+	for _, spawner in ipairs(spawners) do
+		local spawner_pos = Unit.local_position(spawner[1], 0)
+		local _, travel_dist, _, _, _ = MainPathUtils.closest_pos_at_main_path(nil, spawner_pos)
+		events[#events + 1] = {
+			kind = "event_boss",
+			travel_dist = travel_dist,
+			spawner = spawner
+		}
+	end
+
+	table.sort(events, function (a, b)
+		return a.travel_dist < b.travel_dist
+	end)
+
+	return events
 end
 
 LevelAnalysis.pick_boss_spline = function (self, map_section, padding, last_travel_dist)
@@ -982,10 +1045,11 @@ LevelAnalysis._give_events = function (self, main_paths, terror_spawners, genera
 			terror_event_name = "nothing"
 			local data = terror_spawners.event_boss
 			local level_sections = data.level_sections
+			local spawners = data.spawners
 			local start_index = level_sections[i]
 			local end_index = level_sections[i + 1] - 1
 			local index = math.floor((start_index + end_index) / 2)
-			local spawners = data.spawners
+			index = math.clamp(index, start_index, level_sections[i + 1])
 			local spawner = spawners[index]
 			boxed_pos = Vector3Box(Unit.local_position(spawner[1], 0))
 			gizmo_unit = spawner[1]
@@ -1291,6 +1355,7 @@ LevelAnalysis.generate_boss_paths = function (self)
 
 	if boss_spawning_method == "hand_placed" then
 		self:_hand_placed_terror_creation(self.main_paths, self.boss_event_list, "boss_events")
+	elseif boss_spawning_method == "bypassed" then
 	else
 		local level_overrides = level_settings.boss_events
 		local event_every_x_meter = (level_overrides and level_overrides.recurring_distance) or 300
@@ -1374,7 +1439,7 @@ LevelAnalysis._remove_short_routes = function (self, routes, patrol_type)
 		end
 
 		if length <= 15 then
-			print("Removing patrol of type: '" .. patrol_type .. "', called: '" .. data.id .. "' because it is too short: " .. tostring(data.travel_dist) .. "m, which is less then 10m.")
+			print("Removing patrol of type: '" .. patrol_type .. "', called: '" .. data.id .. "' because it is too short: " .. length .. "m, which is less then 15m.")
 			table.remove(routes, j)
 		end
 	end

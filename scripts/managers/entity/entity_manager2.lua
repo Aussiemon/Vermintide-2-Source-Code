@@ -313,6 +313,7 @@ EntityManager2.unregister_units = function (self, units, num_units)
 	for i = 1, num_units, 1 do
 		repeat
 			local unit = units[i]
+			POSITION_LOOKUP[unit] = nil
 			local unit_extensions = ScriptUnit.extensions(unit)
 
 			if not unit_extensions then

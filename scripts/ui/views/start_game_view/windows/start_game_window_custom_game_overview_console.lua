@@ -18,8 +18,8 @@ StartGameWindowCustomGameOverviewConsole.on_enter = function (self, params, offs
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
-	local player_manager = Managers.player
-	local local_player = player_manager:local_player()
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
+	local local_player = Managers.player:local_player()
 	self._stats_id = local_player:stats_id()
 	self._render_settings = {
 		snap_pixel_positions = true
@@ -213,8 +213,9 @@ StartGameWindowCustomGameOverviewConsole._handle_input = function (self, dt, t)
 
 		if input_service:get(START_GAME_INPUT) or self:_is_button_pressed(widgets_by_name.play_button) then
 			self._play_button_pressed = true
+			local custom_game_settings = parent:get_custom_game_settings(self._mechanism_name) or parent:get_custom_game_settings("adventure")
 
-			parent:play(t, "custom")
+			parent:play(t, custom_game_settings.game_mode_type)
 		end
 	end
 
@@ -228,25 +229,44 @@ end
 StartGameWindowCustomGameOverviewConsole._can_play = function (self)
 	local parent = self._parent
 	local selected_level_id = parent:get_selected_level_id()
+	local selected_journey = parent:get_selected_deus_journey()
+	local selected_mission = selected_journey or selected_level_id
 	local selected_difficulty_key = parent:get_difficulty_option()
-	local can_play = selected_level_id ~= nil and selected_difficulty_key ~= nil
+	local can_play = selected_mission ~= nil and selected_difficulty_key ~= nil
 
 	return can_play
 end
 
 StartGameWindowCustomGameOverviewConsole._update_mission_option = function (self)
-	local selected_level_id = self._parent:get_selected_level_id()
+	local parent = self._parent
+	local selected_level_id = parent:get_selected_level_id()
+	local selected_journey = parent:get_selected_deus_journey()
+	local selected_mission = selected_journey or selected_level_id
 
-	if selected_level_id then
-		local level_settings = LevelSettings[selected_level_id]
-		local mission_widget = self._widgets_by_name.mission_setting
-		mission_widget.content.input_text = Localize(level_settings.display_name)
-		local level_image = level_settings.level_image
-		mission_widget.content.icon_texture = level_image
-		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, selected_level_id) or 0
-		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
-		mission_widget.content.icon_frame_texture = level_frame
+	if not selected_mission then
+		return
 	end
+
+	local display_name = ""
+	local icon_texture = ""
+	local completed_difficulty_index = nil
+
+	if selected_journey then
+		local journey_settings = DeusJourneySettings[selected_journey]
+		display_name = journey_settings.display_name
+		icon_texture = journey_settings.level_image
+		completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(self._statistics_db, self._stats_id, selected_journey)
+	else
+		local level_settings = LevelSettings[selected_level_id]
+		display_name = level_settings.display_name
+		icon_texture = level_settings.level_image
+		completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, selected_level_id)
+	end
+
+	local mission_widget = self._widgets_by_name.mission_setting
+	mission_widget.content.input_text = Localize(display_name)
+	mission_widget.content.icon_texture = icon_texture
+	mission_widget.content.icon_frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
 end
 
 StartGameWindowCustomGameOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
@@ -276,16 +296,18 @@ StartGameWindowCustomGameOverviewConsole._update_difficulty_option = function (s
 end
 
 StartGameWindowCustomGameOverviewConsole._option_selected = function (self, input_index, t)
+	local parent = self._parent
+	local custom_game_settings = parent:get_custom_game_settings(self._mechanism_name) or parent:get_custom_game_settings("adventure")
 	local selected_widget_name = selector_input_definition[input_index]
 
 	if selected_widget_name == "mission_setting" then
-		self._parent:set_layout_by_name("area_selection")
+		self._parent:set_layout_by_name(custom_game_settings.layout_name)
 	elseif selected_widget_name == "difficulty_setting" then
 		self._parent:set_layout_by_name("difficulty_selection_custom")
 	elseif selected_widget_name == "play_button_console" then
 		self._play_button_pressed = true
 
-		self._parent:play(t, "custom")
+		self._parent:play(t, custom_game_settings.game_mode_type)
 	else
 		ferror("Unknown selector_input_definition: %s", selected_widget_name)
 	end

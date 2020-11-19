@@ -26,7 +26,7 @@ HUDSystem.destroy = function (self)
 	self.network_transmit = nil
 end
 
-HUDSystem.rpc_set_current_location = function (self, sender, unit_id, location_id)
+HUDSystem.rpc_set_current_location = function (self, channel_id, unit_id, location_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if not Unit.alive(unit) then

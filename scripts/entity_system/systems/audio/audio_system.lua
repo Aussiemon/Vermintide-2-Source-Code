@@ -215,9 +215,11 @@ AudioSystem._play_param_event = function (self, event, param, value, unit, objec
 	WwiseWorld.trigger_event(wwise_world, event, source)
 end
 
-AudioSystem.rpc_play_2d_audio_event = function (self, sender, event_id)
+AudioSystem.rpc_play_2d_audio_event = function (self, channel_id, event_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_play_2d_audio_event", sender, event_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_play_2d_audio_event", peer_id, event_id)
 	end
 
 	local event = NetworkLookup.sound_events[event_id]
@@ -226,7 +228,7 @@ AudioSystem.rpc_play_2d_audio_event = function (self, sender, event_id)
 	WwiseWorld.trigger_event(wwise_world, event)
 end
 
-AudioSystem.rpc_server_audio_event = function (self, sender, sound_id)
+AudioSystem.rpc_server_audio_event = function (self, channel_id, sound_id)
 	local wwise_world = Managers.world:wwise_world(self.world)
 	local sound_event = NetworkLookup.sound_events[sound_id]
 	local entity_manager = Managers.state.entity
@@ -239,7 +241,7 @@ AudioSystem.rpc_server_audio_event = function (self, sender, sound_id)
 	WwiseWorld.trigger_event(wwise_world, sound_event)
 end
 
-AudioSystem.rpc_server_audio_event_at_pos = function (self, sender, sound_id, position)
+AudioSystem.rpc_server_audio_event_at_pos = function (self, channel_id, sound_id, position)
 	local wwise_world = Managers.world:wwise_world(self.world)
 	local sound_event = NetworkLookup.sound_events[sound_id]
 	local entity_manager = Managers.state.entity
@@ -252,9 +254,11 @@ AudioSystem.rpc_server_audio_event_at_pos = function (self, sender, sound_id, po
 	WwiseWorld.trigger_event(wwise_world, sound_event, position)
 end
 
-AudioSystem.rpc_server_audio_unit_event = function (self, sender, sound_id, unit_id, is_level_unit, object_id)
+AudioSystem.rpc_server_audio_unit_event = function (self, channel_id, sound_id, unit_id, is_level_unit, object_id)
 	if self.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_server_audio_unit_event", sender, sound_id, unit_id, is_level_unit, object_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_server_audio_unit_event", peer_id, sound_id, unit_id, is_level_unit, object_id)
 	end
 
 	local event = NetworkLookup.sound_events[sound_id]
@@ -266,9 +270,11 @@ AudioSystem.rpc_server_audio_unit_event = function (self, sender, sound_id, unit
 	end
 end
 
-AudioSystem.rpc_server_audio_position_event = function (self, sender, sound_id, position)
+AudioSystem.rpc_server_audio_position_event = function (self, channel_id, sound_id, position)
 	if self.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_server_audio_position_event", sender, sound_id, position)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_server_audio_position_event", peer_id, sound_id, position)
 	end
 
 	local event = NetworkLookup.sound_events[sound_id]
@@ -276,7 +282,7 @@ AudioSystem.rpc_server_audio_position_event = function (self, sender, sound_id, 
 	self:_play_position_event(event, position)
 end
 
-AudioSystem.rpc_server_audio_unit_dialogue_event = function (self, sender, sound_id, unit_id)
+AudioSystem.rpc_server_audio_unit_dialogue_event = function (self, channel_id, sound_id, unit_id)
 	if self.is_server then
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_unit_dialogue_event", sound_id, unit_id)
 	end
@@ -299,7 +305,7 @@ AudioSystem.rpc_server_audio_unit_dialogue_event = function (self, sender, sound
 	end
 end
 
-AudioSystem.rpc_server_audio_unit_param_string_event = function (self, sender, sound_event_id, unit_id, object_id, name_id, value_id)
+AudioSystem.rpc_server_audio_unit_param_string_event = function (self, channel_id, sound_event_id, unit_id, object_id, name_id, value_id)
 	if self.is_server then
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_unit_param_string_event", sound_event_id, unit_id, object_id, name_id, value_id)
 	end
@@ -312,7 +318,7 @@ AudioSystem.rpc_server_audio_unit_param_string_event = function (self, sender, s
 	self:_play_param_event(event, param, value, unit, object_id)
 end
 
-AudioSystem.rpc_server_audio_unit_param_int_event = function (self, sender, sound_event_id, unit_id, object_id, name_id, value)
+AudioSystem.rpc_server_audio_unit_param_int_event = function (self, channel_id, sound_event_id, unit_id, object_id, name_id, value)
 	if self.is_server then
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_unit_param_int_event", sound_event_id, unit_id, object_id, name_id, value)
 	end
@@ -324,7 +330,7 @@ AudioSystem.rpc_server_audio_unit_param_int_event = function (self, sender, soun
 	self:_play_param_event(event, param, value, unit, object_id)
 end
 
-AudioSystem.rpc_server_audio_unit_param_float_event = function (self, sender, sound_event_id, unit_id, object_id, name_id, value)
+AudioSystem.rpc_server_audio_unit_param_float_event = function (self, channel_id, sound_event_id, unit_id, object_id, name_id, value)
 	if self.is_server then
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_unit_param_float_event", sound_event_id, unit_id, object_id, name_id, value)
 	end
@@ -336,14 +342,14 @@ AudioSystem.rpc_server_audio_unit_param_float_event = function (self, sender, so
 	self:_play_param_event(event, param, value, unit, object_id)
 end
 
-AudioSystem.rpc_client_audio_set_global_parameter_with_lerp = function (self, sender, parameter_id, value)
+AudioSystem.rpc_client_audio_set_global_parameter_with_lerp = function (self, channel_id, parameter_id, value)
 	local name = NetworkLookup.global_parameter_names[parameter_id]
 	local percentage = value * 100
 
 	self:set_global_parameter_with_lerp(name, percentage)
 end
 
-AudioSystem.rpc_client_audio_set_global_parameter = function (self, sender, parameter_id, value)
+AudioSystem.rpc_client_audio_set_global_parameter = function (self, channel_id, parameter_id, value)
 	local name = NetworkLookup.global_parameter_names[parameter_id]
 
 	self:set_global_parameter(name, value)

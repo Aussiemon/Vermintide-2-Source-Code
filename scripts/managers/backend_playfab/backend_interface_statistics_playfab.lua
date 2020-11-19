@@ -98,6 +98,8 @@ end
 
 BackendInterfaceStatisticsPlayFab.clear_saved_stats = function (self)
 	self._stats_to_save = nil
+
+	Managers.player:statistics_db():apply_persistant_stats()
 end
 
 BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self)

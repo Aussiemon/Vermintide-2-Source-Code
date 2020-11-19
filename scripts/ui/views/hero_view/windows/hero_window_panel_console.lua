@@ -502,7 +502,7 @@ local default_font_color = Colors.get_color_table_with_alpha("white", 255)
 HeroWindowPanelConsole._animate_purchase_add = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 	local style = widgets_by_name.preorder_text.style
-	local progress = 0.5 + math.sin(Application.time_since_launch() * 3) * 0.5
+	local progress = 0.5 + math.sin(Managers.time:time("ui") * 3) * 0.5
 	local font_increase = math.easeOutCubic(progress) * 10
 	local text_color = style.text.text_color
 	local shadow_text_color = style.text_shadow.text_color
@@ -605,7 +605,7 @@ HeroWindowPanelConsole._animate_title_entry = function (self, widget, dt)
 	end
 
 	if style.new_marker then
-		local new_marker_progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+		local new_marker_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 		style.new_marker.color[1] = 100 + 155 * new_marker_progress
 	end
 

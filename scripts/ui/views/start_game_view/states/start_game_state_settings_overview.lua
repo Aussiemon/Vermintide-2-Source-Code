@@ -28,18 +28,7 @@ require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_grid
 require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_summary_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_additional_settings_console")
 require("scripts/ui/views/start_game_view/windows/start_game_window_lobby_browser_console")
-
-for _, dlc in pairs(DLCSettings) do
-	local start_game_windows = dlc.start_game_windows
-
-	if start_game_windows then
-		for i = 1, #start_game_windows, 1 do
-			local start_game_window = start_game_windows[i]
-
-			require(start_game_window)
-		end
-	end
-end
+DLCUtils.require_list("start_game_windows")
 
 local definitions = local_require("scripts/ui/views/start_game_view/states/definitions/start_game_state_settings_overview_definitions")
 local widget_definitions = definitions.widgets
@@ -47,14 +36,6 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local STREAMING_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 StartGameStateSettingsOverview = class(StartGameStateSettingsOverview)
 StartGameStateSettingsOverview.NAME = "StartGameStateSettingsOverview"
 
@@ -79,6 +60,7 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._ingame_ui = ingame_ui_context.ingame_ui
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -107,7 +89,7 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		windows_settings = self._windows_settings,
-		input_service = fake_input_service,
+		input_service = FAKE_INPUT_SERVICE,
 		layout_settings = self._layout_settings,
 		start_state = params.start_state,
 		use_gamepad_layout = self._gamepad_style_active
@@ -179,6 +161,9 @@ StartGameStateSettingsOverview._setup_menu_layout = function (self)
 	self._gamepad_style_active = use_gamepad_layout
 	self._layout_settings = layout_settings
 	self._window_layouts = layout_settings.window_layouts
+	self._mechanism_quickplay_settings = layout_settings.mechanism_quickplay_settings
+	self._mechanism_custom_game_settings = layout_settings.mechanism_custom_game_settings
+	self._mechanism_twitch_settings = layout_settings.mechanism_twitch_settings
 end
 
 StartGameStateSettingsOverview._create_ui_elements = function (self, params)
@@ -382,7 +367,7 @@ StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
 end
 
 StartGameStateSettingsOverview.window_input_service = function (self)
-	return (self._show_difficulty_option and fake_input_service) or self:input_service()
+	return (self._show_difficulty_option and FAKE_INPUT_SERVICE) or self:input_service()
 end
 
 StartGameStateSettingsOverview._close_window_at_index = function (self, window_index)
@@ -460,6 +445,7 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 		self:set_selected_level_id(table.level_id)
 		self:set_difficulty_option(table.difficulty_key)
 		self:set_selected_weave_id(table.weave_id)
+		self:set_selected_deus_journey(table.deus_journey_name)
 	else
 		self._layout_save_settings = nil
 	end
@@ -496,6 +482,18 @@ StartGameStateSettingsOverview.set_layout_by_name = function (self, name)
 	end
 
 	ferror("[StartGameStateSettingsOverview]:set_layout_by_name() - Could not find a layout with name %s", name)
+end
+
+StartGameStateSettingsOverview.get_quickplay_settings = function (self, mechanism_name)
+	return self._mechanism_quickplay_settings[mechanism_name]
+end
+
+StartGameStateSettingsOverview.get_custom_game_settings = function (self, mechanism_name)
+	return self._mechanism_custom_game_settings[mechanism_name]
+end
+
+StartGameStateSettingsOverview.get_twitch_settings = function (self, mechanism_name)
+	return self._mechanism_twitch_settings[mechanism_name]
 end
 
 StartGameStateSettingsOverview.set_layout = function (self, index)
@@ -899,69 +897,68 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 
 		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
 	elseif game_mode_type == "adventure" then
-		local level_key = nil
-		local difficulty = self._selected_difficulty_key
-		local is_private = is_offline
-		local quick_game = true
-		local always_host = is_offline
-		local strict_matchmaking = false
-		local deed_backend_id, event_data = nil
+		local params = {
+			quick_game = true,
+			strict_matchmaking = false,
+			difficulty = self._selected_difficulty_key,
+			private_game = is_offline,
+			always_host = is_offline
+		}
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+		self.parent:start_game(game_mode_type, params)
 	elseif game_mode_type == "weave_quick_play" then
-		local level_key = nil
-		local difficulty = self._selected_difficulty_key
-		local is_private = is_offline
-		local quick_game = true
-		local always_host = is_offline
-		local strict_matchmaking = false
-		local deed_backend_id, event_data = nil
+		local params = {
+			quick_game = true,
+			strict_matchmaking = false,
+			difficulty = self._selected_difficulty_key,
+			private_game = is_offline,
+			always_host = is_offline
+		}
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+		self.parent:start_game(game_mode_type, params)
 	elseif game_mode_type == "custom" then
 		local network_lobby = self._network_lobby
 		local num_members = #network_lobby:members():get_members()
-		local is_alone = num_members == 1
-		local level_key = self:get_selected_level_id()
-		local difficulty = self._selected_difficulty_key
 		local is_private = is_offline or self:is_private_option_enabled()
-		local quick_game = false
-		local always_host = is_offline or is_private or self:is_always_host_option_enabled()
-		local strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled()
-		local deed_backend_id, event_data = nil
+		local is_alone = num_members == 1
+		local always_host = is_private or self:is_always_host_option_enabled()
+		local params = {
+			quick_game = false,
+			network_lobby = network_lobby,
+			num_members = num_members,
+			is_alone = is_alone,
+			level_key = self:get_selected_level_id(),
+			difficulty = self._selected_difficulty_key,
+			private_game = is_private,
+			always_host = always_host,
+			strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled()
+		}
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+		self.parent:start_game(game_mode_type, params)
 	elseif game_mode_type == "deed" then
-		local level_key, difficulty = nil
-		local is_private = true
-		local quick_game = false
-		local always_host = true
-		local strict_matchmaking = false
-		local deed_backend_id = self:get_selected_heroic_deed_backend_id()
-		local event_data = nil
+		local params = {
+			is_private = true,
+			quick_game = false,
+			strict_matchmaking = false,
+			always_host = true,
+			deed_backend_id = self:get_selected_heroic_deed_backend_id()
+		}
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+		self.parent:start_game(game_mode_type, params)
 	elseif game_mode_type == "twitch" then
-		local level_key = self:get_selected_level_id()
-		local difficulty = self._selected_difficulty_key
-		local is_private = true
-		local quick_game = false
-		local always_host = true
-		local strict_matchmaking = false
-		local deed_backend_id, event_data = nil
+		local params = {
+			private_game = true,
+			quick_game = false,
+			strict_matchmaking = false,
+			always_host = true,
+			level_key = self:get_selected_level_id(),
+			difficulty = self._selected_difficulty_key
+		}
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
+		self.parent:start_game(game_mode_type, params)
 	elseif game_mode_type == "event" then
 		local live_event_interface = Managers.backend:get_interface("live_events")
 		local game_mode_data = live_event_interface:get_game_mode_data()
-		local level_key = game_mode_data.level_key
-		local excluded_level_keys = game_mode_data.excluded_level_keys
-		local difficulty = self._selected_difficulty_key
-		local is_private = false
-		local quick_game = false
-		local always_host = false
-		local strict_matchmaking = false
-		local deed_backend_id = nil
 		local event_data = {
 			mutators = game_mode_data.mutators
 		}
@@ -970,7 +967,29 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 			event_data = nil
 		end
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data, excluded_level_keys)
+		local params = {
+			private_game = false,
+			strict_matchmaking = false,
+			always_host = false,
+			quick_game = false,
+			level_key = game_mode_data.level_key,
+			difficulty = self._selected_difficulty_key,
+			event_data = event_data,
+			excluded_level_keys = game_mode_data.excluded_level_keys
+		}
+
+		self.parent:start_game(game_mode_type, params)
+	elseif game_mode_type == "versus" then
+		local params = {
+			quick_game = false,
+			strict_matchmaking = false,
+			always_host = true,
+			level_key = self:get_selected_level_id(),
+			difficulty = self._selected_difficulty_key,
+			private_game = self:is_private_option_enabled()
+		}
+
+		self.parent:start_game(game_mode_type, params)
 	elseif game_mode_type == "weave" then
 		local weave_name = self:get_selected_weave_id()
 		local objective_index = self:get_selected_weave_objective_index()
@@ -980,6 +999,68 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 		self.parent:start_game_weave(weave_name, objective_index, is_private, always_host)
 	elseif game_mode_type == "weave_find_group" then
 		self.parent:start_game_weave_find_group(force_close_menu)
+	elseif game_mode_type == "deus_custom" then
+		local network_lobby = self._network_lobby
+		local num_members = #network_lobby:members():get_members()
+		local is_alone = num_members == 1
+		local private_game = is_offline or self:is_private_option_enabled()
+		local always_host = private_game or self:is_always_host_option_enabled()
+		local backend_deus = Managers.backend:get_interface("deus")
+		local journey_cycle = backend_deus:get_journey_cycle()
+		local journey_name = self:get_selected_deus_journey() or AvailableJourneyOrder[1]
+		local boon_name = journey_cycle.journey_data[journey_name].boon
+		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
+		local params = {
+			quick_game = false,
+			journey_name = journey_name,
+			difficulty = self._selected_difficulty_key,
+			private_game = private_game,
+			always_host = always_host,
+			strict_matchmaking = is_alone and not private_game and not always_host and self:is_strict_matchmaking_option_enabled(),
+			boon_reward = boon_name,
+			dominant_god = dominant_god
+		}
+
+		self.parent:start_game(game_mode_type, params)
+	elseif game_mode_type == "deus_twitch" then
+		local backend_deus = Managers.backend:get_interface("deus")
+		local journey_cycle = backend_deus:get_journey_cycle()
+		local journey_name = self:get_selected_deus_journey() or AvailableJourneyOrder[1]
+		local boon_name = journey_cycle.journey_data[journey_name].boon
+		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
+		local params = {
+			private_game = true,
+			quick_game = false,
+			strict_matchmaking = false,
+			always_host = true,
+			journey_name = journey_name,
+			difficulty = self._selected_difficulty_key,
+			boon_reward = boon_name,
+			dominant_god = dominant_god
+		}
+
+		self.parent:start_game(game_mode_type, params)
+	elseif game_mode_type == "deus_quickplay" then
+		local backend_deus = Managers.backend:get_interface("deus")
+		local journey_cycle = backend_deus:get_journey_cycle()
+		local journey_data = journey_cycle.journey_data
+		local journey_names = table.keys(journey_data)
+		local journey_name = journey_names[math.random(1, #journey_names)]
+		local journey_settings = journey_data[journey_name]
+		local boon_name = journey_settings.boon
+		local dominant_god = journey_settings.dominant_god
+		local params = {
+			quick_game = true,
+			strict_matchmaking = false,
+			journey_name = journey_name,
+			boon_reward = boon_name,
+			dominant_god = dominant_god,
+			difficulty = self._selected_difficulty_key,
+			private_game = is_offline,
+			always_host = is_offline
+		}
+
+		self.parent:start_game(game_mode_type, params)
 	else
 		ferror("Unknown game_mode_type(%s)", game_mode_type)
 	end
@@ -1136,6 +1217,18 @@ StartGameStateSettingsOverview.set_selected_level_id = function (self, level_id)
 	end
 
 	self._specific_level_id = level_id
+end
+
+StartGameStateSettingsOverview.set_selected_deus_journey = function (self, journey_name)
+	if self._layout_save_settings then
+		self._layout_save_settings.deus_journey_name = journey_name
+	end
+
+	self._specific_deus_journey_name = journey_name
+end
+
+StartGameStateSettingsOverview.get_selected_deus_journey = function (self)
+	return self._specific_deus_journey_name or nil
 end
 
 StartGameStateSettingsOverview.get_selected_area_name = function (self)
@@ -1354,7 +1447,7 @@ StartGameStateSettingsOverview._can_add_streaming_function = function (self)
 	local on_enter_sub_state = self.parent:on_enter_sub_state()
 	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
 
-	if PLATFORM == "ps4" then
+	if PLATFORM ~= "win32" then
 		local twitch_enabled = GameSettingsDevelopment.twitch_enabled
 		local is_offline = Managers.account:offline_mode()
 

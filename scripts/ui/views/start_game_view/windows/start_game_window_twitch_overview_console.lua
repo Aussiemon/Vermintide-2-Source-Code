@@ -23,6 +23,7 @@ StartGameWindowTwitchOverviewConsole.on_enter = function (self, params, offset)
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
 	self._is_server = ingame_ui_context.is_server
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -228,12 +229,10 @@ StartGameWindowTwitchOverviewConsole._handle_virtual_keyboard = function (self, 
 		return
 	end
 
-	local done, success, twitch_user_name = Managers.system_dialog:poll_virtual_keyboard(self._virtual_keyboard_id)
-
-	if done then
-		self._virtual_keyboard_id = nil
-
-		if success then
+	if PLATFORM == "xb1" then
+		if not XboxInterface.interface_active() then
+			local twitch_user_name = XboxInterface.get_keyboard_result()
+			self._virtual_keyboard_id = nil
 			local twitch_user_name = string.gsub(twitch_user_name, " ", "")
 
 			if twitch_user_name then
@@ -246,6 +245,27 @@ StartGameWindowTwitchOverviewConsole._handle_virtual_keyboard = function (self, 
 
 			Managers.twitch:connect(twitch_user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
 			self:_play_sound("Play_hud_select")
+		end
+	else
+		local done, success, twitch_user_name = Managers.system_dialog:poll_virtual_keyboard(self._virtual_keyboard_id)
+
+		if done then
+			self._virtual_keyboard_id = nil
+
+			if success then
+				local twitch_user_name = string.gsub(twitch_user_name, " ", "")
+
+				if twitch_user_name then
+					PlayerData.twitch_user_name = twitch_user_name
+				end
+
+				local frame_widget = self._widgets_by_name.frame_widget
+				local frame_widget_content = frame_widget.content
+				frame_widget_content.twitch_name = twitch_user_name
+
+				Managers.twitch:connect(twitch_user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+				self:_play_sound("Play_hud_select")
+			end
 		end
 	end
 end
@@ -297,9 +317,11 @@ StartGameWindowTwitchOverviewConsole._handle_input = function (self, dt, t)
 			end
 
 			if input_service:get(START_GAME_INPUT) or self:_is_button_pressed(widgets_by_name.play_button) then
-				self._play_button_pressed = true
+				local twitch_settings = parent:get_twitch_settings(self._mechanism_name) or parent:get_twitch_settings("adventure")
 
-				parent:play(t, "twitch")
+				parent:play(t, twitch_settings.game_mode_type)
+
+				self._play_button_pressed = true
 			end
 		end
 	end
@@ -370,6 +392,13 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 					local position = definitions.twitch_keyboard_anchor_point
 					local inv_scale = RESOLUTION_LOOKUP.inv_scale
 					self._virtual_keyboard_id = Managers.system_dialog:open_virtual_keyboard(user_id, title, twitch_user_name, position)
+				elseif PLATFORM == "xb1" then
+					local twitch_user_name = PlayerData.twitch_user_name
+					local title = Localize("start_game_window_twitch_login_hint")
+
+					XboxInterface.show_virtual_keyboard(twitch_user_name, title)
+
+					self._virtual_keyboard_id = true
 				else
 					local user_name = ""
 
@@ -434,26 +463,52 @@ StartGameWindowTwitchOverviewConsole._can_play = function (self)
 
 	local parent = self._parent
 	local selected_level_id = parent:get_selected_level_id()
+	local selected_journey = parent:get_selected_deus_journey()
+	local selected_mission = selected_journey or selected_level_id
 	local selected_difficulty_key = parent:get_difficulty_option()
 	local connected = Managers.twitch and Managers.twitch:is_connected()
-	local can_play = selected_level_id ~= nil and selected_difficulty_key ~= nil and connected
+	local can_play = selected_mission ~= nil and selected_difficulty_key ~= nil and connected
 
 	return can_play
 end
 
 StartGameWindowTwitchOverviewConsole._update_mission_option = function (self)
-	local selected_level_id = self._parent:get_selected_level_id()
+	local parent = self._parent
+	local selected_level_id = parent:get_selected_level_id()
+	local selected_journey = parent:get_selected_deus_journey()
+	local selected_mission = selected_level_id or selected_journey
 
-	if selected_level_id then
-		local level_settings = LevelSettings[selected_level_id]
-		local mission_widget = self._widgets_by_name.mission_setting
-		mission_widget.content.input_text = Localize(level_settings.display_name)
-		local level_image = level_settings.level_image
-		mission_widget.content.icon_texture = level_image
-		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, selected_level_id) or 0
-		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
-		mission_widget.content.icon_frame_texture = level_frame
+	if selected_mission then
+		if selected_journey then
+			self:_set_selected_journey(selected_journey)
+		else
+			self:_set_selected_level(selected_level_id)
+		end
 	end
+
+	self._widgets_by_name.mission_setting.content.button_hotspot.disable_button = selected_level_id == nil
+end
+
+StartGameWindowTwitchOverviewConsole._set_selected_level = function (self, level_id)
+	local level_settings = LevelSettings[level_id]
+	local mission_widget = self._widgets_by_name.mission_setting
+	mission_widget.content.input_text = Localize(level_settings.display_name)
+	local level_image = level_settings.level_image
+	mission_widget.content.icon_texture = level_image
+	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, level_id)
+	local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+	mission_widget.content.icon_frame_texture = level_frame
+end
+
+StartGameWindowTwitchOverviewConsole._set_selected_journey = function (self, journey_name)
+	local level_settings = DeusJourneySettings[journey_name]
+	local mission_widget = self._widgets_by_name.mission_setting
+	mission_widget.content.input_text = Localize(level_settings.display_name)
+	local level_image = level_settings.level_image
+	mission_widget.content.icon_texture = level_image
+	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, journey_name)
+	local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+	mission_widget.content.icon_frame_texture = level_frame
 end
 
 StartGameWindowTwitchOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
@@ -483,16 +538,18 @@ StartGameWindowTwitchOverviewConsole._update_difficulty_option = function (self)
 end
 
 StartGameWindowTwitchOverviewConsole._option_selected = function (self, input_index, t)
+	local parent = self._parent
+	local twitch_settings = parent:get_twitch_settings(self._mechanism_name) or parent:get_twitch_settings("adventure")
 	local selected_widget_name = selector_input_definition[input_index]
 
 	if selected_widget_name == "mission_setting" then
-		self._parent:set_layout_by_name("area_selection")
+		self._parent:set_layout_by_name(twitch_settings.layout_name)
 	elseif selected_widget_name == "difficulty_setting" then
 		self._parent:set_layout_by_name("difficulty_selection_custom")
 	elseif selected_widget_name == "play_button_console" then
 		self._play_button_pressed = true
 
-		self._parent:play(t, "custom")
+		self._parent:play(t, twitch_settings.game_mode_type)
 	else
 		ferror("Unknown selector_input_definition: %s", selected_widget_name)
 	end

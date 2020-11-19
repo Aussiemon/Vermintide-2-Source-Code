@@ -134,13 +134,7 @@ progression_unlocks.bw_unchained = {
 	unlock_type = "career"
 }
 
-for dlc_name, dlc in pairs(DLCSettings) do
-	local dlc_progression_unlocks = dlc.progression_unlocks
-
-	if dlc_progression_unlocks then
-		table.merge(progression_unlocks, dlc_progression_unlocks)
-	end
-end
+DLCUtils.merge("progression_unlocks", progression_unlocks)
 
 for unlock_name, template in pairs(progression_unlocks) do
 	template.name = unlock_name

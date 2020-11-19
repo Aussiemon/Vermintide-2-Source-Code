@@ -40,19 +40,19 @@ settings.light_weight_projectiles = {
 }
 settings.light_weight_projectile_effects = {
 	ungor_arrow = {
-		{
-			vfx = {
+		vfx = {
+			{
 				particle_name = "fx/ungor_arrow",
 				kill_policy = "destroy"
 			},
-			sfx = {
-				looping_sound_event_name = "Play_enemy_weapon_ungor_archer_arrow_start",
-				looping_sound_stop_event_name = "Stop_enemy_weapon_ungor_archer_arrow_start"
+			{
+				particle_name = "fx/ungor_arrow_flash"
 			}
 		},
-		{
-			vfx = {
-				particle_name = "fx/ungor_arrow_flash"
+		sfx = {
+			{
+				looping_sound_event_name = "Play_enemy_weapon_ungor_archer_arrow_start",
+				looping_sound_stop_event_name = "Stop_enemy_weapon_ungor_archer_arrow_start"
 			}
 		}
 	}

@@ -71,7 +71,8 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	local auto_load_files = DialogueSettings.auto_load_files
 	local blocked_auto_load = DialogueSettings.blocked_auto_load_files[level_name]
 	self._original_dialogue_settings = {}
-	local dialogue_settings_override = LevelSettings[level_name].override_dialogue_settings
+	local level_settings = LevelSettings[level_name]
+	local dialogue_settings_override = level_settings.override_dialogue_settings
 
 	if dialogue_settings_override then
 		for setting_name, value in pairs(dialogue_settings_override) do
@@ -169,6 +170,9 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 		local current_wind = weave_template.wind
 		self.global_context.current_wind = current_wind
 	end
+
+	local level_theme = level_settings.theme
+	self.global_context.current_theme = level_theme
 
 	self.tagquery_database:set_global_context(self.global_context)
 
@@ -900,13 +904,13 @@ DialogueSystem._update_new_events = function (self, t)
 	self.input_event_queue_n = 0
 end
 
-DialogueSystem.hot_join_sync = function (self, sender)
+DialogueSystem.hot_join_sync = function (self, peer_id)
 	if self.global_context.current_wind then
 		local current_wind = self.global_context.current_wind
 		local weave_name_id = NetworkLookup.weave_winds[current_wind]
 		local network_transmit = Managers.state.network.network_transmit
 
-		network_transmit:send_rpc("rpc_update_current_wind", sender, weave_name_id)
+		network_transmit:send_rpc("rpc_update_current_wind", peer_id, weave_name_id)
 	end
 end
 
@@ -1021,7 +1025,9 @@ DialogueSystem.trigger_attack = function (self, blackboard, player_unit, enemy_u
 				audio_system_extension:_play_event_with_source(wwise_world, sound_event, wwise_source)
 			else
 				if sound_event then
-					RPC.rpc_server_audio_unit_event(owner.peer_id, sound_event_id, unit_id, false, 0)
+					local channel_id = PEER_ID_TO_CHANNEL[owner.peer_id]
+
+					RPC.rpc_server_audio_unit_event(channel_id, sound_event_id, unit_id, false, 0)
 				end
 
 				local audio_system_extension = Managers.state.entity:system("audio_system")
@@ -1058,8 +1064,9 @@ DialogueSystem.trigger_backstab = function (self, player_unit, enemy_unit, black
 				audio_system_extension:_play_event_with_source(wwise_world, sound_event, wwise_source)
 			elseif sound_event then
 				local sound_event_id = NetworkLookup.sound_events[sound_event]
+				local channel_id = PEER_ID_TO_CHANNEL[owner.peer_id]
 
-				RPC.rpc_server_audio_unit_event(owner.peer_id, sound_event_id, unit_id, false, 0)
+				RPC.rpc_server_audio_unit_event(channel_id, sound_event_id, unit_id, false, 0)
 			end
 		end
 	end
@@ -1083,8 +1090,9 @@ DialogueSystem.trigger_flanking = function (self, player_unit, enemy_unit)
 				audio_system_extension:_play_event(flanking_event, enemy_unit, 0)
 			else
 				local flanking_event_id = NetworkLookup.sound_events[flanking_event]
+				local channel_id = PEER_ID_TO_CHANNEL[owner.peer_id]
 
-				RPC.rpc_server_audio_unit_event(owner.peer_id, flanking_event_id, unit_id, false, 0)
+				RPC.rpc_server_audio_unit_event(channel_id, flanking_event_id, unit_id, false, 0)
 
 				local audio_system_extension = Managers.state.entity:system("audio_system")
 
@@ -1116,8 +1124,9 @@ DialogueSystem.trigger_backstab_hit = function (self, player_unit, enemy_unit)
 			else
 				local go_id = NetworkUnit.game_object_id(player_unit)
 				local event_id = NetworkLookup.sound_events[backstabhit_event]
+				local channel_id = PEER_ID_TO_CHANNEL[player_data.peer_id]
 
-				RPC.rpc_play_first_person_sound(player_data.peer_id, go_id, event_id, POSITION_LOOKUP[player_unit])
+				RPC.rpc_play_first_person_sound(channel_id, go_id, event_id, POSITION_LOOKUP[player_unit])
 			end
 		end
 	end
@@ -1278,7 +1287,7 @@ DialogueSystem._update_player_jumping = function (self, t)
 	end
 end
 
-DialogueSystem.rpc_trigger_dialogue_event = function (self, sender, go_id, event_id, event_data_array, event_data_array_types, identifier)
+DialogueSystem.rpc_trigger_dialogue_event = function (self, channel_id, go_id, event_id, event_data_array, event_data_array_types, identifier)
 	local unit = Managers.state.unit_storage:unit(go_id)
 
 	if not unit then
@@ -1317,7 +1326,7 @@ DialogueSystem.rpc_trigger_dialogue_event = function (self, sender, go_id, event
 	self.input_event_queue_n = input_event_queue_n + 4
 end
 
-DialogueSystem.rpc_play_marker_event = function (self, sender, go_id, marker_id)
+DialogueSystem.rpc_play_marker_event = function (self, channel_id, go_id, marker_id)
 	local marker_unit = Managers.state.network:game_object_or_level_unit(go_id, false)
 
 	if not marker_unit then
@@ -1349,7 +1358,7 @@ DialogueSystem._check_play_debug_sound = function (self, sound_event, subtitles_
 	return
 end
 
-DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level_unit, dialogue_id, dialogue_index)
+DialogueSystem.rpc_play_dialogue_event = function (self, channel_id, go_id, is_level_unit, dialogue_id, dialogue_index)
 	local dialogue_actor_unit = Managers.state.network:game_object_or_level_unit(go_id, is_level_unit)
 
 	if not dialogue_actor_unit then
@@ -1431,7 +1440,7 @@ DialogueSystem.rpc_play_dialogue_event = function (self, sender, go_id, is_level
 	end
 end
 
-DialogueSystem.rpc_interrupt_dialogue_event = function (self, sender, go_id, is_level_unit)
+DialogueSystem.rpc_interrupt_dialogue_event = function (self, channel_id, go_id, is_level_unit)
 	local dialogue_actor_unit = Managers.state.network:game_object_or_level_unit(go_id, is_level_unit)
 
 	if not dialogue_actor_unit then
@@ -1472,7 +1481,7 @@ DialogueSystem.rpc_interrupt_dialogue_event = function (self, sender, go_id, is_
 	end
 end
 
-DialogueSystem.rpc_update_current_wind = function (self, sender, weave_name_id)
+DialogueSystem.rpc_update_current_wind = function (self, channel_id, weave_name_id)
 	local current_wind = NetworkLookup.weave_winds[weave_name_id]
 	self.global_context.current_wind = current_wind
 end

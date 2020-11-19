@@ -34,56 +34,9 @@ weapon_template.actions = {
 	action_two = {
 		default = ActionTemplates.give_item_on_defend
 	},
-	action_instant_drink_healing_draught = {
-		default = {
-			kind = "dummy",
-			weapon_action_hand = "left",
-			total_time = 0,
-			allowed_chain_actions = {}
-		},
-		instant_drink = {
-			damage_window_end = 0.2,
-			ammo_usage = 1,
-			anim_end_event = "attack_finished",
-			kind = "healing_draught",
-			damage_window_start = 0.05,
-			weapon_action_hand = "left",
-			block_pickup = true,
-			uninterruptible = true,
-			dialogue_event = "on_healing_draught",
-			anim_event = "attack_heal",
-			auto_validate_on_gamepad = true,
-			total_time = 1.2,
-			allowed_chain_actions = {},
-			condition_func = function (user_unit)
-				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local status_extension = ScriptUnit.extension(user_unit, "status_system")
-				local full_health = health_extension:current_permanent_health_percent() >= 1
-				local is_wounded = status_extension:is_wounded()
-
-				return is_wounded or not full_health
-			end,
-			chain_condition_func = function (user_unit)
-				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local status_extension = ScriptUnit.extension(user_unit, "status_system")
-				local full_health = health_extension:current_permanent_health_percent() >= 1
-				local is_wounded = status_extension:is_wounded()
-
-				return is_wounded or not full_health
-			end
-		}
-	},
-	action_instant_give_item = ActionTemplates.instant_give_item,
 	action_inspect = ActionTemplates.action_inspect_left,
 	action_wield = ActionTemplates.wield_left,
-	action_career_skill = ActionTemplates.career_skill_dummy,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught,
+	action_instant_give_item = ActionTemplates.instant_give_item,
 	action_instant_heal_self = {
 		default = {
 			kind = "dummy",

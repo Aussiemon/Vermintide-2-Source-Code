@@ -176,12 +176,26 @@ DotTypeLookup = {
 	aoe_poison_dot = "poison_dot",
 	chaos_zombie_explosion = "poison_dot"
 }
+
+DLCUtils.merge("dot_type_lookup", DotTypeLookup)
+
 local checked_templates = {
 	bright_wizard = {},
 	dwarf_ranger = {},
 	empire_soldier = {},
 	witch_hunter = {},
-	wood_elf = {}
+	wood_elf = {},
+	vs_poison_wind_globadier = {},
+	vs_packmaster = {},
+	vs_gutter_runner = {},
+	vs_corruptor = {},
+	vs_vortex_sorcerer = {},
+	vs_ratling_gunner = {},
+	vs_warpfire_thrower = {},
+	vs_chaos_troll = {},
+	vs_chaos_spawn = {},
+	vs_stormfiend = {},
+	vs_rat_ogre = {}
 }
 
 for _, item in pairs(ItemMasterList) do
@@ -209,13 +223,15 @@ for _, item in pairs(ItemMasterList) do
 					local action_name = action_names[j]
 					actions[action_name] = ActionTemplates[action_name]
 				end
-
-				actions.action_career_skill = nil
 			end
 		end
 	end
 end
 
+local MeleeBuffTypes = MeleeBuffTypes or {
+	MELEE_1H = true,
+	MELEE_2H = true
+}
 local WEAPON_DAMAGE_UNIT_LENGTH_EXTENT = 1.919366
 local TAP_ATTACK_BASE_RANGE_OFFSET = 0.6
 local HOLD_ATTACK_BASE_RANGE_OFFSET = 0.65
@@ -228,6 +244,15 @@ for item_template_name, item_template in pairs(Weapons) do
 	local hold_attack_meta_data = attack_meta_data and attack_meta_data.hold_attack
 	local set_default_tap_attack_range = tap_attack_meta_data and tap_attack_meta_data.max_range == nil
 	local set_default_hold_attack_range = hold_attack_meta_data and hold_attack_meta_data.max_range == nil
+
+	if MeleeBuffTypes[item_template.buff_type] then
+		fassert(attack_meta_data, "Missing attack metadata for weapon %s", item_template_name)
+		fassert(tap_attack_meta_data, "Missing tap_attack metadata for weapon %s", item_template_name)
+		fassert(hold_attack_meta_data, "Missing hold_attack metadata for weapon %s", item_template_name)
+		fassert(tap_attack_meta_data.arc, "Missing arc parameter in tap_attack metadata for weapon %s", item_template_name)
+		fassert(hold_attack_meta_data.arc, "Missing arc parameter in hold_attack metadata for weapon %s", item_template_name)
+	end
+
 	local actions = item_template.actions
 
 	for action_name, sub_actions in pairs(actions) do

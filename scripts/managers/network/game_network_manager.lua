@@ -11,16 +11,31 @@ local PING_SAMPLES_MAX_SIZE = 10
 local PING_SAMPLE_INTERVAL = 1
 
 GameNetworkManager.init = function (self, world, lobby, is_server, event_delegate)
-	Network.create_game_session()
+	print("GameNetworkManager:init... creating game session")
 
-	local session = Network.game_session()
+	local session = Network.create_game_session()
 
 	fassert(session, "Failed to create game session")
 
 	self.game_session = session
 
 	if is_server then
+		printf("Host GameSession.make_game_session_host with session:", session)
 		GameSession.make_game_session_host(session)
+	else
+		local game_session_host = GameSession.game_session_host(self.game_session)
+
+		if not game_session_host or game_session_host == "0" then
+			game_session_host = lobby:lobby_host()
+		end
+
+		fassert(game_session_host and game_session_host ~= "0", "Missing game session host")
+
+		self._game_session_host = game_session_host
+		local channel_id = PEER_ID_TO_CHANNEL[game_session_host]
+
+		GameSession.join(session, channel_id)
+		printf("Joning GameSession %s as a client through channel_id %d", session, channel_id)
 	end
 
 	self._world = world
@@ -41,7 +56,6 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	debug_print("My own peer_id = %s", tostring(self.peer_id))
 	debug_print("self.is_server = %s", tostring(self.is_server))
-	self:set_max_upload_speed(Application.user_setting("max_upload_speed") or DefaultUserSettings.get("user_settings", "max_upload_speed"))
 	self:set_small_network_packets(Application.user_setting("small_network_packets") or DefaultUserSettings.get("user_settings", "small_network_packets"))
 
 	self._event_delegate = event_delegate
@@ -55,19 +69,6 @@ end
 
 GameNetworkManager.session_id = function (self)
 	return self._session_id
-end
-
-GameNetworkManager.set_max_upload_speed = function (self, max_speed)
-	if self.is_server then
-		local max_num_peers = 3
-		local min_per_peer = max_speed / max_num_peers
-
-		debug_print("Network caps: min/peer %d kbps, total %d kbps", min_per_peer, max_speed)
-		Network.enable_qos(min_per_peer, min_per_peer, max_speed)
-	else
-		debug_print("Network caps: min/peer %d kbps, total %d kbps", max_speed, max_speed)
-		Network.enable_qos(max_speed, max_speed, max_speed)
-	end
 end
 
 GameNetworkManager.ping_by_peer = function (self, peer_id)
@@ -491,6 +492,19 @@ GameNetworkManager._health_extension = function (self, go_id)
 	return health_extension
 end
 
+GameNetworkManager._career_extension = function (self, go_id)
+	local player_unit_id = GameSession.game_object_field(self.game_session, go_id, "unit_game_object_id")
+	local player_unit = self.unit_storage:unit(player_unit_id)
+
+	if player_unit == nil then
+		return nil
+	end
+
+	local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+	return career_extension
+end
+
 GameNetworkManager.game_object_created = function (self, go_id, owner_id)
 	local go_type_id = GameSession.game_object_field(self.game_session, go_id, "go_type")
 	local go_type = NetworkLookup.go_types[go_type_id]
@@ -586,6 +600,28 @@ GameNetworkManager.game_object_destroyed_weave_objective = function (self, game_
 	weave_objective_system:game_object_destroyed(game_object_id)
 end
 
+GameNetworkManager.game_object_created_horde_surge = function (self, game_object_id, owner_id, go_template)
+	local game_mode = Managers.state.game_mode:game_mode()
+	game_mode._horde_surge_handler._game_object_id = game_object_id
+end
+
+GameNetworkManager.game_object_destroyed_horde_surge = function (self, game_object_id)
+	local game_mode = Managers.state.game_mode:game_mode()
+	game_mode._horde_surge_handler._game_object_id = nil
+end
+
+GameNetworkManager.game_object_created_versus_objective = function (self, game_object_id, owner_id, go_template)
+	local versus_objective_system = Managers.state.entity:system("versus_objective_system")
+
+	versus_objective_system:game_object_created(game_object_id)
+end
+
+GameNetworkManager.game_object_destroyed_versus_objective = function (self, game_object_id, owner_id, go_template)
+	local versus_objective_system = Managers.state.entity:system("versus_objective_system")
+
+	versus_objective_system:game_object_destroyed(game_object_id)
+end
+
 GameNetworkManager.destroy_game_object = function (self, go_id)
 	debug_print("destroying game object with go_id=%d", go_id)
 
@@ -617,10 +653,28 @@ GameNetworkManager.game_object_created_player_unit = function (self, go_id, owne
 end
 
 GameNetworkManager.game_object_destroyed_player_unit = function (self, go_id, owner_id, go_template)
-	local player_unit = self.unit_storage:unit(go_id)
+	local target_unit = self.unit_storage:unit(go_id)
 
 	if self.is_server then
 		self.network_server:peer_despawned_player(owner_id)
+	end
+
+	if DEDICATED_SERVER then
+		return false
+	end
+
+	local health_system = ScriptUnit.has_extension(target_unit, "health_system")
+	local last_damage_data = health_system.last_damage_data
+
+	if last_damage_data then
+		local local_player = Managers.player:local_player()
+
+		if last_damage_data.attacker_unique_id == local_player:unique_id() then
+			local position = POSITION_LOOKUP[local_player.player_unit]
+			local target_position = POSITION_LOOKUP[target_unit]
+
+			Managers.telemetry.events:local_player_killed_player(local_player, position, target_position)
+		end
 	end
 
 	self:game_object_destroyed_network_unit(go_id, owner_id, go_template)
@@ -692,6 +746,36 @@ GameNetworkManager.game_object_destroyed_twitch_vote = function (self, game_obje
 	Managers.twitch:remove_game_object_id(game_object_id)
 end
 
+GameNetworkManager.game_object_created_versus_character_selection_unit = function (self, game_object_id, owner_id, go_template)
+	local mechanism = Managers.mechanism:game_mechanism()
+	mechanism._party_selection_logic._go_id = game_object_id
+end
+
+GameNetworkManager.game_object_destroyed_versus_character_selection_unit = function (self, game_object_id)
+	local mechanism = Managers.mechanism:game_mechanism()
+	mechanism._party_selection_logic._go_id = nil
+end
+
+GameNetworkManager.game_object_created_career_data = function (self, go_id, owner_peer_id)
+	local career_extension = self:_career_extension(go_id)
+
+	if career_extension == nil then
+		return
+	end
+
+	career_extension:set_career_game_object_id(go_id)
+end
+
+GameNetworkManager.game_object_destroyed_career_data = function (self, go_id, owner_peer_id)
+	local career_extension = self:_career_extension(go_id)
+
+	if career_extension == nil then
+		return
+	end
+
+	career_extension:set_career_game_object_id(nil)
+end
+
 GameNetworkManager.remove_peer = function (self, peer_id)
 	if self._object_synchronizing_clients[peer_id] then
 		self._object_synchronizing_clients[peer_id] = nil
@@ -749,14 +833,16 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 		Managers.state.conflict:hot_join_sync(peer_id)
 	end
 
-	RPC.rpc_to_client_sync_session_id(peer_id, self._session_id)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+	RPC.rpc_to_client_sync_session_id(channel_id, self._session_id)
 
 	self._object_synchronizing_clients[peer_id] = nil
 
 	self.network_transmit:remove_peer_ignore(peer_id)
 end
 
-GameNetworkManager.rpc_play_particle_effect = function (self, sender, effect_id, go_id, node_id, offset, rotation_offset, linked)
+GameNetworkManager.rpc_play_particle_effect = function (self, channel_id, effect_id, go_id, node_id, offset, rotation_offset, linked)
 	if self.is_server then
 		self.network_transmit:send_rpc_clients("rpc_play_particle_effect", effect_id, go_id, node_id, offset, rotation_offset, linked)
 	end
@@ -827,7 +913,7 @@ GameNetworkManager.gm_event_end_conditions_met = function (self, reason, checkpo
 	self.network_transmit:send_rpc_clients("rpc_gm_event_end_conditions_met", reason_id, checkpoint_available, peer_ids, local_player_ids, percentages)
 end
 
-GameNetworkManager.rpc_gm_event_end_conditions_met = function (self, sender, reason_id, checkpoint_available, peer_ids, local_player_ids, percentages)
+GameNetworkManager.rpc_gm_event_end_conditions_met = function (self, channel_id, reason_id, checkpoint_available, peer_ids, local_player_ids, percentages)
 	if not self.is_server then
 		local percentages_completed = self:_unpack_percentages_completed_arrays(peer_ids, local_player_ids, percentages)
 		local end_reason = NetworkLookup.game_end_reasons[reason_id]
@@ -841,7 +927,7 @@ GameNetworkManager.gm_event_round_started = function (self)
 	self.network_transmit:send_rpc_clients("rpc_gm_event_round_started")
 end
 
-GameNetworkManager.rpc_gm_event_round_started = function (self, sender)
+GameNetworkManager.rpc_gm_event_round_started = function (self, channel_id)
 	Managers.state.game_mode:trigger_event("round_started")
 end
 
@@ -849,11 +935,11 @@ GameNetworkManager.gm_event_initial_peers_spawned = function (self)
 	self.network_transmit:send_rpc_clients("rpc_gm_event_initial_peers_spawned")
 end
 
-GameNetworkManager.rpc_gm_event_initial_peers_spawned = function (self, sender)
+GameNetworkManager.rpc_gm_event_initial_peers_spawned = function (self, channel_id)
 	Managers.state.game_mode:trigger_event("initial_peers_spawned")
 end
 
-GameNetworkManager.rpc_play_melee_hit_effects = function (self, sender, sound_event_id, hit_position, sound_type_id, unit_game_object_id)
+GameNetworkManager.rpc_play_melee_hit_effects = function (self, channel_id, sound_event_id, hit_position, sound_type_id, unit_game_object_id)
 	local hit_unit = self.unit_storage:unit(unit_game_object_id)
 
 	if not Unit.alive(hit_unit) then
@@ -861,7 +947,9 @@ GameNetworkManager.rpc_play_melee_hit_effects = function (self, sender, sound_ev
 	end
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_play_melee_hit_effects", sender, sound_event_id, hit_position, sound_type_id, unit_game_object_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_play_melee_hit_effects", peer_id, sound_event_id, hit_position, sound_type_id, unit_game_object_id)
 	end
 
 	local sound_event = NetworkLookup.sound_events[sound_event_id]
@@ -870,7 +958,7 @@ GameNetworkManager.rpc_play_melee_hit_effects = function (self, sender, sound_ev
 	EffectHelper.play_melee_hit_effects(sound_event, self._world, hit_position, sound_type, true, hit_unit)
 end
 
-GameNetworkManager.rpc_request_spawn_network_unit = function (self, sender, request_spawn_template_id, position, rotation, source_unit_go_id, state_int)
+GameNetworkManager.rpc_request_spawn_network_unit = function (self, channel_id, request_spawn_template_id, position, rotation, source_unit_go_id, state_int)
 	local source_unit = self.unit_storage:unit(source_unit_go_id)
 	local template_name = NetworkLookup.spawn_unit_templates[request_spawn_template_id]
 	local spawn_template = SpawnUnitTemplates[template_name]
@@ -880,7 +968,7 @@ GameNetworkManager.rpc_request_spawn_network_unit = function (self, sender, requ
 	local players = Managers.player:human_players()
 end
 
-GameNetworkManager.rpc_surface_mtr_fx = function (self, sender, effect_name_id, unit_game_object_id, position, rotation, normal, actor_index)
+GameNetworkManager.rpc_surface_mtr_fx = function (self, channel_id, effect_name_id, unit_game_object_id, position, rotation, normal, actor_index)
 	local unit = self.unit_storage:unit(unit_game_object_id)
 
 	if not Unit.alive(unit) then
@@ -888,7 +976,9 @@ GameNetworkManager.rpc_surface_mtr_fx = function (self, sender, effect_name_id, 
 	end
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_surface_mtr_fx", sender, effect_name_id, unit_game_object_id, position, rotation, normal, actor_index)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_surface_mtr_fx", peer_id, effect_name_id, unit_game_object_id, position, rotation, normal, actor_index)
 	end
 
 	local hit_actor = nil
@@ -902,7 +992,7 @@ GameNetworkManager.rpc_surface_mtr_fx = function (self, sender, effect_name_id, 
 	EffectHelper.play_surface_material_effects(effect_name, self._world, unit, position, rotation, normal, nil, true, nil, hit_actor)
 end
 
-GameNetworkManager.rpc_surface_mtr_fx_lvl_unit = function (self, sender, effect_name_id, unit_level_index, position, rotation, normal, actor_index)
+GameNetworkManager.rpc_surface_mtr_fx_lvl_unit = function (self, channel_id, effect_name_id, unit_level_index, position, rotation, normal, actor_index)
 	local level = LevelHelper:current_level(self._world)
 	local unit = Level.unit_by_index(level, unit_level_index)
 
@@ -911,7 +1001,9 @@ GameNetworkManager.rpc_surface_mtr_fx_lvl_unit = function (self, sender, effect_
 	end
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_surface_mtr_fx_lvl_unit", sender, effect_name_id, unit_level_index, position, rotation, normal, actor_index)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_surface_mtr_fx_lvl_unit", peer_id, effect_name_id, unit_level_index, position, rotation, normal, actor_index)
 	end
 
 	local hit_actor = nil
@@ -925,9 +1017,11 @@ GameNetworkManager.rpc_surface_mtr_fx_lvl_unit = function (self, sender, effect_
 	EffectHelper.play_surface_material_effects(effect_name, self._world, unit, position, rotation, normal, nil, true, nil, hit_actor)
 end
 
-GameNetworkManager.rpc_skinned_surface_mtr_fx = function (self, sender, effect_name_id, position, rotation, normal)
+GameNetworkManager.rpc_skinned_surface_mtr_fx = function (self, channel_id, effect_name_id, position, rotation, normal)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_skinned_surface_mtr_fx", sender, effect_name_id, position, rotation, normal)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_skinned_surface_mtr_fx", peer_id, effect_name_id, position, rotation, normal)
 	end
 
 	local effect_name = NetworkLookup.surface_material_effects[effect_name_id]
@@ -939,7 +1033,7 @@ GameNetworkManager.game_session_host = function (self)
 	return self.game_session and (self._game_session_host or GameSession.game_session_host(self.game_session))
 end
 
-GameNetworkManager.rpc_enemy_is_alerted = function (self, sender, unit_id, is_alerted)
+GameNetworkManager.rpc_enemy_is_alerted = function (self, channel_id, unit_id, is_alerted)
 	local unit = self.unit_storage:unit(unit_id)
 	local category_name = "detect"
 
@@ -959,13 +1053,13 @@ GameNetworkManager.rpc_enemy_is_alerted = function (self, sender, unit_id, is_al
 	end
 end
 
-GameNetworkManager.rpc_ladder_shake = function (self, sender, unit_index)
+GameNetworkManager.rpc_ladder_shake = function (self, channel_id, unit_index)
 	local unit = Level.unit_by_index(LevelHelper:current_level(self._world), unit_index)
 
 	ScriptUnit.extension(unit, "ladder_system"):shake()
 end
 
-GameNetworkManager.rpc_assist = function (self, sender, savior_player_id, savior_local_player_id, saved_player_id, saved_local_player_id, predicate_id, enemy_unit_id)
+GameNetworkManager.rpc_assist = function (self, channel_id, savior_player_id, savior_local_player_id, saved_player_id, saved_local_player_id, predicate_id, enemy_unit_id)
 	local player_manager = Managers.player
 	local savior_player = player_manager:player(savior_player_id, savior_local_player_id)
 	local saved_player = player_manager:player(saved_player_id, saved_local_player_id)
@@ -1005,9 +1099,11 @@ GameNetworkManager.rpc_assist = function (self, sender, savior_player_id, savior
 	end
 end
 
-GameNetworkManager.rpc_coop_feedback = function (self, sender, player1_peer_id, player1_local_player_id, predicate_id, player2_peer_id, player2_local_player_id)
+GameNetworkManager.rpc_coop_feedback = function (self, channel_id, player1_peer_id, player1_local_player_id, predicate_id, player2_peer_id, player2_local_player_id)
 	if self.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_coop_feedback", sender, player1_peer_id, player1_local_player_id, predicate_id, player2_peer_id, player2_local_player_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_coop_feedback", peer_id, player1_peer_id, player1_local_player_id, predicate_id, player2_peer_id, player2_local_player_id)
 	end
 
 	local predicate = NetworkLookup.coop_feedback[predicate_id]
@@ -1026,7 +1122,7 @@ GameNetworkManager.rpc_coop_feedback = function (self, sender, player1_peer_id, 
 		local is_player_controlled = player1:is_player_controlled()
 		local player_1_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(player_1_peer_id)) or tostring(player_1_peer_id))) or player1:name()
 
-		if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+		if (PLATFORM == "xb1" or PLATFORM == "ps4") and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
 			player_1_name = (is_player_controlled and (lobby:user_name(player_1_peer_id) or tostring(player_1_peer_id))) or player1:name()
 		end

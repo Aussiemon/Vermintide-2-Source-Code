@@ -1,4 +1,4 @@
-local twitch_settings = (PLATFORM == "xb1" and MixerSettings) or TwitchSettings
+local twitch_settings = TwitchSettings
 
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then

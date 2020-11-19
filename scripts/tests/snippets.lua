@@ -15,6 +15,9 @@ local Snippets = {
 	request_weapons_for_career = function (career_name)
 		return Testify:make_request("request_weapons_for_career", career_name)
 	end,
+	wait_for_players_inventory_ready = function ()
+		Testify:make_request("wait_for_players_inventory_ready")
+	end,
 	player_wield_weapon = function (weapon)
 		Testify:make_request("player_wield_weapon", weapon)
 		Testify:make_request("wait_for_weapon_asset_to_be_loaded")
@@ -126,8 +129,8 @@ local Snippets = {
 	make_players_invicible = function ()
 		Testify:make_request("make_players_invicible")
 	end,
-	make_player_and_one_bot_invicible = function ()
-		Testify:make_request("make_player_and_one_bot_invicible")
+	make_player_and_two_bots_invicible = function ()
+		Testify:make_request("make_player_and_two_bots_invicible")
 	end,
 	end_zone_activated = function (end_zone_name)
 		return Testify:make_request("end_zone_activated", end_zone_name)

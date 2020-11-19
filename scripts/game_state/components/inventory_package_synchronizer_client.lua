@@ -82,7 +82,26 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 		packages_list[package_name] = false
 	end
 
-	packages_list[career.package_name] = false
+	if career.package_name then
+		packages_list[career.package_name] = false
+	end
+
+	if career.talent_packages then
+		local mechanism_manager = Managers.mechanism
+		local mechanism = mechanism_manager:game_mechanism()
+		local talent_interface = nil
+
+		if mechanism:get_state() == "weave" then
+			talent_interface = Managers.backend:get_interface("weaves")
+		else
+			talent_interface = Managers.backend:get_talents_interface()
+		end
+
+		local talent_tree = talent_interface:get_talent_tree(career_name)
+		local talents = talent_interface:get_talents(career_name)
+
+		career.talent_packages(talents, talent_tree, packages_list, is_first_person)
+	end
 
 	return packages_list
 end
@@ -141,7 +160,7 @@ end
 
 local TEMP_PACKAGE_MAP = {}
 
-InventoryPackageSynchronizerClient.rpc_server_set_inventory_packages = function (self, sender, inventory_sync_id, inventory_package_list)
+InventoryPackageSynchronizerClient.rpc_server_set_inventory_packages = function (self, channel_id, inventory_sync_id, inventory_package_list)
 	local network_manager = Managers.state and Managers.state.network
 	local ignore_lobby_rpcs = network_manager and network_manager.ignore_lobby_rpcs
 
@@ -149,15 +168,16 @@ InventoryPackageSynchronizerClient.rpc_server_set_inventory_packages = function 
 		return
 	end
 
-	local peer_id = Network:peer_id()
+	local peer_id = Network.peer_id()
+	local remote_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-	if self.is_server and sender ~= peer_id then
-		network_printf("[NETWORK] got rpc_server_set_inventory_packages from " .. sender .. ", is_server:" .. tostring(self.is_server) .. "  --> ignogering")
+	if self.is_server and remote_peer_id ~= peer_id then
+		network_printf("[NETWORK] got rpc_server_set_inventory_packages from " .. tostring(remote_peer_id) .. ", is_server:" .. tostring(self.is_server) .. "  --> ignogering")
 
 		return
 	end
 
-	network_printf("[NETWORK] rpc_server_set_inventory_packages, sender:%s inventory_sync_id:%d my_peer_id:%s", sender, inventory_sync_id, peer_id)
+	network_printf("[NETWORK] rpc_server_set_inventory_packages, remote_peer_id:%s inventory_sync_id:%d my_peer_id:%s", tostring(remote_peer_id), tostring(inventory_sync_id), tostring(peer_id))
 
 	self.inventory_sync_id = inventory_sync_id
 	local temp_package_map = TEMP_PACKAGE_MAP

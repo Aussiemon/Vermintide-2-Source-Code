@@ -32,24 +32,14 @@ GameSettingsDevelopment.use_engine_optimized_ai_locomotion = true
 GameSettingsDevelopment.allow_retry_weave = false
 GameSettingsDevelopment.disable_carousel = true
 GameSettingsDevelopment.use_store_unload_list = true
+GameSettingsDevelopment.enable_deus_tracking = Development.parameter("enable_deus_tracking")
 local script_data = script_data
 script_data.debug_behaviour_trees = (script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees) or false
 GameSettingsDevelopment.use_backend = not Development.parameter("use_local_backend")
-local test_backend = Development.parameter("test_backend")
-
-if test_backend ~= nil then
-	print("Using test backend:", test_backend)
-
-	GameSettingsDevelopment.backend_settings = BackendSettings[test_backend]
-else
-	print("Using internal backend")
-
-	GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
-end
-
+GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
 GameSettingsDevelopment.twitch_enabled = true
 GameSettingsDevelopment.allow_chat_input = true
-GameSettingsDevelopment.disable_intro_trailer = false
+GameSettingsDevelopment.disable_intro_trailer = Development.parameter("disable_intro_trailer")
 GameSettingsDevelopment.use_new_pickup_spawning = true
 GameSettingsDevelopment.fade_environments = true
 script_data.debug_enabled = true
@@ -151,6 +141,16 @@ if BUILD == "dev" or BUILD == "debug" then
 else
 	GameSettingsDevelopment.disable_free_flight = Development.parameter("disable-free-flight") == nil or Development.parameter("disable-free-flight")
 end
+
+local test_backend = Development.parameter("test_backend")
+
+if test_backend ~= nil then
+	print("Using test backend:", test_backend)
+
+	GameSettingsDevelopment.backend_settings = BackendSettings[test_backend]
+end
+
+print("PlayFab Title ID:", GameSettingsDevelopment.backend_settings.title_id)
 
 if Development.parameter("quests_enabled") ~= nil then
 	GameSettingsDevelopment.backend_settings.quests_enabled = Development.parameter("quests_enabled")

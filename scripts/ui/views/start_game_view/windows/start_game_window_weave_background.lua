@@ -177,7 +177,7 @@ StartGameWindowWeaveBackground._update_background_animations = function (self, d
 	local matchmaking_manager = Managers.matchmaking
 	local is_game_matchmaking = matchmaking_manager:is_game_matchmaking()
 	local speed = (is_game_matchmaking and 4) or 2.5
-	local progress = 0.5 + math.sin(Application.time_since_launch() * speed) * 0.5
+	local progress = 0.5 + math.sin(Managers.time:time("ui") * speed) * 0.5
 
 	self:_set_background_bloom_intensity(progress, is_game_matchmaking)
 end

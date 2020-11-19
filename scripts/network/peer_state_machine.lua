@@ -3,9 +3,7 @@ require("scripts/network/peer_states")
 PeerStateMachine = {}
 
 local function network_printf(format, ...)
-	if script_data.network_debug_connections then
-		printf("[PeerSM] " .. format, ...)
-	end
+	printf("[PeerSM] " .. format, ...)
 end
 
 PeerStateMachine.create = function (server, peer_id, xb1_preconnect)

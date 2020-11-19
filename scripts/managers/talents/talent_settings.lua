@@ -3,16 +3,7 @@ require("scripts/managers/talents/talent_settings_sienna")
 require("scripts/managers/talents/talent_settings_kerillian")
 require("scripts/managers/talents/talent_settings_markus")
 require("scripts/managers/talents/talent_settings_victor")
-
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.talent_settings
-
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
-	end
-end
+DLCUtils.require_list("talent_settings")
 
 MaxTalentPoints = 6
 NumTalentRows = 6
@@ -54,7 +45,7 @@ for hero_name, hero_talent_trees in pairs(TalentTrees) do
 					talent_settings.tree = tree
 					talent_settings.row = row
 					talent_settings.coulumn = coulumn
-					talent_settings.talent_id = talent_id
+					talent_settings.talent_id = lookup.talent_id
 				end
 			end
 		end

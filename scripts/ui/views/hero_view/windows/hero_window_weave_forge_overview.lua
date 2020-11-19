@@ -774,7 +774,7 @@ HeroWindowWeaveForgeOverview._upgrade_forge = function (self)
 
 	self._parent:block_input()
 
-	local time = Application.time_since_launch()
+	local time = Managers.time:time("ui")
 	self._upgrade_forge_done_time = time + UPGRADE_REQUEST_LIMIT
 	self._upgrade_forge_response = nil
 	local widgets_by_name = self._widgets_by_name

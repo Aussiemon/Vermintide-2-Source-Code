@@ -5,6 +5,7 @@ GenericUnitInteractableExtension.init = function (self, extension_init_context, 
 	self._is_level_object = Unit.level(unit) ~= nil
 	self.interactable_type = Unit.get_data(unit, "interaction_data", "interaction_type") or "player_generic"
 	self.interactor_unit = nil
+	self._enabled = true
 	self.num_times_successfully_completed = 0
 	self.interaction_result = nil
 
@@ -67,9 +68,19 @@ GenericUnitInteractableExtension.hot_join_sync = function (self, sender)
 		local individual_pickup = Unit.get_data(interactable_unit, "interaction_data", "individual_pickup") or false
 
 		if not individual_pickup and used then
-			RPC.rpc_sync_interactable_used_state(sender, interactable_unit_id, self._is_level_object, used)
+			local channel_id = PEER_ID_TO_CHANNEL[sender]
+
+			RPC.rpc_sync_interactable_used_state(channel_id, interactable_unit_id, self._is_level_object, used)
 		end
 	end
+end
+
+GenericUnitInteractableExtension.is_enabled = function (self)
+	return self._enabled
+end
+
+GenericUnitInteractableExtension.set_enabled = function (self, enabled)
+	self._enabled = enabled
 end
 
 return

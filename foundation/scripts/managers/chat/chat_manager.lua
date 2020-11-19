@@ -1,3 +1,4 @@
+require("scripts/managers/irc/irc_manager")
 require("scripts/ui/views/chat_gui")
 require("scripts/misc/script_retrieve_app_ticket_token")
 
@@ -20,7 +21,9 @@ if not MESSAGE_TYPES then
 		[Irc.PRIVATE_MSG] = "Private Message",
 		[Irc.CHANNEL_MSG] = "Channel Message",
 		[Irc.SYSTEM_MSG] = "System Message",
-		[Irc.PARTY_MSG] = "Party Message"
+		[Irc.PARTY_MSG] = "Party Message",
+		[Irc.TEAM_MSG] = "Team Message",
+		[Irc.ALL_MSG] = "All Message"
 	}
 end
 
@@ -45,7 +48,9 @@ local CHAT_VIEW_LUT = {
 CHAT_VIEW_TYPE_LUT = {
 	[Irc.PRIVATE_MSG] = "Private",
 	[Irc.CHANNEL_MSG] = "Channels",
-	[Irc.PARTY_MSG] = "Party"
+	[Irc.PARTY_MSG] = "Party",
+	[Irc.TEAM_MSG] = "Team Message",
+	[Irc.ALL_MSG] = "All Message"
 }
 CHAT_VIEW_COLOR = {
 	All = Colors.get_table("white"),
@@ -73,7 +78,7 @@ ChatManager.init = function (self)
 
 	self:add_message_target("Party", Irc.PARTY_MSG)
 
-	if PLATFORM == "win32" and GameSettingsDevelopment.use_global_chat and rawget(_G, "Steam") then
+	if (PLATFORM == "win32" or PLATFORM == "linux") and GameSettingsDevelopment.use_global_chat and rawget(_G, "Steam") then
 		Steam.retrieve_encrypted_app_ticket()
 
 		local token = ScriptReceiveAppTicketToken:new()
@@ -216,14 +221,23 @@ ChatManager.check_meta = function (self, message, username, parameter)
 	return message
 end
 
-ChatManager.add_message_target = function (self, message_target, message_target_type)
+ChatManager.add_message_target = function (self, message_target, message_target_type, message_target_key)
 	if self:_verify_new_target(message_target, message_target_type) then
 		self.message_targets[#self.message_targets + 1] = {
 			message_target = message_target,
-			message_target_type = message_target_type
+			message_target_type = message_target_type,
+			message_target_key = message_target_key
 		}
 		self.message_targets_lut[message_target] = #self.message_targets
 	end
+end
+
+ChatManager.set_message_target_type = function (self, message_target_type)
+	local message_target_index = self.message_targets_lut[message_target_type]
+
+	fassert(message_target_index, "[ChatManager] There is not message target for Irc target %q", message_target_type)
+
+	self.current_message_target_index = message_target_index
 end
 
 ChatManager._verify_new_target = function (self, message_target, message_target_type)
@@ -244,9 +258,8 @@ ChatManager.remove_message_target = function (self, message_target)
 	local target_index = self.message_targets_lut[message_target]
 
 	if target_index then
-		table.remove(self.message_targets, target_index)
-
 		self.message_targets_lut[message_target] = nil
+		self.message_targets[target_index] = nil
 
 		return true
 	end
@@ -396,6 +409,7 @@ ChatManager.destroy = function (self)
 	UIRenderer.destroy(self._ui_top_renderer, top_world)
 
 	self.channels = nil
+	self.message_targets = {}
 end
 
 ChatManager.set_font_size = function (self, font_size)
@@ -406,6 +420,10 @@ end
 
 ChatManager.set_chat_enabled = function (self, chat_enabled)
 	self._chat_enabled = chat_enabled
+end
+
+ChatManager.is_chat_enabled = function (self)
+	return self._chat_enabled
 end
 
 ChatManager.register_channel = function (self, channel_id, members_func)
@@ -441,7 +459,7 @@ ChatManager.enable_gui = function (self, enable)
 end
 
 ChatManager.update = function (self, dt, t, menu_active, menu_input_service, no_unblock)
-	if self.gui_enabled then
+	if self.gui_enabled and PLATFORM ~= "linux" then
 		self.chat_gui:update(dt, menu_active, menu_input_service, no_unblock, self._chat_enabled)
 	end
 end
@@ -464,7 +482,15 @@ ChatManager._get_localized_message = function (self, message, localize, localiza
 	return message
 end
 
-ChatManager.send_chat_message = function (self, channel_id, local_player_id, message, localize, localization_parameters, localize_parameters, recent_message_index, optional_message_type, optional_message_target)
+ChatManager._get_message_target = function (self, message_target)
+	for i, data in ipairs(self.message_targets) do
+		if message_target == data.message_target then
+			return data
+		end
+	end
+end
+
+ChatManager.send_chat_message = function (self, channel_id, local_player_id, message, localize, localization_parameters, localize_parameters, recent_message_index, optional_message_target, optional_message_type, optional_message_target_key, sender_peer_id)
 	local command, parameters, context_data = self:_handle_command(message, recent_message_index, optional_message_target)
 
 	if command then
@@ -484,24 +510,44 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 		localization_parameters[1] = old_parameter
 	end
 
-	local message_target_info = self.message_targets[self.current_message_target_index]
-	local message_type = optional_message_type or message_target_info.message_target_type
-	local message_target = optional_message_target or message_target_info.message_target
+	local message_target_info = nil
 
-	if message_type == Irc.PARTY_MSG then
+	if optional_message_target then
+		message_target_info = self:_get_message_target(optional_message_target)
+	else
+		message_target_info = self.message_targets[self.current_message_target_index]
+	end
+
+	local message_target = message_target_info.message_target
+	local message_type = optional_message_type or message_target_info.message_target_type
+	local message_target_key = optional_message_target_key or message_target_info.message_target_key
+
+	if message_type == Irc.PARTY_MSG or message_type == Irc.TEAM_MSG or message_type == Irc.ALL_MSG then
 		if self.is_server then
+			if sender_peer_id then
+				peer_id = sender_peer_id or peer_id
+			end
+
 			local members = self:channel_members(channel_id)
 
 			for _, member in pairs(members) do
 				if member ~= self.my_peer_id then
-					RPC.rpc_chat_message(member, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
+					local network_channel_id = PEER_ID_TO_CHANNEL[member]
+
+					if network_channel_id then
+						RPC.rpc_chat_message(network_channel_id, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+					end
 				end
 			end
 		else
 			local host_peer_id = self.host_peer_id
 
 			if host_peer_id then
-				RPC.rpc_chat_message(host_peer_id, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
+				local network_channel_id = PEER_ID_TO_CHANNEL[host_peer_id]
+
+				if network_channel_id then
+					RPC.rpc_chat_message(network_channel_id, channel_id, peer_id, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+				end
 			end
 		end
 	elseif message_type == Irc.CHANNEL_MSG or message_type == Irc.PRIVATE_MSG then
@@ -512,7 +558,11 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 		end
 
 		if message_type == Irc.CHANNEL_MSG then
-			peer_id = "[" .. message_target .. "] " .. peer_id
+			if message_target_key then
+				peer_id = string.format("[%s] ", Localize(message_target_key))
+			else
+				peer_id = string.format("[%s]", message_target)
+			end
 		elseif message_type == Irc.PRIVATE_MSG then
 			peer_id = "To [" .. message_target .. "]"
 		end
@@ -554,14 +604,22 @@ ChatManager.send_system_chat_message = function (self, channel_id, message_id, l
 
 		for _, member in pairs(members) do
 			if member ~= my_peer_id then
-				RPC.rpc_chat_message(member, channel_id, my_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
+				local network_channel_id = PEER_ID_TO_CHANNEL[member]
+
+				if network_channel_id then
+					RPC.rpc_chat_message(network_channel_id, channel_id, my_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, Irc.SYSTEM_MSG)
+				end
 			end
 		end
 	else
 		local host_peer_id = self.host_peer_id
 
 		if host_peer_id then
-			RPC.rpc_chat_message(host_peer_id, channel_id, my_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
+			local network_channel_id = PEER_ID_TO_CHANNEL[host_peer_id]
+
+			if network_channel_id then
+				RPC.rpc_chat_message(network_channel_id, channel_id, my_peer_id, 0, message_id, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, Irc.SYSTEM_MSG)
+			end
 		end
 	end
 
@@ -646,7 +704,7 @@ ChatManager.has_channel = function (self, channel_id)
 	return self.channels[channel_id] and true
 end
 
-ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
+ChatManager.rpc_chat_message = function (self, sender_channel_id, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
 	if not self:has_channel(channel_id) then
 		return
 	end
@@ -654,10 +712,15 @@ ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sende
 	if self.is_server then
 		local members = self:channel_members(channel_id)
 		local my_peer_id = self.my_peer_id
+		local sender_peer_id = CHANNEL_TO_PEER_ID[sender_channel_id]
 
 		for _, member in pairs(members) do
-			if member ~= my_peer_id and member ~= sender then
-				RPC.rpc_chat_message(member, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev)
+			if member ~= my_peer_id and member ~= sender_peer_id then
+				local member_channel_id = PEER_ID_TO_CHANNEL[member]
+
+				if member_channel_id then
+					RPC.rpc_chat_message(member_channel_id, channel_id, message_sender, local_player_id, message, localization_parameters, localize, localize_parameters, is_system_message, pop_chat, is_dev, message_type)
+				end
 			end
 		end
 	end
@@ -669,7 +732,7 @@ ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sende
 
 		local localized_message = self:_get_localized_message(message, localize, localization_parameters, localize_parameters)
 
-		self:_add_message_to_list(channel_id, message_sender, local_player_id, localized_message, is_system_message, pop_chat, is_dev)
+		self:_add_message_to_list(channel_id, message_sender, local_player_id, localized_message, is_system_message, pop_chat, is_dev, message_type)
 	end
 end
 
@@ -699,15 +762,26 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 	end
 
 	local player_manager = Managers.player
-	local player = player_manager:player_from_peer_id(message_sender, local_player_id)
+	local sender_player = player_manager:player_from_peer_id(message_sender, local_player_id)
 	local is_bot = false
 
-	if player then
-		is_bot = not player:is_player_controlled()
+	if sender_player then
+		is_bot = not sender_player:is_player_controlled()
 	end
 
 	if Application.user_setting("profanity_check") and not is_system_message then
 		message = self:_profanity_check(message)
+	end
+
+	local is_enemy = false
+
+	if sender_player and not DEDICATED_SERVER then
+		local local_player = Managers.player:local_player()
+		local local_party = local_player:get_party()
+		local local_side = local_party and Managers.state.side.side_by_party[local_party]
+		local remote_party = local_side and sender_player:get_party()
+		local remote_side = remote_party and Managers.state.side.side_by_party[remote_party]
+		is_enemy = remote_side and Managers.state.side:is_enemy_by_side(local_side, remote_side)
 	end
 
 	local parsed_message = ""
@@ -728,6 +802,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 		pop_chat = pop_chat,
 		is_dev = is_dev,
 		is_bot = is_bot,
+		is_enemy = is_enemy,
 		link = link,
 		data = data,
 		is_system_message = is_system_message

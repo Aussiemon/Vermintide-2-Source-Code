@@ -8,6 +8,14 @@ ImguiUnlockOverride.update = function (self)
 	return
 end
 
+local dlc_list = {}
+
+local function set_all(t, k, v)
+	for i = 1, #k, 1 do
+		t[k[i]] = v
+	end
+end
+
 ImguiUnlockOverride.draw = function (self)
 	return
 end

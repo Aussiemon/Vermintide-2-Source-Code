@@ -102,8 +102,9 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 
 	if not instant_spawn and peer_id ~= self_peer_id then
 		local local_player_id = slot.local_player_id
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-		RPC.rpc_set_observer_camera(peer_id, local_player_id)
+		RPC.rpc_set_observer_camera(channel_id, local_player_id)
 	end
 
 	slot.game_mode_data = data
@@ -128,7 +129,7 @@ AdventureSpawning._unassign_data_from_slot = function (self, slot, data)
 	slot.game_mode_data = {}
 end
 
-AdventureSpawning.player_entered_game_session = function (self, peer_id, local_player_id)
+AdventureSpawning.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
 	local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
 	local side_party = self._side.party
 
@@ -290,7 +291,7 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots)
 
 			if DEDICATED_SERVER then
 				local game_session = network_server.game_session ~= nil
-				local all_loaded = network_server.profile_synchronizer:inventory_package_synchronizer().all_loaded
+				local all_loaded = network_server.profile_synchronizer:inventory_package_synchronizer_all_loaded()
 				ready_to_spawn = game_session and all_loaded
 			else
 				ready_to_spawn = network_server:is_peer_ingame(status.peer_id)
@@ -359,23 +360,35 @@ AdventureSpawning._add_client_to_party = function (self, peer_id, local_player_i
 end
 
 AdventureSpawning._spawn_player = function (self, status)
-	local peer_id = status.peer_id
-	local local_player_id = status.local_player_id
-	local profile_index = status.profile_index
-	local career_index = status.career_index
 	local data = status.game_mode_data
 	local position, rotation = self:_find_spawn_point(status)
 	local is_initial_spawn = data.spawn_state == "is_initial_spawn"
-	local network_consumables = SpawningHelper.netpack_consumables(data.consumables)
-	local ammo = data.ammo
-	local ammo_melee_percent_int = math.floor(ammo.slot_melee * 100)
-	local ammo_ranged_percent_int = math.floor(ammo.slot_ranged * 100)
-	local ability_cooldown_perentage = data.ability_cooldown_percentage or 1
-	local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
 	local session = Managers.state.network:game()
 
 	if session then
-		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, unpack(network_consumables))
+		local peer_id = status.peer_id
+		local local_player_id = status.local_player_id
+		local profile_index = status.profile_index
+		local career_index = status.career_index
+		local network_consumables = SpawningHelper.netpack_consumables(data.consumables)
+		local healthkit_id, potion_id, grenade_id = unpack(network_consumables)
+		local network_buff_ids = {}
+
+		if data.persistent_buffs then
+			for _, buff_name in pairs(data.persistent_buffs.buff_names) do
+				local buff_id = NetworkLookup.buff_templates[buff_name]
+
+				table.insert(network_buff_ids, buff_id)
+			end
+		end
+
+		local ammo = data.ammo
+		local ammo_melee_percent_int = math.floor(ammo.slot_melee * 100)
+		local ammo_ranged_percent_int = math.floor(ammo.slot_ranged * 100)
+		local ability_cooldown_perentage = data.ability_cooldown_percentage or 1
+		local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
+
+		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_buff_ids)
 	end
 
 	data.spawn_state = (is_initial_spawn and "initial_spawning") or "spawning"
@@ -385,7 +398,7 @@ AdventureSpawning._spawn_bot = function (self, status)
 	local data = status.game_mode_data
 	local position = data.position:unbox()
 	local rotation = data.rotation:unbox()
-	local is_initial_spawn = false
+	local is_initial_spawn = data.spawn_state == "is_initial_spawn"
 	local consumables = data.consumables
 	local ammo = data.ammo
 	local peer_id = status.peer_id
@@ -518,6 +531,10 @@ end
 
 AdventureSpawning.get_active_respawn_units = function (self)
 	return self._respawn_handler:get_active_respawn_units()
+end
+
+AdventureSpawning.set_move_dead_players_to_next_respawn = function (self, value)
+	self._respawn_handler:set_move_dead_players_to_next_respawn(value)
 end
 
 return

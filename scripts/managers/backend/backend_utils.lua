@@ -27,6 +27,11 @@ end
 BackendUtils.get_loadout_item = function (career_name, slot)
 	local backend_items = Managers.backend:get_interface("items")
 	local backend_id = BackendUtils.get_loadout_item_id(career_name, slot)
+
+	if not backend_id then
+		return
+	end
+
 	local item = backend_items:get_item_from_id(backend_id)
 
 	return item
@@ -111,17 +116,7 @@ BackendUtils.get_total_power_level = function (profile_name, career_name, option
 		return game_mode_setting.power_level_override
 	end
 
-	if game_mode_key == "weave" or game_mode_key == "weave_find_group" then
-		local weaves_interface = Managers.backend:get_interface("weaves")
-		local average_power_level = weaves_interface:get_average_power_level(career_name)
-
-		return average_power_level
-	else
-		local hero_power_level = BackendUtils.get_hero_power_level(profile_name)
-		local average_item_power_level = BackendUtils.get_average_item_power_level(career_name)
-
-		return hero_power_level + average_item_power_level
-	end
+	return Managers.backend:get_total_power_level(profile_name, career_name, game_mode_key)
 end
 
 BackendUtils.get_item_template = function (item_data, backend_id)
@@ -224,6 +219,7 @@ local CAREER_ID_LOOKUP = {
 	"dr_ranger",
 	"dr_slayer",
 	"dr_ironbreaker",
+	"dr_engineer",
 	"we_waywatcher",
 	"we_shade",
 	"we_maidenguard",

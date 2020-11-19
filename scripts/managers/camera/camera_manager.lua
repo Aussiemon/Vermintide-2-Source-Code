@@ -294,7 +294,7 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 				ShadingEnvironment.set_scalar(shading_env, "dof_focal_region_start", focal_padding)
 				ShadingEnvironment.set_scalar(shading_env, "dof_focal_region_end", focal_padding)
 				ShadingEnvironment.set_scalar(shading_env, "dof_focal_near_scale", focal_scale)
-				ShadingEnvironment.set_scalar(shading_env, "dof_focal_near_scale", focal_scale)
+				ShadingEnvironment.set_scalar(shading_env, "dof_focal_far_scale", focal_scale)
 			end
 		end
 
@@ -312,6 +312,8 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 
 				if side_name == "heroes" then
 					colors = OutlineSettings.colors
+				elseif side_name == "dark_pact" then
+					colors = OutlineSettingsVS.colors
 				end
 			end
 		end

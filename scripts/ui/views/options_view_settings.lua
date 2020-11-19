@@ -1,104 +1,3 @@
-local function assigned(a, b)
-	if a == nil then
-		return b
-	else
-		return a
-	end
-end
-
-local function get_slider_value(min, max, value)
-	local range = max - min
-	local norm_value = math.clamp(value, min, max) - min
-
-	return norm_value / range
-end
-
-local function set_function(self, user_setting_name, widget_type, content, style, value_set_function)
-	local new_value = nil
-
-	if widget_type == "slider" then
-		new_value = content.value
-	else
-		local options_values = content.options_values
-		local current_selection = content.current_selection
-		new_value = options_values[current_selection]
-	end
-
-	self.changed_user_settings[user_setting_name] = new_value
-
-	value_set_function(content, style, new_value)
-end
-
-local function setup_function(self, user_setting_name, widget_type, options)
-	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
-	local current_value = Application.user_setting(user_setting_name)
-
-	if widget_type == "slider" then
-		local min = options.min
-		local max = options.max
-		local decimals = options.decimals
-		local value = get_slider_value(min, max, current_value)
-
-		return value, min, max, decimals, "menu_settings_" .. user_setting_name, default_value
-	else
-		local selection, default_option = nil
-
-		for index, option in ipairs(options) do
-			local value = option.value
-
-			if value == current_value then
-				selection = index
-			end
-
-			if value == default_value then
-				default_option = index
-			end
-		end
-
-		fassert(default_option, "Default value %q for %q does not exist in passed options table", tostring(default_value), user_setting_name)
-
-		selection = selection or default_option
-
-		return selection, options, "menu_settings_" .. user_setting_name, default_option
-	end
-end
-
-local function saved_value_function(self, user_setting_name, widget_type, widget, saved_function)
-	local saved_value = assigned(self.changed_user_settings[user_setting_name], Application.user_setting(user_setting_name))
-	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
-
-	if saved_value == nil then
-		saved_value = default_value
-	end
-
-	local content = widget.content
-	local style = widget.style
-
-	if widget_type == "slider" then
-		local min = content.min
-		local max = content.max
-		saved_value = math.clamp(saved_value, min, max)
-		content.internal_value = get_slider_value(min, max, saved_value)
-		content.value = saved_value
-	else
-		local saved_index, default_index = nil
-
-		for index, value in pairs(content.options_values) do
-			if value == saved_value then
-				saved_index = index
-			end
-
-			if value == default_value then
-				default_index = index
-			end
-		end
-
-		content.current_selection = saved_index or default_index
-	end
-
-	saved_function(content, style, saved_value)
-end
-
 local video_settings_definition = {
 	{
 		text = "settings_view_header_display",
@@ -425,6 +324,20 @@ local audio_settings_definition = {
 		callback = "cb_music_bus_volume",
 		tooltip_text = "tooltip_music_volume",
 		widget_type = "slider"
+	},
+	{
+		setting_name = "mute_in_background",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
 	},
 	{
 		size_y = 30,
@@ -938,6 +851,85 @@ local gameplay_settings_definition = {
 	}
 }
 
+local function set_function(self, user_setting_name, widget_type, content, style, value_set_function)
+	local new_value = nil
+
+	if widget_type == "slider" then
+		new_value = content.value
+	else
+		local options_values = content.options_values
+		local current_selection = content.current_selection
+		new_value = options_values[current_selection]
+	end
+
+	self.changed_user_settings[user_setting_name] = new_value
+
+	value_set_function(content, style, new_value)
+end
+
+local function setup_function(self, user_setting_name, widget_type, options)
+	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
+	local current_value = Application.user_setting(user_setting_name)
+
+	if widget_type == "slider" then
+		local min = options.min
+		local max = options.max
+		local decimals = options.decimals
+		local value = math.clamp(current_value / (max - min), 0, 1)
+
+		return value, min, max, decimals, "menu_settings_" .. user_setting_name, default_value
+	else
+		local selection, default_option = nil
+
+		for index, option in ipairs(options) do
+			local value = option.value
+
+			if value == current_value then
+				selection = index
+			end
+
+			if value == default_value then
+				default_option = index
+			end
+		end
+
+		fassert(default_option, "Default value %q for %q does not exist in passed options table", tostring(default_value), user_setting_name)
+
+		selection = selection or default_option
+
+		return selection, options, "menu_settings_" .. user_setting_name, default_option
+	end
+end
+
+local function saved_value_function(self, user_setting_name, widget_type, widget, saved_function)
+	local saved_value = self.changed_user_settings[user_setting_name]
+
+	if saved_value == nil then
+		saved_value = Application.user_setting(user_setting_name)
+	end
+
+	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
+
+	if saved_value == nil then
+		saved_value = default_value
+	end
+
+	local content = widget.content
+	local style = widget.style
+
+	if widget_type == "slider" then
+		local min = content.min
+		local max = content.max
+		saved_value = math.clamp(saved_value, min, max)
+		content.internal_value = saved_value / (max - min)
+		content.value = saved_value
+	else
+		content.current_selection = table.find(content.options_values, saved_value) or table.find(content.options_values, default_value)
+	end
+
+	saved_function(content, style, saved_value)
+end
+
 function generate_settings(settings_definition)
 	for _, definition in pairs(settings_definition) do
 		local setting_name = definition.setting_name
@@ -949,9 +941,7 @@ function generate_settings(settings_definition)
 			local widget_type = definition.widget_type
 
 			OptionsView[callback_name] = function (self, content, style)
-				return set_function(self, setting_name, widget_type, content, style, definition.value_set_function or function ()
-					return
-				end)
+				return set_function(self, setting_name, widget_type, content, style, definition.value_set_function or NOP)
 			end
 
 			local setup_function_name = prefix .. "_setup"
@@ -965,9 +955,7 @@ function generate_settings(settings_definition)
 			definition.saved_value = saved_value_function_name
 
 			OptionsView[saved_value_function_name] = function (self, widget)
-				return saved_value_function(self, setting_name, widget_type, widget, definition.value_saved_function or function ()
-					return
-				end)
+				return saved_value_function(self, setting_name, widget_type, widget, definition.value_saved_function or NOP)
 			end
 
 			definition.tooltip_text = "tooltip_" .. setting_name
@@ -979,10 +967,10 @@ generate_settings(audio_settings_definition)
 generate_settings(gameplay_settings_definition)
 generate_settings(video_settings_definition)
 
-local lightfx_defined = rawget(_G, "LightFX")
+local LightFX = rawget(_G, "LightFX")
 local razerchroma_defined = rawget(_G, "RazerChroma")
 
-if lightfx_defined or razerchroma_defined then
+if LightFX or RazerChroma then
 	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
 		size_y = 30,
 		widget_type = "empty"
@@ -993,7 +981,7 @@ if lightfx_defined or razerchroma_defined then
 	}
 end
 
-if lightfx_defined then
+if LightFX then
 	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
 		setup = "cb_alien_fx_setup",
 		saved_value = "cb_alien_fx_saved_value",
@@ -1003,7 +991,7 @@ if lightfx_defined then
 	}
 end
 
-if razerchroma_defined then
+if RazerChroma then
 	gameplay_settings_definition[#gameplay_settings_definition + 1] = {
 		setup = "cb_razer_chroma_setup",
 		saved_value = "cb_razer_chroma_saved_value",
@@ -1171,6 +1159,30 @@ local keybind_settings_definition = {
 		}
 	},
 	{
+		keybind_description = "ping_only_enemy",
+		required_dlc = "carousel",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_enemy"
+		}
+	},
+	{
+		keybind_description = "ping_only_movement",
+		required_dlc = "carousel",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_movement"
+		}
+	},
+	{
+		keybind_description = "ping_only_item",
+		required_dlc = "carousel",
+		widget_type = "keybind",
+		actions = {
+			"ping_only_item"
+		}
+	},
+	{
 		keybind_description = "social_wheel_only",
 		widget_type = "keybind",
 		actions = {
@@ -1303,19 +1315,19 @@ local keybind_settings_definition = {
 		}
 	},
 	{
-		keybind_description = "hotkey_achievements",
-		keymappings_key = "IngameMenuKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"hotkey_achievements"
-		}
-	},
-	{
 		keybind_description = "hotkey_store",
 		keymappings_key = "IngameMenuKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"hotkey_store"
+		}
+	},
+	{
+		keybind_description = "hotkey_achievements",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_achievements"
 		}
 	},
 	{
@@ -1355,6 +1367,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "voip_push_to_talk",
+		keymappings_key = "ChatControllerSettings",
 		widget_type = "keybind",
 		actions = {
 			"voip_push_to_talk"
@@ -1432,6 +1445,21 @@ local gamepad_settings_definition = {
 			1260,
 			440
 		}
+	},
+	{
+		setup = "cb_gamepad_layout_setup",
+		name = "gamepad_layout",
+		saved_value = "cb_gamepad_layout_saved_value",
+		callback = "cb_gamepad_layout",
+		tooltip_text = "tooltip_gamepad_layout",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_gamepad_left_handed_enabled_setup",
+		saved_value = "cb_gamepad_left_handed_enabled_saved_value",
+		callback = "cb_gamepad_left_handed_enabled",
+		tooltip_text = "tooltip_gamepad_left_handed_enabled",
+		widget_type = "stepper"
 	},
 	{
 		setup = "cb_gamepad_look_invert_y_setup",

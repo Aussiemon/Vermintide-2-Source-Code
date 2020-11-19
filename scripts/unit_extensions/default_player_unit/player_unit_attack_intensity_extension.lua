@@ -14,17 +14,16 @@ PlayerUnitAttackIntensityExtension.init = function (self, extension_init_context
 	self._attack_intensity_decay_grace = {}
 	self._attack_intensity_reset = {}
 	local difficulty_manager = Managers.state.difficulty
-	local difficulty = difficulty_manager:get_difficulty()
-	self._difficulty = difficulty
+	local difficulty_settings = difficulty_manager:get_difficulty_settings()
+	local difficulty_lookup = AttackIntensitySettings.difficulty
+	self._attack_intensity_difficulty = Managers.state.difficulty:get_difficulty_value_from_table(difficulty_lookup)
 
 	self:_setup_intensity()
 end
 
 PlayerUnitAttackIntensityExtension._setup_intensity = function (self)
-	local difficulty = self._difficulty
-
 	for type, _ in pairs(AttackIntensitySettings.attack_type_intesities) do
-		local intensity_settings = AttackIntensitySettings.difficulty[difficulty][type]
+		local intensity_settings = self._attack_intensity_difficulty[type]
 		self._attack_intensity[type] = 0
 		self._attack_allowed[type] = true
 		self._attack_intensity_threshold[type] = intensity_settings.threshold
@@ -81,7 +80,7 @@ end
 PlayerUnitAttackIntensityExtension.add_attack_intensity = function (self, attack_intensity_type, added_attack_intensity, clamp_override)
 	fassert(AttackIntensitySettings.attack_type_intesities[attack_intensity_type], "No attack intesity settings defined for attack type \"%s\"", attack_intensity_type)
 
-	self._attack_intensity_decay_grace[attack_intensity_type] = AttackIntensitySettings.difficulty[self._difficulty][attack_intensity_type].decay_grace
+	self._attack_intensity_decay_grace[attack_intensity_type] = self._attack_intensity_difficulty[attack_intensity_type].decay_grace
 	self._attack_intensity[attack_intensity_type] = math.clamp(self._attack_intensity[attack_intensity_type] + added_attack_intensity, 0, clamp_override or DEFAULT_ATTACK_INTENSITY_CLAMP)
 
 	if self._attack_intensity_threshold[attack_intensity_type] < self._attack_intensity[attack_intensity_type] then

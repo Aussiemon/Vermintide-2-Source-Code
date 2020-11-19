@@ -347,17 +347,26 @@ ScriptWorld.create_shading_environment = function (world, shading_environment_na
 	return shading_env
 end
 
-ScriptWorld.load_level = function (world, name, object_sets, position, rotation, shading_callback, mood_setting)
+ScriptWorld.spawn_level = function (world, name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 	local levels = World.get_data(world, "levels")
 
 	fassert(levels[name] == nil, "Level %q already loaded", name)
 
-	local level = World.load_level_with_object_sets(world, name, object_sets or {}, {}, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), true, name, "force_render")
+	local spawn_non_background_units = true
+	local level = nil
+
+	if time_sliced_spawn then
+		level = World.spawn_level_time_sliced(world, name, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), object_sets or {})
+	else
+		level = World.spawn_level(world, name, position or Vector3.zero(), rotation or Quaternion.identity(), Vector3(1, 1, 1), object_sets or {})
+	end
+
 	local nested_levels = Level.nested_levels(level)
 	local logic_level = nested_levels[1] or level
 	levels[name] = {
 		level = level,
-		nested_levels = nested_levels
+		nested_levels = nested_levels,
+		spawning = time_sliced_spawn
 	}
 	local shading_env_name = Level.get_data(level, "shading_environment")
 
@@ -382,7 +391,7 @@ ScriptWorld.load_level = function (world, name, object_sets, position, rotation,
 		end
 	end
 
-	return logic_level
+	return logic_level, level
 end
 
 ScriptWorld.level = function (world, name)

@@ -1,7 +1,7 @@
 KeystrokeHelper = KeystrokeHelper or {}
 
 KeystrokeHelper.num_utf8chars = function (text)
-	local length = string.len(text)
+	local length = #text
 	local index = 1
 	local num_chars = 0
 	local _ = nil
@@ -40,7 +40,7 @@ KeystrokeHelper._build_utf8_table = function (text, external_table)
 	local text_table = external_table or {}
 	local character_index = 1
 	local index = 1
-	local length = string.len(text)
+	local length = #text
 
 	while index <= length do
 		local _, end_index = Utf8.location(text, index)
@@ -111,18 +111,19 @@ KeystrokeHelper[Keyboard.DELETE] = function (text_table, index, mode)
 end
 
 KeystrokeHelper[Keyboard.F9] = function (text_table, index, mode, max_length)
-	local clipboard = string.gsub(Clipboard.get() or "", "[^%g ]", "")
+	local clipboard = string.gsub(Clipboard.get() or "", "[^ -~]+", "")
 	local n = #clipboard
 
 	if max_length then
-		n = math.min(max_length - #text_table)
+		n = math.min(n, max_length - #text_table)
 	end
 
 	index = index - 1
+	local insert = table.insert
 	local sub = string.sub
 
 	for i = 1, n, 1 do
-		table.insert(text_table, index + i, sub(clipboard, i, i))
+		insert(text_table, index + i, sub(clipboard, i, i))
 	end
 
 	return index + n + 1, mode

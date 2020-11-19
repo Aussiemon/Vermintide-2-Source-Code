@@ -77,7 +77,7 @@ MatchmakingStateRequestJoinGame._setup_lobby_connection = function (self, join_l
 				network_options = network_options,
 				game_server_data = join_lobby_data
 			}
-			self._password_request = ServerJoinStateMachine:new(network_options, join_lobby_data.server_info.ip_port, user_data)
+			self._user_data = user_data
 		else
 			self.lobby_client = GameServerLobbyClient:new(network_options, join_lobby_data, password)
 		end
@@ -107,9 +107,17 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 	if state == "failed_pre_connection_verification" then
 		return self:_join_game_failed(self._pre_verification_error, t, false)
 	elseif state == "waiting_for_password" then
-		self._password_request:update(dt)
+		local action, user_data, password = nil
 
-		local action, user_data, password = self._password_request:result()
+		if self._password_request then
+			self._password_request:update(dt)
+
+			action, user_data, password = self._password_request:result()
+		else
+			password = ""
+			user_data = self._user_data
+			action = "join"
+		end
 
 		if action ~= nil then
 			if action == "join" then
@@ -119,9 +127,11 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 				return self:_join_game_failed("cancelled", t, false)
 			end
 
-			self._password_request:destroy()
+			if self._password_request then
+				self._password_request:destroy()
 
-			self._password_request = nil
+				self._password_request = nil
+			end
 		end
 	elseif state == "waiting_to_join_lobby" then
 		if lobby_client:is_joined() and host ~= "0" then
@@ -322,6 +332,12 @@ MatchmakingStateRequestJoinGame._join_game_success = function (self, t)
 	if join_method == "party" then
 		return MatchmakingStatePartyJoins, self.state_context
 	else
+		if Managers.mechanism:current_mechanism_name() == "versus" then
+			self.state_context.profiles_data = {}
+
+			return MatchmakingStateJoinGame, self.state_context
+		end
+
 		return MatchmakingStateRequestProfiles, self.state_context
 	end
 end
@@ -372,7 +388,7 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, reason, t, i
 	end
 end
 
-MatchmakingStateRequestJoinGame.rpc_matchmaking_request_join_lobby_reply = function (self, sender, client_cookie, host_cookie, reply_id, reply_variable)
+MatchmakingStateRequestJoinGame.rpc_matchmaking_request_join_lobby_reply = function (self, channel_id, client_cookie, host_cookie, reply_id, reply_variable)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -381,7 +397,7 @@ MatchmakingStateRequestJoinGame.rpc_matchmaking_request_join_lobby_reply = funct
 	self._game_reply_variable = reply_variable
 end
 
-MatchmakingStateRequestJoinGame.rpc_notify_connected = function (self, sender)
+MatchmakingStateRequestJoinGame.rpc_notify_connected = function (self, channel_id)
 	self._connected_to_server = true
 end
 

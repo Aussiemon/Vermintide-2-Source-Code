@@ -220,7 +220,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						local is_critical_strike = self._is_critical_strike
 						local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-						self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, nil, nil)
+						self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, "on_critical_shot", nil)
 
 						if health_extension then
 							local override_damage_profile = nil

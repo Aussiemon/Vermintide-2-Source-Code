@@ -99,14 +99,6 @@ AnimationMovementTemplates.chaos_troll = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local animation_movement_templates_file_names = dlc.animation_movement_templates_file_names
-
-	if animation_movement_templates_file_names then
-		for _, file_name in pairs(animation_movement_templates_file_names) do
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("animation_movement_templates_file_names")
 
 return

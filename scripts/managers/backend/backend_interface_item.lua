@@ -462,10 +462,11 @@ BackendInterfaceItem.set_loadout_item = function (self, item_id, profile, slot)
 
 	local loadout = self._backend_items:get_loadout()
 	local profile_id = loadout[profile].backend_id
+	local success = BackendItem.set_loadout_item(item_id, profile_id, slot)
 
-	print("SLOT " .. slot)
-	BackendItem.set_loadout_item(item_id, profile_id, slot)
-	self._backend_items:make_dirty()
+	if success then
+		self._backend_items:make_dirty()
+	end
 end
 
 BackendInterfaceItem.remove_item = function (self, backend_id, ignore_equipped)

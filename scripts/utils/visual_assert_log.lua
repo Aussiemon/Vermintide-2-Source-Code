@@ -34,6 +34,10 @@ local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 
 VisualAssertLog.update = function ()
+	if not script_data.visual_assert_log_enabled then
+		return
+	end
+
 	if VisualAssertLog.n_asserts > 0 then
 		local gui = VisualAssertLog.gui
 		local screen_width = RESOLUTION_LOOKUP.res_w

@@ -122,7 +122,7 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 
 			if frame_widget_content.text_field_active then
 				local keystrokes = Keyboard.keystrokes()
-				frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
+				frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes, 32)
 				local input_service = self.parent:window_input_service()
 
 				if input_service:get("execute_chat_input", true) then

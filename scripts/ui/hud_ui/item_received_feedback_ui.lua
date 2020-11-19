@@ -177,7 +177,9 @@ ItemReceivedFeedbackUI.event_give_item_feedback = function (self, hash, giver_pl
 	local player_1_career_index = (career_extension and career_extension:career_index()) or (giver_player and giver_player:profile_index())
 	local player_1_profile_index = (giver_player and giver_player:profile_index()) or nil
 	local player_1_profile_image = player_1_profile_index and player_1_career_index and self:_get_hero_portrait(player_1_profile_index, player_1_career_index)
-	local item_icon = item_icons[item_name] or "icons_placeholder"
+	local item_data = ItemMasterList[item_name]
+	local hud_icon = item_data and item_data.item_received_icon
+	local item_icon = item_icons[item_name] or hud_icon or "icons_placeholder"
 
 	self:add_event(hash, event_colors.default, "give_item", player_1_profile_image, item_icon)
 end

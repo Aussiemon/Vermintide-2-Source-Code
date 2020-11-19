@@ -316,7 +316,7 @@ GDCStartUI.end_gdc_intro = function (self)
 	self.intro_complete = true
 end
 
-GDCStartUI.rpc_on_skip_gdc_intro = function (self, sender)
+GDCStartUI.rpc_on_skip_gdc_intro = function (self, channel_id)
 	if Managers.player.is_server then
 		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_on_skip_gdc_intro", self.peer_id)
 	end

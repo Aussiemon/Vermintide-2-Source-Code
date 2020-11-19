@@ -1,12 +1,4 @@
 local definitions = local_require("scripts/ui/views/cutscene_overlay_ui_definitions")
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local DO_RELOAD = false
 CutsceneOverlayUI = class(CutsceneOverlayUI)
 
@@ -77,7 +69,7 @@ end
 CutsceneOverlayUI.start = function (self, template_settings)
 	local templates = template_settings.templates
 	self._templates = table.clone(templates)
-	self._start_time = Application.time_since_launch()
+	self._start_time = Managers.time:time("ui")
 	self._complete = false
 
 	self:_create_ui_elements()
@@ -202,7 +194,7 @@ CutsceneOverlayUI.update = function (self, dt)
 		return
 	end
 
-	local current_frame_time = Application.time_since_launch()
+	local current_frame_time = Managers.time:time("ui")
 	local current_time = current_frame_time - self._start_time
 	local complete = true
 
@@ -277,7 +269,7 @@ end
 CutsceneOverlayUI._draw = function (self, widget, dt)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
-	local input_service = fake_input_service
+	local input_service = FAKE_INPUT_SERVICE
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, widget)

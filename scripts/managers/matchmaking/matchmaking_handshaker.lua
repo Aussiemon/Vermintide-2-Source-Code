@@ -46,10 +46,8 @@ end
 
 MatchmakingHandshakerHost.update = function (self, t)
 	if self.next_ping_time <= t then
-		local current_connections = self.network_transmit.connection_handler.current_connections
-
 		for peer_id, client_cookie in pairs(self.clients) do
-			if current_connections[peer_id] == nil then
+			if PEER_ID_TO_CHANNEL[peer_id] == nil then
 				mm_printf("Handshake host removing client %s", peer_id)
 
 				self.clients[peer_id] = nil
@@ -76,39 +74,43 @@ MatchmakingHandshakerHost.update = function (self, t)
 	end
 end
 
-MatchmakingHandshakerHost.rpc_matchmaking_handshake_start = function (self, sender, client_cookie)
+MatchmakingHandshakerHost.rpc_matchmaking_handshake_start = function (self, channel_id, client_cookie)
 	print("MatchmakingHandshakerHost:rpc_matchmaking_handshake_start()")
 
-	self.clients[sender] = nil
-	self.client_pong_times[sender] = nil
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	self.clients[peer_id] = nil
+	self.client_pong_times[peer_id] = nil
 	local name = nil
-	name = (DEDICATED_SERVER and "-") or (LobbyInternal.user_name and LobbyInternal.user_name(sender)) or "-"
+	name = (DEDICATED_SERVER and "-") or (LobbyInternal.user_name and LobbyInternal.user_name(peer_id)) or "-"
 
-	mm_printf_force("Got a handshake request from %s with user name '%s'", sender, name)
-	RPC.rpc_matchmaking_handshake_reply(sender, client_cookie, self.cookie)
+	mm_printf_force("Got a handshake request from %s with user name '%s'", peer_id, name)
+	RPC.rpc_matchmaking_handshake_reply(channel_id, client_cookie, self.cookie)
 end
 
-MatchmakingHandshakerHost.rpc_matchmaking_handshake_complete = function (self, sender, client_cookie, host_cookie)
+MatchmakingHandshakerHost.rpc_matchmaking_handshake_complete = function (self, channel_id, client_cookie, host_cookie)
 	if host_cookie ~= self.cookie then
 		return
 	end
 
-	self.clients[sender] = client_cookie
-	self.client_pong_times[sender] = Managers.time:time("main")
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	self.clients[peer_id] = client_cookie
+	self.client_pong_times[peer_id] = Managers.time:time("main")
 	self.num_clients = self.num_clients + 1
 end
 
-MatchmakingHandshakerHost.rpc_pong = function (self, sender, client_cookie, host_cookie)
-	if not self:validate_cookies(sender, client_cookie, host_cookie) then
+MatchmakingHandshakerHost.rpc_pong = function (self, channel_id, client_cookie, host_cookie)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if not self:validate_cookies(peer_id, client_cookie, host_cookie) then
 		return
 	end
 
-	local last_pong_time = self.client_pong_times[sender]
+	local last_pong_time = self.client_pong_times[peer_id]
 	last_pong_time = math.max(last_pong_time, Managers.time:time("main"))
-	self.client_pong_times[sender] = last_pong_time
+	self.client_pong_times[peer_id] = last_pong_time
 	local ping_start_time = self.ping_start_time
 	local ping_time_write_index = self.ping_time_write_index
-	self.pings_by_peer_id[sender][ping_time_write_index] = Application.time_since_launch() - ping_start_time
+	self.pings_by_peer_id[peer_id][ping_time_write_index] = Application.time_since_launch() - ping_start_time
 end
 
 MatchmakingHandshakerHost.send_rpc_to_client = function (self, rpc_name, peer_id, ...)
@@ -117,16 +119,21 @@ MatchmakingHandshakerHost.send_rpc_to_client = function (self, rpc_name, peer_id
 	local client_cookie = self.clients[peer_id]
 	local host_cookie = self.cookie
 	local rpc = RPC[rpc_name]
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 	mm_printf("Sending rpc: %s to client: %s", rpc_name, tostring(peer_id))
-	rpc(peer_id, client_cookie, host_cookie, ...)
+	rpc(channel_id, client_cookie, host_cookie, ...)
 end
 
 MatchmakingHandshakerHost.send_rpc_to_clients = function (self, rpc_name, ...)
 	local rpc = RPC[rpc_name]
 
 	for peer_id, client_cookie in pairs(self.clients) do
-		rpc(peer_id, client_cookie, self.cookie, ...)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+		if channel_id then
+			rpc(channel_id, client_cookie, self.cookie, ...)
+		end
 	end
 end
 
@@ -135,7 +142,11 @@ MatchmakingHandshakerHost.send_rpc_to_clients_except = function (self, rpc_name,
 
 	for peer_id, client_cookie in pairs(self.clients) do
 		if peer_id ~= except then
-			rpc(peer_id, client_cookie, self.cookie, ...)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			if channel_id then
+				rpc(channel_id, client_cookie, self.cookie, ...)
+			end
 		end
 	end
 end
@@ -146,7 +157,11 @@ MatchmakingHandshakerHost.send_rpc_to_all = function (self, rpc_name, ...)
 	local rpc = RPC[rpc_name]
 
 	for peer_id, client_cookie in pairs(self.clients) do
-		rpc(peer_id, client_cookie, self.cookie, ...)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+		if channel_id then
+			rpc(channel_id, client_cookie, self.cookie, ...)
+		end
 	end
 end
 
@@ -214,26 +229,31 @@ MatchmakingHandshakerClient.start_handshake = function (self, peer_id)
 	self.host_peer_id = peer_id
 
 	mm_printf_force("Starting handshake with host %s using client cookie %s", peer_id, self.cookie)
-	RPC.rpc_matchmaking_handshake_start(peer_id, self.cookie)
+
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+	RPC.rpc_matchmaking_handshake_start(channel_id, self.cookie)
 end
 
-MatchmakingHandshakerClient.rpc_matchmaking_handshake_reply = function (self, sender, client_cookie, host_cookie)
+MatchmakingHandshakerClient.rpc_matchmaking_handshake_reply = function (self, channel_id, client_cookie, host_cookie)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
 	if client_cookie ~= self.cookie then
-		mm_printf_force("Invalid client cookie %s in reply from %s", client_cookie, sender)
+		mm_printf_force("Invalid client cookie %s in reply from %s", client_cookie, peer_id)
 
 		return
 	end
 
-	mm_printf_force("Handshake successful (%s) (%s) (%s)", sender, client_cookie, host_cookie)
+	mm_printf_force("Handshake successful (%s) (%s) (%s)", peer_id, client_cookie, host_cookie)
 
 	self.host_cookie = host_cookie
-	self.host_peer_id = sender
+	self.host_peer_id = peer_id
 	self.last_pong_time = Managers.time:time("main")
 
-	RPC.rpc_matchmaking_handshake_complete(sender, client_cookie, host_cookie)
+	RPC.rpc_matchmaking_handshake_complete(channel_id, client_cookie, host_cookie)
 end
 
-MatchmakingHandshakerClient.rpc_ping = function (self, sender, client_cookie, host_cookie, pings_by_peer_id)
+MatchmakingHandshakerClient.rpc_ping = function (self, channel_id, client_cookie, host_cookie, pings_by_peer_id)
 	if not self:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -242,7 +262,7 @@ MatchmakingHandshakerClient.rpc_ping = function (self, sender, client_cookie, ho
 	last_pong_time = math.max(last_pong_time, Managers.time:time("main"))
 	self.last_pong_time = last_pong_time
 
-	RPC.rpc_pong(sender, client_cookie, host_cookie)
+	RPC.rpc_pong(channel_id, client_cookie, host_cookie)
 
 	self.pings_by_peer_id = pings_by_peer_id
 end
@@ -252,8 +272,11 @@ MatchmakingHandshakerClient.send_rpc_to_host = function (self, rpc_name, ...)
 	mm_printf("Sending rpc: %s to host: %s", rpc_name, tostring(self.host_peer_id))
 
 	local rpc = RPC[rpc_name]
+	local channel_id = PEER_ID_TO_CHANNEL[self.host_peer_id]
 
-	rpc(self.host_peer_id, self.cookie, self.host_cookie, ...)
+	if channel_id then
+		rpc(channel_id, self.cookie, self.host_cookie, ...)
+	end
 end
 
 MatchmakingHandshakerClient.validate_cookies = function (self, client_cookie, host_cookie)

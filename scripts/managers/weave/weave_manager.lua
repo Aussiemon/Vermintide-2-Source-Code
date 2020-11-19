@@ -478,7 +478,7 @@ WeaveManager.sync_end_of_weave_data = function (self)
 	network_transmit:send_rpc_clients("rpc_sync_end_of_weave_data", score, remaining_time, num_players, damage_taken)
 end
 
-WeaveManager.hot_join_sync = function (self, sender)
+WeaveManager.hot_join_sync = function (self, peer_id)
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 
 	if game_mode_key ~= "weave" then
@@ -492,13 +492,13 @@ WeaveManager.hot_join_sync = function (self, sender)
 		local weave_name_id = NetworkLookup.weave_names[weave_name]
 		local objective_index = self._active_objective_index
 
-		network_transmit:send_rpc("rpc_set_active_weave", sender, weave_name_id, objective_index)
+		network_transmit:send_rpc("rpc_set_active_weave", peer_id, weave_name_id, objective_index)
 	end
 
 	local player_count = self._num_players
 
 	if player_count then
-		network_transmit:send_rpc("rpc_sync_player_count", sender, player_count)
+		network_transmit:send_rpc("rpc_sync_player_count", peer_id, player_count)
 	end
 end
 
@@ -830,13 +830,13 @@ WeaveManager._track_ai_killed = function (self, breed_name)
 	end
 end
 
-WeaveManager.rpc_bar_cutoff_reached = function (self, sender)
+WeaveManager.rpc_bar_cutoff_reached = function (self, channel_id)
 	local objective_template = self:get_active_objective_template()
 	local bar_cutoff = objective_template.bar_cutoff
 	self._bar_score = bar_cutoff
 end
 
-WeaveManager.rpc_set_active_weave = function (self, sender, weave_name_id, objective_index)
+WeaveManager.rpc_set_active_weave = function (self, channel_id, weave_name_id, objective_index)
 	local weave_name = NetworkLookup.weave_names[weave_name_id]
 
 	self:reset_statistics_for_challenges()
@@ -846,22 +846,22 @@ WeaveManager.rpc_set_active_weave = function (self, sender, weave_name_id, objec
 	Managers.state.event:trigger("weave_objective_synced")
 end
 
-WeaveManager.rpc_weave_objective_completed = function (self, sender)
+WeaveManager.rpc_weave_objective_completed = function (self, channel_id)
 	self:_objective_completed()
 end
 
-WeaveManager.rpc_sync_end_of_weave_data = function (self, sender, score, remaining_time, num_players, damage_taken)
+WeaveManager.rpc_sync_end_of_weave_data = function (self, channel_id, score, remaining_time, num_players, damage_taken)
 	self._score = score
 	self._remaining_time = remaining_time
 	self._num_players = num_players
 	self._damage_taken = damage_taken
 end
 
-WeaveManager.rpc_sync_player_count = function (self, sender, num_players)
+WeaveManager.rpc_sync_player_count = function (self, channel_id, num_players)
 	self._num_players = num_players
 end
 
-WeaveManager.rpc_weave_final_objective_completed = function (self, sender)
+WeaveManager.rpc_weave_final_objective_completed = function (self, channel_id)
 	self:final_objective_completed()
 end
 

@@ -99,7 +99,7 @@ ObjectiveSocketSystem.on_remove_extension = function (self, unit, extension_name
 	self.socket_extensions[unit] = nil
 end
 
-ObjectiveSocketSystem.hot_join_sync = function (self, sender)
+ObjectiveSocketSystem.hot_join_sync = function (self, peer_id)
 	for unit, extension in pairs(self.socket_extensions) do
 		local sockets = extension.sockets
 		local num_sockets = extension.num_sockets
@@ -109,13 +109,15 @@ ObjectiveSocketSystem.hot_join_sync = function (self, sender)
 			local socket = sockets[socket_id]
 
 			if not socket.open then
-				RPC.rpc_objective_entered_socket_zone(sender, unit_id, socket_id, extension.use_game_object_id or false)
+				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+				RPC.rpc_objective_entered_socket_zone(channel_id, unit_id, socket_id, extension.use_game_object_id or false)
 			end
 		end
 	end
 end
 
-ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, sender, unit_id, socket_id, is_game_object)
+ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, channel_id, unit_id, socket_id, is_game_object)
 	fassert(not self.is_server, "Should only be called on the client")
 
 	local level = LevelHelper:current_level(self.world)

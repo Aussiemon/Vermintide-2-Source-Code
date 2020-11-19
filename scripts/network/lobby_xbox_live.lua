@@ -23,8 +23,6 @@ LobbyInternal.state_map = {
 
 LobbyInternal.init_client = function (network_options)
 	if not LobbyInternal.client then
-		Network.set_explicit_connections()
-
 		if not Network.xboxlive_client_exists() then
 			Network.init_xboxlive_client(network_options.config_file_name)
 		end
@@ -52,14 +50,6 @@ end
 
 LobbyInternal.ping = function (peer_id)
 	return Network.ping(peer_id)
-end
-
-LobbyInternal.add_ping_peer = function (peer_id)
-	return
-end
-
-LobbyInternal.remove_ping_peer = function (peer_id)
-	return
 end
 
 LobbyInternal.leave_lobby = function (xboxlive_lobby)
@@ -90,6 +80,26 @@ LobbyInternal.shutdown_client = function ()
 
 		LobbyInternal.xbox_live_lobby_browser = nil
 	end
+end
+
+LobbyInternal.open_channel = function (lobby, peer)
+	local session_id = lobby:session_id()
+	local channel_id = MultiplayerSession.open_channel(session_id, peer)
+
+	printf("LobbyInternal.open_channel session: %s, to peer: %s channel: %s", session_id, peer, channel_id)
+
+	return channel_id
+end
+
+LobbyInternal.close_channel = function (lobby, channel)
+	local session_id = lobby:session_id()
+
+	printf("LobbyInternal.close_channel session: %s, channel: %s", session_id, channel)
+	MultiplayerSession.close_channel(session_id, channel)
+end
+
+LobbyInternal.is_orphaned = function (engine_lobby)
+	return false
 end
 
 LobbyInternal.shutdown_xboxlive_client = function ()
@@ -357,7 +367,11 @@ XboxLiveLobby.update_data = function (self, dt)
 				local peer_id = member_data.peer
 
 				if peer_id ~= my_peer_id then
-					RPC.rpc_client_update_lobby_data(peer_id)
+					local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+					if channel_id then
+						RPC.rpc_client_update_lobby_data(channel_id)
+					end
 				end
 			end
 

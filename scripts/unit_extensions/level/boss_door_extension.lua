@@ -74,15 +74,16 @@ BossDoorExtension.update = function (self, unit, input, dt, context, t)
 	end
 end
 
-BossDoorExtension.hot_join_sync = function (self, sender)
+BossDoorExtension.hot_join_sync = function (self, peer_id)
 	local level = LevelHelper:current_level(self.world)
 	local level_index = Level.unit_index(level, self.unit)
 	local door_state = self.current_state
 	local door_state_id = NetworkLookup.door_states[door_state]
 	local breed_name = self.breed_name or "n/a"
 	local breed_id = NetworkLookup.breeds[breed_name]
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	RPC.rpc_sync_boss_door_state(sender, level_index, door_state_id, breed_id)
+	RPC.rpc_sync_boss_door_state(channel_id, level_index, door_state_id, breed_id)
 end
 
 BossDoorExtension.destroy = function (self)

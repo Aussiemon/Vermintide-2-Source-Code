@@ -144,6 +144,11 @@ end
 FreeFlightManager._update_global = function (self, dt)
 	local data = self.data.global
 	local input_service = self:_resolve_input_service()
+
+	if PLATFORM == "linux" then
+		return
+	end
+
 	local button_pressed = input_service:get("global_free_flight_toggle")
 	local frustum_modifier = input_service:get("frustum_freeze_toggle")
 

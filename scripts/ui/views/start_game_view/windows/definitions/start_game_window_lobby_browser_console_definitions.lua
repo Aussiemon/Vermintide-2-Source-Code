@@ -40,9 +40,11 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 							}
 						end
 
-						local data = game_mode_data[game_modes[game_mode]]
-						local levels = data.levels
-						levels[#levels + 1] = name
+						if not level_data.supported_game_modes or level_data.supported_game_modes[game_mode] then
+							local data = game_mode_data[game_modes[game_mode]]
+							local levels = data.levels
+							levels[#levels + 1] = name
+						end
 					end
 				end
 			end
@@ -76,7 +78,6 @@ local distance_array = (PLATFORM == "ps4" and {
 	"map_zone_options_5"
 }) or {
 	"map_zone_options_2",
-	"map_zone_options_3",
 	"map_zone_options_4",
 	"map_zone_options_5"
 }

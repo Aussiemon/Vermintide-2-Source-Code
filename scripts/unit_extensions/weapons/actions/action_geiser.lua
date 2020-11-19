@@ -101,32 +101,38 @@ ActionGeiser.fire = function (self, reason)
 	local hit_actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", start_pos, "size", Vector3(radius, capsule_half_height, radius), "rotation", Quaternion.look(Vector3.up(), Vector3.up()), "collision_filter", "filter_character_trigger", "use_global_table")
 	local charge_value = self.charge_value
 	local effect_name = current_action.particle_effect
-	local size = "_large"
 	local overcharge = current_action.overcharge_type
 	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 	local ignore_hitting_allies = not DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
+	local small_charge_value = current_action.small_charge_value or 0.33
+	local medium_charge_value = current_action.medium_charge_value or 0.66
+	local large_charge_value = current_action.large_charge_value or 1
+	local size = "_large"
 
-	if charge_value < 0.33 then
+	if charge_value < small_charge_value then
 		size = "_small"
-	elseif charge_value < 0.66 then
+	elseif charge_value < medium_charge_value then
 		size = "_medium"
-	elseif charge_value >= 1 and not global_is_inside_inn then
+	elseif large_charge_value <= charge_value and not global_is_inside_inn then
+		size = "_large"
 		local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 		local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 		local explosion_template_name = current_action.aoe_name
 		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 		overcharge = current_action.overcharge_type_heavy
 
-		self.network_transmit:send_rpc_server("rpc_client_create_aoe", owner_unit_id, source_pos, damage_source_id, explosion_template_id)
+		self.network_transmit:send_rpc_server("rpc_client_create_aoe", owner_unit_id, source_pos, damage_source_id, explosion_template_id, radius)
 	end
 
-	effect_name = effect_name .. size
-	local variable_name = current_action.particle_radius_variable
-	local effect_id = NetworkLookup.effects[effect_name]
-	local variable_id = NetworkLookup.effects[variable_name]
-	local radius_variable = Vector3(radius, 1, 1)
+	if effect_name then
+		effect_name = effect_name .. size
+		local variable_name = current_action.particle_radius_variable
+		local effect_id = NetworkLookup.effects[effect_name]
+		local variable_id = NetworkLookup.effects[variable_name]
+		local radius_variable = Vector3(radius, 1, 1)
 
-	self.network_transmit:send_rpc_server("rpc_play_simple_particle_with_vector_variable", effect_id, position, variable_id, radius_variable)
+		self.network_transmit:send_rpc_server("rpc_play_simple_particle_with_vector_variable", effect_id, position, variable_id, radius_variable)
+	end
 
 	if overcharge then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge]
@@ -221,7 +227,7 @@ ActionGeiser.fire = function (self, reason)
 
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(self._is_critical_strike, self.owner_buff_extension, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(self._is_critical_strike, self.owner_buff_extension, hud_extension, nil, "on_critical_shot", nil)
 end
 
 local UNITS_PER_FRAME = 1

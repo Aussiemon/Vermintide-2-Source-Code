@@ -73,7 +73,7 @@ PlayerInputExtension.update = function (self, unit, input, dt, context, t)
 		self.new_buffer_key = nil
 	end
 
-	if self.input_buffer then
+	if self.input_buffer and self.input_buffer_timer then
 		self.input_buffer_timer = self.input_buffer_timer - dt
 
 		if self.input_buffer_timer <= 0 then

@@ -937,7 +937,7 @@ function flow_callback_chr_editor_inventory_drop(params)
 
 			local actor = Unit.create_actor(item_unit, "rp_dropped")
 
-			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 5)
 			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 		end
 	end
@@ -952,7 +952,7 @@ function flow_callback_chr_editor_inventory_drop(params)
 
 			local actor = Unit.create_actor(item_unit, "rp_dropped")
 
-			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 5)
 			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 		end
 	end

@@ -85,7 +85,9 @@ DemoTitleUI._setup_level = function (self)
 		end
 	end
 
-	self._level = ScriptWorld.load_level(self._world, DemoSettings.level_name, spawned_object_sets, nil, nil, callback(self, "shading_callback"))
+	local position, rotation, mood_setting = nil
+	local spawn_time_sliced = false
+	self._level = ScriptWorld.spawn_level(self._world, DemoSettings.level_name, spawned_object_sets, position, rotation, callback(self, "shading_callback"), mood_setting, spawn_time_sliced)
 
 	Level.spawn_background(self._level)
 end
@@ -97,7 +99,7 @@ DemoTitleUI.shading_callback = function (self, world, shading_env, viewport)
 		local multiplier = settings.outline_multiplier
 
 		if settings.pulsate then
-			multiplier = settings.outline_multiplier * 0.5 + math.sin(Application.time_since_launch() * settings.pulse_multiplier) * settings.outline_multiplier * 0.5
+			multiplier = settings.outline_multiplier * 0.5 + math.sin(Managers.time:time("ui") * settings.pulse_multiplier) * settings.outline_multiplier * 0.5
 		end
 
 		ShadingEnvironment.set_vector3(shading_env, settings.variable, color)

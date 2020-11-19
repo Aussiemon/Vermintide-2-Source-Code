@@ -59,7 +59,7 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
 end
@@ -109,6 +109,7 @@ ActionChargedProjectile._shoot = function (self, t)
 		end
 
 		self.owner_buff_extension:trigger_procs("on_grenade_use")
+		Managers.state.achievement:trigger_event("on_grenade_thrown", owner_unit, current_action)
 	end
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
@@ -249,11 +250,22 @@ ActionChargedProjectile._shoot = function (self, t)
 end
 
 ActionChargedProjectile.finish = function (self, reason)
-	local owner_unit = self.owner_unit
-
 	if self.state == "waiting_to_shoot" then
 		self:_shoot()
 		self:_proc_spell_used(self.owner_buff_extension)
+	end
+
+	local ammo_extension = self.ammo_extension
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+
+	if reason ~= "new_interupting_action" then
+		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+
+		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
+			ammo_extension:start_reload(true)
+		end
 	end
 
 	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")

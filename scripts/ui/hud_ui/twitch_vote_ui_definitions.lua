@@ -972,39 +972,20 @@ local function create_vertical_window_divider(scenegraph_id, size)
 	return widget
 end
 
-local VOTE_TEXTS = nil
-
-if PLATFORM == "xb1" then
-	VOTE_TEXTS = {
-		standard_vote = {
-			"Left",
-			"Right"
-		},
-		multiple_choice = {
-			"A",
-			"B",
-			"C",
-			"D",
-			"E"
-		}
+local VOTE_TEXTS = {
+	standard_vote = {
+		"#A",
+		"#B"
+	},
+	multiple_choice = {
+		"#A",
+		"#B",
+		"#C",
+		"#D",
+		"#E"
 	}
-else
-	VOTE_TEXTS = {
-		standard_vote = {
-			"#A",
-			"#B"
-		},
-		multiple_choice = {
-			"#A",
-			"#B",
-			"#C",
-			"#D",
-			"#E"
-		}
-	}
-end
-
-local streaming_icon = (PLATFORM ~= "xb1" and "twitch_icon_small") or "mixer_icon_small"
+}
+local streaming_icon = "twitch_icon_small"
 
 return {
 	vote_texts = VOTE_TEXTS,

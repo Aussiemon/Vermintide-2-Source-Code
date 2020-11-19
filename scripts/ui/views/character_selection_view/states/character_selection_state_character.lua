@@ -11,14 +11,6 @@ local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local DO_RELOAD = false
 local VIDEO_REFERENCE_NAME = "CharacterSelectionStateCharacter"
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 CharacterSelectionStateCharacter = class(CharacterSelectionStateCharacter)
 CharacterSelectionStateCharacter.NAME = "CharacterSelectionStateCharacter"
 
@@ -203,12 +195,12 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 			content.career_settings = career
 			local portrait_image = career.portrait_image
 			content.portrait = "medium_" .. portrait_image
-			local is_career_unlocked, reason, dlc_name = career.is_unlocked_function(hero_name, hero_level)
+			local is_career_unlocked, reason, dlc_name = career:is_unlocked_function(hero_name, hero_level)
 			content.locked = not is_career_unlocked
-			content.locked_reason = reason
+			content.locked_reason = not is_career_unlocked and reason and Localize(reason)
 			content.dlc_name = dlc_name
 
-			if dlc_name then
+			if reason == "dlc_not_owned" then
 				content.lock_texture = content.lock_texture .. "_gold"
 				content.frame = content.frame .. "_gold"
 			end
@@ -265,7 +257,7 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 			content.taken = not can_play_profile
 
 			if j == selected_career_index and selected_profile_index == profile_index then
-				self:_set_select_button_enabled(can_play_profile and not is_career_locked, is_career_locked and content.dlc_name)
+				self:_set_select_button_enabled(can_play_profile and not is_career_locked, is_career_locked and content.dlc_name, content.dlc_name)
 			end
 
 			widget_index = widget_index + 1
@@ -386,7 +378,7 @@ CharacterSelectionStateCharacter._select_hero = function (self, profile_index, c
 
 			if is_selected then
 				local locked_info_text_content = self._widgets_by_name.locked_info_text.content
-				locked_info_text_content.visible = content.locked
+				locked_info_text_content.visible = content.locked_reason or content.locked
 				locked_info_text_content.text = content.locked_reason
 			end
 
@@ -767,6 +759,14 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 		if select_button.content.dlc_name then
 			Managers.state.event:trigger("ui_dlc_upsell", select_button.content.dlc_name)
 		elseif current_profile_index ~= self._selected_profile_index or current_career_index ~= self._selected_career_index then
+			local dlc_name = select_button.content.verify_dlc_name
+
+			if dlc_name and Managers.unlock:dlc_requires_restart(dlc_name) then
+				self.parent:close_menu()
+
+				return
+			end
+
 			self:_change_profile(self._selected_profile_index, self._selected_career_index)
 			self.parent:set_input_blocked(true)
 		else
@@ -784,12 +784,13 @@ CharacterSelectionStateCharacter._set_hero_info = function (self, hero_name, car
 	widgets_by_name.info_hero_level.content.text = level
 end
 
-CharacterSelectionStateCharacter._set_select_button_enabled = function (self, enabled, required_dlc_name)
+CharacterSelectionStateCharacter._set_select_button_enabled = function (self, enabled, required_dlc_name, dlc_name)
 	local button_content = self._widgets_by_name.select_button.content
 
 	if enabled then
 		button_content.title_text = Localize("input_description_confirm")
 		button_content.button_hotspot.disable_button = false
+		button_content.verify_dlc_name = PLATFORM ~= "win32" and dlc_name
 		button_content.dlc_name = nil
 
 		self.menu_input_description:set_input_description(generic_input_actions.available)
@@ -797,12 +798,14 @@ CharacterSelectionStateCharacter._set_select_button_enabled = function (self, en
 		button_content.title_text = Localize("menu_store_purchase_button_unlock")
 		button_content.button_hotspot.disable_button = false
 		button_content.dlc_name = required_dlc_name
+		button_content.verify_dlc_name = nil
 
 		self.menu_input_description:set_input_description(nil)
 	else
 		button_content.title_text = Localize("dlc1_2_difficulty_unavailable")
 		button_content.button_hotspot.disable_button = true
 		button_content.dlc_name = nil
+		button_content.verify_dlc_name = nil
 
 		self.menu_input_description:set_input_description(nil)
 	end
@@ -983,7 +986,7 @@ CharacterSelectionStateCharacter._animate_element_by_catmullrom = function (self
 end
 
 CharacterSelectionStateCharacter.input_service = function (self)
-	return ((self._pending_profile_request or self._resync_id or self.parent:input_blocked()) and fake_input_service) or self.parent:input_service(true)
+	return ((self._pending_profile_request or self._resync_id or self.parent:input_blocked()) and FAKE_INPUT_SERVICE) or self.parent:input_service(true)
 end
 
 return

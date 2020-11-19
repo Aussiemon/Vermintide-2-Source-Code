@@ -17,14 +17,7 @@ COLD_CAMERA_BACKLIGHT = {
 LevelSettings = LevelSettings or {}
 
 require("scripts/settings/dlc_settings")
-
-for _, dlc in pairs(DLCSettings) do
-	local level_settings = dlc.level_settings
-
-	if level_settings then
-		dofile(level_settings)
-	end
-end
+DLCUtils.dofile("level_settings")
 
 local default_start_level = (Development.parameter("gdc") and "magnus") or "inn_level"
 LevelSettings.default_start_level = default_start_level
@@ -260,7 +253,7 @@ LevelSettings.inn_level_skulls = {
 LevelSettings.inn_level_sonnstill = {
 	knocked_down_setting = "knocked_down",
 	tome_package_name = "resource_packages/levels/tomes/inn_sonnstill_tome",
-	display_name = "level_name_keep",
+	debug_environment_level_flow_event = "keep_event_sonnstill",
 	player_aux_bus_name = "environment_reverb_outside",
 	no_bots_allowed = true,
 	use_keep_decorations = true,
@@ -275,6 +268,7 @@ LevelSettings.inn_level_sonnstill = {
 	loading_ui_package_name = "loading_screen_15",
 	has_multiple_loading_images = true,
 	conflict_settings = "inn_level",
+	display_name = "level_name_keep",
 	level_name = "levels/inn/event_decoration/sonnstill/world",
 	no_nav_mesh = false,
 	source_aux_bus_name = "environment_reverb_outside_source",
@@ -310,22 +304,23 @@ LevelSettings.inn_level_sonnstill = {
 LevelSettings.farmlands = {
 	act_unlock_order = 0,
 	display_name = "level_name_farmlands",
-	level_name = "levels/honduras/farmlands/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	description_text = "nik_loading_screen_farmland_01",
+	ambient_sound_event = "silent_default_world_sound",
 	level_image = "level_icon_09",
 	unlockable = true,
 	boss_spawning_method = "hand_placed",
 	main_game_level = true,
 	loading_ui_package_name = "loading_screen_7",
+	description_text = "nik_loading_screen_farmland_01",
 	act_presentation_order = 1,
 	use_mini_patrols = false,
-	ambient_sound_event = "silent_default_world_sound",
+	level_name = "levels/honduras/farmlands/world",
 	act = "act_3",
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
 	package_name = "resource_packages/levels/honduras/farmlands",
+	meta_package_name = "resource_packages/levels/honduras/farmlands_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	environment_variations = {
 		"wv_dawn_rain_01"
@@ -765,12 +760,13 @@ LevelSettings.fort = {
 	act = "act_2",
 	main_game_level = true,
 	act_presentation_order = 3,
-	description_text = "nik_loading_screen_fort_01",
-	boss_spawning_method = "hand_placed",
 	level_image = "level_icon_06",
+	boss_spawning_method = "hand_placed",
+	description_text = "nik_loading_screen_fort_01",
 	loading_ui_package_name = "loading_screen_8",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/fort/world",
+	meta_package_name = "resource_packages/levels/honduras/fort_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	environment_variations = {
 		"wv_dawn_snow_01"
@@ -1096,9 +1092,9 @@ LevelSettings.skaven_stronghold = {
 LevelSettings.military = {
 	act_unlock_order = 0,
 	display_name = "level_name_military",
-	level_name = "levels/honduras/military/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
+	package_name = "resource_packages/levels/honduras/military",
 	level_image = "level_icon_01",
 	unlockable = true,
 	use_mini_patrols = false,
@@ -1111,7 +1107,8 @@ LevelSettings.military = {
 	act = "act_1",
 	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/military",
+	level_name = "levels/honduras/military/world",
+	meta_package_name = "resource_packages/levels/honduras/military_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	environment_variations = {
 		"wv_midnight_storm_01"
@@ -1314,22 +1311,23 @@ LevelSettings.skittergate = {
 LevelSettings.bell = {
 	act_unlock_order = 1,
 	display_name = "level_name_bell",
-	level_name = "levels/honduras/bell/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	description_text = "nik_loading_screen_bell_01",
+	ambient_sound_event = "silent_default_world_sound",
 	level_image = "level_icon_07",
 	unlockable = true,
 	boss_spawning_method = "hand_placed",
 	main_game_level = true,
 	loading_ui_package_name = "loading_screen_1",
+	description_text = "nik_loading_screen_bell_01",
 	act_presentation_order = 2,
 	use_mini_patrols = false,
-	ambient_sound_event = "silent_default_world_sound",
+	level_name = "levels/honduras/bell/world",
 	act = "act_2",
 	default_surface_material = "stone_wet",
 	knocked_down_setting = "knocked_down",
 	package_name = "resource_packages/levels/honduras/bell",
+	meta_package_name = "resource_packages/levels/honduras/bell_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	environment_variations = {
 		"wv_dusk_snow_01"

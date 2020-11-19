@@ -1,77 +1,76 @@
-PlayerBreeds = {}
-PlayerBreedHitZones = {
-	player_breed_hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
-		},
-		torso = {
-			prio = 1,
-			actors = {
-				"c_head",
-				"c_neck",
-				"c_spine",
-				"c_spine1",
-				"c_spine2",
-				"c_hips",
-				"c_leftshoulder",
-				"c_rightshoulder",
-				"c_leftarm",
-				"c_leftforearm",
-				"c_lefthand",
-				"c_rightarm",
-				"c_rightforearm",
-				"c_righthand",
-				"c_rightupleg",
-				"c_rightleg",
-				"c_rightfoot",
-				"c_leftupleg",
-				"c_leftleg",
-				"c_leftfoot"
-			},
-			push_actors = {}
-		},
-		afro = {
-			prio = 5,
-			actors = {
-				"c_afro"
-			}
-		}
+PlayerBreeds = PlayerBreeds or {}
+PlayerBreedHitZones = PlayerBreedHitZones or {}
+PlayerBreedHitZones.player_breed_hit_zones = {
+	full = {
+		prio = 1,
+		actors = {}
 	},
-	kruber_breed_hit_zones = {
-		full = {
-			prio = 1,
-			actors = {}
+	torso = {
+		prio = 1,
+		actors = {
+			"c_head",
+			"c_neck",
+			"c_spine",
+			"c_spine1",
+			"c_spine2",
+			"c_hips",
+			"c_leftshoulder",
+			"c_rightshoulder",
+			"c_leftarm",
+			"c_leftforearm",
+			"c_lefthand",
+			"c_rightarm",
+			"c_rightforearm",
+			"c_righthand",
+			"c_rightupleg",
+			"c_rightleg",
+			"c_rightfoot",
+			"c_leftupleg",
+			"c_leftleg",
+			"c_leftfoot"
 		},
-		torso = {
-			prio = 1,
-			actors = {
-				"c_head",
-				"c_neck",
-				"c_spine",
-				"c_hips",
-				"c_leftshoulder",
-				"c_rightshoulder",
-				"c_leftarm",
-				"c_leftforearm",
-				"c_lefthand",
-				"c_rightarm",
-				"c_rightforearm",
-				"c_righthand",
-				"c_rightupleg",
-				"c_rightleg",
-				"c_rightfoot",
-				"c_leftupleg",
-				"c_leftleg",
-				"c_leftfoot"
-			},
-			push_actors = {}
+		push_actors = {}
+	},
+	afro = {
+		prio = 5,
+		actors = {
+			"c_afro"
+		}
+	}
+}
+PlayerBreedHitZones.kruber_breed_hit_zones = {
+	full = {
+		prio = 1,
+		actors = {}
+	},
+	torso = {
+		prio = 1,
+		actors = {
+			"c_head",
+			"c_neck",
+			"c_spine",
+			"c_hips",
+			"c_leftshoulder",
+			"c_rightshoulder",
+			"c_leftarm",
+			"c_leftforearm",
+			"c_lefthand",
+			"c_rightarm",
+			"c_rightforearm",
+			"c_righthand",
+			"c_rightupleg",
+			"c_rightleg",
+			"c_rightfoot",
+			"c_leftupleg",
+			"c_leftleg",
+			"c_leftfoot"
 		},
-		afro = {
-			prio = 5,
-			actors = {
-				"c_afro"
-			}
+		push_actors = {}
+	},
+	afro = {
+		prio = 5,
+		actors = {
+			"c_afro"
 		}
 	}
 }

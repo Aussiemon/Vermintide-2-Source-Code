@@ -7,16 +7,9 @@ require("scripts/ui/views/hero_view/states/hero_view_state_achievements")
 require("scripts/ui/views/hero_view/states/hero_view_state_keep_decorations")
 require("scripts/ui/views/hero_view/states/hero_view_state_weave_forge")
 require("scripts/settings/news_feed_templates")
-
-for name, dlc in pairs(DLCSettings) do
-	local hero_view = dlc.hero_view
-
-	if hero_view then
-		for ui_name, data in pairs(hero_view) do
-			require(data.filename)
-		end
-	end
-end
+DLCUtils.map_list("hero_view", function (hero_view_ui_data)
+	require(hero_view_ui_data.filename)
+end)
 
 local definitions = local_require("scripts/ui/views/hero_view/hero_view_definitions")
 local widget_definitions = definitions.widgets_definitions
@@ -29,33 +22,10 @@ local function dprint(...)
 	print("[HeroView]", ...)
 end
 
-local platform = PLATFORM
-
-if platform ~= "ps4" or not {
-	LobbyDistanceFilter.CLOSE,
-	LobbyDistanceFilter.MEDIUM,
-	LobbyDistanceFilter.WORLD
-} then
-	local MapLobbyDistanceFilter = {
-		LobbyDistanceFilter.CLOSE,
-		LobbyDistanceFilter.MEDIUM,
-		LobbyDistanceFilter.FAR,
-		LobbyDistanceFilter.WORLD
-	}
-end
-
 local DO_RELOAD = true
 local debug_draw_scenegraph = false
 local debug_menu = true
 HeroView = class(HeroView)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 HeroView.init = function (self, ingame_ui_context)
 	self.world = ingame_ui_context.world
@@ -85,7 +55,7 @@ HeroView.init = function (self, ingame_ui_context)
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		settings_by_screen = settings_by_screen,
-		input_service = fake_input_service
+		input_service = FAKE_INPUT_SERVICE
 	}
 	self._state_machine_params = state_machine_params
 	self.units = {}
@@ -125,7 +95,7 @@ HeroView.clear_wanted_state = function (self)
 end
 
 HeroView.input_service = function (self)
-	return (self._draw_loading and fake_input_service) or self.input_manager:get_service("hero_view")
+	return (self._draw_loading and FAKE_INPUT_SERVICE) or self.input_manager:get_service("hero_view")
 end
 
 HeroView.set_input_blocked = function (self, blocked)
@@ -266,7 +236,7 @@ HeroView.update = function (self, dt, t)
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
-	local input_service = (input_blocked and fake_input_service) or self:input_service()
+	local input_service = (input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 	self._state_machine_params.input_service = input_service
 	local transitioning = self:transitioning()
 
@@ -310,7 +280,7 @@ HeroView.on_enter = function (self, params)
 	self.waiting_for_post_update_enter = true
 	self._on_enter_transition_params = params
 
-	self:play_sound("hud_in_inventory_state_on")
+	Managers.music:duck_sounds()
 
 	self._draw_loading = false
 end
@@ -470,7 +440,7 @@ HeroView.on_exit = function (self)
 	self.exiting = nil
 
 	self:_handle_view_popups()
-	self:play_sound("hud_in_inventory_state_off")
+	Managers.music:unduck_sounds()
 
 	self._draw_loading = false
 end

@@ -79,6 +79,7 @@ EndScreenUI.on_enter = function (self, screen_name, screen_context)
 	local screen_class = rawget(_G, class_name)
 	self._screen = screen_class:new(self._ingame_ui_context, input_service, screen_context)
 
+	self._screen:on_fade_in()
 	Wwise.set_state("override", "false")
 end
 
@@ -94,7 +95,7 @@ EndScreenUI.on_exit = function (self)
 		input_manager:device_unblock_all_services("gamepad", 1)
 	end
 
-	WwiseWorld.trigger_event(self.wwise_world, "hud_in_inventory_state_off")
+	Managers.music:unduck_sounds()
 end
 
 EndScreenUI.on_complete = function (self)
@@ -135,7 +136,7 @@ EndScreenUI.update = function (self, dt)
 
 			screen:start()
 		end
-	elseif screen:started() and screen:completed() then
+	elseif screen:started() and screen:completed() and not Managers.backend:is_pending_request() then
 		Managers.transition:fade_in(GameSettings.transition_fade_in_speed, callback(self, "on_complete"))
 	end
 

@@ -1,14 +1,6 @@
 require("scripts/ui/reward_popup/reward_popup_ui")
 
 local POLL_REWARDS_COOLDOWN = 1.5
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 GiftPopupUI = class(GiftPopupUI)
 
 GiftPopupUI.init = function (self, parent, ingame_ui_context)
@@ -75,6 +67,10 @@ GiftPopupUI.post_update = function (self, dt, t)
 	end
 end
 
+GiftPopupUI.has_presentation_data = function (self)
+	return #self._presentation_queue > 0 or self._reward_popup:is_presentation_active()
+end
+
 GiftPopupUI._can_present_reward = function (self)
 	if self._reward_popup:is_presentation_active() then
 		return false
@@ -126,7 +122,7 @@ GiftPopupUI.active = function (self)
 end
 
 GiftPopupUI.active_input_service = function (self)
-	return fake_input_service
+	return FAKE_INPUT_SERVICE
 end
 
 GiftPopupUI.destroy = function (self)

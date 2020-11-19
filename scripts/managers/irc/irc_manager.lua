@@ -4,6 +4,8 @@ require("scripts/managers/irc/irc_utils")
 IRCManager = class(IRCManager)
 Irc.LIST_END_MSG = 8
 Irc.META_MSG = 9
+Irc.TEAM_MSG = 10
+Irc.ALL_MSG = 11
 local DEBUG_PRINT = false
 local CONNECTION_RETRIES = 3
 local MESSAGES_TO_SEND = {}

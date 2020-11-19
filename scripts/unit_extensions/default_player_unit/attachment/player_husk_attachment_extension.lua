@@ -163,38 +163,14 @@ PlayerHuskAttachmentExtension._remove_buffs = function (self, slot_name)
 	table.clear(current_item_buffs)
 end
 
-PlayerHuskAttachmentExtension.add_buffs_to_slot = function (self, slot_name, buff_name_1, buff_data_type_1, value_1, buff_name_2, buff_data_type_2, value_2, buff_name_3, buff_data_type_3, value_3, buff_name_4, buff_data_type_4, value_4)
+PlayerHuskAttachmentExtension.set_buffs_to_slot = function (self, slot_name, buffs)
 	local slot_buffs = self._synced_slot_buffs[slot_name] or {}
 
 	table.clear(slot_buffs)
 
-	if buff_name_1 ~= "n/a" then
-		slot_buffs[buff_name_1] = {
-			[buff_data_type_1] = value_1
-		}
-	end
+	self._synced_slot_buffs[slot_name] = buffs
 
-	if buff_name_2 ~= "n/a" then
-		slot_buffs[buff_name_2] = {
-			[buff_data_type_2] = value_2
-		}
-	end
-
-	if buff_name_3 ~= "n/a" then
-		slot_buffs[buff_name_3] = {
-			[buff_data_type_3] = value_3
-		}
-	end
-
-	if buff_name_4 ~= "n/a" then
-		slot_buffs[buff_name_4] = {
-			[buff_data_type_4] = value_4
-		}
-	end
-
-	self._synced_slot_buffs[slot_name] = slot_buffs
-
-	self:_apply_buffs(slot_buffs, slot_name)
+	self:_apply_buffs(buffs, slot_name)
 end
 
 return

@@ -1,3 +1,5 @@
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 require("scripts/helpers/pseudo_random_distribution")
 
 local bpc = dofile("scripts/settings/bpc")
@@ -10,6 +12,7 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self._unit = unit
 	self.world = extension_init_context.world
 	self._breed = extension_init_data.breed
+	self._initial_buff_names = extension_init_data.initial_buff_names
 	self._buffs = {}
 	self._stat_buffs = {}
 	self._event_buffs = {}
@@ -35,6 +38,8 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 end
 
 BuffExtension.extensions_ready = function (self, world, unit)
+	self:_activate_initial_buffs()
+
 	local breed = Unit.get_data(unit, "breed")
 
 	if not breed or not breed.is_player then
@@ -81,6 +86,7 @@ BuffExtension.clear = function (self)
 		local buff = buffs[num_buffs]
 		buff_extension_function_params.bonus = buff.bonus
 		buff_extension_function_params.multiplier = buff.multiplier
+		buff_extension_function_params.value = buff.value
 		buff_extension_function_params.t = end_time
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
@@ -104,6 +110,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 	local start_time = Managers.time:time("game")
 	local id = self.id
 	local world = self.world
+	self.id = id + 1
 
 	if #self._buffs == 0 then
 		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, true)
@@ -132,6 +139,14 @@ BuffExtension.add_buff = function (self, template_name, params)
 						end
 
 						if duration and sub_buff_template.refresh_durations then
+							if existing_buff.area_buff_unit then
+								local buff_area_extension = ScriptUnit.has_extension(existing_buff.area_buff_unit, "buff_area_system")
+
+								if buff_area_extension then
+									buff_area_extension:set_duration(duration)
+								end
+							end
+
 							existing_buff.start_time = start_time
 							existing_buff.duration = duration
 							existing_buff.end_time = end_time
@@ -142,6 +157,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 							if reapply_buff_func then
 								buff_extension_function_params.bonus = existing_buff.bonus
 								buff_extension_function_params.multiplier = existing_buff.multiplier
+								buff_extension_function_params.value = existing_buff.value
 								buff_extension_function_params.t = start_time
 								buff_extension_function_params.end_time = end_time
 								buff_extension_function_params.attacker_unit = existing_buff.attacker_unit
@@ -162,165 +178,148 @@ BuffExtension.add_buff = function (self, template_name, params)
 				end
 
 				if has_max_stacks then
-					break
-				elseif stacks == max_stacks - 1 then
-					local on_max_stacks_func = MaxStackFunctions[sub_buff_template.on_max_stacks_func]
+					local on_max_stacks_overflow_func = MaxStackFunctions[sub_buff_template.on_max_stacks_overflow_func]
 
-					if on_max_stacks_func then
+					if on_max_stacks_overflow_func then
 						local player = Managers.player:owner(self._unit)
 
 						if player then
-							on_max_stacks_func(player, sub_buff_template)
-						end
-					end
 
-					if sub_buff_template.reset_on_max_stacks then
-						local num_buffs = #self._buffs
-						local j = 1
+							-- Decompilation error in this vicinity:
+							on_max_stacks_overflow_func(player, sub_buff_template)
 
-						while num_buffs >= j do
-							local buff = self._buffs[j]
+							break
 
-							if buff.buff_type == sub_buff_template.name then
-								buff_extension_function_params.bonus = buff.bonus
-								buff_extension_function_params.multiplier = buff.multiplier
-								buff_extension_function_params.t = start_time
-								buff_extension_function_params.end_time = buff.duration and buff.start_time + buff.duration
-								buff_extension_function_params.attacker_unit = buff.attacker_unit
-								buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
+							local buff = {
+								id = id,
+								parent_id = params and params.parent_id,
+								start_time = start_time,
+								template = sub_buff_template,
+								buff_type = sub_buff_template.name
+							}
 
-								self:_remove_sub_buff(buff, j, buff_extension_function_params)
-
-								num_buffs = num_buffs - 1
-							else
-								j = j + 1
+							if sub_buff_template.buff_area then
+								local unit_spawner = Managers.state.unit_spawner
+								local extension_init_data = {
+									buff_area_system = {
+										removal_proc_function_name = sub_buff_template.exit_area_func,
+										add_proc_function_name = sub_buff_template.enter_area_func,
+										duration = sub_buff_template.duration,
+										radius = sub_buff_template.area_radius,
+										sub_buff_template = sub_buff_template,
+										owner_player = Managers.player:owner(self._unit)
+									}
+								}
+								local buff_unit, buff_unit_go_id = unit_spawner:spawn_network_unit(sub_buff_template.area_unit_name, "buff_aoe_unit", extension_init_data, POSITION_LOOKUP[self._unit], Quaternion.identity(), nil)
+								buff.area_buff_unit = buff_unit
 							end
+
+							buff.attacker_unit = (params and params.attacker_unit) or nil
+							buff.source_attacker_unit = (params and params.source_attacker_unit) or nil
+							local bonus = sub_buff_template.bonus
+							local value = sub_buff_template.value
+							local multiplier = sub_buff_template.multiplier
+							local proc_chance = sub_buff_template.proc_chance
+							local range = sub_buff_template.range
+							local damage_source, power_level = nil
+
+							if params then
+								local variable_value = params.variable_value
+
+								if variable_value then
+									local variable_bonus_table = sub_buff_template.variable_bonus
+
+									if variable_bonus_table then
+										local bonus_index = (variable_value == 1 and #variable_bonus_table) or 1 + math.floor(variable_value / (1 / #variable_bonus_table))
+										bonus = variable_bonus_table[bonus_index]
+									end
+
+									local variable_multiplier_table = sub_buff_template.variable_multiplier
+
+									if variable_multiplier_table then
+										local min_multiplier = variable_multiplier_table[1]
+										local max_multiplier = variable_multiplier_table[2]
+										multiplier = math.lerp(min_multiplier, max_multiplier, variable_value)
+									end
+
+									local variable_bonus_max = sub_buff_template.variable_bonus_max
+
+									if variable_bonus_max then
+										bonus = math.lerp(0, variable_bonus_max, variable_value)
+									end
+
+									local variable_multiplier_max = sub_buff_template.variable_multiplier_max
+
+									if variable_multiplier_max then
+										multiplier = math.lerp(0, variable_multiplier_max, variable_value)
+									end
+								end
+
+								bonus = params.external_optional_bonus or bonus
+								multiplier = params.external_optional_multiplier or multiplier
+								value = params.external_optional_value or value
+								proc_chance = params.external_optional_proc_chance or proc_chance
+								duration = params.external_optional_duration or duration
+								range = params.external_optional_range or range
+								damage_source = params.damage_source
+								power_level = params.power_level
+							end
+
+							if sub_buff_template.duration_modifier_func then
+								duration = sub_buff_template:duration_modifier_func(duration)
+							end
+
+							buff.bonus = bonus
+							buff.multiplier = multiplier
+							buff.proc_chance = proc_chance
+							buff.value = value
+							buff.duration = duration
+							buff.range = range
+							buff.damage_source = damage_source
+							buff.power_level = power_level
+							buff_extension_function_params.bonus = bonus
+							buff_extension_function_params.multiplier = multiplier
+							buff_extension_function_params.value = value
+							buff_extension_function_params.t = start_time
+							buff_extension_function_params.end_time = end_time
+							buff_extension_function_params.attacker_unit = buff.attacker_unit
+							buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
+							local apply_buff_func = sub_buff_template.apply_buff_func
+
+							if apply_buff_func then
+								BuffFunctionTemplates.functions[apply_buff_func](self._unit, buff, buff_extension_function_params, world)
+							end
+
+							if sub_buff_template.stat_buff then
+								local index = self:_add_stat_buff(sub_buff_template, buff)
+								buff.stat_buff_index = index
+							end
+
+							if sub_buff_template.event_buff then
+								local buff_func = sub_buff_template.buff_func
+								local event = sub_buff_template.event
+								buff.buff_func = buff_func
+								local event_buffs = self._event_buffs[event]
+								local index = self._event_buffs_index
+								buff.event_buff_index = index
+								event_buffs[index] = buff
+								self._event_buffs_index = index + 1
+							end
+
+							if sub_buff_template.buff_after_delay then
+								local delayed_buff_name = sub_buff_template.delayed_buff_name
+								buff.delayed_buff_name = delayed_buff_name
+							end
+
+							if sub_buff_template.continuous_effect then
+								self._continuous_screen_effects[id] = self:_play_screen_effect(sub_buff_template.continuous_effect)
+							end
+
+							self._buffs[#self._buffs + 1] = buff
 						end
-
-						break
 					end
 				end
 			end
-
-			local buff = {
-				id = id,
-				parent_id = params and params.parent_id,
-				start_time = start_time,
-				template = sub_buff_template,
-				buff_type = sub_buff_template.name
-			}
-
-			if sub_buff_template.buff_area then
-				local unit_spawner = Managers.state.unit_spawner
-				local extension_init_data = {
-					buff_area_system = {
-						removal_proc_function_name = sub_buff_template.remove_buff_func,
-						radius = sub_buff_template.area_radius,
-						owner_player = Managers.player:owner(self._unit)
-					}
-				}
-				local buff_unit, buff_unit_go_id = unit_spawner:spawn_network_unit(sub_buff_template.area_unit_name, "buff_aoe_unit", extension_init_data, POSITION_LOOKUP[self._unit], Quaternion.identity(), nil)
-				buff.area_buff_unit = buff_unit
-			end
-
-			buff.attacker_unit = (params and params.attacker_unit) or nil
-			buff.source_attacker_unit = (params and params.source_attacker_unit) or nil
-			local bonus = sub_buff_template.bonus
-			local multiplier = sub_buff_template.multiplier
-			local proc_chance = sub_buff_template.proc_chance
-			local range = sub_buff_template.range
-			local damage_source, power_level = nil
-
-			if params then
-				local variable_value = params.variable_value
-
-				if variable_value then
-					local variable_bonus_table = sub_buff_template.variable_bonus
-
-					if variable_bonus_table then
-						local bonus_index = (variable_value == 1 and #variable_bonus_table) or 1 + math.floor(variable_value / (1 / #variable_bonus_table))
-						bonus = variable_bonus_table[bonus_index]
-					end
-
-					local variable_multiplier_table = sub_buff_template.variable_multiplier
-
-					if variable_multiplier_table then
-						local min_multiplier = variable_multiplier_table[1]
-						local max_multiplier = variable_multiplier_table[2]
-						multiplier = math.lerp(min_multiplier, max_multiplier, variable_value)
-					end
-
-					local variable_bonus_max = sub_buff_template.variable_bonus_max
-
-					if variable_bonus_max then
-						bonus = math.lerp(0, variable_bonus_max, variable_value)
-					end
-
-					local variable_multiplier_max = sub_buff_template.variable_multiplier_max
-
-					if variable_multiplier_max then
-						multiplier = math.lerp(0, variable_multiplier_max, variable_value)
-					end
-				end
-
-				bonus = params.external_optional_bonus or bonus
-				multiplier = params.external_optional_multiplier or multiplier
-				proc_chance = params.external_optional_proc_chance or proc_chance
-				duration = params.external_optional_duration or duration
-				range = params.external_optional_range or range
-				damage_source = params.damage_source
-				power_level = params.power_level
-			end
-
-			if sub_buff_template.duration_modifier_func then
-				duration = sub_buff_template:duration_modifier_func(duration)
-			end
-
-			buff.bonus = bonus
-			buff.multiplier = multiplier
-			buff.proc_chance = proc_chance
-			buff.duration = duration
-			buff.range = range
-			buff.damage_source = damage_source
-			buff.power_level = power_level
-			buff_extension_function_params.bonus = bonus
-			buff_extension_function_params.multiplier = multiplier
-			buff_extension_function_params.t = start_time
-			buff_extension_function_params.end_time = end_time
-			buff_extension_function_params.attacker_unit = buff.attacker_unit
-			buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
-			local apply_buff_func = sub_buff_template.apply_buff_func
-
-			if apply_buff_func then
-				BuffFunctionTemplates.functions[apply_buff_func](self._unit, buff, buff_extension_function_params, world)
-			end
-
-			if sub_buff_template.stat_buff then
-				local index = self:_add_stat_buff(sub_buff_template, buff)
-				buff.stat_buff_index = index
-			end
-
-			if sub_buff_template.event_buff then
-				local buff_func = sub_buff_template.buff_func
-				local event = sub_buff_template.event
-				buff.buff_func = buff_func
-				local event_buffs = self._event_buffs[event]
-				local index = self._event_buffs_index
-				buff.event_buff_index = index
-				event_buffs[index] = buff
-				self._event_buffs_index = index + 1
-			end
-
-			if sub_buff_template.buff_after_delay then
-				local delayed_buff_name = sub_buff_template.delayed_buff_name
-				buff.delayed_buff_name = delayed_buff_name
-			end
-
-			if sub_buff_template.continuous_effect then
-				self._continuous_screen_effects[id] = self:_play_screen_effect(sub_buff_template.continuous_effect)
-			end
-
-			self._buffs[#self._buffs + 1] = buff
 		until true
 	end
 
@@ -348,8 +347,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 		self._deactivation_sounds[id] = deactivation_sound
 	end
 
-	self.id = id + 1
-
 	return id
 end
 
@@ -361,6 +358,7 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 	local bonus = buff.bonus or 0
 	local multiplier = buff.multiplier or 0
 	local proc_chance = buff.proc_chance or 1
+	local value = buff.value
 	local stat_buffs = self._stat_buffs
 	local stat_buff_type = sub_buff_template.stat_buff
 	local stat_buff = stat_buffs[stat_buff_type]
@@ -394,7 +392,8 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 			stat_buff[index] = {
 				bonus = bonus,
 				multiplier = multiplier,
-				proc_chance = proc_chance
+				proc_chance = proc_chance,
+				value = value
 			}
 		elseif application_method == "stacking_bonus" then
 			local current_bonus = stat_buff[index].bonus
@@ -407,6 +406,18 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 			local current_multiplier = stat_buff[index].multiplier
 			stat_buff[index].bonus = current_bonus + bonus
 			stat_buff[index].multiplier = current_multiplier + multiplier
+		elseif application_method == "min" then
+			local min_stat_buff = stat_buff[index]
+
+			if not min_stat_buff.all_values then
+				min_stat_buff.all_values = {
+					min_stat_buff.value
+				}
+			end
+
+			min_stat_buff.all_values[#min_stat_buff.all_values + 1] = value
+			local prev_value = min_stat_buff.value or math.huge
+			min_stat_buff.value = math.min(prev_value, value)
 		end
 	end
 
@@ -426,6 +437,7 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 		local end_time = buff.duration and buff.start_time + buff.duration
 		buff_extension_function_params.bonus = buff.bonus
 		buff_extension_function_params.multiplier = buff.multiplier
+		buff_extension_function_params.value = buff.value
 		buff_extension_function_params.t = t
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
@@ -500,6 +512,7 @@ BuffExtension.remove_buff = function (self, id)
 		local template = buff.template
 		buff_extension_function_params.bonus = buff.bonus
 		buff_extension_function_params.multiplier = buff.multiplier
+		buff_extension_function_params.value = buff.value
 		buff_extension_function_params.t = end_time
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
@@ -584,6 +597,7 @@ BuffExtension._remove_stat_buff = function (self, buff)
 	local bonus = buff.bonus or 0
 	local multiplier = buff.multiplier or 0
 	local proc_chance = buff.proc_chance or 1
+	local value = buff.value
 	local stat_buff = sub_buff_template.stat_buff
 	local stat_buffs = self._stat_buffs[stat_buff]
 	local application_method = StatBuffApplicationMethods[stat_buff]
@@ -613,6 +627,29 @@ BuffExtension._remove_stat_buff = function (self, buff)
 		local current_multiplier = stat_buffs[index].multiplier
 		stat_buffs[index].bonus = current_bonus - bonus
 		stat_buffs[index].multiplier = current_multiplier - multiplier
+	elseif application_method == "min" then
+		local min_stat_buff = stat_buffs[index]
+
+		if min_stat_buff.all_values then
+			local index_to_remove = table.index_of(min_stat_buff.all_values, value)
+
+			fassert(index_to_remove ~= -1, "buff needs to be there when removed, if it's not then something went wrong")
+			table.swap_delete(min_stat_buff.all_values, index_to_remove)
+
+			if #min_stat_buff.all_values == 0 then
+				min_stat_buff.value = nil
+			else
+				min_stat_buff.value = min_stat_buff.all_values[1]
+
+				for _, other_buff_value in ipairs(min_stat_buff.all_values) do
+					min_stat_buff.value = math.min(min_stat_buff.value, other_buff_value)
+				end
+			end
+		else
+			fassert(min_stat_buff.value == value, "buff needs to be there when removed, if it's not then something went wrong")
+
+			min_stat_buff.value = nil
+		end
 	end
 end
 
@@ -760,6 +797,31 @@ BuffExtension.trigger_procs = function (self, event, ...)
 	end
 end
 
+BuffExtension.get_buff_value = function (self, stat_buff)
+	local unit = self._unit
+	local stat_buffs = self._stat_buffs[stat_buff]
+	local procced = false
+	local is_proc = StatBuffApplicationMethods[stat_buff] == "proc"
+	local final_value, id = nil
+
+	for name, stat_buff_data in pairs(stat_buffs) do
+		local proc_chance = stat_buff_data.proc_chance
+
+		if math.random() <= proc_chance then
+			final_value = stat_buff_data.value
+
+			if is_proc then
+				procced = true
+				id = stat_buff_data.id
+
+				break
+			end
+		end
+	end
+
+	return final_value, procced, id
+end
+
 BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 	local unit = self._unit
 	local stat_buffs = self._stat_buffs[stat_buff]
@@ -830,6 +892,34 @@ end
 
 BuffExtension.active_buffs = function (self)
 	return self._buffs
+end
+
+BuffExtension.initial_buff_names = function (self)
+	return self._initial_buff_names
+end
+
+BuffExtension.get_persistent_buff_names = function (self)
+	local persistent_buffs = {}
+
+	for _, buff_data in pairs(self._buffs) do
+		local template = buff_data.template
+
+		if template.is_persistent then
+			table.insert(persistent_buffs, template.name)
+		end
+	end
+
+	return persistent_buffs
+end
+
+BuffExtension._activate_initial_buffs = function (self)
+	local initial_buff_names = self._initial_buff_names
+
+	if initial_buff_names then
+		for _, buff_name in ipairs(initial_buff_names) do
+			self:add_buff(buff_name)
+		end
+	end
 end
 
 return

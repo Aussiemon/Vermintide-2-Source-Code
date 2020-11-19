@@ -44,16 +44,7 @@ dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_sorce
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_zombie_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_pig_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior")
-
-for _, dlc in pairs(DLCSettings) do
-	local behaviour_trees = dlc.behaviour_trees
-
-	if behaviour_trees then
-		for _, tree in ipairs(behaviour_trees) do
-			dofile(tree)
-		end
-	end
-end
+DLCUtils.dofile_list("behaviour_trees")
 
 if USE_PRECOMPILED_ROOT_TABLES then
 	for bt_name, bt_node in pairs(BreedBehaviors) do

@@ -12,6 +12,8 @@ TimeManager.init = function (self)
 	self._mean_dt = 0
 	self._global_time_scale = 1
 	self._lerp_global_time_scale = false
+
+	self:register_timer("ui", "main", Application.time_since_launch())
 end
 
 TimeManager.register_timer = function (self, name, parent_name, start_time)

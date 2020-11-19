@@ -178,26 +178,8 @@ require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_cha
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_exalted_champion_norsca")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_spawn")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_zombie")
-
-for _, dlc in pairs(DLCSettings) do
-	local nodes = dlc.behaviour_tree_nodes
-
-	if nodes then
-		for _, node in ipairs(nodes) do
-			dofile(node)
-		end
-	end
-end
-
-for _, dlc in pairs(DLCSettings) do
-	local behaviour_trees = dlc.behaviour_trees_precompiled
-
-	if behaviour_trees then
-		for _, tree in ipairs(behaviour_trees) do
-			require(tree)
-		end
-	end
-end
+DLCUtils.dofile_list("behaviour_tree_nodes")
+DLCUtils.require_list("behaviour_trees_precompiled")
 
 BehaviorTree = class(BehaviorTree)
 BehaviorTree.types = {}

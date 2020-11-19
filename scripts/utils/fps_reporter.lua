@@ -13,7 +13,7 @@ FPSReporter.init = function (self)
 end
 
 FPSReporter.update = function (self, dt, t)
-	local fps = 1 / dt
+	local fps = 1 / math.max(dt, 0.001)
 
 	self:_update_average_fps(fps)
 	self:_update_histogram(fps)
@@ -41,6 +41,8 @@ FPSReporter._normalize_histogram = function (self)
 	for _, count in pairs(self._histogram) do
 		num_frames = num_frames + count
 	end
+
+	num_frames = math.max(num_frames, 1)
 
 	for i, _ in pairs(self._histogram) do
 		self._histogram[i] = self._histogram[i] / num_frames

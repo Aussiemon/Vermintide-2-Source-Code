@@ -7,10 +7,12 @@ require("scripts/unit_extensions/camera/states/camera_state_follow_third_person"
 require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_ledge")
 require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_over_shoulder")
 require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_smart_climbing")
+require("scripts/unit_extensions/camera/states/camera_state_follow_third_person_tunneling")
 require("scripts/unit_extensions/camera/states/camera_state_follow_chaos_spawn_grabbed")
 require("scripts/unit_extensions/camera/states/camera_state_observer")
 require("scripts/unit_extensions/camera/states/camera_state_attract")
 require("scripts/unit_extensions/camera/states/camera_state_interaction")
+require("scripts/unit_extensions/camera/states/camera_state_observer_spectator")
 
 CameraSystem = class(CameraSystem, ExtensionSystemBase)
 local extensions = {
@@ -77,6 +79,19 @@ CameraSystem.set_follow_unit = function (self, player, follow_unit, follow_node_
 	end
 end
 
+CameraSystem.update_tunnel_camera_position = function (self, player, position)
+	local camera_unit = self.camera_units[player]
+
+	if ScriptUnit.has_extension(camera_unit, "camera_system") then
+		local camera_state_ext = ScriptUnit.extension(camera_unit, "camera_state_machine_system")
+		local camera_state = camera_state_ext.state_machine.state_current
+
+		if camera_state.update_tunnel_camera_position then
+			camera_state:update_tunnel_camera_position(position)
+		end
+	end
+end
+
 CameraSystem.local_player_created = function (self, player)
 	local camera_manager = Managers.state.camera
 	local viewport_name = player.viewport_name
@@ -113,18 +128,18 @@ CameraSystem._setup_camera_unit = function (self, player, viewport_name)
 	local unit_template_name = "camera_unit"
 	local position = Vector3.zero()
 	local rotation = Quaternion.identity()
-	local camera_state_class_list = {
-		CameraStateIdle,
-		CameraStateFollow,
-		CameraStateFollowThirdPerson,
-		CameraStateFollowAttract,
-		CameraStateFollowThirdPersonLedge,
-		CameraStateFollowThirdPersonOverShoulder,
-		CameraStateFollowThirdPersonSmartClimbing,
-		CameraStateFollowChaosSpawnGrabbed,
-		CameraStateObserver,
-		CameraStateInteraction
-	}
+	local camera_state_class_list = {}
+	local profile_index = player:profile_index() or 1
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career_index = player:career_index() or 1
+	local career = profile.careers[career_index]
+	local camera_state_class_list = {}
+
+	for _, camera_state_name in ipairs(career.camera_state_list) do
+		camera_state_class_list[#camera_state_class_list + 1] = rawget(_G, camera_state_name)
+	end
+
 	local extension_init_data = {
 		camera_state_machine_system = {
 			start_state = "idle",
@@ -214,10 +229,25 @@ CameraSystem.post_update = function (self, context)
 	end
 end
 
-CameraSystem.rpc_set_observer_camera = function (self, sender, local_player_id)
+CameraSystem.rpc_set_observer_camera = function (self, channel_id, local_player_id)
 	local player = Managers.player:local_player(local_player_id)
 
 	CharacterStateHelper.change_camera_state(player, "observer")
+end
+
+CameraSystem.initialize_camera_states = function (self, player, profile_index, career_index)
+	local profile = SPProfiles[profile_index]
+	local career = profile.careers[career_index]
+	local camera_state_list = career.camera_state_list
+	local camera_state_class_list = {}
+
+	for _, camera_state_name in ipairs(camera_state_list) do
+		camera_state_class_list[#camera_state_class_list + 1] = rawget(_G, camera_state_name)
+	end
+
+	local camera_state_extension = ScriptUnit.has_extension(player.camera_follow_unit, "camera_state_machine_system")
+
+	camera_state_extension:reinitialize_camera_states(camera_state_class_list, "idle")
 end
 
 return

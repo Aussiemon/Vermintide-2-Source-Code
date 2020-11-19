@@ -11,16 +11,7 @@ require("scripts/managers/matchmaking/matchmaking_state_wait_for_countdown")
 require("scripts/managers/matchmaking/matchmaking_state_search_for_weave_group")
 require("scripts/managers/matchmaking/matchmaking_state_host_weave_find_group")
 require("scripts/managers/matchmaking/matchmaking_handshaker")
-
-for _, dlc in pairs(DLCSettings) do
-	local matchmaking_state_files = dlc.matchmaking_state_files
-
-	if matchmaking_state_files then
-		for _, file in ipairs(matchmaking_state_files) do
-			require(file)
-		end
-	end
-end
+DLCUtils.require_list("matchmaking_state_files")
 
 MatchmakingManager = class(MatchmakingManager)
 script_data.matchmaking_debug = script_data.matchmaking_debug or Development.parameter("matchmaking_debug")
@@ -56,7 +47,7 @@ MatchmakingSettings = {
 	REQUEST_PROFILES_REPLY_TIME = 10,
 	JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL = 20,
 	LOBBY_FINDER_UPDATE_INTERVAL = 1,
-	max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and LobbyDistanceFilter.MEDIUM) or Application.user_setting("max_quick_play_search_range") or DefaultUserSettings.get("user_settings", "max_quick_play_search_range"),
+	max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and "close") or Application.user_setting("max_quick_play_search_range") or DefaultUserSettings.get("user_settings", "max_quick_play_search_range"),
 	allowed_profiles = {
 		true,
 		true,
@@ -144,8 +135,6 @@ MatchmakingManager.init = function (self, params)
 	local network_options = Managers.lobby:network_options()
 
 	if not DEDICATED_SERVER then
-		self:apply_server_settings()
-
 		local lobby_finder = LobbyFinder:new(network_options, MatchmakingSettings.MAX_NUM_LOBBIES, true)
 		self.lobby_finder = lobby_finder
 		params.lobby_finder = lobby_finder
@@ -176,39 +165,12 @@ MatchmakingManager.init = function (self, params)
 
 	self:reset_lobby_filters()
 	mm_printf("initializing")
-	mm_printf("my_peer_id: %s, I am %s", Network:peer_id(), (self.is_server and "server") or "client")
+	mm_printf("my_peer_id: %s, I am %s", Network.peer_id(), (self.is_server and "server") or "client")
 
 	self.lobby_finder_timer = 0
 	self.profile_update_time = 0
 	self._leader_peer_id = nil
 	self.countdown_has_finished = false
-end
-
-MatchmakingManager.apply_server_settings = function (self)
-	if self._game_server_finder then
-		self._game_server_finder:destroy()
-
-		self._game_server_finder = nil
-		self.params.game_server_finder = nil
-	end
-
-	local disable_dedicated_servers = Development.parameter("use_lan_backend") or rawget(_G, "Steam") == nil
-	local supported_on_platform = PLATFORM == "win32"
-	local network_options = Managers.lobby:network_options()
-	local game_server_finder = nil
-
-	if disable_dedicated_servers or not supported_on_platform then
-		game_server_finder = GameServerFinderLan:new(network_options, MatchmakingSettings.MAX_NUM_SERVERS)
-	else
-		game_server_finder = GameServerFinder:new(network_options, MatchmakingSettings.MAX_NUM_SERVERS)
-	end
-
-	self._game_server_finder = game_server_finder
-	self.params.game_server_finder = game_server_finder
-end
-
-MatchmakingManager.game_server_finder = function (self)
-	return self._game_server_finder
 end
 
 MatchmakingManager.reset_ping = function (self)
@@ -220,7 +182,13 @@ MatchmakingManager.reset_lobby_filters = function (self)
 		return
 	end
 
-	LobbyInternal.clear_filter_requirements()
+	if PLATFORM == "win32" then
+		local engine_lobby_browser = self.lobby_finder:get_lobby_browser()
+
+		LobbyInternal.clear_filter_requirements(engine_lobby_browser)
+	else
+		LobbyInternal.clear_filter_requirements()
+	end
 end
 
 MatchmakingManager.get_players_ping = function (self)
@@ -336,10 +304,6 @@ MatchmakingManager.destroy = function (self)
 		self._state:on_exit()
 	end
 
-	if self._game_server_finder then
-		self._game_server_finder:destroy()
-	end
-
 	if self.lobby_finder then
 		self.lobby_finder:destroy()
 	end
@@ -387,7 +351,7 @@ MatchmakingManager.unregister_rpcs = function (self)
 	self.network_event_delegate = nil
 end
 
-MatchmakingManager._change_state = function (self, new_state, params, state_context)
+MatchmakingManager._change_state = function (self, new_state, params, state_context, reason)
 	if self._state and self._state.NAME == new_state.NAME then
 		mm_printf("Ignoring state transision %s because we are already there", new_state.NAME)
 
@@ -397,13 +361,13 @@ MatchmakingManager._change_state = function (self, new_state, params, state_cont
 	if self._state then
 		if self._state.on_exit then
 			mm_printf("Exiting state %s with on_exit()", self._state.NAME)
-			self._state:on_exit()
+			self._state:on_exit(self._state.NAME)
 		else
 			mm_printf("Exiting %s", self._state.NAME)
 		end
 	end
 
-	self._state = new_state:new(params)
+	self._state = new_state:new(params, reason)
 	self._state.parent = self._parent
 	self.state_context = state_context
 
@@ -439,11 +403,17 @@ end
 
 MatchmakingManager.update = function (self, dt, t)
 	if self._state then
+		self.debug.statename = self._state.NAME
 		local state_name = self._state.NAME
-		local new_state, state_context = self._state:update(dt, t)
+
+		Profiler.start(state_name)
+
+		local new_state, state_context, reason = self._state:update(dt, t)
+
+		Profiler.stop(state_name)
 
 		if new_state then
-			self:_change_state(new_state, self.params, state_context)
+			self:_change_state(new_state, self.params, state_context, reason)
 		end
 	end
 
@@ -473,14 +443,20 @@ MatchmakingManager.update = function (self, dt, t)
 		self.handshaker_host:update(t)
 	end
 
-	if self.handshaker_client and self.handshaker_client.host_peer_id and self.network_transmit.connection_handler.current_connections[self.handshaker_client.host_peer_id] == nil then
+	if self.handshaker_client and self.handshaker_client.host_peer_id and PEER_ID_TO_CHANNEL[self.handshaker_client.host_peer_id] == nil then
 		mm_printf_force("No connection to host, cancelling matchmaking")
 		self:cancel_matchmaking()
 		self.network_transmit:queue_local_rpc("rpc_stop_enter_game_countdown")
 	end
+
+	if PLATFORM ~= "linux" then
+		self:_update_debug(dt, t)
+	end
 end
 
 MatchmakingManager._update_afk_logic = function (self, dt, t)
+	Profiler.start("afk logic")
+
 	local lobby = self.lobby
 
 	if self.is_server and lobby:is_joined() then
@@ -525,6 +501,8 @@ MatchmakingManager._update_afk_logic = function (self, dt, t)
 			end
 		end
 	end
+
+	Profiler.stop("afk logic")
 end
 
 local remove_peer_power_level_table = {}
@@ -535,6 +513,9 @@ MatchmakingManager._update_power_level = function (self, t)
 	end
 
 	self._power_level_timer = t + 5
+
+	Profiler.start("power level")
+
 	local own_peer_id = Network.peer_id()
 	local is_server = self.is_server
 	local local_player = Managers.player:local_player()
@@ -565,6 +546,8 @@ MatchmakingManager._update_power_level = function (self, t)
 	if is_server then
 		self:_set_power_level()
 	end
+
+	Profiler.stop("power level")
 end
 
 MatchmakingManager.get_average_power_level = function (self)
@@ -627,6 +610,63 @@ MatchmakingManager._set_power_level = function (self)
 		lobby_data.power_level = average_power_level
 
 		self.lobby:set_lobby_data(lobby_data)
+	end
+end
+
+MatchmakingManager._update_debug = function (self, dt, t)
+	if DebugKeyHandler.key_pressed("f6", "start quick search", "network", "left shift") then
+		self:find_game("whitebox_tutorial", "normal", false, false, t)
+	end
+
+	if script_data.debug_lobbies then
+		if self._state == MatchmakingStateSearchGame then
+			return
+		end
+
+		self.debug.lobby_timer = self.debug.lobby_timer - dt
+
+		if self.debug.lobby_timer < 0 then
+			self.debug.lobbies = self.lobby_finder:lobbies()
+			self.debug.lobby_timer = MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH
+		end
+
+		if DebugKeyHandler.key_pressed("f7", "join your other client", "network", "left shift") then
+			local lobbies = self.lobby_finder:lobbies()
+
+			for i = 1, #lobbies, 1 do
+				local lobby_data = lobbies[i]
+
+				if lobby_data.host ~= self.peer_id and lobby_data.unique_server_name == Development.parameter("unique_server_name") then
+					mm_printf("Joining 'friend' lobby using F7")
+
+					self.lobby_to_join = lobby_data
+
+					break
+				end
+			end
+		end
+
+		if #self.lobby_finder:lobbies() > 1 and self._state.NAME == "MatchmakingStateIdle" then
+			local start_matchmaking_timer = Development.parameter("start_matchmaking_timer")
+
+			if start_matchmaking_timer and self.start_matchmaking_time == nil then
+				self.start_matchmaking_time = t + start_matchmaking_timer
+			end
+
+			if self.start_matchmaking_time and self.start_matchmaking_time < t then
+				self.start_matchmaking_time = t + 1000000
+
+				self:find_game("whitebox_tutorial", "normal", false, true, t)
+			end
+		end
+	end
+
+	if DebugKeyHandler.key_pressed("l", "show lobbies", "network", "left shift") then
+		if not script_data.debug_lobbies then
+			script_data.debug_lobbies = true
+		else
+			script_data.debug_lobbies = not script_data.debug_lobbies
+		end
 	end
 end
 
@@ -758,7 +798,7 @@ MatchmakingManager._get_level_key_from_level_weights = function (self, level_key
 
 		local level_key = level_keys[chosen_index]
 
-		if (level_key and level_weights_by_index[chosen_index] > 0) or event_mode then
+		if (level_key and level_weights_by_index[chosen_index] >= 0) or event_mode then
 			preferred_levels[#preferred_levels + 1] = level_key
 		end
 
@@ -778,12 +818,12 @@ MatchmakingManager._calculate_level_weights = function (self, level_keys, recent
 	local settings = MatchmakingSettings.quickplay_level_select_settings
 	local player = Managers.player:local_player()
 	local statistics_db = self.statistics_db
-	local lookup_level_keys = NetworkLookup.level_keys
+	local lookup_level_keys = NetworkLookup.unlockable_level_keys
 	local stats_id = player:stats_id()
 	local last_played_games = recent_games_played or {}
 	local level_weight_by_lookup = {}
 
-	for i = 1, #NetworkLookup.level_keys, 1 do
+	for i = 1, #NetworkLookup.unlockable_level_keys, 1 do
 		level_weight_by_lookup[i] = -1
 	end
 
@@ -841,7 +881,7 @@ end
 MatchmakingManager._add_level_weight = function (self, peer_id, weight_array)
 	local level_weights = self._level_weights
 	local stripped_weights_array = {}
-	local lookup_level_keys = NetworkLookup.level_keys
+	local lookup_level_keys = NetworkLookup.unlockable_level_keys
 
 	for key, value in pairs(weight_array) do
 		if value ~= -1 then
@@ -948,6 +988,7 @@ MatchmakingManager.set_matchmaking_data = function (self, next_level_key, diffic
 	lobby_data.twitch_enabled = (GameSettingsDevelopment.twitch_enabled and Managers.twitch:is_connected() and Managers.twitch:game_mode_supported(game_mode) and "true") or "false"
 	lobby_data.eac_authorized = (eac_authorized and "true") or "false"
 	lobby_data.mechanism = Managers.mechanism:current_mechanism_name()
+	lobby_data.match_started = "true"
 
 	print("[MATCHMAKING] - Hosting game on level:", current_level_key, next_level_key, environment_id)
 	level_transition_handler:set_next_level(next_level_key, environment_id)
@@ -970,9 +1011,9 @@ end
 
 MatchmakingManager.find_game = function (self, search_config)
 	if self.is_server then
-		local dedicated_servers = search_config.dedicated_servers
+		local dedicated_server = search_config.dedicated_server
 
-		fassert(dedicated_servers ~= nil, "Dedicated server game wasn't set!")
+		fassert(dedicated_server ~= nil, "Dedicated server game wasn't set!")
 
 		self.state_context = {
 			search_config = table.clone(search_config),
@@ -997,7 +1038,7 @@ MatchmakingManager.find_game = function (self, search_config)
 		local game_mode = search_config.game_mode
 		local next_state = nil
 
-		if dedicated_servers then
+		if dedicated_server then
 			if join_method == "party" then
 				fassert(search_config.wait_for_join_message ~= nil, "Missing wait_for_join_message for dedicated server party join.")
 
@@ -1074,7 +1115,7 @@ MatchmakingManager.cancel_matchmaking = function (self)
 		return
 	end
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		local player = Managers.player:local_player(1)
 		local connection_state = "cancelled"
 		local started_matchmaking_t = self.state_context.started_matchmaking_t
@@ -1111,7 +1152,7 @@ MatchmakingManager.cancel_matchmaking = function (self)
 			self._ingame_ui:hide_unavailable_hero_popup()
 		end
 
-		self:_change_state(MatchmakingStateIdle, self.params, self.state_context)
+		self:_change_state(MatchmakingStateIdle, self.params, self.state_context, "cancel_matchmaking")
 	end
 
 	if self.is_server then
@@ -1128,7 +1169,7 @@ MatchmakingManager.cancel_matchmaking = function (self)
 		local difficulty_lookup = NetworkLookup.difficulties.normal
 		local quick_game = false
 
-		Managers.state.difficulty:set_difficulty("normal")
+		Managers.state.difficulty:set_difficulty("normal", 0)
 
 		if PLATFORM == "xb1" then
 			self.lobby:enable_matchmaking(false)
@@ -1156,7 +1197,7 @@ MatchmakingManager.is_matchmaking_in_inn = function (self)
 	local name = self._state.NAME
 	local is_matchmaking = name ~= "MatchmakingStateIdle"
 
-	return self.is_in_inn and is_matchmaking
+	return self.is_in_inn and is_matchmaking, name
 end
 
 MatchmakingManager.is_game_matchmaking = function (self)
@@ -1164,8 +1205,9 @@ MatchmakingManager.is_game_matchmaking = function (self)
 	local is_matchmaking = name ~= "MatchmakingStateIdle"
 	local search_config = self.state_context.search_config
 	local private_game = (search_config and search_config.private_game) or false
+	local reason = self._state.reason
 
-	return is_matchmaking, private_game
+	return is_matchmaking, private_game, reason
 end
 
 MatchmakingManager.active_game_mode = function (self)
@@ -1180,7 +1222,7 @@ MatchmakingManager.active_game_mode = function (self)
 	return game_mode
 end
 
-MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, host_cookie, is_matchmaking, private_game, level_key_id, difficulty_id, quick_game)
+MatchmakingManager.rpc_set_matchmaking = function (self, channel_id, client_cookie, host_cookie, is_matchmaking, private_game, level_key_id, difficulty_id, quick_game)
 	if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -1215,7 +1257,7 @@ MatchmakingManager.rpc_set_matchmaking = function (self, sender, client_cookie, 
 	end
 end
 
-MatchmakingManager.rpc_set_game_mode_event_data = function (self, sender, mutator_lookup_array)
+MatchmakingManager.rpc_set_game_mode_event_data = function (self, channel_id, mutator_lookup_array)
 	local mutators = {}
 
 	for i = 1, #mutator_lookup_array, 1 do
@@ -1228,31 +1270,35 @@ MatchmakingManager.rpc_set_game_mode_event_data = function (self, sender, mutato
 	}
 end
 
-MatchmakingManager.rpc_clear_game_mode_event_data = function (self, sender)
+MatchmakingManager.rpc_clear_game_mode_event_data = function (self, channel_id)
 	self:clear_game_mode_event_data()
 end
 
-MatchmakingManager.rpc_cancel_matchmaking = function (self, sender)
+MatchmakingManager.rpc_cancel_matchmaking = function (self, channel_id)
 	if not self.is_server then
 		return
 	end
 
-	if not Managers.party:is_leader(sender) then
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if not Managers.party:is_leader(peer_id) then
 		return
 	end
 
 	self:cancel_matchmaking()
 end
 
-MatchmakingManager.rpc_matchmaking_request_profiles_data = function (self, sender, client_cookie, host_cookie)
-	if not self.handshaker_host:validate_cookies(sender, client_cookie, host_cookie) then
+MatchmakingManager.rpc_matchmaking_request_profiles_data = function (self, channel_id, client_cookie, host_cookie)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if not self.handshaker_host:validate_cookies(peer_id, client_cookie, host_cookie) then
 		return
 	end
 
 	local peer_ids, player_indices = self.slot_allocator:pack_for_transmission()
 
-	mm_printf("PROFILES REQUESTED BY %s REPLY wh:%s | we:%s | dr:%s | bw:%s | es:%s", sender, peer_ids[1], peer_ids[4], peer_ids[3], peer_ids[2], peer_ids[5])
-	self.network_transmit:send_rpc("rpc_matchmaking_request_profiles_data_reply", sender, client_cookie, host_cookie, peer_ids, player_indices)
+	mm_printf("PROFILES REQUESTED BY %s REPLY wh:%s | we:%s | dr:%s | bw:%s | es:%s", peer_id, peer_ids[1], peer_ids[4], peer_ids[3], peer_ids[2], peer_ids[5])
+	self.network_transmit:send_rpc("rpc_matchmaking_request_profiles_data_reply", peer_id, client_cookie, host_cookie, peer_ids, player_indices)
 end
 
 MatchmakingManager.update_profiles_data_on_clients = function (self)
@@ -1293,7 +1339,7 @@ MatchmakingManager._missing_required_dlc = function (self, game_mode_key, diffic
 	return nil
 end
 
-MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, client_cookie, host_cookie, lobby_id, friend_join, client_dlc_unlocked_array)
+MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, channel_id, client_cookie, host_cookie, lobby_id, friend_join, client_dlc_unlocked_array)
 	local id = self.lobby:id()
 	id = tostring(id)
 	lobby_id = tostring(lobby_id)
@@ -1307,6 +1353,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 		lobby_id_match = (LobbyInternal.lobby_id_match and LobbyInternal.lobby_id_match(id, lobby_id)) or id == lobby_id
 	end
 
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 	local client_unlocked_dlcs = self:_extract_dlcs(client_dlc_unlocked_array)
 	local game_mode_manager = Managers.state.game_mode
 	local difficulty_manager = Managers.state.difficulty
@@ -1314,8 +1361,9 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 	local difficulty_key = difficulty_manager and difficulty_manager:get_difficulty()
 	local is_game_mode_ended = (game_mode_manager and game_mode_manager:is_game_mode_ended()) or false
 	local is_searching_for_players = self._state.NAME == "MatchmakingStateHostGame" or self._state.NAME == "MatchmakingStateIngame" or self._state.NAME == "MatchmakingStateWaitForCountdown" or self._state.NAME == "MatchmakingStateHostFindWeaveGroup"
+	local is_searching_for_dedicated_server = self._state.NAME == "MatchmakingStateReserveLobby"
 	local handshaker_host = self.handshaker_host
-	local valid_cookies = (handshaker_host and handshaker_host:validate_cookies(sender, client_cookie, host_cookie)) or false
+	local valid_cookies = (handshaker_host and handshaker_host:validate_cookies(peer_id, client_cookie, host_cookie)) or false
 	local matchmaking = self.lobby:lobby_data("matchmaking")
 	local lobby_game_mode_id = self.lobby:lobby_data("game_mode")
 	local lobby_game_mode_index = tonumber(lobby_game_mode_id)
@@ -1324,13 +1372,13 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 	local is_friend = false
 
 	if not DEDICATED_SERVER then
-		is_friend = LobbyInternal.is_friend(sender) or friend_join
+		is_friend = LobbyInternal.is_friend(peer_id) or friend_join
 	end
 
 	local user_blocked = nil
 
 	if not DEDICATED_SERVER and PLATFORM == "win32" then
-		local relationship = Friends.relationship(sender)
+		local relationship = Friends.relationship(peer_id)
 		user_blocked = relationship == 5 or relationship == 6
 	end
 
@@ -1344,6 +1392,8 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 		reply = "game_mode_ended"
 	elseif not DEDICATED_SERVER and not is_friend and not is_searching_for_players then
 		reply = "not_searching_for_players"
+	elseif is_searching_for_dedicated_server then
+		reply = "is_searching_for_dedicated_server"
 	elseif Managers.deed:has_deed() then
 		reply = "lobby_has_active_deed"
 	elseif not valid_cookies then
@@ -1356,7 +1406,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 			local weave_manager = Managers.weave
 			local player_ids = weave_manager:get_player_ids()
 
-			if not player_ids[sender] then
+			if not player_ids[peer_id] then
 				reply = "cannot_join_weave"
 			end
 		elseif lobby_game_mode == "weave" and matchmaking == "false" then
@@ -1365,7 +1415,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 			local player_ids = weave_data and weave_data.player_ids
 
 			if player_ids then
-				if not player_ids[sender] then
+				if not player_ids[peer_id] then
 					reply = "cannot_join_weave"
 				end
 			else
@@ -1374,27 +1424,35 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 		end
 	end
 
-	mm_printf_force("Got request to join matchmaking lobby %s from %s, replying %s", lobby_id, sender, reply)
+	local mechanism = Managers.mechanism:game_mechanism()
+
+	if not reply and mechanism.ok_to_friend_join then
+		reply = mechanism.ok_to_friend_join(peer_id)
+	end
+
+	mm_printf_force("Got request to join matchmaking lobby %s from %s, replying %s", lobby_id, peer_id, reply)
 
 	local reply_id = NetworkLookup.game_ping_reply[reply]
 
-	self.network_transmit:send_rpc("rpc_matchmaking_request_join_lobby_reply", sender, client_cookie, host_cookie, reply_id, reply_variable)
+	self.network_transmit:send_rpc("rpc_matchmaking_request_join_lobby_reply", peer_id, client_cookie, host_cookie, reply_id, reply_variable)
 end
 
-MatchmakingManager.rpc_matchmaking_request_profile = function (self, sender, client_cookie, host_cookie, profile)
-	if not self.handshaker_host:validate_cookies(sender, client_cookie, host_cookie) then
+MatchmakingManager.rpc_matchmaking_request_profile = function (self, channel_id, client_cookie, host_cookie, profile)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if not self.handshaker_host:validate_cookies(peer_id, client_cookie, host_cookie) then
 		return
 	end
 
 	local game_mechanism = Managers.mechanism:game_mechanism()
-	local player_slot_available = (game_mechanism.allocate_slot and game_mechanism:allocate_slot(sender, profile)) or true
+	local player_slot_available = (game_mechanism.allocate_slot and game_mechanism:allocate_slot(peer_id, profile)) or true
 
 	if player_slot_available then
-		mm_printf("Assigning profile slot %d to %s", profile, sender)
+		mm_printf("Assigning profile slot %d to %s", profile, peer_id)
 		self:update_profiles_data_on_clients()
 	end
 
-	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply", sender, client_cookie, host_cookie, profile, player_slot_available)
+	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply", peer_id, client_cookie, host_cookie, profile, player_slot_available)
 end
 
 MatchmakingManager.current_state = function (self)
@@ -1430,6 +1488,16 @@ MatchmakingManager.active_lobby = function (self)
 end
 
 MatchmakingManager.hero_available_in_lobby_data = function (self, hero_index, lobby_data)
+	local search_config = self.state_context.search_config
+
+	if search_config then
+		local allow_duplicate_heroes = search_config.allow_duplicate_heroes
+
+		if allow_duplicate_heroes then
+			return true
+		end
+	end
+
 	if SlotAllocator.is_free_in_lobby(hero_index, lobby_data) then
 		return true
 	end
@@ -1495,15 +1563,18 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 
 	if level_key and level_key ~= "any" then
 		local correct_level = false
+		local reason = "<no lobby level>"
 
 		if lobby_data.selected_level_key then
 			correct_level = lobby_data.selected_level_key == level_key
+			reason = string.format("(%s ~= %s)", level_key, lobby_data.selected_level_key)
 		elseif lobby_data.level_key then
 			correct_level = lobby_data.level_key == level_key
+			reason = string.format("(%s ~= %s)", level_key, lobby_data.level_key)
 		end
 
 		if not correct_level then
-			return false, "wrong level"
+			return false, "wrong level " .. reason
 		end
 	end
 
@@ -1548,7 +1619,9 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 	end
 
 	local num_players = lobby_data.num_players and tonumber(lobby_data.num_players)
-	local has_empty_slot = num_players and num_players < MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
+	local search_config = self.state_context.search_config
+	local max_number_of_players = search_config.max_number_of_players or MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
+	local has_empty_slot = num_players and num_players < max_number_of_players
 
 	if not has_empty_slot then
 		return false, "no empty slot"
@@ -1598,9 +1671,9 @@ MatchmakingManager.broken_server_map = function (self)
 	return MatchmakingManager._broken_servers
 end
 
-MatchmakingManager.rpc_matchmaking_request_join_lobby_reply = function (self, sender, client_cookie, host_cookie, reply_id, reply_variable)
+MatchmakingManager.rpc_matchmaking_request_join_lobby_reply = function (self, channel_id, client_cookie, host_cookie, reply_id, reply_variable)
 	if self._state and self._state.NAME == "MatchmakingStateRequestJoinGame" then
-		self._state:rpc_matchmaking_request_join_lobby_reply(sender, client_cookie, host_cookie, reply_id, reply_variable)
+		self._state:rpc_matchmaking_request_join_lobby_reply(channel_id, client_cookie, host_cookie, reply_id, reply_variable)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1608,19 +1681,19 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby_reply = function (self, se
 	end
 end
 
-MatchmakingManager.rpc_notify_connected = function (self, sender)
+MatchmakingManager.rpc_notify_connected = function (self, channel_id)
 	local state_name = (self._state and self._state.NAME) or "none"
 
 	if state_name == "MatchmakingStateRequestJoinGame" or state_name == "MatchmakingStateRequestGameServerOwnership" then
-		self._state:rpc_notify_connected(sender)
+		self._state:rpc_notify_connected(channel_id)
 	else
 		mm_printf_force("rpc_notify_connected, got this in wrong state current_state:%s", state_name)
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_join_game = function (self, sender, client_cookie, host_cookie)
+MatchmakingManager.rpc_matchmaking_join_game = function (self, channel_id, client_cookie, host_cookie)
 	if self._state and self._state.NAME == "MatchmakingStateJoinGame" then
-		self._state:rpc_matchmaking_join_game(sender, client_cookie, host_cookie)
+		self._state:rpc_matchmaking_join_game(channel_id, client_cookie, host_cookie)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1628,9 +1701,9 @@ MatchmakingManager.rpc_matchmaking_join_game = function (self, sender, client_co
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_update_profiles_data = function (self, sender, client_cookie, host_cookie, profile_array, player_id_array)
+MatchmakingManager.rpc_matchmaking_update_profiles_data = function (self, channel_id, client_cookie, host_cookie, profile_array, player_id_array)
 	if self._state and (self._state.NAME == "MatchmakingStateJoinGame" or self._state.NAME == "MatchmakingStateRequestProfiles") then
-		self._state:rpc_matchmaking_update_profiles_data(sender, client_cookie, host_cookie, profile_array, player_id_array)
+		self._state:rpc_matchmaking_update_profiles_data(channel_id, client_cookie, host_cookie, profile_array, player_id_array)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1638,9 +1711,9 @@ MatchmakingManager.rpc_matchmaking_update_profiles_data = function (self, sender
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_request_profile_reply = function (self, sender, client_cookie, host_cookie, profile, reply)
+MatchmakingManager.rpc_matchmaking_request_profile_reply = function (self, channel_id, client_cookie, host_cookie, profile, reply)
 	if self._state and self._state.NAME == "MatchmakingStateJoinGame" then
-		self._state:rpc_matchmaking_request_profile_reply(sender, client_cookie, host_cookie, profile, reply)
+		self._state:rpc_matchmaking_request_profile_reply(channel_id, client_cookie, host_cookie, profile, reply)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1648,9 +1721,9 @@ MatchmakingManager.rpc_matchmaking_request_profile_reply = function (self, sende
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_request_profiles_data_reply = function (self, sender, client_cookie, host_cookie, profile_array, player_id_array)
+MatchmakingManager.rpc_matchmaking_request_profiles_data_reply = function (self, channel_id, client_cookie, host_cookie, profile_array, player_id_array)
 	if self._state and self._state.NAME == "MatchmakingStateRequestProfiles" then
-		self._state:rpc_matchmaking_request_profiles_data_reply(sender, client_cookie, host_cookie, profile_array, player_id_array)
+		self._state:rpc_matchmaking_request_profiles_data_reply(channel_id, client_cookie, host_cookie, profile_array, player_id_array)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1658,9 +1731,11 @@ MatchmakingManager.rpc_matchmaking_request_profiles_data_reply = function (self,
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_request_selected_level = function (self, sender, client_cookie, host_cookie)
+MatchmakingManager.rpc_matchmaking_request_selected_level = function (self, channel_id, client_cookie, host_cookie)
 	if self._state and self._state.NAME == "MatchmakingStateHostGame" then
-		if not self.handshaker_host:validate_cookies(sender, client_cookie, host_cookie) then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		if not self.handshaker_host:validate_cookies(peer_id, client_cookie, host_cookie) then
 			return
 		end
 
@@ -1668,7 +1743,7 @@ MatchmakingManager.rpc_matchmaking_request_selected_level = function (self, send
 		local selected_level = lobby_data.selected_level_key
 		local selected_level_id = NetworkLookup.level_keys[selected_level]
 
-		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_request_selected_level_reply", sender, selected_level_id)
+		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_request_selected_level_reply", peer_id, selected_level_id)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1676,9 +1751,9 @@ MatchmakingManager.rpc_matchmaking_request_selected_level = function (self, send
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_request_selected_level_reply = function (self, sender, client_cookie, host_cookie, selected_level_id)
+MatchmakingManager.rpc_matchmaking_request_selected_level_reply = function (self, channel_id, client_cookie, host_cookie, selected_level_id)
 	if self._state and self._state.NAME == "MatchmakingStateFriendClient" then
-		self._state:rpc_matchmaking_request_selected_level_reply(sender, client_cookie, host_cookie, selected_level_id)
+		self._state:rpc_matchmaking_request_selected_level_reply(channel_id, client_cookie, host_cookie, selected_level_id)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1686,9 +1761,11 @@ MatchmakingManager.rpc_matchmaking_request_selected_level_reply = function (self
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_request_selected_difficulty = function (self, sender, client_cookie, host_cookie)
+MatchmakingManager.rpc_matchmaking_request_selected_difficulty = function (self, channel_id, client_cookie, host_cookie)
 	if self._state and self._state.NAME == "MatchmakingStateHostGame" then
-		if not self.handshaker_host:validate_cookies(sender, client_cookie, host_cookie) then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		if not self.handshaker_host:validate_cookies(peer_id, client_cookie, host_cookie) then
 			return
 		end
 
@@ -1696,7 +1773,7 @@ MatchmakingManager.rpc_matchmaking_request_selected_difficulty = function (self,
 		local difficulty = lobby_data.difficulty
 		local difficulty_id = NetworkLookup.difficulties[difficulty]
 
-		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_request_selected_difficulty_reply", sender, difficulty_id)
+		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_request_selected_difficulty_reply", peer_id, difficulty_id)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1704,9 +1781,9 @@ MatchmakingManager.rpc_matchmaking_request_selected_difficulty = function (self,
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_request_selected_difficulty_reply = function (self, sender, client_cookie, host_cookie, difficulty_id)
+MatchmakingManager.rpc_matchmaking_request_selected_difficulty_reply = function (self, channel_id, client_cookie, host_cookie, difficulty_id)
 	if self._state and self._state.NAME == "MatchmakingStateFriendClient" then
-		self._state:rpc_matchmaking_request_selected_difficulty_reply(sender, client_cookie, host_cookie, difficulty_id)
+		self._state:rpc_matchmaking_request_selected_difficulty_reply(channel_id, client_cookie, host_cookie, difficulty_id)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1714,9 +1791,11 @@ MatchmakingManager.rpc_matchmaking_request_selected_difficulty_reply = function 
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_request_status_message = function (self, sender, client_cookie, host_cookie)
+MatchmakingManager.rpc_matchmaking_request_status_message = function (self, channel_id, client_cookie, host_cookie)
 	if self._state and self._state.NAME == "MatchmakingStateHostGame" then
-		if not self.handshaker_host:validate_cookies(sender, client_cookie, host_cookie) then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		if not self.handshaker_host:validate_cookies(peer_id, client_cookie, host_cookie) then
 			return
 		end
 
@@ -1726,7 +1805,7 @@ MatchmakingManager.rpc_matchmaking_request_status_message = function (self, send
 			return
 		end
 
-		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_status_message", sender, status_message)
+		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_status_message", peer_id, status_message)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1734,9 +1813,9 @@ MatchmakingManager.rpc_matchmaking_request_status_message = function (self, send
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_status_message = function (self, sender, client_cookie, host_cookie, status_message)
+MatchmakingManager.rpc_matchmaking_status_message = function (self, channel_id, client_cookie, host_cookie, status_message)
 	if self._state and self._state.NAME == "MatchmakingStateFriendClient" then
-		self._state:rpc_matchmaking_status_message(sender, client_cookie, host_cookie, status_message)
+		self._state:rpc_matchmaking_status_message(channel_id, client_cookie, host_cookie, status_message)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1744,7 +1823,7 @@ MatchmakingManager.rpc_matchmaking_status_message = function (self, sender, clie
 	end
 end
 
-MatchmakingManager.rpc_game_server_set_group_leader = function (self, sender, peer_id)
+MatchmakingManager.rpc_game_server_set_group_leader = function (self, channel_id, peer_id)
 	if peer_id == "0" then
 		peer_id = nil
 	end
@@ -1752,9 +1831,9 @@ MatchmakingManager.rpc_game_server_set_group_leader = function (self, sender, pe
 	Managers.party:set_leader(peer_id)
 end
 
-MatchmakingManager.rpc_matchmaking_broadcast_game_server_ip_address = function (self, sender, client_cookie, host_cookie, ip_address)
+MatchmakingManager.rpc_matchmaking_broadcast_game_server_ip_address = function (self, channel_id, client_cookie, host_cookie, ip_address)
 	if self._state and self._state.NAME == "MatchmakingStateFriendClient" then
-		self._state:rpc_matchmaking_broadcast_game_server_ip_address(sender, client_cookie, host_cookie, ip_address)
+		self._state:rpc_matchmaking_broadcast_game_server_ip_address(channel_id, client_cookie, host_cookie, ip_address)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1762,7 +1841,7 @@ MatchmakingManager.rpc_matchmaking_broadcast_game_server_ip_address = function (
 	end
 end
 
-MatchmakingManager.rpc_game_server_reserve_slots = function (self, sender, client_cookie, host_cookie, peer_table)
+MatchmakingManager.rpc_game_server_reserve_slots = function (self, channel_id, client_cookie, host_cookie, peer_table)
 	if not self.handshaker_host:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -1772,19 +1851,21 @@ MatchmakingManager.rpc_game_server_reserve_slots = function (self, sender, clien
 	end
 end
 
-MatchmakingManager.rpc_set_quick_game = function (self, sender, quick_game)
+MatchmakingManager.rpc_set_quick_game = function (self, channel_id, quick_game)
 	self:set_quick_game(quick_game)
 end
 
-MatchmakingManager.rpc_start_game_countdown_finished = function (self, sender)
+MatchmakingManager.rpc_start_game_countdown_finished = function (self, channel_id)
 	self:countdown_completed()
 end
 
-MatchmakingManager.rpc_matchmaking_sync_quickplay_data = function (self, sender, weight_array)
-	self:_add_level_weight(sender, weight_array)
+MatchmakingManager.rpc_matchmaking_sync_quickplay_data = function (self, channel_id, weight_array)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	self:_add_level_weight(peer_id, weight_array)
 end
 
-MatchmakingManager.rpc_matchmaking_request_quickplay_data = function (self, sender)
+MatchmakingManager.rpc_matchmaking_request_quickplay_data = function (self, channel_id)
 	local unlocked_levels = self:_get_unlocked_levels()
 	local recent_games_played_json = Managers.backend:get_read_only_data("recent_quickplay_games")
 	local recent_games_played = (recent_games_played_json and cjson.decode(recent_games_played_json)) or {}
@@ -1794,7 +1875,7 @@ MatchmakingManager.rpc_matchmaking_request_quickplay_data = function (self, send
 	self.network_transmit:send_rpc_server("rpc_matchmaking_sync_quickplay_data", weight_array)
 end
 
-MatchmakingManager.rpc_matchmaking_verify_dlc = function (self, sender, dlc_name_ids)
+MatchmakingManager.rpc_matchmaking_verify_dlc = function (self, channel_id, dlc_name_ids)
 	if self._state then
 		local success = true
 
@@ -1812,9 +1893,9 @@ MatchmakingManager.rpc_matchmaking_verify_dlc = function (self, sender, dlc_name
 	end
 end
 
-MatchmakingManager.rpc_matchmaking_verify_dlc_reply = function (self, sender, success)
+MatchmakingManager.rpc_matchmaking_verify_dlc_reply = function (self, channel_id, success)
 	if self._state and self._state.NAME == "MatchmakingStateStartGame" then
-		self._state:rpc_matchmaking_verify_dlc_reply(sender, success)
+		self._state:rpc_matchmaking_verify_dlc_reply(channel_id, success)
 	else
 		local state_name = (self._state and self._state.NAME) or "none"
 
@@ -1822,11 +1903,11 @@ MatchmakingManager.rpc_matchmaking_verify_dlc_reply = function (self, sender, su
 	end
 end
 
-MatchmakingManager.rpc_join_reserved_game_server = function (self, sender)
+MatchmakingManager.rpc_join_reserved_game_server = function (self, channel_id)
 	local state_name = (self._state and self._state.NAME) or "none"
 
 	if state_name == "MatchmakingStateReserveLobby" then
-		self._state:rpc_join_reserved_game_server(sender)
+		self._state:rpc_join_reserved_game_server(channel_id)
 	else
 		mm_printf_force("rpc_join_reserved_game_server, got this in wrong state current_state:%s", state_name)
 	end
@@ -1844,6 +1925,7 @@ MatchmakingManager.hot_join_sync = function (self, peer_id)
 		mm_printf("Assigned player %s to slot %d when hot join syncing", peer_id, hero_profile_index)
 	end
 
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 	local game_mode_event_data = self._game_mode_event_data
 
 	if game_mode_event_data then
@@ -1855,14 +1937,14 @@ MatchmakingManager.hot_join_sync = function (self, peer_id)
 			mutator_lookup_array[i] = NetworkLookup.mutator_templates[mutator_name]
 		end
 
-		RPC.rpc_set_game_mode_event_data(peer_id, mutator_lookup_array)
+		RPC.rpc_set_game_mode_event_data(channel_id, mutator_lookup_array)
 	else
-		RPC.rpc_clear_game_mode_event_data(peer_id)
+		RPC.rpc_clear_game_mode_event_data(channel_id)
 	end
 
-	RPC.rpc_set_client_game_privacy(peer_id, self:is_game_private())
-	RPC.rpc_set_quick_game(peer_id, self:is_quick_game())
-	RPC.rpc_matchmaking_request_quickplay_data(peer_id)
+	RPC.rpc_set_client_game_privacy(channel_id, self:is_game_private())
+	RPC.rpc_set_quick_game(channel_id, self:is_quick_game())
+	RPC.rpc_matchmaking_request_quickplay_data(channel_id)
 end
 
 MatchmakingManager.countdown_completed = function (self)
@@ -1906,12 +1988,12 @@ end
 
 MatchmakingManager.setup_filter_requirements = function (self, number_of_players, distance_filter, filters, near_filters)
 	filters.network_hash = {
-		value = self._network_hash,
-		comparison = LobbyComparison.EQUAL
+		comparison = "equal",
+		value = self._network_hash
 	}
 	filters.matchmaking = {
 		value = "true",
-		comparison = LobbyComparison.EQUAL
+		comparison = "equal"
 	}
 	local requirements = {
 		free_slots = number_of_players,
@@ -1921,18 +2003,6 @@ MatchmakingManager.setup_filter_requirements = function (self, number_of_players
 	}
 
 	self.lobby_finder:add_filter_requirements(requirements)
-
-	local game_server_requirements = {
-		server_browser_filters = {
-			dedicated = "valuenotused",
-			full = "valuenotused",
-			gamedir = Managers.mechanism:server_universe()
-		},
-		matchmaking_filters = requirements.filters
-	}
-
-	self._game_server_finder:add_filter_requirements(game_server_requirements)
-	self._game_server_finder:refresh()
 end
 
 MatchmakingManager.request_join_lobby = function (self, lobby, state_context_params)
@@ -1944,7 +2014,7 @@ MatchmakingManager.request_join_lobby = function (self, lobby, state_context_par
 		return
 	end
 
-	mm_printf("Joining lobby %s from lobby browser.", tostring(lobby))
+	mm_printf("Joining lobby %s.", tostring(lobby))
 
 	local state_context = {
 		join_by_lobby_browser = true,
@@ -2032,7 +2102,7 @@ function DEBUG_LOBBIES()
 	end
 end
 
-MatchmakingManager.rpc_set_client_game_privacy = function (self, peer_id, is_private)
+MatchmakingManager.rpc_set_client_game_privacy = function (self, channel_id, is_private)
 	local lobby = self.lobby
 
 	if not self.is_server then

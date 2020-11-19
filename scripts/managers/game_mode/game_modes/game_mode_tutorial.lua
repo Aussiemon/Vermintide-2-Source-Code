@@ -40,8 +40,9 @@ GameModeTutorial._switch_profile_to_tutorial = function (self)
 	self._tutorial_profile_index = profile_index
 	self._tutorial_career_index = career_index
 	self._local_player_spawned = false
+	local is_bot = false
 
-	self._profile_synchronizer:select_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index)
+	self._profile_synchronizer:select_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index, is_bot)
 end
 
 GameModeTutorial._switch_back_to_previous_profile = function (self)
@@ -51,7 +52,9 @@ GameModeTutorial._switch_back_to_previous_profile = function (self)
 	local prev_career = self._previous_career_index
 
 	if prev_profile and prev_career then
-		self._profile_synchronizer:select_profile(peer_id, local_player_id, prev_profile, prev_career)
+		local is_bot = false
+
+		self._profile_synchronizer:select_profile(peer_id, local_player_id, prev_profile, prev_career, is_bot)
 	else
 		self._profile_synchronizer:unassign_peer_to_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index)
 	end
@@ -67,8 +70,8 @@ GameModeTutorial.unregister_rpcs = function (self)
 	GameModeTutorial.super.unregister_rpcs(self)
 end
 
-GameModeTutorial.player_entered_game_session = function (self, peer_id, local_player_id)
-	GameModeTutorial.super.player_entered_game_session(self, peer_id, local_player_id)
+GameModeTutorial.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
+	GameModeTutorial.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
 
 	local _, current_party_id = Managers.party:get_party_from_player_id(peer_id, local_player_id)
 
@@ -231,6 +234,14 @@ GameModeTutorial.get_end_screen_config = function (self, game_won, game_lost, pl
 	end
 
 	return screen_name, screen_config
+end
+
+GameModeTutorial.ended = function (self, reason)
+	local all_peers_ingame = self._network_server:are_all_peers_ingame()
+
+	if not all_peers_ingame then
+		self._network_server:disconnect_joining_peers()
+	end
 end
 
 GameModeTutorial.local_player_ready_to_start = function (self, player)

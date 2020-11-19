@@ -5,14 +5,6 @@ require("scripts/ui/ui_widgets")
 
 local definitions = dofile("scripts/ui/views/console_cursor_view_definitions")
 local DO_RELOAD = true
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 ConsoleCursorView = class(ConsoleCursorView)
 
 ConsoleCursorView.init = function (self, world)
@@ -61,7 +53,7 @@ ConsoleCursorView._draw = function (self, dt)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, self._render_settings)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self._render_settings)
 
 	for name, widget in pairs(self._widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)

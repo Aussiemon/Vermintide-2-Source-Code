@@ -44,28 +44,28 @@ for i = 1, num_defined_levels, 1 do
 	total_defined_experience = total_defined_experience + experience_levels[i]
 end
 
-ExperienceSettings = {
-	get_player_level = function (player)
-		local network_manager = Managers.state.network
-		local network_game = network_manager:game()
+ExperienceSettings = ExperienceSettings or {}
 
-		if not network_game then
-			return nil
-		end
+ExperienceSettings.get_player_level = function (player)
+	local network_manager = Managers.state.network
+	local network_game = network_manager:game()
 
-		local unit_storage = Managers.state.unit_storage
-		local unit = player.player_unit
-		local go_id = unit_storage:go_id(unit)
-
-		if not go_id then
-			return nil
-		end
-
-		local level = GameSession.game_object_field(network_game, go_id, "level")
-
-		return level
+	if not network_game then
+		return nil
 	end
-}
+
+	local unit_storage = Managers.state.unit_storage
+	local unit = player.player_unit
+	local go_id = unit_storage:go_id(unit)
+
+	if not go_id then
+		return nil
+	end
+
+	local level = GameSession.game_object_field(network_game, go_id, "level")
+
+	return level
+end
 
 ExperienceSettings.get_account_level = function ()
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")

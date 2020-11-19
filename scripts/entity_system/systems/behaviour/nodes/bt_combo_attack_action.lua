@@ -532,7 +532,7 @@ BTComboAttackAction.anim_cb_frenzy_damage = function (self, unit, blackboard)
 	local damage = nil
 
 	if damage_table then
-		damage = damage_table[Managers.state.difficulty:get_difficulty()]
+		damage = Managers.state.difficulty:get_difficulty_value_from_table(damage_table)
 	else
 		damage = action.damage
 	end

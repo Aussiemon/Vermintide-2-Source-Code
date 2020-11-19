@@ -124,7 +124,7 @@ end
 Side.add_player_unit = function (self, player_unit)
 	local player_units = self._player_units
 
-	fassert(table.find(player_units, player_unit) == false, "player_unit has already been added to side.")
+	fassert(table.find(player_units, player_unit) == nil, "player_unit has already been added to side.")
 
 	local num_player_units = #player_units + 1
 	player_units[num_player_units] = player_unit
@@ -141,7 +141,7 @@ end
 Side.add_enemy_player_unit = function (self, player_unit)
 	local enemy_player_units = self._enemy_player_units
 
-	fassert(table.find(enemy_player_units, player_unit) == false, "player_unit has already been added as an enemy.")
+	fassert(table.find(enemy_player_units, player_unit) == nil, "player_unit has already been added as an enemy.")
 
 	local num_enemy_player_units = #enemy_player_units + 1
 	enemy_player_units[num_enemy_player_units] = player_unit
@@ -151,7 +151,7 @@ Side.remove_enemy_player_unit = function (self, player_unit)
 	local enemy_player_units = self._enemy_player_units
 	local index = table.find(enemy_player_units, player_unit)
 
-	fassert(index ~= false, "player_unit did not get added or has already been removed as an enemy.")
+	fassert(index ~= nil, "player_unit did not get added or has already been removed as an enemy.")
 	table.swap_delete(enemy_player_units, index)
 end
 

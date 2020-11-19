@@ -106,14 +106,6 @@ KeepDecorationSettings = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local keep_decoration_file_names = dlc.keep_decoration_file_names
-
-	if keep_decoration_file_names then
-		for _, file_name in ipairs(keep_decoration_file_names) do
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("keep_decoration_file_names")
 
 return

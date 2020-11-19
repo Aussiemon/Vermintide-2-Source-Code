@@ -54,12 +54,12 @@ NetworkClockServer._debug_stuff = function (self, dt)
 	end
 end
 
-NetworkClockServer.rpc_network_clock_sync_request = function (self, sender, client_time)
-	RPC.rpc_network_time_sync_response(sender, client_time, self._clock)
+NetworkClockServer.rpc_network_clock_sync_request = function (self, channel_id, client_time)
+	RPC.rpc_network_time_sync_response(channel_id, client_time, self._clock)
 end
 
-NetworkClockServer.rpc_network_current_server_time_request = function (self, sender, client_time)
-	RPC.rpc_network_current_server_time_response(sender, client_time, self._clock)
+NetworkClockServer.rpc_network_current_server_time_request = function (self, channel_id, client_time)
+	RPC.rpc_network_current_server_time_response(channel_id, client_time, self._clock)
 end
 
 return

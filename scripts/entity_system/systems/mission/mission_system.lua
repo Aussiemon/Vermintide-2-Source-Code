@@ -181,6 +181,10 @@ MissionSystem.start_mission = function (self, mission_name, unit, sync_data)
 	end
 end
 
+MissionSystem.block_mission_ui = function (self, ui_blocked)
+	Managers.state.event:trigger("ui_event_block_mission_ui", ui_blocked)
+end
+
 MissionSystem.end_mission = function (self, mission_name, sync)
 	fassert(self.active_missions[mission_name], "No active mission with passed mission_name %q", mission_name)
 
@@ -264,13 +268,14 @@ MissionSystem.hot_join_sync = function (self, sender)
 		local template = MissionTemplates[mission_template_name]
 		local sync_data = template.create_sync_data(data)
 		local level_unit = data.unit
+		local channel_id = PEER_ID_TO_CHANNEL[sender]
 
 		if level_unit then
 			local level_unit_id = Level.unit_index(LevelHelper:current_level(self.world), level_unit)
 
-			RPC.rpc_start_mission_with_unit(sender, mission_name_id, level_unit_id, sync_data)
+			RPC.rpc_start_mission_with_unit(channel_id, mission_name_id, level_unit_id, sync_data)
 		else
-			RPC.rpc_start_mission(sender, mission_name_id, sync_data)
+			RPC.rpc_start_mission(channel_id, mission_name_id, sync_data)
 		end
 	end
 end
@@ -304,20 +309,20 @@ MissionSystem.flow_callback_end_mission = function (self, mission_name)
 	self:end_mission(mission_name, true)
 end
 
-MissionSystem.rpc_start_mission = function (self, peer_id, mission_name_id, sync_data)
+MissionSystem.rpc_start_mission = function (self, channel_id, mission_name_id, sync_data)
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
 
 	self:start_mission(mission_name, nil, sync_data)
 end
 
-MissionSystem.rpc_start_mission_with_unit = function (self, peer_id, mission_name_id, level_unit_id, sync_data)
+MissionSystem.rpc_start_mission_with_unit = function (self, channel_id, mission_name_id, level_unit_id, sync_data)
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
 	local unit = Level.unit_by_index(LevelHelper:current_level(self.world), level_unit_id)
 
 	self:start_mission(mission_name, unit, sync_data)
 end
 
-MissionSystem.rpc_request_mission = function (self, peer_id, mission_name_id)
+MissionSystem.rpc_request_mission = function (self, channel_id, mission_name_id)
 	fassert(self.is_server, "[MissionSystem] Request mission ended up on a client")
 
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
@@ -325,7 +330,7 @@ MissionSystem.rpc_request_mission = function (self, peer_id, mission_name_id)
 	self:request_mission(mission_name)
 end
 
-MissionSystem.rpc_request_mission_with_unit = function (self, peer_id, mission_name_id, level_unit_id)
+MissionSystem.rpc_request_mission_with_unit = function (self, channel_id, mission_name_id, level_unit_id)
 	fassert(self.is_server, "[MissionSystem] Request mission ended up on a client")
 
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
@@ -334,7 +339,7 @@ MissionSystem.rpc_request_mission_with_unit = function (self, peer_id, mission_n
 	self:request_mission(mission_name, unit)
 end
 
-MissionSystem.rpc_request_mission_update = function (self, peer_id, mission_name_id, positive)
+MissionSystem.rpc_request_mission_update = function (self, channel_id, mission_name_id, positive)
 	fassert(self.is_server, "[MissionSystem] Request mission update ended up on a client")
 
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
@@ -347,13 +352,13 @@ MissionSystem.rpc_request_mission_update = function (self, peer_id, mission_name
 	end
 end
 
-MissionSystem.rpc_end_mission = function (self, peer_id, mission_name_id)
+MissionSystem.rpc_end_mission = function (self, channel_id, mission_name_id)
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
 
 	self:end_mission(mission_name)
 end
 
-MissionSystem.rpc_update_mission = function (self, peer_id, mission_name_id, sync_data)
+MissionSystem.rpc_update_mission = function (self, channel_id, mission_name_id, sync_data)
 	local mission_name = NetworkLookup.mission_names[mission_name_id]
 	local data = self.active_missions[mission_name]
 
@@ -372,6 +377,10 @@ end
 
 MissionSystem.get_missions = function (self)
 	return self.active_missions, self.completed_missions
+end
+
+MissionSystem.has_active_mission = function (self, mission_name)
+	return self.active_missions[mission_name] ~= nil
 end
 
 MissionSystem.get_level_end_mission_data = function (self, mission_template_name)

@@ -114,13 +114,13 @@ MatchmakingStateStartGame.update = function (self, dt, t)
 end
 
 MatchmakingStateStartGame._setup_lobby_data = function (self)
-	local level_key, difficulty, act_key, quick_game, private_game, excluded_level_keys, weave_name = nil
+	local level_key, difficulty, difficulty_tweak, act_key, quick_game, private_game, excluded_level_keys, weave_name = nil
 	local search_config = self.search_config
 	local game_mode = search_config.game_mode
 
 	if self.state_context.join_by_lobby_browser then
 		level_key = self._level_transition_handler:default_level_key()
-		difficulty = Managers.state.difficulty:get_difficulty()
+		difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
 		act_key = nil
 		quick_game = false
 		private_game = false
@@ -128,6 +128,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 	else
 		level_key = search_config.level_key
 		difficulty = search_config.difficulty
+		difficulty_tweak = 0
 		act_key = search_config.act_key
 		quick_game = search_config.quick_game
 		private_game = search_config.private_game
@@ -152,7 +153,11 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		else
 			local preferred_level_keys = search_config.preferred_level_keys
 
+			print("MatchmakingStateStartGame preferred_level_keys", preferred_level_keys)
+
 			if preferred_level_keys then
+				table.dump(preferred_level_keys, "preferred_level_keys")
+
 				level_key = preferred_level_keys[Math.random(1, #preferred_level_keys)]
 			else
 				level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
@@ -168,7 +173,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 
 	local eac_authorized = false
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		if DEDICATED_SERVER then
 			local eac_server = Managers.matchmaking.network_server:eac_server()
 			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
@@ -261,7 +266,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 	local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
 
 	self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name, environment_variation_id)
-	Managers.state.difficulty:set_difficulty(difficulty)
+	Managers.state.difficulty:set_difficulty(difficulty, difficulty_tweak)
 
 	self._game_parameters = {
 		level_key = level_key,
@@ -356,8 +361,9 @@ MatchmakingStateStartGame._handle_results = function (self, verify_dlc_data)
 	return is_done, success
 end
 
-MatchmakingStateStartGame.rpc_matchmaking_verify_dlc_reply = function (self, sender, success)
-	self._verify_dlc_data.results[sender] = success
+MatchmakingStateStartGame.rpc_matchmaking_verify_dlc_reply = function (self, channel_id, success)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	self._verify_dlc_data.results[peer_id] = success
 end
 
 local removed_peers = {}

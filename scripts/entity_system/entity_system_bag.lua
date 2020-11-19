@@ -65,10 +65,10 @@ EntitySystemBag.update = function (self, entity_system_update_context, update_fu
 	end
 end
 
-EntitySystemBag.hot_join_sync = function (self, sender)
+EntitySystemBag.hot_join_sync = function (self, peer_id)
 	for i, system in ipairs(self.systems) do
 		if system.hot_join_sync then
-			system:hot_join_sync(sender)
+			system:hot_join_sync(peer_id)
 		end
 	end
 end

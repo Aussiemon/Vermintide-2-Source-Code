@@ -12,14 +12,6 @@ local DO_RELOAD = false
 local LIST_SPACING = 4
 local LIST_MAX_WIDTH = 800
 local DIALOGUE_DELAY = 1
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 HeroViewStateKeepDecorations = class(HeroViewStateKeepDecorations)
 HeroViewStateKeepDecorations.NAME = "HeroViewStateKeepDecorations"
 
@@ -284,7 +276,7 @@ HeroViewStateKeepDecorations.update = function (self, dt, t)
 		self:_create_ui_elements()
 	end
 
-	local input_service = (self._input_blocked and fake_input_service) or self:input_service()
+	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 
 	self:_update_client_paintings(dt)
 	self:_update_sound_trigger_delay(dt)
@@ -396,7 +388,7 @@ HeroViewStateKeepDecorations._is_button_hover = function (self, widget)
 end
 
 HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
-	local input_service = (self._input_blocked and fake_input_service) or self:input_service()
+	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local input_pressed = input_service:get("toggle_menu")
 	local input_close_pressed = gamepad_active and input_service:get("back")

@@ -3312,13 +3312,12 @@ UtilityConsiderations = {
 	dummy_defensive_seeking_bomb = {
 		time_since_last = {
 			max_value = 12,
-			min_value = 8,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
 				0.5,
-				0.5,
+				0,
 				1,
 				1
 			}
@@ -4088,14 +4087,6 @@ UtilityConsiderations = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local utility_considerations_file_names = dlc.utility_considerations_file_names
-
-	if utility_considerations_file_names then
-		for _, file_name in pairs(utility_considerations_file_names) do
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("utility_considerations_file_names")
 
 return

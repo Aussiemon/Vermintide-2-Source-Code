@@ -1343,26 +1343,26 @@ AISystem.alert_enemies_within_range = function (self, unit, position, radius)
 	end
 end
 
-AISystem.rpc_alert_enemies_within_range = function (self, peer_id, unit_id, position, radius)
+AISystem.rpc_alert_enemies_within_range = function (self, channel_id, unit_id, position, radius)
 	local unit = Managers.state.unit_storage:unit(unit_id)
 
 	self:alert_enemies_within_range(unit, position, radius)
 end
 
-AISystem.rpc_set_ward_state = function (self, peer_id, unit_id, state)
+AISystem.rpc_set_ward_state = function (self, channel_id, unit_id, state)
 	local unit = Managers.state.unit_storage:unit(unit_id)
 
 	AiUtils.stormvermin_champion_set_ward_state(unit, state, false)
 end
 
-AISystem.rpc_set_hit_reaction_template = function (self, peer_id, unit_id, hit_effect_template)
+AISystem.rpc_set_hit_reaction_template = function (self, channel_id, unit_id, hit_effect_template)
 	local unit = Managers.state.unit_storage:unit(unit_id)
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 
 	hit_reaction_extension:set_hit_effect_template_id(hit_effect_template)
 end
 
-AISystem.rpc_change_tentacle_state = function (self, peer_id, tentacle_unit_id, target_unit_id, tentacle_template_id, tentacle_reach_dist, server_time)
+AISystem.rpc_change_tentacle_state = function (self, channel_id, tentacle_unit_id, target_unit_id, tentacle_template_id, tentacle_reach_dist, server_time)
 	local tentacle_unit = Managers.state.unit_storage:unit(tentacle_unit_id)
 	local target_unit = Managers.state.unit_storage:unit(target_unit_id)
 	local template_name = NetworkLookup.tentacle_template[tentacle_template_id]
@@ -1374,7 +1374,7 @@ AISystem.rpc_change_tentacle_state = function (self, peer_id, tentacle_unit_id, 
 	end
 end
 
-AISystem.rpc_sync_tentacle_path = function (self, peer_id, tentacle_unit_id, point_array)
+AISystem.rpc_sync_tentacle_path = function (self, channel_id, tentacle_unit_id, point_array)
 	local tentacle_unit = Managers.state.unit_storage:unit(tentacle_unit_id)
 	local tentacle_extension = ScriptUnit.has_extension(tentacle_unit, "ai_supplementary_system")
 
@@ -1383,7 +1383,7 @@ AISystem.rpc_sync_tentacle_path = function (self, peer_id, tentacle_unit_id, poi
 	end
 end
 
-AISystem.rpc_set_corruptor_beam_state = function (self, peer_id, unit_id, state, target_unit_id)
+AISystem.rpc_set_corruptor_beam_state = function (self, channel_id, unit_id, state, target_unit_id)
 	local unit = Managers.state.unit_storage:unit(unit_id)
 	local target_unit = Managers.state.unit_storage:unit(target_unit_id)
 	local corruptor_beam_extension = ScriptUnit.has_extension(unit, "ai_beam_effect_system")
@@ -1393,7 +1393,7 @@ AISystem.rpc_set_corruptor_beam_state = function (self, peer_id, unit_id, state,
 	end
 end
 
-AISystem.rpc_set_allowed_nav_layer = function (self, peer_id, layer_id, allowed)
+AISystem.rpc_set_allowed_nav_layer = function (self, channel_id, layer_id, allowed)
 	local layer_name = LAYER_ID_MAPPING[layer_id]
 	NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = (allowed and 1) or 0
 	NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = (allowed and 1) or 0
@@ -1405,7 +1405,11 @@ AISystem.rpc_set_allowed_nav_layer = function (self, peer_id, layer_id, allowed)
 	end
 end
 
-AISystem.rpc_check_trigger_backstab_sfx = function (self, peer_id, unit_id)
+AISystem.rpc_check_trigger_backstab_sfx = function (self, channel_id, unit_id)
+	if DEDICATED_SERVER then
+		return
+	end
+
 	local network_manager = Managers.state.network
 	local unit = network_manager:game_object_or_level_unit(unit_id)
 	local local_player = Managers.player:local_player()
@@ -1428,19 +1432,19 @@ AISystem.rpc_check_trigger_backstab_sfx = function (self, peer_id, unit_id)
 	end
 end
 
-AISystem.hot_join_sync = function (self, sender)
+AISystem.hot_join_sync = function (self, peer_id)
 	local size = #LAYER_ID_MAPPING
 
 	for i = NavTagVolumeStartLayer, size, 1 do
 		local layer_name = LAYER_ID_MAPPING[i]
 
 		if NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] <= 0 then
-			self.network_transmit:send_rpc("rpc_set_allowed_nav_layer", sender, i, false)
+			self.network_transmit:send_rpc("rpc_set_allowed_nav_layer", peer_id, i, false)
 		end
 	end
 
 	for unit, func in pairs(self._hot_join_sync_units) do
-		func(sender, unit)
+		func(peer_id, unit)
 	end
 end
 

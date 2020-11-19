@@ -42,7 +42,7 @@ StateLoadingMigrateHost._init_network = function (self)
 		if level_to_load then
 			self._level_transition_handler:set_next_level(level_to_load, environment_to_load)
 
-			loading_context.host_migration_level_to_load = nil
+			host_migration_info.level_to_load = nil
 			loading_context.environment_to_load = nil
 		end
 
@@ -50,22 +50,23 @@ StateLoadingMigrateHost._init_network = function (self)
 		self.parent:start_matchmaking()
 	else
 		network_printf("Migrating to host %s, trying to find its lobby...", host_to_migrate_to)
-		self.parent:setup_lobby_finder(callback(self, "cb_lobby_joined"), nil, host_to_migrate_to)
+		self.parent:set_host_migrating(true)
 
+		local lobby_finder = self.parent:setup_lobby_finder(callback(self, "cb_lobby_joined"), nil, host_to_migrate_to)
 		local requirements = {
 			free_slots = 1,
-			distance_filter = LobbyDistanceFilter.WORLD,
+			distance_filter = "world",
 			filters = {
 				host = {
-					value = host_peer_id,
-					comparison = LobbyComparison.EQUAL
+					comparison = "equal",
+					value = host_peer_id
 				}
 			},
 			near_filters = {}
 		}
+		local lobby_browser = lobby_finder:get_lobby_browser()
 
-		LobbyInternal.clear_filter_requirements()
-		LobbyInternal.add_filter_requirements(requirements)
+		LobbyInternal.add_filter_requirements(requirements, lobby_browser)
 	end
 end
 

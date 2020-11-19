@@ -243,7 +243,9 @@ BTChampionAttackAction.leave = function (self, unit, blackboard, t, reason, dest
 
 			statistics_db:increment_stat(stats_id, inc_stat_on_dodged)
 		elseif owner and owner:is_player_controlled() then
-			RPC.rpc_increment_stat(owner:network_id(), NetworkLookup.statistics[inc_stat_on_dodged])
+			local channel_id = PEER_ID_TO_CHANNEL[owner:network_id()]
+
+			RPC.rpc_increment_stat(channel_id, NetworkLookup.statistics[inc_stat_on_dodged])
 		end
 	end
 

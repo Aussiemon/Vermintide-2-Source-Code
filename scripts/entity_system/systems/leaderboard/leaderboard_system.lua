@@ -362,7 +362,7 @@ LeaderboardSystem.get_ranking_for_friends = function (self, level_key, difficult
 	}
 end
 
-LeaderboardSystem.rpc_client_leaderboard_register_score = function (self, sender, level_key_id, difficulty_id, score, ...)
+LeaderboardSystem.rpc_client_leaderboard_register_score = function (self, channel_id, level_key_id, difficulty_id, score, ...)
 	local level_key = NetworkLookup.level_keys[level_key_id]
 	local difficulty_name = NetworkLookup.difficulties[difficulty_id]
 	local human_players = {

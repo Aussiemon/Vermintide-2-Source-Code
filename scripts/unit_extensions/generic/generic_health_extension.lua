@@ -87,7 +87,7 @@ GenericHealthExtension.reset = function (self)
 	table.clear(self.last_damage_data)
 end
 
-GenericHealthExtension.hot_join_sync = function (self, sender)
+GenericHealthExtension.hot_join_sync = function (self, peer_id)
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local go_id, is_level_unit = network_manager:game_object_or_level_id(unit)
@@ -98,7 +98,7 @@ GenericHealthExtension.hot_join_sync = function (self, sender)
 		local damage = NetworkUtils.get_network_safe_damage_hotjoin_sync(damage_taken)
 		local network_transmit = self.network_transmit
 
-		network_transmit:send_rpc("rpc_sync_damage_taken", sender, go_id, is_level_unit, false, damage, state_id)
+		network_transmit:send_rpc("rpc_sync_damage_taken", peer_id, go_id, is_level_unit, false, damage, state_id)
 
 		if not self:is_alive() then
 			local damage_amount = 0
@@ -117,7 +117,7 @@ GenericHealthExtension.hot_join_sync = function (self, sender)
 			local total_hits = 0
 			local backstab_multiplier = 1
 
-			network_transmit:send_rpc("rpc_add_damage", sender, go_id, is_level_unit, go_id, is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+			network_transmit:send_rpc("rpc_add_damage", peer_id, go_id, is_level_unit, go_id, is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 		end
 	end
 end
@@ -370,6 +370,11 @@ GenericHealthExtension.get_is_invincible = function (self)
 	end
 
 	local dlc_is_invincible = false
+	local ghost_mode_extension = ScriptUnit.has_extension(unit, "ghost_mode_system")
+
+	if ghost_mode_extension then
+		dlc_is_invincible = ghost_mode_extension:is_in_ghost_mode()
+	end
 
 	return self.is_invincible or has_invincibility_buff or dlc_is_invincible
 end
@@ -378,8 +383,9 @@ GenericHealthExtension.save_kill_feed_data = function (self, attacker_unit, dama
 	local unit = self.unit
 	local last_damage_data = self.last_damage_data
 	local registered_damage = false
+	local current_health = self:current_health()
 
-	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" then
+	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" and current_health > 0 then
 		local attacker_unit = source_attacker_unit or AiUtils.get_actual_attacker_unit(attacker_unit)
 
 		if AiUtils.unit_alive(attacker_unit) then

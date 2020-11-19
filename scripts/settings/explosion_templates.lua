@@ -147,16 +147,16 @@ ExplosionTemplates = {
 					power_level = 1000
 				},
 				cataclysm = {
-					power_level_glance = 300,
-					power_level = 600
+					power_level_glance = 550,
+					power_level = 1100
 				},
 				cataclysm_2 = {
-					power_level_glance = 400,
-					power_level = 800
+					power_level_glance = 575,
+					power_level = 1150
 				},
 				cataclysm_3 = {
-					power_level_glance = 500,
-					power_level = 1000
+					power_level_glance = 600,
+					power_level = 1200
 				}
 			},
 			camera_effect = {
@@ -204,16 +204,16 @@ ExplosionTemplates = {
 					power_level = 1000
 				},
 				cataclysm = {
-					power_level_glance = 300,
-					power_level = 600
+					power_level_glance = 550,
+					power_level = 1100
 				},
 				cataclysm_2 = {
-					power_level_glance = 400,
-					power_level = 800
+					power_level_glance = 575,
+					power_level = 1150
 				},
 				cataclysm_3 = {
-					power_level_glance = 500,
-					power_level = 1000
+					power_level_glance = 600,
+					power_level = 1200
 				}
 			}
 		}
@@ -254,16 +254,16 @@ ExplosionTemplates = {
 					power_level = 500
 				},
 				cataclysm = {
-					power_level_glance = 150,
-					power_level = 300
+					power_level_glance = 275,
+					power_level = 550
 				},
 				cataclysm_2 = {
-					power_level_glance = 200,
-					power_level = 400
+					power_level_glance = 300,
+					power_level = 600
 				},
 				cataclysm_3 = {
-					power_level_glance = 250,
-					power_level = 500
+					power_level_glance = 325,
+					power_level = 650
 				}
 			}
 		},
@@ -489,6 +489,78 @@ ExplosionTemplates = {
 					power_level_glance = 250,
 					power_level = 500
 				}
+			}
+		},
+		aoe = {
+			dot_template_name = "burning_dot_fire_grenade",
+			radius = 6,
+			nav_tag_volume_layer = "fire_grenade",
+			create_nav_tag_volume = true,
+			attack_template = "fire_grenade_dot",
+			sound_event_name = "player_combat_weapon_fire_grenade_explosion",
+			damage_interval = 1,
+			duration = 5,
+			area_damage_template = "explosion_template_aoe",
+			nav_mesh_effect = {
+				particle_radius = 2,
+				particle_name = "fx/wpnfx_fire_grenade_impact_remains",
+				particle_spacing = 0.9
+			}
+		}
+	},
+	frag_fire_grenade = {
+		is_grenade = true,
+		explosion = {
+			dont_rotate_fx = true,
+			radius = 5,
+			max_damage_radius = 2,
+			alert_enemies_radius = 20,
+			sound_event_name = "player_combat_weapon_grenade_explosion",
+			attack_template = "grenade",
+			damage_profile_glance = "frag_grenade_glance",
+			alert_enemies = true,
+			damage_profile = "frag_grenade",
+			effect_name = "fx/wpnfx_frag_grenade_impact",
+			difficulty_power_level = {
+				easy = {
+					power_level_glance = 100,
+					power_level = 200
+				},
+				normal = {
+					power_level_glance = 200,
+					power_level = 400
+				},
+				hard = {
+					power_level_glance = 300,
+					power_level = 600
+				},
+				harder = {
+					power_level_glance = 400,
+					power_level = 800
+				},
+				hardest = {
+					power_level_glance = 500,
+					power_level = 1000
+				},
+				cataclysm = {
+					power_level_glance = 550,
+					power_level = 1100
+				},
+				cataclysm_2 = {
+					power_level_glance = 575,
+					power_level = 1150
+				},
+				cataclysm_3 = {
+					power_level_glance = 600,
+					power_level = 1200
+				}
+			},
+			camera_effect = {
+				near_distance = 5,
+				near_scale = 1,
+				shake_name = "frag_grenade_explosion",
+				far_scale = 0.15,
+				far_distance = 20
 			}
 		},
 		aoe = {
@@ -1311,14 +1383,93 @@ ExplosionTemplates.twitch_pulse_explosion = {
 		effect_name = "fx/chr_kruber_shockwave"
 	}
 }
+ExplosionTemplates.suicide_blast = {
+	explosion = {
+		radius = 4,
+		dot_template_name = "burning_3W_dot",
+		max_damage_radius = 4,
+		alert_enemies = true,
+		damage_type_glance = "fire_grenade_glance",
+		alert_enemies_radius = 15,
+		attack_template = "fire_grenade_explosion",
+		sound_event_name = "fireball_big_hit",
+		always_hurt_players = true,
+		damage_type = "fire_grenade",
+		damage_profile = "explosive_barrel",
+		effect_name = "fx/wpnfx_fire_grenade_impact",
+		difficulty_power_level = {
+			easy = {
+				power_level_glance = 50,
+				power_level = 100
+			},
+			normal = {
+				power_level_glance = 100,
+				power_level = 200
+			},
+			hard = {
+				power_level_glance = 150,
+				power_level = 300
+			},
+			harder = {
+				power_level_glance = 200,
+				power_level = 400
+			},
+			hardest = {
+				power_level_glance = 250,
+				power_level = 500
+			},
+			survival_hard = {
+				power_level_glance = 150,
+				power_level = 300
+			},
+			survival_harder = {
+				power_level_glance = 200,
+				power_level = 400
+			},
+			survival_hardest = {
+				power_level_glance = 250,
+				power_level = 500
+			}
+		}
+	},
+	aoe = {
+		dot_template_name = "burning_1W_dot",
+		radius = 4,
+		nav_tag_volume_layer = "bot_poison_wind",
+		create_nav_tag_volume = true,
+		attack_template = "fire_grenade_dot",
+		sound_event_name = "player_combat_weapon_fire_grenade_explosion",
+		damage_interval = 1,
+		duration = 3,
+		area_damage_template = "explosion_template_aoe",
+		nav_mesh_effect = {
+			particle_radius = 2,
+			particle_name = "fx/wpnfx_fire_grenade_impact_remains",
+			particle_spacing = 0.9
+		}
+	}
+}
+ExplosionTemplates.gutter_runner_foff = {
+	explosion = {
+		duration = 1,
+		radius = 3,
+		attack_template = "drakegun",
+		max_damage_radius = 2,
+		damage_profile = "ability_push",
+		power_level = 200,
+		damage_type = "grenade",
+		effect_name = "fx/chr_gutter_foff"
+	}
+}
+ExplosionTemplates.shadow_flare = {
+	spawn_unit = {
+		glow_time = 15,
+		unit_name = "shadow_flare_light",
+		unit_path = "units/weapons/player/wpn_shadow_gargoyle_head/wpn_shadow_gargoyle_head"
+	}
+}
 
-for _, dlc in pairs(DLCSettings) do
-	local explosion_templates = dlc.explosion_templates
-
-	if explosion_templates then
-		table.merge_recursive(ExplosionTemplates, explosion_templates)
-	end
-end
+DLCUtils.merge("explosion_templates", ExplosionTemplates)
 
 for name, templates in pairs(ExplosionTemplates) do
 	templates.name = name

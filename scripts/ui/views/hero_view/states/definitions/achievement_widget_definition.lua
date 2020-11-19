@@ -228,7 +228,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			pass_type = "text",
 			text_id = "progress_button_text",
 			content_check_function = function (content)
-				return content.completed and not content.claimed and not content.draw_bar and content.progress_button_hotspot.is_hover
+				return content.completed and not content.claimed and not content.draw_bar and content.progress_button_hotspot.is_hover and not content.locked
 			end
 		},
 		{
@@ -236,7 +236,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			pass_type = "text",
 			text_id = "progress_button_text",
 			content_check_function = function (content)
-				return content.completed and not content.claimed and not content.draw_bar and not content.progress_button_hotspot.is_hover
+				return content.completed and not content.claimed and not content.draw_bar and not content.progress_button_hotspot.is_hover and not content.locked
 			end
 		},
 		{
@@ -245,6 +245,14 @@ local function create_achievement_entry(scenegraph_id, size)
 			text_id = "progress_button_text",
 			content_check_function = function (content)
 				return content.completed and not content.claimed and not content.draw_bar
+			end
+		},
+		{
+			style_id = "progress_button_text_disabled",
+			pass_type = "text",
+			text_id = "progress_button_text",
+			content_check_function = function (content)
+				return content.completed and not content.claimed and not content.draw_bar and content.locked
 			end
 		},
 		{
@@ -296,7 +304,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			style_id = "progress_button_hover_glow",
 			pass_type = "texture",
 			content_check_function = function (content)
-				return content.completed and not content.claimed and content.progress_button_hotspot.is_hover
+				return content.completed and not content.claimed and content.progress_button_hotspot.is_hover and not content.locked
 			end
 		},
 		{
@@ -307,7 +315,7 @@ local function create_achievement_entry(scenegraph_id, size)
 				return content.completed and not content.claimed and not content.claiming
 			end,
 			content_change_function = function (content, style)
-				local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+				local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 				style.color[1] = 55 + progress * 200
 			end
 		},
@@ -373,6 +381,74 @@ local function create_achievement_entry(scenegraph_id, size)
 			pass_type = "texture",
 			style_id = "icon",
 			texture_id = "icon"
+		},
+		{
+			style_id = "dlc_lock_hotspot",
+			pass_type = "hotspot",
+			content_id = "dlc_lock_hotspot",
+			content_check_function = function (content)
+				local should_draw = content.draw
+				content.draw = false
+				content.is_hover = false
+
+				return should_draw
+			end
+		},
+		{
+			style_id = "dlc_lock",
+			texture_id = "dlc_lock",
+			pass_type = "rotated_texture",
+			content_check_function = function (content)
+				return content.locked
+			end,
+			content_change_function = function (content, style, _, dt)
+				if content.dlc_on_claim == true then
+					content.dlc_lock_t = 1
+					content.dlc_lock_dir = -content.dlc_lock_dir
+					content.dlc_on_claim = false
+				else
+					local t = content.dlc_lock_t
+
+					if t then
+						local math = math
+						t = t - dt
+						style.angle = 0.1 * math.pi * math.min(1, t * t) * math.sin(3 * math.pi * t * content.dlc_lock_dir)
+						content.dlc_lock_t = t > 0 and t
+					end
+				end
+			end
+		},
+		{
+			style_id = "dlc_lock_glow",
+			texture_id = "dlc_lock_glow",
+			pass_type = "texture",
+			content_check_function = function (content)
+				return content.locked
+			end,
+			content_change_function = function (content, style, _, dt)
+				local t = content.dlc_lock_t
+				local alpha_mult = content.dlc_lock_glow_alpha_multiplier
+
+				if content.dlc_lock_hotspot.is_hover then
+					alpha_mult = alpha_mult + 3 * dt
+				elseif t and t > 0 then
+					alpha_mult = math.sin(0.5 * math.pi * t)
+				else
+					alpha_mult = alpha_mult - 2 * dt
+				end
+
+				alpha_mult = math.clamp(alpha_mult, 0, 1)
+				style.color[1] = 255 * alpha_mult
+				content.dlc_lock_glow_alpha_multiplier = alpha_mult
+			end
+		},
+		{
+			style_id = "locked_text",
+			pass_type = "tooltip_text",
+			text_id = "locked_text",
+			content_check_function = function (content)
+				return content.locked and content.dlc_lock_hotspot.is_hover
+			end
 		},
 		{
 			pass_type = "texture",
@@ -460,22 +536,6 @@ local function create_achievement_entry(scenegraph_id, size)
 			text_id = "claimed_text",
 			content_check_function = function (content)
 				return content.claimed
-			end
-		},
-		{
-			style_id = "locked_text",
-			pass_type = "text",
-			text_id = "locked_text",
-			content_check_function = function (content)
-				return content.locked
-			end
-		},
-		{
-			style_id = "locked_text_shadow",
-			pass_type = "text",
-			text_id = "locked_text",
-			content_check_function = function (content)
-				return content.locked
 			end
 		},
 		{
@@ -568,25 +628,29 @@ local function create_achievement_entry(scenegraph_id, size)
 	local content = {
 		icon_background = "achievement_left",
 		expand_background_edge = "achievement_paper_bottom",
-		reward_illusion_frame = "item_frame_illusion",
+		reward_icon = "icons_placeholder",
 		progress_text = "n/a",
 		glass = "button_glass_02",
-		reward_icon = "icons_placeholder",
-		progress_bar = "experience_bar_fill",
+		dlc_lock = "hero_icon_locked_gold",
 		draw_bar = true,
-		completed = false,
+		reward_illusion_frame = "item_frame_illusion",
 		icon = "achievement_trophy_01",
 		arrow = "achievement_arrow",
-		title_divider = "divider_01_bottom",
-		background_fade = "options_window_fade_01",
+		progress_bar = "experience_bar_fill",
+		dlc_lock_glow_alpha_multiplier = 0,
+		locked_text = "n/a",
 		is_illusion = false,
+		expand_background = "achievement_paper_middle",
 		reward_icon_claimed = "achievement_banner",
 		background_completed = "achievement_background",
 		background = "achievement_background_dark",
+		title_divider = "divider_01_bottom",
 		arrow_hover = "achievement_arrow_hover",
+		background_fade = "options_window_fade_01",
+		dlc_lock_glow = "circular_gradient_masked",
 		expand_background_shadow = "edge_fade_small",
 		hover_glow = "button_state_default",
-		expand_background = "achievement_paper_middle",
+		completed = false,
 		title = "n/a",
 		claimed = false,
 		expanded = false,
@@ -596,8 +660,10 @@ local function create_achievement_entry(scenegraph_id, size)
 		rect_masked = "rect_masked",
 		claiming = false,
 		reward_background = "achievement_right",
-		locked_text = "n/a",
+		dlc_on_claim = false,
 		reward_hover = "item_icon_hover",
+		dlc_lock_dir = (math.random() < 0.5 and 1) or -1,
+		dlc_lock_hotspot = {},
 		button_hotspot = {
 			allow_multi_hover = true
 		},
@@ -1177,6 +1243,84 @@ local function create_achievement_entry(scenegraph_id, size)
 				11
 			}
 		},
+		dlc_lock_hotspot = {
+			vertical_alignment = "center",
+			horizontal_alignment = "right",
+			size = {
+				130,
+				50
+			},
+			offset = {
+				size[1] - 130 + 25,
+				-10,
+				11
+			}
+		},
+		dlc_lock = {
+			vertical_alignment = "center",
+			masked = true,
+			angle = 0,
+			horizontal_alignment = "right",
+			texture_size = {
+				45.6,
+				52.199999999999996
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				-17,
+				-55,
+				20
+			},
+			pivot = {
+				22.8,
+				31.199999999999996
+			}
+		},
+		dlc_lock_glow = {
+			vertical_alignment = "center",
+			horizontal_alignment = "right",
+			texture_size = {
+				76.8,
+				76.8
+			},
+			color = {
+				255,
+				242,
+				193,
+				50
+			},
+			offset = {
+				-2,
+				-56,
+				11
+			}
+		},
+		locked_text = {
+			font_size = 18,
+			horizontal_alignment = "center",
+			font_type = "hell_shark",
+			cursor_side = "left",
+			vertical_alignment = "top",
+			max_width = 500,
+			text_color = Colors.get_table("white"),
+			line_colors = {
+				Colors.get_table("orange_red")
+			},
+			offset = {
+				-200,
+				0,
+				50
+			},
+			cursor_offset = {
+				-20,
+				-27
+			}
+		},
 		reward_background = {
 			vertical_alignment = "center",
 			masked = true,
@@ -1398,40 +1542,6 @@ local function create_achievement_entry(scenegraph_id, size)
 				11
 			}
 		},
-		locked_text = {
-			vertical_alignment = "bottom",
-			upper_case = true,
-			font_size = 18,
-			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
-			text_color = Colors.get_color_table_with_alpha("red", 255),
-			size = {
-				progress_bar_size[1],
-				progress_bar_size[2]
-			},
-			offset = {
-				size[1] / 2 - progress_bar_size[1] / 2,
-				10,
-				10
-			}
-		},
-		locked_text_shadow = {
-			vertical_alignment = "bottom",
-			upper_case = true,
-			font_size = 18,
-			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
-			text_color = Colors.get_color_table_with_alpha("black", 255),
-			size = {
-				progress_bar_size[1],
-				progress_bar_size[2]
-			},
-			offset = {
-				size[1] / 2 - progress_bar_size[1] / 2 + 2,
-				8,
-				9
-			}
-		},
 		progress_button_text = {
 			vertical_alignment = "center",
 			upper_case = false,
@@ -1481,6 +1591,28 @@ local function create_achievement_entry(scenegraph_id, size)
 				size[1] / 2 - progress_bar_size[1] / 2 + 2,
 				progress_bar_height_offset - 2,
 				9
+			}
+		},
+		progress_button_text_disabled = {
+			vertical_alignment = "center",
+			upper_case = false,
+			font_size = 18,
+			horizontal_alignment = "center",
+			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			text_color = {
+				255,
+				155,
+				155,
+				155
+			},
+			size = {
+				progress_bar_size[1],
+				progress_bar_size[2]
+			},
+			offset = {
+				size[1] / 2 - progress_bar_size[1] / 2,
+				progress_bar_height_offset,
+				10
 			}
 		},
 		description = {

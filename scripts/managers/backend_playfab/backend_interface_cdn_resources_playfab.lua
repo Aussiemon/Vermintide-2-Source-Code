@@ -41,7 +41,7 @@ BackendInterfaceCdnResourcesPlayFab._cb_localization_urls_loaded = function (sel
 		local url = result[resource_id]
 
 		if url then
-			if PLATFORM == "win32" then
+			if PLATFORM == "win32" or PLATFORM == "linux" then
 				Managers.curl:get(url, {}, callback(self, "_cb_localization_loaded", key, external_cb), nil, {})
 			else
 				Managers.rest_transport:get(url, {}, callback(self, "_cb_localization_loaded", key, external_cb), nil, nil)

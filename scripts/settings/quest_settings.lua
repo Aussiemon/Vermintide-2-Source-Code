@@ -778,31 +778,34 @@ end
 QuestSettings.track_charge_stagger_breeds = {}
 
 QuestSettings.handle_charge_stagger = function (unit, blackboard, attacker_unit)
-	local health_extension = ScriptUnit.extension(unit, "health_system")
-	local career_extension = ScriptUnit.extension(attacker_unit, "career_system")
+	local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
+
+	if not career_extension then
+		return
+	end
+
 	local career_name = career_extension:career_name()
 
 	if not QuestSettings.track_charge_stagger_breeds[career_name] then
-		return false
+		return
 	end
 
+	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 	local recent_damage_type = health_extension:recent_damage_source()
 	local damage_type = career_extension:career_skill_weapon_name(nil)
 
 	if recent_damage_type == damage_type then
-		local blackboard = blackboard
-		local t = Managers.time:time("game")
-		local attack_started_t = blackboard.attack_started_at_t
-		local current_action = nil
+		local current_action = blackboard.action
 
-		if blackboard.action then
-			current_action = blackboard.action
-		end
+		if current_action and current_action.name == "charge" then
+			local t = Managers.time:time("game")
+			local attack_started_t = blackboard.attack_started_at_t
 
-		if current_action and current_action.name == "charge" and t - attack_started_t > 2 then
-			local stat_name = "lake_charge_stagger"
+			if attack_started_t and t - attack_started_t > 2 then
+				local stat_name = "lake_charge_stagger"
 
-			increment_stat(attacker_unit, stat_name)
+				increment_stat(attacker_unit, stat_name)
+			end
 		end
 	end
 end

@@ -23,16 +23,9 @@ local extensions = {
 	"GenericStatusExtension"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.status_extensions
-
-	if files then
-		for _, file in ipairs(files) do
-			local extension_name = require(file)
-			extensions[#extensions + 1] = extension_name
-		end
-	end
-end
+DLCUtils.map_list("status_extensions", function (file)
+	extensions[#extensions + 1] = require(file)
+end)
 
 StatusSystem.init = function (self, entity_system_creation_context, system_name)
 	StatusSystem.super.init(self, entity_system_creation_context, system_name, extensions)
@@ -47,7 +40,7 @@ StatusSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 end
 
-StatusSystem.rpc_hooked_sync = function (self, sender, status_id, game_object_id, time_left)
+StatusSystem.rpc_hooked_sync = function (self, channel_id, status_id, game_object_id, time_left)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -65,7 +58,7 @@ StatusSystem.rpc_hooked_sync = function (self, sender, status_id, game_object_id
 	end
 end
 
-StatusSystem.rpc_set_action_data = function (self, sender, game_object_id, breed_id, breed_action_id)
+StatusSystem.rpc_set_action_data = function (self, channel_id, game_object_id, breed_id, breed_action_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -79,7 +72,7 @@ StatusSystem.rpc_set_action_data = function (self, sender, game_object_id, breed
 	status_ext:set_breed_action(breed_name, breed_action_name)
 end
 
-StatusSystem.rpc_status_change_bool = function (self, sender, status_id, status_bool, game_object_id, other_object_id)
+StatusSystem.rpc_status_change_bool = function (self, channel_id, status_id, status_bool, game_object_id, other_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -179,11 +172,13 @@ StatusSystem.rpc_status_change_bool = function (self, sender, status_id, status_
 	end
 
 	if Managers.player.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_bool", sender, status_id, status_bool, game_object_id, other_object_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_bool", peer_id, status_id, status_bool, game_object_id, other_object_id)
 	end
 end
 
-StatusSystem.rpc_status_change_int = function (self, sender, status_id, status_int, game_object_id)
+StatusSystem.rpc_status_change_int = function (self, channel_id, status_id, status_int, game_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -206,11 +201,13 @@ StatusSystem.rpc_status_change_int = function (self, sender, status_id, status_i
 	end
 
 	if Managers.player.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_int", sender, status_id, status_int, game_object_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_int", peer_id, status_id, status_int, game_object_id)
 	end
 end
 
-StatusSystem.rpc_status_change_int_and_unit = function (self, sender, status_id, status_int, game_object_id, other_object_id)
+StatusSystem.rpc_status_change_int_and_unit = function (self, channel_id, status_id, status_int, game_object_id, other_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -231,11 +228,13 @@ StatusSystem.rpc_status_change_int_and_unit = function (self, sender, status_id,
 	end
 
 	if Managers.player.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_int", sender, status_id, status_int, game_object_id, other_object_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_status_change_int", peer_id, status_id, status_int, game_object_id, other_object_id)
 	end
 end
 
-StatusSystem.rpc_set_wounded = function (self, sender, game_object_id, wounded, reason_id)
+StatusSystem.rpc_set_wounded = function (self, channel_id, game_object_id, wounded, reason_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -248,7 +247,7 @@ StatusSystem.rpc_set_wounded = function (self, sender, game_object_id, wounded, 
 	status_extension:set_wounded(wounded, reason)
 end
 
-StatusSystem.rpc_set_catapulted = function (self, sender, unit_id, catapulted, velocity)
+StatusSystem.rpc_set_catapulted = function (self, channel_id, unit_id, catapulted, velocity)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -260,11 +259,13 @@ StatusSystem.rpc_set_catapulted = function (self, sender, unit_id, catapulted, v
 	status_extension:set_catapulted(catapulted, velocity)
 
 	if Managers.player.is_server then
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_set_catapulted", sender, unit_id, catapulted, velocity)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_set_catapulted", peer_id, unit_id, catapulted, velocity)
 	end
 end
 
-StatusSystem.rpc_leap_start = function (self, sender, unit_id)
+StatusSystem.rpc_leap_start = function (self, channel_id, unit_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -276,7 +277,7 @@ StatusSystem.rpc_leap_start = function (self, sender, unit_id)
 	status_extension:leap_start(unit)
 end
 
-StatusSystem.rpc_leap_finished = function (self, sender, unit_id)
+StatusSystem.rpc_leap_finished = function (self, channel_id, unit_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -288,7 +289,7 @@ StatusSystem.rpc_leap_finished = function (self, sender, unit_id)
 	status_extension:leap_finished(unit)
 end
 
-StatusSystem.rpc_set_blocking = function (self, sender, game_object_id, blocking)
+StatusSystem.rpc_set_blocking = function (self, channel_id, game_object_id, blocking)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -300,11 +301,13 @@ StatusSystem.rpc_set_blocking = function (self, sender, game_object_id, blocking
 	status_extension:set_blocking(blocking)
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_set_blocking", sender, game_object_id, blocking)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_set_blocking", peer_id, game_object_id, blocking)
 	end
 end
 
-StatusSystem.rpc_set_charge_blocking = function (self, sender, game_object_id, charge_blocking)
+StatusSystem.rpc_set_charge_blocking = function (self, channel_id, game_object_id, charge_blocking)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -316,7 +319,9 @@ StatusSystem.rpc_set_charge_blocking = function (self, sender, game_object_id, c
 	status_extension:set_charge_blocking(charge_blocking)
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_set_charge_blocking", sender, game_object_id, charge_blocking)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_set_charge_blocking", peer_id, game_object_id, charge_blocking)
 	end
 end
 
@@ -334,7 +339,7 @@ StatusSystem.rpc_player_blocked_attack = function (self, sender, game_object_id,
 	status_extension:blocked_attack(fatigue_type, attacking_unit, fatigue_point_costs_multiplier, improved_block, attack_direction)
 end
 
-StatusSystem.rpc_hot_join_sync_health_status = function (self, sender, game_object_id, wounds, ready_for_assisted_respawn, respawn_unit_game_object_id)
+StatusSystem.rpc_hot_join_sync_health_status = function (self, channel_id, game_object_id, wounds, ready_for_assisted_respawn, respawn_unit_game_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 	status_extension.wounds = wounds
@@ -344,7 +349,7 @@ StatusSystem.rpc_hot_join_sync_health_status = function (self, sender, game_obje
 	end
 end
 
-StatusSystem.rpc_replenish_fatigue = function (self, sender, game_object_id, fatigue_type_id)
+StatusSystem.rpc_replenish_fatigue = function (self, channel_id, game_object_id, fatigue_type_id)
 	print("rpc_replenish_fatigue")
 
 	local unit = self.unit_storage:unit(game_object_id)
@@ -353,9 +358,11 @@ StatusSystem.rpc_replenish_fatigue = function (self, sender, game_object_id, fat
 	StatusUtils.replenish_stamina_local_players(nil, fatigue_type)
 end
 
-StatusSystem.rpc_replenish_fatigue_other_players = function (self, sender, fatigue_type_id)
+StatusSystem.rpc_replenish_fatigue_other_players = function (self, channel_id, fatigue_type_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_replenish_fatigue_other_players", sender, fatigue_type_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_replenish_fatigue_other_players", peer_id, fatigue_type_id)
 	end
 
 	local fatigue_type = NetworkLookup.fatigue_types[fatigue_type_id]
@@ -363,7 +370,7 @@ StatusSystem.rpc_replenish_fatigue_other_players = function (self, sender, fatig
 	StatusUtils.replenish_stamina_local_players(nil, fatigue_type)
 end
 
-StatusSystem.rpc_set_stagger = function (self, sender, game_object_id, stagger, stagger_direction, stagger_length, stagger_type, stagger_time, stagger_animation_scale, always_stagger_suffered)
+StatusSystem.rpc_set_stagger = function (self, channel_id, game_object_id, stagger, stagger_direction, stagger_length, stagger_type, stagger_time, stagger_animation_scale, always_stagger_suffered)
 	local unit = self.unit_storage:unit(game_object_id)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 

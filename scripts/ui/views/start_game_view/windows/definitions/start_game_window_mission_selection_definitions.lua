@@ -843,7 +843,7 @@ local widgets = {
 }
 
 for i = 1, 20, 1 do
-	scenegraph_id = "level_root_" .. i
+	local scenegraph_id = "level_root_" .. i
 	scenegraph_definition[scenegraph_id] = {
 		vertical_alignment = "center",
 		parent = "level_root_node",

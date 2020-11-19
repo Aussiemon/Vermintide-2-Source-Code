@@ -3580,19 +3580,8 @@ PatrolFormationSettings.prologue_marauder = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local patrol_formation_settings = dlc.patrol_formation_settings
-
-	if patrol_formation_settings then
-		table.merge_recursive(PatrolFormationSettings, patrol_formation_settings)
-	end
-
-	local patrol_formations = dlc.patrol_formations
-
-	if patrol_formations then
-		table.merge_recursive(PatrolFormationSettings, patrol_formations)
-	end
-end
+DLCUtils.merge("patrol_formation_settings", PatrolFormationSettings)
+DLCUtils.merge("patrol_formations", PatrolFormationSettings)
 
 PatrolFormationSettings.random_roaming_formation = function (breed_pack)
 	local members = breed_pack.members

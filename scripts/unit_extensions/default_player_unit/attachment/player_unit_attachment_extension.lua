@@ -294,16 +294,21 @@ PlayerUnitAttachmentExtension.spawn_resynced_loadout = function (self, item_to_s
 end
 
 PlayerUnitAttachmentExtension._send_rpc_add_attachment_buffs = function (self, unit_object_id, slot_id, synced_buffs)
-	local params = AttachmentUtils.get_syncable_buff_params(synced_buffs)
+	local rpc_params = BuffUtils.buffs_to_rpc_params(synced_buffs)
+	local num_buffs, buff_ids, buff_value_type_ids, buff_values = unpack(rpc_params)
 
-	if #params > 0 then
+	if #buff_ids ~= #buff_value_type_ids or #buff_value_type_ids ~= #buff_values then
+		fassert(false, "[PlayerUnitAttachmentExtension] Length of arrays buff_names(%d) and buff_value_types(%d) and buff_values(%d) are not equal!", #buff_ids, #buff_value_type_ids, #buff_values)
+	end
+
+	if num_buffs > 0 then
 		local network_manager = Managers.state.network
 		local network_transmit = network_manager.network_transmit
 
 		if self._is_server then
-			network_transmit:send_rpc_clients("rpc_add_attachment_buffs", unit_object_id, slot_id, unpack(params))
+			network_transmit:send_rpc_clients("rpc_add_attachment_buffs", unit_object_id, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 		else
-			network_transmit:send_rpc_server("rpc_add_attachment_buffs", unit_object_id, slot_id, unpack(params))
+			network_transmit:send_rpc_server("rpc_add_attachment_buffs", unit_object_id, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 		end
 	end
 end

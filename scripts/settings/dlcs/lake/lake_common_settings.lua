@@ -56,6 +56,51 @@ settings.unlock_settings = {
 		id = "1345990"
 	}
 }
+settings.unlock_settings_xb1 = {
+	lake = {
+		id = "52544E39-5A56-305A-C058-52563853C200",
+		backend_reward_id = "lake",
+		class = "UnlockDlc",
+		requires_restart = true
+	},
+	lake_upgrade = {
+		id = "52544E39-5A56-305A-C058-52563853C200",
+		backend_reward_id = "lake_upgrade",
+		class = "UnlockDlc"
+	}
+}
+settings.unlock_settings_ps4 = {
+	CUSA13595_00 = {
+		lake = {
+			product_label = "V2USGRAILKNIGHTK",
+			backend_reward_id = "lake",
+			class = "UnlockDlc",
+			requires_restart = true,
+			id = "7f6d2826dc0b4c23b28f56e169af41f6"
+		},
+		lake_upgrade = {
+			id = "7f6d2826dc0b4c23b28f56e169af41f6",
+			product_label = "V2USGRAILKNIGHTK",
+			class = "UnlockDlc",
+			backend_reward_id = "lake_upgrade"
+		}
+	},
+	CUSA13645_00 = {
+		lake = {
+			product_label = "V2EUGRAILKNIGHTK",
+			backend_reward_id = "lake",
+			class = "UnlockDlc",
+			requires_restart = true,
+			id = "bc65d303c0774842b2f06a164082d76b"
+		},
+		lake_upgrade = {
+			id = "bc65d303c0774842b2f06a164082d76b",
+			product_label = "V2EUGRAILKNIGHTK",
+			class = "UnlockDlc",
+			backend_reward_id = "lake_upgrade"
+		}
+	}
+}
 settings.progression_unlocks = {
 	es_questingknight = {
 		description = "end_screen_career_unlocked",

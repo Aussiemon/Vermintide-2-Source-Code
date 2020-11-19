@@ -2,6 +2,7 @@ require("scripts/unit_extensions/level/door_extension")
 require("scripts/unit_extensions/level/simple_door_extension")
 require("scripts/unit_extensions/level/boss_door_extension")
 require("scripts/unit_extensions/level/big_boy_destructible_extension")
+require("scripts/unit_extensions/level/crawl_space_extension")
 
 DoorSystem = class(DoorSystem, ExtensionSystemBase)
 local RPCS = {
@@ -12,7 +13,8 @@ local extensions = {
 	"DoorExtension",
 	"SimpleDoorExtension",
 	"BossDoorExtension",
-	"BigBoyDestructibleExtension"
+	"BigBoyDestructibleExtension",
+	"CrawlSpaceExtension"
 }
 
 DoorSystem.init = function (self, entity_system_creation_context, system_name)
@@ -27,13 +29,18 @@ DoorSystem.init = function (self, entity_system_creation_context, system_name)
 	self._broadphase = Broadphase(127, 1.5)
 	self._boss_doors = {}
 	self._active_groups = {}
+	self._crawl_space_tunnels = {}
+	self._crawl_space_spawners = {}
 end
 
 DoorSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 	local door_extension = DoorSystem.super.on_add_extension(self, world, unit, extension_name)
 	self.unit_extension_data[unit] = door_extension
 	local position = Unit.world_position(unit, 0)
-	door_extension.__broadphase_id = Broadphase.add(self._broadphase, unit, position, 0.5)
+
+	if extension_name ~= "CrawlSpaceExtension" then
+		door_extension.__broadphase_id = Broadphase.add(self._broadphase, unit, position, 0.5)
+	end
 
 	if extension_name == "BossDoorExtension" then
 		local boss_doors = self._boss_doors
@@ -56,7 +63,26 @@ DoorSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 		end
 	end
 
+	if extension_name == "CrawlSpaceExtension" then
+		local crawl_space_id = Unit.get_data(unit, "crawl_space_id")
+
+		if crawl_space_id == 0 then
+			self._crawl_space_spawners[#self._crawl_space_spawners + 1] = door_extension
+		elseif self._crawl_space_tunnels[crawl_space_id] then
+			door_extension.partner_unit = self._crawl_space_tunnels[crawl_space_id].unit
+			self._crawl_space_tunnels[crawl_space_id].partner_unit = unit
+		else
+			self._crawl_space_tunnels[crawl_space_id] = door_extension
+		end
+	end
+
 	return door_extension
+end
+
+DoorSystem.extensions_ready = function (self, world, unit, extension_name)
+	if extension_name == "CrawlSpaceExtension" then
+		self._crawl_spaces_ready = true
+	end
 end
 
 local sections_to_open = {}
@@ -141,7 +167,9 @@ DoorSystem.on_remove_extension = function (self, unit, extension_name)
 
 	local extension = self.unit_extension_data[unit]
 
-	Broadphase.remove(self._broadphase, extension.__broadphase_id)
+	if extension_name ~= "CrawlSpaceExtension" then
+		Broadphase.remove(self._broadphase, extension.__broadphase_id)
+	end
 
 	self.unit_extension_data[unit] = nil
 end
@@ -219,7 +247,46 @@ DoorSystem.get_boss_door_units = function (self)
 	return boss_door_units
 end
 
-DoorSystem.rpc_sync_door_state = function (self, sender, level_object_id, door_state_id)
+DoorSystem.get_crawl_space_tunnel_units = function (self, disabled_too)
+	if not self._crawl_spaces_ready then
+		return
+	end
+
+	local crawl_space_units = {}
+
+	for _, crawl_space in pairs(self._crawl_space_tunnels) do
+		local unit = crawl_space.unit
+		local partner_unit = crawl_space.partner_unit
+		local interactable_extension = ScriptUnit.extension(unit, "interactable_system")
+		local interactable_partner_extension = ScriptUnit.has_extension(partner_unit, "interactable_system")
+
+		if interactable_extension:is_enabled() or disabled_too then
+			crawl_space_units[#crawl_space_units + 1] = unit
+		end
+
+		if partner_unit and (interactable_partner_extension:is_enabled() or disabled_too) then
+			crawl_space_units[#crawl_space_units + 1] = partner_unit
+		end
+	end
+
+	return crawl_space_units
+end
+
+DoorSystem.get_crawl_space_spawner_units = function (self)
+	if not self._crawl_spaces_ready then
+		return
+	end
+
+	local crawl_space_units = {}
+
+	for _, crawl_space in pairs(self._crawl_space_spawners) do
+		crawl_space_units[#crawl_space_units + 1] = crawl_space.unit
+	end
+
+	return crawl_space_units
+end
+
+DoorSystem.rpc_sync_door_state = function (self, channel_id, level_object_id, door_state_id)
 	local level = LevelHelper:current_level(self.world)
 	local door_unit = Level.unit_by_index(level, level_object_id)
 	local door_extension = ScriptUnit.has_extension(door_unit, "door_system")
@@ -233,7 +300,7 @@ DoorSystem.rpc_sync_door_state = function (self, sender, level_object_id, door_s
 	end
 end
 
-DoorSystem.rpc_sync_boss_door_state = function (self, sender, level_object_id, door_state_id, breed_id)
+DoorSystem.rpc_sync_boss_door_state = function (self, channel_id, level_object_id, door_state_id, breed_id)
 	local level = LevelHelper:current_level(self.world)
 	local door_unit = Level.unit_by_index(level, level_object_id)
 	local door_extension = ScriptUnit.has_extension(door_unit, "door_system")

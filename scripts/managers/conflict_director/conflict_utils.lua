@@ -1142,43 +1142,44 @@ local function add_breeds_from_horde_settings(horde_settings, difficulty, output
 end
 
 ConflictUtils.find_conflict_director_breeds = function (conflict_director, difficulty, output)
+	local fallback_difficulty = DifficultySettings[difficulty].fallback_difficulty
+
 	if not conflict_director.boss.disabled then
 		local boss_settings = table.clone(conflict_director.boss)
 
-		ConflictUtils.patch_settings_with_difficulty(boss_settings, difficulty)
+		ConflictUtils.patch_settings_with_difficulty(boss_settings, difficulty, fallback_difficulty)
 		add_breeds_from_boss_settings(boss_settings, difficulty, output)
 	end
 
 	if not conflict_director.specials.disabled then
 		local special_settings = table.clone(conflict_director.specials)
 
-		ConflictUtils.patch_settings_with_difficulty(special_settings, difficulty)
+		ConflictUtils.patch_settings_with_difficulty(special_settings, difficulty, fallback_difficulty)
 		add_breeds_from_special_settings(special_settings, difficulty, output)
 	end
 
 	if not conflict_director.pack_spawning.disabled then
 		local pack_spawning_settings = table.clone(conflict_director.pack_spawning)
 
-		ConflictUtils.patch_settings_with_difficulty(pack_spawning_settings, difficulty)
+		ConflictUtils.patch_settings_with_difficulty(pack_spawning_settings, difficulty, fallback_difficulty)
 		add_breeds_from_pack_spawning_settings(pack_spawning_settings, difficulty, output)
 	end
 
 	if not conflict_director.horde.disabled then
 		local horde_settings = table.clone(conflict_director.horde)
 
-		ConflictUtils.patch_settings_with_difficulty(horde_settings, difficulty)
+		ConflictUtils.patch_settings_with_difficulty(horde_settings, difficulty, fallback_difficulty)
 		add_breeds_from_horde_settings(horde_settings, difficulty, output)
 	end
 
 	return output
 end
 
-ConflictUtils.patch_settings_with_difficulty = function (source_settings, difficulty)
+ConflictUtils.patch_settings_with_difficulty = function (source_settings, difficulty, fallback_difficulty)
 	local overrides = source_settings.difficulty_overrides
+	local override_settings = overrides and (overrides[difficulty] or overrides[fallback_difficulty])
 
-	if overrides and overrides[difficulty] then
-		local override_settings = overrides[difficulty]
-
+	if override_settings then
 		for key, _ in pairs(source_settings) do
 			if key ~= "difficulty_overrides" then
 				source_settings[key] = override_settings[key] or source_settings[key]

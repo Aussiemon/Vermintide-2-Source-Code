@@ -63,23 +63,6 @@ else
 	LobbyState.FAILED = "failed"
 end
 
-LobbyPrivacy = LobbyPrivacy or {}
-LobbyPrivacy.PRIVATE = "private"
-LobbyPrivacy.FRIENDS = "friends"
-LobbyPrivacy.PUBLIC = "public"
-LobbyPrivacy.INVISIBLE = "invisible"
-LobbyComparison = LobbyComparison or {}
-LobbyComparison.EQUAL = "equal"
-LobbyComparison.NOT_EQUAL = "not_equal"
-LobbyComparison.LESS = "less"
-LobbyComparison.LESS_OR_EQUAL = "less_or_equal"
-LobbyComparison.GREATER = "greater"
-LobbyComparison.GREATER_OR_EQUAL = "greater_or_equal"
-LobbyDistanceFilter = LobbyDistanceFilter or {}
-LobbyDistanceFilter.CLOSE = "close"
-LobbyDistanceFilter.MEDIUM = "medium"
-LobbyDistanceFilter.FAR = "far"
-LobbyDistanceFilter.WORLD = "world"
 LobbyGameModes = {
 	"adventure",
 	"custom",
@@ -98,15 +81,32 @@ for idx, game_mode in pairs(LobbyGameModes) do
 end
 
 LobbyGameModes = lookup
+LobbyAux.map_lobby_distance_filter = (PLATFORM == "ps4" and {
+	"close",
+	"medium",
+	"world"
+}) or {
+	"close",
+	"far",
+	"world"
+}
+local next_distance = {}
 
-LobbyDistanceFilter.get_next = function (current_filter, max_filter)
-	if current_filter == LobbyDistanceFilter.CLOSE and max_filter ~= LobbyDistanceFilter.CLOSE then
-		return LobbyDistanceFilter.MEDIUM
-	elseif current_filter == LobbyDistanceFilter.MEDIUM and max_filter ~= LobbyDistanceFilter.MEDIUM then
-		return LobbyDistanceFilter.FAR
-	elseif current_filter == LobbyDistanceFilter.FAR and max_filter ~= LobbyDistanceFilter.FAR then
-		return LobbyDistanceFilter.WORLD
+for i = 1, #LobbyAux.map_lobby_distance_filter, 1 do
+	local filter_name = LobbyAux.map_lobby_distance_filter[i]
+	next_distance[filter_name] = LobbyAux.map_lobby_distance_filter[i + 1]
+end
+
+LobbyAux.next_distance_filter = next_distance
+
+LobbyAux.get_next_lobby_distance_filter = function (current_filter, max_filter)
+	if current_filter == max_filter then
+		return
 	end
+
+	local next_filter_name = LobbyAux.next_distance_filter[current_filter]
+
+	return next_filter_name
 end
 
 LobbyAux.get_unique_server_name = function ()

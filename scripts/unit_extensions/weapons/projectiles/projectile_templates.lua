@@ -67,6 +67,8 @@ ProjectileTemplates.impact_templates = {
 					return true
 				end
 
+				Unit.set_local_position(unit, 0, first_hit_position)
+
 				local ai_base_extension = ScriptUnit.has_extension(owner_unit, "ai_system")
 
 				if ai_base_extension then
@@ -108,6 +110,81 @@ ProjectileTemplates.impact_templates = {
 		},
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				Unit.set_unit_visibility(unit, false)
+				Unit.flow_event(unit, "lua_projectile_impact")
+
+				return true
+			end
+		}
+	},
+	vs_globadier_impact = {
+		server = {
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				local first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
+				local unit_id = Managers.state.unit_storage:go_id(unit)
+
+				Managers.state.network.network_transmit:send_rpc_all("rpc_area_damage", unit_id, first_hit_position)
+
+				if not Unit.alive(owner_unit) then
+					return true
+				end
+
+				Unit.set_local_position(unit, 0, first_hit_position)
+
+				local ai_base_extension = ScriptUnit.has_extension(owner_unit, "ai_system")
+
+				if ai_base_extension then
+					local blackboard = ai_base_extension:blackboard()
+					blackboard.explosion_impact = true
+				end
+
+				if AiUtils.unit_alive(owner_unit) then
+					local players_inside = 0
+					local area_damage_position = POSITION_LOOKUP[unit]
+
+					for _, player in pairs(Managers.player:human_players()) do
+						local player_unit = player.player_unit
+
+						if player_unit ~= nil then
+							local unit_position = POSITION_LOOKUP[player_unit]
+							local distance_sq = Vector3.distance_squared(unit_position, area_damage_position)
+							local is_inside_radius = distance_sq < 9
+
+							if is_inside_radius then
+								players_inside = players_inside + 1
+							end
+						end
+					end
+
+					local dialogue_extension = ScriptUnit.has_extension(owner_unit, "dialogue_system")
+
+					if dialogue_extension then
+						local dialogue_input = dialogue_extension.input
+						local event_data = FrameTable.alloc_table()
+						event_data.num_units = players_inside
+
+						dialogue_input:trigger_dialogue_event("pwg_projectile_hit", event_data)
+					end
+				end
+
+				return true
+			end
+		},
+		client = {
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				local is_player_unit = DamageUtils.is_player_unit(owner_unit)
+
+				if is_player_unit then
+					local owner_player = Managers.player:owner(owner_unit)
+					local owner_is_local = owner_player and owner_player.local_player
+
+					if owner_is_local then
+						local wwise_world = Managers.world:wwise_world(world)
+
+						WwiseWorld.trigger_event(wwise_world, "player_versus_globadier_fps_globe_impact")
+					end
+				end
+
 				Unit.set_unit_visibility(unit, false)
 				Unit.flow_event(unit, "lua_projectile_impact")
 

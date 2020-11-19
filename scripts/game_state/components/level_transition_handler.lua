@@ -89,11 +89,14 @@ LevelTransitionHandler.load_level = function (self, level_key, environment_varia
 
 	local level_settings = LevelSettings[level_key]
 	local level_package_name = level_settings.package_name
+	local meta_package_name = level_settings.meta_package_name
+	local package_manager = Managers.package
 
-	if self.level_key ~= level_key or self.environment_variation_id ~= environment_variation_id or (not Managers.package:has_loaded(level_package_name, "LevelTransitionHandler") and not Managers.package:is_loading(level_package_name)) then
+	if self.level_key ~= level_key or self.environment_variation_id ~= environment_variation_id or (not package_manager:has_loaded(level_package_name, "LevelTransitionHandler") and not package_manager:is_loading(level_package_name) and (not meta_package_name or (not package_manager:has_loaded(meta_package_name, "LevelTransitionHandler") and not package_manager:is_loading(meta_package_name)))) then
 		self:_load_dlc_level_packages(level_key)
 		self:_load_nested_level_packages(level_key)
 		self:_load_umbra_tome_package(level_key)
+		self:_load_meta_package(level_key)
 
 		self.last_level_key = self.level_key
 		self.level_key = level_key
@@ -101,12 +104,12 @@ LevelTransitionHandler.load_level = function (self, level_key, environment_varia
 		self.level_name = level_settings.level_name
 
 		Print("Loading level: %q", self.level_key)
-		Print("Package name : %q", level_package_name)
+		Print("Package name: %q Meta package name: %q", level_package_name, meta_package_name)
 
 		self.picked_level_key = nil
 		self.loading_packages[level_key] = level_package_name
 
-		Managers.package:load(level_package_name, "LevelTransitionHandler", nil, true)
+		package_manager:load(level_package_name, "LevelTransitionHandler", nil, true)
 
 		self.has_loaded_all_packages = false
 	else
@@ -131,6 +134,7 @@ LevelTransitionHandler.release_level_resources = function (self, level_key)
 			self.environment_variation_id = nil
 		end
 
+		self:_unload_meta_packages(level_key)
 		self:_unload_dlc_level_packages(level_key)
 		self:_unload_nested_level_packages(level_key)
 		self:_unload_umbra_tome_package(level_key)
@@ -233,7 +237,7 @@ LevelTransitionHandler.update = function (self)
 		if package_manager:has_loaded(level_package_name) then
 			self.loaded_levels[level_name] = true
 
-			if self:_dlc_level_packages_loaded(level_name) and self:_nested_level_packages_loaded(level_name) and self:_umbra_tome_package_loaded(level_name) then
+			if self:_meta_package_loaded(level_name) and self:_dlc_level_packages_loaded(level_name) and self:_nested_level_packages_loaded(level_name) and self:_umbra_tome_package_loaded(level_name) then
 				self.loading_packages[level_name] = nil
 			end
 		end
@@ -261,7 +265,7 @@ LevelTransitionHandler.prepare_load_level = function (self, level_index, level_s
 	end
 end
 
-LevelTransitionHandler.rpc_reload_level = function (self, sender, level_seed, locked_director_functions_ids)
+LevelTransitionHandler.rpc_reload_level = function (self, channel_id, level_seed, locked_director_functions_ids)
 	self:reload_level()
 	printf("[LevelTransitionHandler] rpc_reload_level : %s seed: %i environment %i. Same level as previously, NOT resetting package load status.", self.level_key, level_seed or -1, self.environment_variation_id or 0)
 	print("[LevelTransitionHandler] Setting level_seed: ", level_seed)
@@ -425,6 +429,55 @@ LevelTransitionHandler._umbra_tome_package_loaded = function (self, level_key)
 	end
 
 	return true
+end
+
+LevelTransitionHandler._load_meta_package = function (self, level_key)
+	local settings = LevelSettings[level_key]
+	local meta_package_name = settings.meta_package_name
+
+	if not meta_package_name then
+		return
+	end
+
+	local async = true
+	local package_manager = Managers.package
+	local reference_name = "LevelTransitionHandler"
+
+	package_manager:load(meta_package_name, reference_name, nil, async)
+end
+
+LevelTransitionHandler._meta_package_loaded = function (self, level_key)
+	local settings = LevelSettings[level_key]
+	local meta_package_name = settings.meta_package_name
+
+	if not meta_package_name then
+		return true
+	end
+
+	local reference_name = "LevelTransitionHandler"
+	local package_manager = Managers.package
+
+	if not package_manager:has_loaded(meta_package_name, reference_name) then
+		return false
+	end
+
+	return true
+end
+
+LevelTransitionHandler._unload_meta_packages = function (self, level_key)
+	local settings = LevelSettings[level_key]
+	local meta_package_name = settings.meta_package_name
+
+	if not meta_package_name then
+		return
+	end
+
+	local reference_name = "LevelTransitionHandler"
+	local package_manager = Managers.package
+
+	if package_manager:has_loaded(meta_package_name, reference_name) or package_manager:is_loading(meta_package_name) then
+		package_manager:unload(meta_package_name, reference_name)
+	end
 end
 
 LevelTransitionHandler._update_debug = function (self)

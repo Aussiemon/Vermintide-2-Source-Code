@@ -1,6 +1,6 @@
 GameModeBase = class(GameModeBase)
 
-GameModeBase.init = function (self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer, level_key, statistics_db)
+GameModeBase.init = function (self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
 	self._network_server = network_server
 	self._settings = settings
 	self._world = world
@@ -28,14 +28,6 @@ end
 
 GameModeBase.destroy = function (self)
 	return
-end
-
-GameModeBase.add_hud_components = function (self, ingame_hud)
-	local hud_components = self._settings.hud_components
-
-	if hud_components then
-		ingame_hud:add_components(hud_components)
-	end
 end
 
 GameModeBase.cleanup_game_mode_units = function (self)
@@ -92,7 +84,7 @@ GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career
 	local bot_player = Managers.player:add_bot_player(profile.display_name, local_peer_id, "default", profile_index, career_index, local_player_id)
 
 	bot_player:create_game_object()
-	self._profile_synchronizer:select_profile(local_peer_id, local_player_id, profile_index, career_index)
+	self._profile_synchronizer:select_profile(local_peer_id, local_player_id, profile_index, career_index, is_bot)
 
 	local event_manager = Managers.state.event
 
@@ -205,10 +197,6 @@ GameModeBase.ready_to_transition = function (self)
 	self._level_transition_handler:level_completed()
 end
 
-GameModeBase.object_sets = function (self)
-	return self._settings.object_sets
-end
-
 GameModeBase.wanted_transition = function (self)
 	return
 end
@@ -237,11 +225,11 @@ GameModeBase.ready_to_spawn = function (self, status)
 	return
 end
 
-GameModeBase.player_entered_game_session = function (self, peer_id, local_player_id)
+GameModeBase.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
 	local player_spawners = self._player_spawners
 
 	for i = 1, #player_spawners, 1 do
-		player_spawners[i]:player_entered_game_session(peer_id, local_player_id)
+		player_spawners[i]:player_entered_game_session(peer_id, local_player_id, wanted_party_index)
 	end
 end
 
@@ -282,6 +270,12 @@ GameModeBase.change_game_mode_state = function (self, state_name)
 
 	if self._is_server then
 		Managers.state.game_mode:change_game_mode_state(state_name)
+
+		if self._lobby_host then
+			self._lobby_host:set_lobby_data({
+				game_state = state_name
+			})
+		end
 	end
 end
 
@@ -306,6 +300,10 @@ GameModeBase.respawn_unit_spawned = function (self, unit)
 end
 
 GameModeBase.flow_callback_add_spawn_point = function (self, unit)
+	return
+end
+
+GameModeBase.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)
 	return
 end
 
@@ -447,6 +445,10 @@ end
 
 GameModeBase.local_player_game_starts = function (self, player, loading_context)
 	return
+end
+
+GameModeBase.is_about_to_lose = function (self)
+	return self.about_to_lose
 end
 
 return

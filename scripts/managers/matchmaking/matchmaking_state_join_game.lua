@@ -29,14 +29,13 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 	self._lobby_data.selected_level_key = self._join_lobby_data.selected_level_key
 	self._lobby_data.difficulty = self._join_lobby_data.difficulty
 
-	if Managers.mechanism:current_mechanism_name() == "adventure" then
+	if Managers.mechanism:mechanism_setting("check_matchmaking_hero_availability") then
 		local matchmaking_manager = self._matchmaking_manager
 		local hero_index, hero_name = self:_current_hero()
 
 		fassert(hero_index, "no hero index? this is wrong")
 
 		if matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) then
-			local hero = SPProfiles[hero_index]
 			self._selected_hero_name = hero_name
 
 			self:_request_profile_from_host(hero_index)
@@ -179,6 +178,8 @@ MatchmakingStateJoinGame._update_lobby_data = function (self, dt, t)
 		end
 
 		local difficulty = lobby_client:lobby_data("difficulty")
+		local difficulty_tweak = lobby_client:lobby_data("difficulty_tweak")
+		lobby_data.difficulty_tweak = difficulty_tweak
 
 		if lobby_data.difficulty ~= difficulty then
 			lobby_data.difficulty = difficulty
@@ -229,7 +230,7 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 	return cancel
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_update_profiles_data = function (self, sender, client_cookie, host_cookie, profile_array, player_id_array)
+MatchmakingStateJoinGame.rpc_matchmaking_update_profiles_data = function (self, channel_id, client_cookie, host_cookie, profile_array, player_id_array)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -249,8 +250,10 @@ end
 
 MatchmakingStateJoinGame.get_transition = function (self)
 	if self._join_lobby_data and self._next_transition_state then
+		local join_method = self._join_lobby_data.join_method or (self.search_config and self.search_config.join_method)
 		local start_lobby_data = {
-			lobby_client = self.lobby_client
+			lobby_client = self.lobby_client,
+			join_method = join_method
 		}
 
 		return self._next_transition_state, start_lobby_data
@@ -330,7 +333,7 @@ MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index
 	self._matchmaking_manager.debug.level = lobby_client:lobby_data("selected_level_key")
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, sender, client_cookie, host_cookie, profile, reply)
+MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, client_cookie, host_cookie, profile, reply)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -386,7 +389,7 @@ MatchmakingStateJoinGame.loading_context = function (self)
 	return self._matchmaking_loading_context
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_join_game = function (self, sender, client_cookie, host_cookie)
+MatchmakingStateJoinGame.rpc_matchmaking_join_game = function (self, channel_id, client_cookie, host_cookie)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end

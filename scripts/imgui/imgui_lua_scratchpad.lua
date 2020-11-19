@@ -56,6 +56,7 @@ ImguiLuaScratchpad.init = function (self)
 	self._expr = ""
 	self._thunk, self._error, self._val = nil
 	self._func_info_magic = setmetatable({}, magic_mt)
+	self._is_persistent = false
 end
 
 ImguiLuaScratchpad.update = function (self)
@@ -64,6 +65,10 @@ end
 
 ImguiLuaScratchpad.draw = function (self)
 	Imgui.begin_window("Lua Scratchpad")
+
+	self._is_persistent = Imgui.checkbox("Is persistent", self._is_persistent)
+
+	Imgui.same_line()
 
 	if Imgui.button("Execute") and self:_load_expression() then
 		self:_execute_thunk()
@@ -106,15 +111,36 @@ ImguiLuaScratchpad._inspect_pair = function (self, k, v)
 	Imgui.text_colored(string.format("%s", v), unpack(self._TYPE_TO_COLOR[t]))
 end
 
+local has_ffi, ffi, shell32 = pcall(require, "ffi")
+
+if has_ffi then
+	has_ffi, shell32 = pcall(ffi.load, "shell32")
+
+	ffi.cdef(" void *ShellExecuteA(void*, const char*, const char*, const char*, const char*, int); ")
+end
+
 ImguiLuaScratchpad._inspect_function = function (self, name, func)
 	local info = self._func_info_magic[func]
 
 	Imgui.text_colored(string.format("function %s()", name), unpack(self._TYPE_TO_COLOR.function))
 	Imgui.same_line()
 
-	local where = (info.source and string.format("%s:%s", info.source, info.linedefined)) or string.format("0x%012x", info.addr)
+	local is_file_func = info.source and not string.find(info.source, "\n")
+	local where = (is_file_func and string.format("%s:%s", info.source, info.linedefined)) or (info.addr and string.format("0x%012x", info.addr)) or "<unknown origin>"
 
 	Imgui.text_colored(where, unpack(fallback_color))
+
+	if has_ffi and is_file_func then
+		Imgui.same_line()
+
+		if Imgui.small_button("Open##" .. info.source) then
+			local base_path = script_data.source_dir
+			local path = base_path .. info.source:gsub("^@", "\\"):gsub("/", "\\")
+
+			printf("Opening %q", path)
+			print(shell32.ShellExecuteA(nil, "open", path, nil, base_path, 10))
+		end
+	end
 end
 
 ImguiLuaScratchpad._inspect_table = function (self, name, tab)
@@ -134,7 +160,11 @@ ImguiLuaScratchpad._inspect_table = function (self, name, tab)
 end
 
 ImguiLuaScratchpad._load_expression = function (self)
-	self._thunk, self._error = loadstring(self._expr, "Input")
+	self._thunk, self._error = loadstring("return " .. self._expr, "Input")
+
+	if not self._thunk then
+		self._thunk, self._error = loadstring(self._expr, "Input")
+	end
 
 	return self._thunk ~= nil
 end
@@ -202,7 +232,7 @@ ImguiLuaScratchpad._execute_thunk = function (self)
 end
 
 ImguiLuaScratchpad.is_persistent = function (self)
-	return false
+	return self._is_persistent
 end
 
 return

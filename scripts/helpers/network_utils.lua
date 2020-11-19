@@ -42,7 +42,7 @@ NetworkUtils = {
 		return Vector3.clamp(pos, pos_min, pos_max)
 	end,
 	get_user_name = function (peer_id, lobby)
-		if PLATFORM ~= "win32" then
+		if PLATFORM == "xb1" or PLATFORM == "ps4" then
 			if lobby:has_user_name(peer_id) then
 				return lobby:user_name(peer_id)
 			else

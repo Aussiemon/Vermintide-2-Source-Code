@@ -122,7 +122,7 @@ local talent_buff_templates = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing"
 			}
 		}
@@ -148,7 +148,7 @@ local talent_buff_templates = {
 	markus_questing_knight_crit_can_insta_kill = {
 		buffs = {
 			{
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				name = "markus_questing_knight_crit_can_insta_kill",
 				event_buff = true,
 				buff_func = "check_for_instantly_killing_crit"
@@ -292,21 +292,19 @@ local talents = {
 	{
 		description = "vanguard_desc",
 		name = "markus_questing_knight_vanguard",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_vanguard",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_vanguard"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "markus_questing_knight_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_bloodlust_2",
 		description_values = {
 			{
@@ -314,17 +312,15 @@ local talents = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "markus_questing_knight_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_heal_share",
 		description_values = {
 			{
@@ -332,17 +328,15 @@ local talents = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_kills_buff_power_stacking_desc",
 		name = "markus_questing_knight_kills_buff_power_stacking",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_kills_buff_power_stacking",
 		description_values = {
 			{
@@ -356,34 +350,30 @@ local talents = {
 				value = buff_tweak_data.markus_questing_knight_kills_buff_power_stacking_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_kills_buff_power_stacking"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_crit_can_insta_kill_desc",
 		name = "markus_questing_knight_crit_can_insta_kill",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_crit_can_insta_kill",
 		description_values = {
 			{
 				value = buff_tweak_data.markus_questing_knight_crit_can_insta_kill.damage_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_crit_can_insta_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_charged_attacks_increased_power_desc",
 		name = "markus_questing_knight_charged_attacks_increased_power",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_charged_attacks_increased_power",
 		description_values = {
 			{
@@ -391,17 +381,15 @@ local talents = {
 				value = buff_tweak_data.markus_questing_knight_charged_attacks_increased_power.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_charged_attacks_increased_power"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "tank_unbalance_desc",
 		name = "markus_questing_knight_tank_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_tank_unbalance",
 		description_values = {
 			{
@@ -420,17 +408,15 @@ local talents = {
 				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"tank_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "markus_questing_knight_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_smiter_unbalance",
 		description_values = {
 			{
@@ -442,17 +428,15 @@ local talents = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "markus_questing_knight_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "markus_questing_knight_power_level_unbalance",
 		description_values = {
 			{
@@ -460,29 +444,23 @@ local talents = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_passive_additional_quest_desc",
 		name = "markus_questing_knight_passive_additional_quest",
 		num_ranks = 1,
 		icon = "markus_questing_knight_passive_additional_quest",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "markus_questing_knight_passive_side_quest_desc",
 		name = "markus_questing_knight_passive_side_quest",
 		num_ranks = 1,
 		icon = "markus_questing_knight_passive_side_quest",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "markus_questing_knight_passive_improved_reward_desc",
@@ -495,15 +473,13 @@ local talents = {
 				value = buff_tweak_data.markus_questing_knight_passive_improved_reward.display_multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "markus_questing_knight_health_refund_over_time_desc",
 		name = "markus_questing_knight_health_refund_over_time",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "markus_questing_knight_health_refund_over_time",
 		description_values = {
 			{
@@ -514,17 +490,15 @@ local talents = {
 				value = buff_tweak_data.markus_questing_knight_health_refund_over_time_delayed_heal.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_health_refund_over_time"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_parry_increased_power_desc",
 		name = "markus_questing_knight_parry_increased_power",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "markus_questing_knight_parry_increased_power",
 		description_values = {
 			{
@@ -535,11 +509,9 @@ local talents = {
 				value = buff_tweak_data.markus_questing_knight_parry_increased_power_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_parry_increased_power"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_push_arc_stamina_reg_desc",
@@ -552,21 +524,17 @@ local talents = {
 				value = buff_tweak_data.markus_questing_knight_push_arc.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_push_arc",
 			"markus_questing_knight_stamina_reg"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_ability_double_activation_desc",
 		name = "markus_questing_knight_ability_double_activation",
 		num_ranks = 1,
 		icon = "markus_questing_knight_ability_double_activation",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "markus_questing_knight_ability_buff_on_kill_desc",
@@ -582,20 +550,16 @@ local talents = {
 				value = buff_tweak_data.markus_questing_knight_ability_buff_on_kill_movement_speed.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"markus_questing_knight_ability_buff_on_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "markus_questing_knight_ability_tank_attack_desc",
 		name = "markus_questing_knight_ability_tank_attack",
 		num_ranks = 1,
 		icon = "markus_questing_knight_ability_tank_attack",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	}
 }
 local hero_name = "empire_soldier"

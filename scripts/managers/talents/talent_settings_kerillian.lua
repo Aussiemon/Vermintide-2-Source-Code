@@ -260,14 +260,13 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				apply_buff_func = "apply_shade_activated_ability",
-				name = "kerillian_shade_activated_ability",
 				remove_buff_func = "end_shade_activated_ability",
+				name = "kerillian_shade_activated_ability",
+				refresh_durations = true,
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "passive_bonus_kerillian_shade",
-				dormant = true,
-				refresh_durations = true
+				apply_buff_func = "apply_shade_activated_ability"
 			}
 		}
 	},
@@ -290,7 +289,7 @@ TalentBuffTemplates.wood_elf = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -337,8 +336,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				refresh_durations = true,
 				icon = "kerillian_shade_stacking_headshot_damage_on_headshot",
-				stat_buff = "headshot_multiplier",
-				dormant = true
+				stat_buff = "headshot_multiplier"
 			}
 		}
 	},
@@ -376,14 +374,13 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				apply_buff_func = "apply_shade_activated_ability",
-				name = "kerillian_shade_activated_ability_short",
 				remove_buff_func = "end_shade_activated_ability_short",
+				name = "kerillian_shade_activated_ability_short",
+				refresh_durations = true,
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "kerillian_shade_passive_stealth_on_backstab_kill",
-				dormant = true,
-				refresh_durations = true
+				apply_buff_func = "apply_shade_activated_ability"
 			}
 		}
 	},
@@ -413,7 +410,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				remove_buff_func = "remove_movement_buff",
 				refresh_durations = true,
-				dormant = true,
 				max_stacks = 1,
 				icon = "kerillian_shade_movement_speed_on_critical_hit",
 				apply_buff_func = "apply_movement_buff",
@@ -436,11 +432,10 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_damage_reduction_on_critical_hit_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				stat_buff = "damage_taken",
 				max_stacks = 1,
 				icon = "kerillian_shade_damage_reduction_on_critical_hit",
-				dormant = true
+				stat_buff = "damage_taken",
+				refresh_durations = true
 			}
 		}
 	},
@@ -448,15 +443,14 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				icon = "passive_bonus_kerillian_shade",
-				name = "kerillian_shade_activated_ability",
-				apply_buff_func = "apply_shade_activated_ability",
-				refresh_durations = true,
 				remove_buff_func = "end_shade_activated_ability",
-				dormant = true,
+				name = "kerillian_shade_activated_ability",
+				perk = "guaranteed_crit",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				perk = "guaranteed_crit"
+				icon = "passive_bonus_kerillian_shade",
+				apply_buff_func = "apply_shade_activated_ability",
+				refresh_durations = true
 			}
 		}
 	},
@@ -596,7 +590,7 @@ TalentBuffTemplates.wood_elf = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -610,7 +604,7 @@ TalentBuffTemplates.wood_elf = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -637,7 +631,6 @@ TalentBuffTemplates.wood_elf = {
 				buff_func = "maidenguard_reset_unharmed_buff",
 				event = "on_damage_taken",
 				icon = "kerillian_maidenguard_power_level_on_unharmed",
-				dormant = true,
 				max_stacks = 1
 			}
 		}
@@ -758,17 +751,15 @@ TalentBuffTemplates.wood_elf = {
 				refresh_durations = true,
 				stat_buff = "power_level",
 				max_stacks = 1,
-				duration = 2,
-				dormant = true
+				duration = 2
 			}
 		}
 	},
 	kerillian_maidenguard_cooldown_on_nearby_allies_buff = {
 		buffs = {
 			{
-				dormant = true,
-				icon = "kerillian_maidenguard_cooldown_on_nearby_allies",
-				stat_buff = "cooldown_regen"
+				stat_buff = "cooldown_regen",
+				icon = "kerillian_maidenguard_cooldown_on_nearby_allies"
 			}
 		}
 	},
@@ -785,10 +776,9 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_passive_attack_speed_on_dodge_buff = {
 		buffs = {
 			{
-				dormant = true,
+				refresh_durations = true,
 				icon = "kerillian_maidenguard_passive_attack_speed_on_dodge",
-				stat_buff = "attack_speed",
-				refresh_durations = true
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -889,8 +879,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				icon = "kerillian_maidenguard_activated_ability_buff_on_enemy_hit",
 				refresh_durations = true,
-				stat_buff = "critical_strike_chance",
-				dormant = true
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
@@ -991,7 +980,7 @@ TalentBuffTemplates.wood_elf = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -1055,11 +1044,10 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_attack_speed_on_ranged_headshot_buff = {
 		buffs = {
 			{
+				max_stacks = 1,
 				icon = "kerillian_waywatcher_attack_speed_on_ranged_headshot",
 				stat_buff = "attack_speed",
-				max_stacks = 1,
-				refresh_durations = true,
-				dormant = true
+				refresh_durations = true
 			}
 		}
 	},
@@ -1077,7 +1065,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				remove_buff_func = "remove_movement_buff",
-				dormant = true,
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "kerillian_waywatcher_movement_speed_on_special_kill",
@@ -1227,25 +1214,23 @@ Talents.wood_elf = {
 	{
 		description = "regrowth_desc_3",
 		name = "kerillian_shade_regrowth_2",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_shade_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.regrowth.buffs[1].bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_regrowth"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "kerillian_shade_bloodlust",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_bloodlust",
 		description_values = {
 			{
@@ -1253,17 +1238,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "kerillian_shade_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_conqueror",
 		description_values = {
 			{
@@ -1271,17 +1254,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy_desc",
 		name = "kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy",
 		description_values = {
 			{
@@ -1289,17 +1270,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_increased_critical_strike_damage_desc",
 		name = "kerillian_shade_increased_critical_strike_damage",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_increased_critical_strike_damage",
 		description_values = {
 			{
@@ -1307,17 +1286,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_increased_critical_strike_damage.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_increased_critical_strike_damage"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_stacking_headshot_damage_on_headshot_desc",
 		name = "kerillian_shade_stacking_headshot_damage_on_headshot",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_stacking_headshot_damage_on_headshot",
 		description_values = {
 			{
@@ -1331,17 +1308,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_stacking_headshot_damage_on_headshot_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_stacking_headshot_damage_on_headshot"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_passive_improved_desc",
 		name = "kerillian_shade_passive_improved",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_shade_passive_improved",
 		description_values = {
 			{
@@ -1349,11 +1324,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_passive_improved.bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_passive_improved"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_passive_stealth_on_backstab_kill_desc",
@@ -1365,14 +1338,12 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_passive_stealth_on_backstab_kill_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_passive_stealth_on_backstab_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
-		description = "kerillian_shade_backstabs_replenishes_ammunition_desc",
+		description = "kerillian_shade_backstabs_replenishes_ammunition_desc_2",
 		name = "kerillian_shade_backstabs_replenishes_ammunition",
 		num_ranks = 1,
 		icon = "kerillian_shade_backstabs_replenishes_ammunition",
@@ -1384,11 +1355,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_backstabs_replenishes_ammunition_cooldown.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_backstabs_replenishes_ammunition"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_movement_speed_desc",
@@ -1401,11 +1370,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_movement_speed.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_movement_speed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_movement_speed_on_critical_hit_desc",
@@ -1421,17 +1388,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_movement_speed_on_critical_hit_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_movement_speed_on_critical_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_damage_reduction_on_critical_hit_desc",
 		name = "kerillian_shade_damage_reduction_on_critical_hit",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_damage_reduction_on_critical_hit",
 		description_values = {
 			{
@@ -1442,11 +1407,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_damage_reduction_on_critical_hit_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_damage_reduction_on_critical_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_activated_ability_quick_cooldown_desc_2",
@@ -1466,11 +1429,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_shade_activated_ability_quick_cooldown_crit.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_shade_activated_ability_quick_cooldown_buff"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_shade_activated_ability_dash_desc",
@@ -1478,9 +1439,7 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		icon = "kerillian_shade_activated_ability_dash",
 		description_values = {},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "kerillian_shade_activated_ability_restealth_desc",
@@ -1488,15 +1447,13 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		icon = "kerillian_shade_activated_ability_restealth",
 		description_values = {},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "kerillian_shade_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_smiter_unbalance",
 		description_values = {
 			{
@@ -1508,17 +1465,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "finesse_unbalance_desc",
 		name = "kerillian_shade_finesse_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_ninja_unbalance",
 		description_values = {
 			{
@@ -1530,17 +1485,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.finesse_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"finesse_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "kerillian_shade_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_shade_power_level_unbalance",
 		description_values = {
 			{
@@ -1548,34 +1501,30 @@ Talents.wood_elf = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "reaper_desc",
 		name = "kerillian_maidenguard_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "kerillian_maidenguard_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_bloodlust",
 		description_values = {
 			{
@@ -1583,17 +1532,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "kerillian_maidenguard_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_conqueror",
 		description_values = {
 			{
@@ -1601,17 +1548,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_power_level_on_unharmed_desc",
 		name = "kerillian_maidenguard_power_level_on_unharmed",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_power_level_on_unharmed",
 		description_values = {
 			{
@@ -1622,17 +1567,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_power_level_on_unharmed.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_power_level_on_unharmed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_crit_chance_desc",
 		name = "kerillian_maidenguard_crit_chance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_crit_chance",
 		description_values = {
 			{
@@ -1640,17 +1583,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_crit_chance.bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_crit_chance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_versatile_dodge_desc",
 		name = "kerillian_maidenguard_versatile_dodge",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_cooldown_on_nearby_allies",
 		description_values = {
 			{
@@ -1662,11 +1603,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_power_on_dodge.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_versatile_dodge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_passive_attack_speed_on_dodge_desc",
@@ -1685,17 +1624,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_passive_attack_speed_on_dodge_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_passive_attack_speed_on_dodge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_speed_on_block_desc",
 		name = "kerillian_maidenguard_speed_on_block",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_improved_dodge",
 		description_values = {
 			{
@@ -1707,13 +1644,11 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_power_on_block_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_speed_on_block",
 			"kerillian_maidenguard_speed_on_push",
 			"kerillian_maidenguard_power_on_blocked_attacks_remove_damage"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_passive_noclip_dodge_desc",
@@ -1721,12 +1656,10 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		icon = "kerillian_maidenguard_passive_noclip_dodge",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_passive_noclip_dodge_start",
 			"kerillian_maidenguard_passive_noclip_dodge_end"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_max_ammo_desc",
@@ -1739,17 +1672,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_max_ammo.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_max_ammo"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_max_health_desc",
 		name = "kerillian_maidenguard_max_health",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_max_stamina",
 		description_values = {
 			{
@@ -1757,11 +1688,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_max_health.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_max_health"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_block_cost_desc",
@@ -1774,11 +1703,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_block_cost.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_block_cost"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_maidenguard_activated_ability_invis_duration_desc",
@@ -1790,26 +1717,22 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_activated_ability_invis_duration.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "kerillian_maidenguard_activated_ability_damage_desc_2",
 		name = "kerillian_maidenguard_activated_ability_damage",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_activated_ability_damage",
 		description_values = {},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "kerillian_maidenguard_activated_ability_buff_on_enemy_hit_desc",
 		name = "kerillian_maidenguard_activated_ability_buff_on_enemy_hit",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_activated_ability_buff_on_enemy_hit",
 		description_values = {
 			{
@@ -1823,17 +1746,15 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_maidenguard_activated_ability_crit_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_activated_ability_buff_on_enemy_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "kerillian_maidenguard_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_smiter_unbalance",
 		description_values = {
 			{
@@ -1845,17 +1766,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "kerillian_maidenguard_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_linesman_unbalance",
 		description_values = {
 			{
@@ -1867,17 +1786,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "kerillian_maidenguard_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_maidenguard_power_level_unbalance",
 		description_values = {
 			{
@@ -1885,51 +1802,45 @@ Talents.wood_elf = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "regrowth_desc_3",
 		name = "kerillian_waywatcher_regrowth_2",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_waywatcher_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.regrowth.buffs[1].bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_regrowth"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "reaper_desc",
 		name = "kerillian_waywatcher_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_waywatcher_bloodlust",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "kerillian_waywatcher_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_waywatcher_conqueror",
 		description_values = {
 			{
@@ -1937,11 +1848,9 @@ Talents.wood_elf = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_extra_arrow_melee_kill_desc",
@@ -1953,24 +1862,20 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_waywatcher_extra_arrow_melee_kill_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_extra_arrow_melee_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_critical_bleed_desc",
 		name = "kerillian_waywatcher_critical_bleed",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_waywatcher_critical_bleed",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_critical_bleed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_attack_speed_on_ranged_headshot_desc",
@@ -1986,11 +1891,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_waywatcher_attack_speed_on_ranged_headshot_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_attack_speed_on_ranged_headshot"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_improved_regen_desc_2",
@@ -2003,18 +1906,14 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_waywatcher_improved_regen.display_multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "kerillian_waywatcher_group_regen_desc_2",
 		name = "kerillian_waywatcher_group_regen",
 		num_ranks = 1,
 		icon = "kerillian_waywatcher_group_regen",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "kerillian_waywatcher_passive_cooldown_restore_desc",
@@ -2027,9 +1926,7 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_waywatcher_passive_cooldown_restore.display_multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "kerillian_waywatcher_movement_speed_on_special_kill_desc",
@@ -2045,11 +1942,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_waywatcher_movement_speed_on_special_kill_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_movement_speed_on_special_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_activated_ability_cooldown_desc",
@@ -2062,28 +1957,24 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_waywatcher_activated_ability_cooldown.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_activated_ability_cooldown"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_projectile_ricochet_desc",
 		name = "kerillian_waywatcher_projectile_ricochet",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "kerillian_waywatcher_projectile_ricochet",
 		description_values = {
 			{
 				value = buff_tweak_data.kerillian_waywatcher_projectile_ricochet.bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_projectile_ricochet"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_activated_ability_restore_ammo_on_career_skill_special_kill_desc",
@@ -2096,11 +1987,9 @@ Talents.wood_elf = {
 				value = buff_tweak_data.kerillian_waywatcher_activated_ability_restore_ammo_on_career_skill_special_kill.ammo_bonus_fraction
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_activated_ability_restore_ammo_on_career_skill_special_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_waywatcher_activated_ability_additional_projectile_desc",
@@ -2108,33 +1997,29 @@ Talents.wood_elf = {
 		num_ranks = 1,
 		icon = "kerillian_waywatcher_activated_ability_additional_projectile",
 		description_values = {},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "kerillian_waywatcher_activated_ability_piercing_shot_desc",
 		name = "kerillian_waywatcher_activated_ability_piercing_shot",
-		talent_weapon_index = 2,
 		num_ranks = 1,
 		icon = "kerillian_waywatcher_activated_ability_piercing_shot",
+		talent_career_skill_index = 2,
 		description_values = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.kerillian_waywatcher_activated_ability_piercing_shot.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"kerillian_waywatcher_activated_ability_piercing_shot"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "kerillian_waystalker_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_waystalker_linesman_unbalance",
 		description_values = {
 			{
@@ -2146,17 +2031,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "finesse_unbalance_desc",
 		name = "kerillian_waystalker_finesse_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_waystalker_ninja_unbalance",
 		description_values = {
 			{
@@ -2168,17 +2051,15 @@ Talents.wood_elf = {
 				value = BuffTemplates.finesse_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"finesse_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "kerillian_waystalker_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "kerillian_waystalker_power_level_unbalance",
 		description_values = {
 			{
@@ -2186,17 +2067,14 @@ Talents.wood_elf = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "kerillian_placeholder",
 		name = "kerillian_placeholder"
-	},
-	buffer = "both"
+	}
 }
 
 for name, data in pairs(TalentBuffTemplates.wood_elf) do

@@ -1,4 +1,5 @@
 require("scripts/unit_extensions/weapons/actions/action_base")
+require("scripts/unit_extensions/weapons/actions/action_ranged_base")
 require("scripts/unit_extensions/weapons/actions/action_charge")
 require("scripts/unit_extensions/weapons/actions/action_dummy")
 require("scripts/unit_extensions/weapons/actions/action_inspect")
@@ -89,25 +90,12 @@ local action_classes = {
 	career_wh_two = ActionCareerWHBountyhunter
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local action_template_file_names = dlc.action_template_file_names
-
-	if action_template_file_names then
-		for i = 1, #action_template_file_names, 1 do
-			local action_template_file_name = action_template_file_names[i]
-
-			require(action_template_file_name)
-		end
+DLCUtils.require_list("action_template_file_names")
+DLCUtils.map("action_classes_lookup", function (action_classes_lookup)
+	for key, class_name in pairs(action_classes_lookup) do
+		action_classes[key] = _G[class_name]
 	end
-
-	local action_classes_lookup = dlc.action_classes_lookup
-
-	if action_classes_lookup then
-		for key, class_name in pairs(action_classes_lookup) do
-			action_classes[key] = _G[class_name]
-		end
-	end
-end
+end)
 
 local function create_attack(item_name, attack_kind, world, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	return action_classes[attack_kind]:new(world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -131,18 +119,33 @@ local function is_within_damage_window(current_time_in_action, action, owner_uni
 	return after_start and before_end
 end
 
+local function get_skin_action_override_data(skin_anim_data, action_settings)
+	if skin_anim_data then
+		local lookup_data = action_settings.lookup_data
+		local action_overrides = skin_anim_data[lookup_data.action_name]
+
+		return action_overrides and action_overrides[lookup_data.sub_action_name]
+	end
+
+	return nil
+end
+
 WeaponUnitExtension = class(WeaponUnitExtension)
 
 WeaponUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.weapon_system = extension_init_data.weapon_system
 	local world = extension_init_context.world
 	self.world = world
+	self.wwise_world = Managers.world:wwise_world(world)
 	self.unit = unit
 	local owner_unit = extension_init_data.owner_unit
 	self.owner_unit = owner_unit
 	self.item_name = extension_init_data.item_name
 	local first_person_unit = extension_init_data.first_person_rig
 	self.first_person_unit = first_person_unit
+	local weapon_skin_name = extension_init_data.skin_name
+	local weapon_skin_data = WeaponSkins.skins[weapon_skin_name]
+	self.weapon_skin_anim_overrides = weapon_skin_data and weapon_skin_data.action_anim_overrides
 	local actual_damage_unit = World.spawn_unit(world, "units/weapons/player/wpn_damage/wpn_damage")
 
 	Unit.disable_physics(actual_damage_unit)
@@ -178,12 +181,32 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 			request = {}
 		}
 	end
+
+	self.looping_audio_events = {}
+	self._custom_data = {}
+	local item_data = rawget(ItemMasterList, self.item_name)
+	local weapon_template_name = item_data and item_data.template
+
+	if weapon_template_name then
+		local template = Weapons[weapon_template_name]
+		local custom_data = template.custom_data
+
+		if custom_data then
+			for key, value in pairs(custom_data) do
+				self._custom_data[key] = value
+			end
+		end
+
+		self._weapon_update = template and template.update
+	end
+end
+
+WeaponUnitExtension.cb_game_session_disconnect = function (self)
+	self.sync_data_game_object_id = nil
 end
 
 WeaponUnitExtension.extensions_ready = function (self, world, unit)
-	if ScriptUnit.has_extension(unit, "ammo_system") then
-		self.ammo_extension = ScriptUnit.extension(unit, "ammo_system")
-	end
+	self.ammo_extension = ScriptUnit.has_extension(unit, "ammo_system")
 end
 
 WeaponUnitExtension.destroy = function (self)
@@ -200,6 +223,10 @@ WeaponUnitExtension.destroy = function (self)
 		if attack_prev.destroy then
 			attack_prev:destroy()
 		end
+	end
+
+	for id in pairs(self.looping_audio_events) do
+		self:stop_looping_audio(id)
 	end
 end
 
@@ -222,18 +249,20 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	local new_action = action_name
 	local new_sub_action = sub_action_name
 
+	if not self.player then
+		local player_manager = Managers.player
+		local player = player_manager:unit_owner(owner_unit)
+		self.is_bot = player and not player:is_player_controlled()
+		self.is_local = player and not player.remote
+		self.player = player
+	end
+
 	table.clear(interupting_action_data)
 
 	if new_action then
 		local action_settings = self:get_action(new_action, new_sub_action, actions)
+		action_settings, new_action, new_sub_action = ActionUtils.resolve_action_selector(action_settings, talent_extension, buff_extension, self)
 		local action_kind = action_settings.kind
-
-		if action_kind == "action_selector" then
-			new_action, new_sub_action = ActionUtils.resolve_action_selector(action_settings, talent_extension, buff_extension)
-			action_settings = self:get_action(new_action, new_sub_action, actions)
-			action_kind = action_settings.kind
-		end
-
 		self.actions[action_kind] = self.actions[action_kind] or create_attack(self.item_name, action_kind, self.world, self.is_server, owner_unit, self.actual_damage_unit, self.first_person_unit, self.unit, self.weapon_system)
 	end
 
@@ -273,7 +302,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	if new_action and current_action_settings then
 		interupting_action_data.new_action = new_action
 		interupting_action_data.new_sub_action = new_sub_action
-		interupting_action_data.action = self:get_action(new_action, new_sub_action, actions)
+		interupting_action_data.new_action_settings = self:get_action(new_action, new_sub_action, actions)
 		chain_action_data = self:_finish_action("new_interupting_action", interupting_action_data)
 	end
 
@@ -324,10 +353,12 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local action_kind = current_action_settings.kind
 		local action = self.actions[action_kind]
 		local time_to_complete = current_action_settings.total_time
-		time_to_complete = time_to_complete / ActionUtils.get_action_time_scale(owner_unit, current_action_settings)
-		local event = current_action_settings.anim_event
-		local event_3p = current_action_settings.anim_event_3p or event
-		local looping_event = current_action_settings.looping_anim
+		local action_time_scale = ActionUtils.get_action_time_scale(owner_unit, current_action_settings)
+		time_to_complete = time_to_complete / action_time_scale
+		local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
+		local event = (skin_data and skin_data.anim_event) or current_action_settings.anim_event
+		local event_3p = (skin_data and skin_data.anim_event_3p) or current_action_settings.anim_event_3p or event
+		local looping_event = (skin_data and skin_data.looping_anim) or current_action_settings.looping_anim
 
 		for _, data in pairs(self.action_buff_data) do
 			table.clear(data)
@@ -356,21 +387,22 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		if self.ammo_extension then
 			if self.ammo_extension:total_remaining_ammo() == 0 then
-				event = current_action_settings.anim_event_no_ammo_left or event
+				event = (skin_data and skin_data.anim_event_no_ammo_left) or current_action_settings.anim_event_no_ammo_left or event
 			elseif self.ammo_extension:total_remaining_ammo() == 1 then
-				event = current_action_settings.anim_event_last_ammo or event
+				event = (skin_data and skin_data.anim_event_last_ammo) or current_action_settings.anim_event_last_ammo or event
 			end
 		end
 
 		if buff_extension then
-			local infinite_ammo = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
+			local infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
 
 			if infinite_ammo then
-				event = current_action_settings.anim_event_infinite_ammo or event
+				event = (skin_data and skin_data.anim_event_infinite_ammo) or current_action_settings.anim_event_infinite_ammo or event
 			end
 		end
 
 		self.action_time_started = t
+		self.action_time_scale = action_time_scale
 		self.action_time_done = t + time_to_complete
 
 		if current_action_settings.cooldown then
@@ -408,6 +440,11 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			local first_person_variable_id = nil
 			local hero_player = true
 
+			if CharacterStateHelper.is_enemy_character(owner_unit) then
+				first_person_variable_id = 1
+				hero_player = false
+			end
+
 			if hero_player then
 				first_person_variable_id = Unit.animation_find_variable(first_person_unit, "attack_speed")
 			end
@@ -425,6 +462,11 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			if not script_data.disable_third_person_weapon_animation_events then
 				local third_person_variable_id = nil
 				hero_player = true
+
+				if CharacterStateHelper.is_enemy_character(owner_unit) then
+					third_person_variable_id = 1
+					hero_player = false
+				end
 
 				if hero_player then
 					third_person_variable_id = Unit.animation_find_variable(owner_unit, "attack_speed")
@@ -483,18 +525,45 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 
 	self:anim_end_event(reason, current_action_settings)
 
+	local next_action_settings = data and data.new_action_settings
+	local on_chain_keep_audio_loops = next_action_settings and next_action_settings.on_chain_keep_audio_loops
+
+	if on_chain_keep_audio_loops then
+		for id in pairs(self.looping_audio_events) do
+			if not table.contains(on_chain_keep_audio_loops, id) then
+				self:stop_looping_audio(id)
+			end
+		end
+	else
+		for id in pairs(self.looping_audio_events) do
+			self:stop_looping_audio(id)
+		end
+	end
+
+	if current_action_settings.finish_function then
+		current_action_settings.finish_function(self.owner_unit)
+	end
+
+	local first_person_extension = ScriptUnit.has_extension(self.owner_unit, "first_person_system")
+
+	if first_person_extension then
+		first_person_extension:set_weapon_sway_settings(nil)
+	end
+
 	if self.bot_attack_data then
 		self:clear_bot_attack_request()
 	end
 
 	self.current_action_settings = nil
+	self.action_time_scale = nil
 
 	return chain_action_data
 end
 
 WeaponUnitExtension.anim_end_event = function (self, reason, current_action_settings)
 	local go_id = Managers.state.unit_storage:go_id(self.owner_unit)
-	local event = current_action_settings.anim_end_event
+	local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
+	local event = (skin_data and skin_data.anim_end_event) or current_action_settings.anim_end_event
 	local anim_end_event_condition_func = current_action_settings.anim_end_event_condition_func
 	local do_event = (not anim_end_event_condition_func and true) or anim_end_event_condition_func(self.owner_unit, reason, self.ammo_extension)
 
@@ -565,6 +634,10 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 			end
 		end
 	end
+
+	if self._weapon_update then
+		self:_weapon_update(dt, t)
+	end
 end
 
 WeaponUnitExtension.is_streak_action_available = function (self, streak_action, t, time_offset)
@@ -584,7 +657,7 @@ WeaponUnitExtension.is_chain_action_available = function (self, next_chain_actio
 	local current_time_in_action = t - self.action_time_started
 	local max_time = current_action_settings.total_time + 2
 	time_offset = time_offset or 0
-	local chain_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, current_action_settings)
+	local chain_time_scale = self.action_time_scale or ActionUtils.get_action_time_scale(self.owner_unit, current_action_settings)
 
 	if next_chain_action.auto_chain then
 		return current_time_in_action >= ((next_chain_action.start_time and next_chain_action.start_time / chain_time_scale) or max_time) + time_offset
@@ -769,8 +842,7 @@ WeaponUnitExtension._process_bot_attack_request = function (self, attack_type, a
 			found_chain_action, found_action_settings = self:_find_chain_action(actions, allowed_chain_actions, t, "action_one", 1)
 		end
 	else
-		local action_one = actions.action_one
-		action_settings = action_one.default
+		action_settings = ActionUtils.resolve_action_selector(actions.action_one.default)
 		found_chain_action, found_action_settings = self:_find_chain_action(actions, action_settings.allowed_chain_actions, t, wanted_input, wanted_occurrence_number)
 	end
 
@@ -874,6 +946,123 @@ WeaponUnitExtension.time_to_next_attack = function (self, wanted_attack_type, cu
 	else
 		return nil
 	end
+end
+
+WeaponUnitExtension.set_mode = function (self, new_mode)
+	self.weapon_mode = new_mode
+end
+
+WeaponUnitExtension.get_mode = function (self)
+	return self.weapon_mode
+end
+
+WeaponUnitExtension.get_custom_data = function (self, key)
+	fassert(self._custom_data[key], "Custom data key '%s' does not exist, add it to the weapon template", key)
+
+	return self._custom_data[key]
+end
+
+WeaponUnitExtension.set_custom_data = function (self, key, value)
+	fassert(self._custom_data[key], "Custom data key '%s' does not exist, add it to the weapon template", key)
+
+	self._custom_data[key] = value
+end
+
+WeaponUnitExtension.add_looping_audio = function (self, id, start_event_id, end_event_id, start_event_husk_id, end_event_husk_id, auto_start)
+	fassert(start_event_id, "tried to add looping audio with no start event, id: %s", id)
+	fassert(end_event_id, "tried to add looping audio with no end event, id: %s", id)
+
+	local data = self.looping_audio_events[id]
+
+	if data and data.is_playing then
+		self:stop_looping_audio(id)
+	end
+
+	local data = {
+		is_playing = false,
+		start_event_id = start_event_id,
+		end_event_id = end_event_id,
+		start_event_husk_id = start_event_husk_id,
+		end_event_husk_id = end_event_husk_id
+	}
+	self.looping_audio_events[id] = data
+
+	if auto_start then
+		self:start_looping_audio(id)
+	end
+end
+
+WeaponUnitExtension.start_looping_audio = function (self, id)
+	local audio_data = self.looping_audio_events[id]
+
+	if not audio_data or audio_data.is_playing then
+		return
+	end
+
+	if self.is_local and not self.is_bot and not audio_data.wwise_playing_id then
+		local wwise_source_id = WwiseWorld.make_auto_source(self.wwise_world, self.unit)
+		audio_data.wwise_playing_id = WwiseWorld.trigger_event(self.wwise_world, audio_data.start_event_id, wwise_source_id)
+	end
+
+	ActionUtils.play_husk_sound_event(self.wwise_world, audio_data.start_event_husk_id, self.owner_unit, self.is_bot)
+
+	audio_data.is_playing = true
+end
+
+WeaponUnitExtension.stop_looping_audio = function (self, id)
+	local audio_data = self.looping_audio_events[id]
+
+	if not audio_data or not audio_data.is_playing then
+		return
+	end
+
+	if self.is_local and not self.is_bot then
+		if audio_data.wwise_playing_id and WwiseWorld.is_playing(self.wwise_world, audio_data.wwise_playing_id) then
+			local wwise_source_id = WwiseWorld.make_auto_source(self.wwise_world, self.unit)
+
+			WwiseWorld.trigger_event(self.wwise_world, audio_data.end_event_id, wwise_source_id)
+		end
+
+		audio_data.wwise_playing_id = nil
+	end
+
+	ActionUtils.play_husk_sound_event(self.wwise_world, audio_data.end_event_husk_id, self.owner_unit, self.is_bot)
+
+	audio_data.is_playing = false
+end
+
+WeaponUnitExtension.is_playing_looping_audio = function (self, id)
+	local audio_data = self.looping_audio_events[id]
+
+	if audio_data then
+		return audio_data.is_playing
+	end
+
+	return false
+end
+
+WeaponUnitExtension.set_looping_audio_switch = function (self, id, group, state)
+	local audio_data = self.looping_audio_events[id]
+
+	if not audio_data or not group or not state then
+		return
+	end
+
+	local wwise_source_id = WwiseWorld.make_auto_source(self.wwise_world, self.unit)
+
+	WwiseWorld.set_switch(self.wwise_world, group, state, wwise_source_id)
+end
+
+WeaponUnitExtension.update_looping_audio_parameter = function (self, id, parameter_name, parameter_value)
+	local audio_data = self.looping_audio_events[id]
+
+	if not audio_data or not parameter_name or not parameter_value then
+		return
+	end
+
+	local wwise_source_id = WwiseWorld.make_auto_source(self.wwise_world, self.unit)
+
+	WwiseWorld.set_source_parameter(self.wwise_world, wwise_source_id, parameter_name, parameter_value)
 end
 
 return

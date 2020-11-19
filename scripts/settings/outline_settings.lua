@@ -89,15 +89,7 @@ OutlineSettings.ranges = {
 	small_pickup = 2
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local outline_settings = dlc.outline_settings
-
-	if outline_settings then
-		for _, outline_file in ipairs(outline_settings) do
-			require(outline_file)
-		end
-	end
-end
+DLCUtils.require_list("outline_settings")
 
 for name, settings in pairs(OutlineSettings.colors) do
 	settings.name = name

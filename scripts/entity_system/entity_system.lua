@@ -20,6 +20,7 @@ require("scripts/entity_system/systems/area_damage/area_damage_system")
 require("scripts/entity_system/systems/audio/audio_system")
 require("scripts/entity_system/systems/buff/buff_system")
 require("scripts/entity_system/systems/camera/camera_system")
+require("scripts/entity_system/systems/world_marker/world_marker_system")
 require("scripts/entity_system/systems/cutscene/cutscene_system")
 require("scripts/entity_system/systems/darkness/darkness_system")
 require("scripts/entity_system/systems/damage/death_system")
@@ -77,17 +78,8 @@ require("scripts/entity_system/systems/whereabouts/whereabouts_system")
 require("scripts/entity_system/systems/weaves/weave_objective_system")
 require("scripts/entity_system/systems/weaves/weave_item_spawner_system")
 require("scripts/entity_system/systems/weaves/weave_loadout_system")
-
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.systems
-
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
-	end
-end
-
+require("scripts/entity_system/systems/career/career_system")
+DLCUtils.require_list("systems")
 require("scripts/unit_extensions/human/ai_player_unit/ai_anim_utils")
 require("scripts/unit_extensions/human/ai_player_unit/ai_husk_base_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_simple_extension")
@@ -153,6 +145,9 @@ require("scripts/unit_extensions/default_player_unit/charge/player_husk_overchar
 require("scripts/unit_extensions/default_player_unit/charge/player_unit_overcharge_extension")
 require("scripts/unit_extensions/default_player_unit/player_husk_visual_effects_extension")
 require("scripts/unit_extensions/default_player_unit/player_unit_visual_effects_extension")
+require("scripts/unit_extensions/default_player_unit/energy/player_unit_energy_extension")
+require("scripts/unit_extensions/default_player_unit/energy/player_husk_energy_extension")
+require("scripts/unit_extensions/default_player_unit/boons/boon_extension")
 require("scripts/unit_extensions/default_player_unit/target_override_extension")
 require("scripts/unit_extensions/cutscene_camera/cutscene_camera")
 require("scripts/unit_extensions/smart_targeting/player_unit_smart_targeting_extension")
@@ -168,16 +163,7 @@ require("scripts/unit_extensions/weaves/weave_item_extension")
 require("scripts/unit_extensions/weaves/weave_interaction_extension")
 require("scripts/unit_extensions/weaves/weave_kill_enemies_extension")
 require("scripts/unit_extensions/level/event_light_spawner_extension")
-
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.entity_extensions
-
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
-	end
-end
+DLCUtils.require_list("entity_extensions")
 
 local projectile_locomotion_extensions = {
 	"ProjectilePhysicsHuskLocomotionExtension",
@@ -268,6 +254,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		self:_add_system("versus_item_spawner_system", VersusItemSpawnerSystem, entity_system_creation_context)
 	end
 
+	self:_add_system("world_marker_system", WorldMarkerSystem, entity_system_creation_context)
+
 	if GameSettingsDevelopment.disable_carousel or not DLCSettings.carousel then
 		self.entity_manager:add_ignore_extensions({
 			"VersusVolumeObjectiveExtension",
@@ -340,9 +328,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	})
 	self:_add_system("door_system", DoorSystem, entity_system_creation_context)
 	self:_add_system("payload_system", PayloadSystem, entity_system_creation_context)
-	self:_add_system("career_system", ExtensionSystemBase, entity_system_creation_context, {
-		"CareerExtension"
-	})
+	self:_add_system("career_system", CareerSystem, entity_system_creation_context)
 	self:_add_system("event_spawner_system", ExtensionSystemBase, entity_system_creation_context, {
 		"EventLightSpawnerExtension"
 	})
@@ -417,6 +403,26 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("surrounding_aware_system", SurroundingAwareSystem, entity_system_creation_context)
 	self:_add_system("dialogue_system", DialogueSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
 	self:_add_system("proximity_system", ProximitySystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
+	self:_add_system("energy_system", ExtensionSystemBase, entity_system_creation_context, {
+		"PlayerUnitEnergyExtension",
+		"PlayerHuskEnergyExtension"
+	})
+	self:_add_system("boon_system", ExtensionSystemBase, entity_system_creation_context, {
+		"BoonExtension"
+	})
+
+	for _, dlc in pairs(DLCSettings) do
+		local entity_system_params = dlc.entity_system_params or {}
+
+		for _, params in pairs(entity_system_params) do
+			local system_name = params.system_name
+			local system_class = rawget(_G, params.system_class_name)
+			local context = params.context or entity_system_creation_context
+			local extension_list = params.extension_list
+
+			self:_add_system(system_name, system_class, context, extension_list)
+		end
+	end
 end
 
 EntitySystem.register_system = function (self, system_object, system_name, ...)
@@ -501,8 +507,8 @@ EntitySystem.commit_and_remove_pending_units = function (self)
 	unit_spawner.locked = true
 end
 
-EntitySystem.hot_join_sync = function (self, sender)
-	self.entity_system_bag:hot_join_sync(sender)
+EntitySystem.hot_join_sync = function (self, peer_id)
+	self.entity_system_bag:hot_join_sync(peer_id)
 end
 
 EntitySystem.destroy = function (self)

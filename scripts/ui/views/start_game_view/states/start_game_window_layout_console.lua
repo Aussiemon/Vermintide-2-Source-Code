@@ -1,5 +1,5 @@
 local TWITCH_DISPLAY_NAME = {
-	xb1 = "start_game_window_mixer",
+	xb1 = "start_game_window_twitch",
 	win32 = "start_game_window_twitch",
 	ps4 = "start_game_window_twitch"
 }
@@ -861,6 +861,24 @@ local generic_input_actions = {
 		}
 	}
 }
+local mechanism_custom_game_settings = {
+	adventure = {
+		game_mode_type = "custom",
+		layout_name = "area_selection"
+	}
+}
+local mechanism_twitch_settings = {
+	adventure = {
+		game_mode_type = "twitch",
+		layout_name = "area_selection"
+	}
+}
+local mechanism_quickplay_settings = {
+	adventure = {
+		game_mode_type = "adventure",
+		layout_name = "area_selection"
+	}
+}
 
 for _, dlc in pairs(DLCSettings) do
 	local start_game_window_layout_console = dlc.start_game_window_layout_console
@@ -881,6 +899,51 @@ for _, dlc in pairs(DLCSettings) do
 				table.insert(window_layouts, 1, new_window_layouts[i])
 			end
 		end
+
+		local dlc_mechanism_custom_game = start_game_window_layout_console.mechanism_custom_game
+
+		if dlc_mechanism_custom_game then
+			local mechanism_name = dlc_mechanism_custom_game.mechanism_name
+			local layout_name = dlc_mechanism_custom_game.layout_name
+			local game_mode_type = dlc_mechanism_custom_game.game_mode_type
+
+			fassert(mechanism_custom_game_settings[mechanism_name] == nil, "Trying to set custom_game for the mechanism '%s' which is already set.", mechanism_name)
+
+			mechanism_custom_game_settings[mechanism_name] = {
+				layout_name = layout_name,
+				game_mode_type = game_mode_type
+			}
+		end
+
+		local dlc_mechanism_twitch = start_game_window_layout_console.mechanism_twitch
+
+		if dlc_mechanism_twitch then
+			local mechanism_name = dlc_mechanism_twitch.mechanism_name
+			local layout_name = dlc_mechanism_twitch.layout_name
+			local game_mode_type = dlc_mechanism_twitch.game_mode_type
+
+			fassert(mechanism_twitch_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
+
+			mechanism_twitch_settings[mechanism_name] = {
+				layout_name = layout_name,
+				game_mode_type = game_mode_type
+			}
+		end
+
+		local dlc_mechanism_quickplay = start_game_window_layout_console.mechanism_quickplay
+
+		if dlc_mechanism_quickplay then
+			local mechanism_name = dlc_mechanism_quickplay.mechanism_name
+			local layout_name = dlc_mechanism_quickplay.layout_name
+			local game_mode_type = dlc_mechanism_quickplay.game_mode_type
+
+			fassert(mechanism_quickplay_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
+
+			mechanism_quickplay_settings[mechanism_name] = {
+				layout_name = layout_name,
+				game_mode_type = game_mode_type
+			}
+		end
 	end
 end
 
@@ -898,5 +961,8 @@ return {
 	windows = windows,
 	window_layouts = window_layouts,
 	generic_input_actions = generic_input_actions,
-	video_resources = video_resources
+	video_resources = video_resources,
+	mechanism_custom_game_settings = mechanism_custom_game_settings,
+	mechanism_twitch_settings = mechanism_twitch_settings,
+	mechanism_quickplay_settings = mechanism_quickplay_settings
 }

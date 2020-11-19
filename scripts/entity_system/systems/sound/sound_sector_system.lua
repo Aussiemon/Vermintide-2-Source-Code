@@ -28,6 +28,7 @@ SoundSectorSystem.init = function (self, context, system_name)
 	self._sectors = {}
 	self._sector_sound_source_ids = {}
 	self._sector_sound_source_units = {}
+	self._sector_sound_source_refs = {}
 	self._sector_process_index = 0
 
 	for i = 1, NUM_OF_SECTORS, 1 do
@@ -54,6 +55,12 @@ SoundSectorSystem.destroy = function (self)
 
 	for event_name, _ in pairs(self._events) do
 		event_manager:unregister(event_name, self)
+	end
+
+	local wwise_world = self.wwise_world
+
+	for source_id, _ in pairs(self._sector_sound_source_refs) do
+		WwiseWorld.destroy_manual_source(wwise_world, source_id)
 	end
 end
 
@@ -222,25 +229,37 @@ SoundSectorSystem._play_sector_sound_event = function (self, sector_index, sound
 	local level_settings = LevelHelper:current_level_settings()
 	local terrain = level_settings.terrain or "city"
 	local sound_source_unit = self._sector_sound_source_units[sector_index]
-	local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, sound_source_unit)
+	local sound_environment_system = Managers.state.entity:system("sound_environment_system")
+	local wwise_world = self.wwise_world
+	local wwise_source_id = WwiseUtils.make_unit_manual_source(wwise_world, sound_source_unit)
 
-	WwiseWorld.set_switch(self.wwise_world, "area", terrain, wwise_source_id)
-
-	local wwise_playing_id = WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
-
-	Managers.state.entity:system("sound_environment_system"):register_source_environment_update(wwise_source_id, sound_source_unit)
+	WwiseWorld.set_switch(wwise_world, "area", terrain, wwise_source_id)
+	WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
+	sound_environment_system:register_source_environment_update(wwise_source_id, sound_source_unit)
 
 	self._sector_sound_source_ids[sound_id] = wwise_source_id
+	self._sector_sound_source_refs[wwise_source_id] = (self._sector_sound_source_refs[wwise_source_id] or 0) + 1
 	self.current_audio_event = sound_event
 end
 
 SoundSectorSystem._stop_sector_sound_event = function (self, sector_index, sound_id, sound_event)
+	local wwise_world = self.wwise_world
 	local wwise_source_id = self._sector_sound_source_ids[sound_id]
 
 	Managers.state.entity:system("sound_environment_system"):unregister_source_environment_update(wwise_source_id)
-	WwiseWorld.trigger_event(self.wwise_world, sound_event, wwise_source_id)
+	WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 	self._sector_sound_source_ids[sound_id] = nil
+	local source_ref_counts = self._sector_sound_source_refs
+	source_ref_counts[wwise_source_id] = source_ref_counts[wwise_source_id] - 1
+
+	if source_ref_counts[wwise_source_id] <= 0 then
+		fassert(source_ref_counts[wwise_source_id] == 0, "Sector sound source id [%d] ref count gone negative", wwise_source_id)
+
+		source_ref_counts[wwise_source_id] = nil
+
+		WwiseWorld.destroy_manual_source(wwise_world, wwise_source_id)
+	end
 end
 
 local MIN_DISTANCE_THRESHOLD_SQ = 25
@@ -257,7 +276,7 @@ SoundSectorSystem._calc_unit_sector = function (self, camera_position, unit)
 	end
 end
 
-SoundSectorSystem.hot_join_sync = function (self, sender)
+SoundSectorSystem.hot_join_sync = function (self, peer_id)
 	local extensions = self._extensions
 	local network_transmit = Managers.state.network.network_transmit
 
@@ -265,7 +284,7 @@ SoundSectorSystem.hot_join_sync = function (self, sender)
 		if extension.has_target then
 			local go_id = self.unit_storage:go_id(unit)
 
-			network_transmit:send_rpc("rpc_enemy_has_target", sender, go_id, true)
+			network_transmit:send_rpc("rpc_enemy_has_target", peer_id, go_id, true)
 		end
 	end
 end
@@ -296,7 +315,7 @@ SoundSectorSystem.event_ai_unit_deactivated = function (self, unit, breed_name)
 	end
 end
 
-SoundSectorSystem.rpc_enemy_has_target = function (self, sender, unit_id, has_target)
+SoundSectorSystem.rpc_enemy_has_target = function (self, channel_id, unit_id, has_target)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if unit == nil then

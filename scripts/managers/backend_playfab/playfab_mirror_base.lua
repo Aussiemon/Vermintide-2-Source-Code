@@ -5,6 +5,7 @@ local CAREER_ID_LOOKUP = {
 	"dr_ranger",
 	"dr_slayer",
 	"dr_ironbreaker",
+	"dr_engineer",
 	"we_waywatcher",
 	"we_shade",
 	"we_maidenguard",
@@ -39,6 +40,7 @@ PlayFabMirrorBase = class(PlayFabMirrorBase)
 PlayFabMirrorBase.init = function (self, signin_result)
 	self._num_items_to_load = 0
 	self._stats = {}
+	self._unlocked_dlcs = {}
 	self._commits = {}
 	self._commit_current_id = nil
 	self._last_id = 0
@@ -90,6 +92,11 @@ PlayFabMirrorBase.init = function (self, signin_result)
 			user_data_values[key] = value
 		end
 	end
+
+	local deus_finished_journeys_json = read_only_data_values.deus_finished_journeys or "{}"
+	local deus_finished_journeys = cjson.decode(deus_finished_journeys_json)
+
+	self:set_deus_finished_journeys(deus_finished_journeys)
 
 	self._user_data = user_data_values
 	self._user_data_mirror = table.clone(self._user_data)
@@ -169,6 +176,11 @@ PlayFabMirrorBase._update_dlc_ownership = function (self)
 	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
+	self._unlocked_dlcs = unlocked_dlcs
+end
+
+PlayFabMirrorBase.dlc_unlocked_at_signin = function (self, dlc_name)
+	return table.find(self._unlocked_dlcs, dlc_name) ~= false
 end
 
 PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
@@ -313,30 +325,6 @@ PlayFabMirrorBase.execute_dlc_logic_request_cb = function (self, result)
 		end
 
 		self:_sync_unseen_rewards(function_result.item_grant_results)
-	end
-
-	self:_set_up_additional_account_data()
-end
-
-PlayFabMirrorBase._set_up_additional_account_data = function (self)
-	local request = {
-		FunctionName = "additionalAccountDataSetUp",
-		FunctionParameter = {}
-	}
-	local request_cb = callback(self, "additional_data_setup_request_cb")
-
-	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
-
-	self._num_items_to_load = self._num_items_to_load + 1
-end
-
-PlayFabMirrorBase.additional_data_setup_request_cb = function (self, result)
-	self._num_items_to_load = self._num_items_to_load - 1
-	local function_result = result.FunctionResult
-	local new_read_only_data = function_result.new_user_read_only_data
-
-	for key, value in pairs(new_read_only_data) do
-		self:set_read_only_data(key, value, true)
 	end
 
 	self:_request_best_power_levels()
@@ -627,7 +615,128 @@ PlayFabMirrorBase.weaves_player_setup_request_cb = function (self, result)
 	self:set_essence(essence)
 	self:set_total_essence(total_essence)
 	self:set_maximum_essence(maximum_essence)
-	self:_request_user_inventory()
+	self:_request_win_tracks()
+end
+
+PlayFabMirrorBase._request_win_tracks = function (self)
+	self._num_items_to_load = self._num_items_to_load + 1
+	local request = {
+		FunctionName = "winTracksSetup",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "win_tracks_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+end
+
+PlayFabMirrorBase.win_tracks_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local new_read_only_data = function_result.new_read_only_data
+
+	for key, value in pairs(new_read_only_data) do
+		local value_json = cjson.encode(value)
+
+		self:set_read_only_data(key, value_json, true)
+	end
+
+	local win_tracks = function_result.win_tracks
+	self._win_tracks = win_tracks
+	local win_tracks_progress = function_result.new_read_only_data.win_tracks_progress
+	self._current_win_track_id = win_tracks_progress.current_win_track_id
+
+	self:_deus_player_setup()
+end
+
+PlayFabMirrorBase.get_win_tracks = function (self)
+	return self._win_tracks
+end
+
+PlayFabMirrorBase._deus_player_setup = function (self)
+	self._num_items_to_load = self._num_items_to_load + 1
+	local request = {
+		FunctionName = "deusPlayerSetup",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "deus_player_setup_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+end
+
+PlayFabMirrorBase.deus_player_setup_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:handle_deus_result(result)
+	self:_request_refresh_boons()
+end
+
+PlayFabMirrorBase._request_refresh_boons = function (self)
+	self._num_items_to_load = self._num_items_to_load + 1
+	local request = {
+		FunctionName = "refreshBoons",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "refresh_boons_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+end
+
+PlayFabMirrorBase.refresh_boons_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:handle_boons_result(result)
+	self:_set_up_additional_account_data()
+end
+
+PlayFabMirrorBase._set_up_additional_account_data = function (self, steps_completed)
+	local request = {
+		FunctionName = "additionalAccountDataSetUp",
+		FunctionParameter = {
+			steps_completed = steps_completed
+		}
+	}
+	local request_cb = callback(self, "additional_data_setup_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.additional_data_setup_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local new_read_only_data = function_result.new_user_read_only_data
+	local new_currencies = function_result.new_currencies
+
+	if new_read_only_data then
+		for key, value in pairs(new_read_only_data) do
+			self:set_read_only_data(key, value, true)
+		end
+	end
+
+	if new_currencies then
+		if new_currencies.ES then
+			self:set_essence(self._essence + new_currencies.ES)
+		end
+
+		if new_currencies.SM then
+			local peddler_interface = Managers.backend:get_interface("peddler")
+
+			if peddler_interface then
+				local current_chips = peddler_interface:get_chips("SM")
+
+				peddler_interface:set_chips("SM", current_chips + new_currencies.SM)
+			end
+		end
+	end
+
+	local steps_completed = function_result.steps_completed
+
+	if steps_completed then
+		self:_set_up_additional_account_data(steps_completed)
+	else
+		self:_request_user_inventory()
+	end
 end
 
 PlayFabMirrorBase._request_user_inventory = function (self)
@@ -654,7 +763,7 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 
 		if not item.BundleContents then
 			if item.ItemId and not rawget(ItemMasterList, item.ItemId) then
-				Crashify.print_exception("PlayfabMirrorBase", string.format("ItemMasterList has no item %q", tostring(item.ItemId)))
+				Crashify.print_exception("PlayFabMirrorBase", string.format("ItemMasterList has no item %q", tostring(item.ItemId)))
 			else
 				local backend_id = item.ItemInstanceId
 
@@ -688,10 +797,12 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 
 	self:_create_fake_inventory_items(unlocked_weapon_skins)
 
-	if HAS_STEAM then
+	if DEDICATED_SERVER then
+		self:request_characters()
+	elseif HAS_STEAM then
 		self:_request_steam_user_inventory()
 	else
-		self:request_characters()
+		self:_migrate_characters()
 	end
 end
 
@@ -699,11 +810,45 @@ PlayFabMirrorBase._request_steam_user_inventory = function (self)
 	print("steam item server: requesting user inventory")
 
 	local function callback(result, item_list)
-		print("[PlayFabMirror] _request_steam_user_inventory got results")
+		print("[PlayFabMirrorBase] _request_steam_user_inventory got results")
 		self:_cb_steam_user_inventory(result, item_list)
 	end
 
 	Managers.steam:request_user_inventory(callback)
+	self:_migrate_characters()
+end
+
+PlayFabMirrorBase._migrate_characters = function (self)
+	if not self._read_only_data.characters_data then
+		self._num_items_to_load = self._num_items_to_load + 1
+		local request = {
+			FunctionName = "migrateCharacters",
+			FunctionParameter = {}
+		}
+		local migrate_characters_cb = callback(self, "migrate_characters_cb")
+
+		PlayFabClientApi.ExecuteCloudScript(request, migrate_characters_cb)
+
+		return
+	end
+
+	self:request_characters()
+end
+
+PlayFabMirrorBase.migrate_characters_cb = function (self, result)
+	local function_result = result.FunctionResult
+	local success = function_result.success
+	local characters_data = function_result.characters_data
+	self._read_only_data.characters_data = characters_data
+	self._read_only_data_mirror.characters_data = characters_data
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:request_characters()
+end
+
+PlayFabMirrorBase.delete_playfab_characters_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	self:request_characters()
 end
 
@@ -740,6 +885,10 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list)
 end
 
 PlayFabMirrorBase._set_inital_career_data = function (self, career_name, character_data, slots_to_verify)
+	if not slots_to_verify then
+		return
+	end
+
 	local career_data = self._career_data[career_name]
 	local career_data_mirror = self._career_data_mirror[career_name]
 	local broken_slots = {}
@@ -964,7 +1113,7 @@ PlayFabMirrorBase._commit_status = function (self)
 
 	if commit_data.status == "commit_error" then
 		return "commit_error"
-	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_weave_user_data and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data then
+	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_weave_user_data and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data and not commit_data.wait_for_win_tracks_data then
 		if (PLATFORM == "xb1" or PLATFORM == "ps4") and not Managers.account:offline_mode() then
 			PlayfabBackendSaveDataUtils.store_online_data(self)
 		end
@@ -996,6 +1145,9 @@ end
 PlayFabMirrorBase.set_character_data = function (self, career_name, key, value)
 	local career_data = self._career_data[career_name]
 	career_data[key] = value
+	local character_name = PROFILES_BY_CAREER_NAMES[career_name].display_name
+
+	self:set_career_read_only_data(character_name, key, value, career_name, false)
 end
 
 PlayFabMirrorBase.update_career_data = function (self, career_name, key, value)
@@ -1128,7 +1280,7 @@ local new_fake_inventory_items = {}
 PlayFabMirrorBase._create_fake_inventory_items = function (self, unlocked_weapon_skins)
 	table.clear(new_fake_inventory_items)
 
-	for skin_name, unlocked in pairs(unlocked_weapon_skins) do
+	for skin_name, optional_offline_backend_id in pairs(unlocked_weapon_skins) do
 		local item_key, rarity = WeaponSkins.matching_weapon_skin_item_key(skin_name)
 
 		if item_key and rarity then
@@ -1138,7 +1290,7 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, unlocked_weapon
 
 			local fake_item = {
 				ItemId = item_key,
-				ItemInstanceId = guid(),
+				ItemInstanceId = (type(optional_offline_backend_id) == "string" and optional_offline_backend_id) or guid(),
 				CustomData = {
 					skin = skin_name,
 					rarity = rarity
@@ -1229,7 +1381,11 @@ PlayFabMirrorBase.add_item = function (self, backend_id, item)
 	local skin_data = WeaponSkins.skins[item.ItemId]
 
 	if skin_data then
-		self:add_unlocked_weapon_skin(item.ItemId)
+		if Managers.account:offline_mode() then
+			self:add_unlocked_weapon_skin(item.ItemId, item.ItemInstanceId)
+		else
+			self:add_unlocked_weapon_skin(item.ItemId)
+		end
 	else
 		inventory_items[backend_id] = item
 
@@ -1249,7 +1405,7 @@ PlayFabMirrorBase.update_item_field = function (self, backend_id, field, value)
 	local inventory_items = self._inventory_items
 	local item = inventory_items[backend_id]
 
-	fassert(item[field], "Trying to update a field on an item in playfab_mirror.lua that does not exist on the item")
+	fassert(item[field], "Trying to update a field on an item in playfab_mirror_base.lua that does not exist on the item")
 
 	item[field] = value
 end
@@ -1265,12 +1421,12 @@ PlayFabMirrorBase.update_item = function (self, backend_id, new_item)
 	self:_update_data(item, backend_id)
 end
 
-PlayFabMirrorBase.add_unlocked_weapon_skin = function (self, weapon_skin)
+PlayFabMirrorBase.add_unlocked_weapon_skin = function (self, weapon_skin, offline_backend_id)
 	if self._unlocked_weapon_skins then
 		self._unlocked_weapon_skins[weapon_skin] = true
 
 		self:_create_fake_inventory_items({
-			[weapon_skin] = true
+			[weapon_skin] = offline_backend_id or true
 		})
 	end
 end
@@ -1299,11 +1455,162 @@ PlayFabMirrorBase.get_maximum_essence = function (self)
 	return self._maximum_essence
 end
 
+PlayFabMirrorBase.set_deus_meta_currency = function (self, amount)
+	self._deus_meta_currency = amount
+end
+
+PlayFabMirrorBase.get_deus_meta_currency = function (self)
+	return self._deus_meta_currency
+end
+
+PlayFabMirrorBase.set_deus_total_meta_currency = function (self, amount)
+	self._deus_total_meta_currency = amount
+end
+
+PlayFabMirrorBase.get_deus_total_meta_currency = function (self)
+	return self._deus_total_meta_currency
+end
+
+PlayFabMirrorBase.set_deus_maximum_meta_currency = function (self, amount)
+	self._deus_maximum_meta_currency = amount
+end
+
+PlayFabMirrorBase.get_deus_maximum_meta_currency = function (self)
+	return self._deus_maximum_meta_currency
+end
+
+PlayFabMirrorBase.set_deus_finished_journeys = function (self, deus_finished_journeys)
+	self._deus_finished_journeys = deus_finished_journeys
+end
+
+PlayFabMirrorBase.get_deus_finished_journeys = function (self)
+	return self._deus_finished_journeys or {}
+end
+
+PlayFabMirrorBase.get_deus_rolled_over_soft_currency = function (self)
+	return SaveData.deus_rolled_over_soft_currency or 0
+end
+
+PlayFabMirrorBase.get_deus_journey_cycle_data = function (self)
+	return self._deus_journey_cycle_data
+end
+
+PlayFabMirrorBase.handle_deus_result = function (self, result)
+	local function_result = result.FunctionResult
+	local deus_meta_currency = function_result.deus_meta_currency
+	local deus_total_meta_currency = function_result.deus_total_meta_currency
+	local deus_maximum_meta_currency = function_result.deus_maximum_meta_currency
+	local deus_finished_journeys = function_result.deus_finished_journeys
+	local deus_journey_cycle_data = function_result.deus_journey_cycle_data
+
+	if deus_finished_journeys then
+		self:set_deus_finished_journeys(deus_finished_journeys)
+	end
+
+	if deus_meta_currency then
+		self:set_deus_meta_currency(deus_meta_currency)
+	end
+
+	if deus_total_meta_currency then
+		self:set_deus_total_meta_currency(deus_total_meta_currency)
+	end
+
+	if deus_maximum_meta_currency then
+		self:set_deus_maximum_meta_currency(deus_maximum_meta_currency)
+	end
+
+	if deus_journey_cycle_data then
+		local current_time = Managers.time:time("main")
+		self._deus_journey_cycle_data = {
+			span = deus_journey_cycle_data.span_ms / 1000,
+			remaining_time = deus_journey_cycle_data.remaining_time_ms / 1000,
+			cycle_count = deus_journey_cycle_data.cycle_count,
+			time_of_update = current_time
+		}
+	end
+end
+
+PlayFabMirrorBase.get_active_boons = function (self)
+	return self._active_boons
+end
+
+PlayFabMirrorBase.predict_refresh_boons = function (self)
+	local updated_boons = {}
+	local current_time = Managers.time:time("main")
+
+	for _, boon in ipairs(self._active_boons) do
+		local elapsed = current_time - boon.time_of_update
+		local remaining_time = boon.remaining_time - elapsed
+
+		if remaining_time > 0 then
+			boon.remaining_time = remaining_time
+			boon.time_of_update = current_time
+			updated_boons[#updated_boons + 1] = boon
+		end
+	end
+
+	self._active_boons = updated_boons
+end
+
+PlayFabMirrorBase.predict_granted_boon = function (self, boon_name)
+	local boon_template = BoonTemplates[boon_name]
+	local current_time = Managers.time:time("main")
+
+	for _, boon in ipairs(self._active_boons) do
+		if boon.boon_name == boon_name then
+			boon.remaining_time = boon_template.duration
+			boon.time_of_update = current_time
+
+			return
+		end
+	end
+
+	self._active_boons[#self._active_boons + 1] = {
+		boon_name = boon_name,
+		time_of_update = current_time,
+		remaining_time = boon_template.duration
+	}
+end
+
+PlayFabMirrorBase.predict_deus_rolled_over_soft_currency = function (self, amount)
+	local roll_over_coins = math.ceil(amount * DeusRollOverSettings.roll_over)
+	SaveData.deus_rolled_over_soft_currency = math.clamp(roll_over_coins, 0, DeusRollOverSettings.max)
+
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
+end
+
+PlayFabMirrorBase.predict_reset_rolled_over_soft_currency = function (self, amount)
+	SaveData.deus_rolled_over_soft_currency = 0
+
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
+end
+
+PlayFabMirrorBase.handle_boons_result = function (self, result)
+	local function_result = result.FunctionResult
+	local active_boons = function_result.active_boons
+	local current_time = Managers.time:time("main")
+
+	if active_boons then
+		for _, boon in ipairs(active_boons) do
+			boon.time_of_update = current_time
+			boon.remaining_time = boon.remaining_time / 1000
+		end
+
+		self._active_boons = active_boons
+	end
+end
+
 PlayFabMirrorBase.commit = function (self, skip_queue, commit_complete_callback)
 	local queued_commit = self._queued_commit
 	local id = nil
 
-	if skip_queue and not self._commit_current_id then
+	if skip_queue then
+		if self._commit_current_id then
+			print("Unable to skip queue due to commit already in progress")
+
+			return
+		end
+
 		if queued_commit.active then
 			local id = queued_commit.id
 
@@ -1393,6 +1700,27 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 		end
 	end
 
+	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
+
+	if win_tracks_interface then
+		local current_win_track_id = win_tracks_interface:get_current_win_track_id()
+
+		if current_win_track_id ~= self._current_win_track_id then
+			self._current_win_track_id = current_win_track_id
+			local update_win_tracks_request = {
+				FunctionName = "updateCurrentWinTrack",
+				FunctionParameter = {
+					current_win_track_id = current_win_track_id
+				}
+			}
+			local success_callback = callback(self, "update_current_win_track_cb", commit_id)
+			local id = self._request_queue:enqueue(update_win_tracks_request, success_callback, false)
+			commit.status = "waiting"
+			commit.wait_for_win_tracks_data = true
+			commit.request_queue_ids[#commit.request_queue_ids + 1] = id
+		end
+	end
+
 	table.clear(new_data)
 
 	local read_only_data_mirror = self._read_only_data_mirror
@@ -1430,6 +1758,20 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 	return commit_id
 end
 
+PlayFabMirrorBase.update_current_win_track_cb = function (self, commit_id, result)
+	local commit = self._commits[commit_id]
+	local function_result = result.FunctionResult
+	local new_read_only_data = function_result.new_read_only_data
+
+	for key, value in pairs(new_read_only_data) do
+		local encoded_value = cjson.encode(value)
+
+		self:set_read_only_data(key, encoded_value, true)
+	end
+
+	commit.wait_for_win_tracks_data = false
+end
+
 PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, result)
 	local commit = self._commits[commit_id]
 	local function_result = result.FunctionResult
@@ -1444,6 +1786,12 @@ PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, 
 		end
 
 		read_only_data_mirror[key] = value
+	end
+
+	self._characters_data_mirror = cjson.decode(read_only_data_mirror[self._characters_data_key])
+
+	for character_name, character_data in pairs(self._characters_data_mirror) do
+		table.merge(self._career_data_mirror, character_data.careers)
 	end
 
 	commit.wait_for_read_only_data = false
@@ -1544,9 +1892,6 @@ end
 PlayFabMirrorBase._setup_careers = function (self)
 	local read_only_data = self._read_only_data
 	local characters_data = cjson.decode(read_only_data[self._characters_data_key])
-	characters_data.spectator = {
-		careers = {}
-	}
 	self._career_data = {}
 	self._career_data_mirror = {}
 	self._career_lookup = {}
@@ -1684,12 +2029,14 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 		end
 	end
 
+	dirty = dirty or Managers.account:offline_mode()
+
 	return dirty, characters_data
 end
 
 PlayFabMirrorBase.set_career_read_only_data = function (self, character, key, value, career, set_mirror)
 	local characters_data = self._characters_data
-	local data = (career and characters_data[character][career]) or characters_data[character]
+	local data = (career and characters_data[character].careers[career]) or characters_data[character]
 	data[key] = value
 	local encoded_data = cjson.encode(characters_data)
 

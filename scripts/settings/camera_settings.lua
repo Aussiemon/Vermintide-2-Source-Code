@@ -26,7 +26,8 @@ local THIRD_PERSON_TRANSITIONS = {
 	observer = CameraTransitionTemplates.reviving,
 	over_shoulder = CameraTransitionTemplates.over_shoulder,
 	chaos_spawn_grabbed = CameraTransitionTemplates.grabbed_by_chaos_spawn,
-	smart_climbing = CameraTransitionTemplates.smart_climbing
+	smart_climbing = CameraTransitionTemplates.smart_climbing,
+	tunneling = CameraTransitionTemplates.tunneling
 }
 CameraSettings.first_person = {
 	{
@@ -305,7 +306,21 @@ CameraSettings.first_person = {
 						name = "smart_climbing",
 						class = "TransformCamera",
 						offset_position = {
-							z = 1,
+							z = 0.3,
+							x = 0,
+							y = -1
+						},
+						node_transitions = table.merge({
+							first_person_node = CameraTransitionTemplates.first_person_fast
+						}, THIRD_PERSON_TRANSITIONS)
+					}
+				},
+				{
+					_node = {
+						name = "tunneling",
+						class = "TransformCamera",
+						offset_position = {
+							z = 0.3,
 							x = 0,
 							y = -1
 						},

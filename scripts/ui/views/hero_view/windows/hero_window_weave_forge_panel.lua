@@ -460,7 +460,7 @@ HeroWindowWeaveForgePanel._update_background_animations = function (self, dt)
 	end
 
 	local pulse_speed = 2.5
-	local progress = 0.5 + math.sin(Application.time_since_launch() * pulse_speed) * 0.5
+	local progress = 0.5 + math.sin(Managers.time:time("ui") * pulse_speed) * 0.5
 
 	self:_set_background_bloom_intensity(progress)
 end

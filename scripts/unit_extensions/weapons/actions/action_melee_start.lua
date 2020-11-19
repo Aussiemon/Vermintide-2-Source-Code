@@ -1,25 +1,17 @@
 ActionMeleeStart = class(ActionMeleeStart, ActionDummy)
 
-local function play_additional_charge_animation(unit, anim_data)
-	if anim_data and anim_data.anim_event and anim_data.variable_name and anim_data.variable_value then
-		CharacterStateHelper.play_animation_event_with_variable_float(unit, anim_data.anim_event, anim_data.variable_name, anim_data.variable_value)
-	end
-end
-
 ActionMeleeStart.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	ActionMeleeStart.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	Unit.flow_event(self.first_person_unit, "sfx_swing_charge")
 
-	local owner_unit = self._owner_unit
-	self._action = new_action
 	self._action_start_time = t
 
-	play_additional_charge_animation(owner_unit, new_action.custom_start_anim_data)
+	self:_play_additional_animation(new_action.custom_start_anim_data)
 end
 
 ActionMeleeStart.client_owner_post_update = function (self, dt, t, world)
-	local action = self._action
-	local owner_unit = self._owner_unit
+	local action = self.current_action
+	local owner_unit = self.owner_unit
 	local action_start_time = self._action_start_time
 	local blocking_charge = action.blocking_charge
 	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
@@ -45,7 +37,7 @@ ActionMeleeStart.client_owner_post_update = function (self, dt, t, world)
 end
 
 ActionMeleeStart.finish = function (self, reason)
-	local owner_unit = self._owner_unit
+	local owner_unit = self.owner_unit
 	local go_id = Managers.state.unit_storage:go_id(owner_unit)
 
 	if not LEVEL_EDITOR_TEST then
@@ -62,7 +54,7 @@ ActionMeleeStart.finish = function (self, reason)
 
 	status_extension:set_blocking(false)
 	status_extension:set_charge_blocking(false)
-	play_additional_charge_animation(owner_unit, self._action.custom_finish_anim_data)
+	self:_play_additional_animation(self.current_action.custom_finish_anim_data)
 end
 
 return

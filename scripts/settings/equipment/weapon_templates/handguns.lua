@@ -26,7 +26,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.3,
 			anim_event = "attack_shoot",
 			ignore_shield_hit = true,
-			total_time = 0.66,
+			total_time = 0.5,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -203,15 +203,7 @@ weapon_template.actions = {
 		}
 	},
 	weapon_reload = ActionTemplates.reload,
-	action_inspect = ActionTemplates.action_inspect,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_inspect = ActionTemplates.action_inspect
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",
@@ -220,7 +212,8 @@ weapon_template.ammo_data = {
 	ammo_per_clip = 1,
 	play_reload_anim_on_wield_reload = true,
 	reload_time = 1.5,
-	reload_on_ammo_pickup = true
+	reload_on_ammo_pickup = true,
+	should_update_anim_ammo = true
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_spine1",
@@ -231,6 +224,9 @@ weapon_template.attack_meta_data = {
 	charge_when_obstructed = false,
 	ignore_enemies_for_obstruction = true,
 	aim_at_node_charged = "j_head"
+}
+action_anim_overrides = {
+	animation_variation_id = 1
 }
 weapon_template.default_spread_template = "handgun"
 weapon_template.spread_lerp_speed = 5
@@ -294,7 +290,12 @@ weapon_template.tooltip_detail = {
 		sub_action_name = "default"
 	}
 }
+local handgun_es = table.clone(weapon_template)
+local handgun_dr = table.clone(weapon_template)
+handgun_dr.wield_anim = "to_handgun_dr"
+handgun_dr.wield_anim_no_ammo = "to_handgun_dr_noammo"
 
 return {
-	handgun_template_1 = table.clone(weapon_template)
+	handgun_template_1 = table.clone(handgun_es),
+	handgun_template_2 = table.clone(handgun_dr)
 }

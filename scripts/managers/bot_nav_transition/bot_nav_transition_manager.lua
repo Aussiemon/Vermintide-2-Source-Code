@@ -132,7 +132,7 @@ BotNavTransitionManager._destroy_transition = function (self, transitions, index
 	World.destroy_unit(self._world, transition.unit)
 end
 
-BotNavTransitionManager.rpc_create_bot_nav_transition = function (self, sender, from, via, to, player_jumped)
+BotNavTransitionManager.rpc_create_bot_nav_transition = function (self, channel_id, from, via, to, player_jumped)
 	self:create_transition(from, via, to, player_jumped)
 end
 

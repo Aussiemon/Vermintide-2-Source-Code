@@ -10,7 +10,7 @@ function local_require(filename)
 		table.remove(package.load_order, load_order_index)
 	end
 
-	return require(filename)
+	return package.loaded[filename]
 end
 
 return

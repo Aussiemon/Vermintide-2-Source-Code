@@ -243,12 +243,14 @@ AIDebugger.update = function (self, t, dt)
 		self._edit_ai_utility:update(self.active_unit, t, dt, Managers.input:get_service("Debug"), blackboard)
 	end
 
-	if script_data.debug_ai_pacing then
-		self:debug_pacing(t, dt)
-	end
+	if not CurrentConflictSettings.disabled then
+		if script_data.debug_ai_pacing then
+			self:debug_pacing(t, dt)
+		end
 
-	if self.is_server and script_data.debug_player_intensity then
-		self:debug_player_intensity(t, dt)
+		if self.is_server and script_data.debug_player_intensity then
+			self:debug_player_intensity(t, dt)
+		end
 	end
 
 	if DebugKeyHandler.key_pressed("c", "spawn bot player", "ai debugger", nil, "FreeFlight") then

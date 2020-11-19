@@ -1,12 +1,10 @@
 require("scripts/ui/views/level_end/level_end_view")
 
 for _, dlc in pairs(DLCSettings) do
-	local files = dlc.end_view
+	local end_view_files = dlc.end_view
 
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
+	if end_view_files then
+		table.map(end_view_files, require)
 	end
 end
 
@@ -17,8 +15,14 @@ LevelEndViewWrapper.init = function (self, level_end_view_context)
 
 	self:_create_input_service()
 
-	local is_weave = self._level_end_view_context.game_mode_key == "weave" and not self._level_end_view_context.is_quickplay
-	self._level_end_view = (is_weave and LevelEndViewWeave:new(level_end_view_context)) or LevelEndView:new(level_end_view_context)
+	local level_end_view = level_end_view_context.level_end_view
+
+	if level_end_view then
+		local class = rawget(_G, level_end_view)
+		self._level_end_view = class:new(level_end_view_context)
+	else
+		self._level_end_view = LevelEndView:new(level_end_view_context)
+	end
 end
 
 LevelEndViewWrapper._create_input_service = function (self)

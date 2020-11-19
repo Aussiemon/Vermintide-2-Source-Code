@@ -33,18 +33,14 @@ InteractionHelper.interactions = {
 	difficulty_selection_access = {},
 	weave_level_select_access = {},
 	weave_magic_forge_access = {},
-	weave_leaderboard_access = {}
+	weave_leaderboard_access = {},
+	inn_door_transition = {},
+	deus_door_transition = {}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local interactions = dlc.interactions
-
-	if interactions then
-		for _, interaction in pairs(interactions) do
-			InteractionHelper.interactions[interaction] = {}
-		end
-	end
-end
+DLCUtils.map_list("interactions", function (interaction)
+	InteractionHelper.interactions[interaction] = {}
+end)
 
 for _, config_table in pairs(InteractionHelper.interactions) do
 	config_table.request_rpc = config_table.request_rpc or "rpc_generic_interaction_request"
@@ -55,6 +51,8 @@ InteractionHelper.printf = function (...)
 		printf(...)
 	end
 end
+
+local IS_LOCAL_HOST = "IS_LOCAL_HOST"
 
 InteractionHelper.request = function (self, interaction_type, interactor_go_id, interactable_go_id, is_level_unit, is_server)
 	InteractionHelper.printf("InteractionHelper:request(%s, %s, %s, %s)", interaction_type, tostring(interactor_go_id), tostring(interactable_go_id), tostring(is_level_unit))
@@ -69,12 +67,12 @@ InteractionHelper.request = function (self, interaction_type, interactor_go_id, 
 
 	if rpc_name == "rpc_generic_interaction_request" then
 		if is_server then
-			network_manager._event_delegate.event_table[rpc_name](Managers.state.network, Network.peer_id(), interactor_go_id, interactable_go_id, is_level_unit, interaction_type_id)
+			network_manager._event_delegate.event_table[rpc_name](Managers.state.network, IS_LOCAL_HOST, interactor_go_id, interactable_go_id, is_level_unit, interaction_type_id)
 		else
 			network_manager.network_transmit:send_rpc_server(rpc_name, interactor_go_id, interactable_go_id, is_level_unit, interaction_type_id)
 		end
 	elseif is_server then
-		network_manager._event_delegate.event_table[rpc_name](Managers.state.network, Network.peer_id(), interactor_go_id, interactable_go_id, is_level_unit)
+		network_manager._event_delegate.event_table[rpc_name](Managers.state.network, IS_LOCAL_HOST, interactor_go_id, interactable_go_id, is_level_unit)
 	else
 		network_manager.network_transmit:send_rpc_server(rpc_name, interactor_go_id, interactable_go_id, is_level_unit)
 	end
@@ -108,15 +106,17 @@ InteractionHelper.approve_request = function (self, interaction_type, interactor
 	Managers.state.network.network_transmit:send_rpc_clients("rpc_interaction_approved", interaction_id, interactor_go_id, interactable_go_id, is_level_unit)
 end
 
-InteractionHelper.deny_request = function (self, sender, interactor_go_id)
-	InteractionHelper.printf("InteractionHelper:deny_request(%s, %s)", tostring(sender), tostring(interactor_go_id))
+InteractionHelper.deny_request = function (self, peer_id, interactor_go_id)
+	InteractionHelper.printf("InteractionHelper:deny_request(%s, %s)", tostring(peer_id), tostring(interactor_go_id))
 
-	if Network.peer_id() == sender then
+	if Network.peer_id() == peer_id then
 		local interactor_unit = Managers.state.unit_storage:unit(interactor_go_id)
 
 		InteractionHelper:request_denied(interactor_unit)
 	else
-		RPC.rpc_interaction_denied(sender, interactor_go_id)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+		RPC.rpc_interaction_denied(channel_id, interactor_go_id)
 	end
 end
 

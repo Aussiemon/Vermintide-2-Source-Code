@@ -307,6 +307,8 @@ CraftPageSalvageConsole._remove_craft_item = function (self, backend_id)
 
 		if self._num_craft_items == 0 then
 			self:_set_craft_button_disabled(true)
+		else
+			self:_set_craft_button_disabled(false)
 		end
 
 		local counter_text = tostring(self._num_craft_items)
@@ -362,8 +364,13 @@ end
 
 CraftPageSalvageConsole._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
+	local input_settings = (not disabled and self.settings.name) or "disabled"
 
-	self.parent:set_input_description((not disabled and self.settings.name) or "disabled")
+	if (self._num_craft_items or 0) < CraftingSettings.NUM_SALVAGE_SLOTS then
+		input_settings = input_settings .. "_auto"
+	end
+
+	self.parent:set_input_description(input_settings)
 end
 
 CraftPageSalvageConsole._exit = function (self, selected_level)

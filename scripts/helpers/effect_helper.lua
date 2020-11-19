@@ -438,6 +438,12 @@ EffectHelper.flow_cb_play_surface_material_effect = function (effect_name, unit,
 end
 
 EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_name, unit, object, foot_direction, use_occlusion)
+	local ghost_mode_extension = ScriptUnit.has_extension(unit, "ghost_mode_system")
+
+	if ghost_mode_extension and ghost_mode_extension:is_husk() and ghost_mode_extension:is_in_ghost_mode() then
+		return
+	end
+
 	local foot_node_index = Unit.node(unit, object)
 	local raycast_offset = MaterialEffectSettings.footstep_raycast_offset
 	local raycast_position = Unit.world_position(unit, foot_node_index) + Vector3(0, 0, raycast_offset)

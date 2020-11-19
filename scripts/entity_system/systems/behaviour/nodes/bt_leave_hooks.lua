@@ -268,14 +268,6 @@ BTLeaveHooks.beastmen_standard_bearer_leave_move_and_plant_standard = function (
 	health_extension.is_invincible = false
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local bt_leave_hooks = dlc.bt_leave_hooks
-
-	if bt_leave_hooks then
-		for hook_name, hook_func in pairs(bt_leave_hooks) do
-			BTLeaveHooks[hook_name] = hook_func
-		end
-	end
-end
+DLCUtils.merge("bt_leave_hooks", BTLeaveHooks)
 
 return

@@ -15,12 +15,15 @@ ActionInstantWield.client_owner_start_action = function (self, new_action, t, ch
 	local action_on_wield = new_action.action_on_wield
 	local equipment = self.inventory_extension:equipment()
 	local slot_data = equipment.slots[slot]
-	local item_data = slot_data.item_data
-	local item_template = BackendUtils.get_item_template(item_data)
-	item_template.next_action = action_on_wield
 
-	self.inventory_extension:wield(slot)
-	self.input_extension:add_wield_cooldown(t)
+	if slot_data then
+		local item_data = slot_data.item_data
+		local item_template = BackendUtils.get_item_template(item_data)
+		item_template.next_action = action_on_wield
+
+		self.inventory_extension:wield(slot)
+		self.input_extension:add_wield_cooldown(t)
+	end
 end
 
 ActionInstantWield.client_owner_post_update = function (self, dt, t, world, can_damage)

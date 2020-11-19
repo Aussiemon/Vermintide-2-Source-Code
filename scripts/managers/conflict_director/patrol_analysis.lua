@@ -587,18 +587,18 @@ PatrolAnalysis.run = function (self)
 			local retry_count = spline.retries or 0
 			local node_count = GwNavBot.get_path_nodes_count(navbot)
 
-			if node_count > 0 or spline.failed then
+			if node_count > 0 then
 				self:inject_spline_path(spline, line_drawer)
 			else
-				print("\t> spline segment failed", spline.id, "index:", wp_index, "reties:", retry_count)
+				print("\t> spline segment failed", spline.id, "index:", wp_index, "retries:", retry_count)
 
 				wp_index = math.max(wp_index - 1, 1)
 				spline.retries = retry_count + 1
 				spline.failed = spline.retries >= 3
 			end
 
-			if wp_index < #spline then
-				print("\t> continuing spline", spline.id, "index:", wp_index, "reties:", retry_count)
+			if wp_index < #spline and not spline.failed then
+				print("\t> continuing spline", spline.id, "index:", wp_index, "retries:", retry_count)
 
 				local p1 = spline[wp_index].pos:unbox()
 
@@ -612,7 +612,20 @@ PatrolAnalysis.run = function (self)
 				spline.wp_index = wp_index
 				i = i + 1
 			else
-				print("\t> spline completed", spline.id, "reties:", retry_count)
+				print("\t> spline completed", spline.id, "retries:", retry_count)
+
+				if not spline.spline_points then
+					local p1 = spline[1].pos:unbox()
+					local p2 = spline[2].pos:unbox()
+					local direction = Vector3.normalize(p2 - p1)
+					spline.spline_points = {
+						Vector3Box(p1),
+						Vector3Box(p1 + direction)
+					}
+					spline.spline_points_index = 2
+
+					print("\t> spline segment aborted after 3 tries -> " .. table.tostring(spline))
+				end
 
 				local unique_navbot = spline.unique_navbot
 

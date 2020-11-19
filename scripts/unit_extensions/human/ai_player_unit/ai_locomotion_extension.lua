@@ -17,7 +17,6 @@ AILocomotionExtension.init = function (self, extension_init_context, unit, exten
 	self._move_speed_var = Unit.animation_find_variable(unit, "move_speed")
 	self._velocity = Vector3Box()
 	self._update_function_name = "update_script_driven"
-	self._debug_color_name = Colors.get_random_color()
 	self._wanted_velocity = nil
 	self._wanted_rotation = nil
 	self._rotation_speed = DEFAULT_ROTATION_SPEED
@@ -69,15 +68,17 @@ AILocomotionExtension.hot_join_sync = function (self, sender)
 		return
 	end
 
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
+
 	if Unit.has_animation_state_machine(unit) then
 		local game_object_id = Managers.state.network:unit_game_object_id(unit)
 		local breed = Unit.get_data(unit, "breed")
 
-		RPC[breed.animation_sync_rpc](sender, game_object_id, Unit.animation_get_state(unit))
+		RPC[breed.animation_sync_rpc](channel_id, game_object_id, Unit.animation_get_state(unit))
 	else
 		local game_object_id = Managers.state.network:unit_game_object_id(unit)
 
-		RPC.rpc_hot_join_nail_to_wall_fix(sender, game_object_id)
+		RPC.rpc_hot_join_nail_to_wall_fix(channel_id, game_object_id)
 	end
 end
 

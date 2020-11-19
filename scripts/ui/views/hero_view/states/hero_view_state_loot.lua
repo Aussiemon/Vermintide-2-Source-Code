@@ -44,14 +44,6 @@ local CHEST_PRESENTATION_LOOK_DOWN_TIME = 1
 local CHEST_PRESENTATION_BONUS_WAIT_TIME = 1
 local CHEST_PRESENTATION_BONUS_TIME = 2
 local CHEST_PRESENTATION_EXIT_TIME = 1
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local glow_rarity_colors = {
 	default = {
 		front = {
@@ -1020,10 +1012,8 @@ HeroViewStateLoot._activate_widget_viewport = function (self, preview_widget, ac
 
 		if activate then
 			ScriptWorld.activate_viewport(world, viewport)
-			print("ENABLING LOOT PREVIEW VIEWPORT")
 		else
 			ScriptWorld.deactivate_viewport(world, viewport)
-			print("DISABLING LOOT PREVIEW VIEWPORT")
 		end
 
 		preview_widget_content.activated = activate
@@ -1087,6 +1077,12 @@ HeroViewStateLoot._select_option_tab_by_index = function (self, index)
 		local hotspot_content = widget_content[hotspot_name]
 		hotspot_content.is_selected = i == index
 	end
+end
+
+HeroViewStateLoot._has_grid_item = function (self, item)
+	local item_grid = self._item_grid
+
+	return item_grid:has_item(item)
 end
 
 HeroViewStateLoot._select_grid_item = function (self, item, t)
@@ -1456,8 +1452,16 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 				local hero_attributes = Managers.backend:get_interface("hero_attributes")
 				local start_experience = hero_attributes:get("wood_elf", "experience")
 				local loot_profile_name = "default"
+				local end_of_level_rewards_arguments = {
+					chest_upgrade_data = {
+						game_won = true,
+						tome = math.random(0, 3),
+						grimoire = math.random(0, 2),
+						loot_dice = math.random(0, 2)
+					}
+				}
 
-				backend_loot:generate_end_of_level_loot(true, true, "hardest", "ussingen", math.random(0, 3), math.random(0, 2), math.random(0, 2), math.random(0, 2), "wood_elf", start_experience, start_experience + 100, loot_profile_name, nil, nil)
+				backend_loot:generate_end_of_level_loot(true, true, "hardest", "ussingen", "wood_elf", start_experience, start_experience + 100, loot_profile_name, nil, nil, "adventure", 0, end_of_level_rewards_arguments)
 			end
 
 			if self:_is_button_pressed(debug_widgets_by_name.debug_add_chest_2) then
@@ -1661,7 +1665,7 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 				data.item_previewer = item_previewer
 			elseif slot_type == "hat" then
 				local preview_widget = data.preview_widget
-				local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_hat_camera_position_by_character, index)
+				local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_hat_camera_position_by_character, "HeroViewStateLootindex" .. index)
 
 				world_previewer:on_enter(preview_widget)
 				world_previewer:force_hide_character()
@@ -1677,7 +1681,7 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 				content.is_loading = true
 			elseif slot_type == "skin" then
 				local preview_widget = data.preview_widget
-				local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_skin_camera_position_by_character, index)
+				local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, UISettings.hero_skin_camera_position_by_character, "HeroViewStateLootindex" .. index)
 
 				world_previewer:on_enter(preview_widget)
 				world_previewer:force_hide_character()

@@ -152,18 +152,18 @@ ExtensionSystemBase.post_update_extension = function (self, extension_name, dt, 
 	end
 end
 
-ExtensionSystemBase.hot_join_sync = function (self, sender)
+ExtensionSystemBase.hot_join_sync = function (self, peer_id)
 	for extension_name, _ in pairs(self.extensions) do
-		self:_hot_join_sync_extension(extension_name, sender)
+		self:_hot_join_sync_extension(extension_name, peer_id)
 	end
 end
 
-ExtensionSystemBase._hot_join_sync_extension = function (self, extension_name, sender)
+ExtensionSystemBase._hot_join_sync_extension = function (self, extension_name, peer_id)
 	local entities = self.entity_manager:get_entities(extension_name)
 
 	for unit, internal in pairs(entities) do
 		if internal.hot_join_sync then
-			internal:hot_join_sync(sender)
+			internal:hot_join_sync(peer_id)
 		end
 	end
 end

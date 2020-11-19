@@ -163,7 +163,7 @@ ActionUtils.scale_power_levels = function (power_level, power_type, attacker_uni
 	return scaled_power_level
 end
 
-ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
+ActionUtils.get_power_multiplier = function (power_type, damage_profile, target_settings, dropoff_scalar)
 	local power_distribution = target_settings.power_distribution or damage_profile.power_distribution or DefaultPowerDistribution
 	local power_distribution_near = target_settings.power_distribution_near or damage_profile.power_distribution_near
 	local power_distribution_far = target_settings.power_distribution_far or damage_profile.power_distribution_far
@@ -177,12 +177,17 @@ ActionUtils.get_power_level = function (power_type, power_level, damage_profile,
 		power_multiplier = power_distribution[power_type]
 	end
 
+	return power_multiplier
+end
+
+ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
+	local power_multiplier = ActionUtils.get_power_multiplier(power_type, damage_profile, target_settings, dropoff_scalar)
 	local scaled_power_level = ActionUtils.scale_power_levels(power_level, power_type, attacker_unit, difficulty_level)
 
 	return scaled_power_level * power_multiplier
 end
 
-ActionUtils.get_power_level_for_target = function (original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, armor_type_override, damage_source, breed, dummy_unit_armor, dropoff_scalar, difficulty_level, target_unit_armor, target_unit_primary_armor)
+ActionUtils.get_power_level_for_target = function (target_unit, original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, armor_type_override, damage_source, breed, dummy_unit_armor, dropoff_scalar, difficulty_level, target_unit_armor, target_unit_primary_armor)
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local critical_strike_settings = is_critical_strike and damage_profile.critical_strike
 	local attack_armor_power_modifer, impact_armor_power_modifer = nil
@@ -215,6 +220,9 @@ ActionUtils.get_power_level_for_target = function (original_power_level, damage_
 	if is_enemy_target then
 		attack_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, attack_power, breed, damage_source, dummy_unit_armor)
 		impact_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, impact_power, breed, damage_source, dummy_unit_armor)
+		local target_armor = armor_type_override or target_unit_primary_armor or target_unit_armor
+		attack_armor_power_modifer = ActionUtils.apply_buffs_to_armor_power_on_hit(attacker_unit, target_unit, attack_armor_power_modifer, target_armor)
+		impact_armor_power_modifer = ActionUtils.apply_buffs_to_armor_power_on_hit(attacker_unit, target_unit, impact_armor_power_modifer, target_armor)
 	end
 
 	attack_power = attack_power * attack_armor_power_modifer
@@ -297,6 +305,24 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 	power_level = power_level * (power_level_weapon_multiplier + power_level_target_multiplier)
 
 	return power_level
+end
+
+ActionUtils.apply_buffs_to_armor_power_on_hit = function (attacker_unit, target_unit, attack_armor_power_modifer, armor_category)
+	if not ALIVE[target_unit] then
+		return attack_armor_power_modifer
+	end
+
+	local target_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
+
+	if not target_buff_extension then
+		return attack_armor_power_modifer
+	end
+
+	if armor_category == 2 or armor_category == 6 then
+		attack_armor_power_modifer = target_buff_extension:apply_buffs_to_value(attack_armor_power_modifer, "debuff_armoured")
+	end
+
+	return attack_armor_power_modifer
 end
 
 ActionUtils.scale_charged_projectile_power_level = function (power_level, action, charge_level)
@@ -424,28 +450,40 @@ end
 ActionUtils.get_action_time_scale = function (unit, action_settings, is_animation, custom_value)
 	local time_scale = custom_value or action_settings.anim_time_scale or 1
 
-	if unit and Unit.alive(unit) and ScriptUnit.has_extension(unit, "buff_system") then
-		local buff_extension = ScriptUnit.extension(unit, "buff_system")
-		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
-		local wielded_slot_template = inventory_extension:get_wielded_slot_item_template()
-		local buff_type = wielded_slot_template.buff_type
-		local is_melee = MeleeBuffTypes[buff_type]
-		local is_ranged = RangedBuffTypes[buff_type]
-		local weapon_type = wielded_slot_template.weapon_type
+	if unit and Unit.alive(unit) then
+		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
-		if is_melee then
-			time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
-		elseif is_ranged then
-			time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
-		end
+		if buff_extension then
+			local custom_anim_time_scale_mult = action_settings.custom_anim_time_scale_mult
 
-		if weapon_type and weapon_type == "DRAKEFIRE" then
-			time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed_drakefire")
-		end
+			if custom_anim_time_scale_mult then
+				time_scale = time_scale * custom_anim_time_scale_mult(unit, time_scale, is_animation)
+			end
 
-		if action_settings.scale_chain_window_by_charge_time_buff or (action_settings.scale_anim_by_charge_time_buff and is_animation) then
-			local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
-			time_scale = time_scale * 1 / charge_speed
+			local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+			local wielded_slot_template = inventory_extension:get_wielded_slot_item_template()
+
+			if wielded_slot_template then
+				local buff_type = wielded_slot_template.buff_type
+				local is_melee = MeleeBuffTypes[buff_type]
+				local is_ranged = RangedBuffTypes[buff_type]
+				local weapon_type = wielded_slot_template.weapon_type
+
+				if is_melee then
+					time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
+				elseif is_ranged then
+					time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed")
+				end
+
+				if weapon_type and weapon_type == "DRAKEFIRE" then
+					time_scale = buff_extension:apply_buffs_to_value(time_scale, "attack_speed_drakefire")
+				end
+
+				if action_settings.scale_chain_window_by_charge_time_buff or (action_settings.scale_anim_by_charge_time_buff and is_animation) then
+					local charge_speed = buff_extension:apply_buffs_to_value(1, "reduced_ranged_charge_time")
+					time_scale = time_scale * 1 / charge_speed
+				end
+			end
 		end
 	end
 
@@ -606,7 +644,7 @@ ActionUtils.get_critical_strike_chance = function (unit, action)
 	local additional_crit_chance = action.additional_critical_strike_chance or 0
 	local crit_chance = base_crit_chance + additional_crit_chance
 	local action_type = action.kind
-	local is_melee_action = action_type == "sweep" or action_type == "push_stagger"
+	local is_melee_action = action_type == "sweep" or action_type == "push_stagger" or action_type == "shield_slam"
 
 	if is_melee_action then
 		crit_chance = buff_extension:apply_buffs_to_value(crit_chance, "critical_strike_chance_melee")
@@ -679,12 +717,20 @@ ActionUtils.redirect_shield_hit = function (hit_unit, hit_actor)
 	return potential_hit_unit_owner, new_hit_actor
 end
 
-ActionUtils.resolve_action_selector = function (action, talent_extension, buff_extension)
+ActionUtils.resolve_action_selector = function (action, talent_extension, buff_extension, weapon_extension)
+	if not action then
+		return nil
+	end
+
+	if action.kind ~= "action_selector" then
+		return action, action.lookup_data.action_name, action.lookup_data.sub_action_name
+	end
+
 	local next_action = action.default_action
 	local conditional_actions = action.conditional_actions
 
 	for i = 1, #conditional_actions, 1 do
-		if conditional_actions[i].condition(talent_extension, buff_extension) then
+		if conditional_actions[i].condition(talent_extension, buff_extension, weapon_extension) then
 			next_action = conditional_actions[i]
 
 			break
@@ -693,8 +739,96 @@ ActionUtils.resolve_action_selector = function (action, talent_extension, buff_e
 
 	local next_action_name = next_action.action or action.lookup_data.action_name
 	local next_sub_action_name = next_action.sub_action
+	local item_template = Weapons[action.lookup_data.item_template_name]
+	local new_action = item_template.actions[next_action_name][next_sub_action_name]
 
-	return next_action_name, next_sub_action_name
+	return new_action, next_action_name, next_sub_action_name
+end
+
+ActionUtils.get_push_damage_profile = function (sub_action)
+	if sub_action then
+		return sub_action.damage_profile_inner, sub_action.damage_profile_outer
+	end
+
+	return nil, nil
+end
+
+ActionUtils.get_damage_profile_name = function (sub_action, action_hand)
+	if sub_action then
+		action_hand = action_hand or sub_action.weapon_action_hand
+		local impact_data = sub_action.impact_data
+		local damage_profile_name_either = (impact_data and impact_data.damage_profile) or sub_action.damage_profile
+		local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or sub_action.damage_profile_left
+		local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or sub_action.damage_profile_right
+
+		if action_hand == "both" then
+			return damage_profile_name_left, damage_profile_name_right
+		end
+
+		if action_hand == "left" then
+			local damage_profile_name = damage_profile_name_either or damage_profile_name_left
+
+			return damage_profile_name, nil
+		end
+
+		if action_hand == "right" then
+			local damage_profile_name = damage_profile_name_either or damage_profile_name_right
+
+			return nil, damage_profile_name
+		end
+
+		return nil, damage_profile_name_either
+	end
+
+	return nil, nil
+end
+
+ActionUtils.get_damage_profile_performance_scores = function (damage_profile_name)
+	local results = {
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	}
+
+	if damage_profile_name then
+		local damage_profile = DamageProfileTemplates[damage_profile_name]
+		local target_settings = (damage_profile.targets and damage_profile.targets[1]) or damage_profile.default_target
+		local attack_power = ActionUtils.get_power_multiplier("attack", damage_profile, target_settings, nil)
+
+		for i = 1, 6, 1 do
+			local armor_mod = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, i)
+			local performance_value = attack_power * armor_mod
+			results[i] = performance_value
+		end
+	end
+
+	return results
+end
+
+ActionUtils.get_performance_scores_for_sub_action = function (sub_action)
+	local results = nil
+	local left_profile, right_profile = ActionUtils.get_damage_profile_name(sub_action)
+
+	if left_profile then
+		results = ActionUtils.get_damage_profile_performance_scores(left_profile)
+	end
+
+	if right_profile then
+		if not left_profile then
+			results = ActionUtils.get_damage_profile_performance_scores(right_profile)
+		else
+			local other_results = ActionUtils.get_damage_profile_performance_scores(right_profile)
+
+			for i = 1, #other_results, 1 do
+				results[i] = results[i] + other_results[i]
+			end
+		end
+	end
+
+	return results
 end
 
 return

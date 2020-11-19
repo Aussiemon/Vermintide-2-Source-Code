@@ -160,7 +160,7 @@ DeedManager._update_owner = function (self, dt)
 	local members_map = lobby:members():members_map()
 
 	if not members_map[owner_peer_id] then
-		Managers.chat:add_local_system_message(1, "deed_owner_left_game", true)
+		Managers.chat:add_local_system_message(1, Localize("deed_owner_left_game"), true)
 
 		self._deed_session_faulty = true
 	end
@@ -175,7 +175,7 @@ DeedManager._use_reward_callback = function (self)
 	reward_callback()
 end
 
-DeedManager.rpc_select_deed = function (self, sender, item_name_id, owner_peer_id)
+DeedManager.rpc_select_deed = function (self, channel_id, item_name_id, owner_peer_id)
 	local item_name = NetworkLookup.item_names[item_name_id]
 	local item_data = ItemMasterList[item_name]
 	self._selected_deed_data = item_data
@@ -184,11 +184,13 @@ DeedManager.rpc_select_deed = function (self, sender, item_name_id, owner_peer_i
 	local network_manager = Managers.state.network
 
 	if self._is_server and network_manager and network_manager:game() then
-		self:_send_rpc_to_clients_except("rpc_select_deed", sender, item_name_id, owner_peer_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self:_send_rpc_to_clients_except("rpc_select_deed", peer_id, item_name_id, owner_peer_id)
 	end
 end
 
-DeedManager.rpc_deed_consumed = function (self, sender)
+DeedManager.rpc_deed_consumed = function (self, channel_id)
 	print("Deed has been consumed by owner, act on reward callback!")
 
 	if not self._reward_callback then
@@ -201,12 +203,17 @@ DeedManager.rpc_deed_consumed = function (self, sender)
 
 	if self._is_server and network_manager and network_manager:game() then
 		print("Sending to the other clients to act on deed consume")
-		self:_send_rpc_to_clients_except("rpc_deed_consumed", sender)
+
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self:_send_rpc_to_clients_except("rpc_deed_consumed", peer_id)
 	end
 end
 
-DeedManager.rpc_reset_deed = function (self, sender)
-	if sender ~= self._server_peer_id then
+DeedManager.rpc_reset_deed = function (self, channel_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id ~= self._server_peer_id then
 		print("[DeedManager] Skipping rpc_reset_deed, not sent from current server")
 
 		return
@@ -219,8 +226,9 @@ end
 
 DeedManager._send_rpc_to_server = function (self, rpc_name, ...)
 	local rpc = RPC[rpc_name]
+	local channel_id = PEER_ID_TO_CHANNEL[self._server_peer_id]
 
-	rpc(self._server_peer_id, ...)
+	rpc(channel_id, ...)
 end
 
 DeedManager._send_rpc_to_clients = function (self, rpc_name, ...)
@@ -238,7 +246,9 @@ DeedManager._send_rpc_to_clients = function (self, rpc_name, ...)
 		local peer_id = client_peer_ids[i]
 
 		if peer_id ~= server_peer_id then
-			rpc(peer_id, ...)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			rpc(channel_id, ...)
 		end
 	end
 end
@@ -258,7 +268,9 @@ DeedManager._send_rpc_to_clients_except = function (self, rpc_name, except, ...)
 		local peer_id = client_peer_ids[i]
 
 		if peer_id ~= server_peer_id and peer_id ~= except then
-			rpc(peer_id, ...)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			rpc(channel_id, ...)
 		end
 	end
 end

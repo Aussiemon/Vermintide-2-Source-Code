@@ -30,6 +30,24 @@ GenericVolumeTemplates.functions = {
 				health_extension:entered_kill_volume(t)
 			end
 		},
+		heroes_insta_kill = {
+			on_enter = function (unit, dt, t, data)
+				if Managers.state.side:versus_is_hero(unit) then
+					local health_extension = ScriptUnit.extension(unit, "health_system")
+
+					health_extension:entered_kill_volume(t)
+				end
+			end
+		},
+		dark_pact_insta_kill = {
+			on_enter = function (unit, dt, t, data)
+				if Managers.state.side:versus_is_dark_pact(unit) then
+					local health_extension = ScriptUnit.extension(unit, "health_system")
+
+					health_extension:entered_kill_volume(t)
+				end
+			end
+		},
 		catacombs_corpse_pit = {
 			on_enter = function (unit, dt, t, data)
 				local buff_system = Managers.state.entity:system("buff_system")
@@ -99,8 +117,9 @@ GenericVolumeTemplates.functions = {
 				elseif player.remote then
 					local unit_id = Managers.state.unit_storage:go_id(unit)
 					local location_id = NetworkLookup.locations[location]
+					local channel_id = PEER_ID_TO_CHANNEL[player.peer_id]
 
-					RPC.rpc_set_current_location(player.peer_id, unit_id, location_id)
+					RPC.rpc_set_current_location(channel_id, unit_id, location_id)
 				end
 			end
 		}
@@ -264,6 +283,8 @@ GenericVolumeTemplates.functions.damage_volume.player_insta_kill = GenericVolume
 GenericVolumeTemplates.functions.damage_volume.generic_insta_kill_no_cost = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill
 GenericVolumeTemplates.functions.damage_volume.ai_insta_kill_no_cost = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill
 GenericVolumeTemplates.functions.damage_volume.player_insta_kill_no_cost = GenericVolumeTemplates.functions.damage_volume.generic_insta_kill
+GenericVolumeTemplates.functions.damage_volume.pactsworn_insta_kill_no_cost = GenericVolumeTemplates.functions.damage_volume.dark_pact_insta_kill
+GenericVolumeTemplates.functions.damage_volume.heroes_insta_kill_no_cost = GenericVolumeTemplates.functions.damage_volume.heroes_insta_kill
 GenericVolumeTemplates.functions.damage_volume.ai_kill_dot = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.ai_kill_dot_no_cost = GenericVolumeTemplates.functions.damage_volume.generic_dot
 GenericVolumeTemplates.functions.damage_volume.skaven_molten_steel = GenericVolumeTemplates.functions.damage_volume.generic_dot

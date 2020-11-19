@@ -323,8 +323,9 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 				local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
+				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-				RPC.rpc_buff_on_attack(peer_id, attacker_unit_id, hit_unit_id, attack_type_id, (is_critical_strike and allow_critical_proc) or false, hit_zone_id, target_number, buff_weapon_type_id)
+				RPC.rpc_buff_on_attack(channel_id, attacker_unit_id, hit_unit_id, attack_type_id, (is_critical_strike and allow_critical_proc) or false, hit_zone_id, 1, buff_weapon_type_id)
 				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
 			elseif attacker_player then
 				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
@@ -394,7 +395,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 	end
 end
 
-AreaDamageSystem.rpc_area_damage = function (self, sender, go_id, position)
+AreaDamageSystem.rpc_area_damage = function (self, channel_id, go_id, position)
 	local unit = self.unit_storage:unit(go_id)
 	local area_damage_system = ScriptUnit.extension(unit, "area_damage_system")
 
@@ -403,9 +404,11 @@ AreaDamageSystem.rpc_area_damage = function (self, sender, go_id, position)
 	end
 end
 
-AreaDamageSystem.rpc_create_explosion = function (self, sender, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level, is_critical_strike, source_attacker_unit_id)
+AreaDamageSystem.rpc_create_explosion = function (self, channel_id, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level, is_critical_strike, source_attacker_unit_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_create_explosion", sender, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level or 0, is_critical_strike, source_attacker_unit_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_create_explosion", peer_id, attacker_unit_id, attacker_is_level_unit, position, rotation, explosion_template_name_id, scale, damage_source_id, attacker_power_level or 0, is_critical_strike, source_attacker_unit_id)
 	end
 
 	local attacker_unit = nil
@@ -425,14 +428,14 @@ AreaDamageSystem.rpc_create_explosion = function (self, sender, attacker_unit_id
 	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level, is_critical_strike, source_attacker_unit)
 end
 
-AreaDamageSystem.rpc_enable_area_damage = function (self, sender, level_index, enable)
+AreaDamageSystem.rpc_enable_area_damage = function (self, channel_id, level_index, enable)
 	local unit = Managers.state.network:game_object_or_level_unit(level_index, true)
 	local area_damage_extension = ScriptUnit.extension(unit, "area_damage_system")
 
 	area_damage_extension:enable(enable)
 end
 
-AreaDamageSystem.rpc_create_liquid_damage_area = function (self, sender, source_unit_go_id, position, flow_direction, liquid_template_id)
+AreaDamageSystem.rpc_create_liquid_damage_area = function (self, channel_id, source_unit_go_id, position, flow_direction, liquid_template_id)
 	fassert(self.is_server, "Error! Only the server should create Liquid Damage Areas!")
 
 	local source_unit = self.unit_storage:unit(source_unit_go_id)
@@ -451,7 +454,7 @@ AreaDamageSystem.rpc_create_liquid_damage_area = function (self, sender, source_
 	liquid_area_damage_extension:ready()
 end
 
-AreaDamageSystem.rpc_add_liquid_damage_blob = function (self, sender, liquid_unit_id, blob_id, position, is_filled)
+AreaDamageSystem.rpc_add_liquid_damage_blob = function (self, channel_id, liquid_unit_id, blob_id, position, is_filled)
 	local unit = self.unit_storage:unit(liquid_unit_id)
 
 	if unit then
@@ -461,7 +464,7 @@ AreaDamageSystem.rpc_add_liquid_damage_blob = function (self, sender, liquid_uni
 	end
 end
 
-AreaDamageSystem.rpc_update_liquid_damage_blob = function (self, sender, liquid_unit_id, blob_id, state)
+AreaDamageSystem.rpc_update_liquid_damage_blob = function (self, channel_id, liquid_unit_id, blob_id, state)
 	local unit = self.unit_storage:unit(liquid_unit_id)
 
 	if not unit then
@@ -480,7 +483,7 @@ AreaDamageSystem.rpc_update_liquid_damage_blob = function (self, sender, liquid_
 	end
 end
 
-AreaDamageSystem.rpc_damage_wave_set_state = function (self, sender, unit_id, state)
+AreaDamageSystem.rpc_damage_wave_set_state = function (self, channel_id, unit_id, state)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if not unit then
@@ -501,7 +504,7 @@ AreaDamageSystem.rpc_damage_wave_set_state = function (self, sender, unit_id, st
 	end
 end
 
-AreaDamageSystem.rpc_create_damage_wave = function (self, sender, source_unit_go_id, position, optional_target_position, damage_wave_template_id)
+AreaDamageSystem.rpc_create_damage_wave = function (self, channel_id, source_unit_go_id, position, optional_target_position, damage_wave_template_id)
 	fassert(self.is_server, "Error! Only the server should create Damage Waves!")
 
 	local source_unit = self.unit_storage:unit(source_unit_go_id)
@@ -519,7 +522,7 @@ AreaDamageSystem.rpc_create_damage_wave = function (self, sender, source_unit_go
 	damage_wave_extension:launch_wave(nil, optional_target_position)
 end
 
-AreaDamageSystem.rpc_add_damage_wave_fx = function (self, sender, damage_wave_unit_id, position)
+AreaDamageSystem.rpc_add_damage_wave_fx = function (self, channel_id, damage_wave_unit_id, position)
 	local unit = self.unit_storage:unit(damage_wave_unit_id)
 
 	if unit then
@@ -529,7 +532,7 @@ AreaDamageSystem.rpc_add_damage_wave_fx = function (self, sender, damage_wave_un
 	end
 end
 
-AreaDamageSystem.rpc_add_damage_blob_fx = function (self, sender, damage_blob_unit_id, position, life_time_percentage)
+AreaDamageSystem.rpc_add_damage_blob_fx = function (self, channel_id, damage_blob_unit_id, position, life_time_percentage)
 	local unit = self.unit_storage:unit(damage_blob_unit_id)
 
 	if unit then
@@ -539,12 +542,14 @@ AreaDamageSystem.rpc_add_damage_blob_fx = function (self, sender, damage_blob_un
 	end
 end
 
-AreaDamageSystem.rpc_abort_damage_blob = function (self, sender, damage_blob_unit_id)
+AreaDamageSystem.rpc_abort_damage_blob = function (self, channel_id, damage_blob_unit_id)
 	local unit = self.unit_storage:unit(damage_blob_unit_id)
 
 	if unit then
 		if self.is_server then
-			self.network_transmit:send_rpc_clients_except("rpc_abort_damage_blob", sender, damage_blob_unit_id)
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+			self.network_transmit:send_rpc_clients_except("rpc_abort_damage_blob", peer_id, damage_blob_unit_id)
 		end
 
 		local damage_blob_extension = ScriptUnit.extension(unit, "area_damage_system")

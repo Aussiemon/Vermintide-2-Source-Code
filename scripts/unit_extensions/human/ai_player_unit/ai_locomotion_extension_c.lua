@@ -72,6 +72,7 @@ AILocomotionExtensionC.hot_join_sync = function (self, sender)
 		return
 	end
 
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
 	local unit = self._unit
 	local game_object_id = Managers.state.network:unit_game_object_id(unit)
 
@@ -79,9 +80,9 @@ AILocomotionExtensionC.hot_join_sync = function (self, sender)
 		local blackboard = BLACKBOARDS[unit]
 		local breed = blackboard.breed
 
-		RPC[breed.animation_sync_rpc](sender, game_object_id, Unit.animation_get_state(unit))
+		RPC[breed.animation_sync_rpc](channel_id, game_object_id, Unit.animation_get_state(unit))
 	else
-		RPC.rpc_hot_join_nail_to_wall_fix(sender, game_object_id)
+		RPC.rpc_hot_join_nail_to_wall_fix(channel_id, game_object_id)
 	end
 end
 

@@ -73,8 +73,13 @@ BTTransformAction.transform = function (self, unit, blackboard)
 	local breed = Breeds[action.wanted_breed_transform]
 	local spawn_category = "misc"
 	local conflict_director = Managers.state.conflict
+	local position = (unit and POSITION_LOOKUP[unit]) or Unit.world_position(unit, 0)
+	local rotation = (unit and Unit.local_rotation(unit, 0)) or Quaternion.identity()
 
-	conflict_director:spawn_queued_unit(breed, Vector3Box(POSITION_LOOKUP[unit]), QuaternionBox(Unit.local_rotation(unit, 0)), spawn_category, nil, nil, optional_data)
+	if position and rotation then
+		conflict_director:spawn_queued_unit(breed, Vector3Box(position), QuaternionBox(rotation), spawn_category, nil, nil, optional_data)
+	end
+
 	conflict_director:destroy_unit(unit, blackboard, "boss_transformation")
 
 	blackboard.has_transformed = true

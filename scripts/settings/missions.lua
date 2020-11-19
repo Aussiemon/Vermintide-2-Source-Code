@@ -1897,16 +1897,134 @@ Missions.weave_collect_limited_item_objective = {
 	collect_amount = 1,
 	hidden = true
 }
+Missions.town_survive_arena = {
+	mission_template_name = "goal",
+	text = "morris_town_survive_arena"
+}
+Missions.town_exit = {
+	mission_template_name = "goal",
+	text = "morris_town_exit"
+}
+Missions.mountain_survive_ritual = {
+	mission_template_name = "goal",
+	text = "morris_mountain_survive_ritual"
+}
+Missions.mountain_exit = {
+	mission_template_name = "goal",
+	text = "morris_mountain_exit"
+}
+Missions.mines_blow_up_gate = {
+	text = "morris_mines_blow_up_gate",
+	mission_template_name = "collect",
+	collect_amount = 3
+}
+Missions.mines_exit = {
+	mission_template_name = "goal",
+	text = "morris_mines_exit"
+}
+Missions.crag_complete_ritual = {
+	mission_template_name = "goal",
+	text = "morris_crag_complete_ritual"
+}
+Missions.crag_exit = {
+	mission_template_name = "goal",
+	text = "morris_crag_exit"
+}
+Missions.mordrek_start_winch = {
+	mission_template_name = "goal",
+	text = "morris_mordrek_start_winch"
+}
+Missions.mordrek_exit = {
+	mission_template_name = "goal",
+	text = "morris_mordrek_exit"
+}
+Missions.bay_activate_bell = {
+	mission_template_name = "goal",
+	text = "morris_bay_activate_bell"
+}
+Missions.bay_survive_until_boat = {
+	mission_template_name = "goal",
+	text = "morris_bay_fight_horde"
+}
+Missions.bay_escape_via_boat = {
+	mission_template_name = "goal",
+	text = "morris_bay_hold_out_until_boat_arrives"
+}
+Missions.bay_survive_arena = {
+	mission_template_name = "goal",
+	text = "morris_bay_survive_arena"
+}
+Missions.bay_escape_arena = {
+	mission_template_name = "goal",
+	text = "morris_bay_escape_arena"
+}
+Missions.bay_survive_enemies = {
+	mission_template_name = "goal",
+	text = "morris_bay_survive_enemies"
+}
+Missions.bay_exit_bay = {
+	mission_template_name = "goal",
+	text = "morris_bay_exit_bay"
+}
+Missions.gorge_blow_gate = {
+	text = "morris_gorge_blow_gate",
+	mission_template_name = "collect",
+	collect_amount = 3
+}
+Missions.gorge_survive = {
+	mission_template_name = "goal",
+	text = "morris_gorge_survive"
+}
+Missions.gorge_exit_area = {
+	mission_template_name = "goal",
+	text = "gorge_exit_area"
+}
+Missions.snare_survive = {
+	mission_template_name = "goal",
+	text = "morris_snare_survive_the_throne_room"
+}
+Missions.snare_survive_town = {
+	mission_template_name = "goal",
+	text = "morris_snare_survive_the_town"
+}
+Missions.snare_survive_arena = {
+	mission_template_name = "goal",
+	text = "morris_snare_survive_the_arena"
+}
+Missions.snare_survive_farm = {
+	mission_template_name = "goal",
+	text = "morris_snare_survive_the_farm"
+}
+Missions.snare_survive_alley = {
+	mission_template_name = "goal",
+	text = "morris_snare_survive_the_alley"
+}
+Missions.snare_enter = {
+	mission_template_name = "goal",
+	text = "gorge_snare_enter_the_mines"
+}
+Missions.snare_exit = {
+	mission_template_name = "goal",
+	text = "gorge_snare_exit_the_gate"
+}
+Missions.snare_escape = {
+	mission_template_name = "goal",
+	text = "gorge_snare_escape_into_portal"
+}
+Missions.volcano_winch = {
+	mission_template_name = "goal",
+	text = "morris_volcano_pull_the_winch"
+}
+Missions.volcano_survive = {
+	mission_template_name = "goal",
+	text = "morris_volcano_survive"
+}
+Missions.volcano_escape = {
+	mission_template_name = "goal",
+	text = "morris_volcano_escape_into_portal"
+}
 
-for _, dlc in pairs(DLCSettings) do
-	local missions = dlc.missions
-
-	if missions then
-		for name, data in pairs(missions) do
-			Missions[name] = data
-		end
-	end
-end
+DLCUtils.merge("missions", Missions)
 
 for name, data in pairs(Missions) do
 	assert(data.mission_template_name, "mission_template_name not specified")

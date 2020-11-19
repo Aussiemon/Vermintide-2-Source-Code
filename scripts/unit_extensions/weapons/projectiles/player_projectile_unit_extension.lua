@@ -5,9 +5,11 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	local item_name = extension_init_data.item_name
 	local owner_unit = extension_init_data.owner_unit
 	self._world = extension_init_context.world
+	self._wwise_world = Managers.world:wwise_world(self._world)
 	self._projectile_unit = unit
 	self._owner_unit = owner_unit
 	self._owner_player = Managers.player:owner(owner_unit)
+	local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 	self.item_name = item_name
 	local item_data = ItemMasterList[item_name]
 	local item_template = BackendUtils.get_item_template(item_data)
@@ -26,6 +28,11 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	local timed_data = current_action.timed_data
 	self.power_level = extension_init_data.power_level
 	self.projectile_info = projectile_info
+
+	if impact_data.grenade and owner_buff_extension and owner_buff_extension:has_buff_perk("frag_fire_grenades") then
+		impact_data = table.shallow_copy(impact_data)
+		impact_data.aoe = ExplosionTemplates.frag_fire_grenade
+	end
 
 	if impact_data then
 		self._impact_data = impact_data
@@ -51,6 +58,7 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	self._marked_for_deletion = false
 	self._did_damage = false
 	self._num_bounces = 0
+	self._num_additional_penetrations = owner_buff_extension:apply_buffs_to_value(0, "ranged_additional_penetrations")
 	self._is_critical_strike = not not extension_init_data.is_critical_strike
 
 	self:initialize_projectile(projectile_info, impact_data)
@@ -81,7 +89,12 @@ PlayerProjectileUnitExtension.initialize_projectile = function (self, projectile
 
 	if timed_data then
 		self._is_timed = true
-		self._life_time = self._time_initialized + timed_data.life_time
+
+		if timed_data.activate_life_time_on_impact then
+			self._life_time = math.huge
+		else
+			self:_activate_life_time(self._time_initialized)
+		end
 	end
 
 	if projectile_info.times_bigger then
@@ -118,14 +131,32 @@ PlayerProjectileUnitExtension.mark_for_deletion = function (self)
 end
 
 PlayerProjectileUnitExtension.stop = function (self)
-	if not self._stop_impacts then
+	if self._stop_impacts then
+		return
+	end
+
+	local timed_data = self._timed_data
+	local activate_life_time_on_impact = timed_data and timed_data.activate_life_time_on_impact
+
+	if not activate_life_time_on_impact then
 		self:mark_for_deletion()
 		Unit.flow_event(self._projectile_unit, "lua_projectile_end")
-		self._locomotion_extension:stop()
 
-		self._stop_impacts = true
 		self.active = false
 	end
+
+	self._locomotion_extension:stop()
+
+	self._stop_impacts = true
+end
+
+PlayerProjectileUnitExtension._stop_by_life_time = function (self)
+	self:mark_for_deletion()
+	Unit.flow_event(self._projectile_unit, "lua_projectile_end")
+	self._locomotion_extension:stop()
+
+	self._stop_impacts = true
+	self.active = false
 end
 
 PlayerProjectileUnitExtension.update = function (self, unit, input, _, context, t)
@@ -148,7 +179,7 @@ PlayerProjectileUnitExtension.update = function (self, unit, input, _, context, 
 		local recent_impacts, num_impacts = impact_extension:recent_impacts()
 
 		if num_impacts > 0 then
-			self:handle_impacts(recent_impacts, num_impacts)
+			self:handle_impacts(recent_impacts, num_impacts, t)
 		end
 	end
 end
@@ -163,7 +194,13 @@ PlayerProjectileUnitExtension.handle_timed_events = function (self, t)
 			self:do_aoe(aoe_data, POSITION_LOOKUP[unit])
 		end
 
-		self:stop()
+		local sound_event = self._timed_data.life_time_activate_sound_stop_event
+
+		if sound_event then
+			WwiseWorld.trigger_event(self._wwise_world, sound_event)
+		end
+
+		self:_stop_by_life_time()
 	end
 end
 
@@ -201,7 +238,7 @@ end
 
 local best_hit_units = {}
 
-PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impacts)
+PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impacts, time)
 	table.clear(best_hit_units)
 
 	local unit = self._projectile_unit
@@ -276,6 +313,12 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 					hud_extension.show_critical_indication = false
 				end
 
+				local timed_data = self._timed_data
+
+				if timed_data and timed_data.activate_life_time_on_impact then
+					self:_activate_life_time(time)
+				end
+
 				local breed = AiUtils.unit_breed(hit_unit)
 
 				if breed then
@@ -337,11 +380,23 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 	end
 end
 
+PlayerProjectileUnitExtension._activate_life_time = function (self, game_time)
+	local timed_data = self._timed_data
+	local sound_event = timed_data.life_time_activate_sound_start_event
+
+	if sound_event then
+		WwiseWorld.trigger_event(self._wwise_world, sound_event)
+	end
+
+	self._life_time = game_time + timed_data.life_time
+end
+
 PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
 	local shield_blocked = false
 	local damage_profile_name = impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local allow_link = true
+	local forced_penetration = false
 	local aoe_data = impact_data.aoe
 	breed = AiUtils.unit_breed(hit_unit)
 
@@ -376,7 +431,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, buff_type, unmodified)
 
-		allow_link, shield_blocked = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
+		allow_link, shield_blocked, forced_penetration = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
 	end
 
 	local grenade = impact_data.grenade
@@ -390,20 +445,32 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	if current_action.use_max_targets then
 		if current_action.max_targets <= self._num_targets_hit then
+			if self._num_additional_penetrations > 0 then
+				forced_penetration = true
+			else
+				local hit_enemy_or_player = true
+
+				self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_enemy_or_player)
+				self:stop()
+			end
+		end
+	elseif self._max_mass <= self._amount_of_mass_hit then
+		if self._num_additional_penetrations > 0 then
+			forced_penetration = true
+		else
 			local hit_enemy_or_player = true
 
 			self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_enemy_or_player)
 			self:stop()
 		end
-	elseif self._max_mass <= self._amount_of_mass_hit then
-		local hit_enemy_or_player = true
-
-		self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_enemy_or_player)
-		self:stop()
 	end
 
 	if self._locomotion_extension.notify_hit_enemy then
 		self._locomotion_extension:notify_hit_enemy(hit_unit)
+	end
+
+	if forced_penetration then
+		self._num_additional_penetrations = self._num_additional_penetrations - 1
 	end
 end
 
@@ -417,6 +484,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local hit_zone = breed.hit_zones_lookup[node]
 	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
 	local attack_direction = hit_direction
+	local forced_penetration = false
 	local was_alive = (is_server and AiUtils.unit_alive(hit_unit)) or AiUtils.client_predicted_unit_alive(hit_unit)
 
 	if was_alive then
@@ -499,14 +567,24 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 
 	if was_alive and no_damage then
 		self._did_damage = predicted_damage
-		self._amount_of_mass_hit = self._max_mass
 
-		self:stop()
+		if self._num_additional_penetrations > 0 then
+			forced_penetration = true
+		else
+			self._amount_of_mass_hit = self._max_mass
+
+			self:stop()
+		end
 	elseif was_alive and not action.ignore_armor and (breed.armor_category == 2 or breed.armor_category == 3 or shield_blocked) then
 		self._did_damage = predicted_damage
-		self._amount_of_mass_hit = self._max_mass
 
-		self:stop()
+		if self._num_additional_penetrations > 0 then
+			forced_penetration = true
+		else
+			self._amount_of_mass_hit = self._max_mass
+
+			self:stop()
+		end
 	else
 		self._did_damage = predicted_damage
 
@@ -543,7 +621,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 
 	local allow_link = hit_zone_name ~= "ward"
 
-	return allow_link, shield_blocked
+	return allow_link, shield_blocked, forced_penetration
 end
 
 PlayerProjectileUnitExtension.hit_player = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -551,6 +629,7 @@ PlayerProjectileUnitExtension.hit_player = function (self, impact_data, hit_unit
 	local hit = false
 	local allow_link = false
 	local shield_blocked = false
+	local forced_penetration = false
 	local owner_player = self._owner_player
 	local damage_profile_name = impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
@@ -573,18 +652,30 @@ PlayerProjectileUnitExtension.hit_player = function (self, impact_data, hit_unit
 
 			if action.use_max_targets then
 				if action.max_targets <= self._num_targets_hit then
+					if self._num_additional_penetrations > 0 then
+						forced_penetration = true
+					else
+						local hit_player_or_enemy = true
+
+						self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_player_or_enemy)
+						self:stop()
+					end
+				end
+			elseif self._max_mass <= self._amount_of_mass_hit then
+				if self._num_additional_penetrations > 0 then
+					forced_penetration = true
+				else
 					local hit_player_or_enemy = true
 
 					self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_player_or_enemy)
 					self:stop()
 				end
-			elseif self._max_mass <= self._amount_of_mass_hit then
-				local hit_player_or_enemy = true
-
-				self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_player_or_enemy)
-				self:stop()
 			end
 		end
+	end
+
+	if forced_penetration then
+		self._num_additional_penetrations = self._num_additional_penetrations - 1
 	end
 end
 
@@ -699,7 +790,7 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 		end
 	end
 
-	if not bounce or (bounce and bounce_linking) then
+	if (not bounce or (bounce and bounce_linking)) and (self._num_additional_penetrations == 0 or not health_extension or impact_data.grenade) then
 		self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, false, true, false, false)
 	end
 
@@ -709,7 +800,11 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 		self:do_aoe(aoe_data, hit_position)
 	end
 
-	self:stop()
+	if health_extension and self._num_additional_penetrations > 0 and not impact_data.grenade then
+		self._num_additional_penetrations = self._num_additional_penetrations - 1
+	else
+		self:stop()
+	end
 end
 
 PlayerProjectileUnitExtension.hit_damagable_prop = function (self, damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, level_index, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -766,7 +861,9 @@ PlayerProjectileUnitExtension.hit_non_level_unit = function (self, impact_data, 
 		end
 	end
 
-	self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, false, true, false, false)
+	if self._num_additional_penetrations == 0 then
+		self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, false, true, false, false)
+	end
 
 	local aoe_data = impact_data.aoe
 
@@ -777,7 +874,11 @@ PlayerProjectileUnitExtension.hit_non_level_unit = function (self, impact_data, 
 	end
 
 	if stop_impacts then
-		self:stop()
+		if self._num_additional_penetrations > 0 then
+			self._num_additional_penetrations = self._num_additional_penetrations - 1
+		else
+			self:stop()
+		end
 	end
 end
 
@@ -1010,13 +1111,7 @@ PlayerProjectileUnitExtension._link_pickup_projectile = function (self, impact_d
 		local pickup_spawn_type = "dropped"
 		local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
 
-		if self._is_server then
-			local pickup_system = Managers.state.entity:system("pickup_system")
-
-			pickup_system:rpc_spawn_linked_pickup(nil, pickup_name_id, link_position, link_rotation, pickup_spawn_type_id, hit_unit_id, node_index, is_level_unit, spawn_limit)
-		else
-			network_manager.network_transmit:send_rpc_server("rpc_spawn_linked_pickup", pickup_name_id, link_position, link_rotation, pickup_spawn_type_id, hit_unit_id, node_index, is_level_unit, spawn_limit)
-		end
+		network_manager.network_transmit:send_rpc_server("rpc_spawn_linked_pickup", pickup_name_id, link_position, link_rotation, pickup_spawn_type_id, hit_unit_id, node_index, is_level_unit, spawn_limit)
 	else
 		local random_angle = math.random(-math.half_pi, math.half_pi)
 		local bounce_dir = (hit_enemy_or_player and hit_direction) or Vector3.reflect(hit_direction, hit_normal)

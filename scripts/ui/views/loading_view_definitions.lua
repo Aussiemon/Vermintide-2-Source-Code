@@ -337,7 +337,7 @@ local press_to_continue_widget = {
 				pass_type = "text",
 				text_id = "text",
 				content_check_function = function (content, style)
-					style.text_color[1] = 192 + math.sin(Application.time_since_launch() * 4) * 64
+					style.text_color[1] = 192 + math.sin(Managers.time:time("ui") * 4) * 64
 
 					return true
 				end

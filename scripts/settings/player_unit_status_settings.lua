@@ -82,7 +82,7 @@ PlayerUnitStatusSettings.charge_values_defensive = {
 	catapulted = 0.02,
 	pounced = 0.02
 }
-PlayerUnitStatusSettings.overcharge_values = {
+PlayerUnitStatusSettings.overcharge_values = table.merge(PlayerUnitStatusSettings.overcharge_values or {}, {
 	drakegun_basic = 2,
 	beam_staff_alternate = 0.85,
 	beam_staff_shotgun = 7,
@@ -104,7 +104,7 @@ PlayerUnitStatusSettings.overcharge_values = {
 	geiser_push = 1,
 	geiser_charged = 8,
 	spark = 1
-}
+})
 PlayerUnitStatusSettings.hanging_by_pack_master = {
 	release_unhook_time_dead = 3,
 	release_unhook_time = 1.5,
@@ -117,5 +117,7 @@ PlayerUnitStatusSettings.hanging_by_pack_master = {
 	release_falling_time_ko = 3,
 	release_unhook_time_ko = 4
 }
+
+DLCUtils.require_list("player_unit_status_settings_file_names")
 
 return

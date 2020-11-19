@@ -4,8 +4,10 @@ AdminManager = class(AdminManager)
 
 AdminManager.init = function (self)
 	if DEDICATED_SERVER then
-		CommandWindow.open("Dedicated Server")
-		CommandWindow.print(string.format("Version: content '%s', engine '%s'", script_data.settings.content_revision, script_data.build_identifier))
+		local window_title = script_data.window_title
+
+		CommandWindow.open(window_title or "Dedicated Server")
+		cprint(string.format("Version: content '%s', engine '%s'", script_data.settings.content_revision, script_data.build_identifier))
 
 		local settings = {
 			port = script_data.rcon_port or script_data.settings.rcon_port or 20000

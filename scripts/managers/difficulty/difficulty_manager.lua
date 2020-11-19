@@ -11,18 +11,28 @@ DifficultyManager.init = function (self, world, is_server, network_event_delegat
 	network_event_delegate:register(self, "rpc_set_difficulty")
 
 	self.difficulty = nil
+	self.fallback_difficulty = nil
+	self.difficulty_setting = nil
+	self.difficulty_tweak = 0
 end
 
-DifficultyManager.set_difficulty = function (self, difficulty)
+DifficultyManager.set_difficulty = function (self, difficulty, tweak)
+	fassert(tweak and tweak >= -10 and tweak <= 10, "tweak must be a number from -10 to 10")
+
 	self.difficulty = difficulty
+	self.difficulty_setting = DifficultySettings[difficulty]
+	self.difficulty_rank = self.difficulty_setting.rank
+	self.fallback_difficulty = self.difficulty_setting.fallback_difficulty
+	self.difficulty_tweak = tweak
 	self.difficulty_rank = DifficultySettings[difficulty].rank
 
-	Managers.mechanism:set_difficulty(difficulty)
+	Managers.mechanism:set_difficulty(difficulty, tweak)
 	SET_BREED_DIFFICULTY()
 
 	if self.is_server then
 		local lobby_data = self.lobby_host:get_stored_lobby_data()
 		lobby_data.difficulty = difficulty
+		lobby_data.difficulty_tweak = tweak
 
 		self.lobby_host:set_lobby_data(lobby_data)
 
@@ -32,7 +42,7 @@ DifficultyManager.set_difficulty = function (self, difficulty)
 			local network_transmit = network_manager.network_transmit
 			local difficulty_id = NetworkLookup.difficulties[self.difficulty]
 
-			network_transmit:send_rpc_clients("rpc_set_difficulty", difficulty_id, false)
+			network_transmit:send_rpc_clients("rpc_set_difficulty", difficulty_id, tweak, false)
 		end
 	end
 end
@@ -46,33 +56,50 @@ DifficultyManager.get_level_difficulties = function (self, level_key)
 end
 
 DifficultyManager.get_difficulty = function (self)
-	return self.difficulty
+	return self.difficulty, self.difficulty_tweak
 end
 
 DifficultyManager.get_difficulty_rank = function (self)
-	return self.difficulty_rank
+	return self.difficulty_rank, self.difficulty_tweak
 end
 
 DifficultyManager.get_difficulty_settings = function (self)
-	return DifficultySettings[self.difficulty]
+	return self.difficulty_setting
 end
 
-DifficultyManager.hot_join_sync = function (self, sender)
+DifficultyManager.get_difficulty_value_from_table = function (self, lookup_table)
+	local difficulty_key = self.difficulty
+	local val = lookup_table[difficulty_key]
+
+	if val then
+		return val
+	end
+
+	local fallback_difficulty = DifficultySettings[difficulty_key].fallback_difficulty
+
+	return lookup_table[fallback_difficulty]
+end
+
+DifficultyManager.get_difficulty_index = function (self)
+	return table.index_of(DefaultDifficulties, self.difficulty)
+end
+
+DifficultyManager.hot_join_sync = function (self, peer_id)
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local difficulty_id = NetworkLookup.difficulties[self.difficulty]
 
-	network_transmit:send_rpc("rpc_set_difficulty", sender, difficulty_id, true)
+	network_transmit:send_rpc("rpc_set_difficulty", peer_id, difficulty_id, self.difficulty_tweak, true)
 end
 
 DifficultyManager.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 end
 
-DifficultyManager.rpc_set_difficulty = function (self, sender, difficulty_id, hot_join)
+DifficultyManager.rpc_set_difficulty = function (self, channel_id, difficulty_id, difficulty_tweak, hot_join)
 	local difficulty = NetworkLookup.difficulties[difficulty_id]
 
-	self:set_difficulty(difficulty)
+	self:set_difficulty(difficulty, difficulty_tweak)
 
 	if hot_join then
 		Managers.state.event:trigger("difficulty_synced")

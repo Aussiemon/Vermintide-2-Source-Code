@@ -36,8 +36,7 @@ settings.statistics_lookup = {
 	"weave_light_low_curse",
 	"scorpion_weaves_fire_season_1",
 	"weave_shadow_kill_no_shrouded",
-	"weave_death_hit_by_spirit",
-	"scorpion_keep_standard_bearer_alive"
+	"weave_death_hit_by_spirit"
 }
 settings.husk_lookup = {
 	"units/weapons/player/wpn_dw_thrown_axe_01_t2/wpn_dw_thrown_axe_01_t2_magic_01_3p",

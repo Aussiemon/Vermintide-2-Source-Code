@@ -1,13 +1,19 @@
 function cprint(...)
 	print(...)
-	CommandWindow.print(...)
+
+	if PLATFORM == "win32" then
+		CommandWindow.print(...)
+	end
 end
 
 function cprintf(f, ...)
 	local s = sprintf(f, ...)
 
 	print(s)
-	CommandWindow.print(s)
+
+	if PLATFORM == "win32" then
+		CommandWindow.print(s)
+	end
 end
 
 function printf(...)

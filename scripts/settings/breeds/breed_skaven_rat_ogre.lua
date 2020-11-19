@@ -323,6 +323,9 @@ local breed_data = {
 
 		QuestSettings.check_rat_ogre_killed_mid_leap(blackboard, killer_unit)
 		QuestSettings.check_rat_ogre_killed_without_dealing_damage(blackboard, killer_unit)
+	end,
+	before_stagger_enter_function = function (unit, blackboard, attacker_unit, is_push)
+		Managers.state.achievement:trigger_event("rat_ogre_stagger", unit, blackboard, attacker_unit)
 	end
 }
 Breeds.skaven_rat_ogre = table.create_copy(Breeds.skaven_rat_ogre, breed_data)

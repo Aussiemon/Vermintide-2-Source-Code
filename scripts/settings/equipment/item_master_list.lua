@@ -19,7 +19,8 @@ table.append(CanWieldAllItemTemplates, {
 	"wh_captain",
 	"es_huntsman",
 	"es_knight",
-	"es_mercenary"
+	"es_mercenary",
+	"empire_soldier_tutorial"
 })
 
 ItemMasertListUpdateQueue = {}
@@ -43,16 +44,7 @@ dofile("scripts/settings/equipment/player_wwise_dependencies")
 dofile("scripts/settings/equipment/item_master_list_weapon_skins")
 dofile("scripts/settings/equipment/item_master_list_test_items")
 dofile("scripts/settings/equipment/item_master_list_steam_items")
-
-for _, dlc in pairs(DLCSettings) do
-	local file_names = dlc.item_master_list_file_names
-
-	if file_names then
-		for i = 1, #file_names, 1 do
-			dofile(file_names[i])
-		end
-	end
-end
+DLCUtils.dofile_list("item_master_list_file_names")
 
 for i = 1, #ItemMasertListUpdateQueue, 1 do
 	local item_names = ItemMasertListUpdateQueue[i][1]
@@ -89,6 +81,14 @@ for item_name, item_data in pairs(ItemMasterList) do
 		fassert(matching_item, "Missing matching item %s referenced by %s", item_data.matching_item_key, item_name)
 
 		item_data.can_wield = matching_item.can_wield
+	end
+
+	if item_data.slot_type == "hat" then
+		if table.find(item_data.can_wield, "bw_unchained") or table.find(item_data.can_wield, "bw_adept") then
+			item_data.item_preview_environment = "hats_bloom_01"
+		end
+	elseif item_data.slot_type == "weapon_skin" and string.find(item_name, "_runed_") then
+		item_data.item_preview_object_set_name = "flow_rune_weapon_lights"
 	end
 end
 

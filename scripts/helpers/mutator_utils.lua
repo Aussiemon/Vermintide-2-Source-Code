@@ -18,10 +18,11 @@ MutatorUtils.apply_buff_to_alive_player_units = function (context, data, buff_na
 	end
 
 	local side = Managers.state.side:get_side_from_name("heroes")
-	local current_player_units = side.PLAYER_AND_BOT_UNITS
+	local current_player_units = (data.only_affect_players and side.PLAYER_UNITS) or side.PLAYER_AND_BOT_UNITS
 	local num_current_player_units = #current_player_units
 	local get_extension = ScriptUnit.extension
 	local unit_alive = AiUtils.unit_alive
+	local new_buff_ids = {}
 
 	for i = 1, num_current_player_units, 1 do
 		local unit = current_player_units[i]
@@ -32,8 +33,8 @@ MutatorUtils.apply_buff_to_alive_player_units = function (context, data, buff_na
 				attacker_unit = unit
 			}
 			local buff_ext = get_extension(unit, "buff_system")
-
-			buff_ext:add_buff(buff_name, params)
+			local buff_id = buff_ext:add_buff(buff_name, params)
+			new_buff_ids[unit] = buff_id
 		end
 
 		player_units[unit] = true
@@ -44,6 +45,8 @@ MutatorUtils.apply_buff_to_alive_player_units = function (context, data, buff_na
 			player_units[unit] = nil
 		end
 	end
+
+	return new_buff_ids
 end
 
 MutatorUtils.store_breed_and_action_settings = function (context, data)

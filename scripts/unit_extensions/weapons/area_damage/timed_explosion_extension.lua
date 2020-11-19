@@ -2,6 +2,7 @@ TimedExplosionExtension = class(TimedExplosionExtension)
 
 TimedExplosionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
+	self._on_explode_callbacks = {}
 	self._area_damage_system = extension_init_context.entity_manager:system("area_damage_system")
 	self.explosion_template_name = extension_init_data.explosion_template_name
 	local explosion_template = ExplosionTemplates[extension_init_data.explosion_template_name]
@@ -19,12 +20,13 @@ TimedExplosionExtension.init = function (self, extension_init_context, unit, ext
 		self._buildup_effect_delay = (self._time_to_explode + self._follow_time) - (explosion_template.explosion.buildup_effect_time or 0)
 	else
 		self._time_to_explode = explosion_template.time_to_explode or 0
-		self._scale = explosion_template.explosion.radius or 1
+		self._scale = explosion_template.explosion.unit_scale or explosion_template.explosion.radius or 1
 		self._follow_time = explosion_template.follow_time or 0
 		self._power = explosion_template.explosion.power_level or 0
 		self._buildup_effect_delay = (self._time_to_explode + self._follow_time) - (explosion_template.explosion.buildup_effect_time or 0)
 	end
 
+	self._buildup_effect_offset = explosion_template.explosion.buildup_effect_offset
 	self._buildup_effect = explosion_template.explosion.buildup_effect_name
 	self._use_effect = self._buildup_effect ~= nil
 	self.is_server = Managers.player.is_server
@@ -41,7 +43,7 @@ TimedExplosionExtension.init = function (self, extension_init_context, unit, ext
 		self._state = "waiting_to_explode"
 	end
 
-	self._deletion_timer = 1
+	self._deletion_timer = explosion_template.explosion.deletion_timer or 1
 end
 
 TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
@@ -52,7 +54,16 @@ TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
 
 		if self._buildup_effect_delay <= 0 and self._use_effect then
 			self._use_effect = false
-			self._fx_id = World.create_particles(context.world, self._buildup_effect, POSITION_LOOKUP[unit])
+			local position = Vector3.copy(POSITION_LOOKUP[unit])
+
+			if self._buildup_effect_offset then
+				local buildup_effect_offset = Vector3(unpack(self._buildup_effect_offset))
+				position.x = position.x + buildup_effect_offset.x
+				position.y = position.y + buildup_effect_offset.y
+				position.z = position.z + buildup_effect_offset.z
+			end
+
+			self._fx_id = World.create_particles(context.world, self._buildup_effect, position)
 		end
 	end
 
@@ -61,8 +72,6 @@ TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
 
 		if self._time_to_explode == 0 and (self.is_server or not self.trigger_on_server_only) then
 			self:_explode()
-
-			self._state = "exploded"
 		end
 	elseif state == "follow_unit" then
 		if Unit.alive(self.follow_unit) then
@@ -107,8 +116,26 @@ TimedExplosionExtension._explode = function (self)
 	local scale = 1
 	local damage_source = explosion_template.damage_source or "undefined"
 	local attacker_power_level = self._power
+	self._state = "exploded"
 
 	self._area_damage_system:create_explosion(attacker_unit, position, rotation, explosion_template_name, scale, damage_source, attacker_power_level, false)
+	self:_invoke_on_explode_callbacks()
+end
+
+TimedExplosionExtension._invoke_on_explode_callbacks = function (self)
+	local position = POSITION_LOOKUP[self._unit]
+
+	for _, callback in ipairs(self._on_explode_callbacks) do
+		callback(self.explosion_template_name, position)
+	end
+
+	self._on_explode_callbacks = nil
+end
+
+TimedExplosionExtension.add_on_explode_callback = function (self, callback)
+	if callback ~= nil then
+		table.insert(self._on_explode_callbacks, callback)
+	end
 end
 
 return

@@ -189,7 +189,7 @@ weapon_template.actions = {
 			hit_shield_stop_anim = "attack_hit",
 			no_damage_impact_sound_event = "Play_weapon_fire_torch_armour_hit",
 			hit_effect = "melee_hit_torches_1h",
-			damage_profile = "torch",
+			damage_profile = "torch_heavy",
 			aim_assist_ramp_multiplier = 0.4,
 			damage_window_end = 0.3,
 			impact_sound_event = "Play_weapon_fire_torch_flesh_hit",
@@ -738,7 +738,8 @@ weapon_template.actions = {
 				projectile_unit_name = "units/weapons/player/pup_torch/pup_torch"
 			}
 		}
-	}
+	},
+	action_inspect = ActionTemplates.action_inspect
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",
@@ -749,6 +750,14 @@ weapon_template.ammo_data = {
 }
 weapon_template.pickup_data = {
 	pickup_name = "torch"
+}
+weapon_template.attack_meta_data = {
+	tap_attack = {
+		arc = 1
+	},
+	hold_attack = {
+		arc = 1
+	}
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_torch/wpn_torch"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right

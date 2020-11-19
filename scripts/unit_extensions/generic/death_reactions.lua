@@ -687,31 +687,21 @@ local function ungor_archer_kill_minotaur_challenge(attacker)
 		local stat_name = "scorpion_kill_archers_kill_minotaur"
 		local stat_name_index = NetworkLookup.statistics[stat_name]
 		local statistics_db = Managers.player:statistics_db()
-		local local_player = Managers.player:local_player()
-		local stats_id = local_player:stats_id()
 
-		statistics_db:increment_stat(stats_id, stat_name)
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
+		statistics_db:increment_stat_and_sync_to_clients("scorpion_kill_archers_kill_minotaur")
 	end
 end
 
 local function gors_killed_by_warpfire_challenge()
 	local statistics_db = Managers.player:statistics_db()
-	local local_player = Managers.player:local_player()
-	local stats_id = local_player:stats_id()
 
-	statistics_db:increment_stat(stats_id, "warpfire_killed_gors")
+	statistics_db:increment_local_stat("warpfire_killed_gors")
 
-	local num_killed_gors = statistics_db:get_stat(stats_id, "warpfire_killed_gors")
+	local num_killed_gors = statistics_db:get_local_stat("warpfire_killed_gors")
 
 	if QuestSettings.num_gors_killed_by_warpfire <= num_killed_gors then
-		statistics_db:set_stat(stats_id, "warpfire_killed_gors", 0)
-
-		local stat_name = "scorpion_slay_gors_warpfire_damage"
-		local stat_name_index = NetworkLookup.statistics[stat_name]
-
-		statistics_db:increment_stat(stats_id, stat_name)
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_increment_stat", stat_name_index)
+		statistics_db:set_local_stat("warpfire_killed_gors", 0)
+		statistics_db:increment_stat_and_sync_to_clients("scorpion_slay_gors_warpfire_damage")
 	end
 end
 
@@ -1224,6 +1214,10 @@ DeathReactions.templates = {
 					for pickup_name, spawn_weighting in pairs(pickups) do
 						table.clear(pickup_params)
 
+						if pickup_name == "boss_loot" then
+							pickup_name = Managers.state.game_mode:get_boss_loot_pickup()
+						end
+
 						local dice_keeper = context.dice_keeper
 						local can_spawn_pickup_type = true
 						local pickup_settings = AllPickups[pickup_name]
@@ -1237,11 +1231,14 @@ DeathReactions.templates = {
 						spawn_weighting_total = spawn_weighting_total + spawn_weighting
 
 						if spawn_value <= spawn_weighting_total and can_spawn_pickup_type then
+							local breed = Unit.get_data(unit, "breed")
+							local breed_name = breed and breed.name
 							local extension_init_data = {
 								pickup_system = {
 									has_physics = true,
 									spawn_type = "loot",
-									pickup_name = pickup_name
+									pickup_name = pickup_name,
+									dropped_by_breed = breed_name
 								}
 							}
 							local unit_name = pickup_settings.unit_name
@@ -1374,11 +1371,15 @@ DeathReactions.templates = {
 				local player = Managers.player:owner(unit)
 				local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
 				local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
-				local position = Unit.local_position(unit, 0)
+				local position = POSITION_LOOKUP[unit]
 
 				Managers.telemetry.events:player_died(player, damage_type, damage_source, position)
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
+				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+				StatisticsUtil.register_kill(unit, killing_blow, context.statistics_db, true)
+				Unit.flow_event(unit, "lua_on_death")
+
 				return nil, DeathReactions.IS_DONE
 			end
 		},
@@ -1387,13 +1388,19 @@ DeathReactions.templates = {
 				local player = Managers.player:owner(unit)
 				local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
 				local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
-				local position = Unit.local_position(unit, 0)
+				local position = POSITION_LOOKUP[unit]
 
 				Managers.telemetry.events:player_died(player, damage_type, damage_source, position)
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
-				if not is_hot_join_sync(killing_blow) and ScriptUnit.has_extension(unit, "dialogue_system") then
-					SurroundingAwareSystem.add_event(unit, "player_death", DialogueSettings.death_discover_distance, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+				if not is_hot_join_sync(killing_blow) then
+					trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
+					StatisticsUtil.register_kill(unit, killing_blow, context.statistics_db)
+					Unit.flow_event(unit, "lua_on_death")
+
+					if ScriptUnit.has_extension(unit, "dialogue_system") then
+						SurroundingAwareSystem.add_event(unit, "player_death", DialogueSettings.death_discover_distance, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
+					end
 				end
 
 				return nil, DeathReactions.IS_DONE
@@ -1515,10 +1522,19 @@ DeathReactions.templates = {
 			start = function (unit, context, t, killing_blow, is_server)
 				local network_time = Managers.state.network:network_time()
 				local explode_time = network_time
+				local attacker_unit = killing_blow[DamageDataIndex.ATTACKER]
 				local data = {
 					explode_time = explode_time,
-					killer_unit = killing_blow[DamageDataIndex.ATTACKER]
+					killer_unit = attacker_unit
 				}
+				local health_extension = ScriptUnit.has_extension(unit, "health_system")
+				local damage_data = health_extension.last_damage_data
+				local attacker_unique_id = damage_data.attacker_unique_id
+				local attacker_player = Managers.player:player_from_unique_id(attacker_unique_id)
+				local stats_id = attacker_player and attacker_player:stats_id()
+
+				Managers.state.achievement:trigger_event("explosive_barrel_destroyed", stats_id, unit, killing_blow)
+
 				local death_extension = ScriptUnit.extension(unit, "death_system")
 				death_extension.death_has_started = true
 
@@ -1581,6 +1597,14 @@ DeathReactions.templates = {
 					explode_time = explode_time,
 					killer_unit = killing_blow[DamageDataIndex.ATTACKER]
 				}
+				local health_extension = ScriptUnit.has_extension(unit, "health_system")
+				local damage_data = health_extension.last_damage_data
+				local attacker_unique_id = damage_data.attacker_unique_id
+				local attacker_player = Managers.player:player_from_unique_id(attacker_unique_id)
+				local stats_id = attacker_player and attacker_player:stats_id()
+
+				Managers.state.achievement:trigger_event("explosive_barrel_destroyed", stats_id, unit, killing_blow)
+
 				local death_extension = ScriptUnit.extension(unit, "death_system")
 				death_extension.death_has_started = true
 
@@ -1977,6 +2001,10 @@ DeathReactions.templates = {
 		}
 	}
 }
+
+DLCUtils.map_list("death_reactions", function (file)
+	return table.merge(DeathReactions.templates, require(file))
+end)
 
 DeathReactions.get_reaction = function (death_reaction_template, is_husk)
 	local templates = DeathReactions.templates

@@ -157,6 +157,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 				self:_select_targets(world, true)
 
 				local targets = self.targets
+				local check_buffs = true
 
 				for i = 1, #targets, 1 do
 					local current_target = targets[i]
@@ -190,7 +191,11 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 								override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
 							end
 
-							DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, true, current_target, nil, self._is_critical_strike, power_level, override_damage_profile, buff_target_number)
+							local data = DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, check_buffs, current_target, nil, self._is_critical_strike, power_level, override_damage_profile, buff_target_number)
+
+							if data.buffs_checked then
+								check_buffs = check_buffs and false
+							end
 						end
 					end
 				end
@@ -421,7 +426,7 @@ ActionFlamethrower._check_critical_strike = function (self, t)
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, current_action, t)
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(is_critical_strike, self.buff_extension, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(is_critical_strike, self.buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
 end

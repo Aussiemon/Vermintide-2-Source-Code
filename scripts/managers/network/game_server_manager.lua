@@ -25,11 +25,6 @@ GameServerManager.destroy = function (self)
 end
 
 GameServerManager.update = function (self, dt, t)
-	if Keyboard.pressed(Keyboard.button_index("q")) then
-		self:set_leader_peer_id(Network.peer_id())
-		self:set_start_game_params(Network.peer_id(), "magnus", "adventure", "hard", false)
-	end
-
 	self:_notify_backend_errors()
 end
 
@@ -43,6 +38,10 @@ end
 
 GameServerManager._update_game_server = function (self, dt, t)
 	self:_update_leader()
+end
+
+GameServerManager.server_name = function (self)
+	return self._game_server:server_name()
 end
 
 GameServerManager.set_leader_peer_id = function (self, leader_peer_id)
@@ -59,7 +58,9 @@ GameServerManager.set_leader_peer_id = function (self, leader_peer_id)
 	local members = self._game_server:members():get_members()
 
 	for _, peer_id in ipairs(members) do
-		RPC.rpc_game_server_set_group_leader(peer_id, non_nil_leader)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+		RPC.rpc_game_server_set_group_leader(channel_id, non_nil_leader)
 	end
 end
 
@@ -80,8 +81,9 @@ end
 GameServerManager.hot_join_sync = function (self, peer_id)
 	local leader = Managers.party:leader()
 	local non_nil_leader = (leader == nil and "0") or leader
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	RPC.rpc_game_server_set_group_leader(peer_id, non_nil_leader)
+	RPC.rpc_game_server_set_group_leader(channel_id, non_nil_leader)
 end
 
 GameServerManager.set_start_game_params = function (self, sender, level_key, game_mode, difficulty, private_game)

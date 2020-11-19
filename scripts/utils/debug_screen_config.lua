@@ -50,6 +50,12 @@ local settings = {
 		category = "Allround useful stuff!"
 	},
 	{
+		description = "Allows items from different mechanisms to show in the inventory",
+		is_boolean = true,
+		setting_name = "disable_mechanism_item_filter",
+		category = "Allround useful stuff!"
+	},
+	{
 		setting_name = "teleport player",
 		description = "Teleports the player to a portal hub element",
 		category = "Allround useful stuff!",
@@ -333,6 +339,7 @@ local settings = {
 		preset = {
 			skippable_cutscenes = true,
 			disable_long_timesteps = true,
+			disable_mechanism_item_filter = false,
 			use_lan_backend = true,
 			network_timeout_really_long = true,
 			skip_splash = true
@@ -610,7 +617,8 @@ Features that make player mechanics nicer to work with.
 		item_source = {
 			1,
 			2,
-			3
+			3,
+			4
 		}
 	},
 	{
@@ -644,11 +652,11 @@ Features that make player mechanics nicer to work with.
 
 			if profile_name then
 				local profile_index = FindProfileIndex(profile_name)
-				local career_index = 1
-				local career_name = SPProfiles[profile_index].careers[career_index].display_name
+				local careers = SPProfiles[profile_index].careers
+				local career = careers[script_data.wanted_career_index] or careers[1]
 				local force_respawn = true
 
-				Managers.state.network:request_profile(1, profile_name, career_name, force_respawn)
+				Managers.state.network:request_profile(1, profile_name, career.display_name, force_respawn)
 			end
 		end
 	},
@@ -685,15 +693,58 @@ Features that make player mechanics nicer to work with.
 			if party_id then
 				local party = Managers.party:get_party(party_id)
 
-				if party.num_open_slots > 0 then
+				if party.num_open_slots + party.num_bots > 0 then
 					print("Debug switching wanted party to:", party_id)
 
 					local player = Managers.player:local_player()
 					local local_player_id = player:local_player_id()
 					local peer_id = player:network_id()
+					local mechanism_name = Managers.mechanism:current_mechanism_name()
+					local side = Managers.state.side.side_by_party[party]
 
 					Managers.party:request_join_party(peer_id, local_player_id, party_id)
-					Managers.state.spawn:delayed_despawn(player)
+
+					if player and player:needs_despawn() then
+						Managers.state.spawn:delayed_despawn(player)
+
+						local available_profiles = side.available_profiles or PROFILES_BY_AFFILIATION.heroes
+
+						if available_profiles then
+							for k = 1, #available_profiles, 1 do
+								local profile_name = available_profiles[k]
+
+								if profile_name then
+									local profile_index = FindProfileIndex(profile_name)
+									local career_index = 1
+									local career_name = SPProfiles[profile_index].careers[career_index].display_name
+
+									if Managers.mechanism:profile_available(profile_name, career_name) then
+										local force_respawn = true
+
+										Managers.state.network:request_profile(1, profile_name, career_name, force_respawn)
+
+										local camera_system = Managers.state.entity:system("camera_system")
+										local player = Managers.player:local_player()
+
+										camera_system:initialize_camera_states(player, profile_index, career_index)
+
+										break
+									end
+								end
+							end
+						end
+					end
+
+					local sides = Managers.state.side:sides()
+					local object_set_name, enable = nil
+
+					for i = 1, #sides, 1 do
+						local current_side = sides[i]
+						object_set_name = string.format("%s_%s", mechanism_name, current_side:name())
+						enable = current_side == side
+
+						Managers.state.game_mode:set_object_set_enabled(object_set_name, enable)
+					end
 				end
 			end
 		end
@@ -909,6 +960,35 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
+		description = "Adds any buff in the game to player.",
+		setting_name = "Add Buff",
+		category = "Player mechanics",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			local buff_templates = BuffTemplates
+
+			for key, item in pairs(buff_templates) do
+				if item.buffs and item.buffs[1] and not item.buffs[1].dormant then
+					options[#options + 1] = key
+				end
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local key = options[index]
+			local player_manager = Managers.player
+			local player = player_manager:local_player()
+			local unit = player.player_unit
+			local buff_system = Managers.state.entity:system("buff_system")
+			local server_controlled = false
+
+			buff_system:add_buff(unit, key, unit, server_controlled)
+		end
+	},
+	{
 		description = "Enable OverCharge Debug Information",
 		is_boolean = true,
 		setting_name = "overcharge_debug",
@@ -918,6 +998,18 @@ Features that make player mechanics nicer to work with.
 		description = "Enable OverCharge Debug Information",
 		is_boolean = true,
 		setting_name = "disable_overcharge",
+		category = "Player mechanics"
+	},
+	{
+		description = "Enable Energy Debug Information",
+		is_boolean = true,
+		setting_name = "energy_debug",
+		category = "Player mechanics"
+	},
+	{
+		description = "Disables Energy loss",
+		is_boolean = true,
+		setting_name = "disable_energy",
 		category = "Player mechanics"
 	},
 	{
@@ -1372,6 +1464,12 @@ Features that make player mechanics nicer to work with.
 		category = "AI recommended"
 	},
 	{
+		description = "Draws lines up in the sky where each inactive ai is",
+		is_boolean = true,
+		setting_name = "show_where_inactive_ai_is",
+		category = "AI recommended"
+	},
+	{
 		description = "turns on animation debug on your current ai debug target.",
 		is_boolean = true,
 		setting_name = "anim_debug_ai_debug_target",
@@ -1447,6 +1545,12 @@ Features that make player mechanics nicer to work with.
 		description = "Shows player intensity",
 		is_boolean = true,
 		setting_name = "debug_player_intensity",
+		category = "Conflict & Pacing"
+	},
+	{
+		description = "debug the peak delayer.",
+		is_boolean = true,
+		setting_name = "debug_peak_delayer",
 		category = "Conflict & Pacing"
 	},
 	{
@@ -1556,6 +1660,29 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "debug_terror",
 		category = "AI"
+	},
+	{
+		description = "Change which difficulty terror events will be played at",
+		setting_name = "terror_event_difficulty",
+		category = "AI",
+		item_source = DifficultySettings
+	},
+	{
+		setting_name = "terror_event_difficulty_tweak",
+		category = "AI",
+		description = "Change which difficulty tweak terror events will be played at.",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for i = -DifficultyTweak.range, DifficultyTweak.range, 1 do
+				options[#options + 1] = i
+			end
+
+			table.sort(options)
+
+			options[#options + 1] = "[clear value]"
+		end
 	},
 	{
 		description = "Draws a sphere and text at each respawner unit in the level. Must set 'debug_ai_recycler=true'",
@@ -1979,6 +2106,23 @@ Features that make player mechanics nicer to work with.
 		item_source = DifficultySettings
 	},
 	{
+		setting_name = "current_difficulty_tweak_setting",
+		category = "Gamemode/level",
+		description = "Change which difficulty tweak you play at. Restart required.",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for i = -DifficultyTweak.range, DifficultyTweak.range, 1 do
+				options[#options + 1] = i
+			end
+
+			table.sort(options)
+
+			options[#options + 1] = "[clear value]"
+		end
+	},
+	{
 		description = "Set difficulty. No restart required for most stuff, mostly used for testing enemies. Some stuff might need restart of level.",
 		setting_name = "set_difficulty",
 		category = "Gamemode/level",
@@ -1993,9 +2137,10 @@ Features that make player mechanics nicer to work with.
 			table.sort(options)
 		end,
 		func = function (options, index)
-			local item = options[index]
+			local difficulty = options[index]
+			local _, current_difficulty_tweak = Managers.state.difficulty:get_difficulty()
 
-			Managers.state.difficulty:set_difficulty(item)
+			Managers.state.difficulty:set_difficulty(difficulty, current_difficulty_tweak)
 
 			local side = Managers.state.side:get_side_from_name("heroes")
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
@@ -2004,10 +2149,34 @@ Features that make player mechanics nicer to work with.
 				local player_unit = player_and_bot_units[i]
 				local player_unit_attack_intensity_extension = ScriptUnit.has_extension(player_unit, "attack_intensity_system")
 
-				player_unit_attack_intensity_extension:debug_set_difficulty(item)
+				if player_unit_attack_intensity_extension then
+					player_unit_attack_intensity_extension:refresh_difficulty()
+				end
 			end
 
-			print("Set difficulty to ", item)
+			print("Set difficulty to " .. difficulty .. current_difficulty_tweak)
+		end
+	},
+	{
+		setting_name = "set_difficulty_tweak",
+		category = "Gamemode/level",
+		description = "Set difficulty tweak to make the current difficulty slightly easier/harder. " .. "No restart required for most stuff, mostly used for testing enemies. Some stuff might need restart of level.",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for i = -DifficultyTweak.range, DifficultyTweak.range, 1 do
+				options[#options + 1] = i
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local current_difficulty, _ = Managers.state.difficulty:get_difficulty()
+			local difficulty_tweak = options[index]
+
+			Managers.state.difficulty:set_difficulty(current_difficulty, difficulty_tweak)
+			print("Set difficulty to " .. current_difficulty .. difficulty_tweak)
 		end
 	},
 	{
@@ -2026,6 +2195,18 @@ Features that make player mechanics nicer to work with.
 		description = "Shows state of the game-mode and in what parties different players are.",
 		is_boolean = true,
 		setting_name = "show_gamemode_debug",
+		category = "Gamemode/level"
+	},
+	{
+		description = "Disable horde surge events.",
+		is_boolean = true,
+		setting_name = "disable_horde_surge",
+		category = "Gamemode/level"
+	},
+	{
+		description = "Displays debug info for Horde Surge events.",
+		is_boolean = true,
+		setting_name = "debug_horde_surge",
 		category = "Gamemode/level"
 	},
 	{
@@ -5207,6 +5388,29 @@ Features that make player mechanics nicer to work with.
 		}
 	},
 	{
+		description = "Sets Backend Response Latency",
+		setting_name = "backend_response_latency",
+		category = "Network",
+		item_source = {
+			0,
+			1,
+			2,
+			4,
+			8,
+			16
+		},
+		custom_item_source_order = function (item_source, options)
+			for _, v in ipairs(item_source) do
+				local option = v
+				options[#options + 1] = option
+			end
+		end,
+		func = function (options, index)
+			local option = options[index]
+			script_data.backend_response_latency = option
+		end
+	},
+	{
 		no_nil = true,
 		description = "Sets packet loss",
 		setting_name = "packet_loss",
@@ -5457,6 +5661,12 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "debug_text_to_speech_missing",
 		category = "Dialogue"
+	},
+	{
+		description = "Disable auto block on input loss",
+		is_boolean = true,
+		setting_name = "disable_auto_block",
+		category = "Input"
 	},
 	{
 		description = "Debug print input device statuses",
@@ -6133,6 +6343,18 @@ Features that make player mechanics nicer to work with.
 		category = "Bots"
 	},
 	{
+		description = "Bot won't shot at enemy players, but still attack ai enemies.",
+		is_boolean = true,
+		setting_name = "ai_bots_disable_player_range_attacks",
+		category = "Bots"
+	},
+	{
+		description = "Bot won't melee at enemy players, but still attack ai enemies.",
+		is_boolean = true,
+		setting_name = "ai_bots_disable_player_melee_attacks",
+		category = "Bots"
+	},
+	{
 		description = "Enable debug printing related to bot weapons.",
 		is_boolean = true,
 		setting_name = "ai_bots_weapon_debug",
@@ -6768,6 +6990,12 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
+		description = "Shows the bones of the player units",
+		is_boolean = true,
+		setting_name = "debug_player_skeletons",
+		category = "Player mechanics"
+	},
+	{
 		description = "Shows current career sound state",
 		is_boolean = true,
 		setting_name = "debug_career_sound_state",
@@ -6803,15 +7031,60 @@ Features that make player mechanics nicer to work with.
 			local loot_profile_name = "default"
 
 			if item == "tier_1" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 0, 0, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				local end_of_level_rewards_arguments = {
+					chest_upgrade_data = {
+						grimoire = 0,
+						tome = 0,
+						game_won = true,
+						loot_dice = 0
+					}
+				}
+
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", display_name, 0, 0, loot_profile_name, nil, nil, "adventure", 0, end_of_level_rewards_arguments)
 			elseif item == "tier_2" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 0, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				local end_of_level_rewards_arguments = {
+					chest_upgrade_data = {
+						grimoire = 0,
+						tome = 2,
+						game_won = true,
+						loot_dice = 0
+					}
+				}
+
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", display_name, 0, 0, loot_profile_name, nil, nil, "adventure", 0, end_of_level_rewards_arguments)
 			elseif item == "tier_3" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 1, 0, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				local end_of_level_rewards_arguments = {
+					chest_upgrade_data = {
+						grimoire = 1,
+						tome = 2,
+						game_won = true,
+						loot_dice = 0
+					}
+				}
+
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", display_name, 0, 0, loot_profile_name, nil, nil, "adventure", 0, end_of_level_rewards_arguments)
 			elseif item == "tier_4" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 2, 1, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				local end_of_level_rewards_arguments = {
+					chest_upgrade_data = {
+						grimoire = 2,
+						tome = 2,
+						game_won = true,
+						loot_dice = 1
+					}
+				}
+
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", display_name, 0, 0, loot_profile_name, nil, nil, "adventure", 0, end_of_level_rewards_arguments)
 			elseif item == "tier_5" then
-				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", 2, 3, 4, 0, display_name, 0, 0, loot_profile_name, nil, nil)
+				local end_of_level_rewards_arguments = {
+					chest_upgrade_data = {
+						grimoire = 3,
+						tome = 2,
+						game_won = true,
+						loot_dice = 4
+					}
+				}
+
+				loot_interface:generate_end_of_level_loot(true, true, "hardest", "bell", display_name, 0, 0, loot_profile_name, nil, nil, "adventure", 0, end_of_level_rewards_arguments)
 			end
 		end
 	},
@@ -7037,6 +7310,47 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "Lists all blessings with functionality to activate them. Requires restart of a deus level or loading the next one",
+		setting_name = "Activate or Deactivate Blessings",
+		category = "Items",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for key, _ in pairs(DeusBlessingSettings) do
+				options[#options + 1] = key
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local activated_blessings = script_data.debug_activated_blessings or {}
+			local key = options[index]
+			local blessing_deactivation_index = nil
+
+			for i = 1, #activated_blessings, 1 do
+				if activated_blessings[i] == key then
+					blessing_deactivation_index = i
+				end
+			end
+
+			if blessing_deactivation_index then
+				table.remove(activated_blessings, blessing_deactivation_index)
+				Debug.sticky_text("Deactivated blessing %s", key)
+			else
+				activated_blessings[#activated_blessings + 1] = key
+
+				Debug.sticky_text("Activated blessing %s", key)
+			end
+
+			if #activated_blessings > 0 then
+				script_data.debug_activated_blessings = activated_blessings
+			else
+				script_data.debug_activated_blessings = nil
+			end
+		end
+	},
+	{
 		description = "Lists all Twitch Mode Vote Templates with functionality to activate them.",
 		setting_name = "Force Twitch Mode Vote Template",
 		category = "Items",
@@ -7153,12 +7467,6 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "set_all_challenges_claimable",
 		category = "Progression"
-	},
-	{
-		description = "Show data for objectives in the current level",
-		is_boolean = true,
-		setting_name = "debug_objectives",
-		category = "Gamemode/level"
 	},
 	{
 		description = "Draws debug information for each active objective",
@@ -7341,6 +7649,281 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "count_owned_dlc_as_installed",
 		category = "DLC"
+	},
+	{
+		description = "Starts a Deus run directly on a map",
+		setting_name = "Run Deus Map Node",
+		category = "Deus",
+		func = function ()
+			local mechanism = Managers.mechanism:game_mechanism()
+
+			if mechanism.debug_load_map then
+				mechanism:debug_load_map()
+			end
+		end
+	},
+	{
+		description = "Starts a Deus run directly on a shrine",
+		setting_name = "Run Deus Shrine Node",
+		category = "Deus",
+		func = function ()
+			local mechanism = Managers.mechanism:game_mechanism()
+
+			if mechanism.debug_load_shrine_node then
+				mechanism:debug_load_shrine_node()
+			end
+		end
+	},
+	{
+		description = "Adds 1 to the meta progression currency, currently only works with local backend",
+		setting_name = "Add 1 deus meta progression currency",
+		category = "Deus",
+		func = function ()
+			local deus_interface = Managers.backend:get_interface("deus")
+
+			deus_interface:debug_add_meta_currency(1)
+		end
+	},
+	{
+		description = "Adds 10 to the meta progression currency, currently only works with local backend",
+		setting_name = "Add 10 deus meta progression currency",
+		category = "Deus",
+		func = function ()
+			local deus_interface = Managers.backend:get_interface("deus")
+
+			deus_interface:debug_add_meta_currency(10)
+		end
+	},
+	{
+		description = "Finishes a journey",
+		setting_name = "Debug Finish Journey",
+		category = "Deus",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for name, settings in pairs(DeusJourneySettings) do
+				options[#options + 1] = name
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local journey = options[index]
+			local deus_interface = Managers.backend:get_interface("deus")
+
+			deus_interface:debug_finish_journey(journey)
+		end
+	},
+	{
+		description = "Sets the completed difficulty for the selected journey temporary.",
+		setting_name = "Set completed journey difficulty",
+		category = "Deus",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for _, journey_name in ipairs(AvailableJourneyOrder) do
+				for _, difficulty_name in ipairs(DefaultDifficulties) do
+					options[#options + 1] = journey_name .. "/" .. difficulty_name
+				end
+			end
+		end,
+		func = function (options, index)
+			local journey_and_difficulty = string.split(options[index], "/")
+			local journey_name = journey_and_difficulty[1]
+			local difficulty_name = journey_and_difficulty[2]
+			local difficulty_id = table.index_of(DefaultDifficulties, difficulty_name)
+
+			LevelUnlockUtils.debug_set_completed_journey_difficulty(journey_name, difficulty_id)
+		end
+	},
+	{
+		description = "Clears all the current weapon unlocks for the player, currently only works with local backend",
+		setting_name = "Clear Deus meta progression",
+		category = "Deus",
+		func = function ()
+			local deus_interface = Managers.backend:get_interface("deus")
+
+			deus_interface:debug_clear_meta_progression()
+		end
+	},
+	{
+		description = "Lists all powerups with functionality to activate them. Needs to be in a deus run.",
+		setting_name = "Activate Deus PowerUp",
+		category = "Deus",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for rarity, powerups_for_rarity in pairs(DeusPowerUps) do
+				for powerup_name, powerup in pairs(powerups_for_rarity) do
+					options[#options + 1] = rarity .. "/" .. powerup_name
+				end
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			if not Managers.mechanism:current_mechanism_name() == "deus" then
+				return
+			end
+
+			local mechanism = Managers.mechanism:game_mechanism()
+			local deus_run_controller = mechanism:get_deus_run_controller()
+
+			if not deus_run_controller then
+				return
+			end
+
+			local option = options[index]
+			local rarity_and_power_up_name = string.split(option, "/")
+			local rarity = rarity_and_power_up_name[1]
+			local power_up_name = rarity_and_power_up_name[2]
+			local power_up = DeusPowerUpUtils.debug_generate_power_up(power_up_name, rarity)
+
+			deus_run_controller:add_power_ups({
+				power_up
+			})
+
+			local buff_system = Managers.state.entity:system("buff_system")
+			local player_unit = Managers.player:local_player().player_unit
+
+			buff_system:add_buff(player_unit, power_up.buff_name, player_unit)
+		end
+	},
+	{
+		description = "Unlocks every deus chest aka weapon shrine",
+		is_boolean = true,
+		setting_name = "unlock_all_deus_chests",
+		category = "Deus"
+	},
+	{
+		description = "debug any changes to the deus shared state.",
+		is_boolean = true,
+		setting_name = "deus_shared_state_debug",
+		category = "Deus"
+	},
+	{
+		description = "log any relevant event in the deus run controller.",
+		is_boolean = true,
+		setting_name = "deus_run_controller_debug",
+		category = "Deus"
+	},
+	{
+		description = "draw a map with debug ui. This will draw either the current run seed being played, or the seed set by imgui_deus_map_gen",
+		is_boolean = true,
+		setting_name = "deus_debug_draw_map",
+		category = "Deus"
+	},
+	{
+		description = "test fog without saving already seen nodes, essentially everything not accessed is fully foggy",
+		is_boolean = true,
+		setting_name = "deus_fog_with_no_memory",
+		category = "Deus"
+	},
+	{
+		setting_name = "deus_seed",
+		category = "Deus",
+		description = "Force a default graph seed",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for key, _ in pairs(DeusDefaultGraphs) do
+				options[#options + 1] = key
+			end
+
+			options[#options + 1] = "[clear value]"
+
+			table.sort(options)
+		end
+	},
+	{
+		setting_name = "deus_journey",
+		category = "Deus",
+		description = "Force a deus journey",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for _, val in pairs(AvailableJourneyOrder) do
+				options[#options + 1] = val
+			end
+
+			options[#options + 1] = "[clear value]"
+
+			table.sort(options)
+		end
+	},
+	{
+		setting_name = "deus_dominant_god",
+		category = "Deus",
+		description = "Force a deus dominant god",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for _, val in pairs(DEUS_GOD_INDEX) do
+				options[#options + 1] = val
+			end
+
+			options[#options + 1] = "[clear value]"
+
+			table.sort(options)
+		end
+	},
+	{
+		description = "Journeys will work in 10minute cycles for debugging. Only works in local backend.",
+		is_boolean = true,
+		setting_name = "deus_journey_ten_minute_cycle",
+		category = "Deus"
+	},
+	{
+		description = "Shows how many enemies are marked by a curse",
+		is_boolean = true,
+		setting_name = "debug_deus_marked_enemies",
+		category = "Deus"
+	},
+	{
+		description = "Lists all boons with functionality to activate them. Needs respawn (e.g. career change).",
+		setting_name = "Activate Boon",
+		category = "Boons",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for boon_name, _ in pairs(BoonTemplates) do
+				options[#options + 1] = boon_name
+			end
+
+			table.sort(options)
+		end,
+		func = function (options, index)
+			local boons_interface = Managers.backend:get_interface("boons")
+
+			boons_interface:debug_activate_boon(options[index])
+		end
+	},
+	{
+		description = "Expire all boons, clearing the boon list.",
+		setting_name = "Expire All Boons",
+		category = "Boons",
+		func = function ()
+			local boons_interface = Managers.backend:get_interface("boons")
+
+			boons_interface:debug_expire_all_boons()
+		end
+	},
+	{
+		description = "Refreshes the boon data from the backend.",
+		setting_name = "Refresh Boons",
+		category = "Boons",
+		func = function ()
+			local boons_interface = Managers.backend:get_interface("boons")
+
+			boons_interface:refresh_boons()
+		end
 	}
 }
 
@@ -7531,6 +8114,105 @@ end
 
 for _, rarity in ipairs(item_rarities) do
 	table.append(settings, add_trinket_preset(rarity))
+end
+
+local function equip_preset(slot_type, rarity)
+	local function load_items_preset(options)
+		table.clear(options)
+
+		local player_manager = Managers.player
+		local player = player_manager:local_player()
+		local profile_index = player:profile_index()
+		local profile = SPProfiles[profile_index]
+		local career_index = player:career_index()
+		local career_data = profile.careers[career_index]
+		local career_name = career_data.name
+		local item_master_list = ItemMasterList
+		local backend_common = Managers.backend:get_interface("common")
+
+		for item_name, item_data in pairs(item_master_list) do
+			if item_data.slot_type == slot_type and backend_common:can_wield(career_name, item_data) then
+				options[#options + 1] = item_name
+			end
+		end
+
+		table.sort(options)
+	end
+
+	local function equip_item_preset(options, index)
+		local item_name = options[index]
+
+		if not item_name then
+			return
+		end
+
+		local item_interface = Managers.backend:get_interface("items")
+		local item = item_interface:get_item_from_key(item_name)
+
+		if not item then
+			item_interface:award_item(item_name, nil, nil, rarity)
+
+			item = item_interface:get_item_from_key(item_name)
+		end
+
+		if not item then
+			return
+		end
+
+		local item_data = ItemMasterList[item_name]
+		local player_manager = Managers.player
+		local player = player_manager:local_player()
+		local player_unit = player.player_unit
+		local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+		local resyncing_loadout = inventory_extension:resyncing_loadout()
+
+		if resyncing_loadout then
+			return
+		end
+
+		local backend_id = item.backend_id
+		local slot_type = item_data.slot_type
+		local slots = InventorySettings.slots_by_slot_index
+		local slot_name = nil
+
+		for _, slot in pairs(slots) do
+			if slot_type == slot.type then
+				slot_name = slot.name
+
+				break
+			end
+		end
+
+		local profile_index = player:profile_index()
+		local profile = SPProfiles[profile_index]
+		local display_name = profile.display_name
+		local hero_attributes = Managers.backend:get_interface("hero_attributes")
+		local career_index = hero_attributes:get(display_name, "career")
+		local career_data = profile.careers[career_index]
+		local career_name = career_data.name
+
+		BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
+		inventory_extension:create_equipment_in_slot(slot_name, backend_id)
+	end
+
+	return {
+		{
+			description = "Lists all items for current career to equip them, adding to inventory if necessary.",
+			category = "Items",
+			setting_name = "Equip " .. slot_type .. " Items (" .. rarity .. ")",
+			item_source = {},
+			load_items_source_func = load_items_preset,
+			func = equip_item_preset
+		}
+	}
+end
+
+for _, rarity in ipairs(item_rarities) do
+	table.append(settings, equip_preset("melee", rarity))
+end
+
+for _, rarity in ipairs(item_rarities) do
+	table.append(settings, equip_preset("ranged", rarity))
 end
 
 local platform = PLATFORM

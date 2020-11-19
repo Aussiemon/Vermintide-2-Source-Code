@@ -12,7 +12,9 @@ DialogueSettings.auto_load_files = {
 	"dialogues/generated/wood_elf_generic_vo",
 	"dialogues/generated/bright_wizard_generic_vo",
 	"dialogues/generated/dwarf_ranger_generic_vo",
-	"dialogues/generated/witch_hunter_generic_vo"
+	"dialogues/generated/witch_hunter_generic_vo",
+	"dialogues/generated/pactsworn_player_vo",
+	"dialogues/generated/vs_player_vo"
 }
 DialogueSettings.level_specific_load_files = {
 	whitebox_climb = {
@@ -176,20 +178,20 @@ DialogueSettings.blocked_auto_load_files = {
 	inn_level = true
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local auto_load_files = dlc.auto_load_files
-
-	if auto_load_files then
-		table.append(DialogueSettings.auto_load_files, auto_load_files)
-	end
-end
+DLCUtils.append("auto_load_files", DialogueSettings.auto_load_files)
 
 for _, dlc in pairs(DLCSettings) do
 	local dialogue_settings = dlc.dialogue_settings
 
 	if dialogue_settings then
 		for level_id, dialogue_settings_table in pairs(dialogue_settings) do
-			DialogueSettings.level_specific_load_files[level_id] = dialogue_settings_table
+			local current_level_settings = DialogueSettings.level_specific_load_files[level_id]
+
+			if current_level_settings then
+				table.append(current_level_settings, dialogue_settings_table)
+			else
+				DialogueSettings.level_specific_load_files[level_id] = dialogue_settings_table
+			end
 		end
 	end
 
@@ -228,9 +230,9 @@ DialogueSettings.armor_hit_broadcast_range = 7
 DialogueSettings.dialogue_level_start_delay = 120
 DialogueSettings.story_start_delay = 90
 DialogueSettings.story_tick_time = 10
-DialogueSettings.ambush_delay = 5
+DialogueSettings.ambush_delay = 10
 DialogueSettings.vector_delay = 12
-DialogueSettings.sound_event_default_length = 3.4567
+DialogueSettings.sound_event_default_length = 4.5
 DialogueSettings.breed_types_trigger_on_spawn = {
 	chaos_troll = true,
 	chaos_spawn = true,

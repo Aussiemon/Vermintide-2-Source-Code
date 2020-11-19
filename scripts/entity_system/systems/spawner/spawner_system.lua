@@ -367,12 +367,12 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 	return #spawn_list
 end
 
-SpawnerSystem.spawn_horde_from_terror_event_id_composition = function (self, event_id, composition_type, limit_spawners, group_template, strictly_not_close_to_players, side_id)
+SpawnerSystem.spawn_horde_from_terror_event_ids_composition = function (self, event_ids, composition_type, limit_spawners, group_template, strictly_not_close_to_players, side_id)
 	local composition = CurrentHordeSettings.compositions[composition_type]
 	local index = LoadedDice.roll_easy(composition.loaded_probs)
 	local variant = composition[index]
 
-	self:spawn_horde_from_terror_event_id(event_id, variant, limit_spawners, group_template, strictly_not_close_to_players, composition_type, side_id)
+	self:spawn_horde_from_terror_event_ids(event_ids, variant, limit_spawners, group_template, strictly_not_close_to_players, composition_type, side_id)
 end
 
 local ok_spawner_breeds = {
@@ -380,28 +380,31 @@ local ok_spawner_breeds = {
 	skaven_slave = true
 }
 
-SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id, use_closest_spawners, source_unit)
+SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id, use_closest_spawners, source_unit)
 	local ConflictUtils = ConflictUtils
 	local must_use_hidden_spawners = variant.must_use_hidden_spawners
 	local spawners, hidden_spawners, event_spawn = nil
 	local dont_remove_this = math.random()
 
-	if event_id and event_id ~= "" then
-		local source_spawners = self._id_lookup[event_id]
+	if event_ids and #event_ids > 0 then
 		spawners = {}
 
-		if source_spawners then
-			for i = 1, #source_spawners, 1 do
-				local source_spawner = source_spawners[i]
+		for _, event_id in ipairs(event_ids) do
+			local source_spawners = self._id_lookup[event_id]
 
-				if not self._disabled_spawners[source_spawner] then
-					spawners[#spawners + 1] = source_spawner
+			if source_spawners then
+				for i = 1, #source_spawners, 1 do
+					local source_spawner = source_spawners[i]
+
+					if not self._disabled_spawners[source_spawner] then
+						spawners[#spawners + 1] = source_spawner
+					end
 				end
-			end
-		else
-			fassert("No horde spawners found with terror_id %d ", event_id)
+			else
+				fassert("No horde spawners found with terror_id %d ", event_id)
 
-			return
+				return
+			end
 		end
 
 		if #spawners == 0 then
@@ -572,7 +575,7 @@ SpawnerSystem.change_spawner_id = function (self, unit, spawner_id, new_spawner_
 end
 
 SpawnerSystem.get_raw_spawner_unit = function (self, terror_id)
-	local spawners = self._raw_id_lookup[terror_id]
+	local spawners = self._raw_id_lookup[terror_id] or self._id_lookup[terror_id]
 
 	if spawners then
 		local spawner_unit = spawners[math.random(1, #spawners)]

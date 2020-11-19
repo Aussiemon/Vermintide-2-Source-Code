@@ -4089,7 +4089,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 			},
 			size = {
 				size[1] - 150,
-				130
+				125
 			}
 		},
 		text_shadow = {
@@ -4113,7 +4113,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 			},
 			size = {
 				size[1] - 150,
-				130
+				125
 			}
 		}
 	}

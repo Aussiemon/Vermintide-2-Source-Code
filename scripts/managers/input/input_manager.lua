@@ -44,7 +44,7 @@ InputManager.initialize_device = function (self, input_device_type, input_device
 		return
 	end
 
-	if self.platform ~= "win32" and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
+	if (self.platform == "xb1" or self.platform == "ps4") and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
 		return
 	end
 
@@ -481,7 +481,11 @@ InputManager.release_input = function (self, device_types, device_index, service
 			return
 		end
 
-		table.remove(service, table.find(service, capture_owner))
+		local owner_index = table.find(service, capture_owner)
+
+		if owner_index then
+			table.remove(service, table.find(service, capture_owner))
+		end
 
 		if table.is_empty(service) then
 			input_group[service_name] = nil
@@ -609,7 +613,7 @@ InputManager.map_device_to_service = function (self, input_service_name, input_d
 		return
 	end
 
-	if self.platform ~= "win32" and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
+	if (self.platform == "xb1" or self.platform == "ps4") and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
 		return
 	end
 
@@ -732,20 +736,11 @@ InputManager.update_devices = function (self, dt, t)
 	end
 end
 
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
-
 InputManager.get_service = function (self, input_service_name)
 	if self.input_services then
 		return self.input_services[input_service_name]
 	else
-		return fake_input_service
+		return FAKE_INPUT_SERVICE
 	end
 end
 
@@ -865,7 +860,7 @@ end
 InputManager.apply_saved_keymaps = function (self, specific_table_name)
 	local stored_keymaps_data = self.stored_keymaps_data
 
-	if self.platform == "win32" or self.platform == "xb1" then
+	if self.platform == "win32" or self.platform == "xb1" or self.platform == "linux" then
 		local keymaps = PlayerData.controls or {}
 
 		for keybinding_table_name, keybinding_table in pairs(keymaps) do

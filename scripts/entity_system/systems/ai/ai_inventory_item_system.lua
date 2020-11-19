@@ -46,7 +46,7 @@ AIInventoryItemSystem.on_remove_extension = function (self, unit, extension_name
 	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
-AIInventoryItemSystem.hot_join_sync = function (self, sender)
+AIInventoryItemSystem.hot_join_sync = function (self, peer_id)
 	return
 end
 

@@ -452,7 +452,7 @@ AIGroupSystem.get_available_spline_type = function (self)
 	return spline_type
 end
 
-AIGroupSystem.hot_join_sync = function (self, sender, player)
+AIGroupSystem.hot_join_sync = function (self, peer_id, player)
 	return
 end
 

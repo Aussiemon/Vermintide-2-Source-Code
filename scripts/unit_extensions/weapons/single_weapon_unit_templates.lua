@@ -2,13 +2,7 @@ SingleWeaponUnitTemplates = {
 	templates = {}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local file = dlc.single_weapon_templates
-
-	if file then
-		require(file)
-	end
-end
+DLCUtils.require("single_weapon_templates")
 
 SingleWeaponUnitTemplates.get_template = function (projectile_template, is_husk)
 	local templates = SingleWeaponUnitTemplates.templates

@@ -56,7 +56,7 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 	end
 end
 
-EndZoneExtension.rpc_activate_end_zone = function (self, sender, waystone_type, activate, wind_name_id, activation_name)
+EndZoneExtension.rpc_activate_end_zone = function (self, channel_id, waystone_type, activate, wind_name_id, activation_name)
 	if waystone_type ~= self._waystone_type then
 		return
 	end
@@ -307,8 +307,9 @@ EndZoneExtension.hot_join_sync = function (self, sender)
 	if self._activated then
 		local wind = self:_get_wind_name() or "none"
 		local wind_name_id = NetworkLookup.weave_winds[wind]
+		local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-		RPC.rpc_activate_end_zone(sender, self._waystone_type, true, wind_name_id, self._activation_name)
+		RPC.rpc_activate_end_zone(channel_id, self._waystone_type, true, wind_name_id, self._activation_name)
 	end
 end
 

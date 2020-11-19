@@ -180,6 +180,12 @@ DeathSystem.kill_unit = function (self, unit, killing_blow)
 
 	health_extension:set_dead()
 
+	local buff_extenstion = ScriptUnit.has_extension(unit, "buff_system")
+
+	if buff_extenstion then
+		buff_extenstion:trigger_procs("on_death", unit)
+	end
+
 	if is_hot_join_sync(killing_blow) then
 		extension.death_has_started = true
 	end
@@ -246,7 +252,7 @@ DeathSystem.forced_kill = function (self, unit, damage_type)
 	self.network_transmit:send_rpc_clients("rpc_forced_kill", go_id, damage_type_id)
 end
 
-DeathSystem.rpc_forced_kill = function (self, sender, unit_go_id, damage_type_id)
+DeathSystem.rpc_forced_kill = function (self, channel_id, unit_go_id, damage_type_id)
 	local unit_storage = self.unit_storage
 	local unit = unit_storage:unit(unit_go_id)
 	local damage_type = NetworkLookup.damage_types[damage_type_id]

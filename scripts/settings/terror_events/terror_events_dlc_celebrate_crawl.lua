@@ -858,6 +858,25 @@ local terror_event_blueprints = {
 			spawner_id = "pub_floor_fall_b",
 			composition_type = "chaos_berzerkers_small"
 		}
+	},
+	crawl_drachenwine_challenge = {
+		{
+			"set_master_event_running",
+			name = "crawl_drachenwine_challenge"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "drachenwine_challenge",
+			breed_name = "chaos_corruptor_sorcerer"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"flow_event",
+			flow_event_name = "drachenwine_challenge_enabled"
+		}
 	}
 }
 

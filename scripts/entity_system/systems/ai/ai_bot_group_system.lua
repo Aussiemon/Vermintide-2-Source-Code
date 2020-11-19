@@ -236,7 +236,7 @@ AIBotGroupSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
-AIBotGroupSystem.hot_join_sync = function (self, sender, player)
+AIBotGroupSystem.hot_join_sync = function (self, peer_id, player)
 	return
 end
 
@@ -330,7 +330,7 @@ AIBotGroupSystem.has_pending_pickup_order = function (self, bot_unit)
 	return false
 end
 
-AIBotGroupSystem.rpc_bot_unit_order = function (self, sender, order_type_id, bot_unit_id, order_target_id, ordering_player_peer, ordering_local_player_id)
+AIBotGroupSystem.rpc_bot_unit_order = function (self, channel_id, order_type_id, bot_unit_id, order_target_id, ordering_player_peer, ordering_local_player_id)
 	local order_type = NetworkLookup.bot_orders[order_type_id]
 	local bot_unit = self._unit_storage:unit(bot_unit_id)
 	local target_unit = self._unit_storage:unit(order_target_id)
@@ -341,7 +341,7 @@ AIBotGroupSystem.rpc_bot_unit_order = function (self, sender, order_type_id, bot
 	end
 end
 
-AIBotGroupSystem.rpc_bot_lookup_order = function (self, sender, order_type_id, bot_unit_id, order_target_id, ordering_player_peer, ordering_local_player_id)
+AIBotGroupSystem.rpc_bot_lookup_order = function (self, channel_id, order_type_id, bot_unit_id, order_target_id, ordering_player_peer, ordering_local_player_id)
 	local order_type = NetworkLookup.bot_orders[order_type_id]
 	local bot_unit = self._unit_storage:unit(bot_unit_id)
 	local target = NetworkLookup[AIBotGroupSystem.bot_orders[order_type].lookup][order_target_id]
@@ -411,8 +411,9 @@ AIBotGroupSystem._order_pickup = function (self, bot_unit, pickup_unit, ordering
 			if bot_data then
 				local inventory_extension = ScriptUnit.extension(bot_unit, "inventory_system")
 				local slot_data = inventory_extension:get_slot_data(slot_name)
+				local can_hold_more = inventory_extension:can_store_additional_item(slot_name)
 
-				if slot_data then
+				if slot_data and not can_hold_more then
 					local current_item_template = inventory_extension:get_item_template(slot_data)
 					local has_similar_item_already = nil
 					has_similar_item_already = (pickup_ext.pickup_name ~= "grimoire" or current_item_template.is_grimoire) and current_item_template.pickup_data and current_item_template.pickup_data.pickup_name == pickup_ext.pickup_name
@@ -1284,6 +1285,28 @@ AIBotGroupSystem._update_opportunity_targets = function (self, dt, t)
 				end
 			end
 
+			local VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+
+			for target_unit, is_valid in pairs(VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS) do
+				if is_valid then
+					local ghost_mode_ext = ScriptUnit.has_extension(target_unit, "ghost_mode_system")
+
+					if not ghost_mode_ext or not ghost_mode_ext:is_in_ghost_mode() then
+						local target_pos = POSITION_LOOKUP[target_unit]
+
+						if AiUtils.unit_alive(target_unit) and Vector3_distance_squared(target_pos, self_pos) < FALLBACK_OPPORTUNITY_DISTANCE_SQ then
+							local utility, distance = self:_calculate_opportunity_utility(bot_unit, blackboard, self_pos, old_target, target_unit, t, false, true)
+
+							if best_utility < utility then
+								best_utility = utility
+								best_target = target_unit
+								best_distance = distance
+							end
+						end
+					end
+				end
+			end
+
 			blackboard.opportunity_target_enemy = best_target
 			blackboard.opportunity_target_distance = best_distance
 		end
@@ -1381,8 +1404,9 @@ AIBotGroupSystem._update_orders = function (self, dt, t)
 
 			for slot_name, order in pairs(orders) do
 				local slot_data = inventory_ext:get_slot_data(slot_name)
+				local can_hold_more = inventory_ext:can_store_additional_item(slot_name)
 
-				if slot_data then
+				if slot_data and not can_hold_more then
 					local current_item_template = inventory_ext:get_item_template(slot_data)
 					local has_picked_up_item = nil
 					has_picked_up_item = (order.pickup_name ~= "grimoire" or current_item_template.is_grimoire) and current_item_template.pickup_data and current_item_template.pickup_data.pickup_name == order.pickup_name
@@ -1628,8 +1652,11 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 					local pickup_ext = ScriptUnit.extension(current_pickup, "pickup_system")
 					local pickup_name = pickup_ext.pickup_name
 					local slot_name = AllPickups[pickup_name].slot_name
+					local inventory_extension = blackboard.inventory_extension
+					local has_item = inventory_extension:get_slot_data(slot_name)
+					local can_hold_more = inventory_extension:can_store_additional_item(slot_name)
 
-					if ScriptUnit.extension(unit, "inventory_system"):get_slot_data(slot_name) then
+					if has_item and not can_hold_more then
 						blackboard.mule_pickup = nil
 					else
 						ASSIGNED_MULE_PICKUPS_TEMP[current_pickup] = true
@@ -1657,6 +1684,10 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 			local num_players = 0
 
 			for i = 1, num_human_players, 1 do
+				if slot_name == "infinite_slot" then
+					break
+				end
+
 				local player_unit = PLAYER_UNITS[i]
 
 				if AiUtils.unit_alive(player_unit) then
@@ -1683,8 +1714,11 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 				for unit, data in pairs(side_bot_data) do
 					local blackboard = data.blackboard
 					local order = data.pickup_orders[slot_name]
+					local inventory_extension = blackboard.inventory_extension
+					local has_item = inventory_extension:get_slot_data(slot_name)
+					local can_hold_more = inventory_extension:can_store_additional_item(slot_name)
 
-					if not blackboard.mule_pickup and not ScriptUnit.extension(unit, "inventory_system"):get_slot_data(slot_name) and not order then
+					if not blackboard.mule_pickup and (not has_item or can_hold_more) and not order then
 						local best_pickup_dist_sq = math.huge
 						local best_pickup = nil
 
@@ -2635,7 +2669,16 @@ AIBotGroupSystem._chat_message = function (self, unit, ordering_player, message,
 	local localization_parameters = FrameTable.alloc_table()
 
 	table.append_varargs(localization_parameters, ...)
-	Managers.chat:send_chat_message(1, player:local_player_id(), message_string, localize, localization_parameters, localize_parameters)
+
+	local channel_id = 1
+	local message_target = nil
+	local mechanism = Managers.mechanism:game_mechanism()
+
+	if mechanism.get_chat_channel then
+		channel_id, message_target = mechanism:get_chat_channel(ordering_player, false)
+	end
+
+	Managers.chat:send_chat_message(channel_id, player:local_player_id(), message_string, localize, localization_parameters, localize_parameters, nil, message_target)
 end
 
 return

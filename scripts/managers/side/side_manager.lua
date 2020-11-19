@@ -96,6 +96,18 @@ SideManager.get_party_from_side_name = function (self, name)
 	return side.party
 end
 
+SideManager.versus_is_hero = function (self, unit)
+	local side = self.side_by_unit[unit]
+
+	return side and side:name() == "heroes"
+end
+
+SideManager.versus_is_dark_pact = function (self, unit)
+	local side = self.side_by_unit[unit]
+
+	return side and side:name() == "dark_pact"
+end
+
 SideManager.add_unit_to_side = function (self, unit, side_id)
 	local side = self._sides[side_id]
 
@@ -261,6 +273,10 @@ end
 local function is_valid_target(unit)
 	local status_ext = ScriptUnit.extension(unit, "status_system")
 	local dlc_valid = true
+
+	if status_ext.in_ghost_mode then
+		dlc_valid = false
+	end
 
 	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and dlc_valid and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
 end

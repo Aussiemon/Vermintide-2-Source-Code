@@ -16,6 +16,7 @@ StartGameWindowAdventureSettings.on_enter = function (self, params, offset)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -151,8 +152,11 @@ StartGameWindowAdventureSettings._handle_input = function (self, dt, t)
 	local play_pressed = gamepad_active and self._enable_play and input_service:get("refresh_press")
 
 	if self:_is_button_released(widgets_by_name.play_button) or play_pressed then
+		local custom_game_settings = parent:get_quickplay_settings(self._mechanism_name) or parent:get_quickplay_settings("adventure")
+		local game_mode_type = custom_game_settings.game_mode_type
+
 		parent:set_private_option_enabled(false)
-		parent:play(t, "adventure")
+		parent:play(t, game_mode_type)
 	end
 end
 

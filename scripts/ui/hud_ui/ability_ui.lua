@@ -8,13 +8,12 @@ AbilityUI.init = function (self, parent, ingame_ui_context)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self.player_manager = ingame_ui_context.player_manager
+	self.player = ingame_ui_context.player
 	self.ui_animations = {}
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
-	local world = ingame_ui_context.world_manager:world("level_world")
-	self.wwise_world = Managers.world:wwise_world(world)
+	self.wwise_world = ingame_ui_context.wwise_world
 	self.is_in_inn = ingame_ui_context.is_in_inn
 
 	self:_create_ui_elements()
@@ -22,6 +21,7 @@ AbilityUI.init = function (self, parent, ingame_ui_context)
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "input_changed", "event_input_changed")
+	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 	rawset(_G, "ability_ui", self)
 end
 
@@ -47,10 +47,18 @@ AbilityUI._create_ui_elements = function (self)
 	self:event_input_changed()
 end
 
+AbilityUI._get_player_unit = function (self)
+	if self._is_spectator then
+		return self._spectated_player, self._spectated_player_unit
+	end
+
+	local player = self.player
+
+	return player, player.player_unit
+end
+
 AbilityUI._setup_activated_ability = function (self)
-	local player_manager = self.player_manager
-	local player = player_manager:local_player(1)
-	local player_unit = player.player_unit
+	local player, player_unit = self:_get_player_unit()
 
 	if not player_unit then
 		return
@@ -73,9 +81,7 @@ AbilityUI._setup_activated_ability = function (self)
 end
 
 AbilityUI._sync_ability_cooldown = function (self)
-	local player_manager = self.player_manager
-	local player = player_manager:local_player(1)
-	local player_unit = player.player_unit
+	local player, player_unit = self:_get_player_unit()
 
 	if not player_unit then
 		return
@@ -98,6 +104,11 @@ AbilityUI._sync_ability_cooldown = function (self)
 
 	if ability_cooldown then
 		local cooldown_fraction = ability_cooldown / max_cooldown
+
+		if self._is_spectator then
+			cooldown_fraction = career_extension:current_ability_cooldown_percentage(1)
+		end
+
 		local input_pressed = self:_is_ability_input_pressed()
 
 		if not ability_paused and input_pressed and self._current_cooldown_fraction == 0 then
@@ -154,6 +165,7 @@ AbilityUI.destroy = function (self)
 	local event_manager = Managers.state.event
 
 	event_manager:unregister("input_changed", self)
+	event_manager:unregister("on_spectator_target_changed", self)
 	self:set_visible(false)
 	rawset(_G, "ability_ui", nil)
 	print("[AbilityUI] - Destroy")
@@ -197,6 +209,10 @@ AbilityUI._handle_gamepad = function (self)
 end
 
 AbilityUI.update = function (self, dt, t)
+	if not self._is_visible then
+		return
+	end
+
 	local should_render = self:_handle_gamepad()
 
 	if not should_render then
@@ -284,6 +300,19 @@ AbilityUI.event_input_changed = function (self)
 	self:set_dirty()
 end
 
+AbilityUI.on_spectator_target_changed = function (self, spectated_player_unit)
+	self._spectated_player_unit = spectated_player_unit
+	self._spectated_player = Managers.player:owner(spectated_player_unit)
+	self._is_spectator = true
+	local observed_side = Managers.state.side:get_side_from_player_unique_id(self._spectated_player:unique_id())
+
+	if observed_side:name() == "dark_pact" then
+		self:set_visible(false)
+	else
+		self:set_visible(true)
+	end
+end
+
 AbilityUI._set_input = function (self, widget, input_action)
 	local texture_data, input_text, prefix_text = self:_get_input_texture_data(input_action)
 	local text_length = (input_text and UTF8Utils.string_length(input_text)) or 0
@@ -356,17 +385,22 @@ AbilityUI._get_input_texture_data = function (self, input_action)
 	return nil, ""
 end
 
-AbilityUI._update_ability_animations = function (self, dt)
+AbilityUI._update_ability_animations = function (self, dt, t)
 	if not self._is_visible then
 		return false
 	end
 
 	local widget = self._widgets_by_name.ability
 	local style = widget.style
-	local speed_multiplier = 5
-	local time_since_launch = Application.time_since_launch()
-	local pulse_progress = 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
+	local pulse_progress = 0.5 + math.sin(t * 5) * 0.5
 	local effect_alpha = math.min(style.ability_effect_left.color[1] + dt * 200, 255)
+	local is_cog = self:_get_player_unit():career_name() == "dr_engineer"
+
+	if is_cog then
+		effect_alpha = 0
+		pulse_progress = 0.5
+	end
+
 	style.ability_effect_left.color[1] = effect_alpha
 	style.ability_effect_top_left.color[1] = effect_alpha
 	style.ability_effect_right.color[1] = effect_alpha
@@ -374,9 +408,9 @@ AbilityUI._update_ability_animations = function (self, dt)
 	style.input_text_gamepad.text_color[1] = 100 + pulse_progress * 155
 	style.input_text_shadow_gamepad.text_color[1] = 100 + pulse_progress * 155
 	style.input_texture_left_shoulder.color[1] = 100 + pulse_progress * 155
+	style.input_texture_left_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
 	style.input_texture_right_shoulder.color[1] = 100 + pulse_progress * 155
 	style.input_texture_right_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
-	style.input_texture_left_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
 	style.input_text_gamepad.text_color[3] = math.lerp(255, 0, pulse_progress)
 	style.ability_bar_highlight.color[1] = 100 + pulse_progress * 155
 

@@ -940,14 +940,6 @@ local widget_definitions_by_state = {
 	},
 	declined = {}
 }
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 StoreItemPurchasePopup = class(StoreItemPurchasePopup)
 

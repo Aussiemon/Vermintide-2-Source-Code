@@ -1055,7 +1055,7 @@ local function create_window(scenegraph_id, size)
 				if not content.text_field_active then
 					return false
 				else
-					style.caret_color[1] = 128 + math.sin(Application.time_since_launch() * 5) * 128
+					style.caret_color[1] = 128 + math.sin(Managers.time:time("ui") * 5) * 128
 				end
 
 				content.real_chat_text = content.chat_text.text

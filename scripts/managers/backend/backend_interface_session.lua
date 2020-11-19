@@ -37,13 +37,15 @@ Session.register_rpcs = function (self, network_event_delegate)
 	end
 end
 
-Session.rpc_backend_session_join = function (self, sender, session_id)
+Session.rpc_backend_session_join = function (self, channel_id, session_id)
 	BackendSession.join(session_id)
 end
 
-Session.rpc_backend_session_done = function (self, sender)
+Session.rpc_backend_session_done = function (self, channel_id)
 	if not self._debug_backend_session_done_timeout then
-		self:_dice_player_done(sender)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self:_dice_player_done(peer_id)
 	end
 end
 

@@ -10,14 +10,6 @@ local CHEST_PRESENTATION_ZOOM_TIME = 0.8
 local CHEST_PRESENTATION_BONUS_WAIT_TIME = 1
 local CHEST_PRESENTATION_BONUS_TIME = 2
 local CHEST_PRESENTATION_EXIT_TIME = 1
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local chest_idle_animations = {
 	"loot_chest_jump",
 	"loot_chest_jump_02"
@@ -161,11 +153,11 @@ EndViewStateChest.create_ui_elements = function (self, params)
 end
 
 EndViewStateChest._initialize_score_topics = function (self)
-	local scores = LootChestData.scores
 	local score_widgets = self._score_widgets
-	local chest_upgrade_score_topics = UISettings.chest_upgrade_score_topics
+	local chest_upgrade_score_topics = UISettings.chest_upgrade_score_topics[self.game_mode_key] or UISettings.chest_upgrade_score_topics.default
 	local num_score_topics = #chest_upgrade_score_topics
 	self._num_score_topics = num_score_topics
+	self._score_topics = {}
 	local spacing = -10
 
 	for index, settings in ipairs(chest_upgrade_score_topics) do
@@ -180,6 +172,7 @@ EndViewStateChest._initialize_score_topics = function (self)
 		local scenegraph_id = widget.scenegraph_id
 		local widget_height = scenegraph_definition[scenegraph_id].size[2]
 		widget.offset[2] = -(widget_height + spacing) * (index - 1)
+		self._score_topics[#self._score_topics + 1] = name
 	end
 end
 
@@ -549,118 +542,32 @@ end
 EndViewStateChest._start_presentation = function (self, t)
 	local instant_spawn = true
 	local start_settings_index = 1
-	local chest_setting = self.chest_settings[start_settings_index]
 	self._spawned_chest_index = start_settings_index
 
 	self:_display_chest_by_settings_index(start_settings_index, t, instant_spawn)
 
-	local score_per_chest = LootChestData.score_per_chest
-	local total_entry_scores = 0
 	local entry_id = 0
-	local scores = LootChestData.scores
 	local context = self._context
-	local mission_system_data = context.mission_system_data
-
-	if self.game_won then
-		local score_name = "game_won"
-		local game_won_score = scores[score_name]
-
-		self:_add_score({
-			id = entry_id,
-			score = game_won_score,
-			name = score_name
-		})
-
-		entry_id = entry_id + 1
-		total_entry_scores = total_entry_scores + game_won_score
-	end
-
-	local is_quickplay = self._context.is_quickplay
-
-	if is_quickplay then
-		local score_name = "quickplay"
-		local quickplay_score = scores[score_name]
-
-		self:_add_score({
-			id = entry_id,
-			score = quickplay_score,
-			name = score_name
-		})
-
-		entry_id = entry_id + 1
-		total_entry_scores = total_entry_scores + quickplay_score
-	end
-
-	local tome_mission_data = mission_system_data.tome_mission_data
-	local num_tomes = (tome_mission_data and tome_mission_data.current_amount) or 0
-
-	if num_tomes > 0 then
-		local score_name = "tome"
-		local tome_score = scores[score_name]
-		local total_tome_score = tome_score * num_tomes
-
-		self:_add_score({
-			id = entry_id,
-			score = total_tome_score,
-			name = score_name,
-			amount = num_tomes
-		})
-
-		entry_id = entry_id + 1
-		total_entry_scores = total_entry_scores + total_tome_score
-	end
-
-	local grimoire_mission_data = mission_system_data.grimoire_mission_data
-	local num_grimoires = (grimoire_mission_data and grimoire_mission_data.current_amount) or 0
-
-	if num_grimoires > 0 then
-		local score_name = "grimoire"
-		local grimoire_score = scores[score_name]
-		local total_grimoire_score = grimoire_score * num_grimoires
-
-		self:_add_score({
-			id = entry_id,
-			score = total_grimoire_score,
-			name = score_name,
-			amount = num_grimoires
-		})
-
-		entry_id = entry_id + 1
-		total_entry_scores = total_entry_scores + total_grimoire_score
-	end
-
-	local loot_dice_mission_data = mission_system_data.loot_dice_mission_data
-	local num_loot_dice = (loot_dice_mission_data and loot_dice_mission_data.current_amount) or 0
-
-	if num_loot_dice > 0 then
-		local score_name = "loot_dice"
-		local loot_dice_score = scores[score_name]
-		local total_loot_dice_score = loot_dice_score * num_loot_dice
-
-		self:_add_score({
-			id = entry_id,
-			score = total_loot_dice_score,
-			name = score_name,
-			amount = num_loot_dice
-		})
-
-		entry_id = entry_id + 1
-		total_entry_scores = total_entry_scores + total_loot_dice_score
-	end
-
 	local end_of_level_rewards = context.rewards.end_of_level_rewards
 	local chest = end_of_level_rewards.chest
-	local random_value = chest.random_value
+	local score_breakdown = chest.score_breakdown
 
-	if random_value then
-		self:_add_score({
-			name = "max_random_score",
-			id = entry_id,
-			score = random_value
-		})
+	for _, score_topic in ipairs(self._score_topics) do
+		local score_part = score_breakdown[score_topic]
 
-		entry_id = entry_id + 1
-		total_entry_scores = total_entry_scores + random_value
+		if score_part and score_part.score > 0 then
+			local score = score_part.score
+			local amount = score_part.amount
+
+			self:_add_score({
+				id = entry_id,
+				score = score,
+				name = score_topic,
+				amount = amount
+			})
+
+			entry_id = entry_id + 1
+		end
 	end
 
 	if entry_id == 0 then

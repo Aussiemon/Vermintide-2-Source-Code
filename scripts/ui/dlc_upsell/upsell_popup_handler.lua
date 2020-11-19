@@ -1,19 +1,18 @@
 require("scripts/ui/dlc_upsell/upsell_popup_settings")
-local_require("scripts/ui/dlc_upsell/upsell_popup_scorpion")
-local_require("scripts/ui/dlc_upsell/upsell_popup_lake")
+require("scripts/ui/dlc_upsell/upsell_popup")
 
 UpsellPopupHandler = class(UpsellPopupHandler)
 
 UpsellPopupHandler.init = function (self, context)
 	self._context = context
 
-	self:register_events()
+	Managers.state.event:register(self, "ui_dlc_upsell", "ui_dlc_upsell")
 end
 
 UpsellPopupHandler.destroy = function (self)
-	self:unregister_events()
+	Managers.state.event:unregister("ui_dlc_upsell", self)
 
-	if self.ui_popup then
+	if self._ui_popup then
 		self.ui_popup:destroy()
 
 		self.ui_popup = nil
@@ -21,65 +20,52 @@ UpsellPopupHandler.destroy = function (self)
 end
 
 UpsellPopupHandler.update = function (self, dt, t)
-	if self.ui_popup then
-		local popup = self.ui_popup
+	local popup = self._ui_popup
 
-		popup:update(dt)
-
-		if popup:exit_done() then
-			popup:destroy()
-
-			self.ui_popup = nil
-		end
+	if not popup then
+		return
 	end
-end
 
-UpsellPopupHandler.register_events = function (self)
-	local event_manager = Managers.state.event
+	local Managers_state = Managers.state
 
-	if event_manager then
-		event_manager:register(self, "ui_dlc_upsell", "ui_dlc_upsell")
+	if Managers_state and Managers_state.voting:vote_in_progress() then
+		popup:hide()
+
+		return
 	end
-end
 
-UpsellPopupHandler.unregister_events = function (self)
-	local event_manager = Managers.state.event
+	popup:update(dt)
 
-	if event_manager then
-		event_manager:unregister("ui_dlc_upsell", self)
+	if popup:exit_done() then
+		popup:delete()
+
+		self._ui_popup = nil
 	end
 end
 
 UpsellPopupHandler.ui_dlc_upsell = function (self, dlc_name)
-	if self.ui_popup then
+	if self._ui_popup then
 		return
 	end
 
 	if Managers.unlock:is_dlc_unlocked(dlc_name) then
-		print("DLC " .. dlc_name .. " is already unlocked. Skipping upsell...")
+		printf("DLC %q already unlocked. Skipping upsell.", dlc_name)
 
 		return
 	end
 
-	local popup_settings = dlc_name and UpsellPopupSettings[dlc_name]
+	local popup_settings = UpsellPopupSettings[dlc_name]
 
 	if not popup_settings then
-		print("No upsell message for DLC " .. dlc_name)
+		printf("No upsell popup settings for DLC %q", dlc_name)
 
 		return
 	end
 
-	local popup_class = rawget(_G, popup_settings.class_name)
+	local popup_class = _G[popup_settings.class_name]
+	self._ui_popup = popup_class:new(self._context, dlc_name, popup_settings)
 
-	if popup_class then
-		self.ui_popup = popup_class:new(self._context, dlc_name)
-	else
-		print("Invalid popup class for DLC " .. dlc_name)
-	end
-
-	if self.ui_popup then
-		self.ui_popup:show()
-	end
+	self._ui_popup:show()
 end
 
 return

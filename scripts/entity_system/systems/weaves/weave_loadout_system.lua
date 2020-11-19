@@ -25,9 +25,11 @@ WeaveLoadoutSystem.destroy = function (self)
 	self.network_event_delegate = nil
 end
 
-WeaveLoadoutSystem.rpc_add_weave_buffs = function (self, sender, go_id, num_buffs, buff_ids, buff_data_type_ids, buff_values)
+WeaveLoadoutSystem.rpc_add_weave_buffs = function (self, channel_id, go_id, num_buffs, buff_ids, buff_data_type_ids, buff_values)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_add_weave_buffs", sender, go_id, num_buffs, buff_ids, buff_data_type_ids, buff_values)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_add_weave_buffs", peer_id, go_id, num_buffs, buff_ids, buff_data_type_ids, buff_values)
 	end
 
 	local unit = self.unit_storage:unit(go_id)

@@ -15,11 +15,11 @@ LobbyHost.init = function (self, network_options, lobby)
 	local project_hash = network_options.project_hash
 	self.network_hash = LobbyAux.create_network_hash(config_file_name, project_hash)
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		fassert(network_options.max_members, "Must provide max members to LobbyHost")
 	end
 
-	self.max_members = PLATFORM == "win32" and network_options.max_members
+	self.max_members = (PLATFORM == "win32" or PLATFORM == "linux") and network_options.max_members
 	self.lobby = lobby or LobbyInternal.create_lobby(network_options)
 	self.peer_id = Network.peer_id()
 	self._network_initialized = false
@@ -29,29 +29,27 @@ end
 LobbyHost.destroy = function (self)
 	print("[LobbyHost] Destroying")
 
-	local my_peer_id = self.peer_id
+	if self.lobby ~= nil then
+		local my_peer_id = self.peer_id
 
-	if self.lobby.kick then
-		for _, peer_id in ipairs(self.lobby:members()) do
-			if peer_id ~= my_peer_id then
-				self.lobby:kick(peer_id)
+		if self.lobby.kick then
+			for _, peer_id in ipairs(self.lobby:members()) do
+				if peer_id ~= my_peer_id then
+					self.lobby:kick(peer_id)
+				end
 			end
 		end
+
+		self.lobby_members = nil
 	end
 
-	self.lobby_members = nil
-
-	LobbyInternal.leave_lobby(self.lobby)
-
-	self.lobby = nil
-
+	self:_free_lobby()
 	GarbageLeakDetector.register_object(self, "Lobby Host")
 end
 
 LobbyHost.update = function (self, dt)
 	local lobby = self.lobby
-	local lobby_state = lobby:state()
-	local new_state = LobbyInternal.state_map[lobby_state]
+	local new_state = lobby:state()
 	local old_state = self.state or 0
 
 	if new_state ~= old_state then
@@ -89,36 +87,8 @@ LobbyHost.update = function (self, dt)
 		end
 	end
 
-	if PLATFORM == "ps4" then
-		lobby:update(dt)
-	end
-
 	if self.lobby_members then
 		self.lobby_members:update()
-
-		local members_joined = self.lobby_members:get_members_joined()
-
-		for i = 1, #members_joined, 1 do
-			local peer_id = members_joined[i]
-
-			LobbyInternal.add_ping_peer(peer_id)
-		end
-
-		local members_left = self.lobby_members:get_members_left()
-
-		for i = 1, #members_left, 1 do
-			local peer_id = members_left[i]
-
-			LobbyInternal.remove_ping_peer(peer_id)
-
-			local my_peer_id = self.peer_id
-
-			if peer_id == my_peer_id then
-				self._lost_connection_to_lobby = true
-
-				print("[LobbyHost] Lost connection to the lobby")
-			end
-		end
 	end
 end
 
@@ -192,10 +162,6 @@ LobbyHost.attempting_reconnect = function (self)
 	return false
 end
 
-LobbyHost.lost_connection_to_lobby = function (self)
-	return self._lost_connection_to_lobby
-end
-
 LobbyHost.members = function (self)
 	return self.lobby_members
 end
@@ -244,7 +210,7 @@ end
 
 LobbyHost.set_lobby = function (self, lobby)
 	print("leaving old lobby")
-	LobbyInternal.leave_lobby(self.lobby)
+	self:_free_lobby()
 
 	self.lobby = lobby
 	local lobby_data_table = self.lobby_data_table or {}
@@ -254,8 +220,31 @@ LobbyHost.set_lobby = function (self, lobby)
 	self.lobby_members = LobbyMembers:new(lobby)
 end
 
+LobbyHost.steal_lobby = function (self)
+	local lobby = self.lobby
+	self.lobby = nil
+
+	return lobby
+end
+
 LobbyHost.failed = function (self)
 	return self.state == LobbyState.FAILED
+end
+
+LobbyHost._free_lobby = function (self)
+	if self.lobby ~= nil then
+		LobbyInternal.leave_lobby(self.lobby)
+
+		self.lobby = nil
+	end
+end
+
+LobbyHost.lost_connection_to_lobby = function (self)
+	return LobbyInternal.is_orphaned(self.lobby)
+end
+
+LobbyHost.close_channel = function (self, channel_id)
+	LobbyInternal.close_channel(self.lobby, channel_id)
 end
 
 return

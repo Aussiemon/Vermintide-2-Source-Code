@@ -25,6 +25,8 @@ MusicManager.panning_rules = {
 }
 
 MusicManager.init = function (self)
+	dprint("init")
+
 	if GLOBAL_MUSIC_WORLD then
 		self._world = MUSIC_WORLD
 		self._wwise_world = MUSIC_WWISE_WORLD
@@ -36,11 +38,17 @@ MusicManager.init = function (self)
 	end
 
 	self._music_players = {}
+	self._duck_sounds_stack = 0
+
+	self:_update_window_focus()
+
 	self._bus_transitions = {}
 	self._flags = {}
-	self._game_state = nil
+	self._game_states = {}
 	self._game_object_id = nil
 	self._group_states = {}
+	self._scream_delays = {}
+	self._current_horde_sound_settings = {}
 	self._event_queues = {}
 	local master_bus_volume = Application.user_setting("master_bus_volume")
 
@@ -69,12 +77,46 @@ MusicManager.init = function (self)
 	end
 end
 
+MusicManager.duck_sounds = function (self)
+	if self._duck_sounds_stack == 0 then
+		self:trigger_event("hud_in_inventory_state_on")
+	end
+
+	self._duck_sounds_stack = self._duck_sounds_stack + 1
+end
+
+MusicManager.unduck_sounds = function (self)
+	if self._duck_sounds_stack == 1 then
+		self:trigger_event("hud_in_inventory_state_off")
+	end
+
+	self._duck_sounds_stack = math.max(0, self._duck_sounds_stack - 1)
+end
+
+MusicManager._update_window_focus = function (self)
+	if not DEDICATED_SERVER then
+		local has_focus = Window.has_focus()
+
+		if has_focus ~= self._has_focus then
+			if has_focus then
+				self:trigger_event("unmute_all")
+			elseif Application.user_setting("mute_in_background") then
+				self:trigger_event("mute_all")
+			end
+
+			self._has_focus = has_focus
+		end
+	end
+end
+
 MusicManager.stop_all_sounds = function (self)
 	dprint("stop_all_sounds")
 	self._wwise_world:stop_all()
 end
 
 MusicManager.stop_event_id = function (self, event_id)
+	dprint("stop_event_id")
+
 	if self._wwise_world:is_playing(event_id) then
 		self._wwise_world:stop_event(event_id)
 	end
@@ -86,7 +128,7 @@ MusicManager.trigger_event = function (self, event_name)
 	local wwise_world = self._wwise_world
 	local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, event_name)
 
-	print("MUSIC MANAGER", event_name, wwise_playing_id, wwise_source_id)
+	dprint("MUSIC MANAGER", event_name, wwise_playing_id, wwise_source_id)
 
 	return wwise_playing_id, wwise_source_id
 end
@@ -110,13 +152,25 @@ MusicManager.update = function (self, dt, t)
 	local conflict_director = Managers.state.conflict
 
 	if conflict_director then
-		self:_update_flag_in_combat(conflict_director)
-		self:_update_combat_intensity(conflict_director)
-		self:_update_boss_state(conflict_director)
-		self:_update_game_state(dt, t, conflict_director)
+		if self._is_server then
+			self:_update_flag_in_combat(conflict_director)
+			self:_update_combat_intensity(conflict_director)
+			self:_update_boss_state(conflict_director)
+			self:_update_game_state(dt, t, conflict_director)
+		end
+
+		if not DEDICATED_SERVER then
+			self:_update_boss_music_intensity(conflict_director)
+		end
+	end
+
+	if not DEDICATED_SERVER then
 		self:_update_player_state(dt, t)
 		self:_update_career_state(dt, t)
 		self:_update_enemy_aggro_state(dt, t)
+		self:_update_game_mode(dt, t)
+		self:_update_side_state(dt, t)
+		self:_update_window_focus()
 	end
 
 	self:_update_flags()
@@ -180,14 +234,17 @@ MusicManager.stop_event_queue = function (self, event_queue_name)
 end
 
 MusicManager.destroy = function (self)
+	dprint("DESTROY")
+
 	if not GLOBAL_MUSIC_WORLD then
 		Application.release_world(self._world)
 	end
+
+	self:_unregister_events()
 end
 
 MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
-	self:set_flag("in_level", true)
-	self:_setup_level_music_players()
+	dprint("on_enter_level")
 
 	self._network_event_delegate = network_event_delegate
 
@@ -199,9 +256,17 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 		local init_data = {
 			go_type = go_type,
 			combat_intensity = intensity_state_id,
-			game_state = game_state_id,
 			boss_state = boss_state_id
 		}
+		local parties = Managers.party:parties()
+		local game_states = {}
+
+		for _, party in pairs(parties) do
+			game_states[party.party_id] = game_state_id
+		end
+
+		init_data.game_state = game_states
+		self._game_states = game_states
 		local session = Managers.state.network.game_session
 
 		fassert(not self._game_object_id, "Creating game object when already exists")
@@ -211,21 +276,49 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 		end)
 	end
 
+	self:_setup_level_music_players()
+	self:set_flag("in_level", true)
+
 	self._is_server = is_server
 	self.last_man_standing = false
+	self._party_manager = Managers.party
+	self._side_manager = Managers.state.side
+
+	self:_register_events()
 end
 
 MusicManager.on_exit_level = function (self)
 	dprint("on_exit_level")
+	self:set_flag("in_level", false)
+	self:set_flag("in_combat", false)
 	self:_reset_level_music_players()
 	self._network_event_delegate:unregister(self)
 
 	self._network_event_delegate = nil
-
-	self:set_flag("in_level", false)
-
 	self._is_server = false
 	self.last_man_standing = false
+
+	self:_unregister_events()
+end
+
+MusicManager._register_events = function (self)
+	local event_manager = Managers.state.event
+
+	if not event_manager then
+		return
+	end
+
+	event_manager:register(self, "player_party_changed", "on_player_party_changed")
+end
+
+MusicManager._unregister_events = function (self)
+	local event_manager = Managers.state.event
+
+	if not event_manager then
+		return
+	end
+
+	event_manager:unregister("player_party_changed", self)
 end
 
 MusicManager.client_game_session_disconnect_music_states = function (self, game_object_id)
@@ -237,12 +330,15 @@ MusicManager.server_game_session_disconnect_music_states = function (self, game_
 end
 
 MusicManager.game_object_created = function (self, game_object_id, owner_id, go_template)
+	dprint("game_object_created")
+
 	self._game_object_id = game_object_id
 	self._owner_id = owner_id
 	self._go_template = go_template
 end
 
 MusicManager.game_object_destroyed = function (self, game_object_id, owner_id, go_template)
+	dprint("game_object_destroyed")
 	Application.warning("[MusicManager:game_object_destroyed] Removed go_template == self._go_template check due to crash")
 
 	self._game_object_id = nil
@@ -285,6 +381,8 @@ MusicManager.set_flag = function (self, flag, value)
 end
 
 MusicManager._setup_level_music_players = function (self)
+	dprint("_setup_level_music_players")
+
 	local music_configs = MusicSettings
 
 	for config_name, config in pairs(music_configs) do
@@ -303,6 +401,8 @@ MusicManager._setup_level_music_players = function (self)
 end
 
 MusicManager._reset_level_music_players = function (self)
+	dprint("_reset_level_music_players")
+
 	local music_configs = MusicSettings
 
 	for config_name, config in pairs(music_configs) do
@@ -329,16 +429,12 @@ MusicManager._update_flag_in_combat = function (self, conflict_director)
 	local num_aggroed_enemies = self:_number_of_aggroed_enemies()
 	local pacing = conflict_director.pacing
 	local intensity = pacing.total_intensity
-	local in_combat = CombatMusic.minimum_enemies < num_aggroed_enemies and CombatMusic.minimum_intensity < intensity
+	local in_combat = CombatMusic.minimum_enemies <= num_aggroed_enemies
 
 	self:set_flag("in_combat", in_combat)
 end
 
 MusicManager._update_combat_intensity = function (self, conflict_director)
-	if not self._flags.in_combat then
-		return
-	end
-
 	local pacing = conflict_director.pacing
 	local intensity = pacing.total_intensity
 	local highest_state = nil
@@ -357,22 +453,14 @@ end
 MusicManager._update_boss_state = function (self, conflict_director)
 	local music_player = self._music_players.combat_music
 
-	if music_player and self._is_server then
-		local angry_boss = conflict_director:angry_boss()
-		local state = nil
-
-		if angry_boss then
-			state = self:_get_combat_music_state(conflict_director)
-		else
-			state = "no_boss"
-		end
-
-		self:set_music_group_state("combat_music", "boss_state", state)
+	if not music_player then
+		return
 	end
 
-	if not DEDICATED_SERVER then
-		self:_update_boss_music_intensity(conflict_director)
-	end
+	local angry_boss = conflict_director:angry_boss()
+	local state = (angry_boss and self:_get_combat_music_state(conflict_director)) or "no_boss"
+
+	self:set_music_group_state("combat_music", "boss_state", state)
 end
 
 MusicManager._get_combat_music_state = function (self, conflict_director)
@@ -398,10 +486,9 @@ MusicManager._get_combat_music_state = function (self, conflict_director)
 end
 
 MusicManager._update_boss_music_intensity = function (self, conflict_director)
-	local player_manager = Managers.player
 	local state_name = BossFightMusicIntensity.default_state
 	local group_name = BossFightMusicIntensity.group_name
-	local local_player = player_manager:local_player()
+	local local_player = self:_get_player()
 
 	if local_player then
 		local player_unit = local_player.player_unit
@@ -468,7 +555,7 @@ MusicManager.check_last_man_standing_music_state = function (self)
 		return
 	end
 
-	local local_player = player_manager:local_player()
+	local local_player = self:_get_player()
 	local player_unit = local_player and local_player.player_unit
 
 	if Unit.alive(player_unit) then
@@ -512,85 +599,115 @@ local HORDE_MUSIC_STATES = {
 }
 
 MusicManager._update_game_state = function (self, dt, t, conflict_director)
-	local music_player = self._music_players.combat_music
+	local parties = Managers.party:parties()
+	local states_changed = nil
 
-	if music_player and self._is_server then
-		local state = nil
-		local horde_type, sound_settings = conflict_director:has_horde()
-		local game_mode_manager = Managers.state.game_mode
-		local lost = (game_mode_manager:game_mode().about_to_lose and true) or false
-		local player_manager = Managers.player
-		local local_player = player_manager:local_player()
-		local won = game_mode_manager:game_won(local_player)
-		local old_state = self._game_state
-		local is_survival = game_mode_manager:game_mode_key() == "survival"
-		local horde_size, horde_ends_at = conflict_director:horde_size()
-		local is_pre_horde = old_state == "pre_horde" or old_state == "pre_ambush"
-		local is_horde_alive = (is_survival and horde_size >= 1) or (horde_size >= 7 and t < horde_ends_at) or horde_type
+	for _, party in pairs(parties) do
+		local slot_data = party.occupied_slots[1]
 
-		if lost then
-			if is_survival then
-				state = "survival_lost"
-			else
-				state = "lost"
-			end
-		elseif won then
-			local level_settings = LevelHelper:current_level_settings()
-			state = (level_settings and level_settings.music_won_state) or "won"
-			local active_weave = Managers.weave:get_active_weave()
+		if slot_data then
+			local party_id = party.party_id
+			local player = slot_data.player
+			local old_state_id = self._game_states[party_id]
+			local old_state = NetworkLookup.music_group_states[old_state_id]
+			local state = self:_get_game_state_for_player(dt, t, conflict_director, party_id, old_state, player)
 
-			if active_weave then
-				local weave_phase = Managers.weave:get_active_weave_phase() or 0
+			if state ~= old_state then
+				local music_state = nil
 
-				if weave_phase == 2 then
-					state = "won_between_winds"
+				if self._current_horde_sound_settings[party_id] and HORDE_MUSIC_STATES[state] then
+					music_state = get_horde_music_state(state, self._current_horde_sound_settings[party_id])
+				else
+					music_state = state
 				end
+
+				self._game_states[party_id] = NetworkLookup.music_group_states[music_state]
+				states_changed = true
 			end
-		elseif is_pre_horde and self._scream_delay and self._scream_delay < t then
-			self._scream_delay = nil
-			state = "horde"
-		elseif is_pre_horde and not self._scream_delay and self:_horde_done_spawning(horde_type) then
-			if horde_type == "ambush" then
-				self:delay_trigger_horde_dialogue(t, t + DialogueSettings.ambush_delay, "ambush")
-
-				self._scream_delay = t + 1.5
-				state = old_state
-			else
-				state = "horde"
-			end
-		elseif is_pre_horde and is_horde_alive then
-			state = old_state
-		elseif old_state == "horde" and is_horde_alive then
-			state = "horde"
-		elseif horde_type == "vector" or horde_type == "vector_blob" or horde_type == "event" then
-			state = "pre_horde"
-
-			self:delay_trigger_horde_dialogue(t, t + DialogueSettings.vector_delay, "vector")
-
-			self._current_horde_sound_settings = sound_settings
-		elseif horde_type == "ambush" then
-			state = "pre_ambush"
-			self._current_horde_sound_settings = sound_settings
-		else
-			state = "explore"
 		end
-
-		if state ~= old_state then
-			print("MUSIC: ", old_state, "->", state)
-		end
-
-		self._game_state = state
-		local music_state = nil
-
-		if self._current_horde_sound_settings and HORDE_MUSIC_STATES[state] then
-			music_state = get_horde_music_state(state, self._current_horde_sound_settings)
-		else
-			music_state = state
-		end
-
-		self:set_music_group_state("combat_music", "game_state", music_state)
-		self:delay_trigger_horde_dialogue(t)
 	end
+
+	if states_changed then
+		self:set_music_group_state("combat_music", "game_state", self._game_states)
+	end
+end
+
+MusicManager._get_game_state_for_player = function (self, dt, t, conflict_director, party_id, old_state, player)
+	local game_mode_manager = Managers.state.game_mode
+	local round_about_to_end = game_mode_manager:game_mode().about_to_lose
+	local game_mode_key = game_mode_manager:game_mode_key()
+	local is_survival = game_mode_key == "survival"
+
+	if round_about_to_end then
+		if is_survival then
+			return "survival_lost"
+		elseif game_mode_manager:game_won(player) then
+			local weave_manager = Managers.weave
+
+			if weave_manager:get_active_weave() and weave_manager:get_active_weave() == 2 then
+				return "won_between_winds"
+			end
+
+			local level_settings = LevelHelper:current_level_settings()
+
+			return (level_settings and level_settings.music_won_state) or "won"
+		elseif game_mode_manager:game_lost(player) then
+			return "lost"
+		elseif game_mode_key == "versus" and Managers.mechanism:get_state() == "round_1" then
+			return "draw"
+		end
+
+		return old_state
+	end
+
+	if game_mode_manager:game_won(player) then
+		local weave_manager = Managers.weave
+
+		if weave_manager:get_active_weave() and weave_manager:get_active_weave() == 2 then
+			return "won_between_winds"
+		end
+
+		local level_settings = LevelHelper:current_level_settings()
+
+		return (level_settings and level_settings.music_won_state) or "won"
+	end
+
+	local is_pre_horde = old_state == "pre_horde" or old_state == "pre_ambush" or old_state == "pre_ambush_beastmen" or old_state == "pre_ambush_chaos"
+	local horde_type, sound_settings = conflict_director:has_horde()
+	local horde_size, horde_ends_at = conflict_director:horde_size()
+	local is_horde_alive = (is_survival and horde_size >= 1) or (horde_size >= 7 and t < horde_ends_at) or horde_type
+
+	if is_pre_horde and self._scream_delays[party_id] and self._scream_delays[party_id] < t then
+		self._scream_delays[party_id] = nil
+
+		return "horde"
+	elseif is_pre_horde and not self._scream_delays[party_id] and self:_horde_done_spawning(horde_type) then
+		if horde_type == "ambush" then
+			self:delay_trigger_horde_dialogue(t, t + DialogueSettings.ambush_delay, "ambush")
+
+			self._scream_delays[party_id] = t + 1.5
+
+			return old_state
+		else
+			return "horde"
+		end
+	elseif is_pre_horde and is_horde_alive then
+		return old_state
+	elseif (old_state == "horde" or old_state == "horde_beastmen" or old_state == "horde_chaos") and is_horde_alive then
+		return "horde"
+	elseif horde_type == "vector" or horde_type == "vector_blob" or horde_type == "event" then
+		self:delay_trigger_horde_dialogue(t, t + DialogueSettings.vector_delay, "vector")
+
+		self._current_horde_sound_settings[party_id] = sound_settings
+
+		return "pre_horde"
+	elseif horde_type == "ambush" then
+		self._current_horde_sound_settings[party_id] = sound_settings
+
+		return "pre_ambush"
+	end
+
+	return "explore"
 end
 
 local ai_units = {}
@@ -625,14 +742,13 @@ end
 
 MusicManager._update_player_state = function (self, dt, t)
 	local music_player = self._music_players.combat_music
-	local local_player_id = self._active_local_player_id
 
-	if music_player and local_player_id then
-		local player = Managers.player:local_player(local_player_id)
+	if music_player then
+		local player = self:_get_player()
 		local player_unit = player.player_unit
+		local state = nil
 
 		if Unit.alive(player_unit) then
-			local state = nil
 			local status_ext = ScriptUnit.extension(player_unit, "status_system")
 
 			if Managers.state.game_mode:game_mode().about_to_lose then
@@ -649,13 +765,23 @@ MusicManager._update_player_state = function (self, dt, t)
 				state = "need_help"
 			elseif self.last_man_standing then
 				state = "last_man_standing"
+			elseif status_ext.get_in_ghost_mode and status_ext:get_in_ghost_mode() then
+				state = "ghost"
 			else
 				state = "normal"
 			end
 
 			music_player:set_group_state("player_state", state)
 		else
-			music_player:set_group_state("player_state", "normal")
+			local side = self:_get_side()
+
+			if side:name() == "dark_pact" then
+				state = "dead"
+			else
+				state = "normal"
+			end
+
+			music_player:set_group_state("player_state", state)
 		end
 	elseif music_player then
 		music_player:set_group_state("player_state", "normal")
@@ -664,13 +790,7 @@ end
 
 MusicManager._update_career_state = function (self, dt, t)
 	local music_player = self._music_players.combat_music
-	local local_player_id = self._active_local_player_id
-	local player = Managers.player:local_player(local_player_id)
-
-	if player and player.bot_player then
-		return
-	end
-
+	local player = self:_get_player()
 	local career_state = "default"
 
 	if player then
@@ -692,8 +812,8 @@ MusicManager._update_enemy_aggro_state = function (self, dt, t)
 	local local_player_id = self._active_local_player_id
 
 	if music_player and local_player_id then
-		local player = Managers.player:local_player(local_player_id)
-		local player_unit = player.player_unit
+		local player = self:_get_player()
+		local player_unit = player and player.player_unit
 
 		if Unit.alive(player_unit) then
 			local sound_effect_extension = ScriptUnit.extension(player_unit, "sound_effect_system")
@@ -708,13 +828,121 @@ MusicManager._update_enemy_aggro_state = function (self, dt, t)
 	end
 end
 
+MusicManager._update_game_mode = function (self, dt, t)
+	local music_player = self._music_players.combat_music
+
+	if music_player then
+		local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+		music_player:set_group_state("game_mode", mechanism_name)
+
+		if mechanism_name == "adventure" then
+		elseif mechanism_name == "versus" then
+			self:_update_versus_game_state(music_player, dt, t)
+		else
+			fassert("Non-supported game mode '%s'", mechanism_name)
+		end
+	end
+end
+
+MusicManager._update_side_state = function (self, dt, t)
+	local music_player = self._music_players.combat_music
+
+	if not music_player or not self._active_local_player_id then
+		return
+	end
+
+	local player = self:_get_player()
+
+	if not player then
+		return
+	end
+
+	if not player.player_unit or not Unit.alive(player.player_unit) then
+		return
+	end
+
+	local side = self:_get_side()
+
+	music_player:set_group_state("game_faction", side:name())
+end
+
+MusicManager._update_versus_game_state = function (self, music_player, dt, t)
+	local music_player = self._music_players.combat_music
+
+	if not music_player or not self._active_local_player_id then
+		return
+	end
+
+	local player = self:_get_player()
+
+	if not player then
+		return
+	end
+
+	local side = self:_get_side()
+	local is_dark_pact = side:name() == "dark_pact"
+
+	if is_dark_pact then
+		local status = self._party_manager:get_status_from_unique_id(player:unique_id())
+		local profile_id = status.profile_id
+
+		music_player:set_group_state("pactsworn_character", profile_id)
+	end
+
+	local game_mode_manager = Managers.state.game_mode
+	local game_mode = game_mode_manager:game_mode()
+	local game_mode_key = game_mode_manager:game_mode_key()
+	local game_mode_state = game_mode:game_mode_state()
+
+	if game_mode_key == "inn_vs" or game_mode_state == "initial_state" or game_mode_state == "character_selection_state" then
+		music_player:set_group_state("versus_state", "menu")
+
+		return
+	end
+
+	if game_mode_state == "player_team_parading_state" then
+		music_player:set_group_state("versus_state", "intro")
+
+		return
+	end
+
+	if not game_mode_manager:is_round_started() or game_mode_manager:is_game_mode_ended() then
+		music_player:set_group_state("versus_state", "normal")
+
+		return
+	end
+
+	local win_conditions = game_mode:win_conditions()
+	local side_close_to_winning = win_conditions:get_side_close_to_winning()
+
+	if side_close_to_winning then
+		local state = nil
+		local side_name = side and side:name()
+
+		if side_name == side_close_to_winning then
+			state = "close_to_win"
+		else
+			state = "time_is_running_out"
+		end
+
+		music_player:set_group_state("versus_state", state)
+	elseif is_dark_pact then
+		music_player:set_group_state("versus_state", "match_on")
+	else
+		music_player:set_group_state("versus_state", "normal")
+	end
+end
+
 MusicManager.register_active_player = function (self, player_id)
+	dprint("register_active_player")
 	fassert(not self._active_local_player_id, "Active player %q already registered!", player_id)
 
 	self._active_local_player_id = player_id
 end
 
 MusicManager.unregister_active_player = function (self, player_id)
+	dprint("unregister_active_player")
 	fassert(self._active_local_player_id == player_id, "Trying to unregister player %q when player %q is active player", player_id, self._player_id)
 
 	self._active_local_player_id = nil
@@ -724,7 +952,7 @@ MusicManager.set_music_group_state = function (self, music_player, group, state)
 	local game_object_id = self._game_object_id
 
 	if self._is_server and game_object_id then
-		local state_id = NetworkLookup.music_group_states[state]
+		local state_id = (type(state) == "table" and state) or NetworkLookup.music_group_states[state]
 		local session = Managers.state.network:game()
 
 		GameSession.set_game_object_field(session, game_object_id, group, state_id)
@@ -732,6 +960,8 @@ MusicManager.set_music_group_state = function (self, music_player, group, state)
 end
 
 MusicManager.music_trigger = function (self, music_player, event)
+	dprint("music_trigger")
+
 	local player = self._music_players[music_player]
 
 	player:post_trigger(event)
@@ -774,6 +1004,55 @@ MusicManager.trigger_horde_dialogue = function (self, horde_name)
 	if dummy_unit then
 		SurroundingAwareSystem.add_event(dummy_unit, "horde", DialogueSettings.discover_enemy_attack_distance, "horde_type", horde_name)
 	end
+end
+
+MusicManager._get_player = function (self)
+	if self._player then
+		return self._player
+	end
+
+	if not self._active_local_player_id then
+		return
+	end
+
+	self._player = Managers.player:local_player(self._active_local_player_id)
+
+	if not self._player or (self._player and self._player.bot_player) then
+		return
+	end
+
+	return self._player
+end
+
+MusicManager._get_party = function (self)
+	if self._party then
+		return self._party
+	end
+
+	local player = self:_get_player()
+	self._party = self._party_manager:get_party_from_unique_id(player:unique_id())
+
+	return self._party
+end
+
+MusicManager._get_side = function (self)
+	if self._side then
+		return self._side
+	end
+
+	local party = self:_get_party()
+	self._side = self._side_manager.side_by_party[party]
+
+	return self._side
+end
+
+MusicManager.on_player_party_changed = function (self, player, is_local_player, old_party_id, new_party_id)
+	if not is_local_player then
+		return
+	end
+
+	self._party = self._party_manager:get_party(new_party_id)
+	self._side = self._side_manager.side_by_party[self._party]
 end
 
 return

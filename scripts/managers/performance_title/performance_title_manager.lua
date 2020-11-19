@@ -230,7 +230,7 @@ PerformanceTitleManager._translate_title_assignment = function (self, peer_id, l
 	return title_assignment
 end
 
-PerformanceTitleManager.rpc_sync_performance_titles = function (self, sender, peer_ids, local_player_ids, title_ids, amounts)
+PerformanceTitleManager.rpc_sync_performance_titles = function (self, channel_id, peer_ids, local_player_ids, title_ids, amounts)
 	local assigned_titles = {}
 
 	for i = 1, 4, 1 do

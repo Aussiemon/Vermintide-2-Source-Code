@@ -6,7 +6,11 @@ return {
 		"all"
 	},
 	excluded_pickup_item_names = {
+		explosive_barrel = true,
 		wpn_grimoire_01 = true,
-		wpn_side_objective_tome_01 = true
+		explosive_barrel_objective = true,
+		wpn_side_objective_tome_01 = true,
+		lamp_oil = true,
+		beer_barrel = true
 	}
 }

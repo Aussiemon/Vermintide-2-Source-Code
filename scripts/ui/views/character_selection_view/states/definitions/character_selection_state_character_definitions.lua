@@ -531,9 +531,10 @@ local scenegraph_definition = {
 }
 local description_text_style = {
 	word_wrap = true,
-	font_size = 18,
-	localize = false,
 	use_shadow = true,
+	localize = false,
+	dynamic_font_size_word_wrap = true,
+	font_size = 18,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
 	font_type = "hell_shark",

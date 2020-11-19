@@ -1,25 +1,8 @@
 require("scripts/ui/reward_popup/reward_popup_ui")
-
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.end_view_state
-
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
-	end
-end
+DLCUtils.require_list("end_view_state")
 
 local SPEED_UP_MULT_MAX = 3
 local SPEED_UP_LERP_SPEED = 4
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local RPCS = {
 	"rpc_signal_end_of_level_done",
 	"rpc_notify_lobby_joined"
@@ -56,6 +39,7 @@ LevelEndViewBase.init = function (self, context)
 		self.deed_rewards = self:_get_deed_rewards()
 		self.keep_decoration_rewards = self:_get_keep_decoration_rewards()
 		self.event_rewards = self:_get_event_rewards()
+		self.win_track_rewards = self:_get_win_track_rewards()
 	end
 
 	self._reward_presentation_queue = {}
@@ -376,6 +360,24 @@ LevelEndViewBase._get_level_up_rewards = function (self)
 	return items_by_level
 end
 
+LevelEndViewBase._get_win_track_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local win_track_rewards = {
+		start_experience = self.context.rewards.win_track_start_experience,
+		item_rewards = {}
+	}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "win_track_reward") == 1 then
+			local data = string.split(reward_name, ";")
+			local level = tonumber(data[2])
+			win_track_rewards.item_rewards[level] = item
+		end
+	end
+
+	return win_track_rewards
+end
+
 LevelEndViewBase._get_deed_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local deed_rewards = {}
@@ -538,6 +540,38 @@ LevelEndViewBase.present_level_up = function (self, hero_name, hero_level)
 	end
 end
 
+LevelEndViewBase.present_win_track_reward = function (self, idx)
+	local item_interface = Managers.backend:get_interface("items")
+	local win_track_rewards = self.win_track_rewards
+	local item_rewards = win_track_rewards.item_rewards
+	local win_track_reward_item = item_rewards[idx]
+	local presentation_data = {}
+	local entry = {}
+	local backend_id = win_track_reward_item.backend_id
+	local reward_item = item_interface:get_item_from_id(backend_id)
+	local item_data = item_interface:get_item_masterlist_data(backend_id)
+	local item_type = item_data.item_type
+	local description = {}
+	local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+	description[1] = Localize(item_type)
+	description[2] = Localize(display_name)
+
+	if description then
+		entry[#entry + 1] = {
+			widget_type = "description",
+			value = description
+		}
+	end
+
+	entry[#entry + 1] = {
+		widget_type = "item",
+		value = win_track_reward_item
+	}
+	presentation_data[#presentation_data + 1] = entry
+
+	self:_present_reward(presentation_data)
+end
+
 LevelEndViewBase.present_additional_rewards = function (self)
 	local deed_rewards = self.deed_rewards
 	local num_deed_rewards = #deed_rewards
@@ -686,34 +720,6 @@ LevelEndViewBase.present_chest_rewards = function (self)
 
 		self:_present_reward(presentation_data)
 	end
-
-	local bonus_chest = end_of_level_rewards.bonus_chest
-
-	if bonus_chest then
-		local backend_id = bonus_chest.backend_id
-		local item_data = item_interface:get_item_masterlist_data(backend_id)
-		local item_name = item_data.name
-		local presentation_data = {
-			{
-				{
-					widget_type = "title",
-					value = Localize("end_screen_quick_play_bonus")
-				}
-			},
-			{
-				{
-					widget_type = "title",
-					value = Localize("end_screen_you_received")
-				},
-				{
-					widget_type = "loot_chest",
-					value = item_name
-				}
-			}
-		}
-
-		self:_present_reward(presentation_data)
-	end
 end
 
 LevelEndViewBase.wanted_menu_state = function (self)
@@ -851,7 +857,7 @@ LevelEndViewBase._proceed_to_next_auto_state = function (self, index, num_states
 	self._next_auto_state_index = nil
 end
 
-LevelEndViewBase.rpc_signal_end_of_level_done = function (self, sender, peer_id, do_reload)
+LevelEndViewBase.rpc_signal_end_of_level_done = function (self, channel_id, peer_id, do_reload)
 	if self.is_server then
 		local lobby = self._lobby
 		local members = lobby:members():get_members()
@@ -859,7 +865,9 @@ LevelEndViewBase.rpc_signal_end_of_level_done = function (self, sender, peer_id,
 
 		for i, member_peer_id in ipairs(members) do
 			if member_peer_id ~= peer_id and member_peer_id ~= my_peer_id then
-				RPC.rpc_signal_end_of_level_done(member_peer_id, peer_id, do_reload)
+				local channel_id = PEER_ID_TO_CHANNEL[member_peer_id]
+
+				RPC.rpc_signal_end_of_level_done(channel_id, peer_id, do_reload)
 			end
 		end
 	end
@@ -883,7 +891,11 @@ LevelEndViewBase.signal_done = function (self, do_reload)
 
 				for i, peer_id in ipairs(members) do
 					if peer_id ~= own_peer_id then
-						RPC.rpc_signal_end_of_level_done(peer_id, own_peer_id, do_reload)
+						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+						if channel_id then
+							RPC.rpc_signal_end_of_level_done(channel_id, own_peer_id, do_reload)
+						end
 					end
 				end
 			end
@@ -891,8 +903,11 @@ LevelEndViewBase.signal_done = function (self, do_reload)
 			local lobby = self._lobby
 			local host = lobby:lobby_host()
 			local my_peer_id = Network.peer_id()
+			local channel_id = PEER_ID_TO_CHANNEL[host]
 
-			RPC.rpc_signal_end_of_level_done(host, my_peer_id, do_reload)
+			if channel_id then
+				RPC.rpc_signal_end_of_level_done(channel_id, my_peer_id, do_reload)
+			end
 		end
 	end
 
@@ -908,16 +923,19 @@ LevelEndViewBase.peer_signaled_done = function (self, peer_id, do_reload)
 	self._wants_reload[peer_id] = do_reload
 end
 
-LevelEndViewBase.rpc_notify_lobby_joined = function (self, peer_id)
+LevelEndViewBase.rpc_notify_lobby_joined = function (self, channel_id)
 	if self.is_server then
 		local do_reload = false
 		local lobby = self._lobby
 		local members = lobby:members():get_members()
 		local my_peer_id = Network.peer_id()
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		for i, member_peer_id in ipairs(members) do
 			if member_peer_id ~= peer_id and member_peer_id ~= my_peer_id then
-				RPC.rpc_signal_end_of_level_done(member_peer_id, peer_id, do_reload)
+				local channel_id = PEER_ID_TO_CHANNEL[member_peer_id]
+
+				RPC.rpc_signal_end_of_level_done(channel_id, peer_id, do_reload)
 			end
 		end
 
@@ -1191,11 +1209,11 @@ LevelEndViewBase.set_input_manager = function (self, input_manager)
 end
 
 LevelEndViewBase.input_service = function (self)
-	return (self:displaying_reward_presentation() and fake_input_service) or self.input_manager:get_service("end_of_level")
+	return (self:displaying_reward_presentation() and FAKE_INPUT_SERVICE) or self.input_manager:get_service("end_of_level")
 end
 
 LevelEndViewBase.menu_input_service = function (self)
-	return (self.input_blocked and fake_input_service) or self:input_service()
+	return (self.input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 end
 
 LevelEndViewBase.set_input_blocked = function (self, blocked)
@@ -1284,7 +1302,9 @@ end
 LevelEndViewBase.spawn_level = function (self, context, world)
 	local level_name = "levels/end_screen/world"
 	local object_sets = {}
-	local level = ScriptWorld.load_level(world, level_name, object_sets, nil, nil, nil)
+	local position, rotation, shading_callback, mood_setting = nil
+	local time_sliced_spawn = false
+	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 	Level.spawn_background(level)
 
@@ -1302,10 +1322,20 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 		"material",
 		"materials/ui/ui_1080p_menu_single_textures",
 		"material",
+		"materials/ui/ui_1080p_store_menu",
+		"material",
 		"materials/ui/ui_1080p_common",
 		"material",
 		"materials/fonts/gw_fonts"
 	}
+	local extra_materials = self.get_extra_materials and self:get_extra_materials()
+
+	if extra_materials then
+		for _, extra_material in ipairs(extra_materials) do
+			materials[#materials + 1] = extra_material
+		end
+	end
+
 	local ui_renderer = UIRenderer.create(world, unpack(materials))
 	local ui_top_renderer = UIRenderer.create(top_world, unpack(materials))
 

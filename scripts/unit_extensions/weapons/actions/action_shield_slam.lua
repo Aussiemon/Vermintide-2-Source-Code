@@ -256,12 +256,6 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 							ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, hit_position, target_hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
 						end
 
-						local charge_value = self.damage_profile.charge_value or "heavy_attack"
-						local send_to_server = true
-						local buff_type = DamageUtils.get_item_buff_type(self.item_name)
-						target_index = self._num_targets_hit
-
-						DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, target_hit_zone_name, target_index, send_to_server, buff_type)
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", self._num_targets_hit == 1)
 					end
 				end
@@ -316,6 +310,8 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 		inner_hit_units[target_breed_unit] = true
 	end
 
+	local hit_index = 1
+
 	for hit_unit, _ in pairs(inner_hit_units) do
 		local breed = unit_get_data(hit_unit, "breed")
 		local dummy = not breed and unit_get_data(hit_unit, "is_dummy")
@@ -345,10 +341,9 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 			local send_to_server = true
 			local charge_value = damage_profile.charge_value or "heavy_attack"
-			local num_hit_targets = 1
 			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_hit_targets, send_to_server, buff_type)
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, hit_index, send_to_server, buff_type)
 
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 			local weapon_system = self.weapon_system
@@ -368,6 +363,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			end
 
 			self.hit_target_breed_unit = true
+			hit_index = hit_index + 1
 		elseif ScriptUnit.has_extension(hit_unit, "health_system") then
 			if is_level_unit then
 				local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
@@ -409,18 +405,24 @@ ActionShieldSlam.finish = function (self, reason)
 	end
 
 	self.hit_target_breed_unit = false
+	local owner_unit = self.owner_unit
+	local current_action = self.current_action
 
 	if reason == "action_complete" and self.state ~= "hit" then
-		self:_hit(self.world, true, self.owner_unit, self.current_action)
+		self:_hit(self.world, true, owner_unit, current_action)
 	end
 
 	local ammo_extension = self.ammo_extension
-	local current_action = self.current_action
 
-	if reason ~= "new_interupting_action" and ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
-		local play_reload_animation = true
+	if reason ~= "new_interupting_action" then
+		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
-		ammo_extension:start_reload(play_reload_animation)
+		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
+			local play_reload_animation = true
+
+			ammo_extension:start_reload(play_reload_animation)
+		end
 	end
 end
 

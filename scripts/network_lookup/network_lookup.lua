@@ -21,23 +21,8 @@ require("scripts/settings/survival_settings")
 require("scripts/settings/spawn_unit_templates")
 require("scripts/unit_extensions/weaves/weave_item_templates")
 require("scripts/settings/unlock_settings")
-
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.statistics_database
-
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
-	end
-end
-
-if PLATFORM ~= "xb1" then
-	require("scripts/settings/twitch_settings")
-else
-	require("scripts/settings/mixer_settings")
-end
-
+DLCUtils.require_list("statistics_database")
+require("scripts/settings/twitch_settings")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_templates")
 require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_templates")
@@ -142,6 +127,8 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_hero_conversations_ground_zero",
 	"dialogues/generated/lookup_hub_conversations",
 	"dialogues/generated/lookup_ping_dialogues_honduras",
+	"dialogues/generated/lookup_pactsworn_player_vo",
+	"dialogues/generated/lookup_vs_player_vo",
 	"dialogues/generated/lookup_wood_elf_generic_vo",
 	"dialogues/generated/lookup_empire_soldier_generic_vo",
 	"dialogues/generated/lookup_bright_wizard_generic_vo",
@@ -161,15 +148,9 @@ function create_lookup(lookup, hashtable)
 	return lookup
 end
 
+DLCUtils.append("dialogue_lookup", dialogue_lookup_tables)
+
 for _, dlc in pairs(DLCSettings) do
-	local dlc_lookup_tables = dlc.dialogue_lookup
-
-	if dlc_lookup_tables then
-		for _, dialogue_lookup_table in ipairs(dlc_lookup_tables) do
-			dialogue_lookup_tables[#dialogue_lookup_tables + 1] = dialogue_lookup_table
-		end
-	end
-
 	local lookups = dlc.network_lookups
 
 	if lookups then
@@ -194,7 +175,9 @@ for _, dlc in pairs(DLCSettings) do
 end
 
 for _, dialogue_lookup_table in ipairs(dialogue_lookup_tables) do
-	dofile(dialogue_lookup_table)
+	if Application.can_get("lua", dialogue_lookup_table) then
+		dofile(dialogue_lookup_table)
+	end
 
 	if Application.can_get("lua", dialogue_lookup_table .. "_markers") then
 		dofile(dialogue_lookup_table .. "_markers")
@@ -254,6 +237,11 @@ end
 
 NetworkLookup.mutator_templates = create_lookup({}, MutatorTemplates)
 NetworkLookup.breeds = create_lookup({}, Breeds)
+
+for breed_name, breed in pairs(PlayerBreeds) do
+	NetworkLookup.breeds[#NetworkLookup.breeds + 1] = breed_name
+end
+
 local temp = {}
 
 for _, breed in pairs(Breeds) do
@@ -301,6 +289,7 @@ end
 
 table.append(damage_sources, NetworkLookup.item_names)
 table.append(damage_sources, NetworkLookup.breeds)
+DLCUtils.append("network_damage_sources", damage_sources)
 
 NetworkLookup.damage_sources = damage_sources
 NetworkLookup.breeds[#NetworkLookup.breeds + 1] = "n/a"
@@ -503,19 +492,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local husk_lookup = dlc.husk_lookup
-
-	if husk_lookup then
-		for i = 1, #husk_lookup, 1 do
-			local husk_unit = husk_lookup[i]
-
-			assert(not NetworkLookup.anims[husk_unit], "The husk unit [\"%s\"] from DLC [\"%s\"] already exists in NetworkLookup.husks!")
-
-			NetworkLookup.husks[#NetworkLookup.husks + 1] = husk_unit
-		end
-	end
-end
+DLCUtils.append("husk_lookup", NetworkLookup.husks)
 
 NetworkLookup.go_types = {
 	"player",
@@ -545,6 +522,7 @@ NetworkLookup.go_types = {
 	"ai_unit_plague_wave_spawner",
 	"player_projectile_unit",
 	"aoe_projectile_unit",
+	"aoe_projectile_unit_fixed_impact",
 	"projectile_unit",
 	"pickup_torch_unit",
 	"pickup_torch_unit_init",
@@ -599,17 +577,12 @@ NetworkLookup.go_types = {
 	"weave_interaction_unit",
 	"weave_doom_wheel_unit",
 	"weave_kill_enemies_unit",
-	"versus_volume_objective_unit",
-	"versus_mission_objective_unit"
+	"versus_character_selection_unit",
+	"horde_surge",
+	"engineer_career_data"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local go_types = dlc.network_go_types
-
-	if go_types then
-		table.append(NetworkLookup.go_types, go_types)
-	end
-end
+DLCUtils.append("network_go_types", NetworkLookup.go_types)
 
 NetworkLookup.spawn_health_state = {
 	"alive",
@@ -742,13 +715,7 @@ NetworkLookup.game_modes = {
 	"adventure_mode"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local modes = dlc.game_modes
-
-	if modes then
-		table.append(NetworkLookup.game_modes, modes)
-	end
-end
+DLCUtils.append("game_modes", NetworkLookup.game_modes)
 
 NetworkLookup.buff_attack_types = {
 	"n/a",
@@ -1042,6 +1009,13 @@ NetworkLookup.weave_names = create_lookup({
 }, WeaveSettings.templates)
 NetworkLookup.weave_objective_names = create_lookup({}, WeaveSettings.weave_objective_names)
 NetworkLookup.weave_item_template_names = create_lookup({}, WeaveItemTemplates)
+
+if GameModeSettings.versus then
+	NetworkLookup.versus_objective_names = create_lookup({
+		"n/a"
+	}, GameModeSettings.versus.objective_names)
+end
+
 NetworkLookup.hit_react_types = {
 	"light",
 	"medium",
@@ -1096,6 +1070,7 @@ NetworkLookup.projectile_templates = {
 	"throw_trajectory",
 	"grenade_impact",
 	"explosion_impact",
+	"vs_globadier_impact",
 	"arrow_impact",
 	"pickup_impact",
 	"explosion",
@@ -1146,6 +1121,7 @@ NetworkLookup.mechanism_keys = create_lookup({}, MechanismSettings)
 NetworkLookup.game_mode_keys = create_lookup({}, GameModeSettings)
 NetworkLookup.fatigue_types = create_lookup({}, PlayerUnitStatusSettings.fatigue_point_costs)
 NetworkLookup.pickup_names = create_lookup({}, AllPickups)
+NetworkLookup.unlockable_level_keys = table.clone(UnlockableLevels)
 NetworkLookup.pickup_spawn_types = {
 	"spawner",
 	"guaranteed",
@@ -1202,6 +1178,7 @@ NetworkLookup.effects = {
 	"fx/wpnfx_flamethrower_1p_01",
 	"fx/wpnfx_flamethrower_01",
 	"fx/wpnfx_flamethrower_hit_01",
+	"fx/chr_warp_fire_flamethrower_01",
 	"fx/chr_warp_fire_explosion_01",
 	"fx/wpnfx_range_crit_01",
 	"fx/chaos_sorcerer_plague_wave_hit_01",
@@ -1518,7 +1495,27 @@ NetworkLookup.sound_events = {
 	"Play_enemy_mutator_chaos_sorcerer_skulking_loop",
 	"Stop_enemy_mutator_chaos_sorcerer_skulking_loop",
 	"Play_enemy_mutator_chaos_sorcerer_hunting_loop",
-	"Stop_enemy_mutator_chaos_sorcerer_hunting_loop"
+	"Stop_enemy_mutator_chaos_sorcerer_hunting_loop",
+	"stop_player_combat_weapon_bw_deus_01_charge_husk",
+	"player_combat_weapon_bw_deus_01_charge_husk",
+	"player_combat_weapon_bw_deus_01_magma_fire",
+	"player_combat_weapon_steampistol_fire",
+	"player_combat_weapon_steampistol_fire_fast",
+	"Play_wpn_engineer_pistol_charge",
+	"Play_wpn_engineer_pistol_charge_stop",
+	"Play_wpn_engineer_pistol_equip",
+	"Play_wpn_engineer_pistol_equip_no_ammo",
+	"Play_wpn_engineer_pistol_foley",
+	"Play_wpn_engineer_pistol_inspect",
+	"Play_wpn_engineer_pistol_inspect_stop",
+	"Play_wpn_engineer_pistol_last_bullet",
+	"Play_wpn_engineer_pistol_no_ammo",
+	"Play_wpn_engineer_pistol_reload",
+	"Play_wpn_engineer_pistol_reload_husk",
+	"Play_wpn_engineer_pistol_spinning_loop",
+	"Play_wpn_engineer_pistol_spinning_start",
+	"Play_wpn_engineer_pistol_spinning_stop",
+	"Stop_wpn_engineer_pistol_spinning_loop"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1648,19 +1645,7 @@ NetworkLookup.ai_inventory = {
 	"beastmen_minotaur_dual_axes"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local ai_inventory = dlc.ai_inventory
-
-	if ai_inventory then
-		for i = 1, #ai_inventory, 1 do
-			local name = ai_inventory[i]
-
-			if not table.contains(NetworkLookup.ai_inventory, name) then
-				NetworkLookup.ai_inventory[#NetworkLookup.ai_inventory + 1] = name
-			end
-		end
-	end
-end
+DLCUtils.append("ai_inventory", NetworkLookup.ai_inventory)
 
 NetworkLookup.connection_fails = {
 	"no_peer_data_on_join",
@@ -1711,7 +1696,8 @@ NetworkLookup.dialogue_events = {
 	"activate_ability",
 	"activate_ability_taunt",
 	"flanking",
-	"reload_failed"
+	"reload_failed",
+	"spawning"
 }
 NetworkLookup.dialogue_event_data_names = {
 	"num_units",
@@ -1768,19 +1754,8 @@ NetworkLookup.dialogue_event_data_names = {
 	"out_of_ammo"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local dialogue_event_data_lookup = dlc.dialogue_event_data_lookup
-
-	if dialogue_event_data_lookup then
-		for i = 1, #dialogue_event_data_lookup, 1 do
-			local event_name = dialogue_event_data_lookup[i]
-
-			if not table.contains(NetworkLookup.dialogue_event_data_names, event_name) then
-				NetworkLookup.dialogue_event_data_names[#NetworkLookup.dialogue_event_data_names + 1] = event_name
-			end
-		end
-	end
-end
+DLCUtils.append("dialogue_event_data_lookup", NetworkLookup.dialogue_event_data_names)
+DLCUtils.append("dialogue_events", NetworkLookup.dialogue_events)
 
 NetworkLookup.hero_names = {
 	"dwarf_ranger",
@@ -1816,6 +1791,7 @@ NetworkLookup.music_group_states = {
 	"lost",
 	"survival_lost",
 	"won",
+	"draw",
 	"won_between_winds",
 	"pre_horde",
 	"pre_ambush",
@@ -1907,15 +1883,7 @@ NetworkLookup.statistics = {
 	"scorpion_slay_gors_warpfire_damage"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local statistics_lookup = dlc.statistics_lookup
-
-	if statistics_lookup then
-		for i = 1, #statistics_lookup, 1 do
-			NetworkLookup.statistics[#NetworkLookup.statistics + 1] = statistics_lookup[i]
-		end
-	end
-end
+DLCUtils.append("statistics_lookup", NetworkLookup.statistics)
 
 local music_group_states = {}
 local music_lookups = NetworkLookup.music_group_states
@@ -2047,6 +2015,12 @@ NetworkLookup.weave_winds = {
 	"life",
 	"metal"
 }
+NetworkLookup.connection_states = {
+	"connecting",
+	"connected",
+	"disconnecting",
+	"disconnected"
+}
 NetworkLookup.bot_orders = create_lookup({}, AIBotGroupSystem.bot_orders)
 NetworkLookup.twitch_vote_templates = create_lookup({
 	"draw",
@@ -2067,18 +2041,14 @@ NetworkLookup.weapon_skins = create_lookup({
 NetworkLookup.performance_titles = create_lookup({
 	"n/a"
 }, PerformanceTitles.titles)
-NetworkLookup.social_wheel_events = create_lookup({}, SocialWheelSettingsLookup)
+NetworkLookup.social_wheel_events = create_lookup({
+	"n/a"
+}, SocialWheelSettingsLookup)
 NetworkLookup.challenges = create_lookup({}, InGameChallengeTemplates)
 NetworkLookup.challenge_rewards = create_lookup({}, InGameChallengeRewards)
 NetworkLookup.challenge_categories = {}
 
-for _, dlc in pairs(DLCSettings) do
-	local challenge_categories = dlc.challenge_categories
-
-	if challenge_categories then
-		table.append(NetworkLookup.challenge_categories, challenge_categories)
-	end
-end
+DLCUtils.append("challenge_categories", NetworkLookup.challenge_categories)
 
 NetworkLookup.boon_consume_types = {
 	"time",
@@ -2135,23 +2105,34 @@ for level_key, terror_events in pairs(TerrorEventBlueprints) do
 	end
 end
 
+for _, blueprint in pairs(GenericTerrorEvents) do
+	for _, event in ipairs(blueprint) do
+		local name = event.flow_event_name
+
+		if name and not event.disable_network_send then
+			flow_events[name] = true
+		end
+	end
+end
+
 NetworkLookup.terror_flow_events = create_lookup({}, flow_events)
 NetworkLookup.inventory_packages = dofile("scripts/network_lookup/inventory_package_list")
 local career_packages = dofile("scripts/network_lookup/career_package_list")
 
 table.append(NetworkLookup.inventory_packages, career_packages)
+DLCUtils.append("inventory_package_list", NetworkLookup.inventory_packages)
 
-for _, dlc in pairs(DLCSettings) do
-	if dlc.inventory_package_list then
-		table.append(NetworkLookup.inventory_packages, dlc.inventory_package_list)
-	end
-end
+local NETWORK_LOOKUP_DUPLICATES_ALLOWED = {
+	locations = true
+}
 
 local function init(self, name)
 	for index, str in ipairs(self) do
-		fassert(not self[str], "[NetworkLookup.lua] Duplicate entry %q in %q.", str, name)
-
-		self[str] = index
+		if not self[str] then
+			self[str] = index
+		elseif not NETWORK_LOOKUP_DUPLICATES_ALLOWED[name] then
+			ferror("[NetworkLookup.lua] Duplicate entry %q in %q.", str, name)
+		end
 	end
 
 	local index_error_print = "[NetworkLookup.lua] Table " .. name .. " does not contain key: "

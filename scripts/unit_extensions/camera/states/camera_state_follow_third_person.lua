@@ -11,6 +11,32 @@ CameraStateFollowThirdPerson.on_enter = function (self, unit, input, dt, context
 	local camera_extension = self.camera_extension
 	local follow_unit, follow_node = camera_extension:get_follow_data()
 	local viewport_name = camera_extension.viewport_name
+	local override_follow_unit = params.override_follow_unit
+
+	if override_follow_unit and Unit.alive(override_follow_unit) then
+		follow_unit = override_follow_unit
+	end
+
+	if not follow_unit or not Unit.alive(follow_unit) then
+		self._follow_unit = nil
+
+		return
+	end
+
+	local override_node_name = params.override_node_name
+
+	if override_node_name then
+		if Unit.has_node(follow_unit, override_node_name) then
+			follow_node = Unit.node(follow_unit, override_node_name)
+		else
+			printf(string.format("Tried to get non existing node '%s' for unit '%s'", override_node_name, tostring(follow_unit)))
+		end
+	end
+
+	local camera_offset = params.camera_offset
+	self._camera_offset = camera_offset and Vector3Box(camera_offset)
+	self._allow_camera_movement = params.allow_camera_movement
+	self._follow_unit_rotation = (params.follow_unit_rotation == nil and true) or params.follow_unit_rotation
 	self._follow_unit = follow_unit
 	self._follow_node = follow_node
 	local camera_manager = Managers.state.camera
@@ -35,10 +61,10 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 	local unit = self.unit
 	local camera_extension = self.camera_extension
 	local follow_unit = self._follow_unit
-	local follow_node = self._follow_node
+	local follow_node = self._follow_node or 0
 
-	if not Unit.alive(follow_unit) then
-		csm:change_state("idle")
+	if not follow_unit or not Unit.alive(follow_unit) then
+		csm:change_state("observer")
 
 		return
 	end
@@ -52,8 +78,6 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 
 		return
 	end
-
-	CameraStateHelper.set_local_pose(unit, follow_unit, follow_node)
 
 	if self.calculate_lerp then
 		local total_lerp_time = self.total_lerp_time
@@ -79,6 +103,16 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 			self.progress = current_progress
 			self.lerp_time = current_lerp_time
 		end
+	elseif self._follow_unit_rotation and not self._allow_camera_movement then
+		CameraStateHelper.set_local_pose(unit, follow_unit, follow_node)
+	else
+		if self._allow_camera_movement then
+			CameraStateHelper.set_camera_rotation(unit, camera_extension)
+		end
+
+		local camera_offset = self._camera_offset and Vector3Box.unbox(self._camera_offset)
+
+		CameraStateHelper.set_follow_camera_position(unit, follow_unit, follow_node, camera_offset, nil, dt)
 	end
 end
 

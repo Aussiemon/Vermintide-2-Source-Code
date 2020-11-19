@@ -87,7 +87,7 @@ StateTitleScreenInitNetwork._connected_to_steam = function (self)
 
 	local connected_to_network = true
 
-	if PLATFORM == "win32" and rawget(_G, "Steam") then
+	if (PLATFORM == "win32" or PLATFORM == "linux") and rawget(_G, "Steam") then
 		connected_to_network = Steam.connected()
 	end
 

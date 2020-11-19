@@ -288,7 +288,7 @@ WeaveProperties.properties = {
 		display_name = "properties_power_vs_unarmoured",
 		buffer = "server",
 		advanced_description = "description_properties_power_vs_unarmoured",
-		icon = "icon_property_attack_speed",
+		icon = "icon_property_power_unarmoured",
 		buff_name = "weave_properties_power_vs_unarmoured",
 		description_values = {
 			{
@@ -302,7 +302,7 @@ WeaveProperties.properties = {
 		display_name = "properties_power_vs_armoured",
 		buffer = "server",
 		advanced_description = "description_properties_power_vs_armoured",
-		icon = "icon_property_power_unarmoured",
+		icon = "icon_property_power_armoured",
 		buff_name = "weave_properties_power_vs_armoured",
 		description_values = {
 			{

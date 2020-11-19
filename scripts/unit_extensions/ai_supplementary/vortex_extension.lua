@@ -142,7 +142,9 @@ VortexExtension.extensions_ready = function (self, world, unit)
 		navigation_extension:set_max_speed(vortex_template.override_movement_speed)
 	end
 
-	WwiseUtils.trigger_unit_event(world, "Play_enemy_sorcerer_vortex_loop", unit)
+	local start_sound_event_name = vortex_template.start_sound_event_name or "Play_enemy_sorcerer_vortex_loop"
+
+	WwiseUtils.trigger_unit_event(world, start_sound_event_name, unit)
 end
 
 VortexExtension.destroy = function (self)
@@ -220,8 +222,9 @@ VortexExtension.destroy = function (self)
 
 	blackboard.vortex_data = nil
 	local world = self.world
+	local stop_sound_event_name = self.vortex_template.stop_sound_event_name or "Stop_enemy_sorcerer_vortex_loop"
 
-	WwiseUtils.trigger_unit_event(world, "Stop_enemy_sorcerer_vortex_loop", unit)
+	WwiseUtils.trigger_unit_event(world, stop_sound_event_name, unit)
 
 	if self._use_nav_cost_map_volumes then
 		local ai_system = self.ai_system
@@ -699,9 +702,14 @@ VortexExtension.attract = function (self, unit, t, dt, blackboard, vortex_templa
 	local max_allowed_inner_radius_dist = vortex_template.max_allowed_inner_radius_dist
 	local allowed_distance = inner_radius + max_allowed_inner_radius_dist
 
-	self:_update_attract_players(unit, blackboard, vortex_data, vortex_template, t, center_pos, minimum_height_diff, inner_radius, outer_radius, falloff_radius, allowed_distance)
-	self:_update_attract_outside_ai(vortex_data, blackboard, vortex_template, center_pos, minimum_height_diff, inner_radius, outer_radius, falloff_radius)
-	self:_update_attract_inside_ai(blackboard, vortex_data, vortex_template, dt, center_pos, inner_radius, allowed_distance)
+	if vortex_template.player_attractable then
+		self:_update_attract_players(unit, blackboard, vortex_data, vortex_template, t, center_pos, minimum_height_diff, inner_radius, outer_radius, falloff_radius, allowed_distance)
+	end
+
+	if vortex_template.ai_attractable then
+		self:_update_attract_outside_ai(vortex_data, blackboard, vortex_template, center_pos, minimum_height_diff, inner_radius, outer_radius, falloff_radius)
+		self:_update_attract_inside_ai(blackboard, vortex_data, vortex_template, dt, center_pos, inner_radius, allowed_distance)
+	end
 end
 
 VortexExtension.is_position_inside = function (self, position, min_allowed_distance)

@@ -22,9 +22,25 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id)
 	self._session_id = 0
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
+	self._packages_to_unload = {}
+	self._packages_to_unload_n = 0
 end
 
 HeroPreviewer.destroy = function (self)
+	if self._packages_to_unload_n > 0 then
+		local package_manager = Managers.package
+		local reference_name = self:_reference_name()
+		local packages_to_unload = self._packages_to_unload
+
+		for i = 1, self._packages_to_unload_n, 1 do
+			local package_name = packages_to_unload[i]
+
+			package_manager:unload(package_name, reference_name)
+		end
+
+		self._packages_to_unload_n = 0
+	end
+
 	self._session_id = self._session_id + 1
 
 	GarbageLeakDetector.register_object(self, "HeroPreviewer")
@@ -64,6 +80,20 @@ HeroPreviewer.post_update = function (self, dt)
 	self:_handle_hero_spawn_request()
 	self:_poll_hero_package_loading()
 	self:_poll_item_package_loading()
+
+	if self._packages_to_unload_n > 0 then
+		local package_manager = Managers.package
+		local reference_name = self:_reference_name()
+		local packages_to_unload = self._packages_to_unload
+
+		for i = 1, self._packages_to_unload_n, 1 do
+			local package_name = packages_to_unload[i]
+
+			package_manager:unload(package_name, reference_name)
+		end
+
+		self._packages_to_unload_n = 0
+	end
 end
 
 HeroPreviewer._update_units_visibility = function (self, dt)
@@ -849,13 +879,15 @@ HeroPreviewer._unload_item_packages_by_slot = function (self, slot_type)
 	if item_info_by_slot[slot_type] then
 		local slot_type_data = item_info_by_slot[slot_type]
 		local package_names = slot_type_data.package_names
-		local package_manager = Managers.package
-		local reference_name = self:_reference_name()
+		local packages_to_unload = self._packages_to_unload
+		local packages_to_unload_n = self._packages_to_unload_n
 
 		for _, package_name in ipairs(package_names) do
-			package_manager:unload(package_name, reference_name)
+			packages_to_unload_n = packages_to_unload_n + 1
+			packages_to_unload[packages_to_unload_n] = package_name
 		end
 
+		self._packages_to_unload_n = packages_to_unload_n
 		item_info_by_slot[slot_type] = nil
 	end
 end

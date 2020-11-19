@@ -521,6 +521,11 @@ player.completed_levels_difficulty = {}
 player.completed_career_levels = {}
 player.played_difficulty = {}
 player.weapon_kills_per_breed = {}
+player.mission_streak = {}
+player.spawned_times = {
+	value = 0,
+	sync_on_hot_join = true
+}
 player.completed_daily_quests = {
 	value = 0,
 	database_name = "completed_daily_quests",
@@ -748,15 +753,7 @@ for level_key, level in pairs(LevelSettings) do
 	end
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.statistics_definitions
-
-	if files then
-		for _, file in ipairs(files) do
-			dofile(file)
-		end
-	end
-end
+DLCUtils.dofile_list("statistics_definitions")
 
 local function add_names(stats)
 	for stat_name, stat_definition in pairs(stats) do

@@ -4,7 +4,6 @@ require("scripts/ui/ui_elements")
 require("scripts/ui/ui_element")
 require("scripts/ui/ui_widgets")
 require("scripts/ui/ui_widgets_weaves")
-require("scripts/ui/views/widget_definitions")
 require("scripts/ui/views/ingame_view")
 require("scripts/ui/views/ingame_hud")
 require("scripts/ui/views/popup_handler")
@@ -28,18 +27,13 @@ require("scripts/ui/motd/motd_popup_ui")
 require("scripts/ui/text_popup/text_popup_ui")
 require("scripts/ui/weave_tutorial/weave_ui_onboarding_tutorial")
 require("scripts/ui/dlc_upsell/upsell_popup_handler")
+DLCUtils.map_list("ui_views", function (view)
+	local file = view.file
 
-for _, dlc in pairs(DLCSettings) do
-	local ui_views = dlc.ui_views
-
-	if ui_views then
-		for _, view in ipairs(ui_views) do
-			if view.file then
-				dofile(view.file)
-			end
-		end
+	if file then
+		dofile(file)
 	end
-end
+end)
 
 local rpcs = {}
 local settings = require("scripts/ui/views/ingame_ui_settings")
@@ -89,10 +83,6 @@ IngameUI.init = function (self, ingame_ui_context)
 	self._player = ingame_ui_context.player
 	self.is_server = ingame_ui_context.is_server
 	self.ingame_hud = IngameHud:new(self, ingame_ui_context)
-
-	Managers.state.game_mode:game_mode():add_hud_components(self.ingame_hud)
-	self._player:set_hud(self.ingame_hud)
-
 	self.last_resolution_x, self.last_resolution_y = Application.resolution()
 
 	InitVideo()
@@ -120,7 +110,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	end
 
 	Managers.chat:set_profile_synchronizer(ingame_ui_context.profile_synchronizer)
-	Managers.chat:set_wwise_world(self.world_manager:wwise_world(self.world))
+	Managers.chat:set_wwise_world(wwise_world)
 	Managers.chat:set_input_manager(input_manager)
 	Managers.rcon:set_input_manager(input_manager)
 
@@ -217,8 +207,6 @@ IngameUI.is_in_view_state = function (self, state_name)
 end
 
 IngameUI.destroy = function (self)
-	self._player:set_hud(nil)
-
 	local event_manager = Managers.state.event
 
 	if event_manager then
@@ -460,6 +448,7 @@ end
 IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self._disable_ingame_ui = disable_ingame_ui
 
+	FatUI.begin_frame(self.ui_renderer.gui, self.wwise_world, dt)
 	self:_update_fade_transition()
 
 	local views = self.views
@@ -495,6 +484,12 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 	if self.survey_active then
 		self:_survey_update(dt)
+	end
+
+	if self.quit_game_retry and self.delay_quit_game_retry <= t then
+		self.quit_game_retry = nil
+
+		self:handle_transition("end_game")
 	end
 
 	if is_in_inn then
@@ -545,7 +540,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		end
 
 		local gdc_build = Development.parameter("gdc")
-		local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI")
+		local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI") or ingame_hud:component("VersusTabUI")
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 		local fade_active = Managers.transition:in_fade_active()
 
@@ -605,6 +600,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self:_update_chat_ui(dt, t, input_service, end_of_level_ui)
 	self:_render_debug_ui(dt, t)
 	self:_update_fade_transition()
+	FatUI.close_frame()
 end
 
 IngameUI.disable_ingame_ui = function (self)
@@ -649,7 +645,9 @@ IngameUI._url_loaded = function (self, url, texture_resource)
 end
 
 IngameUI.post_render = function (self)
-	self.motd_ui:post_render()
+	if self.motd_ui then
+		self.motd_ui:post_render()
+	end
 end
 
 IngameUI.cutscene_active = function (self)
@@ -696,7 +694,7 @@ end
 
 IngameUI._menu_blocking_information = function (self, input_service, end_of_level_ui)
 	local ingame_hud = self.ingame_hud
-	local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI")
+	local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI") or ingame_hud:component("VersusTabUI")
 	local player_list_focused = ingame_player_list_ui and ingame_player_list_ui:is_focused()
 	local gift_popup_ui = ingame_hud:component("GiftPopupUI")
 	local gift_popup_active = gift_popup_ui and gift_popup_ui:active()
@@ -819,6 +817,11 @@ IngameUI.is_transition_allowed = function (self, transition)
 		end
 	end
 
+	if Managers.mechanism:current_mechanism_name() == "versus" and (transition == "hero_view" or transition == "hero_view_force") then
+		error_message = "versus_transition_not_allowed"
+		transition_allowed = false
+	end
+
 	if error_message then
 		self:add_local_system_message(error_message)
 	end
@@ -859,6 +862,12 @@ end
 
 IngameUI.handle_transition = function (self, new_transition, params)
 	fassert(transitions[new_transition], "Missing transition to %s", new_transition)
+
+	if script_data.disable_store and new_transition == "hero_view_force" and params and params.menu_state_name == "store" then
+		Managers.chat:add_local_system_message(1, "Store is disabled.", true)
+
+		return
+	end
 
 	local blocked_transitions = self.blocked_transitions
 
@@ -1192,7 +1201,7 @@ IngameUI.hide_unavailable_hero_popup = function (self)
 
 	fassert(popup_join_lobby_handler ~= nil, "trying to hide PopupJoinLobbyHandler when its not visible")
 	popup_join_lobby_handler:hide()
-	popup_join_lobby_handler:destroy()
+	popup_join_lobby_handler:delete()
 
 	self.popup_join_lobby_handler = nil
 end
@@ -1229,6 +1238,10 @@ IngameUI._cancel_popup = function (self)
 	if self.popup_id then
 		Managers.popup:cancel_popup(self.popup_id)
 	end
+end
+
+IngameUI.get_hud_component = function (self, hud_component_name)
+	return self.ingame_hud:get_hud_component(hud_component_name)
 end
 
 return

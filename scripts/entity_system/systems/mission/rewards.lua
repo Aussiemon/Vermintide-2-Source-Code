@@ -23,7 +23,7 @@ Rewards.init = function (self, level_key, game_mode_key, quickplay_bonus)
 	self._quickplay_bonus = quickplay_bonus
 end
 
-Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_event_game_mode, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_event_game_mode, game_time, end_of_level_rewards_arguments, extra_mission_results)
 	local deed_manager = Managers.deed
 
 	if game_won and deed_manager:has_deed() and not deed_manager:is_deed_owner() then
@@ -33,11 +33,8 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_
 		self._end_of_level_info = {
 			game_won = game_won,
 			hero_name = hero_name,
-			weave_tier = weave_tier,
-			weave_progress = weave_progress,
 			game_time = game_time,
-			current_weave_index = current_weave_index,
-			kill_count = kill_count
+			end_of_level_rewards_arguments = end_of_level_rewards_arguments
 		}
 		local cb = callback(self, "cb_deed_consumed")
 
@@ -45,11 +42,11 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_
 	else
 		local loot_profile_name = (is_in_event_game_mode and "event") or "default"
 
-		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, game_time, end_of_level_rewards_arguments, extra_mission_results)
 	end
 end
 
-Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_profile_name, game_time, end_of_level_rewards_arguments, extra_mission_results)
 	local backend_manager = Managers.backend
 	local hero_attributes = backend_manager:get_interface("hero_attributes")
 	local start_experience = hero_attributes:get(hero_name, "experience")
@@ -64,15 +61,23 @@ Rewards._award_end_of_level_rewards = function (self, game_won, hero_name, loot_
 		deed_item_backend_id = deed_backend_id
 	end
 
-	self._mission_results = self:_mission_results(game_won)
+	self._mission_results = self:_mission_results(game_won, extra_mission_results)
 	self._start_experience = start_experience
 	self._start_experience_pool = start_experience_pool
+	local win_track_interface = Managers.backend:get_interface("win_tracks")
+
+	if win_track_interface then
+		local win_track_id = win_track_interface:get_current_win_track_id()
+		local start_win_track_experience = win_track_interface:get_win_track_experience(win_track_id)
+		self._start_win_track_experience = start_win_track_experience
+	end
+
 	local level_end, end_experience = self:get_level_end()
 
-	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+	self:_generate_end_of_level_loot(game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, game_time, end_of_level_rewards_arguments)
 end
 
-Rewards._mission_results = function (self, game_won)
+Rewards._mission_results = function (self, game_won, extra_mission_results)
 	local game_mode_key = self._game_mode_key
 	local mission_results = {}
 	local difficulty_manager = Managers.state.difficulty
@@ -87,6 +92,13 @@ Rewards._mission_results = function (self, game_won)
 			mission_results[1] = {
 				text = "end_screen_mission_completed",
 				experience = experience_reward * self:experience_multiplier()
+			}
+		elseif game_mode_key == "versus" then
+			local settings = Managers.state.game_mode:settings()
+			local experience_settings = settings.experience
+			mission_results[#mission_results + 1] = {
+				text = "versus_mission_won",
+				experience = experience_settings.win_match
 			}
 		else
 			self:_add_missions_from_mission_system(mission_results, difficulty_rank)
@@ -127,6 +139,7 @@ Rewards._mission_results = function (self, game_won)
 		}
 
 		table.insert(mission_results, 1, mission_failed_reward)
+	elseif game_mode_key == "versus" then
 	else
 		local mission_system = Managers.state.entity:system("mission_system")
 		local percentages_completed = mission_system:percentages_completed()
@@ -155,6 +168,40 @@ Rewards._mission_results = function (self, game_won)
 		table.insert(mission_results, 1, mission_failed_reward)
 	end
 
+	if game_mode_key == "versus" then
+		local settings = Managers.state.game_mode:settings()
+		local experience_settings = settings.experience
+		local mechanism = Managers.mechanism:game_mechanism()
+		local first_prev_hero_score = mechanism:previous_hero_score(1)
+		local last_prev_hero_score = mechanism:previous_hero_score(2)
+		local num_obj_completed_first_round = (first_prev_hero_score and first_prev_hero_score.num_completed_objectives) or 0
+		local num_obj_completed_last_round = (last_prev_hero_score and last_prev_hero_score.num_completed_objectives) or 0
+		local objective_system = Managers.state.entity:system("versus_objective_system")
+		local total_main_objectives = objective_system:num_main_objectives()
+		local xp_all_objectives_completed = experience_settings.complete_all_objectives
+		local first_round_xp = num_obj_completed_first_round / total_main_objectives * xp_all_objectives_completed
+		local last_round_xp = (num_obj_completed_last_round and num_obj_completed_last_round / total_main_objectives * xp_all_objectives_completed) or 0
+		local total_objective_xp = math.ceil(first_round_xp + last_round_xp)
+		mission_results[#mission_results + 1] = {
+			text = "versus_mission_completed",
+			experience = experience_settings.complete_match
+		}
+
+		if total_objective_xp > 0 then
+			mission_results[#mission_results + 1] = {
+				text = "versus_mission_objectives_completed",
+				experience = total_objective_xp
+			}
+		end
+	end
+
+	if extra_mission_results then
+		for _, extra_mission_result in ipairs(extra_mission_results) do
+			extra_mission_result.experience = extra_mission_result.experience * self:experience_multiplier()
+			mission_results[#mission_results + 1] = extra_mission_result
+		end
+	end
+
 	return mission_results
 end
 
@@ -164,7 +211,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 	local active_missions, completed_missions = mission_system:get_missions()
 
 	for mission_name, data in pairs(completed_missions) do
-		if not data.is_goal then
+		if not data.is_goal and not data.mission_data.disable_rewards then
 			local experience = data.experience or 0
 			local bonus_dice = data.bonus_dice or 0
 			local bonus_tokens = data.bonus_tokens or 0
@@ -182,7 +229,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 	end
 
 	for mission_name, data in pairs(active_missions) do
-		if not data.is_goal then
+		if not data.is_goal and not data.mission_data.disable_rewards then
 			local mission_template_name = data.mission_data.mission_template_name
 			local template = MissionTemplates[mission_template_name]
 			local done, amount = template.evaluate_mission(data)
@@ -232,29 +279,13 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 	end
 end
 
-Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, game_time, end_of_level_rewards_arguments)
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty = difficulty_manager:get_difficulty()
-	local mission_system = Managers.state.entity:system("mission_system")
-	local num_tomes = 0
-	local num_grims = 0
-	local num_loot_dice = 0
-	local num_painting_scraps = 0
 	local loot_interface = Managers.backend:get_interface("loot")
 	local quickplay = self._quickplay_bonus
-
-	if game_won then
-		local tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission")
-		local grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission")
-		local loot_dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission")
-		local painting_scraps_mission_data = mission_system:get_level_end_mission_data("painting_scrap_hidden_mission")
-		num_tomes = (tome_mission_data and tome_mission_data.current_amount) or 0
-		num_grims = (grimoire_mission_data and grimoire_mission_data.current_amount) or 0
-		num_loot_dice = (loot_dice_mission_data and loot_dice_mission_data.current_amount) or 0
-		num_painting_scraps = (painting_scraps_mission_data and painting_scraps_mission_data.current_amount) or 0
-	end
-
-	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, self._game_mode_key, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+	self._end_of_level_loot_id = loot_interface:generate_end_of_level_loot(game_won, quickplay, difficulty, self._level_key, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_item_backend_id, self._game_mode_key, game_time, end_of_level_rewards_arguments)
+	self._end_of_level_rewards_arguments = end_of_level_rewards_arguments
 end
 
 Rewards.cb_deed_consumed = function (self)
@@ -266,13 +297,10 @@ Rewards.cb_deed_consumed = function (self)
 	local game_won = end_of_level_info.game_won
 	local hero_name = end_of_level_info.hero_name
 	local loot_profile_name = "default"
-	local weave_tier = end_of_level_info.weave_tier
-	local weave_progress = end_of_level_info.weave_progress
 	local game_time = end_of_level_info.game_time
-	local current_weave_index = end_of_level_info.current_weave_index
-	local kill_count = end_of_level_info.kill_count
+	local end_of_level_rewards_arguments = end_of_level_info.end_of_level_rewards_arguments
 
-	self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+	self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, game_time, end_of_level_rewards_arguments)
 end
 
 Rewards.rewards_generated = function (self)
@@ -307,7 +335,7 @@ Rewards.get_rewards = function (self)
 	local loot_id = self._end_of_level_loot_id
 	local loot = loot_interface:get_loot(loot_id)
 
-	return loot
+	return loot, self._end_of_level_rewards_arguments
 end
 
 Rewards.get_mission_results = function (self)
@@ -319,6 +347,10 @@ Rewards.get_level_start = function (self)
 	local start_experience_pool = self._start_experience_pool or 0
 
 	return ExperienceSettings.get_level(start_experience), start_experience, start_experience_pool
+end
+
+Rewards.get_win_track_experience_start = function (self)
+	return self._start_win_track_experience
 end
 
 Rewards.get_level_end = function (self)

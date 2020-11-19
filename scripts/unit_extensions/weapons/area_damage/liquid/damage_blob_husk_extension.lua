@@ -7,6 +7,7 @@ DamageBlobHuskExtension.init = function (self, extension_init_context, unit, ext
 	self.unit = unit
 	self.nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	self._source_unit = extension_init_data.source_unit
+	self.physics_world = World.physics_world(world)
 	local unit_storage = Managers.state.unit_storage
 	self.go_id = unit_storage:go_id(unit)
 	self.fx_list = {}
@@ -94,7 +95,7 @@ DamageBlobHuskExtension.update = function (self, unit, input, dt, context, t)
 	local blob_update_function = self._blob_update_function
 
 	if blob_update_function then
-		local result = self:_blob_update_function(t, dt, unit)
+		local result = self:_blob_update_function(t, dt, unit, self.physics_world)
 
 		if not result then
 			self._blob_update_function = nil

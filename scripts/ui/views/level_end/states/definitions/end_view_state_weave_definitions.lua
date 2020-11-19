@@ -56,7 +56,6 @@ local scenegraph_definition = {
 	content_top_fade = {
 		vertical_alignment = "top",
 		parent = "content_bg",
-		scale = "fit_width",
 		size = {
 			1920,
 			200
@@ -70,7 +69,6 @@ local scenegraph_definition = {
 	content_top_glow_1 = {
 		vertical_alignment = "top",
 		parent = "content_bg",
-		scale = "fit_width",
 		size = {
 			1920,
 			350
@@ -84,7 +82,6 @@ local scenegraph_definition = {
 	content_top_glow_2 = {
 		vertical_alignment = "top",
 		parent = "content_bg",
-		scale = "fit_width",
 		size = {
 			1920,
 			300
@@ -98,7 +95,6 @@ local scenegraph_definition = {
 	content_top_glow_3 = {
 		vertical_alignment = "top",
 		parent = "content_bg",
-		scale = "fit_width",
 		size = {
 			1920,
 			250
@@ -978,7 +974,7 @@ function create_simple_gamepad_disabled_texture(scenegraph_id, masked, retained,
 					texture_id = "glow_id",
 					retained_mode = retained,
 					content_change_function = function (content, style)
-						style.color[1] = 40 + 20 * math.sin(Application.time_since_launch() * 5)
+						style.color[1] = 40 + 20 * math.sin(Managers.time:time("ui") * 5)
 					end
 				}
 			}

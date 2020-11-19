@@ -216,7 +216,7 @@ ProjectileLinkerSystem.link_pickup = function (self, pickup_unit, link_position,
 	end
 end
 
-ProjectileLinkerSystem.rpc_link_pickup = function (self, sender, pickup_unit_go_id, link_position, link_rotation, hit_unit_go_id, node_index, is_level_unit)
+ProjectileLinkerSystem.rpc_link_pickup = function (self, channel_id, pickup_unit_go_id, link_position, link_rotation, hit_unit_go_id, node_index, is_level_unit)
 	local pickup_unit = Managers.state.unit_storage:unit(pickup_unit_go_id)
 	local hit_unit = Managers.state.network:game_object_or_level_unit(hit_unit_go_id, is_level_unit)
 
@@ -243,7 +243,7 @@ ProjectileLinkerSystem.spawn_and_link_units = function (self, linked_unit_name, 
 	end
 end
 
-ProjectileLinkerSystem.rpc_spawn_and_link_units = function (self, sender, linked_unit_name_id, link_position, link_rotation, hit_unit_go_id, node_index, is_level_unit)
+ProjectileLinkerSystem.rpc_spawn_and_link_units = function (self, channel_id, linked_unit_name_id, link_position, link_rotation, hit_unit_go_id, node_index, is_level_unit)
 	local hit_unit = Managers.state.network:game_object_or_level_unit(hit_unit_go_id, is_level_unit)
 	local linked_unit_name = NetworkLookup.husks[linked_unit_name_id]
 

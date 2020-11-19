@@ -638,7 +638,7 @@ end
 local entry_frame_settings = UIFrameSettings.menu_frame_12
 
 local function create_lobby_list_entry_content(lobby_data)
-	local my_peer_id = Network:peer_id()
+	local my_peer_id = Network.peer_id()
 	local host = lobby_data.host
 	local title_text = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
 
@@ -1055,6 +1055,8 @@ LobbyItemsList.update = function (self, dt, loading)
 		if not button_content.fake then
 			if button_hotspot.on_hover_enter then
 				self:play_sound("Play_hud_hover")
+
+				button_hotspot.on_hover_enter = false
 			end
 
 			if (button_hotspot.is_selected or self.gamepad_changed_selected_list_index == i) and i ~= selected_list_index then

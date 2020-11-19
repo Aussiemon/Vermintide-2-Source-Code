@@ -78,6 +78,10 @@ PlayerHud.set_current_location = function (self, location)
 	self.current_location = location
 end
 
+PlayerHud.block_current_location_ui = function (self, block_ui)
+	self.location_ui_blocked = block_ui
+end
+
 PlayerHud.gdc_intro_active = function (self, state)
 	self.show_gdc_intro = true
 end

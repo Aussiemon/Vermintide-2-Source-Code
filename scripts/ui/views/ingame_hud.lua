@@ -1,16 +1,23 @@
 require("foundation/scripts/util/local_require")
+require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
 require("scripts/ui/ui_animator")
 require("scripts/ui/ui_cleanui")
+DLCUtils.dofile("hud_component_list_path")
 
-local definitions = local_require("scripts/ui/views/ingame_hud_definitions")
-local components_hud_scale_lookup = definitions.components_hud_scale_lookup
 IngameHud = class(IngameHud)
 
 IngameHud.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self._peer_id = Network.peer_id()
 	self._ingame_ui_context = ingame_ui_context
+
+	self:_setup_components()
+end
+
+IngameHud._setup_components = function (self)
 	self._currently_visible_components = {}
+	self._current_group_name = nil
+	local ingame_ui_context = self._ingame_ui_context
 	local tobii_available = Managers.mechanism:mechanism_setting("tobii_available")
 	local has_tobii = rawget(_G, "Tobii")
 
@@ -26,7 +33,115 @@ IngameHud.init = function (self, parent, ingame_ui_context)
 		self._clean_ui = nil
 	end
 
+	local game_mode_manager = Managers.state.game_mode
+	local game_mode_settings = game_mode_manager:settings()
+	local hud_component_list_path = game_mode_settings.hud_component_list_path
+	local definitions = self:_setup_component_definitions(hud_component_list_path)
+	self._definitions = definitions
+	self._components_hud_scale_lookup = definitions.components_hud_scale_lookup
+
 	self:_compile_component_list(ingame_ui_context, definitions.components)
+	Managers.state.event:register(self, "player_party_changed", "event_player_party_changed")
+end
+
+IngameHud.reset_components = function (self)
+	self:destroy()
+	self:_setup_components()
+end
+
+IngameHud.event_player_party_changed = function (self, player, is_local, old_party_id, new_party_id)
+	if not is_local then
+		return
+	end
+
+	self:reset_components()
+end
+
+IngameHud._setup_component_definitions = function (self, hud_component_list_path)
+	local definitions = local_require(hud_component_list_path)
+	local components = table.clone(definitions.components)
+	local visibility_groups = definitions.visibility_groups
+	local visibility_groups_lookup = {}
+
+	for _, settings in ipairs(visibility_groups) do
+		local name = settings.name
+		visibility_groups_lookup[name] = settings
+	end
+
+	for name, dlc in pairs(DLCSettings) do
+		local ingame_hud_components = dlc.ingame_hud_components
+
+		if ingame_hud_components then
+			for _, settings in pairs(ingame_hud_components) do
+				local class_name = settings.class_name
+				local add = true
+
+				for i = 1, #components, 1 do
+					if components[i].class_name == class_name then
+						add = false
+					end
+				end
+
+				if add then
+					components[#components + 1] = table.clone(settings)
+				end
+			end
+		end
+	end
+
+	local function sort_components_by_hud_scale(a, b)
+		return b.use_hud_scale and not a.use_hud_scale
+	end
+
+	table.sort(components, sort_components_by_hud_scale)
+
+	local components_lookup = {}
+	local components_hud_scale_lookup = {}
+
+	for _, settings in ipairs(components) do
+		local name = settings.class_name
+		components_lookup[name] = settings
+
+		if settings.use_hud_scale then
+			components_hud_scale_lookup[name] = true
+		end
+	end
+
+	for _, settings in ipairs(components) do
+		local class_name = settings.class_name
+		local visibility_groups = settings.visibility_groups
+
+		for _, group_name in ipairs(visibility_groups) do
+			local visibility_group = visibility_groups_lookup[group_name]
+
+			if visibility_group then
+				fassert(visibility_group, "Could not find the visibility group: (%s) for component: (%s)", group_name, class_name)
+
+				local validation_function = visibility_group.validation_function
+
+				fassert(validation_function, "Could not find any validation_function for visibility group: (%s)", group_name)
+
+				if not visibility_group.visible_components then
+					visibility_group.visible_components = {}
+				end
+
+				local visible_components = visibility_group.visible_components
+				visible_components[class_name] = true
+			end
+		end
+
+		local filename = settings.filename
+
+		require(filename)
+	end
+
+	return {
+		components = components,
+		components_lookup = components_lookup,
+		components_hud_scale_lookup = components_hud_scale_lookup,
+		visibility_groups = visibility_groups,
+		visibility_groups_lookup = visibility_groups_lookup
+	}
 end
 
 IngameHud._compile_component_list = function (self, ingame_ui_context, component_definitions)
@@ -43,9 +158,7 @@ IngameHud._compile_component_list = function (self, ingame_ui_context, component
 
 		component_list[class_name] = definition
 
-		if definition.always_active then
-			self:_add_component(component_list, components, components_array, components_array_id_lookup, class_name)
-		end
+		self:_add_component(component_list, components, components_array, components_array_id_lookup, class_name)
 	end
 
 	self._component_list = component_list
@@ -111,22 +224,6 @@ IngameHud._remove_component = function (self, component_list, components, compon
 	components_array_id_lookup[component] = nil
 end
 
-IngameHud.add_components = function (self, components_to_add)
-	local component_list = self._component_list
-	local components = self._components
-	local components_array = self._components_array
-	local components_array_id_lookup = self._components_array_id_lookup
-	local num_components = #components_to_add
-
-	for i = 1, num_components, 1 do
-		local class_name = components_to_add[i]
-
-		self:_add_component(component_list, components, components_array, components_array_id_lookup, class_name)
-	end
-
-	self._current_group_name = nil
-end
-
 IngameHud.remove_components = function (self, components_to_remove)
 	local component_list = self._component_list
 	local components = self._components
@@ -148,8 +245,31 @@ IngameHud.component = function (self, component_name)
 	return component
 end
 
-IngameHud._update_component_visibility = function (self)
-	self._definitions = definitions
+IngameHud._update_components_post_visibility = function (self)
+	if self._update_post_visibility then
+		local definitions = self._definitions
+		local visibility_groups_lookup = definitions.visibility_groups_lookup
+		local current_group_name = self._current_group_name
+		local group_settings = visibility_groups_lookup[current_group_name]
+		local components_array = self._components_array
+		local visible_components = group_settings.visible_components
+
+		for j = 1, #components_array, 1 do
+			local component = components_array[j]
+			local component_name = component.name
+			local status = (visible_components and visible_components[component_name]) or false
+
+			if component.post_visibility_changed then
+				component:post_visibility_changed(status)
+			end
+		end
+
+		self._update_post_visibility = false
+	end
+end
+
+IngameHud._update_components_visibility = function (self)
+	local definitions = self._definitions
 	local visibility_groups = definitions.visibility_groups
 	local num_visibility_groups = #visibility_groups
 	local debug_visibility_group = script_data.debug_hud_visibility_group
@@ -186,6 +306,7 @@ IngameHud._update_component_visibility = function (self)
 				end
 
 				self._current_group_name = group_name
+				self._update_post_visibility = true
 			end
 
 			break
@@ -195,6 +316,10 @@ IngameHud._update_component_visibility = function (self)
 	if handle_debug then
 		Debug.text("HUD visibility group: " .. tostring(self._current_group_name or "none"))
 	end
+end
+
+IngameHud.get_hud_component = function (self, hud_component_name)
+	return self._components[hud_component_name]
 end
 
 IngameHud._update_hud_scale = function (self)
@@ -230,7 +355,7 @@ end
 
 IngameHud.update = function (self, dt, t)
 	self:_reset_hud_frame_variables()
-	self:_update_component_visibility()
+	self:_update_components_visibility()
 
 	local peer_id = self._peer_id
 	local player_manager = Managers.player
@@ -245,7 +370,7 @@ IngameHud.update = function (self, dt, t)
 		local component = components_array[i]
 		local component_name = component.name
 
-		if use_custom_hud_scale and not hud_scale_applied and components_hud_scale_lookup[component_name] then
+		if use_custom_hud_scale and not hud_scale_applied and self._components_hud_scale_lookup[component_name] then
 			hud_scale_applied = true
 
 			self:_apply_hud_scale()
@@ -269,6 +394,7 @@ end
 
 IngameHud.post_update = function (self, dt, t)
 	self:_reset_hud_frame_variables()
+	self:_update_components_post_visibility()
 
 	local peer_id = self._peer_id
 	local player_manager = Managers.player
@@ -282,7 +408,7 @@ IngameHud.post_update = function (self, dt, t)
 		local component = components_array[i]
 		local component_name = component.name
 
-		if use_custom_hud_scale and not hud_scale_applied and components_hud_scale_lookup[component_name] then
+		if use_custom_hud_scale and not hud_scale_applied and self._components_hud_scale_lookup[component_name] then
 			hud_scale_applied = true
 
 			self:_apply_hud_scale()
@@ -297,11 +423,13 @@ IngameHud.post_update = function (self, dt, t)
 		self:_abort_hud_scale()
 	end
 
-	self._scale_modified = nil
-	self._resolution_modified = nil
+	self._scale_modified = false
+	self._resolution_modified = false
 end
 
 IngameHud.destroy = function (self)
+	Managers.state.event:unregister("player_party_changed", self)
+
 	local components_array = self._components_array
 
 	for _, component in ipairs(components_array) do
@@ -322,43 +450,32 @@ IngameHud.input_service = function (self)
 	return false
 end
 
-IngameHud._reset_hud_frame_variables = function (self)
-	self._is_own_player_dead = nil
-	self._is_cutscene_active = nil
-	self._crosshair_position_x = nil
-	self._crosshair_position_y = nil
-end
-
-IngameHud.is_cutscene_active = function (self)
-	if not self._is_cutscene_active then
-		local cutscene_system = Managers.state.entity:system("cutscene_system")
-		self._is_cutscene_active = cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled
-	end
-
-	return self._is_cutscene_active
-end
-
-IngameHud.is_own_player_dead = function (self)
-	local debug_visibility_group = script_data.debug_hud_visibility_group
-
-	if debug_visibility_group and debug_visibility_group == "dead" then
+local function is_own_player_dead_helper(peer_id)
+	if script_data.debug_hud_visibility_group == "dead" then
 		return true
 	end
 
-	if self._is_own_player_dead == nil then
-		local peer_id = self._peer_id
-		local player_manager = Managers.player
-		local my_player = player_manager:player_from_peer_id(peer_id)
-		local player_unit = my_player and my_player.player_unit
+	local player = Managers.player:player_from_peer_id(peer_id)
+	local player_unit = player and player.player_unit
 
-		if not player_unit or not Unit.alive(player_unit) then
-			self._is_own_player_dead = true
-		else
-			local status_extension = ScriptUnit.extension(player_unit, "status_system")
-			self._is_own_player_dead = status_extension:is_ready_for_assisted_respawn()
-		end
+	if not player_unit or not Unit.alive(player_unit) then
+		return true
 	end
 
+	return ScriptUnit.extension(player_unit, "status_system"):is_ready_for_assisted_respawn()
+end
+
+IngameHud.is_in_inn = function (self)
+	return self._ingame_ui_context.is_in_inn
+end
+
+IngameHud._reset_hud_frame_variables = function (self)
+	self._crosshair_position_x = false
+	self._crosshair_position_y = false
+	self._is_own_player_dead = is_own_player_dead_helper(self._peer_id)
+end
+
+IngameHud.is_own_player_dead = function (self)
 	return self._is_own_player_dead
 end
 

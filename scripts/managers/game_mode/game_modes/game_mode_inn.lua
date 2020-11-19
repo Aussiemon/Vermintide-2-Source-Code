@@ -99,8 +99,8 @@ GameModeInn.FAIL_LEVEL = function (self)
 	FAIL_LEVEL_VAR = true
 end
 
-GameModeInn.player_entered_game_session = function (self, peer_id, local_player_id)
-	GameModeInn.super.player_entered_game_session(self, peer_id, local_player_id)
+GameModeInn.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
+	GameModeInn.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
@@ -290,17 +290,18 @@ GameModeInn._deactivate_objective_marker = function (self, unit_id)
 	self._current_objective_id = nil
 end
 
-GameModeInn.rpc_waystone_active = function (self, sender, waystone_type, waystone_is_active, current_waystone_type)
+GameModeInn.rpc_waystone_active = function (self, channel_id, waystone_type, waystone_is_active, current_waystone_type)
 	self._waystone_is_active = waystone_is_active
 	self._waystone_type = waystone_type
 	self._current_waystone_type = current_waystone_type
 end
 
-GameModeInn.hot_join_sync = function (self, sender)
+GameModeInn.hot_join_sync = function (self, peer_id)
 	self._waystone_is_active = false
 	self._waystone_type = 0
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	RPC.rpc_waystone_active(sender, self._waystone_type, self._waystone_is_active, self._current_waystone_type)
+	RPC.rpc_waystone_active(channel_id, self._waystone_type, self._waystone_is_active, self._current_waystone_type)
 end
 
 GameModeInn.local_player_ready_to_start = function (self, player, loading_context)

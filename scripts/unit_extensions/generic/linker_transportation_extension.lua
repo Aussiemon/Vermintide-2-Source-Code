@@ -3,7 +3,6 @@ require("scripts/helpers/navigation_utils")
 LinkerTransportationExtension = class(LinkerTransportationExtension)
 local UPDATE_INTERVAL_OOBB_NO_HUMANS_INSIDE = 1
 local UPDATE_INTERVAL_OOBB_HUMANS_INSIDE = 0.05
-local LINK_UNITS_ON_TRANSPORT = false
 local STORY_STATES = {
 	"stopped_beginning",
 	"moving_forward",
@@ -129,6 +128,7 @@ LinkerTransportationExtension.hot_join_sync = function (self, peer)
 	local level_id = Level.unit_index(LevelHelper:current_level(self.world), self.unit)
 	local state = self.story_state
 	local story_time = self.current_story_time
+	local channel_id = PEER_ID_TO_CHANNEL[peer]
 
 	if self._transporting then
 		local interactor_unit = nil
@@ -144,11 +144,11 @@ LinkerTransportationExtension.hot_join_sync = function (self, peer)
 		if interactor_unit then
 			local interactor_unit_id = network_manager:unit_game_object_id(interactor_unit)
 
-			RPC.rpc_hot_join_sync_linker_transporting(peer, level_id, interactor_unit_id)
+			RPC.rpc_hot_join_sync_linker_transporting(channel_id, level_id, interactor_unit_id)
 		end
 	end
 
-	RPC.rpc_hot_join_sync_linker_transport_state(peer, level_id, STORY_STATES[state], story_time)
+	RPC.rpc_hot_join_sync_linker_transport_state(channel_id, level_id, STORY_STATES[state], story_time)
 end
 
 LinkerTransportationExtension.rpc_hot_join_sync_linker_transporting = function (self, interactor_unit_id)
@@ -460,7 +460,7 @@ LinkerTransportationExtension._update_local_player_position = function (self)
 			if not is_inside_transportation_unit then
 				local index = table.find(self._bot_slots, unit)
 
-				if index == false then
+				if index == nil then
 					index = math.random(1, 4)
 				end
 
@@ -557,33 +557,9 @@ LinkerTransportationExtension._unlink_transported_unit = function (self, unit_to
 		table.remove(self._bot_slots, index)
 	end
 
-	if LINK_UNITS_ON_TRANSPORT then
-		if player and (player.local_player or player.bot_player) then
-			local end_position = nil
+	status_extension:set_using_transport(false)
 
-			if self.teleport_on_exit then
-				end_position = Unit.world_position(unit, Unit.node(unit, "g_end"))
-			else
-				local link_node = Unit.node(unit, "rp_transport")
-
-				if index and Unit.has_node(unit, "elevator_slot_0" .. index) then
-					link_node = Unit.node(unit, "elevator_slot_0" .. index)
-				end
-
-				local transport_position = Unit.world_position(unit, link_node)
-				local link_data = locomotion_extension:get_link_data()
-				end_position = transport_position + link_data.offset:unbox()
-			end
-
-			local current_rotation = locomotion_extension:current_rotation()
-
-			locomotion_extension:teleport_to(end_position, current_rotation)
-			locomotion_extension:enable_script_driven_movement()
-		end
-
-		status_extension:set_using_transport(false)
-		LocomotionUtils.disable_linked_movement(unit_to_unlink)
-	elseif player and (player.local_player or player.bot_player) then
+	if player and (player.local_player or player.bot_player) then
 		locomotion_extension:set_on_moving_platform(nil)
 
 		if self.teleport_on_exit then
@@ -602,12 +578,6 @@ LinkerTransportationExtension._get_position_from_index = function (self, index)
 	if Unit.has_node(unit, "elevator_slot_0" .. index) then
 		local node = Unit.node(unit, "elevator_slot_0" .. index)
 		position = Unit.world_position(unit, node)
-	else
-		local pose, half_extents = Unit.box(unit)
-		local translation = Matrix4x4.translation(pose)
-		local rotation = Matrix4x4.rotation(pose)
-		translation.z = transport_position.z
-		position = translation + Quaternion.rotate(rotation, Vector3(half_extents[1] * 0.5, half_extents[2] * 0.5 * self._bot_slots_offset[index], 0))
 	end
 
 	return position
@@ -615,56 +585,32 @@ end
 
 LinkerTransportationExtension._link_transported_unit = function (self, unit_to_link, teleport_on_enter)
 	local unit = self.unit
-	local link_node = Unit.node(unit, "rp_transport")
-	local transport_position = Unit.world_position(unit, link_node)
-	local player_position = Unit.world_position(unit_to_link, 0)
-	local offset = nil
 	local player_manager = Managers.player
 	local player = player_manager:owner(unit_to_link)
+	local unit_side = Managers.state.side.side_by_unit[unit_to_link]
 
-	if LINK_UNITS_ON_TRANSPORT then
-		if teleport_on_enter or self.teleport_on_enter then
-			local index = #self._bot_slots + 1
-
-			if Unit.has_node(unit, "elevator_slot_0" .. index) then
-				link_node = Unit.node(unit, "elevator_slot_0" .. index)
-				offset = Vector3(0, 0, 0)
-			else
-				local pose, half_extents = Unit.box(unit)
-				local translation = Matrix4x4.translation(pose)
-				local rotation = Matrix4x4.rotation(pose)
-				translation.z = transport_position.z
-				local position = translation + Quaternion.rotate(rotation, Vector3(half_extents[1] * 0.5, half_extents[2] * 0.5 * self._bot_slots_offset[index], 0))
-				offset = position - transport_position
-			end
-
-			self._bot_slots[#self._bot_slots + 1] = unit_to_link
-		else
-			offset = player_position - transport_position
-		end
-
+	if unit_side.side_id ~= self._side.side_id then
 		local status_extension = ScriptUnit.extension(unit_to_link, "status_system")
 
 		status_extension:set_using_transport(true)
-		LocomotionUtils.enable_linked_movement(self.world, unit_to_link, unit, link_node, offset)
-	else
-		local locomotion_extension = ScriptUnit.extension(unit_to_link, "locomotion_system")
+	end
 
-		if teleport_on_enter or self.teleport_on_enter then
-			local index = #self._bot_slots + 1
-			self._bot_slots[index] = unit_to_link
-			local position = self:_get_position_from_index(index)
+	local locomotion_extension = ScriptUnit.extension(unit_to_link, "locomotion_system")
 
-			if not player.remote then
-				local current_rotation = locomotion_extension:current_rotation()
-
-				locomotion_extension:teleport_to(position, current_rotation)
-			end
-		end
+	if teleport_on_enter or self.teleport_on_enter then
+		local index = #self._bot_slots + 1
+		self._bot_slots[index] = unit_to_link
+		local position = self:_get_position_from_index(index)
 
 		if not player.remote then
-			locomotion_extension:set_on_moving_platform(unit)
+			local current_rotation = locomotion_extension:current_rotation()
+
+			locomotion_extension:teleport_to(position, current_rotation)
 		end
+	end
+
+	if not player.remote then
+		locomotion_extension:set_on_moving_platform(unit)
 	end
 end
 

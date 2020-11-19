@@ -1,5 +1,5 @@
 local definitions = local_require("scripts/ui/hud_ui/badge_ui_definitions")
-local widget_definitions = definitions.widget_definitions
+local badge_widget_definition = definitions.badge_widget_definition
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 BadgeUI = class(BadgeUI)
@@ -11,7 +11,7 @@ BadgeUI.init = function (self, parent, ingame_ui_context)
 	self._player_manager = ingame_ui_context.player_manager
 	self._local_unique_id = ingame_ui_context.player:unique_id()
 	self._world = ingame_ui_context.world_manager:world("level_world")
-	self._wwise_world = Managers.world:wwise_world(self._world)
+	self._wwise_world = ingame_ui_context.world_manager:wwise_world(self._world)
 	self._render_settings = {
 		alpha_multiplier = 1,
 		snap_pixel_positions = true
@@ -19,17 +19,12 @@ BadgeUI.init = function (self, parent, ingame_ui_context)
 	self._ingame_ui_context = ingame_ui_context
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
+	self._has_active_badge = false
 	self._animations = {}
-	self._active_badge_events = {}
-	self._inactive_badge_events = {}
 	self._badges_queue = {}
 
-	self:create_ui_elements()
-	rawset(_G, "badge_ui", self)
-
-	local event_manager = Managers.state.event
-
-	event_manager:register(self, "add_local_badge", "event_add_local_badge")
+	self:_create_ui_elements()
+	Managers.state.event:register(self, "add_local_badge", "event_add_local_badge")
 end
 
 BadgeUI.destroy = function (self)
@@ -42,15 +37,11 @@ BadgeUI.destroy = function (self)
 	self.ui_animator = nil
 end
 
-BadgeUI.create_ui_elements = function (self)
+BadgeUI._create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local inactive_badge_events = self._inactive_badge_events
-
-	for _, widget in pairs(widget_definitions) do
-		inactive_badge_events[#inactive_badge_events + 1] = UIWidget.init(widget)
-	end
+	self._badge_widget = UIWidget.init(badge_widget_definition)
 end
 
 BadgeUI.update = function (self, dt, t)
@@ -69,23 +60,21 @@ BadgeUI.update = function (self, dt, t)
 		end
 	end
 
-	self:draw(dt)
+	self:_draw(dt)
 end
 
-BadgeUI.draw = function (self, dt)
+BadgeUI._draw = function (self, dt)
+	if not self._has_active_badge then
+		return
+	end
+
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._input_manager:get_service("ingame_menu")
 	local render_settings = self._render_settings
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
-
-	local events = self._active_badge_events
-
-	for _, event in pairs(events) do
-		UIRenderer.draw_widget(ui_renderer, event)
-	end
-
+	UIRenderer.draw_widget(ui_renderer, self._badge_widget)
 	UIRenderer.end_pass(ui_renderer)
 end
 
@@ -93,35 +82,17 @@ BadgeUI._get_badge = function (self, badge_id)
 	local badge_name = NetworkLookup.badges[badge_id]
 	local badge = BadgeDefinitions[badge_name]
 
-	if not badge then
-		return
-	end
+	fassert(badge, "Unknown badge_id '%s'", badge_id)
 
 	return badge
 end
 
 BadgeUI.event_add_local_badge = function (self, badge_id)
-	local badge = self:_get_badge(badge_id)
-
-	if not badge then
-		return
-	end
-
-	local hash = self._local_unique_id .. "_" .. badge_id
-
-	self:add_badge(hash, badge)
+	self:add_badge(self._local_unique_id .. "_" .. badge_id, self:_get_badge(badge_id))
 end
 
 BadgeUI.event_add_remote_player_badge = function (self, remote_player_peer_id, badge_id)
-	local badge = self:_get_badge(badge_id)
-
-	if not badge then
-		return
-	end
-
-	local hash = remote_player_peer_id .. "_" .. badge_id
-
-	self:add_badge(hash, badge)
+	self:add_badge(remote_player_peer_id .. "_" .. badge_id, self:_get_badge(badge_id))
 end
 
 BadgeUI._add_to_queue = function (self, hash, badge)
@@ -143,9 +114,6 @@ BadgeUI._add_to_queue = function (self, hash, badge)
 end
 
 BadgeUI.add_badge = function (self, hash, badge, add_to_queue, num_badges)
-	local active_badge_events = self._active_badge_events
-	local inactive_badge_events = self._inactive_badge_events
-
 	if add_to_queue == nil then
 		add_to_queue = true
 	end
@@ -154,15 +122,22 @@ BadgeUI.add_badge = function (self, hash, badge, add_to_queue, num_badges)
 		num_badges = 1
 	end
 
-	if add_to_queue and #inactive_badge_events == 0 then
+	if add_to_queue and self._has_active_badge then
 		self:_add_to_queue(hash, badge)
 
 		return
 	end
 
-	local widget = table.remove(inactive_badge_events, 1)
+	self._has_active_badge = true
+	local widget = self._badge_widget
 	local content = widget.content
-	content.badge_texture_id = badge.texture_id
+	local gui = self._ui_renderer.gui
+
+	Material.set_texture(Gui.material(gui, "versus_badge_icon"), "diffuse_map", "gui/1080p/single_textures/carousel/badge_icons/" .. badge.texture_id .. "_icon")
+	Material.set_texture(Gui.material(gui, "versus_badge_glow"), "diffuse_map", "gui/1080p/single_textures/carousel/badge_icons/" .. badge.texture_id .. "_glow")
+
+	widget.style.frame_glow.color = badge.color
+	widget.style.icon_glow.color = badge.color
 	content.text_name = badge.text
 	content.text_desc = badge.description
 
@@ -170,10 +145,7 @@ BadgeUI.add_badge = function (self, hash, badge, add_to_queue, num_badges)
 		content.text_name = content.text_name .. " x" .. num_badges
 	end
 
-	local event_id = #active_badge_events + 1
-	active_badge_events[event_id] = widget
-
-	self:_start_animation("on_enter", event_id, widget)
+	self:_start_animation("on_enter", 1, widget)
 end
 
 BadgeUI._start_animation = function (self, animation_name, event_id, widget)
@@ -190,15 +162,12 @@ BadgeUI._start_animation = function (self, animation_name, event_id, widget)
 end
 
 BadgeUI._remove_active_badge = function (self, event_id)
-	local active_badge_events = self._active_badge_events
-	local inactive_badge_events = self._inactive_badge_events
-	local widget = table.remove(active_badge_events, event_id)
 	self._animations[event_id] = nil
-	inactive_badge_events[#inactive_badge_events + 1] = widget
+	self._has_active_badge = false
 end
 
 BadgeUI._add_badge_from_queue = function (self)
-	if #self._inactive_badge_events == 0 then
+	if self._has_active_badge then
 		return
 	end
 

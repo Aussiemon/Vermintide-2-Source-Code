@@ -29,6 +29,19 @@ end
 
 GameServerLobbyClient.destroy = function (self)
 	dprintf("Destroying Game Server Client, leaving server...")
+
+	local host = GameServerInternal.lobby_host(self._game_server_lobby)
+	local channel_id = PEER_ID_TO_CHANNEL[host]
+
+	printf("closing channel %s", tostring(channel_id))
+
+	if channel_id then
+		GameServerInternal.close_channel(self._game_server_lobby, channel_id)
+
+		PEER_ID_TO_CHANNEL[host] = nil
+		CHANNEL_TO_PEER_ID[channel_id] = nil
+	end
+
 	Presence.stop_advertise_playing()
 	GameServerInternal.leave_server(self._game_server_lobby)
 
@@ -40,9 +53,8 @@ GameServerLobbyClient.destroy = function (self)
 end
 
 GameServerLobbyClient.update = function (self, dt)
-	local lobby = self._game_server_lobby
-	local lobby_state = lobby:state()
-	local new_state = GameServerInternal.lobby_state_map[lobby_state]
+	local engine_lobby = self._game_server_lobby
+	local new_state = engine_lobby:state()
 	local old_state = self._state
 
 	if new_state ~= old_state then
@@ -50,13 +62,21 @@ GameServerLobbyClient.update = function (self, dt)
 
 		self._state = new_state
 
-		if new_state == GameServerLobbyState.JOINED then
+		if new_state == "joined" then
+			local game_server_peer_id = GameServerInternal.lobby_host(engine_lobby)
+
+			if not PEER_ID_TO_CHANNEL[game_server_peer_id] then
+				local channel_id = GameServerInternal.open_channel(engine_lobby, game_server_peer_id)
+				PEER_ID_TO_CHANNEL[game_server_peer_id] = channel_id
+				CHANNEL_TO_PEER_ID[channel_id] = game_server_peer_id
+			end
+
 			Presence.advertise_playing(self._game_server_info.ip_port)
 
-			self._members = self._members or LobbyMembers:new(lobby)
+			self._members = self._members or LobbyMembers:new(engine_lobby)
 		end
 
-		if old_state == GameServerLobbyState.JOINED and self._members then
+		if old_state == "joined" and self._members then
 			self._members:clear()
 		end
 	end
@@ -103,11 +123,11 @@ GameServerLobbyClient.ip_address = function (self)
 end
 
 GameServerLobbyClient.is_joined = function (self)
-	return self._state == GameServerLobbyState.JOINED
+	return self._state == "joined"
 end
 
 GameServerLobbyClient.failed = function (self)
-	return self._state == GameServerLobbyState.FAILED
+	return self._state == "failed"
 end
 
 GameServerLobbyClient.id = function (self)

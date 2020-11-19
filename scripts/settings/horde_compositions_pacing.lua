@@ -634,4 +634,18 @@ HordeWaveCompositions = {
 	}
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local horde_compositions_pacing_file = dlc.horde_compositions_pacing_file
+
+	if horde_compositions_pacing_file then
+		local horde_compositions_pacing = dofile(horde_compositions_pacing_file)
+
+		if horde_compositions_pacing then
+			for name, composition in pairs(horde_compositions_pacing) do
+				HordeCompositionsPacing[name] = composition
+			end
+		end
+	end
+end
+
 return

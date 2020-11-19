@@ -48,14 +48,6 @@ ProjectileUnits.grenade_fire = {
 	projectile_unit_name = "units/weapons/player/wpn_emp_grenade_03_t1/wpn_emp_grenade_03_t1_3p"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local projectile_units = dlc.projectile_units
-
-	if projectile_units then
-		for name, data in pairs(projectile_units) do
-			ProjectileUnits[name] = table.clone(data)
-		end
-	end
-end
+DLCUtils.merge("projectile_units", ProjectileUnits)
 
 return

@@ -89,14 +89,22 @@ MusicPlayer.update = function (self, flags, game_object_id)
 		self._playing = false
 	end
 
-	if self._playing and game_object_id then
+	if self._playing and game_object_id and not DEDICATED_SERVER then
 		local session = Managers.state.network:game()
 
 		for group, _ in pairs(SyncedMusicGroupFlags) do
 			local state_id = GameSession.game_object_field(session, game_object_id, group)
-			local state = NetworkLookup.music_group_states[state_id]
 
-			self._playing:set_group_state(group, state)
+			if type(state_id) == "table" then
+				local local_party_id = Managers.player:local_player():get_party().party_id
+				state_id = state_id[local_party_id]
+			end
+
+			if state_id then
+				local state = NetworkLookup.music_group_states[state_id]
+
+				self._playing:set_group_state(group, state)
+			end
 		end
 	end
 
@@ -122,6 +130,8 @@ MusicPlayer.destroy = function (self)
 
 	if self._playing then
 		self._playing:destroy()
+
+		self._playing = nil
 	end
 
 	for music, _ in pairs(self._old_music) do
@@ -129,6 +139,8 @@ MusicPlayer.destroy = function (self)
 
 		music:destroy()
 	end
+
+	self._old_music = nil
 end
 
 MusicPlayer.event_match = function (self, start_event, stop_event)

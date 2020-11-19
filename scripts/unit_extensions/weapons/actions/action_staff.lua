@@ -25,7 +25,7 @@ ActionStaff.client_owner_start_action = function (self, new_action, t, chain_act
 	self.power_level = power_level
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(is_critical_strike, nil, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(is_critical_strike, nil, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
 end

@@ -396,6 +396,12 @@ UIRenderer.draw_widget = function (self, ui_widget)
 	UIRenderer.draw_element(self, ui_widget.element, ui_widget.style, ui_widget.style_global, ui_widget.scenegraph_id, ui_widget.content, animations, ui_widget.offset)
 end
 
+UIRenderer.draw_all_widgets = function (self, widget_list)
+	for _, ui_widget in pairs(widget_list) do
+		UIRenderer.draw_widget(self, ui_widget)
+	end
+end
+
 UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global, scenegraph_id, ui_content, ui_animations, offset)
 	local ui_scenegraph = self.ui_scenegraph
 	local position = Vector3(unpack(UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)))
@@ -416,6 +422,10 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 
 		if ui_content.disable_with_gamepad then
 			global_visible = not gamepad_active
+		end
+
+		if ui_content.only_with_gamepad then
+			global_visible = gamepad_active
 		end
 	end
 
@@ -610,15 +620,27 @@ end
 
 UIRenderer.draw_rect = function (self, lower_left_corner, size, color, retained_id)
 	local render_settings = self.render_settings
+	local snap_pixel_positions = render_settings and render_settings.snap_pixel_positions
+
+	if snap_pixel_positions == nil then
+		snap_pixel_positions = SNAP_PIXEL_POSITIONS
+	end
+
+	if snap_pixel_positions then
+		lower_left_corner = snap_to_position(lower_left_corner)
+	end
+
+	local scaled_position = UIScaleVectorToResolution(lower_left_corner)
+	local scaled_size = UIScaleVectorToResolution(size)
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	if retained_id == true then
-		return Gui.rect(self.gui_retained, UIScaleVectorToResolution(lower_left_corner), UIScaleVectorToResolution(size), color)
+		return Gui.rect(self.gui_retained, scaled_position, scaled_size, color)
 	elseif retained_id then
-		return Gui.update_rect(self.gui_retained, retained_id, UIScaleVectorToResolution(lower_left_corner), UIScaleVectorToResolution(size), color)
+		return Gui.update_rect(self.gui_retained, retained_id, scaled_position, scaled_size, color)
 	else
-		return Gui.rect(self.gui, UIScaleVectorToResolution(lower_left_corner), UIScaleVectorToResolution(size), color)
+		return Gui.rect(self.gui, scaled_position, scaled_size, color)
 	end
 end
 
@@ -1095,7 +1117,7 @@ UIRenderer.draw_centered_uv_texture_amount = function (self, material, lower_lef
 		local texture_position = Vector3(position.x, position.y, position.z)
 		texture_position[axis] = texture_position[axis] + distance_between_textures * i - default_texture_size[axis] * 0.5
 		local uvs = texture_uvs[i]
-		local texture_size_vector = UIScaleVectorToResolution(texture_sizes[i])
+		local texture_size_vector = (texture_sizes and UIScaleVectorToResolution(texture_sizes[i])) or default_texture_size
 		local draw_size = Vector2(texture_size_vector[1], texture_size_vector[2])
 
 		UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, (is_material_table and material[i]) or material, uvs, texture_position, draw_size, color, masked, saturated)
@@ -1504,46 +1526,20 @@ end
 UIRenderer.scaled_font_size_by_area = function (self, text, area_size, style)
 	local area_width = area_size[1]
 	local area_height = area_size[2]
-	local min_font_size = 1
-	local current_font_size = style.font_size
-	local new_font_size = current_font_size
+	local font_material = Fonts[style.font_type][1]
+	local gui = self.gui
 
-	local function get_text_height(ui_renderer, style, width, text)
-		local font, scaled_font_size = UIFontByResolution(style, RESOLUTION_LOOKUP.inv_scale)
-		local font_material = font[1]
-		local _ = font[2]
-		local font_name = font[3]
-		local font_type = style.font_type
-		local _, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_type, scaled_font_size)
-		local whitespace = " \u3002\uff0c"
-		local soft_dividers = "-+&/*"
-		local return_dividers = "\n"
-		local reuse_global_table = true
-		local texts = Gui.word_wrap(ui_renderer.gui, text, font_material, scaled_font_size, width, whitespace, soft_dividers, return_dividers, reuse_global_table)
-		local num_texts = #texts
-		local full_font_height = font_max + math.abs(font_min)
-		local total_height = full_font_height * num_texts
+	for font_size = style.font_size, 1, -0.5 do
+		local _, font_min, font_max = UIGetFontHeight(gui, style.font_type, font_size)
+		local texts = Gui.word_wrap(gui, text, font_material, font_size, area_width, " \u3002\uff0c", "-+&/*", "\n", true)
+		local text_height = math.ceil((font_max - font_min) * #texts)
 
-		return total_height
+		if text_height < area_height then
+			return font_size
+		end
 	end
 
-	local text_height = math.floor(get_text_height(self, style, area_width, text))
-
-	if area_height < text_height then
-		repeat
-			if style.font_size <= min_font_size then
-				break
-			end
-
-			style.font_size = math.max(style.font_size - 0.5, min_font_size)
-			text_height = math.floor(get_text_height(self, style, area_width, text))
-		until text_height <= area_height
-	end
-
-	new_font_size = style.font_size
-	style.font_size = current_font_size
-
-	return new_font_size
+	return 1
 end
 
 UIRenderer.scaled_font_size_by_width = function (self, text, max_width, style)

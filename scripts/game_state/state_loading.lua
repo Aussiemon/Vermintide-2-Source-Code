@@ -2,7 +2,9 @@ require("scripts/game_state/server_join_state_machine")
 require("scripts/game_state/loading_sub_states/win32/state_loading_running")
 require("scripts/game_state/loading_sub_states/win32/state_loading_restart_network")
 require("scripts/game_state/loading_sub_states/win32/state_loading_migrate_host")
+require("scripts/helpers/level_helper")
 require("scripts/settings/level_settings")
+require("scripts/utils/async_level_spawner")
 
 StateLoading = class(StateLoading)
 StateLoading.NAME = "StateLoading"
@@ -73,6 +75,7 @@ StateLoading.on_enter = function (self, param_block)
 	self:_setup_level_transition()
 	self:_setup_state_machine()
 	self:_unmute_all_world_sounds()
+	self:_handle_party_data()
 
 	if self._switch_to_tutorial_backend then
 		Managers.backend:start_tutorial()
@@ -125,6 +128,17 @@ StateLoading.on_enter = function (self, param_block)
 		if not self:loading_view_setup_done() then
 			self:setup_loading_view(level_key)
 		end
+	end
+
+	self._ingame_world_object = nil
+	self._ingame_level_object = nil
+end
+
+StateLoading._handle_party_data = function (self)
+	if Managers.mechanism:switch_mechanism_key() and self._lobby_host then
+		Managers.mechanism:setup_party_data(true)
+	elseif Managers.party:cleared() then
+		Managers.mechanism:setup_party_data()
 	end
 end
 
@@ -238,7 +252,7 @@ StateLoading._setup_first_time_ui = function (self)
 
 		local platform = PLATFORM
 
-		if platform == "win32" then
+		if platform == "win32" or platform == "linux" then
 			if Development.parameter("attract_mode") then
 				level_name = BenchmarkSettings.auto_host_level or level_name
 			end
@@ -337,7 +351,7 @@ end
 StateLoading._trigger_loading_view = function (self, level_key, act_progression_index)
 	level_key = level_key or self._level_transition_handler:default_level_key()
 
-	if not self._loading_music_triggered then
+	if not self._loading_music_triggered and Managers.mechanism:game_mechanism():should_play_level_introduction() then
 		if not Development.parameter("gdc") then
 			local level_settings = LevelSettings[level_key]
 			local weave_name = (self._lobby_client and self._lobby_client:lobby_data("weave_name")) or Managers.weave:get_next_weave() or Development.parameter("weave_name")
@@ -623,7 +637,7 @@ StateLoading.update = function (self, dt, t)
 		end
 	end
 
-	if PLATFORM ~= "win32" and self._has_invitation_error and not self._popup_id then
+	if (PLATFORM == "xb1" or PLATFORM == "ps4") and self._has_invitation_error and not self._popup_id then
 		self:create_popup("invite_broken", "invite_error", "restart_as_server", "menu_accept")
 
 		self._wanted_state = StateTitleScreen
@@ -655,8 +669,10 @@ StateLoading.update = function (self, dt, t)
 
 		local level_seed = Managers.mechanism:get_level_seed()
 		local locked_director_functions = Managers.mechanism:get_locked_director_functions()
+		local use_random_directors = Managers.mechanism:uses_random_directors()
+		local overriden_conflict_setting_name = Managers.mechanism:get_overriden_startup_conflict_setting()
 
-		self._level_transition_handler.enemy_package_loader:setup_startup_enemies(level_key, level_seed, locked_director_functions, weave_objective_data)
+		self._level_transition_handler.enemy_package_loader:setup_startup_enemies(level_key, level_seed, locked_director_functions, use_random_directors, overriden_conflict_setting_name)
 
 		self._should_start_breed_loading = nil
 	end
@@ -764,9 +780,11 @@ StateLoading._update_network = function (self, dt)
 			self._in_post_game_popup_id = nil
 		end
 
-		local bad_state = self._network_client:has_bad_state()
+		local bad_state, state = self._network_client:has_bad_state()
 
 		if bad_state and not self._popup_id then
+			print("bad_state:", state)
+
 			self._wanted_state = StateTitleScreen
 
 			if self._in_post_game_popup_id then
@@ -794,7 +812,7 @@ end
 StateLoading._get_lost_connection_text_id = function (self)
 	local text_id = nil
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		if rawget(_G, "Steam") then
 			text_id = "failure_start_no_steam"
 		else
@@ -868,7 +886,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 		elseif self._lobby_host.state == LobbyState.FAILED and not self._popup_id then
 			local text_id = nil
 
-			if PLATFORM == "win32" then
+			if PLATFORM == "win32" or PLATFORM == "linux" then
 				if rawget(_G, "Steam") then
 					if Steam.connected() then
 						text_id = "failure_start_steam_lobby_create"
@@ -920,7 +938,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 	end
 
 	if PLATFORM == "xb1" and self._waiting_for_cleanup and Managers.account:all_lobbies_freed() then
-		self:setup_join_lobby(true)
+		self:setup_join_lobby()
 
 		self._waiting_for_cleanup = nil
 	end
@@ -1095,11 +1113,16 @@ StateLoading._update_lobby_join = function (self, dt, t)
 		end
 
 		if lobby.valid and auto_join_this_lobby then
+			print("=======================Autojoining this lobby")
+
 			local network_options = Managers.lobby:network_options()
 
 			self:_load_global_packages()
 
 			self._lobby_client = LobbyClient:new(network_options, lobby)
+
+			self._lobby_finder:destroy()
+
 			self._lobby_finder = nil
 			self._handle_new_lobby_connection = true
 			found = true
@@ -1117,6 +1140,8 @@ StateLoading._update_lobby_join = function (self, dt, t)
 	end
 
 	if not found and self._lobby_finder_timeout < t and not self._popup_id then
+		self._lobby_finder:destroy()
+
 		self._lobby_finder = nil
 		local name = self._host_to_join_name or Development.parameter("unique_server_name")
 
@@ -1126,6 +1151,7 @@ StateLoading._update_lobby_join = function (self, dt, t)
 	end
 
 	if self._lobby_finder and not found and self._lobby_finder_refresh_timer < t then
+		printf("=======================Refresh lobby_finder search")
 		self._lobby_finder:refresh()
 
 		self._lobby_finder_refresh_timer = t + StateLoading.join_lobby_refresh_interval
@@ -1211,7 +1237,7 @@ StateLoading._update_loading_screen = function (self, dt, t)
 		local level_index = NetworkLookup.level_keys[level_name]
 
 		if self._network_server then
-			self._network_server:rpc_level_loaded(Network.peer_id(), level_index)
+			self._network_server.network_transmit:send_rpc("rpc_level_loaded", Network.peer_id(), level_index)
 		end
 
 		Managers.mechanism:load_packages()
@@ -1314,10 +1340,37 @@ StateLoading._try_next_state = function (self, dt)
 		end
 
 		local packages_loaded = self:_packages_loaded()
+
+		if packages_loaded and not self._async_level_spawner and (DEDICATED_SERVER or self._rpc_load_level_received or not self._host_migrating) then
+			local transition_handler = self._level_transition_handler
+			local world_name = LevelHelper.INGAME_WORLD_NAME
+			local level_key = transition_handler:get_current_level_keys()
+			local level_name = LevelSettings[level_key].level_name
+
+			printf("Starting async level spawning of %s", level_name)
+
+			local game_mode_key = Managers.mechanism:get_next_game_mode_key(transition_handler)
+			local _, spawned_object_sets = GameModeHelper.get_object_sets(level_name, game_mode_key)
+			local frame_time_budget = 0.02
+			self._async_level_spawner = AsyncLevelSpawner:new(world_name, level_name, spawned_object_sets, frame_time_budget)
+		end
+
+		if self._async_level_spawner and not self._level_spawned then
+			local level_spawned, world, level = self._async_level_spawner:update()
+
+			if level_spawned then
+				print("Async level spawning done")
+
+				self._level_spawned = true
+				self._ingame_world_object = world
+				self._ingame_level_object = level
+			end
+		end
+
 		local can_go_to_next_state = self._wanted_state and ui_done and eac_allowed_to_play and not self._popup_id
 
 		if can_go_to_next_state then
-			local ready_to_go_to_next_state = self._permission_to_go_to_next_state and packages_loaded
+			local ready_to_go_to_next_state = self._permission_to_go_to_next_state and packages_loaded and self._level_spawned
 			local backend_is_disconnected = backend_manager:is_disconnected()
 
 			if ready_to_go_to_next_state or backend_is_disconnected or self._teardown_network then
@@ -1371,7 +1424,7 @@ StateLoading._try_next_state = function (self, dt)
 		end
 	end
 
-	if PLATFORM ~= "win32" then
+	if PLATFORM == "xb1" or PLATFORM == "ps4" then
 		self:_handle_afk_timer(dt)
 	end
 
@@ -1446,27 +1499,17 @@ StateLoading._handle_popup = function (self)
 			self._first_time_view:force_done()
 		end
 	elseif result then
-		print(string.format("[StateLoading:_handle_popup] No such result handled (%s)", result))
+		printf("[StateLoading:_handle_join_popup] No such result handled (%q)", result)
 	end
 end
 
 StateLoading._handle_join_popup = function (self)
 	local result = Managers.popup:query_result(self._join_popup_id)
 
-	if result == "cancel" or result == "timeout" then
+	if result == "ok" then
 		Managers.popup:cancel_popup(self._join_popup_id)
-
-		self._teardown_network = true
-		self._join_popup_id = nil
-		self._permission_to_go_to_next_state = true
-
-		if self._first_time_view then
-			self._first_time_view:force_done()
-		end
-
-		self._new_state = StateTitleScreen
 	elseif result then
-		print(string.format("[StateLoading:_handle_join_popup] No such result handled (%s)", result))
+		printf("[StateLoading:_handle_join_popup] No such result handled (%q)", result)
 	end
 end
 
@@ -1536,6 +1579,10 @@ StateLoading.on_exit = function (self, application_shutdown)
 			level_end_view_wrappers = self._level_end_view_wrappers,
 			saved_scoreboard_stats = self._saved_scoreboard_stats
 		}
+		self._ingame_world_object = loading_context.ingame_world_object
+		loading_context.ingame_world_object = self._ingame_world_object
+		self._ingame_level_object = loading_context.ingame_level_object
+		loading_context.ingame_level_object = self._ingame_level_object
 
 		if self._lobby_host then
 			loading_context.lobby_host = self._lobby_host
@@ -1544,7 +1591,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 			local country_code = nil
 
 			if DEDICATED_SERVER then
-				country_code = SteamGameServer.server_country_code()
+				country_code = SteamGameServer.country_code()
 			elseif PLATFORM == "ps4" then
 				country_code = Managers.account:region()
 			elseif rawget(_G, "Steam") then
@@ -1590,6 +1637,24 @@ StateLoading.on_exit = function (self, application_shutdown)
 
 		loading_context.show_profile_on_startup = self.parent.loading_context.show_profile_on_startup
 		self.parent.loading_context = loading_context
+	end
+
+	if self._async_level_spawner then
+		self._async_level_spawner:destroy()
+
+		self._async_level_spawner = nil
+	end
+
+	if self._ingame_level_object then
+		ScriptWorld.destroy_level_from_reference(self._ingame_world_object, self._ingame_level_object)
+
+		self._ingame_level_object = nil
+	end
+
+	if self._ingame_world_object then
+		Managers.world:destroy_world(self._ingame_world_object)
+
+		self._ingame_world_object = nil
 	end
 
 	self._profile_synchronizer = nil
@@ -1699,7 +1764,7 @@ StateLoading._packages_loaded = function (self)
 			local level_name = self._level_transition_handler:get_current_level_keys()
 			local level_index = NetworkLookup.level_keys[level_name]
 
-			network_server:rpc_level_loaded(Network.peer_id(), level_index)
+			network_server.network_transmit:send_rpc("rpc_level_loaded", Network.peer_id(), level_index)
 		end
 
 		local package_manager = Managers.package
@@ -1730,12 +1795,18 @@ StateLoading._packages_loaded = function (self)
 
 		return true
 	end
+
+	return false
 end
 
-StateLoading.rpc_load_level = function (self, sender, level_index, level_seed, difficulty_id, locked_director_functions_ids)
+StateLoading.rpc_load_level = function (self, channel_id, level_index, level_seed, difficulty_id, difficulty_tweak, locked_director_functions_ids)
 	self._rpc_load_level_received = true
 
 	print("[StateLoading] got rpc_load_level", level_index, NetworkLookup.level_keys[level_index])
+end
+
+StateLoading.set_host_migrating = function (self, host_migrating)
+	self._host_migrating = host_migrating
 end
 
 StateLoading._update_loadout_resync = function (self)
@@ -1762,7 +1833,21 @@ StateLoading._update_loadout_resync = function (self)
 			local level_setting = LevelSettings[level_key]
 
 			if level_setting.hub_level then
-				game_mode = "inn"
+				local mechanism_manager = Managers.mechanism
+				local switch_mechanism_key = mechanism_manager:switch_mechanism_key()
+				local current_mechanism_name = mechanism_manager:current_mechanism_name()
+
+				if switch_mechanism_key then
+					if switch_mechanism_key == "versus" then
+						game_mode = "versus"
+					else
+						game_mode = "inn"
+					end
+				elseif current_mechanism_name == "versus" then
+					game_mode = "versus"
+				else
+					game_mode = "inn"
+				end
 			else
 				local lobby = self:get_lobby()
 				game_mode = lobby:lobby_data("game_mode") or lobby:get_stored_lobby_data().game_mode
@@ -1772,6 +1857,8 @@ StateLoading._update_loadout_resync = function (self)
 				end
 			end
 		end
+
+		Managers.backend:get_interface("items"):set_game_mode_specific_items(game_mode)
 
 		local loadout_changed, old_loadout, new_loadout = Managers.backend:set_loadout_interface_override(game_mode)
 
@@ -1792,6 +1879,7 @@ StateLoading._update_loadout_resync = function (self)
 		local network_server = self._network_server
 		local network_client = self._network_client
 		local profile_synchronizer = (network_server and network_server.profile_synchronizer) or (network_client and network_client.profile_synchronizer)
+		local profile_requester = (network_server and network_server:profile_requester()) or (network_client and network_client:profile_requester())
 
 		if profile_synchronizer then
 			local peer_id = Network.peer_id()
@@ -1811,9 +1899,9 @@ StateLoading._update_loadout_resync = function (self)
 		local profile_synchronizer = (network_server and network_server.profile_synchronizer) or (network_client and network_client.profile_synchronizer)
 
 		if profile_synchronizer then
-			local inventory_synchronizer = profile_synchronizer:inventory_package_synchronizer()
+			local all_loaded = profile_synchronizer:inventory_package_synchronizer_all_loaded()
 
-			if inventory_synchronizer.all_loaded then
+			if all_loaded then
 				state = states.DONE
 
 				print("[StateLoading] loadout_resync_state RESYNCING -> DONE")
@@ -1857,14 +1945,6 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		Managers.account:set_current_lobby(nil)
 	end
 
-	if self._lobby_host and not self._lobby_host:is_dedicated_server() then
-		self._lobby_host:destroy()
-
-		self._lobby_host = nil
-
-		Managers.account:set_current_lobby(nil)
-	end
-
 	if self._network_server then
 		self._network_server:destroy()
 
@@ -1875,7 +1955,7 @@ StateLoading._destroy_network = function (self, application_shutdown)
 		self._network_client = nil
 	end
 
-	if self._lobby_host and self._lobby_host:is_dedicated_server() then
+	if self._lobby_host then
 		self._lobby_host:destroy()
 
 		self._lobby_host = nil
@@ -1884,10 +1964,24 @@ StateLoading._destroy_network = function (self, application_shutdown)
 	end
 
 	if rawget(_G, "LobbyInternal") then
+		if Managers.party:has_party_lobby() then
+			local lobby = Managers.party:steal_lobby()
+
+			LobbyInternal.leave_lobby(lobby)
+		end
+
 		LobbyInternal.shutdown_client()
 	end
 
+	if Managers.mechanism:game_mechanism().unregister_chats then
+		Managers.mechanism:game_mechanism():unregister_chats()
+	end
+
 	Managers.chat:unregister_channel(1)
+
+	if Managers.mechanism:game_mechanism().unregister_chats then
+		Managers.mechanism:game_mechanism():unregister_chats()
+	end
 
 	self.parent.loading_context = {}
 
@@ -2083,20 +2177,22 @@ StateLoading.setup_lobby_finder = function (self, lobby_joined_callback, lobby_t
 	if host_to_join then
 		self:create_join_popup(self._host_to_join_name)
 	end
+
+	return self._lobby_finder
 end
 
 StateLoading.should_start_breed_load_process = function (self)
 	self._should_start_breed_loading = true
 end
 
-StateLoading.setup_lobby_host = function (self, wait_for_joined_callback)
+StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platform_lobby)
 	local loading_context = self.parent.loading_context
 
 	assert(not loading_context.profile_synchronizer)
 	assert(not loading_context.network_server)
 
 	local network_options = Managers.lobby:network_options()
-	self._lobby_host = LobbyHost:new(network_options)
+	self._lobby_host = LobbyHost:new(network_options, platform_lobby)
 	local level_key, environment_id = self:get_next_level_key()
 
 	if not self:loading_view_setup_done() then
@@ -2121,7 +2217,7 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback)
 		local initial_environment = level_transition_handler:get_current_environment_id()
 		local wanted_profile_index = self.parent.loading_context.wanted_profile_index
 		self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, initial_environment, wanted_profile_index, level_transition_handler)
-		self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
+		self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
 		self._network_transmit:set_network_event_delegate(self._network_event_delegate)
 		self._network_server:register_rpcs(self._network_event_delegate, self._network_transmit)
@@ -2145,7 +2241,7 @@ StateLoading.host_joined = function (self)
 	local initial_environment = self._level_transition_handler:get_current_environment_id()
 	local wanted_profile_index = self.parent.loading_context.wanted_profile_index
 	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, initial_environment, wanted_profile_index, self._level_transition_handler)
-	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
+	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
 	self._network_server:register_rpcs(self._network_event_delegate, self._network_transmit)
@@ -2173,7 +2269,21 @@ StateLoading.setup_chat_manager = function (self, lobby, host_peer_id, my_peer_i
 
 	Managers.chat:setup_network_context(network_context)
 
+	if Managers.mechanism:game_mechanism().setup_chats then
+		Managers.mechanism:game_mechanism():setup_chats()
+	end
+
 	local function member_func()
+		if DEDICATED_SERVER then
+			local mechanism = Managers.mechanism:game_mechanism()
+
+			if mechanism:get_state() == "inn" then
+				local reservation_handler = mechanism:get_slot_reservation_handler()
+
+				return reservation_handler:reservers()
+			end
+		end
+
 		return lobby:members():get_members()
 	end
 
@@ -2194,7 +2304,8 @@ StateLoading.setup_global_managers = function (self, lobby, host_peer_id, my_pee
 end
 
 StateLoading.setup_network_transmit = function (self, network_handler)
-	self._network_transmit = self.parent.loading_context.network_transmit or NetworkTransmit:new(true, network_handler.connection_handler)
+	local server_peer_id = (self._network_server and self._network_server.server_peer_id) or (self._network_client and self._network_client.server_peer_id)
+	self._network_transmit = self.parent.loading_context.network_transmit or NetworkTransmit:new(true, server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
 	network_handler:register_rpcs(self._network_event_delegate, self._network_transmit)
@@ -2233,18 +2344,12 @@ StateLoading.create_join_popup = function (self, host_name)
 		return
 	end
 
-	local header = Localize("popup_migrating_to_host_header")
+	local header = Localize("unknown_error")
 	local message = Localize("popup_migrating_to_host_message") .. "\n" .. host_name
-	local time = StateLoading.join_lobby_timeout
 
 	assert(self._join_popup_id == nil, "Tried to show popup even though we already had one.")
 
-	self._join_popup_id = Managers.popup:queue_popup(message, header, "cancel", Localize("popup_choice_cancel"))
-	local default_result = "timeout"
-	local timer_alignment = "center"
-	local blink = false
-
-	Managers.popup:activate_timer(self._join_popup_id, time, default_result, timer_alignment, blink)
+	self._join_popup_id = Managers.popup:queue_popup(message, header, "ok", Localize("popup_choice_ok"))
 end
 
 StateLoading.clear_network_loading_context = function (self)
@@ -2291,8 +2396,9 @@ StateLoading.setup_network_client = function (self, clear_peer_state, lobby_clie
 	local level_key = self._level_transition_handler:get_current_level_keys()
 	local level_index = (level_key and NetworkLookup.level_keys[level_key]) or nil
 	local wanted_profile_index = self.parent.loading_context.wanted_profile_index
-	self._network_client = NetworkClient:new(self._level_transition_handler, host, level_index, wanted_profile_index, clear_peer_state, self._lobby_client)
-	self._network_transmit = NetworkTransmit:new(false, self._network_client.connection_handler)
+	local wanted_party_index = self.parent.loading_context.wanted_party_index or 0
+	self._network_client = NetworkClient:new(self._level_transition_handler, host, level_index, wanted_profile_index, wanted_party_index, clear_peer_state, self._lobby_client)
+	self._network_transmit = NetworkTransmit:new(false, self._network_client.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
 	self._network_client:register_rpcs(self._network_event_delegate, self._network_transmit)
@@ -2351,6 +2457,8 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 		if weave_name then
 			stored_lobby_host_data.weave_name = weave_name
 			stored_lobby_host_data.game_mode = (PLATFORM == "ps4" and "weave") or NetworkLookup.game_modes.weave
+		elseif Managers.mechanism:current_mechanism_name() == "versus" then
+			stored_lobby_host_data.game_mode = (PLATFORM == "ps4" and "versus") or NetworkLookup.game_modes.versus
 		elseif Development.parameter("auto_host_level") then
 			stored_lobby_host_data.game_mode = (PLATFORM == "ps4" and "custom") or NetworkLookup.game_modes.custom
 		end

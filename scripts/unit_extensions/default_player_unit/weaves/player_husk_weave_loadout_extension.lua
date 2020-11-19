@@ -17,7 +17,7 @@ PlayerHuskWeaveLoadoutExtension.add_buffs = function (self, num_buffs, buff_ids,
 		buff_data_type_ids,
 		buff_values
 	}
-	local buffs = BuffUtils.weave_buffs_from_rpc_params(num_buffs, buff_ids, buff_data_type_ids, buff_values)
+	local buffs = BuffUtils.buffs_from_rpc_params(num_buffs, buff_ids, buff_data_type_ids, buff_values)
 
 	self:_apply_buffs(buffs)
 end
@@ -41,8 +41,9 @@ PlayerHuskWeaveLoadoutExtension.hot_join_sync = function (self, sender)
 
 	if rpc_params then
 		local unit_go_id = Managers.state.unit_storage:go_id(self._unit)
+		local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-		RPC.rpc_add_weave_buffs(sender, unit_go_id, unpack(rpc_params))
+		RPC.rpc_add_weave_buffs(channel_id, unit_go_id, unpack(rpc_params))
 	end
 end
 

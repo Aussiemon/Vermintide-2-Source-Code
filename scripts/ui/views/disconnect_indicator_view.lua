@@ -7,14 +7,6 @@ require("scripts/ui/ui_widgets")
 local definitions = require("scripts/ui/views/disconnect_indicator_view_definitions")
 local test_ui = false
 DisconnectIndicatorView = class(DisconnectIndicatorView)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 DisconnectIndicatorView.FLASH_CYCLE = 0.5
 DisconnectIndicatorView.SILENCE_THRESHOLD = GameSettingsDevelopment.network_silence_warning_delay or 3
 
@@ -124,7 +116,7 @@ DisconnectIndicatorView._draw = function (self, dt)
 	local alpha = math.abs(math.sin(angle))
 
 	self:_set_transparency(alpha)
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, self._render_settings)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self._render_settings)
 	UIRenderer.draw_widget(ui_renderer, self._icon_text_widget)
 	UIRenderer.end_pass(ui_renderer)
 end

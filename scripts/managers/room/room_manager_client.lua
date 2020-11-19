@@ -56,11 +56,11 @@ RoomManagerClient.destroy = function (self)
 	self._network_event_delegate = nil
 end
 
-RoomManagerClient.rpc_inn_room_created = function (self, sender, peer_id, room_id, profile_index)
+RoomManagerClient.rpc_inn_room_created = function (self, channel_id, peer_id, room_id, profile_index)
 	self:create_room(peer_id, room_id, profile_index)
 end
 
-RoomManagerClient.rpc_inn_room_destroyed = function (self, sender, peer_id)
+RoomManagerClient.rpc_inn_room_destroyed = function (self, channel_id, peer_id)
 	self:destroy_room(peer_id)
 end
 

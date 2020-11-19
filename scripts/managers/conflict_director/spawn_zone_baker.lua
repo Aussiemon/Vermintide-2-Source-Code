@@ -229,7 +229,8 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 
 	self._all_hi_data = {}
 	self._count_up = 0
-	self.difficulty = Managers.state.difficulty:get_difficulty()
+	local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
+	self.composition_difficulty = DifficultyTweak.converters.composition(difficulty, difficulty_tweak)
 	local zones = self.zones
 	local num_main_zones = self.num_main_zones
 	local zone_convert = self.zone_convert
@@ -570,7 +571,7 @@ SpawnZoneBaker.create_hi_data = function (self, zone, pack_type_name)
 		local clamp_breeds = (zone.hi and zone_checks.clamp_breeds_hi) or zone_checks.clamp_breeds_low
 
 		if clamp_breeds then
-			local difficulty_overrides = clamp_breeds[self.difficulty]
+			local difficulty_overrides = clamp_breeds[self.composition_difficulty]
 
 			if difficulty_overrides then
 				local breed_count = {}
@@ -1121,7 +1122,7 @@ SpawnZoneBaker.draw_func1 = function (self, zone, zone_list_index, row, left, ro
 	local zone_type = (zone.island and "ISLAND") or "MAIN"
 	local row_text = string.format("%d %s: %d %s", row, zone_type, zone_list_index, zone.pack_spawning_setting.name or "?")
 
-	Gui.text(self._gui, row_text, "core/editor_slave/gui/arial", 14, "core/editor_slave/gui/arial", Vector3(left + 200, row_y, 1000))
+	Gui.text(self._gui, row_text, "materials/fonts/arial", 14, "materials/fonts/arial", Vector3(left + 200, row_y, 1000))
 end
 
 SpawnZoneBaker._draw_zone = function (self, zone, color)
@@ -1189,16 +1190,16 @@ SpawnZoneBaker.draw_func2 = function (self, zone, zone_list_index, row, left, ro
 	local zone_type = (zone.island and "ISLAND") or "MAIN"
 	local row_text = string.format("%s: %d %s", zone_type, zone_list_index, s)
 
-	Gui.text(self._gui, row_text, "core/editor_slave/gui/arial", 14, "core/editor_slave/gui/arial", Vector3(left + 200, row_y, 1000), color)
+	Gui.text(self._gui, row_text, "materials/fonts/arial", 14, "materials/fonts/arial", Vector3(left + 200, row_y, 1000), color)
 end
 
 SpawnZoneBaker._draw_legend = function (self, legend, x, y)
-	Gui.text(self._gui, string.format("LEGEND OF PACK-TYPES"), "core/editor_slave/gui/arial", 14, "core/editor_slave/gui/arial", Vector3(x, y, 1000))
+	Gui.text(self._gui, string.format("LEGEND OF PACK-TYPES"), "materials/fonts/arial", 14, "materials/fonts/arial", Vector3(x, y, 1000))
 
 	y = y - 30
 
 	for key, code in pairs(legend) do
-		Gui.text(self._gui, string.format("%s = %s", key, code), "core/editor_slave/gui/arial", 14, "core/editor_slave/gui/arial", Vector3(x, y, 1000))
+		Gui.text(self._gui, string.format("%s = %s", key, code), "materials/fonts/arial", 14, "materials/fonts/arial", Vector3(x, y, 1000))
 
 		y = y - 20
 	end

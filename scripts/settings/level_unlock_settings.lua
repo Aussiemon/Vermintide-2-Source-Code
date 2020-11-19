@@ -34,14 +34,7 @@ GameActsDisplayNames = {
 	act_2 = "act_2_display_name"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local unlock_settings = dlc.level_unlock_settings
-
-	if unlock_settings then
-		dofile(unlock_settings)
-	end
-end
-
+DLCUtils.dofile("level_unlock_settings")
 require("scripts/settings/packaged_levels")
 
 local function is_level_available_on_disk(level_data)
@@ -176,6 +169,18 @@ LevelUnlockUtils.completed_level_difficulty_index = function (statistics_db, pla
 		local difficulty_index = statistics_db:get_persistent_stat(player_stats_id, "completed_levels_difficulty", level_difficulty_name)
 
 		return difficulty_index
+	else
+		return 0
+	end
+end
+
+LevelUnlockUtils.completed_journey_difficulty_index = function (statistics_db, player_stats_id, journey_name)
+	local journey_difficulty_name = JourneyDifficultyDBNames[journey_name]
+
+	if journey_difficulty_name then
+		local difficulty_index = statistics_db:get_persistent_stat(player_stats_id, "completed_journeys_difficulty", journey_difficulty_name)
+
+		return math.clamp(difficulty_index, 0, 5)
 	else
 		return 0
 	end
@@ -612,6 +617,21 @@ LevelUnlockUtils.debug_set_completed_game_difficulty = function (difficulty)
 	for _, level_key in pairs(LevelDifficultyDBNames) do
 		slot9 = statistics_db:set_stat(stats_id, "completed_levels_difficulty", level_key, difficulty)
 	end
+
+	local backend_stats = {}
+
+	statistics_db:generate_backend_stats(stats_id, backend_stats)
+	Managers.backend:set_stats(backend_stats)
+	Managers.backend:commit()
+end
+
+LevelUnlockUtils.debug_set_completed_journey_difficulty = function (journey_name, difficulty_id)
+	local statistics_db = Managers.player:statistics_db()
+	local player = Managers.player:local_player()
+	local stats_id = player:stats_id()
+	local journey_difficulty_name = JourneyDifficultyDBNames[journey_name]
+
+	statistics_db:set_stat(stats_id, "completed_journeys_difficulty", journey_difficulty_name, difficulty_id)
 
 	local backend_stats = {}
 

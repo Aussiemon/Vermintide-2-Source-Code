@@ -730,7 +730,7 @@ local function create_simple_pulsating_text(text, scenegraph_id, size, color, te
 					pass_type = "text",
 					text_id = "text",
 					content_check_function = function (content, style)
-						style.text_color[1] = 160 + math.sin(Application.time_since_launch() * 5) * 95
+						style.text_color[1] = 160 + math.sin(Managers.time:time("ui") * 5) * 95
 
 						return true
 					end

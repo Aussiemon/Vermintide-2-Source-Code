@@ -44,7 +44,7 @@ RoomHandler.create_room = function (self, room_info, room_id)
 	local rotation = Quaternion.look(-normal)
 	local world = self._world
 	local level_name = room_info.level_name
-	local level = World.load_level(world, level_name, position, rotation)
+	local level = World.spawn_level(world, level_name, position, rotation)
 	local flow_event_name = "room_" .. tostring(room_id) .. "_spawned"
 
 	LevelHelper:flow_event(world, flow_event_name)

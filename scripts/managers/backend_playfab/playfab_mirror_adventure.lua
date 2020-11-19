@@ -22,35 +22,6 @@ PlayFabMirrorAdventure.init = function (self, signin_result)
 end
 
 PlayFabMirrorAdventure.request_characters = function (self)
-	if not self._read_only_data.characters_data then
-		self._num_items_to_load = self._num_items_to_load + 1
-		local request = {
-			FunctionName = "migrateCharacters",
-			FunctionParameter = {}
-		}
-		local migrate_characters_cb = callback(self, "migrate_characters_cb")
-
-		PlayFabClientApi.ExecuteCloudScript(request, migrate_characters_cb)
-
-		return
-	end
-
-	self:_verify_dlc_careers()
-end
-
-PlayFabMirrorAdventure.migrate_characters_cb = function (self, result)
-	local function_result = result.FunctionResult
-	local success = function_result.success
-	local characters_data = function_result.characters_data
-	self._read_only_data.characters_data = characters_data
-	self._num_items_to_load = self._num_items_to_load - 1
-
-	self:_verify_dlc_careers()
-end
-
-PlayFabMirrorAdventure.delete_playfab_characters_cb = function (self, result)
-	self._num_items_to_load = self._num_items_to_load - 1
-
 	self:_verify_dlc_careers()
 end
 

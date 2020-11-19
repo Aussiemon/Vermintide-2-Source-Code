@@ -2,15 +2,7 @@ require("scripts/ui/helpers/scrollbar_logic")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_store_definitions")
 
-for name, dlc in pairs(DLCSettings) do
-	local store_state_filenames = dlc.store_state_filenames
-
-	if store_state_filenames then
-		for _, filename in ipairs(store_state_filenames) do
-			require(filename)
-		end
-	end
-end
+DLCUtils.require_list("store_state_filenames")
 
 local widget_definitions = definitions.widgets
 local list_detail_widget_definitions = definitions.list_detail_widgets
@@ -94,14 +86,6 @@ local item_widget_definition_functions = {
 	dlc_header_video = "create_store_header_video_definition",
 	dlc_logo = "create_store_dlc_logo_definition"
 }
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 HeroViewStateStore = class(HeroViewStateStore)
 HeroViewStateStore.NAME = "HeroViewStateStore"
@@ -156,7 +140,7 @@ HeroViewStateStore.on_enter = function (self, params)
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		windows_settings = self._windows_settings,
-		input_service = fake_input_service,
+		input_service = FAKE_INPUT_SERVICE,
 		start_state = params.start_state or params.state_params.start_state,
 		layout_settings = self._layout_settings
 	}
@@ -437,7 +421,7 @@ HeroViewStateStore._initial_windows_setups = function (self, params)
 end
 
 HeroViewStateStore.window_input_service = function (self)
-	return ((self._input_blocked or self._friends_list_active) and fake_input_service) or self:input_service()
+	return ((self._input_blocked or self._friends_list_active) and FAKE_INPUT_SERVICE) or self:input_service()
 end
 
 HeroViewStateStore._close_window_at_index = function (self, window_index)
@@ -1476,6 +1460,9 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 	local content = widget.content
 	local style = widget.style
 	local masked = style.icon.masked
+	local can_use_item, reason = self:can_use_item(item)
+	content.can_use_item = can_use_item
+	content.can_not_use_item_reason = reason
 	local rarity_background = item_backgrounds_by_rarirty[rarity]
 	content.background = rarity_background
 	local end_time = item.end_time
@@ -1492,10 +1479,13 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 
 	if steam_itemdefid then
 		real_currency = true
-		price_text, platform_price_data = self:get_steam_item_price_text(steam_itemdefid)
+		price_text, platform_price_data = self:get_steam_item_price_text(steam_itemdefid, content)
 	elseif dlc_name then
 		real_currency = true
 		price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
+	elseif not can_use_item then
+		real_currency = true
+		price_text = Localize(reason)
 	else
 		local currency_type = "SM"
 		local regular_prices = item.regular_prices
@@ -1603,7 +1593,12 @@ HeroViewStateStore._setup_ps4_price_data = function (self, widget, price_data)
 	local spacing = 20
 	local size = content.size
 	local is_plus_price = price_data.is_plus_price
-	local has_ps_plus = Managers.account:has_access("playstation_plus")
+	local has_ps_plus = false
+
+	if not Managers.account:offline_mode() then
+		has_ps_plus = Managers.account:has_access("playstation_plus")
+	end
+
 	local original_price = price_data.original_price
 	local display_original_price = price_data.display_original_price
 	local display_price = price_data.display_price
@@ -1751,18 +1746,61 @@ HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
 	end
 end
 
-HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid)
+HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, content)
 	local backend_store = Managers.backend:get_interface("peddler")
 	local price, currency = backend_store:get_steam_item_price(steam_itemdefid)
 	local price_text = nil
 
-	if price then
+	if not content.can_use_item then
+		price_text = Localize(content.can_not_use_item_reason or "dlc_price_unavailable")
+	elseif price then
 		price_text = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
 	else
 		price_text = Localize("dlc_price_unavailable")
 	end
 
 	return price_text
+end
+
+HeroViewStateStore.can_use_item = function (self, item)
+	return true
+
+	local unlock_manager = Managers.unlock
+	local data = item.data
+
+	if data.required_dlc and not unlock_manager:is_dlc_unlocked(data.required_dlc) then
+		return false, "item_dlc_unavailable"
+	end
+
+	local base_item_key = item.data.matching_item_key
+
+	if base_item_key then
+		local base_item = ItemMasterList[base_item_key]
+
+		if base_item.required_dlc and not unlock_manager:is_dlc_unlocked(base_item.required_dlc) then
+			return false, "item_dlc_unavailable"
+		end
+
+		if not Managers.backend:get_interface("items"):has_item(base_item_key) then
+			return false, "item_weapon_unavailable"
+		end
+	end
+
+	local careers = item.data.can_wield
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+
+	for i = 1, #careers, 1 do
+		local career = careers[i]
+		local profile = PROFILES_BY_CAREER_NAMES[career]
+		local hero_experience = hero_attributes:get(profile.display_name, "experience") or 0
+		local hero_level = ExperienceSettings.get_level(hero_experience)
+
+		if CareerSettings[career]:is_unlocked_function(profile.display_name, hero_level) then
+			return true
+		end
+	end
+
+	return false, "item_career_unavailable"
 end
 
 HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)

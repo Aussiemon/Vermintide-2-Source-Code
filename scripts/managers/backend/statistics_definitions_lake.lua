@@ -35,7 +35,6 @@ end
 local relevant_careers = {
 	es_questingknight = true
 }
-player.mission_streak = {}
 
 for career, _ in pairs(CareerSettings) do
 	if relevant_careers[career] then

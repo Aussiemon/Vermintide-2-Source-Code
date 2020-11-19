@@ -27,6 +27,7 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._num_event_ai_spawned = 0
 	self._num_event_ai_active = 0
 	self._num_ai_string = "SPAWNED: %3i   ACTIVE: %3i   EVENT SPAWNED: %3i   EVENT SPAWNED ACTIVE: %3i"
+	self._inactive_units = {}
 	self._settings = {
 		critical = {
 			font = "materials/fonts/arial",
@@ -88,7 +89,7 @@ PerformanceManager.update = function (self, dt, t)
 	return
 end
 
-PerformanceManager.event_ai_unit_spawned = function (self, breed_name, active, event_spawned)
+PerformanceManager.event_ai_unit_spawned = function (self, unit, breed_name, active, event_spawned)
 	if not self._tracked_ai_breeds[breed_name] then
 		return
 	end
@@ -98,6 +99,8 @@ PerformanceManager.event_ai_unit_spawned = function (self, breed_name, active, e
 	if active then
 		self._num_ai_active = self._num_ai_active + 1
 		self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] + 1
+	else
+		self._inactive_units[unit] = true
 	end
 
 	if event_spawned then
@@ -114,6 +117,7 @@ PerformanceManager.event_ai_units_all_destroyed = function (self)
 	self._num_event_ai_spawned = 0
 	self._num_ai_active = 0
 	self._num_event_ai_active = 0
+	self._inactive_units = {}
 	local activated_per_breed = self._activated_per_breed
 
 	for breed_name, amount in pairs(activated_per_breed) do
@@ -129,6 +133,7 @@ PerformanceManager.event_ai_unit_activated = function (self, unit, breed_name, e
 	end
 
 	self._num_ai_active = self._num_ai_active + 1
+	self._inactive_units[unit] = nil
 
 	if event_spawned then
 		self._num_event_ai_active = self._num_event_ai_active + 1
@@ -142,10 +147,11 @@ PerformanceManager.event_ai_unit_deactivated = function (self, unit, breed_name)
 		return
 	end
 
+	self._inactive_units[unit] = true
 	self._num_ai_active = math.max(self._num_ai_active - 1, 0)
 end
 
-PerformanceManager.event_ai_unit_despawned = function (self, breed_name, active, event_spawned)
+PerformanceManager.event_ai_unit_despawned = function (self, unit, breed_name, active, event_spawned)
 	if active then
 		self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] - 1
 	end
@@ -158,6 +164,8 @@ PerformanceManager.event_ai_unit_despawned = function (self, breed_name, active,
 
 	if active then
 		self._num_ai_active = self._num_ai_active - 1
+	else
+		self._inactive_units[unit] = nil
 	end
 
 	if event_spawned then

@@ -407,11 +407,10 @@ IngameVotingUI.update_pulse_animations = function (self, dt, hold_input_pressed)
 
 	local menu_active = self.menu_active
 	local speed_multiplier = (menu_active and 8) or 5
-	local time_since_launch = Application.time_since_launch()
-	local progress = (not menu_active and hold_input_pressed and 0) or 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
+	local progress = (not menu_active and hold_input_pressed and 0) or 0.5 + math.sin(Managers.time:time("ui") * speed_multiplier) * 0.5
 
 	if not menu_active then
-		slot7 = 50 + progress * 50
+		slot6 = 50 + progress * 50
 	else
 		local alpha = 100 + progress * 155
 		self.background.style.input_glow.color[1] = alpha

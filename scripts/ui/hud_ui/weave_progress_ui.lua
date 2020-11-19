@@ -27,9 +27,8 @@ WeaveProgressUI._create_ui_elements = function (self)
 	self._bonus_objective_lookup = {}
 	self._widgets = {}
 
-	for name, widget in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget)
-		self._widgets[name] = widget
+	for name, widget_def in pairs(widget_definitions) do
+		self._widgets[name] = UIWidget.init(widget_def)
 	end
 
 	self._bonus_header_widget = UIWidget.init(definitions.create_bonus_objective_header_func())
@@ -37,7 +36,6 @@ WeaveProgressUI._create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self._progress = 0
-	DO_RELOAD = false
 end
 
 WeaveProgressUI._sync_weave_objectives = function (self)
@@ -55,8 +53,7 @@ WeaveProgressUI._sync_weave_objectives = function (self)
 		local objectives = weave_template.objectives
 
 		for i = prior_objective_index, 1, -1 do
-			local objective_template = objectives[i]
-			bar_cutoff = objective_template.bar_cutoff
+			bar_cutoff = objectives[i].bar_cutoff
 
 			if bar_cutoff and bar_cutoff < 100 then
 				break
@@ -68,8 +65,7 @@ WeaveProgressUI._sync_weave_objectives = function (self)
 	local widget = self._widgets.progress_ui
 	local content = widget.content
 	content.bar_cutoff = bar_cutoff
-	local bar_texture = "weaves_essence_bar_fill"
-	local bar_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(bar_texture)
+	local bar_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name("weaves_essence_bar_fill")
 	local bubble_icon_style = widget.style.bubble_icon
 	local base_offset_x = bubble_icon_style.base_offset_x
 	bubble_icon_style.offset[1] = base_offset_x + bar_texture_settings.size[1] * bar_cutoff * 0.01
@@ -78,26 +74,18 @@ WeaveProgressUI._sync_weave_objectives = function (self)
 
 	if bonus_time then
 		local seconds = math.max(bonus_time, 0)
-		local minutes = math.floor(seconds / 60)
-		local hours = math.floor(minutes / 60)
-		local timer_text = string.format("%d:%02d", minutes - hours * 60, seconds % 60)
-		bonus_time_text = "+ " .. timer_text
+		bonus_time_text = string.format("+ %d:%02d", math.floor(seconds / 60), seconds % 60)
 	end
 
 	content.bonus_time = bonus_time_text
 	self._initiated = true
 end
 
-WeaveProgressUI._sync_weave_data = function (self, dt, t)
-	if self._initiated then
-		return
+WeaveProgressUI.update = function (self, dt, t)
+	if not self._initiated then
+		self:_sync_weave_objectives()
 	end
 
-	self:_sync_weave_objectives()
-end
-
-WeaveProgressUI.update = function (self, dt, t)
-	self:_sync_weave_data(dt, t)
 	self:_update_bonus_objectives(dt, t)
 	self:_update_animations(dt, t)
 	self:_update_bar(dt, t)
@@ -133,7 +121,7 @@ WeaveProgressUI._update_bonus_objectives = function (self, dt, t)
 	local current_objective_ordered = objectives_ordered[current_objective_index]
 
 	if weave_objective_system then
-		local current_objectives = weave_objective_system:current_objectives()
+		local current_objectives = weave_objective_system:current_main_objectives()
 
 		for _, objective in pairs(current_objectives) do
 			local objective_name = objective:objective_name()
@@ -235,16 +223,17 @@ WeaveProgressUI._update_animations = function (self, dt)
 	local animations = self._animations
 	local animation_callbacks = self._animation_callbacks
 
-	for anmation_name, anmation in pairs(animations) do
+	for animation_name, anmation in pairs(animations) do
 		UIAnimation.update(anmation, dt)
 
 		if UIAnimation.completed(anmation) then
-			animations[anmation_name] = nil
+			animations[animation_name] = nil
+			local cb = animation_callbacks[animation_name]
 
-			if animation_callbacks[anmation_name] then
-				animation_callbacks[anmation_name]()
+			if cb then
+				cb()
 
-				animation_callbacks[anmation_name] = nil
+				animation_callbacks[animation_name] = nil
 			end
 		end
 	end

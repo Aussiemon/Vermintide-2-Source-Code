@@ -134,7 +134,7 @@ BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
 		blackboard.spawned_allies_wave = blackboard.spawned_allies_wave + 1
 	end
 
-	if blackboard.follow_animation_locked and not destroy then
+	if blackboard.follow_animation_locked then
 		self:_release_animation_lock(unit, blackboard)
 	end
 

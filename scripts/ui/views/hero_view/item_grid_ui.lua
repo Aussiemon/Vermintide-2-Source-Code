@@ -27,17 +27,6 @@ end
 ItemGridUI.change_category = function (self, category_name, keep_page_index)
 	self:clear_item_grid()
 
-	local hero_name = self._hero_name
-	local career_index = self._career_index
-	local profile = SPProfiles[FindProfileIndex(hero_name)]
-	local career = profile.careers[career_index]
-	local career_name = career.name
-	local is_slayer = career_name == "dr_slayer"
-
-	if is_slayer and category_name == "ranged" then
-		category_name = "melee"
-	end
-
 	for index, category in ipairs(self._category_settings) do
 		if category.name == category_name then
 			self:_on_category_index_change(index, keep_page_index)

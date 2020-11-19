@@ -1,11 +1,12 @@
 require("scripts/network/peer_state_machine")
-require("scripts/network/connection_handler")
 require("scripts/network/voip")
 require("scripts/game_state/components/profile_synchronizer")
 require("scripts/utils/profile_requester")
 require("scripts/game_state/components/slot_allocator")
 require("scripts/settings/profiles/sp_profiles")
 
+PEER_ID_TO_CHANNEL = PEER_ID_TO_CHANNEL or {}
+CHANNEL_TO_PEER_ID = CHANNEL_TO_PEER_ID or {}
 local NUM_PROFILES = #PROFILES_BY_AFFILIATION.heroes
 local KICK_PEER_WAIT_TIMER = 5
 
@@ -19,11 +20,11 @@ PeerState = PeerState or CreateStrictEnumTable("Broken", "Connecting", "Connecte
 NetworkServer = class(NetworkServer)
 
 NetworkServer.init = function (self, player_manager, lobby_host, initial_level, environment_variation_id, wanted_profile_index, level_transition_handler, game_server_manager)
-	self.peer_connections = {}
+	PEER_ID_TO_CHANNEL[Network.peer_id()] = 0
+	CHANNEL_TO_PEER_ID[0] = Network.peer_id()
 	local my_peer_id = Network.peer_id()
 	self.my_peer_id = my_peer_id
-	self.connection_handler = ConnectionHandler:new()
-	self.peers_to_disconnect = {}
+	self.server_peer_id = my_peer_id
 	self.peers_added_to_gamesession = {}
 	self.peers_completed_game_object_sync = {}
 	self.player_manager = player_manager
@@ -34,18 +35,22 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	local is_server = true
 	self.slot_allocator = SlotAllocator:new(is_server, self.lobby_host, NUM_PROFILES)
 	self._game_server_manager = game_server_manager
+	self._connections = {}
+	self._joined_peers = {}
+	self._connected_peers = {}
 
 	self:set_current_level(initial_level, environment_variation_id)
 
-	self.profile_synchronizer = ProfileSynchronizer:new(is_server, lobby_host, self)
+	local mechanism_manager = Managers.mechanism
+	local profile_synchronizer_class = mechanism_manager:get_profile_synchronizer_class()
+	self.profile_synchronizer = profile_synchronizer_class:new(is_server, lobby_host, self)
 	self._profile_requester = ProfileRequester:new(is_server, self, self.profile_synchronizer)
 
-	Managers.mechanism:set_profile_synchronizer(self.profile_synchronizer)
+	mechanism_manager:set_profile_synchronizer(self.profile_synchronizer)
 
 	local voip_params = {
 		is_server = is_server,
 		my_peer_id = my_peer_id,
-		connection_handler = self.connection_handler,
 		lobby = lobby_host
 	}
 	self.voip = Voip:new(voip_params)
@@ -63,7 +68,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 			local hero_level = ExperienceSettings.get_level(hero_experience)
 			local career = profile.careers[wanted_career_index]
 
-			if not career or not career.is_unlocked_function(hero_name, hero_level) then
+			if not career or not career:is_unlocked_function(hero_name, hero_level) then
 				wanted_career_index = 1
 
 				hero_attributes:set(hero_name, "career", wanted_career_index)
@@ -84,13 +89,17 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	end
 
 	if DEDICATED_SERVER or (HAS_STEAM and not Development.parameter("use_lan_backend")) then
-		self._eac_server = EACServer.create(my_peer_id, server_name)
+		self._eac_server = EACServer.create(server_name)
 	end
 
-	self._eac_peer_ids = {}
+	self._using_gamelift = DEDICATED_SERVER and rawget(_G, "GameliftServer") ~= nil
 
 	if DEDICATED_SERVER then
 		self._eac_authorized_written_to_lobby_data = ""
+
+		if self._using_gamelift then
+			GameliftServer.process_ready()
+		end
 	end
 
 	Managers.mechanism:register_network_server(self)
@@ -137,8 +146,10 @@ NetworkServer.num_joining_peers = function (self)
 	return num_peers
 end
 
-NetworkServer.rpc_notify_connected = function (self, sender)
-	if sender == self.my_peer_id then
+NetworkServer.rpc_notify_connected = function (self, channel_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id == self.my_peer_id then
 		local profile_index, career_index = nil
 		local level_settings = self.level_key and LevelSettings[self.level_key]
 		profile_index = (not level_settings or level_settings.game_mode ~= "tutorial" or self.wanted_profile_index) and (wanted_profile_index or self.profile_synchronizer:get_first_free_profile())
@@ -152,13 +163,15 @@ NetworkServer.rpc_notify_connected = function (self, sender)
 			career_index = hero_attributes:get(hero_name, "career") or 1
 		end
 
-		self.peer_state_machines[sender].rpc_notify_lobby_joined(profile_index, career_index)
+		self.peer_state_machines[peer_id].rpc_notify_lobby_joined(profile_index, career_index)
 	end
 end
 
-NetworkServer.rpc_notify_in_post_game = function (self, sender, in_post_game)
-	if sender == self.my_peer_id then
-		local peer_state_machine = self.peer_state_machines[sender]
+NetworkServer.rpc_notify_in_post_game = function (self, channel_id, in_post_game)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id == self.my_peer_id then
+		local peer_state_machine = self.peer_state_machines[peer_id]
 
 		if peer_state_machine:has_function("rpc_post_game_notified") then
 			peer_state_machine.rpc_post_game_notified(in_post_game)
@@ -166,8 +179,10 @@ NetworkServer.rpc_notify_in_post_game = function (self, sender, in_post_game)
 	end
 end
 
-NetworkServer.rpc_game_started = function (self, sender)
-	if sender == self.my_peer_id then
+NetworkServer.rpc_game_started = function (self, channel_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id == self.my_peer_id then
 		Managers.state.event:trigger("game_started")
 	end
 end
@@ -202,8 +217,10 @@ NetworkServer.is_in_post_game = function (self)
 	end
 end
 
-NetworkServer.rpc_to_client_spawn_player = function (self, sender, ...)
-	if sender == self.my_peer_id then
+NetworkServer.rpc_to_client_spawn_player = function (self, channel_id, ...)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if peer_id == self.my_peer_id then
 	end
 end
 
@@ -238,18 +255,19 @@ NetworkServer.profile_requester = function (self)
 	return self._profile_requester
 end
 
-NetworkServer.rpc_is_ingame = function (self, sender)
-	local peer_state_machine = self.peer_state_machines[sender]
+NetworkServer.rpc_is_ingame = function (self, channel_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local peer_state_machine = self.peer_state_machines[peer_id]
 
 	if not peer_state_machine or not peer_state_machine:has_function("rpc_is_ingame") then
-		network_printf("RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_is_ingame")
-		RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)
+		printf("RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_is_ingame")
+		RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_join)
 	else
 		peer_state_machine.rpc_is_ingame()
 	end
 end
 
-NetworkServer.rpc_loading_synced = function (self, sender)
+NetworkServer.rpc_loading_synced = function (self, channel_id)
 	return
 end
 
@@ -283,17 +301,13 @@ NetworkServer.peer_respawn_player = function (self, peer_id)
 	end
 end
 
-NetworkServer.rpc_client_respawn_player = function (self, sender)
-	self:peer_respawn_player(sender)
+NetworkServer.rpc_client_respawn_player = function (self, channel_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	self:peer_respawn_player(peer_id)
 end
 
 NetworkServer.destroy = function (self)
-	if self._eac_server ~= nil then
-		EACServer.destroy(self._eac_server)
-
-		self._eac_server = nil
-	end
-
 	if self.network_event_delegate then
 		self:unregister_rpcs()
 	end
@@ -310,8 +324,19 @@ NetworkServer.destroy = function (self)
 
 	self.profile_synchronizer = nil
 
-	self.connection_handler:update(0)
 	GarbageLeakDetector.register_object(self, "NetworkServer")
+
+	for peer_id, connection in pairs(self._connections) do
+		self:close_channel(peer_id)
+	end
+
+	table.clear(self._connected_peers)
+
+	if self._eac_server ~= nil then
+		EACServer.destroy(self._eac_server)
+
+		self._eac_server = nil
+	end
 
 	if self._gui ~= nil then
 		World.destroy_gui(Application.debug_world(), self._gui)
@@ -323,7 +348,8 @@ NetworkServer.destroy = function (self)
 end
 
 NetworkServer.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_client_connection_state", "rpc_notify_lobby_joined", "rpc_to_client_spawn_player", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player")
+	network_event_delegate:register(self, "rpc_notify_lobby_joined", "rpc_to_client_spawn_player", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player")
+	network_event_delegate:register_with_return(self, "approve_channel")
 
 	self.network_event_delegate = network_event_delegate
 
@@ -337,12 +363,6 @@ end
 
 NetworkServer.on_level_exit = function (self)
 	table.clear(self.peers_completed_game_object_sync)
-
-	for peer_id, peer_data in pairs(self.peer_connections) do
-		if peer_data.state == PeerState.InPostGame then
-			peer_data.state = PeerState.Loading
-		end
-	end
 
 	local peer_state_machines = self.peer_state_machines
 
@@ -406,7 +426,9 @@ NetworkServer.disconnect_all_peers = function (self, reason)
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
 		if peer_id ~= Network.peer_id() and peer_state_machine.current_state ~= PeerStates.Disconnecting and peer_state_machine.current_state ~= PeerStates.Disconnected then
-			RPC.rpc_connection_failed(peer_id, reason_id)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			RPC.rpc_connection_failed(channel_id, reason_id)
 		end
 	end
 end
@@ -417,7 +439,9 @@ NetworkServer.disconnect_peer = function (self, peer_id, reason)
 	local current_state = peer_state_machine.current_state
 
 	if current_state ~= PeerStates.Disconnecting and current_state ~= PeerStates.Disconnected then
-		RPC.rpc_connection_failed(peer_id, reason_id)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+		RPC.rpc_connection_failed(channel_id, reason_id)
 	end
 end
 
@@ -446,56 +470,53 @@ NetworkServer.force_disconnect_client_by_peer_id = function (self, peer_id)
 	end
 end
 
-NetworkServer.rpc_client_connection_state = function (self, sender, peer_id, peer_state)
-	return
-end
+NetworkServer.rpc_notify_lobby_joined = function (self, channel_id, wanted_profile_index, wanted_career_index, wanted_party_index, clan_tag, account_id)
+	local remote_peer = CHANNEL_TO_PEER_ID[channel_id]
 
-NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_index, wanted_career_index, clan_tag, account_id)
-	network_printf("Peer %s has sent rpc_notify_lobby_joined", tostring(sender))
+	network_printf("Peer %s has sent rpc_notify_lobby_joined", tostring(remote_peer))
 
-	local peer_state_machine = self.peer_state_machines[sender]
+	local peer_state_machine = self.peer_state_machines[remote_peer]
 
 	if not peer_state_machine or not peer_state_machine:has_function("rpc_notify_lobby_joined") then
-		network_printf("RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_notify_lobby_joined")
-		RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)
+		network_printf("RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_notify_lobby_joined")
+		RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_join)
 	else
-		peer_state_machine.rpc_notify_lobby_joined(wanted_profile_index, wanted_career_index, clan_tag, account_id)
-
-		if sender ~= self.my_peer_id then
-			self:_add_peer_to_eac(sender)
-		end
+		peer_state_machine.rpc_notify_lobby_joined(wanted_profile_index, wanted_career_index, wanted_party_index, clan_tag, account_id)
 
 		local enemy_package_loader = self.level_transition_handler.enemy_package_loader
 
-		enemy_package_loader:client_connected(sender)
+		enemy_package_loader:client_connected(remote_peer)
 	end
 end
 
-NetworkServer.rpc_post_game_notified = function (self, sender, in_post_game)
-	network_printf("Peer %s has sent rpc_post_game_notified", tostring(sender))
+NetworkServer.rpc_post_game_notified = function (self, channel_id, in_post_game)
+	local remote_peer = CHANNEL_TO_PEER_ID[channel_id]
 
-	local peer_state_machine = self.peer_state_machines[sender]
+	network_printf("Peer %s has sent rpc_post_game_notified", tostring(remote_peer))
+
+	local peer_state_machine = self.peer_state_machines[remote_peer]
 
 	if not peer_state_machine or not peer_state_machine:has_function("rpc_post_game_notified") then
-		network_printf("RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_post_game_notified")
-		RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)
+		network_printf("RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_join)", "rpc_post_game_notified")
+		RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_join)
 	else
 		peer_state_machine.rpc_post_game_notified(in_post_game)
 	end
 end
 
-NetworkServer.rpc_level_loaded = function (self, sender, level_id)
+NetworkServer.rpc_level_loaded = function (self, channel_id, level_id)
 	print("### Sending rpc_level_loaded")
 
-	local peer_state_machine = self.peer_state_machines[sender]
+	local remote_peer = CHANNEL_TO_PEER_ID[channel_id]
+	local peer_state_machine = self.peer_state_machines[remote_peer]
 
 	if not peer_state_machine then
-		if sender ~= self.my_peer_id then
-			network_printf("RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_enter_game)", "rpc_level_loaded")
-			RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_enter_game)
+		if remote_peer ~= self.my_peer_id then
+			network_printf("RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_enter_game)", "rpc_level_loaded")
+			RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_enter_game)
 		end
 	else
-		print(string.format("#### Has state machine: %s, sender: %s, level_id: %s", peer_state_machine:has_function("rpc_level_loaded"), sender, level_id))
+		print(string.format("#### Has state machine: %s, peer_id: %s, level_id: %s", peer_state_machine:has_function("rpc_level_loaded"), remote_peer, level_id))
 
 		if peer_state_machine:has_function("rpc_level_loaded") then
 			peer_state_machine.rpc_level_loaded(level_id)
@@ -503,12 +524,13 @@ NetworkServer.rpc_level_loaded = function (self, sender, level_id)
 	end
 end
 
-NetworkServer.rpc_want_to_spawn_player = function (self, sender)
-	local peer_state_machine = self.peer_state_machines[sender]
+NetworkServer.rpc_want_to_spawn_player = function (self, channel_id)
+	local remote_peer = CHANNEL_TO_PEER_ID[channel_id]
+	local peer_state_machine = self.peer_state_machines[remote_peer]
 
 	if not peer_state_machine or not peer_state_machine:has_function("rpc_want_to_spawn_player") then
-		network_printf("RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_enter_game)", "rpc_want_to_spawn_player")
-		RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_enter_game)
+		network_printf("RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_enter_game)", "rpc_want_to_spawn_player")
+		RPC.rpc_connection_failed(channel_id, NetworkLookup.connection_fails.no_peer_data_on_enter_game)
 	else
 		peer_state_machine.rpc_want_to_spawn_player()
 	end
@@ -520,51 +542,144 @@ NetworkServer.game_object_sync_done = function (self, peer_id)
 	self.peers_completed_game_object_sync[peer_id] = true
 
 	self.game_network_manager:_hot_join_sync(peer_id)
-	RPC.rpc_set_migration_host(peer_id, self.host_to_migrate_to or "", (self.host_to_migrate_to and true) or false)
+
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+	RPC.rpc_set_migration_host(channel_id, self.host_to_migrate_to or "", (self.host_to_migrate_to and true) or false)
+end
+
+NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id)
+	PEER_ID_TO_CHANNEL[peer_id] = channel_id
+	CHANNEL_TO_PEER_ID[channel_id] = peer_id
+
+	print("GOT approve_channel", channel_id, peer_id, instance_id)
+
+	local joined_peers = self._joined_peers
+	local connections = self._connections
+	local connection = {
+		eac_match_timer = 0,
+		channel_id = channel_id,
+		peer_id = peer_id,
+		channel_state = Network.channel_state(channel_id)
+	}
+
+	if self._eac_server then
+		EACServer.add_peer(self._eac_server, channel_id)
+	end
+
+	connections[peer_id] = connection
+	joined_peers[#joined_peers + 1] = connection
+
+	if DEDICATED_SERVER then
+		local mechanism = Managers.mechanism:game_mechanism()
+
+		if mechanism.get_slot_reservation_handler then
+			local slot_reservation_handler = mechanism:get_slot_reservation_handler()
+
+			slot_reservation_handler:send_slot_update_to_clients()
+		end
+	else
+		local party_manager = Managers.party
+		local has_free_slots = party_manager:any_party_has_free_slots(1)
+
+		if not has_free_slots then
+			print("Game is full, denied access.")
+
+			return false
+		end
+	end
+
+	printf("Client with peer_id %s got APPROVED by server", peer_id)
+	NetworkUtils.announce_chat_peer_joined(peer_id, self.lobby_host)
+
+	return true
+end
+
+NetworkServer.close_channel = function (self, peer_id)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+	if self._eac_server then
+		EACServer.remove_peer(self._eac_server, channel_id)
+	end
+
+	self.lobby_host:close_channel(channel_id)
+
+	self._connections[peer_id] = nil
+	PEER_ID_TO_CHANNEL[peer_id] = nil
+	CHANNEL_TO_PEER_ID[channel_id] = nil
+end
+
+NetworkServer._update_connections = function (self, peer_state_machines)
+	for peer_id, connection in pairs(self._connections) do
+		local state = Network.channel_state(connection.channel_id)
+
+		if state ~= connection.channel_state then
+			printf("CHANNEL_STATE changed: %s -> %s for peer_id: '%s'", connection.channel_state, state, peer_id)
+
+			if state == "connected" then
+				local state_id = NetworkLookup.connection_states[state]
+
+				self.network_transmit:send_rpc_clients_except("rpc_client_connection_state", peer_id, peer_id, state_id)
+			elseif state == "disconnected" then
+				local peer_state_machine = peer_state_machines[peer_id]
+
+				if peer_state_machine and peer_state_machine.current_state ~= PeerStates.Disconnecting and peer_state_machine.current_state ~= PeerStates.Disconnected then
+					local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
+
+					if PLATFORM ~= "win32" then
+						sender = self.lobby_host:user_name(peer_id)
+					end
+
+					local message = string.format(Localize("system_chat_player_left_the_game"), sender)
+					local pop_chat = true
+
+					Managers.chat:add_local_system_message(1, message, pop_chat)
+
+					local enemy_package_loader = self.level_transition_handler.enemy_package_loader
+
+					enemy_package_loader:client_disconnected(peer_id)
+					peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
+
+					local state_id = NetworkLookup.connection_states[state]
+
+					self.network_transmit:send_rpc_clients_except("rpc_client_connection_state", peer_id, peer_id, state_id)
+				end
+			end
+
+			connection.channel_state = state
+		end
+	end
 end
 
 NetworkServer.update = function (self, dt)
 	self._profile_requester:update(dt)
 	self.profile_synchronizer:update()
 
-	local connection_handler = self.connection_handler
 	local peer_state_machines = self.peer_state_machines
-	local new_connections, num_new_connections = connection_handler:update(dt)
 
-	for i = 1, num_new_connections, 1 do
-		local peer_id = new_connections[i]
+	self:_update_connections(peer_state_machines)
 
-		network_printf("New connection detected in NetworkServer from %q", peer_id)
-		NetworkUtils.announce_chat_peer_joined(peer_id, self.lobby_host)
-	end
+	local joined_peers = self._joined_peers
 
-	local lobby_members = self.lobby_host:members()
+	if #joined_peers > 0 then
+		for i = 1, #joined_peers, 1 do
+			local joined = joined_peers[i]
+			local remote_peer_id = joined.peer_id
+			local channel_id = joined.channel_id
 
-	if lobby_members then
-		local members_joined = lobby_members:get_members_joined()
+			network_printf("Peer %s joined server lobby.", remote_peer_id)
+			network_printf("Creating peer info.")
 
-		for i, peer_id in ipairs(members_joined) do
-			if peer_id ~= self.lobby_host:lobby_host() then
-				if peer_state_machines[peer_id] then
-					network_printf("Peer %s reconnected to the server lobby.", peer_id)
-				else
-					network_printf("Peer %s joined server lobby.", peer_id)
+			self.peer_state_machines[remote_peer_id] = PeerStateMachine.create(self, remote_peer_id)
 
-					peer_state_machines[peer_id] = PeerStateMachine.create(self, peer_id)
-				end
-			end
+			NetworkUtils.announce_chat_peer_joined(remote_peer_id, self.lobby_host)
+
+			local state_id = 2
+
+			self.network_transmit:send_rpc_clients_except("rpc_client_connection_state", remote_peer_id, remote_peer_id, state_id)
 		end
-	end
 
-	local broken_connections, broken_connections_n = connection_handler:get_broken_connections()
-
-	for i = 1, broken_connections_n, 1 do
-		local peer_id = broken_connections[i]
-
-		network_printf("Broken connection to peer id %s discovered in connection handler. Server selecting peer to disconnect.", peer_id)
-		self:_handle_peer_left_game(peer_id)
-
-		broken_connections[i] = nil
+		table.clear(joined_peers)
 	end
 
 	local game_session = self.game_network_manager and self.game_network_manager:game()
@@ -596,7 +711,7 @@ NetworkServer.update = function (self, dt)
 			end
 		end
 
-		if peers_ingame < 2 then
+		if Managers.mechanism:current_mechanism_name() == "deus" then
 			host_to_migrate_to = nil
 		end
 
@@ -642,21 +757,40 @@ NetworkServer.update = function (self, dt)
 				self._eac_authorized_written_to_lobby_data = eac_authorized_string
 			end
 		end
+
+		if self._using_gamelift then
+			if GameliftServer.should_terminate() then
+				GameliftServer.process_ending()
+				Application.quit()
+			elseif not self._gamelift_session_id and GameliftServer.can_get_session() then
+				local session_id, ip_addr, port, name, matchmaking = GameliftServer.get_session()
+
+				print("Got gamelift session data (NS):", session_id, ip_addr, port, name, matchmaking)
+				Crashify.print_exception("[AWSDedicatedServer]", string.format("Got gamelift session data (NS): %s", name))
+				self.lobby_host:set_server_name(name)
+				GameliftServer.activate_game_session()
+
+				self._gamelift_session_id = session_id
+			end
+		end
 	end
 
 	if self.lobby_host:is_joined() then
 		local lobby_members = self.lobby_host:members()
-		local members = lobby_members:get_members()
-		local num_members = #members
-		local lobby_data = self.lobby_host:get_stored_lobby_data()
 
-		if lobby_data and num_members ~= lobby_data.num_players then
-			printf("[NetworkServer] Changing num_players from %s to %s", tostring(lobby_data.num_players), tostring(num_members))
-			cprintf("Players: %d", num_members)
+		if lobby_members then
+			local members = lobby_members:get_members()
+			local num_members = #members
+			local lobby_data = self.lobby_host:get_stored_lobby_data()
 
-			lobby_data.num_players = num_members
+			if lobby_data and num_members ~= lobby_data.num_players then
+				printf("[NetworkServer] Changing num_players from %s to %s", tostring(lobby_data.num_players), tostring(num_members))
+				cprintf("Players: %d", num_members)
 
-			self.lobby_host:set_lobby_data(lobby_data)
+				lobby_data.num_players = num_members
+
+				self.lobby_host:set_lobby_data(lobby_data)
+			end
 		end
 	end
 
@@ -687,45 +821,15 @@ NetworkServer._handle_peer_left_game = function (self, peer_id)
 	end
 end
 
-NetworkServer._add_peer_to_eac = function (self, peer_id)
-	if self._eac_server == nil then
-		return
-	end
-
-	EACServer.add_peer(self._eac_server, peer_id)
-
-	self._eac_peer_ids[peer_id] = {
-		eac_match_timer = 0,
-		updated = false
-	}
-end
-
-NetworkServer._remove_peer_from_eac = function (self, peer_id)
-	if self._eac_server == nil then
-		return
-	end
-
-	EACServer.remove_peer(self._eac_server, peer_id)
-
-	self._eac_peer_ids[peer_id] = nil
-end
-
 NetworkServer._update_eac_match = function (self, dt)
-	local eac_peer_ids = self._eac_peer_ids
-
-	for peer_id, data in pairs(eac_peer_ids) do
-		data.update = false
-	end
-
 	local peer_state_machines = self.peer_state_machines
 
 	for peer_id, peer_state_machine in pairs(peer_state_machines) do
 		local state_name = peer_state_machine.current_state.state_name
 		local bad_state = state_name == "Disconnecting" or state_name == "Disconnected"
-		local data = eac_peer_ids[peer_id]
+		local data = self._connections[peer_id]
 
 		if data and not bad_state then
-			data.update = true
 			data.eac_match_timer = math.max(0, data.eac_match_timer - dt)
 
 			if data.eac_match_timer == 0 then
@@ -742,20 +846,19 @@ NetworkServer._update_eac_match = function (self, dt)
 			end
 		end
 	end
-
-	for peer_id, data in pairs(eac_peer_ids) do
-		if not data.update then
-			self:_remove_peer_from_eac(peer_id)
-		end
-	end
 end
 
 NetworkServer.eac_check_peer = function (self, peer_id)
 	local server_state, peer_state = nil
 
 	if DEDICATED_SERVER then
-		server_state = EACServer.state(self._eac_server, self.my_peer_id)
-		peer_state = EACServer.state(self._eac_server, peer_id)
+		if BUILD == "release" then
+			server_state = "trusted"
+			peer_state = "trusted"
+		else
+			server_state = EACServer.state(self._eac_server, self.my_peer_id)
+			peer_state = EACServer.state(self._eac_server, peer_id)
+		end
 	else
 		local host = self.lobby_host
 		server_state = EAC.state()
@@ -791,7 +894,7 @@ NetworkServer._draw_peer_states = function (self)
 	if DEDICATED_SERVER then
 		local result = ""
 		local pattern = "%-16s|%s\n"
-		result = result .. string.format(pattern, "Peer", "State")
+		result = result .. string.format(pattern, "Peer", "Peer-state")
 
 		for peer, sm in pairs(self.peer_state_machines) do
 			result = result .. string.format(pattern, peer, tostring(sm.current_state))
@@ -832,7 +935,7 @@ NetworkServer._draw_peer_states = function (self)
 
 	x = x + peer_width
 
-	Gui.text(self._gui, "State", font, text_height, font_material, Vector3(x, y, 0), text_color)
+	Gui.text(self._gui, "Peer-state", font, text_height, font_material, Vector3(x, y, 0), text_color)
 
 	y = y - 4
 
@@ -853,10 +956,12 @@ NetworkServer._draw_peer_states = function (self)
 	end
 end
 
-NetworkServer.rpc_clear_peer_state = function (self, sender)
-	print(string.format("### CLEARING PEER STATE FOR %s", tostring(sender)))
+NetworkServer.rpc_clear_peer_state = function (self, channel_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-	local state_machine = self.peer_state_machines[sender]
+	print(string.format("### CLEARING PEER STATE FOR %s", tostring(peer_id)))
+
+	local state_machine = self.peer_state_machines[peer_id]
 
 	if state_machine == nil then
 		local reason = nil
@@ -867,14 +972,14 @@ NetworkServer.rpc_clear_peer_state = function (self, sender)
 			reason = NetworkLookup.connection_fails.unknown_error
 		end
 
-		RPC.rpc_connection_failed(sender, reason)
+		RPC.rpc_connection_failed(channel_id, reason)
 
 		return
 	end
 
 	state_machine.state_data:change_state(PeerStates.Connecting)
 
-	local players_by_peer = Managers.player:players_at_peer(sender)
+	local players_by_peer = Managers.player:players_at_peer(peer_id)
 
 	if not players_by_peer then
 		return
@@ -882,10 +987,10 @@ NetworkServer.rpc_clear_peer_state = function (self, sender)
 
 	for _, player in pairs(players_by_peer) do
 		local local_player_id = player:local_player_id()
-		local profile_index, career_index = self.profile_synchronizer:profile_by_peer(sender, local_player_id)
+		local profile_index, career_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 
 		if profile_index then
-			self.profile_synchronizer:unassign_peer_to_profile(sender, local_player_id, profile_index, career_index)
+			self.profile_synchronizer:unassign_peer_to_profile(peer_id, local_player_id, profile_index, career_index)
 		end
 	end
 end
@@ -964,6 +1069,22 @@ NetworkServer.are_all_peers_ingame = function (self, ignore_map)
 	return true
 end
 
+NetworkServer.all_approved_peers_are_connected = function (self, ignore_map)
+	ignore_map = ignore_map or dummy_ignore_map
+	local peer_state_machines = self.peer_state_machines
+
+	for peer_id, peer_state_machine in pairs(peer_state_machines) do
+		local current_state = peer_state_machine.current_state
+		local state_name = current_state.state_name
+
+		if ignore_map[peer_id] == nil and not current_state.approved_for_joining then
+			return false
+		end
+	end
+
+	return true
+end
+
 NetworkServer.disconnect_joining_peers = function (self)
 	local peer_state_machines = self.peer_state_machines
 
@@ -1029,6 +1150,19 @@ NetworkServer.waiting_to_enter_game = function (self)
 	end
 
 	return false
+end
+
+NetworkServer.add_connected_peer = function (self, peer_id)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+	self._connected_peers[peer_id] = channel_id
+end
+
+NetworkServer.remove_connected_peer = function (self, peer_id)
+	self._connected_peers[peer_id] = nil
+end
+
+NetworkServer.connected_peers = function (self)
+	return self._connected_peers
 end
 
 NetworkServer.disconnected = function (self)

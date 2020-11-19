@@ -134,8 +134,6 @@ GamePadAbilityUI._set_ability_cooldown_state = function (self, cooldown_fraction
 		style.ability_bar_highlight.color[1] = 0
 		style.input_text.text_color[1] = 0
 		style.input_text_shadow.text_color[1] = 0
-		style.input_texture_left_shoulder.color[1] = 0
-		style.input_texture_right_shoulder.color[1] = 0
 	end
 
 	widget.content.on_cooldown = on_cooldown
@@ -195,9 +193,10 @@ GamePadAbilityUI._handle_gamepad_activity = function (self)
 end
 
 GamePadAbilityUI._handle_gamepad = function (self)
+	local active_career_skill = self:_handle_active_ability()
 	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM == "xb1"
 
-	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" then
+	if ((not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always") or active_career_skill then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end
@@ -239,6 +238,24 @@ GamePadAbilityUI.update = function (self, dt, t)
 		self:_handle_resolution_modified()
 		self:draw(dt)
 	end
+end
+
+GamePadAbilityUI._handle_active_ability = function (self)
+	local player = Managers.player:local_player()
+
+	if not player then
+		return false
+	end
+
+	local player_unit = player.player_unit
+
+	if not Unit.alive(player_unit) then
+		return false
+	end
+
+	local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
+
+	return inventory_ext and inventory_ext:get_wielded_slot_name() == "slot_career_skill_weapon"
 end
 
 GamePadAbilityUI._handle_resolution_modified = function (self)
@@ -401,9 +418,7 @@ GamePadAbilityUI._update_ability_animations = function (self, dt)
 
 	local widget = self._widgets_by_name.ability
 	local style = widget.style
-	local speed_multiplier = 5
-	local time_since_launch = Application.time_since_launch()
-	local pulse_progress = 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
+	local pulse_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 	local effect_alpha = math.min(style.ability_effect_left.color[1] + dt * 200, 255)
 	style.ability_effect_left.color[1] = effect_alpha
 	style.ability_effect_top_left.color[1] = effect_alpha
@@ -411,10 +426,6 @@ GamePadAbilityUI._update_ability_animations = function (self, dt)
 	style.ability_effect_top_right.color[1] = effect_alpha
 	style.input_text.text_color[1] = 100 + pulse_progress * 155
 	style.input_text_shadow.text_color[1] = 100 + pulse_progress * 155
-	style.input_texture_left_shoulder.color[1] = 100 + pulse_progress * 155
-	style.input_texture_right_shoulder.color[1] = 100 + pulse_progress * 155
-	style.input_texture_right_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
-	style.input_texture_left_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
 	style.ability_bar_highlight.color[1] = 100 + pulse_progress * 155
 
 	self:_set_widget_dirty(widget)

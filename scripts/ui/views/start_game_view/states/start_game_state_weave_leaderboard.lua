@@ -13,14 +13,6 @@ local LIST_MAX_WIDTH = 800
 local LIST_PRESENTATION_AMOUNT = 12
 local LIST_FADE_IN_DURATION = 0.3
 local MIN_TIME_BETWEEN_LEADERBOARD_REQUESTS = 1.5
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local localized_reward_tier_strings = {
 	Localize("menu_weave_leaderboard_tier_3_title"),
 	Localize("menu_weave_leaderboard_tier_2_title"),
@@ -156,7 +148,7 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 		self:_initialize_stepper(3, Localize("menu_weave_leaderboard_filter_season"), season_data, #season_data)
 	end
 
-	self:_restart_poll_queue(Application.time_since_launch())
+	self:_restart_poll_queue(Managers.time:time("ui"))
 	self:_update_leaderboard_presentation()
 	Managers.input:enable_gamepad_cursor()
 	self:play_sound("menu_leaderboard_open")
@@ -287,7 +279,7 @@ StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
 	end
 
 	self._polling_callback = callback(self, "_cb_cashe_list_data", filter_value, leaderboard_type, stat_name, season_id)
-	local time = Application.time_since_launch()
+	local time = Managers.time:time("ui")
 	self._min_poll_time = time + MIN_TIME_BETWEEN_LEADERBOARD_REQUESTS
 end
 
@@ -407,7 +399,7 @@ StartGameStateWeaveLeaderboard._cb_cashe_list_data = function (self, filter_valu
 
 	cashed_list_data[filter_value][leaderboard_type][stat_name] = {
 		list_entries,
-		Application.time_since_launch()
+		Managers.time:time("ui")
 	}
 
 	if leaderboard_type == "global" and filter_value == "personal" then

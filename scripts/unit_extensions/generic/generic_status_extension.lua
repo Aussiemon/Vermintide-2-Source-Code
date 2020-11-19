@@ -367,6 +367,12 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			end
 		elseif self.pack_master_status == "pack_master_released" then
 			self.pack_master_status = nil
+		elseif self.pack_master_status == "pack_master_dragging" then
+			if self.is_server and (not self.pack_master_grabber or not Unit.alive(self.pack_master_grabber)) then
+				StatusUtils.set_grabbed_by_pack_master_network("pack_master_unhooked", unit, false, nil)
+			end
+		elseif self.pack_master_status == "pack_master_hoisting" and self.is_server and (not self.pack_master_grabber or not Unit.alive(self.pack_master_grabber)) then
+			StatusUtils.set_grabbed_by_pack_master_network("pack_master_unhooked", unit, false, nil)
 		end
 	end
 
@@ -914,7 +920,7 @@ end
 GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_unit)
 	local unit = self.unit
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
-	pounced_down = pounced_down and pouncer_unit ~= nil
+	pounced_down = pounced_down and pouncer_unit ~= nil and Unit.alive(pouncer_unit)
 	self.pounced_down = pounced_down
 
 	if pounced_down then
@@ -997,6 +1003,8 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 
 	if knocked_down then
+		StatisticsUtil.register_knockdown(unit, health_extension, nil, is_server)
+
 		local dialogue_event = "knocked_down"
 		local num_times_knocked_down = self._num_times_knocked_down
 
@@ -1519,8 +1527,13 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	self.pack_master_status = grabbed_status
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 	local outline_grabbed_unit = grabbed_status ~= "pack_master_hanging"
+	local player_manager = Managers.player
+	local grabber_player = player_manager:unit_owner(grabber_unit)
+	local local_player = player_manager:local_player()
 
-	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled(), grabber_unit, outline_grabbed_unit)
+	if local_player ~= grabber_player then
+		self:set_outline_incapacitated(not self:is_dead() and self:is_disabled(), grabber_unit, outline_grabbed_unit)
+	end
 
 	if grabbed_status == "pack_master_pulling" then
 		if not is_grabbed then
@@ -1569,6 +1582,15 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		if previous_status == "pack_master_pulling" then
 			locomotion:set_disabled(false, nil, nil, true)
 		else
+			local equipment = self.inventory_extension:equipment()
+			local weapon_unit = equipment.right_hand_wielded_unit_3p
+
+			if weapon_unit and Unit.is_a(weapon_unit, "units/weapons/player/wpn_packmaster_claw/wpn_packmaster_claw_3p") then
+				Unit.animation_event(weapon_unit, "drag_walk")
+			else
+				Crashify.print_exception("Packmaster", "Wrong weapon equipped when entering pack_master_dragging state")
+			end
+
 			Unit.animation_event(grabber_unit, "drag_walk")
 			Unit.animation_event(unit, "move_bwd")
 		end
@@ -1589,12 +1611,31 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 			locomotion:set_wanted_velocity(Vector3.zero())
 		end
 
+		local breed = Unit.get_data(grabber_unit, "breed")
+
+		if breed and breed.is_player then
+			local new_pos = PactswornUtils.get_hoist_position(unit, grabber_unit)
+
+			locomotion:teleport_to(new_pos, nil)
+		end
+
 		local dir = Vector3.normalize(POSITION_LOOKUP[unit] - POSITION_LOOKUP[grabber_unit])
 
+		Vector3.set_z(dir, 0)
 		Unit.set_local_rotation(unit, 0, Quaternion.look(dir, Vector3.up()))
 		Unit.animation_event(unit, "packmaster_hang_start")
 		locomotion:set_disabled(true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
-		Unit.animation_event(grabber_unit, "attack_grab_hang")
+
+		local target_unit_name = SPProfiles[self.profile_id].unit_name
+		local inventory_extension = self.inventory_extension
+		local equipment = inventory_extension:equipment()
+		local weapon_unit = equipment.right_hand_wielded_unit_3p
+		local slot_name = inventory_extension:get_wielded_slot_name()
+
+		if slot_name == "slot_packmaster_claw" then
+			Unit.animation_event(weapon_unit, "attack_grab_hang_" .. target_unit_name)
+			Unit.animation_event(grabber_unit, "attack_grab_hang_" .. target_unit_name)
+		end
 
 		self.pack_master_hoisted = true
 	elseif grabbed_status == "pack_master_hanging" then
@@ -1750,6 +1791,10 @@ GenericStatusExtension.is_valid_vortex_target = function (self)
 	return not self:is_dead() and not self:is_pounced_down() and not self:is_knocked_down() and not self:is_grabbed_by_pack_master() and not self:get_is_ledge_hanging() and not self:is_hanging_from_hook() and not self:is_ready_for_assisted_respawn() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn() and not self:is_in_end_zone()
 end
 
+GenericStatusExtension.is_valid_corruptor_target = function (self)
+	return not self:is_dead() and not self:is_pounced_down() and not self:is_knocked_down() and not self:is_grabbed_by_pack_master() and not self:get_is_ledge_hanging() and not self:is_hanging_from_hook() and not self:is_ready_for_assisted_respawn() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn() and not self:is_in_end_zone()
+end
+
 GenericStatusExtension.is_ogre_target = function (self)
 	return not self:is_dead() and not self:is_pounced_down() and not self:is_grabbed_by_pack_master() and not self:is_hanging_from_hook() and not self:is_using_transport() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn()
 end
@@ -1806,6 +1851,12 @@ GenericStatusExtension.is_permanent_heal = function (self, heal_type)
 
 		if disable_permanent_heal then
 			return false
+		end
+
+		local temp_to_permanent_health = buff_extension:has_buff_perk("temp_to_permanent_health")
+
+		if temp_to_permanent_health then
+			return true
 		end
 	end
 
@@ -1911,12 +1962,12 @@ GenericStatusExtension.current_move_speed_multiplier = function (self)
 	return math.lerp(self.move_speed_multiplier, 1, lerp_t)
 end
 
-GenericStatusExtension.set_invisible = function (self, invisible)
+GenericStatusExtension.set_invisible = function (self, invisible, force_third_person)
 	self.invisible = invisible
 	local unit = self.unit
 	local flow_event_name = nil
 	local player = self.player
-	local is_third_person = self.is_husk or player.bot_player
+	local is_third_person = force_third_person or self.is_husk or player.bot_player
 	local local_player = Managers.player:local_player()
 	local side_manager = Managers.state.side
 	local unit_side = side_manager.side_by_unit[unit]
@@ -2093,9 +2144,10 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 	local lookup = NetworkLookup.statuses
 	local network_manager = Managers.state.network
 	local self_game_object_id = network_manager:unit_game_object_id(self.unit)
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
 	local flavour_unit_game_object_id = (self.ready_for_assisted_respawn and network_manager:unit_game_object_id(self.assisted_respawn_flavour_unit)) or 0
 
-	RPC.rpc_hot_join_sync_health_status(sender, self_game_object_id, self:max_wounds_network_safe(), self.ready_for_assisted_respawn, flavour_unit_game_object_id)
+	RPC.rpc_hot_join_sync_health_status(channel_id, self_game_object_id, self:max_wounds_network_safe(), self.ready_for_assisted_respawn, flavour_unit_game_object_id)
 
 	if self.pack_master_status then
 		local t = Managers.time:time("game")
@@ -2106,63 +2158,63 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		if self.pack_master_status == "pack_master_dropping" then
 			local time_left = math.clamp(t - self.release_falling_time, 0, 7)
 
-			RPC.rpc_hooked_sync(sender, pack_master_status_id, self_game_object_id, time_left)
+			RPC.rpc_hooked_sync(channel_id, pack_master_status_id, self_game_object_id, time_left)
 		elseif self.pack_master_status == "pack_master_unhooked" then
 			local time_left = math.clamp(t - self.release_unhook_time, 0, 7)
 
-			RPC.rpc_hooked_sync(sender, pack_master_status_id, self_game_object_id, time_left)
+			RPC.rpc_hooked_sync(channel_id, pack_master_status_id, self_game_object_id, time_left)
 		end
 
-		RPC.rpc_status_change_bool(sender, pack_master_status_id, is_grabbed, self_game_object_id, grabber_go_id)
+		RPC.rpc_status_change_bool(channel_id, pack_master_status_id, is_grabbed, self_game_object_id, grabber_go_id)
 	end
 
 	local ledge_hanging_unit_game_object_id = (self.is_ledge_hanging and network_manager:unit_game_object_id(self.current_ledge_hanging_unit)) or 0
 	local pouncer_unit_game_object_id = (self.pounced_down and network_manager:unit_game_object_id(self.pouncer_unit)) or 0
 	local current_ladder_unit_game_object_id = (self.on_ladder and network_manager:unit_game_object_id(self.current_ladder_unit)) or 0
 
-	RPC.rpc_status_change_bool(sender, lookup.pounced_down, self.pounced_down, self_game_object_id, pouncer_unit_game_object_id)
-	RPC.rpc_status_change_bool(sender, lookup.pushed, self.pushed, self_game_object_id, 0)
-	RPC.rpc_status_change_bool(sender, lookup.charged, self.charged, self_game_object_id, 0)
-	RPC.rpc_status_change_bool(sender, lookup.dead, self.dead, self_game_object_id, 0)
+	RPC.rpc_status_change_bool(channel_id, lookup.pounced_down, self.pounced_down, self_game_object_id, pouncer_unit_game_object_id)
+	RPC.rpc_status_change_bool(channel_id, lookup.pushed, self.pushed, self_game_object_id, 0)
+	RPC.rpc_status_change_bool(channel_id, lookup.charged, self.charged, self_game_object_id, 0)
+	RPC.rpc_status_change_bool(channel_id, lookup.dead, self.dead, self_game_object_id, 0)
 
 	local tentacle_grabber_go_id = network_manager:unit_game_object_id(self.grabbed_by_tentacle_unit) or NetworkConstants.invalid_game_object_id
 
-	RPC.rpc_status_change_bool(sender, lookup.grabbed_by_tentacle, self.grabbed_by_tentacle, self_game_object_id, tentacle_grabber_go_id)
+	RPC.rpc_status_change_bool(channel_id, lookup.grabbed_by_tentacle, self.grabbed_by_tentacle, self_game_object_id, tentacle_grabber_go_id)
 
 	if self.grabbed_by_tentacle_status and self.grabbed_by_tentacle_status ~= "grabbed" then
 		local grabbed_substatus_id = NetworkLookup.grabbed_by_tentacle[self.grabbed_by_tentacle_status]
 
-		RPC.rpc_status_change_int(sender, lookup.grabbed_by_tentacle, grabbed_substatus_id, self_game_object_id)
+		RPC.rpc_status_change_int(channel_id, lookup.grabbed_by_tentacle, grabbed_substatus_id, self_game_object_id)
 	end
 
 	local chaos_spawn_grabber_go_id = network_manager:unit_game_object_id(self.grabbed_by_chaos_spawn_unit) or NetworkConstants.invalid_game_object_id
 
-	RPC.rpc_status_change_bool(sender, lookup.grabbed_by_chaos_spawn, self.grabbed_by_chaos_spawn, self_game_object_id, chaos_spawn_grabber_go_id)
+	RPC.rpc_status_change_bool(channel_id, lookup.grabbed_by_chaos_spawn, self.grabbed_by_chaos_spawn, self_game_object_id, chaos_spawn_grabber_go_id)
 
 	if self.grabbed_by_chaos_spawn_status and self.grabbed_by_chaos_spawn_status ~= "grabbed" then
 		local grabbed_substatus_id = NetworkLookup.grabbed_by_chaos_spawn[self.grabbed_by_chaos_spawn_status]
 
-		RPC.rpc_status_change_int(sender, lookup.grabbed_by_chaos_spawn, grabbed_substatus_id, self_game_object_id)
+		RPC.rpc_status_change_int(channel_id, lookup.grabbed_by_chaos_spawn, grabbed_substatus_id, self_game_object_id)
 	end
 
 	local attacking_unit_id = (self.overpowered and network_manager:unit_game_object_id(self.overpowered_attacking_unit)) or NetworkConstants.invalid_game_object_id
 	local status_int = (self.overpowered and NetworkLookup.overpowered_templates[self.overpowered_template]) or 0
 
-	RPC.rpc_status_change_int_and_unit(sender, lookup.overpowered, status_int, self_game_object_id, attacking_unit_id)
+	RPC.rpc_status_change_int_and_unit(channel_id, lookup.overpowered, status_int, self_game_object_id, attacking_unit_id)
 
 	if self.knocked_down then
 		local knocked_down_status_id = lookup.knocked_down
 
-		RPC.rpc_status_change_bool(sender, knocked_down_status_id, true, self_game_object_id, 0)
+		RPC.rpc_status_change_bool(channel_id, knocked_down_status_id, true, self_game_object_id, 0)
 	end
 
 	local vortex_unit_id = (self.in_vortex and network_manager:unit_game_object_id(self.in_vortex_unit)) or NetworkConstants.invalid_game_object_id
 
-	RPC.rpc_status_change_bool(sender, lookup.in_vortex, self.in_vortex, self_game_object_id, vortex_unit_id)
-	RPC.rpc_status_change_bool(sender, lookup.crouching, self.crouching, self_game_object_id, 0)
-	RPC.rpc_status_change_bool(sender, lookup.pulled_up, self.pulled_up, self_game_object_id, 0)
-	RPC.rpc_status_change_bool(sender, lookup.ladder_climbing, self.on_ladder, self_game_object_id, current_ladder_unit_game_object_id)
-	RPC.rpc_status_change_bool(sender, lookup.ledge_hanging, self.is_ledge_hanging, self_game_object_id, ledge_hanging_unit_game_object_id)
+	RPC.rpc_status_change_bool(channel_id, lookup.in_vortex, self.in_vortex, self_game_object_id, vortex_unit_id)
+	RPC.rpc_status_change_bool(channel_id, lookup.crouching, self.crouching, self_game_object_id, 0)
+	RPC.rpc_status_change_bool(channel_id, lookup.pulled_up, self.pulled_up, self_game_object_id, 0)
+	RPC.rpc_status_change_bool(channel_id, lookup.ladder_climbing, self.on_ladder, self_game_object_id, current_ladder_unit_game_object_id)
+	RPC.rpc_status_change_bool(channel_id, lookup.ledge_hanging, self.is_ledge_hanging, self_game_object_id, ledge_hanging_unit_game_object_id)
 end
 
 GenericStatusExtension.set_in_end_zone = function (self, in_end_zone)
@@ -2185,6 +2237,10 @@ end
 
 GenericStatusExtension.breed_action = function (self)
 	return self._current_action
+end
+
+GenericStatusExtension.should_climb = function (self)
+	return false
 end
 
 return

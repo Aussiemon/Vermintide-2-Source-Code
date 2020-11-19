@@ -1,13 +1,5 @@
 MatchmakingStateFriendClient = class(MatchmakingStateFriendClient)
 MatchmakingStateFriendClient.NAME = "MatchmakingStateFriendClient"
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 MatchmakingStateFriendClient.init = function (self, params)
 	self.matchmaking_manager = params.matchmaking_manager
@@ -56,7 +48,7 @@ MatchmakingStateFriendClient.get_transition = function (self)
 	end
 end
 
-MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = function (self, sender, client_cookie, host_cookie, ip_address)
+MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = function (self, channel_id, client_cookie, host_cookie, ip_address)
 	if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end

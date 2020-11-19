@@ -1,17 +1,4 @@
-local definitions = local_require("scripts/ui/views/level_end/states/definitions/end_view_state_summary_definitions")
-local widget_definitions = definitions.widgets
-local summary_entry_widget_definitions = definitions.summary_entry_widgets
-local scenegraph_definition = definitions.scenegraph_definition
-local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 EndViewStateSummary = class(EndViewStateSummary)
 EndViewStateSummary.NAME = "EndViewStateSummary"
 EndViewStateSummary.CAN_SPEED_UP = true
@@ -87,8 +74,18 @@ EndViewStateSummary.exit_done = function (self)
 	return self._exit_started and self._animations.on_enter == nil
 end
 
+EndViewStateSummary._get_definitions = function (self)
+	return local_require("scripts/ui/views/level_end/states/definitions/end_view_state_summary_definitions")
+end
+
 EndViewStateSummary.create_ui_elements = function (self, params)
+	local definitions = self:_get_definitions()
+	local widget_definitions = definitions.widgets
+	local summary_entry_widget_definitions = definitions.summary_entry_widgets
+	local scenegraph_definition = definitions.scenegraph_definition
+	local animation_definitions = definitions.animation_definitions
 	DO_RELOAD = false
+	self._scenegraph_definition = scenegraph_definition
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
@@ -267,7 +264,7 @@ EndViewStateSummary._start_transition_animation = function (self, key, animation
 		render_settings = self.render_settings
 	}
 	local widgets = {}
-	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	local anim_id = self.ui_animator:start_animation(animation_name, widgets, self._scenegraph_definition, params)
 	self._animations[key] = anim_id
 end
 
@@ -277,7 +274,7 @@ EndViewStateSummary._start_animation = function (self, key, animation_name)
 		render_settings = self.render_settings
 	}
 	local widgets = self._widgets_by_name
-	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	local anim_id = self.ui_animator:start_animation(animation_name, widgets, self._scenegraph_definition, params)
 	self._animations[key] = anim_id
 end
 
@@ -367,13 +364,13 @@ EndViewStateSummary._animate_summary_entries = function (self, dt)
 	for index, entry in ipairs(summary_entries) do
 		if not entry.animation_completed then
 			if not self.summary_entry_enter_anim_id then
-				self.summary_entry_enter_anim_id = self.ui_animator:start_animation(enter_animation_name, self._widgets_by_name, scenegraph_definition, entry)
+				self.summary_entry_enter_anim_id = self.ui_animator:start_animation(enter_animation_name, self._widgets_by_name, self._scenegraph_definition, entry)
 			elseif ui_animator:is_animation_completed(self.summary_entry_enter_anim_id) then
 				ui_animator:stop_animation(self.summary_entry_enter_anim_id)
 
 				self.summary_entry_enter_anim_id = nil
 				entry.animation_completed = true
-				self.total_experience_count_anim_id = self.ui_animator:start_animation("total_experience_increase", self._widgets_by_name, scenegraph_definition, entry)
+				self.total_experience_count_anim_id = self.ui_animator:start_animation("total_experience_increase", self._widgets_by_name, self._scenegraph_definition, entry)
 			end
 
 			animations_completed = false
@@ -507,7 +504,7 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 
 		self:_play_sound("play_gui_mission_summary_experience_bar_end")
 
-		self.level_up_anim_id = self.ui_animator:start_animation("level_up", self._widgets_by_name, scenegraph_definition, {
+		self.level_up_anim_id = self.ui_animator:start_animation("level_up", self._widgets_by_name, self._scenegraph_definition, {
 			wwise_world = self.wwise_world
 		})
 	end

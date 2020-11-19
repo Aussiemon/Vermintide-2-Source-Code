@@ -31,7 +31,7 @@ ChaosTrollHealthExtension.current_max_health_percent = function (self)
 	return self.health / self.original_health
 end
 
-ChaosTrollHealthExtension.hot_join_sync = function (self, sender)
+ChaosTrollHealthExtension.hot_join_sync = function (self, peer_id)
 	local go_id = self._game_object_id or Managers.state.unit_storage:go_id(self.unit)
 
 	if go_id then
@@ -40,10 +40,10 @@ ChaosTrollHealthExtension.hot_join_sync = function (self, sender)
 		local is_level_unit = false
 		local set_max_health = true
 
-		self.network_transmit:send_rpc("rpc_sync_damage_taken", sender, go_id, is_level_unit, set_max_health, health, state)
+		self.network_transmit:send_rpc("rpc_sync_damage_taken", peer_id, go_id, is_level_unit, set_max_health, health, state)
 	end
 
-	ChaosTrollHealthExtension.super.hot_join_sync(self, sender)
+	ChaosTrollHealthExtension.super.hot_join_sync(self, peer_id)
 end
 
 ChaosTrollHealthExtension.update_regen_effect = function (self, t, dt, regen_pulse_interval, intensity)

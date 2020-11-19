@@ -868,14 +868,6 @@ AnimationCallbackTemplates.server.anim_cb_chew_attack_finished = function (unit,
 	blackboard.anim_cb_chew_attack_finished = true
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local files_names = dlc.animation_callback_template_files
-
-	if files_names then
-		for _, file_name in pairs(files_names) do
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("animation_callback_template_files")
 
 return

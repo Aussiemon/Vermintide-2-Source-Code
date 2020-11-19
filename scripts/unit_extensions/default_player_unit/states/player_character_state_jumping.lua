@@ -58,14 +58,20 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 	locomotion_extension:set_forced_velocity(velocity_jump)
 	locomotion_extension:set_wanted_velocity(velocity_jump)
 
+	local move_anim = nil
+	local item_template = inventory_extension:get_wielded_slot_item_template()
+	self._play_fp_anim = item_template and item_template.jump_anim_enabled_1p
+
 	if CharacterStateHelper.has_move_input(input_extension) then
-		local move_anim = "jump_fwd"
-
-		CharacterStateHelper.play_animation_event(unit, move_anim)
+		move_anim = "jump_fwd"
 	else
-		local move_anim = "jump_idle"
+		move_anim = "jump_idle"
+	end
 
-		CharacterStateHelper.play_animation_event(unit, move_anim)
+	CharacterStateHelper.play_animation_event(unit, move_anim)
+
+	if self._play_fp_anim then
+		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim)
 	end
 
 	first_person_extension:play_camera_effect_sequence("jump", t)
@@ -98,6 +104,10 @@ PlayerCharacterStateJumping.on_exit = function (self, unit, input, dt, context, 
 	if next_state and next_state ~= "falling" and Managers.state.network:game() then
 		CharacterStateHelper.play_animation_event(unit, "land_still")
 		CharacterStateHelper.play_animation_event(unit, "to_onground")
+
+		if self._play_fp_anim then
+			CharacterStateHelper.play_animation_event_first_person(self.first_person_extension, "to_onground")
+		end
 	end
 end
 

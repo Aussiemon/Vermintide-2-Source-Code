@@ -716,7 +716,7 @@ AIInterestPointSystem.api_release_claim = function (self, request_id)
 	self.requests[request_id] = nil
 end
 
-AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender, go_id, is_level_unit, percent_claimed)
+AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, channel_id, go_id, is_level_unit, percent_claimed)
 	local unit = self.network_manager:game_object_or_level_unit(go_id, is_level_unit)
 
 	if unit == nil then

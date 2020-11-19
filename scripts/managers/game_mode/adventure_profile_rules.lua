@@ -23,10 +23,11 @@ AdventureProfileRules._profile_available = function (self, profile_index, career
 	local owners = self._profile_synchronizer:owners(profile_index)
 
 	for _, owner_table in ipairs(owners) do
-		local peer_id = owner_table.peer_id
-		local local_player_id = owner_table.local_player_id
+		if owner_table.peer_id == peer_id and owner_table.local_player_id == local_player_id then
+			return true
+		end
 
-		if not self:_owner_is_bot(peer_id, local_player_id) then
+		if not self:_owner_is_bot(owner_table.peer_id, owner_table.local_player_id) then
 			return false
 		end
 	end
@@ -106,7 +107,13 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 			new_career_index = 1
 		end
 
-		profile_synchronizer:select_profile(peer_id, local_player_id, new_profile_index, new_career_index)
+		local is_bot = false
+
+		profile_synchronizer:select_profile(peer_id, local_player_id, new_profile_index, new_career_index, is_bot)
+	else
+		local status = Managers.party:get_player_status(peer_id, local_player_id)
+		status.profile_index = current_profile_index
+		status.career_index = current_career_index
 	end
 end
 

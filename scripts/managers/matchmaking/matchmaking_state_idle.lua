@@ -1,8 +1,9 @@
 MatchmakingStateIdle = class(MatchmakingStateIdle)
 MatchmakingStateIdle.NAME = "MatchmakingStateIdle"
 
-MatchmakingStateIdle.init = function (self, params)
+MatchmakingStateIdle.init = function (self, params, reason)
 	self.lobby = params.lobby
+	self.reason = reason
 end
 
 MatchmakingStateIdle.destroy = function (self)
@@ -14,7 +15,7 @@ MatchmakingStateIdle.on_enter = function (self, state_context)
 end
 
 MatchmakingStateIdle.on_exit = function (self)
-	return
+	self.reason = nil
 end
 
 MatchmakingStateIdle.update = function (self, dt, t)

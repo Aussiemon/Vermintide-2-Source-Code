@@ -18,7 +18,7 @@ HeroSpawnerHandler.spawn_hero_request = function (self, player, hero_name)
 		return false
 	end
 
-	self.peer_id = Network:peer_id()
+	self.peer_id = Network.peer_id()
 	self.player = player
 	self.hero_name = hero_name
 	self.hero_index = FindProfileIndex(hero_name)
@@ -109,7 +109,7 @@ HeroSpawnerHandler.query_result = function (self, request_id)
 	return self.result
 end
 
-HeroSpawnerHandler.rpc_to_client_spawn_player = function (self, sender, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn)
+HeroSpawnerHandler.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn)
 	if self.hero_spawner_faded_in then
 		Managers.transition:fade_out(1)
 

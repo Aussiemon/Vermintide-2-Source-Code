@@ -1,3 +1,7 @@
+local function count_bosses_alive()
+	return #Managers.state.conflict:alive_bosses()
+end
+
 GenericTerrorEvents = {
 	boss_event_rat_ogre = {
 		{
@@ -191,5 +195,7 @@ GenericTerrorEvents = {
 		}
 	}
 }
+
+DLCUtils.require_list("generic_terror_event_files")
 
 return

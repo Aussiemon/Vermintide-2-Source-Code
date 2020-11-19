@@ -5227,8 +5227,8 @@ UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, reta
 	}
 end
 
-UIWidgets.create_aligned_texture = function (texture, texture_size, horizontal_alignment, vertical_alignment, scenegraph_id, masked, retained, color, layer)
-	return {
+UIWidgets.create_aligned_texture = function (texture, texture_size, horizontal_alignment, vertical_alignment, scenegraph_id, masked, retained, color, layer, offset)
+	slot10 = {
 		element = {
 			passes = {
 				{
@@ -5260,23 +5260,30 @@ UIWidgets.create_aligned_texture = function (texture, texture_size, horizontal_a
 				},
 				masked = masked
 			}
-		},
-		offset = {
+		}
+	}
+
+	if not offset or not offset then
+		slot11 = {
 			0,
 			0,
 			layer or 0
-		},
-		scenegraph_id = scenegraph_id
-	}
+		}
+	end
+
+	slot10.offset = slot11
+	slot10.scenegraph_id = scenegraph_id
+
+	return slot10
 end
 
-UIWidgets.create_simple_centered_texture_amount = function (texture, texture_size, scenegraph_id, amount, masked)
+UIWidgets.create_simple_centered_texture_amount = function (texture, texture_size, scenegraph_id, amount, masked, color)
 	local textures = {}
 	local texture_colors = {}
 
 	for i = 1, amount, 1 do
 		textures[i] = texture
-		texture_colors[i] = {
+		texture_colors[i] = color or {
 			255,
 			255,
 			255,
@@ -5303,7 +5310,7 @@ UIWidgets.create_simple_centered_texture_amount = function (texture, texture_siz
 				spacing = 8,
 				texture_size = texture_size,
 				texture_amount = amount,
-				color = {
+				color = color or {
 					255,
 					255,
 					255,

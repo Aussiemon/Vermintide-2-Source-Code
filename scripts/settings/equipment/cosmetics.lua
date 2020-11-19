@@ -2403,6 +2403,15 @@ Cosmetics = {
 	frame_0098 = {
 		icon = "unit_frame_02"
 	},
+	frame_0099 = {
+		icon = "unit_frame_02"
+	},
+	frame_0100 = {
+		icon = "unit_frame_02"
+	},
+	frame_0101 = {
+		icon = "unit_frame_02"
+	},
 	frame_dev = {
 		icon = "unit_frame_02"
 	},
@@ -2576,21 +2585,13 @@ Cosmetics = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local files_names = dlc.cosmetics_files
+DLCUtils.map_list("cosmetics_files", function (file_name)
+	local cosmetics_templates = require(file_name)
 
-	if files_names then
-		for _, file_name in ipairs(files_names) do
-			local cosmetics_templates = require(file_name)
-
-			if cosmetics_templates then
-				for template_name, template in pairs(cosmetics_templates) do
-					Cosmetics[template_name] = template
-				end
-			end
-		end
+	if cosmetics_templates then
+		table.merge(Cosmetics, cosmetics_templates)
 	end
-end
+end)
 
 for name, cosmetic_data in pairs(Cosmetics) do
 	cosmetic_data.name = name

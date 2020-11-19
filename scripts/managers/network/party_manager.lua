@@ -3,14 +3,16 @@ require("scripts/helpers/player_utils")
 PartyManager = class(PartyManager)
 local rpcs = {
 	"rpc_request_join_party",
+	"rpc_reset_party_data",
 	"rpc_peer_assigned_to_party",
 	"rpc_remove_peer_from_party"
 }
 
 PartyManager.init = function (self)
 	self._leader = nil
+	self._hot_join_synced_peers = {}
 
-	self:_reset()
+	self:clear()
 end
 
 PartyManager.destroy = function (self)
@@ -20,6 +22,18 @@ PartyManager.destroy = function (self)
 		World.destroy_gui(world, self._gui)
 
 		self._gui = nil
+	end
+end
+
+PartyManager._free_lobby = function (self)
+	if self._party_lobby_or_data ~= nil then
+		print("/// Party lobby has been freed!")
+
+		if type(self._party_lobby_or_data) == "userdata" then
+			LobbyInternal.leave_lobby(self._party_lobby_or_data)
+		end
+
+		self._party_lobby_or_data = nil
 	end
 end
 
@@ -49,10 +63,31 @@ PartyManager.is_leader = function (self, peer_id)
 	return peer_id == self._leader
 end
 
-PartyManager._reset = function (self)
+PartyManager.has_party_lobby = function (self)
+	return self._party_lobby_or_data ~= nil
+end
+
+PartyManager.store_lobby = function (self, lobby_or_data)
+	print("/// Party lobby has been stored!")
+	self:_free_lobby()
+
+	self._party_lobby_or_data = lobby_or_data
+end
+
+PartyManager.steal_lobby = function (self)
+	print("/// Party lobby has been stolen!")
+
+	local lobby = self._party_lobby_or_data
+	self._party_lobby_or_data = nil
+
+	return lobby
+end
+
+PartyManager.clear = function (self, sync_to_clients)
 	self._player_statuses = {}
 	self._parties = {}
 	self._party_by_name = {}
+	self._num_parties = 0
 	self._undecided_party = self:_register_party({
 		party_id = 0,
 		name = "undecided",
@@ -61,7 +96,26 @@ PartyManager._reset = function (self)
 		tags = {}
 	})
 	self._parties[0] = self._undecided_party
-	self._hot_join_synced_peers = {}
+	self._cleared = true
+
+	if sync_to_clients then
+		self:_send_rpc_to_clients("rpc_reset_party_data")
+	end
+end
+
+PartyManager.gather_party_members = function (self)
+	local members = {}
+	local party = self:get_local_player_party()
+	local occupied_slots = party.occupied_slots
+
+	for slot_id, player_data in ipairs(occupied_slots) do
+		members[#members + 1] = {
+			peer_id = player_data.peer_id,
+			local_player_id = player_data.local_player_id
+		}
+	end
+
+	return members
 end
 
 PartyManager._register_party = function (self, def)
@@ -103,7 +157,14 @@ PartyManager.register_parties = function (self, party_definitions)
 		local party = self:_register_party(def)
 		self._parties[party_id] = party
 		self._party_by_name[party_name] = party
+		self._num_parties = self._num_parties + 1
 	end
+
+	self._cleared = false
+end
+
+PartyManager.cleared = function (self)
+	return self._cleared
 end
 
 PartyManager._create_player_status = function (self, peer_id, local_player_id, is_bot)
@@ -128,6 +189,13 @@ end
 
 PartyManager.register_player = function (self, player, unique_id)
 	local status = self._player_statuses[unique_id]
+
+	if not status then
+		local peer_id = player:network_id()
+		local local_player_id = player:local_player_id()
+		status = self:_create_player_status(peer_id, local_player_id, false)
+	end
+
 	status.player = player
 end
 
@@ -135,6 +203,8 @@ PartyManager.set_selected_profile = function (self, peer_id, local_player_id, pr
 	local status = self:get_player_status(peer_id, local_player_id)
 	status.selected_profile_index = profile_index
 	status.selected_career_index = career_index
+	status.profile_index = profile_index
+	status.career_index = career_index
 end
 
 PartyManager.cleanup_game_mode_data = function (self)
@@ -157,6 +227,10 @@ end
 
 PartyManager.update = function (self, t, dt)
 	return
+end
+
+PartyManager.get_local_player_party = function (self)
+	return self:get_party(self._local_player_party_id)
 end
 
 PartyManager.get_party = function (self, party_id)
@@ -208,8 +282,9 @@ PartyManager.request_join_party = function (self, peer_id, local_player_id, part
 		printf("Sending request join party")
 
 		optional_slot_id = optional_slot_id or NetworkConstants.INVALID_PARTY_SLOT_ID
+		local channel_id = PEER_ID_TO_CHANNEL[self._server_peer_id]
 
-		RPC.rpc_request_join_party(self._server_peer_id, peer_id, local_player_id, party_id, optional_slot_id)
+		RPC.rpc_request_join_party(channel_id, peer_id, local_player_id, party_id, optional_slot_id)
 	end
 end
 
@@ -226,6 +301,16 @@ end
 
 PartyManager.get_party_from_player_id = function (self, peer_id, local_player_id)
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
+	local status = self._player_statuses[unique_id]
+
+	if status then
+		local party_id = status.party_id
+
+		return self._parties[party_id], party_id
+	end
+end
+
+PartyManager.get_party_from_unique_id = function (self, unique_id)
 	local status = self._player_statuses[unique_id]
 
 	if status then
@@ -270,6 +355,10 @@ function update_status_profile_index(player_status)
 	player_status.profile_index = profile_index
 	player_status.career_index = career_index
 	player_status.profile_id = profile_index and SPProfiles[profile_index].display_name
+end
+
+PartyManager.get_num_parties = function (self)
+	return self._num_parties
 end
 
 PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wanted_party_id, optional_slot_id, is_bot)
@@ -326,6 +415,15 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 		Managers.state.event:trigger("on_player_joined_party", peer_id, local_player_id, party_id, slot_id)
 	end
 
+	local player = Managers.player:player(peer_id, local_player_id)
+	local is_local_player = player and player.local_player
+
+	if is_local_player then
+		self._local_player_party_id = party_id
+	end
+
+	Managers.state.event:trigger("player_party_changed", player, is_local_player, old_party_id, party_id)
+
 	return player_status
 end
 
@@ -354,6 +452,12 @@ PartyManager.remove_peer_from_party = function (self, peer_id, local_player_id, 
 
 	player_status.party_id = nil
 	player_status.slot_id = nil
+	local player = Managers.player:player(peer_id, local_player_id)
+	local is_local_player = player and player.local_player
+
+	if is_local_player then
+		self._local_player_party_id = nil
+	end
 
 	if self._is_server then
 		self:_send_rpc_to_clients("rpc_remove_peer_from_party", peer_id, local_player_id, party_id)
@@ -424,7 +528,7 @@ PartyManager._find_first_empty_slot_id = function (self, party)
 	ferror("No empty slot in party %s", party.name)
 end
 
-PartyManager.get_least_filled_party = function (self, ignore_bots)
+PartyManager.get_least_filled_party = function (self, ignore_bots, ignore_spectator_party)
 	local parties = self._parties
 
 	fassert(#parties > 1, "parties has not been initialized yet")
@@ -434,15 +538,18 @@ PartyManager.get_least_filled_party = function (self, ignore_bots)
 
 	for i = 1, #parties, 1 do
 		local party = parties[i]
-		local num_used_slots = party.num_used_slots
 
-		if ignore_bots then
-			num_used_slots = num_used_slots - party.num_bots
-		end
+		if not ignore_spectator_party or party.name ~= "spectators" then
+			local num_used_slots = party.num_used_slots
 
-		if count > num_used_slots then
-			best_party_id = i
-			count = num_used_slots
+			if ignore_bots then
+				num_used_slots = num_used_slots - party.num_bots
+			end
+
+			if count > num_used_slots then
+				best_party_id = i
+				count = num_used_slots
+			end
 		end
 	end
 
@@ -473,6 +580,7 @@ end
 
 PartyManager.hot_join_sync = function (self, peer_id)
 	local parties = self._parties
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 	for party_id = 0, #parties, 1 do
 		local party = parties[party_id]
@@ -485,7 +593,7 @@ PartyManager.hot_join_sync = function (self, peer_id)
 			local is_bot = status.is_bot
 			local slot_id = status.slot_id
 
-			RPC.rpc_peer_assigned_to_party(peer_id, slot_peer_id, slot_local_player_id, party_id, slot_id, is_bot)
+			RPC.rpc_peer_assigned_to_party(channel_id, slot_peer_id, slot_local_player_id, party_id, slot_id, is_bot)
 		end
 	end
 end
@@ -496,7 +604,9 @@ PartyManager._send_rpc_to_clients = function (self, rpc_name, ...)
 
 	for peer_id, synced in pairs(self._hot_join_synced_peers) do
 		if peer_id ~= server_peer_id and synced then
-			rpc(peer_id, ...)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			rpc(channel_id, ...)
 		end
 	end
 end
@@ -511,6 +621,10 @@ PartyManager.network_context_created = function (self, lobby, server_peer_id, ow
 	self._is_server = is_server
 end
 
+PartyManager.parties_by_name = function (self)
+	return self._party_by_name
+end
+
 PartyManager.network_context_destroyed = function (self)
 	print("[PartyManager] network_context_destroyed")
 
@@ -518,8 +632,9 @@ PartyManager.network_context_destroyed = function (self)
 	self._server_peer_id = nil
 	self._peer_id = nil
 	self._is_server = nil
+	self._hot_join_synced_peers = {}
 
-	self:_reset()
+	self:clear()
 end
 
 PartyManager.server_peer_hot_join_synced = function (self, peer_id)
@@ -545,7 +660,7 @@ PartyManager.server_peer_left_session = function (self, peer_id)
 	end
 end
 
-PartyManager.rpc_request_join_party = function (self, sender, peer_id, local_player_id, party_id, optional_slot_id)
+PartyManager.rpc_request_join_party = function (self, channel_id, peer_id, local_player_id, party_id, optional_slot_id)
 	printf("Recieved join party request from %s - %s party_id(%s)", peer_id, local_player_id, party_id)
 
 	if optional_slot_id == NetworkConstants.INVALID_PARTY_SLOT_ID then
@@ -555,14 +670,19 @@ PartyManager.rpc_request_join_party = function (self, sender, peer_id, local_pla
 	self:request_join_party(peer_id, local_player_id, party_id, optional_slot_id)
 end
 
-PartyManager.rpc_peer_assigned_to_party = function (self, sender, peer_id, local_player_id, party_id, slot_id, is_bot)
-	print("PartyManager:rpc_peer_assigned_to_party()", sender, peer_id, local_player_id, party_id, slot_id)
+PartyManager.rpc_peer_assigned_to_party = function (self, channel_id, peer_id, local_player_id, party_id, slot_id, is_bot)
+	print("PartyManager:rpc_peer_assigned_to_party()", channel_id, peer_id, local_player_id, party_id, slot_id)
 	self:assign_peer_to_party(peer_id, local_player_id, party_id, slot_id, is_bot)
 end
 
-PartyManager.rpc_remove_peer_from_party = function (self, sender, peer_id, local_player_id, party_id)
-	print("PartyManager:rpc_remove_peer_from_party()", sender, peer_id, local_player_id, party_id)
+PartyManager.rpc_remove_peer_from_party = function (self, channel_id, peer_id, local_player_id, party_id)
+	print("PartyManager:rpc_remove_peer_from_party()", channel_id, peer_id, local_player_id, party_id)
 	self:remove_peer_from_party(peer_id, local_player_id, party_id)
+end
+
+PartyManager.rpc_reset_party_data = function (self)
+	self:clear()
+	Managers.mechanism:setup_mechanism_parties()
 end
 
 PartyManager._draw_debug = function (self, t)
@@ -662,11 +782,7 @@ PartyManager._draw_debug = function (self, t)
 			local profile_id = status.profile_id
 			local profile_index = status.profile_index
 			local career_index = status.career_index
-			local slot_data = party.slots_data[status.slot_id]
-			local wanted_profile_id = slot_data.wanted_profile_id
-			local wanted_profile_name = SPProfiles[wanted_profile_id] and SPProfiles[wanted_profile_id].display_name
-			local wanted_career_id = slot_data.wanted_career_id
-			local row2_text = string.format("P/C: %s-%s/%s, Picked: %s-%s/%s", tostring(profile_id), tostring(profile_index), tostring(career_index), tostring(wanted_profile_name), tostring(wanted_profile_id), tostring(wanted_career_id))
+			local row2_text = string.format("P/C: %s-%s/%s", tostring(profile_id), tostring(profile_index), tostring(career_index))
 			local info = "-"
 			local player_controlled = "?"
 			local player = status.player
@@ -720,6 +836,22 @@ PartyManager._draw_debug = function (self, t)
 
 		y = y - row_height * 2
 	end
+end
+
+PartyManager.any_party_has_free_slots = function (self, num_slots)
+	num_slots = num_slots or 1
+	local parties = self._parties
+
+	for i = 1, #parties, 1 do
+		local party = parties[i]
+		local num_open_slots = party.num_open_slots + party.num_bots
+
+		if num_slots <= num_open_slots then
+			return true
+		end
+	end
+
+	return false
 end
 
 return

@@ -32,6 +32,7 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 	self.current_action = new_action
 	self._target_index = 1
 	self.state = "waiting_to_shoot"
+	self._check_buffs = true
 
 	if new_action.use_ammo_at_time then
 		self.use_ammo_time = t + new_action.use_ammo_at_time
@@ -54,7 +55,7 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(is_critical_strike, self.buff_extension, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(is_critical_strike, self.buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
 end
@@ -129,7 +130,14 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 			end
 
 			if result then
-				DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, self.is_server, result, current_action, direction, true, target, nil, self._is_critical_strike, self.power_level)
+				local check_buffs = self._check_buffs
+				local data = DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, self.is_server, result, current_action, direction, check_buffs, target, nil, self._is_critical_strike, self.power_level)
+
+				if data.buffs_checked then
+					check_buffs = check_buffs and false
+				end
+
+				self._check_buffs = check_buffs
 			end
 
 			local weapon_unit = self.weapon_unit
@@ -155,14 +163,18 @@ ActionBulletSpray.finish = function (self, reason)
 	self:_clear_targets()
 
 	local ammo_extension = self.ammo_extension
+	local current_action = self.current_action
+	local owner_unit = self.owner_unit
+	local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+	local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
-	if ammo_extension and self.current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
+	if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 		local play_reload_animation = true
 
 		ammo_extension:start_reload(play_reload_animation)
 	end
 
-	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
+	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	if hud_extension then
 		hud_extension.show_critical_indication = false

@@ -94,6 +94,36 @@ ActionBase._proc_spell_used = function (self, buff_extension)
 	end
 end
 
+ActionBase._play_additional_animation = function (self, anim_data)
+	if anim_data and anim_data.variable_name and anim_data.variable_value then
+		if anim_data.third_person then
+			local unit = self.owner_unit
+
+			if unit then
+				if anim_data.anim_event then
+					CharacterStateHelper.play_animation_event_with_variable_float(unit, anim_data.anim_event, anim_data.variable_name, anim_data.variable_value)
+				else
+					CharacterStateHelper.set_animation_variable_float(unit, anim_data.variable_name, anim_data.variable_value)
+				end
+			end
+		end
+
+		if anim_data.first_person then
+			local unit = self.first_person_unit
+
+			if unit then
+				local variable_index = Unit.animation_find_variable(unit, anim_data.variable_name)
+
+				Unit.animation_set_variable(unit, variable_index, anim_data.variable_value)
+
+				if anim_data.anim_event then
+					Unit.animation_event(unit, anim_data.anim_event)
+				end
+			end
+		end
+	end
+end
+
 ActionBase.finish = function (self, reason)
 	return
 end

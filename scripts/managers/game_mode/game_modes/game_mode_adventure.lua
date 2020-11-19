@@ -31,8 +31,9 @@ GameModeAdventure.init = function (self, settings, world, ...)
 		local profile_name = PROFILES_BY_AFFILIATION.tutorial[1]
 		local profile_index = FindProfileIndex(profile_name)
 		local career_index = 1
+		local is_bot = false
 
-		self._profile_synchronizer:select_profile(peer_id, local_player_id, profile_index, career_index)
+		self._profile_synchronizer:select_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
 
 		local party_id = 1
 
@@ -86,7 +87,7 @@ GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t
 	local humans_dead = GameModeHelper.side_is_dead("heroes", ignore_bots)
 	local players_disabled = GameModeHelper.side_is_disabled("heroes")
 	local mutator_lost, mutator_lost_delay = mutator_handler:evaluate_lose_conditions()
-	local lost = not self._lose_condition_disabled and (mutator_lost or humans_dead or players_disabled or self._level_failed or self:_is_time_up())
+	local lost = not self._lose_condition_disabled and self._local_player_spawned and (mutator_lost or humans_dead or players_disabled or self._level_failed or self:_is_time_up())
 
 	if self.about_to_lose then
 		if lost then
@@ -124,8 +125,8 @@ GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t
 	end
 end
 
-GameModeAdventure.player_entered_game_session = function (self, peer_id, local_player_id)
-	GameModeAdventure.super.player_entered_game_session(self, peer_id, local_player_id)
+GameModeAdventure.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
+	GameModeAdventure.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
 
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
@@ -187,6 +188,14 @@ GameModeAdventure.get_end_screen_config = function (self, game_won, game_lost, p
 	end
 
 	return screen_name, screen_config
+end
+
+GameModeAdventure.ended = function (self, reason)
+	local all_peers_ingame = self._network_server:are_all_peers_ingame()
+
+	if not all_peers_ingame then
+		self._network_server:disconnect_joining_peers()
+	end
 end
 
 GameModeAdventure.local_player_ready_to_start = function (self, player)
@@ -292,7 +301,7 @@ GameModeAdventure._get_first_available_bot_profile = function (self)
 	local hero_experience = hero_attributes:get(display_name, "experience") or 0
 	local hero_level = ExperienceSettings.get_level(hero_experience)
 
-	if not career.is_unlocked_function(display_name, hero_level) then
+	if not career:is_unlocked_function(display_name, hero_level) then
 		career_index = 1
 
 		hero_attributes:set(display_name, "career", career_index)

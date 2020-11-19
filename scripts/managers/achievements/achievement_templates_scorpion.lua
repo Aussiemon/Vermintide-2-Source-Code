@@ -66,6 +66,7 @@ for season_id = season_offset, season_num, 1 do
 			name = "achv_scorpion_" .. tier .. "_seasonal_name",
 			desc = "achv_scorpion_" .. tier .. "_seasonal_desc",
 			icon = "achievement_trophy_scorpion_" .. tier .. "_season_2",
+			disable_on_consoles = season_id ~= season_num,
 			completed = function (statistics_db, stats_id)
 				local has_completed, _ = _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
 
@@ -88,10 +89,11 @@ for season_id = season_offset, season_num, 1 do
 	AchievementTemplates.achievements[quickplay_achievement_id] = {
 		ID_XB1 = 78,
 		name = "achv_scorpion_complete_unranked_weaves_name",
-		required_dlc = "scorpion",
-		icon = "achievement_trophy_scorpion_complete_unranked_weaves_season_2",
-		ID_PS4 = "077",
 		desc = "achv_scorpion_complete_unranked_weaves_desc",
+		ID_PS4 = "077",
+		icon = "achievement_trophy_scorpion_complete_unranked_weaves_season_2",
+		required_dlc = "scorpion",
+		disable_on_consoles = season_id ~= season_num,
 		completed = function (statistics_db, stats_id)
 			local weave_quickplay_wins = statistics_db:get_persistent_stat(stats_id, season_name, "weave_quickplay_wins")
 
@@ -583,6 +585,7 @@ AchievementTemplates.achievements.scorpion_complete_all_helmgart_levels_cataclys
 AchievementTemplates.achievements.scorpion_complete_bogenhafen_cataclysm = {
 	required_dlc = "scorpion",
 	name = "achv_scorpion_complete_bogenhafen_cataclysm_name",
+	required_dlc_extra = "bogenhafen",
 	icon = "achievement_trophy_scorpion_complete_bogenhafen_cataclysm",
 	desc = "achv_scorpion_complete_bogenhafen_cataclysm_desc",
 	completed = function (statistics_db, stats_id)
@@ -648,6 +651,7 @@ AchievementTemplates.achievements.scorpion_complete_bogenhafen_cataclysm = {
 AchievementTemplates.achievements.scorpion_complete_back_to_ubersreik_cataclysm = {
 	required_dlc = "scorpion",
 	name = "achv_scorpion_complete_back_to_ubersreik_cataclysm_name",
+	required_dlc_extra = "holly",
 	icon = "achievement_trophy_scorpion_complete_back_to_ubersreik_cataclysm",
 	desc = "achv_scorpion_complete_back_to_ubersreik_cataclysm_desc",
 	completed = function (statistics_db, stats_id)
@@ -732,6 +736,7 @@ AchievementTemplates.achievements.scorpion_complete_back_to_ubersreik_cataclysm 
 AchievementTemplates.achievements.scorpion_complete_plaza_cataclysm = {
 	required_dlc = "scorpion",
 	name = "achv_scorpion_complete_plaza_cataclysm_name",
+	required_dlc_extra = "holly",
 	icon = "achievement_trophy_scorpion_complete_plaza_cataclysm",
 	desc = "achv_scorpion_complete_plaza_cataclysm_desc",
 	completed = function (statistics_db, stats_id)
@@ -751,11 +756,30 @@ AchievementTemplates.achievements.scorpion_complete_plaza_cataclysm = {
 local function _has_completed_tier(statistics_db, stats_id, from, to)
 	local complete = false
 	local counter = 0
+	local current_season = ScorpionSeasonalSettings.current_season_id
 
 	for tier = from, to, 1 do
 		for player = 1, 4, 1 do
 			local stat_name = "weave_score_weave_" .. tier .. "_" .. player .. "_players"
-			complete = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name) > 0
+
+			if PLATFORM ~= "win32" then
+				for season_index = 1, current_season, 1 do
+					if season_index == 1 then
+						stat_name = "weave_score_weave_" .. tier .. "_" .. player .. "_players"
+					else
+						stat_name = tier .. "_" .. player
+					end
+
+					local season_name = ScorpionSeasonalSettings.get_season_name(season_index)
+					complete = statistics_db:get_persistent_stat(stats_id, season_name, stat_name) > 0
+
+					if complete then
+						break
+					end
+				end
+			else
+				complete = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name) > 0
+			end
 
 			if complete then
 				break
@@ -978,22 +1002,35 @@ for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list) do
 			local from = 1
 			local to = weave_number
 			local completed, count = _has_completed_tier(statistics_db, stats_id, from, to)
-			local weaves_won = statistics_db:get_persistent_stat(stats_id, "scorpion_weaves_won")
-			local num_completed_weaves = math.min(count + weaves_won, weave_number)
 
-			return weave_number <= num_completed_weaves
+			if PLATFORM ~= "win32" then
+				return completed
+			else
+				local weaves_won = statistics_db:get_persistent_stat(stats_id, "scorpion_weaves_won")
+				local num_completed_weaves = math.min(count + weaves_won, weave_number)
+
+				return weave_number <= num_completed_weaves
+			end
 		end,
 		progress = function (statistics_db, stats_id)
 			local from = 1
 			local to = weave_number
 			local completed, count = _has_completed_tier(statistics_db, stats_id, from, to)
-			local weaves_won = statistics_db:get_persistent_stat(stats_id, "scorpion_weaves_won")
-			local num_completed_weaves = math.min(count + weaves_won, weave_number)
 
-			return {
-				num_completed_weaves,
-				weave_number
-			}
+			if PLATFORM ~= "win32" then
+				return {
+					count,
+					weave_number
+				}
+			else
+				local weaves_won = statistics_db:get_persistent_stat(stats_id, "scorpion_weaves_won")
+				local num_completed_weaves = math.min(count + weaves_won, weave_number)
+
+				return {
+					num_completed_weaves,
+					weave_number
+				}
+			end
 		end
 	}
 end

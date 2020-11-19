@@ -24,7 +24,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.2,
 			anim_event = "attack_shoot",
 			reload_time = 1.25,
-			total_time = 0.66,
+			total_time = 0.5,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -192,15 +192,7 @@ weapon_template.actions = {
 	},
 	weapon_reload = ActionTemplates.reload,
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",
@@ -209,7 +201,8 @@ weapon_template.ammo_data = {
 	ammo_per_clip = 8,
 	play_reload_anim_on_wield_reload = true,
 	reload_time = 1.5,
-	reload_on_ammo_pickup = true
+	reload_on_ammo_pickup = true,
+	should_update_anim_ammo = true
 }
 weapon_template.default_spread_template = "repeating_pistol"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_emp_pistol_01_t1/wpn_emp_pistol_01_t1"

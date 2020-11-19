@@ -20,6 +20,26 @@ if platform == "win32" then
 			}
 		}
 	}
+elseif platform == "linux" then
+	SoundQualitySettings = {
+		templates = {
+			low = {
+				max_num_voices = 28,
+				sound_performance = 1,
+				occlusion = false
+			},
+			medium = {
+				max_num_voices = 64,
+				sound_performance = 0.5,
+				occlusion = false
+			},
+			high = {
+				max_num_voices = 80,
+				sound_performance = 0,
+				occlusion = true
+			}
+		}
+	}
 elseif platform == "xb1" then
 	SoundQualitySettings = {
 		templates = {

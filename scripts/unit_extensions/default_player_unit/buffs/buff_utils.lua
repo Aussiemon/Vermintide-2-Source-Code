@@ -1,5 +1,8 @@
 BuffUtils = BuffUtils or {}
-script_data.debug_legendary_traits = script_data.debug_legendary_traits or Development.parameter("debug_legendary_traits")
+
+if script_data then
+	script_data.debug_legendary_traits = script_data.debug_legendary_traits or Development.parameter("debug_legendary_traits")
+end
 
 BuffUtils.apply_buff_tweak_data = function (buffs, tweak_data)
 	for name, buff_data in pairs(buffs) do
@@ -15,7 +18,28 @@ BuffUtils.apply_buff_tweak_data = function (buffs, tweak_data)
 	end
 end
 
-BuffUtils.weave_buffs_from_rpc_params = function (num_buffs, buff_ids, buff_data_type_ids, buff_values)
+BuffUtils.get_max_stacks = function (buff_name, buff_index)
+	local buffs = BuffTemplates[buff_name].buffs
+	local max_stacks = buffs[buff_index or 1].max_stacks
+
+	return max_stacks or nil
+end
+
+BuffUtils.remove_stacked_buffs = function (buffed_unit, stacked_buff_ids)
+	local buff_extension = buffed_unit and ScriptUnit.has_extension(buffed_unit, "buff_system")
+
+	if not buff_extension then
+		return
+	end
+
+	for _, buff_id in ipairs(stacked_buff_ids) do
+		buff_extension:remove_buff(buff_id)
+	end
+
+	table.clear(stacked_buff_ids)
+end
+
+BuffUtils.buffs_from_rpc_params = function (num_buffs, buff_ids, buff_data_type_ids, buff_values)
 	local lookup_templates = NetworkLookup.buff_templates
 	local lookup_data_types = NetworkLookup.buff_data_types
 	local buffs = {}
@@ -34,7 +58,7 @@ BuffUtils.weave_buffs_from_rpc_params = function (num_buffs, buff_ids, buff_data
 	return buffs
 end
 
-BuffUtils.weave_buffs_to_rpc_params = function (buffs)
+BuffUtils.buffs_to_rpc_params = function (buffs)
 	local lookup_templates = NetworkLookup.buff_templates
 	local lookup_data_types = NetworkLookup.buff_data_types
 	local num_buffs = 0

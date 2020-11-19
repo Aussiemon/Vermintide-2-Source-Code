@@ -126,7 +126,7 @@ return {
 						percentage_spawn_offset = 15
 					},
 					{
-						terror_event_name = "main_path_specials_disablers_skaven_short",
+						terror_event_name = "main_path_standard_skaven_small_short",
 						percentage = 57,
 						percentage_spawn_offset = 15
 					},

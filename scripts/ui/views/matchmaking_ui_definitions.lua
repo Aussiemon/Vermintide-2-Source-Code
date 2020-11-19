@@ -857,9 +857,9 @@ local widget_detail_definitions = {
 	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow")
 }
 local cancel_input_widgets = {
-	cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_input", nil, nil, cancel_input_text_style),
-	cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_suffix", nil, nil, cancel_text_style),
-	cancel_text_prefix = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_prefix", nil, nil, cancel_text_style),
+	cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_input", nil, nil, cancel_input_text_style),
+	cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_suffix", nil, nil, cancel_text_style),
+	cancel_text_prefix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_prefix", nil, nil, cancel_text_style),
 	cancel_icon = UIWidgets.create_simple_texture("xbone_button_icon_a", "cancel_icon"),
 	cancel_input_backround = UIWidgets.create_simple_texture("tab_menu_bg_02", "cancel_input_backround")
 }

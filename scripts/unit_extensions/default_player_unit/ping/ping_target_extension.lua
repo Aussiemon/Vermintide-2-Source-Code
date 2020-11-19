@@ -12,12 +12,19 @@ PingTargetExtension.extensions_ready = function (self, world, unit)
 	self._locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
 end
 
-PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit)
+PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, show_outline)
 	local owner_unit = self._unit
+
+	if show_outline == nil then
+		show_outline = true
+	end
+
 	self._pinged = pinged
 
 	if self._outline_extension then
-		self._outline_extension.set_pinged(pinged, flash)
+		if show_outline then
+			self._outline_extension.set_pinged(pinged, flash)
+		end
 
 		if pinged then
 			self:_add_witch_hunter_buff(pinger_unit)
@@ -65,6 +72,11 @@ PingTargetExtension._add_witch_hunter_buff = function (self, pinger_unit)
 	if buff_extension then
 		local wh_buff_name = "defence_debuff_enemies"
 		local side = Managers.state.side.side_by_unit[pinger_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 

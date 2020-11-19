@@ -115,4 +115,69 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 	return packages
 end
 
+WeaponUtils.get_used_actions = function (template)
+	local missing_actions = {}
+	local checked_actions = {}
+	local pending_actions = {}
+
+	for name, data in pairs(template.actions) do
+		if data.default then
+			pending_actions[name] = {}
+			checked_actions[name] = {}
+			pending_actions[name].default = true
+		end
+	end
+
+	local action_to_check_n, action_to_check_v = next(pending_actions)
+
+	while action_to_check_n ~= nil do
+		local sub_action_to_check_n = next(action_to_check_v)
+
+		while sub_action_to_check_n ~= nil do
+			local sub_action = ActionUtils.resolve_action_selector(template.actions[action_to_check_n][sub_action_to_check_n])
+			local chain_actions = sub_action.allowed_chain_actions
+
+			for chain_action_id = 1, #chain_actions, 1 do
+				local chain_action_name = chain_actions[chain_action_id].action
+				local chain_sub_action_name = chain_actions[chain_action_id].sub_action
+
+				if chain_action_name and chain_sub_action_name then
+					local chain_action = template.actions[chain_action_name]
+					local chain_sub_action = chain_action and chain_action[chain_sub_action_name]
+
+					if chain_sub_action then
+						if (not checked_actions[chain_action_name] or not checked_actions[chain_action_name][chain_sub_action_name]) and (not pending_actions[chain_action_name] or not pending_actions[chain_action_name][chain_sub_action_name]) then
+							if not pending_actions[chain_action_name] then
+								pending_actions[chain_action_name] = {}
+							end
+
+							pending_actions[chain_action_name][chain_sub_action_name] = true
+						end
+					else
+						if not missing_actions[chain_action_name] then
+							missing_actions[chain_action_name] = {}
+						end
+
+						missing_actions[chain_action_name][chain_sub_action_name] = true
+					end
+				end
+			end
+
+			pending_actions[action_to_check_n][sub_action_to_check_n] = nil
+
+			if not checked_actions[action_to_check_n] then
+				checked_actions[action_to_check_n] = {}
+			end
+
+			checked_actions[action_to_check_n][sub_action_to_check_n] = true
+			sub_action_to_check_n = next(action_to_check_v)
+		end
+
+		pending_actions[action_to_check_n] = nil
+		action_to_check_n, action_to_check_v = next(pending_actions)
+	end
+
+	return checked_actions, missing_actions
+end
+
 return

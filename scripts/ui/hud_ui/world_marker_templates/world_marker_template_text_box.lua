@@ -6,7 +6,7 @@ template.max_distance = 20
 template.screen_clamp = false
 template.screen_margins = nil
 
-template.create_widget_defintion = function (scenegraph_id)
+template.create_widget_definition = function (scenegraph_id)
 	local frame_name = "shadow_frame_02"
 	local frame_settings = UIFrameSettings[frame_name]
 	local frame_height = frame_settings.texture_sizes.horizontal[2]
@@ -181,7 +181,7 @@ template.on_enter = function (widget)
 	content.spawn_progress_timer = 0
 end
 
-template.animation_update = function (ui_renderer, widget, settings, dt, t)
+template.update_function = function (ui_renderer, widget, marker, settings, dt, t)
 	local animating = false
 	local content = widget.content
 	local style = widget.style

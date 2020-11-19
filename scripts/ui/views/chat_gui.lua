@@ -305,7 +305,7 @@ ChatGui._update_chat_messages = function (self)
 			local new_message = added_chat_messages[i]
 			local new_message_table = {}
 
-			if new_message.type ~= Irc.PARTY_MSG then
+			if new_message.type ~= Irc.PARTY_MSG and new_message.type ~= Irc.ALL_MSG and new_message.type ~= Irc.TEAM_MSG then
 				local message = new_message.message
 
 				if new_message.is_system_message then
@@ -326,6 +326,7 @@ ChatGui._update_chat_messages = function (self)
 				end
 
 				new_message_table.is_dev = new_message.is_dev
+				new_message_table.is_enemy = new_message.is_enemy
 				new_message_table.is_bot = new_message.is_bot
 				new_message_table.message = message
 				new_message_table.type = new_message.type
@@ -350,11 +351,24 @@ ChatGui._update_chat_messages = function (self)
 
 				local message = new_message.message
 				new_message_table.is_dev = new_message.is_dev
+				new_message_table.is_enemy = new_message.is_enemy
 				new_message_table.is_bot = new_message.is_bot
 				new_message_table.is_system = false
 				new_message_table.sender = (ingame_display_name and string.format("%s (%s): ", name, Localize(ingame_display_name))) or string.format("%s: ", name)
 				new_message_table.message = message
 				new_message_table.type = new_message.type
+				local message_targets = self.chat_manager.message_targets
+
+				for _, message_target in ipairs(message_targets) do
+					if message_target.message_target_type == new_message.type then
+						if message_target.message_target_key then
+							new_message_table.channel_string = string.format("[%s] ", Localize(message_target.message_target_key))
+						end
+
+						break
+					end
+				end
+
 				show_new_messages = true
 			end
 
@@ -500,10 +514,12 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		self.block_chat_activation_hack = self.block_chat_activation_hack + dt
 	end
 
-	local block_chat_activation = self.block_chat_activation_hack < 0.2
+	local block_chat_activation = self.block_chat_activation_hack < 0.2 or not Managers.chat:is_chat_enabled()
 
 	if chat_closed then
-		if tab_hotspot.on_release or ((input_service:get("activate_chat_input") or input_service:get("execute_chat_input")) and not block_chat_activation and GameSettingsDevelopment.allow_chat_input) then
+		local alt_chat_input = input_service:get("execute_alt_chat_input")
+
+		if tab_hotspot.on_release or ((input_service:get("activate_chat_input") or input_service:get("execute_chat_input") or alt_chat_input) and not block_chat_activation and GameSettingsDevelopment.allow_chat_input) then
 			if chat_enabled then
 				chat_closed = false
 				chat_close_time = nil
@@ -520,8 +536,30 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			self.chat_message = ""
 			self.chat_index = 1
 			self.chat_mode = "insert"
+			local channel_id = 1
+			local message_target = nil
+			local mechanism = Managers.mechanism:game_mechanism()
+
+			if mechanism.get_chat_channel then
+				channel_id, message_target = mechanism:get_chat_channel(Managers.player:local_player(), alt_chat_input)
+			end
+
+			self.channel_id = channel_id
+			self.alt_chat_input = alt_chat_input
+
+			if message_target then
+				Managers.chat:set_message_target_type(message_target)
+			end
+
 			local current_message_target_info = Managers.chat:current_message_target()
-			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
+			local current_message_target = nil
+
+			if current_message_target_info.message_target_key then
+				current_message_target = string.format("[%s] ", Localize(current_message_target_info.message_target_key))
+			else
+				current_message_target = string.format("[%s] ", current_message_target_info.message_target)
+			end
+
 			local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
 			local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
 			self.chat_input_widget.content.channel_field = current_message_target
@@ -568,7 +606,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		tab_hotspot.on_release = false
 
 		if chat_focused and chat_enabled then
-			if input_service:get("execute_chat_input") and GameSettingsDevelopment.allow_chat_input then
+			if GameSettingsDevelopment.allow_chat_input and input_service:get("execute_chat_input") then
 				chat_closed = false
 				chat_focused = false
 
@@ -577,11 +615,14 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				end
 
 				if self.chat_message ~= "" then
-					if self.chat_manager:has_channel(1) then
+					local target_index = 1
+					local channel_id = self.channel_id
+
+					if self.chat_manager:has_channel(channel_id) then
 						local localize = false
 						local localize_parameters = false
 
-						self.chat_manager:send_chat_message(1, 1, self.chat_message, localize, nil, localize_parameters, self.recent_message_index)
+						self.chat_manager:send_chat_message(channel_id, 1, self.chat_message, localize, nil, localize_parameters, self.recent_message_index)
 					end
 
 					self.chat_message = ""
@@ -720,38 +761,57 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 				self.chat_index = new_chat_index
 				self.chat_mode = new_chat_mode
 			end
-		elseif input_service:get("activate_chat_input") or (input_service:get("execute_chat_input") and GameSettingsDevelopment.allow_chat_input) then
-			if chat_enabled then
-				chat_closed = false
-				chat_close_time = nil
-				chat_focused = true
+		else
+			local alt_chat_input = input_service:get("execute_alt_chat_input")
 
-				self:block_input()
-			else
-				chat_closed = false
-				chat_close_time = UISettings.chat.chat_close_delay
-				chat_focused = false
-				self._refocus_chat_window = true
+			if input_service:get("activate_chat_input") or ((input_service:get("execute_chat_input") or alt_chat_input) and GameSettingsDevelopment.allow_chat_input) then
+				if chat_enabled then
+					chat_closed = false
+					chat_close_time = nil
+					chat_focused = true
+
+					self:block_input()
+				else
+					chat_closed = false
+					chat_close_time = UISettings.chat.chat_close_delay
+					chat_focused = false
+					self._refocus_chat_window = true
+				end
+
+				self.chat_message = ""
+				self.chat_index = 1
+				self.chat_mode = "insert"
+				self.recent_message_index = nil
+				self.old_chat_message = nil
+				local channel_id = 1
+				local message_target = nil
+				local mechanism = Managers.mechanism:game_mechanism()
+
+				if mechanism.get_chat_channel then
+					channel_id, message_target = mechanism:get_chat_channel(Managers.player:local_player(), alt_chat_input)
+				end
+
+				self.channel_id = channel_id
+				self.alt_chat_input = alt_chat_input
+
+				if message_target then
+					Managers.chat:set_message_target_type(message_target)
+				end
+
+				local current_message_target_info = Managers.chat:current_message_target()
+				local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
+				local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
+				local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
+				self.chat_input_widget.content.channel_field = current_message_target
+				local channel_text_color = IRC_CHANNEL_COLORS[current_message_target_info.message_target_type]
+
+				self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
+
+				self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
+				self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
+				self.chat_input_widget.content.caret_index = 1
+				self.chat_input_widget.content.text_index = 1
 			end
-
-			self.chat_message = ""
-			self.chat_index = 1
-			self.chat_mode = "insert"
-			self.recent_message_index = nil
-			self.old_chat_message = nil
-			local current_message_target_info = Managers.chat:current_message_target()
-			local current_message_target = "[" .. tostring(current_message_target_info.message_target) .. "]  "
-			local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.channel_text)
-			local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, current_message_target, font[1], scaled_font_size)
-			self.chat_input_widget.content.channel_field = current_message_target
-			local channel_text_color = IRC_CHANNEL_COLORS[current_message_target_info.message_target_type]
-
-			self:_apply_color_values(self.chat_input_widget.style.channel_text.text_color, channel_text_color)
-
-			self.ui_scenegraph.chat_input_text.size[1] = definitions.CHAT_INPUT_TEXT_WIDTH - text_width
-			self.chat_input_widget.style.text.offset[1] = self.chat_input_widget.style.channel_text.offset[1] + text_width
-			self.chat_input_widget.content.caret_index = 1
-			self.chat_input_widget.content.text_index = 1
 		end
 
 		local chat_input_widget_content = self.chat_input_widget.content
@@ -875,7 +935,6 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	if not gamepad_active and menu_active and chat_enabled then
-		UIRenderer.draw_widget(ui_renderer, tab_widget)
 	end
 
 	self:_apply_hud_scale()

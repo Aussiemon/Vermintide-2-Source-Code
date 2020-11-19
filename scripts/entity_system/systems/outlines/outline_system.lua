@@ -13,7 +13,10 @@ OutlineSystem.system_extensions = {
 	"ConditionalInteractOutlineExtension",
 	"ConditionalPickupOutlineExtension",
 	"EnemyOutlineExtension",
-	"GenericOutlineExtension"
+	"GenericOutlineExtension",
+	"SmallPickupOutlineExtension",
+	[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerOutlineExtension",
+	[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerHuskOutlineExtension"
 }
 
 OutlineSystem.init = function (self, context, system_name)
@@ -138,6 +141,13 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 		extension.pinged_method = "not_in_dark"
 		extension.flag = "outline_unit"
 		extension.apply_method = "unit_and_childs"
+	elseif extension_name == "SmallPickupOutlineExtension" then
+		extension.outline_color = OutlineSettings.colors.interactable
+		extension.distance = OutlineSettings.ranges.small_pickup
+		extension.method = "within_distance_and_not_in_dark"
+		extension.pinged_method = "not_in_dark"
+		extension.flag = "outline_unit_z"
+		extension.apply_method = "unit"
 	elseif extension_name == "GenericOutlineExtension" then
 		extension.outline_color = OutlineSettings.colors.interactable
 		extension.distance = OutlineSettings.ranges.interactable
@@ -147,7 +157,66 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 		extension.apply_method = "unit"
 	end
 
+	if extension_name == "DarkPactPlayerOutlineExtension" then
+		extension.outline_color = OutlineSettingsVS.colors.ally
+		extension.method = "never"
+		extension.pinged_method = "show_versus_dark_pact_outline"
+		extension.flag = "outline_unit"
+		extension.apply_method = "unit_and_childs"
+	elseif extension_name == "DarkPactPlayerHuskOutlineExtension" then
+		local is_ally = nil
+		local local_player = Managers.player:local_player()
+
+		if local_player then
+			local peer_id = local_player:network_id()
+			local local_player_id = local_player:local_player_id()
+			local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
+			local side = Managers.state.side.side_by_party[party]
+
+			if side then
+				local side_name = side:name()
+
+				if side_name == "dark_pact" then
+					is_ally = true
+				end
+			end
+		end
+
+		extension.outline_color = (is_ally and OutlineSettingsVS.colors.ally) or OutlineSettings.colors.knocked_down
+		extension.distance = OutlineSettings.ranges.player_husk
+		extension.method = "always_same_side"
+		extension.pinged_method = "show_versus_dark_pact_outline"
+		extension.last_set_method = extension.method
+		extension.flag = "outline_unit"
+		extension.apply_method = "unit_and_childs"
+
+		extension.set_method_player_setting = function (method)
+			return
+		end
+
+		extension.update_override_method_player_setting = function ()
+			return
+		end
+	end
+
 	extension.set_outline_color = function (color)
+		local color_setting = Managers.mechanism:mechanism_setting("deny_outline_color_change_for_party")
+
+		if color_setting then
+			local player = Managers.player:local_player()
+
+			if player then
+				local peer_id = player:network_id()
+				local local_player_id = player:local_player_id()
+				local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
+				local side = Managers.state.side.side_by_party[party]
+
+				if side and color_setting[side:name()] then
+					return
+				end
+			end
+		end
+
 		extension.outline_color = OutlineSettings.colors[color]
 		extension.new_color = true
 	end
@@ -317,6 +386,7 @@ OutlineSystem.unfreeze = function (self, unit)
 end
 
 OutlineSystem.local_player_created = function (self, player)
+	self._local_player = player
 	self.camera_unit = player.camera_follow_unit
 end
 
@@ -483,7 +553,7 @@ OutlineSystem.set_priority_outline = function (self, unit, apply_method, do_outl
 	outline_extension.set_method(apply_method)
 
 	if outline_extension.flag then
-		local c = outline_extension.outline_color.channel
+		local c = (outline_extension.enemy_color and outline_extension.enemy_color.channel) or outline_extension.outline_color.channel
 		local channel = Color(c[1], c[2], c[3], c[4])
 
 		self:outline_unit(unit, outline_extension.flag, channel, do_outline, outline_extension.apply_method, false)
@@ -561,6 +631,32 @@ OutlineSystem.always = function (self, unit, extension)
 	local active_cutscene = self:_is_cutscene_active()
 
 	return not active_cutscene
+end
+
+OutlineSystem.always_same_side = function (self, unit, extension)
+	local same_side = extension.same_side
+
+	if not same_side then
+		local unit_side = Managers.state.side.side_by_unit[unit]
+		local local_side = Managers.state.side.side_by_party[self._local_player:get_party()]
+		same_side = not Managers.state.side:is_enemy_by_side(unit_side, local_side)
+		extension.same_side = same_side
+	end
+
+	local active_cutscene = self:_is_cutscene_active()
+
+	return same_side and not active_cutscene
+end
+
+OutlineSystem.same_side_in_ghost_mode = function (self, unit, extension)
+	local status_extension = extension.status_extension
+
+	if status_extension == nil then
+		status_extension = ScriptUnit.has_extension(unit, "status_system")
+		extension.status_extension = status_extension or false
+	end
+
+	return status_extension and status_extension:get_in_ghost_mode() and self:always_same_side(unit, extension)
 end
 
 OutlineSystem.visible = function (self, unit, extension)

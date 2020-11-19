@@ -33,8 +33,9 @@ AreaIndicatorUI.update = function (self, dt)
 		local player_hud_extension = ScriptUnit.extension(player_unit, "hud_system")
 		local saved_location = self.saved_location
 		local current_location = player_hud_extension.current_location
+		local location_ui_blocked = player_hud_extension.location_ui_blocked
 
-		if current_location ~= nil and current_location ~= saved_location then
+		if not location_ui_blocked and current_location ~= nil and current_location ~= saved_location then
 			self.saved_location = current_location
 			local ui_settings = UISettings.area_indicator
 			local widget = self.area_text_box

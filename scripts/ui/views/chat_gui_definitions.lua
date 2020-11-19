@@ -21,7 +21,9 @@ IRC_CHANNEL_COLORS = {
 	[Irc.PRIVATE_MSG] = Colors.get_table("medium_purple"),
 	[Irc.CHANNEL_MSG] = Colors.get_table("khaki"),
 	[Irc.SYSTEM_MSG] = Colors.get_table("gold"),
-	[Irc.PARTY_MSG] = Colors.get_table("sky_blue")
+	[Irc.PARTY_MSG] = Colors.get_table("khaki"),
+	[Irc.TEAM_MSG] = Colors.get_table("khaki"),
+	[Irc.ALL_MSG] = Colors.get_table("khaki")
 }
 local scenegraph_definition = {
 	root = {

@@ -71,7 +71,7 @@ AttachmentUtils.link = function (world, source, target, node_linking)
 	end
 end
 
-AttachmentUtils.hot_join_sync = function (sender, unit, slots, synced_buffs)
+AttachmentUtils.hot_join_sync = function (peer_id, unit, slots, synced_buffs)
 	local unit_go_id = Managers.state.unit_storage:go_id(unit)
 
 	for slot_name, slot_data in pairs(slots) do
@@ -84,15 +84,17 @@ AttachmentUtils.hot_join_sync = function (sender, unit, slots, synced_buffs)
 
 			local slot_id = NetworkLookup.equipment_slots[slot_name]
 			local attachment_id = NetworkLookup.item_names[slot_data.name]
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-			RPC.rpc_create_attachment(sender, unit_go_id, slot_id, attachment_id)
+			RPC.rpc_create_attachment(channel_id, unit_go_id, slot_id, attachment_id)
 
 			local slot_synced_buffs = synced_buffs[slot_name]
 
 			if slot_synced_buffs then
-				local params = AttachmentUtils.get_syncable_buff_params(slot_synced_buffs)
+				local rpc_params = BuffUtils.buffs_to_rpc_params(slot_synced_buffs)
+				local num_buffs, buff_ids, buff_value_type_ids, buff_values = unpack(rpc_params)
 
-				RPC.rpc_add_attachment_buffs(sender, unit_go_id, slot_id, unpack(params))
+				RPC.rpc_add_attachment_buffs(channel_id, unit_go_id, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 			end
 		until true
 	end

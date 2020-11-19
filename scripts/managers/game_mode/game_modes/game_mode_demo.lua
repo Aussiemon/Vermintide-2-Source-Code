@@ -44,6 +44,14 @@ GameModeDemo.complete_level = function (self)
 	end
 end
 
+GameModeDemo.ended = function (self, reason)
+	local all_peers_ingame = self._network_server:are_all_peers_ingame()
+
+	if not all_peers_ingame then
+		self._network_server:disconnect_joining_peers()
+	end
+end
+
 GameModeDemo.wanted_transition = function (self)
 	return self._transition
 end

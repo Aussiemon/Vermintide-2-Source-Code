@@ -23,6 +23,10 @@ PlayFabRequestQueue.init = function (self)
 	self._eac_id = 0
 end
 
+PlayFabRequestQueue.is_pending_request = function (self)
+	return self._active_entry or #self._queue > 0
+end
+
 PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_eac_challenge)
 	local id = self._id + 1
 	local entry = {

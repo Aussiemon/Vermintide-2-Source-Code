@@ -27,14 +27,6 @@ local ACHIEVEMENT_DEFAULT_HEIGHT = achievement_entry_size[2]
 local ACHIEVEMENT_WINDOW_HEIGHT = achievement_window_size[2]
 local ACHIEVEMENT_PRESENTATION_AMOUNT = achievement_presentation_amount
 local ACHIEVEMENT_SPACING = achievement_spacing
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 HeroViewStateAchievements = class(HeroViewStateAchievements)
 HeroViewStateAchievements.NAME = "HeroViewStateAchievements"
 
@@ -536,43 +528,45 @@ HeroViewStateAchievements._reset_tab = function (self, widget)
 	widget.alpha_fade_multipler = 5
 end
 
-HeroViewStateAchievements._has_any_unclaimed_completed_challenge_in_category = function (self, base_data)
-	local achievement_manager = self._achievement_manager
-	local quest_manager = self._quest_manager
-	local category_type = base_data.type
+local function has_unclaimed_challenge(challenge_manager, base_category)
+	local entries = base_category.entries
 
-	local function has_unclaimed_challenge(base_category)
-		if base_category.entries then
-			for _, id in ipairs(base_category.entries) do
-				local data = nil
+	if entries then
+		for i = 1, #entries, 1 do
+			local data = challenge_manager:get_data_by_id(entries[i])
 
-				if category_type == "achievements" then
-					data = achievement_manager:get_data_by_id(id)
-				elseif category_type == "quest" then
-					data = quest_manager:get_data_by_id(id)
-				end
-
-				local required_dlc = data.required_dlc
-				local unlocked = not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)
-
-				if unlocked and data.completed and not data.claimed then
-					return true
-				end
+			if data.completed and not data.claimed then
+				return true
 			end
 		end
-
-		if base_category.categories then
-			for _, category in ipairs(base_category.categories) do
-				if has_unclaimed_challenge(category) then
-					return true
-				end
-			end
-		end
-
-		return false
 	end
 
-	return has_unclaimed_challenge(base_data)
+	local categories = base_category.categories
+
+	if categories then
+		for i = 1, #categories, 1 do
+			if has_unclaimed_challenge(challenge_manager, categories[i]) then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+HeroViewStateAchievements._has_any_unclaimed_completed_challenge_in_category = function (self, base_data)
+	local category_type = base_data.type
+	local challenge_manager = nil
+
+	if category_type == "achievements" then
+		challenge_manager = self._achievement_manager
+	elseif category_type == "quest" then
+		challenge_manager = self._quest_manager
+	else
+		ferror("Invalid category type: %q", category_type)
+	end
+
+	return has_unclaimed_challenge(challenge_manager, base_data)
 end
 
 HeroViewStateAchievements._populate_tab = function (self, widget, categories)
@@ -654,32 +648,51 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 		local style = widget.style
 		local entry_id = entries[i]
 		local entry_data = manager:get_data_by_id(entry_id)
+		local unlocked = true
+		local locked_text = Localize("dlc_not_owned") .. ":"
 		local required_dlc = entry_data.required_dlc
-		local unlocked = not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)
+
+		if required_dlc and not Managers.unlock:is_dlc_unlocked(required_dlc) then
+			local settings = StoreDlcSettingsByName[required_dlc]
+
+			if settings then
+				locked_text = locked_text .. "\n" .. Localize(settings.name)
+				content.dlc_name = settings.name
+			end
+
+			unlocked = false
+		end
+
+		local required_dlc_extra = entry_data.required_dlc_extra
+
+		if required_dlc_extra and not Managers.unlock:is_dlc_unlocked(required_dlc_extra) then
+			local settings = StoreDlcSettingsByName[required_dlc_extra]
+
+			if settings then
+				locked_text = locked_text .. "\n" .. Localize(settings.name)
+				content.dlc_name = settings.name
+			end
+
+			unlocked = false
+		end
 
 		if not unlocked then
-			local locked_text = Localize("dlc_not_owned")
-
-			for _, store_dlc_settings in ipairs(StoreDlcSettings) do
-				if store_dlc_settings.dlc_name == required_dlc then
-					locked_text = locked_text .. ": " .. Localize(store_dlc_settings.name)
-
-					break
-				end
+			if not content.dlc_name then
+				locked_text = locked_text .. "\n" .. Localize("lb_unknown")
 			end
 
 			content.locked_text = locked_text
 		end
 
 		local requirements = entry_data.requirements
-		local completed = entry_data.completed or script_data.set_all_challenges_claimable
+		local completed = (entry_data.completed or script_data.set_all_challenges_claimable) and not script_data["eac-untrusted"]
 		local progress = entry_data.progress
 		local claimed = entry_data.claimed
 		local reward = entry_data.reward
 		content.locked = not unlocked
-		content.can_close = unlocked and can_close and not completed
-		content.completed = unlocked and completed
-		content.claimed = unlocked and claimed
+		content.can_close = can_close and not completed
+		content.completed = completed
+		content.claimed = claimed
 		content.id = entry_id
 		content.original_order_index = i
 		local name = entry_data.name
@@ -788,7 +801,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 		self:_set_achievement_expand_height(widget, expand_height)
 
-		if unlocked and progress and not completed and not claimed then
+		if progress and not completed and not claimed then
 			local accuired = progress[1]
 			local required = progress[2]
 			local progress_fraction = accuired / required
@@ -815,7 +828,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 			self:_set_color_intensity(style.side_detail_right.color, color_intensity_fraction)
 		end
 
-		if content.completed and not content.claimed then
+		if completed and not claimed and unlocked then
 			claimable_achievement_widgets[#claimable_achievement_widgets + 1] = widget
 		else
 			unclaimable_achievement_widgets[#unclaimable_achievement_widgets + 1] = widget
@@ -1148,7 +1161,13 @@ HeroViewStateAchievements._on_achievement_pressed = function (self, widget)
 	elseif progress_button_hotspot.is_hover then
 		progress_button_hotspot.is_hover = false
 
-		self:_claim_reward(widget)
+		if content.locked then
+			content.dlc_on_claim = true
+
+			self:play_sound("Play_gui_locked_content")
+		else
+			self:_claim_reward(widget)
+		end
 	elseif content.expandable then
 		if not content.expanded then
 			self:play_sound("Play_gui_achivements_menu_item_expand")
@@ -1607,7 +1626,7 @@ HeroViewStateAchievements.update = function (self, dt, t)
 		self:create_ui_elements()
 	end
 
-	local input_service = (self._input_blocked and fake_input_service) or self:input_service()
+	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 
 	if self.reward_popup then
 		self.reward_popup:update(dt)
@@ -1694,7 +1713,7 @@ HeroViewStateAchievements._update_animations = function (self, dt)
 	local book_disabled = summary_quest_book.content.disabled
 
 	if not book_disabled then
-		local book_progress = 0.5 + math.sin(Application.time_since_launch() * 2) * 0.5
+		local book_progress = 0.5 + math.sin(Managers.time:time("ui") * 2) * 0.5
 		local book_anim_progress = math.easeOutCubic(book_progress)
 		summary_quest_book.offset[2] = book_anim_progress * 6
 	else
@@ -1730,7 +1749,7 @@ HeroViewStateAchievements._set_button_force_hover = function (self, widget, forc
 end
 
 HeroViewStateAchievements._handle_input = function (self, dt, t)
-	local input_service = (self._input_blocked and fake_input_service) or self:input_service()
+	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local input_pressed = input_service:get("toggle_menu")
 	local input_close_pressed = gamepad_active and input_service:get("back")
@@ -1830,10 +1849,19 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 
 				if self:_is_button_hover(widget) then
 					widget.content.reward_button_hotspot.draw = true
+					widget.content.dlc_lock_hotspot.draw = true
 				end
 
 				if self:_is_button_pressed(widget) then
 					self:_on_achievement_pressed(widget)
+				end
+
+				local dlc_lock_hotspot = widget.content.dlc_lock_hotspot
+
+				if dlc_lock_hotspot and dlc_lock_hotspot.on_release then
+					dlc_lock_hotspot.on_release = false
+
+					Managers.unlock:open_dlc_page(widget.content.dlc_name)
 				end
 			end
 		end

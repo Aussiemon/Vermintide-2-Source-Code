@@ -49,11 +49,13 @@ UnlockManager._init_unlocks = function (self)
 		for unlock_name, unlock_config in pairs(settings.unlocks) do
 			local class_name = unlock_config.class
 			local id = unlock_config.id
+			local fallback_id = PLATFORM == "ps4" and unlock_config.fallback_id
 			local backend_reward_id = unlock_config.backend_reward_id
 			local always_unlocked_game_app_ids = unlock_config.always_unlocked_game_app_ids
+			local requires_restart = unlock_config.requires_restart
 			local cosmetic = unlock_config.cosmetic
 			local class = rawget(_G, class_name)
-			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids, cosmetic)
+			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids, cosmetic, fallback_id, requires_restart)
 			unlocks[unlock_name] = instance
 			unlocks_indexed[i][unlock_name] = instance
 		end
@@ -67,44 +69,63 @@ local POPUP_IDS_TO_REMOVE = {}
 
 UnlockManager.update = function (self, dt)
 	if PLATFORM == "xb1" then
-		self._dlc_status_changed = nil
-		local status = XboxDLC.status()
+		if self._update_unlocks then
+			self._dlc_status_changed = nil
+			local status = XboxDLC.status()
 
-		if status ~= XboxDLC.IDLE then
-			self:_check_licenses()
-			self:_reinitialize_backend_dlc()
-		end
-
-		if not table.is_empty(self._popup_ids) then
-			table.clear(POPUP_IDS_TO_REMOVE)
-
-			for idx, popup_id in ipairs(self._popup_ids) do
-				local result = Managers.popup:query_result(popup_id)
-
-				if result then
-					POPUP_IDS_TO_REMOVE[#POPUP_IDS_TO_REMOVE + 1] = idx
-				end
+			if status ~= XboxDLC.IDLE then
+				self:_check_licenses()
+				self:_reinitialize_backend_dlc()
 			end
 
-			if not table.is_empty(POPUP_IDS_TO_REMOVE) then
-				local num_popups = #POPUP_IDS_TO_REMOVE
-
-				for i = num_popups, 1, -1 do
-					local idx = POPUP_IDS_TO_REMOVE[i]
-
-					table.remove(self._popup_ids, idx)
-				end
+			if not table.is_empty(self._popup_ids) then
+				self:_handle_popups()
+			else
+				self:_update_console_backend_unlocks()
 			end
-		elseif self._update_unlocks then
-			self:_update_console_backend_unlocks()
 		end
 	elseif PLATFORM == "ps4" then
 		if self._update_unlocks then
 			self:_check_ps4_dlc_status()
-			self:_update_console_backend_unlocks()
+
+			if not table.is_empty(self._popup_ids) then
+				self:_handle_popups()
+			else
+				self:_update_console_backend_unlocks()
+			end
 		end
 	else
 		self:_update_backend_unlocks()
+	end
+end
+
+UnlockManager._handle_popups = function (self)
+	table.clear(POPUP_IDS_TO_REMOVE)
+
+	for idx, popup_id in ipairs(self._popup_ids) do
+		local result = Managers.popup:query_result(popup_id)
+
+		if result then
+			self:_handle_popup_results(result)
+
+			POPUP_IDS_TO_REMOVE[#POPUP_IDS_TO_REMOVE + 1] = idx
+		end
+	end
+
+	if not table.is_empty(POPUP_IDS_TO_REMOVE) then
+		local num_popups = #POPUP_IDS_TO_REMOVE
+
+		for i = num_popups, 1, -1 do
+			local idx = POPUP_IDS_TO_REMOVE[i]
+
+			table.remove(self._popup_ids, idx)
+		end
+	end
+end
+
+UnlockManager._handle_popup_results = function (self, result)
+	if result == "restart_game" then
+		Managers.account:force_exit_to_title_screen()
 	end
 end
 
@@ -139,11 +160,11 @@ UnlockManager._check_ps4_dlc_status = function (self)
 				if not table.find(owned_dlcs, unlock_name) then
 					local unlock = self._unlocks[unlock_name]
 
-					if unlock.update_license then
+					if unlock and unlock.update_license then
 						unlock:update_license()
 					end
 
-					if unlock:unlocked() then
+					if unlock and unlock:unlocked() then
 						print("New DLC Unlocked: ", unlock_name)
 						self:_reinitialize_backend_dlc()
 					end
@@ -305,37 +326,63 @@ UnlockManager._update_console_backend_unlocks = function (self)
 		if not dlcs_interface:updating_dlc_ownership() then
 			self._state = "check_unseen_rewards"
 		end
-	elseif self._state == "check_unseen_rewards" and self._ingame_ui and not self._ingame_ui:is_in_view_state("HeroViewStateStore") then
-		local item_interface = Managers.backend:get_interface("items")
-		local unseen_rewards = item_interface:get_unseen_item_rewards()
+	elseif self._state == "check_unseen_rewards" then
+		if self._ingame_ui and not self._ingame_ui:is_in_view_state("HeroViewStateStore") then
+			local item_interface = Managers.backend:get_interface("items")
+			local unseen_rewards = item_interface:get_unseen_item_rewards()
 
-		if unseen_rewards then
-			for i = 1, #unseen_rewards, 1 do
-				local reward = unseen_rewards[i]
-				local item = nil
+			if unseen_rewards then
+				for i = 1, #unseen_rewards, 1 do
+					local reward = unseen_rewards[i]
+					local item = nil
 
-				if reward.item_type == "weapon_skin" then
-					local item_id = reward.item_id
-					local weapon_skin_data = WeaponSkins.skins[item_id]
-					local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
-					item = {
-						data = weapon_skin_data,
-						backend_id = backend_id,
-						key = item_id
-					}
-				else
-					item = item_interface:get_item_from_id(reward.backend_id)
-				end
+					if reward.item_type == "weapon_skin" then
+						local item_id = reward.item_id
+						local weapon_skin_data = WeaponSkins.skins[item_id]
+						local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
+						item = {
+							data = weapon_skin_data,
+							backend_id = backend_id,
+							key = item_id
+						}
+					else
+						item = item_interface:get_item_from_id(reward.backend_id)
+					end
 
-				if item then
-					local item_data = item.data
-					local display_name = item_data.display_name
+					if item then
+						local item_data = item.data
+						local display_name = item_data.display_name
 
-					self:_add_reward({
-						item
-					}, display_name)
+						self:_add_reward({
+							item
+						}, display_name)
+					end
 				end
 			end
+
+			self._state = "wait_for_rewards"
+		end
+	elseif self._state == "wait_for_rewards" then
+		if self._ingame_ui and #self._reward_queue <= self._reward_queue_id then
+			local gift_popup_ui = self._ingame_ui:get_hud_component("GiftPopupUI")
+
+			if gift_popup_ui and not gift_popup_ui:has_presentation_data() then
+				self._state = "evaluate_restart"
+			end
+		end
+	elseif self._state == "evaluate_restart" and table.is_empty(self._popup_ids) then
+		local requires_restart = false
+
+		for name, unlock in pairs(self._unlocks) do
+			if unlock:requires_restart() then
+				requires_restart = true
+
+				break
+			end
+		end
+
+		if requires_restart then
+			self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(Localize("popup_console_dlc_needs_restart"), Localize("popup_notice_topic"), "restart_game", Localize("menu_return_to_title_screen"))
 		end
 
 		self._state = "done"
@@ -387,7 +434,17 @@ UnlockManager.get_unlocked_dlcs = function (self)
 	return unlocked_unlocks
 end
 
+UnlockManager.dlc_requires_restart = function (self, dlc_name)
+	local unlock = self._unlocks[dlc_name]
+
+	return unlock:requires_restart()
+end
+
 UnlockManager.is_dlc_unlocked = function (self, name)
+	if script_data.all_dlcs_unlocked then
+		return true
+	end
+
 	local unlock = self._unlocks[name]
 
 	if PLATFORM ~= "win32" and not unlock then
@@ -421,6 +478,38 @@ UnlockManager.dlc_id = function (self, name)
 	fassert(unlock, "No such unlock %q", name or "nil")
 
 	return unlock:id()
+end
+
+local function find_steam_store_page_url(dlc_name)
+	for _, dlc_settings in pairs(StoreDlcSettings) do
+		if dlc_settings.dlc_name == dlc_name then
+			return dlc_settings.store_page_url
+		end
+	end
+
+	return nil
+end
+
+UnlockManager.open_dlc_page = function (self, dlc_name)
+	if IS_WINDOWS and rawget(_G, "Steam") then
+		local url = find_steam_store_page_url(dlc_name)
+
+		if url then
+			Steam.open_url(url)
+		end
+	elseif IS_XB1 then
+		local product_id = UnlockSettings[1].unlocks[dlc_name].id
+		local user_id = Managers.account:user_id()
+
+		XboxLive.show_product_details(user_id, product_id)
+	elseif IS_PS4 then
+		local user_id = Managers.account:user_id()
+		local product_label = ProductLabels[dlc_name]
+
+		Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
+			product_label
+		})
+	end
 end
 
 UnlockManager.ps4_dlc_product_label = function (self, name)

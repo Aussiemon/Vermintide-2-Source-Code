@@ -32,11 +32,16 @@ local camera_position_by_character = {
 		z = 0.4,
 		x = 0,
 		y = 1
+	},
+	default = {
+		z = 0.4,
+		x = 0,
+		y = 1
 	}
 }
 
 MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_character_positions, unique_id)
-	MenuWorldPreviewer.super.init(self, ingame_ui_context, optional_camera_character_positions, unique_id)
+	MenuWorldPreviewer.super.init(self, ingame_ui_context, unique_id)
 
 	self.input_manager = ingame_ui_context.input_manager
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -272,7 +277,7 @@ MenuWorldPreviewer._set_character_visibility = function (self, visible)
 
 			if profile_name then
 				local character_camera_positions = self._character_camera_positions
-				local new_character_position = character_camera_positions[profile_name]
+				local new_character_position = character_camera_positions[profile_name] or character_camera_positions.default
 				x = new_character_position.x
 				y = new_character_position.y
 				z = new_character_position.z
@@ -458,7 +463,7 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 
 	camera_move_duration = camera_move_duration or 0.01
 	local character_camera_positions = self._character_camera_positions
-	local new_character_position = character_camera_positions[profile_name]
+	local new_character_position = character_camera_positions[profile_name] or character_camera_positions.default
 
 	self:set_character_axis_offset("x", new_character_position.x, camera_move_duration, math.easeOutCubic)
 	self:set_character_axis_offset("y", new_character_position.y, camera_move_duration, math.easeOutCubic)

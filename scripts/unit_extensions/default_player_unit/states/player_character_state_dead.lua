@@ -45,8 +45,11 @@ PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 	local time_since_death = t - self.despawn_time_start
 	local player = Managers.player:unit_owner(unit)
 	local marked_for_despawn = player and not player:needs_despawn()
+	local game_mode = Managers.state.game_mode:game_mode()
+	local about_to_lose = game_mode.is_about_to_lose and game_mode:is_about_to_lose()
+	local should_go_to_observer = not self.switched_to_observer_camera and (marked_for_despawn or self.dead_player_destroy_time < time_since_death + 1)
 
-	if not self.switched_to_observer_camera and (marked_for_despawn or self.dead_player_destroy_time < time_since_death + 1) then
+	if should_go_to_observer and not about_to_lose then
 		self.switched_to_observer_camera = true
 
 		CharacterStateHelper.change_camera_state(self.player, "observer")

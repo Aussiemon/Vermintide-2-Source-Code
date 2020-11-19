@@ -207,7 +207,13 @@ local transitions = {
 			backend_manager:commit(true)
 			commit_complete_callback()
 		else
-			backend_manager:commit(true, commit_complete_callback)
+			local id = backend_manager:commit(true, commit_complete_callback)
+
+			if not id then
+				local t = Managers.time:time("ui")
+				self.quit_game_retry = true
+				self.delay_quit_game_retry = t + 1
+			end
 		end
 	end,
 	do_return_to_title_screen = function (self)
@@ -392,6 +398,10 @@ local transitions = {
 		self.current_view = "character_selection"
 		self.initial_profile_view = true
 		self.views[self.current_view].exit_to_game = true
+
+		if params.back_to_vs_preview then
+			self.views[self.current_view].back_to_vs_preview = params.back_to_vs_preview
+		end
 	end,
 	exit_initial_character_selection = function (self)
 		self.menu_active = false
@@ -462,7 +472,7 @@ local transitions = {
 		self.current_view = nil
 	end
 }
-view_settings = {
+local view_settings = {
 	ui_renderer_function = function (world, is_tutorial, is_in_inn)
 		local materials = {
 			"material",
@@ -644,7 +654,6 @@ view_settings = {
 	end,
 	hotkey_mapping = {
 		hotkey_hero = {
-			disable_when_matchmaking = true,
 			in_transition = "character_selection_force",
 			error_message = "matchmaking_ready_interaction_message_profile_view",
 			view = "character_selection",
@@ -714,29 +723,17 @@ view_settings = {
 	blocked_transitions = {}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local ui_views = dlc.ui_views
+DLCUtils.map_list("ui_views", function (view)
+	if view.transitions then
+		for name, func in pairs(view.transitions) do
+			fassert(not transitions[name], "Transition %q already exists", name)
 
-	if ui_views then
-		for _, view in ipairs(ui_views) do
-			if view.transitions then
-				for transition_name, func in pairs(view.transitions) do
-					fassert(transitions[transition_name] == nil, "Transition (%s) already exists. Duplicate somewhere", transition_name)
-
-					transitions[transition_name] = func
-				end
-			end
+			transitions[name] = func
 		end
 	end
-
-	local hotkey_mapping = dlc.hotkey_mapping
-
-	if hotkey_mapping then
-		for hotkey_name, settings in pairs(hotkey_mapping) do
-			view_settings.hotkey_mapping[hotkey_name] = settings
-		end
-	end
-end
+end)
+DLCUtils.merge("hotkey_mapping", view_settings.hotkey_mapping)
+DLCUtils.merge("ui_transitions", transitions)
 
 return {
 	transitions = transitions,

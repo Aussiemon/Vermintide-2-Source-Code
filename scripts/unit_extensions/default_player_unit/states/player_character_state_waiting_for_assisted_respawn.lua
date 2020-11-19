@@ -29,6 +29,7 @@ PlayerCharacterStateWaitingForAssistedRespawn.on_enter = function (self, unit, i
 	local flavour_animation = Unit.get_data(flavour_unit, "on_enter_loop_anim")
 
 	CharacterStateHelper.play_animation_event(unit, flavour_animation)
+	CharacterStateHelper.change_camera_state(self.player, "observer")
 
 	local career_extension = ScriptUnit.extension(unit, "career_system")
 

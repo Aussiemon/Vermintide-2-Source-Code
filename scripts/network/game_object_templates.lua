@@ -221,6 +221,13 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
 	},
+	aoe_projectile_unit_fixed_impact = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = false,
+		syncs_rotation = false,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	overpowering_blob_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = false,
@@ -264,6 +271,13 @@ local game_object_templates = {
 		is_level_unit = false
 	},
 	versus_volume_objective_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	versus_capture_point_objective_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
 		syncs_rotation = true,
@@ -536,19 +550,25 @@ local game_object_templates = {
 		game_object_created_func_name = "game_object_created_weave_objective",
 		game_object_destroyed_func_name = "game_object_destroyed_weave_objective"
 	},
+	horde_surge = {
+		game_object_created_func_name = "game_object_created_horde_surge",
+		game_object_destroyed_func_name = "game_object_destroyed_horde_surge"
+	},
+	versus_objective = {
+		game_object_created_func_name = "game_object_created_versus_objective",
+		game_object_destroyed_func_name = "game_object_destroyed_versus_objective"
+	},
 	game_mode_data = {
 		game_object_created_func_name = "game_object_created_game_mode_data",
 		game_object_destroyed_func_name = "game_object_destroyed_game_mode_data"
+	},
+	engineer_career_data = {
+		game_object_created_func_name = "game_object_created_career_data",
+		game_object_destroyed_func_name = "game_object_destroyed_career_data"
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local templates = dlc.game_object_templates
-
-	if templates then
-		table.merge_recursive(game_object_templates, templates)
-	end
-end
+DLCUtils.merge("game_object_templates", game_object_templates)
 
 for go_template_name, go_template in pairs(game_object_templates) do
 	go_template.go_type = go_template_name

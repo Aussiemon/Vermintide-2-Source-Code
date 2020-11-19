@@ -23,6 +23,18 @@ local extensions = {
 	"PickupSpawnerExtension"
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local additional_system_extensions = dlc.additional_system_extensions and dlc.additional_system_extensions.pickup_system
+
+	if additional_system_extensions then
+		for _, extension in ipairs(additional_system_extensions) do
+			require(extension.require)
+
+			extensions[#extensions + 1] = extension.class
+		end
+	end
+end
+
 PickupSystem.init = function (self, context, system_name)
 	PickupSystem.super.init(self, context, system_name, extensions)
 
@@ -378,13 +390,16 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 
 	self:spawn_guarenteed_pickups()
 
+	local mutator_handler = Managers.state.game_mode._mutator_handler
 	local primary_pickup_spawners = self.primary_pickup_spawners
 	local primary_pickup_settings = pickup_settings.primary or pickup_settings
+	primary_pickup_settings = mutator_handler:pickup_settings_updated_settings(primary_pickup_settings)
 
 	self:_spawn_spread_pickups(primary_pickup_spawners, primary_pickup_settings, comparator, 1)
 
 	local secondary_pickup_spawners = self.secondary_pickup_spawners
 	local secondary_pickup_settings = pickup_settings.secondary
+	secondary_pickup_settings = mutator_handler:pickup_settings_updated_settings(secondary_pickup_settings)
 
 	if secondary_pickup_settings then
 		self:_spawn_spread_pickups(secondary_pickup_spawners, secondary_pickup_settings, comparator, 2)
@@ -418,10 +433,17 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 				end
 			end
 		else
+			local pickups = Managers.mechanism:get_filtered_pickups(pickup_type)
+
 			for i = 1, value, 1 do
-				local spawn_value = self:_random()
-				local pickups = Pickups[pickup_type]
 				local spawn_weighting_total = 0
+
+				for _, settings in pairs(pickups) do
+					spawn_weighting_total = spawn_weighting_total + settings.spawn_weighting
+				end
+
+				local spawn_value = self:_random(0, spawn_weighting_total * 100) / 100
+				spawn_weighting_total = 0
 				local selected_pickup = false
 
 				for pickup_name, settings in pairs(pickups) do
@@ -508,7 +530,7 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 
 						for l = 1, num_pickups_to_spawn, 1 do
 							local pickup_name = pickups_to_spawn[l]
-							local can_spawn = Unit.get_data(spawner_unit, pickup_name)
+							local can_spawn = self:_can_spawn(spawner_unit, pickup_name)
 
 							if can_spawn then
 								local settings = AllPickups[pickup_name]
@@ -754,7 +776,7 @@ PickupSystem._spawn_guaranteed_pickup = function (self, spawner_unit, spawn_type
 	table.clear(potential_pickups)
 
 	for pickup_name, settings in pairs(AllPickups) do
-		local can_spawn = Unit.get_data(spawner_unit, pickup_name)
+		local can_spawn = self:_can_spawn(spawner_unit, pickup_name)
 
 		if can_spawn and settings.spawn_weighting > 0 then
 			potential_pickups[#potential_pickups + 1] = pickup_name
@@ -786,7 +808,7 @@ PickupSystem._spawn_specified_pickups = function (self)
 		table.clear(potential_pickups)
 
 		for pickup_name, settings in pairs(AllPickups) do
-			local can_spawn = Unit.get_data(unit, pickup_name)
+			local can_spawn = self:_can_spawn(unit, pickup_name)
 
 			if can_spawn then
 				potential_pickups[#potential_pickups + 1] = pickup_name
@@ -1045,6 +1067,13 @@ PickupSystem.hot_join_sync = function (self, sender)
 	return
 end
 
+PickupSystem.spawn_pickup = function (self, pickup_name, position, physics, rotation, with_physics, spawn_type)
+	local pickup_settings = AllPickups[pickup_name]
+	local pickup_unit, _ = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type)
+
+	return pickup_unit
+end
+
 PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_down)
 	if not position then
 		return
@@ -1053,7 +1082,7 @@ PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_
 	if raycast_down then
 		local physics_world = World.physics_world(self.world)
 		local direction = Vector3.down()
-		local length = 15
+		local length = 40
 		local result, new_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, length, "closest", "collision_filter", "filter_pickup_collision")
 
 		if result then
@@ -1115,9 +1144,6 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 	local unit_name = pickup_settings.unit_name
 	local pickup_unit, pickup_unit_go_id = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 
-	if self.is_server then
-	end
-
 	self:_update_limited_limited_owned_pickups(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id)
 
 	return pickup_unit, pickup_unit_go_id
@@ -1142,7 +1168,11 @@ PickupSystem._update_limited_limited_owned_pickups = function (self, pickup_sett
 	end
 end
 
-PickupSystem.rpc_spawn_pickup_with_physics = function (self, sender, pickup_name_id, position, rotation, spawn_type_id)
+PickupSystem._can_spawn = function (self, spawner_unit, pickup_name)
+	return Unit.get_data(spawner_unit, pickup_name) or Managers.mechanism:can_spawn_pickup(spawner_unit, pickup_name)
+end
+
+PickupSystem.rpc_spawn_pickup_with_physics = function (self, channel_id, pickup_name_id, position, rotation, spawn_type_id)
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
 
 	fassert(AllPickups[pickup_name], "pickup name %s does not exist in Pickups table", pickup_name)
@@ -1153,19 +1183,19 @@ PickupSystem.rpc_spawn_pickup_with_physics = function (self, sender, pickup_name
 	self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, true, spawn_type)
 end
 
-PickupSystem.rpc_spawn_pickup = function (self, sender, pickup_name_id, position, rotation, spawn_type_id)
+PickupSystem.rpc_spawn_pickup = function (self, channel_id, pickup_name_id, position, rotation, spawn_type_id)
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
 
 	fassert(AllPickups[pickup_name], "pickup name %s does not exist in Pickups table", pickup_name)
 
-	local owner_peer_id = sender or Network.peer_id()
+	local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id or Network.peer_id()]
 	local pickup_settings = AllPickups[pickup_name]
 	local spawn_type = NetworkLookup.pickup_spawn_types[spawn_type_id]
 
 	self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, false, spawn_type, owner_peer_id)
 end
 
-PickupSystem.rpc_spawn_linked_pickup = function (self, sender, pickup_name_id, link_position, link_rotation, spawn_type_id, hit_unit_go_id, node_index, is_level_unit, spawn_limit)
+PickupSystem.rpc_spawn_linked_pickup = function (self, channel_id, pickup_name_id, link_position, link_rotation, spawn_type_id, hit_unit_go_id, node_index, is_level_unit, spawn_limit)
 	fassert(self.is_server, "Can only spawn linked pickups on the server!")
 
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
@@ -1183,7 +1213,7 @@ PickupSystem.rpc_spawn_linked_pickup = function (self, sender, pickup_name_id, l
 		with_physics = false
 	end
 
-	local owner_peer_id = sender or Network.peer_id()
+	local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id or Network.peer_id()]
 	local pickup_settings = AllPickups[pickup_name]
 	local pickup_unit, pickup_unit_go_id = self:_spawn_pickup(pickup_settings, pickup_name, link_position, link_rotation, with_physics, spawn_type, owner_peer_id, spawn_limit)
 
@@ -1203,29 +1233,29 @@ PickupSystem._delete_pickup = function (self, unit)
 	end
 end
 
-PickupSystem.rpc_delete_pickup = function (self, sender, unit_id)
+PickupSystem.rpc_delete_pickup = function (self, channel_id, unit_id)
 	local unit = Managers.state.network:game_object_or_level_unit(unit_id)
 
 	self:_delete_pickup(unit)
 end
 
-PickupSystem.rpc_delete_limited_owned_pickup_unit = function (self, sender, owner_peer_id, pickup_unit_id)
+PickupSystem.rpc_delete_limited_owned_pickup_unit = function (self, channel_id, owner_peer_id, pickup_unit_id)
 	local pickup_unit = Managers.state.network:game_object_or_level_unit(pickup_unit_id)
 
 	self:delete_limited_owned_pickup_unit(owner_peer_id, pickup_unit)
 end
 
-PickupSystem.rpc_delete_limited_owned_pickups = function (self, sender, owner_peer_id)
+PickupSystem.rpc_delete_limited_owned_pickups = function (self, channel_id, owner_peer_id)
 	self:event_delete_limited_owned_pickups(owner_peer_id)
 end
 
-PickupSystem.rpc_delete_limited_owned_pickup_type = function (self, sender, owner_peer_id, pickup_name_id)
+PickupSystem.rpc_delete_limited_owned_pickup_type = function (self, channel_id, owner_peer_id, pickup_name_id)
 	local pickup_type = NetworkLookup.pickup_names[pickup_name_id]
 
 	self:delete_limited_owned_pickup_type(owner_peer_id, pickup_type)
 end
 
-PickupSystem.rpc_force_use_pickup = function (self, sender, pickup_name_id)
+PickupSystem.rpc_force_use_pickup = function (self, channel_id, pickup_name_id)
 	local is_server = Managers.player.is_server
 
 	if is_server then

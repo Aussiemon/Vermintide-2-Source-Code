@@ -2,14 +2,6 @@ local definitions = local_require("scripts/ui/views/weave_splash_ui_definitions"
 local scenegraph_definition = definitions.scenegraph_definition
 local widget_definitions = definitions.widget_definitions
 local create_weave_image_func = definitions.create_weave_image_func
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local weave_splash_images = {
 	"weave_loading_screen"
 }
@@ -42,7 +34,7 @@ WeaveSplashUI._create_ui_elements = function (self)
 		self._widgets[name] = UIWidget.init(widget_definition)
 	end
 
-	local image_name = weave_splash_images[1]
+	local image_name = Managers.mechanism:mechanism_setting("loading_screen_override") or weave_splash_images[1]
 	local widget_definition = create_weave_image_func(image_name, 255)
 	self._weave_splash_widgets[#self._weave_splash_widgets + 1] = UIWidget.init(widget_definition)
 	local next_image_index = 1 + self._current_splash_index % #weave_splash_images
@@ -101,7 +93,7 @@ WeaveSplashUI._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings
-	local input_service = fake_input_service
+	local input_service = FAKE_INPUT_SERVICE
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 

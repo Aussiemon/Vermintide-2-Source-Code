@@ -1,6 +1,11 @@
 CosmeticsUtils = {
 	retrieve_skin_packages = function (skin_name, first_person)
 		local skin_data = Cosmetics[skin_name]
+
+		if not skin_data then
+			return {}
+		end
+
 		local packages = nil
 
 		if first_person then

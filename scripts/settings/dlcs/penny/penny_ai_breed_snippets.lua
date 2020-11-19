@@ -419,7 +419,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_death = function (unit, bl
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.drop_loot_dice(4, Vector3(14.959, 383.806, 31.202), true)
+	AiBreedSnippets.drop_loot(4, Vector3(14.959, 383.806, 31.202), true)
 end
 
 AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_despawn = function (unit, blackboard)

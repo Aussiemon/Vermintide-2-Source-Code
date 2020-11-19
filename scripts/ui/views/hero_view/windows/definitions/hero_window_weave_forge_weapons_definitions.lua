@@ -792,7 +792,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 				return backend_id and ItemHelper.is_new_backend_id(backend_id)
 			end,
 			content_change_function = function (content, style)
-				local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+				local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 				style.color[1] = 55 + progress * 200
 				local button_hotspot = content.button_hotspot
 				local backend_id = content.backend_id

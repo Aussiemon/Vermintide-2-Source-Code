@@ -36,4 +36,8 @@ AlwaysUnlocked.is_cosmetic = function (self)
 	return self._cosmetic
 end
 
+AlwaysUnlocked.requires_restart = function (self)
+	return false
+end
+
 return

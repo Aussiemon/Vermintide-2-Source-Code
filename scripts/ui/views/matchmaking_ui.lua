@@ -140,6 +140,10 @@ MatchmakingUI.update = function (self, dt, t)
 
 	local disable_matchmaking_ui = false
 
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		disable_matchmaking_ui = true
+	end
+
 	if disable_matchmaking_ui then
 		return
 	end
@@ -372,6 +376,18 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 		self:_set_detail_level_text(text, false)
 		self:_set_detail_difficulty_text("", nil, true)
+	elseif game_mode == "deus" then
+		self:_set_detail_level_text("deus_matching", true)
+
+		local difficulty = matchmaking_info.difficulty
+
+		if difficulty ~= cached_matchmaking_info.difficulty then
+			cached_matchmaking_info.difficulty = difficulty
+			local difficulty_setting = difficulty and DifficultySettings[difficulty]
+			local difficulty_display_name = (difficulty_setting and difficulty_setting.display_name) or "dlc1_2_difficulty_unavailable"
+
+			self:_set_detail_difficulty_text(difficulty_display_name)
+		end
 	else
 		local difficulty = matchmaking_info.difficulty
 
@@ -486,6 +502,13 @@ MatchmakingUI._update_mission_vote_status = function (self)
 
 		self:_set_detail_level_text("", false)
 		self:_set_detail_difficulty_text("", nil, true)
+	elseif game_mode == "deus" then
+		self:_set_detail_level_text("deus_matching", true)
+
+		local difficulty_settings = DifficultySettings[difficulty]
+		local difficulty_display_name = difficulty_settings and difficulty_settings.display_name
+
+		self:_set_detail_difficulty_text(difficulty_display_name or "")
 	else
 		local difficulty_settings = DifficultySettings[difficulty]
 		local difficulty_display_name = difficulty_settings and difficulty_settings.display_name

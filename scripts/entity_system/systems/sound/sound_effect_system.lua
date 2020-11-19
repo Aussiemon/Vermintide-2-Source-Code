@@ -42,7 +42,7 @@ SoundEffectSystem.aggro_unit_changed = function (self, target_unit, enemy_unit, 
 	end
 end
 
-SoundEffectSystem.rpc_aggro_unit_changed = function (self, sender, target_unit_id, enemy_unit_id, has_aggro)
+SoundEffectSystem.rpc_aggro_unit_changed = function (self, channel_id, target_unit_id, enemy_unit_id, has_aggro)
 	local target_unit = self.unit_storage:unit(target_unit_id)
 	local enemy_unit = self.unit_storage:unit(enemy_unit_id)
 

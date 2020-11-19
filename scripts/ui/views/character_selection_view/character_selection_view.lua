@@ -17,14 +17,6 @@ local DO_RELOAD = true
 local debug_draw_scenegraph = false
 local debug_menu = true
 CharacterSelectionView = class(CharacterSelectionView)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 CharacterSelectionView.init = function (self, ingame_ui_context)
 	self.world = ingame_ui_context.world
@@ -48,7 +40,7 @@ CharacterSelectionView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("character_selection_view", "mouse")
 	input_manager:map_device_to_service("character_selection_view", "gamepad")
 
-	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context, UISettings.hero_selection_camera_position_by_character)
+	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context, UISettings.hero_selection_camera_position_by_character, "CharacterSelectionView")
 
 	self.world_previewer:force_stream_highest_mip_levels()
 
@@ -58,7 +50,7 @@ CharacterSelectionView.init = function (self, ingame_ui_context)
 		parent = self,
 		world_previewer = self.world_previewer,
 		settings_by_screen = settings_by_screen,
-		input_service = fake_input_service
+		input_service = FAKE_INPUT_SERVICE
 	}
 	self._state_machine_params = state_machine_params
 	self.units = {}
@@ -114,7 +106,7 @@ CharacterSelectionView.input_service = function (self, ignore_input_blocked)
 	if ignore_input_blocked then
 		return self.input_manager:get_service("character_selection_view")
 	else
-		return (self._input_blocked and fake_input_service) or self.input_manager:get_service("character_selection_view")
+		return (self._input_blocked and FAKE_INPUT_SERVICE) or self.input_manager:get_service("character_selection_view")
 	end
 end
 
@@ -240,7 +232,7 @@ CharacterSelectionView.update = function (self, dt, t)
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
-	local input_service = (input_blocked and not gamepad_active and fake_input_service) or input_manager:get_service("character_selection_view")
+	local input_service = (input_blocked and not gamepad_active and FAKE_INPUT_SERVICE) or input_manager:get_service("character_selection_view")
 	self._state_machine_params.input_service = input_service
 	local transitioning = self:transitioning()
 
@@ -308,7 +300,7 @@ CharacterSelectionView.on_enter = function (self, params)
 		self:show_hero_panel()
 	end
 
-	self:play_sound("hud_in_inventory_state_on")
+	Managers.music:duck_sounds()
 	self:play_sound("play_gui_amb_hero_screen_loop_begin")
 
 	local player_manager = Managers.player
@@ -548,7 +540,7 @@ CharacterSelectionView.on_exit = function (self, params)
 	end
 
 	self:hide_hero_world()
-	self:play_sound("hud_in_inventory_state_off")
+	Managers.music:unduck_sounds()
 	self:play_sound("play_gui_amb_hero_screen_loop_end")
 	UISettings.hero_fullscreen_menu_on_exit()
 end

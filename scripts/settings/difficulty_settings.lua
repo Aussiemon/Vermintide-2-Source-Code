@@ -312,6 +312,51 @@ DifficultySettings.cataclysm_3 = {
 		unlit_texture = "scorpion_icon_unlit"
 	}
 }
+DifficultySettings.versus_base = {
+	completed_frame_texture = "map_frame_01",
+	display_name = "difficulty_normal",
+	always_damage_heavy = true,
+	allow_respawns = true,
+	stagger_damage_multiplier = 0.2,
+	friendly_fire_ranged = false,
+	stagger_modifier = 1,
+	required_power_level = 0,
+	power_level_cap = 400,
+	xp_multiplier = 2,
+	fallback_difficulty = "normal",
+	max_chest_power_level = 100,
+	friendly_fire_melee = false,
+	wounds = 5,
+	description = "difficulty_normal_desc",
+	damage_percent_cap = 1,
+	slot_healthkit = "potion_healing_draught_01",
+	knocked_down_damage_multiplier = 0.5,
+	min_stagger_damage_coefficient = 1,
+	power_level_max_target = 400,
+	rank = 2,
+	chance_of_shield_vermin_patrol = 0.3,
+	max_hp = 150,
+	amount_shield_vermin_patrol = 2,
+	display_image = "difficulty_option_2",
+	respawn = {
+		temporary_health_percentage = 0,
+		health_percentage = 0.5,
+		ammo_melee = 0.5,
+		ammo_ranged = 0.5
+	},
+	level_failed_reward = {
+		token_type = "iron_tokens",
+		token_amount = 8
+	},
+	weave_settings = {
+		experience_reward_on_complete = 200
+	}
+}
+
+for name, setting in pairs(DifficultySettings) do
+	setting.difficulty = name
+end
+
 ExtraDifficultyRequirements = {
 	kill_all_lords_on_legend = {
 		description_text = "achv_scorpion_cataclysm_unlock_kill_all_lords_desc",
@@ -332,9 +377,13 @@ ExtraDifficultyRequirements = {
 	}
 }
 DifficultyRanks = {}
+MinimumDifficultyRank = math.huge
+MaximumDifficultyRank = 0
 
 for _, settings in pairs(DifficultySettings) do
 	DifficultyRanks[#DifficultyRanks + 1] = settings.rank
+	MinimumDifficultyRank = math.min(MinimumDifficultyRank, settings.rank)
+	MaximumDifficultyRank = math.max(MaximumDifficultyRank, settings.rank)
 end
 
 Difficulties = {
@@ -344,7 +393,8 @@ Difficulties = {
 	"hardest",
 	"cataclysm",
 	"cataclysm_2",
-	"cataclysm_3"
+	"cataclysm_3",
+	"versus_base"
 }
 DefaultDifficulties = {
 	"normal",
@@ -363,5 +413,7 @@ DifficultyMapping = {
 DefaultStartingDifficulty = "hard"
 DefaultQuickPlayStartingDifficulty = "normal"
 DefaultAdventureModeStartingDifficulty = "normal"
+
+require("scripts/settings/difficulty_tweak")
 
 return

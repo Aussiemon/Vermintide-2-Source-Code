@@ -28,6 +28,7 @@ TestCases = {
 					Snippets.set_player_profile(profile.name, career_name)
 					Snippets.set_bot_profile(profile.name, career_name)
 					Snippets.add_all_weapon_skins()
+					Snippets.wait_for_players_inventory_ready()
 
 					for _, weapon in pairs(Snippets.request_weapons_for_career(career_name)) do
 						local weapon_id = weapon.backend_id
@@ -54,6 +55,7 @@ TestCases = {
 				local weave_name = "weave_" .. weave_number
 
 				Snippets.load_weave(weave_name)
+				Snippets.sleep(4)
 			end
 		end)
 	end,
@@ -62,6 +64,7 @@ TestCases = {
 			local result = ""
 
 			Snippets.set_script_data({
+				power_level_override = 1600,
 				ai_bots_disabled = false
 			})
 			Snippets.set_telemetry_settings({
@@ -100,7 +103,7 @@ TestCases = {
 				local timer = 0
 
 				while timer < 0.1 do
-					Snippets.make_player_and_one_bot_invicible()
+					Snippets.make_player_and_two_bots_invicible()
 					Snippets.update_camera_to_follow_first_bot_rotation()
 
 					timer = timer + dt
@@ -301,6 +304,74 @@ TestCases = {
 			print(output)
 
 			return output
+		end)
+	end,
+	run_through_deus_level = function (level_key)
+		Testify:run_case(function (dt, t)
+			local result = ""
+
+			Snippets.set_script_data({
+				power_level_override = 1600,
+				ai_bots_disabled = false
+			})
+			Snippets.set_telemetry_settings({
+				send = true
+			})
+			Snippets.wait_for_player_to_spawn()
+			Snippets.load_level(level_key)
+
+			local last_player_teleportation_time = os.clock()
+			local bots_stuck_data = {
+				{
+					Vector3Box(Vector3(-999, -999, -999)),
+					os.time
+				},
+				{
+					Vector3Box(Vector3(-999, -999, -999)),
+					os.time
+				},
+				{
+					Vector3Box(Vector3(-999, -999, -999)),
+					os.time
+				}
+			}
+
+			while not Snippets.level_finished() do
+				Snippets.set_camera_to_observe_first_bot()
+				Snippets.teleport_blocked_bots_forward_on_main_path({
+					bots_blocked_time_before_teleportation = 6,
+					bots_teleportation_range = 21,
+					bots_stuck_data = bots_stuck_data
+				})
+				Snippets.teleport_player_forward_on_main_path((os.clock() - last_player_teleportation_time) * 0.5)
+
+				last_player_teleportation_time = os.clock()
+				local timer = 0
+
+				while timer < 0.1 do
+					Snippets.make_players_invicible()
+					Snippets.update_camera_to_follow_first_bot_rotation()
+
+					timer = timer + dt
+				end
+			end
+
+			if Snippets.end_of_the_level_reached() then
+				result = result .. "End of level reached"
+			elseif Snippets.level_end_screen_displayed() then
+				if Snippets.has_lost() then
+					result = result .. "Defeated"
+				else
+					result = result .. "Victorious"
+				end
+
+				Snippets.close_level_end_screen()
+			end
+
+			Snippets.sleep(5)
+			print("[Testify] Level finished!")
+
+			return result
 		end)
 	end
 }

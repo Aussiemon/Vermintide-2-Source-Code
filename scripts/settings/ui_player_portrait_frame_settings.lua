@@ -1503,6 +1503,42 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_0099 = {
+		{
+			texture = "portrait_frame_0099",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0100 = {
+		{
+			texture = "portrait_frame_0100",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0101 = {
+		{
+			texture = "portrait_frame_0101",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_mondstille_01 = {
 		{
 			texture = "portrait_frame_mondstille_01_base",
@@ -1906,5 +1942,7 @@ UIPlayerPortraitFrameSettings = {
 		}
 	}
 }
+
+DLCUtils.merge("ui_portrait_frame_settings", UIPlayerPortraitFrameSettings)
 
 return

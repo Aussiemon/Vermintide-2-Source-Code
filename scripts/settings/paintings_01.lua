@@ -1184,13 +1184,13 @@ Paintings.ver_AB626C_BretFrontisPiece = {
 	}
 }
 Paintings.ver_skaven_7th_edition_army_book_page_027 = {
-	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
+	sound_event = "painting_skaven_7th_edition_army_book_page_027_description",
 	rarity = "common",
-	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
+	display_name = "painting_skaven_7th_edition_army_book_page_027_name",
 	icon = "icon_painting_3",
 	frame = "painted",
-	description = "painting_skaven_7th_edition_army_book_page_037_description",
-	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
+	description = "painting_skaven_7th_edition_army_book_page_027_description",
+	artist = "painting_skaven_7th_edition_army_book_page_027_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,
@@ -1289,13 +1289,13 @@ Paintings.ver_wfrp2_knights_of_the_grail_Page_040 = {
 	}
 }
 Paintings.ver_wfrp2_knights_of_the_grail_Page_058 = {
-	sound_event = "painting_skaven_7th_edition_army_book_page_037_description",
+	sound_event = "painting_wfrp2_knights_of_the_grail_Page_058_description",
 	rarity = "common",
-	display_name = "painting_skaven_7th_edition_army_book_page_037_name",
+	display_name = "painting_wfrp2_knights_of_the_grail_Page_058_name",
 	icon = "icon_painting_3",
 	frame = "painted",
-	description = "painting_skaven_7th_edition_army_book_page_037_description",
-	artist = "painting_skaven_7th_edition_army_book_page_037_artist",
+	description = "painting_wfrp2_knights_of_the_grail_Page_058_description",
+	artist = "painting_wfrp2_knights_of_the_grail_Page_058_artist",
 	orientation = "vertical",
 	frames = {
 		gold = true,
@@ -1363,6 +1363,96 @@ Paintings.ver_PD238_BretDuel_CMYK = {
 		wood = true
 	}
 }
+Paintings.ver_dwarfs_page_50 = {
+	sound_event = "painting_dwarfs_page_50_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_50_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_50_description",
+	artist = "painting_dwarfs_page_50_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_dwarfs_page_56 = {
+	sound_event = "painting_dwarfs_page_56_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_56_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_56_description",
+	artist = "painting_dwarfs_page_30_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_dwarfs_page_30 = {
+	sound_event = "painting_dwarfs_page_30_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_30_name",
+	icon = "icon_painting_1",
+	frame = "wood",
+	description = "painting_dwarfs_page_30_description",
+	artist = "painting_dwarfs_page_30_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_dwarfs_page_51 = {
+	sound_event = "painting_dwarfs_page_51_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_51_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_51_description",
+	artist = "painting_dwarfs_page_51_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_whf17_masterengineer = {
+	sound_event = "painting_whf17_masterengineer_description",
+	rarity = "common",
+	display_name = "painting_whf17_masterengineer_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_whf17_masterengineer_description",
+	artist = "painting_whf17_masterengineer_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_dwarfs_page_48 = {
+	sound_event = "painting_dwarfs_page_48_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_48_name",
+	icon = "icon_painting_1",
+	frame = "wood",
+	description = "painting_dwarfs_page_48_description",
+	artist = "painting_dwarfs_page_48_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1401,6 +1491,8 @@ local painting_order = {
 	"hor_storm_of_magic_Page_007",
 	"hor_storm_of_magic_Page_012",
 	"hor_wfrp2_knights_of_the_grail_Page_017",
+	"hor_dwarfs_page_30",
+	"hor_dwarfs_page_48",
 	"ver_none",
 	"ver_bw01",
 	"ver_khorne04",
@@ -1457,7 +1549,11 @@ local painting_order = {
 	"ver_wfrp2_knights_of_the_grail_Page_070",
 	"ver_AB617_BretIntroPage_CMYK",
 	"ver_KK280_BretGrailDamsel_CMYK",
-	"ver_PD238_BretDuel_CMYK"
+	"ver_PD238_BretDuel_CMYK",
+	"ver_dwarfs_page_50",
+	"ver_dwarfs_page_56",
+	"ver_dwarfs_page_51",
+	"ver_whf17_masterengineer"
 }
 PaintingOrder = PaintingOrder or {}
 

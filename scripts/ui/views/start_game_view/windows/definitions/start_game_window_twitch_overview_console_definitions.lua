@@ -734,7 +734,7 @@ local function create_window(scenegraph_id, size)
 				if not content.text_field_active then
 					style.caret_color[1] = 0
 				else
-					style.caret_color[1] = 128 + math.sin(Application.time_since_launch() * 5) * 128
+					style.caret_color[1] = 128 + math.sin(Managers.time:time("ui") * 5) * 128
 				end
 
 				return not Managers.twitch:is_connected() and not Managers.twitch:is_connecting()
@@ -749,7 +749,7 @@ local function create_window(scenegraph_id, size)
 					return
 				end
 
-				local timer = math.ceil(Application.time_since_launch() * 10)
+				local timer = math.ceil(Managers.time:time("ui") * 10)
 				local dots = timer % 5
 				local dot_str = ""
 
@@ -883,142 +883,6 @@ local function create_window(scenegraph_id, size)
 	return widget
 end
 
-local function create_window_mixer(scenegraph_id, size)
-	local widget = {
-		element = {}
-	}
-	local passes = {
-		{
-			style_id = "connecting",
-			pass_type = "text",
-			text_id = "disconnected",
-			content_check_function = function (content)
-				return Managers.twitch and not Managers.twitch:is_connected() and not Managers.twitch:is_connecting() and Managers.input:is_device_active("gamepad")
-			end
-		},
-		{
-			style_id = "shadow",
-			pass_type = "text",
-			text_id = "disconnected",
-			content_check_function = function (content)
-				return Managers.twitch and not Managers.twitch:is_connected() and not Managers.twitch:is_connecting() and Managers.input:is_device_active("gamepad")
-			end
-		},
-		{
-			style_id = "connecting",
-			pass_type = "text",
-			text_id = "connecting_id",
-			content_check_function = function (content, style)
-				if not Managers.twitch:is_connecting() then
-					return
-				end
-
-				local timer = math.ceil(Application.time_since_launch() * 10)
-				local dots = timer % 5
-				local dot_str = ""
-
-				for i = 1, dots, 1 do
-					dot_str = dot_str .. "."
-				end
-
-				content.connecting_id = Localize("start_game_window_twitch_connecting") .. dot_str
-
-				return true
-			end
-		},
-		{
-			style_id = "shadow",
-			pass_type = "text",
-			text_id = "connecting_id",
-			content_check_function = function (content, style)
-				if not Managers.twitch:is_connecting() then
-					return
-				end
-			end
-		},
-		{
-			style_id = "connecting",
-			pass_type = "text",
-			text_id = "connected",
-			content_check_function = function (content)
-				return Managers.twitch and Managers.twitch:is_connected() and Managers.input:is_device_active("gamepad")
-			end
-		},
-		{
-			style_id = "shadow",
-			pass_type = "text",
-			text_id = "connected",
-			content_check_function = function (content)
-				return Managers.twitch and Managers.twitch:is_connected() and Managers.input:is_device_active("gamepad")
-			end
-		}
-	}
-	local content = {
-		text_start_offset = 0,
-		connecting_id = "Connecting",
-		connected = "Connected to ",
-		error_id = "",
-		twitch_name = "",
-		text_input_hotspot = {},
-		disconnected = Localize("start_game_window_twitch_disconnected")
-	}
-	local style = {
-		connecting = {
-			word_wrap = false,
-			scenegraph_id = "connecting",
-			font_size = 24,
-			pixel_perfect = true,
-			horizontal_alignment = "center",
-			vertical_alignment = "center",
-			dynamic_font = true,
-			font_type = "hell_shark",
-			text_color = {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = {
-				0,
-				0,
-				10
-			}
-		},
-		shadow = {
-			word_wrap = false,
-			scenegraph_id = "connecting",
-			font_size = 24,
-			pixel_perfect = true,
-			horizontal_alignment = "center",
-			vertical_alignment = "center",
-			dynamic_font = true,
-			font_type = "hell_shark",
-			text_color = {
-				255,
-				0,
-				0,
-				0
-			},
-			offset = {
-				2,
-				-2,
-				9
-			}
-		}
-	}
-	widget.element.passes = passes
-	widget.content = content
-	widget.style = style
-	widget.offset = {
-		0,
-		0,
-		0
-	}
-	widget.scenegraph_id = scenegraph_id
-
-	return widget
-end
-
 local twitch_description_style = {
 	font_size = 28,
 	upper_case = false,
@@ -1060,8 +924,8 @@ local function disconnected_content_check_function(content)
 	return not Managers.twitch:is_connecting() and Managers.twitch:is_connected() and not Managers.input:is_device_active("gamepad")
 end
 
-local streaming_desc_str = (PLATFORM ~= "xb1" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
-local client_disclaimer_desc_str = (PLATFORM ~= "xb1" and "start_game_window_twitch_client_disclaimer_description") or "start_game_window_mixer_client_disclaimer_description"
+local streaming_desc_str = "start_game_window_twitch_connect_description"
+local client_disclaimer_desc_str = "start_game_window_twitch_client_disclaimer_description"
 local play_widgets = {
 	mission_setting = UIWidgets.create_start_game_console_setting_button("game_option_1", Localize("start_game_window_mission"), nil, nil, nil, scenegraph_definition.game_option_1.size),
 	difficulty_setting = UIWidgets.create_start_game_console_setting_button("game_option_2", Localize("start_game_window_difficulty"), nil, "difficulty_option_1", nil, scenegraph_definition.game_option_2.size, true),
@@ -1090,14 +954,6 @@ local widgets = {
 widgets.login_text_frame.element.passes[1].content_check_function = connected_content_check_function
 widgets.connect_button_frame.element.passes[1].content_check_function = connected_content_check_function
 widgets.disconnect_button_frame.element.passes[1].content_check_function = disconnected_content_check_function
-
-if PLATFORM == "xb1" then
-	widgets.frame_widget = create_window_mixer("twitch_background", scenegraph_definition.twitch_background.size)
-	widgets.login_text_frame = nil
-	widgets.connect_button_frame = nil
-	widgets.disconnect_button_frame = nil
-end
-
 local additional_settings_widgets = {}
 local selector_input_definition = {
 	"mission_setting",

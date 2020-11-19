@@ -130,15 +130,7 @@ local screens = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	if dlc.ui_end_screens then
-		for name, definition in pairs(dlc.ui_end_screens) do
-			fassert(screens[name] == nil, "end screen (%s) already exists.", name)
-
-			screens[name] = definition
-		end
-	end
-end
+DLCUtils.merge("ui_end_screens", screens)
 
 for name, definition in pairs(screens) do
 	fassert(definition.file_name, "end screen (%s) needs a file name", name)

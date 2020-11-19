@@ -316,8 +316,9 @@ end
 PlayerHuskLocomotionExtension.hot_join_sync = function (self, sender)
 	local player_object_id = self.id
 	local unit = self.unit
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-	RPC.rpc_sync_anim_state_3(sender, player_object_id, Unit.animation_get_state(unit))
+	RPC.rpc_sync_anim_state_3(channel_id, player_object_id, Unit.animation_get_state(unit))
 end
 
 PlayerHuskLocomotionExtension.current_rotation = function (self)

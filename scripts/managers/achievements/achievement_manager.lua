@@ -5,6 +5,33 @@ local World = rawget(_G, "World")
 local script_data = rawget(_G, "script_data")
 local Color = rawget(_G, "Color")
 local Gui = rawget(_G, "Gui")
+
+if PLATFORM ~= "win32" then
+	local to_remove = {}
+	local achievements = AchievementTemplates.achievements
+	local outline_categories = outline.categories
+
+	for idx, category_data in ipairs(outline_categories) do
+		table.clear(to_remove)
+
+		local entries = category_data.entries
+
+		for idx, entry in pairs(entries) do
+			if achievements[entry].disable_on_consoles then
+				to_remove[#to_remove + 1] = idx
+			end
+		end
+
+		for i = #to_remove, 1, -1 do
+			local idx = to_remove[i]
+			local entry = entries[idx]
+
+			table.remove(entries, idx)
+			Application.warning(string.format("### [AchievementManager] Stripping %q for consoles", entry))
+		end
+	end
+end
+
 AchievementManager = class(AchievementManager)
 local ACHIEVEMENT_CHECK_DELAY = 1
 
@@ -12,6 +39,8 @@ AchievementManager.init = function (self, world, statistics_db)
 	self.initialized = false
 	self.world = world
 	self._statistics_db = statistics_db
+	self._event_mappings = {}
+	self._template_event_data = {}
 	self._templates = {}
 	self._unlocked_achievements = {}
 	self._unlock_tasks = {}
@@ -20,7 +49,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	local backend_interface_loot = Managers.backend:get_interface("loot")
 	self._backend_interface_loot = backend_interface_loot
 
-	if PLATFORM == "win32" or PLATFORM == "win64" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		if rawget(_G, "Steam") and GameSettingsDevelopment.network_mode == "steam" then
 			self.platform = "steam"
 		else
@@ -34,6 +63,7 @@ AchievementManager.init = function (self, world, statistics_db)
 		self.platform = "debug"
 	end
 
+	local event_mappings = self._event_mappings
 	local template_count = 0
 
 	for _, template in pairs(AchievementTemplates.achievements) do
@@ -41,6 +71,16 @@ AchievementManager.init = function (self, world, statistics_db)
 			local idx = template_count + 1
 			self._templates[idx] = template
 			template_count = idx
+		end
+
+		local events = template.events
+
+		if events then
+			for _, event_name in ipairs(events) do
+				self._event_mappings[event_name] = self._event_mappings[event_name] or {}
+				self._event_mappings[event_name][#self._event_mappings[event_name] + 1] = template
+				self._template_event_data[template.id] = {}
+			end
 		end
 	end
 
@@ -60,6 +100,31 @@ AchievementManager.init = function (self, world, statistics_db)
 	Managers.state.event:register(self, "event_enable_achievements", "event_enable_achievements")
 
 	self.initialized = true
+end
+
+AchievementManager.trigger_event = function (self, event_name, ...)
+	if DEDICATED_SERVER then
+		return
+	end
+
+	local event_mappings = self._event_mappings
+	local template_event_data = self._template_event_data
+	local template_list = event_mappings[event_name]
+	local unlocked_achievements = self._unlocked_achievements
+
+	if template_list then
+		local player = Managers.player:local_player()
+		local stats_id = player:stats_id()
+		local statistics_db = self._statistics_db
+
+		for _, template in ipairs(template_list) do
+			if not unlocked_achievements[template.id] then
+				template.on_event(statistics_db, stats_id, template_event_data[template.id], event_name, {
+					...
+				})
+			end
+		end
+	end
 end
 
 AchievementManager.destroy = function (self)
@@ -148,18 +213,19 @@ AchievementManager.update = function (self, dt, t)
 	local template_id = template.id
 	local statistics_db = self._statistics_db
 	local stats_id = player:stats_id()
+	local template_event_data = self._template_event_data
 	local should_process = not unlocked_achievements[template_id] and not unlock_tasks[template_id]
 
 	if should_process then
 		local token, error_msg, achievement_completed = nil
 
 		if platform_functions.set_progress and template.progress then
-			local progress_table = template.progress(statistics_db, stats_id)
+			local progress_table = template.progress(statistics_db, stats_id, template_event_data[template.id])
 			local progress = progress_table[1]
 			local max_progress = progress_table[2]
 			token, error_msg, achievement_completed = platform_functions.set_progress(template, progress, max_progress)
 		else
-			achievement_completed = template.completed(statistics_db, stats_id)
+			achievement_completed = template.completed(statistics_db, stats_id, template_event_data[template.id])
 
 			if achievement_completed then
 				token, error_msg = platform_functions.unlock(template)
@@ -286,11 +352,14 @@ end
 
 AchievementManager.has_any_unclaimed_achievement = function (self)
 	for achievement_id, data in pairs(self._achievement_data) do
-		local required_dlc = data.required_dlc
-		local unlocked = not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)
+		if data.completed and not data.claimed then
+			local required_dlc = data.required_dlc
+			local required_dlc_extra = data.required_dlc_extra
+			local is_unlocked = (not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)) and (not required_dlc_extra or Managers.unlock:is_dlc_unlocked(required_dlc_extra))
 
-		if data.completed and unlocked and not data.claimed then
-			return true
+			if is_unlocked then
+				return true
+			end
 		end
 	end
 
@@ -494,13 +563,13 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 	if type(achievement_data.completed) == "boolean" then
 		completed = achievement_data.completed
 	elseif type(achievement_data.completed) == "function" then
-		completed = achievement_data.completed(self._statistics_db, stats_id)
+		completed = achievement_data.completed(self._statistics_db, stats_id, achievement_data)
 	end
 
 	if type(achievement_data.progress) == "table" then
 		progress = achievement_data.progress
 	elseif type(achievement_data.progress) == "function" then
-		progress = achievement_data.progress(self._statistics_db, stats_id)
+		progress = achievement_data.progress(self._statistics_db, stats_id, achievement_data)
 	end
 
 	if type(achievement_data.requirements) == "table" then
@@ -536,6 +605,7 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		desc = desc,
 		icon = achievement_data.icon,
 		required_dlc = achievement_data.required_dlc,
+		required_dlc_extra = achievement_data.required_dlc_extra,
 		completed = completed,
 		progress = progress,
 		requirements = requirements,

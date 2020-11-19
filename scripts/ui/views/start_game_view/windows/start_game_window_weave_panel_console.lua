@@ -440,7 +440,7 @@ StartGameWindowWeavePanelConsole._animate_title_entry = function (self, widget, 
 	end
 
 	if style.new_marker then
-		local new_marker_progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+		local new_marker_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 		style.new_marker.color[1] = 100 + 155 * new_marker_progress
 	end
 

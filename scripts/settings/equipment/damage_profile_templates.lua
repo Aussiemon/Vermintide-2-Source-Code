@@ -218,6 +218,14 @@ DamageProfileTemplates.heavy_slashing_linesman = {
 	default_target = "default_target_linesman_H",
 	targets = "targets_linesman_H"
 }
+DamageProfileTemplates.heavy_slashing_linesman_burn = {
+	armor_modifier = "armor_modifier_linesman_H",
+	critical_strike = "critical_strike_linesman_H",
+	charge_value = "heavy_attack",
+	cleave_distribution = "cleave_distribution_linesman_H",
+	default_target = "default_target_linesman_burn_H",
+	targets = "targets_linesman_burn_H"
+}
 DamageProfileTemplates.heavy_slashing_linesman_polearm = {
 	armor_modifier = "armor_modifier_linesman_H",
 	critical_strike = "critical_strike_linesman_H",
@@ -292,6 +300,10 @@ new_template("medium_blunt_tank", "_1h", nil, "heavy_attack")
 DamageProfileTemplates.medium_blunt_tank_1h.targets = "targets_tank_M_1h"
 DamageProfileTemplates.medium_blunt_tank_1h.armor_modifier = "armor_modifier_tank_M_1h"
 
+new_template("medium_blunt_tank", "_impact", nil, nil)
+
+DamageProfileTemplates.medium_blunt_tank_impact.stagger_distance_modifier = 1.15
+
 new_template("medium_blunt_tank_1h", nil, "medium_slashing_tank_1h", "heavy_attack", "light_slashing_tank", "slashing_tank", "slashing_tank", "light_slashing_tank")
 new_template("medium_blunt_tank_1h", nil, "medium_blunt_tank_dual", nil, nil)
 
@@ -346,6 +358,7 @@ DamageProfileTemplates.light_pointy_smiter = {
 new_template("light_slashing_smiter", "_diag", nil, nil, "slashing_linesman")
 new_template("light_slashing_smiter", "_flat", nil, nil, "slashing_tank")
 new_template("light_slashing_smiter", "_upper", nil, nil, "slashing_upper")
+new_template("light_slashing_smiter", "_heavy", nil, "heavy")
 new_template("light_pointy_smiter", "_diag", nil, nil, "blunt_linesman")
 new_template("light_pointy_smiter", "_flat", nil, nil, "blunt_tank")
 new_template("light_pointy_smiter", "_upper", nil, nil, "blunt_tank_uppercut")
@@ -458,6 +471,12 @@ DamageProfileTemplates.heavy_blunt_smiter_burn = {
 	targets = "targets_smiter_M",
 	shield_break = true
 }
+
+new_template("heavy_blunt_smiter_burn", "_charge", nil, nil, nil)
+
+DamageProfileTemplates.heavy_blunt_smiter_burn_charge.critical_strike = "critical_strike_blunt_smiter_2h_hammer_H"
+DamageProfileTemplates.heavy_blunt_smiter_burn_charge.armor_modifier = "armor_modifier_blunt_smiter_2h_hammer_H"
+DamageProfileTemplates.heavy_blunt_smiter_burn_charge.default_target = "default_target_smiter_burn_H_charged"
 DamageProfileTemplates.light_slashing_smiter_stab = {
 	armor_modifier = "armor_modifier_stab_smiter_L",
 	critical_strike = "critical_strike_stab_smiter_L",
@@ -4894,19 +4913,9 @@ DamageProfileTemplates.ratling_gunner_backdrop = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local file_names = dlc.damage_profile_template_files_names
-
-	if file_names then
-		for _, file_name in ipairs(file_names) do
-			local dlc_damage_templates = require(file_name)
-
-			for template_name, template in pairs(dlc_damage_templates) do
-				DamageProfileTemplates[template_name] = template
-			end
-		end
-	end
-end
+DLCUtils.map_list("damage_profile_template_files_names", function (file_name)
+	table.merge(DamageProfileTemplates, require(file_name))
+end)
 
 for name, damage_profile in pairs(DamageProfileTemplates) do
 	if not damage_profile.targets then

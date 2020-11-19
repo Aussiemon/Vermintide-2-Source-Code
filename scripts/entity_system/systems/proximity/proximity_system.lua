@@ -44,10 +44,22 @@ ProximitySystem.init = function (self, context, system_name)
 	self._pseudo_sorted_list = {}
 	self._old_enabled_fx = {}
 	self._new_enabled_fx = {}
+	self._is_spectator = false
+	self._spectated_player = nil
+	self._spectated_player_unit = nil
+	local event_manager = Managers.state.event
+
+	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 end
 
 ProximitySystem.destroy = function (self)
 	self.unit_extension_data = nil
+end
+
+ProximitySystem.on_spectator_target_changed = function (self, spectated_player_unit)
+	self._spectated_player_unit = spectated_player_unit
+	self._spectated_player = Managers.player:owner(spectated_player_unit)
+	self._is_spectator = true
 end
 
 ProximitySystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -521,7 +533,7 @@ ProximitySystem._update_nearby_boss = function (self)
 		return
 	end
 
-	local local_player = Managers.player:local_player()
+	local local_player = (self._is_spectator and self._spectated_player) or Managers.player:local_player()
 
 	if not local_player then
 		return
@@ -572,13 +584,18 @@ ProximitySystem._update_nearby_enemies = function (self)
 	local list = self._pseudo_sorted_list
 	local old_enabled_fx = self._old_enabled_fx
 	local new_enabled_fx = self._new_enabled_fx
-	local local_players = Managers.player:players_at_peer(Network.peer_id())
+	local local_players = (self._is_spectator and {
+		self._spectated_player
+	}) or Managers.player:players_at_peer(Network.peer_id())
 	local player_pos = Vector3(0, 0, 0)
 	local num_players = 0
 	local camera_manager = Managers.state.camera
 
 	for _, player in pairs(local_players) do
-		if not player.bot_player then
+		if self._is_spectator then
+			player_pos = Unit.world_position(player.player_unit, 0)
+			num_players = num_players + 1
+		elseif not player.bot_player then
 			player_pos = camera_manager:camera_position(player.viewport_name)
 			num_players = num_players + 1
 		end

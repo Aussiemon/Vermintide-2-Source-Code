@@ -205,6 +205,20 @@ BoonManager.on_round_end = function (self)
 	event_manager:unregister("on_player_left_party", self)
 	event_manager:unregister("on_player_joined_party", self)
 	event_manager:unregister("new_player_unit", self)
+
+	local boons = self._boons
+
+	for i = #boons, 1, -1 do
+		local boon = boons[i]
+
+		if boon.consume_type == "round" then
+			boon.consume_value = boon.consume_value - 1
+		end
+
+		if self:_has_been_consumed(boon) then
+			table.swap_delete(boons, i)
+		end
+	end
 end
 
 BoonManager.on_venture_start = function (self)
@@ -227,7 +241,7 @@ BoonManager.on_venture_end = function (self)
 	end
 end
 
-BoonManager.on_player_spawned = function (self, player, unit)
+BoonManager.on_player_spawned = function (self, player, unit, unique_id)
 	self._spawned_players_queue[#self._spawned_players_queue + 1] = unit
 end
 

@@ -84,11 +84,14 @@ InteractableSystem._handle_standard_interact_request = function (self, interacti
 	InteractionHelper:deny_request(sender, interactor_id)
 end
 
-InteractableSystem.rpc_generic_interaction_request = function (self, sender, interactor_go_id, interactable_go_id, is_level_unit, interaction_type_id)
+local IS_LOCAL_HOST = "IS_LOCAL_HOST"
+
+InteractableSystem.rpc_generic_interaction_request = function (self, channel_id, interactor_go_id, interactable_go_id, is_level_unit, interaction_type_id)
+	local peer_id = (channel_id == IS_LOCAL_HOST and Network.peer_id()) or CHANNEL_TO_PEER_ID[channel_id]
 	local interaction_type = NetworkLookup.interactions[interaction_type_id]
 
-	InteractionHelper.printf("rpc_generic_interaction_request(%s, %s, %s, %s, %s)", sender, tostring(interactor_go_id), tostring(interactable_go_id), tostring(is_level_unit), interaction_type)
-	self:_handle_standard_interact_request(interaction_type, sender, interactor_go_id, interactable_go_id, is_level_unit)
+	InteractionHelper.printf("rpc_generic_interaction_request(%s, %s, %s, %s, %s)", peer_id, tostring(interactor_go_id), tostring(interactable_go_id), tostring(is_level_unit), interaction_type)
+	self:_handle_standard_interact_request(interaction_type, peer_id, interactor_go_id, interactable_go_id, is_level_unit)
 end
 
 return

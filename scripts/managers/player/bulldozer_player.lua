@@ -1,4 +1,5 @@
 BulldozerPlayer = class(BulldozerPlayer, Player)
+EnergyData = EnergyData or {}
 
 BulldozerPlayer.init = function (self, network_manager, input_source, viewport_name, viewport_world_name, is_server, local_player_id, unique_id, ui_id, backend_id)
 	BulldozerPlayer.super.init(self, network_manager, input_source, viewport_name, viewport_world_name, is_server, local_player_id)
@@ -41,30 +42,6 @@ BulldozerPlayer.set_player_unit = function (self, unit)
 	self.player_unit = unit
 end
 
-BulldozerPlayer.set_hud = function (self, hud)
-	self._hud = hud
-
-	if self.player_unit and hud then
-		self:_add_hud_components()
-	end
-end
-
-BulldozerPlayer._add_hud_components = function (self)
-	local profile_index = self:profile_index()
-	local profile = SPProfiles[profile_index]
-	local hud_components = profile.hud_components
-
-	self._hud:add_components(hud_components)
-end
-
-BulldozerPlayer._remove_hud_components = function (self)
-	local profile_index = self:profile_index()
-	local profile = SPProfiles[profile_index]
-	local hud_components = profile.hud_components
-
-	self._hud:remove_components(hud_components)
-end
-
 BulldozerPlayer.type = function (self)
 	return "BulldozerPlayer"
 end
@@ -94,10 +71,6 @@ BulldozerPlayer.despawn = function (self)
 
 	if first_person_extension then
 		first_person_extension:play_hud_sound_event("Stop_ability_loop_turn_off")
-	end
-
-	if self._hud then
-		self:_remove_hud_components()
 	end
 
 	local player_unit = self.player_unit
@@ -176,7 +149,7 @@ BulldozerPlayer.spawn_unit = function (self, unit_name, extension_init_data, uni
 	end
 end
 
-BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int)
+BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, initial_buff_names)
 	local profile_index = self:profile_index()
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -201,6 +174,11 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, profile)
 	local hero_name = profile.display_name
 	local career = profile.careers[career_index]
+
+	if is_initial_spawn and career.additional_starting_inventory then
+		initial_inventory.additional_items = career.additional_starting_inventory
+	end
+
 	local character_state_class_list = {}
 
 	for _, character_state_name in ipairs(career.character_state_list) do
@@ -218,6 +196,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	frame_item = frame_item or BackendUtils.try_set_loadout_item(career_name, "slot_frame", "frame_0000")
 	local frame_name = (frame_item and frame_item.data.name) or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
+	local energy_data = EnergyData[career_name] or {}
 	local faction = profile.dialogue_faction or "player"
 	local status = Managers.party:get_status_from_unique_id(self._unique_id)
 	local party = Managers.party:get_party(status.party_id)
@@ -301,7 +280,8 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 			template = aim_template
 		},
 		buff_system = {
-			is_husk = false
+			is_husk = false,
+			initial_buff_names = initial_buff_names
 		},
 		statistics_system = {
 			template = "player",
@@ -323,6 +303,9 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		overcharge_system = {
 			overcharge_data = overcharge_data
 		},
+		energy_system = {
+			energy_data = energy_data
+		},
 		smart_targeting_system = {
 			player = self
 		},
@@ -332,8 +315,19 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		proximity_system = {
 			side = side,
 			breed = breed
+		},
+		boon_system = {
+			profile_index = profile_index
 		}
 	}
+	local using_ghost_mode_system = Managers.mechanism:mechanism_setting("using_ghost_mode_system")
+
+	if using_ghost_mode_system then
+		extension_init_data.ghost_mode_system = {
+			side_id = side.side_id
+		}
+	end
+
 	local unit_name = skin_data.third_person
 	local spawn_data = {
 		unit_name = unit_name,
@@ -386,11 +380,6 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	end
 
 	Managers.state.event:trigger("camera_teleported")
-
-	if self._hud then
-		self:_add_hud_components()
-	end
-
 	self:_set_spawn_state("spawned")
 
 	return unit
@@ -439,7 +428,7 @@ BulldozerPlayer.local_player_id = function (self)
 end
 
 BulldozerPlayer.platform_id = function (self)
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		return self.peer_id
 	else
 		return Managers.account:account_id()
@@ -530,8 +519,6 @@ BulldozerPlayer.cached_name = function (self)
 end
 
 BulldozerPlayer.destroy = function (self)
-	self:set_hud(nil)
-
 	if self._player_sync_data then
 		self._player_sync_data:destroy()
 	end
@@ -546,6 +533,8 @@ BulldozerPlayer.destroy = function (self)
 
 	Managers.free_flight:unregister_player(self:local_player_id())
 	Managers.music:unregister_active_player(self._local_player_id)
+
+	self._destroyed = true
 end
 
 BulldozerPlayer.best_aquired_power_level = function (self)

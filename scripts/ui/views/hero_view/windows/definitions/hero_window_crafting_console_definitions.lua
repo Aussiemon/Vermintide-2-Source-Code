@@ -551,6 +551,25 @@ local input_actions = {
 			}
 		}
 	},
+	salvage_auto = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 2,
+				description_text = "input_description_reset"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 3,
+				description_text = "hero_view_crafting_salvage_auto_fill"
+			},
+			{
+				input_action = "refresh",
+				priority = 4,
+				description_text = "hero_view_crafting_salvage"
+			}
+		}
+	},
 	craft_random_item = {
 		actions = {
 			{
@@ -641,6 +660,20 @@ local input_actions = {
 				input_action = "special_1",
 				priority = 2,
 				description_text = "input_description_reset"
+			}
+		}
+	},
+	disabled_auto = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 2,
+				description_text = "input_description_reset"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 3,
+				description_text = "hero_view_crafting_salvage_auto_fill"
 			}
 		}
 	}

@@ -374,12 +374,13 @@ weapon_template.actions = {
 			weapon_action_hand = "left",
 			damage_window_end = 0.25,
 			impact_sound_event = "shield_hit",
-			aim_assist_ramp_multiplier = 0.2,
+			charge_value = "heavy_attack",
 			anim_end_event = "attack_finished",
 			damage_profile_aoe = "shield_slam_aoe",
+			aim_assist_ramp_multiplier = 0.2,
 			aim_assist_max_ramp_multiplier = 0.4,
-			aim_assist_ramp_decay_delay = 0.2,
 			dedicated_target_range = 3.5,
+			aim_assist_ramp_decay_delay = 0.2,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy",
 			total_time = 1,
@@ -441,6 +442,7 @@ weapon_template.actions = {
 			damage_profile = "medium_blunt_tank_1h",
 			damage_window_end = 0.39,
 			impact_sound_event = "blunt_hit",
+			charge_value = "heavy_attack",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2,
 			uninterruptible = true,
@@ -475,71 +477,6 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default_left_heavy",
-					start_time = 0.65,
-					action = "action_one",
-					release_required = "action_one_hold",
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_wield",
-					input = "action_wield"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				return input_extension:reset_release_input()
-			end,
-			hit_mass_count = TANK_HIT_MASS_COUNT
-		},
-		heavy_attack_right = {
-			damage_window_start = 0.17,
-			range_mod = 1.4,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "blunt_hit_armour",
-			width_mod = 25,
-			headshot_multiplier = 2,
-			additional_critical_strike_chance = 0,
-			hit_effect = "melee_hit_hammers_1h",
-			use_precision_sweep = false,
-			damage_profile = "medium_blunt_tank_1h",
-			damage_window_end = 0.26,
-			impact_sound_event = "blunt_hit",
-			anim_end_event = "attack_finished",
-			dedicated_target_range = 2,
-			uninterruptible = true,
-			anim_event = "attack_swing_heavy_right",
-			hit_stop_anim = "attack_hit",
-			total_time = 1.25,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			anim_time_scale = time_mod * 1.05,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 1,
-					end_time = 0.2,
-					buff_name = "planted_charging_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "default_combo",
-					start_time = 0.65,
-					action = "action_one",
-					release_required = "action_one_hold",
-					input = "action_one"
-				},
-				{
-					sub_action = "default_combo",
 					start_time = 0.65,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -943,15 +880,7 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_wide_sweeps",
@@ -1041,6 +970,9 @@ local one_handed_hammer_shield_template_2 = table.clone(weapon_template)
 one_handed_hammer_shield_template_2.actions.action_one.light_attack_left.range_mod = 1
 one_handed_hammer_shield_template_2.actions.action_one.light_attack_right.range_mod = 1
 one_handed_hammer_shield_template_2.actions.action_one.light_attack_last.range_mod = 1
+local inspect_table = table.clone(ActionTemplates.action_inspect)
+inspect_table.action_inspect_hold.anim_event = "inspect_start_2"
+one_handed_hammer_shield_template_2.actions.action_inspect = inspect_table
 
 return {
 	one_handed_hammer_shield_template_1 = one_handed_hammer_shield_template_1,

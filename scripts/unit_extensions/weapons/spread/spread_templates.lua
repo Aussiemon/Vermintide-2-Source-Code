@@ -735,6 +735,52 @@ SpreadTemplates = {
 			}
 		}
 	},
+	heavy_steam_pistol_special = {
+		continuous = {
+			still = {
+				max_yaw = 9,
+				max_pitch = 7
+			},
+			moving = {
+				max_yaw = 11,
+				max_pitch = 8
+			},
+			crouch_still = {
+				max_yaw = 8,
+				max_pitch = 6
+			},
+			crouch_moving = {
+				max_yaw = 9,
+				max_pitch = 7
+			},
+			zoomed_still = {
+				max_yaw = 11,
+				max_pitch = 8
+			},
+			zoomed_moving = {
+				max_yaw = 11,
+				max_pitch = 8
+			},
+			zoomed_crouch_still = {
+				max_yaw = 11,
+				max_pitch = 8
+			},
+			zoomed_crouch_moving = {
+				max_yaw = 11,
+				max_pitch = 8
+			}
+		},
+		immediate = {
+			being_hit = {
+				immediate_pitch = 3,
+				immediate_yaw = 3
+			},
+			shooting = {
+				immediate_pitch = 5,
+				immediate_yaw = 5
+			}
+		}
+	},
 	rake_shot = {
 		continuous = {
 			still = {
@@ -1111,6 +1157,7 @@ SpreadTemplates.beam_staff_basic = SpreadTemplates.beam_staff_basic or table.clo
 SpreadTemplates.repeating_pistol = SpreadTemplates.repeating_pistol or table.clone(SpreadTemplates.default)
 SpreadTemplates.repeating_handgun = SpreadTemplates.repeating_handgun or table.clone(SpreadTemplates.default)
 SpreadTemplates.repeating_handgun_special = SpreadTemplates.repeating_handgun_special or table.clone(SpreadTemplates.default)
+SpreadTemplates.heavy_steam_pistol_special = SpreadTemplates.heavy_steam_pistol_special or table.clone(SpreadTemplates.default)
 SpreadTemplates.repeating_crossbow_burst = SpreadTemplates.repeating_crossbow_burst or table.clone(SpreadTemplates.default)
 SpreadTemplates.sparks = SpreadTemplates.sparks or table.clone(SpreadTemplates.default)
 SpreadTemplates.spear = SpreadTemplates.spear or table.clone(SpreadTemplates.default)
@@ -1130,12 +1177,6 @@ SpreadTemplates.rake_shot = table.create_copy(SpreadTemplates.rake_shot, SpreadT
 SpreadTemplates.rake_twin_shot = table.create_copy(SpreadTemplates.rake_twin_shot, SpreadTemplates.rake_twin_shot) or table.clone(SpreadTemplates.default)
 SpreadTemplates.rake_twin_shot = SpreadTemplates.rake_twin_shot or table.clone(SpreadTemplates.default)
 
-for _, dlc in pairs(DLCSettings) do
-	local spread_templates = dlc.spread_templates
-
-	if spread_templates then
-		table.merge_recursive(SpreadTemplates, spread_templates)
-	end
-end
+DLCUtils.merge("spread_templates", SpreadTemplates)
 
 return

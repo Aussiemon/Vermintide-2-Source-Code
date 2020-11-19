@@ -21,9 +21,13 @@ BossHealthUI.init = function (self, parent, ingame_ui_context)
 	self:create_ui_elements()
 
 	self._animations = {}
+	self._is_spectator = false
+	self._spectated_player = nil
+	self._spectated_player_unit = nil
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "show_boss_health_bar", "event_show_boss_health_bar")
+	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 
 	self._proximity_update_time = 0
 	self._look_at_boss_unit_timer = 0
@@ -35,6 +39,7 @@ BossHealthUI.destroy = function (self)
 	local event_manager = Managers.state.event
 
 	event_manager:unregister("show_boss_health_bar", self)
+	event_manager:unregister("on_spectator_target_changed", self)
 end
 
 BossHealthUI.create_ui_elements = function (self)
@@ -52,6 +57,12 @@ BossHealthUI.create_ui_elements = function (self)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+	local game_mode_manager = Managers.state.game_mode
+	local game_mode_key = game_mode_manager:game_mode_key()
+
+	if game_mode_key == "versus" then
+		self.ui_scenegraph.pivot.position[2] = -150
+	end
 end
 
 BossHealthUI._set_portrait_by_breed = function (self, breed_name)
@@ -72,7 +83,7 @@ BossHealthUI.update = function (self, dt, t)
 end
 
 BossHealthUI._update_targeted_boss = function (self, dt, t)
-	local local_player = self.player_manager:local_player()
+	local local_player = (self._is_spectator and self._spectated_player) or self.player_manager:local_player()
 
 	if not local_player then
 		return
@@ -156,6 +167,12 @@ BossHealthUI.event_show_boss_health_bar = function (self, unit)
 			self._next_update_is_instant = true
 		end
 	end
+end
+
+BossHealthUI.on_spectator_target_changed = function (self, spectated_player_unit)
+	self._spectated_player_unit = spectated_player_unit
+	self._spectated_player = Managers.player:owner(spectated_player_unit)
+	self._is_spectator = true
 end
 
 BossHealthUI._reset = function (self)

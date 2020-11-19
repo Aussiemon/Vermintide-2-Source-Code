@@ -118,18 +118,16 @@ WeaponTraits.buff_templates = {
 	traits_melee_attack_speed_on_crit = {
 		buffs = {
 			{
+				event = "on_critical_hit",
 				buff_to_add = "traits_melee_attack_speed_on_crit_proc",
 				event_buff = true,
-				buff_func = "add_buff",
-				event = "on_critical_hit",
-				dormant = true
+				buff_func = "add_buff"
 			}
 		}
 	},
 	traits_melee_timed_block_cost = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "timed_block_cost"
 			}
 		}
@@ -137,7 +135,6 @@ WeaponTraits.buff_templates = {
 	traits_melee_counter_push_power = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "counter_push_power"
 			}
 		}
@@ -146,7 +143,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_block",
-				dormant = true,
 				event_buff = true,
 				buff_func = "block_increase_enemy_damage_taken"
 			}
@@ -165,7 +161,6 @@ WeaponTraits.buff_templates = {
 			{
 				event = "on_assisted_ally",
 				event_buff = true,
-				dormant = true,
 				buff_func = "heal_assisted_and_self_on_assist"
 			}
 		}
@@ -174,7 +169,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				dormant = true,
 				event_buff = true,
 				buff_func = "replenish_ammo_on_headshot_ranged"
 			}
@@ -183,9 +177,8 @@ WeaponTraits.buff_templates = {
 	traits_ranged_restore_stamina_headshot = {
 		buffs = {
 			{
-				max_stacks = 1,
-				dormant = true,
-				stat_buff = "coop_stamina"
+				stat_buff = "coop_stamina",
+				max_stacks = 1
 			}
 		}
 	},
@@ -193,7 +186,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				dormant = true,
 				event_buff = true,
 				buff_func = "increased_movement_speed"
 			}
@@ -202,9 +194,8 @@ WeaponTraits.buff_templates = {
 	traits_ranged_reduced_overcharge = {
 		buffs = {
 			{
-				max_stacks = 1,
-				dormant = true,
-				stat_buff = "reduced_overcharge"
+				stat_buff = "reduced_overcharge",
+				max_stacks = 1
 			}
 		}
 	},
@@ -212,7 +203,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				dormant = true,
 				event_buff = true,
 				buff_func = "replenish_ammo_on_headshot_ranged"
 			}
@@ -222,7 +212,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_critical_hit",
-				dormant = true,
 				event_buff = true,
 				buff_func = "ammo_fraction_gain_on_crit_trait"
 			}
@@ -231,11 +220,10 @@ WeaponTraits.buff_templates = {
 	traits_ranged_remove_overcharge_on_crit = {
 		buffs = {
 			{
-				event_buff = true,
-				buff_func = "remove_overcharge",
 				event = "on_critical_hit",
 				perk = "no_overcharge_crit",
-				dormant = true
+				event_buff = true,
+				buff_func = "remove_overcharge"
 			}
 		}
 	},
@@ -243,7 +231,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				dormant = true,
 				event_buff = true,
 				buff_func = "buff_consecutive_shots_damage"
 			}
@@ -272,7 +259,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_critical_hit",
-				dormant = true,
 				event_buff = true,
 				buff_func = "ranged_crits_increase_dmg_vs_armour_type"
 			}
@@ -329,7 +315,6 @@ WeaponTraits.buff_templates = {
 				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_with_internal_cooldown_on_crit",
 				event = "on_critical_hit",
-				dormant = true,
 				bonus = 1
 			}
 		}
@@ -337,7 +322,6 @@ WeaponTraits.buff_templates = {
 	traits_reduce_cooldown_on_crit_internal_cooldown = {
 		buffs = {
 			{
-				dormant = true,
 				perk = "cooldown_delay"
 			}
 		}
@@ -345,33 +329,28 @@ WeaponTraits.buff_templates = {
 	traits_heal_on_crit = {
 		buffs = {
 			{
-				event_buff = true,
-				buff_func = "heal",
 				event = "on_critical_hit",
-				dormant = true,
-				bonus = 5
+				bonus = 5,
+				event_buff = true,
+				buff_func = "heal"
 			}
 		}
 	},
 	trait_ring_not_consume_potion = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "not_consume_potion"
 			}
 		}
 	},
 	trait_ring_potion_spread = {
 		buffs = {
-			{
-				dormant = true
-			}
+			{}
 		}
 	},
 	trait_ring_not_consume_potion_damage = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "not_consume_potion"
 			}
 		}
@@ -379,7 +358,6 @@ WeaponTraits.buff_templates = {
 	trait_ring_all_potions = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "potion_duration"
 			}
 		}
@@ -387,7 +365,6 @@ WeaponTraits.buff_templates = {
 	trait_ring_potion_duration = {
 		buffs = {
 			{
-				dormant = true,
 				perk = "potion_duration"
 			}
 		}
@@ -395,7 +372,6 @@ WeaponTraits.buff_templates = {
 	trait_necklace_not_consume_healing = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "not_consume_medpack"
 			}
 		}
@@ -403,7 +379,6 @@ WeaponTraits.buff_templates = {
 	trait_necklace_heal_self_on_heal_other = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "heal_self_on_heal_other"
 			}
 		}
@@ -411,9 +386,8 @@ WeaponTraits.buff_templates = {
 	trait_necklace_increased_healing_received = {
 		buffs = {
 			{
-				max_stacks = 1,
-				dormant = true,
-				stat_buff = "healing_received"
+				stat_buff = "healing_received",
+				max_stacks = 1
 			}
 		}
 	},
@@ -422,7 +396,6 @@ WeaponTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				update_func = "update_heal_ticks",
-				dormant = true,
 				perk = "no_permanent_health"
 			}
 		}
@@ -431,7 +404,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				dormant = true,
 				event_buff = true,
 				buff_func = "buff_defence_on_damage_taken"
 			}
@@ -449,7 +421,6 @@ WeaponTraits.buff_templates = {
 	trait_trinket_not_consume_grenade = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "not_consume_grenade"
 			}
 		}
@@ -457,7 +428,6 @@ WeaponTraits.buff_templates = {
 	trait_trinket_increase_grenade_radius = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "grenade_radius"
 			}
 		}
@@ -466,7 +436,6 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				dormant = true,
 				event_buff = true,
 				buff_func = "debuff_defence_grenade_hit"
 			}
@@ -991,5 +960,6 @@ for name, data in pairs(WeaponTraits.buff_templates) do
 end
 
 BuffUtils.apply_buff_tweak_data(WeaponTraits.buff_templates, buff_tweak_data)
+DLCUtils.require_list("weapon_traits_file_names")
 
 return

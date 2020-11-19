@@ -61,8 +61,10 @@ ActionPotion.finish = function (self, reason)
 		targets[#targets + 1] = additional_target
 	end
 
-	if buff_extension:has_buff_perk("potion_duration") then
-		buff_template = buff_template .. "_increased"
+	local increased_buff_template = buff_template .. "_increased"
+
+	if buff_extension:has_buff_perk("potion_duration") and BuffTemplates[increased_buff_template] then
+		buff_template = increased_buff_template
 	end
 
 	local num_targets = #targets
@@ -130,6 +132,8 @@ ActionPotion.finish = function (self, reason)
 			end
 		end
 	end
+
+	buff_extension:trigger_procs("on_potion_consumed", self.item_name)
 
 	local player = Managers.player:unit_owner(owner_unit)
 	local position = POSITION_LOOKUP[owner_unit]

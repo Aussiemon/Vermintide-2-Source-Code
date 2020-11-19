@@ -33,9 +33,11 @@ AttachmentSystem.on_add_extension = function (self, world, unit, extension_name,
 	return AttachmentSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 end
 
-AttachmentSystem.rpc_create_attachment = function (self, sender, unit_go_id, slot_id, item_name_id)
+AttachmentSystem.rpc_create_attachment = function (self, channel_id, unit_go_id, slot_id, item_name_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_create_attachment", sender, unit_go_id, slot_id, item_name_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_create_attachment", peer_id, unit_go_id, slot_id, item_name_id)
 	end
 
 	local unit_storage = self.unit_storage
@@ -48,9 +50,11 @@ AttachmentSystem.rpc_create_attachment = function (self, sender, unit_go_id, slo
 	attachment_extension:create_attachment(slot_name, item_data)
 end
 
-AttachmentSystem.rpc_remove_attachment = function (self, sender, unit_go_id, slot_id)
+AttachmentSystem.rpc_remove_attachment = function (self, channel_id, unit_go_id, slot_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_remove_attachment", sender, unit_go_id, slot_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_remove_attachment", peer_id, unit_go_id, slot_id)
 	end
 
 	local unit_storage = self.unit_storage
@@ -61,24 +65,19 @@ AttachmentSystem.rpc_remove_attachment = function (self, sender, unit_go_id, slo
 	attachment_extension:remove_attachment(slot_name)
 end
 
-AttachmentSystem.rpc_add_attachment_buffs = function (self, sender, go_id, slot_id, buff_1_id, buff_data_type_1_id, value_1, buff_2_id, buff_data_type_2_id, value_2, buff_3_id, buff_data_type_3_id, value_3, buff_4_id, buff_data_type_4_id, value_4)
+AttachmentSystem.rpc_add_attachment_buffs = function (self, channel_id, go_id, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_add_attachment_buffs", sender, go_id, slot_id, buff_1_id, buff_data_type_1_id, value_1, buff_2_id, buff_data_type_2_id, value_2, buff_3_id, buff_data_type_3_id, value_3, buff_4_id, buff_data_type_4_id, value_4)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_add_attachment_buffs", peer_id, go_id, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 	end
 
 	local unit = self.unit_storage:unit(go_id)
 	local slot_name = NetworkLookup.equipment_slots[slot_id]
-	local buff_name_1 = NetworkLookup.buff_templates[buff_1_id]
-	local buff_name_2 = NetworkLookup.buff_templates[buff_2_id]
-	local buff_name_3 = NetworkLookup.buff_templates[buff_3_id]
-	local buff_name_4 = NetworkLookup.buff_templates[buff_4_id]
-	local buff_data_type_1 = NetworkLookup.buff_data_types[buff_data_type_1_id]
-	local buff_data_type_2 = NetworkLookup.buff_data_types[buff_data_type_2_id]
-	local buff_data_type_3 = NetworkLookup.buff_data_types[buff_data_type_3_id]
-	local buff_data_type_4 = NetworkLookup.buff_data_types[buff_data_type_4_id]
+	local buffs = BuffUtils.buffs_from_rpc_params(num_buffs, buff_ids, buff_value_type_ids, buff_values)
 	local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 
-	attachment_extension:add_buffs_to_slot(slot_name, buff_name_1, buff_data_type_1, value_1, buff_name_2, buff_data_type_2, value_2, buff_name_3, buff_data_type_3, value_3, buff_name_4, buff_data_type_4, value_4)
+	attachment_extension:set_buffs_to_slot(slot_name, buffs)
 end
 
 return

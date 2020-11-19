@@ -13,7 +13,8 @@ MoodPriority = {
 	"skill_huntsman_surge",
 	"wounded",
 	"drunk_01",
-	"hangover_01"
+	"hangover_01",
+	"staggered"
 }
 HealingMoods = {
 	bandage = "heal_medikit",
@@ -150,7 +151,27 @@ MoodSettings = {
 		blend_out_time = 0.25,
 		particle_effects_on_enter = {},
 		particle_effects_on_exit = {}
+	},
+	staggered = {
+		environment_setting = "skill_huntsman_stealth",
+		blend_in_time = 0.2,
+		blend_out_time = 0.1,
+		particle_effects_on_enter = {
+			"fx/screenspace_wounded"
+		},
+		particle_effects_on_exit = {
+			"fx/screenspace_fak_healed"
+		}
+	},
+	ghost_mode = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.1,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
 	}
 }
+
+table.insert(MoodPriority, 2, "ghost_mode")
 
 return

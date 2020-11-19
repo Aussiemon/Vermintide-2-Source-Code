@@ -33,10 +33,10 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 	self.active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
-	self._unhide_ammo_at_action_end = new_action.unhide_ammo_on_infinite_ammo and buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
+	self._unhide_ammo_at_action_end = new_action.unhide_ammo_on_infinite_ammo and buff_extension:has_buff_perk("infinite_ammo")
 end
 
 ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -207,7 +207,10 @@ ActionCrossbow.finish = function (self, reason)
 
 		status_extension:set_zooming(false)
 
-		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
+		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+
+		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
 
 			ammo_extension:start_reload(play_reload_animation)

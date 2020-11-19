@@ -168,7 +168,11 @@ end
 AccountManager.update = function (self, dt)
 	self:_update_playtogether()
 	self:_update_psn_client(dt)
-	self:_update_psn()
+
+	if self:is_online() then
+		self:_update_psn()
+	end
+
 	self:_notify_plus()
 	self:_verify_profile()
 	self._web_api:update(dt)
@@ -310,11 +314,11 @@ AccountManager._update_psn = function (self)
 	local room_left = false
 
 	if current_room ~= previous_room then
-		room_joined = room_state_current == PsnRoom.JOINED
-		room_left = room_state_previous == PsnRoom.JOINED
+		room_joined = room_state_current == LobbyState.JOINED
+		room_left = room_state_previous == LobbyState.JOINED
 	else
-		room_joined = room_state_previous ~= PsnRoom.JOINED and room_state_current == PsnRoom.JOINED
-		room_left = room_state_previous == PsnRoom.JOINED and room_state_current ~= PsnRoom.JOINED
+		room_joined = room_state_previous ~= LobbyState.JOINED and room_state_current == LobbyState.JOINED
+		room_left = room_state_previous == LobbyState.JOINED and room_state_current ~= LobbyState.JOINED
 	end
 
 	self:_update_psn_presence(room_joined, room_left)
@@ -412,7 +416,7 @@ end
 AccountManager.region = function (self)
 	local country = PS4.user_country(self._initial_user_id)
 
-	print("Country: " .. country)
+	print("Country:", tostring(country))
 
 	return country
 end
@@ -934,6 +938,10 @@ AccountManager._set_presence_status_content = function (self, presence, append)
 	str = str .. "}"
 
 	return str
+end
+
+AccountManager.force_exit_to_title_screen = function (self)
+	self:initiate_leave_game()
 end
 
 AccountManager.check_popup_retrigger = function (self)

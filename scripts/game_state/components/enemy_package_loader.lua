@@ -72,7 +72,6 @@ EnemyPackageLoader.init = function (self)
 	self.breed_processed = Script.new_map(96)
 	self._currently_loading_breeds = {}
 	self._locked_breeds = {}
-	self.zone_conflict_directors = nil
 	self.random_director_list = nil
 	self.breed_category_loaded_packages = {}
 
@@ -812,7 +811,7 @@ EnemyPackageLoader._remove_directors_not_in_factions = function (self, director_
 	end)
 end
 
-EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, failed_locked_functions, weave_objective_data)
+EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, failed_locked_functions, use_random_directors, overriden_conflict_setting_name)
 	local level_settings = LevelSettings[level_key]
 	local level_name = level_settings.level_name
 	local num_nested_levels = LevelResource.nested_level_count(level_name)
@@ -824,17 +823,18 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 	local spawn_zone_path = level_name .. "_spawn_zones"
 
 	if not Application.can_get("lua", spawn_zone_path) then
-		ferror("Cant get %s, make sure this is added to the \\resource_packages\\level_scripts.package file. Or have you forgotten to run generate_resource_packages.bat?", spawn_zone_path)
+		ferror("Cant get %s, make sure this is added to the \\resource_packages\\level_scripts.package file. Or have you forgotten to run generate_resource_packages.bat? If it only crashes when running from a bundle, it might be that this level needs to be whitelisted.", spawn_zone_path)
 	end
 
 	local breed_lookup = {}
-	local difficulty = Managers.mechanism:get_difficulty()
-	local difficulty_rank = DifficultySettings[difficulty].rank
+	local difficulty, difficulty_tweak = Managers.mechanism:get_difficulty()
+	local composition_difficulty = DifficultyTweak.converters.composition(difficulty, difficulty_tweak)
+	local composition_difficulty_rank = DifficultySettings[composition_difficulty].rank
 	local terror_events = TerrorEventBlueprints[level_key]
 
 	if terror_events then
 		for event_name, event in pairs(terror_events) do
-			ConflictUtils.add_breeds_from_event(event_name, event, difficulty, difficulty_rank, breed_lookup, terror_events)
+			ConflictUtils.add_breeds_from_event(event_name, event, composition_difficulty, composition_difficulty_rank, breed_lookup, terror_events)
 		end
 	end
 
@@ -851,19 +851,18 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 		num_main_zones = altered_amount_num_main_zones
 	end
 
-	local default_conflict_settings_name = nil
-	default_conflict_settings_name = (not weave_objective_data or weave_objective_data.conflict_settings) and (level_settings.conflict_settings or "default")
+	local default_conflict_settings_name = overriden_conflict_setting_name or level_settings.conflict_settings or "default"
 	local non_random_conflict_directors, num_random_conflict_directors = nil
-	non_random_conflict_directors, num_random_conflict_directors, self.zone_conflict_directors, level_seed = MainPathSpawningGenerator.get_unique_non_random_conflict_directors(default_conflict_settings_name, zones, num_main_zones, level_seed)
+	non_random_conflict_directors, num_random_conflict_directors, level_seed = MainPathSpawningGenerator.process_conflict_directors_zones(default_conflict_settings_name, zones, num_main_zones, level_seed)
 
 	for conflict_settings_name, _ in pairs(non_random_conflict_directors) do
 		local conflict_setting = ConflictDirectors[conflict_settings_name]
-		local contained_breeds = conflict_setting.contained_breeds[difficulty]
+		local contained_breeds = conflict_setting.contained_breeds[composition_difficulty]
 
 		table.merge(breed_lookup, contained_breeds)
 	end
 
-	if not weave_objective_data then
+	if use_random_directors then
 		local director_list = table.shallow_copy(level_settings.conflict_director_set or DefaultConflictDirectorSet)
 		local faction_weights = table.shallow_copy(level_settings.conflict_faction_weights or DefaultConflictFactionSetWeights)
 		local breed_cap = level_settings.breed_cap_override or EnemyPackageLoaderSettings.max_loaded_breed_cap
@@ -884,7 +883,7 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 			self:_remove_locked_directors(director_list, failed_locked_functions)
 		end
 
-		self:_remove_directors_by_breed_budget(director_list, breed_lookup, difficulty, breed_cap)
+		self:_remove_directors_by_breed_budget(director_list, breed_lookup, composition_difficulty, breed_cap)
 
 		local non_random_director_list = table.keys(non_random_conflict_directors)
 		local mandatory_factions = self:_get_factions_from_directors(non_random_director_list)
@@ -894,7 +893,7 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 
 		self:_remove_directors_not_in_factions(director_list, faction_list)
 
-		self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, difficulty, non_random_conflict_directors, level_seed)
+		self.random_director_list = self:_get_directors_from_breed_budget(breed_lookup, num_random_conflict_directors, director_list, breed_cap, composition_difficulty, non_random_conflict_directors, level_seed, failed_locked_functions)
 	end
 
 	local loop_breeds = true
@@ -906,7 +905,7 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 			local breed_data = Breeds[breed_name]
 
 			if breed_data.additional_breed_packages_to_load then
-				local additional_breeds = breed_data.additional_breed_packages_to_load(difficulty)
+				local additional_breeds = breed_data.additional_breed_packages_to_load(composition_difficulty)
 
 				if additional_breeds then
 					for i = 1, #additional_breeds, 1 do
@@ -923,10 +922,12 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 		end
 	end
 
+	print("[EnemyPackageLoader] breed_lookup: " .. table.tostring(breed_lookup))
+
 	return breed_lookup
 end
 
-EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed, failed_locked_functions, weave_objective_data)
+EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed, failed_locked_functions, use_random_directors, overriden_conflict_setting_name)
 	fassert(level_seed, "Cannot setup_startup_enemies without level_seed!")
 
 	local breeds_to_load_at_startup = self._breeds_to_load_at_startup
@@ -934,14 +935,14 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed
 
 	if not breeds_to_load_at_startup.loaded then
 		self:_reset_dynamic_breed_lookups()
-		print("[EnemyPackageLoader] setup_startup_enemies - level_key:", level_key, "- level_seed:", level_seed, "- weave:", weave_objective_data)
+		print("[EnemyPackageLoader] setup_startup_enemies - level_key:", level_key, "- level_seed:", level_seed, "- use_random_directors:", use_random_directors, "- overriden_conflict:", overriden_conflict_setting_name)
 
 		local level_settings = LevelSettings[level_key]
 
 		if level_settings.load_no_enemies then
 			print("[EnemyPackageLoader] Load no enemies on this level")
 		else
-			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions, weave_objective_data)
+			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions, use_random_directors, overriden_conflict_setting_name)
 			local breed_category_lookup = self._breed_category_lookup
 			local breeds_to_load_lookup = {}
 			local breed_categories = level_settings.breed_categories or EnemyPackageLoaderSettings.categories
@@ -995,6 +996,8 @@ EnemyPackageLoader._load_startup_enemy_packages = function (self)
 	local num_entries = #breeds_to_load_at_startup
 	local use_optimized = self.use_optimized
 
+	printf("load_startup_enemy_packages: --------------")
+
 	for i = 1, num_entries, 1 do
 		local breed_name = breeds_to_load_at_startup[i]
 		local breed = Breeds[breed_name]
@@ -1007,6 +1010,7 @@ EnemyPackageLoader._load_startup_enemy_packages = function (self)
 
 		package_manager:load(breed_package_name, "EnemyPackageLoader", callback(self, "cb_startup_breed_package_loaded", breed_name), async, prioritize)
 		self:_set_breed_processed(breed_name, true)
+		printf(breed_name)
 	end
 
 	breeds_to_load_at_startup.loaded = true
@@ -1069,7 +1073,6 @@ EnemyPackageLoader.unload_enemy_packages = function (self, force_unload_startup_
 	end
 
 	self.random_director_list = nil
-	self.zone_conflict_directors = nil
 end
 
 EnemyPackageLoader._sync_dynamic_to_client = function (self, peer_id, connection_key)
@@ -1081,6 +1084,8 @@ EnemyPackageLoader._sync_dynamic_to_client = function (self, peer_id, connection
 		bitmasks[#bitmasks + 1] = 0
 	end
 
+	print("Sync dynamic to client:")
+
 	for breed_name, state in pairs(package_state) do
 		if state ~= "unloaded" and not breeds_to_load_at_startup[breed_name] then
 			local breed_index = NetworkLookup.breeds[breed_name]
@@ -1090,17 +1095,19 @@ EnemyPackageLoader._sync_dynamic_to_client = function (self, peer_id, connection
 			bitmasks[bitmask_index] = bit.bor(bitmask, 2^bit_index)
 			local dynamic_package = self._dynamic_loaded_packages[breed_name]
 			dynamic_package[peer_id] = true
+
+			printf("breed_name: %s, bitmask: %d, bit_index: %d", breed_name, bitmask_index, bit_index)
 		end
 	end
 
 	self:_send_rpc("rpc_from_server_load_breeds_by_bitmask", peer_id, connection_key, bitmasks)
 end
 
-EnemyPackageLoader.rpc_from_server_load_breeds_by_bitmask = function (self, sender, connection_key, bitmasks)
+EnemyPackageLoader.rpc_from_server_load_breeds_by_bitmask = function (self, channel_id, connection_key, bitmasks)
 	local num_bitmasks = #bitmasks
 	self._unique_connection_key = connection_key
 
-	printf("[EnemyPackageLoader] New connection established (%s) (key=%s) (num_bitmasks=%d)", sender, connection_key, num_bitmasks)
+	printf("[EnemyPackageLoader] New connection established (%s) (key=%s)", channel_id, connection_key)
 
 	for i = 1, num_bitmasks, 1 do
 		local bitmask = bitmasks[i]
@@ -1124,74 +1131,78 @@ EnemyPackageLoader.rpc_from_server_load_breeds_by_bitmask = function (self, send
 	end
 end
 
-EnemyPackageLoader.rpc_from_server_load_breed_package = function (self, sender, connection_key, breed_id)
+EnemyPackageLoader.rpc_from_server_load_breed_package = function (self, channel_id, connection_key, breed_id)
 	local server_peer_id = self._server_peer_id
 	local unique_connection_key = self._unique_connection_key
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-	if server_peer_id ~= sender then
-		printf("[EnemyPackageLoader] rpc_from_server_load_breed_package from wrong lobby (server=%s|%s)", server_peer_id or "nil", sender)
+	if server_peer_id ~= peer_id then
+		printf("[EnemyPackageLoader] rpc_from_server_load_breed_package from wrong lobby (server=%s|%s)", server_peer_id or "nil", peer_id)
 
 		return
 	elseif connection_key ~= unique_connection_key then
-		printf("[EnemyPackageLoader] rpc_from_server_load_breed_package from old connection (%s) (key=%s|%s)", sender, unique_connection_key or "nil", connection_key)
+		printf("[EnemyPackageLoader] rpc_from_server_load_breed_package from old connection (%s) (key=%s|%s)", peer_id, unique_connection_key or "nil", connection_key)
 
 		return
 	end
 
 	local breed_name = NetworkLookup.breeds[breed_id]
 
-	printf("[EnemyPackageLoader] rpc_from_server_load_breed_package (sender=%s, connection_key=%d, breed_name=%s)", sender, connection_key, breed_name)
+	printf("[EnemyPackageLoader] rpc_from_server_load_breed_package (peer_id=%s, connection_key=%d, breed_name=%s)", peer_id, connection_key, breed_name)
 	self:_start_loading_package(breed_name)
 end
 
-EnemyPackageLoader.rpc_from_server_unload_breed_package = function (self, sender, connection_key, breed_id)
+EnemyPackageLoader.rpc_from_server_unload_breed_package = function (self, channel_id, connection_key, breed_id)
 	local server_peer_id = self._server_peer_id
 	local unique_connection_key = self._unique_connection_key
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-	if server_peer_id ~= sender then
-		printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package from wrong lobby (server=%s|%s)", server_peer_id or "nil", sender)
+	if server_peer_id ~= peer_id then
+		printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package from wrong lobby (server=%s|%s)", server_peer_id or "nil", peer_id)
 
 		return
 	elseif connection_key ~= unique_connection_key then
-		printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package from old connection (%s) (key=%s|%s)", sender, unique_connection_key or "nil", connection_key)
+		printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package from old connection (%s) (key=%s|%s)", peer_id, unique_connection_key or "nil", connection_key)
 
 		return
 	end
 
 	local breed_name = NetworkLookup.breeds[breed_id]
 
-	printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package (sender=%s, connection_key=%d, breed_name=%s)", sender, connection_key, breed_name)
+	printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package (peer_id=%s, connection_key=%d, breed_name=%s)", peer_id, connection_key, breed_name)
 	self:_unload_package(breed_name)
 end
 
-EnemyPackageLoader.rpc_from_client_loading_breed_package_done = function (self, sender, connection_key, breed_id)
-	local client_key = self._unique_connections[sender]
+EnemyPackageLoader.rpc_from_client_loading_breed_package_done = function (self, channel_id, connection_key, breed_id)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local client_key = self._unique_connections[peer_id]
 
 	if client_key ~= connection_key then
-		printf("[EnemyPackageLoader] rpc_from_client_loading_breed_package_done from old connection (%s) - (key=%s|%s)", sender, client_key or "nil", connection_key)
+		printf("[EnemyPackageLoader] rpc_from_client_loading_breed_package_done from old connection (%s) - (key=%s|%s)", peer_id, client_key or "nil", connection_key)
 
 		return
 	end
 
 	local breed_name = NetworkLookup.breeds[breed_id]
 
-	printf("[EnemyPackageLoader] rpc_from_client_loading_breed_package_done (sender=%s, connection_key=%d, breed_name=%s)", sender, connection_key, breed_name)
+	printf("[EnemyPackageLoader] rpc_from_client_loading_breed_package_done (peer_id=%s, connection_key=%d, breed_name=%s)", peer_id, connection_key, breed_name)
 
-	self._dynamic_loaded_packages[breed_name][sender] = true
+	self._dynamic_loaded_packages[breed_name][peer_id] = true
 end
 
-EnemyPackageLoader.rpc_from_client_sync_packages_load_done = function (self, sender, connection_key)
-	local client_key = self._unique_connections[sender]
+EnemyPackageLoader.rpc_from_client_sync_packages_load_done = function (self, channel_id, connection_key)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	local client_key = self._unique_connections[peer_id]
 
 	if client_key ~= connection_key then
-		printf("[EnemyPackageLoader] rpc_from_client_sync_packages_load_done from old connection (%s) - (key=%s|%s)", sender, client_key or "nil", connection_key)
+		printf("[EnemyPackageLoader] rpc_from_client_sync_packages_load_done from old connection (%s) - (key=%s|%s)", peer_id, client_key or "nil", connection_key)
 
 		return
 	else
-		printf("[EnemyPackageLoader] rpc_from_client_sync_packages_load_done (sender=%s, connection_key=%d)", sender, connection_key)
+		printf("[EnemyPackageLoader] rpc_from_client_sync_packages_load_done (peer_id=%s, connection_key=%d)", peer_id, connection_key)
 	end
 
-	self._load_sync_done_peers[sender] = true
+	self._load_sync_done_peers[peer_id] = true
 end
 
 EnemyPackageLoader._send_rpc = function (self, rpc_name, peer_id, ...)
@@ -1200,8 +1211,9 @@ EnemyPackageLoader._send_rpc = function (self, rpc_name, peer_id, ...)
 	end
 
 	local rpc = RPC[rpc_name]
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	rpc(peer_id, ...)
+	rpc(channel_id, ...)
 end
 
 EnemyPackageLoader._send_rpc_to_server = function (self, rpc_name, ...)
@@ -1210,8 +1222,9 @@ EnemyPackageLoader._send_rpc_to_server = function (self, rpc_name, ...)
 	end
 
 	local rpc = RPC[rpc_name]
+	local channel_id = PEER_ID_TO_CHANNEL[self._server_peer_id]
 
-	rpc(self._server_peer_id, self._unique_connection_key, ...)
+	rpc(channel_id, self._unique_connection_key, ...)
 end
 
 EnemyPackageLoader._send_rpc_to_clients = function (self, rpc_name, ...)
@@ -1221,7 +1234,9 @@ EnemyPackageLoader._send_rpc_to_clients = function (self, rpc_name, ...)
 
 	for peer_id, connection_key in pairs(unique_connections) do
 		if peer_id ~= server_peer_id and connection_key then
-			rpc(peer_id, connection_key, ...)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			rpc(channel_id, connection_key, ...)
 		end
 	end
 end
@@ -1233,7 +1248,9 @@ EnemyPackageLoader._send_rpc_to_clients_except = function (self, rpc_name, excep
 
 	for peer_id, connection_key in pairs(unique_connections) do
 		if peer_id ~= server_peer_id and peer_id ~= except and connection_key then
-			rpc(peer_id, connection_key, ...)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			rpc(channel_id, connection_key, ...)
 		end
 	end
 end
@@ -1265,8 +1282,10 @@ EnemyPackageLoader.client_disconnected = function (self, peer_id)
 		peers[peer_id] = nil
 	end
 
-	self._unique_connections[peer_id] = nil
-	self._load_sync_done_peers[peer_id] = nil
+	if self._unique_connections then
+		self._unique_connections[peer_id] = nil
+		self._load_sync_done_peers[peer_id] = nil
+	end
 end
 
 EnemyPackageLoader.debug_loaded_breeds = function (self)

@@ -4,11 +4,13 @@ local generic_input_actions = definitions.generic_input_actions
 local deed_game_widget_definitions = definitions.deed_game_widgets
 local custom_game_widget_definitions = definitions.custom_game_widgets
 local adventure_game_widget_definitions = definitions.adventure_game_widgets
+local game_mode_widget_definitions = definitions.game_mode_widgets
 local event_game_widget_definitions = definitions.event_game_widgets
 local weave_game_widget_definitions = definitions.weave_game_widgets
 local weave_find_group_widget_definitions = definitions.weave_find_group_widgets
 local weave_quickplay_widget_definitions = definitions.weave_quickplay_widgets
 local twitch_mode_widget_funcs = definitions.twitch_mode_widget_funcs
+local switch_mechanism_widget_definitions = definitions.switch_mechanism_widgets
 MissionVotingUI = class(MissionVotingUI)
 
 MissionVotingUI.init = function (self, parent, ingame_ui_context)
@@ -149,6 +151,32 @@ MissionVotingUI.create_ui_elements = function (self)
 
 	self._adventure_game_widgets = adventure_game_widgets
 	self._adventure_game_widgets_by_name = adventure_game_widgets_by_name
+	local game_mode_widgets = {}
+	local game_mode_widgets_by_name = {}
+
+	for name, widget_definition in pairs(game_mode_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			game_mode_widgets[#game_mode_widgets + 1] = widget
+			game_mode_widgets_by_name[name] = widget
+		end
+	end
+
+	self._game_mode_widgets = game_mode_widgets
+	self._game_mode_widgets_by_name = game_mode_widgets_by_name
+	local switch_mechanism_widgets = {}
+	local switch_mechanism_widgets_by_name = {}
+
+	for name, widget_definition in pairs(switch_mechanism_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			switch_mechanism_widgets[#switch_mechanism_widgets + 1] = widget
+			switch_mechanism_widgets_by_name[name] = widget
+		end
+	end
+
+	self._switch_mechanism_widgets = switch_mechanism_widgets
+	self._switch_mechanism_widgets_by_name = switch_mechanism_widgets_by_name
 	local twitch_widgets = {}
 	local twitch_widgets_by_name = {}
 
@@ -251,6 +279,12 @@ MissionVotingUI.start_vote = function (self, active_voting)
 			local difficulty = vote_data.difficulty
 
 			self:_set_adventure_presentation(difficulty)
+		elseif vote_data.mechanism_key ~= nil then
+			local mechanism_key = vote_data.mechanism_key
+
+			self:_set_game_mode_presentation(mechanism_key)
+		elseif vote_data.switch_mechanism then
+			self:_set_switch_mechanism_presentation(vote_data)
 		else
 			local level_key = vote_data.level_key
 			local difficulty = vote_data.difficulty
@@ -398,6 +432,33 @@ MissionVotingUI._set_adventure_presentation = function (self, difficulty)
 	game_option_1.content.icon = difficulty_display_image
 	game_option_1.content.icon_frame = difficulty_frame_texture
 	self._presentation_type = "adventure"
+end
+
+MissionVotingUI._set_game_mode_presentation = function (self, mechanism_key)
+	local game_mode_widgets_by_name = self._game_mode_widgets_by_name
+	local game_mode_text = game_mode_widgets_by_name.game_mode_text
+	game_mode_text.content.text = Localize("vs_game_mode_title_" .. mechanism_key)
+	self._presentation_type = "game_mode"
+end
+
+MissionVotingUI._set_switch_mechanism_presentation = function (self, vote_data)
+	local mechanism_key = vote_data.mechanism
+	local level_key = vote_data.level_key
+	local level_settings = LevelSettings[level_key]
+	local level_display_name = level_settings.display_name
+	local level_image = level_settings.level_image
+	local frame_index = 3
+	local level_frame = self:_get_selection_frame_by_difficulty_index(frame_index)
+	local switch_mechanism_widgets_by_name = self._switch_mechanism_widgets_by_name
+	local game_option_1 = switch_mechanism_widgets_by_name.game_option_1
+	game_option_1.content.title_text = Localize(level_display_name)
+	local level_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
+	game_option_1.content.icon = level_image
+	game_option_1.content.icon_frame = level_frame
+	local level_texture_size = game_option_1.style.icon.texture_size
+	level_texture_size[1] = level_texture_settings.size[1]
+	level_texture_size[2] = level_texture_settings.size[2]
+	self._presentation_type = "switch_mechanism"
 end
 
 MissionVotingUI._set_custom_game_presentation = function (self, difficulty, level_key, private_game, always_host, strict_matchmaking)
@@ -602,15 +663,7 @@ end
 MissionVotingUI.update = function (self, dt, t)
 	local parent = self._parent
 	local ingame_ui = parent:parent()
-	local menu_active = ingame_ui.menu_active
-	local current_view = ingame_ui.current_view
-
-	if menu_active or current_view then
-		menu_active = true
-	else
-		menu_active = false
-	end
-
+	local menu_active = ingame_ui.menu_active or ingame_ui.current_view or ingame_ui._transition_fade_data
 	self.menu_active = menu_active
 
 	self:_update_animations(dt, t)
@@ -818,6 +871,34 @@ MissionVotingUI.draw = function (self, dt)
 
 				render_settings.snap_pixel_positions = snap_pixel_positions
 			end
+		elseif presentation_type == "game_mode" then
+			local game_mode_widgets = self._game_mode_widgets
+
+			for i = 1, #game_mode_widgets, 1 do
+				local widget = game_mode_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
+		elseif presentation_type == "switch_mechanism" then
+			local switch_mechanism_widgets = self._switch_mechanism_widgets
+
+			for i = 1, #switch_mechanism_widgets, 1 do
+				local widget = switch_mechanism_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
 		end
 	end
 
@@ -839,8 +920,7 @@ MissionVotingUI._update_pulse_animations = function (self, dt)
 
 	if not menu_active then
 		local speed_multiplier = (menu_active and 5) or 8
-		local time_since_launch = Application.time_since_launch()
-		local progress = (menu_active and 0) or 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
+		local progress = (menu_active and 0) or 0.5 + math.sin(Managers.time:time("ui") * speed_multiplier) * 0.5
 		local alpha = 100 + progress * 155
 		local widgets_by_name = self._widgets_by_name
 		widgets_by_name.timer_fg.style.texture_id.color[1] = alpha

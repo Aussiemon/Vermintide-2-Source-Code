@@ -58,6 +58,16 @@ AreaDamageExtension.destroy = function (self)
 	end
 
 	local world = self.world
+
+	if self.explosion_template_name then
+		local explosion_template = ExplosionTemplates[self.explosion_template_name]
+		local stop_aoe_sound_event_name = explosion_template.aoe.stop_aoe_sound_event_name
+
+		if stop_aoe_sound_event_name then
+			WwiseUtils.trigger_unit_event(world, stop_aoe_sound_event_name, self.unit, 0)
+		end
+	end
+
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
 
 	if self.is_server and area_damage.server.destroy then
@@ -225,12 +235,21 @@ AreaDamageExtension.start = function (self)
 	end
 
 	if self.explosion_template_name then
-		local area_damage_position = Unit.local_position(self.unit, 0)
+		local unit = self.unit
+		local world = self.world
 		local explosion_template = ExplosionTemplates[self.explosion_template_name]
 		local sound_event_name = explosion_template.aoe.sound_event_name
 
 		if sound_event_name then
-			WwiseUtils.trigger_position_event(self.world, sound_event_name, area_damage_position)
+			local area_damage_position = Unit.local_position(unit, 0)
+
+			WwiseUtils.trigger_position_event(world, sound_event_name, area_damage_position)
+		end
+
+		local start_aoe_sound_event_name = explosion_template.aoe.start_aoe_sound_event_name
+
+		if start_aoe_sound_event_name then
+			WwiseUtils.trigger_unit_event(world, start_aoe_sound_event_name, unit, 0)
 		end
 	end
 
@@ -343,7 +362,7 @@ AreaDamageExtension._add_to_damage_buffer = function (self, temp_damage_buffer)
 	end
 end
 
-AreaDamageExtension.hot_join_sync = function (self, sender)
+AreaDamageExtension.hot_join_sync = function (self, peer_id)
 	return
 end
 

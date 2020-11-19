@@ -18,6 +18,7 @@ StartGameWindowAdventureOverviewConsole.on_enter = function (self, params, offse
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._statistics_db = ingame_ui_context.statistics_db
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -200,9 +201,11 @@ StartGameWindowAdventureOverviewConsole._handle_input = function (self, dt, t)
 		end
 
 		if input_service:get(START_GAME_INPUT) or self:_is_button_pressed(widgets_by_name.play_button) then
+			local custom_game_settings = parent:get_quickplay_settings(self._mechanism_name) or parent:get_quickplay_settings("adventure")
+			local game_mode_type = custom_game_settings.game_mode_type
 			self._play_button_pressed = true
 
-			parent:play(t, "adventure")
+			parent:play(t, game_mode_type)
 		end
 	end
 end

@@ -7,7 +7,7 @@ TalentExtension.init = function (self, extension_init_context, unit, extension_i
 	self.player = extension_init_data.player
 	self._profile_index = extension_init_data.profile_index
 	self._talent_buff_ids = {}
-	self.talent_weapon_index = 1
+	self.talent_career_skill_index = 1
 end
 
 TalentExtension.extensions_ready = function (self, world, unit)
@@ -102,6 +102,30 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 					end
 				end
 			end
+
+			if player.local_player or is_server_bot then
+				local client_buffs = talent_data.client_buffs
+
+				if client_buffs then
+					for j = 1, #client_buffs, 1 do
+						local buff_template = client_buffs[j]
+						local id = buff_extension:add_buff(buff_template)
+						talent_buff_ids[#talent_buff_ids + 1] = id
+					end
+				end
+			end
+
+			if self.is_server then
+				local server_buffs = talent_data.server_buffs
+
+				if server_buffs then
+					for j = 1, #server_buffs, 1 do
+						local buff_template = server_buffs[j]
+						local id = buff_extension:add_buff(buff_template)
+						talent_buff_ids[#talent_buff_ids + 1] = id
+					end
+				end
+			end
 		end
 	end
 end
@@ -118,20 +142,31 @@ TalentExtension.update_talent_weapon_index = function (self, talent_ids)
 		return
 	end
 
-	self.talent_weapon_index = 1
+	self.talent_career_skill_index = 1
+	self.talent_career_weapon_index = nil
 
 	for i = 1, #talent_ids, 1 do
 		local talent_id = talent_ids[i]
 		local talent_data = talents[talent_id]
 
-		if talent_data and talent_data.talent_weapon_index then
-			self.talent_weapon_index = talent_data.talent_weapon_index
+		if talent_data then
+			if talent_data.talent_career_skill_index then
+				self.talent_career_skill_index = talent_data.talent_career_skill_index
+			end
+
+			if talent_data.talent_career_weapon_index then
+				self.talent_career_weapon_index = talent_data.talent_career_weapon_index
+			end
 		end
 	end
 end
 
-TalentExtension.get_talent_weapon_index = function (self)
-	return self.talent_weapon_index
+TalentExtension.get_talent_career_skill_index = function (self)
+	return self.talent_career_skill_index
+end
+
+TalentExtension.get_talent_career_weapon_index = function (self)
+	return self.talent_career_weapon_index
 end
 
 TalentExtension._clear_buffs_from_talents = function (self)

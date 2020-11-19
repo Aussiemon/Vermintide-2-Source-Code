@@ -2,16 +2,6 @@ require("scripts/ui/views/level_end/level_end_view_base")
 require("scripts/ui/views/level_end/states/end_view_state_summary")
 require("scripts/ui/views/team_previewer")
 
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.end_view_state
-
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
-	end
-end
-
 local definitions = local_require("scripts/ui/views/level_end/level_end_view_definitions")
 local widget_definitions = definitions.widgets_definitions
 local scenegraph_definition = definitions.scenegraph_definition
@@ -19,14 +9,6 @@ local animation_definitions = definitions.animations
 local generic_input_actions = definitions.generic_input_actions
 local debug_draw_scenegraph = false
 local debug_menu = false
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 LevelEndViewWeave = class(LevelEndViewWeave, LevelEndViewBase)
 
 LevelEndViewWeave.init = function (self, context)
@@ -122,7 +104,7 @@ LevelEndViewWeave.destroy = function (self)
 end
 
 LevelEndViewWeave.active_input_service = function (self)
-	return (self.input_blocked and fake_input_service) or self:input_service()
+	return (self.input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 end
 
 LevelEndViewWeave._retry_level = function (self)
@@ -396,7 +378,9 @@ end
 
 LevelEndViewWeave.spawn_level = function (self, context, world)
 	local object_sets = {}
-	local level = ScriptWorld.load_level(world, level_name, object_sets, nil, nil, nil)
+	local position, rotation, shading_callback, mood_setting = nil
+	local time_sliced_spawn = false
+	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 	Level.spawn_background(level)
 

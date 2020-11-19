@@ -751,9 +751,13 @@ local function cb_rush_intervention_unit_spawned(unit, breed, optional_data)
 	print("rush intervention - spawning ", breed.name)
 end
 
-SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, main_path_info, main_path_player_info)
+SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, main_path_info, main_path_player_info, disable_rush_intervention)
 	if script_data.ai_specials_spawning_disabled then
 		return false, "specials spawning disabled"
+	end
+
+	if disable_rush_intervention and disable_rush_intervention.specials then
+		return false, "no intervention, since game mode disabled it"
 	end
 
 	local status_extension = ScriptUnit.extension(player_unit, "status_system")

@@ -1,11 +1,13 @@
 LootChestData = LootChestData or {}
 LootChestData.scores = {
-	loot_dice = 5,
-	tome = 10,
-	game_won = 10,
-	quickplay = 10,
-	max_random_score = 30,
-	grimoire = 15
+	default = {
+		loot_dice = 5,
+		tome = 10,
+		game_won = 10,
+		quickplay = 10,
+		max_random_score = 30,
+		grimoire = 15
+	}
 }
 LootChestData.score_per_chest = 20
 LootChestData.score_thresholds = {
@@ -19,10 +21,8 @@ LootChestData.score_thresholds = {
 LootChestData.score_thresholds_per_chest = {
 	0
 }
-local total = 0
 
 for i = 2, #LootChestData.score_thresholds, 1 do
-	local score = LootChestData.score_thresholds[i]
 	LootChestData.score_thresholds_per_chest[i] = LootChestData.score_thresholds[i] - LootChestData.score_thresholds[i - 1]
 end
 
@@ -7375,5 +7375,7 @@ LootChestData.items_new = {
 		}
 	}
 }
+
+DLCUtils.merge("extra_loot_chest_score_types", LootChestData.scores)
 
 return

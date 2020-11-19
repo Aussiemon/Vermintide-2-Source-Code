@@ -19,7 +19,7 @@ ImguiCraftItem.init = function (self)
 		"unique"
 	}
 	self._items_per_type = {}
-	self._power_level = 100
+	self._power_level = 300
 	self._property_strength = 1
 	self._current_type = -1
 	self._current_item = -1

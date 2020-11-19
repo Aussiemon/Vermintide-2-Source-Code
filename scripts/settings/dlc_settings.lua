@@ -345,6 +345,17 @@ DLCSettings = DLCSettings or {
 			buff = "scripts/settings/dlcs/lake/buff_settings_lake",
 			achievements = "scripts/settings/dlcs/lake/lake_achievements_settings"
 		}
+	},
+	cog = {
+		package_name = "resource_packages/dlcs/cog",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/cog/cog_equipment_settings",
+			ai = "scripts/settings/dlcs/cog/cog_ai_settings",
+			common = "scripts/settings/dlcs/cog/cog_common_settings",
+			buff = "scripts/settings/dlcs/cog/buff_settings_cog",
+			sound = "scripts/settings/dlcs/cog/cog_sound_settings",
+			achievements = "scripts/settings/dlcs/cog/cog_achievements_settings"
+		}
 	}
 }
 

@@ -315,14 +315,18 @@ ActionPushStagger.finish = function (self, reason)
 	callback_context.has_gotten_callback = false
 	local ammo_extension = self.ammo_extension
 	local current_action = self.current_action
-
-	if reason ~= "new_interupting_action" and ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
-		local play_reload_animation = true
-
-		ammo_extension:start_reload(play_reload_animation)
-	end
-
 	local owner_unit = self.owner_unit
+
+	if reason ~= "new_interupting_action" then
+		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+
+		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
+			local play_reload_animation = true
+
+			ammo_extension:start_reload(play_reload_animation)
+		end
+	end
 
 	if not LEVEL_EDITOR_TEST then
 		local go_id = Managers.state.unit_storage:go_id(owner_unit)

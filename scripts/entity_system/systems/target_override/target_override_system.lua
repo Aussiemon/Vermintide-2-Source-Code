@@ -16,7 +16,7 @@ TargetOverrideSystem.destroy = function (self)
 	self._network_event_delegate = nil
 end
 
-TargetOverrideSystem.rpc_taunt = function (self, sender, game_object_id, radius, duration, stagger, taunt_bosses)
+TargetOverrideSystem.rpc_taunt = function (self, channel_id, game_object_id, radius, duration, stagger, taunt_bosses)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	ScriptUnit.extension(unit, "target_override_system"):taunt(radius, duration, stagger, taunt_bosses)

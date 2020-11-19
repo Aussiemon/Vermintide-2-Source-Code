@@ -63,124 +63,6 @@ weapon_template.actions = {
 				}
 			}
 		},
-		default_right = {
-			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
-			aim_assist_max_ramp_multiplier = 0.4,
-			uninterruptible = true,
-			anim_event = "attack_swing_charge_stab",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			total_time = math.huge,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.5,
-					buff_name = "planted_charging_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "light_attack_last",
-					start_time = 0,
-					action = "action_one",
-					end_time = 0.3,
-					input = "action_one_release"
-				},
-				{
-					sub_action = "heavy_attack_stab",
-					start_time = 0.5,
-					action = "action_one",
-					input = "action_one_release"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					start_time = 0.5,
-					blocker = true,
-					end_time = 1,
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "heavy_attack_stab",
-					start_time = 0.7,
-					action = "action_one",
-					auto_chain = true
-				}
-			}
-		},
-		default_shield = {
-			aim_assist_ramp_multiplier = 0.2,
-			aim_assist_ramp_decay_delay = 0.1,
-			anim_end_event = "attack_finished",
-			kind = "melee_start",
-			aim_assist_max_ramp_multiplier = 0.4,
-			uninterruptible = true,
-			anim_event = "attack_swing_charge",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			total_time = math.huge,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.5,
-					buff_name = "planted_charging_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "light_attack_shield",
-					start_time = 0,
-					action = "action_one",
-					end_time = 0.3,
-					input = "action_one_release"
-				},
-				{
-					sub_action = "heavy_attack_right",
-					start_time = 0.5,
-					action = "action_one",
-					input = "action_one_release"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					start_time = 0.5,
-					blocker = true,
-					end_time = 1,
-					input = "action_one_hold"
-				},
-				{
-					sub_action = "heavy_attack_right",
-					start_time = 0.7,
-					action = "action_one",
-					auto_chain = true
-				}
-			}
-		},
 		default_left = {
 			aim_assist_ramp_multiplier = 0.2,
 			aim_assist_ramp_decay_delay = 0.1,
@@ -794,64 +676,6 @@ weapon_template.actions = {
 				}
 			}
 		},
-		light_attack_last = {
-			damage_window_start = 0.38,
-			range_mod = 1.2,
-			kind = "sweep",
-			first_person_hit_anim = "shake_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			additional_critical_strike_chance = 0,
-			use_precision_sweep = false,
-			damage_profile = "light_slashing_linesman_flat",
-			hit_shield_stop_anim = "attack_hit_shield",
-			hit_effect = "melee_hit_hammers_2h",
-			damage_window_end = 0.47,
-			impact_sound_event = "slashing_hit",
-			anim_end_event = "attack_finished",
-			dedicated_target_range = 2.5,
-			anim_event = "attack_swing_down",
-			hit_stop_anim = "attack_hit",
-			total_time = 1.1,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			anim_time_scale = time_mod * 1.25,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.8,
-					end_time = 0.5,
-					buff_name = "planted_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.75,
-					action = "action_one",
-					end_time = 1.2,
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 1.2,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_two",
-					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_wield",
-					input = "action_wield"
-				}
-			}
-		},
 		light_attack_stab_postpush = {
 			damage_window_start = 0.18,
 			range_mod = 1.2,
@@ -1051,15 +875,7 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right

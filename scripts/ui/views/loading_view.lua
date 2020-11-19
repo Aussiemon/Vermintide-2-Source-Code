@@ -70,14 +70,6 @@ local objective_texts = {
 }
 local num_subtitle_rows = 5
 LoadingView = class(LoadingView)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 LoadingView.init = function (self, ui_context)
 	local world = ui_context.world
@@ -411,6 +403,8 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 		self.tip_text_prefix_widget.style.text.horizontal_alignment = "center"
 		self.tip_text_prefix_widget.style.text.word_wrap = true
 	else
+		tip_localization_key = tip_localization_key or Managers.mechanism:get_loading_tip()
+
 		if not tip_localization_key then
 			local tip_type_index = 1
 			local random = math.random()
@@ -701,7 +695,7 @@ LoadingView.draw = function (self, dt)
 		end
 	end
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, self.render_settings)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self.render_settings)
 
 	for i = 1, #self.widgets, 1 do
 		UIRenderer.draw_widget(ui_renderer, self.widgets[i])
@@ -714,7 +708,7 @@ LoadingView.draw = function (self, dt)
 	UIRenderer.end_pass(ui_renderer)
 
 	if self.weave_loading_icon then
-		UIRenderer.begin_pass(ui_hdr_renderer, ui_scenegraph, fake_input_service, dt, nil, self.render_settings)
+		UIRenderer.begin_pass(ui_hdr_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self.render_settings)
 		UIRenderer.draw_widget(ui_hdr_renderer, self.weave_loading_icon)
 		UIRenderer.end_pass(ui_hdr_renderer)
 	end

@@ -4,17 +4,11 @@ local position_lookup = POSITION_LOOKUP
 PlayerCharacterStateGrabbedByPackMaster.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "grabbed_by_pack_master")
 
-	self.bread_crumb_trail = {}
-	self.bread_crumb_trail_n = 10
 	self.move_target_index = 0
-	self.store_index = 0
 	self.desired_distance = 2
 	self.last_valid_position = Vector3Box()
+	self._drag_delta_move = Vector3Box()
 	self.next_hanging_damage_time = 0
-
-	for i = 1, self.bread_crumb_trail_n, 1 do
-		self.bread_crumb_trail[i] = Vector3Box()
-	end
 end
 
 PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
@@ -35,25 +29,30 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 	local packmaster_unit = status_extension:get_pack_master_grabber()
 	local packmaster_unit_position = position_lookup[packmaster_unit]
 	local position = position_lookup[unit]
-	local num_initial_crumbs = self.bread_crumb_trail_n / 2
-
-	for i = 1, num_initial_crumbs, 1 do
-		self.bread_crumb_trail[i]:store(Vector3.lerp(position, packmaster_unit_position, i / num_initial_crumbs))
-	end
-
+	local node = Unit.node(packmaster_unit, "j_rightweaponcomponent10")
+	local start_pos = Unit.world_position(packmaster_unit, node)
+	local target_pos = start_pos + Vector3(0, 2, 0)
+	self._pole = {
+		pole_length = 2,
+		apos = Vector3Box(start_pos),
+		bpos = Vector3Box(target_pos)
+	}
 	self.move_target_index = 1
-	self.store_index = num_initial_crumbs + 1
-	self.bread_crumb_trail_timer = t + 0.25
 
 	if self.ai_extension == nil then
 		local wwise_world = Managers.world:wwise_world(self.world)
-		slot17, slot18 = WwiseWorld.trigger_event(wwise_world, "start_strangled_state", first_person_extension:get_first_person_unit())
+		slot19, slot20 = WwiseWorld.trigger_event(wwise_world, "start_strangled_state", first_person_extension:get_first_person_unit())
 	end
 
 	self.last_valid_position:store(position)
+	self.locomotion_extension:set_wanted_pos(position)
 
 	self.pack_master_status = CharacterStateHelper.pack_master_status(status_extension)
 	local states = PlayerCharacterStateGrabbedByPackMaster.states
+
+	if self.pack_master_status == "pack_master_pulling" then
+		self._initial_pull_t = t + 0.75
+	end
 
 	if states[self.pack_master_status].enter then
 		states[self.pack_master_status].enter(self, unit)
@@ -143,7 +142,7 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 	},
 	pack_master_dragging = {
 		enter = function (parent, unit)
-			parent.locomotion_extension:enable_script_driven_no_mover_movement()
+			parent.locomotion_extension:enable_wanted_position_movement()
 
 			local inventory_extension = parent.inventory_extension
 
@@ -153,9 +152,24 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 				CharacterStateHelper.show_inventory_3p(unit, true, true, Managers.player.is_server, parent.inventory_extension)
 			end
 
+			parent.dragged_move_anim = "move_bwd"
+
 			CharacterStateHelper.play_animation_event_first_person(parent.first_person_extension, "move_bwd")
 		end,
 		run = function (parent, unit)
+			local drag_delta_move = parent._drag_delta_move:unbox()
+			local delta_move_length = Vector3.length(drag_delta_move)
+
+			if delta_move_length == 0 and parent.dragged_move_anim == "move_bwd" then
+				Managers.state.network:anim_event(unit, "packmaster_hooked_idle")
+
+				parent.dragged_move_anim = "packmaster_hooked_idle"
+			elseif delta_move_length > 0 and parent.dragged_move_anim == "packmaster_hooked_idle" then
+				Managers.state.network:anim_event(unit, "move_bwd")
+
+				parent.dragged_move_anim = "move_bwd"
+			end
+
 			return true
 		end,
 		leave = function (parent, unit)
@@ -202,7 +216,10 @@ PlayerCharacterStateGrabbedByPackMaster.states = {
 	},
 	pack_master_hoisting = {
 		enter = function (parent, unit)
-			fix_mover(parent, unit)
+			local packmaster_unit = parent.status_extension:get_pack_master_grabber()
+			local new_pos = PactswornUtils.get_hoist_position(unit, packmaster_unit)
+
+			parent.locomotion_extension:teleport_to(new_pos, nil)
 		end,
 		run = function (parent, unit)
 			return
@@ -306,70 +323,75 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 		self.pack_master_status = pack_master_status
 	end
 
-	if not states[pack_master_status].run(self, unit) then
+	local packmaster_unit = status_extension:get_pack_master_grabber()
+
+	if not states[pack_master_status].run(self, unit) or not Unit.alive(packmaster_unit) then
+		if pack_master_status == "pack_master_pulling" then
+			if self._initial_pull_t < t and not self._pull_lerp then
+				self.locomotion_extension:enable_wanted_position_movement()
+
+				self._pull_lerp = true
+				self._pull_lerp_dif = math.huge
+			end
+
+			if self._pull_lerp then
+				local pole = self._pole
+				local neck_node = Unit.node(unit, "j_neck")
+				local neck_pos = Unit.world_position(unit, neck_node)
+				local position = position_lookup[unit]
+				local neck_to_feet_vec = position - neck_pos
+				local hand_node = Unit.node(packmaster_unit, "j_rightweaponcomponent10")
+				local hand_pos = Unit.world_position(packmaster_unit, hand_node)
+				local hand_to_neck_vec = Vector3.normalize(neck_pos - hand_pos) * pole.pole_length
+				local new_neck_pos = hand_pos + hand_to_neck_vec
+				local wanted_position = new_neck_pos + neck_to_feet_vec
+
+				if self._pull_lerp then
+					local current_pos = Unit.world_position(unit, 0)
+					local dif = wanted_position - current_pos
+					local delta_move = Vector3.normalize(dif) * dt * 0.5
+					local delta_move_length = Vector3.length_squared(dif)
+
+					if delta_move_length < self._pull_lerp_dif then
+						self._pull_lerp_dif = Vector3.length_squared(dif)
+						wanted_position = current_pos + delta_move
+					else
+						self._pull_lerp = nil
+					end
+				end
+
+				self.locomotion_extension:set_wanted_pos(wanted_position)
+			end
+		end
+
 		return
 	end
 
-	local packmaster_unit = status_extension:get_pack_master_grabber()
 	local packmaster_unit_position = position_lookup[packmaster_unit]
-
-	if self.bread_crumb_trail_timer < t then
-		self.bread_crumb_trail_timer = t + 0.4
-
-		if self.store_index == self.move_target_index then
-			self.move_target_index = (self.store_index + self.bread_crumb_trail_n / 2) % self.bread_crumb_trail_n + 1
-
-			self.locomotion_extension:teleport_to(self.bread_crumb_trail[self.move_target_index]:unbox())
-		end
-
-		self.bread_crumb_trail[self.store_index]:store(packmaster_unit_position)
-
-		self.store_index = self.store_index % self.bread_crumb_trail_n + 1
-	end
-
 	local position = position_lookup[unit]
-	local wanted_distance = self.desired_distance
-	local wanted_distance_sq = wanted_distance * wanted_distance
-	local best_crumb_position = nil
-	local best_crumb_distance_sq = math.huge
+	local wanted_position = nil
+	local pole = self._pole
+	local neck_node = Unit.node(unit, "j_neck")
+	local neck_pos = Unit.world_position(unit, neck_node)
+	local neck_to_feet_vec = position - neck_pos
+	local hand_node = Unit.node(packmaster_unit, "j_rightweaponcomponent10")
+	local hand_pos = Unit.world_position(packmaster_unit, hand_node)
+	local hand_to_neck_vec = Vector3.normalize(neck_pos - hand_pos) * pole.pole_length
+	local new_neck_pos = hand_pos + hand_to_neck_vec
+	wanted_position = new_neck_pos + neck_to_feet_vec
+	wanted_position = wanted_position or position
+	local wanted_change = wanted_position - position
+	wanted_change.z = 0
 
-	for i = 1, self.bread_crumb_trail_n, 1 do
-		local bread_crumb_position = self.bread_crumb_trail[i]:unbox()
-		local distance_sq = Vector3.distance_squared(bread_crumb_position, packmaster_unit_position)
-		local distance_to_wanted_sq = math.abs(distance_sq - wanted_distance_sq)
+	self._drag_delta_move:store(wanted_change)
 
-		if distance_to_wanted_sq < best_crumb_distance_sq then
-			best_crumb_position = bread_crumb_position
-			best_crumb_distance_sq = distance_to_wanted_sq
-		end
-	end
-
-	local direction = Vector3.normalize(best_crumb_position - packmaster_unit_position)
-	local wanted_position = packmaster_unit_position + direction * wanted_distance
-	local packmaster_speed = nil
-	local breed = Unit.get_data(packmaster_unit, "breed")
-
-	if not breed then
-		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(packmaster_unit)
-		packmaster_speed = movement_settings_table.move_speed
-	else
-		packmaster_speed = breed.walk_speed
-	end
-
-	local distance_sq = Vector3.distance_squared(position, packmaster_unit_position)
-	local distance_sq_from_desired = distance_sq - wanted_distance_sq
-	local speed_factor_from_distance = packmaster_speed * 0.9 + distance_sq_from_desired * 0.4
-	local to_bread_crumb_vector = wanted_position - position
-	local to_bread_crumb_direction = Vector3.normalize(to_bread_crumb_vector)
-
-	self.locomotion_extension:set_wanted_velocity(to_bread_crumb_direction * speed_factor_from_distance)
-	Vector3.set_z(to_bread_crumb_direction, 0)
-
-	local rotation_wanted = Quaternion.look(-to_bread_crumb_direction)
+	local to_packmaster = Vector3.flat(packmaster_unit_position - position)
+	local rotation_wanted = Quaternion.look(-to_packmaster)
 	local rotation_current = Unit.local_rotation(unit, 0)
 	local rotation = Quaternion.lerp(rotation_current, rotation_wanted, 0.1)
 
 	Unit.set_local_rotation(unit, 0, rotation)
+	self.locomotion_extension:set_wanted_pos(wanted_position)
 
 	local physics_world = World.get_data(self.world, "physics_world")
 	local radius = 0.9
@@ -380,18 +402,6 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 
 	if num_actors == 0 then
 		self.last_valid_position:store(position)
-	end
-
-	if script_data.debug_ai_movement then
-		QuickDrawer:line(position, wanted_position)
-		QuickDrawer:sphere(position, 0.2, Colors.get("magenta"))
-		QuickDrawer:sphere(wanted_position + Vector3.up() * 0.4, 0.2, Colors.get("magenta"))
-
-		for i = 1, self.bread_crumb_trail_n, 1 do
-			local bread_crumb_position = self.bread_crumb_trail[i]:unbox()
-
-			QuickDrawer:sphere(bread_crumb_position, 0.1, Colors.get("blue"))
-		end
 	end
 end
 

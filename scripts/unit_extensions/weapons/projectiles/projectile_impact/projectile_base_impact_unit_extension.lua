@@ -33,9 +33,9 @@ ProjectileBaseImpactUnitExtension.impact = function (self, hit_unit, hit_positio
 	pdArray.push_back5(impact_buffer, unpack(temp_table))
 
 	if Unit.actor(hit_unit, hit_actor_index) == nil then
+		print("hitting pickup?")
 		print(hit_actor_index)
 		print(Unit.find_actor(hit_unit, "c_afro"))
-		assert(false, "Need to know if this ever happens, contact Staffan if it does.")
 	end
 end
 

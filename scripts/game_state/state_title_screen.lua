@@ -5,6 +5,7 @@ require("scripts/managers/rcon/rcon_manager")
 require("scripts/managers/eac/eac_manager")
 require("scripts/settings/game_settings")
 require("scripts/ui/views/beta_overlay")
+require("scripts/ui/views/alpha_overlay")
 require("foundation/scripts/managers/chat/chat_manager")
 
 if PLATFORM == "xb1" then
@@ -32,6 +33,12 @@ StateTitleScreen.on_enter = function (self, params)
 	end
 
 	if (PLATFORM == "ps4" or PLATFORM == "xb1") and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and (PLATFORM == "ps4" or Managers.account:offline_mode()) then
+		if Managers.party:has_party_lobby() then
+			local lobby = Managers.party:steal_lobby()
+
+			LobbyInternal.leave_lobby(lobby)
+		end
+
 		LobbyInternal.shutdown_client()
 	end
 
@@ -76,12 +83,14 @@ StateTitleScreen.on_enter = function (self, params)
 
 	Managers.rcon = Managers.rcon or RconManager:new()
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		Managers.eac = Managers.eac or EacManager:new()
 	end
 
-	if Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay then
-		self:_init_beta_overlay()
+	self:_init_beta_overlay()
+
+	if Development.parameter("use_alpha_overlay") or script_data.settings.use_alpha_overlay then
+		self:_init_alpha_overlay()
 	end
 
 	self._platform = PLATFORM
@@ -256,7 +265,21 @@ StateTitleScreen._init_chat_manager = function (self)
 end
 
 StateTitleScreen._init_beta_overlay = function (self)
-	Managers.beta_overlay = Managers.beta_overlay or BetaOverlay:new()
+	local beta_overlay_text = Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay
+
+	if beta_overlay_text and not Managers.beta_overlay then
+		local top_world = Managers.world:world("top_ingame_view")
+
+		if beta_overlay_text == true then
+			beta_overlay_text = "ALPHA"
+		end
+
+		Managers.beta_overlay = BetaOverlay:new(top_world, tostring(beta_overlay_text))
+	end
+end
+
+StateTitleScreen._init_alpha_overlay = function (self)
+	Managers.alpha_overlay = Managers.alpha_overlay or AlphaOverlay:new()
 end
 
 StateTitleScreen.update = function (self, dt, t)
@@ -375,6 +398,12 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 	end
 
 	if application_shutdown and rawget(_G, "LobbyInternal") and LobbyInternal.client then
+		if Managers.party:has_party_lobby() then
+			local lobby = Managers.party:steal_lobby()
+
+			LobbyInternal.leave_lobby(lobby)
+		end
+
 		LobbyInternal.shutdown_client()
 	end
 

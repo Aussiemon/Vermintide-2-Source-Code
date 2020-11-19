@@ -3,15 +3,32 @@ require("scripts/network/lobby_aux")
 LobbyClient = class(LobbyClient)
 
 LobbyClient.init = function (self, network_options, lobby_data, joined_lobby)
-	self.lobby = joined_lobby or LobbyInternal.join_lobby(lobby_data)
+	local lobby = joined_lobby or LobbyInternal.join_lobby(lobby_data)
+	self.lobby = lobby
 	self.stored_lobby_data = lobby_data
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
 	self.network_hash = LobbyAux.create_network_hash(config_file_name, project_hash)
 	self.peer_id = Network.peer_id()
+	self._host_peer_id = nil
+	self._host_channel_id = nil
 end
 
 LobbyClient.destroy = function (self)
+	local host = self._host_peer_id
+	local channel_id = self._host_channel_id
+
+	if channel_id then
+		printf("LobbyClient close server channel %s to %s", tostring(channel_id), host)
+		LobbyInternal.close_channel(self.lobby, channel_id)
+
+		PEER_ID_TO_CHANNEL[host] = nil
+		CHANNEL_TO_PEER_ID[channel_id] = nil
+	end
+
+	self._host_peer_id = nil
+	self._host_channel_id = nil
+
 	LobbyInternal.leave_lobby(self.lobby)
 
 	self.lobby_members = nil
@@ -22,10 +39,9 @@ LobbyClient.destroy = function (self)
 end
 
 LobbyClient.update = function (self, dt)
-	local lobby = self.lobby
-	local lobby_state = lobby:state()
-	local host_peer_id = lobby:lobby_host()
-	local new_state = LobbyInternal.state_map[lobby_state]
+	local engine_lobby = self.lobby
+	local host_peer_id = engine_lobby:lobby_host()
+	local new_state = engine_lobby:state()
 	local old_state = self.state
 
 	if new_state ~= old_state then
@@ -34,11 +50,11 @@ LobbyClient.update = function (self, dt)
 		self.state = new_state
 
 		if new_state == LobbyState.JOINED then
-			self.lobby_members = self.lobby_members or LobbyMembers:new(lobby, self.client)
+			self.lobby_members = self.lobby_members or LobbyMembers:new(engine_lobby, self.client)
 
 			Managers.party:set_leader(host_peer_id)
 
-			self._lost_connection_to_lobby = false
+			self._look_for_host = true
 			self._reconnecting_to_lobby = nil
 			self._try_reconnecting = nil
 			self._reconnect_times = nil
@@ -62,6 +78,24 @@ LobbyClient.update = function (self, dt)
 		end
 	end
 
+	if self._look_for_host then
+		local host = engine_lobby:lobby_host()
+
+		printf("====== Looking for host: %s", tostring(host))
+
+		if host ~= nil then
+			local channel_id = LobbyInternal.open_channel(engine_lobby, host)
+			self._host_peer_id = host
+			self._host_channel_id = channel_id
+			PEER_ID_TO_CHANNEL[host] = channel_id
+			CHANNEL_TO_PEER_ID[channel_id] = host
+
+			printf("Connected to host: %s, using channel: %d", host, channel_id)
+
+			self._look_for_host = nil
+		end
+	end
+
 	if self.lobby_members then
 		self.lobby_members:update()
 
@@ -71,7 +105,7 @@ LobbyClient.update = function (self, dt)
 		for i = 1, #members_left, 1 do
 			local peer_id = members_left[i]
 
-			if peer_id == my_peer_id or peer_id == host_peer_id then
+			if peer_id == my_peer_id then
 				self._lost_connection_to_lobby = true
 				self._try_reconnecting = peer_id == my_peer_id
 
@@ -80,7 +114,7 @@ LobbyClient.update = function (self, dt)
 		end
 	end
 
-	if HAS_STEAM and self._lost_connection_to_lobby and not self._reconnecting_to_lobby and self._try_reconnecting then
+	if HAS_STEAM and self:lost_connection_to_lobby() and not self._reconnecting_to_lobby and self._try_reconnecting then
 		print("[LobbyClient] Attempting to rejoin lobby", self.stored_lobby_data.id, "Retries:", self._reconnect_times or 0)
 		LobbyInternal.leave_lobby(self.lobby)
 
@@ -153,8 +187,20 @@ LobbyClient.attempting_reconnect = function (self)
 	return self._reconnecting_to_lobby or self._try_reconnecting
 end
 
+LobbyClient._free_lobby = function (self)
+	if self.lobby ~= nil then
+		LobbyInternal.leave_lobby(self.lobby)
+
+		self.lobby = nil
+	end
+end
+
 LobbyClient.lost_connection_to_lobby = function (self)
-	return self._lost_connection_to_lobby
+	return LobbyInternal.is_orphaned(self.lobby) or self._lost_connection_to_lobby
+end
+
+LobbyClient.game_session_host = function (self)
+	return LobbyInternal.game_session_host(self.lobby)
 end
 
 return

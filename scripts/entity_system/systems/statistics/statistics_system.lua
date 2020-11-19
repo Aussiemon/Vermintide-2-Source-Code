@@ -94,7 +94,7 @@ StatisticsSystem.hot_join_sync = function (self, sender)
 	end
 end
 
-StatisticsSystem.rpc_set_unsigned_number_session_stat = function (self, sender, stat_id, value)
+StatisticsSystem.rpc_set_unsigned_number_session_stat = function (self, channel_id, stat_id, value)
 	local stat = NetworkLookup.session_stats[stat_id]
 	local statistics_db = self.extension_init_context.statistics_db
 
@@ -103,7 +103,7 @@ end
 
 local TEMP_ARGS = {}
 
-StatisticsSystem.rpc_register_kill = function (self, sender, victim_unit_go_id)
+StatisticsSystem.rpc_register_kill = function (self, channel_id, victim_unit_go_id)
 	local unit_storage = self.unit_storage
 	local victim_unit = unit_storage:unit(victim_unit_go_id)
 

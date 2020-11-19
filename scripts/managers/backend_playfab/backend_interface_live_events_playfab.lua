@@ -76,18 +76,4 @@ BackendInterfaceLiveEventsPlayfab.get_game_mode_data = function (self)
 	end
 end
 
-BackendInterfaceLiveEventsPlayfab.get_inn_level_name = function (self)
-	local live_events = self._live_events
-
-	for i = 1, #live_events, 1 do
-		local live_event = live_events[i]
-
-		if live_event.inn_override then
-			return live_event.inn_override
-		end
-	end
-
-	return "inn_level"
-end
-
 return

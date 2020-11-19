@@ -111,5 +111,13 @@ PayloadSpeedSettings.farmlands_heavy_load_01.pushed.acceleration = 1
 PayloadSpeedSettings.farmlands_heavy_load_01.not_pushed = PayloadSpeedSettings.farmlands_heavy_load_01.not_pushed or {}
 PayloadSpeedSettings.farmlands_heavy_load_01.not_pushed.speed = 0
 PayloadSpeedSettings.farmlands_heavy_load_01.not_pushed.acceleration = 0.2
+PayloadSpeedSettings.normal = PayloadSpeedSettings.normal or {}
+PayloadSpeedSettings.normal.pushed = PayloadSpeedSettings.normal.pushed or {}
+PayloadSpeedSettings.normal.pushed.speed = 2
+PayloadSpeedSettings.normal.pushed.bonus_speed_per_player = 0.25
+PayloadSpeedSettings.normal.pushed.acceleration = 0.5
+PayloadSpeedSettings.normal.not_pushed = PayloadSpeedSettings.normal.not_pushed or {}
+PayloadSpeedSettings.normal.not_pushed.speed = 0
+PayloadSpeedSettings.normal.not_pushed.acceleration = 0.5
 
 return

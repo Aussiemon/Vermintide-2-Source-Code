@@ -26,6 +26,9 @@ if not rawget(_G, "StoreLayoutConfig") then
 						weapon_skins = "item_details",
 						hats = "item_details",
 						skins = "item_details"
+					},
+					engineer = {
+						weapon_skins = "item_details"
 					}
 				},
 				kruber = {
@@ -114,12 +117,12 @@ if not rawget(_G, "StoreLayoutConfig") then
 		layout = "category",
 		display_name = "menu_store_panel_title_cosmetics"
 	}
-	StoreLayoutConfig.pages.dlc = {
-		sound_event_enter = "Play_hud_store_category_dlc",
-		layout = "dlc_list",
-		display_name = "menu_store_panel_title_dlcs",
-		type = "dlc",
-		content = {
+	local dlc_content = nil
+
+	if PLATFORM == "win32" then
+		dlc_content = {
+			"cog",
+			"cog_upgrade",
 			"lake",
 			"lake_upgrade",
 			"scorpion",
@@ -127,6 +130,22 @@ if not rawget(_G, "StoreLayoutConfig") then
 			"bogenhafen",
 			"pre_order"
 		}
+	else
+		dlc_content = {
+			"lake",
+			"scorpion",
+			"holly",
+			"bogenhafen",
+			"pre_order"
+		}
+	end
+
+	StoreLayoutConfig.pages.dlc = {
+		sound_event_enter = "Play_hud_store_category_dlc",
+		layout = "dlc_list",
+		display_name = "menu_store_panel_title_dlcs",
+		type = "dlc",
+		content = dlc_content
 	}
 	StoreLayoutConfig.pages.item_details = {
 		layout = "item_detailed",
@@ -196,6 +215,14 @@ if not rawget(_G, "StoreLayoutConfig") then
 		item_filter = "can_wield_dr_ranger",
 		sort_order = 1,
 		category_button_texture = "store_category_icon_bardin_ranger"
+	}
+	StoreLayoutConfig.pages.engineer = {
+		sound_event_enter = "Play_hud_store_category_button",
+		layout = "category",
+		display_name = "dr_engineer",
+		item_filter = "can_wield_dr_engineer",
+		sort_order = 4,
+		category_button_texture = "store_category_icon_bardin_engineer"
 	}
 	StoreLayoutConfig.pages.kruber = {
 		sound_event_enter = "Play_hud_store_kruber",

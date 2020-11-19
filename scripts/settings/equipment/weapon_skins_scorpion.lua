@@ -503,7 +503,15 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_empire_shield_04/wpn_emp_shield_04_magic_01",
 			template = "one_handed_hammer_shield_template_1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_shield_hammer"
+			display_unit = "units/weapons/weapon_display/display_shield_hammer",
+			action_anim_overrides = {
+				action_two = {
+					default = {
+						anim_event = "parry_pose_02",
+						anim_event_3p = "parry_pose"
+					}
+				}
+			}
 		}
 	},
 	{
@@ -517,7 +525,15 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_empire_shield_04/wpn_emp_shield_04_magic_01",
 			template = "one_handed_sword_shield_template_1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_shield_sword"
+			display_unit = "units/weapons/weapon_display/display_shield_sword",
+			action_anim_overrides = {
+				action_two = {
+					default = {
+						anim_event = "parry_pose_02",
+						anim_event_3p = "parry_pose"
+					}
+				}
+			}
 		}
 	},
 	{

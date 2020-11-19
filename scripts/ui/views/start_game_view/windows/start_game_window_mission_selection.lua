@@ -502,8 +502,8 @@ StartGameWindowMissionSelection._handle_input = function (self, dt, t)
 		local parent = self.parent
 		local game_mode_layout_name = parent:get_selected_game_mode_layout_name()
 
-		parent:set_selected_level_id(self._selected_level_id)
 		parent:set_layout_by_name(game_mode_layout_name)
+		parent:set_selected_level_id(self._selected_level_id)
 	end
 end
 

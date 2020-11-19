@@ -191,23 +191,27 @@ KeepDecorationSystem.is_painting_in_use = function (self, painting)
 	return false
 end
 
-KeepDecorationSystem.rpc_send_painting = function (self, sender, painting)
-	self:_add_client_painting(sender, painting)
+KeepDecorationSystem.rpc_send_painting = function (self, channel_id, painting)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	self:_add_client_painting(peer_id, painting)
 	self:_refresh_client_paintings()
 end
 
-KeepDecorationSystem.rpc_request_painting = function (self, sender)
+KeepDecorationSystem.rpc_request_painting = function (self, channel_id)
 	local painting = Managers.backend:get_interface("keep_decorations"):get_decoration("keep_hall_painting_wood_base_5") or "hor_none"
 
 	self.network_transmit:send_rpc_server("rpc_send_painting", painting)
 end
 
-KeepDecorationSystem.hot_join_sync = function (self, sender)
+KeepDecorationSystem.hot_join_sync = function (self, peer_id)
 	local level_key = Managers.state.game_mode:level_key()
 	local level_setting = LevelSettings[level_key]
 
 	if level_setting.use_keep_decorations then
-		RPC.rpc_request_painting(sender)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+		RPC.rpc_request_painting(channel_id)
 	end
 end
 

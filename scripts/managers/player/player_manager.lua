@@ -48,13 +48,23 @@ PlayerManager.statistics_db = function (self)
 	return self._statistics_db
 end
 
-PlayerManager.rpc_to_client_spawn_player = function (self, sender, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id)
+PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_buff_ids)
 	if script_data.network_debug_connections then
-		printf("PlayerManager:rpc_to_client_spawn_player(%s, %s, %s, %s)", tostring(sender), tostring(profile_index), tostring(position), tostring(rotation))
+		printf("PlayerManager:rpc_to_client_spawn_player(%s, %s, %s, %s)", tostring(channel_id), tostring(profile_index), tostring(position), tostring(rotation))
 	end
 
 	if self.is_server and not Managers.state.network:in_game_session() then
 		return
+	end
+
+	local initial_buff_names = {}
+
+	if network_buff_ids then
+		for _, buff_id in ipairs(network_buff_ids) do
+			local buff_name = NetworkLookup.buff_templates[buff_id]
+
+			table.insert(initial_buff_names, buff_name)
+		end
 	end
 
 	local ammo_melee = ammo_melee_percent_int * 0.01
@@ -63,7 +73,27 @@ PlayerManager.rpc_to_client_spawn_player = function (self, sender, local_player_
 
 	player:set_profile_index(profile_index)
 	player:set_career_index(career_index)
-	player:spawn(position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, NetworkLookup.item_names[healthkit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], ability_cooldown_percent_int)
+
+	local player_unit = player.player_unit
+
+	if player_unit == nil or not Unit.alive(player_unit) then
+		player:spawn(position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, NetworkLookup.item_names[healthkit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], ability_cooldown_percent_int, initial_buff_names)
+	else
+		if player:needs_despawn() then
+			Managers.state.spawn:delayed_despawn(player)
+		end
+
+		local position = Vector3Box(position)
+		local rotation = QuaternionBox(rotation)
+
+		local function respawn_func()
+			if not player._destroyed and not player.player_unit then
+				player:spawn(position:unbox(), rotation:unbox(), is_initial_spawn, ammo_melee, ammo_ranged, NetworkLookup.item_names[healthkit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], ability_cooldown_percent_int, initial_buff_names)
+			end
+		end
+
+		Managers.state.unit_spawner:add_destroy_listener(player_unit, "delayed_client_spawn_player", respawn_func)
+	end
 end
 
 PlayerManager.exit_ingame = function (self)
@@ -103,7 +133,7 @@ PlayerManager.assign_unit_ownership = function (self, unit, player, is_player_un
 		local side = side_manager.side_by_party[party]
 
 		side_manager:add_player_unit_to_side(unit, side.side_id)
-		Managers.state.event:trigger("new_player_unit", player, unit)
+		Managers.state.event:trigger("new_player_unit", player, unit, player:unique_id())
 	end
 
 	Managers.state.unit_spawner:add_destroy_listener(unit, "player_manager", callback(self, "unit_destroy_callback"))

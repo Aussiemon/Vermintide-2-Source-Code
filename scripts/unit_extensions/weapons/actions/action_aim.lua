@@ -3,13 +3,9 @@ ActionAim = class(ActionAim, ActionBase)
 ActionAim.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionAim.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
-	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
-		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
-	end
-
-	if ScriptUnit.has_extension(weapon_unit, "spread_system") then
-		self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
-	end
+	self.ammo_extension = ScriptUnit.has_extension(weapon_unit, "ammo_system")
+	self.spread_extension = ScriptUnit.has_extension(weapon_unit, "spread_system")
+	self.weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 end
 
 local function scale_delay_value(action_settings, value, owner_unit, buff_extension)
@@ -141,9 +137,16 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local sound_event = current_action.aim_sound_event
 
 		if sound_event then
-			local wwise_world = self.wwise_world
+			if current_action.looping_aim_sound then
+				local start_aim_id = current_action.aim_sound_event
+				local stop_aim_id = current_action.unaim_sound_event
 
-			WwiseWorld.trigger_event(wwise_world, sound_event)
+				self.weapon_extension:add_looping_audio("aim", start_aim_id, stop_aim_id, nil, nil, true)
+			else
+				local wwise_world = self.wwise_world
+
+				WwiseWorld.trigger_event(wwise_world, sound_event)
+			end
 		end
 
 		self.played_aim_sound = true
@@ -196,7 +199,10 @@ ActionAim.finish = function (self, reason)
 	first_person_extension:disable_rig_offset()
 	first_person_extension:stop_force_look_rotation()
 
-	if ammo_extension and ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 and current_action.reload_when_out_of_ammo then
+	local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+	local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+
+	if ammo_extension and ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload then
 		local play_reload_animation = true
 
 		ammo_extension:start_reload(play_reload_animation)
@@ -230,7 +236,10 @@ ActionAim.finish = function (self, reason)
 
 	inventory_extension:set_loaded_projectile_override(nil)
 	self.buff_extension:trigger_procs("on_charge_finished")
-	self:_stop_charge_sound()
+
+	if not current_action.looping_aim_sound then
+		self:_stop_charge_sound()
+	end
 end
 
 return

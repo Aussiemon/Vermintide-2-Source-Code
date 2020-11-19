@@ -15,15 +15,7 @@ ProjectileGravitySettings = {
 	gaze_fireball = -0.01
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local projectile_gravity_settings = dlc.projectile_gravity_settings
-
-	if projectile_gravity_settings then
-		for name, value in pairs(projectile_gravity_settings) do
-			ProjectileGravitySettings[name] = value
-		end
-	end
-end
+DLCUtils.merge("projectile_gravity_settings", ProjectileGravitySettings)
 
 Projectiles = {
 	normal_arrow = {

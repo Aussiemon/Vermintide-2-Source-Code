@@ -439,12 +439,6 @@ PlayerUnitMovementSettings.parry.raise_delay = 0.18
 PlayerUnitMovementSettings.block = PlayerUnitMovementSettings.block or {}
 PlayerUnitMovementSettings.block.raise_delay = 0.18
 
-for _, dlc in pairs(DLCSettings) do
-	local file = dlc.player_movement_settings
-
-	if file then
-		require(file)
-	end
-end
+DLCUtils.require("player_movement_settings")
 
 return

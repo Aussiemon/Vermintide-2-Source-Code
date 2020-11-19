@@ -15,7 +15,7 @@ LobbyMembers.init = function (self, lobby)
 	self.members = my_members
 	self._members_changed = true
 
-	if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+	if (PLATFORM == "xb1" or PLATFORM == "ps4") and not Managers.account:offline_mode() then
 		self.lobby:update_user_names()
 	end
 end
@@ -40,7 +40,7 @@ LobbyMembers.update = function (self)
 
 			printf("[LobbyMembers] Member joined %s", tostring(peer_id))
 
-			if PLATFORM ~= "win32" then
+			if PLATFORM == "xb1" or PLATFORM == "ps4" then
 				local account_manager = Managers.account
 
 				if PLATFORM == "xb1" then

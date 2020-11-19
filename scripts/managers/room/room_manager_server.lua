@@ -86,8 +86,9 @@ RoomManagerServer.move_players_from_room = function (self, room_id)
 					locomotion_extension:teleport_to(spawn_pos, spawn_rot)
 				else
 					local unit_id = network_manager:unit_game_object_id(player_unit)
+					local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-					RPC.rpc_teleport_unit_to(peer_id, unit_id, spawn_pos, spawn_rot)
+					RPC.rpc_teleport_unit_to(channel_id, unit_id, spawn_pos, spawn_rot)
 				end
 			end
 		until true
@@ -95,11 +96,13 @@ RoomManagerServer.move_players_from_room = function (self, room_id)
 end
 
 RoomManagerServer.hot_join_sync = function (self, sender)
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
+
 	for peer_id, room_info in pairs(self._peer_rooms) do
 		local room_id = room_info.room_id
 		local profile_index = room_info.profile_index
 
-		RPC.rpc_inn_room_created(sender, peer_id, room_id, profile_index)
+		RPC.rpc_inn_room_created(channel_id, peer_id, room_id, profile_index)
 	end
 end
 

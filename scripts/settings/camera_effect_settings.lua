@@ -1634,4 +1634,6 @@ CameraEffectSettings.empty_modifier_settings = {
 	time_stamp = 0
 }
 
+DLCUtils.merge("camera_shake_settings", CameraEffectSettings.shake)
+
 return

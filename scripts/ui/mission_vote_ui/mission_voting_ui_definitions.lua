@@ -2462,7 +2462,7 @@ function create_twitch_disclaimer(is_server)
 		350 / size[1],
 		108 / size[2]
 	}
-	local service_name = (PLATFORM == "xb1" and "Mixer") or "Twitch"
+	local service_name = "Twitch"
 	local disclaimer_text_id = (is_server and "twitch_warning_text_server") or "twitch_warning_text_client"
 	local disclaimer_text = string.format(Localize(disclaimer_text_id), service_name, service_name)
 	local widget = {
@@ -2480,18 +2480,7 @@ function create_twitch_disclaimer(is_server)
 				{
 					texture_id = "twitch_background_texture_id",
 					style_id = "twitch_background",
-					pass_type = "texture",
-					content_check_function = function (content, style)
-						return PLATFORM ~= "xb1"
-					end
-				},
-				{
-					texture_id = "mixer_background_texture_id",
-					style_id = "mixer_background",
-					pass_type = "texture",
-					content_check_function = function (content, style)
-						return PLATFORM == "xb1"
-					end
+					pass_type = "texture"
 				},
 				{
 					style_id = "title_text",
@@ -2526,11 +2515,10 @@ function create_twitch_disclaimer(is_server)
 			}
 		},
 		content = {
-			twitch_background_texture_id = "menu_options_button_image_03",
-			title_text = "twitch_disconnect_warning",
 			title_edge = "game_option_divider",
+			title_text = "twitch_disconnect_warning",
 			title_bg = "playername_bg_02",
-			mixer_background_texture_id = "twitch_logo",
+			twitch_background_texture_id = "menu_options_button_image_03",
 			frame = frame_settings.texture,
 			disclaimer_text = disclaimer_text
 		},
@@ -2579,24 +2567,6 @@ function create_twitch_disclaimer(is_server)
 				offset = {
 					0,
 					0,
-					1
-				}
-			},
-			mixer_background = {
-				horizontal_alignment = "right",
-				texture_size = {
-					210,
-					61.5
-				},
-				color = {
-					128,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-15,
-					15,
 					1
 				}
 			},
@@ -2728,7 +2698,7 @@ function create_twitch_mode(is_server)
 		350 / size[1],
 		108 / size[2]
 	}
-	local service_name = (PLATFORM == "xb1" and "Mixer") or "Twitch"
+	local service_name = "Twitch"
 	local info_text_id = Localize("twitch_info_text_server")
 	local info_text = string.format(info_text_id, service_name)
 	local widget = {
@@ -2746,18 +2716,7 @@ function create_twitch_mode(is_server)
 				{
 					texture_id = "twitch_background_texture_id",
 					style_id = "twitch_background",
-					pass_type = "texture",
-					content_check_function = function (content, style)
-						return PLATFORM ~= "xb1"
-					end
-				},
-				{
-					texture_id = "mixer_background_texture_id",
-					style_id = "mixer_background",
-					pass_type = "texture",
-					content_check_function = function (content, style)
-						return PLATFORM == "xb1"
-					end
+					pass_type = "texture"
 				},
 				{
 					style_id = "title_text",
@@ -2792,12 +2751,11 @@ function create_twitch_mode(is_server)
 			}
 		},
 		content = {
-			twitch_background_texture_id = "menu_options_button_image_03",
 			title_edge = "game_option_divider",
+			title_text = "twitch_mode",
 			title_bg = "playername_bg_02",
-			mixer_background_texture_id = "twitch_logo",
+			twitch_background_texture_id = "menu_options_button_image_03",
 			frame = frame_settings.texture,
-			title_text = (PLATFORM == "xb1" and "mixer_mode") or "twitch_mode",
 			info_text = info_text
 		},
 		style = {
@@ -2845,24 +2803,6 @@ function create_twitch_mode(is_server)
 				offset = {
 					0,
 					0,
-					1
-				}
-			},
-			mixer_background = {
-				horizontal_alignment = "right",
-				texture_size = {
-					210,
-					61.5
-				},
-				color = {
-					128,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-15,
-					15,
 					1
 				}
 			},
@@ -3276,6 +3216,14 @@ local adventure_game_widgets = {
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
 	reward_presentation = create_reward_presentation("reward_presentation", scenegraph_definition.reward_presentation.size)
 }
+local game_mode_widgets = {
+	game_mode_text = UIWidgets.create_simple_text("n/a", "mutator_description_text", nil, nil, objective_title_text_style),
+	frame = UIWidgets.create_frame("deed_option_bg", scenegraph_definition.deed_option_bg.size, deed_frame_name, 20),
+	bg = UIWidgets.create_simple_texture("game_options_bg_04", "deed_option_bg")
+}
+local switch_mechanism_widgets = {
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("switch_mechanism_deus"), nil, "game_options_bg_02")
+}
 local weave_quickplay_widgets = {
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
 	reward_presentation = create_weave_quickplay_presentation("reward_presentation", scenegraph_definition.reward_presentation.size)
@@ -3358,6 +3306,7 @@ return {
 	generic_input_actions = generic_input_actions,
 	scenegraph_definition = scenegraph_definition,
 	adventure_game_widgets = adventure_game_widgets,
+	game_mode_widgets = game_mode_widgets,
 	custom_game_widgets = custom_game_widgets,
 	deed_game_widgets = deed_game_widgets,
 	event_game_widgets = event_game_widgets,
@@ -3365,5 +3314,6 @@ return {
 	weave_find_group_widgets = weave_find_group_widgets,
 	weave_quickplay_widgets = weave_quickplay_widgets,
 	twitch_mode_widget_funcs = twitch_mode_widget_funcs,
+	switch_mechanism_widgets = switch_mechanism_widgets,
 	widgets = widgets
 }

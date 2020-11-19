@@ -163,6 +163,11 @@ HordeSettings = {
 					"skaven_huge_armor",
 					"skaven_huge_berzerker"
 				}
+			},
+			versus_base = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
 			}
 		}
 	},
@@ -4725,6 +4730,10 @@ ConflictDirectorLockedFunctions = {
 			return false
 		end
 
+		if script_data.unlock_all_levels then
+			return false
+		end
+
 		local level_settings = LevelSettings[level_key]
 
 		if level_settings.allowed_locked_director_functions and level_settings.allowed_locked_director_functions.beastmen then
@@ -5162,6 +5171,9 @@ ConflictDirectors = {
 		horde = HordeSettings.disabled
 	}
 }
+
+DLCUtils.require_list("conflict_settings_files")
+
 local difficulties = Difficulties
 local start_time = os.clock()
 local ConflictUtils_find_conflict_director_breeds = ConflictUtils.find_conflict_director_breeds

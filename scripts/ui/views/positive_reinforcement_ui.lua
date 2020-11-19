@@ -46,16 +46,18 @@ end
 
 PositiveReinforcementUI.create_ui_elements = function (self)
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
+	local game_mode_setting = GameModeSettings[game_mode_key].hud_ui_settings
+	local scenegraph_definition = definitions.scenegraph_definition
 
-	if game_mode_key == "weave" then
-		definitions.scenegraph_definition.message_animated = table.clone(definitions.scenegraph_definition.message_animated_offset)
+	if game_mode_setting and game_mode_setting.killfeed_offset then
+		scenegraph_definition.message_animated = table.clone(scenegraph_definition.message_animated_offset)
 	else
-		definitions.scenegraph_definition.message_animated = table.clone(definitions.scenegraph_definition.message_animated_base)
+		scenegraph_definition.message_animated = table.clone(scenegraph_definition.message_animated_base)
 	end
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.message_widgets = {}
 
 	for _, widget in pairs(definitions.message_widgets) do
@@ -200,10 +202,6 @@ PositiveReinforcementUI.event_add_positive_enforcement = function (self, hash, i
 	local player_2_profile_image = player_2_profile_index and player_2_career_index and self:_get_hero_portrait(player_2_profile_index, player_2_career_index)
 
 	if not player_1_profile_image or not player_2_profile_image then
-		return
-	end
-
-	if event_type == "aid" then
 		return
 	end
 

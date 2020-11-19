@@ -18,6 +18,7 @@ StartGameWindowSettings.on_enter = function (self, params, offset)
 		snap_pixel_positions = true
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -227,14 +228,20 @@ StartGameWindowSettings._handle_input = function (self, dt, t)
 		end
 	end
 
+	local custom_game_settings = parent:get_custom_game_settings(self._mechanism_name) or parent:get_custom_game_settings("adventure")
+
 	if self:_is_button_released(widgets_by_name.game_option_1) then
-		parent:set_layout_by_name("area_selection_custom")
+		parent:set_layout_by_name(custom_game_settings.layout_name)
 	elseif self:_is_button_released(widgets_by_name.game_option_2) then
 		parent:set_layout_by_name("difficulty_selection_custom")
 	end
 
 	if self:_is_button_released(widgets_by_name.play_button) then
-		local game_mode_type = "custom"
+		local game_mode_type = custom_game_settings.game_mode_type
+
+		if self._mechanism_name == "versus" then
+			game_mode_type = "versus"
+		end
 
 		parent:play(t, game_mode_type)
 	end
@@ -293,6 +300,12 @@ StartGameWindowSettings._update_additional_options = function (self)
 	if is_alone ~= self._is_alone or private_enabled ~= self._private_enabled or always_host_enabled ~= self._always_host_enabled or strict_matchmaking_enabled ~= self._strict_matchmaking_enabled or twitch_active ~= self._twitch_active then
 		local widgets_by_name = self._widgets_by_name
 		local always_host_disabled = nil
+
+		if self._mechanism_name == "versus" then
+			always_host_disabled = true
+			always_host_enabled = true
+		end
+
 		local private_is_selected = private_enabled
 		local private_is_disabled = twitch_active
 		local private_hotspot = widgets_by_name.private_button.content.button_hotspot
@@ -355,14 +368,20 @@ end
 StartGameWindowSettings._update_mission_selection = function (self)
 	local parent = self.parent
 	local selected_level_id = parent:get_selected_level_id()
+	local selected_journey = parent:get_selected_deus_journey()
+	local selected_mission = selected_level_id or selected_journey
 
-	if not selected_level_id or selected_level_id ~= self._selected_level_id then
-		self:_set_selected_level(selected_level_id)
+	if not selected_mission or selected_mission ~= self._selected_mission then
+		if selected_journey then
+			self:_set_selected_journey(selected_journey)
+		else
+			self:_set_selected_level(selected_level_id)
+		end
 
-		self._selected_level_id = selected_level_id
-		local widgets_by_name = self._widgets_by_name
-		widgets_by_name.game_option_2.content.button_hotspot.disable_button = selected_level_id == nil
+		self._selected_mission = selected_mission
 	end
+
+	self._widgets_by_name.game_option_2.content.button_hotspot.disable_button = selected_mission == nil
 end
 
 StartGameWindowSettings._set_selected_level = function (self, level_id)
@@ -380,6 +399,28 @@ StartGameWindowSettings._set_selected_level = function (self, level_id)
 		texture_size[2] = icon_texture_settings.size[2]
 		widget.content.icon = level_image
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id) or 0
+		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+		widget.content.icon_frame = level_frame
+	end
+
+	widget.content.option_text = text
+end
+
+StartGameWindowSettings._set_selected_journey = function (self, journey_name)
+	local widget = self._widgets_by_name.game_option_1
+	local text = "n/a"
+
+	if journey_name then
+		local journey_settings = DeusJourneySettings[journey_name]
+		local display_name = journey_settings.display_name
+		local level_image = journey_settings.level_image
+		text = Localize(display_name)
+		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
+		local texture_size = widget.style.icon.texture_size
+		texture_size[1] = icon_texture_settings.size[1]
+		texture_size[2] = icon_texture_settings.size[2]
+		widget.content.icon = level_image
+		local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(self.statistics_db, self._stats_id, journey_name)
 		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
 		widget.content.icon_frame = level_frame
 	end

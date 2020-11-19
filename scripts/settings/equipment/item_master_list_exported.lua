@@ -688,6 +688,7 @@ ItemMasterList.skin_ww_shade = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "plentiful",
 	skin_type = "unit",
+	item_preview_environment = "shade_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_shade"
@@ -704,6 +705,7 @@ ItemMasterList.skin_ww_shade_ash = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "rare",
 	skin_type = "unit",
+	item_preview_environment = "shade_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_shade"
@@ -720,6 +722,7 @@ ItemMasterList.skin_ww_shade_crimson = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "promo",
 	skin_type = "unit",
+	item_preview_environment = "shade_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_shade"
@@ -736,6 +739,7 @@ ItemMasterList.skin_ww_shade_emerald = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "common",
 	skin_type = "unit",
+	item_preview_environment = "shade_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_shade"
@@ -752,6 +756,7 @@ ItemMasterList.skin_ww_shade_midnight = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "exotic",
 	skin_type = "unit",
+	item_preview_environment = "shade_skins_01",
 	item_type = "skin",
 	required_dlc = "bogenhafen",
 	can_wield = {
@@ -769,6 +774,7 @@ ItemMasterList.skin_ww_shade_black_and_gold = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "promo",
 	skin_type = "unit",
+	item_preview_environment = "shade_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_shade"
@@ -882,6 +888,7 @@ ItemMasterList.skin_ww_waywatcher = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "plentiful",
 	skin_type = "unit",
+	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_waywatcher"
@@ -898,6 +905,7 @@ ItemMasterList.skin_ww_waywatcher_helmgart = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "promo",
 	skin_type = "unit",
+	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_waywatcher"
@@ -914,6 +922,7 @@ ItemMasterList.skin_ww_waywatcher_anmyr = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "promo",
 	skin_type = "unit",
+	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_waywatcher"
@@ -930,6 +939,7 @@ ItemMasterList.skin_ww_waywatcher_tirsyth = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "rare",
 	skin_type = "unit",
+	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_waywatcher"
@@ -946,6 +956,7 @@ ItemMasterList.skin_ww_waywatcher_atylwyth = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "exotic",
 	skin_type = "unit",
+	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
 	required_dlc = "bogenhafen",
 	can_wield = {
@@ -963,6 +974,7 @@ ItemMasterList.skin_ww_waywatcher_black_and_gold = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "promo",
 	skin_type = "unit",
+	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_waywatcher"
@@ -979,6 +991,7 @@ ItemMasterList.skin_ww_waywatcher_cythral = {
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "common",
 	skin_type = "unit",
+	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"we_waywatcher"
@@ -1334,6 +1347,7 @@ ItemMasterList.skin_bw_unchained = {
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "plentiful",
 	skin_type = "unit",
+	item_preview_environment = "unchained_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"bw_unchained"
@@ -1350,6 +1364,7 @@ ItemMasterList.skin_bw_unchained_ash = {
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "exotic",
 	skin_type = "unit",
+	item_preview_environment = "unchained_skins_01",
 	item_type = "skin",
 	required_dlc = "bogenhafen",
 	can_wield = {
@@ -1367,6 +1382,7 @@ ItemMasterList.skin_bw_unchained_black_and_gold = {
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "promo",
 	skin_type = "unit",
+	item_preview_environment = "unchained_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"bw_unchained"
@@ -1383,6 +1399,7 @@ ItemMasterList.skin_bw_unchained_bronze = {
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "rare",
 	skin_type = "unit",
+	item_preview_environment = "unchained_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"bw_unchained"
@@ -1399,6 +1416,7 @@ ItemMasterList.skin_bw_unchained_bronze = {
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "exotic",
 	skin_type = "unit",
+	item_preview_environment = "unchained_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"bw_unchained"
@@ -1415,6 +1433,7 @@ ItemMasterList.skin_bw_unchained_brown_and_white = {
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "common",
 	skin_type = "unit",
+	item_preview_environment = "unchained_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"bw_unchained"
@@ -1431,6 +1450,7 @@ ItemMasterList.skin_bw_unchained_ostermark = {
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "promo",
 	skin_type = "unit",
+	item_preview_environment = "unchained_skins_01",
 	item_type = "skin",
 	can_wield = {
 		"bw_unchained"
@@ -7087,7 +7107,6 @@ ItemMasterList.wpn_bardin_survival_ale = {
 	is_local = true,
 	inventory_icon = "icons_placeholder",
 	slot_type = "potion",
-	description_type = "beer_bottle",
 	rarity = "plentiful",
 	gamepad_hud_icon = "icons_placeholder",
 	hud_icon = "icons_placeholder",
@@ -7282,7 +7301,7 @@ ItemMasterList.dr_handgun = {
 	inventory_icon = "icon_wpn_dw_handgun_01_t1",
 	display_name = "dw_handgun_skin_01_name",
 	has_power_level = true,
-	template = "handgun_template_1",
+	template = "handgun_template_2",
 	property_table_name = "ranged",
 	item_type = "dr_handgun",
 	trait_table_name = "ranged_ammo",

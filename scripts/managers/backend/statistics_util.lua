@@ -72,13 +72,8 @@ end
 
 local _tracked_weapon_kills_per_breed_stats = {}
 
-for _, dlc in pairs(DLCSettings) do
-	if dlc.tracked_weapon_kills_per_breed_stats then
-		for _, dlc_settings in pairs(dlc.tracked_weapon_kills_per_breed_stats) do
-			_tracked_weapon_kills_per_breed_stats[_] = dlc_settings
-		end
-	end
-end
+DLCUtils.merge("tracked_weapon_kills_per_breed_stats", _tracked_weapon_kills_per_breed_stats)
+DLCUtils.merge("_tracked_weapon_kill_stats", _tracked_weapon_kill_stats)
 
 local function _track_weapon_kills_per_breed_stats(statistics_db, stats_id, weapon_name, target_breed)
 	local weapon_stats_dlcs = weapon_name and _tracked_weapon_kills_per_breed_stats[weapon_name]
@@ -185,6 +180,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 	local player_manager = Managers.player
 	local victim_player = player_manager:owner(victim_unit)
 	local breed_killed = Unit_get_data(victim_unit, "breed")
+	local breed_killed_name = breed_killed and breed_killed.name
 	local breed_attacker = victim_damage_data.breed
 	local attacker_side = victim_damage_data.attacker_side
 	local attacker_unique_id = victim_damage_data.attacker_unique_id
@@ -196,6 +192,8 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 		statistics_db:increment_stat(stats_id, "kills_total")
 
 		if breed_killed then
+			Managers.state.achievement:trigger_event("register_kill", stats_id, victim_unit, damage_data, breed_killed)
+
 			local breed_killed_name = breed_killed.name
 			local killed_race_name = breed_killed.race
 
@@ -229,6 +227,21 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 			if master_list_item then
 				local slot_type = master_list_item.slot_type
 
+				if not slot_type then
+					local weapon_template_name = master_list_item.template
+
+					if weapon_template_name then
+						local weapon_template = Weapons[weapon_template_name]
+						local buff_type = weapon_template and weapon_template.buff_type
+
+						if MeleeBuffTypes[buff_type] then
+							slot_type = "melee"
+						elseif RangedBuffTypes[buff_type] then
+							slot_type = "ranged"
+						end
+					end
+				end
+
 				if slot_type == "melee" then
 					statistics_db:increment_stat(stats_id, "kills_melee")
 				elseif slot_type == "ranged" then
@@ -236,18 +249,20 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				end
 
 				_track_weapon_kill_stats(statistics_db, stats_id, master_list_item)
-				_track_weapon_kills_per_breed_stats(statistics_db, stats_id, damage_source, breed_killed.name)
+
+				if Breeds[breed_killed_name] then
+					_track_weapon_kills_per_breed_stats(statistics_db, stats_id, damage_source, breed_killed.name)
+				end
 			end
 		end
 	end
 
-	if breed_killed and breed_attacker then
-		local print_message = breed_killed.awards_positive_reinforcement_message
+	if breed_killed and breed_attacker and breed_killed.awards_positive_reinforcement_message then
+		local positive_reinforcement_check = Managers.state.game_mode:setting("positive_reinforcement_check")
+		local predicate = "killed_special"
 
-		if print_message then
+		if not positive_reinforcement_check or positive_reinforcement_check(predicate, breed_attacker, breed_killed) then
 			local breed_attacker_name = breed_attacker.name
-			local breed_killed_name = breed_killed.name
-			local predicate = "killed_special"
 			local local_human = false
 			local stats_id = ""
 
@@ -274,8 +289,6 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 					local stats_id = player:stats_id()
 
 					if statistics_db:is_registered(stats_id) then
-						local breed_killed_name = breed_killed.name
-
 						if GameSettingsDevelopment.disable_carousel then
 							if Breeds[breed_killed_name] then
 								statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
@@ -492,10 +505,14 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 		local current_health_percentage = (current_health - damage_amount) / max_health
 		local career_extension = ScriptUnit.extension(victim_unit, "career_system")
 		local career_name = career_extension:career_name()
-		local min_health = statistics_db:get_stat(stats_id, "min_health_percentage", career_name)
+		local breed = career_extension:get_breed()
 
-		if current_health_percentage < min_health then
-			statistics_db:set_stat(stats_id, "min_health_percentage", career_name, current_health_percentage)
+		if breed.is_hero then
+			local min_health = statistics_db:get_stat(stats_id, "min_health_percentage", career_name)
+
+			if current_health_percentage < min_health then
+				statistics_db:set_stat(stats_id, "min_health_percentage", career_name, current_health_percentage)
+			end
 		end
 	end
 
@@ -513,6 +530,9 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 
 			if current_health > 0 then
 				local stats_id = attacker_player:stats_id()
+
+				Managers.state.achievement:trigger_event("register_damage", stats_id, victim_unit, damage_data, attacker_unit, target_breed)
+
 				damage_amount = math.clamp(damage_amount, 0, current_health)
 
 				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt", damage_amount)
@@ -529,6 +549,24 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 
 				if hit_zone == "head" then
 					statistics_db:increment_stat(stats_id, "headshots")
+				end
+
+				if target_breed.is_player then
+					local is_enemy, attacker_side = Managers.state.side:is_enemy(attacker_unit, victim_unit)
+
+					if is_enemy and attacker_side.show_damage_feedback then
+						local victim_health_ext = ScriptUnit.has_extension(victim_unit, "health_system")
+
+						if victim_health_ext:is_alive() then
+							local target_player = player_manager:owner(victim_unit)
+							local local_human = not attacker_player.remote and not attacker_player.bot_player
+							local event_type = (local_human and "dealing_damage") or "other_dealing_damage"
+							local profile_index = target_player:profile_index()
+							local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
+
+							Managers.state.event:trigger("add_damage_feedback_event", stats_id .. breed_name, local_human, event_type, attacker_player, target_player, damage_amount, damage_type)
+						end
+					end
 				end
 			end
 		end
@@ -627,11 +665,26 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 		return
 	end
 
+	local game_mode_key = Managers.state.game_mode:game_mode_key()
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player:stats_id()
-	local profile_index = local_player:profile_index()
-	local profile = SPProfiles[profile_index]
-	local display_name = profile.display_name
+	local profile, display_name = nil
+
+	if game_mode_key == "versus" then
+		local local_player_status = Managers.party:get_status_from_unique_id(stats_id)
+		local selected_profile_index = local_player_status.preferred_profile_index
+
+		if not selected_profile_index then
+			return
+		end
+
+		profile = SPProfiles[selected_profile_index]
+		display_name = profile.display_name
+	else
+		local profile_index = local_player:profile_index()
+		profile = SPProfiles[profile_index]
+		display_name = profile.display_name
+	end
 
 	statistics_db:increment_stat(stats_id, "completed_levels_" .. display_name, level_id)
 
@@ -813,6 +866,10 @@ StatisticsUtil._register_mutator_challenges = function (statistics_db, stats_id,
 	end
 end
 
+StatisticsUtil.register_journey_complete = function (statistics_db, player, journey_name, difficulty_name)
+	StatisticsUtil._register_completed_journey_difficulty(statistics_db, player, journey_name, difficulty_name)
+end
+
 StatisticsUtil.register_complete_tutorial = function (statistics_db)
 	local level_settings = LevelHelper:current_level_settings()
 	local local_player = Managers.player:local_player()
@@ -884,6 +941,8 @@ StatisticsUtil._register_completed_level_difficulty = function (statistics_db, l
 	local difficulties = difficulty_manager:get_level_difficulties(level_id)
 	local difficulty = table.find(difficulties, difficulty_name)
 
+	Managers.state.achievement:trigger_event("register_completed_level", difficulty_name, level_id, career_name, local_player)
+
 	if current_completed_difficulty < difficulty then
 		statistics_db:set_stat(stats_id, "completed_levels_difficulty", level_difficulty_name, difficulty)
 	end
@@ -906,6 +965,28 @@ StatisticsUtil._register_completed_level_difficulty = function (statistics_db, l
 	end
 
 	statistics_db:increment_stat(stats_id, "played_difficulty", difficulty_name)
+end
+
+StatisticsUtil._register_completed_journey_difficulty = function (statistics_db, player, journey_name, difficulty_name)
+	local stats_id = player:stats_id()
+	local journey_difficulty_name = JourneyDifficultyDBNames[journey_name]
+	local current_completed_difficulty = statistics_db:get_persistent_stat(stats_id, "completed_journeys_difficulty", journey_difficulty_name)
+	local difficulties = Managers.state.difficulty:get_level_difficulties()
+	local difficulty_index = table.find(difficulties, difficulty_name)
+
+	if current_completed_difficulty < difficulty_index then
+		if difficulty_index > #DefaultDifficulties then
+			fassert(false, [[
+This shouldn't happen. 
+difficulties: %s
+difficulty_name: %s
+difficulty_index: %s
+DefaultDifficulties: %s
+current_completed_difficulty: %s]], table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_difficulty)
+		end
+
+		statistics_db:set_stat(stats_id, "completed_journeys_difficulty", journey_difficulty_name, difficulty_index)
+	end
 end
 
 StatisticsUtil.unlock_lorebook_page = function (page_id, statistics_db)

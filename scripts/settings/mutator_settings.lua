@@ -36,15 +36,7 @@ local mutators_to_add = {
 	"twitch_darkness"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local mutators = dlc.mutators
-
-	if mutators then
-		for i = 1, #mutators, 1 do
-			mutators_to_add[#mutators_to_add + 1] = mutators[i]
-		end
-	end
-end
+DLCUtils.append("mutators", mutators_to_add)
 
 local mutator_settings = {}
 

@@ -65,7 +65,7 @@ MatchmakingStateRequestProfiles._request_profiles_data = function (self)
 	self._matchmaking_manager.debug.text = "requesting_profiles_data"
 end
 
-MatchmakingStateRequestProfiles.rpc_matchmaking_request_profiles_data_reply = function (self, sender, client_cookie, host_cookie, profile_array, player_id_array)
+MatchmakingStateRequestProfiles.rpc_matchmaking_request_profiles_data_reply = function (self, channel_id, client_cookie, host_cookie, profile_array, player_id_array)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end
@@ -77,10 +77,10 @@ MatchmakingStateRequestProfiles.rpc_matchmaking_request_profiles_data_reply = fu
 	self._next_state = MatchmakingStateJoinGame
 	self._matchmaking_manager.debug.text = "profiles_data_received"
 
-	mm_printf("PROFILES DATA REPLY BY %s REPLY wh:%s | we:%s | dr:%s | bw:%s | es:%s", sender, profile_array[1], profile_array[2], profile_array[3], profile_array[4], profile_array[5])
+	mm_printf("PROFILES DATA REPLY BY %s REPLY wh:%s | we:%s | dr:%s | bw:%s | es:%s", channel_id, profile_array[1], profile_array[2], profile_array[3], profile_array[4], profile_array[5])
 end
 
-MatchmakingStateRequestProfiles.rpc_matchmaking_update_profiles_data = function (self, sender, client_cookie, host_cookie, profile_array, player_id_array)
+MatchmakingStateRequestProfiles.rpc_matchmaking_update_profiles_data = function (self, channel_id, client_cookie, host_cookie, profile_array, player_id_array)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
 		return
 	end

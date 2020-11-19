@@ -45,4 +45,17 @@ GenericCameraStateMachineExtension.update = function (self, unit, input, dt, con
 	self.state_machine:update(unit, input, dt, context, t)
 end
 
+GenericCameraStateMachineExtension.reinitialize_camera_states = function (self, camera_state_class_list, start_state)
+	start_state = start_state or self.start_state
+	camera_state_class_list = camera_state_class_list or table.clone(self.camera_state_class_list)
+	self.state_machine = nil
+
+	table.clear(self.camera_state_class_list)
+
+	self.camera_state_class_list = camera_state_class_list
+	self.state_machine = GenericStateMachine:new(self.world, self.unit)
+
+	self:extensions_ready()
+end
+
 return

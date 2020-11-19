@@ -26,6 +26,8 @@ VoiceChatXboxOneManager.init = function (self)
 end
 
 VoiceChatXboxOneManager.reset = function (self)
+	VoiceChat.clear_remote_users()
+	VoiceChat.clear_local_users()
 	table.clear(self._muted_users)
 	table.clear(self._remote_users)
 
@@ -236,6 +238,9 @@ VoiceChatXboxOneManager._update_members_changed = function (self, lobby)
 end
 
 VoiceChatXboxOneManager.destroy = function (self)
+	VoiceChat.clear_remote_users()
+	VoiceChat.clear_local_users()
+
 	if self._popup_id then
 		Managers.popup:cancel_popup(self._popup_id)
 

@@ -6,14 +6,7 @@ require("core/volumetrics/lua/volumetrics_flow_callbacks")
 require("scripts/helpers/nav_tag_volume_utils")
 require("scripts/settings/difficulty_settings")
 require("scripts/settings/attachment_node_linking")
-
-for _, dlc in pairs(DLCSettings) do
-	local flow_callbacks = dlc.flow_callbacks
-
-	if flow_callbacks then
-		dofile(flow_callbacks)
-	end
-end
+DLCUtils.dofile("flow_callbacks")
 
 local flow_return_table = Boot.flow_return_table
 local unit_alive = Unit.alive
@@ -321,6 +314,29 @@ function flow_callback_versus_item_gizmo_spawned(params)
 			versus_item_spawner_system:item_gizmo_spawned(params.unit)
 		end
 	end
+end
+
+function flow_callback_get_current_level_key(params)
+	flow_return_table.level_key = Managers.mechanism:get_current_level_keys()
+
+	return flow_return_table
+end
+
+function flow_callback_get_current_current_deus_theme_index(params)
+	flow_return_table.theme_index = 1
+	local level_key = Managers.mechanism:get_current_level_keys()
+	local level_settings = LevelSettings[level_key]
+	local level_theme = level_settings.theme
+
+	for i = 1, #DEUS_THEME_INDEX, 1 do
+		local theme = DEUS_THEME_INDEX[i]
+
+		if theme == level_theme then
+			flow_return_table.theme_index = i
+		end
+	end
+
+	return flow_return_table
 end
 
 function flow_callback_boss_gizmo_spawned(params)
@@ -1517,7 +1533,7 @@ function flow_callback_register_sound_environment(params)
 end
 
 function flow_callback_wwise_trigger_event_with_environment(params)
-	if DEDICATED_SERVER then
+	if DEDICATED_SERVER or not Managers.state.entity then
 		flow_return_table.playing_id = 1
 		flow_return_table.source_id = 1
 
@@ -2333,6 +2349,145 @@ function flow_callback_objective_unit_set_active_generic(params)
 	extension:set_active(params.active, params.unit)
 end
 
+local function get_objective_system()
+	if Managers.weave:get_active_weave() then
+		return Managers.state.entity:system("weave_objective_system")
+	elseif Managers.mechanism:current_mechanism_name() == "versus" then
+		return Managers.state.entity:system("versus_objective_system")
+	end
+end
+
+function flow_callback_objective_get_num_current_main_objectives(params)
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	flow_return_table.out_value = #objective_system:current_main_objectives()
+
+	return flow_return_table
+end
+
+function flow_callback_objective_get_total_main_objectives(params)
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	flow_return_table.out_value = objective_system:num_main_objectives()
+
+	return flow_return_table
+end
+
+function flow_callback_objective_get_total_num_completed_objectives(params)
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	flow_return_table.out_value = objective_system:num_total_completed_objectives()
+
+	return flow_return_table
+end
+
+function flow_callback_objective_get_num_completed_main_objectives(params)
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	flow_return_table.out_value = objective_system:num_completed_main_objectives()
+
+	return flow_return_table
+end
+
+function flow_callback_objective_get_current_completed_sub_objectives(params)
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	flow_return_table.out_value = objective_system:num_current_completed_sub_objectives()
+
+	return flow_return_table
+end
+
+function flow_callback_objective_get_num_current_sub_objectives()
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	flow_return_table.out_value = objective_system:num_current_sub_objectives()
+
+	return flow_return_table
+end
+
+function flow_callback_objective_complete_current_objectives(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	local current_main_objectives = objective_system:current_main_objectives()
+	local current_sub_objectives = objective_system:current_sub_objectives()
+
+	for _, data in pairs(current_sub_objectives) do
+		for _, extension in ipairs(data.extensions) do
+			extension._is_done = true
+		end
+	end
+
+	for _, extension in pairs(current_main_objectives) do
+		extension._completed = true
+	end
+end
+
+function flow_callback_objective_complete_sub_objective(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	local current_sub_objectives = objective_system:current_sub_objectives()
+
+	for _, data in pairs(current_sub_objectives) do
+		for _, extension in ipairs(data.extensions) do
+			extension._completed = true
+		end
+	end
+end
+
+function flow_callback_objective_complete_current_objective_by_name(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	objective_system:complete_objective(params.name)
+end
+
 function flow_callback_umbra_set_gate_closed(params)
 	local unit = params.unit
 	local world = Unit.world(unit)
@@ -2975,7 +3130,7 @@ function flow_callback_survival_handler_reset(params)
 end
 
 function flow_callback_set_difficulty(params)
-	Managers.state.difficulty:set_difficulty(params.difficulty)
+	Managers.state.difficulty:set_difficulty(params.difficulty, 0)
 end
 
 function flow_callback_show_difficulty(params)
@@ -3975,6 +4130,42 @@ function flow_callback_set_unit_faded_status(params)
 	if status_extension then
 		status_extension:set_invisible(faded)
 	end
+end
+
+function flow_callback_get_level_seed(params)
+	return Managers.mechanism:get_level_seed()
+end
+
+function flow_callback_predict_hitscan(params)
+	local player_unit = params.player_unit
+	local range = params.range or 10
+	local spread = params.spread or 0
+	local returns = {
+		success = false
+	}
+	local world = Application.main_world()
+	local physics_world = World.get_data(world, "physics_world")
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+	local unit_id = network_manager:unit_game_object_id(player_unit)
+
+	if game and unit_id then
+		local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
+		local aim_position = GameSession.game_object_field(game, unit_id, "aim_position")
+		local random_yaw = math.random() * math.rad(spread)
+		local random_pitch = math.random() * math.rad(spread)
+		aim_direction = Quaternion.rotate(Quaternion(Vector3.up(), random_yaw), aim_direction)
+		aim_direction = Quaternion.rotate(Quaternion(Vector3.right(), random_pitch), aim_direction)
+		local result = PhysicsWorld.immediate_raycast_actors(physics_world, aim_position, aim_direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
+		local INDEX_POSITION = 1
+		local INDEX_DISTANCE = 2
+		local end_position = (result and result[#result][INDEX_POSITION]) or aim_position + aim_direction * range
+		returns.end_position = end_position
+		returns.success = true
+		returns.distance = (result and result[#result][INDEX_DISTANCE]) or range
+	end
+
+	return returns
 end
 
 return

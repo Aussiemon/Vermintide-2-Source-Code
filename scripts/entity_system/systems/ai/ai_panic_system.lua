@@ -103,7 +103,7 @@ AIPanicSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 end
 
-AIPanicSystem.hot_join_sync = function (self, sender, player)
+AIPanicSystem.hot_join_sync = function (self, peer_id, player)
 	return
 end
 

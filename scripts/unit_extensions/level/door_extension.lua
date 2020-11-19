@@ -220,8 +220,9 @@ DoorExtension.hot_join_sync = function (self, sender)
 	local level_index = Level.unit_index(level, self.unit)
 	local door_state = self.current_state
 	local door_state_id = NetworkLookup.door_states[door_state]
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-	RPC.rpc_sync_door_state(sender, level_index, door_state_id)
+	RPC.rpc_sync_door_state(channel_id, level_index, door_state_id)
 end
 
 DoorExtension.destroy = function (self)

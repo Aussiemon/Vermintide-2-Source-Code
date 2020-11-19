@@ -32,9 +32,6 @@ end
 RoundStartedSystem.set_start_area = function (self, volume_name)
 	local level = LevelHelper:current_level(self._world)
 	local level_name = LevelHelper:current_level_settings(self._world).level_name
-
-	fassert(Level.has_volume(level, volume_name), "Volume name %s does not exist in level %s", volume_name, level_name)
-
 	self._start_area = volume_name
 end
 

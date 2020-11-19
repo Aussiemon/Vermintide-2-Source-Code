@@ -12,6 +12,7 @@ DamageBlobExtension.init = function (self, extension_init_context, unit, extensi
 	self.unit = unit
 	self.nav_world = ai_system:nav_world()
 	self.ai_system = ai_system
+	self.physics_world = World.physics_world(world)
 	self.network_transmit = network_manager.network_transmit
 	self.ai_blob_index = 1
 	self.blobs = {}
@@ -310,7 +311,7 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 	local blob_update_function = self._blob_update_function
 
 	if blob_update_function then
-		local result = self:_blob_update_function(t, dt, unit)
+		local result = self:_blob_update_function(t, dt, unit, self.physics_world)
 		local unit_id = self.unit_id
 
 		if not result and unit_id then
@@ -645,7 +646,7 @@ DamageBlobExtension.is_position_inside = function (self, position, nav_cost_map_
 	return distance_sq <= blob_radius_sq
 end
 
-DamageBlobExtension.hot_join_sync = function (self, sender)
+DamageBlobExtension.hot_join_sync = function (self, peer_id)
 	local fx_list = self.fx_list
 	local unit_id = self.unit_id
 	local network_transmit = self.network_transmit
@@ -657,7 +658,7 @@ DamageBlobExtension.hot_join_sync = function (self, sender)
 		local position = fx_entry.position:unbox()
 		local life_time_percentage = math.max(fx_entry.time - t, 0) / blob_life_time
 
-		network_transmit:send_rpc("rpc_add_damage_blob_fx", sender, unit_id, position, life_time_percentage)
+		network_transmit:send_rpc("rpc_add_damage_blob_fx", peer_id, unit_id, position, life_time_percentage)
 	end
 end
 

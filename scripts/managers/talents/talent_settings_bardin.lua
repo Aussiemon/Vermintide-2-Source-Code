@@ -157,7 +157,7 @@ local buff_tweak_data = {
 		duration = 2
 	},
 	bardin_slayer_damage_taken_capped = {
-		bonus = 10
+		value = 10
 	},
 	bardin_slayer_damage_reduction_on_melee_charge_action_buff = {
 		duration = 5,
@@ -252,6 +252,9 @@ local buff_tweak_data = {
 	bardin_ranger_smoke_heal_buff = {
 		time_between_heals = 1,
 		heal_amount = 3
+	},
+	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
+		duration = 10
 	}
 }
 TalentBuffTemplates = TalentBuffTemplates or {}
@@ -303,7 +306,6 @@ TalentBuffTemplates.dwarf_ranger = {
 				refresh_durations = true,
 				is_cooldown = true,
 				icon = "bardin_ironbreaker_gromril_armour",
-				dormant = true,
 				delayed_buff_name = "bardin_ironbreaker_gromril_armour"
 			}
 		}
@@ -332,7 +334,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_gromril_armour",
-				dormant = true,
 				refresh_durations = true
 			}
 		}
@@ -404,7 +405,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -436,9 +437,8 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_power_on_nearby_allies_buff = {
 		buffs = {
 			{
-				dormant = true,
-				icon = "bardin_ironbreaker_power_on_nearby_allies2",
-				stat_buff = "power_level"
+				stat_buff = "power_level",
+				icon = "bardin_ironbreaker_power_on_nearby_allies2"
 			}
 		}
 	},
@@ -517,10 +517,9 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_party_power_on_blocked_attacks_buff = {
 		buffs = {
 			{
-				dormant = true,
+				refresh_durations = true,
 				icon = "bardin_ironbreaker_power_on_blocked_attacks",
-				stat_buff = "power_level_melee",
-				refresh_durations = true
+				stat_buff = "power_level_melee"
 			}
 		}
 	},
@@ -542,7 +541,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				chunk_size = 1,
 				event_buff = true,
 				buff_func = "bardin_ironbreaker_remove_on_block_power_buff",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				max_stacks = 1,
 				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add"
 			}
@@ -564,9 +563,8 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_power_on_blocked_attacks_buff = {
 		buffs = {
 			{
-				dormant = true,
-				icon = "bardin_ironbreaker_power_on_blocked_attacks",
-				stat_buff = "power_level_melee"
+				stat_buff = "power_level_melee",
+				icon = "bardin_ironbreaker_power_on_blocked_attacks"
 			}
 		}
 	},
@@ -617,7 +615,6 @@ TalentBuffTemplates.dwarf_ranger = {
 				refresh_durations = true,
 				is_cooldown = true,
 				icon = "bardin_ironbreaker_gromril_armour",
-				dormant = true,
 				delayed_buff_name = "bardin_ironbreaker_gromril_armour"
 			}
 		}
@@ -713,10 +710,9 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_activated_ability_power_buff = {
 		buffs = {
 			{
-				dormant = true,
+				refresh_durations = true,
 				icon = "bardin_ironbreaker_activated_ability_power_buff_allies",
-				stat_buff = "power_level",
-				refresh_durations = true
+				stat_buff = "power_level"
 			}
 		}
 	},
@@ -788,7 +784,6 @@ TalentBuffTemplates.dwarf_ranger = {
 				perk = "no_ranged_knockback",
 				max_stacks = 1,
 				remove_buff_func = "end_slayer_activated_ability",
-				dormant = true,
 				refresh_durations = true
 			}
 		}
@@ -800,7 +795,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -814,7 +809,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -853,8 +848,7 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_slayer_power_on_double_two_handed_weapons",
-				stat_buff = "power_level",
-				dormant = true
+				stat_buff = "power_level"
 			}
 		}
 	},
@@ -872,8 +866,7 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_slayer_attack_speed_on_double_one_handed_weapons",
-				stat_buff = "attack_speed",
-				dormant = true
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -901,9 +894,8 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				remove_buff_func = "remove_movement_buff",
-				dormant = true,
-				refresh_durations = true,
 				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
@@ -913,7 +905,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_damage_taken_capped = {
 		buffs = {
 			{
-				stat_buff = "max_damage_taken"
+				stat_buff = "max_damage_taken_from_boss_or_elite"
 			}
 		}
 	},
@@ -974,11 +966,10 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_activated_ability_leap_damage_buff = {
 		buffs = {
 			{
-				perk = "bloody_mess",
-				stat_buff = "power_level",
 				max_stacks = 1,
 				icon = "bardin_slayer_activated_ability_leap_damage",
-				dormant = true
+				stat_buff = "power_level",
+				perk = "bloody_mess"
 			}
 		}
 	},
@@ -1026,7 +1017,6 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_passive_consumeable_dupe_healing = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "not_consume_medpack"
 			}
 		}
@@ -1034,7 +1024,6 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_passive_consumeable_dupe_potion = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "not_consume_potion"
 			}
 		}
@@ -1042,7 +1031,6 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_passive_consumeable_dupe_grenade = {
 		buffs = {
 			{
-				dormant = true,
 				stat_buff = "not_consume_grenade"
 			}
 		}
@@ -1062,19 +1050,31 @@ TalentBuffTemplates.dwarf_ranger = {
 		}
 	},
 	bardin_ranger_activated_ability = {
+		buffs = {
+			{
+				buff_to_add = "bardin_ranger_activated_ability_buff",
+				name = "bardin_ranger_activated_ability",
+				area_unit_name = "units/hub_elements/empty",
+				icon = "bardin_ranger_activated_ability",
+				enter_area_func = "enter_buff_area",
+				refresh_durations = true,
+				refresh_buff_area_position = true,
+				area_radius = 8,
+				buff_area = true,
+				max_stacks = 1,
+				exit_area_func = "exit_buff_area"
+			}
+		}
+	},
+	bardin_ranger_activated_ability_buff = {
 		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
+				remove_buff_func = "ranger_activated_ability_buff_remove",
 				continuous_effect = "fx/screenspace_ranger_skill_01",
-				name = "bardin_ranger_activated_ability",
-				refresh_durations = true,
-				area_unit_name = "units/hub_elements/empty",
-				remove_buff_func = "end_ranger_activated_ability",
-				refresh_buff_area_position = true,
-				area_radius = 7,
-				buff_area = true,
 				max_stacks = 1,
-				icon = "bardin_ranger_activated_ability"
+				icon = "bardin_ranger_activated_ability",
+				apply_buff_func = "ranger_activated_ability_buff"
 			}
 		}
 	},
@@ -1085,7 +1085,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -1186,11 +1186,10 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_reduced_damage_taken_headshot_buff = {
 		buffs = {
 			{
+				max_stacks = 1,
 				icon = "bardin_ranger_reduced_damage_taken_headshot",
 				stat_buff = "damage_taken",
-				max_stacks = 1,
-				refresh_durations = true,
-				dormant = true
+				refresh_durations = true
 			}
 		}
 	},
@@ -1207,87 +1206,86 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_reload_speed_on_multi_hit_buff = {
 		buffs = {
 			{
+				max_stacks = 1,
 				icon = "bardin_ranger_reload_speed_on_multi_hit",
 				stat_buff = "reload_speed",
-				max_stacks = 1,
-				refresh_durations = true,
-				dormant = true
+				refresh_durations = true
 			}
 		}
 	},
 	bardin_ranger_smoke_attack = {
-		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
-				buff_to_add = "bardin_ranger_smoke_attack_buff",
-				name = "bardin_ranger_smoke_attack",
-				buff_area = true,
-				refresh_durations = true,
-				max_stacks = 1,
-				remove_buff_func = "end_ranger_activated_ability",
-				refresh_buff_area_position = true,
-				area_radius = 7,
-				continuous_effect = "fx/screenspace_ranger_skill_01",
+				buff_to_add = "bardin_ranger_activated_ability_buff",
+				name = "bardin_ranger_activated_ability",
+				smoke_buff = "bardin_ranger_smoke_attack_buff",
 				area_unit_name = "units/hub_elements/empty",
-				update_func = "bardin_ranger_smoke_buff"
+				enter_area_func = "enter_buff_area",
+				refresh_durations = true,
+				refresh_buff_area_position = false,
+				update_func = "bardin_ranger_smoke_buff",
+				icon = "bardin_ranger_activated_ability",
+				area_radius = 7,
+				buff_area = true,
+				max_stacks = 1,
+				exit_area_func = "exit_buff_area"
 			}
 		}
 	},
 	bardin_ranger_smoke_attack_buff = {
 		buffs = {
 			{
-				duration = 3,
+				icon = "bardin_ranger_activated_ability_duration",
 				refresh_durations = true,
 				stat_buff = "attack_speed",
-				continuous_effect = "fx/screenspace_ranger_skill_01",
 				max_stacks = 1,
-				icon = "bardin_ranger_activated_ability_duration"
-			}
-		}
-	},
-	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
-		deactivation_effect = "fx/screenspace_ranger_skill_02",
-		buffs = {
-			{
-				remove_buff_func = "end_ranger_activated_ability",
-				name = "bardin_ranger_activated_ability_stealth_outside_of_smoke",
-				icon = "bardin_ranger_activated_ability",
-				area_unit_name = "units/hub_elements/empty",
-				refresh_durations = true,
-				refresh_buff_area_position = true,
-				area_radius = 7,
-				continuous_effect = "fx/screenspace_ranger_skill_01",
-				max_stacks = 1,
-				duration = 10
+				duration = 3
 			}
 		}
 	},
 	bardin_ranger_smoke_heal = {
-		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
-				buff_to_add = "bardin_ranger_smoke_heal_buff",
-				name = "bardin_ranger_smoke_heal",
-				buff_area = true,
+				buff_to_add = "bardin_ranger_activated_ability_buff",
+				name = "bardin_ranger_activated_ability",
+				smoke_buff = "bardin_ranger_smoke_heal_buff",
+				update_func = "bardin_ranger_smoke_buff",
+				enter_area_func = "enter_buff_area",
 				refresh_durations = true,
+				refresh_buff_area_position = false,
 				max_stacks = 1,
-				remove_buff_func = "end_ranger_activated_ability",
-				refresh_buff_area_position = true,
 				area_radius = 7,
-				continuous_effect = "fx/screenspace_ranger_skill_01",
+				buff_area = true,
 				area_unit_name = "units/hub_elements/empty",
-				update_func = "bardin_ranger_smoke_buff"
+				exit_area_func = "exit_buff_area"
 			}
 		}
 	},
 	bardin_ranger_smoke_heal_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				duration = 3,
-				continuous_effect = "fx/screenspace_ranger_skill_01",
 				max_stacks = 1,
-				update_func = "bardin_ranger_heal_smoke"
+				refresh_durations = true,
+				update_func = "bardin_ranger_heal_smoke",
+				duration = 3
+			}
+		}
+	},
+	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
+		buffs = {
+			{
+				buff_to_add = "bardin_ranger_activated_ability_buff",
+				name = "bardin_ranger_activated_ability",
+				area_unit_name = "units/hub_elements/empty",
+				icon = "bardin_ranger_activated_ability",
+				enter_area_func = "enter_buff_area",
+				refresh_durations = true,
+				refresh_buff_area_position = false,
+				area_radius = 7,
+				buff_area = true,
+				max_stacks = 1,
+				exit_area_func = "exit_buff_area",
+				unlimited = true
 			}
 		}
 	},
@@ -1306,7 +1304,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ranger_ability_free_grenade",
-				dormant = true,
 				perk = "free_grenade"
 			}
 		}
@@ -1416,21 +1413,19 @@ Talents.dwarf_ranger = {
 	{
 		description = "vanguard_desc",
 		name = "bardin_ironbreaker_vanguard",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_regrowth",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_vanguard"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "bardin_ironbreaker_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_bloodlust",
 		description_values = {
 			{
@@ -1438,17 +1433,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "bardin_ironbreaker_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_conqueror",
 		description_values = {
 			{
@@ -1456,17 +1449,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_power_on_nearby_allies_desc",
 		name = "bardin_ironbreaker_power_on_nearby_allies",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_power_on_nearby_allies2",
 		description_values = {
 			{
@@ -1474,17 +1465,15 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_power_on_nearby_allies_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_power_on_nearby_allies"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc",
 		name = "bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_increased_overcharge_increased_range_power",
 		description_values = {
 			{
@@ -1504,18 +1493,16 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_overcharge_increase_power_lowers_attack_speed_desc.final_attack_speed
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_drakefire_changing_attack_speed",
 			"bardin_ironbreaker_drakefire_changing_ranged_power"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_party_power_on_blocked_attacks_desc",
 		name = "bardin_ironbreaker_party_power_on_blocked_attacks",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_power_on_blocked_attacks",
 		description_values = {
 			{
@@ -1529,11 +1516,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_party_power_on_blocked_attacks_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_party_power_on_blocked_attacks_add"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_rising_attack_speed_desc",
@@ -1549,11 +1534,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_gromril_attack_speed.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_stacking_buff_gromril"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_max_gromril_delay_desc",
@@ -1565,22 +1548,18 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_gromril_delay_short.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ironbreaker_gromril_stagger_desc",
 		name = "bardin_ironbreaker_gromril_stagger",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_gromril_stagger",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_gromril_stagger"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_regen_stamina_on_charged_attacks_desc",
@@ -1596,11 +1575,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_charged_attacks_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_regen_stamina_on_charged_attacks"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_regen_stamina_on_block_broken_desc",
@@ -1613,11 +1590,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_regen_stamina_on_block_broken.proc_chance
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_regen_stamina_on_block_broken"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina_desc",
@@ -1630,11 +1605,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina.cooldown_reduction
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ironbreaker_activated_ability_power_buff_allies_desc",
@@ -1650,18 +1623,14 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_activated_ability_power_buff.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ironbreaker_activated_ability_taunt_bosses_desc",
 		name = "bardin_ironbreaker_activated_ability_taunt_bosses",
 		num_ranks = 1,
 		icon = "bardin_ironbreaker_activated_ability_taunt_bosses",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ironbreaker_activated_ability_taunt_range_and_duration_desc",
@@ -1676,15 +1645,13 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.range
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "tank_unbalance_desc",
 		name = "bardin_ironbreaker_tank_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_tank_unbalance",
 		description_values = {
 			{
@@ -1703,17 +1670,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"tank_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "bardin_ironbreaker_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_smiter_unbalance",
 		description_values = {
 			{
@@ -1725,17 +1690,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "bardin_ironbreaker_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ironbreaker_power_level_unbalance",
 		description_values = {
 			{
@@ -1743,34 +1706,30 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "reaper_desc",
 		name = "bardin_slayer_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "bardin_slayer_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_bloodlust",
 		description_values = {
 			{
@@ -1778,17 +1737,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "bardin_slayer_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_conqueror",
 		description_values = {
 			{
@@ -1796,11 +1753,9 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_crit_chance_desc",
@@ -1813,17 +1768,15 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_crit_chance.bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_crit_chance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_power_on_double_two_handed_weapons_desc",
 		name = "bardin_slayer_power_on_double_two_handed_weapons",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_power_on_double_two_handed_weapons",
 		description_values = {
 			{
@@ -1831,17 +1784,15 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_power_on_double_two_handed_weapons_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_power_on_double_two_handed_weapons"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_attack_speed_on_double_one_handed_weapons_desc",
 		name = "bardin_slayer_attack_speed_on_double_one_handed_weapons",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_attack_speed_on_double_one_handed_weapons",
 		description_values = {
 			{
@@ -1849,28 +1800,24 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_attack_speed_on_double_one_handed_weapons_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_attack_speed_on_double_one_handed_weapons"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_passive_cooldown_reduction_on_max_stacks_desc",
 		name = "bardin_slayer_passive_cooldown_reduction_on_max_stacks",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_passive_cooldown_reduction_on_max_stacks",
 		description_values = {},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_slayer_passive_movement_speed_desc",
 		name = "bardin_slayer_passive_movement_speed",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "bardin_slayer_passive_movement_speed",
 		description_values = {
 			{
@@ -1878,47 +1825,41 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_passive_movement_speed.multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_slayer_passive_increased_max_stacks_desc",
 		name = "bardin_slayer_passive_increased_max_stacks",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_passive_increased_max_stacks",
 		description_values = {
 			{
 				value = buff_tweak_data.bardin_slayer_passive_increased_max_stacks.display_value
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_slayer_damage_taken_capped_desc_2",
 		name = "bardin_slayer_damage_taken_capped",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_damage_taken_capped",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_slayer_damage_taken_capped.bonus
+				value = buff_tweak_data.bardin_slayer_damage_taken_capped.value
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_damage_taken_capped"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_damage_reduction_on_melee_charge_action_desc_2",
 		name = "bardin_slayer_damage_reduction_on_melee_charge_action",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_damage_reduction_on_melee_charge_action",
 		description_values = {
 			{
@@ -1929,11 +1870,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_damage_reduction_on_melee_charge_action_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_damage_reduction_on_melee_charge_action"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_push_on_dodge_desc",
@@ -1941,17 +1880,15 @@ Talents.dwarf_ranger = {
 		num_ranks = 1,
 		icon = "bardin_slayer_push_on_dodge",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_push_on_dodge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_activated_ability_leap_range_desc",
 		name = "bardin_slayer_activated_ability_leap_range",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_activated_ability_leap_range",
 		description_values = {
 			{
@@ -1959,15 +1896,13 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_activated_ability_leap_range.display_multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_slayer_activated_ability_leap_damage_desc",
 		name = "bardin_slayer_activated_ability_leap_damage",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_activated_ability_leap_damage",
 		description_values = {
 			{
@@ -1975,12 +1910,10 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_activated_ability_leap_damage_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_slayer_activated_ability_leap_damage_add",
 			"bardin_slayer_activated_ability_leap_damage_remove"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_slayer_activated_ability_impact_damage_desc_2",
@@ -1993,9 +1926,7 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_activated_ability_impact_damage.display_multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_slayer_activated_ability_movement_desc_2",
@@ -2008,15 +1939,13 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_slayer_activated_ability_movement.multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "bardin_slayer_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_smiter_unbalance",
 		description_values = {
 			{
@@ -2028,17 +1957,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "bardin_slayer_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_linesman_unbalance",
 		description_values = {
 			{
@@ -2050,17 +1977,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "bardin_slayer_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_slayer_power_level_unbalance",
 		description_values = {
 			{
@@ -2068,47 +1993,41 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "vanguard_desc",
 		name = "bardin_ranger_vanguard",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ranger_regrowth",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_vanguard"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "reaper_desc",
 		name = "bardin_ranger_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ranger_bloodlust",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "bardin_ranger_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ranger_conqueror",
 		description_values = {
 			{
@@ -2116,17 +2035,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ranger_increased_melee_damage_on_no_ammo_desc",
 		name = "bardin_ranger_increased_melee_damage_on_no_ammo",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
 		description_values = {
 			{
@@ -2134,29 +2051,25 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_melee_damage_on_no_ammo.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_increased_melee_damage_on_no_ammo_add",
 			"bardin_ranger_increased_melee_damage_on_no_ammo_remove"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ranger_cooldown_on_reload_desc",
 		name = "bardin_ranger_cooldown_on_reload",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "bardin_ranger_cooldown_on_reload",
 		description_values = {
 			{
 				value = buff_tweak_data.bardin_ranger_cooldown_on_reload.bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_cooldown_on_reload"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ranger_attack_speed_desc",
@@ -2169,11 +2082,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_attack_speed.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_attack_speed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ranger_passive_spawn_potions_or_bombs_desc",
@@ -2186,9 +2097,7 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_passive_spawn_potions_or_bombs.display_multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ranger_passive_improved_ammo_desc_2",
@@ -2201,9 +2110,7 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_passive_improved_ammo.multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ranger_passive_ale_desc",
@@ -2226,9 +2133,7 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_survival_ale_buff_presentation.max_stacks
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ranger_movement_speed_desc",
@@ -2241,17 +2146,15 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_movement_speed.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_movement_speed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ranger_reduced_damage_taken_headshot_desc_2",
 		name = "bardin_ranger_reduced_damage_taken_headshot",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ranger_reduced_damage_taken_headshot",
 		description_values = {
 			{
@@ -2262,11 +2165,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_reduced_damage_taken_headshot_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_reduced_damage_taken_headshot"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ranger_reload_speed_on_multi_hit_desc",
@@ -2282,11 +2183,9 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_reload_speed_on_multi_hit_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_reload_speed_on_multi_hit_add"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_ranger_smoke_attack_desc",
@@ -2302,9 +2201,7 @@ Talents.dwarf_ranger = {
 				value = buff_tweak_data.bardin_ranger_smoke_heal_buff.heal_amount
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ranger_activated_ability_stealth_outside_of_smoke_desc",
@@ -2312,9 +2209,7 @@ Talents.dwarf_ranger = {
 		num_ranks = 1,
 		icon = "bardin_ranger_activated_ability_stealth_outside_of_smoke",
 		description_values = {},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "bardin_ranger_ability_free_grenade_desc",
@@ -2322,17 +2217,15 @@ Talents.dwarf_ranger = {
 		num_ranks = 1,
 		icon = "bardin_ranger_ability_free_grenade",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"bardin_ranger_ability_free_grenade_remove"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "tank_unbalance_desc",
 		name = "bardin_ranger_tank_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ranger_tank_unbalance",
 		description_values = {
 			{
@@ -2351,17 +2244,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"tank_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "bardin_ranger_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ranger_linesman_unbalance",
 		description_values = {
 			{
@@ -2373,17 +2264,15 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "bardin_ranger_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "bardin_ranger_power_level_unbalance",
 		description_values = {
 			{
@@ -2391,11 +2280,9 @@ Talents.dwarf_ranger = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bardin_placeholder",

@@ -249,7 +249,7 @@ BreedFreezer.try_mark_unit_for_freeze = function (self, breed, unit)
 	return true
 end
 
-BreedFreezer.rpc_breed_freeze_units = function (self, peer_id, unit_go_ids)
+BreedFreezer.rpc_breed_freeze_units = function (self, channel_id, unit_go_ids)
 	fassert(self._freezer_initialized, "Received freeze before freezer was initialized!")
 
 	local unit_storage = Managers.state.unit_storage
@@ -390,7 +390,7 @@ BreedFreezer.try_unfreeze_breed = function (self, breed, data)
 	return unit
 end
 
-BreedFreezer.rpc_breed_unfreeze_breed = function (self, peer_id, breed_id, pos, rot, side_id, go_id)
+BreedFreezer.rpc_breed_unfreeze_breed = function (self, channel_id, breed_id, pos, rot, side_id, go_id)
 	fassert(self._freezer_initialized, "Received unfreeze before freezer was initialized!")
 
 	local breed_name = NetworkLookup.breeds[breed_id]
@@ -456,7 +456,7 @@ BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
 	return unit
 end
 
-BreedFreezer.rpc_breed_freezer_hot_join = function (self, peer_id, debug_breed_freeze)
+BreedFreezer.rpc_breed_freezer_hot_join = function (self, channel_id, debug_breed_freeze)
 	self._current_synked_breed_index = 0
 
 	self:_setup_freeze_box()
@@ -474,8 +474,9 @@ BreedFreezer.hot_join_sync = function (self, peer_id)
 	local unit_count = 0
 	local breed_index = 1
 	local max_breed_freezer_units_per_rpc = NetworkConstants.max_breed_freezer_units_per_rpc
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	RPC.rpc_breed_freezer_hot_join(peer_id, script_data.debug_breed_freeze or false)
+	RPC.rpc_breed_freezer_hot_join(channel_id, script_data.debug_breed_freeze or false)
 
 	local frozen_goids = Managers.state.unit_storage.frozen_bimap_goid_unit
 	local indexed_lookup = self._breed_freezer_settings.breeds_index_lookup
@@ -487,7 +488,7 @@ BreedFreezer.hot_join_sync = function (self, peer_id)
 
 		if max_breed_freezer_units_per_rpc <= num_units_of_breed + unit_count then
 			printf("\t--> rpc-package size reached, sending rpc now")
-			RPC.rpc_breed_freezer_sync_breeds(peer_id, starts, breed_go_ids)
+			RPC.rpc_breed_freezer_sync_breeds(channel_id, starts, breed_go_ids)
 			table.clear(breed_go_ids)
 			table.clear(starts)
 
@@ -507,13 +508,13 @@ BreedFreezer.hot_join_sync = function (self, peer_id)
 
 	if #starts > 0 then
 		printf("\t--> rpc-package size reached, sending rpc now (last package)")
-		RPC.rpc_breed_freezer_sync_breeds(peer_id, starts, breed_go_ids)
+		RPC.rpc_breed_freezer_sync_breeds(channel_id, starts, breed_go_ids)
 		table.dump(starts, "starts")
 		table.dump(breed_go_ids, "breed_go_ids")
 	end
 end
 
-BreedFreezer.rpc_breed_freezer_sync_breeds = function (self, peer_id, starts, unit_go_ids)
+BreedFreezer.rpc_breed_freezer_sync_breeds = function (self, channel_id, starts, unit_go_ids)
 	printf("Breedfreezer (client) received breed syncs num_breeds:%d, total_units:%d", #starts / 2, #unit_go_ids)
 
 	local breed_index = self._current_synked_breed_index

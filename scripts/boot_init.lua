@@ -30,8 +30,19 @@ end
 
 BUILD = Application.build()
 PLATFORM = Application.platform()
+IS_CONSOLE = PLATFORM == "ps4" or PLATFORM == "xb1"
+IS_WINDOWS = PLATFORM == "win32"
+IS_LINUX = PLATFORM == "linux"
+IS_XB1 = PLATFORM == "xb1"
+IS_PS4 = PLATFORM == "ps4"
+IS_NOT_CONSOLE = not IS_CONSOLE
+IS_NOT_WINDOWS = not IS_WINDOWS
+IS_NOT_LINUX = not IS_LINUX
+IS_NOT_XB1 = not IS_XB1
+IS_NOT_PS4 = not IS_PS4
 LAUNCH_MODE = "game"
-HAS_STEAM = (rawget(_G, "Steam") and true) or false
+HAS_STEAM = HAS_STEAM ~= false and not not rawget(_G, "Steam")
+DEDICATED_SERVER = Application.is_dedicated_server()
 local args = {
 	Application.argv()
 }
@@ -77,7 +88,7 @@ if LEVEL_EDITOR_TEST then
 		"resource_packages/levels/ui_end_screen",
 		"resource_packages/levels/ui_end_screen_victory"
 	}
-elseif PLATFORM == "ps4" then
+elseif IS_PS4 then
 	GlobalResources = GlobalResources or {
 		"resource_packages/menu_assets_common",
 		"resource_packages/ingame_sounds_one",
@@ -99,7 +110,7 @@ elseif PLATFORM == "ps4" then
 		"resource_packages/projection_decals",
 		"resource_packages/ingame_sounds_honduras"
 	}
-elseif PLATFORM == "xb1" then
+elseif IS_XB1 then
 	GlobalResources = GlobalResources or {
 		"resource_packages/menu_assets_common",
 		"resource_packages/ingame_sounds_one",
@@ -146,7 +157,7 @@ else
 	}
 end
 
-if BUILD ~= "dev" and PLATFORM == "win32" then
+if BUILD ~= "dev" and IS_WINDOWS then
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		local input = io.input
 		local read = io.read

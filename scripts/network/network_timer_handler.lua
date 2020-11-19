@@ -90,7 +90,7 @@ NetworkTimerHandler.destroy = function (self)
 	self._network_clock = nil
 end
 
-NetworkTimerHandler.rpc_start_network_timer = function (self, sender, end_time)
+NetworkTimerHandler.rpc_start_network_timer = function (self, channel_id, end_time)
 	self:start_timer_client(end_time)
 end
 

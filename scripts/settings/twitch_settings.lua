@@ -34,6 +34,15 @@ require("scripts/settings/twitch_vote_templates_items")
 require("scripts/settings/twitch_vote_templates_spawning")
 require("scripts/settings/twitch_vote_templates_mutators")
 
+for _, dlc in pairs(DLCSettings) do
+	local dlc_twitch_settings = dlc.twitch_settings
+	local dlc_vote_templates_file = dlc_twitch_settings and dlc_twitch_settings.vote_templates_file
+
+	if dlc_vote_templates_file then
+		require(dlc_vote_templates_file)
+	end
+end
+
 local TEMP_TABLE = {}
 local min_diff = math.huge
 
@@ -92,6 +101,32 @@ for name, template in pairs(TwitchVoteTemplates) do
 
 	if template.boss_equivalent then
 		TwitchBossEquivalentSpawnTemplatesLookup[#TwitchBossEquivalentSpawnTemplatesLookup + 1] = name
+	end
+end
+
+TwitchVoteWhitelists = TwitchVoteWhitelists or {}
+
+for _, dlc in pairs(DLCSettings) do
+	local dlc_twitch_settings = dlc.twitch_settings
+
+	if dlc_twitch_settings then
+		local dlc_supported_game_modes = dlc_twitch_settings.supported_game_modes
+
+		if dlc_supported_game_modes then
+			table.merge(TwitchSettings.supported_game_modes, dlc_supported_game_modes)
+		end
+
+		local dlc_vote_whitelists = dlc_twitch_settings.vote_whitelists
+
+		if dlc_vote_whitelists then
+			for game_mode, vote_whitelist in pairs(dlc_vote_whitelists) do
+				if TwitchVoteWhitelists[game_mode] then
+					table.merge(TwitchVoteWhitelists[game_mode], vote_whitelist)
+				else
+					TwitchVoteWhitelists[game_mode] = vote_whitelist
+				end
+			end
+		end
 	end
 end
 

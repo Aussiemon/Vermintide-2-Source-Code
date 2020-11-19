@@ -65,7 +65,9 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		left_ammo_unit_1p = left_hand_ammo_unit_1p,
 		projectile_units_template = item_units.projectile_units_template,
 		pickup_template_name = item_units.pickup_template_name,
-		link_pickup_template_name = item_units.link_pickup_template_name
+		link_pickup_template_name = item_units.link_pickup_template_name,
+		right_hand_unit_name = item_units.right_hand_unit,
+		left_hand_unit_name = item_units.left_hand_unit
 	}
 
 	return slot_data
@@ -178,6 +180,8 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 
 	GearUtils.link(world, attachment_node_linking_3p, scene_graph_links_3p, owner_unit_3p, weapon_unit_3p)
 
+	material_settings = material_settings or item_template.material_settings
+
 	if material_settings then
 		GearUtils.apply_material_settings(weapon_unit_3p, material_settings)
 	end
@@ -190,7 +194,8 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 				owner_unit = owner_unit_3p,
 				attach_nodes = attachment_node_linking_1p,
 				item_name = item_name,
-				item_template = item_template
+				item_template = item_template,
+				skin_name = item_units.skin
 			},
 			ammo_system = {
 				owner_unit = owner_unit_3p,
@@ -422,9 +427,10 @@ GearUtils.destroy_slot = function (world, unit, slot_data, equipment, allow_dest
 	equipment.slots[slot_name] = nil
 end
 
-GearUtils.hot_join_sync = function (sender, unit, equipment)
+GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_equipment)
 	local slots = equipment.slots
 	local unit_object_id = Managers.state.unit_storage:go_id(unit)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 	for slot_name, slot_data in pairs(slots) do
 		repeat
@@ -439,12 +445,19 @@ GearUtils.hot_join_sync = function (sender, unit, equipment)
 			local item_id = NetworkLookup.item_names[item_data.name]
 			local weapon_skin_id = NetworkLookup.weapon_skins[slot_data.skin or "n/a"]
 
-			RPC.rpc_add_equipment(sender, unit_object_id, slot_id, item_id, weapon_skin_id)
+			RPC.rpc_add_equipment(channel_id, unit_object_id, slot_id, item_id, weapon_skin_id)
 		until true
 	end
 
 	if equipment.wielded then
-		RPC.rpc_wield_equipment(sender, unit_object_id, NetworkLookup.equipment_slots[equipment.wielded_slot])
+		RPC.rpc_wield_equipment(channel_id, unit_object_id, NetworkLookup.equipment_slots[equipment.wielded_slot])
+	end
+
+	for slot_name, data in pairs(additional_equipment) do
+		local slot_id = NetworkLookup.equipment_slots[slot_name]
+		local count = data.used_slots or #data.items
+
+		RPC.rpc_update_additional_slot(channel_id, unit_object_id, slot_id, count)
 	end
 end
 
@@ -528,7 +541,7 @@ GearUtils.create_grenade_extension_init_data = function (owner_unit, item_name, 
 	return extension_init_data
 end
 
-GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, buffs_table)
+GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, buffs_table, only_no_wield_required)
 	if Managers.state.game_mode:has_activated_mutator("whiterun") then
 		return buffs_table
 	end
@@ -543,11 +556,18 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 			local property_data = properties_data[property_key]
 			local buff_name = property_data.buff_name
 			local buffer = property_data.buffer or "client"
+			local no_wield_required = property_data.no_wield_required
 
 			if BuffTemplates[buff_name] then
-				buffs_table[buffer][buff_name] = {
-					variable_value = property_value
-				}
+				if only_no_wield_required and no_wield_required then
+					buffs_table[buffer][buff_name] = {
+						variable_value = property_value
+					}
+				elseif not only_no_wield_required and not no_wield_required then
+					buffs_table[buffer][buff_name] = {
+						variable_value = property_value
+					}
+				end
 			end
 		end
 	end
@@ -561,11 +581,18 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 			local trait_data = traits_data[trait_key]
 			local buff_name = trait_data.buff_name
 			local buffer = trait_data.buffer or "client"
+			local no_wield_required = traits_data.no_wield_required
 
 			if BuffTemplates[buff_name] then
-				buffs_table[buffer][buff_name] = {
-					variable_value = 1
-				}
+				if only_no_wield_required and no_wield_required then
+					buffs_table[buffer][buff_name] = {
+						variable_value = 1
+					}
+				elseif not only_no_wield_required and not no_wield_required then
+					buffs_table[buffer][buff_name] = {
+						variable_value = 1
+					}
+				end
 			end
 		end
 	end

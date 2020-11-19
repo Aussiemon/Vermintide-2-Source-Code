@@ -52,7 +52,7 @@ BuffSystem.on_add_extension = function (self, world, unit, extension_name, exten
 	return buff_extension
 end
 
-BuffSystem.hot_join_sync = function (self, sender)
+BuffSystem.hot_join_sync = function (self, peer_id)
 	if self.is_server then
 		local num_group_buffs = #self.player_group_buffs
 		local network_manager = self.network_manager
@@ -63,7 +63,7 @@ BuffSystem.hot_join_sync = function (self, sender)
 			local group_buff_template_name = group_buff_data.group_buff_template_name
 			local group_buff_template_id = NetworkLookup.group_buff_templates[group_buff_template_name]
 
-			network_transmit:send_rpc("rpc_add_group_buff", sender, group_buff_template_id, 1)
+			network_transmit:send_rpc("rpc_add_group_buff", peer_id, group_buff_template_id, 1)
 		end
 
 		for unit, data in pairs(self.server_controlled_buffs) do
@@ -74,7 +74,7 @@ BuffSystem.hot_join_sync = function (self, sender)
 				local buff_template_name_id = NetworkLookup.buff_templates[template_name]
 				local attacker_unit_object_id = network_manager:unit_game_object_id(attacker_unit) or NetworkConstants.invalid_game_object_id
 
-				network_transmit:send_rpc("rpc_add_buff", sender, unit_object_id, buff_template_name_id, attacker_unit_object_id, server_buff_id, false)
+				network_transmit:send_rpc("rpc_add_buff", peer_id, unit_object_id, buff_template_name_id, attacker_unit_object_id, server_buff_id, false)
 			end
 		end
 	end
@@ -280,7 +280,9 @@ BuffSystem.remove_server_controlled_buff = function (self, unit, server_buff_id)
 		local network_manager = self.network_manager
 		local unit_object_id = network_manager:game_object_or_level_id(unit)
 
-		network_manager.network_transmit:send_rpc_clients("rpc_remove_server_controlled_buff", unit_object_id, server_buff_id)
+		if unit_object_id then
+			network_manager.network_transmit:send_rpc_clients("rpc_remove_server_controlled_buff", unit_object_id, server_buff_id)
+		end
 	end
 
 	return num_buffs_removed
@@ -356,12 +358,14 @@ BuffSystem.remove_volume_buff = function (self, unit, buff_template_name)
 	self.volume_buffs[unit][buff_template_name] = nil
 end
 
-BuffSystem.rpc_add_buff = function (self, sender, unit_id, buff_template_name_id, attacker_unit_id, server_buff_id, send_to_sender)
+BuffSystem.rpc_add_buff = function (self, channel_id, unit_id, buff_template_name_id, attacker_unit_id, server_buff_id, send_to_sender)
 	if self.is_server then
 		if send_to_sender then
 			self.network_manager.network_transmit:send_rpc_clients("rpc_add_buff", unit_id, buff_template_name_id, attacker_unit_id, 0, false)
 		else
-			self.network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff", sender, unit_id, buff_template_name_id, attacker_unit_id, 0, false)
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+			self.network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff", peer_id, unit_id, buff_template_name_id, attacker_unit_id, 0, false)
 		end
 	end
 
@@ -374,7 +378,7 @@ BuffSystem.rpc_add_buff = function (self, sender, unit_id, buff_template_name_id
 	end
 end
 
-BuffSystem.rpc_remove_server_controlled_buff = function (self, sender, unit_id, server_buff_id)
+BuffSystem.rpc_remove_server_controlled_buff = function (self, channel_id, unit_id, server_buff_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if Unit.alive(unit) then
@@ -395,21 +399,21 @@ BuffSystem.rpc_remove_server_controlled_buff = function (self, sender, unit_id, 
 	end
 end
 
-BuffSystem.rpc_add_volume_buff_multiplier = function (self, sender, unit_id, buff_template_name_id, multiplier)
+BuffSystem.rpc_add_volume_buff_multiplier = function (self, channel_id, unit_id, buff_template_name_id, multiplier)
 	local unit = self.unit_storage:unit(unit_id)
 	local buff_template_name = NetworkLookup.buff_templates[buff_template_name_id]
 
 	self:add_volume_buff(unit, buff_template_name, multiplier)
 end
 
-BuffSystem.rpc_remove_volume_buff = function (self, sender, unit_id, buff_template_name_id)
+BuffSystem.rpc_remove_volume_buff = function (self, channel_id, unit_id, buff_template_name_id)
 	local unit = self.unit_storage:unit(unit_id)
 	local buff_template_name = NetworkLookup.buff_templates[buff_template_name_id]
 
 	self:remove_volume_buff(unit, buff_template_name)
 end
 
-BuffSystem.rpc_add_group_buff = function (self, sender, group_buff_template_id, num_instances)
+BuffSystem.rpc_add_group_buff = function (self, channel_id, group_buff_template_id, num_instances)
 	if self.is_server then
 		self.network_manager.network_transmit:send_rpc_clients("rpc_add_group_buff", group_buff_template_id, num_instances)
 	end
@@ -440,7 +444,7 @@ BuffSystem.rpc_add_group_buff = function (self, sender, group_buff_template_id, 
 	end
 end
 
-BuffSystem.rpc_remove_group_buff = function (self, sender, group_buff_template_id, num_instances)
+BuffSystem.rpc_remove_group_buff = function (self, channel_id, group_buff_template_id, num_instances)
 	local group_buff_template_name = NetworkLookup.group_buff_templates[group_buff_template_id]
 	local group_buffs = self.player_group_buffs
 
@@ -477,7 +481,7 @@ BuffSystem.rpc_remove_group_buff = function (self, sender, group_buff_template_i
 	end
 end
 
-BuffSystem.rpc_buff_on_attack = function (self, sender, attacking_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number, buff_type_id)
+BuffSystem.rpc_buff_on_attack = function (self, channel_id, attacking_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number, buff_type_id)
 	local hit_unit = self.unit_storage:unit(hit_unit_id)
 	local attacking_unit = self.unit_storage:unit(attacking_unit_id)
 	local attack_type = NetworkLookup.buff_attack_types[attack_type_id]
@@ -493,7 +497,7 @@ BuffSystem.rpc_buff_on_attack = function (self, sender, attacking_unit_id, hit_u
 	DamageUtils.buff_on_attack(attacking_unit, hit_unit, attack_type, is_critical, hit_zone_name, target_number, send_to_server, buff_weapon_type)
 end
 
-BuffSystem.rpc_proc_event = function (self, sender, peer_id, local_player_id, event_id)
+BuffSystem.rpc_proc_event = function (self, channel_id, peer_id, local_player_id, event_id)
 	local player = Managers.player:player(peer_id, local_player_id)
 	local event = NetworkLookup.proc_events[event_id]
 	local player_unit = player.player_unit
@@ -504,7 +508,7 @@ BuffSystem.rpc_proc_event = function (self, sender, peer_id, local_player_id, ev
 	end
 end
 
-BuffSystem.rpc_remove_gromril_armour = function (self, sender, unit_id)
+BuffSystem.rpc_remove_gromril_armour = function (self, channel_id, unit_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if not Unit.alive(unit) then

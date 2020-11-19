@@ -43,23 +43,8 @@ local extensions = {
 	"TargetHealthExtension"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local health_extension_files = dlc.health_extension_files
-
-	if health_extension_files then
-		for _, health_extension_file in ipairs(health_extension_files) do
-			require(health_extension_file)
-		end
-	end
-
-	local health_extensions = dlc.health_extensions
-
-	if health_extensions then
-		for _, health_extension in ipairs(health_extensions) do
-			extensions[#extensions + 1] = health_extension
-		end
-	end
-end
+DLCUtils.require_list("health_extension_files")
+DLCUtils.append("health_extensions", extensions)
 
 HealthSystem.init = function (self, entity_system_creation_context, system_name)
 	HealthSystem.super.init(self, entity_system_creation_context, system_name, extensions)
@@ -333,7 +318,7 @@ HealthSystem.update_debug = function (self)
 	end
 end
 
-HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	fassert(not self.is_server, "Tried sending rpc_add_damage to something other than client")
 
 	local victim_unit = nil
@@ -394,7 +379,7 @@ HealthSystem.rpc_add_damage = function (self, sender, victim_unit_go_id, victim_
 	end
 end
 
-HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+HealthSystem.rpc_add_damage_network = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	fassert(self.is_server, "Tried sending rpc_add_damage_network to something other than the server")
 
 	local victim_unit = nil
@@ -435,7 +420,7 @@ HealthSystem.rpc_add_damage_network = function (self, sender, victim_unit_go_id,
 	DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 end
 
-HealthSystem.rpc_damage_taken_overcharge = function (self, sender, unit_go_id, damage)
+HealthSystem.rpc_damage_taken_overcharge = function (self, channel_id, unit_go_id, damage)
 	local unit = self.unit_storage:unit(unit_go_id)
 
 	if unit then
@@ -443,7 +428,7 @@ HealthSystem.rpc_damage_taken_overcharge = function (self, sender, unit_go_id, d
 	end
 end
 
-HealthSystem.rpc_heal = function (self, sender, target_unit_go_id, target_unit_is_level_unit, healer_unit_go_id, healer_unit_is_level_unit, heal_amount, heal_type_id)
+HealthSystem.rpc_heal = function (self, channel_id, target_unit_go_id, target_unit_is_level_unit, healer_unit_go_id, healer_unit_is_level_unit, heal_amount, heal_type_id)
 	local target_unit = nil
 	local unit_storage = self.unit_storage
 
@@ -494,14 +479,14 @@ HealthSystem.rpc_heal = function (self, sender, target_unit_go_id, target_unit_i
 	end
 end
 
-HealthSystem.rpc_remove_assist_shield = function (self, sender, unit_go_id)
+HealthSystem.rpc_remove_assist_shield = function (self, channel_id, unit_go_id)
 	local unit = self.unit_storage:unit(unit_go_id)
 	local health_extension = self.unit_extensions[unit]
 
 	health_extension:remove_assist_shield("blocked_damage")
 end
 
-HealthSystem.rpc_request_heal = function (self, sender, unit_go_id, heal_amount, heal_type_id)
+HealthSystem.rpc_request_heal = function (self, channel_id, unit_go_id, heal_amount, heal_type_id)
 	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a heal from a client")
 
 	local unit = self.unit_storage:unit(unit_go_id)
@@ -519,13 +504,13 @@ HealthSystem.rpc_request_heal = function (self, sender, unit_go_id, heal_amount,
 	end
 end
 
-HealthSystem.rpc_suicide = function (self, sender, go_id)
+HealthSystem.rpc_suicide = function (self, channel_id, go_id)
 	local unit = self.unit_storage:unit(go_id)
 
 	self:suicide(unit)
 end
 
-HealthSystem.rpc_sync_damage_taken = function (self, sender, go_id, is_level_unit, set_max_health, amount, state_id)
+HealthSystem.rpc_sync_damage_taken = function (self, channel_id, go_id, is_level_unit, set_max_health, amount, state_id)
 	fassert(not self.is_server, "rpc_sync_damage_taken was sent to server, only clients should receive this!")
 
 	local unit = nil
@@ -556,7 +541,7 @@ HealthSystem.rpc_sync_damage_taken = function (self, sender, go_id, is_level_uni
 	end
 end
 
-HealthSystem.rpc_take_falling_damage = function (self, sender, go_id, fall_height)
+HealthSystem.rpc_take_falling_damage = function (self, channel_id, go_id, fall_height)
 	local unit = self.unit_storage:unit(go_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -590,7 +575,7 @@ HealthSystem.rpc_take_falling_damage = function (self, sender, go_id, fall_heigh
 	end
 end
 
-HealthSystem.rpc_request_knock_down = function (self, sender, unit_go_id)
+HealthSystem.rpc_request_knock_down = function (self, channel_id, unit_go_id)
 	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a knock down from a client")
 
 	local unit = self.unit_storage:unit(unit_go_id)
@@ -599,7 +584,7 @@ HealthSystem.rpc_request_knock_down = function (self, sender, unit_go_id)
 	health_extension:knock_down(unit)
 end
 
-HealthSystem.rpc_request_heal_wounds = function (self, sender, unit_go_id)
+HealthSystem.rpc_request_heal_wounds = function (self, channel_id, unit_go_id)
 	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a wound heal from a client")
 
 	local unit = self.unit_storage:unit(unit_go_id)
@@ -607,7 +592,7 @@ HealthSystem.rpc_request_heal_wounds = function (self, sender, unit_go_id)
 	StatusUtils.set_wounded_network(unit, false, "healed")
 end
 
-HealthSystem.rpc_request_revive = function (self, sender, revived_unit_go_id, reviver_unit_go_id)
+HealthSystem.rpc_request_revive = function (self, channel_id, revived_unit_go_id, reviver_unit_go_id)
 	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a revive from a client")
 
 	local revived_unit = self.unit_storage:unit(revived_unit_go_id)

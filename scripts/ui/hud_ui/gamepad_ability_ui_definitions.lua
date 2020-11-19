@@ -121,19 +121,45 @@ local function create_cooldown_widget(scenegraph_id, amount)
 	return definition
 end
 
+local texture_by_career = {
+	dr_engineer = {
+		ability_effect = "gamepad_ability_effect_cog",
+		ability_top_texture_id = "icon_rotarygun"
+	},
+	default = {
+		ability_effect = "gamepad_ability_effect",
+		ability_top_texture_id = "ability_glow"
+	}
+}
+
 local function create_ability_widget()
 	return {
 		scenegraph_id = "ability_root",
 		element = {
 			passes = {
 				{
-					pass_type = "texture",
 					style_id = "ability_effect",
-					texture_id = "texture_id",
-					content_id = "ability_effect",
+					texture_id = "ability_effect",
+					pass_type = "texture",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return not content.parent.on_cooldown
+						return not content.on_cooldown
+					end,
+					content_change_function = function (content, style)
+						local player = Managers.player:local_player()
+						local player_unit = player and player.player_unit
+
+						if not ALIVE[player_unit] then
+							return
+						end
+
+						local career_ext = ScriptUnit.extension(player_unit, "career_system")
+						local career_name = career_ext:career_name()
+						local career_textures = texture_by_career[career_name] or texture_by_career.default
+
+						for texture_id, texture_name in pairs(career_textures) do
+							content[texture_id] = texture_name
+						end
 					end
 				},
 				{
@@ -175,38 +201,11 @@ local function create_ability_widget()
 			}
 		},
 		content = {
-			ability_bar_highlight = "hud_player_ability_bar_glow",
-			input_text = "",
-			ability_top_texture_id = "ability_glow",
 			on_cooldown = true,
-			ability_effect = {
-				texture_id = "gamepad_ability_effect",
-				uvs = {
-					{
-						0,
-						0
-					},
-					{
-						1,
-						1
-					}
-				}
-			},
-			ability_effect_top = {
-				texture_id = "hud_player_ability_icon_glow",
-				uvs = {
-					{
-						0,
-						0
-					},
-					{
-						1,
-						1
-					}
-				}
-			},
-			input_texture_left_shoulder = ButtonTextureByName("left_shoulder", "xb1").texture,
-			input_texture_right_shoulder = ButtonTextureByName("right_shoulder", "xb1").texture
+			ability_bar_highlight = "hud_player_ability_bar_glow",
+			ability_effect = "gamepad_ability_effect_cog",
+			input_text = "",
+			ability_top_texture_id = "icon_rotarygun"
 		},
 		style = {
 			input_text = {
@@ -245,44 +244,6 @@ local function create_ability_widget()
 					104
 				}
 			},
-			input_texture_left_shoulder = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				color = {
-					0,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-35,
-					83,
-					20
-				},
-				texture_size = {
-					ButtonTextureByName("left_shoulder", "xb1").size[1] * 0.85,
-					ButtonTextureByName("left_shoulder", "xb1").size[2] * 0.85
-				}
-			},
-			input_texture_right_shoulder = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				color = {
-					0,
-					255,
-					255,
-					255
-				},
-				offset = {
-					25,
-					83,
-					20
-				},
-				texture_size = {
-					ButtonTextureByName("right_shoulder", "xb1").size[1] * 0.85,
-					ButtonTextureByName("right_shoulder", "xb1").size[2] * 0.85
-				}
-			},
 			ability_effect = {
 				vertical_alignment = "bottom",
 				horizontal_alignment = "right",
@@ -310,8 +271,8 @@ local function create_ability_widget()
 					136
 				},
 				offset = {
-					-4,
-					3,
+					-3,
+					0,
 					101
 				},
 				color = {

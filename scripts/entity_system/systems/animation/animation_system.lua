@@ -103,7 +103,7 @@ AnimationSystem.update_anim_variables = function (self, t)
 	end
 end
 
-AnimationSystem.rpc_sync_anim_state = function (self, sender, go_id, ...)
+AnimationSystem.rpc_sync_anim_state = function (self, channel_id, go_id, ...)
 	local unit = self.unit_storage:unit(go_id)
 
 	Unit.animation_set_state(unit, ...)
@@ -122,7 +122,7 @@ AnimationSystem.rpc_sync_anim_state_10 = AnimationSystem.rpc_sync_anim_state
 AnimationSystem.rpc_sync_anim_state_11 = AnimationSystem.rpc_sync_anim_state
 AnimationSystem.rpc_sync_anim_state_12 = AnimationSystem.rpc_sync_anim_state
 
-AnimationSystem.rpc_anim_event_variable_float = function (self, sender, anim_id, go_id, variable_id, variable_value)
+AnimationSystem.rpc_anim_event_variable_float = function (self, channel_id, anim_id, go_id, variable_id, variable_value)
 	local unit = self.unit_storage:unit(go_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -130,7 +130,9 @@ AnimationSystem.rpc_anim_event_variable_float = function (self, sender, anim_id,
 	end
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_anim_event_variable_float", sender, anim_id, go_id, variable_id, variable_value)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_anim_event_variable_float", peer_id, anim_id, go_id, variable_id, variable_value)
 	end
 
 	if Unit.has_animation_state_machine(unit) then
@@ -146,7 +148,7 @@ AnimationSystem.rpc_anim_event_variable_float = function (self, sender, anim_id,
 	end
 end
 
-AnimationSystem.rpc_anim_set_variable_float = function (self, sender, go_id, variable_id, variable_value)
+AnimationSystem.rpc_anim_set_variable_float = function (self, channel_id, go_id, variable_id, variable_value)
 	local unit = self.unit_storage:unit(go_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -154,7 +156,9 @@ AnimationSystem.rpc_anim_set_variable_float = function (self, sender, go_id, var
 	end
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_anim_set_variable_float", sender, go_id, variable_id, variable_value)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_anim_set_variable_float", peer_id, go_id, variable_id, variable_value)
 	end
 
 	if Unit.has_animation_state_machine(unit) then
@@ -165,7 +169,7 @@ AnimationSystem.rpc_anim_set_variable_float = function (self, sender, go_id, var
 	end
 end
 
-AnimationSystem.rpc_anim_event = function (self, sender, anim_id, go_id)
+AnimationSystem.rpc_anim_event = function (self, channel_id, anim_id, go_id)
 	local unit = self.unit_storage:unit(go_id)
 
 	if not unit or not Unit.alive(unit) then
@@ -173,7 +177,9 @@ AnimationSystem.rpc_anim_event = function (self, sender, anim_id, go_id)
 	end
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_anim_event", sender, anim_id, go_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_anim_event", peer_id, anim_id, go_id)
 	end
 
 	if Unit.has_animation_state_machine(unit) then
@@ -184,7 +190,7 @@ AnimationSystem.rpc_anim_event = function (self, sender, anim_id, go_id)
 	end
 end
 
-AnimationSystem.rpc_link_unit = function (self, sender, child_unit_id, child_node, parent_unit_id, parent_node)
+AnimationSystem.rpc_link_unit = function (self, channel_id, child_unit_id, child_node, parent_unit_id, parent_node)
 	local child_unit = self.unit_storage:unit(child_unit_id)
 	local parent_unit = self.unit_storage:unit(parent_unit_id)
 	local world = Unit.world(parent_unit)
@@ -192,7 +198,7 @@ AnimationSystem.rpc_link_unit = function (self, sender, child_unit_id, child_nod
 	World.link_unit(world, child_unit, child_node, parent_unit, parent_node)
 end
 
-AnimationSystem.rpc_anim_set_variable_by_distance = function (self, sender, unit_id, anim_variable_index, goal_pos, scale, flat_distance)
+AnimationSystem.rpc_anim_set_variable_by_distance = function (self, channel_id, unit_id, anim_variable_index, goal_pos, scale, flat_distance)
 	local unit = self.unit_storage:unit(unit_id)
 
 	self:_set_variable_by_distance(unit, anim_variable_index, goal_pos, scale, flat_distance)
@@ -231,7 +237,7 @@ AnimationSystem._set_variable_by_distance = function (self, unit, anim_variable_
 	end
 end
 
-AnimationSystem.rpc_anim_set_variable_by_time = function (self, sender, unit_id, anim_variable_index, int_16bit_duration, scale)
+AnimationSystem.rpc_anim_set_variable_by_time = function (self, channel_id, unit_id, anim_variable_index, int_16bit_duration, scale)
 	local unit = self.unit_storage:unit(unit_id)
 	local duration = int_16bit_duration * 0.00390625
 
@@ -258,7 +264,7 @@ AnimationSystem._set_variable_by_time = function (self, unit, anim_variable_inde
 	end
 end
 
-AnimationSystem.rpc_update_anim_variable_done = function (self, sender, unit_id)
+AnimationSystem.rpc_update_anim_variable_done = function (self, channel_id, unit_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if self.anim_variable_update_list[unit] then

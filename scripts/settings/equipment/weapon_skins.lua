@@ -683,12 +683,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "wh_repeating_pistol_skin_01_description",
 			rarity = "common",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t1",
 			hud_icon = "weapon_generic_icon_repeating_pistol",
-			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 			inventory_icon = "icon_wpn_empire_pistol_repeater_t1",
 			display_name = "wh_repeating_pistol_skin_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t1",
-			template = "repeating_pistol_template_1"
+			template = "repeating_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -696,12 +699,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "wh_repeating_pistol_skin_02_description",
 			rarity = "rare",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t2",
 			hud_icon = "weapon_generic_icon_repeating_pistol",
-			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 			inventory_icon = "icon_wpn_empire_pistol_repeater_t2",
 			display_name = "wh_repeating_pistol_skin_02_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t2",
-			template = "repeating_pistol_template_1"
+			template = "repeating_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -709,12 +715,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "wh_repeating_pistol_skin_02_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t2_runed_01",
 			hud_icon = "weapon_generic_icon_repeating_pistol",
-			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 			inventory_icon = "icon_wpn_empire_pistol_repeater_t2",
 			display_name = "wh_repeating_pistol_skin_02_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t2_runed_01",
-			template = "repeating_pistol_template_1"
+			template = "repeating_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -728,7 +737,10 @@ WeaponSkins.skins = {
 			display_name = "wh_repeating_pistol_skin_02_runed_02_name",
 			template = "repeating_pistol_template_1",
 			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
-			material_settings = WeaponMaterialSettingsTemplates.purple_glow
+			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -736,12 +748,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "wh_repeating_pistol_skin_03_description",
 			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t3",
 			hud_icon = "weapon_generic_icon_repeating_pistol",
-			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 			inventory_icon = "icon_wpn_empire_pistol_repeater_t3",
 			display_name = "wh_repeating_pistol_skin_03_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t3",
-			template = "repeating_pistol_template_1"
+			template = "repeating_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -749,12 +764,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "wh_repeating_pistol_skin_04_description",
 			rarity = "plentiful",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater_02/wpn_empire_pistol_repeater_02_t1",
 			hud_icon = "weapon_generic_icon_repeating_pistol",
-			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 			inventory_icon = "icon_wpn_empire_pistol_repeater_02_t1",
 			display_name = "wh_repeating_pistol_skin_04_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater_02/wpn_empire_pistol_repeater_02_t1",
-			template = "repeating_pistol_template_1"
+			template = "repeating_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -762,12 +780,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "wh_repeating_pistol_skin_04_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater_02/wpn_empire_pistol_repeater_02_t1_runed_01",
 			hud_icon = "weapon_generic_icon_repeating_pistol",
-			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 			inventory_icon = "icon_wpn_empire_pistol_repeater_02_t1",
 			display_name = "wh_repeating_pistol_skin_04_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater_02/wpn_empire_pistol_repeater_02_t1_runed_01",
-			template = "repeating_pistol_template_1"
+			template = "repeating_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -775,12 +796,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "wh_repeating_pistol_skin_05_description",
 			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater_02/wpn_empire_pistol_repeater_02_t2",
 			hud_icon = "weapon_generic_icon_repeating_pistol",
-			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 			inventory_icon = "icon_wpn_empire_pistol_repeater_02_t2",
 			display_name = "wh_repeating_pistol_skin_05_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater_02/wpn_empire_pistol_repeater_02_t2",
-			template = "repeating_pistol_template_1"
+			template = "repeating_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_repeating_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -1019,7 +1043,7 @@ WeaponSkins.skins = {
 			description = "bw_dagger_skin_02_description",
 			rarity = "common",
 			hud_icon = "weapon_generic_icon_daggers",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			inventory_icon = "icon_wpn_brw_dagger_02",
 			display_name = "bw_dagger_skin_02_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_dagger_02/wpn_brw_dagger_02",
@@ -1032,7 +1056,7 @@ WeaponSkins.skins = {
 			description = "bw_dagger_skin_03_description",
 			rarity = "rare",
 			hud_icon = "weapon_generic_icon_daggers",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			inventory_icon = "icon_wpn_brw_dagger_03",
 			display_name = "bw_dagger_skin_03_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_dagger_03/wpn_brw_dagger_03",
@@ -1045,7 +1069,7 @@ WeaponSkins.skins = {
 			description = "bw_dagger_skin_03_runed_01_description",
 			rarity = "unique",
 			hud_icon = "weapon_generic_icon_daggers",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			inventory_icon = "icon_wpn_brw_dagger_03",
 			display_name = "bw_dagger_skin_03_runed_01_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_dagger_03/wpn_brw_dagger_03_runed_01",
@@ -1058,7 +1082,7 @@ WeaponSkins.skins = {
 			description = "bw_dagger_skin_04_description",
 			rarity = "exotic",
 			hud_icon = "weapon_generic_icon_daggers",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			inventory_icon = "icon_wpn_brw_dagger_04",
 			display_name = "bw_dagger_skin_04_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_dagger_04/wpn_brw_dagger_04",
@@ -1071,7 +1095,7 @@ WeaponSkins.skins = {
 			description = "bw_dagger_skin_04_runed_01_description",
 			rarity = "unique",
 			hud_icon = "weapon_generic_icon_daggers",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			inventory_icon = "icon_wpn_brw_dagger_04",
 			display_name = "bw_dagger_skin_04_runed_01_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_dagger_04/wpn_brw_dagger_04_runed_01",
@@ -1084,7 +1108,7 @@ WeaponSkins.skins = {
 			description = "bw_dagger_skin_05_description",
 			rarity = "exotic",
 			hud_icon = "weapon_generic_icon_daggers",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			inventory_icon = "icon_wpn_brw_dagger_05",
 			display_name = "bw_dagger_skin_05_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_dagger_05/wpn_brw_dagger_05",
@@ -1097,7 +1121,7 @@ WeaponSkins.skins = {
 			description = "bw_dagger_skin_05_runed_01_description",
 			rarity = "unique",
 			hud_icon = "weapon_generic_icon_daggers",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			inventory_icon = "icon_wpn_brw_dagger_05",
 			display_name = "bw_dagger_skin_05_runed_01_name",
 			right_hand_unit = "units/weapons/player/wpn_brw_dagger_05/wpn_brw_dagger_05_runed_01",
@@ -1114,7 +1138,7 @@ WeaponSkins.skins = {
 			inventory_icon = "icon_wpn_brw_dagger_05",
 			display_name = "bw_dagger_skin_05_runed_02_name",
 			template = "one_handed_daggers_template_1",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon",
+			display_unit = "units/weapons/weapon_display/display_1h_dagger_wizard",
 			material_settings = WeaponMaterialSettingsTemplates.purple_glow
 		}
 	},
@@ -3650,7 +3674,15 @@ WeaponSkins.skins = {
 			left_hand_unit = "units/weapons/player/wpn_empire_shield_04/wpn_emp_shield_04",
 			template = "one_handed_hammer_shield_template_1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_shield_hammer"
+			display_unit = "units/weapons/weapon_display/display_shield_hammer",
+			action_anim_overrides = {
+				action_two = {
+					default = {
+						anim_event = "parry_pose_02",
+						anim_event_3p = "parry_pose"
+					}
+				}
+			}
 		}
 	},
 	{
@@ -3855,7 +3887,15 @@ WeaponSkins.skins = {
 			left_hand_unit = "units/weapons/player/wpn_empire_shield_04/wpn_emp_shield_04",
 			template = "one_handed_sword_shield_template_1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_shield_sword"
+			display_unit = "units/weapons/weapon_display/display_shield_sword",
+			action_anim_overrides = {
+				action_two = {
+					default = {
+						anim_event = "parry_pose_02",
+						anim_event_3p = "parry_pose"
+					}
+				}
+			}
 		}
 	},
 	{
@@ -4218,12 +4258,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_blunderbuss_skin_01_description",
 			rarity = "plentiful",
+			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_blunderbusses",
 			inventory_icon = "icon_wpn_empire_blunderbuss_02_t1",
 			display_name = "es_blunderbuss_skin_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t1/wpn_empire_blunderbuss_02_t1",
-			template = "blunderbuss_template_1"
+			template = "blunderbuss_template_1",
+			display_unit = "units/weapons/weapon_display/display_blunderbusses",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4231,12 +4274,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_blunderbuss_skin_02_description",
 			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t2/wpn_empire_blunderbuss_02_t2",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_blunderbusses",
 			inventory_icon = "icon_wpn_empire_blunderbuss_02_t2",
 			display_name = "es_blunderbuss_skin_02_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t2/wpn_empire_blunderbuss_02_t2",
-			template = "blunderbuss_template_1"
+			template = "blunderbuss_template_1",
+			display_unit = "units/weapons/weapon_display/display_blunderbusses",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4244,12 +4290,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_blunderbuss_skin_02_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t2/wpn_empire_blunderbuss_02_t2_runed_01",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_blunderbusses",
 			inventory_icon = "icon_wpn_empire_blunderbuss_02_t2",
 			display_name = "es_blunderbuss_skin_02_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_02_t2/wpn_empire_blunderbuss_02_t2_runed_01",
-			template = "blunderbuss_template_1"
+			template = "blunderbuss_template_1",
+			display_unit = "units/weapons/weapon_display/display_blunderbusses",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4263,7 +4312,10 @@ WeaponSkins.skins = {
 			display_name = "es_blunderbuss_skin_02_runed_02_name",
 			template = "blunderbuss_template_1",
 			display_unit = "units/weapons/weapon_display/display_blunderbusses",
-			material_settings = WeaponMaterialSettingsTemplates.purple_glow
+			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4271,12 +4323,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_blunderbuss_skin_03_description",
 			rarity = "common",
+			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t1/wpn_empire_blunderbuss_t1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_blunderbusses",
 			inventory_icon = "icon_wpn_empire_blunderbuss_t1",
 			display_name = "es_blunderbuss_skin_03_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t1/wpn_empire_blunderbuss_t1",
-			template = "blunderbuss_template_1"
+			template = "blunderbuss_template_1",
+			display_unit = "units/weapons/weapon_display/display_blunderbusses",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -4284,12 +4339,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_blunderbuss_skin_04_description",
 			rarity = "rare",
+			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t2/wpn_empire_blunderbuss_t2",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_blunderbusses",
 			inventory_icon = "icon_wpn_empire_blunderbuss_t2",
 			display_name = "es_blunderbuss_skin_04_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t2/wpn_empire_blunderbuss_t2",
-			template = "blunderbuss_template_1"
+			template = "blunderbuss_template_1",
+			display_unit = "units/weapons/weapon_display/display_blunderbusses",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -4297,12 +4355,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_blunderbuss_skin_04_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t2/wpn_empire_blunderbuss_t2_runed_01",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_blunderbusses",
 			inventory_icon = "icon_wpn_empire_blunderbuss_t2",
 			display_name = "es_blunderbuss_skin_04_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t2/wpn_empire_blunderbuss_t2_runed_01",
-			template = "blunderbuss_template_1"
+			template = "blunderbuss_template_1",
+			display_unit = "units/weapons/weapon_display/display_blunderbusses",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -4310,12 +4371,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_blunderbuss_skin_05_description",
 			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t3/wpn_empire_blunderbuss_t3",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_blunderbusses",
 			inventory_icon = "icon_wpn_empire_blunderbuss_t3",
 			display_name = "es_blunderbuss_skin_05_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_blunderbuss_t3/wpn_empire_blunderbuss_t3",
-			template = "blunderbuss_template_1"
+			template = "blunderbuss_template_1",
+			display_unit = "units/weapons/weapon_display/display_blunderbusses",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -4436,12 +4500,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_handgun_skin_01_description",
 			rarity = "common",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t1/wpn_empire_handgun_02_t1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_1h_handguns",
 			inventory_icon = "icon_wpn_empire_handgun_02_t1",
 			display_name = "es_handgun_skin_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t1/wpn_empire_handgun_02_t1",
-			template = "handgun_template_1"
+			template = "handgun_template_1",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4449,12 +4516,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_handgun_skin_01_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t1/wpn_empire_handgun_02_t1_runed_01",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_1h_handguns",
 			inventory_icon = "icon_wpn_empire_handgun_02_t1",
 			display_name = "es_handgun_skin_01_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t1/wpn_empire_handgun_02_t1_runed_01",
-			template = "handgun_template_1"
+			template = "handgun_template_1",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4462,12 +4532,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_handgun_skin_02_description",
 			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_1h_handguns",
 			inventory_icon = "icon_wpn_empire_handgun_02_t2",
 			display_name = "es_handgun_skin_02_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2",
-			template = "handgun_template_1"
+			template = "handgun_template_1",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4475,12 +4548,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_handgun_skin_02_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_runed_01",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_1h_handguns",
 			inventory_icon = "icon_wpn_empire_handgun_02_t2",
 			display_name = "es_handgun_skin_02_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_runed_01",
-			template = "handgun_template_1"
+			template = "handgun_template_1",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4494,7 +4570,10 @@ WeaponSkins.skins = {
 			display_name = "es_handgun_skin_02_runed_02_name",
 			template = "handgun_template_1",
 			display_unit = "units/weapons/weapon_display/display_1h_handguns",
-			material_settings = WeaponMaterialSettingsTemplates.purple_glow
+			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -4502,12 +4581,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_handgun_skin_03_description",
 			rarity = "plentiful",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_t1/wpn_empire_handgun_t1",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_1h_handguns",
 			inventory_icon = "icon_wpn_empire_handgun_t1",
 			display_name = "es_handgun_skin_03_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_handgun_t1/wpn_empire_handgun_t1",
-			template = "handgun_template_1"
+			template = "handgun_template_1",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -4515,12 +4597,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_handgun_skin_04_description",
 			rarity = "common",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_t2/wpn_empire_handgun_t2",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_1h_handguns",
 			inventory_icon = "icon_wpn_empire_handgun_t2",
 			display_name = "es_handgun_skin_04_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_handgun_t2/wpn_empire_handgun_t2",
-			template = "handgun_template_1"
+			template = "handgun_template_1",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -4528,12 +4613,15 @@ WeaponSkins.skins = {
 		data = {
 			description = "es_handgun_skin_05_description",
 			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_empire_handgun_t3/wpn_empire_handgun_t3",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_1h_handguns",
 			inventory_icon = "icon_wpn_empire_handgun_t3",
 			display_name = "es_handgun_skin_05_name",
-			right_hand_unit = "units/weapons/player/wpn_empire_handgun_t3/wpn_empire_handgun_t3",
-			template = "handgun_template_1"
+			template = "handgun_template_1",
+			display_unit = "units/weapons/weapon_display/display_1h_handguns",
+			action_anim_overrides = {
+				animation_variation_id = 0
+			}
 		}
 	},
 	{
@@ -7491,15 +7579,7 @@ end
 
 WeaponSkins.skins = skins
 
-for _, dlc in pairs(DLCSettings) do
-	local file_names = dlc.weapon_skins_file_names
-
-	if file_names then
-		for _, file_name in ipairs(file_names) do
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("weapon_skins_file_names")
 
 WeaponSkins.item_has_skin_table = function (item_master_list_key)
 	return WeaponSkins.skins[item_master_list_key] ~= nil

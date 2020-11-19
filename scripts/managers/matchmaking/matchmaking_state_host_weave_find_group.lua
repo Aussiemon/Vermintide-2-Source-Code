@@ -127,7 +127,7 @@ MatchmakingStateHostFindWeaveGroup._start_hosting_game = function (self)
 	local quick_game = false
 	local eac_authorized = false
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		if DEDICATED_SERVER then
 			local eac_server = Managers.matchmaking.network_server:eac_server()
 			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"

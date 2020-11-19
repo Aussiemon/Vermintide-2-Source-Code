@@ -68,10 +68,12 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self._system_data.all_update_units[unit] = self
 	self._mover_modes = {
 		ladder = false,
-		enemy_noclip = false
+		enemy_noclip = false,
+		dark_pact_noclip = false
 	}
 	self._climb_entrance = nil
 	self._climb_exit = nil
+	self.wanted_position = Vector3Box()
 end
 
 PlayerUnitLocomotionExtension.set_mover_filter_property = function (self, property, bool)
@@ -87,6 +89,8 @@ PlayerUnitLocomotionExtension.set_mover_filter_property = function (self, proper
 		filter = "filter_player_ladder_mover"
 	elseif modes.enemy_noclip then
 		filter = "filter_player_enemy_noclip_mover"
+	elseif modes.dark_pact_noclip then
+		filter = "filter_player_mover_pactsworn_ghost_mode"
 	else
 		filter = self._default_mover_filter
 	end
@@ -149,8 +153,9 @@ end
 PlayerUnitLocomotionExtension.hot_join_sync = function (self, sender)
 	local unit = self.unit
 	local game_object_id = Managers.state.network:unit_game_object_id(unit)
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-	RPC.rpc_sync_anim_state_3(sender, game_object_id, Unit.animation_get_state(unit))
+	RPC.rpc_sync_anim_state_3(channel_id, game_object_id, Unit.animation_get_state(unit))
 end
 
 PlayerUnitLocomotionExtension._initialize_sample_velocities = function (self)
@@ -284,7 +289,7 @@ PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, con
 
 	if first_person_unit and self._move_speed_anim_var_1p then
 		local lerp_time = 0.3
-		local move_speed = Vector3.length(self.velocity_current:unbox())
+		local move_speed = (self.on_ground and Vector3.length(self.velocity_current:unbox())) or 0
 		local move_speed_lerp_val = self._move_speed_lerp_val
 
 		if move_speed_lerp_val < move_speed then
@@ -298,6 +303,35 @@ PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, con
 		self._move_speed_lerp_val = move_speed_lerp_val
 
 		Unit.animation_set_variable(first_person_unit, self._move_speed_anim_var_1p, math.min(move_speed_lerp_val, 99.9999))
+	end
+
+	if script_data.debug_player_skeletons then
+		local bones = Unit.bones(unit)
+
+		for _, bone in ipairs(bones) do
+			if Unit.has_node(unit, bone) then
+				local i = Unit.node(unit, bone)
+				local parent = Unit.scene_graph_parent(unit, i)
+
+				if parent then
+					local from = Unit.world_position(unit, parent)
+					local to = Unit.world_position(unit, i)
+					local r = Vector3.distance(from, to) / 10
+
+					if r > 0.1 then
+						r = 0.1
+					end
+
+					local color = Color(100, 100, 255)
+
+					if bone == self.draw_node then
+						color = Color(255, 255, 0)
+					end
+
+					QuickDrawer:cone(from, to, r, color, 20, 5)
+				end
+			end
+		end
 	end
 end
 
@@ -638,6 +672,23 @@ PlayerUnitLocomotionExtension.update_script_driven_no_mover_movement = function 
 	self.velocity_current:store(velocity)
 end
 
+PlayerUnitLocomotionExtension.update_wanted_position_movement = function (self, unit, dt, t)
+	local current_position = POSITION_LOOKUP[unit]
+	local wanted_pos = self.wanted_position:unbox()
+	local move_velocity = wanted_pos - current_position
+	local velocity = self.velocity_current:unbox()
+	local velocity_fall = Vector3(0, 0, velocity.z)
+	velocity_fall.z = velocity_fall.z - 9.82 * dt
+	local delta_velocity = move_velocity + velocity_fall
+	local mover = Unit.mover(unit)
+
+	Mover.move(mover, delta_velocity, dt)
+
+	local mover_position = Mover.position(mover)
+
+	Unit.set_local_position(unit, 0, mover_position)
+end
+
 PlayerUnitLocomotionExtension.set_disable_rotation_update = function (self)
 	self.disable_rotation_update = true
 end
@@ -795,6 +846,16 @@ PlayerUnitLocomotionExtension.current_relative_velocity = function (self)
 	return velocity_relative
 end
 
+PlayerUnitLocomotionExtension.current_relative_velocity_3p = function (self)
+	local unit = self.unit
+	local velocity_current = self.velocity_current:unbox()
+	local rotation_current = Unit.local_rotation(unit, 0)
+	local rotation_inverse = Quaternion.inverse(rotation_current)
+	local velocity_relative = Quaternion.rotate(rotation_inverse, velocity_current)
+
+	return velocity_relative
+end
+
 PlayerUnitLocomotionExtension.enable_linked_movement = function (self, parent_unit, node, offset)
 	self.state = "linked_movement"
 	self.link_data = {
@@ -866,6 +927,12 @@ PlayerUnitLocomotionExtension.enable_script_driven_no_mover_movement = function 
 	self.state = "script_driven_no_mover"
 end
 
+PlayerUnitLocomotionExtension.enable_wanted_position_movement = function (self, entrance, exit)
+	self:_stop(false)
+
+	self.state = "wanted_position_mover"
+end
+
 PlayerUnitLocomotionExtension.is_animation_driven = function (self)
 	return self.state == "animation_driven"
 end
@@ -896,6 +963,10 @@ end
 
 PlayerUnitLocomotionExtension.is_on_ground = function (self)
 	return self.on_ground
+end
+
+PlayerUnitLocomotionExtension.set_wanted_pos = function (self, pos)
+	self.wanted_position:store(pos)
 end
 
 PlayerUnitLocomotionExtension.teleport_to = function (self, pos, rot)

@@ -148,6 +148,51 @@ ChallengeManager.get_challenge_from_unique_id = function (self, unique_id)
 	return nil
 end
 
+local challenges_to_remove = {}
+
+ChallengeManager.remove_filtered_challenges = function (self, category, owner_unique_id)
+	table.clear(challenges_to_remove)
+
+	local all_challenges = self._all_challenges
+	local completed_challenges = self._completed_challenges
+
+	for i = 1, #all_challenges, 1 do
+		local challenge = all_challenges[i]
+		local valid = not category or challenge:get_category() == category
+		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
+
+		if valid then
+			challenges_to_remove[#challenges_to_remove + 1] = challenge
+		end
+	end
+
+	for i = 1, #completed_challenges, 1 do
+		local challenge = completed_challenges[i]
+		local valid = not category or challenge:get_category() == category
+		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
+
+		if valid then
+			challenges_to_remove[#challenges_to_remove + 1] = challenge
+		end
+	end
+
+	for _, challenge in ipairs(challenges_to_remove) do
+		challenge:cancel()
+
+		local challenge_id = table.index_of(all_challenges, challenge)
+
+		if challenge_id then
+			table.swap_delete(all_challenges, challenge_id)
+		end
+
+		challenge_id = table.index_of(completed_challenges, challenge)
+
+		if challenge_id then
+			table.swap_delete(completed_challenges, challenge_id)
+		end
+	end
+end
+
 ChallengeManager.get_all_challenges = function (self)
 	return self._all_challenges
 end
@@ -196,7 +241,7 @@ ChallengeManager.get_completed_challenges_filtered = function (self, results, ca
 	return results, results_size
 end
 
-ChallengeManager.player_entered_game_session = function (self, peer_id, local_player_id)
+ChallengeManager.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local player = Managers.player:player_from_unique_id(unique_id)
 	local all_challenges = self._all_challenges

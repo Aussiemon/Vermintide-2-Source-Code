@@ -13,21 +13,6 @@ local function dprint(...)
 	print("[StartGameView]", ...)
 end
 
-local platform = PLATFORM
-
-if platform ~= "ps4" or not {
-	LobbyDistanceFilter.CLOSE,
-	LobbyDistanceFilter.MEDIUM,
-	LobbyDistanceFilter.WORLD
-} then
-	local MapLobbyDistanceFilter = {
-		LobbyDistanceFilter.CLOSE,
-		LobbyDistanceFilter.MEDIUM,
-		LobbyDistanceFilter.FAR,
-		LobbyDistanceFilter.WORLD
-	}
-end
-
 local DO_RELOAD = true
 local debug_draw_scenegraph = false
 local debug_menu = true
@@ -43,14 +28,6 @@ if PLATFORM ~= "win32" then
 end
 
 StartGameView = class(StartGameView)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 StartGameView.init = function (self, ingame_ui_context)
 	self.world = ingame_ui_context.world
@@ -80,7 +57,7 @@ StartGameView.init = function (self, ingame_ui_context)
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		settings_by_screen = settings_by_screen,
-		input_service = fake_input_service
+		input_service = FAKE_INPUT_SERVICE
 	}
 	self._state_machine_params = state_machine_params
 	self.units = {}
@@ -169,7 +146,7 @@ StartGameView.clear_wanted_state = function (self)
 end
 
 StartGameView.input_service = function (self)
-	return (self._draw_loading and fake_input_service) or self.input_manager:get_service("start_game_view")
+	return (self._draw_loading and FAKE_INPUT_SERVICE) or self.input_manager:get_service("start_game_view")
 end
 
 StartGameView.set_input_blocked = function (self, blocked)
@@ -260,7 +237,7 @@ StartGameView.update = function (self, dt, t)
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
-	local input_service = (input_blocked and fake_input_service) or self:input_service()
+	local input_service = (input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 	self._state_machine_params.input_service = input_service
 	local transitioning = self:transitioning()
 
@@ -315,7 +292,7 @@ StartGameView.on_enter = function (self, params)
 	self._on_enter_transition_params = params
 	self._on_enter_sub_state = params.menu_sub_state_name
 
-	self:play_sound("hud_in_inventory_state_on")
+	Managers.music:duck_sounds()
 
 	self._draw_loading = false
 
@@ -513,7 +490,7 @@ StartGameView.on_exit = function (self)
 
 	self._active_view = nil
 
-	self:play_sound("hud_in_inventory_state_off")
+	Managers.music:unduck_sounds()
 
 	self._draw_loading = false
 end
@@ -609,72 +586,8 @@ StartGameView.number_of_players = function (self)
 	return player_manager:num_human_players()
 end
 
-StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, always_host, strict_matchmaking, t, game_mode, deed_backend_id, event_data, excluded_level_keys)
-	print("............................................................................................................")
-	print("............................................................................................................")
-	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Game Mode: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no", game_mode or "Not specified")
-	print("............................................................................................................")
-	print("............................................................................................................")
-
-	if deed_backend_id then
-		Managers.deed:select_deed(deed_backend_id, Network.peer_id())
-	end
-
-	if game_mode == "deed" then
-		local item_interface = Managers.backend:get_interface("items")
-		local item = item_interface:get_item_from_id(deed_backend_id)
-		local item_data = item.data
-		local difficulty = item.difficulty
-		level_key = item.level_key
-		local vote_data = {
-			item_name = item_data.name,
-			level_key = level_key,
-			difficulty = difficulty,
-			game_mode = game_mode,
-			excluded_level_keys = excluded_level_keys
-		}
-
-		Managers.state.voting:request_vote("game_settings_deed_vote", vote_data, Network.peer_id())
-	elseif game_mode == "event" then
-		local vote_data = {
-			level_key = level_key,
-			difficulty = difficulty_key,
-			quick_game = quick_game,
-			private_game = private_game,
-			always_host = always_host,
-			strict_matchmaking = strict_matchmaking,
-			event_data = event_data,
-			game_mode = game_mode,
-			excluded_level_keys = excluded_level_keys
-		}
-
-		Managers.state.voting:request_vote("game_settings_event_vote", vote_data, Network.peer_id())
-	elseif game_mode == "weave_quick_play" then
-		local vote_data = {
-			quick_game = true,
-			game_mode = "weave",
-			difficulty = difficulty_key,
-			private_game = private_game,
-			always_host = always_host
-		}
-
-		Managers.state.voting:request_vote("game_settings_weave_quick_play_vote", vote_data, Network.peer_id())
-	else
-		local vote_data = {
-			level_key = level_key,
-			difficulty = difficulty_key,
-			quick_game = quick_game,
-			private_game = private_game,
-			always_host = always_host,
-			strict_matchmaking = strict_matchmaking,
-			game_mode = game_mode,
-			excluded_level_keys = excluded_level_keys
-		}
-		local vote_template = "game_settings_vote"
-
-		Managers.state.voting:request_vote(vote_template, vote_data, Network.peer_id())
-	end
-
+StartGameView.start_game = function (self, request_type, params)
+	Managers.mechanism:request_vote(request_type, params)
 	self:play_sound("play_gui_lobby_button_play")
 	self:close_menu()
 end

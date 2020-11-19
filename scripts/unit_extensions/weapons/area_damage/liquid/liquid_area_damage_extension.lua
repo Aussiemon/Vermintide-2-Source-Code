@@ -757,7 +757,7 @@ LiquidAreaDamageExtension.get_rim_nodes = function (self)
 	return self._inactive_flow, false
 end
 
-LiquidAreaDamageExtension.hot_join_sync = function (self, sender)
+LiquidAreaDamageExtension.hot_join_sync = function (self, peer_id)
 	local flow = self._flow
 	local liquid_unit_id = self._unit_id
 	local network_transmit = self._network_transmit
@@ -766,7 +766,7 @@ LiquidAreaDamageExtension.hot_join_sync = function (self, sender)
 		local position = liquid.position:unbox()
 		local is_filled = liquid.full
 
-		network_transmit:send_rpc("rpc_add_liquid_damage_blob", sender, liquid_unit_id, real_index, position, is_filled)
+		network_transmit:send_rpc("rpc_add_liquid_damage_blob", peer_id, liquid_unit_id, real_index, position, is_filled)
 	end
 end
 

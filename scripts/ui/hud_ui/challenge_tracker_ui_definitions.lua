@@ -409,10 +409,6 @@ local function create_objective(challenge, gui, offset, index)
 	return widget
 end
 
-local function NOP()
-	return
-end
-
 local animation_definitions = {
 	on_enter = {
 		{

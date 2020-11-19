@@ -16,7 +16,7 @@ template.screen_margins = {
 	right = 150
 }
 
-template.create_widget_defintion = function (scenegraph_id)
+template.create_widget_definition = function (scenegraph_id)
 	local arrow_offset = 25
 
 	return {
@@ -227,7 +227,7 @@ template.on_enter = function (widget)
 	content.spawn_progress_timer = 0
 end
 
-template.animation_update = function (ui_renderer, widget, settings, dt, t)
+template.update_function = function (ui_renderer, widget, marker, settings, dt, t)
 	local animating = false
 	local content = widget.content
 	local style = widget.style

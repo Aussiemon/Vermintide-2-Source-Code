@@ -34,14 +34,6 @@ local rarity_index = {
 	rare = 3,
 	unique = 5
 }
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 HeroViewStateOverview = class(HeroViewStateOverview)
 HeroViewStateOverview.NAME = "HeroViewStateOverview"
 
@@ -49,7 +41,6 @@ HeroViewStateOverview.on_enter = function (self, params)
 	print("[HeroViewState] Enter Substate HeroViewStateOverview")
 
 	self.parent = params.parent
-	self.fake_input_service = fake_input_service
 	self._gamepad_style_active = self:_setup_menu_layout()
 	local ingame_ui_context = params.ingame_ui_context
 	self.ingame_ui_context = ingame_ui_context
@@ -110,7 +101,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
 		windows_settings = self._windows_settings,
-		input_service = fake_input_service,
+		input_service = FAKE_INPUT_SERVICE,
 		hero_name = self.hero_name,
 		career_index = self.career_index,
 		profile_index = self.profile_index,
@@ -224,7 +215,7 @@ HeroViewStateOverview._initial_windows_setups = function (self, params)
 end
 
 HeroViewStateOverview.window_input_service = function (self)
-	return (self._input_blocked and fake_input_service) or self:input_service()
+	return (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 end
 
 HeroViewStateOverview._close_window_at_index = function (self, window_index)

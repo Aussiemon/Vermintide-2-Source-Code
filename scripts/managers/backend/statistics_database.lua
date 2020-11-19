@@ -69,6 +69,7 @@ StatisticsDatabase = class(StatisticsDatabase)
 StatisticsDatabase.init = function (self)
 	self.statistics = {}
 	self.categories = {}
+	self.local_statistics = {}
 end
 
 StatisticsDatabase.destroy = function (self)
@@ -108,6 +109,12 @@ local function init_backend_stat(stat, backend_stats)
 				stat.persistent_value = convert_from_backend(backend_raw_value, stat.database_type)
 			else
 				stat.persistent_value = 0
+			end
+
+			if type(stat.persistent_value) == "table" then
+				stat.persistent_value_mirror = table.clone(stat.persistent_value)
+			else
+				stat.persistent_value_mirror = stat.persistent_value
 			end
 		end
 	else
@@ -198,8 +205,9 @@ local function sync_stat(peer_id, stat_peer_id, stat_local_player_id, path, path
 
 			if stat.value ~= default_value or (stat.persistent_value and stat.persistent_value ~= default_value) then
 				local networkified_path = networkified_path(path)
+				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-				RPC.rpc_sync_statistics_number(peer_id, stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value or 0))
+				RPC.rpc_sync_statistics_number(channel_id, stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value or 0))
 			end
 		end
 	else
@@ -253,7 +261,7 @@ end
 local function reset_stat(stat)
 	if stat.value then
 		if stat.database_type == nil then
-			stat.value = 0
+			stat.value = stat.persistent_value or stat.default_value or 0
 		elseif stat.database_type == "hexarray" then
 			for i = 1, #stat.value, 1 do
 				stat.value[i] = false
@@ -274,6 +282,8 @@ StatisticsDatabase.reset_session_stats = function (self)
 
 		reset_stat(stats)
 	end
+
+	table.clear(self.local_statistics)
 end
 
 local function generate_backend_stats(stat, backend_stats)
@@ -455,6 +465,20 @@ StatisticsDatabase.set_stat = function (self, id, ...)
 	stat.persistent_value = new_value
 end
 
+StatisticsDatabase.set_non_persistent_stat = function (self, id, ...)
+	local stat = self.statistics[id]
+	local arg_n = select("#", ...)
+
+	for i = 1, arg_n - 1, 1 do
+		local arg_value = select(i, ...)
+		stat = stat[arg_value]
+	end
+
+	local new_value = select(arg_n, ...)
+	stat.dirty = stat.value ~= new_value
+	stat.value = new_value
+end
+
 StatisticsDatabase.get_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
@@ -469,6 +493,11 @@ end
 
 StatisticsDatabase.has_stat = function (self, id, ...)
 	local stat = self.statistics[id]
+
+	if not stat then
+		return false
+	end
+
 	local arg_n = select("#", ...)
 
 	for i = 1, arg_n, 1 do
@@ -555,7 +584,7 @@ StatisticsDatabase.debug_draw = function (self)
 	end
 end
 
-StatisticsDatabase.rpc_increment_stat = function (self, sender, stat_id)
+StatisticsDatabase.rpc_increment_stat = function (self, channel_id, stat_id)
 	local stat = NetworkLookup.statistics[stat_id]
 	local player = Managers.player:local_player()
 
@@ -568,7 +597,7 @@ StatisticsDatabase.rpc_increment_stat = function (self, sender, stat_id)
 	self:increment_stat(stats_id, stat)
 end
 
-StatisticsDatabase.rpc_increment_stat_group = function (self, sender, group_id, stat_id)
+StatisticsDatabase.rpc_increment_stat_group = function (self, channel_id, group_id, stat_id)
 	local stat_group_name = NetworkLookup.statistics_group_name[group_id]
 	local stat_name = NetworkLookup.statistics[stat_id]
 	local player = Managers.player:local_player()
@@ -582,7 +611,7 @@ StatisticsDatabase.rpc_increment_stat_group = function (self, sender, group_id, 
 	self:increment_stat(stats_id, stat_group_name, stat_name)
 end
 
-StatisticsDatabase.rpc_set_local_player_stat = function (self, sender, stat_id, amount)
+StatisticsDatabase.rpc_set_local_player_stat = function (self, channel_id, stat_id, amount)
 	local stat = NetworkLookup.statistics[stat_id]
 	local player = Managers.player:local_player()
 
@@ -598,7 +627,7 @@ StatisticsDatabase.rpc_set_local_player_stat = function (self, sender, stat_id, 
 	end
 end
 
-StatisticsDatabase.rpc_sync_statistics_number = function (self, sender, peer_id, local_player_id, statistics_path_names, value, persistent_value)
+StatisticsDatabase.rpc_sync_statistics_number = function (self, channel_id, peer_id, local_player_id, statistics_path_names, value, persistent_value)
 	local player = Managers.player:player(peer_id, local_player_id)
 	local stats_id = player:stats_id()
 	local path = unnetworkified_path(statistics_path_names)
@@ -622,6 +651,82 @@ end
 
 StatisticsDatabase.get_all_stats = function (self, id)
 	return self.statistics[id]
+end
+
+StatisticsDatabase.get_local_stat = function (self, stat_name)
+	return self.local_statistics[stat_name]
+end
+
+StatisticsDatabase.set_local_stat = function (self, stat_name, value)
+	self.local_statistics[stat_name] = value
+end
+
+StatisticsDatabase.increment_local_stat = function (self, stat_name)
+	if not self.local_statistics[stat_name] then
+		self.local_statistics[stat_name] = 0
+	end
+
+	self.local_statistics[stat_name] = self.local_statistics[stat_name] + 1
+end
+
+local function apply_persistant_stat(stat)
+	if stat.value then
+		if stat.persistent_value and stat.dirty then
+			if stat.database_type == nil then
+				stat.persistent_value_mirror = stat.persistent_value
+			elseif stat.database_type == "hexarray" then
+				for i = 1, #stat.persistent_value, 1 do
+					stat.persistent_value_mirror[i] = stat.persistent_value[i]
+				end
+			end
+		end
+	else
+		for stat_name, stat_definition in pairs(stat) do
+			apply_persistant_stat(stat_definition)
+		end
+	end
+end
+
+StatisticsDatabase.apply_persistant_stats = function (self)
+	dbprintf("StatisticsDatabase: Applying all session stats")
+
+	for id, category in pairs(self.categories) do
+		local stats = self.statistics[id]
+
+		apply_persistant_stat(stats)
+	end
+end
+
+local function reset_persistant_stat(stat)
+	if stat.value then
+		if stat.persistent_value and stat.dirty then
+			if stat.database_type == nil then
+				stat.persistent_value = stat.persistent_value_mirror
+				stat.value = stat.persistent_value or stat.default_value or 0
+			elseif stat.database_type == "hexarray" then
+				for i = 1, #stat.persistent_value, 1 do
+					stat.persistent_value[i] = stat.persistent_value_mirror[i]
+					stat.value[i] = stat.persistent_value[i] or false
+				end
+			end
+
+			stat.dirty = false
+		end
+	else
+		for stat_name, stat_definition in pairs(stat) do
+			reset_persistant_stat(stat_definition)
+		end
+	end
+end
+
+StatisticsDatabase.reset_persistant_stats = function (self)
+	dbprintf("StatisticsDatabase: Reseting all session stats")
+
+	for id, category in pairs(self.categories) do
+		local stats = self.statistics[id]
+
+		reset_persistant_stat(stats)
+	end
 end
 
 local DB_UNIT_TEST = false

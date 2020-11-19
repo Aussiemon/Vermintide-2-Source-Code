@@ -504,7 +504,6 @@ InteractionUI.update = function (self, dt, t, my_player)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")
-	local console_disabled = false
 	local player_unit = my_player.player_unit
 
 	if not player_unit then
@@ -521,7 +520,7 @@ InteractionUI.update = function (self, dt, t, my_player)
 
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
 	local interaction_bar_active = false
-	local title_text, action_text, interact_action, failed_reason, is_channeling = nil
+	local title_text, action_text, interact_action, failed_reason, is_channeling, override_text_color = nil
 	local is_interacting = interactor_extension:is_interacting()
 	local is_waiting_for_interaction_approval = interactor_extension:is_waiting_for_interaction_approval()
 	local interaction_in_progress = is_interacting and not is_waiting_for_interaction_approval
@@ -536,17 +535,13 @@ InteractionUI.update = function (self, dt, t, my_player)
 		end
 	end
 
-	title_text, action_text, interact_action, failed_reason = self:_get_interaction_text(player_unit, is_channeling)
+	title_text, action_text, interact_action, failed_reason, override_text_color = self:_get_interaction_text(player_unit, is_channeling)
 
-	if title_text then
-		action_text = action_text or "NO_TEXT_ASSIGNED"
-	end
+	if action_text then
+		title_text = (title_text and Localize(title_text)) or ""
+		action_text = (action_text and Localize(action_text)) or ""
 
-	if title_text and action_text then
-		title_text = (console_disabled and title_text) or Localize(title_text)
-		action_text = (console_disabled and action_text) or Localize(action_text)
-
-		self:_assign_button_info(interact_action, failed_reason, is_channeling)
+		self:_assign_button_info(interact_action, failed_reason, is_channeling, override_text_color)
 
 		local widget_style = self.interaction_widget.style
 		local widget_content = self.interaction_widget.content
@@ -563,7 +558,7 @@ InteractionUI.update = function (self, dt, t, my_player)
 			local title_text_shadow_style = widget_style.title_text_shadow
 			local background_style = widget_style.background
 			local fade_in_time = 0.1
-			local target_alpha = (console_disabled and 128) or 255
+			local target_alpha = 255
 			self.interaction_animations.tooltip_icon_fade = UIAnimation.init(UIAnimation.function_by_time, icon_style.color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
 			self.interaction_animations.tooltip_button_text_fade = UIAnimation.init(UIAnimation.function_by_time, button_text_style.text_color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
 			self.interaction_animations.tooltip_button_text_shadow_fade = UIAnimation.init(UIAnimation.function_by_time, button_text_shadow_style.text_color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
@@ -600,7 +595,7 @@ end
 
 InteractionUI._get_interaction_text = function (self, player_unit, is_channeling)
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
-	local title_text, action_text, interact_action = nil
+	local title_text, action_text, interact_action, override_text_color = nil
 	local can_interact, failed_reason, interaction_type = interactor_extension:can_interact()
 	local is_interacting, current_interaction_type = interactor_extension:is_interacting()
 	interaction_type = interaction_type or current_interaction_type
@@ -619,14 +614,14 @@ InteractionUI._get_interaction_text = function (self, player_unit, is_channeling
 			end
 		end
 	else
-		title_text, action_text, interact_action = self:_get_wielded_interaction_text(player_unit)
+		title_text, action_text, interact_action, override_text_color = self:_get_wielded_interaction_text(player_unit)
 	end
 
 	if GameSettingsDevelopment.disabled_interactions[interaction_type] then
 		title_text = "Currently Disabled"
 	end
 
-	return title_text, action_text, interact_action, failed_reason
+	return title_text, action_text, interact_action, failed_reason, override_text_color
 end
 
 InteractionUI._get_wielded_interaction_text = function (self, player_unit)
@@ -636,7 +631,7 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 		return
 	end
 
-	local title_text, action_text, interact_action = nil
+	local title_text, action_text, interact_action, override_text_color = nil
 	local highest_prio = 0
 	local best_action_name, best_sub_action_name = nil
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
@@ -647,13 +642,17 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 		for sub_action_name, action_settings in pairs(sub_actions) do
 			local interaction_priority = action_settings.interaction_priority or -1000
 
-			if action_settings.interaction_type ~= nil and highest_prio < interaction_priority and (action_settings.condition_func(player_unit) or (is_interacting and action_settings.interaction_type == interaction_type)) then
-				local input_device_supports_action = self:button_texture_data_by_input_action(action_settings.hold_input or action_name)
+			if action_settings.interaction_type ~= nil and highest_prio < interaction_priority then
+				local show_interaction_ui = action_settings.show_interaction_ui and action_settings.show_interaction_ui(player_unit)
 
-				if input_device_supports_action then
-					highest_prio = action_settings.interaction_priority
-					best_action_name = action_name
-					best_sub_action_name = sub_action_name
+				if show_interaction_ui or action_settings.condition_func(player_unit) or (is_interacting and action_settings.interaction_type == interaction_type) then
+					local input_device_supports_action = self:button_texture_data_by_input_action(action_settings.hold_input or action_name)
+
+					if input_device_supports_action then
+						highest_prio = action_settings.interaction_priority
+						best_action_name = action_name
+						best_sub_action_name = sub_action_name
+					end
 				end
 			end
 		end
@@ -672,18 +671,18 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 			local can_interact = can_interact_func(player_unit, interactable_unit, interaction_data, interaction_template.config, self.world)
 
 			if can_interact then
-				title_text, action_text = interaction_template.client.hud_description(interactable_unit, interaction_data, interaction_template.config, nil, player_unit)
+				title_text, action_text, override_text_color = interaction_template.client.hud_description(interactable_unit, interaction_data, interaction_template.config, nil, player_unit)
 			else
-				title_text, action_text = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
+				title_text, action_text, override_text_color = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
 			end
 		else
-			title_text, action_text = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
+			title_text, action_text, override_text_color = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
 		end
 
 		interact_action = action_settings.hold_input or best_action_name
 	end
 
-	return title_text, action_text, interact_action
+	return title_text, action_text, interact_action, override_text_color
 end
 
 InteractionUI._get_wielded_item_data = function (self, player_unit)
@@ -694,7 +693,7 @@ InteractionUI._get_wielded_item_data = function (self, player_unit)
 	return item_data
 end
 
-InteractionUI._assign_button_info = function (self, interact_action, failed_reason, channeling)
+InteractionUI._assign_button_info = function (self, interact_action, failed_reason, channeling, override_text_color)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local widget_style = self.interaction_widget.style
@@ -742,6 +741,10 @@ InteractionUI._assign_button_info = function (self, interact_action, failed_reas
 		else
 			new_text_color = widget_style.text.default_text_color
 		end
+	end
+
+	if override_text_color then
+		new_text_color = override_text_color
 	end
 
 	text_color[2] = new_text_color[2]

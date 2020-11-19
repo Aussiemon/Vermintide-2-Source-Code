@@ -71,6 +71,30 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 					end
 				end
 			end
+
+			if player.local_player then
+				local client_buffs = talent_data.client_buffs
+
+				if client_buffs then
+					for j = 1, #client_buffs, 1 do
+						local buff_template = client_buffs[j]
+						local id = buff_extension:add_buff(buff_template)
+						talent_buff_ids[#talent_buff_ids + 1] = id
+					end
+				end
+			end
+
+			if self.is_server then
+				local server_buffs = talent_data.server_buffs
+
+				if server_buffs then
+					for j = 1, #server_buffs, 1 do
+						local buff_template = server_buffs[j]
+						local id = buff_extension:add_buff(buff_template)
+						talent_buff_ids[#talent_buff_ids + 1] = id
+					end
+				end
+			end
 		end
 	end
 end

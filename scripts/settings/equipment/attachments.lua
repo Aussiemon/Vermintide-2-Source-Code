@@ -557,6 +557,17 @@ local dr_helmets_skinned_long = {
 	buffs = {}
 }
 Attachments.dr_helmets_skinned_long = table.clone(dr_helmets_skinned_long)
+local dr_helmets_skinned_long_no_head = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet_dr_hood",
+	show_attachments_event = "lua_hide_head",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_long,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.dr_helmets_skinned_long_no_head = table.clone(dr_helmets_skinned_long_no_head)
 local dr_helmets_no_ear = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

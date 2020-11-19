@@ -166,4 +166,34 @@ IkChain.solve = function (self, t, dt)
 	Debug.text("Solving tentacle: %d iterations", count)
 end
 
+IkChain.solve_dragging = function (self, t, dt)
+	local target_pos = self.target_pos:unbox()
+	local aim_pos = self.aim_pos:unbox()
+	local to_target = target_pos - aim_pos
+	local target_pos = aim_pos + to_target * (self.acc or 1) * dt
+
+	self.aim_pos:store(target_pos)
+
+	local start_pos = self.origin_pos:unbox()
+	local num_joints = self.n
+	local joints = unbox_pos_array(self.joints, temp_joints, num_joints)
+	local lengths = self.lengths
+	local count = 0
+	local distance = Vector3.length(joints[1] - target_pos)
+
+	if self.totallength < distance then
+		for i = 1, num_joints - 1, 1 do
+			local r = Vector3.length(target_pos - joints[i])
+			local l = lengths[i] / r
+			joints[i + 1] = (1 - l) * joints[i] + l * target_pos
+		end
+	else
+		self:backward(joints, lengths, num_joints, target_pos)
+	end
+
+	save_joints_in_boxed_array(joints, self.joints, num_joints)
+	self:debug_draw(joints, num_joints)
+	Debug.text("Solving tentacle: %d iterations", count)
+end
+
 return

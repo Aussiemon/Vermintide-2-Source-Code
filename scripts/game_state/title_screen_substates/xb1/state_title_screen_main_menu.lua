@@ -162,6 +162,7 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 		Wwise.set_state("menu_mute_ingame_sounds", "false")
 	end
 
+	UISettings.set_console_settings()
 	self._setup_sound()
 	self:_setup_input()
 	self:_init_menu_views()
@@ -746,6 +747,10 @@ StateTitleScreenMainMenu.cb_xsts_token_received = function (self, data)
 end
 
 StateTitleScreenMainMenu._signin_to_backend = function (self)
+	local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+	local mechanism_settings = MechanismSettings[mechanism_name]
+	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
+	local mirror = playfab_mirror or "PlayFabMirrorAdventure"
 	Managers.unlock = UnlockManager:new()
 
 	if self._game_type == game_types.OFFLINE then
@@ -760,7 +765,7 @@ StateTitleScreenMainMenu._signin_to_backend = function (self)
 		end
 
 		Managers.rest_transport = Managers.rest_transport_offline
-		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabXbox", "PlayFabMirror", "DataServerQueue")
+		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabXbox", mirror, "DataServerQueue")
 
 		Managers.backend:signin("")
 	else
@@ -768,7 +773,7 @@ StateTitleScreenMainMenu._signin_to_backend = function (self)
 		Managers.account:set_offline_mode(false)
 
 		Managers.rest_transport = Managers.rest_transport_online
-		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabXbox", "PlayFabMirror", "DataServerQueue")
+		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabXbox", mirror, "DataServerQueue")
 
 		Managers.backend:signin(self._xsts_result)
 		Managers.account:set_xsts_token(self._xsts_result)

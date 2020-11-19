@@ -40,8 +40,7 @@ end
 
 GameServer.update = function (self, dt, t)
 	local game_server = self._game_server
-	local game_server_state = game_server:state()
-	local new_state = GameServerInternal.state_map[game_server_state]
+	local new_state = game_server:state()
 	local old_state = self._state
 
 	if new_state ~= old_state then
@@ -49,7 +48,7 @@ GameServer.update = function (self, dt, t)
 
 		self._state = new_state
 
-		if new_state == GameServerState.CONNECTED then
+		if new_state == "connected" then
 			local data_table = self._data_table
 			data_table.network_hash = self._network_hash
 
@@ -60,7 +59,7 @@ GameServer.update = function (self, dt, t)
 			self._members = self._members or LobbyMembers:new(game_server)
 		end
 
-		if old_state == GameServerState.CONNECTED and self._members then
+		if old_state == "connected" and self._members then
 			self._members:clear()
 		end
 	end
@@ -69,22 +68,6 @@ GameServer.update = function (self, dt, t)
 
 	if members then
 		members:update()
-
-		local members_joined = members:get_members_joined()
-
-		for i = 1, #members_joined, 1 do
-			local peer_id = members_joined[i]
-
-			GameServerInternal.add_ping_peer(peer_id)
-		end
-
-		local members_left = members:get_members_left()
-
-		for i = 1, #members_left, 1 do
-			local peer_id = members_left[i]
-
-			GameServerInternal.remove_ping_peer(peer_id)
-		end
 	end
 
 	GameServerInternal.run_callbacks(self._game_server, self)
@@ -98,6 +81,10 @@ end
 
 GameServer.remove_peer = function (self, peer_id)
 	self._game_server:remove_member(peer_id)
+end
+
+GameServer.close_channel = function (self, channel_id)
+	GameServerInternal.close_channel(self._game_server, channel_id)
 end
 
 GameServer.set_level_name = function (self, name)
@@ -126,10 +113,6 @@ GameServer.get_stored_lobby_data = function (self)
 end
 
 GameServer.attempting_reconnect = function (self)
-	return false
-end
-
-GameServer.lost_connection_to_lobby = function (self)
 	return false
 end
 
@@ -162,7 +145,7 @@ GameServer.get_max_members = function (self)
 end
 
 GameServer.is_joined = function (self)
-	return self._state == GameServerState.CONNECTED
+	return self._state == "connected"
 end
 
 GameServer.id = function (self)
@@ -171,6 +154,10 @@ end
 
 GameServer.server_name = function (self)
 	return self._server_name
+end
+
+GameServer.set_server_name = function (self, server_name)
+	self._server_name = server_name
 end
 
 GameServer.set_network_initialized = function (self, initialized)
@@ -182,7 +169,7 @@ GameServer.network_initialized = function (self)
 end
 
 GameServer.failed = function (self)
-	return self._state == GameServerState.DISCONNECTED
+	return self._state == "disconnected"
 end
 
 GameServer.server_member_added = function (self, peer_id)
@@ -204,6 +191,10 @@ end
 GameServer.server_slot_expired = function (self, peer_id)
 	Managers.mechanism:game_server_slot_reservation_expired(peer_id)
 	printf("Server slot %s was deallocated", peer_id)
+end
+
+GameServer.lost_connection_to_lobby = function (self)
+	return false
 end
 
 return

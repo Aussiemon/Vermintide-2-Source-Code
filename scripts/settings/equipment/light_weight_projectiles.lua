@@ -18,6 +18,25 @@ LightWeightProjectiles = {
 			250
 		}
 	},
+	ratling_gunner_vs = {
+		projectile_speed = 80,
+		light_weight_projectile_effect = "ratling_gun_bullet_vs",
+		damage_profile = "ratling_gunner",
+		projectile_max_range = 50,
+		hit_effect = "ratling_gunner",
+		impact_push_speed = 2.5,
+		spread = math.degrees_to_radians(5),
+		attack_power_level = {
+			13,
+			26,
+			90,
+			130,
+			160,
+			160,
+			160,
+			160
+		}
+	},
 	stormfiend_boss = {
 		projectile_speed = 80,
 		light_weight_projectile_effect = "stormfiend_gun_bullet",
@@ -96,14 +115,6 @@ LightWeightProjectiles = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local projectile_settings = dlc.light_weight_projectiles
-
-	if projectile_settings then
-		for name, settings in pairs(projectile_settings) do
-			LightWeightProjectiles[name] = settings
-		end
-	end
-end
+DLCUtils.merge("light_weight_projectiles", LightWeightProjectiles)
 
 return

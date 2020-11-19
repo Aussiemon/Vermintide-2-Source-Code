@@ -77,7 +77,14 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	end
 
 	self._rig_update_timestep = 0.016666666666666666
+	local career_fp_anim_setup = career.fp_anim_setup
+
+	if career_fp_anim_setup then
+		career_fp_anim_setup(fp_unit)
+	end
+
 	self._show_selected_jump = Managers.state.game_mode:setting("show_selected_jump")
+	self._current_jump_id = nil
 	self._move_y = 0
 	self._move_x = 0
 	self._move_z = 0
@@ -112,6 +119,157 @@ PlayerUnitFirstPerson.destroy = function (self)
 
 	unit_spawner:mark_for_deletion(self.first_person_unit)
 	unit_spawner:mark_for_deletion(self.first_person_attachment_unit)
+end
+
+local BROADPHASE_RESULTS = {}
+
+PlayerUnitFirstPerson.check_for_jumps = function (self, unit, t)
+	local pos = POSITION_LOOKUP[unit]
+	local nav_graph_system = Managers.state.entity:system("nav_graph_system")
+	local max_dist = nav_graph_system.jumps_broadphase_max_dist
+	local jumps_broadphase = nav_graph_system.jumps_broadphase
+	local num_hits = Broadphase.query(jumps_broadphase, pos, max_dist, BROADPHASE_RESULTS)
+
+	if num_hits <= 0 then
+		return
+	end
+
+	local world = self.world
+	local level_jumps = nav_graph_system.level_jumps
+	local player = Managers.player:owner(self.unit)
+	local viewport_name = player.viewport_name
+	local viewport = ScriptWorld.viewport(self.world, viewport_name)
+	local camera = ScriptViewport.camera(viewport)
+	local camera_position = ScriptCamera.position(camera)
+	local camera_rotation = ScriptCamera.rotation(camera)
+	local camera_forward = Quaternion.forward(camera_rotation)
+	local best_id, best_pos = nil
+	local best_val = 0
+
+	for i = 1, num_hits, 1 do
+		local level_jump_id = BROADPHASE_RESULTS[i]
+		local jump_data = level_jumps[level_jump_id]
+		local jump_object_data = jump_data.jump_object_data
+		local tp = (jump_data.swap_entrance_exit and jump_object_data.pos1) or jump_object_data.pos2
+		local smart_object_pos = Vector3(tp[1], tp[2], tp[3])
+		local to_pos_dir = Vector3.normalize(Vector3.flat(smart_object_pos - camera_position))
+		local dot = Vector3.dot(to_pos_dir, camera_forward)
+		local is_infront = dot > 0.25
+		local dist = Vector3.distance(smart_object_pos, pos)
+
+		if is_infront or dist < 0.25 then
+			local dist_clamped = math.clamp(dist, 1, 5)
+			local val = dot + 1.15 / (dist_clamped * dist_clamped)
+
+			if best_val < val and dist < 2 then
+				best_val = val
+				best_pos = smart_object_pos
+				best_id = level_jump_id
+			end
+		end
+	end
+
+	if best_id then
+		if best_id ~= self._current_jump_id then
+			self._current_jump_id = best_id
+			local jump_data = level_jumps[best_id]
+
+			if jump_data then
+				local jump_object_data = jump_data.jump_object_data
+				local p1 = Vector3Aux.unbox(jump_object_data.pos1)
+				local p2 = Vector3Aux.unbox(jump_object_data.pos2)
+				self._valid_jump_id = best_id
+				self._valid_jump_data = jump_data
+				local swapped = jump_data.swap_entrance_exit
+				local to_vec = (swapped and p2 - p1) or p1 - p2
+				local to_vec_flat = Vector3.flat(to_vec)
+				local rot = Quaternion.look(to_vec_flat)
+
+				if self._indicator_unit then
+					Unit.flow_event(self._indicator_unit, "disable_glow")
+				end
+
+				if self._show_selected_jump then
+					self._indicator_unit = jump_data.unit
+				end
+
+				if self._show_selected_jump and self._indicator_unit then
+					Unit.flow_event(self._indicator_unit, "enable_glow")
+				end
+			end
+		end
+	else
+		self:_reset_jump_indicator()
+	end
+end
+
+PlayerUnitFirstPerson._reset_jump_indicator = function (self)
+	self._valid_jump_id = nil
+	self._valid_jump_data = nil
+
+	if self._indicator_unit and unit_alive(self._indicator_unit) then
+		Unit.flow_event(self._indicator_unit, "disable_glow")
+
+		self._indicator_unit = nil
+	end
+
+	self._current_jump_id = nil
+end
+
+local control_points = {}
+
+PlayerUnitFirstPerson._draw_smart_objects = function (self, jump_data, smart_object_pos, dist, max_dist)
+	if not jump_data then
+		return
+	end
+
+	local smart_object_data = jump_data.jump_object_data
+	local smart_object_type = smart_object_data.smart_object_type
+	control_points[1] = Vector3Aux.unbox(smart_object_data.pos1)
+	control_points[2] = Vector3Aux.unbox(smart_object_data.pos2)
+	local alpha_modifier = math.clamp(1 - dist / max_dist, 0, 1)
+	local alpha = math.clamp(255 * alpha_modifier, 1, 255)
+	local drawer = Managers.state.debug:drawer({
+		mode = "immediate",
+		name = "DarkPactPlayerJumpDrawer"
+	})
+	local debug_color = Color(alpha, 127, 255, 212)
+
+	if smart_object_type == "ledges" or smart_object_type == "ledges_with_fence" then
+		if smart_object_data.data.ledge_position1 then
+			drawer:line(control_points[1], Vector3Aux.unbox(smart_object_data.data.ledge_position1), debug_color)
+			drawer:line(Vector3Aux.unbox(smart_object_data.data.ledge_position1), Vector3Aux.unbox(smart_object_data.data.ledge_position2), debug_color)
+			drawer:line(control_points[2], Vector3Aux.unbox(smart_object_data.data.ledge_position2), debug_color)
+		else
+			drawer:line(control_points[1], Vector3Aux.unbox(smart_object_data.data.ledge_position), debug_color)
+			drawer:line(control_points[2], Vector3Aux.unbox(smart_object_data.data.ledge_position), debug_color)
+		end
+
+		if not smart_object_data.data.is_bidirectional then
+			drawer:vector(control_points[1], Vector3.up(), debug_color)
+		end
+	elseif smart_object_type == "jumps" then
+		drawer:line(control_points[1], control_points[2], debug_color)
+	else
+		drawer:line(control_points[1], control_points[2], debug_color)
+	end
+
+	local nav_world = self._nav_world
+	local is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, control_points[1])
+
+	if is_position_on_navmesh then
+		drawer:sphere(control_points[1], 0.02, debug_color)
+	end
+
+	is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, control_points[2])
+
+	if is_position_on_navmesh then
+		drawer:sphere(control_points[2], 0.02, debug_color)
+	end
+end
+
+PlayerUnitFirstPerson.get_valid_jump_id = function (self)
+	return self._valid_jump_id, self._valid_jump_data
 end
 
 PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
@@ -173,6 +331,10 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 
 	if self.first_person_unit then
 		self:_update_state_machine_variables(dt, t)
+	end
+
+	if self._check_for_jumps then
+		self:check_for_jumps(unit, t)
 	end
 
 	self:_poll_testify_requests()
@@ -334,7 +496,6 @@ PlayerUnitFirstPerson.update_rotation = function (self, t, dt)
 		local is_recoiling, recoil_offset = Managers.state.camera:is_recoiling()
 
 		if is_recoiling and recoil_offset then
-			local current_rotation = look_rotation
 			local final_rotation = Quaternion.multiply(look_rotation, recoil_offset:unbox())
 			look_rotation = final_rotation
 		end
@@ -435,6 +596,11 @@ PlayerUnitFirstPerson.apply_recoil = function (self, factor)
 	local camera = ScriptViewport.camera(viewport)
 	local camera_rotation = ScriptCamera.rotation(camera)
 	local current_rotation = self.look_rotation:unbox()
+	local is_recoiling, recoil_offset = Managers.state.camera:is_recoiling()
+
+	if is_recoiling and recoil_offset then
+		camera_rotation = Quaternion.multiply(current_rotation, recoil_offset:unbox())
+	end
 
 	if Application.user_setting("tobii_eyetracking") and ScriptUnit.has_extension(self.unit, "eyetracking_system") then
 		local eyetracking_extension = ScriptUnit.extension(self.unit, "eyetracking_system")
@@ -469,10 +635,6 @@ end
 
 PlayerUnitFirstPerson.set_weapon_sway_settings = function (self, weapon_sway_settings)
 	self._weapon_sway_settings = weapon_sway_settings
-	self._look_delta_y = 0
-	self._look_delta_x = 0
-	self._look_target_y = 0
-	self._look_target_x = 0
 end
 
 PlayerUnitFirstPerson.play_animation_event = function (self, anim_event)
@@ -557,7 +719,7 @@ PlayerUnitFirstPerson.toggle_visibility = function (self, delay)
 	end
 end
 
-PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override)
+PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override, unarmed)
 	if not self.debug_first_person_mode and (override or not Development.parameter("third_person_mode") or not Development.parameter("attract_mode")) then
 		Unit.set_unit_visibility(self.unit, not active)
 
@@ -585,7 +747,7 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override)
 			end
 		end
 
-		self.inventory_extension:show_third_person_inventory(not active)
+		self.inventory_extension:show_third_person_inventory(not active and not unarmed)
 		self.attachment_extension:show_attachments(not active)
 	end
 
@@ -994,20 +1156,37 @@ PlayerUnitFirstPerson.play_camera_recoil = function (self, settings, t)
 	self._current_recoil_data = Managers.state.camera:weapon_recoil(recoil_settings)
 end
 
-PlayerUnitFirstPerson._poll_testify_requests = function (self)
-	if Testify:poll_request("set_player_unit_not_visible") then
-		local unit = Managers.player:local_player().player_unit
-
-		self:hide_weapons("hide_weapons_snippet", true)
-		Unit.set_unit_visibility(self.first_person_attachment_unit, false)
-		Testify:respond_to_request("set_player_unit_not_visible")
-	end
-end
-
+local weapon_sway_lerp_variables = {
+	vs_packmaster = {
+		0.05,
+		0.05,
+		0.05
+	},
+	vs_gutter_runner = {
+		0.05,
+		0.05,
+		0.05
+	},
+	vs_poison_wind_globadier = {
+		0.05,
+		0.05,
+		0.05
+	},
+	vs_warpfire_thrower = {
+		0.05,
+		0.05,
+		0.05
+	},
+	vs_ratling_gunner = {
+		0.05,
+		0.05,
+		0.05
+	}
+}
 local MOUSE_SCALE = 0.001
 local DEFAULT_WEAPON_SWAY_SETTINGS = {
-	look_sensitivity = 1,
-	recentering_lerp_speed = 1,
+	look_sensitivity = 0.6,
+	recentering_lerp_speed = 2,
 	sway_range = 1,
 	lerp_speed = math.huge
 }
@@ -1049,10 +1228,16 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	local move_y = math.round(2 * move_input.y) * 0.5
 	local current_velocity = self.locomotion_extension:current_velocity()
 	local move_z = current_velocity.z
-	local lerp_z_speed = 10
-	local lerp_move_x = 0.05
-	local lerp_move_y = 0.05
-	local lerp_move_z = 0.05
+	local profile = self.profile
+	local profile_name = profile.display_name
+	local lerp_variables = weapon_sway_lerp_variables[profile_name] or {
+		0.05,
+		0.05,
+		0.05
+	}
+	local lerp_move_x = lerp_variables[1]
+	local lerp_move_y = lerp_variables[2]
+	local lerp_move_z = lerp_variables[3]
 
 	if move_x <= 0.3 then
 		lerp_move_x = 0.075
@@ -1062,8 +1247,8 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 		lerp_move_y = 0.075
 	end
 
-	if move_z <= 0.05 then
-		lerp_z_speed = 1
+	if move_z <= 0.3 then
+		lerp_move_z = 0.075
 	end
 
 	move_x = math.lerp(self._move_x, move_x, lerp_move_x)
@@ -1071,7 +1256,7 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	move_z = math.lerp(self._move_z, move_z, lerp_move_z)
 	move_x = math.min(1, math.abs(move_x)) * math.sign(move_x)
 	move_y = math.min(1, math.abs(move_y)) * math.sign(move_y)
-	move_z = math.min(lerp_z_speed, math.abs(move_z)) * math.sign(move_z)
+	move_z = math.min(1, math.abs(move_z)) * math.sign(move_z)
 	self._move_y = move_y
 	self._move_x = move_x
 	self._move_z = move_z
@@ -1091,6 +1276,16 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 
 	if move_z_variable then
 		Unit.animation_set_variable(self.first_person_unit, move_z_variable, move_z)
+	end
+end
+
+PlayerUnitFirstPerson._poll_testify_requests = function (self)
+	if Testify:poll_request("set_player_unit_not_visible") then
+		local unit = Managers.player:local_player().player_unit
+
+		self:hide_weapons("hide_weapons_snippet", true)
+		Unit.set_unit_visibility(self.first_person_attachment_unit, false)
+		Testify:respond_to_request("set_player_unit_not_visible")
 	end
 end
 

@@ -346,11 +346,12 @@ DarknessSystem.shadow_flares_on_ground = function (self)
 	return Managers.state.entity:get_entities("ShadowFlareExtension")
 end
 
-DarknessSystem.rpc_shadow_flare_done = function (self, sender, unit_id)
+DarknessSystem.rpc_shadow_flare_done = function (self, channel_id, unit_id)
 	if self.is_server then
 		local network_manager = Managers.state.network
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		network_manager.network_transmit:send_rpc_clients_except("rpc_shadow_flare_done", sender, unit_id)
+		network_manager.network_transmit:send_rpc_clients_except("rpc_shadow_flare_done", peer_id, unit_id)
 	end
 
 	local rpc_unit = Managers.state.unit_storage:unit(unit_id)

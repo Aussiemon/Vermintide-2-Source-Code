@@ -158,6 +158,8 @@ T.update_movement = function (data, t, dt)
 			extension:update_script_driven_ladder_transition_movement(unit, dt, t)
 		elseif state == "script_driven_no_mover" then
 			extension:update_script_driven_no_mover_movement(unit, dt, t)
+		elseif state == "wanted_position_mover" then
+			extension:update_wanted_position_movement(unit, dt, t)
 		end
 
 		if not extension.has_moved_from_start_position then

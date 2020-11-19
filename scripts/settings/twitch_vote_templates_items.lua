@@ -1,4 +1,4 @@
-local twitch_settings = (PLATFORM == "xb1" and MixerSettings) or TwitchSettings
+local twitch_settings = TwitchSettings
 
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
@@ -69,8 +69,9 @@ local function add_item(is_server, player_unit, pickup_type)
 			local slot_name = pickup_settings.slot_name
 			local item_name = pickup_settings.item_name
 			local slot_data = inventory_extension:get_slot_data(slot_name)
+			local can_store_additional_item = inventory_extension:can_store_additional_item(slot_name)
 
-			if slot_data then
+			if slot_data and not can_store_additional_item then
 				local item_data = slot_data.item_data
 				local item_template = BackendUtils.get_item_template(item_data)
 				local pickup_item_to_spawn = nil
@@ -96,8 +97,12 @@ local function add_item(is_server, player_unit, pickup_type)
 			local unit_template = nil
 			local extra_extension_init_data = {}
 
-			inventory_extension:destroy_slot(slot_name)
-			inventory_extension:add_equipment(slot_name, item_data, unit_template, extra_extension_init_data)
+			if can_store_additional_item and slot_data then
+				inventory_extension:store_additional_item(slot_name, item_data)
+			else
+				inventory_extension:destroy_slot(slot_name)
+				inventory_extension:add_equipment(slot_name, item_data, unit_template, extra_extension_init_data)
+			end
 
 			local go_id = Managers.state.unit_storage:go_id(player_unit)
 			local slot_id = NetworkLookup.equipment_slots[slot_name]

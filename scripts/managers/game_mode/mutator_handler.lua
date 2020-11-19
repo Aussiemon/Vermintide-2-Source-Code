@@ -234,6 +234,22 @@ MutatorHandler.player_hit = function (self, hit_unit, attacking_unit, attack_dat
 	end
 end
 
+MutatorHandler.modify_player_base_damage = function (self, damaged_unit, damage, damage_type)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server and template.modify_player_base_damage then
+			damage = template.modify_player_base_damage(mutator_context, mutator_data, damaged_unit, damage, damage_type)
+		end
+	end
+
+	return damage
+end
+
 MutatorHandler.player_respawned = function (self, spawned_unit)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
@@ -353,19 +369,95 @@ MutatorHandler.evaluate_end_zone_activation_conditions = function (self)
 	return true
 end
 
-MutatorHandler.conflict_director_updated_settings = function (self)
-	fassert(self._is_server, "conflict_director_updated_settings only runs on server")
+MutatorHandler.post_process_terror_event = function (self, elements)
+	fassert(self._is_server, "post_process_terror_event only runs on server")
 
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
 
-	for name, mutator_data in pairs(active_mutators) do
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if template.post_process_terror_event then
+			template.post_process_terror_event(mutator_context, mutator_data, elements)
+		end
+	end
+end
+
+MutatorHandler.pickup_settings_updated_settings = function (self, pickup_settings)
+	if not pickup_settings then
+		return nil
+	end
+
+	local pickup_settings_clone = table.clone(pickup_settings)
+	local final_multipliers = {}
+	local mutators = self._mutators
+
+	for _, mutator in pairs(mutators) do
+		local pickup_system_multipliers = mutator.template.pickup_system_multipliers
+
+		if pickup_system_multipliers then
+			for pickup_type, value in pairs(pickup_system_multipliers) do
+				if final_multipliers[pickup_type] then
+					final_multipliers[pickup_type] = final_multipliers[pickup_type] * value
+				else
+					final_multipliers[pickup_type] = value
+				end
+			end
+		end
+	end
+
+	local function apply_multipliers(pickup_type, pickup_name, amount)
+		if final_multipliers[pickup_name] then
+			return math.ceil(amount * final_multipliers[pickup_name])
+		elseif final_multipliers[pickup_type] then
+			return math.ceil(amount * final_multipliers[pickup_type])
+		else
+			return amount
+		end
+	end
+
+	for pickup_type, value in pairs(pickup_settings_clone) do
+		if type(value) == "table" then
+			for pickup_name, amount in pairs(value) do
+				value[pickup_name] = apply_multipliers(pickup_type, pickup_name, amount)
+			end
+		else
+			pickup_settings_clone[pickup_type] = apply_multipliers(pickup_type, nil, value)
+		end
+	end
+
+	return pickup_settings_clone
+end
+
+MutatorHandler.conflict_director_updated_settings = function (self)
+	local mutator_context = self._mutator_context
+	local mutators = self._mutators
+
+	for name, mutator_data in pairs(mutators) do
 		local template = mutator_data.template
 
 		if template.update_conflict_settings then
 			template.update_conflict_settings(mutator_context, mutator_data)
 		end
 	end
+end
+
+MutatorHandler.tweak_zones = function (self, conflict_director_name, zones, num_zones)
+	fassert(self._is_server, "conflict_director_updated_settings only runs on server")
+
+	local mutator_context = self._mutator_context
+	local mutators = self._mutators
+
+	for name, mutator_data in pairs(mutators) do
+		local template = mutator_data.template
+
+		if template.tweak_zones then
+			template.tweak_zones(mutator_context, mutator_data, conflict_director_name, zones, num_zones)
+		end
+	end
+
+	return zones
 end
 
 MutatorHandler._server_initialize_mutator = function (self, name, active_mutators, mutator_context)
@@ -461,7 +553,23 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 	end
 end
 
-MutatorHandler.rpc_activate_mutator_client = function (self, sender, mutator_id)
+MutatorHandler.tweak_pack_spawning_settings = function (mutator_list, conflict_director_name, pack_spawning_settings)
+	local new_pack_spawning_settings = nil
+
+	for _, mutator_name in ipairs(mutator_list) do
+		local mutator_template = MutatorTemplates[mutator_name]
+
+		if mutator_template.tweak_pack_spawning_settings then
+			new_pack_spawning_settings = new_pack_spawning_settings or table.clone(pack_spawning_settings)
+
+			mutator_template.tweak_pack_spawning_settings(conflict_director_name, new_pack_spawning_settings)
+		end
+	end
+
+	return new_pack_spawning_settings or pack_spawning_settings
+end
+
+MutatorHandler.rpc_activate_mutator_client = function (self, channel_id, mutator_id)
 	fassert(not self._is_server, "Only call rpc_activate_mutator_client on clients.")
 
 	local mutator_name = NetworkLookup.mutator_templates[mutator_id]
@@ -471,7 +579,7 @@ MutatorHandler.rpc_activate_mutator_client = function (self, sender, mutator_id)
 	self:_activate_mutator(mutator_name, active_mutators, mutator_context)
 end
 
-MutatorHandler.rpc_deactivate_mutator_client = function (self, sender, mutator_id)
+MutatorHandler.rpc_deactivate_mutator_client = function (self, channel_id, mutator_id)
 	fassert(not self._is_server, "Only call rpc_deactivate_mutator_client on clients.")
 
 	local mutator_name = NetworkLookup.mutator_templates[mutator_id]

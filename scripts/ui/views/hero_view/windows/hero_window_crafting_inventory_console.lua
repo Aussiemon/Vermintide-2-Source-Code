@@ -101,7 +101,7 @@ HeroWindowCraftingInventoryConsole._input_service = function (self)
 	local parent = self.parent
 
 	if parent:is_friends_list_active() then
-		return parent.fake_input_service
+		return FAKE_INPUT_SERVICE
 	end
 
 	return parent:window_input_service()

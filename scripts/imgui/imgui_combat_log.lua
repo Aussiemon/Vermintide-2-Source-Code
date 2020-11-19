@@ -1,5 +1,7 @@
 ImguiCombatLog = class(ImguiCombatLog)
 local SHOULD_RELOAD = false
+local DEFAULT_WINDOW_X = 800
+local DEFAULT_WINDOW_Y = 500
 
 local function format_timestamp(time)
 	local miliseconds = time % 60
@@ -40,11 +42,16 @@ ImguiCombatLog.init = function (self)
 		}
 	}
 	self._type_ids = {}
-	self._show_timestamp = true
-	self._show_type = true
+	self._settings = {
+		auto_start_recording = true,
+		show_timestamp = true,
+		show_type = true
+	}
+	self._first_run = true
 
 	self:_make_log_type_lookup()
 	self:register_events()
+	self:_load_settings()
 end
 
 ImguiCombatLog.register_events = function (self)
@@ -71,6 +78,24 @@ ImguiCombatLog.unregister_events = function (self)
 	end
 end
 
+ImguiCombatLog.on_round_start = function (self)
+	if self._settings.auto_start_recording then
+		self:register_events()
+	end
+
+	self:_save_settings()
+end
+
+ImguiCombatLog.on_round_end = function (self)
+	self:unregister_events()
+	self:_save_settings()
+end
+
+ImguiCombatLog.destroy = function (self)
+	self:unregister_events()
+	self:_save_settings()
+end
+
 ImguiCombatLog.update = function (self)
 	if SHOULD_RELOAD then
 		self:unregister_events()
@@ -85,51 +110,67 @@ ImguiCombatLog.is_persistent = function (self)
 end
 
 ImguiCombatLog.draw = function (self, is_open)
-	Imgui.Begin("Combat Log")
+	if self._first_run then
+		Imgui.set_next_window_size(DEFAULT_WINDOW_X, DEFAULT_WINDOW_Y)
 
-	self._show_timestamp = Imgui.Checkbox("Timestamp", self._show_timestamp)
+		self._first_run = false
+	end
 
-	Imgui.SameLine()
+	Imgui.begin_window("Combat Log")
 
-	self._show_type = Imgui.Checkbox("Type", self._show_type)
+	self._settings.show_timestamp = Imgui.checkbox("Timestamp", self._settings.show_timestamp)
+
+	Imgui.same_line()
+
+	self._settings.show_type = Imgui.checkbox("Type", self._settings.show_type)
+
+	Imgui.same_line()
+
+	self._settings.auto_start_recording = Imgui.checkbox("Auto Start Recording", self._settings.auto_start_recording)
 	local categories = self.categories
 
 	for i = 1, #categories, 1 do
 		if i > 1 then
-			Imgui.SameLine()
+			Imgui.same_line()
 		end
 
 		local category = categories[i]
-		category.enabled = Imgui.Checkbox(category.name, category.enabled)
+		category.enabled = Imgui.checkbox(category.name, category.enabled)
 	end
 
-	if Imgui.Button("Start", 100, 20) then
+	if Imgui.button("Start", 100, 20) then
 		self:register_events()
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Stop", 100, 20) then
+	if Imgui.button("Stop", 100, 20) then
 		self:unregister_events()
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Copy Visible", 100, 20) then
+	if Imgui.button("Copy Visible", 100, 20) then
 		self:copy_to_clipboard(false)
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Copy All", 100, 20) then
+	if Imgui.button("Copy All", 100, 20) then
 		self:copy_to_clipboard(true)
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Clear", 40, 20) then
+	if Imgui.button("Clear", 40, 20) then
 		self:clear()
 	end
+
+	local show_timestamp = self._settings.show_timestamp
+	local show_type = self._settings.show_type
+	local window_size_x, window_size_y = Imgui.get_window_size()
+
+	Imgui.begin_child_window("Log:", window_size_x - 15, window_size_y - 105, false, "no_title_bar", "always_auto_resize", "horisontal_scrollbar")
 
 	for line_id = 1, #self._log, 1 do
 		local line = self._log[line_id]
@@ -137,14 +178,14 @@ ImguiCombatLog.draw = function (self, is_open)
 		if categories[line.type_id].enabled then
 			local line_contents = line.content
 
-			if self._show_timestamp then
-				Imgui.Text(line.timestamp)
-				Imgui.SameLine()
+			if show_timestamp then
+				Imgui.text(line.timestamp)
+				Imgui.same_line()
 			end
 
-			if self._show_type then
-				Imgui.Text(line.type_name)
-				Imgui.SameLine()
+			if show_type then
+				Imgui.text(line.type_name)
+				Imgui.same_line()
 			end
 
 			local line_content_num = #line_contents
@@ -154,16 +195,17 @@ ImguiCombatLog.draw = function (self, is_open)
 				local text = data[1]
 				local color = data[2]
 
-				Imgui.TextColored(text, color[2], color[3], color[4], color[1])
+				Imgui.text_colored(text, color[2], color[3], color[4], color[1])
 
 				if i ~= line_content_num then
-					Imgui.SameLine()
+					Imgui.same_line()
 				end
 			end
 		end
 	end
 
-	Imgui.End("Combat Log")
+	Imgui.end_child_window()
+	Imgui.end_window("Combat Log")
 end
 
 ImguiCombatLog.log_damage = function (self, attacker_unit, victim_unit, networkified_damage_amount, hit_zone_name, damage_type, damage_source, is_critical_strike, backstab_multiplier, added_dot, target_index, first_hit, total_hits, power_level)
@@ -284,6 +326,7 @@ end
 ImguiCombatLog.copy_to_clipboard = function (self, copy_all)
 	local output = ""
 	local categories = self.categories
+	local show_type = self._settings.show_type
 
 	for line_id = 1, #self._log, 1 do
 		local line = self._log[line_id]
@@ -295,7 +338,7 @@ ImguiCombatLog.copy_to_clipboard = function (self, copy_all)
 				output = output .. line.timestamp
 			end
 
-			if copy_all or self._show_type then
+			if copy_all or show_type then
 				output = output .. " " .. line.type_name
 			end
 
@@ -310,6 +353,49 @@ ImguiCombatLog.copy_to_clipboard = function (self, copy_all)
 	end
 
 	Clipboard.put(output)
+end
+
+ImguiCombatLog._save_settings = function (self)
+	local categories = self.categories
+	local saved_settings = {
+		categories = {},
+		settings = self._settings
+	}
+
+	for i = 1, #categories, 1 do
+		local type = categories[i].type
+		saved_settings.categories[type] = categories[i].enabled
+	end
+
+	Development.set_setting("ImguiCombatLog_settings", saved_settings)
+	Application.save_user_settings()
+end
+
+ImguiCombatLog._load_settings = function (self)
+	local saved_settings = Development.setting("ImguiCombatLog_settings")
+
+	if saved_settings then
+		local category_settings = saved_settings.categories
+
+		if category_settings then
+			local categories = self.categories
+
+			for i = 1, #categories, 1 do
+				local type = categories[i].type
+				local new_val = category_settings[type]
+
+				if new_val ~= nil then
+					categories[i].enabled = new_val
+				end
+			end
+		end
+
+		local general_settings = saved_settings.settings
+
+		if general_settings then
+			table.merge(self._settings, general_settings)
+		end
+	end
 end
 
 return

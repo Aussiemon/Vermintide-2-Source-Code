@@ -54,19 +54,42 @@ CareerSettings.es_questingknight = {
 			item_name = "questing_knight_hat_0000"
 		}
 	},
-	is_unlocked_function = function (hero_name, hero_level)
+	is_unlocked_function = function (career, hero_name, hero_level)
+		local unlocked, reason = career:override_available_for_mechanism()
+
+		if unlocked ~= nil then
+			return unlocked, reason
+		end
+
+		local dlc_name = nil
+		unlocked, reason, dlc_name = career:is_dlc_unlocked()
+
+		if not unlocked then
+			return false, reason, dlc_name
+		end
+
+		return true
+	end,
+	is_dlc_unlocked = function (career)
 		if Managers.unlock:is_dlc_unlocked("lake") then
-			return true
+			if PLATFORM == "win32" or Managers.backend:dlc_unlocked_at_signin("lake") then
+				return true
+			else
+				return false, "popup_needs_restart_topic", "lake"
+			end
 		else
-			return false, Localize("dlc_not_owned"), "lake"
+			return false, "dlc_not_owned", "lake"
 		end
 	end,
-	is_dlc_unlocked = function ()
-		if Managers.unlock:is_dlc_unlocked("lake") then
-			return true
-		else
-			return false, Localize("dlc_not_owned"), "lake"
+	override_available_for_mechanism = function (career)
+		local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+		local career_name = career.display_name
+
+		if settings and settings[career_name] ~= nil then
+			return settings[career_name], "disabled_for_mechanism"
 		end
+
+		return nil
 	end,
 	item_slot_types_by_slot_name = {
 		slot_melee = {
@@ -97,7 +120,7 @@ CareerSettings.es_questingknight = {
 	},
 	loadout_equipment_slots = {
 		"melee",
-		"melee",
+		"ranged",
 		"necklace",
 		"ring",
 		"trinket"

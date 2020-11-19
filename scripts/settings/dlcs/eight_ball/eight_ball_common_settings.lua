@@ -259,9 +259,10 @@ settings.unlock_settings_ps4 = {
 			cosmetic = true
 		},
 		br_1001 = {
-			id = "eb035db81456460788318a1be338253f",
-			product_label = "V2EURANGERHAT001",
+			fallback_id = "eb035db81456460788318a1be338253f",
+			product_label = "V2EURANGERHAT002",
 			class = "UnlockDlc",
+			id = "3fd6fdf7684c4062be54a281340e002e",
 			cosmetic = true
 		},
 		bs_1001 = {

@@ -1,13 +1,6 @@
 GameServerInternal = GameServerInternal or {}
-GameServerInternal.state_map = {
-	[SteamGameServer.CONNECTING] = GameServerState.CONNECTING,
-	[SteamGameServer.CONNECTED] = GameServerState.CONNECTED,
-	[SteamGameServer.DISCONNECTED] = GameServerState.DISCONNECTED
-}
 
 GameServerInternal.init_server = function (network_options, server_name)
-	Network.set_explicit_connections()
-
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
 	local network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
@@ -24,25 +17,20 @@ GameServerInternal.init_server = function (network_options, server_name)
 		server_name = server_name,
 		server_port = network_options.server_port
 	}
+
+	table.dump(settings, "server settings")
+
 	local use_eac = true
 	local server = Network.init_steam_server(config_file_name, settings, use_eac)
 
 	GameSettingsDevelopment.set_ignored_rpc_logs()
-	CommandWindow.print(string.format("Appid: %s", SteamGameServer.app_id()))
+	cprint(string.format("Appid: %s", SteamGameServer.app_id()))
 
 	return server
 end
 
 GameServerInternal.ping = function (peer_id)
 	return Network.ping(peer_id)
-end
-
-GameServerInternal.add_ping_peer = function (peer_id)
-	return
-end
-
-GameServerInternal.remove_ping_peer = function (peer_id)
-	return
 end
 
 GameServerInternal.shutdown_server = function (game_server)
@@ -63,6 +51,21 @@ end
 
 GameServerInternal.user_name = function (game_server, peer_id)
 	return SteamGameServer.name(game_server, peer_id)
+end
+
+if DEDICATED_SERVER then
+	GameServerInternal.open_channel = function (game_server, peer)
+		local channel_id = SteamGameServer.open_channel(game_server, peer)
+
+		print("GameServerInternal.open_channel game_server: %s, to peer: %s channel: %s", game_server, peer, channel_id)
+
+		return channel_id
+	end
+
+	GameServerInternal.close_channel = function (game_server, channel)
+		print("GameServerInternal.close_channel game_server: %s, channel: %s", game_server, channel)
+		SteamGameServer.close_channel(game_server, channel)
+	end
 end
 
 return

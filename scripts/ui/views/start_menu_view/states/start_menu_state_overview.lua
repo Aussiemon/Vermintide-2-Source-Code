@@ -7,14 +7,6 @@ local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local console_cursor_definition = definitions.console_cursor_definition
 local DO_RELOAD = false
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local menu_functions = {
 	function (this)
 		local input_manager = Managers.input
@@ -23,7 +15,7 @@ local menu_functions = {
 		this:_activate_view("options_view")
 	end,
 	function (this)
-		Managers.state.difficulty:set_difficulty("normal")
+		Managers.state.difficulty:set_difficulty("normal", 0)
 		Managers.state.game_mode:start_specific_level("prologue")
 	end,
 	function (this)
@@ -329,9 +321,16 @@ StartMenuStateOverview._populate_career_page = function (self, hero_name, career
 	widgets_by_name.info_career_name.content.text = Localize(display_name)
 	self._spawn_hero = true
 	self.career_index = career_index
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local exp = hero_attributes:get(hero_name, "experience") or 0
-	local level = ExperienceSettings.get_level(exp)
+	local level = nil
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		local experience = ExperienceSettings.get_versus_profile_experience()
+		level = ExperienceSettings.get_versus_profile_level_from_experience(experience)
+	else
+		local hero_attributes = Managers.backend:get_interface("hero_attributes")
+		local exp = hero_attributes:get(hero_name, "experience") or 0
+		level = ExperienceSettings.get_level(exp)
+	end
 
 	self:_set_hero_info(Localize(character_name), level)
 	self:_create_player_portrait(portrait_image, level)

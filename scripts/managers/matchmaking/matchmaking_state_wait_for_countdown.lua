@@ -12,10 +12,13 @@ end
 MatchmakingStateWaitForCountdown.on_enter = function (self, state_context)
 	self._state_context = state_context
 	self._search_config = state_context.search_config
+	self._wait_to_start_game = self._search_config.wait_to_start_game
 end
 
 MatchmakingStateWaitForCountdown.on_exit = function (self)
-	Managers.matchmaking:activate_waystone_portal(false)
+	if not self._wait_to_start_game then
+		Managers.matchmaking:activate_waystone_portal(false)
+	end
 end
 
 MatchmakingStateWaitForCountdown.update = function (self, dt, t)
@@ -24,6 +27,16 @@ MatchmakingStateWaitForCountdown.update = function (self, dt, t)
 	end
 
 	local manager = Managers.matchmaking
+
+	if self._wait_to_start_game then
+		if manager.start_game_now then
+			manager.start_game_now = false
+
+			return MatchmakingStateStartGame, self._state_context
+		end
+
+		return nil
+	end
 
 	if manager.countdown_has_finished then
 		manager.countdown_has_finished = false

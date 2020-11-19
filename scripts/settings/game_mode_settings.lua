@@ -28,10 +28,15 @@ GameModeSettings.adventure.lose_condition_time = 10
 GameModeSettings.adventure.playable = true
 GameModeSettings.adventure.difficulties = DefaultDifficulties
 GameModeSettings.adventure.end_mission_rewards = true
-GameModeSettings.adventure.hud_components = {
-	"TwitchVoteUI"
-}
+GameModeSettings.adventure.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure"
 GameModeSettings.adventure.use_keep_decorations = true
+GameModeSettings.adventure.ping_mode = {
+	world_markers = false,
+	outlines = {
+		item = true,
+		unit = true
+	}
+}
 GameModeSettings.survival = table.clone(GameModeSettings.base)
 GameModeSettings.survival.key = "survival"
 GameModeSettings.survival.class_name = "GameModeSurvival"
@@ -48,11 +53,15 @@ GameModeSettings.survival.playable = true
 GameModeSettings.survival.difficulties = SurvivalDifficulties
 GameModeSettings.survival.required_act_unlocked = "act_1"
 GameModeSettings.survival.end_mission_rewards = true
-GameModeSettings.survival.hud_components = {
-	"GameTimerUI",
-	"DifficultyUnlockUI"
-}
+GameModeSettings.survival.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure"
 GameModeSettings.survival.use_keep_decorations = true
+GameModeSettings.survival.ping_mode = {
+	world_markers = false,
+	outlines = {
+		item = true,
+		unit = true
+	}
+}
 GameModeSettings.tutorial = table.clone(GameModeSettings.base)
 GameModeSettings.tutorial.key = "tutorial"
 GameModeSettings.tutorial.private_only = true
@@ -64,10 +73,7 @@ GameModeSettings.tutorial.object_sets = {
 GameModeSettings.tutorial.lose_condition_time_dead = 4
 GameModeSettings.tutorial.lose_condition_time = 10
 GameModeSettings.tutorial.end_mission_rewards = true
-GameModeSettings.tutorial.hud_components = {
-	"TutorialInputUI",
-	"CutsceneOverlayUI"
-}
+GameModeSettings.tutorial.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure"
 GameModeSettings.tutorial.use_keep_decorations = true
 GameModeSettings.demo = table.clone(GameModeSettings.base)
 GameModeSettings.demo.key = "demo"
@@ -81,6 +87,7 @@ GameModeSettings.demo.lose_condition_time_dead = 4
 GameModeSettings.demo.lose_condition_time = 10
 GameModeSettings.demo.end_mission_rewards = true
 GameModeSettings.demo.use_keep_decorations = true
+GameModeSettings.demo.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure"
 GameModeSettings.inn = table.clone(GameModeSettings.base)
 GameModeSettings.inn.key = "inn"
 GameModeSettings.inn.disable_difficulty_spawning_items = true
@@ -90,15 +97,17 @@ GameModeSettings.inn.player_damage_forbidden = true
 GameModeSettings.inn.cap_power_level = false
 GameModeSettings.inn.end_mission_rewards = false
 GameModeSettings.inn.hide_difficulty = true
-GameModeSettings.inn.hud_components = {
-	"MissionVotingUI",
-	"LevelCountdownUI",
-	"NewsFeedUI",
-	"GiftPopupUI"
-}
+GameModeSettings.inn.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure"
 GameModeSettings.inn.use_keep_decorations = true
 GameModeSettings.inn.social_wheel_by_side = {
 	heroes = "general"
+}
+GameModeSettings.inn.ping_mode = {
+	world_markers = false,
+	outlines = {
+		item = true,
+		unit = true
+	}
 }
 GameModeSettings.weave = table.clone(GameModeSettings.base)
 GameModeSettings.weave.key = "weave"
@@ -115,6 +124,7 @@ GameModeSettings.weave.lose_condition_time_time_up = 6
 GameModeSettings.weave.playable = true
 GameModeSettings.weave.required_dlc = "scorpion"
 GameModeSettings.weave.disable_difficulty_check = true
+GameModeSettings.weave.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure"
 GameModeSettings.weave.difficulties = {
 	"normal",
 	"hard",
@@ -124,9 +134,19 @@ GameModeSettings.weave.difficulties = {
 	"cataclysm_2",
 	"cataclysm_3"
 }
+GameModeSettings.weave.ping_mode = {
+	world_markers = false,
+	outlines = {
+		item = true,
+		unit = true
+	}
+}
 GameModeSettings.weave.bots_disabled = true
 GameModeSettings.weave.end_mission_rewards = true
 GameModeSettings.weave.disable_difficulty_spawning_items = true
+GameModeSettings.weave.hud_ui_settings = {
+	killfeed_offset = true
+}
 
 GameModeSettings.weave.extra_requirements_function = function (optional_statistics_db, optional_stats_id)
 	if script_data.unlock_all_levels then
@@ -174,13 +194,7 @@ GameModeSettings.weave.extra_requirements_function = function (optional_statisti
 	return true
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local game_mode = dlc.game_mode
-
-	if game_mode then
-		require(game_mode)
-	end
-end
+DLCUtils.require("game_mode")
 
 for table_key, settings in pairs(GameModeSettings) do
 	if table_key ~= "base" then

@@ -14,9 +14,8 @@ local disable_voip = Development.parameter("disable_voip")
 
 if has_steam and not disable_voip then
 	Voip.init = function (self, params)
-		self.connection_handler = params.connection_handler
-
 		voip_info_print("[VOIP] Initializing Steam Voip")
+		SteamVoip.setup()
 
 		local world_name = "voip_world"
 		local shading_callback, layer = nil
@@ -44,47 +43,9 @@ if has_steam and not disable_voip then
 
 			if self.enabled and not DEDICATED_SERVER then
 				self.voip_client = SteamVoip.join_room(my_peer_id, self.room_id)
-
-				SteamVoipRoom.add_member(self.room_id, my_peer_id)
 			end
 
 			self.room_host = my_peer_id
-		end
-
-		self.room_member_removed = function (room_id, peer_id)
-			if room_id == self.room_id then
-				if self.member_list[peer_id] then
-					self.member_list[peer_id] = nil
-
-					voip_info_print("[VOIP] Removed member: %q", peer_id)
-				else
-					voip_info_print("[VOIP] Trying to remove member that doesn't exist in room: %q", peer_id)
-				end
-			else
-				voip_info_print("[VOIP] Trying to remove member from bad room: %q, current room id: %q", room_id, self.room_id)
-			end
-
-			local playing_id = self._peer_playing_id[peer_id]
-
-			if playing_id ~= nil then
-				WwiseWorld.stop_voip_output(self.wwise_world, playing_id)
-
-				self._peer_playing_id[peer_id] = nil
-			end
-		end
-
-		self.room_member_added = function (room_id, peer_id)
-			voip_info_print("[VOIP] Peer %s joined room %s (my room id %q)", peer_id, tostring(room_id), tostring(self.room_id))
-
-			if room_id == self.room_id then
-				member_list[peer_id] = true
-			end
-
-			added_members[peer_id] = true
-			local playing_id = WwiseWorld.start_voip_output(self.wwise_world, "Play_voip")
-			self._peer_playing_id[peer_id] = playing_id
-
-			return playing_id
 		end
 	end
 
@@ -96,7 +57,8 @@ if has_steam and not disable_voip then
 		self.network_transmit = network_transmit
 		self.network_event_delegate = network_event_delegate
 
-		network_event_delegate:register(self, "rpc_voip_room_to_join", "rpc_voip_room_request", "rpc_notify_connected")
+		network_event_delegate:register(self, "rpc_voip_room_to_join", "rpc_voip_room_request", "rpc_notify_connected", "room_member_removed")
+		network_event_delegate:register_with_return(self, "room_member_added")
 	end
 
 	Voip.unregister_rpcs = function (self)
@@ -106,7 +68,43 @@ if has_steam and not disable_voip then
 		self.network_transmit = nil
 	end
 
-	Voip.rpc_notify_connected = function (self, sender)
+	Voip.room_member_removed = function (self, callback_object, room_id, peer_id)
+		if room_id == self.room_id then
+			if self.member_list[peer_id] then
+				self.member_list[peer_id] = nil
+
+				voip_info_print("[VOIP] Removed member: %q", peer_id)
+			else
+				voip_info_print("[VOIP] Trying to remove member that doesn't exist in room: %q", peer_id)
+			end
+		else
+			voip_info_print("[VOIP] Trying to remove member from bad room: %q, current room id: %q", room_id, self.room_id)
+		end
+
+		local playing_id = self._peer_playing_id[peer_id]
+
+		if playing_id ~= nil then
+			WwiseWorld.stop_voip_output(self.wwise_world, playing_id)
+
+			self._peer_playing_id[peer_id] = nil
+		end
+	end
+
+	Voip.room_member_added = function (self, room_id, peer_id)
+		voip_info_print("[VOIP] Peer %s joined room %s (my room id %q)", peer_id, tostring(room_id), tostring(self.room_id))
+
+		if room_id == self.room_id then
+			self.member_list[peer_id] = true
+		end
+
+		self.added_members[peer_id] = true
+		local playing_id = WwiseWorld.start_voip_output(self.wwise_world, "Play_voip")
+		self._peer_playing_id[peer_id] = playing_id
+
+		return playing_id
+	end
+
+	Voip.rpc_notify_connected = function (self, channel_id)
 		if self.enabled and not self.is_server then
 			self.requesting_room = true
 
@@ -114,38 +112,40 @@ if has_steam and not disable_voip then
 		end
 	end
 
-	Voip.rpc_voip_room_request = function (self, sender, enter)
+	Voip.rpc_voip_room_request = function (self, channel_id, enter)
 		local room_id = self.room_id
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if not self.is_server then
-			voip_warning_print("[VOIP] Got request from %s to %s but is not server", sender, (enter and "enter") or "leave")
+			voip_warning_print("[VOIP] Got request from %s to %s but is not server", peer_id, (enter and "enter") or "leave")
 
 			return
 		end
 
 		local room_members = SteamVoipRoom.members(room_id)
-		local member_is_in_room = table.find(room_members, sender)
+		local member_is_in_room = table.find(room_members, peer_id)
 
 		if enter and not member_is_in_room then
-			self:add_voip_member(sender)
+			self:add_voip_member(peer_id)
 		elseif not enter and member_is_in_room then
-			self:remove_member(sender)
+			self:remove_member(peer_id)
 		else
-			voip_warning_print("[VOIP] Got request from %s to %s room %s but member_is_in_room was %s", sender, (enter and "enter") or "leave", self.room_id, member_is_in_room)
+			voip_warning_print("[VOIP] Got request from %s to %s room %s but member_is_in_room was %s", peer_id, (enter and "enter") or "leave", self.room_id, member_is_in_room)
 		end
 	end
 
-	Voip.rpc_voip_room_to_join = function (self, sender, room_id)
+	Voip.rpc_voip_room_to_join = function (self, channel_id, room_id)
 		self.requesting_room = false
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if self.room_id then
-			voip_warning_print("[VOIP] Received rpc 'rpc_voip_room_to_join' from host %s but we're already in a room.", sender)
+			voip_warning_print("[VOIP] Received rpc 'rpc_voip_room_to_join' from host %s but we're already in a room.", peer_id)
 		else
-			voip_info_print("[VOIP] Joining room %s (host %q) as client.", room_id, sender)
+			voip_info_print("[VOIP] Joining room %s (host %q) as client.", room_id, peer_id)
 
 			self.room_id = room_id
-			self.room_host = sender
-			local voip_client = SteamVoip.join_room(sender, room_id)
+			self.room_host = peer_id
+			local voip_client = SteamVoip.join_room(peer_id, room_id)
 			self.voip_client = voip_client
 		end
 	end
@@ -170,11 +170,11 @@ if has_steam and not disable_voip then
 		self.room_member_removed = nil
 		self.room_member_added = nil
 		self.member_list = nil
+
+		SteamVoip.shutdown()
 	end
 
 	Voip.update = function (self, dt)
-		SteamVoip.update(self)
-
 		if self.voip_client then
 			if SteamVoipClient.broken_host(self.voip_client) then
 				voip_warning_print("[STEAM VOIP]: Connection to host %q broken. Leaving room.", tostring(self.room_host))
@@ -197,7 +197,7 @@ if has_steam and not disable_voip then
 			end
 
 			if self.push_to_talk then
-				local input_service = Managers.input:get_service("Player")
+				local input_service = Managers.input:get_service("chat_input")
 				local push_to_talk_active = input_service:get("voip_push_to_talk")
 
 				if push_to_talk_active and not self.push_to_talk_active then
@@ -234,7 +234,7 @@ if has_steam and not disable_voip then
 			end
 
 			for peer_index, peer_id in pairs(SteamVoipRoom.members(self.room_id)) do
-				if peer_id ~= self.peer_id and self.connection_handler.current_connections[peer_id] == nil then
+				if peer_id ~= self.peer_id and PEER_ID_TO_CHANNEL[peer_id] == nil then
 					voip_info_print("[VOIP] Removing voip member due to not having a connection to it: %q", tostring(peer_id))
 					SteamVoipRoom.remove_member(room_id, peer_id)
 

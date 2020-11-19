@@ -208,15 +208,16 @@ if PLATFORM ~= "xb1" then
 				},
 				filters = {
 					difficulty = {
+						comparison = "equal",
 						fetch_function = function (state)
 							local search_config = state.search_config
 							local difficulty = search_config.difficulty
 
 							return difficulty
-						end,
-						comparison = LobbyComparison.EQUAL
+						end
 					},
 					game_mode = {
+						comparison = "equal",
 						fetch_function = function (state)
 							local value = (PLATFORM == "win32" and NetworkLookup.game_modes.weave_find_group) or "weave_find_group"
 
@@ -224,8 +225,7 @@ if PLATFORM ~= "xb1" then
 						end,
 						debug_format = function (value)
 							return NetworkLookup.game_modes[value]
-						end,
-						comparison = LobbyComparison.EQUAL
+						end
 					}
 				},
 				near_filters = {

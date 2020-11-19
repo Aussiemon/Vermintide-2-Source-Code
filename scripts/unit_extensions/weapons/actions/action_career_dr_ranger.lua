@@ -39,12 +39,16 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	if has_extended_duration_talent then
 		buff_extension:add_buff("bardin_ranger_smoke_attack")
 		buff_extension:add_buff("bardin_ranger_smoke_heal")
+
+		return
 	end
 
 	local has_stealth_outside_of_smoke_talent = talent_extension:has_talent("bardin_ranger_activated_ability_stealth_outside_of_smoke", "dwarf_ranger", true)
 
 	if has_stealth_outside_of_smoke_talent then
-		buff_name = "bardin_ranger_activated_ability_stealth_outside_of_smoke"
+		buff_extension:add_buff("bardin_ranger_activated_ability_stealth_outside_of_smoke")
+
+		return
 	end
 
 	if talent_extension:has_talent("bardin_ranger_ability_free_grenade", "dwarf_ranger", true) then
@@ -54,21 +58,6 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	buff_extension:add_buff(buff_name, {
 		attacker_unit = owner_unit
 	})
-
-	local owner_player = self.owner_player
-
-	if owner_player.local_player then
-		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_enter")
-		first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_enter", owner_unit, 0)
-		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_loop")
-		career_extension:set_state("bardin_activate_ranger")
-
-		MOOD_BLACKBOARD.skill_ranger = true
-	end
-
-	status_extension:set_invisible(true)
 end
 
 ActionCareerDRRanger._play_vo = function (self)

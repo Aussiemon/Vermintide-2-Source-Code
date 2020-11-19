@@ -19,6 +19,12 @@ CameraStateFollowThirdPersonSmartClimbing.on_enter = function (self, unit, input
 
 	camera_manager:set_pitch_yaw(viewport_name, -0.6, yaw)
 	Unit.set_data(unit, "camera", "settings_node", "smart_climbing")
+
+	self.total_lerp_time = 0.65
+	self.lerp_time = 0
+	self.progress = 0
+	self.calculate_lerp = true
+	self.camera_start_pose = Matrix4x4Box(Unit.world_pose(unit, 0))
 end
 
 CameraStateFollowThirdPersonSmartClimbing.on_exit = function (self, unit, input, dt, context, t, next_state)

@@ -1458,5 +1458,12 @@ return {
 	"wwise/one_handed_crowbills",
 	"wwise/two_handed_hammers",
 	"wwise/one_handed_axes",
-	"wwise/one_handed_swords"
+	"wwise/one_handed_swords",
+	"wwise/dr_deus_01",
+	"wwise/we_deus_01",
+	"wwise/bw_deus_01",
+	"wwise/es_deus_01",
+	"wwise/wh_deus_01",
+	"wwise/coghammer",
+	"wwise/steampistol"
 }

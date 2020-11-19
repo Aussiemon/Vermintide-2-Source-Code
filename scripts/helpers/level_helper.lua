@@ -1,4 +1,5 @@
 LevelHelper = LevelHelper or {}
+LevelHelper.INGAME_WORLD_NAME = "level_world"
 
 LevelHelper.current_level_settings = function (self)
 	local level_key = Managers.state.game_mode:level_key()

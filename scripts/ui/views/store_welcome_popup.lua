@@ -537,14 +537,6 @@ local function setup_ui_definitions(window_width, list_width, list_height)
 	return scenegraph_definition, widget_definitions, animation_definitions
 end
 
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local LIST_SPACING = 10
 local LIST_MAX_WIDTH = 800
 StoreWelcomePopup = class(StoreWelcomePopup)

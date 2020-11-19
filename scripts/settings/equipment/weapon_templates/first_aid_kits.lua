@@ -21,45 +21,6 @@ weapon_template.actions = {
 
 				return can_interact
 			end
-		},
-		push = {
-			damage_window_start = 0.05,
-			anim_end_event = "attack_finished",
-			outer_push_angle = 180,
-			kind = "push_stagger",
-			attack_template = "basic_sweep_push",
-			weapon_action_hand = "left",
-			push_angle = 100,
-			hit_effect = "melee_hit_slashing",
-			damage_window_end = 0.2,
-			charge_value = "action_push",
-			damage_profile_outer = "light_push",
-			anim_event = "attack_push",
-			damage_profile_inner = "medium_push",
-			total_time = 0.8,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			push_radius = push_radius,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				}
-			},
-			chain_condition_func = function (attacker_unit, input_extension)
-				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
-
-				return not status_extension:fatigued()
-			end
 		}
 	},
 	action_two = {
@@ -84,16 +45,7 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect_left,
-	action_wield = ActionTemplates.wield_left,
-	action_career_skill = ActionTemplates.career_skill_dummy,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield_left
 }
 weapon_template.ammo_data = {
 	ammo_hand = "left",

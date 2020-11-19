@@ -11,6 +11,8 @@ end
 ActionWield.client_owner_start_action = function (self, new_action, t, chain_attack_data)
 	ActionWield.super.client_owner_start_action(self, new_action, t, chain_attack_data)
 
+	local inventory_extension = self.inventory_extension
+	local input_extension = self.input_extension
 	self.current_action = new_action
 	self.action_time_started = t
 
@@ -20,12 +22,15 @@ ActionWield.client_owner_start_action = function (self, new_action, t, chain_att
 		first_person_extension:reset_aim_assist_multiplier()
 	end
 
-	local new_slot, scroll_value = CharacterStateHelper.wield_input(self.input_extension, self.inventory_extension, "action_wield", true)
+	local new_slot, scroll_value = CharacterStateHelper.wield_input(input_extension, inventory_extension, "action_wield", true)
 	self.new_slot = new_slot
 
 	assert(self.new_slot, "went into wield action without input")
 
-	local input_extension = self.input_extension
+	if new_slot == inventory_extension:get_wielded_slot_name() then
+		inventory_extension:swap_equipment_from_storage(new_slot, SwapFromStorageType.Unique)
+		Managers.state.event:trigger("swap_equipment_from_storage", new_slot, inventory_extension:get_additional_items(new_slot))
+	end
 
 	input_extension:set_last_scroll_value(scroll_value)
 
@@ -33,14 +38,14 @@ ActionWield.client_owner_start_action = function (self, new_action, t, chain_att
 
 	input_extension:clear_input_buffer(clear_input_buffer_from_wield)
 
-	local equipment = self.inventory_extension:equipment()
+	local equipment = inventory_extension:equipment()
 	local slot_data = equipment.slots[new_slot]
 	local item_data = slot_data.item_data
 	local item_template = BackendUtils.get_item_template(item_data)
 	item_template.next_action = item_template.action_on_wield
 
 	input_extension:add_wield_cooldown(t + new_action.wield_cooldown)
-	self.inventory_extension:wield(self.new_slot)
+	inventory_extension:wield(self.new_slot)
 end
 
 ActionWield.client_owner_post_update = function (self, dt, t, world, can_damage)

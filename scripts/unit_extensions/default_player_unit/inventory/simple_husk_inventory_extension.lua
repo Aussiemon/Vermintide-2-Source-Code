@@ -10,11 +10,43 @@ SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit
 	}
 	self._attached_units = {}
 	self._slot_buffs = {
-		slot_ranged = {},
-		slot_melee = {}
+		wield = {
+			slot_ranged = {},
+			slot_melee = {}
+		},
+		equip = {
+			slot_melee = {},
+			slot_ranged = {}
+		}
 	}
-	self.current_item_buffs = {}
 	self._weapon_fx = {}
+	self.current_item_buffs = {
+		wield = {},
+		equip = {
+			slot_melee = {},
+			slot_ranged = {}
+		}
+	}
+	self._additional_equipment = {}
+	local player = extension_init_data.player
+
+	if player then
+		local career_name = player:career_name()
+		local career_data = career_name and CareerSettings[career_name]
+		local additional_item_slots = career_data and career_data.additional_item_slots
+
+		if additional_item_slots then
+			for slot_name, slot_count in pairs(additional_item_slots) do
+				self._additional_equipment[slot_name] = {
+					used_slots = 0,
+					max_slots = slot_count
+				}
+			end
+		end
+
+		self._career_name = career_name
+	end
+
 	self._show_third_person = true
 end
 
@@ -105,7 +137,7 @@ SimpleHuskInventoryExtension._unlink_unit = function (self, unit, reason, attach
 
 	local actor = Unit.create_actor(unit, "rp_dropped")
 
-	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 5)
 	Actor.add_velocity(actor, Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 end
 
@@ -138,11 +170,9 @@ end
 
 SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_name, skin_name)
 	local item_data = ItemMasterList[item_name]
-	local slot_buffs = self._slot_buffs[slot_name]
 
-	if slot_buffs then
-		table.clear(slot_buffs)
-	end
+	self:clear_buffs_on_slot("equip", slot_name)
+	self:clear_buffs_on_slot("wield", slot_name)
 
 	if item_data.slot_to_use then
 		local other_slot_slot_data = self._equipment.slots[item_data.slot_to_use]
@@ -267,10 +297,11 @@ SimpleHuskInventoryExtension.wield = function (self, slot_name)
 
 			self:_reapply_fade(equipment)
 
-			local slot_buffs = self._slot_buffs[slot_name]
+			local reason = "wield"
+			local slot_buffs = self._slot_buffs[reason][slot_name]
 
 			if Managers.player.is_server and slot_buffs then
-				self:_apply_buffs(slot_buffs)
+				self:_refresh_buffs(slot_buffs, reason, slot_name)
 			end
 
 			self:start_weapon_fx("wield")
@@ -304,39 +335,31 @@ SimpleHuskInventoryExtension._spawn_attached_units = function (self, attached_un
 	end
 end
 
-SimpleHuskInventoryExtension.add_buffs_to_slot = function (self, slot_name, buff_name_1, buff_data_type_1, value_1, buff_name_2, buff_data_type_2, value_2, buff_name_3, buff_data_type_3, value_3, buff_name_4, buff_data_type_4, value_4)
-	local slot_buffs = self._slot_buffs[slot_name]
+SimpleHuskInventoryExtension.clear_buffs_on_slot = function (self, reason, slot_name)
+	if slot_name == "slot_ranged" or slot_name == "slot_melee" then
+		local slot_buffs = self._slot_buffs[reason][slot_name]
 
-	if buff_name_1 ~= "n/a" then
-		slot_buffs[buff_name_1] = {
-			[buff_data_type_1] = value_1
-		}
+		table.clear(slot_buffs)
 	end
+end
 
-	if buff_name_2 ~= "n/a" then
-		slot_buffs[buff_name_2] = {
-			[buff_data_type_2] = value_2
-		}
-	end
+SimpleHuskInventoryExtension.set_buffs_to_slot = function (self, reason, slot_name, buffs)
+	if slot_name == "slot_ranged" or slot_name == "slot_melee" then
+		self._slot_buffs[reason][slot_name] = buffs
 
-	if buff_name_3 ~= "n/a" then
-		slot_buffs[buff_name_3] = {
-			[buff_data_type_3] = value_3
-		}
-	end
-
-	if buff_name_4 ~= "n/a" then
-		slot_buffs[buff_name_4] = {
-			[buff_data_type_4] = value_4
-		}
+		self:_refresh_buffs(buffs, reason, slot_name)
 	end
 end
 
 local params = {}
 
-SimpleHuskInventoryExtension._apply_buffs = function (self, buffs)
+SimpleHuskInventoryExtension._refresh_buffs = function (self, buffs, reason, slot_name)
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
-	local current_item_buffs = self.current_item_buffs
+	local current_item_buffs = self.current_item_buffs[reason]
+
+	if reason == "equip" then
+		current_item_buffs = current_item_buffs[slot_name]
+	end
 
 	for i = 1, #current_item_buffs, 1 do
 		local buff_id = current_item_buffs[i]
@@ -480,7 +503,7 @@ SimpleHuskInventoryExtension.get_wielded_slot_item_template = function (self)
 end
 
 SimpleHuskInventoryExtension.hot_join_sync = function (self, sender)
-	GearUtils.hot_join_sync(sender, self._unit, self._equipment)
+	GearUtils.hot_join_sync(sender, self._unit, self._equipment, self._additional_equipment)
 end
 
 SimpleHuskInventoryExtension.get_wielded_slot_name = function (self)
@@ -495,6 +518,13 @@ SimpleHuskInventoryExtension.get_slot_data = function (self, slot_id)
 	local slots = equipment.slots
 
 	return slots[slot_id]
+end
+
+SimpleHuskInventoryExtension.get_wielded_slot_data = function (self)
+	local slot_name = self:get_wielded_slot_name()
+	local slot_data = self:get_slot_data(slot_name)
+
+	return slot_data
 end
 
 SimpleHuskInventoryExtension.set_loaded_projectile_override = function (self)
@@ -519,6 +549,10 @@ SimpleHuskInventoryExtension._override_career_skill_item_template = function (se
 	end
 
 	return override_item_template
+end
+
+local function get_wield_anim(default, optional_switch, career_name)
+	return (optional_switch and optional_switch[career_name]) or default
 end
 
 SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slot_name, unit_1p, unit_3p)
@@ -563,22 +597,33 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	end
 
 	local item_template = BackendUtils.get_item_template(item_data)
-	local wield_anim = item_template.wield_anim
+	local wield_anim = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career, self._career_name)
 
 	if right_hand_weapon_unit_3p or left_hand_weapon_unit_3p then
 		Unit.flow_event(unit_3p, "lua_wield")
 		Unit.animation_event(unit_3p, wield_anim)
 
 		if right_hand_weapon_unit_3p then
+			Unit.set_flow_variable(right_hand_weapon_unit_3p, "owner", unit_3p)
 			Unit.flow_event(right_hand_weapon_unit_3p, "lua_wield")
 		end
 
 		if left_hand_weapon_unit_3p then
+			Unit.set_flow_variable(left_hand_weapon_unit_3p, "owner", unit_3p)
 			Unit.flow_event(left_hand_weapon_unit_3p, "lua_wield")
 		end
 	end
 
 	if right_hand_weapon_unit_1p or left_hand_weapon_unit_1p then
+		if Unit.animation_has_variable(unit_1p, "animation_variation_id") then
+			local weapon_skin_data = WeaponSkins.skins[slot.skin]
+			local weapon_skin_anim_overrides = weapon_skin_data and weapon_skin_data.action_anim_overrides
+			local animation_variation_id = (weapon_skin_anim_overrides and weapon_skin_anim_overrides.animation_variation_id) or 0
+			local animation_variation_param = Unit.animation_find_variable(unit_1p, "animation_variation_id")
+
+			Unit.animation_set_variable(unit_1p, animation_variation_param, animation_variation_id)
+		end
+
 		Unit.animation_event(unit_1p, wield_anim)
 	end
 
@@ -646,6 +691,48 @@ SimpleHuskInventoryExtension._stop_all_weapon_fx = function (self)
 		GearUtils.destroy_attached_particles(world, fx_ids)
 
 		weapon_fx[name] = nil
+	end
+end
+
+SimpleHuskInventoryExtension.has_additional_item_slots = function (self, slot_name)
+	local additional_equipment_slot = self._additional_equipment[slot_name]
+
+	return additional_equipment_slot ~= nil
+end
+
+SimpleHuskInventoryExtension.can_store_additional_item = function (self, slot_name)
+	local additional_equipment_slot = self._additional_equipment[slot_name]
+
+	return additional_equipment_slot and additional_equipment_slot.used_slots < additional_equipment_slot.max_slots
+end
+
+SimpleHuskInventoryExtension.has_additional_items = function (self, slot_name)
+	local additional_equipment_slot = self._additional_equipment[slot_name]
+
+	return additional_equipment_slot and additional_equipment_slot.used_slots > 0
+end
+
+SimpleHuskInventoryExtension.get_total_item_count = function (self, slot_name)
+	local count = 0
+
+	if self._equipment.slots[slot_name] then
+		count = 1
+	end
+
+	local stored_items = self._additional_equipment[slot_name]
+
+	if stored_items then
+		count = count + stored_items.used_slots
+	end
+
+	return count
+end
+
+SimpleHuskInventoryExtension.update_additional_item_count = function (self, slot_name, used_slots)
+	local additional_equipment_slot = self._additional_equipment[slot_name]
+
+	if additional_equipment_slot then
+		additional_equipment_slot.used_slots = used_slots
 	end
 end
 

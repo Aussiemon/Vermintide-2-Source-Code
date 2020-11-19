@@ -85,14 +85,6 @@ local widget_definitions = {
 }
 HoverUI = class(HoverUI)
 local TEXT_SIZE_MULTIPLIER = 1.1
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 HoverUI.init = function (self, ingame_ui_context, input_service)
 	self.ui_renderer = ingame_ui_context.ui_top_renderer
@@ -127,7 +119,7 @@ HoverUI.update = function (self, dt)
 		return
 	end
 
-	local input_service = self.input_service or fake_input_service
+	local input_service = self.input_service or FAKE_INPUT_SERVICE
 	local ui_scenegraph = self.ui_scenegraph
 
 	self:update_widget_pivot_position(ui_scenegraph, input_service)

@@ -44,6 +44,20 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	gamepad_icon_base = {
+		vertical_alignment = "bottom",
+		parent = "root",
+		horizontal_alignment = "right",
+		size = {
+			119,
+			137
+		},
+		position = {
+			0,
+			60,
+			10
+		}
+	},
 	hud_brush = {
 		parent = "hud_base",
 		position = {
@@ -710,22 +724,61 @@ local function create_slot_widget(index, total_amount)
 					content_check_function = function (content, style)
 						return content.texture_arrow_right_enabled and content.selected
 					end
+				},
+				{
+					style_id = "use_count_text",
+					pass_type = "text",
+					text_id = "use_count_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.is_filled and content.has_additional_slots
+					end
+				},
+				{
+					style_id = "use_count_text_shadow",
+					pass_type = "text",
+					text_id = "use_count_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.is_filled and content.has_additional_slots
+					end
+				},
+				{
+					style_id = "can_swap_text",
+					pass_type = "text",
+					text_id = "can_swap_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.is_filled and content.can_swap
+					end
+				},
+				{
+					style_id = "can_swap_text_shadow",
+					pass_type = "text",
+					text_id = "can_swap_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.is_filled and content.can_swap
+					end
 				}
 			}
 		},
 		content = {
 			texture_selected_left_arrow = "hud_icon_left",
-			texture_selected = "hud_inventory_slot_selection",
+			is_expired = false,
 			texture_selected_right_arrow = "hud_icon_right",
 			input_text = "-",
 			selected = false,
 			texture_selected_up_arrow_glow = "hud_icon_up_glow",
 			texture_background = "hud_inventory_slot_bg_01",
-			texture_selected_right_arrow_glow = "hud_icon_right_glow",
+			use_count_text = "",
+			can_swap_text = "+",
 			texture_selected_up_arrow = "hud_icon_up",
+			texture_selected_right_arrow_glow = "hud_icon_right_glow",
 			visible = true,
+			has_additional_slots = false,
 			texture_frame = "hud_inventory_slot",
-			is_expired = false,
+			texture_selected = "hud_inventory_slot_selection",
 			texture_icon = "journal_icon_02",
 			is_filled = false,
 			texture_arrow = "console_consumable_icon_arrow_02",
@@ -763,6 +816,62 @@ local function create_slot_widget(index, total_amount)
 				offset = {
 					0,
 					22,
+					11
+				}
+			},
+			use_count_text = {
+				vertical_alignment = "bottom",
+				font_size = 18,
+				localize = false,
+				horizontal_alignment = "right",
+				word_wrap = false,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					-4,
+					0,
+					12
+				}
+			},
+			use_count_text_shadow = {
+				vertical_alignment = "bottom",
+				font_size = 18,
+				localize = false,
+				horizontal_alignment = "right",
+				word_wrap = false,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					-2,
+					-2,
+					11
+				}
+			},
+			can_swap_text = {
+				vertical_alignment = "bottom",
+				font_size = 18,
+				localize = false,
+				horizontal_alignment = "right",
+				word_wrap = false,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					-4,
+					20,
+					12
+				}
+			},
+			can_swap_text_shadow = {
+				vertical_alignment = "bottom",
+				font_size = 18,
+				localize = false,
+				horizontal_alignment = "right",
+				word_wrap = false,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					-2,
+					18,
 					11
 				}
 			},
@@ -1200,10 +1309,444 @@ local ammo_text_center_style = {
 		2
 	}
 }
+
+local function create_equipment_background(texture, scenegraph_id, masked, retained, color, layer, horizontal_alignment, vertical_alignment, content_check_function)
+	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+	local definition = {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture",
+					retained_mode = retained,
+					content_check_function = content_check_function
+				}
+			}
+		},
+		content = {
+			texture_id = texture
+		},
+		style = {
+			texture_id = {
+				texture_size = texture_settings.size,
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				masked = masked,
+				horizontal_alignment = horizontal_alignment,
+				vertical_alignment = vertical_alignment
+			}
+		},
+		offset = {
+			0,
+			0,
+			layer or 0
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return definition
+end
+
+local function create_engineer_background(scenegraph_id, layer, retained)
+	local button_texture_data = nil
+
+	if PLATFORM == "win32" then
+		if Application.user_setting("gamepad_use_ps4_style_input_icons") then
+			button_texture_data = ButtonTextureByName("square", "ps4")
+		else
+			button_texture_data = ButtonTextureByName("x", "xb1")
+		end
+	elseif PLATFORM == "xb1" then
+		button_texture_data = ButtonTextureByName("x", "xb1")
+	else
+		button_texture_data = ButtonTextureByName("square", "ps4")
+	end
+
+	local button_texture = button_texture_data.texture
+	local button_size = button_texture_data.size
+
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "minigun_id",
+					style_id = "minigun",
+					pass_type = "texture",
+					retained_mode = retained,
+					content_check_function = function (content, style)
+						content.using_career_skill_weapon = false
+						content.visible = false
+						local player = Managers.player:local_player()
+						local player_unit = player and player.player_unit
+
+						if not Unit.alive(player_unit) then
+							return false
+						end
+
+						local career_extension = ScriptUnit.extension(player_unit, "career_system")
+						local career_name = career_extension and career_extension:career_name()
+						content.visible = career_name == "dr_engineer"
+						local ability_cooldown, max_cooldown = career_extension:current_ability_cooldown()
+						content.on_cooldown = ability_cooldown / max_cooldown ~= 0
+						local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+						content.using_career_skill_weapon = inventory_extension and inventory_extension:get_wielded_slot_name() == "slot_career_skill_weapon"
+						local buff_ext = ScriptUnit.extension(player_unit, "buff_system")
+						content.is_reloading = buff_ext and (buff_ext:has_buff_type("bardin_engineer_pump_buff_long") or buff_ext:has_buff_type("bardin_engineer_pump_buff"))
+						local _, dt = Managers.time:time_and_delta("game")
+						local time = content.time + dt
+						content.time = (content.is_reloading and time) or 0
+						content.using_gamepad = Managers.input:is_device_active("gamepad")
+
+						return not content.using_career_skill_weapon and content.visible
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "reload_button",
+					texture_id = "reload_button_id",
+					retained_mode = retained,
+					content_check_function = function (content, style)
+						return content.on_cooldown and content.reload_button_id and content.using_career_skill_weapon and content.using_gamepad
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_effect",
+					texture_id = "ability_effect",
+					content_check_function = function (content, style)
+						return not content.on_cooldown and content.using_career_skill_weapon
+					end
+				},
+				{
+					texture_id = "reload_id",
+					style_id = "reload",
+					pass_type = "texture",
+					retained_mode = retained,
+					content_check_function = function (content, style)
+						return content.using_career_skill_weapon and content.visible
+					end
+				},
+				{
+					style_id = "reload_icon",
+					pass_type = "texture",
+					texture_id = "reload_icon_id",
+					retained_mode = retained,
+					content_check_function = function (content, style)
+						return content.using_career_skill_weapon and content.visible and content.is_reloading
+					end,
+					content_change_function = function (content, style)
+						style.color[1] = 160 + -math.cos(content.time * 2 * math.pi) * 95
+					end
+				},
+				{
+					style_id = "reload_mask",
+					pass_type = "texture",
+					texture_id = "reload_mask_id",
+					retained_mode = retained,
+					content_check_function = function (content, style)
+						return content.visible and content.is_reloading
+					end,
+					content_change_function = function (content, style)
+						content.reload_mask_id = (content.using_career_skill_weapon and "reload_icon_mask") or "minigun_icon_mask"
+					end
+				},
+				{
+					style_id = "reload_overlay",
+					pass_type = "texture",
+					texture_id = "reload_overlay_id",
+					retained_mode = retained,
+					content_check_function = function (content, style)
+						return content.visible and content.is_reloading
+					end,
+					content_change_function = function (content, style)
+						local value = content.time % 1
+						style.offset[2] = math.lerp(-137, 137, value)
+					end
+				},
+				{
+					style_id = "input_text",
+					pass_type = "text",
+					text_id = "input_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.on_cooldown and content.visible and not content.using_gamepad and content.using_career_skill_weapon
+					end,
+					content_change_function = function (content, style)
+						local input_service = Managers.input:get_service("Player")
+						local keymap_binding = input_service:get_keymapping("weapon_reload", "win32")
+
+						if not keymap_binding then
+							content.input_text = ""
+
+							return
+						end
+
+						local device_type = keymap_binding[1]
+						local key_index = keymap_binding[2]
+						local key_action_type = keymap_binding[3]
+						local is_button_unassigned = key_index == UNASSIGNED_KEY
+						content.input_text = string.upper((is_button_unassigned and "") or Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index))
+					end
+				},
+				{
+					style_id = "input_text_shadow",
+					pass_type = "text",
+					text_id = "input_text",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.on_cooldown and content.visible and not content.using_gamepad and content.using_career_skill_weapon
+					end
+				}
+			}
+		},
+		content = {
+			input_text = "",
+			time = 0,
+			minigun_id = "rotarygun_bg",
+			reload_overlay_id = "glowtexture_mask_red",
+			reload_mask_id = "minigun_icon_mask",
+			ability_effect = "gamepad_ability_effect_cog",
+			reload_icon_id = "icon_reload",
+			reload_id = "reload_bg",
+			reload_button_id = button_texture
+		},
+		style = {
+			input_text = {
+				word_wrap = false,
+				font_size = 24,
+				localize = false,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				size = {
+					22,
+					18
+				},
+				offset = {
+					48,
+					150,
+					105
+				}
+			},
+			input_text_shadow = {
+				word_wrap = false,
+				font_size = 24,
+				localize = false,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				size = {
+					22,
+					18
+				},
+				offset = {
+					46,
+					148,
+					104
+				}
+			},
+			minigun = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				},
+				texture_size = {
+					119,
+					137
+				}
+			},
+			ability_effect = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
+					152,
+					240
+				},
+				offset = {
+					15,
+					-10,
+					100
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			reload = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				texture_size = {
+					119,
+					137
+				}
+			},
+			reload_button = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					100,
+					20
+				},
+				texture_size = button_size
+			},
+			reload_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				texture_size = {
+					119,
+					137
+				}
+			},
+			reload_mask = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				texture_size = {
+					119,
+					137
+				}
+			},
+			reload_overlay = {
+				vertical_alignment = "center",
+				masked = true,
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				},
+				texture_size = {
+					119,
+					137
+				}
+			}
+		},
+		offset = {
+			-2,
+			0,
+			layer or 0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local widget_definitions = {
-	ability_base = UIWidgets.create_simple_atlas_texture("ability_base", "hud_base", nil, RETAINED_MODE_ENABLED, nil, 5, "right", "bottom"),
+	ability_base = create_equipment_background("ability_base", "hud_base", nil, RETAINED_MODE_ENABLED, nil, 5, "right", "bottom"),
 	hud_brushstroke = UIWidgets.create_simple_atlas_texture("hud_brushstroke", "hud_brush", nil, RETAINED_MODE_ENABLED, nil, nil, "right", "bottom"),
-	weapon_slot = create_weapon_slot_widget("weapon_slot")
+	weapon_slot = create_weapon_slot_widget("weapon_slot"),
+	extra_storage_bg = {
+		scenegraph_id = "slot",
+		offset = {
+			1 * (slot_size[1] + 0),
+			22,
+			-100
+		},
+		element = {
+			passes = {
+				{
+					pass_type = "rotated_texture",
+					style_id = "texture",
+					texture_id = "texture",
+					retained_mode = RETAINED_MODE_ENABLED
+				}
+			}
+		},
+		content = {
+			texture = "loot_objective_bg"
+		},
+		style = {
+			texture = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				pivot = {
+					191.5,
+					31.5
+				},
+				angle = math.pi / 2,
+				texture_size = {
+					383,
+					63
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				}
+			}
+		}
+	}
+}
+local career_widget_definitions = {
+	engineer_base = create_engineer_background("gamepad_icon_base", 10)
 }
 local frame_definitions = {
 	health_bar_frame = UIWidgets.create_simple_texture("console_hp_bar_frame", "health_bar_frame", nil, RETAINED_MODE_ENABLED, nil, nil, "center", "bottom"),
@@ -1237,12 +1780,85 @@ for i = 1, #slots, 1 do
 	end
 end
 
+local extra_storage_icons = 2
+local extra_storage_icon_definitions = {}
+
+for i = 1, extra_storage_icons, 1 do
+	local bomb_slot_index = 2
+	local spacing = 0
+	local slot_width = slot_size[1]
+	extra_storage_icon_definitions[i] = {
+		scenegraph_id = "slot",
+		offset = {
+			(bomb_slot_index - 1) * (slot_width + spacing),
+			55 + i * (slot_icon_size[2] - 10),
+			5
+		},
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "texture_icon",
+					texture_id = "texture_icon"
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_glow",
+					texture_id = "texture_glow"
+				}
+			}
+		},
+		content = {
+			t_until_fade = 0,
+			visible = true,
+			texture_glow = "hud_icon_bomb_01_glow",
+			texture_icon = "hud_icon_bomb_01"
+		},
+		style = {
+			texture_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					6
+				},
+				texture_size = slot_icon_size,
+				color = {
+					0,
+					255,
+					255,
+					255
+				}
+			},
+			texture_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					5
+				},
+				texture_size = slot_icon_size,
+				color = {
+					0,
+					255,
+					255,
+					255
+				}
+			}
+		}
+	}
+end
+
 return {
 	slot_size = slot_size,
 	NUM_SLOTS = #slot_widget_definitions,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
+	career_widget_definitions = career_widget_definitions,
 	frame_definitions = frame_definitions,
 	ammo_widget_definitions = ammo_widget_definitions,
-	slot_widget_definitions = slot_widget_definitions
+	slot_widget_definitions = slot_widget_definitions,
+	extra_storage_icon_definitions = extra_storage_icon_definitions
 }

@@ -1,7 +1,6 @@
 local SIZE_X = 1920
 local SIZE_Y = 1080
 local RETAINED_MODE_ENABLED = true
-local DAMAGE_FONT_SIZE = 24
 local portrait_scale = 1
 local settings = {
 	hp_bar = {
@@ -195,120 +194,6 @@ local function create_static_widget()
 			0
 		}
 	}
-end
-
-local function create_damage_widget(rows)
-	local entries = {}
-
-	for i = 1, rows, 1 do
-		local widget_definition = {
-			scenegraph_id = "portrait_pivot",
-			element = {
-				passes = {
-					{
-						style_id = "text",
-						pass_type = "text",
-						text_id = "text"
-					},
-					{
-						style_id = "text_total_sum",
-						pass_type = "text",
-						text_id = "text_total_sum"
-					},
-					{
-						style_id = "text_last_dmg",
-						pass_type = "text",
-						text_id = "text_last_dmg"
-					}
-				}
-			},
-			content = {
-				text = "",
-				text_last_dmg_2 = "",
-				text_last_dmg = "",
-				text_total_sum = "",
-				text_last_dmg_3 = ""
-			},
-			style = {
-				text = {
-					vertical_alignment = "bottom",
-					dynamic_font = true,
-					horizontal_alignment = "left",
-					debug_draw_box = true,
-					font_type = "hell_shark",
-					font_size = DAMAGE_FONT_SIZE,
-					text_color = Colors.get_table("white"),
-					offset = {
-						0,
-						i * 20,
-						0
-					}
-				},
-				text_total_sum = {
-					vertical_alignment = "bottom",
-					dynamic_font = true,
-					horizontal_alignment = "center",
-					debug_draw_box = true,
-					font_type = "hell_shark",
-					font_size = DAMAGE_FONT_SIZE,
-					text_color = Colors.get_table("green"),
-					offset = {
-						0,
-						i * 20,
-						0
-					}
-				},
-				text_last_dmg = {
-					vertical_alignment = "bottom",
-					dynamic_font = true,
-					horizontal_alignment = "left",
-					debug_draw_box = true,
-					font_type = "hell_shark",
-					font_size = DAMAGE_FONT_SIZE,
-					text_color = Colors.get_table("yellow"),
-					offset = {
-						0,
-						i * 20,
-						0
-					}
-				},
-				text_last_dmg_2 = {
-					vertical_alignment = "bottom",
-					dynamic_font = true,
-					horizontal_alignment = "left",
-					font_type = "hell_shark",
-					font_size = DAMAGE_FONT_SIZE,
-					text_color = Colors.get_table("yellow"),
-					offset = {
-						0,
-						i * 20,
-						0
-					}
-				},
-				text_last_dmg_3 = {
-					vertical_alignment = "bottom",
-					dynamic_font = true,
-					horizontal_alignment = "left",
-					font_type = "hell_shark",
-					font_size = DAMAGE_FONT_SIZE,
-					text_color = Colors.get_table("yellow"),
-					offset = {
-						0,
-						i * 20,
-						0
-					}
-				}
-			},
-			offset = {
-				-40,
-				40,
-				0
-			}
-		}
-		entries[i] = widget_definition
-	end
-
-	return entries
 end
 
 local function create_respawn_countdown_widget()
@@ -849,7 +734,6 @@ local widget_definitions = {
 	ability_dynamic = create_dynamic_ability_widget(),
 	respawn_dynamic = create_respawn_countdown_widget()
 }
-local damage_widget_definitions = create_damage_widget(4)
 local features_list = {
 	ability = true,
 	weapons = false,
@@ -880,6 +764,5 @@ return {
 	features_list = features_list,
 	widget_name_by_feature = widget_name_by_feature,
 	scenegraph_definition = scenegraph_definition,
-	widget_definitions = widget_definitions,
-	damage_widget_definitions = damage_widget_definitions
+	widget_definitions = widget_definitions
 }

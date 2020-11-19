@@ -213,13 +213,13 @@ PlayerInZoneExtension._update_state = function (self, dt, t)
 	self[self._state](self, dt, t, self._state_data)
 end
 
-PlayerInZoneExtension.hot_join_sync = function (self, sender)
+PlayerInZoneExtension.hot_join_sync = function (self, peer_id)
 	if self._activated then
 		local network_manager = Managers.state.network
 		local unit_index = LevelHelper:unit_index(self._world, self._unit)
 
 		if unit_index then
-			network_manager.network_transmit:send_rpc("rpc_player_in_zone_set_active", sender, unit_index)
+			network_manager.network_transmit:send_rpc("rpc_player_in_zone_set_active", peer_id, unit_index)
 		end
 	end
 end

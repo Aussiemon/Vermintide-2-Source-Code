@@ -17,11 +17,18 @@ BuffUI.init = function (self, parent, ingame_ui_context)
 	self.player_manager = ingame_ui_context.player_manager
 	self.ui_animations = {}
 	self.is_in_inn = ingame_ui_context.is_in_inn
+	self._is_spectator = false
+	self._spectated_player = nil
+	self._spectated_player_unit = nil
 	self.render_settings = {
 		alpha_multiplier = 1
 	}
 
 	self:_create_ui_elements()
+
+	local event_manager = Managers.state.event
+
+	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 end
 
 BuffUI._create_ui_elements = function (self)
@@ -44,7 +51,7 @@ BuffUI._create_ui_elements = function (self)
 	self:set_visible(true)
 	self:set_dirty()
 
-	local player = Managers.player:local_player(1)
+	local player = (self._is_spectator and self._spectated_player) or Managers.player:local_player(1)
 	local player_unit = player.player_unit
 
 	if player_unit then
@@ -52,6 +59,20 @@ BuffUI._create_ui_elements = function (self)
 		local career_index = career_extension:career_index()
 		self._current_career_index = career_index
 	end
+end
+
+BuffUI.on_spectator_target_changed = function (self, spectated_player_unit)
+	self._spectated_player_unit = spectated_player_unit
+	self._spectated_player = Managers.player:owner(spectated_player_unit)
+	self._is_spectator = true
+
+	self:set_visible(false)
+	self:set_visible(true)
+	self:set_dirty()
+
+	local career_extension = ScriptUnit.extension(spectated_player_unit, "career_system")
+	local career_index = career_extension:career_index()
+	self._current_career_index = career_index
 end
 
 local widgets_to_remove = {}
@@ -62,7 +83,7 @@ BuffUI._sync_buffs = function (self)
 	local t = Managers.time:time("game")
 	local active_buffs = self._active_buffs
 	local align_widgets = false
-	local player = Managers.player:local_player(1)
+	local player = (self._is_spectator and self._spectated_player) or Managers.player:local_player(1)
 	local player_unit = player.player_unit
 
 	if player_unit then
@@ -342,6 +363,7 @@ end
 
 BuffUI.destroy = function (self)
 	self:set_visible(false)
+	Managers.state.event:unregister("on_spectator_target_changed", self)
 end
 
 BuffUI.set_visible = function (self, visible)
@@ -477,7 +499,7 @@ BuffUI._update_buffs = function (self, dt)
 end
 
 BuffUI._handle_career_change = function (self)
-	local player = Managers.player:local_player(1)
+	local player = (self._is_spectator and self._spectated_player) or Managers.player:local_player(1)
 	local player_unit = player.player_unit
 
 	if player_unit then

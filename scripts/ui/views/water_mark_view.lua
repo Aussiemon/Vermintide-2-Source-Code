@@ -5,14 +5,6 @@ require("scripts/ui/ui_widgets")
 
 local definitions = require("scripts/ui/views/water_mark_view_definitions")
 WaterMarkView = class(WaterMarkView)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 WaterMarkView.init = function (self, world)
 	self._world = world
@@ -47,7 +39,7 @@ WaterMarkView._draw = function (self, dt)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, self._render_settings)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self._render_settings)
 	UIRenderer.draw_widget(ui_renderer, self._water_mark_widget)
 	UIRenderer.end_pass(ui_renderer)
 end

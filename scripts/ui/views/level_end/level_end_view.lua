@@ -4,16 +4,6 @@ require("scripts/ui/views/level_end/states/end_view_state_score")
 require("scripts/ui/views/level_end/states/end_view_state_chest")
 require("scripts/ui/reward_popup/reward_popup_ui")
 
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.end_view_state
-
-	if files then
-		for _, file in ipairs(files) do
-			require(file)
-		end
-	end
-end
-
 local definitions = local_require("scripts/ui/views/level_end/level_end_view_definitions")
 local widget_definitions = definitions.widgets_definitions
 local scenegraph_definition = definitions.scenegraph_definition
@@ -22,14 +12,6 @@ local generic_input_actions = definitions.generic_input_actions
 local weave_widget_definitions = definitions.weave_widget_definitions
 local debug_draw_scenegraph = false
 local debug_menu = false
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 LevelEndView = class(LevelEndView, LevelEndViewBase)
 
 LevelEndView.init = function (self, context)
@@ -57,7 +39,13 @@ LevelEndView.setup_pages = function (self, game_won, rewards)
 	elseif game_won then
 		index_by_state_name = self:_setup_pages_victory(rewards)
 	else
-		index_by_state_name = self:_setup_pages_defeat()
+		index_by_state_name = self:_setup_pages_defeat(rewards)
+	end
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		index_by_state_name = {
+			EndViewStateScoreVS = 1
+		}
 	end
 
 	return index_by_state_name
@@ -75,28 +63,41 @@ LevelEndView._setup_pages_victory = function (self, rewards)
 	local index_by_state_name = {}
 	local end_of_level_rewards = rewards.end_of_level_rewards
 	local chest = end_of_level_rewards.chest
+	index_by_state_name.EndViewStateSummary = table.size(index_by_state_name) + 1
+	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
+
+	if win_tracks_interface then
+		local win_track_id = win_tracks_interface:get_current_win_track_id()
+
+		if win_track_id and win_track_id ~= "" then
+			index_by_state_name.EndViewStateWinTracks = table.size(index_by_state_name) + 1
+		end
+	end
 
 	if chest then
-		index_by_state_name = {
-			EndViewStateChest = 2,
-			EndViewStateScore = 3,
-			EndViewStateSummary = 1
-		}
-	else
-		index_by_state_name = {
-			EndViewStateSummary = 1,
-			EndViewStateScore = 2
-		}
+		index_by_state_name.EndViewStateChest = table.size(index_by_state_name) + 1
 	end
+
+	index_by_state_name.EndViewStateScore = table.size(index_by_state_name) + 1
 
 	return index_by_state_name
 end
 
 LevelEndView._setup_pages_defeat = function (self)
 	local index_by_state_name = {
-		EndViewStateSummary = 1,
-		EndViewStateScore = 2
+		EndViewStateSummary = table.size(index_by_state_name) + 1
 	}
+	local win_tracks_interface = Managers.backend:get_interface("win_tracks")
+
+	if win_tracks_interface then
+		local win_track_id = win_tracks_interface:get_current_win_track_id()
+
+		if win_track_id and win_track_id ~= "" then
+			index_by_state_name.EndViewStateWinTracks = table.size(index_by_state_name) + 1
+		end
+	end
+
+	index_by_state_name.EndViewStateScore = table.size(index_by_state_name) + 1
 
 	return index_by_state_name
 end
@@ -297,6 +298,10 @@ LevelEndView.destroy = function (self)
 	LevelEndView.super.destroy(self)
 end
 
+LevelEndView.active_input_service = function (self)
+	return (self.input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+end
+
 LevelEndView._start_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
@@ -307,16 +312,10 @@ LevelEndView._start_animation = function (self, animation_name)
 	return self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 end
 
-LevelEndView.active_input_service = function (self)
-	return (self.input_blocked and fake_input_service) or self:input_service()
-end
-
 LevelEndView._retry_level = function (self)
-	if self.is_server then
-		self:signal_done(true)
-	else
-		self:signal_done(true)
+	self:signal_done(true)
 
+	if not self.is_server then
 		self._retry_button_widget.content.button_hotspot.disabled = true
 	end
 end
@@ -347,10 +346,7 @@ LevelEndView.peer_signaled_done = function (self, peer_id, do_reload)
 end
 
 LevelEndView._set_end_timer = function (self, time)
-	local widget = self._dynamic_widgets.timer_text
-	time = math.ceil(time)
-	local time_text = string.format("%02d:%02d", math.floor(time / 60), time % 60)
-	widget.content.text = string.format(Localize("timer_prefix_time_left") .. ": %s", time_text)
+	self._dynamic_widgets.timer_text.content.text = Localize("timer_prefix_time_left") .. ": " .. UIUtils.format_time(math.ceil(time))
 end
 
 LevelEndView.update_force_shutdown = function (self, dt)
@@ -421,7 +417,9 @@ LevelEndView.spawn_level = function (self, context, world)
 	local object_sets = {
 		object_set
 	}
-	local level = ScriptWorld.load_level(world, level_name, object_sets, nil, nil, nil)
+	local position, rotation, shading_callback, mood_setting = nil
+	local time_sliced_spawn = false
+	local level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 	Level.spawn_background(level)
 

@@ -549,9 +549,16 @@ ScoreboardHelper.get_current_players = function ()
 		local bot_players = Managers.player:bots()
 
 		for _, player in pairs(human_players) do
-			gathered_players[#gathered_players + 1] = player
 			local player_profile_index = player:profile_index()
-			OCCUPIED_SLOTS[player_profile_index] = true
+
+			if not OCCUPIED_SLOTS[player_profile_index] then
+				gathered_players[#gathered_players + 1] = player
+				OCCUPIED_SLOTS[player_profile_index] = true
+			end
+
+			if max_members <= #gathered_players then
+				break
+			end
 		end
 
 		for _, bot_player in pairs(bot_players) do

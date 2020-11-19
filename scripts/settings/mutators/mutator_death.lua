@@ -212,7 +212,6 @@ return {
 		data.spirit_unit_name = "units/fx/vfx_animation_death_spirit_02"
 		data.extension_init_data = {}
 		data.offset = 1
-		data.num_raycasts = 0
 	end,
 	server_update_function = function (context, data, dt, t)
 		local game_session = Network.game_session()

@@ -41,8 +41,9 @@ PlayerUnitWeaveLoadoutExtension.hot_join_sync = function (self, sender)
 
 	if rpc_params then
 		local unit_go_id = Managers.state.unit_storage:go_id(self._unit)
+		local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-		RPC.rpc_add_weave_buffs(sender, unit_go_id, unpack(rpc_params))
+		RPC.rpc_add_weave_buffs(channel_id, unit_go_id, unpack(rpc_params))
 	end
 end
 
@@ -133,7 +134,7 @@ PlayerUnitWeaveLoadoutExtension._sync_buffs = function (self, unit_go_id)
 		return
 	end
 
-	local rpc_params = BuffUtils.weave_buffs_to_rpc_params(syncable_buffs)
+	local rpc_params = BuffUtils.buffs_to_rpc_params(syncable_buffs)
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 

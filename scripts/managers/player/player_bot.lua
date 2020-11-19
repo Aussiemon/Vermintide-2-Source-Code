@@ -1,6 +1,7 @@
 require("scripts/managers/player/bulldozer_player")
 
 PlayerBot = class(PlayerBot, BulldozerPlayer)
+EnergyData = EnergyData or {}
 local BOT_COLORS = {
 	bright_wizard = QuaternionBox(255, 255, 127, 0),
 	witch_hunter = QuaternionBox(255, 255, 215, 0),
@@ -120,6 +121,11 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	end
 
 	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, profile)
+
+	if is_initial_spawn and career.additional_starting_inventory then
+		initial_inventory.additional_items = career.additional_starting_inventory
+	end
+
 	local hero_name = profile.display_name
 	local base_skin = career.base_skin
 	local base_frame = "default"
@@ -130,6 +136,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame")
 	local frame_name = (frame_item and frame_item.data.name) or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
+	local energy_data = EnergyData[career_name] or {}
 	local status = Managers.party:get_status_from_unique_id(self._unique_id)
 	local party = Managers.party:get_party(status.party_id)
 	local side = Managers.state.side.side_by_party[party]
@@ -242,6 +249,9 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		},
 		overcharge_system = {
 			overcharge_data = overcharge_data
+		},
+		energy_system = {
+			energy_data = energy_data
 		},
 		aggro_system = {
 			side = side

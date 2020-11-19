@@ -104,14 +104,6 @@ local subtitle_row_widget = {
 		0
 	}
 }
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 local DO_RELOAD = false
 SubtitleTimedGui = class(SubtitleTimedGui)
 
@@ -278,7 +270,7 @@ SubtitleTimedGui.draw = function (self, ui_renderer, dt)
 		return
 	end
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, render_settings)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, render_settings)
 
 	for i = 1, #widgets, 1 do
 		local widget = widgets[i]

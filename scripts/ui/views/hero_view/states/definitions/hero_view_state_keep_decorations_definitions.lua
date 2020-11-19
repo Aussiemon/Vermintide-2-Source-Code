@@ -377,7 +377,7 @@ local function create_entry_widget()
 				return content.new and not content.button_hotspot.is_hover
 			end,
 			content_change_function = function (content, style)
-				local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+				local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 				style.color[1] = 55 + progress * 200
 			end
 		},
@@ -434,7 +434,7 @@ local function create_entry_widget()
 				return content.new
 			end,
 			content_change_function = function (content, style)
-				local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+				local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 				style.color[1] = 55 + progress * 200
 			end
 		},

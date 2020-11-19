@@ -14,11 +14,6 @@ player.scorpion_kill_archers_kill_minotaur = {
 	database_name = "scorpion_kill_archers_kill_minotaur",
 	source = "player_data"
 }
-player.scorpion_keep_standard_bearer_alive = {
-	value = 0,
-	database_name = "scorpion_keep_standard_bearer_alive",
-	source = "player_data"
-}
 player.scorpion_slay_gors_warpfire_damage = {
 	value = 0,
 	database_name = "scorpion_slay_gors_warpfire_damage",

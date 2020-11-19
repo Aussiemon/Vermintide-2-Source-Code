@@ -37,25 +37,34 @@ PlayerCharacterStateFalling.on_enter = function (self, unit, input, dt, context,
 	local status_extension = self.status_extension
 	local locomotion_extension = self.locomotion_extension
 	local first_person_extension = self.first_person_extension
+	local inventory_extension = self.inventory_extension
 
 	status_extension:set_falling_height()
 	locomotion_extension:set_maximum_upwards_velocity(math.huge)
-	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "idle")
+
+	local item_template = inventory_extension:get_wielded_slot_item_template()
+	self._play_fp_anim = item_template and item_template.jump_anim_enabled_1p
 
 	if previous_state ~= "jumping" then
+		local move_anim_3p, move_anim_1p = nil
+
 		if CharacterStateHelper.is_moving(locomotion_extension) then
-			local move_anim = "jump_fwd"
-
-			CharacterStateHelper.play_animation_event(unit, move_anim)
+			move_anim_3p = "jump_fwd"
 		else
-			local move_anim = "jump_idle"
-
-			CharacterStateHelper.play_animation_event(unit, move_anim)
+			move_anim_3p = "jump_idle"
 		end
+
+		if self._play_fp_anim then
+			move_anim_1p = "to_falling"
+		else
+			move_anim_1p = "idle"
+		end
+
+		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
+		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim_1p)
 	end
 
 	self.jumped = params.jumped
-	local inventory_extension = self.inventory_extension
 
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self.health_extension)
@@ -80,6 +89,10 @@ PlayerCharacterStateFalling.on_exit = function (self, unit, input, dt, context, 
 	locomotion_extension:reset_maximum_upwards_velocity()
 	CharacterStateHelper.play_animation_event(unit, "land_still")
 	CharacterStateHelper.play_animation_event(unit, "to_onground")
+
+	if self._play_fp_anim then
+		CharacterStateHelper.play_animation_event_first_person(self.first_person_extension, "to_onground")
+	end
 
 	self.is_active = false
 	self.jumped = nil

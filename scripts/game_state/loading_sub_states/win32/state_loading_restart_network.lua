@@ -41,6 +41,10 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 	local lobby_to_join = Development.parameter("auto_join_server")
 
+	if auto_join_setting then
+		Development.set_parameter("client", true)
+	end
+
 	Development.set_parameter("auto_join", nil)
 	Development.set_parameter("auto_join_server", nil)
 
@@ -55,7 +59,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 	local platform = PLATFORM
 
 	if not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
-		if platform == "win32" then
+		if platform == "win32" or platform == "linux" then
 			if rawget(_G, "Steam") and not LEVEL_EDITOR_TEST and not Development.parameter("use_lan_backend") then
 				require("scripts/network/lobby_steam")
 				require("scripts/network/game_server/game_server_user_steam")
@@ -179,6 +183,18 @@ StateLoadingRestartNetwork._init_network = function (self)
 	elseif platform == "xb1" or platform == "ps4" then
 		self._server_created = false
 		self._creating_lobby = false
+	elseif loading_context.rejoin_lobby then
+		local lobby_or_data = Managers.party:steal_lobby()
+
+		if type(lobby_or_data) == "table" then
+			loading_context.join_lobby_data = lobby_or_data
+
+			self.parent:setup_join_lobby()
+		else
+			self.parent:setup_lobby_host(nil, lobby_or_data)
+
+			self._server_created = true
+		end
 	else
 		self.parent:setup_lobby_host()
 

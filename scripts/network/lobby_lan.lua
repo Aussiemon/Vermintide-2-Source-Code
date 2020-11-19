@@ -6,26 +6,6 @@ require("scripts/network/lobby_members")
 
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.TYPE = "lan"
-LobbyInternal.state_map = {
-	[LanLobby.CREATING] = LobbyState.CREATING,
-	[LanLobby.JOINING] = LobbyState.JOINING,
-	[LanLobby.JOINED] = LobbyState.JOINED,
-	[LanLobby.FAILED] = LobbyState.FAILED
-}
-
-LobbyInternal.create_lobby = function (network_options)
-	local lobby_port = network_options.lobby_port
-
-	fassert(lobby_port, "Must provide port to LobbyHostLan.")
-
-	return Network.create_lan_lobby(lobby_port, network_options.max_members)
-end
-
-LobbyInternal.leave_lobby = Network.leave_lan_lobby
-
-LobbyInternal.join_lobby = function (lobby_data)
-	return Network.join_lan_lobby(lobby_data.address)
-end
 
 LobbyInternal.network_initialized = function ()
 	local client = LobbyInternal.client
@@ -33,20 +13,43 @@ LobbyInternal.network_initialized = function ()
 	return not not client
 end
 
-LobbyInternal.lobby_browser = function ()
-	return LobbyInternal.client:lobby_browser()
+LobbyInternal.create_lobby = function (network_options)
+	return Network.create_lan_lobby(network_options.max_members)
 end
 
-LobbyInternal.get_lobby_data_from_id = function (id)
-	return nil
+LobbyInternal.join_lobby = function (lobby_data)
+	return Network.join_lan_lobby(lobby_data.id)
 end
 
-LobbyInternal.get_lobby_data_from_id_by_key = function (id, key)
-	return nil
+LobbyInternal.leave_lobby = Network.leave_lan_lobby
+
+LobbyInternal.open_channel = function (lobby, peer)
+	local channel_id = LanLobby.open_channel(lobby, peer)
+
+	print("LobbyInternal.open_channel lobby: %s, to peer: %s channel: %s", lobby, peer, channel_id)
+
+	return channel_id
+end
+
+LobbyInternal.close_channel = function (lobby, channel)
+	print("LobbyInternal.close_channel lobby: %s, channel: %s", lobby, channel)
+	LanLobby.close_channel(lobby, channel)
+end
+
+LobbyInternal.is_orphaned = function (engine_lobby)
+	return false
+end
+
+LobbyInternal.game_session_host = function (engine_lobby)
+	return LanLobby.game_session_host(engine_lobby)
 end
 
 LobbyInternal.init_client = function (network_options)
-	Network.set_explicit_connections()
+	local game_port = network_options.server_port
+
+	if Development.parameter("client") then
+		game_port = 0
+	end
 
 	local peer_id = Development.parameter("lan_peer_id")
 
@@ -54,9 +57,9 @@ LobbyInternal.init_client = function (network_options)
 		print("Forcing LAN peer_id ", peer_id)
 
 		local peer_id_number = tonumber(peer_id, 16)
-		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, 0, peer_id_number)
+		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port, peer_id_number)
 	else
-		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name)
+		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port)
 	end
 
 	GameSettingsDevelopment.set_ignored_rpc_logs()
@@ -68,16 +71,16 @@ LobbyInternal.shutdown_client = function ()
 	LobbyInternal.client = nil
 end
 
+LobbyInternal.get_lobby_data_from_id = function (id)
+	return nil
+end
+
+LobbyInternal.get_lobby_data_from_id_by_key = function (id, key)
+	return nil
+end
+
 LobbyInternal.ping = function (peer_id)
 	return Network.ping(peer_id)
-end
-
-LobbyInternal.add_ping_peer = function (peer_id)
-	return
-end
-
-LobbyInternal.remove_ping_peer = function (peer_id)
-	return
 end
 
 LobbyInternal.get_lobby = LanLobbyBrowser.lobby
@@ -90,20 +93,12 @@ LobbyInternal.add_filter_requirements = function (requirements)
 	return
 end
 
-LobbyInternal.lobby_id = function (lobby)
-	return 10000
-end
-
-LobbyInternal.lobby_id_match = function (id1, id2)
-	if id1 == nil or id2 == nil then
-		return true
-	end
-
-	return id1 == id2
-end
-
 LobbyInternal.user_name = function (user)
 	return Network.peer_id()
+end
+
+LobbyInternal.lobby_id = function (lobby)
+	return 10000
 end
 
 LobbyInternal.is_friend = function (peer_id)
@@ -116,6 +111,14 @@ end
 
 LobbyInternal.set_max_members = function (lobby, max_members)
 	LanLobby.set_max_members(lobby, max_members)
+end
+
+LobbyInternal.lobby_id_match = function (id1, id2)
+	if id1 == nil or id2 == nil then
+		return true
+	end
+
+	return id1 == id2
 end
 
 return

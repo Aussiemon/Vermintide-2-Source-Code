@@ -152,7 +152,9 @@ DiceRoller = class(DiceRoller)
 DiceRoller.init = function (self, world, dice_keeper, rewards, hero_name)
 	self.world = world
 	self.simulation_world = Managers.world:create_world("dice_simulation", nil, nil, nil, Application.DISABLE_APEX_CLOTH, Application.DISABLE_RENDERING, Application.DISABLE_SOUND)
-	local simulation_level = ScriptWorld.load_level(self.simulation_world, "levels/dicegame/world")
+	local object_sets, position, rotation, shading_callback, mood_setting = nil
+	local time_sliced_spawn = false
+	local simulation_level = ScriptWorld.spawn_level(self.simulation_world, "levels/dicegame/world", object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
 	World.set_flow_callback_object(self.simulation_world, self)
 	Level.spawn_background(simulation_level)

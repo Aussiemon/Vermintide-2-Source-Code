@@ -1244,7 +1244,6 @@ local distance_array = (PLATFORM == "ps4" and {
 	"map_zone_options_5"
 }) or {
 	"map_zone_options_2",
-	"map_zone_options_3",
 	"map_zone_options_4",
 	"map_zone_options_5"
 }
@@ -2220,6 +2219,8 @@ local widgets = {
 		add_to_favorites_button = create_window_button("lobby_info_add_to_favorites_button", scenegraph_definition.lobby_info_add_to_favorites_button.size, Localize("lb_add_to_favorites"), 20, false)
 	}
 }
+
+table.clear(widgets.base.lobby_type_button.element.passes)
 
 return {
 	show_lobbies_table = show_lobbies_array,

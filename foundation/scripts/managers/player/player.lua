@@ -46,4 +46,8 @@ Player._set_spawn_state = function (self, state)
 	self._spawn_state = state
 end
 
+Player.spawn_state = function (self)
+	return self._spawn_state
+end
+
 return

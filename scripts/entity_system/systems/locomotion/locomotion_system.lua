@@ -24,7 +24,8 @@ local RPCS = {
 	"rpc_constrain_ai",
 	"rpc_set_on_moving_platform",
 	"rpc_hot_join_nail_to_wall_fix",
-	"rpc_set_forced_velocity"
+	"rpc_set_forced_velocity",
+	"rpc_set_affected_by_gravity"
 }
 local extensions = {
 	"AiHuskLocomotionExtension",
@@ -263,7 +264,7 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 	end
 end
 
-LocomotionSystem.rpc_set_affected_by_gravity = function (self, sender, game_object_id, affected)
+LocomotionSystem.rpc_set_affected_by_gravity = function (self, channel_id, game_object_id, affected)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -277,7 +278,7 @@ LocomotionSystem.rpc_set_affected_by_gravity = function (self, sender, game_obje
 	locomotion_extension:set_affected_by_gravity(affected)
 end
 
-LocomotionSystem.rpc_set_animation_driven_movement = function (self, sender, game_object_id, animation_driven, script_driven_rotation, is_affected_by_gravity, position, rotation)
+LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id, game_object_id, animation_driven, script_driven_rotation, is_affected_by_gravity, position, rotation)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -295,19 +296,19 @@ LocomotionSystem.rpc_set_animation_driven_movement = function (self, sender, gam
 	end
 end
 
-LocomotionSystem.rpc_set_animation_driven_script_movement = function (self, sender, game_object_id, position, rotation, is_affected_by_gravity)
-	self:rpc_set_animation_driven_movement(sender, game_object_id, true, true, is_affected_by_gravity, position, rotation)
+LocomotionSystem.rpc_set_animation_driven_script_movement = function (self, channel_id, game_object_id, position, rotation, is_affected_by_gravity)
+	self:rpc_set_animation_driven_movement(channel_id, game_object_id, true, true, is_affected_by_gravity, position, rotation)
 end
 
-LocomotionSystem.rpc_set_animation_driven = function (self, sender, game_object_id, position, rotation, is_affected_by_gravity)
-	self:rpc_set_animation_driven_movement(sender, game_object_id, true, false, is_affected_by_gravity, position, rotation)
+LocomotionSystem.rpc_set_animation_driven = function (self, channel_id, game_object_id, position, rotation, is_affected_by_gravity)
+	self:rpc_set_animation_driven_movement(channel_id, game_object_id, true, false, is_affected_by_gravity, position, rotation)
 end
 
-LocomotionSystem.rpc_set_script_driven = function (self, sender, game_object_id, position, rotation, is_affected_by_gravity)
-	self:rpc_set_animation_driven_movement(sender, game_object_id, false, true, is_affected_by_gravity, nil)
+LocomotionSystem.rpc_set_script_driven = function (self, channel_id, game_object_id, is_affected_by_gravity)
+	self:rpc_set_animation_driven_movement(channel_id, game_object_id, false, true, is_affected_by_gravity)
 end
 
-LocomotionSystem.rpc_set_animation_translation_scale = function (self, sender, game_object_id, animation_translation_scale)
+LocomotionSystem.rpc_set_animation_translation_scale = function (self, channel_id, game_object_id, animation_translation_scale)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -321,11 +322,13 @@ LocomotionSystem.rpc_set_animation_translation_scale = function (self, sender, g
 	locomotion_extension:set_animation_translation_scale(animation_translation_scale)
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_set_animation_translation_scale", sender, game_object_id, animation_translation_scale)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_set_animation_translation_scale", peer_id, game_object_id, animation_translation_scale)
 	end
 end
 
-LocomotionSystem.rpc_set_animation_rotation_scale = function (self, sender, game_object_id, animation_rotation_scale)
+LocomotionSystem.rpc_set_animation_rotation_scale = function (self, channel_id, game_object_id, animation_rotation_scale)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -339,7 +342,7 @@ LocomotionSystem.rpc_set_animation_rotation_scale = function (self, sender, game
 	locomotion_extension:set_animation_rotation_scale(animation_rotation_scale)
 end
 
-LocomotionSystem.rpc_disable_locomotion = function (self, sender, game_object_id, disabled, update_func_id)
+LocomotionSystem.rpc_disable_locomotion = function (self, channel_id, game_object_id, disabled, update_func_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -354,11 +357,13 @@ LocomotionSystem.rpc_disable_locomotion = function (self, sender, game_object_id
 	locomotion_extension:set_disabled(disabled, func)
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_disable_locomotion", sender, game_object_id, disabled, update_func_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_disable_locomotion", peer_id, game_object_id, disabled, update_func_id)
 	end
 end
 
-LocomotionSystem.rpc_teleport_unit_to = function (self, sender, game_object_id, position, rotation)
+LocomotionSystem.rpc_teleport_unit_to = function (self, channel_id, game_object_id, position, rotation)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -372,7 +377,7 @@ LocomotionSystem.rpc_teleport_unit_to = function (self, sender, game_object_id, 
 	locomotion_extension:teleport_to(position, rotation)
 end
 
-LocomotionSystem.rpc_teleport_unit_with_yaw_rotation = function (self, sender, game_object_id, position, yaw)
+LocomotionSystem.rpc_teleport_unit_with_yaw_rotation = function (self, channel_id, game_object_id, position, yaw)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -387,7 +392,7 @@ LocomotionSystem.rpc_teleport_unit_with_yaw_rotation = function (self, sender, g
 	locomotion_extension:teleport_to(position, rotation)
 end
 
-LocomotionSystem.rpc_enable_linked_movement = function (self, sender, game_object_id, parent_level_unit_index, parent_node_index, offset)
+LocomotionSystem.rpc_enable_linked_movement = function (self, channel_id, game_object_id, parent_level_unit_index, parent_node_index, offset)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -403,7 +408,7 @@ LocomotionSystem.rpc_enable_linked_movement = function (self, sender, game_objec
 	locomotion_extension:enable_linked_movement(parent_unit, parent_node_index, offset)
 end
 
-LocomotionSystem.rpc_disable_linked_movement = function (self, sender, game_object_id)
+LocomotionSystem.rpc_disable_linked_movement = function (self, channel_id, game_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -417,7 +422,7 @@ LocomotionSystem.rpc_disable_linked_movement = function (self, sender, game_obje
 	locomotion_extension:disable_linked_movement()
 end
 
-LocomotionSystem.rpc_add_external_velocity = function (self, sender, game_object_id, velocity)
+LocomotionSystem.rpc_add_external_velocity = function (self, channel_id, game_object_id, velocity)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -431,7 +436,7 @@ LocomotionSystem.rpc_add_external_velocity = function (self, sender, game_object
 	locomotion_extension:add_external_velocity(velocity)
 end
 
-LocomotionSystem.rpc_add_external_velocity_with_upper_limit = function (self, sender, game_object_id, velocity, upper_limit)
+LocomotionSystem.rpc_add_external_velocity_with_upper_limit = function (self, channel_id, game_object_id, velocity, upper_limit)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -445,7 +450,7 @@ LocomotionSystem.rpc_add_external_velocity_with_upper_limit = function (self, se
 	locomotion_extension:add_external_velocity(velocity, upper_limit)
 end
 
-LocomotionSystem.rpc_set_forced_velocity = function (self, sender, game_object_id, velocity)
+LocomotionSystem.rpc_set_forced_velocity = function (self, channel_id, game_object_id, velocity)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -459,7 +464,7 @@ LocomotionSystem.rpc_set_forced_velocity = function (self, sender, game_object_i
 	locomotion_extension:set_forced_velocity(velocity)
 end
 
-LocomotionSystem.rpc_constrain_ai = function (self, sender, game_object_id, constrain, position_array)
+LocomotionSystem.rpc_constrain_ai = function (self, channel_id, game_object_id, constrain, position_array)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -475,7 +480,7 @@ LocomotionSystem.rpc_constrain_ai = function (self, sender, game_object_id, cons
 	locomotion_extension:set_constrained(constrain, min, max)
 end
 
-LocomotionSystem.rpc_set_on_moving_platform = function (self, sender, game_object_id, unit_index)
+LocomotionSystem.rpc_set_on_moving_platform = function (self, channel_id, game_object_id, unit_index)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -491,7 +496,7 @@ LocomotionSystem.rpc_set_on_moving_platform = function (self, sender, game_objec
 	locomotion_extension:set_on_moving_platform(platform_unit)
 end
 
-LocomotionSystem.rpc_hot_join_nail_to_wall_fix = function (self, sender, game_object_id)
+LocomotionSystem.rpc_hot_join_nail_to_wall_fix = function (self, channel_id, game_object_id)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if Unit.has_animation_state_machine(unit) then

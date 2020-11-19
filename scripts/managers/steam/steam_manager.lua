@@ -9,6 +9,8 @@ SteamManager.destroy = function (self)
 end
 
 SteamManager.update = function (self, t, dt)
+	return
+
 	Steam.run_callbacks(self)
 end
 

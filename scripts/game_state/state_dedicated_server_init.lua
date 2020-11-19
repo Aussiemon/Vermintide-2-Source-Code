@@ -14,7 +14,7 @@ StateDedicatedServerInit._init_network = function (self)
 	local platform = PLATFORM
 
 	if not rawget(_G, "GameServerInternal") then
-		if platform == "win32" then
+		if platform == "win32" or platform == "linux" then
 			if rawget(_G, "Steam") then
 				ferror("Running dedicated server with Steam enabled. This will make it easy to introduce bugs.")
 			end
@@ -23,6 +23,20 @@ StateDedicatedServerInit._init_network = function (self)
 		else
 			ferror("Running dedicated server on unsupported platform (%s)", platform)
 		end
+	end
+
+	if rawget(_G, "GameliftServer") ~= nil then
+		if GameliftServer.can_get_session() then
+			local session_id, ip_addr, port, gl_server_name, matchmaking = GameliftServer.get_session()
+
+			print("Got gamelift session data (STATE INIT):", session_id, ip_addr, port, gl_server_name, matchmaking)
+
+			script_data.server_name = gl_server_name
+		else
+			script_data.server_name = "AWS Gamelift unknown"
+		end
+	else
+		print("GAMELIFTPROP NOPE")
 	end
 
 	local network_options = Managers.lobby:network_options()
@@ -77,28 +91,28 @@ StateDedicatedServerInit.update = function (self, dt, t)
 
 			self._state = "load_save"
 
-			CommandWindow.print("Loading save...")
+			cprint("Loading save...")
 		end
 	elseif state == "load_save" then
 		if self._save_data_loaded then
 			self._state = "wait_for_signin"
 
-			CommandWindow.print("Signing in...")
+			cprint("Signing in...")
 		end
 	elseif state == "wait_for_signin" then
 		if Managers.backend:signed_in() then
 			self._state = "wait_for_connect"
 
-			CommandWindow.print("Connecting to Steam...")
+			cprint("Connecting to Steam...")
 		end
 	elseif state == "wait_for_connect" then
-		if server_state == GameServerState.CONNECTED then
-			CommandWindow.print("Connected to Steam")
+		if server_state == "connected" then
+			cprint("Connected to Steam")
 			self.parent:setup_network_server(game_server)
 			self.parent:setup_global_managers(game_server)
 
 			return StateDedicatedServerRunning
-		elseif server_state == GameServerState.DISCONNECTED then
+		elseif server_state == "disconnected" then
 			print("Failed to connect the game server. Check the connection to Steam.")
 			Application.quit()
 		end

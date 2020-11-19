@@ -106,7 +106,9 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 					local votes = vote_template.initial_vote_func(vote_data)
 
 					for peer_id, vote in pairs(votes) do
-						self:rpc_vote(peer_id, vote)
+						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+						self:rpc_vote(channel_id, vote)
 					end
 				end
 
@@ -179,6 +181,8 @@ VoteManager.can_start_vote = function (self, name, vote_data)
 	return true
 end
 
+local IS_LOCAL_CALL = "LOCAL_CALL"
+
 VoteManager.vote = function (self, vote)
 	local valid_vote = vote ~= nil
 
@@ -188,7 +192,9 @@ VoteManager.vote = function (self, vote)
 	local network_manager = Managers.state.network
 
 	if is_server then
-		self:rpc_vote(Network.peer_id(), vote)
+		local channel_id = CHANNEL_TO_PEER_ID[Network.peer_id()]
+
+		self:rpc_vote(IS_LOCAL_CALL, vote)
 	elseif network_manager:in_game_session() then
 		network_manager.network_transmit:send_rpc_server("rpc_vote", vote)
 	end
@@ -379,6 +385,8 @@ VoteManager._vote_result = function (self, vote_time_ended)
 end
 
 VoteManager.hot_join_sync = function (self, peer_id)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
 	if self.active_voting then
 		local active_voting = self.active_voting
 		local template = active_voting.template
@@ -387,16 +395,16 @@ VoteManager.hot_join_sync = function (self, peer_id)
 		local server_start_vote_rpc = template.server_start_vote_rpc
 		local voters = active_voting.voters
 
-		RPC[server_start_vote_rpc](peer_id, name_id, sync_data, voters)
+		RPC[server_start_vote_rpc](channel_id, name_id, sync_data, voters)
 
 		local votes = active_voting.votes
 
 		for voter_peer_id, vote_option in pairs(votes) do
-			RPC.rpc_client_add_vote(peer_id, voter_peer_id, vote_option)
+			RPC.rpc_client_add_vote(channel_id, voter_peer_id, vote_option)
 		end
 	end
 
-	RPC.rpc_client_vote_kick_enabled(peer_id, self._vote_kick_enabled)
+	RPC.rpc_client_vote_kick_enabled(channel_id, self._vote_kick_enabled)
 end
 
 VoteManager.destroy = function (self)
@@ -493,10 +501,18 @@ VoteManager._update_voter_list_by_active_peers = function (self, active_peers, v
 	return changed
 end
 
-VoteManager.rpc_vote = function (self, peer_id, vote_cast)
+VoteManager.rpc_vote = function (self, channel_id, vote_cast)
 	local active_voting = self.active_voting
 
 	if active_voting then
+		local peer_id = nil
+
+		if channel_id == IS_LOCAL_CALL then
+			peer_id = Network.peer_id()
+		else
+			peer_id = CHANNEL_TO_PEER_ID[channel_id]
+		end
+
 		if self:has_voted(peer_id) then
 			return
 		end
@@ -614,29 +630,32 @@ VoteManager._handle_undecided_votes = function (self, active_voting)
 		local peer_id = voters[i]
 
 		if not votes[peer_id] then
-			self:rpc_vote(peer_id, timeout_vote_option)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			self:rpc_vote(channel_id, timeout_vote_option)
 		end
 	end
 end
 
-VoteManager.rpc_server_request_start_vote_base = function (self, peer_id, vote_type_id, sync_data)
+VoteManager.rpc_server_request_start_vote_base = function (self, channel_id, vote_type_id, sync_data)
 	local vote_type_name = NetworkLookup.voting_types[vote_type_id]
 	local vote_template = VoteTemplates[vote_type_name]
 	local vote_data = vote_template.extract_sync_data(sync_data)
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 	self:request_vote(vote_type_name, vote_data, peer_id)
 end
 
-VoteManager.rpc_server_request_start_vote_peer_id = function (self, peer_id, vote_type_id, sync_data)
-	self:rpc_server_request_start_vote_base(peer_id, vote_type_id, sync_data)
+VoteManager.rpc_server_request_start_vote_peer_id = function (self, channel_id, vote_type_id, sync_data)
+	self:rpc_server_request_start_vote_base(channel_id, vote_type_id, sync_data)
 end
 
-VoteManager.rpc_server_request_start_vote_lookup = function (self, peer_id, vote_type_id, sync_data)
-	self:rpc_server_request_start_vote_base(peer_id, vote_type_id, sync_data)
+VoteManager.rpc_server_request_start_vote_lookup = function (self, channel_id, vote_type_id, sync_data)
+	self:rpc_server_request_start_vote_base(channel_id, vote_type_id, sync_data)
 end
 
-VoteManager.rpc_server_request_start_vote_deed = function (self, peer_id, vote_type_id, sync_data)
-	self:rpc_server_request_start_vote_base(peer_id, vote_type_id, sync_data)
+VoteManager.rpc_server_request_start_vote_deed = function (self, channel_id, vote_type_id, sync_data)
+	self:rpc_server_request_start_vote_base(channel_id, vote_type_id, sync_data)
 end
 
 VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data, voters)
@@ -659,19 +678,19 @@ VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data,
 	Managers.matchmaking:set_local_quick_game(false)
 end
 
-VoteManager.rpc_client_start_vote_peer_id = function (self, peer_id, vote_type_id, sync_data, voters)
-	self:_start_vote_base(peer_id, vote_type_id, sync_data, voters)
+VoteManager.rpc_client_start_vote_peer_id = function (self, channel_id, vote_type_id, sync_data, voters)
+	self:_start_vote_base(channel_id, vote_type_id, sync_data, voters)
 end
 
-VoteManager.rpc_client_start_vote_lookup = function (self, peer_id, vote_type_id, sync_data, voters)
-	self:_start_vote_base(peer_id, vote_type_id, sync_data, voters)
+VoteManager.rpc_client_start_vote_lookup = function (self, channel_id, vote_type_id, sync_data, voters)
+	self:_start_vote_base(channel_id, vote_type_id, sync_data, voters)
 end
 
-VoteManager.rpc_client_start_vote_deed = function (self, peer_id, vote_type_id, sync_data, voters)
-	self:_start_vote_base(peer_id, vote_type_id, sync_data, voters)
+VoteManager.rpc_client_start_vote_deed = function (self, channel_id, vote_type_id, sync_data, voters)
+	self:_start_vote_base(channel_id, vote_type_id, sync_data, voters)
 end
 
-VoteManager.rpc_client_add_vote = function (self, sender_id, peer_id, vote_option)
+VoteManager.rpc_client_add_vote = function (self, channel_id, peer_id, vote_option)
 	local active_voting = self.active_voting
 
 	if active_voting then
@@ -679,7 +698,7 @@ VoteManager.rpc_client_add_vote = function (self, sender_id, peer_id, vote_optio
 	end
 end
 
-VoteManager.rpc_client_complete_vote = function (self, sender_id, vote_result)
+VoteManager.rpc_client_complete_vote = function (self, channel_id, vote_result)
 	if self.active_voting then
 		local number_of_votes, vote_results = self:_number_of_votes()
 		self.previous_voting_info = {
@@ -694,11 +713,11 @@ VoteManager.rpc_client_complete_vote = function (self, sender_id, vote_result)
 	self.active_voting = nil
 end
 
-VoteManager.rpc_client_vote_kick_enabled = function (self, sender_id, is_enabled)
+VoteManager.rpc_client_vote_kick_enabled = function (self, channel_id, is_enabled)
 	self._vote_kick_enabled = is_enabled
 end
 
-VoteManager.rpc_update_voters_list = function (self, peer_id, voters)
+VoteManager.rpc_update_voters_list = function (self, channel_id, voters)
 	local active_voting = self.active_voting
 
 	if active_voting then
@@ -719,7 +738,7 @@ VoteManager.rpc_update_voters_list = function (self, peer_id, voters)
 	end
 end
 
-VoteManager.rpc_client_check_dlc = function (self, sender, dlc_name_ids)
+VoteManager.rpc_client_check_dlc = function (self, channel_id, dlc_name_ids)
 	local owns_dlc = true
 
 	for _, dlc_id in ipairs(dlc_name_ids) do
@@ -735,12 +754,13 @@ VoteManager.rpc_client_check_dlc = function (self, sender, dlc_name_ids)
 	Managers.state.network.network_transmit:send_rpc_server("rpc_server_check_dlc_reply", owns_dlc)
 end
 
-VoteManager.rpc_server_check_dlc_reply = function (self, sender, success)
+VoteManager.rpc_server_check_dlc_reply = function (self, channel_id, success)
 	local requirement_check_data = self._requirement_check_data
-	requirement_check_data.results[sender] = success
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	requirement_check_data.results[peer_id] = success
 end
 
-VoteManager.rpc_requirement_failed = function (self, sender, vote_id, message)
+VoteManager.rpc_requirement_failed = function (self, channel_id, vote_id, message)
 	local header = Localize("required_power_level_not_met_in_party")
 	local vote_name = NetworkLookup.voting_types[vote_id]
 	self._popup_id = Managers.popup:queue_popup(message, header, "ok", Localize("button_ok"))

@@ -28,7 +28,7 @@ FirstPersonSystem.destroy = function (self)
 	self.network_event_delegate = nil
 end
 
-FirstPersonSystem.rpc_play_first_person_sound = function (self, sender, unit_id, sound_id, position)
+FirstPersonSystem.rpc_play_first_person_sound = function (self, channel_id, unit_id, sound_id, position)
 	local sound_event = NetworkLookup.sound_events[sound_id]
 	local unit = self.unit_storage:unit(unit_id)
 
@@ -43,9 +43,11 @@ FirstPersonSystem.rpc_play_first_person_sound = function (self, sender, unit_id,
 	fp_ext:play_sound_event(sound_event, position)
 end
 
-FirstPersonSystem.rpc_play_husk_sound_event = function (self, sender, unit_id, event_id)
+FirstPersonSystem.rpc_play_husk_sound_event = function (self, channel_id, unit_id, event_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_play_husk_sound_event", sender, unit_id, event_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_play_husk_sound_event", peer_id, unit_id, event_id)
 	end
 
 	local unit = self.unit_storage:unit(unit_id)
@@ -56,17 +58,18 @@ FirstPersonSystem.rpc_play_husk_sound_event = function (self, sender, unit_id, e
 		return
 	end
 
-	local sound_position = POSITION_LOOKUP[unit]
 	local event = NetworkLookup.sound_events[event_id]
-	local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(self.world, sound_position)
+	local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, unit)
 
 	WwiseWorld.set_switch(wwise_world, "husk", "true", wwise_source_id)
 	WwiseWorld.trigger_event(wwise_world, event, wwise_source_id)
 end
 
-FirstPersonSystem.rpc_play_husk_unit_sound_event = function (self, sender, unit_id, node_id, event_id)
+FirstPersonSystem.rpc_play_husk_unit_sound_event = function (self, channel_id, unit_id, node_id, event_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_play_husk_unit_sound_event", sender, unit_id, node_id, event_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_play_husk_unit_sound_event", peer_id, unit_id, node_id, event_id)
 	end
 
 	local unit = self.unit_storage:unit(unit_id)
@@ -84,7 +87,7 @@ FirstPersonSystem.rpc_play_husk_unit_sound_event = function (self, sender, unit_
 	WwiseWorld.trigger_event(wwise_world, event, wwise_source_id)
 end
 
-FirstPersonSystem.rpc_first_person_flow_event = function (self, sender, unit_id, event_id)
+FirstPersonSystem.rpc_first_person_flow_event = function (self, channel_id, unit_id, event_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if not unit then

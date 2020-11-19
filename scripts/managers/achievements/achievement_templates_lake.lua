@@ -52,7 +52,9 @@ for breed_name, breed in pairs(Breeds) do
 	end
 end
 
-add_weapon_kills_per_breeds_challenge(achievements, "lake_boss_killblow", "markus_questingknight_career_skill_weapon", boss_breeds, 5, nil, "lake_upgrade", nil, nil)
+add_weapon_kills_per_breeds_challenge(achievements, "lake_boss_killblow", {
+	"markus_questingknight_career_skill_weapon"
+}, boss_breeds, 5, nil, "lake_upgrade", true, nil, nil)
 
 local act_1_levels = GameActs.act_1
 local act_2_levels = GameActs.act_2

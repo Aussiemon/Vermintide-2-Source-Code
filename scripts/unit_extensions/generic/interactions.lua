@@ -284,6 +284,13 @@ InteractionDefinitions.revive = {
 			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
+			local interactable_extension = ScriptUnit.extension(interactable_unit, "interactable_system")
+			local being_revived_by = interactable_extension:is_being_interacted_with()
+
+			if being_revived_by and being_revived_by ~= interactor_unit then
+				return false
+			end
+
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
 			local health_extension = ScriptUnit.extension(interactable_unit, "health_system")
 			local grabbed = status_extension:is_grabbed_by_pack_master()
@@ -1064,7 +1071,12 @@ InteractionDefinitions.pickup_object = {
 						end
 
 						local slot_data = inventory_extension:get_slot_data(slot_name)
+						local item_stored = false
 						local item_data = ItemMasterList[item_name]
+
+						if slot_data then
+							item_stored = inventory_extension:store_additional_item(slot_name, slot_data.item_data)
+						end
 
 						inventory_extension:destroy_slot(slot_name)
 						inventory_extension:add_equipment(slot_name, item_data, unit_template, extra_extension_init_data)
@@ -1092,7 +1104,7 @@ InteractionDefinitions.pickup_object = {
 								network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_object_id, slot_id, item_id, weapon_skin_id)
 							end
 
-							if slot_data then
+							if slot_data and not item_stored then
 								local item_data = slot_data.item_data
 								local item_template = BackendUtils.get_item_template(item_data)
 								local pickup_data = item_template.pickup_data
@@ -1352,9 +1364,10 @@ InteractionDefinitions.pickup_object = {
 
 			local pickup_item_name = pickup_settings.item_name
 			local slot_item_name = inventory_extension:get_item_name(slot_name)
+			local can_hold_more = inventory_extension:can_store_additional_item(slot_name)
 			local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
 
-			if return_value and pickup_item_name and slot_item_name and pickup_item_name == slot_item_name and (not buff_extension:has_buff_type("not_consume_pickup") or not pickup_settings.dupable or pickup_extension.spawn_type == "dropped") then
+			if return_value and pickup_item_name and slot_item_name and not can_hold_more and pickup_item_name == slot_item_name and (not buff_extension:has_buff_type("not_consume_pickup") or not pickup_settings.dupable or pickup_extension.spawn_type == "dropped") then
 				fail_reason = "already_equipped"
 				return_value = false
 			end
@@ -1540,8 +1553,9 @@ InteractionDefinitions.give_item = {
 			local target_inventory_extension = ScriptUnit.extension(interactable_unit, "inventory_system")
 			local slot_name = (Managers.input:is_device_active("gamepad") and interactor_inventory_extension:get_selected_consumable_slot_name()) or interactor_inventory_extension:get_wielded_slot_name()
 			local slot_occupied = target_inventory_extension:get_slot_data(slot_name)
+			local can_hold_more = target_inventory_extension:can_store_additional_item(slot_name)
 
-			return is_alive and item_template.can_give_other and not slot_occupied
+			return is_alive and item_template.can_give_other and (not slot_occupied or can_hold_more)
 		end,
 		set_interactor_data = function (interactor_unit, interactable_unit, interactor_data)
 			local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
@@ -2443,14 +2457,62 @@ InteractionDefinitions.difficulty_selection_access.client.hud_description = func
 	return unit_get_data(interactable_unit, "interaction_data", "hud_description"), DifficultySettings[DefaultDifficulties[current_difficulty]].display_name
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local interactions_filenames = dlc.interactions_filenames
+InteractionDefinitions.inn_door_transition = InteractionDefinitions.inn_door_transition or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.inn_door_transition.config.swap_to_3p = false
 
-	if interactions_filenames then
-		for _, file_path in pairs(interactions_filenames) do
-			require(file_path)
-		end
+InteractionDefinitions.inn_door_transition.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	if result == InteractionResult.SUCCESS and not data.is_husk then
+		local variation_data = Managers.backend:get_level_variation_data()
+		local vote_data = {
+			switch_mechanism = true,
+			mechanism = "adventure",
+			level_key = variation_data.hub_level or "inn_level"
+		}
+
+		Managers.state.voting:request_vote("game_settings_vote_switch_mechanism", vote_data, Network.peer_id())
 	end
 end
+
+InteractionDefinitions.inn_door_transition.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
+end
+
+InteractionDefinitions.inn_door_transition.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
+
+	return not is_game_matchmaking
+end
+
+InteractionDefinitions.deus_door_transition = InteractionDefinitions.deus_door_transition or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.deus_door_transition.config.swap_to_3p = false
+
+InteractionDefinitions.deus_door_transition.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	if result == InteractionResult.SUCCESS and not data.is_husk then
+		local variation_data = Managers.backend:get_level_variation_data()
+		local vote_data = {
+			switch_mechanism = true,
+			mechanism = "deus",
+			level_key = "morris_hub"
+		}
+
+		Managers.state.voting:request_vote("game_settings_vote_switch_mechanism", vote_data, Network.peer_id())
+	end
+end
+
+InteractionDefinitions.deus_door_transition.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
+end
+
+InteractionDefinitions.deus_door_transition.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	if not DLCSettings.morris then
+		return false
+	end
+
+	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
+
+	return not is_game_matchmaking
+end
+
+DLCUtils.require_list("interactions_filenames")
 
 return

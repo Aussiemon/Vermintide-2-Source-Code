@@ -268,6 +268,7 @@ local filter_macros = {
 	can_wield_dr_ironbreaker = make_filter_macro_can_wield_career("dr_ironbreaker"),
 	can_wield_dr_slayer = make_filter_macro_can_wield_career("dr_slayer"),
 	can_wield_dr_ranger = make_filter_macro_can_wield_career("dr_ranger"),
+	can_wield_dr_engineer = make_filter_macro_can_wield_career("dr_engineer"),
 	can_wield_empire_soldier = make_filter_macro_can_wield_profile("empire_soldier"),
 	can_wield_es_huntsman = make_filter_macro_can_wield_career("es_huntsman"),
 	can_wield_es_knight = make_filter_macro_can_wield_career("es_knight"),
@@ -426,6 +427,10 @@ local filter_macros = {
 		return is_cosmetic or not mechanisms or table.contains(mechanisms, "adventure")
 	end,
 	available_in_current_mechanism = function (item, backend_id)
+		if script_data.disable_mechanism_item_filter then
+			return true
+		end
+
 		local item_data = item.data
 		local mechanisms = item_data.mechanisms
 		local current_mechanism = Managers.mechanism:current_mechanism_name()
@@ -436,7 +441,7 @@ local filter_macros = {
 			"skin"
 		}, item_data.slot_type)
 
-		return is_cosmetic or (mechanisms and table.contains(mechanisms, current_mechanism)) or (not mechanisms and current_mechanism == "adventure")
+		return is_cosmetic or (mechanisms and table.contains(mechanisms, current_mechanism)) or (not mechanisms and Managers.mechanism:mechanism_setting("default_inventory"))
 	end,
 	owned = function (item, backend_id)
 		local owned = item.owned

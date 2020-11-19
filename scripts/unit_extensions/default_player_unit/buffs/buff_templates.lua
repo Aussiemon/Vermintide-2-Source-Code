@@ -10,13 +10,13 @@ RangedBuffTypes = {
 	RANGED_ABILITY = true
 }
 StatBuffApplicationMethods = {
-	attack_speed_drakefire = "stacking_multiplier",
-	increased_burn_damage = "stacking_multiplier",
+	power_level_frenzy = "stacking_multiplier",
+	reduced_spread = "stacking_multiplier",
 	gromril_cooldown = "stacking_bonus",
 	max_health_alive = "stacking_multiplier",
-	clip_size = "stacking_multiplier",
+	damage_taken_secondary = "stacking_multiplier",
+	faster_respawn = "stacking_multiplier",
 	curse_protection = "stacking_multiplier",
-	damage_taken = "stacking_multiplier_multiplicative",
 	vent_damage = "stacking_multiplier",
 	reduced_overcharge_from_passive = "stacking_multiplier",
 	first_melee_hit_damage = "stacking_multiplier",
@@ -30,7 +30,7 @@ StatBuffApplicationMethods = {
 	not_consume_potion = "proc",
 	damage_taken_kd = "stacking_multiplier",
 	damage_taken_elites = "stacking_multiplier",
-	faster_respawn = "stacking_multiplier",
+	damage_taken = "stacking_multiplier",
 	increase_luck = "stacking_multiplier",
 	power_level_melee_cleave = "stacking_multiplier",
 	reduced_overcharge = "stacking_multiplier",
@@ -38,13 +38,13 @@ StatBuffApplicationMethods = {
 	extra_shot = "proc",
 	heal_self_on_heal_other = "proc",
 	faster_revive = "stacking_multiplier",
-	power_level_large = "stacking_multiplier",
+	clip_size = "stacking_multiplier",
 	shield_break_proc = "proc",
 	block_cost = "stacking_multiplier",
-	max_damage_taken = "stacking_bonus",
+	max_damage_taken = "min",
 	timed_block_cost = "stacking_multiplier",
 	vent_speed = "stacking_multiplier",
-	critical_strike_effectiveness = "stacking_multiplier",
+	hit_mass_reduction = "stacking_multiplier",
 	power_level_armoured = "stacking_multiplier",
 	block_angle = "stacking_multiplier",
 	critical_strike_chance = "stacking_bonus",
@@ -63,7 +63,7 @@ StatBuffApplicationMethods = {
 	protection_chaos = "stacking_multiplier",
 	no_push_fatigue_cost = "proc",
 	power_level_chaos = "stacking_multiplier",
-	reduced_spread = "stacking_multiplier",
+	increased_burn_damage = "stacking_multiplier",
 	healing_received = "stacking_multiplier",
 	reduced_spread_moving = "stacking_multiplier",
 	max_health = "stacking_multiplier",
@@ -71,29 +71,33 @@ StatBuffApplicationMethods = {
 	increased_weapon_damage_melee = "stacking_multiplier",
 	attack_intensity_decay = "stacking_multiplier",
 	flat_power_level = "stacking_bonus",
-	reduced_spread_shot = "stacking_multiplier",
+	attack_speed_drakefire = "stacking_multiplier",
 	attack_intensity_reset = "stacking_multiplier",
+	max_damage_taken_from_boss_or_elite = "min",
 	unbalanced_damage_dealt = "stacking_multiplier",
-	unbalanced_damage_taken = "stacking_bonus",
 	coop_stamina = "proc",
 	power_level_ranged = "stacking_multiplier",
-	protection_ratling_gunner = "stacking_multiplier",
+	unbalanced_damage_taken = "stacking_bonus",
 	headshot_multiplier = "stacking_multiplier",
 	protection_skaven = "stacking_multiplier",
 	power_level_melee = "stacking_multiplier",
 	increased_weapon_damage_ranged = "stacking_multiplier",
+	reduced_spread_shot = "stacking_multiplier",
 	full_charge_boost = "stacking_multiplier",
-	dummy_stagger = "stacking_bonus",
 	protection_aoe = "stacking_multiplier",
 	potion_duration = "stacking_multiplier",
 	max_health_kd = "stacking_multiplier",
 	total_ammo = "stacking_multiplier",
-	power_level_frenzy = "stacking_multiplier",
+	dummy_stagger = "stacking_bonus",
 	reduced_ranged_charge_time = "stacking_multiplier",
 	grenade_radius = "stacking_multiplier",
+	deus_coins_greed = "stacking_multiplier",
 	overcharge_regen = "stacking_multiplier",
+	critical_strike_effectiveness = "stacking_multiplier",
 	grimoire_max_health = "stacking_multiplier",
+	power_level_large = "stacking_multiplier",
 	overcharge_damage_immunity = "proc",
+	debuff_armoured = "stacking_bonus",
 	max_fatigue = "stacking_bonus",
 	power_level_impact = "stacking_multiplier",
 	power_level_unarmoured = "stacking_multiplier",
@@ -104,12 +108,14 @@ StatBuffApplicationMethods = {
 	not_consume_medpack = "proc",
 	outer_block_angle = "stacking_multiplier",
 	increased_weapon_damage_melee_2h = "stacking_multiplier",
+	damage_dealt = "stacking_multiplier",
 	increased_weapon_damage_poisoned_or_bleeding = "stacking_multiplier",
 	reduced_spread_hit = "stacking_multiplier",
-	damage_taken_secondary = "stacking_multiplier_multiplicative",
+	protection_ratling_gunner = "stacking_multiplier",
 	backstab_multiplier = "stacking_bonus",
 	protection_poison_wind = "stacking_multiplier",
 	movement_speed = "stacking_multiplier",
+	ranged_additional_penetrations = "stacking_bonus",
 	power_level_skaven = "stacking_multiplier",
 	damage_taken_burning_enemy = "stacking_multiplier",
 	shielding_player_by_assist = "proc",
@@ -162,7 +168,7 @@ ProcEvents = {
 	"on_critical_hit",
 	"on_last_ammo_used",
 	"on_gained_ammo_from_no_ammo",
-	"on_damage_dealt",
+	"on_player_damage_dealt",
 	"on_stagger",
 	"on_charge_ability_hit",
 	"on_charge_ability_hit_blast",
@@ -176,16 +182,22 @@ ProcEvents = {
 	"on_full_charge_action",
 	"on_enemy_ignited",
 	"on_auto_headshot",
+	"on_potion_consumed",
+	"on_inventory_post_apply_buffs",
+	"on_death",
+	"on_damage_dealt",
 	"on_push_used",
 	"on_backstab",
 	"on_sweep",
 	"on_ranged_hit",
 	"on_critical_sweep",
+	"on_critical_shot",
 	"on_critical_action",
 	"on_spell_used",
 	"on_grenade_use",
 	"on_full_charge",
 	"on_charge_finished",
+	"on_ability_recharged",
 	"on_gromril_armour_removed"
 }
 local buff_params = {}
@@ -1161,7 +1173,7 @@ ProcFunctions = {
 		if Managers.state.network.is_server then
 			local player_unit = player.player_unit
 
-			if Unit.alive(player_unit) then
+			if ALIVE[player_unit] then
 				local attack_type = params[2]
 
 				if attack_type and attack_type == "ability" then
@@ -1655,23 +1667,37 @@ ProcFunctions = {
 		if Unit.alive(player_unit) then
 			local target_number = params[4]
 
-			if target_number < 2 then
-				local buff_template = buff.template
-				local buff_name = buff_template.buff_to_add
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-				local network_manager = Managers.state.network
-				local network_transmit = network_manager.network_transmit
-				local unit_object_id = network_manager:unit_game_object_id(player_unit)
-				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+			if target_number > 1 then
+				return
+			end
 
-				if is_server() then
-					buff_extension:add_buff(buff_name, {
-						attacker_unit = player_unit
-					})
-					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
-				else
-					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
-				end
+			local buff_template = buff.template
+			local valid_buff_types = buff_template.valid_buff_types
+			local buff_type = params[5]
+
+			if valid_buff_types and not valid_buff_types[buff_type] then
+				return
+			end
+
+			local client_side = buff_template.client_side
+			local buff_name = buff_template.buff_to_add
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local unit_object_id = network_manager:unit_game_object_id(player_unit)
+			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+
+			if client_side then
+				buff_extension:add_buff(buff_name, {
+					attacker_unit = player_unit
+				})
+			elseif is_server() then
+				buff_extension:add_buff(buff_name, {
+					attacker_unit = player_unit
+				})
+				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+			else
+				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 			end
 		end
 	end,
@@ -1732,6 +1758,36 @@ ProcFunctions = {
 			local hit_zone_name = params[3]
 
 			if hit_zone_name ~= "head" then
+				return
+			end
+
+			local target_number = params[4]
+
+			if target_number < 2 then
+				buff.marked_for_add = true
+			end
+		end
+	end,
+	add_delayed_buff_on_ranged_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] then
+			local hit_data = params[5]
+			local attack_type = params[2]
+			local unmodifed = params[7]
+			local hit_unit = params[1]
+
+			if not hit_data or hit_data == "n/a" or hit_data ~= "RANGED" then
+				return
+			end
+
+			local is_dummy = false
+
+			if hit_unit then
+				is_dummy = Unit.get_data(hit_unit, "is_dummy")
+			end
+
+			if (attack_type ~= "instant_projectile" and attack_type ~= "projectile") or (not unmodifed and not is_dummy) then
 				return
 			end
 
@@ -2400,6 +2456,35 @@ ProcFunctions = {
 			end
 		end
 	end,
+	exit_buff_area = function (player, template, params)
+		local owner_unit = player.player_unit
+
+		if not ALIVE[owner_unit] then
+			return false
+		end
+
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+		local buff_name = template.buff_to_add
+		local area_buff = buff_extension:get_non_stacking_buff(buff_name)
+
+		if area_buff then
+			buff_extension:remove_buff(area_buff.id)
+		end
+	end,
+	enter_buff_area = function (player, template, params)
+		local owner_unit = player.player_unit
+
+		if not ALIVE[owner_unit] then
+			return false
+		end
+
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+		local buff_name = template.buff_to_add
+
+		buff_extension:add_buff(buff_name, {
+			attacker_unit = owner_unit
+		})
+	end,
 	increased_movement_speed = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -2869,9 +2954,10 @@ ProcFunctions = {
 			local left_unit_1p = slot_data.left_unit_1p
 			local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
-			local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
 
 			if ammo_extension and (attack_type == "instant_projectile" or attack_type == "projectile") then
+				local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
+
 				if target_number == 1 then
 					buff.has_procced = false
 				end
@@ -3080,15 +3166,46 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-			local template = buff.template
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-			table.dump(template.buff_list)
-			buff_extension:remove_buff(template.buff_list[#template.buff_list])
-			table.remove(template.buff_list, #template.buff_list)
+			if buff_extension then
+				local template = buff.template
+				local remove_buff_stack_data_array = template.remove_buff_stack_data
 
-			if #template.buff_list < 1 then
-				buff_extension:remove_buff(buff.id)
+				for i = 1, #remove_buff_stack_data_array, 1 do
+					local remove_buff_stack_data = remove_buff_stack_data_array[i]
+					local buff_to_remove = remove_buff_stack_data.buff_to_remove
+					local num_stacks = remove_buff_stack_data.num_stacks or 1
+
+					if remove_buff_stack_data.server_controlled then
+						fassert(buff_to_remove == template.buff_to_add, "Trying to remove different type of server controlled buff, only same types are allowed right now.")
+
+						local buff_system = Managers.state.entity:system("buff_system")
+						local server_buff_ids = buff.server_buff_ids
+						num_stacks = math.min(#server_buff_ids, num_stacks)
+
+						for i = 1, num_stacks, 1 do
+							local buff_to_remove = table.remove(server_buff_ids)
+
+							buff_system:remove_server_controlled_buff(player_unit, buff_to_remove)
+						end
+					else
+						for i = 1, num_stacks, 1 do
+							local buff = buff_extension:get_buff_type(buff_to_remove)
+
+							if not buff then
+								break
+							end
+
+							buff_extension:remove_buff(buff.id)
+						end
+					end
+
+					if remove_buff_stack_data.reset_update_timer then
+						local t = Managers.time:time("game")
+						buff._next_update_t = t + (template.update_frequency or 0)
+					end
+				end
 			end
 		end
 	end,
@@ -3662,7 +3779,7 @@ ProcFunctions = {
 				easy = "blocked_attack"
 			}
 
-			if breed.name == "hero_es_knight" and not DamageUtils.check_block(player_unit, knight_unit, fatigue_type, "front") then
+			if breed and breed.name == "hero_es_knight" and not DamageUtils.check_block(player_unit, knight_unit, fatigue_type, "front") then
 				DamageUtils.add_damage_network(knight_unit, knight_unit, damage_amount, "full", "forced", nil, Vector3(1, 0, 0), "buff")
 			end
 		end
@@ -3770,67 +3887,123 @@ ProcFunctions = {
 			cooldown_buff.duration = 0
 		end
 	end,
+	on_kill_add_remove = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if not Unit.alive(player_unit) then
+			return
+		end
+
+		local killing_blow_data = params[1]
+
+		if not killing_blow_data then
+			return
+		end
+
+		local buff_template = buff.template
+		local buff_data = buff_template.on_kill_add_remove_data
+
+		if not buff_data then
+			return
+		end
+
+		local required_weapon_type = buff_data.weapon_type
+
+		if required_weapon_type then
+			local slot_type = get_killing_blow_slot_type(params)
+
+			if slot_type == "melee" then
+				local damage_type = killing_blow_data[DamageDataIndex.DAMAGE_TYPE]
+
+				if damage_type == "shot_carbine" then
+					slot_type = "ranged"
+				end
+			end
+
+			if slot_type ~= required_weapon_type then
+				return
+			end
+		end
+
+		local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+
+		if buff_extension then
+			local requirements = buff_data.requirements
+
+			if requirements then
+				local buffs_exist = requirements.buffs_exist
+
+				if buffs_exist then
+					for i = 1, #buffs_exist, 1 do
+						if not buff_extension:has_buff_type(buffs_exist[i]) then
+							return
+						end
+					end
+				end
+
+				local buffs_not_exist = requirements.buffs_not_exist
+
+				if buffs_not_exist then
+					for i = 1, #buffs_not_exist, 1 do
+						if buff_extension:has_buff_type(buffs_not_exist[i]) then
+							return
+						end
+					end
+				end
+			end
+
+			local buffs_to_add = buff_data.buffs_to_add
+
+			if buffs_to_add then
+				for i = 1, #buffs_to_add, 1 do
+					buff_extension:add_buff(buffs_to_add[i])
+				end
+			end
+
+			local buffs_to_remove = buff_data.buffs_to_remove
+
+			if buffs_to_remove then
+				for i = 1, #buffs_to_remove, 1 do
+					local buff = buff_extension:get_non_stacking_buff(buffs_to_remove[i])
+
+					if buff then
+						buff_extension:remove_buff(buff.id)
+					end
+				end
+			end
+		end
+	end,
+	apply_ranged_damage_debuff = function (player, buff, params)
+		local player_unit = player.player_unit
+		local hit_unit = params[1]
+
+		if Unit.alive(player_unit) and Unit.alive(hit_unit) then
+			local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
+
+			if buff_extension then
+				local buff_name = "ranged_damage_debuff"
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
+				local unit_object_id = network_manager:unit_game_object_id(player_unit)
+				local hit_object_id = network_manager:unit_game_object_id(hit_unit)
+
+				if is_server() then
+					buff_extension:add_buff(buff_name, {
+						attacker_unit = player_unit
+					})
+					network_transmit:send_rpc_clients("rpc_add_buff", hit_object_id, buff_template_name_id, unit_object_id, 0, false)
+				else
+					network_transmit:send_rpc_server("rpc_add_buff", hit_object_id, buff_template_name_id, unit_object_id, 0, true)
+				end
+			end
+		end
+	end,
 	dummy_function = function (player, buff, params)
 		return true
 	end
 }
 MaxStackFunctions = {
-	gain_push_applies_burn = function (player, sub_buff_template)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-
-			buff_extension:add_buff("bw_push_applies_burn")
-		end
-	end,
-	gain_assassinate = function (player, sub_buff_template)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-
-			buff_extension:add_buff("assassinate")
-		end
-	end,
-	gain_health_and_ammo = function (player, sub_buff_template)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			if Managers.player.is_server then
-				local heal_amount = sub_buff_template.heal_amount
-
-				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
-			end
-
-			local weapon_slot = "slot_ranged"
-			local ammo_amount = sub_buff_template.ammo_amount
-			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-			local slot_data = inventory_extension:get_slot_data(weapon_slot)
-			local right_unit_1p = slot_data.right_unit_1p
-			local left_unit_1p = slot_data.left_unit_1p
-			local right_hand_ammo_extension = right_unit_1p and ScriptUnit.has_extension(right_unit_1p, "ammo_system")
-			local left_hand_ammo_extension = left_unit_1p and ScriptUnit.has_extension(left_unit_1p, "ammo_system")
-			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
-
-			if ammo_extension then
-				ammo_extension:add_ammo_to_reserve(ammo_amount)
-			end
-		end
-	end,
-	remove_buff = function (player, sub_buff_template)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			local buff_to_remove = sub_buff_template.buff_to_remove
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-			local buff = buff_extension:get_non_stacking_buff(buff_to_remove)
-
-			if buff then
-				buff_extension:remove_buff(buff.id)
-			end
-		end
-	end,
 	add_remove_buffs = function (player, sub_buff_template)
 		local player_unit = player.player_unit
 
@@ -3839,11 +4012,30 @@ MaxStackFunctions = {
 
 			if max_stack_data then
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local buff_system = Managers.state.entity:system("buff_system")
 				local buffs_to_add = max_stack_data.buffs_to_add
 
 				if buffs_to_add then
 					for i = 1, #buffs_to_add, 1 do
 						buff_extension:add_buff(buffs_to_add[i])
+					end
+				end
+
+				local talent_buffs_to_add = max_stack_data.talent_buffs_to_add
+
+				if talent_buffs_to_add then
+					local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
+
+					for name, data in pairs(talent_buffs_to_add) do
+						if talent_extension:has_talent(name) then
+							local buff_to_add = data.buff_to_add
+
+							if data.rpc_sync then
+								buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+							else
+								buff_extension:add_buff(buff_to_add)
+							end
+						end
 					end
 				end
 
@@ -4277,11 +4469,10 @@ BuffTemplates = {
 		activation_sound = "hud_info_state_grimoire_pickup",
 		buffs = {
 			{
-				perk = "skaven_grimoire",
 				name = "grimoire_health_debuff",
-				debuff = true,
 				icon = "buff_icon_grimoire_health_debuff",
-				dormant = true
+				perk = "skaven_grimoire",
+				debuff = true
 			}
 		}
 	},
@@ -5099,11 +5290,10 @@ BuffTemplates = {
 				slowdown_buff_name = "corpse_pit_slowdown",
 				name = "catacombs_corpse_pit",
 				update_func = "update_catacombs_corpse_pit",
-				dormant = true,
-				fatigue_type = "vomit_ground",
-				remove_buff_func = "remove_catacombs_corpse_pit",
 				apply_buff_func = "apply_catacombs_corpse_pit",
 				refresh_durations = true,
+				remove_buff_func = "remove_catacombs_corpse_pit",
+				fatigue_type = "vomit_ground",
 				time_between_ticks = 2,
 				debuff = true,
 				max_stacks = 1,
@@ -5116,15 +5306,14 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "cemetery_floor_plague_slowdown",
 				name = "plague_floor",
+				debuff = true,
 				update_func = "update_moving_through_plague",
-				dormant = true,
-				damage_type = "plague_ground",
+				fatigue_type = "plague_ground",
 				remove_buff_func = "remove_moving_through_plague",
 				apply_buff_func = "apply_moving_through_plague",
-				fatigue_type = "plague_ground",
 				refresh_durations = true,
 				time_between_dot_damages = 0.75,
-				debuff = true,
+				damage_type = "plague_ground",
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
 				difficulty_damage = {
@@ -5209,6 +5398,18 @@ BuffTemplates = {
 			}
 		}
 	},
+	bloodlust = {
+		buffs = {
+			{
+				multiplier = 0.2,
+				name = "bloodlust",
+				event_buff = true,
+				buff_func = "heal_percent_of_damage_dealt_on_melee",
+				event = "on_player_damage_dealt",
+				perk = "smiter_healing"
+			}
+		}
+	},
 	vanguard = {
 		buffs = {
 			{
@@ -5228,7 +5429,7 @@ BuffTemplates = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				bonus = 0.75
 			}
@@ -5436,10 +5637,9 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "cemetery_floor_plague_slowdown",
 				name = "mutator_life_thorns_poison",
-				apply_buff_func = "apply_mutator_life_thorns_poison",
 				refresh_durations = true,
 				remove_buff_func = "remove_mutator_life_thorns_poison",
-				dormant = true,
+				apply_buff_func = "apply_mutator_life_thorns_poison",
 				time_between_dot_damages = 0.01,
 				debuff = true,
 				max_stacks = 1,
@@ -5517,11 +5717,10 @@ BuffTemplates = {
 	mutator_light_debuff = {
 		buffs = {
 			{
-				perk = "mutator_curse",
 				name = "mutator_light_debuff",
-				debuff = true,
 				icon = "buff_icon_mutator_icon_slayer_curse",
-				dormant = true
+				perk = "mutator_curse",
+				debuff = true
 			},
 			{
 				multiplier = 0.015,
@@ -5559,11 +5758,10 @@ BuffTemplates = {
 	metal_mutator_gromril_armour = {
 		buffs = {
 			{
-				icon = "teammate_consumable_icon_defence",
-				name = "metal_mutator_gromril_armour",
 				max_stacks = 10,
+				name = "metal_mutator_gromril_armour",
 				remove_buff_func = "remove_metal_mutator_gromril_armour",
-				dormant = true
+				icon = "teammate_consumable_icon_defence"
 			}
 		}
 	},
@@ -6589,16 +6787,15 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "warpfire_thrower_fire_slowdown",
 				name = "warpfire_thrower_base",
+				debuff = true,
 				update_func = "update_warpfirethrower_in_face",
-				dormant = true,
-				damage_type = "warpfire_ground",
+				fatigue_type = "warpfire_ground",
 				remove_buff_func = "remove_warpfirethrower_in_face",
 				apply_buff_func = "apply_warpfirethrower_in_face",
-				fatigue_type = "warpfire_ground",
 				push_speed = 15,
-				time_between_dot_damages = 0.75,
 				duration = 0.3,
-				debuff = true,
+				time_between_dot_damages = 0.75,
+				damage_type = "warpfire_ground",
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
 				difficulty_damage = {
@@ -6667,16 +6864,15 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "warpfire_thrower_fire_slowdown",
 				name = "warpfire_thrower_base",
+				debuff = true,
 				update_func = "update_warpfirethrower_in_face",
-				dormant = true,
-				damage_type = "warpfire_ground",
+				fatigue_type = "warpfire_ground",
 				remove_buff_func = "remove_warpfirethrower_in_face",
 				apply_buff_func = "apply_warpfirethrower_in_face",
-				fatigue_type = "warpfire_ground",
 				push_speed = 30,
-				time_between_dot_damages = 0.75,
 				duration = 0.3,
-				debuff = true,
+				time_between_dot_damages = 0.75,
+				damage_type = "warpfire_ground",
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
 				difficulty_damage = {
@@ -6831,17 +7027,16 @@ BuffTemplates = {
 	plague_wave_ground_base = {
 		buffs = {
 			{
-				apply_buff_func = "apply_moving_through_vomit",
+				fatigue_type = "vomit_ground",
 				name = "troll_bile_ground",
-				update_func = "update_moving_through_vomit",
-				dormant = true,
+				icon = "troll_vomit_debuff",
 				refresh_durations = true,
 				remove_buff_func = "remove_moving_through_vomit",
-				fatigue_type = "vomit_ground",
+				apply_buff_func = "apply_moving_through_vomit",
 				time_between_dot_damages = 0.75,
 				damage_type = "vomit_ground",
 				max_stacks = 1,
-				icon = "troll_vomit_debuff",
+				update_func = "update_moving_through_vomit",
 				difficulty_damage = {
 					easy = {
 						1,
@@ -6996,15 +7191,14 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
 				name = "troll_bile_ground",
+				debuff = true,
 				update_func = "update_moving_through_vomit",
-				dormant = true,
-				damage_type = "vomit_ground",
+				fatigue_type = "vomit_ground",
 				remove_buff_func = "remove_moving_through_vomit",
 				apply_buff_func = "apply_moving_through_vomit",
-				fatigue_type = "vomit_ground",
 				refresh_durations = true,
 				time_between_dot_damages = 0.75,
-				debuff = true,
+				damage_type = "vomit_ground",
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
 				difficulty_damage = {
@@ -7423,17 +7617,16 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "plague_wave_face_slowdown",
 				name = "plague_wave_face",
-				update_func = "update_vomit_in_face",
-				dormant = true,
-				fatigue_type = "vomit_face",
-				remove_buff_func = "remove_plague_wave_in_face",
+				icon = "troll_vomit_debuff",
 				apply_buff_func = "apply_plague_wave_in_face",
+				remove_buff_func = "remove_plague_wave_in_face",
+				fatigue_type = "vomit_face",
 				duration = 2,
-				time_between_dot_damages = 0.65,
 				refresh_durations = true,
+				time_between_dot_damages = 0.65,
 				damage_type = "plague_face",
 				max_stacks = 1,
-				icon = "troll_vomit_debuff",
+				update_func = "update_vomit_in_face",
 				push_speed = 6,
 				difficulty_damage = {
 					easy = {
@@ -7532,18 +7725,17 @@ BuffTemplates = {
 	vermintide_face_base = {
 		buffs = {
 			{
-				apply_buff_func = "apply_vermintide_in_face",
-				name = "plague_wave_face",
-				update_func = "update_vermintide_in_face",
-				dormant = true,
-				remove_buff_func = "remove_vermintide_in_face",
 				fatigue_type = "vomit_face",
+				name = "plague_wave_face",
+				icon = "troll_vomit_debuff",
 				duration = 3.5,
+				remove_buff_func = "remove_vermintide_in_face",
+				apply_buff_func = "apply_vermintide_in_face",
 				refresh_durations = true,
 				time_between_dot_damages = 0.65,
 				damage_type = "plague_face",
 				max_stacks = 1,
-				icon = "troll_vomit_debuff",
+				update_func = "update_vermintide_in_face",
 				push_speed = 15,
 				difficulty_damage = {
 					easy = {
@@ -7644,18 +7836,17 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
 				name = "troll_bile_face",
+				debuff = true,
 				update_func = "update_vomit_in_face",
-				dormant = true,
-				damage_type = "vomit_face",
+				fatigue_type = "vomit_face",
 				remove_buff_func = "remove_vomit_in_face",
 				apply_buff_func = "apply_vomit_in_face",
-				fatigue_type = "vomit_face",
-				time_between_dot_damages = 0.65,
 				duration = 5,
-				debuff = true,
+				time_between_dot_damages = 0.65,
+				refresh_durations = true,
+				damage_type = "vomit_face",
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
-				refresh_durations = true,
 				push_speed = 6,
 				difficulty_damage = {
 					easy = {
@@ -7854,17 +8045,16 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "vortex_slowdown",
 				name = "vortex",
-				update_func = "update_vortex",
-				dormant = true,
-				fatigue_type = "vomit_face",
-				remove_buff_func = "remove_vortex",
+				icon = "troll_vomit_debuff",
 				apply_buff_func = "apply_vortex",
 				duration = 2,
+				remove_buff_func = "remove_vortex",
+				fatigue_type = "vomit_face",
 				refresh_durations = true,
 				time_between_dot_damages = 0.65,
 				damage_type = "vomit_face",
 				max_stacks = 1,
-				icon = "troll_vomit_debuff",
+				update_func = "update_vortex",
 				difficulty_damage = {
 					easy = {
 						1,
@@ -8005,6 +8195,39 @@ BuffTemplates = {
 				path_to_movement_setting_to_modify = {
 					"walk_move_speed"
 				}
+			}
+		}
+	},
+	career_passive_vs_ratling_gunner = {
+		buffs = {
+			{
+				name = "career_passive_vs_ratling_gunner",
+				event_buff = true,
+				buff_func = "apply_ranged_damage_debuff",
+				event = "on_ranged_hit",
+				icon = "troll_vomit_debuff"
+			}
+		}
+	},
+	ranged_damage_debuff = {
+		buffs = {
+			{
+				icon = "bardin_ranger_not_used_3",
+				multiplier = -0.5,
+				stat_buff = "increased_weapon_damage_ranged",
+				name = "ranged_damage_debuff",
+				refresh_durations = true,
+				priority_buff = true,
+				debuff = true,
+				max_stacks = 1,
+				duration = 3
+			}
+		}
+	},
+	career_passive_vs_gutter_runner_unmount = {
+		buffs = {
+			{
+				name = "career_passive_vs_gutter_runner_unmount"
 			}
 		}
 	},
@@ -8188,18 +8411,17 @@ BuffTemplates = {
 			{
 				slowdown_buff_name = "bile_troll_vomit_face_slowdown",
 				name = "corpse_explosion_default",
+				debuff = true,
 				update_func = "update_vomit_in_face",
-				dormant = true,
-				damage_type = "vomit_face",
+				fatigue_type = "vomit_face",
 				remove_buff_func = "remove_vomit_in_face",
 				apply_buff_func = "apply_vomit_in_face",
-				fatigue_type = "vomit_face",
-				time_between_dot_damages = 0.65,
 				duration = 2,
-				debuff = true,
+				time_between_dot_damages = 0.65,
+				refresh_durations = true,
+				damage_type = "vomit_face",
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
-				refresh_durations = true,
 				push_speed = 6,
 				difficulty_damage = {
 					easy = {
@@ -8460,7 +8682,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_splitting_enemies",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8472,7 +8694,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_leash",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8484,7 +8706,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_slayers_curse",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8496,7 +8718,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_shared_health_pool",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8508,7 +8730,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_bloodlust",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8520,7 +8742,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_ticking_bomb",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8532,7 +8754,7 @@ BuffTemplates = {
 				duration = 33,
 				name = "twitch_mutator_buff_lightning_strike",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8544,7 +8766,7 @@ BuffTemplates = {
 				duration = 25,
 				name = "twitch_mutator_buff_chasing_spirits",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8556,7 +8778,7 @@ BuffTemplates = {
 				duration = 30,
 				name = "twitch_mutator_buff_flames",
 				duration_modifier_func = function (buff_template, duration)
-					return duration * ((PLATFORM == "xb1" and MixerSettings.mutator_duration_multiplier) or TwitchSettings.mutator_duration_multiplier)
+					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
 		}
@@ -8595,8 +8817,7 @@ BuffTemplates = {
 				icon = "troll_vomit_debuff",
 				damage_profile = "bloodlust_debuff",
 				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				dormant = true
+				apply_buff_func = "start_dot_damage"
 			}
 		}
 	},
@@ -8728,29 +8949,12 @@ table.merge_recursive(BuffTemplates, WeaponProperties.buff_templates)
 table.merge_recursive(BuffTemplates, WeaponTraits.buff_templates)
 table.merge_recursive(BuffTemplates, WeaveProperties.buff_templates)
 table.merge_recursive(BuffTemplates, WeaveTraits.buff_templates)
-
-for _, dlc in pairs(DLCSettings) do
-	local buff_templates = dlc.buff_templates
-
-	if buff_templates then
-		table.merge_recursive(BuffTemplates, buff_templates)
-	end
-
-	local proc_functions = dlc.proc_functions
-
-	if proc_functions then
-		table.merge_recursive(ProcFunctions, proc_functions)
-	end
-
-	local add_sub_buffs_to_core_buffs = dlc.add_sub_buffs_to_core_buffs
-
-	if add_sub_buffs_to_core_buffs then
-		for i = 1, #add_sub_buffs_to_core_buffs, 1 do
-			local data = add_sub_buffs_to_core_buffs[i]
-			BuffTemplates[data.buff_name].buffs[#BuffTemplates[data.buff_name].buffs + 1] = data.sub_buff_to_add
-		end
-	end
-end
+DLCUtils.merge("buff_templates", BuffTemplates)
+DLCUtils.merge("proc_functions", ProcFunctions)
+DLCUtils.map_list("add_sub_buffs_to_core_buffs", function (data)
+	local buffs = BuffTemplates[data.buff_name].buffs
+	buffs[#buffs + 1] = data.sub_buff_to_add
+end)
 
 local override_descriptions = {
 	proc_chance = true

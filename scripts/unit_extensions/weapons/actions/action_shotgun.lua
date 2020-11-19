@@ -27,13 +27,13 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 	local owner_unit = self.owner_unit
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-	local infinite_ammo = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
+	local infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
 	self.infinite_ammo = infinite_ammo
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
 	local spread_template_override = new_action.spread_template_override
@@ -69,7 +69,7 @@ ActionShotgun._use_ammo = function (self)
 		num_shots_total = ammo_usage
 	end
 
-	if ammo_extension and not self.extra_buff_shot and not self.infinite_ammo then
+	if ammo_extension and not self.extra_buff_shot then
 		ammo_extension:use_ammo(ammo_usage)
 	end
 
@@ -150,7 +150,6 @@ ActionShotgun._shooting = function (self, t, final_frame)
 end
 
 ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
-	local spread_extension = self.spread_extension
 	local current_action = self.current_action
 	local current_position = self._fire_position:unbox()
 	local current_rotation = self._fire_rotation:unbox()
@@ -167,12 +166,7 @@ ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
 
 	for i = 1, num_shots_this_frame, 1 do
 		self._shots_fired = self._shots_fired + 1
-		local rotation = current_rotation
-
-		if spread_extension then
-			rotation = spread_extension:get_target_style_spread(self._shots_fired, num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
-		end
-
+		local rotation = self:_get_spread_rotation(num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
 		local direction = Quaternion.forward(rotation)
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, current_action.range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 
@@ -242,7 +236,14 @@ end
 ActionShotgun.reload = function (self, current_action)
 	local ammo_extension = self.ammo_extension
 
-	if ammo_extension:can_reload() and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 then
+	if not ammo_extension then
+		return
+	end
+
+	local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+	local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(self.owner_unit)
+
+	if ammo_extension:can_reload() and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 then
 		local play_reload_animation = current_action.play_reload_animation
 
 		ammo_extension:start_reload(play_reload_animation, current_action.override_reload_time)
@@ -272,6 +273,16 @@ ActionShotgun.finish = function (self, reason)
 
 	if hud_extension then
 		hud_extension.show_critical_indication = false
+	end
+end
+
+ActionShotgun._get_spread_rotation = function (self, num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
+	local spread_extension = self.spread_extension
+
+	if spread_extension then
+		return spread_extension:get_target_style_spread(self._shots_fired, num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
+	else
+		return current_rotation
 	end
 end
 

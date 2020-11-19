@@ -3,6 +3,8 @@ Development = Development or {}
 Development.application_parameter = {}
 
 Development.init_application_parameters = function (args, do_pretty_print_args)
+	print("Development.init_application_parameters")
+
 	Development.application_parameter = {}
 	local application_parameters = Development.application_parameter
 
@@ -141,6 +143,43 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 	end
 
 	script_data["eac-untrusted"] = application_parameters["eac-untrusted"] ~= nil or application_parameters.eac_untrusted ~= nil
+
+	if DEDICATED_SERVER or BUILD ~= "release" then
+		for param, value in pairs(application_parameters) do
+			if type(value) == "string" then
+				local fixedparam = string.gsub(param, "-", "_")
+				script_data[fixedparam] = value
+			else
+				script_data[param] = value
+			end
+		end
+	end
+
+	if do_pretty_print_args then
+		print("-----------------------------------------------------------------")
+		print("--                   Application parameters                    --")
+
+		for param, value in pairs(application_parameters) do
+			if type(value) == "table" then
+				local formatted_string = string.format("%%-%ds = {", max_param_string_length)
+				local output = string.format(formatted_string, param)
+
+				for i = 1, #value, 1 do
+					output = output .. " " .. tostring(value[i])
+				end
+
+				output = output .. " }"
+
+				print(output)
+			else
+				local formatted_string = string.format("%%-%ds = %%s", max_param_string_length)
+
+				printf(formatted_string, param, tostring(value))
+			end
+		end
+
+		print("-----------------------------------------------------------------")
+	end
 end
 
 return

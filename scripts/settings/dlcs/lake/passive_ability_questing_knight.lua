@@ -1,95 +1,106 @@
 PassiveAbilityQuestingKnight = class(PassiveAbilityQuestingKnight)
 local NUM_CHALLENGES = 2
-local possible_challenges = {
-	{
-		reward = "markus_questing_knight_passive_power_level",
-		type = "kill_elites",
-		amount = {
-			1,
-			15,
-			15,
-			20,
-			20,
-			30,
-			30,
-			30
-		}
-	},
-	{
-		reward = "markus_questing_knight_passive_attack_speed",
-		type = "kill_specials",
-		amount = {
-			1,
-			10,
-			10,
-			15,
-			15,
-			20,
-			20,
-			20
-		}
-	},
-	{
-		reward = "markus_questing_knight_passive_cooldown_reduction",
-		type = "kill_monsters",
-		amount = {
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1
+local CHALLENGE_CATEGORY = "questing_knight"
+local challenge_settings = {
+	default = {
+		possible_challenges = {
+			{
+				reward = "markus_questing_knight_passive_power_level",
+				type = "kill_elites",
+				amount = {
+					1,
+					15,
+					15,
+					20,
+					20,
+					30,
+					30,
+					30
+				}
+			},
+			{
+				reward = "markus_questing_knight_passive_attack_speed",
+				type = "kill_specials",
+				amount = {
+					1,
+					10,
+					10,
+					15,
+					15,
+					20,
+					20,
+					20
+				}
+			},
+			{
+				reward = "markus_questing_knight_passive_cooldown_reduction",
+				type = "kill_monsters",
+				amount = {
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1
+				}
+			}
+		},
+		possible_challenges_require_grims = {
+			{
+				reward = "markus_questing_knight_passive_health_regen",
+				type = "find_grimoire",
+				amount = {
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1
+				}
+			}
+		},
+		possible_challenges_require_tomes = {
+			{
+				reward = "markus_questing_knight_passive_damage_taken",
+				type = "find_tome",
+				amount = {
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1,
+					1
+				}
+			}
+		},
+		side_quest_challenge = {
+			reward = "markus_questing_knight_passive_strength_potion",
+			type = "kill_enemies",
+			amount = {
+				1,
+				100,
+				125,
+				150,
+				175,
+				200,
+				200,
+				200
+			}
 		}
 	}
 }
-local possible_challenges_require_grims = {
-	{
-		reward = "markus_questing_knight_passive_health_regen",
-		type = "find_grimoire",
-		amount = {
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1
-		}
-	}
-}
-local possible_challenges_require_tomes = {
-	{
-		reward = "markus_questing_knight_passive_damage_taken",
-		type = "find_tome",
-		amount = {
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1,
-			1
-		}
-	}
-}
-local side_quest_challenge = {
-	reward = "markus_questing_knight_passive_strength_potion",
-	type = "kill_enemies",
-	amount = {
-		1,
-		100,
-		125,
-		150,
-		175,
-		200,
-		200,
-		200
-	}
-}
+
+for _, dlc in pairs(DLCSettings) do
+	if dlc.questing_knight_challenges then
+		table.merge_recursive(challenge_settings, dlc.questing_knight_challenges)
+	end
+end
 
 PassiveAbilityQuestingKnight.init = function (self, extension_init_context, unit, extension_init_data, ability_init_data)
 	self._owner_unit = unit
@@ -119,7 +130,7 @@ PassiveAbilityQuestingKnight.extensions_ready = function (self, world, unit)
 		self._tomes_allowed = false
 	else
 		local loot_objectives = level_settings and level_settings.loot_objectives
-		self._grims_allowed = loot_objectives and loot_objectives.grimoire and loot_objectives.grimoire
+		self._grims_allowed = loot_objectives and loot_objectives.grimoire and loot_objectives.grimoire > 0
 		self._tomes_allowed = loot_objectives and loot_objectives.tome and loot_objectives.tome > 0
 	end
 
@@ -138,7 +149,13 @@ end
 
 PassiveAbilityQuestingKnight._create_quests = function (self)
 	local challenge_manager = Managers.venture.challenge
-	local passive_challenges = challenge_manager:get_challenges_filtered({}, "questing_knight", self._player_unique_id)
+	local player_unique_id = self._player_unique_id
+
+	if self:_always_reset_quest_pool() then
+		challenge_manager:remove_filtered_challenges(CHALLENGE_CATEGORY, player_unique_id)
+	end
+
+	local passive_challenges = challenge_manager:get_challenges_filtered({}, CHALLENGE_CATEGORY, player_unique_id)
 	local num_existing_challenges = #passive_challenges
 
 	if num_existing_challenges > 0 then
@@ -146,7 +163,7 @@ PassiveAbilityQuestingKnight._create_quests = function (self)
 			passive_challenges[i]:set_paused(false)
 		end
 	else
-		local completed_challenges = challenge_manager:get_completed_challenges_filtered({}, "questing_knight", self._player_unique_id)
+		local completed_challenges = challenge_manager:get_completed_challenges_filtered({}, CHALLENGE_CATEGORY, player_unique_id)
 
 		if #completed_challenges == 0 then
 			local challenge_list = self:_generate_quest_pool()
@@ -158,24 +175,73 @@ PassiveAbilityQuestingKnight._create_quests = function (self)
 			end
 
 			if self._talent_extension:has_talent("markus_questing_knight_passive_side_quest") then
-				challenge_manager:add_challenge(side_quest_challenge.type, true, "questing_knight", side_quest_challenge.reward, self._player_unique_id, side_quest_challenge.amount[self._difficulty_rank])
+				local side_quest_challenge = self:_get_side_quest_challenge()
+
+				challenge_manager:add_challenge(side_quest_challenge.type, true, CHALLENGE_CATEGORY, side_quest_challenge.reward, player_unique_id, side_quest_challenge.amount[self._difficulty_rank])
 			end
 		end
 	end
 end
 
 PassiveAbilityQuestingKnight._generate_quest_pool = function (self)
-	local challenge_list = table.clone(possible_challenges)
+	local challenge_list = table.clone(self:_get_possible_challenges())
 
 	if self._grims_allowed then
-		table.append(challenge_list, possible_challenges_require_grims)
+		table.append(challenge_list, self:_get_possible_challenges_require_grims())
 	end
 
 	if self._tomes_allowed then
-		table.append(challenge_list, possible_challenges_require_tomes)
+		table.append(challenge_list, self:_get_possible_challenges_require_tomes())
 	end
 
 	return challenge_list
+end
+
+PassiveAbilityQuestingKnight._get_possible_challenges = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+	local possible_challenges = settings.possible_challenges
+
+	fassert(possible_challenges, "[PassiveAbilityQuestingKnight] possible_challenges not defined for the current mechanism")
+
+	return possible_challenges
+end
+
+PassiveAbilityQuestingKnight._get_possible_challenges_require_grims = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+	local possible_challenges_require_grims = settings.possible_challenges_require_grims
+
+	fassert(possible_challenges_require_grims, "[PassiveAbilityQuestingKnight] possible_challenges_require_grims not defined for the current mechanism")
+
+	return possible_challenges_require_grims
+end
+
+PassiveAbilityQuestingKnight._get_possible_challenges_require_tomes = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+	local possible_challenges_require_tomes = settings.possible_challenges_require_tomes
+
+	fassert(possible_challenges_require_tomes, "[PassiveAbilityQuestingKnight] possible_challenges_require_tomes not defined for the current mechanism")
+
+	return possible_challenges_require_tomes
+end
+
+PassiveAbilityQuestingKnight._get_side_quest_challenge = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+	local side_quest_challenge = settings.side_quest_challenge
+
+	fassert(side_quest_challenge, "[PassiveAbilityQuestingKnight] side_quest_challenge not defined for the current mechanism")
+
+	return side_quest_challenge
+end
+
+PassiveAbilityQuestingKnight._always_reset_quest_pool = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local settings = challenge_settings[mechanism_name] or challenge_settings.default
+
+	return settings.always_reset_quest_pool or false
 end
 
 PassiveAbilityQuestingKnight._start_quest_from_pool = function (self, quest_pool, num_to_start)

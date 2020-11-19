@@ -467,7 +467,7 @@ TutorialSystem.iterate_info_slates = function (self, t, unit, extension, raycast
 	end
 end
 
-TutorialSystem.rpc_tutorial_message = function (self, sender, template_id, message_id)
+TutorialSystem.rpc_tutorial_message = function (self, channel_id, template_id, message_id)
 	local template_name = NetworkLookup.tutorials[template_id]
 
 	if not template_name then
@@ -484,21 +484,21 @@ TutorialSystem.rpc_tutorial_message = function (self, sender, template_id, messa
 	end
 end
 
-TutorialSystem.rpc_pacing_changed = function (self, sender, pacing_id)
+TutorialSystem.rpc_pacing_changed = function (self, channel_id, pacing_id)
 	local pacing = NetworkLookup.pacing[pacing_id]
 	self.pacing = pacing
 
 	tutprintf("Changing pacing state to %s", pacing)
 end
 
-TutorialSystem.rpc_objective_unit_set_active = function (self, sender, level_object_id, is_level_unit, activate)
+TutorialSystem.rpc_objective_unit_set_active = function (self, channel_id, level_object_id, is_level_unit, activate)
 	local unit = Managers.state.network:game_object_or_level_unit(level_object_id, is_level_unit)
 	local extension = ScriptUnit.extension(unit, "tutorial_system")
 
 	extension:set_active(activate)
 end
 
-TutorialSystem.rpc_prioritize_objective_tooltip = function (self, sender, prioritized_objective_tooltip_id)
+TutorialSystem.rpc_prioritize_objective_tooltip = function (self, channel_id, prioritized_objective_tooltip_id)
 	local prioritized_objective_tooltip = NetworkLookup.objective_tooltips[prioritized_objective_tooltip_id]
 
 	self:prioritize_objective_tooltip(prioritized_objective_tooltip)

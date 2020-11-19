@@ -4,6 +4,7 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 	local owner_unit = extension_init_data.owner_unit
 	local item_name = extension_init_data.item_name
 	self._world = extension_init_context.world
+	self._wwise_world = Managers.world:wwise_world(self._world)
 	self._projectile_unit = unit
 	self._owner_unit = owner_unit
 	self._owner_player = Managers.player:owner(owner_unit)
@@ -13,6 +14,7 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 	local item_template_name = extension_init_data.item_template_name
 	local action_name = extension_init_data.action_name
 	local sub_action_name = extension_init_data.sub_action_name
+	local owner_buff_extension = ScriptUnit.has_extension(self._owner_unit, "buff_system")
 	self.action_lookup_data = {
 		item_template_name = item_template_name,
 		action_name = action_name,
@@ -23,6 +25,12 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 	local projectile_info = current_action.projectile_info
 	local impact_data = current_action.impact_data
 	local timed_data = current_action.timed_data
+
+	if impact_data.grenade and owner_buff_extension and owner_buff_extension:has_buff_perk("frag_fire_grenades") then
+		impact_data = table.shallow_copy(impact_data)
+		impact_data.aoe = ExplosionTemplates.frag_fire_grenade
+	end
+
 	self.power_level = extension_init_data.power_level
 	self.projectile_info = projectile_info
 	self._impact_data = impact_data
@@ -38,6 +46,7 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 	self._was_active = true
 	self._did_damage = false
 	self._num_bounces = 0
+	self._num_additional_penetrations = owner_buff_extension:apply_buffs_to_value(0, "ranged_additional_penetrations")
 	self._is_critical_strike = not not extension_init_data.is_critical_strike
 
 	self:initialize_projectile(projectile_info, impact_data)
@@ -71,7 +80,12 @@ PlayerProjectileHuskExtension.initialize_projectile = function (self, projectile
 
 	if timed_data then
 		self._is_timed = true
-		self._life_time = self._time_initialized + timed_data.life_time
+
+		if timed_data.activate_life_time_on_impact then
+			self._life_time = math.huge
+		else
+			self:_activate_life_time(self._time_initialized)
+		end
 	end
 
 	if projectile_info.times_bigger then
@@ -111,11 +125,28 @@ PlayerProjectileHuskExtension.update = function (self, unit, input, _, context, 
 end
 
 PlayerProjectileHuskExtension.stop = function (self)
-	Unit.flow_event(self._projectile_unit, "lua_projectile_end")
+	local timed_data = self._timed_data
+	local activate_life_time_on_impact = timed_data and timed_data.activate_life_time_on_impact
+
+	if not activate_life_time_on_impact then
+		Unit.flow_event(self._projectile_unit, "lua_projectile_end")
+
+		self._active = false
+	end
+
 	self.locomotion_extension:stop()
 
 	self._stop_impacts = true
+end
+
+PlayerProjectileHuskExtension._stop_by_life_time = function (self)
+	Unit.flow_event(self._projectile_unit, "lua_projectile_end")
+
 	self._active = false
+
+	self.locomotion_extension:stop()
+
+	self._stop_impacts = true
 end
 
 PlayerProjectileHuskExtension.handle_timed_events = function (self, t)
@@ -128,7 +159,13 @@ PlayerProjectileHuskExtension.handle_timed_events = function (self, t)
 			self:do_aoe(aoe_data, POSITION_LOOKUP[unit])
 		end
 
-		self:stop()
+		local sound_event = self._timed_data.life_time_activate_sound_stop_event
+
+		if sound_event then
+			WwiseWorld.trigger_event(self._wwise_world, sound_event)
+		end
+
+		self:_stop_by_life_time()
 	end
 end
 
@@ -136,6 +173,28 @@ PlayerProjectileHuskExtension.impact_level = function (self, hit_unit, hit_posit
 	local impact_data = self._impact_data
 
 	self:hit_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, level_index)
+	self:_on_impact()
+end
+
+PlayerProjectileHuskExtension._on_impact = function (self)
+	local timed_data = self._timed_data
+
+	if timed_data and timed_data.activate_life_time_on_impact then
+		local time = Managers.time:time("game")
+
+		self:_activate_life_time(time)
+	end
+end
+
+PlayerProjectileHuskExtension._activate_life_time = function (self, game_time)
+	local timed_data = self._timed_data
+	local sound_event = timed_data.life_time_activate_sound_start_event
+
+	if sound_event then
+		WwiseWorld.trigger_event(self._wwise_world, sound_event)
+	end
+
+	self._life_time = game_time + timed_data.life_time
 end
 
 PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_position, hit_direction, hit_normal, hit_actor)
@@ -165,6 +224,8 @@ PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_pos
 			self:hit_non_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, ranged_boost_curve_multiplier)
 		end
 	end
+
+	self:_on_impact()
 end
 
 PlayerProjectileHuskExtension.hit_afro = function (self, breed, hit_actor)
@@ -190,9 +251,10 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local allow_link = true
 	local aoe_data = impact_data.aoe
+	local forced_penetration = false
 
 	if damage_profile then
-		allow_link = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, ranged_boost_curve_multiplier, hit_units)
+		allow_link, forced_penetration = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, ranged_boost_curve_multiplier, hit_units)
 	end
 
 	local grenade = impact_data.grenade
@@ -206,18 +268,30 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	if current_action.use_max_targets then
 		if current_action.max_targets <= self._num_targets_hit then
+			if self._num_additional_penetrations > 0 then
+				forced_penetration = true
+			else
+				if allow_link then
+					self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, true)
+				end
+
+				self:stop()
+			end
+		end
+	elseif self._max_mass <= self._amount_of_mass_hit then
+		if self._num_additional_penetrations > 0 then
+			forced_penetration = true
+		else
 			if allow_link then
 				self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, true)
 			end
 
 			self:stop()
 		end
-	elseif self._max_mass <= self._amount_of_mass_hit then
-		if allow_link then
-			self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, true)
-		end
+	end
 
-		self:stop()
+	if forced_penetration then
+		self._num_additional_penetrations = self._num_additional_penetrations - 1
 	end
 end
 
@@ -239,6 +313,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 	local is_critical_strike = self._is_critical_strike
 	local attack_template = AttackTemplates[target_settings.attack_template]
 	local shield_blocked = false
+	local forced_penetration = false
 	local trueflight_blocking = target_settings.trueflight_blocking
 
 	if not action.ignore_shield_hit then
@@ -273,14 +348,24 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 
 	if was_alive and no_damage then
 		self._did_damage = predicted_damage
-		self._amount_of_mass_hit = self._max_mass
 
-		self:stop()
+		if self._num_additional_penetrations > 0 then
+			forced_penetration = true
+		else
+			self._amount_of_mass_hit = self._max_mass
+
+			self:stop()
+		end
 	elseif was_alive and not action.ignore_armor and (breed.armor_category == 2 or breed.armor_category == 3 or shield_blocked) then
 		self._did_damage = predicted_damage
-		self._amount_of_mass_hit = self._max_mass
 
-		self:stop()
+		if self._num_additional_penetrations > 0 then
+			forced_penetration = true
+		else
+			self._amount_of_mass_hit = self._max_mass
+
+			self:stop()
+		end
 	else
 		self._did_damage = predicted_damage
 
@@ -295,7 +380,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 		EffectHelper.play_skinned_surface_material_effects(hit_effect, self._world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name)
 	end
 
-	return hit_zone_name ~= "ward"
+	return hit_zone_name ~= "ward", forced_penetration
 end
 
 PlayerProjectileHuskExtension.hit_player = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, hit_units, ranged_boost_curve_multiplier)
@@ -305,6 +390,7 @@ PlayerProjectileHuskExtension.hit_player = function (self, impact_data, hit_unit
 
 	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 	local hit = false
+	local forced_penetration = false
 	local owner_player = self._owner_player
 	local damage_profile_name = impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
@@ -319,13 +405,25 @@ PlayerProjectileHuskExtension.hit_player = function (self, impact_data, hit_unit
 		local aoe_data = impact_data.aoe
 
 		if aoe_data and self._max_mass <= self._amount_of_mass_hit then
-			self:do_aoe(aoe_data, hit_position)
-			self:stop()
+			if self._num_additional_penetrations > 0 then
+				forced_penetration = true
+			else
+				self:do_aoe(aoe_data, hit_position)
+				self:stop()
+			end
 		end
 
 		if self._max_mass <= self._amount_of_mass_hit then
-			self:stop()
+			if self._num_additional_penetrations > 0 then
+				forced_penetration = true
+			else
+				self:stop()
+			end
 		end
+	end
+
+	if forced_penetration then
+		self._num_additional_penetrations = self._num_additional_penetrations - 1
 	end
 end
 

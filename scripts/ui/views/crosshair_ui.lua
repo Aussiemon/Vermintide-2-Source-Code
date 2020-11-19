@@ -32,7 +32,6 @@ CrosshairUI.init = function (self, parent, ingame_ui_context)
 
 	self:create_ui_elements()
 	self:update_enabled_crosshair_styles()
-	rawset(_G, "crosshair_ui", self)
 end
 
 CrosshairUI.create_ui_elements = function (self)
@@ -63,12 +62,8 @@ CrosshairUI.create_ui_elements = function (self)
 	self.hit_markers_orig_size = hit_markers[1].size
 end
 
-CrosshairUI.destroy = function (self)
-	rawset(_G, "crosshair_ui", nil)
-end
-
-CrosshairUI.update = function (self, dt)
-	local player_unit = self.local_player.player_unit
+CrosshairUI.update = function (self, dt, t, player)
+	local player_unit = player.player_unit
 	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 	local equipment = inventory_extension:equipment()
 	local parent = self._parent
@@ -154,8 +149,7 @@ CrosshairUI.update_crosshair_style = function (self, equipment)
 end
 
 CrosshairUI._apply_crosshair_position = function (self, x, y)
-	local scenegraph_id = "pivot"
-	local position = self.ui_scenegraph[scenegraph_id].local_position
+	local position = self.ui_scenegraph.pivot.local_position
 	position[1] = x
 	position[2] = y
 end

@@ -438,4 +438,12 @@ BackendInterfaceItemTutorial.sum_best_power_levels = function (self)
 	return 10
 end
 
+BackendInterfaceItemTutorial.configure_game_mode_specific_items = function (self, game_mode, items)
+	return
+end
+
+BackendInterfaceItemTutorial.set_game_mode_specific_items = function (self, game_mode)
+	return
+end
+
 return

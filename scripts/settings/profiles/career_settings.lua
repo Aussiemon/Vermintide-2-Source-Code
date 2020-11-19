@@ -17,23 +17,58 @@ CareerActionNames = {
 		"action_career_we_3_piercing"
 	}
 }
+
+local function local_is_unlocked_function(career, hero_name, hero_level)
+	local unlocked, reason = career:override_available_for_mechanism()
+
+	if unlocked ~= nil then
+		return unlocked, reason
+	end
+
+	local dlc_name = nil
+	unlocked, reason, dlc_name = career:is_dlc_unlocked()
+
+	if not unlocked then
+		return false, reason, dlc_name
+	end
+
+	return ProgressionUnlocks.is_unlocked_for_profile(career.display_name, hero_name, hero_level)
+end
+
+local function local_is_dlc_unlocked(career)
+	return true
+end
+
+local function local_override_available_for_mechanism(career)
+	local settings = Managers.mechanism:mechanism_setting("override_career_availability")
+	local career_name = career.display_name
+
+	if settings and settings[career_name] ~= nil then
+		return settings[career_name], "disabled_for_mechanism"
+	end
+
+	return nil
+end
+
 CareerSettings = {
 	dr_ironbreaker = {
 		profile_name = "dwarf_ranger",
-		display_name = "dr_ironbreaker",
-		sound_character = "dwarf_ironbreaker",
 		name = "dr_ironbreaker",
+		display_name = "dr_ironbreaker",
 		portrait_image_picking = "picking_portrait_bardin_ironbreaker",
 		package_name = "resource_packages/careers/dr_ironbreaker",
 		preview_idle_animation = "career_idle_01",
+		sound_character = "dwarf_ironbreaker",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
 		description = "bardin_1_desc",
 		base_skin = "skin_dr_ironbreaker",
+		picking_image = "medium_unit_frame_portrait_bardin_ironbreaker",
 		preview_wield_slot = "melee",
 		playfab_name = "dr_1",
 		portrait_image = "unit_frame_portrait_bardin_ironbreaker",
+		category_image = "category_icon_bardin_ironbreaker",
 		portrait_thumbnail = "portrait_bardin_ironbreaker_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_dr_ironbreaker,
@@ -59,9 +94,9 @@ CareerSettings = {
 				item_name = "ironbreaker_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("dr_ironbreaker", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -98,20 +133,22 @@ CareerSettings = {
 	},
 	dr_slayer = {
 		profile_name = "dwarf_ranger",
-		display_name = "dr_slayer",
-		sound_character = "dwarf_slayer",
 		name = "dr_slayer",
+		display_name = "dr_slayer",
 		portrait_image_picking = "picking_portrait_bardin_slayer",
 		package_name = "resource_packages/careers/dr_slayer",
 		preview_idle_animation = "career_idle_02",
+		sound_character = "dwarf_slayer",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
 		description = "bardin_2_desc",
 		base_skin = "skin_dr_slayer",
+		picking_image = "medium_unit_frame_portrait_bardin_slayer",
 		preview_wield_slot = "melee",
 		playfab_name = "dr_2",
 		portrait_image = "unit_frame_portrait_bardin_slayer",
+		category_image = "category_icon_bardin_slayer",
 		portrait_thumbnail = "portrait_bardin_slayer_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_dr_slayer,
@@ -136,9 +173,9 @@ CareerSettings = {
 				item_name = "slayer_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("dr_slayer", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -176,20 +213,22 @@ CareerSettings = {
 	},
 	dr_ranger = {
 		profile_name = "dwarf_ranger",
-		display_name = "dr_ranger",
-		sound_character = "dwarf_ranger",
 		name = "dr_ranger",
+		display_name = "dr_ranger",
 		portrait_image_picking = "picking_portrait_bardin_ranger",
 		package_name = "resource_packages/careers/dr_ranger",
 		preview_idle_animation = "career_idle_03",
+		sound_character = "dwarf_ranger",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
 		description = "bardin_3_desc",
 		base_skin = "skin_dr_ranger",
+		picking_image = "medium_unit_frame_portrait_bardin_ranger",
 		preview_wield_slot = "ranged",
 		playfab_name = "dr_3",
 		portrait_image = "unit_frame_portrait_bardin_ranger",
+		category_image = "category_icon_bardin_ranger",
 		portrait_thumbnail = "portrait_bardin_ranger_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_dr_ranger,
@@ -214,9 +253,9 @@ CareerSettings = {
 				item_name = "ranger_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("dr_ranger", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -253,20 +292,22 @@ CareerSettings = {
 	},
 	es_huntsman = {
 		profile_name = "empire_soldier",
-		display_name = "es_huntsman",
-		sound_character = "empire_soldier_huntsman",
 		name = "es_huntsman",
+		display_name = "es_huntsman",
 		portrait_image_picking = "picking_portrait_kruber_huntsman",
 		package_name = "resource_packages/careers/es_huntsman",
 		preview_idle_animation = "career_idle_03",
+		sound_character = "empire_soldier_huntsman",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
 		description = "markus_1_desc",
 		base_skin = "skin_es_huntsman",
+		picking_image = "medium_unit_frame_portrait_kruber_huntsman",
 		preview_wield_slot = "ranged",
 		playfab_name = "es_1",
 		portrait_image = "unit_frame_portrait_kruber_huntsman",
+		category_image = "category_icon_kruber_huntsman",
 		portrait_thumbnail = "portrait_kruber_huntsman_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_es_huntsman,
@@ -290,9 +331,9 @@ CareerSettings = {
 				item_name = "huntsman_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("es_huntsman", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -329,20 +370,22 @@ CareerSettings = {
 	},
 	es_knight = {
 		profile_name = "empire_soldier",
-		display_name = "es_knight",
-		sound_character = "empire_soldier_knight",
 		name = "es_knight",
+		display_name = "es_knight",
 		portrait_image_picking = "picking_portrait_kruber_knight",
 		package_name = "resource_packages/careers/es_knight",
 		preview_idle_animation = "career_idle_02",
+		sound_character = "empire_soldier_knight",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
 		description = "markus_2_desc",
 		base_skin = "skin_es_knight",
+		picking_image = "medium_unit_frame_portrait_kruber_knight",
 		preview_wield_slot = "melee",
 		playfab_name = "es_2",
 		portrait_image = "unit_frame_portrait_kruber_knight",
+		category_image = "category_icon_kruber_knight",
 		portrait_thumbnail = "portrait_kruber_knight_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_es_knight,
@@ -366,9 +409,9 @@ CareerSettings = {
 				item_name = "knight_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("es_knight", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -405,20 +448,22 @@ CareerSettings = {
 	},
 	es_mercenary = {
 		profile_name = "empire_soldier",
-		display_name = "es_mercenary",
-		sound_character = "empire_soldier",
 		name = "es_mercenary",
+		display_name = "es_mercenary",
 		portrait_image_picking = "picking_portrait_kruber_mercenary",
 		package_name = "resource_packages/careers/es_mercenary",
 		preview_idle_animation = "career_idle_01",
+		sound_character = "empire_soldier",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
 		description = "markus_3_desc",
 		base_skin = "skin_es_mercenary",
+		picking_image = "medium_unit_frame_portrait_kruber_mercenary",
 		preview_wield_slot = "melee",
 		playfab_name = "es_3",
 		portrait_image = "unit_frame_portrait_kruber_mercenary",
+		category_image = "category_icon_kruber_mercenary",
 		portrait_thumbnail = "portrait_kruber_mercenary_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_es_mercenary,
@@ -442,9 +487,9 @@ CareerSettings = {
 				item_name = "mercenary_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("es_mercenary", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -481,20 +526,22 @@ CareerSettings = {
 	},
 	we_shade = {
 		profile_name = "wood_elf",
-		display_name = "we_shade",
-		sound_character = "wood_elf_shade",
 		name = "we_shade",
+		display_name = "we_shade",
 		portrait_image_picking = "picking_portrait_kerillian_shade",
 		package_name = "resource_packages/careers/we_shade",
 		preview_idle_animation = "career_idle_01",
+		sound_character = "wood_elf_shade",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
 		description = "kerillian_1_desc",
 		base_skin = "skin_ww_shade",
+		picking_image = "medium_unit_frame_portrait_kerillian_shade",
 		preview_wield_slot = "melee",
 		playfab_name = "we_1",
 		portrait_image = "unit_frame_portrait_kerillian_shade",
+		category_image = "category_icon_kerillian_shade",
 		portrait_thumbnail = "portrait_kerillian_shade_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_we_shade,
@@ -518,9 +565,9 @@ CareerSettings = {
 				item_name = "shade_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("we_shade", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -557,20 +604,22 @@ CareerSettings = {
 	},
 	we_maidenguard = {
 		profile_name = "wood_elf",
-		display_name = "we_maidenguard",
-		sound_character = "wood_elf_handmaiden",
 		name = "we_maidenguard",
+		display_name = "we_maidenguard",
 		portrait_image_picking = "picking_portrait_kerillian_maidenguard",
 		package_name = "resource_packages/careers/we_maidenguard",
 		preview_idle_animation = "career_idle_03",
+		sound_character = "wood_elf_handmaiden",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
 		description = "kerillian_2_desc",
 		base_skin = "skin_ww_maidenguard",
+		picking_image = "medium_unit_frame_portrait_kerillian_maidenguard",
 		preview_wield_slot = "melee",
 		playfab_name = "we_2",
 		portrait_image = "unit_frame_portrait_kerillian_maidenguard",
+		category_image = "category_icon_kerillian_handmaiden",
 		portrait_thumbnail = "portrait_kerillian_maidenguard_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_we_maidenguard,
@@ -594,9 +643,9 @@ CareerSettings = {
 				item_name = "maidenguard_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("we_maidenguard", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -633,20 +682,22 @@ CareerSettings = {
 	},
 	we_waywatcher = {
 		profile_name = "wood_elf",
-		display_name = "we_waywatcher",
-		sound_character = "wood_elf",
 		name = "we_waywatcher",
+		display_name = "we_waywatcher",
 		portrait_image_picking = "picking_portrait_kerillian_waywatcher",
 		package_name = "resource_packages/careers/we_waywatcher",
 		preview_idle_animation = "career_idle_02",
+		sound_character = "wood_elf",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
 		description = "kerillian_3_desc",
 		base_skin = "skin_ww_waywatcher",
+		picking_image = "medium_unit_frame_portrait_kerillian_waywatcher",
 		preview_wield_slot = "ranged",
 		playfab_name = "we_3",
 		portrait_image = "unit_frame_portrait_kerillian_waywatcher",
+		category_image = "category_icon_kerillian_waystalker",
 		portrait_thumbnail = "portrait_kerillian_waywatcher_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_we_waywatcher,
@@ -670,9 +721,9 @@ CareerSettings = {
 				item_name = "waywatcher_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("we_waywatcher", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -709,20 +760,22 @@ CareerSettings = {
 	},
 	wh_zealot = {
 		profile_name = "witch_hunter",
-		display_name = "wh_zealot",
-		sound_character = "witch_hunter_zealot",
 		name = "wh_zealot",
+		display_name = "wh_zealot",
 		portrait_image_picking = "picking_portrait_victor_zealot",
 		package_name = "resource_packages/careers/wh_zealot",
 		preview_idle_animation = "career_idle_03",
+		sound_character = "witch_hunter_zealot",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
 		description = "victor_1_desc",
 		base_skin = "skin_wh_zealot",
+		picking_image = "medium_unit_frame_portrait_victor_zealot",
 		preview_wield_slot = "melee",
 		playfab_name = "wh_1",
 		portrait_image = "unit_frame_portrait_victor_zealot",
+		category_image = "category_icon_victor_zealot",
 		portrait_thumbnail = "portrait_victor_zealot_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_wh_zealot,
@@ -746,9 +799,9 @@ CareerSettings = {
 				item_name = "zealot_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("wh_zealot", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -785,20 +838,22 @@ CareerSettings = {
 	},
 	wh_bountyhunter = {
 		profile_name = "witch_hunter",
-		display_name = "wh_bountyhunter",
-		sound_character = "witch_hunter_bounty_hunter",
 		name = "wh_bountyhunter",
+		display_name = "wh_bountyhunter",
 		portrait_image_picking = "picking_portrait_victor_bounty_hunter",
 		package_name = "resource_packages/careers/wh_bountyhunter",
 		preview_idle_animation = "career_idle_02",
+		sound_character = "witch_hunter_bounty_hunter",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
 		description = "victor_2_desc",
 		base_skin = "skin_wh_bountyhunter",
+		picking_image = "medium_unit_frame_portrait_victor_bountyhunter",
 		preview_wield_slot = "ranged",
 		playfab_name = "wh_2",
 		portrait_image = "unit_frame_portrait_victor_bountyhunter",
+		category_image = "category_icon_victor_bountyhunter",
 		portrait_thumbnail = "portrait_victor_bounty_hunter_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_wh_bountyhunter,
@@ -822,9 +877,9 @@ CareerSettings = {
 				item_name = "bountyhunter_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("wh_bountyhunter", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -861,20 +916,22 @@ CareerSettings = {
 	},
 	wh_captain = {
 		profile_name = "witch_hunter",
-		display_name = "wh_captain",
-		sound_character = "witch_hunter",
 		name = "wh_captain",
+		display_name = "wh_captain",
 		portrait_image_picking = "picking_portrait_victor_captain",
 		package_name = "resource_packages/careers/wh_captain",
 		preview_idle_animation = "career_idle_01",
+		sound_character = "witch_hunter",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
 		description = "victor_3_desc",
 		base_skin = "skin_wh_captain",
+		picking_image = "medium_unit_frame_portrait_victor_captain",
 		preview_wield_slot = "melee",
 		playfab_name = "wh_3",
 		portrait_image = "unit_frame_portrait_victor_captain",
+		category_image = "category_icon_victor_captain",
 		portrait_thumbnail = "portrait_victor_captain_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_wh_captain,
@@ -898,9 +955,9 @@ CareerSettings = {
 				item_name = "witchhunter_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("wh_captain", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -937,20 +994,22 @@ CareerSettings = {
 	},
 	bw_scholar = {
 		profile_name = "bright_wizard",
-		display_name = "bw_scholar",
-		sound_character = "bright_wizard",
 		name = "bw_scholar",
+		display_name = "bw_scholar",
 		portrait_image_picking = "picking_portrait_sienna_scholar",
 		package_name = "resource_packages/careers/bw_scholar",
 		preview_idle_animation = "career_idle_03",
+		sound_character = "bright_wizard",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
 		description = "sienna_1_desc",
 		base_skin = "skin_bw_scholar",
+		picking_image = "medium_unit_frame_portrait_sienna_scholar",
 		preview_wield_slot = "ranged",
 		playfab_name = "bw_1",
 		portrait_image = "unit_frame_portrait_sienna_scholar",
+		category_image = "category_icon_sienna_scholar",
 		portrait_thumbnail = "portrait_sienna_scholar_thumbnail",
 		sort_order = 2,
 		breed = PlayerBreeds.hero_bw_scholar,
@@ -974,9 +1033,9 @@ CareerSettings = {
 				item_name = "scholar_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("bw_scholar", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -1013,20 +1072,22 @@ CareerSettings = {
 	},
 	bw_adept = {
 		profile_name = "bright_wizard",
-		display_name = "bw_adept",
-		sound_character = "bright_wizard_battle_wizard",
 		name = "bw_adept",
+		display_name = "bw_adept",
 		portrait_image_picking = "picking_portrait_sienna_adept",
 		package_name = "resource_packages/careers/bw_adept",
 		preview_idle_animation = "career_idle_02",
+		sound_character = "bright_wizard_battle_wizard",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
 		description = "sienna_2_desc",
 		base_skin = "skin_bw_adept",
+		picking_image = "medium_unit_frame_portrait_sienna_adept",
 		preview_wield_slot = "ranged",
 		playfab_name = "bw_2",
 		portrait_image = "unit_frame_portrait_sienna_adept",
+		category_image = "category_icon_sienna_adept",
 		portrait_thumbnail = "portrait_sienna_adept_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_bw_adept,
@@ -1050,9 +1111,9 @@ CareerSettings = {
 				item_name = "adept_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("bw_adept", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -1089,20 +1150,22 @@ CareerSettings = {
 	},
 	bw_unchained = {
 		profile_name = "bright_wizard",
-		display_name = "bw_unchained",
-		sound_character = "bright_wizard_unchained",
 		name = "bw_unchained",
+		display_name = "bw_unchained",
 		portrait_image_picking = "picking_portrait_sienna_unchained",
 		package_name = "resource_packages/careers/bw_unchained",
 		preview_idle_animation = "career_idle_01",
+		sound_character = "bright_wizard_unchained",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
 		description = "sienna_3_desc",
 		base_skin = "skin_bw_unchained",
+		picking_image = "medium_unit_frame_portrait_sienna_unchained",
 		preview_wield_slot = "melee",
 		playfab_name = "bw_3",
 		portrait_image = "unit_frame_portrait_sienna_unchained",
+		category_image = "category_icon_sienna_unchained",
 		portrait_thumbnail = "portrait_sienna_unchained_thumbnail",
 		sort_order = 3,
 		breed = PlayerBreeds.hero_bw_unchained,
@@ -1126,9 +1189,9 @@ CareerSettings = {
 				item_name = "unchained_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return ProgressionUnlocks.is_unlocked_for_profile("bw_unchained", hero_name, hero_level)
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -1166,16 +1229,18 @@ CareerSettings = {
 	empire_soldier_tutorial = {
 		profile_name = "empire_soldier",
 		display_name = "empire_soldier",
-		sound_character = "empire_soldier_knight",
 		name = "empire_soldier_tutorial",
 		package_name = "resource_packages/careers/es_knight",
+		sound_character = "empire_soldier_knight",
 		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		description = "markus_2_desc",
 		base_skin = "skin_es_knight",
+		picking_image = "medium_unit_frame_portrait_kruber_knight",
 		preview_wield_slot = "melee",
 		portrait_image = "unit_frame_portrait_kruber_knight",
+		category_image = "category_icon_kruber_knight",
 		portrait_thumbnail = "portrait_kruber_knight_thumbnail",
 		sort_order = 1,
 		breed = PlayerBreeds.hero_es_mercenary,
@@ -1199,9 +1264,9 @@ CareerSettings = {
 				item_name = "knight_hat_0000"
 			}
 		},
-		is_unlocked_function = function (hero_name, hero_level)
-			return true
-		end,
+		is_unlocked_function = local_is_unlocked_function,
+		is_dlc_unlocked = local_is_dlc_unlocked,
+		override_available_for_mechanism = local_override_available_for_mechanism,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"
@@ -1255,15 +1320,7 @@ CareerNameAchievementMapping = {
 	wh_bountyhunter = "bountyhunter"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local career_setting_files = dlc.career_setting_files
-
-	if career_setting_files then
-		for _, career_setting_file in ipairs(career_setting_files) do
-			require(career_setting_file)
-		end
-	end
-end
+DLCUtils.require_list("career_setting_files")
 
 if script_data.honduras_demo then
 	CareerSettings.we_shade.preview_items = {

@@ -69,7 +69,7 @@ PropsSystem.update = function (self, context, t)
 	PropsSystem.super.update(self, context, t)
 end
 
-PropsSystem.rpc_thorn_bush_trigger_area_damage = function (self, sender, unit_id)
+PropsSystem.rpc_thorn_bush_trigger_area_damage = function (self, channel_id, unit_id)
 	local unit = Managers.state.unit_storage:unit(unit_id)
 	local script = ScriptUnit.extension(unit, "props_system")
 
@@ -78,7 +78,7 @@ PropsSystem.rpc_thorn_bush_trigger_area_damage = function (self, sender, unit_id
 	end
 end
 
-PropsSystem.rpc_thorn_bush_trigger_despawn = function (self, sender, unit_id)
+PropsSystem.rpc_thorn_bush_trigger_despawn = function (self, channel_id, unit_id)
 	local unit = Managers.state.unit_storage:unit(unit_id)
 	local script = ScriptUnit.extension(unit, "props_system")
 	local world = Managers.world:world("level_world")

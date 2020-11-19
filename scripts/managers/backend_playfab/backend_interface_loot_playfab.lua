@@ -99,18 +99,20 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	self._loot_requests[id] = loot
 end
 
-BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, num_painting_scraps, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, hero_name, start_experience, end_experience, loot_profile_name, deed_item_name, deed_backend_id, game_mode_key, game_time, end_of_level_rewards_arguments)
 	local id = self:_new_id()
 	local remote_player_ids_and_characters = self:_get_remote_player_network_ids_and_characters()
+
+	if end_of_level_rewards_arguments.deus_soft_currency then
+		self._backend_mirror:predict_deus_rolled_over_soft_currency(end_of_level_rewards_arguments.deus_soft_currency)
+	end
+
 	local data = {
 		won = game_won,
 		quick_play_bonus = quick_play_bonus,
 		difficulty = difficulty,
 		level_name = level_key,
 		loot_profile_name = loot_profile_name,
-		num_tomes = num_tomes,
-		num_grims = num_grims,
-		num_dice = num_loot_dice,
 		start_experience = start_experience,
 		end_experience = end_experience,
 		hero_name = hero_name,
@@ -119,11 +121,8 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 		id = id,
 		remote_player_ids_and_characters = remote_player_ids_and_characters,
 		game_mode_key = game_mode_key,
-		weave_tier = weave_tier,
-		weave_progress = weave_progress,
 		game_time = game_time,
-		current_weave_index = current_weave_index,
-		kill_count = kill_count
+		end_of_level_rewards_arguments = end_of_level_rewards_arguments
 	}
 	local generate_end_of_level_loot_request = {
 		FunctionName = "generateEndOfLevelLoot",
@@ -144,14 +143,18 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local id = data.id
 	local rewards = function_result.Rewards
 	local items = function_result.Result
-	local random_value = function_result.RandomValue
 	local consumed_deed_result = function_result.ConsumedDeedResult
 	local experience = function_result.Experience
 	local experience_pool = function_result.ExperiencePool
 	local recent_quickplay_games = function_result.RecentQuickplayGames
 	local essence_rewards = function_result.EssenceRewards
 	local total_essence = function_result.total_essence
+	local vs_profile_data = function_result.vs_profile_data
+	local deus_meta_currency_rewards = function_result.deus_meta_currency_rewards
+	local granted_boon = function_result.granted_boon
+	local score_breakdown = function_result.ScoreBreakdown
 	local num_items = #items
+	local win_track_progress = function_result.win_tracks_progress
 	local loot_request = {}
 	local backend_mirror = self._backend_mirror
 
@@ -173,7 +176,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		}
 
 		if item_type == "chest" then
-			loot_request[item_type].random_value = random_value
+			loot_request[item_type].score_breakdown = score_breakdown
 		end
 
 		backend_mirror:add_item(backend_id, item)
@@ -188,16 +191,24 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local hero_name = data.hero_name
 	local key = hero_name .. "_experience"
 
-	self._backend_mirror:set_read_only_data(key, experience, true)
+	backend_mirror:set_read_only_data(key, experience, true)
+
+	local key = "win_tracks_progress"
+
+	self._backend_mirror:set_read_only_data(key, cjson.encode(win_track_progress), true)
 
 	if experience_pool then
 		local xp_pool_key = hero_name .. "_experience_pool"
 
-		self._backend_mirror:set_read_only_data(xp_pool_key, experience_pool, true)
+		backend_mirror:set_read_only_data(xp_pool_key, experience_pool, true)
 	end
 
 	if recent_quickplay_games then
 		backend_mirror:set_read_only_data("recent_quickplay_games", recent_quickplay_games, true)
+	end
+
+	if vs_profile_data then
+		backend_mirror:set_read_only_data("vs_profile_data", vs_profile_data, true)
 	end
 
 	if essence_rewards and #essence_rewards > 0 then
@@ -209,6 +220,22 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	end
 
 	backend_mirror:set_total_essence(total_essence)
+
+	if deus_meta_currency_rewards and #deus_meta_currency_rewards > 0 then
+		loot_request.deus_meta_currency = deus_meta_currency_rewards
+		local final_deus_meta_currency_reward = deus_meta_currency_rewards[#deus_meta_currency_rewards]
+		local new_total_deus_meta_currency = final_deus_meta_currency_reward.new_total
+
+		backend_mirror:set_deus_meta_currency(new_total_deus_meta_currency)
+	end
+
+	backend_mirror:handle_deus_result(result)
+	backend_mirror:handle_boons_result(result)
+
+	if granted_boon then
+		loot_request.granted_boon = granted_boon
+	end
+
 	Managers.backend:dirtify_interfaces()
 
 	self._loot_requests[id] = loot_request
@@ -217,7 +244,7 @@ end
 BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = function (self)
 	local ids_and_characters = {}
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		if rawget(_G, "Steam") then
 			local human_players = Managers.player:human_players()
 
@@ -328,6 +355,8 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 
 	local items = function_result.items
 	local achievement_id = function_result.achievement_id
+	local currency_added = function_result.currency_added
+	local chips = function_result.chips
 	local backend_mirror = self._backend_mirror
 	local loot = {}
 
@@ -374,6 +403,30 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 				type = "weapon_skin",
 				weapon_skin_name = weapon_skin_name
 			}
+		end
+	end
+
+	local rewarded_currency = {}
+
+	if currency_added then
+		for _, data in ipairs(currency_added) do
+			local code = data.code
+			local amount = data.amount
+			loot[#loot + 1] = {
+				type = "currency",
+				currency_code = code,
+				amount = amount
+			}
+		end
+	end
+
+	if chips then
+		local peddler_interface = Managers.backend:get_interface("peddler")
+
+		if peddler_interface then
+			for chip_type, amount in pairs(chips) do
+				peddler_interface:set_chips(chip_type, amount)
+			end
 		end
 	end
 

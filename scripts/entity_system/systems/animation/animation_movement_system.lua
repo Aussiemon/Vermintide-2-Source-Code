@@ -89,7 +89,7 @@ AnimationMovementSystem.update = function (self, context, t)
 	end
 end
 
-AnimationMovementSystem.rpc_enable_animation_movement_system = function (self, sender, unit_id, enable)
+AnimationMovementSystem.rpc_enable_animation_movement_system = function (self, channel_id, unit_id, enable)
 	local unit = self.unit_storage:unit(unit_id)
 	local extension = self._extensions[unit]
 

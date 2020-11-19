@@ -175,7 +175,7 @@ table.find = function (t, element)
 		end
 	end
 
-	return false
+	return nil
 end
 
 table.index_of = function (t, element)
@@ -245,7 +245,10 @@ else
 end
 
 table.clear_array = function (t, n)
-	for i = 1, n, 1 do
+	slot2 = 1
+	slot3 = n or #t
+
+	for i = slot2, slot3, 1 do
 		t[i] = nil
 	end
 end
@@ -415,6 +418,10 @@ function _add_tabs(str, tabs)
 end
 
 table.tostring = function (t, tabs)
+	if not t then
+		return "nil"
+	end
+
 	tabs = tabs or 0
 	local str = "{\n"
 
@@ -515,16 +522,28 @@ table.unpack_map = function (t)
 	return unpack(temp_weak_table)
 end
 
-table.keys = function (t, output)
+table.keys = function (t, out)
+	out = out or {}
 	local n = 0
-	local result = output or {}
 
-	for key, _ in pairs(t) do
+	for key in pairs(t) do
 		n = n + 1
-		result[n] = key
+		out[n] = key
 	end
 
-	return result
+	return out, n
+end
+
+table.values = function (t, out)
+	out = out or {}
+	local n = 0
+
+	for _, val in pairs(t) do
+		n = n + 1
+		out[n] = val
+	end
+
+	return out, n
 end
 
 table.append_varargs = function (t, ...)
@@ -608,34 +627,25 @@ table.swap_delete = function (t, index)
 	t[table_length] = nil
 end
 
-table.array_remove_if = function (t, compare_func)
-	local target_index = 1
-	local num_elements = #t
+table.array_remove_if = function (t, predicate)
+	local i = 1
+	local v = nil
 
-	for source_index = 1, num_elements, 1 do
-		if not compare_func(t[source_index]) then
-			t[target_index] = t[source_index]
-			target_index = target_index + 1
+	for j = 1, #t, 1 do
+		t[j] = nil
+		v = t[j]
+
+		if not predicate(v) then
+			i = i + 1
+			t[i] = v
 		end
-	end
-
-	while target_index <= num_elements do
-		t[target_index] = nil
-		target_index = target_index + 1
 	end
 end
 
-table.remove_if = function (t, compare_func)
-	local key, value = next(t, nil)
-	local next_key = nil
-
-	while key do
-		if compare_func(key, value) then
-			next_key, value = next(t, key)
-			t[key] = nil
-			key = next_key
-		else
-			key, value = next(t, key)
+table.remove_if = function (t, predicate)
+	for k, v in pairs(t) do
+		if predicate(k, v) then
+			t[k] = nil
 		end
 	end
 end
@@ -679,6 +689,23 @@ table.filter = function (t, func)
 	end
 
 	return copy
+end
+
+table.get_value_or_last = function (t, index)
+	return t[index] or t[#t]
+end
+
+table.autovivified = function (new)
+	new = new or TNEW
+
+	return setmetatable({}, {
+		__index = function (self, key)
+			local val = new(key)
+			self[key] = val
+
+			return val
+		end
+	})
 end
 
 return

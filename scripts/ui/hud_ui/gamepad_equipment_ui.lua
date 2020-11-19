@@ -42,9 +42,12 @@ GamePadEquipmentUI.init = function (self, parent, ingame_ui_context)
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.cleanui = ingame_ui_context.cleanui
 	self._retained_elements_visible = false
+	local player = ingame_ui_context.player
+	self.player = player
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "input_changed", "event_input_changed")
+	event_manager:register(self, "swap_equipment_from_storage", "event_swap_equipment_from_storage")
 	self:_create_ui_elements()
 	rawset(_G, "gamepad_equipment_ui", self)
 end
@@ -59,14 +62,20 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 	local ammo_widgets_by_name = {}
 	local unused_widgets = {}
 	local slot_widgets = {}
+	local career_widgets = {}
 	local static_widgets = {}
-	local count = 1
 
 	for name, definition in pairs(definitions.widget_definitions) do
 		local widget = UIWidget.init(definition)
 		widgets_by_name[name] = widget
-		static_widgets[count] = widget
-		count = count + 1
+		static_widgets[#static_widgets + 1] = widget
+	end
+
+	for name, definition in pairs(definitions.career_widget_definitions) do
+		local widget = UIWidget.init(definition)
+		widgets_by_name[name] = widget
+		career_widgets[name] = widget
+		static_widgets[#static_widgets + 1] = widget
 	end
 
 	for i, definition in ipairs(definitions.slot_widget_definitions) do
@@ -99,6 +108,14 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 	self._static_widgets = static_widgets
 	self._unused_widgets = unused_widgets
 	self._slot_widgets = slot_widgets
+	self._career_widgets = career_widgets
+	local extra_storage_icon_widgets = {}
+
+	for i, widget_def in ipairs(definitions.extra_storage_icon_definitions) do
+		extra_storage_icon_widgets[i] = UIWidget.init(widget_def)
+	end
+
+	self._extra_storage_icon_widgets = extra_storage_icon_widgets
 	widgets_by_name.overcharge_background.style.texture_id.color = {
 		100,
 		150,
@@ -114,6 +131,39 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 	self:set_dirty()
 
 	self._num_added_items = 0
+end
+
+GamePadEquipmentUI.event_swap_equipment_from_storage = function (self, slot_name, additional_items)
+	if slot_name ~= "slot_grenade" then
+		return
+	end
+
+	self._widgets_by_name.extra_storage_bg.style.texture.color[1] = 163
+	self._time_fade_storage_slots = Managers.time:time("ui") + 2
+	local widgets = self._extra_storage_icon_widgets
+
+	for i = 1, #widgets, 1 do
+		local widget = widgets[i]
+		local item = additional_items[i]
+
+		if item then
+			local hud_icon = item.gamepad_hud_icon
+			local style = widget.style
+			local content = widget.content
+			content.visible = true
+			content.texture_icon = hud_icon
+			content.texture_glow = hud_icon .. "_glow"
+			style.texture_icon.color[1] = 255
+			local color_src = Colors.color_definitions[item.key] or Colors.color_definitions.black
+			local color_dst = style.texture_glow.color
+			color_dst[1] = 255
+			color_dst[2] = color_src[2]
+			color_dst[3] = color_src[3]
+			color_dst[4] = color_src[4]
+		else
+			widget.content.visible = false
+		end
+	end
 end
 
 GamePadEquipmentUI.event_input_changed = function (self)
@@ -249,8 +299,7 @@ GamePadEquipmentUI._update_widgets = function (self)
 end
 
 GamePadEquipmentUI._get_wield_scroll_input = function (self)
-	local player_manager = self.player_manager
-	local player = player_manager:local_player(1)
+	local player = self.player
 	local player_unit = player.player_unit
 
 	if not player_unit then
@@ -300,7 +349,7 @@ local sorted_buffs = {}
 local widgets_to_remove = {}
 local verified_widgets = {}
 
-GamePadEquipmentUI._update_equipment_lookup = function (self, equipment)
+GamePadEquipmentUI._update_equipment_lookup = function (self, equipment, inventory_extension)
 	self._equipment_lookup = self._equipment_lookup or {}
 	local equipment_lookup = self._equipment_lookup
 	equipment_lookup.wielded_slot = equipment.wielded_slot
@@ -320,17 +369,24 @@ GamePadEquipmentUI._update_equipment_lookup = function (self, equipment)
 		equipment_lookup.ammo_count = ammo_count
 		equipment_lookup.remaining_ammo = remaining_ammo
 	end
+
+	local grenade_slot_data = equipment_slots.slot_grenade
+
+	if grenade_slot_data and grenade_slot_data.item_data then
+		local item_count = inventory_extension:get_total_item_count("slot_grenade")
+		equipment_lookup.grenade_count = item_count
+	end
 end
 
-GamePadEquipmentUI._check_equipment_changed = function (self, equipment)
+GamePadEquipmentUI._check_equipment_changed = function (self, equipment, inventory_extension)
 	if not self._equipment_lookup then
-		self:_update_equipment_lookup(equipment)
+		self:_update_equipment_lookup(equipment, inventory_extension)
 
 		return true
 	end
 
 	if self._equipment_lookup.wielded_slot ~= equipment.wielded_slot then
-		self:_update_equipment_lookup(equipment)
+		self:_update_equipment_lookup(equipment, inventory_extension)
 
 		return true
 	end
@@ -346,7 +402,7 @@ GamePadEquipmentUI._check_equipment_changed = function (self, equipment)
 		saved_item_name = equipment_lookup[slot_name]
 
 		if item_name ~= saved_item_name then
-			self:_update_equipment_lookup(equipment)
+			self:_update_equipment_lookup(equipment, inventory_extension)
 
 			return true
 		end
@@ -359,13 +415,25 @@ GamePadEquipmentUI._check_equipment_changed = function (self, equipment)
 		local ammo_count, remaining_ammo, using_single_clip = self:_get_ammunition_count(ranged_slot_data.left_unit_1p, ranged_slot_data.right_unit_1p, item_template)
 
 		if equipment_lookup.ammo_count ~= ammo_count then
-			self:_update_equipment_lookup(equipment)
+			self:_update_equipment_lookup(equipment, inventory_extension)
 
 			return true
 		end
 
 		if equipment_lookup.remaining_ammo ~= remaining_ammo then
-			self:_update_equipment_lookup(equipment)
+			self:_update_equipment_lookup(equipment, inventory_extension)
+
+			return true
+		end
+	end
+
+	local grenade_slot_data = equipment_slots.slot_grenade
+
+	if grenade_slot_data and grenade_slot_data.item_data and inventory_extension:has_additional_item_slots("slot_grenade") then
+		local item_count = inventory_extension:get_total_item_count("slot_grenade")
+
+		if equipment_lookup.grenade_count ~= item_count then
+			self:_update_equipment_lookup(equipment, inventory_extension)
 
 			return true
 		end
@@ -382,8 +450,7 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 		return
 	end
 
-	local player_manager = self.player_manager
-	local player = player_manager:local_player(1)
+	local player = self.player
 	local player_unit = player.player_unit
 
 	if not player_unit then
@@ -398,7 +465,7 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 		return
 	end
 
-	if not self:_check_equipment_changed(equipment) then
+	if not self:_check_equipment_changed(equipment, inventory_extension) then
 		return
 	end
 
@@ -413,86 +480,119 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 	local added_items = self._added_items
 
 	for i = 1, num_inventory_slots, 1 do
-		repeat
-			local slot = inventory_slots[i]
-			local slot_name = slot.name
-			local slot_data = equipment_slots[slot_name]
-			local slot_visible = (slot_data and true) or false
-			local item_data = slot_data and slot_data.item_data
-			local item_name = item_data and item_data.name
-			local is_wielded = (item_name and wielded == item_data) or false
+		local slot = inventory_slots[i]
+		local slot_name = slot.name
+		local slot_data = equipment_slots[slot_name]
+		local slot_visible = (slot_data and true) or false
+		local item_data = slot_data and slot_data.item_data
+		local item_name = item_data and item_data.name
+		local is_wielded = (item_name and wielded == item_data) or false
 
-			if is_wielded then
-				local master_item = slot_data.master_item
-				local slot_type = master_item.slot_type
-				local widget = self._widgets_by_name.weapon_slot
-				local content = widget.content
-				local style = widget.style
-				content.wielded_slot = slot_type
+		if is_wielded then
+			local master_item = slot_data.master_item
+			local slot_type = master_item.slot_type
+			local widget = self._widgets_by_name.weapon_slot
+			local content = widget.content
+			local style = widget.style
+			content.wielded_slot = slot_type
 
-				if self._wielded_slot_name ~= slot_name then
-					if slot_type == "melee" or slot_type == "ranged" then
-						self._weapon_was_wielded = true
+			if self._wielded_slot_name ~= slot_name then
+				if slot_type == "melee" or slot_type == "ranged" then
+					self._weapon_was_wielded = true
 
-						self:_add_animation("weapon_slot", widget, widget, "_animate_weapon_wield", 1)
-					elseif self._weapon_was_wielded then
-						self._weapon_was_wielded = false
+					self:_add_animation("weapon_slot", widget, widget, "_animate_weapon_wield", 1)
+				elseif self._weapon_was_wielded then
+					self._weapon_was_wielded = false
 
-						self:_add_animation("weapon_slot", widget, widget, "_animate_weapon_unwield", 4)
-					end
+					self:_add_animation("weapon_slot", widget, widget, "_animate_weapon_unwield", 4)
 				end
-
-				self._wielded_slot_name = slot_name
 			end
 
-			if allowed_equipment_slots[slot_name] then
-				local verified = false
+			self._wielded_slot_name = slot_name
+		end
 
-				for j = 1, #added_items, 1 do
-					local data = added_items[j]
-					local same_item = data.item_name == item_name
-					local same_slot = data.slot_name == slot_name
+		if allowed_equipment_slots[slot_name] then
+			local widget_id = 0
+			local verified = false
 
-					if same_item then
-						if not verified_widgets[j] then
-							verified = true
-							verified_widgets[j] = true
+			for j = 1, #added_items, 1 do
+				local data = added_items[j]
+				local same_item = data.item_name == item_name
+				local same_slot = data.slot_name == slot_name
 
-							break
-						end
-					elseif item_name and same_slot then
+				if same_slot then
+					widget_id = j
+				end
+
+				if same_item then
+					if not verified_widgets[j] then
 						verified = true
 						verified_widgets[j] = true
 
-						self:_add_item(slot_data, data)
-
-						inventory_modified = true
-
 						break
 					end
-				end
+				elseif item_name and same_slot then
+					verified = true
+					verified_widgets[j] = true
 
-				if not verified and slot_data ~= nil then
-					self:_add_item(slot_data)
+					self:_add_item(slot_data, data)
 
-					verified_widgets[#added_items] = true
+					widget_id = j
 					inventory_modified = true
-				end
 
-				if is_wielded then
-					wielded_item_name = item_name
-				end
-			else
-				if slot_name == "slot_ranged" and item_data then
-					self:_update_ammo_count(item_data, slot_data, player_unit)
-					self:_set_ammo_text_focus(is_wielded)
-				end
-
-				if is_wielded then
-					wielded_item_name = item_name
+					break
 				end
 			end
-		until true
+
+			if not verified and slot_data ~= nil then
+				self:_add_item(slot_data)
+
+				widget_id = #added_items
+				verified_widgets[#added_items] = true
+				inventory_modified = true
+			end
+
+			if is_wielded then
+				wielded_item_name = item_name
+			end
+
+			if slot_name == "slot_grenade" and item_data and widget_id > 0 then
+				local has_additional_slots = inventory_extension:has_additional_item_slots(slot_name)
+				local item_count = inventory_extension:get_total_item_count(slot_name)
+				local hud_slot = added_items[widget_id]
+				local widget = hud_slot and hud_slot.widget
+
+				if widget then
+					local content = widget.content
+					local item_count = inventory_extension:get_total_item_count(slot_name)
+
+					if content.item_count ~= item_count then
+						content.item_count = item_count
+						content.use_count_text = "x" .. item_count
+						content.has_additional_slots = has_additional_slots
+
+						self:_set_widget_dirty(widget)
+					end
+
+					local can_swap = inventory_extension:can_swap_from_storage(slot_name, SwapFromStorageType.Unique)
+
+					if content.can_swap ~= can_swap then
+						content.can_swap = can_swap
+
+						self:_set_widget_dirty(widget)
+					end
+				end
+			end
+		else
+			if slot_name == "slot_ranged" and item_data then
+				self:_update_ammo_count(item_data, slot_data, player_unit)
+				self:_set_ammo_text_focus(is_wielded)
+			end
+
+			if is_wielded then
+				wielded_item_name = item_name
+			end
+		end
 	end
 
 	table.clear(widgets_to_remove)
@@ -755,7 +855,30 @@ GamePadEquipmentUI._add_animation = function (self, name, widget, style, func_na
 	end
 end
 
-GamePadEquipmentUI._update_animations = function (self, dt)
+GamePadEquipmentUI._update_animations = function (self, dt, t)
+	local t_until_fade = self._time_fade_storage_slots
+
+	if t_until_fade then
+		local progress = math.clamp(t_until_fade - t, 0, 1)
+		local widgets = self._extra_storage_icon_widgets
+
+		for i = 1, #widgets, 1 do
+			local widget = widgets[i]
+			local style = widget.style
+			style.texture_icon.color[1] = 255 * progress
+			style.texture_glow.color[1] = 128 * progress
+		end
+
+		local bg_widget = self._widgets_by_name.extra_storage_bg
+		bg_widget.style.texture.color[1] = 189 * progress
+
+		self:_set_widget_dirty(bg_widget)
+
+		if progress == 0 then
+			self._time_fade_storage_slots = nil
+		end
+	end
+
 	local animations = self._animations
 	local dirty = false
 
@@ -1019,6 +1142,7 @@ GamePadEquipmentUI.destroy = function (self)
 	local event_manager = Managers.state.event
 
 	event_manager:unregister("input_changed", self)
+	event_manager:unregister("swap_equipment_from_storage", self)
 	self:set_visible(false)
 	rawset(_G, "gamepad_equipment_ui", nil)
 	print("[GamePadEquipmentUI] - Destroy")
@@ -1054,17 +1178,7 @@ GamePadEquipmentUI._set_elements_visible = function (self, visible)
 	self:set_dirty()
 end
 
-local DO_RELOAD = false
-
 GamePadEquipmentUI.update = function (self, dt, t)
-	if DO_RELOAD then
-		self:set_visible(false)
-		self:_create_ui_elements()
-
-		DO_RELOAD = false
-		self._force_ammo_update = true
-	end
-
 	local dirty = false
 	local parent = self._parent
 	local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
@@ -1073,7 +1187,7 @@ GamePadEquipmentUI.update = function (self, dt, t)
 		dirty = true
 	end
 
-	if self:_update_animations(dt) then
+	if self:_update_animations(dt, t) then
 		dirty = true
 	end
 
@@ -1089,6 +1203,29 @@ GamePadEquipmentUI.update = function (self, dt, t)
 	self:_sync_player_equipment()
 	self:_handle_gamepad_activity()
 	self:draw(dt)
+end
+
+GamePadEquipmentUI._handle_career_change = function (self)
+	local old_career_name = self._career_name
+	local player = Managers.player:local_player()
+	local player_unit = player and player.player_unit
+
+	if not ALIVE[player_unit] then
+		return
+	end
+
+	local career_ext = ScriptUnit.extension(player_unit, "career_system")
+	self._career_name = career_ext:career_name()
+
+	if self._career_name ~= old_career_name then
+		for name, widget in pairs(self._career_widgets) do
+			widget.content.visible = true
+
+			self:_set_widget_dirty(widget)
+		end
+
+		return true
+	end
 end
 
 GamePadEquipmentUI._handle_resolution_modified = function (self)
@@ -1156,6 +1293,12 @@ GamePadEquipmentUI.draw = function (self, dt)
 		return
 	end
 
+	local should_render = self:_handle_career_change() or should_render
+
+	if not should_render then
+		return
+	end
+
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -1168,6 +1311,10 @@ GamePadEquipmentUI.draw = function (self, dt)
 	render_settings.alpha_multiplier = self.panel_alpha_multiplier or alpha_multiplier
 
 	for _, widget in ipairs(self._slot_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
+	for _, widget in ipairs(self._extra_storage_icon_widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 

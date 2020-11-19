@@ -77,6 +77,14 @@ GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
 	end
 end
 
+GameModeSurvival.ended = function (self, reason)
+	local all_peers_ingame = self._network_server:are_all_peers_ingame()
+
+	if not all_peers_ingame then
+		self._network_server:disconnect_joining_peers()
+	end
+end
+
 function COMPLETE_LEVEL()
 	COMPLETE_LEVEL_VAR = true
 end

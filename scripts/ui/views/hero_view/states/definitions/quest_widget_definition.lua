@@ -343,7 +343,7 @@ local function create_quest_entry(scenegraph_id, size)
 				return content.completed and not content.claimed and not content.claiming
 			end,
 			content_change_function = function (content, style)
-				local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+				local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 				style.color[1] = 55 + progress * 200
 			end
 		},

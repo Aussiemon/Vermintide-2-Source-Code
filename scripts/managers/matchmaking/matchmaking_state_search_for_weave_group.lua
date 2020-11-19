@@ -13,7 +13,7 @@ MatchmakingStateSearchForWeaveGroup.init = function (self, params)
 	self._lobby = params.lobby
 	self._lobby_finder = params.lobby_finder
 	self._game_server_finder = params.game_server_finder
-	self._peer_id = Network:peer_id()
+	self._peer_id = Network.peer_id()
 	self._matchmaking_manager = params.matchmaking_manager
 	self._level_transition_handler = params.level_transition_handler
 	self._network_server = params.network_server
@@ -46,14 +46,14 @@ MatchmakingStateSearchForWeaveGroup._start_searching_for_games = function (self)
 	local current_near_filters = {}
 	local eac_authorized = false
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		local eac_state = EAC.state()
 		eac_authorized = eac_state == "trusted"
 	end
 
 	current_filters.eac_authorized = {
-		value = (eac_authorized and "true") or "false",
-		comparison = LobbyComparison.EQUAL
+		comparison = "equal",
+		value = (eac_authorized and "true") or "false"
 	}
 	self._current_filters = current_filters
 
@@ -63,7 +63,7 @@ MatchmakingStateSearchForWeaveGroup._start_searching_for_games = function (self)
 
 	self._matchmaking_manager:setup_weave_near_filters(self.state_context, self._current_near_filters)
 
-	self._current_distance_filter = LobbyDistanceFilter.CLOSE
+	self._current_distance_filter = "close"
 
 	self._matchmaking_manager:setup_filter_requirements(1, self._current_distance_filter, self._current_filters, self._current_near_filters)
 
@@ -182,7 +182,7 @@ MatchmakingStateSearchForWeaveGroup._update_seraching = function (self, dt, t)
 
 	if not found_new_lobby then
 		local distance_filter = self._current_distance_filter
-		local next_distance_filter = LobbyDistanceFilter.get_next(distance_filter, MatchmakingSettings.max_distance_filter)
+		local next_distance_filter = LobbyAux.get_next_lobby_distance_filter(distance_filter, MatchmakingSettings.max_distance_filter)
 
 		if next_distance_filter ~= nil then
 			mm_printf("Changing distance filter from %s to %s", distance_filter, next_distance_filter)

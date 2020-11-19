@@ -55,6 +55,10 @@ local widgets_to_remove = {}
 local news_to_add = {}
 
 NewsFeedUI._sync_news = function (self, dt, t)
+	if not self.is_in_inn then
+		return
+	end
+
 	local feed_sync_delay = self.feed_sync_delay
 
 	if feed_sync_delay then

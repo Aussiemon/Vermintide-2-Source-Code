@@ -375,7 +375,7 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 
 			local actor = Unit.create_actor(item_unit, "rp_dropped")
 
-			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 5)
 			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 
 			item_extension.wielding_unit = nil
@@ -426,7 +426,7 @@ AIInventoryExtension._drop_unit = function (self, drop_unit_name, item_unit, ite
 
 	local actor = Unit.create_actor(new_item_unit, "rp_dropped")
 
-	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 5)
 	Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 
 	if drop_multiple then
@@ -495,11 +495,13 @@ AIInventoryExtension.play_hit_sound = function (self, victim_unit, damage_type)
 	EffectHelper.play_melee_hit_effects_enemy("enemy_hit", enemy_hit_sound, self.world, victim_unit, damage_type, is_husk)
 end
 
-AIInventoryExtension.hot_join_sync = function (self, sender)
+AIInventoryExtension.hot_join_sync = function (self, peer_id)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
 	if self.hidden_item_index and ALIVE[self.unit] then
 		local go_id = Managers.state.unit_storage:go_id(self.unit)
 
-		RPC.rpc_ai_show_single_item(sender, go_id, self.hidden_item_index, false)
+		RPC.rpc_ai_show_single_item(channel_id, go_id, self.hidden_item_index, false)
 	end
 
 	if self.dropped then
@@ -507,7 +509,7 @@ AIInventoryExtension.hot_join_sync = function (self, sender)
 		local go_id = Managers.state.unit_storage:go_id(self.unit)
 
 		if go_id then
-			RPC.rpc_ai_inventory_wield(sender, go_id, self.current_item_set_index)
+			RPC.rpc_ai_inventory_wield(channel_id, go_id, self.current_item_set_index)
 		end
 	end
 end

@@ -14,6 +14,11 @@ PlayerWwiseDependencies = {
 			"wwise/player_foley_dwarf_slayer",
 			"wwise/player_dwarf_vo",
 			"wwise/player_dwarf_vce"
+		},
+		engineer = {
+			"wwise/player_foley_dwarf_engineer",
+			"wwise/player_dwarf_vo",
+			"wwise/player_dwarf_vce"
 		}
 	},
 	markus = {

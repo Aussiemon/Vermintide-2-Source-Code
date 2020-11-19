@@ -26,6 +26,7 @@ GenericUnitInteractorExtension.init = function (self, extension_init_context, un
 	self.physics_world = physics_world
 	self.is_server = Managers.player.is_server
 	self.exclusive_interaction_unit = nil
+	self.units_in_range = {}
 
 	self.interactable_unit_destroy_callback = function (destroyed_interactable_unit)
 		local t = Managers.time:time("game")
@@ -161,6 +162,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			local camera = self:_get_player_camera()
 			local distance_score = math.huge
 			local selected_interaction_unit, selected_interaction_type = nil
+			local new_units_in_range = {}
 
 			for i = 1, hits_n, 1 do
 				local hit = hits[i]
@@ -175,29 +177,42 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 
 							if not interact_actor or Unit.actor(hit_unit, interact_actor) == actor then
 								local target_extension = ScriptUnit.extension(hit_unit, "interactable_system")
-								local target_interaction_type = target_extension:interaction_type()
-								local can_interact, fail_reason, interaction_type = self:can_interact(hit_unit, target_interaction_type)
-								local is_in_chest = self:_check_if_interactable_in_chest(hit_unit, camera_position)
 
-								if (can_interact or fail_reason) and not is_in_chest then
-									local interaction_template = InteractionDefinitions[interaction_type]
-									local config = interaction_template.config or interaction_template.get_config()
-									local does_not_require_line_of_sight = config.does_not_require_line_of_sight
-									local score = self:_claculate_interaction_distance_score(hit_unit, camera_position, center_x, center_y, camera)
-									local block_other_interactions = config.block_other_interactions
+								if target_extension:is_enabled() then
+									local target_interaction_type = target_extension:interaction_type()
+									local can_interact, fail_reason, interaction_type = self:can_interact(hit_unit, target_interaction_type)
+									local is_in_chest = self:_check_if_interactable_in_chest(hit_unit, camera_position)
 
-									if (hit_non_interaction_unit and does_not_require_line_of_sight) or not hit_non_interaction_unit then
-										if block_other_interactions then
-											interaction_context.interactable_unit = hit_unit
-											interaction_context.interaction_type = interaction_type
+									if (can_interact or fail_reason) and not is_in_chest then
+										local interaction_template = InteractionDefinitions[interaction_type]
+										local config = interaction_template.config or interaction_template.get_config()
+										local does_not_require_line_of_sight = config.does_not_require_line_of_sight
+										local score = self:_claculate_interaction_distance_score(hit_unit, camera_position, center_x, center_y, camera)
+										local block_other_interactions = config.block_other_interactions
 
-											return
-										elseif score < distance_score then
-											selected_interaction_unit = hit_unit
-											selected_interaction_type = interaction_type
-											distance_score = score
+										if does_not_require_line_of_sight or not hit_non_interaction_unit then
+											if block_other_interactions then
+												interaction_context.interactable_unit = hit_unit
+												interaction_context.interaction_type = interaction_type
+
+												return
+											elseif score < distance_score then
+												selected_interaction_unit = hit_unit
+												selected_interaction_type = interaction_type
+												distance_score = score
+											end
+										end
+
+										if can_interact then
+											new_units_in_range[hit_unit] = target_interaction_type
+
+											if self.units_in_range[hit_unit] == nil then
+												self:in_range(hit_unit, target_interaction_type, true)
+											end
 										end
 									end
+								else
+									hit_non_interaction_unit = true
 								end
 							else
 								hit_non_interaction_unit = true
@@ -208,6 +223,14 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 					end
 				end
 			end
+
+			for old_hit_unit, target_interaction_type in pairs(self.units_in_range) do
+				if new_units_in_range[old_hit_unit] == nil then
+					self:in_range(old_hit_unit, target_interaction_type, false)
+				end
+			end
+
+			self.units_in_range = new_units_in_range
 
 			if selected_interaction_unit then
 				interaction_context.interactable_unit = selected_interaction_unit
@@ -229,8 +252,9 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 
 					if hit_unit and hit_unit ~= self.unit then
 						local is_in_chest = self:_check_if_interactable_in_chest(hit_unit, camera_position)
+						local target_extension = ScriptUnit.has_extension(hit_unit, "interactable_system")
 
-						if ScriptUnit.has_extension(hit_unit, "interactable_system") and not is_in_chest then
+						if target_extension and not is_in_chest and target_extension:is_enabled() then
 							local pos = POSITION_LOOKUP[hit_unit] or Unit.local_position(hit_unit, 0)
 							local dist = Vector3.distance_squared(self_pos, pos)
 
@@ -396,6 +420,19 @@ GenericUnitInteractorExtension.is_looking_at_interactable = function (self)
 	return self.interaction_context.interactable_unit ~= nil
 end
 
+GenericUnitInteractorExtension.in_range = function (self, interactable_unit, interaction_type, is_in_range)
+	local interaction_context = self.interaction_context
+	local unit_to_interact_with = interactable_unit or interaction_context.interactable_unit
+	interaction_type = interaction_type or interaction_context.interaction_type
+	local interaction_data = interaction_context.data
+	local interaction_template = InteractionDefinitions[interaction_type]
+	local in_range_func = interaction_template.client.in_range
+
+	if in_range_func then
+		in_range_func(self.unit, unit_to_interact_with, interaction_data, interaction_template.config, self.world, is_in_range)
+	end
+end
+
 GenericUnitInteractorExtension.can_interact = function (self, interactable_unit, interaction_type)
 	local interaction_context = self.interaction_context
 	local unit_to_interact_with = interactable_unit or interaction_context.interactable_unit
@@ -417,6 +454,12 @@ GenericUnitInteractorExtension.can_interact = function (self, interactable_unit,
 	end
 
 	interaction_type = interaction_type or interaction_context.interaction_type
+	local game_mode = Managers.state.game_mode:game_mode()
+
+	if game_mode.allowed_interactions and not game_mode:allowed_interactions(self.unit, interaction_type) then
+		return false
+	end
+
 	local interaction_data = interaction_context.data
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local can_interact_func = interaction_template.client.can_interact
@@ -446,13 +489,8 @@ GenericUnitInteractorExtension.interaction_description = function (self, fail_re
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
 	local template_config = interaction_template.config
-	local hud_description, extra_param = interaction_template.client.hud_description(interactable_unit, interaction_data, template_config, fail_reason, self.unit)
 
-	if hud_description == nil then
-		return "<ERROR: UNSPECIFIED INTERACTION HUD DESCRIPTION>"
-	end
-
-	return hud_description, extra_param
+	return interaction_template.client.hud_description(interactable_unit, interaction_data, template_config, fail_reason, self.unit)
 end
 
 GenericUnitInteractorExtension.interaction_hold_input = function (self)
@@ -581,8 +619,9 @@ GenericUnitInteractorExtension.hot_join_sync = function (self, sender)
 	local start_time = data.start_time
 	local duration = data.duration
 	local unit_id = network_manager:unit_game_object_id(self.unit)
+	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-	RPC.rpc_sync_interaction_state(sender, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)
+	RPC.rpc_sync_interaction_state(channel_id, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)
 end
 
 return

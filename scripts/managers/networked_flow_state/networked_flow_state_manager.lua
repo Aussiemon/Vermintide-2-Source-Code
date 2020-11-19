@@ -194,7 +194,7 @@ NetworkedFlowStateManager.flow_cb_play_networked_story = function (self, params)
 	}
 end
 
-NetworkedFlowStateManager.rpc_flow_state_story_played = function (self, sender, client_call_event_name_id, start_time)
+NetworkedFlowStateManager.rpc_flow_state_story_played = function (self, channel_id, client_call_event_name_id, start_time)
 	local client_call_event_name = self._story_lookup[client_call_event_name_id]
 	self._client_call_data = {
 		play_out = true,
@@ -243,7 +243,7 @@ NetworkedFlowStateManager.flow_cb_stop_networked_story = function (self, params)
 	}
 end
 
-NetworkedFlowStateManager.rpc_flow_state_story_stopped = function (self, sender, client_call_event_name_id, stop_time)
+NetworkedFlowStateManager.rpc_flow_state_story_stopped = function (self, channel_id, client_call_event_name_id, stop_time)
 	local client_call_event_name = self._story_lookup[client_call_event_name_id]
 
 	debug_print("Story %q has_stopped via rpc (client).", client_call_event_name)
@@ -323,11 +323,12 @@ NetworkedFlowStateManager._sync_stories = function (self, peer)
 		local start_time = nil
 		local stopped = story_data.stopped
 		local story_time_constant = NetworkConstants.story_time
+		local channel_id = PEER_ID_TO_CHANNEL[peer]
 
 		if stopped then
-			RPC.rpc_flow_state_story_stopped(peer, self._story_lookup[client_call_event_name], math.clamp(story_data.stop_time or story_data.length, story_time_constant.min, story_time_constant.max))
+			RPC.rpc_flow_state_story_stopped(channel_id, self._story_lookup[client_call_event_name], math.clamp(story_data.stop_time or story_data.length, story_time_constant.min, story_time_constant.max))
 		else
-			RPC.rpc_flow_state_story_played(peer, self._story_lookup[client_call_event_name], math.clamp(storyteller:time(story_data.id), story_time_constant.min, story_time_constant.max))
+			RPC.rpc_flow_state_story_played(channel_id, self._story_lookup[client_call_event_name], math.clamp(storyteller:time(story_data.id), story_time_constant.min, story_time_constant.max))
 		end
 
 		debug_print("Story %q being hot join synced to peer %s (server).", client_call_event_name, peer)
@@ -341,6 +342,7 @@ NetworkedFlowStateManager._sync_states = function (self, peer)
 		fassert(Unit.alive(unit), "[NetworkedFlowStateManager] Trying to hot join sync state variable for destroyed unit.")
 
 		local unit_id, is_level_id = network_manager:game_object_or_level_id(unit)
+		local channel_id = PEER_ID_TO_CHANNEL[peer]
 
 		for state_name, state_table in pairs(unit_states.states) do
 			local value = state_table.value
@@ -350,7 +352,7 @@ NetworkedFlowStateManager._sync_states = function (self, peer)
 				local type_data = FLOW_STATE_TYPES[type(value)]
 				value = self:_clamp_state(state_name, type_data, value)
 
-				RPC[type_data.rpcs.change](peer, unit_id, state_network_id, value, true, not is_level_id)
+				RPC[type_data.rpcs.change](channel_id, unit_id, state_network_id, value, true, not is_level_id)
 			end
 		end
 	end
@@ -463,11 +465,11 @@ NetworkedFlowStateManager.client_flow_state_changed = function (self, unit_id, s
 	Unit.flow_event(unit, flow_event)
 end
 
-NetworkedFlowStateManager.rpc_flow_state_bool_changed = function (self, sender, unit_id, state_network_id, new_state, only_set, is_game_object)
+NetworkedFlowStateManager.rpc_flow_state_bool_changed = function (self, channel_id, unit_id, state_network_id, new_state, only_set, is_game_object)
 	self:client_flow_state_changed(unit_id, state_network_id, new_state, only_set, is_game_object)
 end
 
-NetworkedFlowStateManager.rpc_flow_state_number_changed = function (self, sender, unit_id, state_network_id, new_state, only_set, is_game_object)
+NetworkedFlowStateManager.rpc_flow_state_number_changed = function (self, channel_id, unit_id, state_network_id, new_state, only_set, is_game_object)
 	self:client_flow_state_changed(unit_id, state_network_id, new_state, only_set, is_game_object)
 end
 

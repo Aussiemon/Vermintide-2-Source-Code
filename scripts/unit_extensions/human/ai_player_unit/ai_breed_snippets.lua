@@ -93,7 +93,7 @@ AiBreedSnippets.on_rat_ogre_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 end
 
 AiBreedSnippets.on_rat_ogre_despawn = function (unit, blackboard)
@@ -107,8 +107,8 @@ AiBreedSnippets.on_rat_ogre_despawn = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	if not blackboard.rewarded_boss_loot_die then
-		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	if not blackboard.rewarded_boss_loot then
+		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 	end
 end
 
@@ -169,7 +169,7 @@ AiBreedSnippets.on_stormfiend_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 end
 
 AiBreedSnippets.on_stormfiend_despawn = function (unit, blackboard)
@@ -189,8 +189,8 @@ AiBreedSnippets.on_stormfiend_despawn = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	if not blackboard.rewarded_boss_loot_die then
-		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	if not blackboard.rewarded_boss_loot then
+		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 	end
 end
 
@@ -355,7 +355,7 @@ AiBreedSnippets.on_chaos_troll_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 end
 
 AiBreedSnippets.on_chaos_troll_despawn = function (unit, blackboard)
@@ -369,8 +369,8 @@ AiBreedSnippets.on_chaos_troll_despawn = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	if not blackboard.rewarded_boss_loot_die then
-		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	if not blackboard.rewarded_boss_loot then
+		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 	end
 end
 
@@ -489,9 +489,10 @@ AiBreedSnippets.on_storm_vermin_hot_join_sync = function (sender, unit)
 
 	if bb.ward_active then
 		local network_manager = Managers.state.network
-		local unit_id = network_manager:unit_game_object_id(unit)
+		local unit_id = network_manager:unit_game_object_id(sender)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-		RPC.rpc_set_ward_state(sender, unit_id, true)
+		RPC.rpc_set_ward_state(channel_id, unit_id, true)
 	end
 end
 
@@ -594,7 +595,7 @@ AiBreedSnippets.on_storm_vermin_champion_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.drop_loot_dice(2, Vector3(166.5, -46, 38), true)
+	AiBreedSnippets.drop_loot(2, Vector3(166.5, -46, 38), true, unit)
 end
 
 AiBreedSnippets.on_storm_vermin_champion_despawn = function (unit, blackboard)
@@ -672,7 +673,7 @@ AiBreedSnippets.on_chaos_spawn_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 end
 
 AiBreedSnippets.on_chaos_spawn_despawn = function (unit, blackboard)
@@ -685,8 +686,8 @@ AiBreedSnippets.on_chaos_spawn_despawn = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	if not blackboard.rewarded_boss_loot_die then
-		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	if not blackboard.rewarded_boss_loot then
+		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 	end
 end
 
@@ -1082,8 +1083,10 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 	end
 end
 
-AiBreedSnippets.reward_boss_kill_loot_die = function (unit, blackboard)
-	if Managers.weave:get_active_weave() then
+AiBreedSnippets.reward_boss_kill_loot = function (unit, blackboard)
+	local pickup_name = Managers.state.game_mode:get_boss_loot_pickup()
+
+	if not pickup_name then
 		return
 	end
 
@@ -1104,12 +1107,14 @@ AiBreedSnippets.reward_boss_kill_loot_die = function (unit, blackboard)
 	end
 
 	wanted_drop_position = wanted_drop_position or position
-	local pickup_name = "loot_die"
+	local breed = Unit.get_data(unit, "breed")
+	local breed_name = breed and breed.name
 	local extension_init_data = {
 		pickup_system = {
 			has_physics = true,
 			spawn_type = "loot",
-			pickup_name = pickup_name
+			pickup_name = pickup_name,
+			dropped_by_breed = breed_name
 		}
 	}
 	local pickup_settings = AllPickups[pickup_name]
@@ -1120,18 +1125,26 @@ AiBreedSnippets.reward_boss_kill_loot_die = function (unit, blackboard)
 
 	Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, wanted_drop_position + offset, rotation)
 
-	blackboard.rewarded_boss_loot_die = true
+	blackboard.rewarded_boss_loot = true
 end
 
-AiBreedSnippets.drop_loot_dice = function (num_die, pos, has_physics)
-	local pickup_name = "loot_die"
+AiBreedSnippets.drop_loot = function (num_die, pos, has_physics, unit)
+	local pickup_name = Managers.state.game_mode:get_boss_loot_pickup()
+
+	if not pickup_name then
+		return
+	end
+
+	local breed = unit and Unit.get_data(unit, "breed")
+	local breed_name = breed and breed.name
 
 	for i = 1, num_die, 1 do
 		local extension_init_data = {
 			pickup_system = {
 				spawn_type = "loot",
 				pickup_name = pickup_name,
-				has_physics = has_physics
+				has_physics = has_physics,
+				dropped_by_breed = breed_name
 			}
 		}
 		local pickup_settings = AllPickups[pickup_name]
@@ -1158,7 +1171,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.drop_loot_dice(2, Vector3(362.5, 51.6, -9.1), true)
+	AiBreedSnippets.drop_loot(2, Vector3(362.5, 51.6, -9.1), true, unit)
 end
 
 AiBreedSnippets.on_chaos_exalted_sorcerer_despawn = function (unit, blackboard)
@@ -1413,7 +1426,7 @@ AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.drop_loot_dice(2, Vector3(231, -75, 45), true)
+	AiBreedSnippets.drop_loot(2, Vector3(231, -75, 45), true, unit)
 end
 
 AiBreedSnippets.on_chaos_exalted_champion_norsca_death = function (unit, blackboard)
@@ -1766,7 +1779,7 @@ AiBreedSnippets.on_grey_seer_death = function (unit, blackboard, t)
 		conflict_director:add_angry_boss(-1)
 	end
 
-	AiBreedSnippets.drop_loot_dice(3, Vector3(-308, -364, -126), true)
+	AiBreedSnippets.drop_loot(3, Vector3(-308, -364, -126), true, unit)
 end
 
 AiBreedSnippets.on_grey_seer_despawn = function (unit, blackboard, t)
@@ -1786,14 +1799,6 @@ AiBreedSnippets.on_gutter_runner_spawn = function (unit, blackboard)
 	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.enemies_distant_distance, "enemy_tag", "skaven_gutter_runner")
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local ai_breed_snippets_file_names = dlc.ai_breed_snippets_file_names
-
-	if ai_breed_snippets_file_names then
-		for _, file_name in pairs(ai_breed_snippets_file_names) do
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("ai_breed_snippets_file_names")
 
 return

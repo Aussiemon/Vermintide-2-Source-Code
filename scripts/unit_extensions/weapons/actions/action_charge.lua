@@ -10,16 +10,11 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 		self.left_unit = slot_data.left_unit_1p
 	end
 
-	if ScriptUnit.has_extension(owner_unit, "status_system") then
-		self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
-	end
-
-	if ScriptUnit.has_extension(weapon_unit, "spread_system") then
-		self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
-	end
-
+	self.status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
+	self.spread_extension = ScriptUnit.has_extension(weapon_unit, "spread_system")
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+	self.weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 	self._rumble_effect_id = nil
 end
 
@@ -28,6 +23,7 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 
 	local owner_unit = self.owner_unit
 	self.current_action = new_action
+	self.audio_loop_id = new_action.audio_loop_id or "charge"
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
 	self.venting_overcharge = nil
 	self._max_charge = false
@@ -48,6 +44,7 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, "reduced_ranged_charge_time")
 	self.charge_complete_time = self.charge_time + t
 	self.overcharge_timer = 0
+	self.ability_charge_timer = 0
 
 	if not new_action.vent_overcharge then
 		Unit.flow_event(self.first_person_unit, "lua_charge_start")
@@ -93,37 +90,52 @@ end
 
 ActionCharge._start_charge_sound = function (self)
 	local current_action = self.current_action
-	local owner_unit = self.owner_unit
-	local owner_player = self.owner_player
-	local is_bot = owner_player and owner_player.bot_player
-	local is_local = owner_player and not owner_player.remote
-	local wwise_world = self.wwise_world
+	local start_charge_id = current_action.charge_sound_name
+	local stop_charge_id = current_action.charge_sound_stop_event
 
-	if is_local and not is_bot then
-		local wwise_playing_id, wwise_source_id = ActionUtils.start_charge_sound(wwise_world, self.weapon_unit, owner_unit, current_action)
-		self.charging_sound_id = wwise_playing_id
-		self.wwise_source_id = wwise_source_id
+	if not start_charge_id or not stop_charge_id then
+		return
 	end
 
-	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_name, owner_unit, is_bot)
+	local weapon_extension = self.weapon_extension
+	local start_charge_husk_id = current_action.charge_sound_husk_name
+	local stop_charge_husk_id = current_action.charge_sound_husk_stop_event
+
+	weapon_extension:add_looping_audio(self.audio_loop_id, start_charge_id, stop_charge_id, start_charge_husk_id, stop_charge_husk_id)
+
+	local owner_player = self.owner_player
+	local is_local_player = owner_player and owner_player.bot_player and not owner_player.remote
+
+	if is_local_player then
+		local charge_sound_switch = current_action.charge_sound_switch
+
+		if charge_sound_switch then
+			local overcharge_extension = ScriptUnit.extension(self.owner_unit, "overcharge_system")
+			local overcharge_state = (overcharge_extension:above_overcharge_threshold() and "above_overcharge_threshold") or "below_overcharge_threshold"
+
+			weapon_extension:set_looping_audio_switch(self.audio_loop_id, charge_sound_switch, overcharge_state)
+		end
+
+		local charge_sound_parameter_name = current_action.charge_sound_parameter_name
+
+		if charge_sound_parameter_name then
+			weapon_extension:update_looping_audio_parameter(self.audio_loop_id, charge_sound_parameter_name, 1)
+		end
+	end
+
+	weapon_extension:start_looping_audio(self.audio_loop_id)
 end
 
-ActionCharge._stop_charge_sound = function (self)
-	local current_action = self.current_action
-	local owner_unit = self.owner_unit
-	local owner_player = self.owner_player
-	local is_bot = owner_player and owner_player.bot_player
-	local is_local = owner_player and not owner_player.remote
-	local wwise_world = self.wwise_world
+ActionCharge._stop_charge_sound = function (self, reason)
+	local end_condition = self.current_action.charge_sound_stop_event_condition_func
 
-	if is_local and not is_bot then
-		ActionUtils.stop_charge_sound(wwise_world, self.charging_sound_id, self.wwise_source_id, current_action)
-
-		self.charging_sound_id = nil
-		self.wwise_source_id = nil
+	if end_condition and not end_condition(self.owner_unit, reason) then
+		return
 	end
 
-	ActionUtils.play_husk_sound_event(wwise_world, current_action.charge_sound_husk_stop_event, owner_unit, is_bot)
+	local weapon_extension = self.weapon_extension
+
+	weapon_extension:stop_looping_audio(self.audio_loop_id)
 end
 
 ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -235,7 +247,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	self.charge_level = charge_level
 end
 
-ActionCharge._clean_up = function (self)
+ActionCharge._clean_up = function (self, reason)
 	if self.particle_id then
 		World.destroy_particles(self.world, self.particle_id)
 
@@ -254,7 +266,7 @@ ActionCharge._clean_up = function (self)
 		self._rumble_effect_id = nil
 	end
 
-	self:_stop_charge_sound()
+	self:_stop_charge_sound(reason)
 end
 
 ActionCharge.finish = function (self, reason)
@@ -262,7 +274,7 @@ ActionCharge.finish = function (self, reason)
 	local first_person_unit = self.first_person_unit
 	local current_action = self.current_action
 
-	self:_clean_up()
+	self:_clean_up(reason)
 
 	local overcharge_extension = self.overcharge_extension
 

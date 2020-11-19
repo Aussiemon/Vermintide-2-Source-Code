@@ -10,6 +10,7 @@ NetworkLookup.anims = {
 	"attack_geiser_placed",
 	"attack_geiser_start",
 	"attack_shoot",
+	"attack_shoot_second",
 	"attack_shoot_beam_end",
 	"attack_shoot_beam_finish",
 	"attack_shoot_beam_loop",
@@ -17,6 +18,7 @@ NetworkLookup.anims = {
 	"attack_shoot_beam_start",
 	"attack_shoot_charged",
 	"attack_shoot_fast",
+	"attack_shoot_second_fast",
 	"attack_shoot_fast_last",
 	"attack_shoot_fireball",
 	"attack_shoot_fireball_charged",
@@ -87,7 +89,9 @@ NetworkLookup.anims = {
 	"attack_swing_down_right",
 	"attack_swing_down_right_axe",
 	"attack_swing_up",
+	"attack_swing_up_pose",
 	"attack_swing_up_left",
+	"attack_swing_up_right",
 	"flamethrower_charge_start",
 	"flamethrower_charge_loop",
 	"cooldown_start",
@@ -107,14 +111,17 @@ NetworkLookup.anims = {
 	"reload_last",
 	"stance_charge",
 	"lock_target",
+	"lock_target_loop",
 	"lower_weapon",
 	"parry_pose",
+	"parry_pose_02",
 	"parry_pose_spell",
 	"parry_deflect_left",
 	"parry_deflect_right",
 	"parry_finished",
 	"parry_break",
 	"parry_break_spell",
+	"parry_stab",
 	"inspect_start",
 	"inspect_end",
 	"inspect_start_2",
@@ -309,6 +316,15 @@ NetworkLookup.anims = {
 	"spawn_climb_over_10m",
 	"spawn_climb_over_20m",
 	"spawn_climb_over_2_5m",
+	"enter_teleporter_1m",
+	"enter_teleporter_manhole",
+	"enter_teleporter_pipe",
+	"enter_teleporter_well",
+	"exit_teleporter_chimney",
+	"exit_teleporter_window",
+	"exit_teleporter_well",
+	"exit_teleporter_pipe_run",
+	"exit_teleporter_manhole",
 	"attack_sweep_01",
 	"attack_sweep_02",
 	"attack_sweep_03",
@@ -486,8 +502,10 @@ NetworkLookup.anims = {
 	"idle_passive_bang_door_2",
 	"idle_passive_guard",
 	"no_anim",
+	"no_anim_upperbody",
 	"ragdoll",
 	"reload_start",
+	"reload_finished",
 	"reload_loop",
 	"reset",
 	"run",
@@ -562,6 +580,7 @@ NetworkLookup.anims = {
 	"to_1h_sword_shield",
 	"to_1h_sword_shield_breton",
 	"to_2h_hammer",
+	"to_2h_picks",
 	"to_2h_sword",
 	"to_2h_sword_we",
 	"to_2h_axe_we",
@@ -609,6 +628,8 @@ NetworkLookup.anims = {
 	"to_uncrouch",
 	"to_unshield",
 	"to_torch",
+	"to_fire_dot_grenade",
+	"crank_speed",
 	"unwield_left_arm_back",
 	"unwield_right_arm_right_hip",
 	"unwield_right_arm_left_hip",
@@ -622,8 +643,12 @@ NetworkLookup.anims = {
 	"climb_enter_exit_speed",
 	"push_init",
 	"climb_time",
+	"climbing",
 	"drag_walk",
 	"attack_grab_idle",
+	"drag_move_forward",
+	"drag_move_right",
+	"distance_to_target",
 	"attack_grab",
 	"packmaster_hooked",
 	"packmaster_release",
@@ -632,6 +657,7 @@ NetworkLookup.anims = {
 	"packmaster_hang_release",
 	"packmaster_hang_release_death",
 	"packmaster_hang_release_ko",
+	"packmaster_hooked_idle",
 	"hanging",
 	"hanging_loop",
 	"hanging_exit",
@@ -816,18 +842,6 @@ NetworkLookup.interest_point_anims = {
 	"idle_passive_guard"
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local anim_lookup = dlc.anim_lookup
-
-	if anim_lookup then
-		for i = 1, #anim_lookup, 1 do
-			local anim_event = anim_lookup[i]
-
-			assert(not NetworkLookup.anims[anim_event], "The animation event [\"%s\"] from DLC [\"%s\"] already exists in NetworkLookup.anims!")
-
-			NetworkLookup.anims[#NetworkLookup.anims + 1] = anim_event
-		end
-	end
-end
+DLCUtils.append("anim_lookup", NetworkLookup.anims)
 
 return

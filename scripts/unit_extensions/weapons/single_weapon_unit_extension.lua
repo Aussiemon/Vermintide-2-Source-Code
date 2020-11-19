@@ -23,19 +23,17 @@ SingleWeaponUnitExtension.has_current_action = function (self)
 end
 
 SingleWeaponUnitExtension.change_state = function (self, state)
-	print("single weapon unit state changed to:", state)
-
 	self.state = state
 
-	self.weapon_template[state](self.world, self.unit, self.data)
+	self.weapon_template[state](self.world, self.unit, self.owner_unit, self.data)
 end
 
 SingleWeaponUnitExtension.destroy = function (self)
-	self.weapon_template.destroy(self.world, self.unit, self.data)
+	self.weapon_template.destroy(self.world, self.unit, self.owner_unit, self.data)
 end
 
 SingleWeaponUnitExtension.update = function (self, unit, input, dt, context, t)
-	self.weapon_template.update(self.world, self.unit, self.data, t, dt)
+	self.weapon_template.update(self.world, self.unit, self.owner_unit, self.data, t, dt)
 end
 
 return

@@ -2,7 +2,8 @@ NavGraphSystem = class(NavGraphSystem, ExtensionSystemBase)
 local WANTED_LEDGELATOR_VERSION = "2017.MAY.05.05"
 local extensions = {
 	"NavGraphConnectorExtension",
-	"LevelUnitSmartObjectExtension"
+	"LevelUnitSmartObjectExtension",
+	"DarkPactClimbingExtension"
 }
 script_data.nav_mesh_debug = script_data.nav_mesh_debug or Development.parameter("nav_mesh_debug")
 use_simple_jump_units = true
@@ -14,7 +15,19 @@ NavGraphSystem.init = function (self, context, system_name)
 
 	self.entity_manager = entity_manager
 	self.world = context.world
+	self._is_server = context.is_server
+	self._stored_jump_data = {}
 	self.unit_extension_data = {}
+	self._use_level_jumps = Managers.state.game_mode:setting("use_level_jumps")
+
+	if self._use_level_jumps then
+		self.level_jumps = {}
+		self._jumps_are_shown = false
+		self._level_jumps_ready = false
+		self.jumps_broadphase_max_dist = 25
+		self.jumps_broadphase = Broadphase(self.jumps_broadphase_max_dist, 2048)
+	end
+
 	local ai_system = Managers.state.entity:system("ai_system")
 	self.nav_world = ai_system:nav_world()
 	local version = nil
@@ -86,7 +99,7 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 	local smart_objects = self.smart_objects
 	local debug_color = Colors.get("orange")
 	local smart_object_unit_data = smart_objects[smart_object_id]
-	local level_jumps = self.level_jumps
+	local use_for_versus = Unit.get_data(unit, "ledge_enabled_vs")
 	local count = 0
 	local num_smart_objects_in_unit = #smart_object_unit_data
 
@@ -106,7 +119,6 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 		local smart_object_index = smart_object_data.smart_object_index
 		self.smart_object_types[smart_object_index] = smart_object_type
 		self.smart_object_data[smart_object_index] = smart_object_data.data
-		local use_for_versus = Unit.get_data(unit, "ledge_enabled_vs")
 		local navgraph = GwNavGraph.create(nav_world, is_bidirectional, control_points, debug_color, layer_id, smart_object_index)
 
 		if not use_for_versus then
@@ -122,40 +134,82 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 		end
 	end
 
+	if self._use_level_jumps and use_for_versus then
+		local first_unit_data = smart_object_unit_data[1]
+
+		self:spawn_versus_jump_unit(first_unit_data)
+
+		local smart_object_type = first_unit_data.smart_object_type or "ledges"
+
+		if first_unit_data.data.is_bidirectional and (smart_object_type == "jumps" or smart_object_type == "ledges_with_fence") and not first_unit_data.data.is_on_small_fence then
+			self:spawn_versus_jump_unit(first_unit_data, true)
+		end
+	end
+
 	self.initialized_unit_nav_graphs[unit] = true
 end
 
-NavGraphSystem.spawn_jump_unit = function (self, world, position, jump_data)
-	if use_simple_jump_units then
-		local jump_unit = World.spawn_unit(world, "units/test_unit/jump_marker_ground_pactsworn", position)
-		jump_data.unit = jump_unit
+local jump_unit_offset_z = 1.1
 
-		return
+NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
+	local ledge_position = jump_object_data.data.ledge_position
+	ledge_position = ledge_position and Vector3Aux.unbox(ledge_position)
+	local position1 = Vector3Aux.unbox(jump_object_data.pos1) + Vector3(0, 0, jump_unit_offset_z)
+	local position2 = Vector3Aux.unbox(jump_object_data.pos2) + Vector3(0, 0, jump_unit_offset_z)
+	local unit_jump_data = {
+		jump_object_data = jump_object_data
+	}
+	local center_position = nil
+
+	if ledge_position then
+		center_position = ledge_position
+	else
+		center_position = (position1 + position2) / 2
 	end
 
-	local jump_object_data = jump_data.jump_object_data
-	local p1 = Vector3Aux.unbox(jump_object_data.pos1)
-	local p2 = Vector3Aux.unbox(jump_object_data.pos2)
-	local swapped = jump_data.swap_entrance_exit
-	local to_vec = (swapped and p2 - p1) or p1 - p2
-	local to_vec_flat = Vector3.flat(to_vec)
-	local rot = Quaternion.look(to_vec_flat)
-	local jump_unit = World.spawn_unit(world, "units/gameplay/ledges/indicator_jump", position, rot)
-	jump_data.unit = jump_unit
-	local data = jump_object_data.data
-	local height = to_vec.z
+	local direction, spawn_position = nil
 
-	if data.is_on_small_fence or data.ledge_position2 then
-		local ledge_pos = Vector3Aux.unbox(data.ledge_position)
-		local to_ledge = ledge_pos - position
-		height = to_ledge.z
+	if swap then
+		direction = Vector3.normalize(center_position - position1)
+		spawn_position = position1
+		unit_jump_data.swap_entrance_exit = true
+	else
+		direction = Vector3.normalize(center_position - position2)
+		spawn_position = position2
 	end
 
-	local length = Vector3.length(to_vec_flat)
+	local right = Vector3.normalize(Vector3.cross(direction, Vector3.up()))
+	local up = Vector3.normalize(Vector3.cross(right, direction))
+	local rotation = Quaternion.look(direction, up)
 
-	Unit.set_data(jump_unit, "length", length - 2)
-	Unit.set_data(jump_unit, "height", height)
-	Unit.flow_event(jump_unit, "lua_update_dimensions")
+	if self._is_server then
+		local extension_init_data = {
+			nav_graph_system = {
+				smart_object_index = jump_object_data.smart_object_index,
+				swap = swap
+			}
+		}
+		local jump_unit = Managers.state.unit_spawner:spawn_network_unit("units/test_unit/jump_marker_ground_pactsworn", "versus_dark_pact_climbing_interaction_unit", extension_init_data, spawn_position, rotation)
+		local node_id = Unit.node(jump_unit, "c_interaction")
+
+		Unit.set_local_scale(jump_unit, node_id, Vector3(1, 2, 1))
+
+		self.level_jumps[jump_unit] = unit_jump_data
+	else
+		local storage = self._stored_jump_data[jump_object_data.smart_object_index]
+
+		if not storage then
+			storage = {}
+			self._stored_jump_data[jump_object_data.smart_object_index] = storage
+		end
+
+		local index = (not swap and 1) or 2
+		storage[index] = unit_jump_data
+	end
+end
+
+NavGraphSystem.level_jump_units = function (self)
+	return self._level_jumps_ready and self.level_jumps
 end
 
 NavGraphSystem.show_all_jump_units = function (self, show)
@@ -163,16 +217,15 @@ NavGraphSystem.show_all_jump_units = function (self, show)
 		return
 	end
 
-	for id, jump_data in pairs(self.level_jumps) do
-		local unit = jump_data.unit
-
+	for unit, _ in pairs(self.level_jumps) do
 		Unit.set_unit_visibility(unit, show)
+		ScriptUnit.extension(unit, "interactable_system"):set_enabled(show)
 	end
 
 	self._jumps_are_shown = show
 end
 
-NavGraphSystem.on_add_extension = function (self, world, unit, extension_name)
+NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {
 		navgraphs = {}
 	}
@@ -201,7 +254,29 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name)
 		end
 	end
 
+	if extension_name == "DarkPactClimbingExtension" then
+		local smart_object_index = extension_init_data.smart_object_index
+		local swap = extension_init_data.swap
+		extension.smart_object_index = smart_object_index
+		extension.swap = swap
+
+		if self._is_server then
+			return extension
+		end
+
+		local storage = self._stored_jump_data[smart_object_index]
+		local index = (not swap and 1) or 2
+		local jump_data = storage[index]
+		self.level_jumps[unit] = jump_data
+	end
+
 	return extension
+end
+
+NavGraphSystem.extensions_ready = function (self, world, unit, extension_name)
+	if extension_name == "DarkPactClimbingExtension" then
+		self._level_jumps_ready = true
+	end
 end
 
 NavGraphSystem._level_unit_smart_object_id = function (self, unit)
@@ -311,9 +386,11 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			if success then
 				entrance_position.z = z
 			else
-				entrance_position = GwNavQueries.inside_position_from_outside_position(nav_world, entrance_position, above, below, horizontal, distance_from_border)
+				local nav_mesh_entrance_position = GwNavQueries.inside_position_from_outside_position(nav_world, entrance_position, above, below, horizontal, distance_from_border)
 
-				fassert(entrance_position, "[NavGraphSystem] While creating smart object of type %q could not find nav mesh for entrance position at %s.", smart_object_type, entrance_position)
+				fassert(nav_mesh_entrance_position, "[NavGraphSystem] While creating smart object of type %q could not find nav mesh for entrance position at %s.", smart_object_type, entrance_position)
+
+				entrance_position = nav_mesh_entrance_position
 			end
 
 			local exit_node_index = Unit.node(unit, exit_node)
@@ -323,9 +400,11 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			if success then
 				exit_position.z = z
 			else
-				exit_position = GwNavQueries.inside_position_from_outside_position(nav_world, exit_position, above, below, horizontal, distance_from_border)
+				local nav_mesh_exit_position = GwNavQueries.inside_position_from_outside_position(nav_world, exit_position, above, below, horizontal, distance_from_border)
 
-				fassert(exit_position, "[NavGraphSystem] While creating smart object of type %q could not find nav mesh for exit position at %s.", smart_object_type, entrance_position)
+				fassert(nav_mesh_exit_position, "[NavGraphSystem] While creating smart object of type %q could not find nav mesh for exit position at %s.", smart_object_type, exit_position)
+
+				exit_position = nav_mesh_exit_position
 			end
 		else
 			local node = Unit.get_data(unit, "smart_objects", i, "node")

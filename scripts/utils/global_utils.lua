@@ -3,7 +3,6 @@ local script_data = script_data
 script_data.disable_debug_position_lookup = (release_build and true) or nil
 local unit_alive = Unit.alive
 PACKAGED_BUILD = (script_data.packaged_build and true) or false
-DEDICATED_SERVER = Application.is_dedicated_server()
 RESOLUTION_LOOKUP = RESOLUTION_LOOKUP or {}
 POSITION_LOOKUP = POSITION_LOOKUP or Script.new_map(256)
 BLACKBOARDS = BLACKBOARDS or Script.new_map(256)

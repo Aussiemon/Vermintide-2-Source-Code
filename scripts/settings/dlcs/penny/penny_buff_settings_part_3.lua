@@ -13,13 +13,12 @@ settings.buff_templates = {
 	enemy_penny_curse = {
 		buffs = {
 			{
-				perk = "slayer_curse",
+				icon = "troll_vomit_debuff",
 				name = "penny_curse",
 				duration = 5,
 				debuff = true,
 				max_stacks = 50,
-				icon = "troll_vomit_debuff",
-				dormant = true,
+				perk = "slayer_curse",
 				refresh_durations = true
 			}
 		}

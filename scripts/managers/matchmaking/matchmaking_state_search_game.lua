@@ -4,8 +4,7 @@ MatchmakingStateSearchGame.NAME = "MatchmakingStateSearchGame"
 MatchmakingStateSearchGame.init = function (self, params)
 	self._lobby = params.lobby
 	self._lobby_finder = params.lobby_finder
-	self._game_server_finder = params.game_server_finder
-	self._peer_id = Network:peer_id()
+	self._peer_id = Network.peer_id()
 	self._matchmaking_manager = params.matchmaking_manager
 	self._level_transition_handler = params.level_transition_handler
 	self._network_server = params.network_server
@@ -28,8 +27,8 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	local search_config = self.search_config
 	local current_filters = {
 		difficulty = {
-			value = search_config.difficulty,
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = search_config.difficulty
 		}
 	}
 	local quick_game = search_config.quick_game
@@ -39,8 +38,8 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 
 		if level_key then
 			current_filters.selected_level_key = {
-				value = level_key,
-				comparison = LobbyComparison.EQUAL
+				comparison = "equal",
+				value = level_key
 			}
 		end
 
@@ -48,8 +47,8 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 
 		if act_key then
 			current_filters.act_key = {
-				value = act_key,
-				comparison = LobbyComparison.EQUAL
+				comparison = "equal",
+				value = act_key
 			}
 		end
 	end
@@ -61,35 +60,35 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 			local game_mode = "custom"
 			local game_mode_index = NetworkLookup.game_modes[game_mode]
 			current_filters.game_mode = {
-				value = game_mode_index,
-				comparison = LobbyComparison.LESS_OR_EQUAL
+				comparison = "less_or_equal",
+				value = game_mode_index
 			}
 		else
 			local game_mode_index = NetworkLookup.game_modes[game_mode]
 			current_filters.game_mode = {
-				value = game_mode_index,
-				comparison = LobbyComparison.EQUAL
+				comparison = "equal",
+				value = game_mode_index
 			}
 		end
 	end
 
 	local eac_authorized = false
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		local eac_state = EAC.state()
 		eac_authorized = eac_state == "trusted"
 	end
 
 	current_filters.eac_authorized = {
-		value = (eac_authorized and "true") or "false",
-		comparison = LobbyComparison.EQUAL
+		comparison = "equal",
+		value = (eac_authorized and "true") or "false"
 	}
 	current_filters.mechanism = {
-		value = Managers.mechanism:current_mechanism_name(),
-		comparison = LobbyComparison.EQUAL
+		comparison = "equal",
+		value = Managers.mechanism:current_mechanism_name()
 	}
 	self._current_filters = current_filters
-	self._current_distance_filter = LobbyDistanceFilter.CLOSE
+	self._current_distance_filter = "close"
 	local average_power_level = self._matchmaking_manager:get_average_power_level()
 	local current_near_filters = {
 		{
@@ -108,7 +107,6 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	self._lobby:set_lobby_data(lobby_data)
 	self._level_transition_handler:set_next_level(nil)
 	self._lobby_finder:refresh()
-	self._game_server_finder:refresh()
 	self._matchmaking_manager:send_system_chat_message("matchmaking_status_start_search")
 
 	if search_config.act_key then
@@ -150,9 +148,8 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 	end
 
 	self._lobby_finder:update(dt)
-	self._game_server_finder:update(dt)
 
-	if self._lobby_finder:is_refreshing() or self._game_server_finder:is_refreshing() then
+	if self._lobby_finder:is_refreshing() then
 		return
 	end
 
@@ -162,7 +159,7 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 
 	if not found_new_lobby then
 		local distance_filter = self._current_distance_filter
-		local next_distance_filter = LobbyDistanceFilter.get_next(distance_filter, MatchmakingSettings.max_distance_filter)
+		local next_distance_filter = LobbyAux.get_next_lobby_distance_filter(distance_filter, MatchmakingSettings.max_distance_filter)
 
 		if next_distance_filter ~= nil then
 			mm_printf("Changing distance filter from %s to %s", distance_filter, next_distance_filter)
@@ -174,13 +171,14 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 			self._matchmaking_manager:send_system_chat_message("matchmaking_status_increased_search_range")
 		end
 
-		if MatchmakingSettings.host_games == "never" then
+		if self.search_config.host_games then
+			search_again = self.search_config.host_games == "never"
+		elseif MatchmakingSettings.host_games == "never" then
 			search_again = true
 		end
 
 		if search_again then
 			self._lobby_finder:refresh()
-			self._game_server_finder:refresh()
 		end
 	end
 
@@ -229,6 +227,12 @@ MatchmakingStateSearchGame._search_for_game = function (self, dt)
 		}
 	elseif preferred_level_keys then
 		preferred_levels = table.clone(preferred_level_keys)
+
+		if search_config.include_hub_level then
+			local mechanism = Managers.mechanism:game_mechanism()
+			local hub_level_name = mechanism:get_hub_level_key()
+			preferred_levels[#preferred_levels + 1] = hub_level_name
+		end
 	else
 		chosen_level, preferred_levels = matchmaking_manager:get_weighed_random_unlocked_level(false, not search_config.quick_game)
 	end
@@ -242,10 +246,8 @@ local server_lobbies = {}
 
 MatchmakingStateSearchGame._get_server_lobbies = function (self)
 	local lobbies = self:_get_lobbies()
-	local servers = self:_get_servers()
 
 	table.clear(server_lobbies)
-	table.merge(server_lobbies, servers)
 	table.merge(server_lobbies, lobbies)
 
 	return server_lobbies
@@ -284,7 +286,7 @@ MatchmakingStateSearchGame._compare_first_prio_lobbies = function (self, current
 	local current_level_settings = current_level_key and LevelSettings[current_level_key]
 	local new_level_settings = new_level_key and LevelSettings[new_level_key]
 
-	if game_mode ~= "weave" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
+	if game_mode ~= "weave" and game_mode ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
 		local current_times_completed = self:_times_party_completed_level(current_level_key)
 		local new_times_completed = self:_times_party_completed_level(new_level_key)
 
@@ -309,7 +311,7 @@ MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, cur
 	local current_level_settings = current_level_key and LevelSettings[current_level_key]
 	local new_level_settings = new_level_key and LevelSettings[new_level_key]
 
-	if game_mode ~= "weave" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
+	if game_mode ~= "weave" and game_mode ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
 		local current_level_key = current_lobby.selected_level_key
 		local current_times_completed = self:_times_party_completed_level(current_level_key)
 		local new_level_key = current_lobby.selected_level_key
@@ -330,10 +332,13 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 	local weave_name = search_config.weave_name or "false"
 	local act_key = search_config.act_key
 	local using_strict_matchmaking = search_config.strict_matchmaking
-	local reached_max_distance = self._current_distance_filter == MatchmakingSettings.max_distance_filter
+	local max_distance_filter = search_config.max_distance_filter or MatchmakingSettings.max_distance_filter
+	local reached_max_distance = self._current_distance_filter == max_distance_filter
 	local allow_occupied_hero_lobbies = Application.user_setting("allow_occupied_hero_lobbies")
 	local current_first_prio_lobby, current_secondary_prio_lobby = nil
 	local matchmaking_manager = self._matchmaking_manager
+
+	table.dump(preferred_levels, "preferred levels", 2)
 
 	for _, level_key in pairs(preferred_levels) do
 		if current_first_prio_lobby then

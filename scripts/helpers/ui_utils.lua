@@ -1,6 +1,15 @@
 require("scripts/helpers/item_tooltip_helper")
 
 UIUtils = UIUtils or {}
+FAKE_INPUT_SERVICE = {
+	get = NOP,
+	has = NOP
+}
+ALL_INPUT_METHODS = {
+	"keyboard",
+	"gamepad",
+	"mouse"
+}
 local VALUE_LIST = {}
 
 UIUtils.format_localized_description = function (fmt_str, fmt_def)
@@ -152,7 +161,7 @@ UIUtils.get_trait_description = function (trait_name, optional_trait_data)
 			local value_type = data.value_type
 			local value = data.value
 
-			if value_type == "percent" then
+			if value_type == "percent" or value_type == "proc_chance" then
 				values[#values + 1] = math.abs(100 * value)
 			else
 				values[#values + 1] = value
@@ -363,6 +372,142 @@ UIUtils.comma_value = function (amount, comma)
 	end
 
 	return formatted
+end
+
+UIUtils.get_portrait_image_by_profile_index = function (profile_index, career_index)
+	local profile_data = SPProfiles[profile_index]
+	local careers = profile_data.careers
+	local career_settings = careers[career_index]
+	local portrait_image = career_settings.portrait_image
+
+	return portrait_image
+end
+
+UIUtils.get_input_texture_data = function (input_service, input_action, gamepad_active)
+	local platform = PLATFORM
+
+	if platform == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
+		platform = "win32"
+	elseif platform == "win32" and gamepad_active then
+		platform = "xb1"
+	end
+
+	local keymap_binding = input_service:get_keymapping(input_action, platform)
+	local device_type = keymap_binding[1]
+	local key_index = keymap_binding[2]
+	local key_action_type = keymap_binding[3]
+	local prefix_text = nil
+
+	if key_action_type == "held" then
+		prefix_text = "matchmaking_prefix_hold"
+	end
+
+	if device_type == "keyboard" then
+		return nil, Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index), prefix_text
+	elseif device_type == "mouse" then
+		local button_texture_data = ButtonTextureByName(device_type .. "_" .. key_index, platform)
+
+		return button_texture_data, Mouse.button_name(key_index), prefix_text
+	elseif device_type == "gamepad" then
+		local button_name = Pad1.button_name(key_index)
+		local button_texture_data = ButtonTextureByName(button_name, platform)
+
+		return button_texture_data, button_name, prefix_text
+	end
+
+	return nil, ""
+end
+
+UIUtils.mixin_pass = function (widget, pass_def)
+	local passes = widget.element.passes
+	passes[#passes + 1] = pass_def
+	local name = pass_def.name
+
+	if pass_def.texture then
+		local texture_id = name
+		pass_def.texture_id = texture_id
+		widget.content[texture_id] = pass_def.texture
+	end
+
+	if pass_def.text then
+		local text_id = name
+		pass_def.text_id = text_id
+		widget.content[text_id] = pass_def.text
+	end
+
+	if pass_def.content then
+		local content_id = name
+		pass_def.content_id = content_id
+		widget.content[content_id] = pass_def.content
+	end
+
+	if pass_def.style then
+		local style_id = name
+		pass_def.style_id = style_id
+		widget.style[style_id] = pass_def.style
+	end
+
+	return widget
+end
+
+UIUtils.make_widget = function (widget, pass, ...)
+	if not widget.element then
+		widget.element = {
+			passes = {}
+		}
+	end
+
+	if not widget.content then
+		widget.content = {}
+	end
+
+	if not widget.style then
+		widget.style = {}
+	end
+
+	if pass then
+		return UIUtils.make_widget(UIUtils.mixin_pass(widget, pass), ...)
+	else
+		return widget
+	end
+end
+
+UIUtils.create_widgets = function (widget_definitions, widgets, widgets_by_name)
+	widgets = widgets or {}
+	widgets_by_name = widgets_by_name or {}
+
+	for name, widget_definition in pairs(widget_definitions) do
+		local widget = UIWidget.init(widget_definition)
+		widgets[#widgets + 1] = widget
+		widgets_by_name[name] = widget
+	end
+
+	return widgets, widgets_by_name
+end
+
+UIUtils.destroy_widgets = function (widget_list)
+	local destroy = UIWidget.destroy
+
+	for _, widget in pairs(widgets) do
+		destroy(ui_renderer, widget)
+	end
+end
+
+UIUtils.align = function (alignment, position, offset)
+	if alignment == "right" or alignment == "top" then
+		position = position + offset
+	elseif alignment == "center" then
+		position = position + 0.5 * offset
+	end
+
+	return position
+end
+
+UIUtils.format_time = function (t)
+	local sec = t % 60
+	local min = (t - sec) / 60
+
+	return string.format("%02d:%02d", min, sec)
 end
 
 return

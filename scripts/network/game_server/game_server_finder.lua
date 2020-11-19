@@ -7,16 +7,15 @@ GameServerFinder.init = function (self, network_options, max_num_servers)
 	self._network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
 	self._cached_servers = {}
 	self._pending_refresh_request = false
+	self._browser_wrapper = GameServerInternal.server_browser() or GameServerInternal.create_server_browser_wrapper()
 end
 
 GameServerFinder.destroy = function (self)
-	return
+	GameServerInternal.forget_server_browser()
 end
 
 GameServerFinder.refresh = function (self)
-	local server_browser = GameServerInternal.server_browser()
-
-	server_browser:refresh()
+	self._browser_wrapper:refresh()
 
 	self._pending_refresh_request = true
 
@@ -24,21 +23,15 @@ GameServerFinder.refresh = function (self)
 end
 
 GameServerFinder.set_search_type = function (self, search_type)
-	local server_browser = GameServerInternal.server_browser()
-
-	server_browser:set_search_type(search_type)
+	self._browser_wrapper:set_search_type(search_type)
 end
 
 GameServerFinder.add_to_favorites = function (self, ip, connection_port, query_port)
-	local server_browser = GameServerInternal.server_browser()
-
-	server_browser:add_to_favorites(ip, connection_port, query_port)
+	self._browser_wrapper:add_to_favorites(ip, connection_port, query_port)
 end
 
 GameServerFinder.remove_from_favorites = function (self, ip, connection_port, query_port)
-	local server_browser = GameServerInternal.server_browser()
-
-	server_browser:remove_from_favorites(ip, connection_port, query_port)
+	self._browser_wrapper:remove_from_favorites(ip, connection_port, query_port)
 end
 
 GameServerFinder.add_filter_requirements = function (self, requirements, skip_verify_lobby_data)
@@ -56,15 +49,15 @@ GameServerFinder.is_refreshing = function (self)
 end
 
 GameServerFinder.update = function (self, dt)
-	local server_browser = GameServerInternal.server_browser()
+	local browser_wrapper = self._browser_wrapper
 
-	server_browser:update(dt)
+	browser_wrapper:update(dt)
 
-	local is_refreshing = server_browser:is_refreshing()
+	local is_refreshing = browser_wrapper:is_refreshing()
 
 	if self._pending_refresh_request and not is_refreshing then
 		local cached_server = self._cached_servers
-		local servers = server_browser:servers()
+		local servers = browser_wrapper:servers()
 
 		for _, server in ipairs(servers) do
 			if self._skip_verify_lobby_data or GameServerAux.verify_lobby_data(server) then

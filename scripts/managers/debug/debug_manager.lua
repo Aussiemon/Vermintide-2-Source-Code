@@ -118,6 +118,10 @@ end
 DebugManager.update = function (self, dt, t)
 	local dt = dt / (time_scale_list[self.time_scale_index] / 100)
 
+	if PLATFORM == "linux" then
+		return
+	end
+
 	self:update_time_scale(dt)
 
 	if Development.parameter("player_mechanics_goodness_debug") then
@@ -260,6 +264,10 @@ DebugManager.update_time_scale = function (self, dt)
 			self:set_time_scale(time_scale_index)
 		end
 	elseif input_manager:is_device_active("gamepad") then
+		if PLATFORM == "linux" then
+			return
+		end
+
 		local service = input_manager:get_service("Debug")
 
 		if service and service:get("time_scale") then
@@ -661,7 +669,9 @@ DebugManager.cycle_patched_items = function (self, t)
 		local debug_command = NetworkLookup.debug_commands.load_patched_items_into_backend
 
 		for _, peer_id in ipairs(other_peers) do
-			rpc(peer_id, debug_command, NOT_USED)
+			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+			rpc(channel_id, debug_command, NOT_USED)
 		end
 
 		if #other_peers > 0 then
@@ -720,7 +730,7 @@ DebugManager._cycle_patched_items = function (self)
 	self._current_patch_item_index = index
 end
 
-DebugManager.rpc_debug_command = function (self, sender, debug_command_lookup, optional_parameter)
+DebugManager.rpc_debug_command = function (self, channel_id, debug_command_lookup, optional_parameter)
 	local debug_command = NetworkLookup.debug_commands[debug_command_lookup]
 
 	if debug_command == "load_patched_items_into_backend" then

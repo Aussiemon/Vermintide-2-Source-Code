@@ -109,7 +109,7 @@ HeroWindowBackgroundConsole._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				layer = 990,
+				layer = 960,
 				viewport_name = "character_preview_viewport",
 				clear_screen_on_create = true,
 				level_name = "levels/ui_keep_menu/world",
@@ -272,8 +272,10 @@ HeroWindowBackgroundConsole._update_character_visibility = function (self, layou
 	end
 end
 
+local EMPTY_TABLE = {}
+
 HeroWindowBackgroundConsole._update_level_events = function (self, layout_name)
-	local level_events_to_trigger = level_events_per_layout[layout_name]
+	local level_events_to_trigger = level_events_per_layout[layout_name] or EMPTY_TABLE
 
 	for _, event_name in ipairs(level_events_to_trigger) do
 		self.world_previewer:trigger_level_event(event_name)
@@ -299,7 +301,7 @@ HeroWindowBackgroundConsole.post_update = function (self, dt, t)
 	self:_update_loading_overlay_fadeout_animation(dt)
 
 	if not self.initialized and self._viewport_widget then
-		local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, camera_position_by_character)
+		local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, camera_position_by_character, "HeroWindowBackgroundConsole")
 
 		local function callback()
 			self.hero_unit_spawned = true

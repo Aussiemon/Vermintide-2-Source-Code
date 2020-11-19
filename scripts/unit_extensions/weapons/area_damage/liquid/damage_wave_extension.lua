@@ -755,7 +755,7 @@ DamageWaveExtension.is_position_inside = function (self, position, nav_cost_map_
 	return distance_sq <= wave_radius_sq
 end
 
-DamageWaveExtension.hot_join_sync = function (self, sender)
+DamageWaveExtension.hot_join_sync = function (self, peer_id)
 	local launched = self.is_launched
 
 	if launched then
@@ -768,15 +768,15 @@ DamageWaveExtension.hot_join_sync = function (self, sender)
 			local fx_entry = fx_list[i]
 			local position = fx_entry.position:unbox()
 
-			network_transmit:send_rpc("rpc_add_damage_wave_fx", sender, unit_id, position)
+			network_transmit:send_rpc("rpc_add_damage_wave_fx", peer_id, unit_id, position)
 		end
 
 		local state = self.state
 
 		if state == "lingering" then
-			network_transmit:send_rpc("rpc_damage_wave_set_state", sender, unit_id, NetworkLookup.damage_wave_states.hide)
+			network_transmit:send_rpc("rpc_damage_wave_set_state", peer_id, unit_id, NetworkLookup.damage_wave_states.hide)
 		else
-			network_transmit:send_rpc("rpc_damage_wave_set_state", sender, unit_id, NetworkLookup.damage_wave_states.running)
+			network_transmit:send_rpc("rpc_damage_wave_set_state", peer_id, unit_id, NetworkLookup.damage_wave_states.running)
 		end
 	end
 end

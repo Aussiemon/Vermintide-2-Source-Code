@@ -184,7 +184,6 @@ StateInGameRunning.on_enter = function (self, params)
 		self._level_end_view_wrapper:game_state_changed()
 	end
 
-	loading_context.scoreboard_session_data = nil
 	params.dice_keeper = nil
 	local gdc_build = Development.parameter("gdc")
 
@@ -258,8 +257,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			self.parent.parent.loading_context.saved_scoreboard_stats = nil
 		end
 
-		local players_session_score = ScoreboardHelper.get_grouped_topic_statistics(self.statistics_db, self.profile_synchronizer, saved_scoreboard_stats)
-		local scoreboard_session_data = ScoreboardHelper.get_sorted_topic_statistics(self.statistics_db, self.profile_synchronizer, saved_scoreboard_stats)
+		local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, saved_scoreboard_stats)
 		local hero_name = nil
 		local peer_id = Network.peer_id()
 		local local_player_id = self.local_player_id
@@ -276,7 +274,6 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			is_quickplay = self.is_quickplay,
 			peer_id = peer_id,
 			local_player_hero_name = hero_name,
-			scoreboard_session_data = scoreboard_session_data,
 			players_session_score = players_session_score,
 			game_won = game_won,
 			game_mode_key = game_mode_key,
@@ -289,26 +286,24 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 
 		if not self._booted_eac_untrusted then
 			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
+			local win_track_start_experience = self.rewards:get_win_track_experience_start()
+			local rewards, end_of_level_rewards_arguments = self.rewards:get_rewards()
 			level_end_view_context.rewards = {
-				end_of_level_rewards = table.clone(self.rewards:get_rewards()),
+				end_of_level_rewards = table.clone(rewards),
 				level_start = {
 					level,
 					start_experience,
 					start_experience_pool
 				},
-				mission_results = table.clone(self.rewards:get_mission_results())
+				mission_results = table.clone(self.rewards:get_mission_results()),
+				win_track_start_experience = win_track_start_experience
 			}
+			level_end_view_context.end_of_level_rewards_arguments = table.clone(end_of_level_rewards_arguments)
 		end
 
-		local mission_system = Managers.state.entity:system("mission_system")
-		level_end_view_context.mission_system_data = {
-			tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission"),
-			grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission"),
-			loot_dice_mission_data = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission"),
-			painting_scraps_mission_data = mission_system:get_level_end_mission_data("painting_scrap_hidden_mission")
-		}
 		local party_data = Managers.mechanism:score_information()
 		level_end_view_context.party_data = party_data
+		level_end_view_context.level_end_view = Managers.mechanism:get_level_end_view()
 		self.parent.parent.loading_context.level_end_view_context = level_end_view_context
 
 		if PLATFORM == "ps4" then
@@ -514,6 +509,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 
 	if ingame_ui.leave_game then
+		statistics_db:reset_persistant_stats()
 		StatisticsUtil.reset_mission_streak(player, statistics_db, stats_id)
 
 		return
@@ -530,7 +526,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	achievement_manager:evaluate_end_of_level_achievements(statistics_db, stats_id, level_key, difficulty_key)
 
 	local stats_interface = Managers.backend:get_interface("statistics")
-	local is_final_objective = game_mode_key ~= "weave" or not Managers.weave:calculate_next_objective_index()
+	local register_statistics = true
+	local is_final_objective = Managers.mechanism:is_final_round()
 
 	if game_mode_key == "survival" then
 		if game_won then
@@ -542,59 +539,88 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	elseif game_won then
 		print("Game won")
 
-		local is_final_weave_objective = is_final_objective and game_mode_key == "weave"
+		if game_mode_key == "weave" then
+			is_final_objective = not Managers.weave:calculate_next_objective_index()
 
-		if is_final_weave_objective then
-			local weave_manager = Managers.weave
-			local weave_tier = weave_manager:get_weave_tier()
-			local score = weave_manager:get_score()
-			local num_players = weave_manager:get_num_players()
-			local weave_templates = WeaveSettings.templates_ordered
-			local num_weave_templates = #weave_templates
-			local personal_best = false
+			if is_final_objective then
+				local weave_manager = Managers.weave
+				local weave_tier = weave_manager:get_weave_tier()
+				local score = weave_manager:get_score()
+				local num_players = weave_manager:get_num_players()
+				local weave_templates = WeaveSettings.templates_ordered
+				local num_weave_templates = #weave_templates
+				local personal_best = false
 
-			for i = num_weave_templates, weave_tier, -1 do
-				local stat_name = ScorpionSeasonalSettings.get_weave_score_stat(i, num_players)
-				local previous_score = statistics_db:get_persistent_stat(stats_id, ScorpionSeasonalSettings.current_season_name, stat_name)
-				local has_previous_score = previous_score and previous_score > 0
+				for i = num_weave_templates, weave_tier, -1 do
+					local stat_name = ScorpionSeasonalSettings.get_weave_score_stat(i, num_players)
+					local previous_score = statistics_db:get_persistent_stat(stats_id, ScorpionSeasonalSettings.current_season_name, stat_name)
+					local has_previous_score = previous_score and previous_score > 0
 
-				if weave_tier == i then
-					if (has_previous_score and previous_score < score) or not has_previous_score then
-						personal_best = true
+					if weave_tier == i then
+						if (has_previous_score and previous_score < score) or not has_previous_score then
+							personal_best = true
 
+							break
+						end
+					elseif has_previous_score then
 						break
 					end
-				elseif has_previous_score then
-					break
 				end
-			end
 
-			self._weave_personal_best_achieved = personal_best
-			self._completed_weave = weave_manager:get_active_weave()
-		elseif game_mode_key == "weave" then
-			local saved_scoreboard_stats = ScoreboardHelper.get_weave_stats(self.statistics_db, self.profile_synchronizer)
-			self.parent.parent.loading_context.saved_scoreboard_stats = saved_scoreboard_stats
+				self._weave_personal_best_achieved = personal_best
+				self._completed_weave = weave_manager:get_active_weave()
+
+				StatisticsUtil.register_weave_complete(statistics_db, player, is_quickplay, difficulty_key)
+			else
+				local saved_scoreboard_stats = ScoreboardHelper.get_weave_stats(self.statistics_db, self.profile_synchronizer)
+				self.parent.parent.loading_context.saved_scoreboard_stats = saved_scoreboard_stats
+			end
+		elseif game_mode_key == "versus" then
+			register_statistics = is_final_objective
 		else
 			self.parent.parent.loading_context.saved_scoreboard_stats = nil
+			is_final_objective = true
 		end
 
-		if self._is_in_event_game_mode then
-			StatisticsUtil.register_played_weekly_event_level(statistics_db, player, level_key, difficulty_key)
+		if register_statistics then
+			if self._is_in_event_game_mode then
+				StatisticsUtil.register_played_weekly_event_level(statistics_db, player, level_key, difficulty_key)
+			end
+
+			StatisticsUtil.register_complete_level(statistics_db, game_mode_key)
 		end
 
-		StatisticsUtil.register_complete_level(statistics_db)
-
-		if is_final_weave_objective then
-			StatisticsUtil.register_weave_complete(statistics_db, player, is_quickplay, difficulty_key)
+		if is_final_objective and Managers.mechanism.on_final_round_won then
+			Managers.mechanism:on_final_round_won(statistics_db, stats_id)
 		end
 
 		stats_interface:save()
 	elseif game_lost then
+		if game_mode_key == "versus" then
+			local mechanism = Managers.mechanism:game_mechanism()
+			local state = mechanism:get_state()
+			register_statistics = state == "inn"
+			is_final_objective = state == "inn"
+
+			if register_statistics then
+				if self._is_in_event_game_mode then
+					StatisticsUtil.register_played_weekly_event_level(statistics_db, player, level_key, difficulty_key)
+				end
+
+				StatisticsUtil.register_complete_level(statistics_db, game_mode_key)
+			end
+
+			stats_interface:save()
+		else
+			is_final_objective = true
+		end
+
 		print("Game lost")
 
 		self.parent.parent.loading_context.saved_scoreboard_stats = nil
 		self.checkpoint_available = checkpoint_available
 
+		statistics_db:reset_persistant_stats()
 		StatisticsUtil.reset_mission_streak(player, statistics_db, stats_id)
 		stats_interface:save()
 	end
@@ -631,10 +657,14 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 		if end_mission_rewards then
 			if not is_booted_unstrusted and (game_lost or is_final_objective) then
-				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key, weave_tier, weave_progress)
+				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key)
 			end
 
 			ingame_ui:activate_end_screen_ui(screen_name, screen_config)
+		end
+
+		if ((game_won and is_final_objective) or game_lost) and is_game_mode_weave then
+			Managers.weave:clear_weave_name()
 		end
 	end
 
@@ -645,10 +675,6 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		callback()
 	else
 		backend_manager:commit(true, callback)
-	end
-
-	if ((game_won and is_final_objective) or game_lost) and is_game_mode_weave then
-		Managers.weave:clear_weave_name()
 	end
 
 	self.game_lost = game_lost
@@ -674,28 +700,22 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 end
 
-StateInGameRunning._current_weave_index = function (self, statistics_db, stats_id)
-	local ignore_dlc_check = false
-	local current_weave = LevelUnlockUtils.current_weave(statistics_db, stats_id, ignore_dlc_check)
-	local weave_template = WeaveSettings.templates[current_weave]
-	local weave_templates_ordererd = WeaveSettings.templates_ordered
-	local current_weave_index = table.find(weave_templates_ordererd, weave_template)
+StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, stats_id, game_won, difficulty_key)
+	if self.game_mode_key == "versus" then
+		return
+	end
 
-	return current_weave_index
-end
-
-StateInGameRunning._award_end_of_level_rewards = function (self, statistics_db, stats_id, game_won, difficulty_key, weave_tier, weave_progress)
 	local profile_synchronizer = self.profile_synchronizer
 	local peer_id = Network.peer_id()
 	local local_player_id = self.local_player_id
 	local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 	local profile = SPProfiles[profile_index]
 	local hero_name = profile.display_name
-	local current_weave_index = self:_current_weave_index(statistics_db, stats_id)
 	local game_time = math.floor(Managers.time:time("game"))
-	local kill_count = statistics_db:get_stat(stats_id, "kills_total")
+	local end_of_level_rewards_arguments = Managers.mechanism:get_end_of_level_rewards_arguments(game_won, self.is_quickplay, statistics_db, stats_id)
+	local extra_mission_results = Managers.mechanism:get_end_of_level_extra_mission_results()
 
-	self.rewards:award_end_of_level_rewards(game_won, hero_name, self._is_in_event_game_mode, weave_tier, weave_progress, game_time, current_weave_index, kill_count)
+	self.rewards:award_end_of_level_rewards(game_won, hero_name, self._is_in_event_game_mode, game_time, end_of_level_rewards_arguments, extra_mission_results)
 
 	local chest_settings = LootChestData.chests_by_category[difficulty_key]
 
@@ -866,8 +886,7 @@ StateInGameRunning.update_ui = function (self)
 		return
 	end
 
-	local t = Application.time_since_launch()
-	local dt = Application.time_since_launch() - (self._t or t)
+	local t, dt = Managers.time:time_and_delta("ui")
 	local disable_ingame_ui = script_data.disable_ui or DebugScreen.active or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
 	local ingame_ui = self.ingame_ui
 	local level_end_view_wrapper = self._level_end_view_wrapper
@@ -894,7 +913,7 @@ StateInGameRunning.update_ui = function (self)
 		self:on_end_screen_ui_complete()
 	end
 
-	self._t = Application.time_since_launch()
+	self._t = t
 end
 
 StateInGameRunning.cb_loading_view_fade_in_done = function (self)
@@ -1300,10 +1319,12 @@ StateInGameRunning._show_afk_warning = function (self)
 		Managers.state.network.network_transmit:send_rpc_server(rpc, message_id, peer_id)
 	end
 
-	self:rpc_trigger_local_afk_system_message(peer_id, message_id, peer_id)
+	local channel_id = CHANNEL_TO_PEER_ID[peer_id]
+
+	self:rpc_trigger_local_afk_system_message(channel_id, message_id, peer_id)
 end
 
-StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, sender, message_id, peer_id)
+StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, channel_id, message_id, peer_id)
 	if self.is_server then
 		Managers.state.network.network_transmit:send_rpc_clients_except(rpc, peer_id, message_id, peer_id)
 	end
@@ -1314,7 +1335,7 @@ StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, sender
 		local is_player_controlled = player:is_player_controlled()
 		local player_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
 
-		if PLATFORM ~= "win32" and not Managers.account:offline_mode() then
+		if (PLATFORM == "xb1" or PLATFORM == "ps4") and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
 			player_name = (is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id))) or player:name()
 		end
@@ -1357,19 +1378,25 @@ StateInGameRunning._kick_afk_player = function (self)
 		Managers.state.network.network_transmit:send_rpc_server(rpc, message_id, peer_id)
 	end
 
-	self:rpc_trigger_local_afk_system_message(peer_id, message_id, peer_id)
+	local channel_id = CHANNEL_TO_PEER_ID[peer_id]
+
+	self:rpc_trigger_local_afk_system_message(channel_id, message_id, peer_id)
 
 	self.afk_kick = true
 end
 
-StateInGameRunning.rpc_follow_to_lobby = function (self, sender, lobby_type, lobby_to_join)
+StateInGameRunning.rpc_follow_to_lobby = function (self, channel_id, lobby_type, lobby_to_join)
 	printf("Got message from lobby host to join %s %s", NetworkLookup.lobby_type[lobby_type], lobby_to_join)
 
-	if not Managers.party:is_leader(sender) then
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if not Managers.party:is_leader(peer_id) then
 		return
 	end
 
-	local lobby_join_data = {}
+	local lobby_join_data = {
+		join_method = "party"
+	}
 
 	if NetworkLookup.lobby_type[lobby_type] == "server" then
 		lobby_join_data.is_server_invite = true
@@ -1382,9 +1409,11 @@ StateInGameRunning.rpc_follow_to_lobby = function (self, sender, lobby_type, lob
 		lobby_join_data.id = lobby_to_join
 	end
 
-	Managers.matchmaking:request_join_lobby(lobby_join_data, {
+	local state_context_params = {
 		friend_join = true
-	})
+	}
+
+	Managers.matchmaking:request_join_lobby(lobby_join_data, state_context_params)
 end
 
 StateInGameRunning._poll_testify_requests = function (self)

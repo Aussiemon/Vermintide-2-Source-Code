@@ -41,6 +41,17 @@ SlotAllocator.allocate_slot = function (self, profile_index, peer_id, local_play
 	self:_update_lobby_data()
 end
 
+SlotAllocator.client_allocate_slot = function (self, profile_index, peer_id, local_player_index)
+	assert(not self._is_server)
+	assert(peer_id ~= nil)
+	assert(local_player_index ~= nil)
+	sa_printf("Client Allocate slot %d for %s:%d", profile_index, peer_id, local_player_index)
+
+	local lobby_data = self._lobby:get_stored_lobby_data()
+	local slot_name = SlotAllocator._slot_name(profile_index)
+	lobby_data[slot_name] = SlotAllocator._join_lobby_entry(peer_id, local_player_index)
+end
+
 SlotAllocator.free_slot = function (self, profile_index)
 	assert(self._is_server)
 	sa_printf("Free slot %d", profile_index)

@@ -237,8 +237,16 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 					health = 0
 					temporary_health = max_health
 				elseif state == "alive" then
-					health = 0
-					temporary_health = max_health / 2
+					local buff_extension = self.buff_extension
+					local temp_to_permanent_health = buff_extension and buff_extension:has_buff_perk("temp_to_permanent_health")
+
+					if temp_to_permanent_health then
+						health = max_health / 2
+						temporary_health = 0
+					else
+						health = 0
+						temporary_health = max_health / 2
+					end
 				end
 			elseif max_health ~= previous_max_health then
 				local previous_health_percentage, previous_temporary_health_percentage = nil
@@ -307,6 +315,65 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 			end
 		end
 	end
+
+	if Managers.mechanism:current_mechanism_name() == "versus" then
+		self:_update_outline_color(t, dt)
+	end
+end
+
+PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
+	local local_player = Managers.player:local_player()
+
+	if not local_player then
+		return
+	end
+
+	local peer_id = local_player:network_id()
+	local local_player_id = local_player:local_player_id()
+	local party = Managers.party:get_party_from_player_id(peer_id, local_player_id)
+	local side = Managers.state.side.side_by_party[party]
+	local is_park_pact = side:name() == "dark_pact"
+
+	if not is_park_pact then
+		return
+	end
+
+	local unit_side = Managers.state.side.side_by_unit[self.unit]
+
+	if not unit_side then
+		return
+	end
+
+	local unit_is_hero = unit_side:name() == "heroes"
+
+	if not unit_is_hero then
+		return
+	end
+
+	local outline_color = nil
+	local is_disabled = self.status_extension:is_disabled()
+
+	if is_disabled then
+		outline_color = OutlineSettingsVS.colors.hero_dying
+	else
+		local current_health_percent = self:current_health_percent()
+
+		if current_health_percent >= 0.66 then
+			outline_color = OutlineSettingsVS.colors.hero_healthy
+		elseif current_health_percent >= 0.33 then
+			outline_color = OutlineSettingsVS.colors.hero_hurt
+		else
+			outline_color = OutlineSettingsVS.colors.hero_dying
+		end
+	end
+
+	local outline_ext = self._outline_extension
+	local prev_outline_color = outline_ext.outline_color
+
+	if outline_color ~= prev_outline_color then
+		outline_ext.outline_color = outline_color
+		outline_ext.reapply = true
+	end
 end
 
 local FORCED_PERMANENT_DAMAGE_TYPES = {
@@ -338,6 +405,10 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		end
 
 		QuestSettings.handle_bastard_block(self.unit, attacker_unit, false)
+	end
+
+	if damage_source_name == "ground_impact" and not breed.is_hero then
+		return
 	end
 
 	fassert(damage_type, "No damage_type!")
@@ -375,11 +446,26 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		local position = POSITION_LOOKUP[unit]
 
 		Managers.telemetry.events:player_damaged(player, damage_type, damage_source_name or "n/a", damage_amount, position)
+
+		local attacker_player = Managers.player:owner(attacker_unit)
+
+		if not DEDICATED_SERVER and attacker_player then
+			local local_player = Managers.player:local_player()
+
+			if attacker_player:unique_id() == local_player:unique_id() then
+				local attacker_position = POSITION_LOOKUP[attacker_unit]
+				local target_breed = Unit.get_data(unit, "breed")
+
+				Managers.telemetry.events:local_player_damaged_player(attacker_player, target_breed.name, damage_amount, attacker_position, position)
+			end
+		end
 	end
 
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-	buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type)
+	if damage_amount > 0 and damage_source_name ~= "temporary_health_degen" then
+		buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type)
+	end
 
 	local min_health = (buff_extension:has_buff_perk("ignore_death") and 1) or 0
 
@@ -847,6 +933,12 @@ PlayerUnitHealthExtension.set_dead = function (self)
 
 		SurroundingAwareSystem.add_event(unit, "player_death", death_discover_distance, "target", unit, "target_name", player_profile)
 	end
+
+	local recent_damages = self:recent_damages()
+	local player = Managers.player:owner(unit)
+	local stats_id = player:stats_id()
+
+	Managers.state.event:trigger("on_player_death", stats_id, unit, recent_damages)
 end
 
 PlayerUnitHealthExtension.set_max_health = function (self, health)

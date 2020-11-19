@@ -26,16 +26,20 @@ end
 
 ObjectiveItemSpawnerSystem.spawn_items = function (self, spawn_ids)
 	for spawn_id, objective_data in pairs(spawn_ids) do
-		local item_spawner_data = self._item_spawners[spawn_id]
+		if objective_data.sub_objectives then
+			self:spawn_items(objective_data.sub_objectives)
+		else
+			local item_spawner_data = self._item_spawners[spawn_id]
 
-		if item_spawner_data then
-			local spawned_unit, game_object_id = self:_trigger_spawn(item_spawner_data, spawn_id, objective_data)
+			if item_spawner_data then
+				local spawned_unit, game_object_id = self:_trigger_spawn(item_spawner_data, spawn_id, objective_data)
 
-			if spawned_unit then
-				self._spawned_items[spawn_id] = {
-					unit = spawned_unit,
-					game_object_id = game_object_id
-				}
+				if spawned_unit then
+					self._spawned_items[spawn_id] = {
+						unit = spawned_unit,
+						game_object_id = game_object_id
+					}
+				end
 			end
 		end
 	end

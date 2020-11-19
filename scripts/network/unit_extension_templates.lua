@@ -325,6 +325,7 @@ local unit_templates = {
 			"GenericStatusExtension",
 			"GenericHitReactionExtension",
 			"GenericDeathExtension",
+			"PlayerUnitWeaveLoadoutExtension",
 			"PlayerUnitLocomotionExtension",
 			"PlayerBotUnitFirstPerson",
 			"GenericUnitAimExtension",
@@ -359,6 +360,7 @@ local unit_templates = {
 			"GenericStatusExtension",
 			"GenericHitReactionExtension",
 			"GenericDeathExtension",
+			"PlayerHuskWeaveLoadoutExtension",
 			"PlayerHuskLocomotionExtension",
 			"GenericUnitAimExtension",
 			"DialogueActorExtension",
@@ -1464,6 +1466,20 @@ local unit_templates = {
 			"AreaDamageExtension"
 		}
 	},
+	aoe_projectile_unit_fixed_impact = {
+		go_type = "aoe_projectile_unit_fixed_impact",
+		self_owned_extensions = {
+			"ProjectileScriptUnitLocomotionExtension",
+			"ProjectileFixedImpactUnitExtension",
+			"GenericImpactProjectileUnitExtension",
+			"AreaDamageExtension"
+		},
+		husk_extensions = {
+			"ProjectileScriptUnitLocomotionExtension",
+			"GenericImpactProjectileUnitExtension",
+			"AreaDamageExtension"
+		}
+	},
 	timed_explosion_unit = {
 		go_type = "timed_explosion_unit",
 		self_owned_extensions = {
@@ -1609,6 +1625,15 @@ local unit_templates = {
 		},
 		husk_extensions = {
 			"VersusMissionObjectiveExtension"
+		}
+	},
+	versus_capture_point_objective_unit = {
+		go_type = "versus_capture_point_objective_unit",
+		self_owned_extensions = {
+			"VersusCapturePointObjectiveExtension"
+		},
+		husk_extensions = {
+			"VersusCapturePointObjectiveExtension"
 		}
 	},
 	weave_capture_point_unit = {
@@ -2206,17 +2231,9 @@ local unit_templates = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local files = dlc.unit_extension_templates
-
-	if files then
-		for _, file in ipairs(files) do
-			local extension_templates = dofile(file)
-
-			table.merge(unit_templates, extension_templates)
-		end
-	end
-end
+DLCUtils.map_list("unit_extension_templates", function (file)
+	table.merge(unit_templates, dofile(file))
+end)
 
 local extension_table_names = {
 	"self_owned_extensions",
@@ -2287,6 +2304,11 @@ end
 
 unit_templates.get_extensions = function (unit_template_name, is_husk, is_server)
 	local extensions, num_extensions = nil
+
+	if unit_template_name == "player_bot_unit" then
+		print("test")
+	end
+
 	local template = unit_templates[unit_template_name]
 
 	if is_husk then

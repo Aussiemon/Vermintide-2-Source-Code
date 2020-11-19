@@ -174,15 +174,17 @@ IngamePlayerListUI._setup_mutator_data = function (self, mutators)
 		local current_mutator_index = 1
 
 		for name, _ in pairs(mutators) do
-			if MAX_MUTATORS < current_mutator_index then
-				break
-			elseif current_mutator_index <= MUTATORS_PER_COLUMN then
-				mutator_storage1[#mutator_storage1 + 1] = name
-			else
-				mutator_storage2[#mutator_storage2 + 1] = name
-			end
+			if not MutatorTemplates[name].hide_from_player_ui then
+				if MAX_MUTATORS < current_mutator_index then
+					break
+				elseif current_mutator_index <= MUTATORS_PER_COLUMN then
+					mutator_storage1[#mutator_storage1 + 1] = name
+				else
+					mutator_storage2[#mutator_storage2 + 1] = name
+				end
 
-			current_mutator_index = current_mutator_index + 1
+				current_mutator_index = current_mutator_index + 1
+			end
 		end
 	end
 end
@@ -576,17 +578,9 @@ IngamePlayerListUI.update_player_information = function (self)
 				local portrait_widget = self:_create_portrait_frame_widget(portrait_frame, portrait_image, player_level_text)
 				local background_color = widget.style.background.color
 				local career_color = Colors.color_definitions[career_name]
-
-				if career_color then
-					background_color[2] = career_color[2]
-					background_color[3] = career_color[3]
-					background_color[4] = career_color[4]
-				else
-					background_color[2] = 255
-					background_color[3] = 255
-					background_color[4] = 255
-				end
-
+				background_color[2] = career_color[2]
+				background_color[3] = career_color[3]
+				background_color[4] = career_color[4]
 				player_data.player_level_text = player_level_text
 				player_data.portrait_widget = portrait_widget
 				player_data.hero_name = display_name

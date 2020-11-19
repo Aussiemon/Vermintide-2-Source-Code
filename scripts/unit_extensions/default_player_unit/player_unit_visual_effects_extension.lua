@@ -27,6 +27,7 @@ end
 PlayerUnitVisualEffectsExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_overcharge_thresholds()
 	self:_set_overcharge_flow_values()
+	self:_set_weapons_energy_drainable()
 end
 
 PlayerUnitVisualEffectsExtension._update_overcharge_thresholds = function (self)
@@ -77,6 +78,58 @@ PlayerUnitVisualEffectsExtension._set_character_overcharge = function (self, val
 	if first_person_mesh_unit and Unit.alive(first_person_mesh_unit) then
 		unit_set_flow_variable(first_person_mesh_unit, "current_overcharge", value)
 		unit_flow_event(first_person_mesh_unit, "lua_update_overcharge")
+	end
+end
+
+PlayerUnitVisualEffectsExtension._set_weapons_energy_drainable = function (self)
+	local inventory_extension = self.inventory_extension
+	local wielded_slot_data = inventory_extension:get_wielded_slot_data()
+	local unit = self.unit
+	local energy_extension = unit and ScriptUnit.has_extension(unit, "energy_system")
+
+	if wielded_slot_data and energy_extension then
+		local is_energy_drainable = energy_extension:is_drainable()
+		local left_unit_1p = wielded_slot_data.left_unit_1p
+		local left_ammo_unit_1p = wielded_slot_data.left_ammo_unit_1p
+		local right_unit_1p = wielded_slot_data.right_unit_1p
+		local right_ammo_unit_1p = wielded_slot_data.right_ammo_unit_1p
+
+		if left_unit_1p and Unit.alive(left_unit_1p) then
+			unit_set_flow_variable(left_unit_1p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if left_ammo_unit_1p and Unit.alive(left_ammo_unit_1p) then
+			unit_set_flow_variable(left_ammo_unit_1p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if right_unit_1p and Unit.alive(right_unit_1p) then
+			unit_set_flow_variable(right_unit_1p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if right_ammo_unit_1p and Unit.alive(right_ammo_unit_1p) then
+			unit_set_flow_variable(right_ammo_unit_1p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		local left_hand_unit_3p = wielded_slot_data.left_unit_3p
+		local left_ammo_unit_3p = wielded_slot_data.left_ammo_unit_3p
+		local right_hand_unit_3p = wielded_slot_data.right_unit_3p
+		local right_ammo_unit_3p = wielded_slot_data.right_ammo_unit_3p
+
+		if left_hand_unit_3p and Unit.alive(left_hand_unit_3p) then
+			unit_set_flow_variable(left_hand_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if left_ammo_unit_3p and Unit.alive(left_ammo_unit_3p) then
+			unit_set_flow_variable(left_ammo_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if right_hand_unit_3p and Unit.alive(right_hand_unit_3p) then
+			unit_set_flow_variable(right_hand_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if right_ammo_unit_3p and Unit.alive(right_ammo_unit_3p) then
+			unit_set_flow_variable(right_ammo_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
 	end
 end
 

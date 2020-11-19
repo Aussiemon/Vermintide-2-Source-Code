@@ -1352,4 +1352,108 @@ AiUtils.remove_bad_spline_points = function (source_points, spline_name)
 	return points
 end
 
+AiUtils.get_combat_conditions = function (blackboard)
+	local target_unit = blackboard.target_unit
+
+	if target_unit then
+		local num_enemies = #blackboard.proximite_enemies
+		local target_breed = Unit.get_data(target_unit, "breed")
+
+		return {
+			enemy_arc = (num_enemies > 3 and 2) or (num_enemies > 1 and 1) or 0,
+			target_armor = (target_breed and target_breed.armor_category) or 1
+		}
+	end
+
+	return nil
+end
+
+local DEFAULT_MAXIMAL_MELEE_RANGE = 5
+local DEFAULT_ATTACK_META_DATA = {
+	tap_attack = {
+		speed_mod = 1.2,
+		penetrating = false,
+		arc = 0,
+		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
+		armor_modifiers = {
+			0.1,
+			0.1,
+			0.1,
+			0.1,
+			0.1,
+			0.1
+		}
+	},
+	hold_attack = {
+		speed_mod = 0.8,
+		penetrating = true,
+		arc = 2,
+		max_range = DEFAULT_MAXIMAL_MELEE_RANGE,
+		armor_modifiers = {
+			0.1,
+			0.1,
+			0.1,
+			0.1,
+			0.1,
+			0.1
+		}
+	}
+}
+local MAX_ARC = 2
+local ARC_IMPORTANCE = {
+	0,
+	0.2,
+	0.4
+}
+local ARMOR_MOD_IMPORTANCE = {
+	1,
+	2,
+	1.5,
+	1,
+	1.3,
+	2
+}
+local ARMOR_ARC_MOD = {
+	1,
+	0,
+	0,
+	0,
+	0,
+	0
+}
+local math_abs = math.abs
+
+AiUtils.get_melee_weapon_score = function (conditions, weapon_item_template)
+	local weapon_meta_data = (weapon_item_template and weapon_item_template.attack_meta_data) or DEFAULT_ATTACK_META_DATA
+	local best_utility = -1
+	local best_attack_input = "tap_attack"
+	local best_attack_meta_data = weapon_meta_data[best_attack_input]
+
+	if conditions then
+		for attack_input, attack_meta_data in pairs(weapon_meta_data) do
+			local utility = 0
+			local target_armor = conditions.target_armor
+			local mod_arc = math.clamp(conditions.enemy_arc + ARMOR_ARC_MOD[target_armor], 0, 2)
+			local arc_diff = 1 - math_abs(mod_arc - attack_meta_data.arc) / MAX_ARC
+			local arc_importnace = ARC_IMPORTANCE[mod_arc + 1]
+			utility = utility + arc_importnace * arc_diff
+			local armor_modifiers = attack_meta_data.armor_modifiers
+
+			if armor_modifiers then
+				local armor_mod = armor_modifiers[target_armor] or 0
+				local armor_relevence = ARMOR_MOD_IMPORTANCE[target_armor] or 1
+				utility = utility + armor_mod * armor_relevence * (attack_meta_data.speed_mod or 1)
+			end
+
+			if best_utility < utility then
+				best_utility = utility
+				best_attack_input = attack_input
+				best_attack_meta_data = attack_meta_data
+			end
+		end
+	end
+
+	return best_attack_input, best_attack_meta_data, best_utility
+end
+
 return

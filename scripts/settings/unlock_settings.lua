@@ -28,14 +28,6 @@ UnlockSettings = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local unlocks = dlc.unlock_settings
-
-	if unlocks then
-		for key, value in pairs(unlocks) do
-			UnlockSettings[1].unlocks[key] = value
-		end
-	end
-end
+DLCUtils.merge("unlock_settings", UnlockSettings[1].unlocks)
 
 return

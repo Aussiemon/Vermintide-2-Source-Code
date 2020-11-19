@@ -86,14 +86,34 @@ HordeSpawner.execute_fallback = function (self, horde_type, side_id, fallback, r
 	end
 end
 
-HordeSpawner.execute_event_horde = function (self, t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
+HordeSpawner.execute_event_horde = function (self, t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
+	local horde = self:_execute_event_horde(t, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
+
+	if type(terror_event_type) == "string" then
+		horde.terror_event_ids = {
+			terror_event_type
+		}
+	elseif type(terror_event_type) == "table" then
+		horde.terror_event_ids = terror_event_type
+	end
+
+	local hordes = self.hordes
+	local id = #hordes + 1
+	hordes[id] = horde
+
+	return horde
+end
+
+HordeSpawner._execute_event_horde = function (self, t, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
 	local composition = nil
 
 	fassert(side_id, "Missing side id in event horde")
 
 	if HordeCompositions[composition_type] then
-		local current_difficulty_rank = Managers.state.difficulty:get_difficulty_rank() - 1
-		composition = CurrentHordeSettings.compositions[composition_type][current_difficulty_rank]
+		local current_difficulty_rank, difficulty_tweak = Managers.state.difficulty:get_difficulty_rank()
+		local composition_difficulty_rank = DifficultyTweak.converters.composition_rank(current_difficulty_rank, difficulty_tweak)
+		composition_difficulty_rank = composition_difficulty_rank - 1
+		composition = CurrentHordeSettings.compositions[composition_type][composition_difficulty_rank]
 	elseif HordeCompositionsPacing[composition_type] then
 		composition = CurrentHordeSettings.compositions_pacing[composition_type]
 	end
@@ -105,7 +125,6 @@ HordeSpawner.execute_event_horde = function (self, t, terror_event_id, side_id, 
 	local horde = {
 		composition_type = composition_type,
 		limit_spawners = limit_spawners,
-		terror_event_id = terror_event_id,
 		start_time = t + (composition.start_time or 4),
 		end_time = t + (composition.start_time or 4) + (composition.end_time or 20),
 		horde_type = horde_type,
@@ -119,9 +138,6 @@ HordeSpawner.execute_event_horde = function (self, t, terror_event_id, side_id, 
 		sound_settings = sound_settings,
 		side_id = side_id
 	}
-	local hordes = self.hordes
-	local id = #hordes + 1
-	hordes[id] = horde
 
 	return horde
 end
@@ -272,8 +288,9 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallbac
 
 	if override_composition_type and CurrentHordeSettings.compositions[override_composition_type] then
 		local override_composition_table = CurrentHordeSettings.compositions[override_composition_type]
-		local current_difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		override_composition = override_composition_table[current_difficulty_rank - 1]
+		local current_difficulty_rank, difficulty_tweak = Managers.state.difficulty:get_difficulty_rank()
+		local composition_difficulty_rank = DifficultyTweak.converters.composition_rank(current_difficulty_rank, difficulty_tweak)
+		override_composition = override_composition_table[composition_difficulty_rank - 1]
 
 		fassert(override_composition.loaded_probs, " Ambush horde %s is missing loaded probabilty table!", override_composition_type)
 
@@ -648,7 +665,9 @@ end
 HordeSpawner.execute_vector_horde = function (self, extra_data, side_id, fallback)
 	local settings = CurrentHordeSettings.vector
 	local max_spawners = settings.max_spawners
-	local start_delay = settings.start_delay
+	local start_delay = (extra_data and extra_data.start_delay) or settings.start_delay
+	local only_behind = extra_data and extra_data.only_behind
+	local silent = extra_data and extra_data.silent
 	local side = Managers.state.side:get_side(side_id)
 	local player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
@@ -663,8 +682,9 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, side_id, fallbac
 
 	if override_composition_type and CurrentHordeSettings.compositions[override_composition_type] then
 		local override_composition_table = CurrentHordeSettings.compositions[override_composition_type]
-		local current_difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		override_composition = override_composition_table[current_difficulty_rank - 1]
+		local current_difficulty_rank, difficulty_tweak = Managers.state.difficulty:get_difficulty_rank()
+		local composition_difficulty_rank = DifficultyTweak.converters.composition_rank(current_difficulty_rank, difficulty_tweak)
+		override_composition = override_composition_table[composition_difficulty_rank - 1]
 
 		fassert(override_composition.loaded_probs, " Vector horde override type %s is missing loaded probabilty table!", override_composition_type)
 
@@ -693,7 +713,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, side_id, fallbac
 	end
 
 	local roll = math.random()
-	local spawn_horde_ahead = roll <= settings.main_path_chance_spawning_ahead
+	local spawn_horde_ahead = not only_behind and roll <= settings.main_path_chance_spawning_ahead
 	local check_reachable = true
 	local distance_from_players = settings.main_path_dist_from_players
 
@@ -705,7 +725,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, side_id, fallbac
 
 	success, horde_spawners, found_cover_points, epicenter_pos = self:find_good_vector_horde_pos(main_target_pos, distance_from_players, check_reachable)
 
-	if not success then
+	if not success and not only_behind then
 		spawn_horde_ahead = not spawn_horde_ahead
 
 		print("--> can't find spawners in this direction, switching to " .. ((spawn_horde_ahead and "ahead") or "behind"))
@@ -743,7 +763,8 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, side_id, fallbac
 		group_template = group_template,
 		sound_settings = sound_settings,
 		group_id = group_id,
-		side_id = side_id
+		side_id = side_id,
+		silent = silent
 	}
 
 	print("horde crated with id", group_id, "of type ", horde.horde_type)
@@ -881,7 +902,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, side_id, fallbac
 	hordes[id] = horde
 	local horde_wave = extra_data and extra_data.horde_wave
 
-	if horde_wave == "multi_first_wave" or horde_wave == "single" then
+	if not silent and (horde_wave == "multi_first_wave" or horde_wave == "single") then
 		local stinger_name = sound_settings.stinger_sound_event or "enemy_horde_stinger"
 
 		self:play_sound(stinger_name, horde.epicenter_pos:unbox())
@@ -1257,7 +1278,7 @@ end
 HordeSpawner.update_event_horde = function (self, horde, t)
 	if not horde.started then
 		if horde.start_time < t then
-			local success, amount = self.spawner_system:spawn_horde_from_terror_event_id(horde.terror_event_id, horde.variant, horde.limit_spawners, horde.group_template, horde.strictly, horde.side_id, horde.use_closest_spawners, horde.source_unit)
+			local success, amount = self.spawner_system:spawn_horde_from_terror_event_ids(horde.terror_event_ids, horde.variant, horde.limit_spawners, horde.group_template, horde.strictly, horde.side_id, horde.use_closest_spawners, horde.source_unit)
 
 			if success then
 				horde.started = true
@@ -1385,12 +1406,18 @@ HordeSpawner.update = function (self, t, dt)
 		local done = nil
 
 		if horde.horde_type == "vector_blob" then
-			self._running_horde_type = horde.horde_type
-			self._running_horde_sound_settings = horde.sound_settings
+			if not horde.silent then
+				self._running_horde_type = horde.horde_type
+				self._running_horde_sound_settings = horde.sound_settings
+			end
+
 			done = true
 		elseif horde.horde_type == "vector" or horde.horde_type == "ambush" then
-			self._running_horde_type = horde.horde_type
-			self._running_horde_sound_settings = horde.sound_settings
+			if not horde.silent then
+				self._running_horde_type = horde.horde_type
+				self._running_horde_sound_settings = horde.sound_settings
+			end
+
 			done = self:update_horde(horde, t)
 		elseif horde.horde_type == "event" then
 			done = self:update_event_horde(horde, t)

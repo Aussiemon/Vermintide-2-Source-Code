@@ -383,25 +383,35 @@ PlayerUnitOverchargeExtension._check_overcharge_level_thresholds = function (sel
 	local overcharge_threshold = self.overcharge_threshold
 
 	if max_value <= new_overcharge_value then
-		local unit = self.unit
+		if buff_extension:has_buff_perk("no_overcharge_explosion") then
+			local wielder = self.unit
+			local vent_amount = new_overcharge_value - max_value + 1
+			local damage_amount = 2 + max_value / 12
+			damage_amount = buff_extension:apply_buffs_to_value(damage_amount, "vent_damage")
 
-		StatusUtils.set_overcharge_exploding(unit, true)
+			DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge", nil, nil, nil, nil, false, false, false, 0, 1)
+			self:remove_charge(vent_amount)
+		else
+			local unit = self.unit
 
-		self.is_exploding = true
-		local overcharged_critical_buff_id = self.overcharged_critical_buff_id
+			StatusUtils.set_overcharge_exploding(unit, true)
 
-		if overcharged_critical_buff_id then
-			buff_extension:remove_buff(overcharged_critical_buff_id)
+			self.is_exploding = true
+			local overcharged_critical_buff_id = self.overcharged_critical_buff_id
 
-			self.overcharged_critical_buff_id = nil
-		end
+			if overcharged_critical_buff_id then
+				buff_extension:remove_buff(overcharged_critical_buff_id)
 
-		local overcharged_buff_id = self.overcharged_buff_id
+				self.overcharged_critical_buff_id = nil
+			end
 
-		if overcharged_buff_id and self.overcharge_value < self.overcharge_limit then
-			buff_extension:remove_buff(overcharged_buff_id)
+			local overcharged_buff_id = self.overcharged_buff_id
 
-			self.overcharged_buff_id = nil
+			if overcharged_buff_id and self.overcharge_value < self.overcharge_limit then
+				buff_extension:remove_buff(overcharged_buff_id)
+
+				self.overcharged_buff_id = nil
+			end
 		end
 	elseif overcharge_threshold <= new_overcharge_value then
 		if not self.above_threshold then

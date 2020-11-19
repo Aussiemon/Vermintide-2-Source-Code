@@ -255,7 +255,7 @@ TalentBuffTemplates.bright_wizard = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -269,7 +269,7 @@ TalentBuffTemplates.bright_wizard = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -318,8 +318,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				icon = "sienna_scholar_crit_chance_above_health_threshold",
-				stat_buff = "critical_strike_chance",
-				dormant = true
+				stat_buff = "critical_strike_chance"
 			}
 		}
 	},
@@ -376,11 +375,10 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_passive_overcharge_pause_on_special_kill_buff = {
 		buffs = {
 			{
+				max_stacks = 1,
 				icon = "sienna_scholar_passive_overcharge_pause_on_special_kill",
 				stat_buff = "reduced_overcharge",
-				max_stacks = 1,
-				refresh_durations = true,
-				dormant = true
+				refresh_durations = true
 			}
 		}
 	},
@@ -399,8 +397,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				refresh_durations = true,
 				icon = "sienna_scholar_damage_taken_on_elite_or_special_kill",
-				stat_buff = "damage_taken",
-				dormant = true
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -419,7 +416,6 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				remove_buff_func = "remove_movement_buff",
 				refresh_durations = true,
-				dormant = true,
 				icon = "sienna_scholar_move_speed_on_critical_hit",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -466,11 +462,10 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				buff_after_delay = true,
-				refresh_durations = true,
 				is_cooldown = true,
-				max_stacks = 1,
 				icon = "sienna_adept_passive",
-				dormant = true,
+				max_stacks = 1,
+				refresh_durations = true,
 				delayed_buff_name = "tranquility"
 			}
 		}
@@ -479,11 +474,10 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				buff_after_delay = true,
-				refresh_durations = true,
 				is_cooldown = true,
-				max_stacks = 1,
 				icon = "sienna_adept_passive",
-				dormant = true,
+				max_stacks = 1,
+				refresh_durations = true,
 				delayed_buff_name = "tranquility"
 			}
 		}
@@ -534,18 +528,16 @@ TalentBuffTemplates.bright_wizard = {
 	tranquility = {
 		buffs = {
 			{
-				dormant = true,
-				stat_buff = "overcharge_regen",
 				max_stacks = 1,
 				icon = "sienna_adept_passive",
-				priority_buff = true
+				priority_buff = true,
+				stat_buff = "overcharge_regen"
 			}
 		}
 	},
 	sienna_adept_activated_ability = {
 		buffs = {
 			{
-				apply_buff_func = "enter_sienna_adept_activated_ability",
 				remove_buff_func = "end_sienna_adept_activated_ability"
 			}
 		}
@@ -569,7 +561,7 @@ TalentBuffTemplates.bright_wizard = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -644,9 +636,8 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_improved_tranquility = {
 		buffs = {
 			{
-				max_stacks = 1,
-				dormant = true,
-				stat_buff = "overcharge_regen"
+				stat_buff = "overcharge_regen",
+				max_stacks = 1
 			}
 		}
 	},
@@ -664,7 +655,6 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				icon = "sienna_adept_passive_charge_speed_increased",
-				dormant = true,
 				stat_buff = "reduced_ranged_charge_time"
 			}
 		}
@@ -682,10 +672,9 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_damage_reduction_on_ignited_enemy_buff = {
 		buffs = {
 			{
-				stat_buff = "damage_taken",
+				refresh_durations = true,
 				icon = "sienna_adept_damage_reduction_on_ignited_enemy",
-				dormant = true,
-				refresh_durations = true
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -717,7 +706,6 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				icon = "sienna_adept_activated_ability_dump_overcharge",
-				dormant = true,
 				remove_buff_func = "sienna_adept_double_trail_talent_start_ability_cooldown"
 			}
 		}
@@ -805,7 +793,7 @@ TalentBuffTemplates.bright_wizard = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -908,17 +896,15 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				refresh_durations = true,
 				icon = "sienna_unchained_reduced_damage_taken_after_venting",
-				stat_buff = "damage_taken_secondary",
-				dormant = true
+				stat_buff = "damage_taken_secondary"
 			}
 		}
 	},
 	sienna_unchained_reduced_passive_overcharge_after_venting_buff = {
 		buffs = {
 			{
-				dormant = true,
-				refresh_durations = true,
-				stat_buff = "reduced_overcharge_from_passive"
+				stat_buff = "reduced_overcharge_from_passive",
+				refresh_durations = true
 			}
 		}
 	},
@@ -982,9 +968,8 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				refresh_durations = true,
-				icon = "sienna_unchained_activated_ability_power_on_enemies_hit",
-				stat_buff = "power_level",
-				dormant = true
+				icon = "sienna_unchained_activated_ability_radius",
+				stat_buff = "power_level"
 			}
 		}
 	}
@@ -1093,25 +1078,23 @@ Talents.bright_wizard = {
 	{
 		description = "reaper_desc",
 		name = "sienna_scholar_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "sienna_scholar_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_bloodlust",
 		description_values = {
 			{
@@ -1119,17 +1102,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "sienna_scholar_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_conqueror",
 		description_values = {
 			{
@@ -1137,11 +1118,9 @@ Talents.bright_wizard = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_increased_attack_speed_desc",
@@ -1154,17 +1133,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_increased_attack_speed.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_increased_attack_speed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_crit_chance_above_health_threshold_desc",
 		name = "sienna_scholar_crit_chance_above_health_threshold",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_crit_chance_above_health_threshold",
 		description_values = {
 			{
@@ -1176,17 +1153,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_crit_chance_above_health_threshold.activation_health
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_crit_chance_above_health_threshold"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_ranged_power_ascending_descending_desc",
 		name = "sienna_scholar_ranged_power_ascending_descending",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_ranged_power_ascending_descending",
 		description_values = {
 			{
@@ -1200,11 +1175,9 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_ranged_power_ascending_descending.max_sub_buff_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_ranged_power_ascending_descending"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_passive_increased_attack_speed_from_overcharge_desc",
@@ -1223,17 +1196,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_passive_increased_attack_speed.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_passive_increased_attack_speed_from_overcharge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_passive_increased_power_level_on_high_overcharge_desc",
 		name = "sienna_scholar_passive_increased_power_level_on_high_overcharge",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_passive_increased_power_level_on_high_overcharge",
 		description_values = {
 			{
@@ -1241,11 +1212,9 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_passive_increased_power_level_on_high_overcharge_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_passive_increased_power_level_on_high_overcharge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_passive_overcharge_pause_on_special_kill_desc",
@@ -1257,17 +1226,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_passive_overcharge_pause_on_special_kill_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_passive_overcharge_pause_on_special_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_damage_taken_on_elite_or_special_kill_desc",
 		name = "sienna_scholar_damage_taken_on_elite_or_special_kill",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_damage_taken_on_elite_or_special_kill",
 		description_values = {
 			{
@@ -1278,11 +1245,9 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_damage_taken_on_elite_or_special_kill_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_damage_taken_on_elite_or_special_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_overcharge_no_slow_desc",
@@ -1290,11 +1255,9 @@ Talents.bright_wizard = {
 		num_ranks = 1,
 		icon = "sienna_scholar_overcharge_no_slow",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_overcharge_no_slow"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_move_speed_on_critical_hit_desc",
@@ -1313,20 +1276,16 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_move_speed_on_critical_hit_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_scholar_move_speed_on_critical_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_scholar_activated_ability_dump_overcharge_desc",
 		name = "sienna_scholar_activated_ability_dump_overcharge",
 		num_ranks = 1,
 		icon = "sienna_scholar_activated_ability_dump_overcharge",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_scholar_activated_ability_heal_desc",
@@ -1338,26 +1297,22 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_scholar_activated_ability_heal.bonus
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_scholar_activated_ability_crit_refresh_cooldown_desc",
 		name = "sienna_scholar_activated_ability_crit_refresh_cooldown",
 		num_ranks = 1,
 		icon = "sienna_scholar_activated_ability_crit_refresh_cooldown",
-		requirements = {},
 		buffs = {
 			"sienna_scholar_activated_ability_crit_refresh_cooldown"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "sienna_scholar_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_smiter_unbalance",
 		description_values = {
 			{
@@ -1369,17 +1324,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "sienna_scholar_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_linesman_unbalance",
 		description_values = {
 			{
@@ -1391,17 +1344,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "sienna_scholar_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_scholar_power_level_unbalance",
 		description_values = {
 			{
@@ -1409,30 +1360,26 @@ Talents.bright_wizard = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "vanguard_desc",
 		name = "sienna_adept_vanguard",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_regrowth",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"sienna_adept_vanguard"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "sienna_adept_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_bloodlust",
 		description_values = {
 			{
@@ -1440,17 +1387,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "sienna_adept_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_conqueror",
 		description_values = {
 			{
@@ -1458,28 +1403,23 @@ Talents.bright_wizard = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_infinite_burn_desc",
 		name = "sienna_adept_infinite_burn",
 		num_ranks = 1,
 		icon = "sienna_adept_stun_resistance",
-		requirements = {},
 		description_values = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_adept_power_level_on_full_charge_desc",
 		name = "sienna_adept_power_level_on_full_charge",
 		num_ranks = 1,
 		icon = "sienna_adept_power_level_on_full_charge",
-		requirements = {},
 		description_values = {
 			{
 				value_type = "percent",
@@ -1488,15 +1428,13 @@ Talents.bright_wizard = {
 		},
 		buffs = {
 			"sienna_adept_power_level_on_full_charge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_attack_speed_on_enemies_hit_desc",
 		name = "sienna_adept_attack_speed_on_enemies_hit",
 		num_ranks = 1,
 		icon = "sienna_adept_attack_speed_on_enemies_hit",
-		requirements = {},
 		description_values = {
 			{
 				value = buff_tweak_data.sienna_adept_attack_speed_on_enemies_hit.required_targets
@@ -1511,8 +1449,7 @@ Talents.bright_wizard = {
 		},
 		buffs = {
 			"sienna_adept_attack_speed_on_enemies_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_passive_charge_speed_increased_desc",
@@ -1525,11 +1462,9 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_passive_charge_speed_increased_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_passive_charge_speed_increased"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_passive_improved_desc_2",
@@ -1542,11 +1477,9 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_improved_tranquility.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_passive_improved"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_passive_cooldown_desc",
@@ -1558,15 +1491,13 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_passive_cooldown.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_adept_damage_reduction_on_ignited_enemy_desc",
 		name = "sienna_adept_damage_reduction_on_ignited_enemy",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_damage_reduction_on_ignited_enemy",
 		description_values = {
 			{
@@ -1580,11 +1511,9 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_damage_reduction_on_ignited_enemy_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_damage_reduction_on_ignited_enemy"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_cooldown_reduction_on_burning_enemy_killed_desc",
@@ -1597,17 +1526,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_cooldown_reduction_on_burning_enemy_killed.cooldown_reduction
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_cooldown_reduction_on_burning_enemy_killed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_increased_burn_damage_reduced_non_burn_damage_desc",
 		name = "sienna_adept_increased_burn_damage_reduced_non_burn_damage",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_increased_burn_damage_reduced_non_burn_damage",
 		description_values = {
 			{
@@ -1619,12 +1546,10 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_reduced_non_burn_damage.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_increased_burn_damage",
 			"sienna_adept_reduced_non_burn_damage"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_adept_ability_trail_double_desc",
@@ -1636,18 +1561,14 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_ability_trail_double.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_adept_activated_ability_explosion_desc",
 		name = "sienna_adept_activated_ability_explosion",
 		num_ranks = 1,
 		icon = "sienna_adept_activated_ability_explosion",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_adept_activated_ability_distance_desc",
@@ -1660,9 +1581,7 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_activated_ability_distance.display_multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_adept_activated_ability_cooldown_desc",
@@ -1675,17 +1594,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_adept_activated_ability_cooldown.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_adept_activated_ability_cooldown"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "tank_unbalance_desc",
 		name = "sienna_adept_tank_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_tank_unbalance",
 		description_values = {
 			{
@@ -1704,17 +1621,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"tank_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "sienna_adept_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_smiter_unbalance",
 		description_values = {
 			{
@@ -1726,17 +1641,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "sienna_adept_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_adept_power_level_unbalance",
 		description_values = {
 			{
@@ -1744,47 +1657,41 @@ Talents.bright_wizard = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "vanguard_desc",
 		name = "sienna_unchained_vanguard",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_regrowth",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_vanguard"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "reaper_desc",
 		name = "sienna_unchained_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_bloodlust",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "sienna_unchained_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_conqueror",
 		description_values = {
 			{
@@ -1792,11 +1699,9 @@ Talents.bright_wizard = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_attack_speed_on_high_overcharge_desc",
@@ -1809,17 +1714,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_attack_speed_on_high_overcharge_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_attack_speed_on_high_overcharge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_burn_push_desc_2",
 		name = "sienna_unchained_burn_push_2",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "sienna_unchained_burn_push",
 		description_values = {
 			{
@@ -1827,30 +1730,26 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_push_arc_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_burn_push"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_exploding_burning_enemies_desc",
 		name = "sienna_unchained_exploding_burning_enemies",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_exploding_burning_enemies",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_exploding_burning_enemies"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_overcharged_blocks_desc",
 		name = "sienna_unchained_overcharged_blocks",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "sienna_unchained_reduced_vent_damage",
 		description_values = {
 			{
@@ -1858,11 +1757,9 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_passive_overcharged_blocks.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_passive_overcharged_blocks"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_increased_vent_speed_desc_2",
@@ -1879,18 +1776,16 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_reduced_vent_damage.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_increased_vent_speed",
 			"sienna_unchained_reduced_vent_damage"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_reduced_damage_taken_after_venting_desc_2",
 		name = "sienna_unchained_reduced_damage_taken_after_venting_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_reduced_damage_taken_after_venting",
 		description_values = {
 			{
@@ -1908,17 +1803,15 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_reduced_damage_taken_after_venting_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_reduced_damage_taken_after_venting"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_burning_enemies_reduced_damage_desc",
 		name = "sienna_unchained_burning_enemies_reduced_damage",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_burning_enemies_reduced_damage",
 		description_values = {
 			{
@@ -1926,22 +1819,18 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_burning_enemies_reduced_damage.multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_unchained_health_to_ult_desc",
 		name = "sienna_unchained_health_to_ult",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "sienna_unchained_vent_overheat_on_low_health",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_health_to_ult"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_reduced_overcharge_desc",
@@ -1954,15 +1843,14 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_reduced_overcharge.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_reduced_overcharge"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_activated_ability_power_on_enemies_hit_desc",
 		name = "sienna_unchained_activated_ability_power_on_enemies_hit",
+		buffer = "server",
 		num_ranks = 1,
 		icon = "sienna_unchained_activated_ability_radius",
 		description_values = {
@@ -1977,26 +1865,22 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_activated_ability_power_on_enemies_hit_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"sienna_unchained_activated_ability_power_on_enemies_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_unchained_activated_ability_fire_aura_desc",
 		name = "sienna_unchained_activated_ability_fire_aura",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_activated_ability_power_on_enemies_hit",
 		description_values = {
 			{
 				value = buff_tweak_data.sienna_unchained_activated_ability_pulse.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "sienna_unchained_activated_ability_temp_health_desc",
@@ -2008,15 +1892,13 @@ Talents.bright_wizard = {
 				value = buff_tweak_data.sienna_unchained_activated_ability_temp_health.display_bonus
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "tank_unbalance_desc",
 		name = "sienna_unchained_tank_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_tank_unbalance",
 		description_values = {
 			{
@@ -2035,17 +1917,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.tank_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"tank_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "sienna_unchained_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_linesman_unbalance",
 		description_values = {
 			{
@@ -2057,17 +1937,15 @@ Talents.bright_wizard = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "sienna_unchained_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "sienna_unchained_power_level_unbalance",
 		description_values = {
 			{
@@ -2075,11 +1953,9 @@ Talents.bright_wizard = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "sienna_placeholder",

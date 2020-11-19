@@ -1929,7 +1929,7 @@ AchievementTemplates.achievements = {
 		icon = "achievement_trophy_bogenhafen_city_no_braziers_lit",
 		display_completion_ui = true,
 		desc = "achv_bogenhafen_city_no_braziers_lit_desc",
-		completed = function (statistics_db, stats_id)
+		completed = function (statistics_db, stats_id, template_data)
 			return statistics_db:get_persistent_stat(stats_id, "bogenhafen_city_no_braziers_lit") > 0
 		end
 	},
@@ -3688,15 +3688,7 @@ AchievementTemplates.achievements.helmgart_lord_1 = {
 	end
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local file_names = dlc.achievement_template_file_names
-
-	if file_names then
-		for i, file_name in ipairs(file_names) do
-			local_require(file_name)
-		end
-	end
-end
+DLCUtils.map_list("achievement_template_file_names", local_require)
 
 for _, diff_key in ipairs(AchievementTemplates.difficulties) do
 	local diff_id = DifficultyMapping[diff_key]

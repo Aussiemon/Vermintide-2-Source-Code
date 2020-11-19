@@ -807,7 +807,7 @@ HeroWindowWeaveForgeWeapons._unlock_item = function (self, item_id)
 
 	self._parent:block_input()
 
-	local time = Application.time_since_launch()
+	local time = Managers.time:time("ui")
 	self._unlock_item_done_time = time + UNLOCK_ITEM_REQUEST_LIMIT
 	self._unlock_item_response = nil
 	local widgets_by_name = self._widgets_by_name

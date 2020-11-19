@@ -77,7 +77,7 @@ ImguiDebugMenu.draw = function (self)
 		if self:_find_needle_list(setting_list, needle) then
 			no_matches = false
 
-			if Imgui.tree_node(category, false) then
+			if Imgui.collapsing_header(category, false) then
 				for i = 1, #setting_list, 1 do
 					local setting = setting_list[i]
 

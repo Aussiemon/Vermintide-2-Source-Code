@@ -20,6 +20,8 @@ BTPackMasterAttackAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
+
+	blackboard.constraint_target = Unit.animation_find_constraint_target(unit, "aim_constraint_target")
 end
 
 BTPackMasterAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -92,6 +94,11 @@ BTPackMasterAttackAction.attack = function (self, unit, t, dt, blackboard)
 	local rotation = LocomotionUtils.rotation_towards_unit(unit, blackboard.target_unit)
 
 	locomotion_extension:set_wanted_rotation(rotation)
+
+	local head_index = Unit.node(blackboard.target_unit, "j_head")
+	local aim_target = Unit.world_position(blackboard.target_unit, head_index)
+
+	Unit.animation_set_constraint_target(unit, blackboard.constraint_target, aim_target)
 
 	if blackboard.create_bot_threat_at and blackboard.create_bot_threat_at < t then
 		self:create_bot_threat(unit, blackboard, t)

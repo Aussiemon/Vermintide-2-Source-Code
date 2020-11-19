@@ -12,7 +12,7 @@ end
 
 local params = {}
 
-TelemetryEvents.header = function (self, engine_revision, content_revision)
+TelemetryEvents.header = function (self, engine_revision, content_revision, machine_name, is_testify_session)
 	table.clear(params)
 
 	params.version = TelemetrySettings.version
@@ -22,6 +22,8 @@ TelemetryEvents.header = function (self, engine_revision, content_revision)
 	params.engine_revision = engine_revision
 	params.content_revision = content_revision
 	params.machine_id = (Application.machine_id and Application.machine_id()) or nil
+	params.machine_name = machine_name
+	params.is_testify_session = is_testify_session
 
 	self.manager:register_event("header", params)
 end
@@ -47,6 +49,16 @@ TelemetryEvents.game_started = function (self, data)
 	self.manager:register_event("game_started", params)
 end
 
+TelemetryEvents.versus_round_started = function (self, player_id, game_round, win_condition)
+	table.clear(params)
+
+	params.player_id = player_id
+	params.game_round = game_round
+	params.win_condition = win_condition
+
+	self.manager:register_event("versus_round_started", params)
+end
+
 TelemetryEvents.weave_activated = function (self, wind, tier)
 	table.clear(params)
 
@@ -59,6 +71,40 @@ end
 TelemetryEvents.round_started = function (self)
 	table.clear(params)
 	self.manager:register_event("round_started", params)
+end
+
+TelemetryEvents.objective_captured = function (self, remaining_time)
+	table.clear(params)
+
+	params.remaining_time = remaining_time
+
+	self.manager:register_event("objective_captured", params)
+end
+
+TelemetryEvents.badge_gained = function (self, badge_name)
+	table.clear(params)
+
+	params.badge_name = badge_name
+
+	self.manager:register_event("badge_gained", params)
+end
+
+TelemetryEvents.node_climb = function (self, breed_name, node_position)
+	table.clear(params)
+
+	params.breed_name = breed_name
+	params.node_position = node_position
+
+	self.manager:register_event("node_climb", params)
+end
+
+TelemetryEvents.left_ghost_mode = function (self, breed_name, position)
+	table.clear(params)
+
+	params.breed_name = breed_name
+	params.position = position
+
+	self.manager:register_event("left_ghost_mode", params)
 end
 
 TelemetryEvents.game_ended = function (self, end_reason)
@@ -282,6 +328,22 @@ TelemetryEvents.player_damaged = function (self, player, damage_type, damage_sou
 	self.manager:register_event("player_damaged", params)
 end
 
+TelemetryEvents.local_player_damaged_player = function (self, player, target_breed, damage_amount, attacker_position, target_position)
+	if player.remote then
+		return
+	end
+
+	table.clear(params)
+
+	params.player = player:telemetry_id()
+	params.damage_amount = damage_amount
+	params.target_breed = target_breed
+	params.attacker_position = attacker_position
+	params.target_position = target_position
+
+	self.manager:register_event("local_player_damaged_player", params)
+end
+
 TelemetryEvents.player_died = function (self, player, damage_type, damage_source, position)
 	if player.remote then
 		return
@@ -295,6 +357,20 @@ TelemetryEvents.player_died = function (self, player, damage_type, damage_source
 	params.position = position
 
 	self.manager:register_event("player_died", params)
+end
+
+TelemetryEvents.local_player_killed_player = function (self, player, position, target_position)
+	if player.remote then
+		return
+	end
+
+	table.clear(params)
+
+	params.player_id = player:telemetry_id()
+	params.position = position
+	params.target_position = target_position
+
+	self.manager:register_event("local_player_killed_player", params)
 end
 
 TelemetryEvents.player_jumped = function (self, player, position)
@@ -430,6 +506,22 @@ TelemetryEvents.player_used_item = function (self, player, item_name, position)
 	params.position = position
 
 	self.manager:register_event("player_used_item", params)
+end
+
+TelemetryEvents.ping_used = function (self, player, own_ping, ping_type, ping_target, player_position)
+	if player.remote then
+		return
+	end
+
+	table.clear(params)
+
+	params.player_id = player:telemetry_id()
+	params.own_ping = own_ping
+	params.ping_type = ping_type
+	params.ping_target = ping_target
+	params.player_position = player_position
+
+	self.manager:register_event("ping_used", params)
 end
 
 TelemetryEvents.tech_settings = function (self, resolution, graphics_quality, screen_mode, rendering_backend)

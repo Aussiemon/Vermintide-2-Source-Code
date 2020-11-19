@@ -816,12 +816,12 @@ first_time_video = {
 	sound_stop = "Stop_vermintide_2_prologue_intro",
 	subtitle_template_settings = first_time_video_subtitle_settings
 }
-lake_intro_video = {
-	video_name = "video/vermintide_2_lake_intro",
-	sound_start = "Play_vermintide_2_lake_intro",
+cog_intro_video = {
+	video_name = "video/vermintide_2_cog_intro",
+	sound_start = "Play_vermintide_2_cog_intro",
 	scenegraph_id = "splash_video",
-	material_name = "vermintide_2_lake_intro",
-	sound_stop = "Stop_vermintide_2_lake_intro"
+	material_name = "vermintide_2_cog_intro",
+	sound_stop = "Stop_vermintide_2_cog_intro"
 }
 
 local function get_slider_progress(min, max, value)
@@ -903,7 +903,7 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 	Framerate.set_low_power()
 
 	if not params.is_prologue then
-		first_time_video = lake_intro_video
+		first_time_video = cog_intro_video
 	end
 
 	self.render_settings = {

@@ -30,6 +30,7 @@ NetworkConstants.number = Network.type_info("number")
 NetworkConstants.game_object_id_max = Network.type_info("game_object_id").max
 NetworkConstants.invalid_game_object_id = NetworkConstants.game_object_id_max
 NetworkConstants.max_overcharge = Network.type_info("max_overcharge")
+NetworkConstants.max_energy = Network.type_info("max_energy")
 NetworkConstants.weave_score = Network.type_info("weave_score")
 NetworkConstants.statistics_path_max_size = Network.type_info("statistics_path").max_size
 
@@ -112,6 +113,7 @@ fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bi
 NetworkConstants.max_breed_freezer_units_per_rpc = Network.type_info("packed_breed_go_ids").max_size
 
 check_bounderies("mutator_lookup", "mutator_templates")
+check_bounderies("buff_lookup", "buff_templates")
 check_bounderies("statistics_path_lookup", "statistics_path_names")
 
 local mechanism_id = Network.type_info("mechanism_id")
@@ -129,6 +131,9 @@ local num_statistics_paths = #NetworkLookup.statistics_path_names
 fassert(num_statistics_paths <= max_statistics_paths, "Too many entries in statistics_path lookup (%d, max:%d), raise global.network_config value for statistics_path by a factor 2", num_statistics_paths, max_statistics_paths)
 
 NetworkConstants.mutator_array = Network.type_info("mutator_array")
+NetworkConstants.buff_array = Network.type_info("buff_array")
+NetworkConstants.buff_variable_type_array = Network.type_info("buff_variable_type_array")
+NetworkConstants.buff_variable_data_array = Network.type_info("buff_variable_data_array")
 local ready_request_id = Network.type_info("ready_request_id")
 NetworkConstants.READY_REQUEST_ID_MAX = ready_request_id.max
 

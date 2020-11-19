@@ -283,7 +283,7 @@ end
 BackendInterfacePeddlerPlayFab.refresh_app_prices = function (self, external_cb)
 	local platform = PLATFORM
 
-	if platform == "win32" then
+	if platform == "win32" or platform == "linux" then
 		self:_refresh_app_prices_steam(external_cb)
 	elseif platform == "ps4" then
 		self:_refresh_app_prices_psn(external_cb)

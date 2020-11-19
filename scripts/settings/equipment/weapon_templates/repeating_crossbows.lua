@@ -209,15 +209,7 @@ weapon_template.actions = {
 	},
 	weapon_reload = ActionTemplates.reload,
 	action_inspect = ActionTemplates.action_inspect_left,
-	action_wield = ActionTemplates.wield_left,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield_left
 }
 weapon_template.ammo_data = {
 	max_ammo = 45,
@@ -248,7 +240,6 @@ weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.repeat
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_crossbow"
 weapon_template.wield_anim = "to_repeating_crossbow"
 weapon_template.wield_anim_no_ammo = "to_repeating_crossbow_noammo"
-weapon_template.wield_anim_not_loaded = "to_repeating_crossbow"
 weapon_template.crosshair_style = "projectile"
 weapon_template.reload_event = "reload"
 weapon_template.buff_type = "RANGED"

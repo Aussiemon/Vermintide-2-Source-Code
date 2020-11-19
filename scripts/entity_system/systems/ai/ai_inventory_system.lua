@@ -234,7 +234,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 	self.units_to_drop_n = 0
 end
 
-AIInventorySystem.rpc_ai_inventory_wield = function (self, sender, go_id, item_set_index)
+AIInventorySystem.rpc_ai_inventory_wield = function (self, channel_id, go_id, item_set_index)
 	local unit = self.unit_storage:unit(go_id)
 
 	if unit == nil then
@@ -250,7 +250,7 @@ AIInventorySystem.rpc_ai_inventory_wield = function (self, sender, go_id, item_s
 	self.item_set_to_wield[unit] = item_set_index
 end
 
-AIInventorySystem.rpc_ai_drop_single_item = function (self, sender, unit_id, item_inventory_index, item_drop_reason_id)
+AIInventorySystem.rpc_ai_drop_single_item = function (self, channel_id, unit_id, item_inventory_index, item_drop_reason_id)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if unit == nil then
@@ -266,7 +266,7 @@ AIInventorySystem.rpc_ai_drop_single_item = function (self, sender, unit_id, ite
 	ai_inventory_extension:drop_single_item(item_inventory_index, NetworkLookup.item_drop_reasons[item_drop_reason_id])
 end
 
-AIInventorySystem.rpc_ai_show_single_item = function (self, sender, unit_id, item_inventory_index, show)
+AIInventorySystem.rpc_ai_show_single_item = function (self, channel_id, unit_id, item_inventory_index, show)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if unit == nil then
@@ -282,9 +282,9 @@ AIInventorySystem.rpc_ai_show_single_item = function (self, sender, unit_id, ite
 	ai_inventory_extension:show_single_item(item_inventory_index, show)
 end
 
-AIInventorySystem.hot_join_sync = function (self, sender)
+AIInventorySystem.hot_join_sync = function (self, peer_id)
 	for unit, extension in pairs(self.unit_extension_data) do
-		extension:hot_join_sync(sender)
+		extension:hot_join_sync(peer_id)
 	end
 end
 

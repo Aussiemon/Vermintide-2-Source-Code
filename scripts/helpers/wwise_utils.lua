@@ -47,4 +47,24 @@ WwiseUtils.make_unit_auto_source = function (world, unit, node_id)
 	return source, wwise_world
 end
 
+WwiseUtils.make_unit_manual_source = function (wwise_world, unit, node_id)
+	local source = nil
+
+	if node_id then
+		source = WwiseWorld.make_manual_source(wwise_world, unit, node_id)
+	else
+		source = WwiseWorld.make_manual_source(wwise_world, unit)
+	end
+
+	local system = Managers.state.entity:system("sound_environment_system")
+
+	if system ~= nil then
+		local position = Unit.world_position(unit, node_id or 0)
+
+		system:set_source_environment(source, position)
+	end
+
+	return source
+end
+
 return

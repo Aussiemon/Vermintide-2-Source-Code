@@ -233,7 +233,7 @@ TransitionManager._render_waiting_message = function (self, dt)
 		return
 	end
 
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		self:show_waiting_for_peers_message(false)
 
 		return

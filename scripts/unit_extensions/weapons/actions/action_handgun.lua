@@ -4,6 +4,7 @@ ActionHandgun.init = function (self, world, item_name, is_server, owner_unit, da
 	ActionHandgun.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	self.trail_end_position_variable = World.find_particles_variable(world, "fx/wpnfx_pistol_bullet_trail", "size")
+	self.career_extension = ScriptUnit.extension(self.owner_unit, "career_system")
 end
 
 ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
@@ -49,11 +50,12 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 	self.extra_buff_shot = false
 	self.ammo_usage = new_action.ammo_usage
 	self.overcharge_type = new_action.overcharge_type
+	self.uses_ability_cooldown = new_action.use_ability_cooldown
 	self.used_ammo = false
 	self.active_reload_time = new_action.active_reload_time and t + new_action.active_reload_time
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
-	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, nil, nil)
+	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
 end
@@ -83,6 +85,10 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 			end
 
 			self.overcharge_extension:add_charge(overcharge_amount)
+		end
+
+		if self.uses_ability_cooldown then
+			self.career_extension:reduce_activated_ability_cooldown(-self.ammo_usage)
 		end
 	end
 
@@ -217,7 +223,10 @@ ActionHandgun.finish = function (self, reason)
 
 		status_extension:set_zooming(false)
 
-		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
+		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+
+		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			ammo_extension:start_reload(true)
 		end
 	end

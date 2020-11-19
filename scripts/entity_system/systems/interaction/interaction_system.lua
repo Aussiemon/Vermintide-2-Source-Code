@@ -30,7 +30,7 @@ InteractionSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 end
 
-InteractionSystem.rpc_interaction_approved = function (self, sender, interaction_id, interactor_go_id, interactable_go_id, is_level_unit)
+InteractionSystem.rpc_interaction_approved = function (self, channel_id, interaction_id, interactor_go_id, interactable_go_id, is_level_unit)
 	local interaction_type = NetworkLookup.interactions[interaction_id]
 	local interactor_unit = self.unit_storage:unit(interactor_go_id)
 	local interactable_unit = self.unit_storage:unit(interactable_go_id)
@@ -46,20 +46,20 @@ InteractionSystem.rpc_interaction_approved = function (self, sender, interaction
 		return
 	end
 
-	InteractionHelper.printf("rpc_interaction_approved(%s, %s, %s, %s, %s)", sender, interaction_type, tostring(interactor_go_id), tostring(interactable_go_id), tostring(is_level_unit))
+	InteractionHelper.printf("rpc_interaction_approved(%s, %s, %s, %s, %s)", channel_id, interaction_type, tostring(interactor_go_id), tostring(interactable_go_id), tostring(is_level_unit))
 	InteractionHelper:request_approved(interaction_type, interactor_unit, interactable_unit)
 end
 
-InteractionSystem.rpc_interaction_denied = function (self, sender, interactor_go_id)
-	InteractionHelper.printf("rpc_interaction_denied(%s, %s)", sender, tostring(interactor_go_id))
+InteractionSystem.rpc_interaction_denied = function (self, channel_id, interactor_go_id)
+	InteractionHelper.printf("rpc_interaction_denied(%s, %s)", channel_id, tostring(interactor_go_id))
 
 	local interactor_unit = self.unit_storage:unit(interactor_go_id)
 
 	InteractionHelper:request_denied(interactor_unit)
 end
 
-InteractionSystem.rpc_interaction_completed = function (self, sender, interactor_go_id, interaction_result)
-	InteractionHelper.printf("rpc_interaction_completed(%s, %s, %s)", sender, tostring(interactor_go_id), InteractionResult[interaction_result])
+InteractionSystem.rpc_interaction_completed = function (self, channel_id, interactor_go_id, interaction_result)
+	InteractionHelper.printf("rpc_interaction_completed(%s, %s, %s)", channel_id, tostring(interactor_go_id), InteractionResult[interaction_result])
 
 	local interactor_unit = self.unit_storage:unit(interactor_go_id)
 
@@ -71,7 +71,7 @@ InteractionSystem.rpc_interaction_completed = function (self, sender, interactor
 	local is_interacting = interactor_extension:is_interacting()
 
 	if not is_interacting then
-		InteractionHelper.printf("got rpc_interaction_completed but wasnt interacting (%s, %s, %s)", sender, tostring(interactor_go_id), InteractionResult[interaction_result])
+		InteractionHelper.printf("got rpc_interaction_completed but wasnt interacting (%s, %s, %s)", channel_id, tostring(interactor_go_id), InteractionResult[interaction_result])
 
 		return
 	end
@@ -81,8 +81,8 @@ InteractionSystem.rpc_interaction_completed = function (self, sender, interactor
 	InteractionHelper:interaction_completed(interactor_unit, interactable_unit, interaction_result)
 end
 
-InteractionSystem.rpc_interaction_abort = function (self, sender, interactor_go_id)
-	InteractionHelper.printf("rpc_interaction_abort(%s, %s)", sender, tostring(interactor_go_id))
+InteractionSystem.rpc_interaction_abort = function (self, channel_id, interactor_go_id)
+	InteractionHelper.printf("rpc_interaction_abort(%s, %s)", channel_id, tostring(interactor_go_id))
 	fassert(self.is_server or LEVEL_EDITOR_TEST, "Error, this should only be run on server!")
 
 	local interactor_unit = self.unit_storage:unit(interactor_go_id)
@@ -105,7 +105,7 @@ InteractionSystem.rpc_interaction_abort = function (self, sender, interactor_go_
 	end
 end
 
-InteractionSystem.rpc_sync_interaction_state = function (self, sender, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)
+InteractionSystem.rpc_sync_interaction_state = function (self, channel_id, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)
 	local unit = self.unit_storage:unit(unit_id)
 	local state = NetworkLookup.interaction_states[state_id]
 	local interaction_type = NetworkLookup.interactions[interaction_type_id]
@@ -115,7 +115,7 @@ InteractionSystem.rpc_sync_interaction_state = function (self, sender, unit_id, 
 	interactor_extension:set_interaction_context(state, interaction_type, interactable_unit, start_time, duration)
 end
 
-InteractionSystem.rpc_sync_interactable_used_state = function (self, sender, interactable_unit_id, is_level_object, is_used)
+InteractionSystem.rpc_sync_interactable_used_state = function (self, channel_id, interactable_unit_id, is_level_object, is_used)
 	local interactable_unit = Managers.state.network:game_object_or_level_unit(interactable_unit_id, is_level_object)
 
 	Unit.set_data(interactable_unit, "interaction_data", "used", is_used)

@@ -548,6 +548,12 @@ local function show_wrong_profile_popup(account_manager)
 	account_manager:_create_popup(wrong_profile_str, "wrong_profile_header", "verify_profile", "menu_retry", "restart_network", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
 end
 
+AccountManager.force_exit_to_title_screen = function (self)
+	self._should_teardown_xboxlive = true
+
+	self:initiate_leave_game()
+end
+
 AccountManager._handle_popup_result = function (self, result)
 	if result == "verify_profile" then
 		self:verify_profile()
@@ -1018,6 +1024,8 @@ AccountManager.get_product_details = function (self, product_ids, response_callb
 		response_callback({
 			error = "Can't fetch marketplace information while being offline"
 		})
+
+		return
 	end
 
 	self._xbox_marketplace:get_product_details(self._user_id, product_ids, response_callback)

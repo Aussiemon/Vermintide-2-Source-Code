@@ -390,18 +390,14 @@ end
 debug.spawn_hero = function (hero_name)
 	local spawn_manager = Managers.state.spawn
 	local hero_spawner_handler = spawn_manager.hero_spawner_handler
-	local peer_id = Network:peer_id()
+	local peer_id = Network.peer_id()
 	local player = Managers.player:player_from_peer_id(peer_id)
 
 	hero_spawner_handler:spawn_hero_request(player, hero_name)
 end
 
 debug.load_level = function (level_name, environment_variation_id, debug_environment_level_flow_event)
-	local game_mode_manager = Managers.state.game_mode
-	local level_transition_handler = game_mode_manager.level_transition_handler
-
-	level_transition_handler:set_next_level(level_name, environment_variation_id or 0)
-	level_transition_handler:level_completed()
+	Managers.mechanism:debug_load_level(level_name, environment_variation_id)
 
 	if debug_environment_level_flow_event ~= nil then
 		StateIngame._level_flow_events = {
@@ -438,7 +434,7 @@ debug.level_loaded = function (level_name)
 		return false
 	end
 
-	local peer_id = Network:peer_id()
+	local peer_id = Network.peer_id()
 	local player = Managers.player:player_from_peer_id(peer_id)
 	local player_unit = player and player.player_unit
 

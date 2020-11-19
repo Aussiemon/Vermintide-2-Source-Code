@@ -493,14 +493,6 @@ BTEnterHooks.activate_slot_system = function (unit, blackboard, t)
 	ai_slot_system:do_slot_search(unit, true)
 end
 
-for _, dlc in pairs(DLCSettings) do
-	local bt_enter_hooks = dlc.bt_enter_hooks
-
-	if bt_enter_hooks then
-		for hook_name, hook_func in pairs(bt_enter_hooks) do
-			BTEnterHooks[hook_name] = hook_func
-		end
-	end
-end
+DLCUtils.merge("bt_enter_hooks", BTEnterHooks)
 
 return

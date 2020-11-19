@@ -1,5 +1,6 @@
 local go_type_table = nil
 local temp_table = {}
+EnergyData = EnergyData or {}
 
 local function enemy_unit_common_extractor(unit, game_session, game_object_id)
 	local breed_name_id = GameSession.game_object_field(game_session, game_object_id, "breed_name")
@@ -53,12 +54,31 @@ go_type_table = {
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local aim_position = first_person_extension:current_position()
 			local rotation = Unit.local_rotation(unit, 0)
-			local experience = ExperienceSettings.get_experience(profile.display_name)
-			local level = ExperienceSettings.get_level(experience)
+			local level = nil
+
+			if Managers.mechanism:current_mechanism_name() == "versus" then
+				local experience = ExperienceSettings.get_versus_profile_experience()
+				level = ExperienceSettings.get_versus_profile_level_from_experience(experience)
+			else
+				local experience = ExperienceSettings.get_experience(profile.display_name)
+				level = ExperienceSettings.get_level(experience)
+			end
+
 			local max_wounds = ScriptUnit.extension(unit, "status_system"):max_wounds_network_safe()
 			local career = profile.careers[career_index]
 
 			fassert(career, "No such career with career_index %s", tostring(career_index))
+
+			local network_buff_ids = {}
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local persistent_buff_names = buff_extension:get_persistent_buff_names()
+
+			for _, buff_name in pairs(persistent_buff_names) do
+				local buff_id = NetworkLookup.buff_templates[buff_name]
+
+				table.insert(network_buff_ids, buff_id)
+			end
+
 			setup_blackboard(player, profile, career, unit)
 
 			local data_table = {
@@ -86,7 +106,8 @@ go_type_table = {
 				velocity = Vector3(0, 0, 0),
 				average_velocity = Vector3(0, 0, 0),
 				profile_id = profile_id,
-				career_id = career_index
+				career_id = career_index,
+				network_buff_ids = network_buff_ids
 			}
 
 			return data_table
@@ -891,6 +912,21 @@ go_type_table = {
 
 			return data_table
 		end,
+		versus_capture_point_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local versus_objective_ext = ScriptUnit.extension(unit, "versus_objective_system")
+			local objective_name = versus_objective_ext:objective_name()
+			local data_table = {
+				go_type = NetworkLookup.go_types.versus_capture_point_objective_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0),
+				scale = Unit.local_scale(unit, 0)[1],
+				objective_name = NetworkLookup.versus_objective_names[objective_name],
+				timer = versus_objective_ext._timer
+			}
+
+			return data_table
+		end,
 		versus_mission_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local versus_objective_ext = ScriptUnit.extension(unit, "versus_objective_system")
 			local objective_name = versus_objective_ext:objective_name()
@@ -1358,6 +1394,70 @@ go_type_table = {
 
 			return data_table
 		end,
+		aoe_projectile_unit_fixed_impact = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+			local angle = locomotion_extension.angle
+			local speed = locomotion_extension.speed
+			local gravity_settings = locomotion_extension.gravity_settings
+			local target_vector = locomotion_extension.target_vector
+			local initial_position = locomotion_extension.initial_position_boxed:unbox()
+			local trajectory_template_name = locomotion_extension.trajectory_template_name
+			local impact_extension = ScriptUnit.extension(unit, "projectile_impact_system")
+			local impact_data = impact_extension.impact_data
+			local impact_position = impact_data.position:unbox()
+			local impact_normal = impact_data.hit_normal:unbox()
+			local impact_direction = impact_data.direction:unbox()
+			local impact_hit_unit = impact_data.hit_unit
+			local impact_actor_index = impact_data.actor_index
+			local impact_time = impact_data.time
+			local owner_unit = impact_extension.owner_unit
+			local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+			local impact_template_name = projectile_extension.impact_template_name
+			local damage_source = projectile_extension.damage_source
+			local area_damage_system = ScriptUnit.extension(unit, "area_damage_system")
+			local aoe_dot_damage = area_damage_system.aoe_dot_damage
+			local aoe_init_damage = area_damage_system.aoe_init_damage
+			local aoe_dot_damage_interval = area_damage_system.aoe_dot_damage_interval
+			local radius = area_damage_system.radius
+			local life_time = area_damage_system.life_time
+			local damage_players = area_damage_system.damage_players
+			local player_screen_effect_name = area_damage_system.player_screen_effect_name
+			local dot_effect_name = area_damage_system.dot_effect_name
+			local area_damage_template = area_damage_system.area_damage_template
+			local source_attacker_unit = area_damage_system.source_attacker_unit
+			local network_manager = Managers.state.network
+			local data_table = {
+				go_type = NetworkLookup.go_types.aoe_projectile_unit_fixed_impact,
+				husk_unit = NetworkLookup.husks[unit_name],
+				angle = angle,
+				speed = speed,
+				gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
+				initial_position = initial_position,
+				target_vector = target_vector,
+				trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
+				owner_unit = network_manager:unit_game_object_id(owner_unit),
+				impact_position = impact_position,
+				impact_time = impact_time,
+				impact_unit = network_manager:game_object_or_level_id(impact_hit_unit),
+				impact_actor = impact_actor_index,
+				impact_direction = impact_direction,
+				impact_normal = impact_normal,
+				impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
+				aoe_dot_damage = aoe_dot_damage,
+				aoe_init_damage = aoe_init_damage,
+				aoe_dot_damage_interval = aoe_dot_damage_interval,
+				radius = radius,
+				life_time = life_time,
+				damage_players = damage_players,
+				player_screen_effect_name = NetworkLookup.effects[player_screen_effect_name],
+				dot_effect_name = NetworkLookup.effects[dot_effect_name],
+				area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
+				source_attacker_unit = network_manager:unit_game_object_id(source_attacker_unit),
+				damage_source_id = NetworkLookup.damage_sources[damage_source]
+			}
+
+			return data_table
+		end,
 		projectile_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local projectile_system = ScriptUnit.extension(unit, "projectile_system")
 			local angle = projectile_system.angle
@@ -1607,12 +1707,14 @@ go_type_table = {
 			local pickup_name = pickup_extension.pickup_name
 			local has_physics = pickup_extension.has_physics
 			local spawn_type = pickup_extension.spawn_type
+			local breed_name = pickup_extension.dropped_by_breed
 			local data_table = {
 				go_type = NetworkLookup.go_types.pickup_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
 				has_physics = has_physics,
 				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+				dropped_by_breed = NetworkLookup.breeds[breed_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0)
 			}
@@ -1876,10 +1978,22 @@ go_type_table = {
 			local career_name = career.name
 			local overcharge_data = OverchargeData[career_name] or {}
 			local overcharge_max_value = GameSession.game_object_field(game_session, go_id, "overcharge_max_value")
+			local energy_data = EnergyData[career_name] or {}
+			local energy_max_value = GameSession.game_object_field(game_session, go_id, "energy_max_value")
 			local unique_id = player:unique_id()
 			local status = Managers.party:get_status_from_unique_id(unique_id)
 			local party = Managers.party:get_party(status.party_id)
 			local side = Managers.state.side.side_by_party[party]
+			local network_buff_ids = GameSession.game_object_field(game_session, go_id, "network_buff_ids")
+			local initial_buff_names = {}
+
+			if network_buff_ids then
+				for _, buff_id in ipairs(network_buff_ids) do
+					local buff_name = NetworkLookup.buff_templates[buff_id]
+
+					table.insert(initial_buff_names, buff_name)
+				end
+			end
 
 			setup_blackboard(player, profile, career, unit)
 
@@ -1944,7 +2058,8 @@ go_type_table = {
 					player = player
 				},
 				buff_system = {
-					is_husk = true
+					is_husk = true,
+					initial_buff_names = initial_buff_names
 				},
 				statistics_system = {
 					template = "player",
@@ -1966,6 +2081,10 @@ go_type_table = {
 				overcharge_system = {
 					overcharge_max_value = overcharge_max_value,
 					overcharge_data = overcharge_data
+				},
+				energy_system = {
+					energy_max_value = energy_max_value,
+					energy_data = energy_data
 				},
 				aggro_system = {
 					side = side
@@ -2027,6 +2146,8 @@ go_type_table = {
 			local career_name = career.name
 			local overcharge_data = OverchargeData[career_name] or {}
 			local overcharge_max_value = GameSession.game_object_field(game_session, go_id, "overcharge_max_value")
+			local energy_data = EnergyData[career_name] or {}
+			local energy_max_value = GameSession.game_object_field(game_session, go_id, "energy_max_value")
 			local unique_id = player:unique_id()
 			local status = Managers.party:get_status_from_unique_id(unique_id)
 			local party = Managers.party:get_party(status.party_id)
@@ -2111,6 +2232,10 @@ go_type_table = {
 				overcharge_system = {
 					overcharge_max_value = overcharge_max_value,
 					overcharge_data = overcharge_data
+				},
+				energy_system = {
+					energy_max_value = energy_max_value,
+					energy_data = energy_data
 				},
 				aggro_system = {
 					side = side
@@ -3217,6 +3342,21 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
+		versus_capture_point_objective_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
+			local scale = GameSession.game_object_field(game_session, go_id, "scale")
+			local timer = GameSession.game_object_field(game_session, go_id, "timer")
+			local extension_init_data = {
+				versus_objective_system = {
+					objective_name = NetworkLookup.versus_objective_names[objective_name],
+					scale = Vector3(scale, scale, scale),
+					timer = timer
+				}
+			}
+			local unit_template_name = "versus_capture_point_objective_unit"
+
+			return unit_template_name, extension_init_data
+		end,
 		versus_mission_objective_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local objective_name = GameSession.game_object_field(game_session, go_id, "objective_name")
 			local scale = GameSession.game_object_field(game_session, go_id, "scale")
@@ -3713,6 +3853,81 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
+		aoe_projectile_unit_fixed_impact = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local angle = GameSession.game_object_field(game_session, go_id, "angle")
+			local speed = GameSession.game_object_field(game_session, go_id, "speed")
+			local gravity_settings = GameSession.game_object_field(game_session, go_id, "gravity_settings")
+			local target_vector = GameSession.game_object_field(game_session, go_id, "target_vector")
+			local initial_position = GameSession.game_object_field(game_session, go_id, "initial_position")
+			local trajectory_template_name = GameSession.game_object_field(game_session, go_id, "trajectory_template_name")
+			local owner_unit_id = GameSession.game_object_field(game_session, go_id, "owner_unit")
+			local source_attacker_unit = GameSession.game_object_field(game_session, go_id, "source_attacker_unit")
+			local impact_position = GameSession.game_object_field(game_session, go_id, "impact_position")
+			local impact_normal = GameSession.game_object_field(game_session, go_id, "impact_normal")
+			local impact_direction = GameSession.game_object_field(game_session, go_id, "impact_direction")
+			local impact_hit_unit_id = GameSession.game_object_field(game_session, go_id, "impact_unit")
+			local impact_actor_index = GameSession.game_object_field(game_session, go_id, "impact_actor")
+			local impact_time = GameSession.game_object_field(game_session, go_id, "impact_time")
+			local impact_template_name = GameSession.game_object_field(game_session, go_id, "impact_template_name")
+			local aoe_init_damage = GameSession.game_object_field(game_session, go_id, "aoe_init_damage")
+			local aoe_dot_damage = GameSession.game_object_field(game_session, go_id, "aoe_dot_damage")
+			local aoe_dot_damage_interval = GameSession.game_object_field(game_session, go_id, "aoe_dot_damage_interval")
+			local radius = GameSession.game_object_field(game_session, go_id, "radius")
+			local life_time = GameSession.game_object_field(game_session, go_id, "life_time")
+			local damage_players = GameSession.game_object_field(game_session, go_id, "damage_players")
+			local player_screen_effect_name = GameSession.game_object_field(game_session, go_id, "player_screen_effect_name")
+			local dot_effect_name = GameSession.game_object_field(game_session, go_id, "dot_effect_name")
+			local area_damage_template = GameSession.game_object_field(game_session, go_id, "area_damage_template")
+			local damage_source_id = GameSession.game_object_field(game_session, go_id, "damage_source_id")
+			local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
+			local owner_player = Managers.player:unit_owner(owner_unit)
+			local source_attacker_unit = Managers.state.unit_storage:unit(source_attacker_unit)
+			local impact_data = {
+				position = Vector3Box(impact_position),
+				direction = Vector3Box(impact_direction),
+				hit_unit = Managers.state.network:game_object_or_level_unit(impact_hit_unit_id, true),
+				actor_index = impact_actor_index,
+				hit_normal = Vector3Box(impact_normal),
+				time = impact_time
+			}
+			local extension_init_data = {
+				projectile_locomotion_system = {
+					is_husk = true,
+					angle = angle,
+					speed = speed,
+					gravity_settings = NetworkLookup.projectile_gravity_settings[gravity_settings],
+					target_vector = target_vector,
+					initial_position = initial_position,
+					trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name]
+				},
+				projectile_impact_system = {
+					impact_data = impact_data,
+					owner_unit = owner_unit
+				},
+				projectile_system = {
+					impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
+					owner_unit = owner_unit,
+					damage_source = NetworkLookup.damage_sources[damage_source_id]
+				},
+				area_damage_system = {
+					aoe_dot_damage = aoe_dot_damage,
+					aoe_init_damage = aoe_init_damage,
+					aoe_dot_damage_interval = aoe_dot_damage_interval,
+					radius = radius,
+					life_time = life_time,
+					damage_players = damage_players,
+					player_screen_effect_name = NetworkLookup.effects[player_screen_effect_name],
+					dot_effect_name = NetworkLookup.effects[dot_effect_name],
+					area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
+					damage_source = NetworkLookup.damage_sources[damage_source_id],
+					source_attacker_unit = source_attacker_unit,
+					owner_player = owner_player
+				}
+			}
+			local unit_template_name = "aoe_projectile_unit_fixed_impact"
+
+			return unit_template_name, extension_init_data
+		end,
 		projectile_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local angle = GameSession.game_object_field(game_session, go_id, "angle")
 			local speed = GameSession.game_object_field(game_session, go_id, "speed")
@@ -3985,11 +4200,13 @@ go_type_table = {
 			local pickup_name = GameSession.game_object_field(game_session, go_id, "pickup_name")
 			local has_physics = GameSession.game_object_field(game_session, go_id, "has_physics")
 			local spawn_type = GameSession.game_object_field(game_session, go_id, "spawn_type")
+			local breed_name = GameSession.game_object_field(game_session, go_id, "dropped_by_breed")
 			local extension_init_data = {
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
 					has_physics = has_physics,
-					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type],
+					dropped_by_breed = NetworkLookup.breeds[breed_name]
 				}
 			}
 			local unit_template_name = "pickup_unit"
@@ -4238,23 +4455,8 @@ go_type_table = {
 	end
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local game_object_initializers = dlc.game_object_initializers
-
-	if game_object_initializers then
-		for go_type, initializer_func in pairs(game_object_initializers) do
-			go_type_table.initializers[go_type] = initializer_func
-		end
-	end
-
-	local game_object_extractors = dlc.game_object_extractors
-
-	if game_object_extractors then
-		for go_type, extractor_func in pairs(game_object_extractors) do
-			go_type_table.extractors[go_type] = extractor_func
-		end
-	end
-end
+DLCUtils.merge("game_object_initializers", go_type_table.initializers)
+DLCUtils.merge("game_object_extractors", go_type_table.extractors)
 
 local initializers = go_type_table.initializers
 

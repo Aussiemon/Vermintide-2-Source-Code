@@ -40,6 +40,10 @@ ProfileRequester.profile_available_for_peer = function (self, peer_id, local_pla
 	return Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
 end
 
+ProfileRequester.profile_is_specator = function (self, profile_index)
+	return profile_index == FindProfileIndex("spectator")
+end
+
 ProfileRequester.request_profile = function (self, peer_id, local_player_id, profile_name, career_name, force_respawn)
 	self._request_id = self._request_id + 1
 	self._request_result = nil
@@ -49,24 +53,23 @@ ProfileRequester.request_profile = function (self, peer_id, local_player_id, pro
 	if self._is_server then
 		self:_request_profile(peer_id, local_player_id, self._request_id, profile_index, career_index, force_respawn)
 	else
-		self._network_transmit:send_rpc_server("rpc_request_profile", local_player_id, self._request_id, profile_index, career_index, force_respawn)
+		self._network_transmit:send_rpc_server("rpc_request_profile", peer_id, local_player_id, self._request_id, profile_index, career_index, force_respawn)
 	end
 end
 
 ProfileRequester._request_profile = function (self, peer_id, local_player_id, request_id, profile_index, career_index, force_respawn)
 	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
-	local allowed_to_switch_to_profile = self:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
+	local allowed_to_switch_to_profile = self:profile_is_specator() or self:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
 	local result_id = nil
 
 	if allowed_to_switch_to_profile then
 		result_id = ProfileRequester.REQUEST_RESULTS.success
-		local profile = SPProfiles[profile_index]
 
-		if profile.affiliation == "heroes" then
-			Managers.party:set_selected_profile(peer_id, local_player_id, profile_index, career_index)
-		end
+		Managers.party:set_selected_profile(peer_id, local_player_id, profile_index, career_index)
 
-		self._profile_synchronizer:select_profile(peer_id, local_player_id, profile_index, career_index)
+		local is_bot = false
+
+		self._profile_synchronizer:select_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
 
 		if force_respawn then
 			Managers.state.game_mode:force_respawn(peer_id, local_player_id)
@@ -76,7 +79,9 @@ ProfileRequester._request_profile = function (self, peer_id, local_player_id, re
 	end
 
 	if self._peer_id == peer_id then
-		self:rpc_request_profile_reply(peer_id, local_player_id, request_id, profile_index, career_index, force_respawn, result_id)
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+		self:rpc_request_profile_reply(channel_id, local_player_id, request_id, profile_index, career_index, force_respawn, result_id)
 	else
 		self._network_transmit:send_rpc("rpc_request_profile_reply", peer_id, local_player_id, request_id, profile_index, career_index, force_respawn, result_id)
 	end
@@ -99,11 +104,13 @@ ProfileRequester.result = function (self)
 	return self._request_result
 end
 
-ProfileRequester.rpc_request_profile = function (self, sender, local_player_id, request_id, profile_index, career_index, force_respawn)
-	self:_request_profile(sender, local_player_id, request_id, profile_index, career_index, force_respawn)
+ProfileRequester.rpc_request_profile = function (self, channel_id, peer_id, local_player_id, request_id, profile_index, career_index, force_respawn)
+	local peer = CHANNEL_TO_PEER_ID[channel_id]
+
+	self:_request_profile(peer, local_player_id, request_id, profile_index, career_index, force_respawn)
 end
 
-ProfileRequester.rpc_request_profile_reply = function (self, sender, local_player_id, request_id, profile_index, career_index, force_respawn, result_id)
+ProfileRequester.rpc_request_profile_reply = function (self, channel_id, local_player_id, request_id, profile_index, career_index, force_respawn, result_id)
 	if request_id < self._request_id then
 		return
 	end
@@ -116,12 +123,13 @@ ProfileRequester.rpc_request_profile_reply = function (self, sender, local_playe
 		local player = Managers.player:player(self_peer_id, local_player_id)
 
 		if player then
-			if player.player_unit then
+			if player:needs_despawn() then
 				self:_despawn_player_unit(player)
 			end
 
 			player:set_profile_index(profile_index)
 			player:set_career_index(career_index)
+			Managers.party:set_selected_profile(self_peer_id, local_player_id, profile_index, career_index)
 		end
 	end
 

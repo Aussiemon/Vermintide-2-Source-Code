@@ -362,15 +362,7 @@ local flow_events = {
 	}
 }
 
-for name, dlc in pairs(DLCSettings) do
-	local hero_view_settings_by_screen = dlc.hero_view_settings_by_screen
-
-	if hero_view_settings_by_screen then
-		for _, settings in ipairs(hero_view_settings_by_screen) do
-			settings_by_screen[#settings_by_screen + 1] = settings
-		end
-	end
-end
+DLCUtils.append("hero_view_settings_by_screen", settings_by_screen)
 
 return {
 	scenegraph_definition = scenegraph_definition,

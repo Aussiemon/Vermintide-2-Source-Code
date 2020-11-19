@@ -278,7 +278,7 @@ UITooltipPasses = {
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			local alpha_multiplier = pass_data.alpha_multiplier
-			local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+			local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 			local alpha = (55 + 200 * progress) * alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_texture_name = data.frame_name
@@ -2097,7 +2097,6 @@ UITooltipPasses = {
 			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
-			local bottom_spacing = 20
 			local frame_margin = data.frame_margin or 0
 			local text_styles = data.text_styles
 			local text_content = data.text_content
@@ -2110,9 +2109,6 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local item_data = item.data
-			local rarity = item.rarity or item_data.rarity
-			local rarity_color = Colors.get_table(rarity)
 			text_content.title = Localize("tooltips_power")
 			text_content.power = tostring(power_level)
 			local loop_func = ipairs
@@ -2127,7 +2123,7 @@ UITooltipPasses = {
 			text_size[2] = 0
 			local total_height = 0
 
-			for index, text_style in loop_func(text_styles) do
+			for _, text_style in loop_func(text_styles) do
 				local style_name = text_style.name
 				local text = text_content[style_name]
 
@@ -2144,6 +2140,26 @@ UITooltipPasses = {
 					total_height = total_height + text_height
 
 					if draw then
+						if ui_content.color_power_level_comparison and style_name == "power" then
+							local highest_other_power_level = 0
+
+							if ui_content.color_power_level_comparison then
+								for _, item_to_check in ipairs(pass_data.items) do
+									if item_to_check.backend_id ~= item.backend_id and highest_other_power_level < item_to_check.power_level then
+										highest_other_power_level = item_to_check.power_level
+									end
+								end
+							end
+
+							if highest_other_power_level < power_level then
+								text_style.text_color = Colors.get_color_table_with_alpha("green", 255)
+							elseif power_level < highest_other_power_level then
+								text_style.text_color = Colors.get_color_table_with_alpha("red", 255)
+							else
+								text_style.text_color = Colors.get_color_table_with_alpha("white", 255)
+							end
+						end
+
 						text_size[2] = text_height
 						text_style.text_color[1] = alpha
 

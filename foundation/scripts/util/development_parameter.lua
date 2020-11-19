@@ -1,7 +1,7 @@
 Development._hardcoded_dev_params = {
 	package_debug = true,
 	use_beta_overlay = false,
-	disable_tutorial_at_start = false,
+	disable_tutorial_at_start = true,
 	network_debug = true,
 	matchmaking_debug = true,
 	hide_version_info = true,
@@ -12,7 +12,7 @@ Development._hardcoded_dev_params = {
 	force_debug_disabled = true,
 	use_telemetry = true,
 	packaged_build = true,
-	test_backend = "stage_steam_playfab",
+	disable_store = false,
 	telemetry_log_interval = "600",
 	disable_intro_trailer = false,
 	force_steam = true,

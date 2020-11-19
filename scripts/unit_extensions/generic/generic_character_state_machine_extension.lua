@@ -32,16 +32,7 @@ require("scripts/unit_extensions/default_player_unit/states/player_character_sta
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_in_vortex")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_overcharge_exploding")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_charged")
-
-for _, dlc in pairs(DLCSettings) do
-	local character_states = dlc.character_states
-
-	if character_states then
-		for _, character_state_file in ipairs(character_states) do
-			dofile(character_state_file)
-		end
-	end
-end
+DLCUtils.dofile_list("character_states")
 
 GenericCharacterStateMachineExtension = class(GenericCharacterStateMachineExtension)
 

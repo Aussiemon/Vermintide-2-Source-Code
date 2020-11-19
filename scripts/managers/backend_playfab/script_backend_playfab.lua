@@ -1,5 +1,6 @@
 require("scripts/managers/backend_playfab/playfab_mirror_adventure")
 require("scripts/settings/version_settings")
+DLCUtils.require_list("playfab_mirror_files")
 
 local IPlayFabHttps = require("PlayFab.IPlayFabHttps")
 local playfab_https = require("scripts/managers/backend/playfab_https_curl")

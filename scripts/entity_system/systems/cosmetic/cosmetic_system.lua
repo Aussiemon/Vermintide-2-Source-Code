@@ -57,9 +57,11 @@ CosmeticSystem.set_equipped_frame = function (self, unit, frame_name)
 	end
 end
 
-CosmeticSystem.rpc_set_equipped_frame = function (self, sender, unit_id, frame_name_id)
+CosmeticSystem.rpc_set_equipped_frame = function (self, channel_id, unit_id, frame_name_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_set_equipped_frame", sender, unit_id, frame_name_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_set_equipped_frame", peer_id, unit_id, frame_name_id)
 	end
 
 	local unit = self.unit_storage:unit(unit_id)

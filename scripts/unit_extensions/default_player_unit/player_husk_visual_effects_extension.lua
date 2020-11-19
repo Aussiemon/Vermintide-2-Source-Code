@@ -21,6 +21,7 @@ end
 PlayerHuskVisualEffectsExtension.update = function (self, unit, input, dt, context, t)
 	self:_update_overcharge_thresholds()
 	self:_set_overcharge_flow_values()
+	self:_set_weapons_energy_drainable()
 end
 
 PlayerHuskVisualEffectsExtension._update_overcharge_thresholds = function (self)
@@ -59,6 +60,37 @@ PlayerHuskVisualEffectsExtension._set_character_overcharge = function (self, val
 	if unit and Unit.alive(unit) then
 		unit_set_flow_variable(unit, "current_overcharge", value)
 		unit_flow_event(unit, "lua_update_overcharge")
+	end
+end
+
+PlayerHuskVisualEffectsExtension._set_weapons_energy_drainable = function (self)
+	local inventory_extension = self.inventory_extension
+	local wielded_slot_data = inventory_extension:equipment()
+	local unit = self.unit
+	local energy_extension = unit and ScriptUnit.has_extension(unit, "energy_system")
+
+	if wielded_slot_data and energy_extension then
+		local is_energy_drainable = energy_extension:is_drainable()
+		local left_hand_wielded_unit_3p = wielded_slot_data.left_hand_wielded_unit_3p
+		local left_hand_ammo_unit_3p = wielded_slot_data.left_hand_ammo_unit_3p
+		local right_hand_wielded_unit_3p = wielded_slot_data.right_hand_wielded_unit_3p
+		local right_hand_ammo_unit_3p = wielded_slot_data.right_hand_ammo_unit_3p
+
+		if left_hand_wielded_unit_3p and Unit.alive(left_hand_wielded_unit_3p) then
+			unit_set_flow_variable(left_hand_wielded_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if left_hand_ammo_unit_3p and Unit.alive(left_hand_ammo_unit_3p) then
+			unit_set_flow_variable(left_hand_ammo_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if right_hand_wielded_unit_3p and Unit.alive(right_hand_wielded_unit_3p) then
+			unit_set_flow_variable(right_hand_wielded_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
+
+		if right_hand_ammo_unit_3p and Unit.alive(right_hand_ammo_unit_3p) then
+			unit_set_flow_variable(right_hand_ammo_unit_3p, "is_energy_drainable", is_energy_drainable)
+		end
 	end
 end
 

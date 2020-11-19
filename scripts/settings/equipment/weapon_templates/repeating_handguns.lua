@@ -71,35 +71,38 @@ weapon_template.actions = {
 		},
 		bullet_spray = {
 			damage_window_start = 0.1,
-			damage_profile = "shot_repeating",
+			damage_window_end = 0,
+			reload_when_out_of_ammo = true,
+			alert_sound_range_hit = 1.5,
+			headshot_multiplier = 2,
+			recoil_factor = 0.6,
+			charge_value = "bullet_hit",
 			critical_hit_effect = "bullet_critical_impact",
 			kind = "handgun",
-			recoil_factor = 0.6,
+			damage_profile = "shot_repeating",
+			anim_event = "attack_shoot_fast",
+			aim_assist_ramp_decay_delay = 0.2,
 			alert_sound_range_fire = 10,
-			alert_sound_range_hit = 1.5,
-			reload_when_out_of_ammo = true,
-			apply_recoil = true,
-			total_time_secondary = 2,
+			anim_event_last_ammo = "attack_shoot_fast_last",
 			additional_critical_strike_chance = 0,
-			hit_effect = "bullet_impact",
-			anim_event_last_ammo = "attack_shoot_last",
-			headshot_multiplier = 2,
-			damage_window_end = 0,
-			aim_assist_ramp_multiplier = 0.1,
-			ammo_usage = 1,
 			fire_time = 0,
 			aim_assist_max_ramp_multiplier = 0.3,
+			aim_assist_ramp_multiplier = 0.1,
 			aim_assist_auto_hit_chance = 0.5,
-			anim_event_secondary = "reload",
-			aim_assist_ramp_decay_delay = 0.2,
-			hold_input = "action_two_hold",
-			anim_event = "attack_shoot",
 			reload_time = 0.5,
-			charge_value = "bullet_hit",
+			apply_recoil = true,
+			total_time_secondary = 2,
+			hit_effect = "bullet_impact",
+			ammo_usage = 1,
+			anim_event_secondary = "reload",
+			hold_input = "action_two_hold",
 			total_time = 0.66,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
+			on_chain_keep_audio_loops = {
+				"aim"
+			},
 			buff_data = {
 				{
 					start_time = 0,
@@ -118,13 +121,13 @@ weapon_template.actions = {
 					sub_action = "bullet_spray",
 					start_time = 0.2,
 					action = "action_one",
-					auto_chain = true
+					input = "action_one_hold"
 				},
 				{
-					sub_action = "bullet_spray",
-					start_time = 0.2,
-					action = "action_one",
-					input = "action_one_hold"
+					sub_action = "spray_loop",
+					start_time = 0.55,
+					action = "action_two",
+					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
@@ -133,6 +136,11 @@ weapon_template.actions = {
 					input = "weapon_reload"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
 			recoil_settings = {
 				horizontal_climb = 0,
 				restore_duration = 0.13,
@@ -146,16 +154,18 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
-			ammo_requirement = 1,
+			can_abort_reload = true,
 			anim_end_event = "attack_finished",
 			kind = "aim",
-			unaim_sound_event = "stop_weapon_repeating_handgun_special_cylinder",
-			can_abort_reload = true,
+			action_priority = 10,
 			aim_sound_delay = 0.6,
-			hold_input = "action_two_hold",
-			anim_event = "lock_target",
+			ammo_requirement = 1,
 			aim_sound_event = "weapon_repeating_handgun_special_cylinder",
 			minimum_hold_time = 1.5,
+			looping_aim_sound = true,
+			unaim_sound_event = "stop_weapon_repeating_handgun_special_cylinder",
+			hold_input = "action_two_hold",
+			anim_event = "lock_target",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -181,12 +191,87 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
+					sub_action = "bullet_spray",
+					start_time = 0.6,
+					action = "action_one",
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "spray_loop",
+					start_time = 0.6,
+					action = "action_one",
+					input = "action_two"
+				},
+				{
 					sub_action = "default",
 					start_time = 0.6,
 					action = "weapon_reload",
 					input = "weapon_reload"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
+			zoom_condition_function = function ()
+				return false
+			end,
+			condition_func = function (unit, input_extension, ammo_extension)
+				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
+					return false
+				end
+
+				return true
+			end
+		},
+		spray_loop = {
+			ammo_requirement = 1,
+			kind = "aim",
+			anim_end_event = "attack_finished",
+			anim_event = "lock_target_loop",
+			aim_sound_delay = 0,
+			hold_input = "action_two_hold",
+			can_abort_reload = true,
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
+			on_chain_keep_audio_loops = {
+				"aim"
+			},
+			total_time = math.huge,
+			buff_data = {
+				{
+					start_time = 0,
+					external_multiplier = 0.4,
+					buff_name = "planted_charging_decrease_movement"
+				}
+			},
+			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "bullet_spray",
+					start_time = 0.2,
+					action = "action_one",
+					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.6,
+					action = "weapon_reload",
+					input = "weapon_reload"
+				}
+			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
 			zoom_condition_function = function ()
 				return false
 			end,
@@ -201,15 +286,7 @@ weapon_template.actions = {
 	},
 	weapon_reload = ActionTemplates.reload,
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",

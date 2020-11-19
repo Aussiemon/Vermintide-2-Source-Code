@@ -10,6 +10,7 @@ ActionBlock.init = function (self, world, item_name, is_server, owner_unit, dama
 	self._blocked_flag = false
 	self._blocked_time = 0
 	self._status_extension = ScriptUnit.extension(owner_unit, "status_system")
+	self._ammo_extension = ScriptUnit.has_extension(weapon_unit, "ammo_system")
 end
 
 ActionBlock.client_owner_start_action = function (self, new_action, t)
@@ -54,14 +55,29 @@ end
 
 ActionBlock.finish = function (self, reason, data)
 	local stop_blocking = true
+	local new_action_settings = data and data.new_action_settings
 
-	if data and data.action and data.action.keep_block then
+	if new_action_settings and new_action_settings.keep_block then
 		stop_blocking = false
+	end
+
+	local owner_unit = self.owner_unit
+
+	if reason ~= "new_interupting_action" then
+		local ammo_extension = self._ammo_extension
+		local current_action = self.current_action
+		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
+		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+
+		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
+			local play_reload_animation = true
+
+			ammo_extension:start_reload(play_reload_animation)
+		end
 	end
 
 	if stop_blocking then
 		if not LEVEL_EDITOR_TEST then
-			local owner_unit = self.owner_unit
 			local go_id = Managers.state.unit_storage:go_id(owner_unit)
 
 			if self.is_server then

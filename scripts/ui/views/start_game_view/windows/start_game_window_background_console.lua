@@ -202,7 +202,7 @@ StartGameWindowBackgroundConsole.post_update = function (self, dt, t)
 	self:_update_loading_overlay_fadeout_animation(dt)
 
 	if not self.initialized and self._viewport_widget then
-		local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, camera_position_by_character)
+		local world_previewer = MenuWorldPreviewer:new(self.ingame_ui_context, camera_position_by_character, "StartGameWindowBackgroundConsole")
 		local hero_name = nil
 
 		world_previewer:on_enter(self._viewport_widget, hero_name)

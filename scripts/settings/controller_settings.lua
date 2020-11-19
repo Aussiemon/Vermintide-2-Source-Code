@@ -288,11 +288,6 @@ if InputUtils.keymaps_key_approved("win32") then
 			UNASSIGNED_KEY,
 			"pressed"
 		},
-		voip_push_to_talk = {
-			"keyboard",
-			"g",
-			"held"
-		},
 		move_left = {
 			"keyboard",
 			"a",
@@ -353,9 +348,39 @@ if InputUtils.keymaps_key_approved("win32") then
 			"right",
 			"pressed"
 		},
+		observer_change_offset = {
+			"mouse",
+			"wheel",
+			"axis"
+		},
+		previous_observer_view = {
+			"keyboard",
+			"q",
+			"pressed"
+		},
+		next_observer_view = {
+			"keyboard",
+			"e",
+			"pressed"
+		},
+		next_observer_rotation_state = {
+			"keyboard",
+			"l",
+			"pressed"
+		},
+		previous_observer_rotation_state = {
+			"keyboard",
+			"k",
+			"pressed"
+		},
 		ghost_mode_enter = {
 			"keyboard",
 			"q",
+			"pressed"
+		},
+		ghost_mode_exit = {
+			"mouse",
+			"left",
 			"pressed"
 		}
 	}
@@ -596,7 +621,6 @@ PlayerControllerKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	social_wheel_only_hold = {},
 	social_wheel_only_release = {},
 	ping_only = {},
-	voip_push_to_talk = {},
 	move_left = {},
 	move_right = {},
 	move_forward = {},
@@ -613,6 +637,16 @@ PlayerControllerKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	previous_observer_target = {
 		"gamepad",
 		"b",
+		"pressed"
+	},
+	ghost_mode_enter = {
+		"gamepad",
+		"x",
+		"pressed"
+	},
+	ghost_mode_exit = {
+		"gamepad",
+		"y",
 		"pressed"
 	}
 }
@@ -863,7 +897,6 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	social_wheel_only_hold = {},
 	social_wheel_only_release = {},
 	ping_only = {},
-	voip_push_to_talk = {},
 	move_left = {},
 	move_right = {},
 	move_forward = {},
@@ -880,6 +913,16 @@ PlayerControllerKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	previous_observer_target = {
 		"gamepad",
 		"circle",
+		"pressed"
+	},
+	ghost_mode_enter = {
+		"gamepad",
+		"square",
+		"pressed"
+	},
+	ghost_mode_exit = {
+		"gamepad",
+		"triangle",
 		"pressed"
 	}
 }
@@ -1401,6 +1444,11 @@ ChatControllerSettings = {
 			"numpad enter",
 			"pressed"
 		},
+		execute_chat_input_3 = {
+			"keyboard",
+			"left shift",
+			"held"
+		},
 		deactivate_chat_input = {
 			"keyboard",
 			"esc",
@@ -1500,6 +1548,11 @@ ChatControllerSettings = {
 			"mouse",
 			"right",
 			"held"
+		},
+		voip_push_to_talk = {
+			"keyboard",
+			"g",
+			"held"
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
@@ -1552,7 +1605,8 @@ ChatControllerSettings = {
 			"mouse",
 			"left",
 			"held"
-		}
+		},
+		voip_push_to_talk = {}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		activate_chat_input = {
@@ -1604,7 +1658,8 @@ ChatControllerSettings = {
 			"mouse",
 			"left",
 			"held"
-		}
+		},
+		voip_push_to_talk = {}
 	}
 }
 ChatControllerFilters = {
@@ -1622,6 +1677,13 @@ ChatControllerFilters = {
 			input_mappings = {
 				button_1 = "execute_chat_input_1",
 				button_2 = "execute_chat_input_2"
+			}
+		},
+		execute_alt_chat_input = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "execute_chat_input_1",
+				button_2 = "execute_chat_input_3"
 			}
 		},
 		chat_switch_view = {
@@ -3772,7 +3834,7 @@ IngamePlayerListKeymaps = {
 		activate_ingame_player_list_1 = {
 			"mouse",
 			"right",
-			"released"
+			"pressed"
 		},
 		activate_ingame_player_list_2 = {
 			"keyboard",
@@ -4091,6 +4153,11 @@ if InputUtils.keymaps_key_approved("win32") then
 		move_left_hold_raw = {},
 		move_right_hold_raw = {},
 		analog_input = {},
+		switch_dark_pact_profile = {
+			"keyboard",
+			"r",
+			"pressed"
+		},
 		skip = {
 			"keyboard",
 			"space",
@@ -4436,6 +4503,11 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"y",
 		"pressed"
 	},
+	switch_dark_pact_profile = {
+		"gamepad",
+		"y",
+		"pressed"
+	},
 	special_1 = {
 		"gamepad",
 		"x",
@@ -4702,6 +4774,11 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"held"
 	},
 	refresh_press = {
+		"gamepad",
+		"triangle",
+		"pressed"
+	},
+	switch_dark_pact_profile = {
 		"gamepad",
 		"triangle",
 		"pressed"

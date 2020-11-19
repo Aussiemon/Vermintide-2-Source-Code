@@ -3,11 +3,10 @@ settings.buff_templates = {
 	slayer_curse_debuff = {
 		buffs = {
 			{
-				perk = "slayer_curse",
 				name = "slayer_curse_debuff",
-				debuff = true,
 				icon = "buff_icon_mutator_icon_slayer_curse",
-				dormant = true
+				perk = "slayer_curse",
+				debuff = true
 			}
 		}
 	},
@@ -51,7 +50,6 @@ settings.buff_templates = {
 				name = "mutator_bloodlust_debuff",
 				damage_percentage = 0.05,
 				icon = "troll_vomit_debuff",
-				dormant = true,
 				remove_buff_func = "remove_bloodlust_debuff",
 				apply_buff_func = "apply_bloodlust_debuff",
 				damage_frequency = 1

@@ -3,24 +3,11 @@ require("scripts/network/lobby_aux")
 
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_lobby_browser_console_definitions")
 local input_delay_before_start_new_search = 0
-
-if PLATFORM ~= "ps4" or not {
-	LobbyDistanceFilter.CLOSE,
-	LobbyDistanceFilter.MEDIUM,
-	LobbyDistanceFilter.WORLD
-} then
-	local MapLobbyDistanceFilter = {
-		LobbyDistanceFilter.CLOSE,
-		LobbyDistanceFilter.MEDIUM,
-		LobbyDistanceFilter.FAR,
-		LobbyDistanceFilter.WORLD
-	}
-end
-
 local network_options = {
 	project_hash = "bulldozer",
 	config_file_name = "global",
 	lobby_port = GameSettingsDevelopment.network_port,
+	server_port = GameSettingsDevelopment.network_port,
 	max_members = MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
 }
 local GAME_MODE_LOOKUP_STRINGS = {
@@ -220,7 +207,7 @@ StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 	elseif is_server then
 		local wanted_server_name = self._current_server_name
 
-		if wanted_server_name ~= "" and string.find(lobby_data.server_info.server_name, wanted_server_name) == nil then
+		if wanted_server_name ~= "" and string.find(lobby_data.server_info.name, wanted_server_name) == nil then
 			return false
 		end
 	else
@@ -276,7 +263,7 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	local difficulty_key = difficulty_table[difficulty_index]
 	local only_show_valid_lobbies = true
 	local distance_index = self._selected_distance_index
-	local distance_filter = MapLobbyDistanceFilter[distance_index]
+	local distance_filter = LobbyAux.map_lobby_distance_filter[distance_index]
 	local show_lobbies_index = self._selected_show_lobbies_index
 	local only_show_joinable = definitions.show_lobbies_table[show_lobbies_index] == "lb_show_joinable"
 	local free_slots = 1
@@ -290,15 +277,15 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	if PLATFORM == "ps4" then
 		local user_region = Managers.account:region()
 
-		if distance_filter == LobbyDistanceFilter.CLOSE then
+		if distance_filter == "close" then
 			requirements.filters.primary_region = {
-				value = MatchmakingRegionLookup.primary[user_region] or MatchmakingRegionLookup.secondary[user_region] or "default",
-				comparison = LobbyComparison.EQUAL
+				comparison = "equal",
+				value = MatchmakingRegionLookup.primary[user_region] or MatchmakingRegionLookup.secondary[user_region] or "default"
 			}
-		elseif distance_filter == LobbyDistanceFilter.MEDIUM then
+		elseif distance_filter == "medium" then
 			requirements.filters.secondary_region = {
-				value = MatchmakingRegionLookup.secondary[user_region] or MatchmakingRegionLookup.primary[user_region] or "default",
-				comparison = LobbyComparison.EQUAL
+				comparison = "equal",
+				value = MatchmakingRegionLookup.secondary[user_region] or MatchmakingRegionLookup.primary[user_region] or "default"
 			}
 		end
 	end
@@ -306,42 +293,42 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	local eac_state = EAC.state()
 	local eac_authorized = eac_state == "trusted"
 	requirements.filters.eac_authorized = {
-		value = (eac_authorized and "true") or "false",
-		comparison = LobbyComparison.EQUAL
+		comparison = "equal",
+		value = (eac_authorized and "true") or "false"
 	}
 
 	if difficulty_key ~= "any" and difficulty_key then
 		requirements.filters.difficulty = {
-			value = difficulty_key,
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = difficulty_key
 		}
 	end
 
 	if level_key ~= "any" and level_key then
 		requirements.filters.selected_level_key = {
-			value = level_key,
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = level_key
 		}
 	end
 
 	if game_mode ~= "any" and game_mode then
 		requirements.filters.game_mode = {
-			value = NetworkLookup.game_modes[game_mode],
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = NetworkLookup.game_modes[game_mode]
 		}
 	end
 
 	if only_show_valid_lobbies then
 		requirements.filters.network_hash = {
-			value = lobby_finder:network_hash(),
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = lobby_finder:network_hash()
 		}
 	end
 
 	if only_show_joinable then
 		requirements.filters.matchmaking = {
 			value = "false",
-			comparison = LobbyComparison.NOT_EQUAL
+			comparison = "not_equal"
 		}
 	end
 
@@ -356,11 +343,17 @@ end
 
 StartGameWindowLobbyBrowserConsole._search = function (self)
 	local requirements = self:_create_filter_requirements()
+	local lobby_finder = self._lobby_finder
 
-	LobbyInternal.clear_filter_requirements()
+	if PLATFORM == "win32" then
+		local lobby_browser = lobby_finder:get_lobby_browser()
+
+		LobbyInternal.clear_filter_requirements(lobby_browser)
+	else
+		LobbyInternal.clear_filter_requirements()
+	end
 
 	local force_refresh = true
-	local lobby_finder = self._lobby_finder
 
 	lobby_finder:add_filter_requirements(requirements, force_refresh)
 

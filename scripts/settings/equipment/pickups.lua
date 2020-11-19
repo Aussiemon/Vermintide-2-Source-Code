@@ -575,19 +575,21 @@ Pickups.special = {
 		end
 	},
 	bardin_survival_ale = {
+		consumable_item = true,
+		type = "inventory_item",
+		pickup_sound_event = "pickup_potion",
+		debug_pickup_category = "consumables",
+		bots_mule_pickup = true,
+		spawn_weighting = 1e-06,
+		slot_name = "slot_level_event",
+		unit_name = "units/weapons/player/pup_ale/pup_ale",
+		allow_bots_pickup = true,
+		hud_description = "interaction_beer",
 		only_once = true,
 		item_description = "interaction_beer",
-		spawn_weighting = 1e-06,
-		debug_pickup_category = "consumables",
-		pickup_sound_event = "pickup_potion",
-		consumable_item = true,
 		item_name = "wpn_bardin_survival_ale",
-		unit_name = "units/weapons/player/pup_ale/pup_ale",
-		type = "inventory_item",
-		slot_name = "slot_level_event",
 		wield_on_pickup = true,
 		local_pickup_sound = true,
-		hud_description = "interaction_beer",
 		action_on_wield = {
 			action = "action_one",
 			sub_action = "default"
@@ -596,11 +598,6 @@ Pickups.special = {
 			local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
 
 			buff_extension:add_buff("intoxication_base")
-
-			local player_manager = Managers.player
-			local local_player = player_manager:local_player()
-			local statistics_db = player_manager:statistics_db()
-			local stats_id = local_player:stats_id()
 		end,
 		can_interact_func = function (interactor_unit, interactable_unit, data)
 			local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
@@ -712,13 +709,7 @@ Pickups.painting_scrap = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local pickups = dlc.pickups
-
-	if pickups then
-		table.merge_recursive(Pickups, pickups)
-	end
-end
+DLCUtils.merge("pickups", Pickups, true)
 
 LootRatPickups = {
 	first_aid_kit = 3,
@@ -728,7 +719,7 @@ LootRatPickups = {
 	cooldown_reduction_potion = 1,
 	frag_grenade_t2 = 1,
 	fire_grenade_t2 = 1,
-	loot_die = 4,
+	boss_loot = 4,
 	lorebook_page = 4
 }
 local total_loot_rat_spawn_weighting = 0

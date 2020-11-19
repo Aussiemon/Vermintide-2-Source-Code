@@ -194,6 +194,7 @@ weapon_template.actions = {
 			reset_aim_on_attack = true,
 			damage_window_end = 0.32,
 			impact_sound_event = "axe_1h_hit",
+			charge_value = "heavy_attack",
 			dedicated_target_range = 2.75,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_down",
@@ -258,6 +259,7 @@ weapon_template.actions = {
 			reset_aim_on_attack = true,
 			damage_window_end = 0.28,
 			impact_sound_event = "axe_1h_hit",
+			charge_value = "heavy_attack",
 			dedicated_target_range = 2.75,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy_down_right",
@@ -693,15 +695,7 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right

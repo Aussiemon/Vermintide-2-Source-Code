@@ -320,7 +320,7 @@ TalentBuffTemplates.witch_hunter = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -334,7 +334,7 @@ TalentBuffTemplates.witch_hunter = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -366,13 +366,12 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				reset_on_max_stacks = true,
-				on_max_stacks_func = "add_remove_buffs",
 				max_stacks = 5,
+				on_max_stacks_func = "add_remove_buffs",
 				icon = "victor_zealot_crit_count",
-				dormant = true,
 				max_stack_data = {
 					buffs_to_add = {
-						"victor_zealot_crit_count_buff"
+						"markus_mercenary_crit_count_buff"
 					}
 				}
 			}
@@ -411,10 +410,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_attack_speed_on_health_percent_buff = {
 		buffs = {
 			{
-				dormant = true,
+				multiplier = 0.1,
 				icon = "victor_zealot_attack_speed_on_health_percent",
-				stat_buff = "attack_speed",
-				multiplier = 0.1
+				stat_buff = "attack_speed"
 			}
 		}
 	},
@@ -539,8 +537,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				refresh_durations = true,
 				icon = "victor_zealot_activated_ability_power_on_hit",
-				stat_buff = "power_level",
-				dormant = true
+				stat_buff = "power_level"
 			}
 		}
 	},
@@ -550,11 +547,10 @@ TalentBuffTemplates.witch_hunter = {
 		activation_sound = "hud_gameplay_stance_tank_activate",
 		buffs = {
 			{
-				icon = "victor_zealot_activated_ability_ignore_death",
-				perk = "ignore_death",
 				max_stacks = 1,
+				icon = "victor_zealot_activated_ability_ignore_death",
 				duration = 5,
-				dormant = true
+				perk = "ignore_death"
 			}
 		}
 	},
@@ -572,11 +568,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_activated_ability_cooldown_stack_on_hit_buff = {
 		buffs = {
 			{
-				icon = "victor_zealot_activated_ability_cooldown_stack_on_hit",
 				refresh_durations = true,
-				duration = 5,
+				icon = "victor_zealot_activated_ability_cooldown_stack_on_hit",
 				remove_buff_func = "reduce_cooldown_on_buff_removed",
-				dormant = true
+				duration = 5
 			}
 		}
 	},
@@ -603,7 +598,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				icon = "victor_bountyhunter_passive",
-				dormant = true,
 				stat_buff = "critical_strike_chance_ranged"
 			}
 		}
@@ -625,7 +619,6 @@ TalentBuffTemplates.witch_hunter = {
 				refresh_durations = true,
 				is_cooldown = true,
 				icon = "victor_bountyhunter_passive",
-				dormant = true,
 				delayed_buff_name = "victor_bountyhunter_passive_crit_buff"
 			}
 		}
@@ -675,7 +668,7 @@ TalentBuffTemplates.witch_hunter = {
 				name = "bloodlust",
 				event_buff = true,
 				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -739,8 +732,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 20,
 				icon = "victor_bountyhunter_power_level_on_clip_size",
-				stat_buff = "power_level_ranged",
-				dormant = true
+				stat_buff = "power_level_ranged"
 			}
 		}
 	},
@@ -752,7 +744,6 @@ TalentBuffTemplates.witch_hunter = {
 				refresh_durations = true,
 				is_cooldown = true,
 				icon = "victor_bountyhunter_passive",
-				dormant = true,
 				delayed_buff_name = "victor_bountyhunter_passive_crit_buff"
 			}
 		}
@@ -827,6 +818,7 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
+				perk = "infinite_ammo",
 				icon = "victor_bountyhunter_passive_infinite_ammo"
 			}
 		}
@@ -878,7 +870,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				remove_buff_func = "remove_movement_buff",
 				refresh_durations = true,
-				dormant = true,
 				max_stacks = 1,
 				icon = "victor_bountyhunter_movespeed_on_ranged_crit",
 				apply_buff_func = "apply_movement_buff",
@@ -901,9 +892,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_buff = {
 		buffs = {
 			{
-				dormant = true,
-				icon = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill",
-				stat_buff = "damage_taken_secondary"
+				stat_buff = "damage_taken_secondary",
+				icon = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill"
 			}
 		}
 	},
@@ -1063,7 +1053,7 @@ TalentBuffTemplates.witch_hunter = {
 				name = "reaper",
 				event_buff = true,
 				buff_func = "heal_damage_targets_on_melee",
-				event = "on_damage_dealt",
+				event = "on_player_damage_dealt",
 				perk = "linesman_healing",
 				max_targets = 5,
 				bonus = 0.25
@@ -1108,8 +1098,8 @@ TalentBuffTemplates.witch_hunter = {
 				buff_func = "dummy_function",
 				remove_on_proc = true,
 				icon = "victor_witchhunter_guaranteed_crit_on_timed_block",
-				dormant = true,
-				max_stacks = 1
+				max_stacks = 1,
+				refresh_durations = true
 			}
 		}
 	},
@@ -1189,11 +1179,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_stamina_regen_on_push_buff = {
 		buffs = {
 			{
-				icon = "victor_witchhunter_stamina_regen_on_push",
-				stat_buff = "fatigue_regen",
 				max_stacks = 1,
 				refresh_durations = true,
-				dormant = true
+				stat_buff = "fatigue_regen",
+				icon = "victor_witchhunter_stamina_regen_on_push"
 			}
 		}
 	},
@@ -1233,11 +1222,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_activated_ability_guaranteed_crit_self_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
-				stat_buff = "critical_strike_chance_melee",
 				max_stacks = 1,
 				icon = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff",
-				dormant = true
+				stat_buff = "critical_strike_chance_melee",
+				refresh_durations = true
 			}
 		}
 	}
@@ -1346,25 +1334,23 @@ Talents.witch_hunter = {
 	{
 		description = "reaper_desc",
 		name = "victor_zealot_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "victor_zealot_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_bloodlust",
 		description_values = {
 			{
@@ -1372,17 +1358,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "victor_zealot_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_conqueror",
 		description_values = {
 			{
@@ -1390,11 +1374,9 @@ Talents.witch_hunter = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_crit_count_desc",
@@ -1406,11 +1388,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_crit_count.buff_on_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_crit_count"
 		},
-		buff_data = {},
 		perks = {
 			"no_random_crits"
 		}
@@ -1418,8 +1398,8 @@ Talents.witch_hunter = {
 	{
 		description = "victor_zealot_power_desc",
 		name = "victor_zealot_power",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_power",
 		description_values = {
 			{
@@ -1427,17 +1407,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_power.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_power"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_attack_speed_on_health_percent_desc",
 		name = "victor_zealot_attack_speed_on_health_percent",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_attack_speed_on_health_percent",
 		description_values = {
 			{
@@ -1453,17 +1431,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_attack_speed_on_health_percent.threshold_2
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_attack_speed_on_health_percent"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_passive_move_speed_desc",
 		name = "victor_zealot_passive_move_speed",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_passive_move_speed",
 		description_values = {
 			{
@@ -1471,17 +1447,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_passive_move_speed_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_passive_move_speed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_passive_healing_received_desc",
 		name = "victor_zealot_passive_healing_received",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_passive_healing_received",
 		description_values = {
 			{
@@ -1489,17 +1463,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_passive_healing_received_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_passive_healing_received"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_passive_damage_taken_desc",
 		name = "victor_zealot_passive_damage_taken",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_passive_damage_taken",
 		description_values = {
 			{
@@ -1507,11 +1479,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_passive_damage_taken_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_passive_damage_taken"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_move_speed_on_damage_taken_desc",
@@ -1527,28 +1497,24 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_move_speed_on_damage_taken_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_move_speed_on_damage_taken"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_max_stamina_on_damage_taken_desc",
 		name = "victor_zealot_max_stamina_on_damage_taken",
 		num_ranks = 1,
 		icon = "victor_zealot_max_stamina_on_damage_taken",
-		requirements = {},
 		buffs = {
 			"victor_zealot_max_stamina_on_damage_taken"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_reduced_damage_taken_desc",
 		name = "victor_zealot_reduced_damage_taken",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_reduced_damage_taken",
 		description_values = {
 			{
@@ -1556,17 +1522,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_reduced_damage_taken_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_zealot_reduced_damage_taken_buff"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_zealot_activated_ability_power_on_hit_desc",
 		name = "victor_zealot_activated_ability_power_on_hit",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_activated_ability_power_on_hit",
 		description_values = {
 			{
@@ -1580,9 +1544,7 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_activated_ability_power_on_hit_buff.max_stacks
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "victor_zealot_activated_ability_ignore_death_desc",
@@ -1590,9 +1552,7 @@ Talents.witch_hunter = {
 		buffer = "server",
 		num_ranks = 1,
 		icon = "victor_zealot_activated_ability_ignore_death",
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "victor_zealot_activated_ability_cooldown_stack_on_hit_desc",
@@ -1608,15 +1568,13 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_zealot_activated_ability_cooldown_stack_on_hit_buff.multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "victor_zealot_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_smiter_unbalance",
 		description_values = {
 			{
@@ -1628,17 +1586,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "victor_zealot_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_linesman_unbalance",
 		description_values = {
 			{
@@ -1650,17 +1606,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "victor_zealot_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_zealot_power_level_unbalance",
 		description_values = {
 			{
@@ -1668,34 +1622,30 @@ Talents.witch_hunter = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "regrowth_desc_3",
 		name = "victor_bountyhunter_regrowth_2",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.regrowth.buffs[1].bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_regrowth"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "bloodlust_desc_3",
 		name = "victor_bountyhunter_bloodlust_2",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_bloodlust",
 		description_values = {
 			{
@@ -1703,17 +1653,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.bloodlust.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_bloodlust"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "victor_bountyhunter_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_conqueror",
 		description_values = {
 			{
@@ -1721,17 +1669,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_power_burst_on_no_ammo_desc",
 		name = "victor_bountyhunter_power_burst_on_no_ammo",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_melee_damage_on_no_ammo",
 		description_values = {
 			{
@@ -1746,17 +1692,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_attack_speed_on_no_ammo_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_increased_melee_damage_on_no_ammo_add"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_debuff_defence_on_crit_desc",
 		name = "victor_bountyhunter_debuff_defence_on_crit",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_debuff_defence_on_crit",
 		description_values = {
 			{
@@ -1767,17 +1711,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.defence_debuff_enemies.buffs[1].duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_debuff_defence_on_crit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_power_level_on_clip_size_desc",
 		name = "victor_bountyhunter_power_level_on_clip_size",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_power_level_on_clip_size",
 		description_values = {
 			{
@@ -1785,17 +1727,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_power_level_on_clip_size_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_power_level_on_clip_size"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_weapon_swap_buff_desc",
 		name = "victor_bountyhunter_weapon_swap_buff",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_heal_on_critical_hit",
 		description_values = {
 			{
@@ -1813,12 +1753,10 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_blessed_ranged_damage_buff.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_weapon_swap_buff",
 			"victor_bountyhunter_activate_passive_on_melee_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_passive_reduced_cooldown_desc",
@@ -1830,20 +1768,16 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_passive_reduced_cooldown.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "victor_bountyhunter_passive_infinite_ammo_desc",
 		name = "victor_bountyhunter_passive_infinite_ammo",
 		num_ranks = 1,
 		icon = "victor_bountyhunter_passive_infinite_ammo",
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_passive_infinite_ammo"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_party_movespeed_on_ranged_crit_desc",
@@ -1859,11 +1793,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_party_movespeed_on_ranged_crit_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_party_movespeed_on_ranged_crit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_reload_on_kill_desc",
@@ -1876,18 +1808,16 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_restore_ammo_on_elite_kill.ammo_bonus_fraction
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_reload_on_kill",
 			"victor_bountyhunter_restore_ammo_on_elite_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_desc",
 		name = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill",
 		description_values = {
 			{
@@ -1898,11 +1828,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_buff.max_stacks
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_activated_ability_railgun_desc_2",
@@ -1915,11 +1843,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_activated_ability_railgun.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_activated_ability_railgun"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_activated_ability_blast_shotgun_desc",
@@ -1935,11 +1861,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_activated_ability_blast_shotgun.required_target_number
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_activated_ability_blast_shotgun"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks_2_desc",
@@ -1955,17 +1879,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_bountyhunter_activated_ability_passive_cooldown_reduction.cooldown
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_bountyhunter_activated_ability_passive_cooldown_reduction"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "smiter_unbalance_desc",
 		name = "victor_bounty_hunter_smiter_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bounty_hunter_smiter_unbalance",
 		description_values = {
 			{
@@ -1977,17 +1899,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.smiter_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"smiter_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "finesse_unbalance_desc",
 		name = "victor_bounty_hunter_finesse_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bounty_hunter_ninja_unbalance",
 		description_values = {
 			{
@@ -1999,17 +1919,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.finesse_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"finesse_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "victor_bounty_hunter_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_bounty_hunter_power_level_unbalance",
 		description_values = {
 			{
@@ -2017,51 +1935,45 @@ Talents.witch_hunter = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "regrowth_desc_3",
 		name = "victor_witchhunter_regrowth_2",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "victor_witchhunter_regrowth",
 		description_values = {
 			{
 				value = BuffTemplates.regrowth.buffs[1].bonus
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_regrowth"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "reaper_desc",
 		name = "victor_witchhunter_reaper",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_witchhunter_bloodlust",
 		description_values = {
 			{
 				value = BuffTemplates.reaper.buffs[1].max_targets
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_reaper"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "conqueror_desc_3",
 		name = "victor_witchhunter_heal_share",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_witchhunter_conqueror",
 		description_values = {
 			{
@@ -2069,17 +1981,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.conqueror.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_conqueror"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_headshot_damage_increase_desc_2",
 		name = "victor_witchhunter_headshot_damage_increase",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_witchhunter_headshot_damage_increase",
 		description_values = {
 			{
@@ -2087,24 +1997,20 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_headshot_damage_increase.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_headshot_damage_increase"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_bleed_on_critical_hit_desc",
 		name = "victor_witchhunter_bleed_on_critical_hit",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_witchhunter_bleed_on_critical_hit",
 		description_values = {},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_bleed_on_critical_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_guaranteed_crit_on_timed_block_desc",
@@ -2116,17 +2022,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_guaranteed_crit_on_timed_block_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_guaranteed_crit_on_timed_block_add"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_critical_hit_chance_on_ping_target_killed_desc_2",
 		name = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
 		description_values = {
 			{
@@ -2137,17 +2041,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_ping_target_crit_chance.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_critical_hit_chance_on_ping_target_killed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_attack_speed_on_enemy_pinged_desc",
 		name = "victor_witchhunter_attack_speed_on_enemy_pinged",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "victor_witchhunter_attack_speed_on_enemy_pinged",
 		description_values = {
 			{
@@ -2158,17 +2060,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_attack_speed_on_enemy_pinged_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_attack_speed_on_enemy_pinged"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_improved_damage_taken_ping_desc",
 		name = "victor_witchhunter_improved_damage_taken_ping",
-		num_ranks = 1,
 		buffer = "both",
+		num_ranks = 1,
 		icon = "victor_witchhunter_improved_damage_taken_ping",
 		description_values = {
 			{
@@ -2176,9 +2076,7 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_improved_damage_taken_ping.multiplier
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "victor_witchhunter_max_ammo_desc",
@@ -2191,11 +2089,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_max_ammo.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_max_ammo"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_stamina_regen_on_push_desc",
@@ -2211,11 +2107,9 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_stamina_regen_on_push_buff.duration
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_stamina_regen_on_push"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_witchhunter_dodge_range_desc",
@@ -2228,12 +2122,10 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_dodge_range.multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_dodge_range",
 			"victor_witchhunter_dodge_speed"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_captain_activated_ability_stagger_ping_debuff_desc",
@@ -2241,9 +2133,7 @@ Talents.witch_hunter = {
 		num_ranks = 1,
 		icon = "victor_captain_activated_ability_stagger_ping_debuff",
 		description_values = {},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "victor_witchhunter_activated_ability_guaranteed_crit_self_buff_desc",
@@ -2259,9 +2149,7 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_activated_ability_guaranteed_crit_self_buff.duration
 			}
 		},
-		requirements = {},
-		buffs = {},
-		buff_data = {}
+		buffs = {}
 	},
 	{
 		description = "victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit_desc",
@@ -2277,17 +2165,15 @@ Talents.witch_hunter = {
 				value = buff_tweak_data.victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit.cooldown_reduction
 			}
 		},
-		requirements = {},
 		buffs = {
 			"victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "linesman_unbalance_desc",
 		name = "victor_witchhunter_linesman_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_witchhunter_linesman_unbalance",
 		description_values = {
 			{
@@ -2299,17 +2185,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.linesman_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"linesman_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "finesse_unbalance_desc",
 		name = "victor_witchhunter_finesse_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_witchhunter_ninja_unbalance",
 		description_values = {
 			{
@@ -2321,17 +2205,15 @@ Talents.witch_hunter = {
 				value = BuffTemplates.finesse_unbalance.buffs[1].max_display_multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"finesse_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "power_level_unbalance_desc",
 		name = "victor_witchhunter_power_level_unbalance",
-		num_ranks = 1,
 		buffer = "server",
+		num_ranks = 1,
 		icon = "victor_witchhunter_power_level_unbalance",
 		description_values = {
 			{
@@ -2339,11 +2221,9 @@ Talents.witch_hunter = {
 				value = BuffTemplates.power_level_unbalance.buffs[1].multiplier
 			}
 		},
-		requirements = {},
 		buffs = {
 			"power_level_unbalance"
-		},
-		buff_data = {}
+		}
 	},
 	{
 		description = "victor_placeholder",

@@ -300,6 +300,8 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 		self:_update_vortex_escape()
 		self:_update_pickups(dt, t)
 		self:_update_interactables(dt, t)
+		self:_update_weapon_loadout_data()
+		self:_update_best_weapon()
 		self._brain:update(unit, t, dt)
 
 		local moving_platform = locomotion_extension:get_moving_platform()
@@ -373,6 +375,8 @@ PlayerBotBase._update_target_enemy = function (self, dt, t)
 		bb.target_unit = slot_enemy
 	elseif prox_enemy and prox_enemy_dist < 2 then
 		bb.target_unit = prox_enemy
+	elseif prox_enemy and bb.proximity_target_is_player and prox_enemy_dist < 10 then
+		bb.target_unit = prox_enemy
 	elseif priority_enemy then
 		bb.target_unit = priority_enemy
 	elseif urgent_enemy then
@@ -427,6 +431,13 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 		local closest_dist = math.huge
 		local closest_enemy = nil
 		local closest_real_dist = math.huge
+		local side = blackboard.side
+
+		for PLAYER_UNIT, _ in pairs(side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS) do
+			num_hits = num_hits + 1
+			BROADPHASE_QUERY_TEMP[num_hits] = PLAYER_UNIT
+		end
+
 		local index = 1
 
 		for i = 1, num_hits, 1 do
@@ -454,12 +465,14 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 
 		if blackboard.proximity_target_enemy or closest_enemy then
 			blackboard.proximity_target_enemy = closest_enemy
+			blackboard.proximity_target_is_player = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[closest_enemy] ~= nil
 		end
 
 		blackboard.proximity_target_distance = closest_real_dist
 	elseif blackboard.proximity_target_enemy and not ALIVE[blackboard.proximity_target_enemy] then
 		blackboard.proximity_target_enemy = nil
 		blackboard.proximity_target_distance = math.huge
+		blackboard.proximity_target_is_player = nil
 	end
 end
 
@@ -877,7 +890,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					elseif can_give_healing_to_other and (not has_no_permanent_health_from_item_buff or is_wounded) and (health_percent < WANTS_TO_GIVE_HEAL_TO_OTHER or is_wounded) and not player_inventory_extension:get_slot_data("slot_healthkit") and heal_other_allowed then
 						in_need_type = "can_accept_heal_item"
 						utility = 70 + health_utility * 10
-					elseif can_give_grenade_to_other and not player_inventory_extension:get_slot_data("slot_grenade") and not is_bot then
+					elseif can_give_grenade_to_other and (not player_inventory_extension:get_slot_data("slot_grenade") or player_inventory_extension:can_store_additional_item("slot_grenade")) and not is_bot then
 						in_need_type = "can_accept_grenade"
 						utility = 70
 					elseif can_give_potion_to_other and not player_inventory_extension:get_slot_data("slot_potion") and not is_bot then
@@ -1395,6 +1408,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 	local blackboard = self._blackboard
 	local override_box = blackboard.navigation_destination_override
 	local override_melee = blackboard.melee and blackboard.melee.engage_position_set and override_box:unbox()
+	local override_ranged = blackboard.shoot and blackboard.shoot.disengage_position_set and override_box:unbox()
 	local override_liquid_escape = blackboard.use_liquid_escape_destination and blackboard.navigation_liquid_escape_destination_override:unbox()
 	local override_vortex_escape = blackboard.use_vortex_escape_destination and blackboard.navigation_vortex_escape_destination_override:unbox()
 	local moving_towards_follow_position = false
@@ -1455,13 +1469,17 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		if override_melee then
 			blackboard.melee.engage_position_set = false
 		end
-	elseif override_vortex_escape or override_liquid_escape or cover_position or override_melee then
-		local override = transport_unit_override or override_vortex_escape or override_liquid_escape or cover_position or override_melee
+
+		if override_ranged then
+			blackboard.shoot.disengage_position_set = false
+		end
+	elseif override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged then
+		local override = transport_unit_override or override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged
 		local offset = override - previous_destination
 		local override_allowed = hold_position == nil or Vector3.distance_squared(hold_position, override) <= hold_position_max_distance_sq
 
 		if override_allowed and (Z_MOVE_TO_EPSILON < math.abs(offset.z) or FLAT_MOVE_TO_EPSILON < Vector3.length(Vector3.flat(offset))) then
-			local should_stop = override_melee and blackboard.melee.stop_at_current_position
+			local should_stop = (override_melee and blackboard.melee.stop_at_current_position) or (override_ranged and blackboard.shoot.stop_at_current_position)
 
 			if should_stop then
 				navigation_extension:stop()
@@ -1900,6 +1918,191 @@ PlayerBotBase._ally_path_allowed = function (self, self_unit, ally_unit, t)
 		end
 	else
 		return true, true
+	end
+end
+
+local function find_chain_times(allowed_chain_actions)
+	if not allowed_chain_actions then
+		return 1, 0, 1, 0
+	end
+
+	local min = math.huge
+	local max = -math.huge
+	local min_idx = 1
+	local max_idx = 1
+
+	for i = 1, #allowed_chain_actions, 1 do
+		local chain = allowed_chain_actions[i]
+
+		if chain.input and chain.action ~= nil and chain.sub_action ~= nil and string.find(chain.input, "action_one") then
+			local chain_start = chain.start_time
+
+			if chain_start < min then
+				min = chain_start
+				min_idx = i
+			end
+
+			if max < chain_start then
+				max = chain_start
+				max_idx = i
+			end
+		end
+	end
+
+	return min_idx, min, max_idx, max
+end
+
+PlayerBotBase._update_weapon_metadata = function (self, template)
+	local metadata = template and template.attack_meta_data
+
+	if metadata and not template._precalculated_metadata then
+		print("updating bot weapon metadata for weapon:", template and template.name)
+
+		local used_actions = WeaponUtils.get_used_actions(template)
+
+		if used_actions.action_one then
+			local weapon_attacks = template.actions.action_one
+			local data_count = 0
+			local armor_types = 6
+			local light_attack_data = {
+				total_chain_time = 0,
+				armor_mods = {
+					0,
+					0,
+					0,
+					0,
+					0,
+					0
+				}
+			}
+			local heavy_attack_data = {
+				total_chain_time = 0,
+				armor_mods = {
+					0,
+					0,
+					0,
+					0,
+					0,
+					0
+				}
+			}
+
+			for name, _ in pairs(used_actions.action_one) do
+				local current_attack = weapon_attacks[name]
+
+				if current_attack.kind == "melee_start" then
+					local chain_attacks = current_attack.allowed_chain_actions
+					local anim_speed_scale = current_attack.anim_time_scale or 1
+					local min_idx, min, max_idx, max = find_chain_times(chain_attacks)
+					light_attack_data.total_chain_time = light_attack_data.total_chain_time + min * anim_speed_scale
+					heavy_attack_data.total_chain_time = heavy_attack_data.total_chain_time + max * anim_speed_scale
+					local chain_action_name = chain_attacks[min_idx].action
+					local chain_sub_action_name = chain_attacks[min_idx].sub_action
+					local chain_action = template.actions[chain_action_name][chain_sub_action_name]
+					anim_speed_scale = chain_action.anim_time_scale or 1
+					min_idx, min = find_chain_times(chain_action.allowed_chain_actions)
+					light_attack_data.total_chain_time = light_attack_data.total_chain_time + min * anim_speed_scale
+					local light_armor_mods = ActionUtils.get_performance_scores_for_sub_action(chain_action)
+					chain_action_name = chain_attacks[max_idx].action
+					chain_sub_action_name = chain_attacks[max_idx].sub_action
+					chain_action = template.actions[chain_action_name][chain_sub_action_name]
+					anim_speed_scale = chain_action.anim_time_scale or 1
+					min_idx, min = find_chain_times(chain_action.allowed_chain_actions)
+					heavy_attack_data.total_chain_time = heavy_attack_data.total_chain_time + min * anim_speed_scale
+					local heavy_armor_mods = ActionUtils.get_performance_scores_for_sub_action(chain_action)
+
+					if light_armor_mods and heavy_armor_mods then
+						for i = 1, armor_types, 1 do
+							light_attack_data.armor_mods[i] = light_attack_data.armor_mods[i] + light_armor_mods[i]
+							heavy_attack_data.armor_mods[i] = heavy_attack_data.armor_mods[i] + heavy_armor_mods[i]
+						end
+
+						data_count = data_count + 1
+					end
+				end
+			end
+
+			local light_meta = metadata.tap_attack
+
+			if light_meta then
+				for i = 1, #light_attack_data.armor_mods, 1 do
+					light_attack_data.armor_mods[i] = light_attack_data.armor_mods[i] / data_count
+				end
+
+				light_meta.armor_modifiers = light_attack_data.armor_mods
+				light_meta.speed_mod = 1 / math.clamp(light_attack_data.total_chain_time / data_count, 0.1, 10)
+			end
+
+			local hold_attack = metadata.hold_attack
+
+			if hold_attack then
+				for i = 1, #heavy_attack_data.armor_mods, 1 do
+					heavy_attack_data.armor_mods[i] = heavy_attack_data.armor_mods[i] / data_count
+				end
+
+				hold_attack.armor_modifiers = heavy_attack_data.armor_mods
+				hold_attack.speed_mod = 1 / math.clamp(heavy_attack_data.total_chain_time / data_count, 0.1, 10)
+			end
+		end
+
+		template._precalculated_metadata = true
+	end
+end
+
+PlayerBotBase._update_weapon_loadout_data = function (self)
+	local blackboard = self._blackboard
+	local inventory_ext = blackboard.inventory_extension
+	local recently_acquired_melee = inventory_ext:recently_acquired("slot_melee")
+	local recently_acquired_ranged = inventory_ext:recently_acquired("slot_ranged")
+
+	if recently_acquired_melee or recently_acquired_ranged then
+		local slot_data = inventory_ext:get_slot_data("slot_melee")
+		local slot_template = slot_data and inventory_ext:get_item_template(slot_data)
+		local slot_buff_type = slot_template and slot_template.buff_type
+		local alt_slot_data = inventory_ext:get_slot_data("slot_ranged")
+		local alt_slot_template = alt_slot_data and inventory_ext:get_item_template(alt_slot_data)
+		local alt_slot_buff_type = alt_slot_template and alt_slot_template.buff_type
+
+		if MeleeBuffTypes[slot_buff_type] and MeleeBuffTypes[alt_slot_buff_type] then
+			blackboard.double_weapons = "slot_melee"
+		elseif RangedBuffTypes[slot_buff_type] and RangedBuffTypes[alt_slot_buff_type] then
+			blackboard.double_weapons = "slot_ranged"
+		else
+			blackboard.double_weapons = nil
+		end
+
+		self:_update_weapon_metadata(slot_template)
+		self:_update_weapon_metadata(alt_slot_template)
+	end
+end
+
+PlayerBotBase._update_best_weapon = function (self)
+	local blackboard = self._blackboard
+
+	if not blackboard.double_weapons then
+		return
+	end
+
+	local combat_conditions = AiUtils.get_combat_conditions(blackboard)
+	local weapons_scores = blackboard.weapon_scores or {}
+	local slot_melee = weapons_scores.slot_melee or {}
+	local slot_ranged = weapons_scores.slot_ranged or {}
+	local inventory = blackboard.inventory_extension
+	local melee_slot_data = inventory:get_slot_data("slot_melee")
+	local melee_item_template = inventory:get_item_template(melee_slot_data)
+	slot_melee.input, slot_melee.meta, slot_melee.score = AiUtils.get_melee_weapon_score(combat_conditions, melee_item_template)
+	slot_melee.score = slot_melee.score
+	local ranged_slot_data = inventory:get_slot_data("slot_ranged")
+	local ranged_item_template = inventory:get_item_template(ranged_slot_data)
+	slot_ranged.input, slot_ranged.meta, slot_ranged.score = AiUtils.get_melee_weapon_score(combat_conditions, ranged_item_template)
+	slot_ranged.score = slot_ranged.score
+	weapons_scores.slot_melee = slot_melee
+	weapons_scores.slot_ranged = slot_ranged
+	blackboard.weapon_scores = weapons_scores
+
+	if script_data.debug_bot_weapon_preference then
+		Debug.text(string.format("Melee: %.3f - %s", slot_melee.score, slot_melee.input))
+		Debug.text(string.format("Ranged: %.3f - %s", slot_ranged.score, slot_ranged.input))
 	end
 end
 

@@ -868,12 +868,13 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
-			cooldown = 0.15,
 			minimum_hold_time = 0.2,
-			anim_end_event = "parry_finished",
-			kind = "block",
-			weapon_action_hand = "left",
 			hold_input = "action_two_hold",
+			kind = "block",
+			anim_end_event = "parry_finished",
+			cooldown = 0.15,
+			weapon_action_hand = "left",
+			anim_event_3p = "parry_pose",
 			anim_event = "parry_pose",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
@@ -918,15 +919,7 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right

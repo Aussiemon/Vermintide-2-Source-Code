@@ -115,7 +115,7 @@ StateTitleScreenInitNetwork._join_session = function (self, dt, t)
 	local initial_level = self._level_transition_handler:get_current_level_keys()
 	local initial_environment = self._level_transition_handler:get_current_environment_id()
 	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, initial_environment, nil, self._level_transition_handler)
-	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
+	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
 	self._network_server:register_rpcs(self._network_event_delegate, self._network_transmit)
@@ -164,7 +164,7 @@ StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
 			local level_key = self._level_transition_handler:get_current_level_keys()
 			local level_index = (level_key and NetworkLookup.level_keys[level_key]) or nil
 			self._network_client = NetworkClient:new(self._level_transition_handler, host, level_index)
-			self._network_transmit = NetworkTransmit:new(false, self._network_client.connection_handler)
+			self._network_transmit = NetworkTransmit:new(false, self._network_client.server_peer_id)
 
 			self._network_transmit:set_network_event_delegate(self._network_event_delegate)
 			self._network_client:register_rpcs(self._network_event_delegate, self._network_transmit)
@@ -324,6 +324,12 @@ StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 	end
 
 	if application_shutdown then
+		if Managers.party:has_party_lobby() then
+			local lobby = Managers.party:steal_lobby()
+
+			LobbyInternal.leave_lobby(lobby)
+		end
+
 		if self._lobby_finder then
 			self._lobby_finder:destroy()
 
@@ -414,7 +420,7 @@ StateTitleScreenInitNetwork._packages_loaded = function (self)
 			local level_name = self._level_transition_handler:get_current_level_keys()
 			local level_index = NetworkLookup.level_keys[level_name]
 
-			self._network_server:rpc_level_loaded(Network.peer_id(), level_index)
+			self._network_server.network_transmit:send_rpc("rpc_level_loaded", Network.peer_id(), level_index)
 		end
 
 		local package_manager = Managers.package

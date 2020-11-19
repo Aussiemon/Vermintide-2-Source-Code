@@ -189,7 +189,7 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 
 	Managers.game_server = GameServerManager:new(level_transition_handler)
 	self._network_server = NetworkServer:new(Managers.player, game_server, initial_level, initial_environment, nil, level_transition_handler, Managers.game_server)
-	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.connection_handler)
+	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
 	self._network_server:register_rpcs(self._network_event_delegate, self._network_transmit)
@@ -239,6 +239,10 @@ StateDedicatedServer.setup_chat_manager = function (self, game_server)
 	}
 
 	Managers.chat:setup_network_context(network_context)
+
+	if Managers.mechanism:game_mechanism().setup_chats then
+		Managers.mechanism:game_mechanism():setup_chats()
+	end
 
 	local function member_func()
 		return game_server:members():get_members()
@@ -290,6 +294,10 @@ StateDedicatedServer._destroy_network = function (self)
 	self.parent.loading_context = {}
 
 	Managers.chat:unregister_channel(1)
+
+	if Managers.mechanism:game_mechanism().unregister_chats then
+		Managers.mechanism:game_mechanism():unregister_chats()
+	end
 
 	if self._network_transmit then
 		self._network_transmit:destroy()

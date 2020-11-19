@@ -62,6 +62,7 @@ GenericHuskInteractorExtension.update = function (self, unit, input, dt, context
 			interaction_template.server.start(world, unit, interactable_unit, interaction_data, interaction_config, t)
 		end
 
+		interaction_context.previous_state = self.state
 		self.state = "doing_interaction"
 	end
 
@@ -111,6 +112,7 @@ GenericHuskInteractorExtension._stop_interaction = function (self, interactable_
 		interaction_template.server.stop(world, unit, interactable_unit, interaction_data, interaction_config, t, interaction_result)
 	end
 
+	interaction_context.previous_state = self.state
 	self.state = "waiting_to_interact"
 end
 
@@ -123,7 +125,10 @@ GenericHuskInteractorExtension.stop_interaction = function (self, t)
 end
 
 GenericHuskInteractorExtension.is_interacting = function (self)
-	return self.state ~= "waiting_to_interact"
+	local interaction_context = self.interaction_context
+	local interaction_type = interaction_context.interaction_type
+
+	return self.state ~= "waiting_to_interact", interaction_type
 end
 
 GenericHuskInteractorExtension.is_stopping = function (self)
@@ -136,7 +141,7 @@ GenericHuskInteractorExtension.interactable_unit = function (self)
 	return self.interaction_context.interactable_unit
 end
 
-GenericHuskInteractorExtension.hot_join_sync = function (self, sender)
+GenericHuskInteractorExtension.hot_join_sync = function (self, peer_id)
 	if not self:is_interacting() then
 		return
 	end
@@ -150,13 +155,15 @@ GenericHuskInteractorExtension.hot_join_sync = function (self, sender)
 	local start_time = data.start_time
 	local duration = data.duration
 	local unit_id = network_manager:unit_game_object_id(self.unit)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	RPC.rpc_sync_interaction_state(sender, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)
+	RPC.rpc_sync_interaction_state(channel_id, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)
 end
 
 GenericHuskInteractorExtension.set_interaction_context = function (self, state, interaction_type, interactable_unit, start_time, duration)
 	InteractionHelper.printf("[GenericHuskInteractorExtension] set_interaction_context %s %s %s", state, interaction_type, tostring(interactable_unit))
 
+	self.interaction_context.previous_state = self.state
 	self.state = state
 	self.interaction_context.data.start_time = start_time
 	self.interaction_context.data.duration = duration
@@ -177,6 +184,7 @@ GenericHuskInteractorExtension.interaction_approved = function (self, interactio
 
 	InteractionHelper.printf("[GenericHuskInteractorExtension] interaction_approved %s %s", interaction_type, tostring(interactable_unit))
 
+	self.interaction_context.previous_state = self.state
 	self.state = "starting_interaction"
 	local interaction_context = self.interaction_context
 	interaction_context.interaction_type = interaction_type

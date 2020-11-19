@@ -30,7 +30,9 @@ ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
-		network_transmit:send_rpc_clients("rpc_start_geiser", go_id, effect_id, new_action.min_radius, new_action.max_radius, self.charge_time, self.angle)
+		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		network_transmit:send_rpc_side_clients("rpc_start_geiser", side, true, go_id, effect_id, new_action.min_radius, new_action.max_radius, self.charge_time, self.angle)
 	else
 		network_transmit:send_rpc_server("rpc_start_geiser", go_id, effect_id, new_action.min_radius, new_action.max_radius, self.charge_time, self.angle)
 	end

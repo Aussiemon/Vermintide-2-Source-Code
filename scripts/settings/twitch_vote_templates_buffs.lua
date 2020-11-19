@@ -5,7 +5,7 @@ local function debug_print(message, ...)
 end
 
 TwitchVoteTemplates = TwitchVoteTemplates or {}
-local twitch_settings = (PLATFORM == "xb1" and MixerSettings) or TwitchSettings
+local twitch_settings = TwitchSettings
 TwitchVoteTemplates.twitch_add_speed_potion_buff = {
 	cost = -200,
 	use_frame_texture = true,

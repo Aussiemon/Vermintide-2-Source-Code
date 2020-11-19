@@ -1105,6 +1105,12 @@ Colors.color_definitions = {
 		0,
 		0
 	},
+	dr_engineer = {
+		ALPHA,
+		255,
+		191,
+		4
+	},
 	we_waywatcher = {
 		ALPHA,
 		55,
@@ -1164,6 +1170,78 @@ Colors.color_definitions = {
 		150,
 		50,
 		100
+	},
+	empire_soldier_tutorial = {
+		ALPHA,
+		36,
+		84,
+		173
+	},
+	vs_poison_wind_globadier = {
+		ALPHA,
+		153,
+		184,
+		193
+	},
+	vs_gutter_runner = {
+		ALPHA,
+		198,
+		154,
+		74
+	},
+	vs_packmaster = {
+		ALPHA,
+		202,
+		197,
+		174
+	},
+	vs_corruptor = {
+		ALPHA,
+		187,
+		235,
+		30
+	},
+	vs_vortex_sorcerer = {
+		ALPHA,
+		41,
+		219,
+		255
+	},
+	vs_ratling_gunner = {
+		ALPHA,
+		228,
+		0,
+		0
+	},
+	vs_warpfire_thrower = {
+		ALPHA,
+		255,
+		192,
+		203
+	},
+	vs_chaos_troll = {
+		ALPHA,
+		55,
+		123,
+		44
+	},
+	vs_chaos_spawn = {
+		ALPHA,
+		74,
+		145,
+		236
+	},
+	vs_stormfiend = {
+		ALPHA,
+		151,
+		99,
+		192
+	},
+	vs_rat_ogre = {
+		ALPHA,
+		204,
+		128,
+		128
 	},
 	console_menu_rect = {
 		ALPHA,
@@ -1296,100 +1374,39 @@ Colors.color_definitions = {
 		128,
 		128,
 		128
+	},
+	khorne = {
+		ALPHA,
+		254,
+		52,
+		31
+	},
+	tzeentch = {
+		ALPHA,
+		61,
+		150,
+		251
+	},
+	slaanesh = {
+		ALPHA,
+		236,
+		109,
+		251
+	},
+	nurgle = {
+		ALPHA,
+		200,
+		230,
+		81
 	}
 }
-
-if Colors.num_colors == nil then
-	local num_colors = 0
-
-	for k, v in pairs(Colors.color_definitions) do
-		num_colors = num_colors + 1
-	end
-
-	Colors.num_colors = num_colors
-end
-
-Colors.get = function (name)
-	local color = Colors.color_definitions[name]
-
-	return Color(color[1], color[2], color[3], color[4])
-end
-
-Colors.get_table = function (name)
-	local color = Colors.color_definitions[name]
-	local color_table = {
-		color[1],
-		color[2],
-		color[3],
-		color[4]
-	}
-
-	return color_table
-end
-
-Colors.get_color_with_alpha = function (name, alpha)
-	local color = Colors.color_definitions[name]
-	local new_color = Color(alpha, color[2], color[3], color[4])
-
-	return new_color
-end
-
-Colors.get_color_table_with_alpha = function (name, alpha)
-	local color = Colors.color_definitions[name]
-	local color_table = {
-		alpha,
-		color[2],
-		color[3],
-		color[4]
-	}
-
-	return color_table
-end
-
-Colors.get_random_color = function ()
-	local counted = 0
-	local to_count = math.random(Colors.num_colors)
-
-	for name, color_table in pairs(Colors.color_definitions) do
-		counted = counted + 1
-
-		if counted == to_count then
-			return name, color_table
-		end
-	end
-end
-
-Colors.get_indexed = function (index)
-	local color = Colors.indexed_colors[index]
-
-	return Color(color[1], color[2], color[3], color[4])
-end
-
-Colors.lerp_color_tables = function (color1, color2, t, result)
-	result = result or {}
-
-	for i = 1, 4, 1 do
-		result[i] = math.lerp(color1[i], color2[i], t)
-	end
-
-	return result
-end
-
-if not Colors.indexed_colors then
-	local indexed_colors = {}
-
-	for _, color in pairs(Colors.color_definitions) do
-		indexed_colors[#indexed_colors + 1] = color
-	end
-
-	Colors.indexed_colors = indexed_colors
-end
+Colors.indexed_colors, Colors.num_colors = table.values(Colors.color_definitions)
 
 if not Colors.distinct_colors_lookup then
 	local i = 1
 	local f = 92 + 63 * i % 3
 	local g = f / 2
-	colors = {
+	Colors.distinct_colors_lookup = {
 		{
 			0,
 			f,
@@ -1441,7 +1458,108 @@ if not Colors.distinct_colors_lookup then
 			f
 		}
 	}
-	Colors.distinct_colors_lookup = colors
+end
+
+Colors.get = function (name)
+	local color = Colors.color_definitions[name]
+
+	return Color(color[1], color[2], color[3], color[4])
+end
+
+Colors.get_color_with_alpha = function (name, alpha)
+	local color = Colors.color_definitions[name]
+
+	return Color(alpha, color[2], color[3], color[4])
+end
+
+Colors.get_table = function (name)
+	local color = Colors.color_definitions[name]
+
+	return {
+		color[1],
+		color[2],
+		color[3],
+		color[4]
+	}
+end
+
+Colors.get_color_table_with_alpha = function (name, alpha)
+	local color = Colors.color_definitions[name]
+
+	return {
+		alpha,
+		color[2],
+		color[3],
+		color[4]
+	}
+end
+
+Colors.get_indexed = function (index)
+	local color = Colors.indexed_colors[index]
+
+	return Color(color[1], color[2], color[3], color[4])
+end
+
+Colors.copy_to = function (dst, src)
+	dst[1] = src[1]
+	dst[2] = src[2]
+	dst[3] = src[3]
+	dst[4] = src[4]
+end
+
+Colors.lerp_color_tables = function (color1, color2, t, out)
+	out = out or {}
+	local s = 1 - t
+	out[1] = color1[1] * s + color2[1] * t
+	out[2] = color1[2] * s + color2[2] * t
+	out[3] = color1[3] * s + color2[3] * t
+	out[4] = color1[4] * s + color2[4] * t
+
+	return out
+end
+
+Colors.from_hex = function (hex)
+	local r, g, b = string.match(hex, "^#?(%x%x)(%x%x)(%x%x)$")
+
+	return tonumber(r, 16), tonumber(g, 16), tonumber(b, 16)
+end
+
+local function hue2rgb(p, q, t)
+	if t < 0 then
+		t = t + 1
+	elseif t > 1 then
+		t = t - 1
+	end
+
+	if t < 0.16666666666666666 then
+		return p + (q - p) * 6 * t
+	elseif t < 0.5 then
+		return q
+	elseif t < 0.6666666666666666 then
+		return p + (q - p) * 6 * (0.6666666666666666 - t)
+	end
+
+	return p
+end
+
+Colors.hsl2rgb = function (h, s, l)
+	local r, g, b = nil
+
+	if s ~= 0 then
+		local q = (l < 0.5 and l * (1 + s)) or s + l * (1 - s)
+		local p = 2 * l - q
+		r = hue2rgb(p, q, h + 0.3333333333333333)
+		g = hue2rgb(p, q, h)
+		b = hue2rgb(p, q, h - 0.3333333333333333)
+	else
+		b = l
+		g = l
+		r = l
+	end
+
+	local floor = math.floor
+
+	return floor(r * 255 + 0.5), floor(g * 255 + 0.5), floor(b * 255 + 0.5)
 end
 
 return

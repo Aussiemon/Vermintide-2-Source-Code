@@ -877,7 +877,7 @@ InputDebugger.finalize_update = function (self, input_services, dt, t)
 		elseif selected_input_type == "filters" then
 			self:update_selected_filter_edit(input_service, dt, t, x_pos, current_input_service_data)
 		end
-	elseif self.input_device_data and DebugKeyHandler.key_pressed("f4", "Enable keymap editor.", "Input", "left ctrl") then
+	elseif self.input_device_data and PLATFORM ~= "linux" and DebugKeyHandler.key_pressed("f4", "Enable keymap editor.", "Input", "left ctrl") then
 		self.debug_edit_keymap = true
 
 		self.input_manager:block_device_except_service("Debug", "keyboard")

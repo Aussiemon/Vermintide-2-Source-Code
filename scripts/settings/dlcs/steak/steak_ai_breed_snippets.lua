@@ -152,8 +152,8 @@ AiBreedSnippets.on_beastmen_minotaur_death = function (unit, blackboard, t)
 		blackboard.charge_traverse_logic = nil
 	end
 
-	if not blackboard.rewarded_boss_loot_die then
-		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	if not blackboard.rewarded_boss_loot then
+		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 	end
 
 	local conflict_director = Managers.state.conflict
@@ -200,8 +200,8 @@ AiBreedSnippets.on_beastmen_minotaur_despawn = function (unit, blackboard, t)
 		blackboard.charge_traverse_logic = nil
 	end
 
-	if not blackboard.rewarded_boss_loot_die then
-		AiBreedSnippets.reward_boss_kill_loot_die(unit, blackboard)
+	if not blackboard.rewarded_boss_loot then
+		AiBreedSnippets.reward_boss_kill_loot(unit, blackboard)
 	end
 
 	local conflict_director = Managers.state.conflict

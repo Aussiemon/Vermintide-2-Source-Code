@@ -13,6 +13,10 @@ TelemetryManagerDummy.reset = function (self)
 	return
 end
 
+TelemetryManagerDummy.reload_settings = function (self)
+	return
+end
+
 TelemetryManagerDummy.update = function (self, dt)
 	return
 end

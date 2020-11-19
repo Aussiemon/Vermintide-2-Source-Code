@@ -348,7 +348,13 @@ LocomotionUtils.update_local_animation_driven_movement = function (unit, dt)
 end
 
 LocomotionUtils.update_local_animation_driven_movement_with_parent = function (unit, dt, parent)
-	local master_pos = Unit.local_position(parent.master_unit, 0)
+	local master_unit = parent.master_unit
+
+	if not master_unit or not Unit.alive(master_unit) then
+		return
+	end
+
+	local master_pos = Unit.local_position(master_unit, 0)
 	local wanted_pose = Unit.animation_wanted_root_pose(unit)
 
 	Unit.set_local_position(unit, 0, master_pos)

@@ -12,10 +12,15 @@ BuffAreaExtension.init = function (self, extension_init_context, unit, extension
 
 	local t = Managers.time:time("game")
 	self.removal_proc_function_name = extension_init_data.removal_proc_function_name
+	self.add_proc_function_name = extension_init_data.add_proc_function_name
+	self._duration = t + extension_init_data.duration
+	self.template = extension_init_data.sub_buff_template
 	local radius = extension_init_data.radius
 	self.owner_player = extension_init_data.owner_player
 	self.radius = radius
 	self.radius_squared = radius * radius
+	self._outside = true
+	self._unlimited = self.template.unlimited
 
 	self:_spawn_los_blocker()
 end
@@ -36,8 +41,17 @@ BuffAreaExtension.update = function (self, unit, input, dt, context, t)
 		within_distance = distance_squared <= self.radius_squared
 	end
 
-	if not within_distance or not player_unit then
+	if within_distance and player_unit and self._outside then
+		self:_add_buff()
+
+		self._outside = false
+	elseif (not within_distance or not player_unit) and not self._outside then
 		self:_remove_buff()
+
+		self._outside = true
+	end
+
+	if self._duration and self._duration < t then
 		self:_remove_unit()
 	end
 end
@@ -46,8 +60,19 @@ BuffAreaExtension.set_unit_position = function (self, position)
 	Unit.set_local_position(self._unit, 0, position)
 end
 
+BuffAreaExtension.set_duration = function (self, duration)
+	local t = Managers.time:time("game")
+	self._duration = t + duration
+end
+
 BuffAreaExtension._remove_buff = function (self)
-	ProcFunctions[self.removal_proc_function_name](self.owner_player)
+	if not self._unlimited then
+		ProcFunctions[self.removal_proc_function_name](self.owner_player, self.template)
+	end
+end
+
+BuffAreaExtension._add_buff = function (self)
+	ProcFunctions[self.add_proc_function_name](self.owner_player, self.template)
 end
 
 BuffAreaExtension._remove_unit = function (self)

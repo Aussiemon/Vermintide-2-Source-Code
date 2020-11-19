@@ -270,7 +270,7 @@ local function detach_ai_unit_from_slot(ai_unit, unit_extension_data)
 	ai_unit_extension.slot = nil
 end
 
-AISlotSystem.hot_join_sync = function (self, sender, player)
+AISlotSystem.hot_join_sync = function (self, peer_id, player)
 	return
 end
 
@@ -2176,8 +2176,8 @@ AISlotSystem.extensions_ready = function (self, world, unit, extension_name)
 		local breed = ai_base_extension:breed()
 		extension.breed = breed
 		local slot_template_name = breed.slot_template
-		local difficulty = Managers.state.difficulty:get_difficulty()
-		local slot_template = SlotTemplates[difficulty][slot_template_name]
+		local slot_template_difficulty = Managers.state.difficulty:get_difficulty_value_from_table(SlotTemplates)
+		local slot_template = slot_template_difficulty[slot_template_name]
 
 		fassert(slot_template_name, "Breed " .. breed.name .. " that uses slot system does not have a slot_template set in its breed.")
 		fassert(slot_template, "Breed " .. breed.name .. " that uses slot system does not have a slot_template setup in SlotTemplates.")

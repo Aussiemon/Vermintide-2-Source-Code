@@ -55,7 +55,7 @@ local blocking_modifiers = {
 }
 
 DebugKeyHandler.key_pressed = function (key, description, category, key_modifier, input_service_name)
-	if not DebugKeyHandler.enabled then
+	if not DebugKeyHandler.enabled or PLATFORM == "linux" then
 		return
 	end
 

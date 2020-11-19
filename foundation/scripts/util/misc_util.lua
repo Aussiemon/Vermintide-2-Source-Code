@@ -1,11 +1,34 @@
-require("foundation/scripts/util/spline")
+IDENTITY = IDENTITY or function (x)
+	return x
+end
+NOP = NOP or function ()
+	return
+end
+TABLE_NEW = TABLE_NEW or function ()
+	return {}
+end
+CONST = CONST or setmetatable({}, {
+	__call = function (self, x)
+		return (x == nil and NOP) or self[x]
+	end,
+	__index = function (self, x)
+		local function f()
+			return x
+		end
+
+		self[x] = f
+
+		return f
+	end
+})
+local string_format = string.format
 
 function printf(f, ...)
-	print(string.format(f, ...))
+	print(string_format(f, ...))
 end
 
 function sprintf(f, ...)
-	return string.format(f, ...)
+	return string_format(f, ...)
 end
 
 function to_boolean(a)
@@ -103,7 +126,5 @@ function ituple_iterator(t, k)
 
 	return k1, val1, t[k + 3]
 end
-
-ColorBox = QuaternionBox
 
 return

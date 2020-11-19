@@ -8,20 +8,13 @@ require("scripts/network_lookup/network_lookup")
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.TYPE = "psn"
 local USE_C_SERIALIZATION = false
-LobbyInternal.state_map = {
-	[PsnRoom.WAITING_TO_CREATE] = LobbyState.WAITING_TO_CREATE,
-	[PsnRoom.CREATING] = LobbyState.CREATING,
-	[PsnRoom.JOINING] = LobbyState.JOINING,
-	[PsnRoom.JOINED] = LobbyState.JOINED,
-	[PsnRoom.FAILED] = LobbyState.FAILED
-}
-LobbyInternal.comparison_map = {
-	[LobbyComparison.EQUAL] = PsnRoomBrowser.EQUAL,
-	[LobbyComparison.NOT_EQUAL] = PsnRoomBrowser.NOT_EQUAL,
-	[LobbyComparison.LESS] = PsnRoomBrowser.LESS,
-	[LobbyComparison.LESS_OR_EQUAL] = PsnRoomBrowser.LESS_OR_EQUAL,
-	[LobbyComparison.GREATER] = PsnRoomBrowser.GREATER,
-	[LobbyComparison.GREATER_OR_EQUAL] = PsnRoomBrowser.GREATER_OR_EQUAL
+LobbyInternal.comparison_lookup = {
+	less_than = 3,
+	greater_or_equal = 6,
+	less_or_equal = 4,
+	greater_than = 5,
+	equal = 1,
+	not_equal = 2
 }
 LobbyInternal.matchmaking_lobby_data = {
 	matchmaking = {
@@ -106,8 +99,6 @@ LobbyInternal.default_lobby_data = {
 
 LobbyInternal.init_client = function (network_options)
 	if not LobbyInternal.client then
-		Network.set_explicit_connections()
-
 		LobbyInternal.client = Network.init_psn_client(network_options.config_file_name)
 		LobbyInternal.psn_room_browser = PSNRoomBrowser:new(LobbyInternal.client)
 		LobbyInternal.psn_room_data_external = PsnClient.room_data_external(LobbyInternal.client)
@@ -128,14 +119,6 @@ LobbyInternal.ping = function (peer_id)
 	return Network.ping(peer_id)
 end
 
-LobbyInternal.add_ping_peer = function (peer_id)
-	return
-end
-
-LobbyInternal.remove_ping_peer = function (peer_id)
-	return
-end
-
 LobbyInternal.shutdown_client = function ()
 	Network.shutdown_psn_client(LobbyInternal.client)
 
@@ -147,6 +130,27 @@ LobbyInternal.shutdown_client = function ()
 		print("[LobbyInternal] shutdown_client")
 		print(Script.callstack())
 	end
+end
+
+LobbyInternal.open_channel = function (lobby, peer)
+	local channel_id = PsnRoom.open_channel(lobby.room_id, peer)
+
+	printf("LobbyInternal.open_channel lobby: %s, to peer: %s channel: %s", lobby, peer, channel_id)
+
+	return channel_id
+end
+
+LobbyInternal.close_channel = function (lobby, channel)
+	printf("LobbyInternal.close_channel lobby: %s, channel: %s", lobby, channel)
+	PsnRoom.close_channel(lobby.room_id, channel)
+end
+
+LobbyInternal.is_orphaned = function (engine_lobby)
+	return false
+end
+
+LobbyInternal.game_session_host = function (engine_lobby)
+	return PsnRoom.game_session_host(engine_lobby.room_id)
 end
 
 LobbyInternal.create_lobby = function (network_options)
@@ -266,7 +270,6 @@ LobbyInternal.serialize_psn_data = function (data_table)
 	table.clear(conv_table)
 
 	local lobby_data_network_lookups = LobbyInternal.lobby_data_network_lookups
-	local default_lobby_values = LobbyInternal.default_lobby_data
 
 	for key, value in pairs(LobbyInternal.default_lobby_data) do
 		if not data_table[key] then
@@ -313,25 +316,20 @@ LobbyInternal.verify_lobby_data = function (lobby_data_table)
 	return lobby_network_hash == my_network_hash
 end
 
-LOBBY_DATA_TEMP_TABLE = {}
-
 LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 	local t = nil
 
 	if USE_C_SERIALIZATION then
 		t = PsnRoom.unpack_room_data(data_string)
 	else
-		table.clear(LOBBY_DATA_TEMP_TABLE)
-
+		t = {}
 		local data_string_table = string.split(data_string, "/")
 
 		for i = 1, #data_string_table, 1 do
 			local key = LobbyInternal.key_order[i]
 			local value = data_string_table[i]
-			LOBBY_DATA_TEMP_TABLE[key] = value
+			t[key] = value
 		end
-
-		t = LOBBY_DATA_TEMP_TABLE
 	end
 
 	local lobby_data_network_lookups = LobbyInternal.lobby_data_network_lookups
@@ -369,13 +367,14 @@ LobbyInternal.add_filter_requirements = function (requirements)
 			local id = mm_lobby_data.id
 			local value = filter.value
 			local comparison = filter.comparison
-			local psn_comparison = LobbyInternal.comparison_map[comparison]
 
 			if lobby_data_network_lookups[key] then
 				value = NetworkLookup[lobby_data_network_lookups[key]][value]
 			end
 
-			room_browser:add_filter(id, value, psn_comparison)
+			local comparison = LobbyInternal.comparison_lookup[comparison]
+
+			room_browser:add_filter(id, value, comparison)
 			mm_printf("Filter: %s, comparison(%s), id=%s, value(untouched)=%s, value=%s", tostring(key), tostring(comparison), tostring(id), tostring(filter.value), tostring(value))
 		else
 			mm_printf("Skipping filter %q matchmaking_lobby_data not setup. Probably redundant on ps4", key)
@@ -599,6 +598,10 @@ PSNRoom.user_id = function (self, peer_id)
 	return user_id
 end
 
+PSNRoom.set_game_session_host = function (self, peer_id)
+	PsnRoom.set_game_session_host(self.room_id, peer_id)
+end
+
 PSNRoomBrowser = class(PSNRoomBrowser)
 
 PSNRoomBrowser.init = function (self, psn_client)
@@ -621,8 +624,8 @@ PSNRoomBrowser.lobby = function (self, index)
 	return PsnRoomBrowser.room(self.browser, index)
 end
 
-PSNRoomBrowser.add_filter = function (self, id, value, psn_comparison)
-	PsnRoomBrowser.add_filter(self.browser, id, value, psn_comparison)
+PSNRoomBrowser.add_filter = function (self, id, value, comparison)
+	PsnRoomBrowser.add_filter(self.browser, id, value, comparison)
 end
 
 PSNRoomBrowser.clear_filters = function (self)

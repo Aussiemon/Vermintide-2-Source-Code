@@ -16,7 +16,7 @@ local extensions = {
 WeaveObjectiveSystem.init = function (self, entity_system_creation_context, system_name)
 	self.super.init(self, entity_system_creation_context, system_name, extensions)
 
-	self._item_spawner_system = Managers.state.entity:system("weave_item_spawner_system")
+	self._item_spawner = Managers.state.entity:system("weave_item_spawner_system")
 	self._spawn_essence_units = true
 	self._weave_manager = Managers.weave
 	self._essence_unit_names = {
@@ -61,8 +61,8 @@ WeaveObjectiveSystem.update = function (self, context, t)
 end
 
 WeaveObjectiveSystem._update_activate_next_objectives = function (self)
-	local num_update_list = #self._update_list
-	local only_kill_objective_left = num_update_list == 1 and self._update_list[1]:objective_name() == "kill_enemies"
+	local num_update_list = #self._main_objectives
+	local only_kill_objective_left = num_update_list == 1 and self._main_objectives[1]:objective_name() == "kill_enemies"
 
 	if num_update_list == 0 or only_kill_objective_left then
 		local next_objective_index = self._current_objective_index + 1
@@ -75,7 +75,7 @@ WeaveObjectiveSystem._update_activate_next_objectives = function (self)
 		end
 
 		if next_objectives then
-			table.clear(self._update_list)
+			table.clear(self._main_objectives)
 			self:_activate_next_objectives(next_objectives)
 
 			self._current_objective_index = next_objective_index
@@ -118,11 +118,18 @@ WeaveObjectiveSystem.game_object_created = function (self, game_object_id)
 			return
 		end
 
+		self._current_objective_index = self._num_completed_main_objectives + 1
+
 		if self._initial_activation_done then
 			extension:activate(game_object_id)
 		end
 
-		self._update_list[game_object_id] = extension
+		self._main_objectives[game_object_id] = extension
+		self._current_num_sub_objectives = self._current_num_sub_objectives + 1
+
+		if extension.is_optional and extension:is_optional() then
+			self._current_num_optional_sub_objectives = self._current_num_optional_sub_objectives + 1
+		end
 	end
 end
 
@@ -131,7 +138,7 @@ WeaveObjectiveSystem.add_score = function (self, score)
 end
 
 WeaveObjectiveSystem.on_ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
-	local update_list = self._update_list
+	local update_list = self._main_objectives
 	local killed_unit_position = POSITION_LOOKUP[killed_unit]
 
 	self:spawn_essence_unit(killed_unit_position + Vector3(0, 0, 0.2))

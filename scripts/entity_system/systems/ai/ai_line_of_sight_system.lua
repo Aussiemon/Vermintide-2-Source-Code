@@ -79,7 +79,7 @@ AILineOfSightSystem.unfreeze = function (self, unit)
 	self._extensions[unit] = extension
 end
 
-AILineOfSightSystem.hot_join_sync = function (self, sender, player)
+AILineOfSightSystem.hot_join_sync = function (self, peer_id, player)
 	return
 end
 

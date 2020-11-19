@@ -315,7 +315,7 @@ end
 
 function flow_callback_force_terror_event(params)
 	if Managers.player.is_server or LEVEL_EDITOR_TEST then
-		Managers.state.conflict:start_terror_event(params.event_type)
+		Managers.state.conflict:start_terror_event(params.event_type, params.seed)
 	end
 end
 

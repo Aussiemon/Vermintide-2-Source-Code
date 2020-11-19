@@ -1723,12 +1723,6 @@ UnitVariationSettings.chaos_fanatic_baked = table.create_copy(UnitVariationSetti
 UnitVariationSettings.chaos_fanatic_baked.enabled_from_start = {}
 UnitVariationSettings.chaos_fanatic_baked.body_parts = {}
 
-for _, dlc in pairs(DLCSettings) do
-	local unit_variation_settings = dlc.unit_variation_settings
-
-	if unit_variation_settings then
-		table.merge_recursive(UnitVariationSettings, unit_variation_settings)
-	end
-end
+DLCUtils.merge("unit_variation_settings", UnitVariationSettings)
 
 return

@@ -236,6 +236,28 @@ BotBehaviors.default = {
 		{
 			"BTSelector",
 			{
+				"BTBotActivateAbilityAction",
+				name = "switch_ability_priority_target",
+				condition = "is_slot_not_wielded",
+				condition_args = {
+					"slot_career_skill_weapon"
+				},
+				action_data = ACTIONS_DEFAULT.use_ability
+			},
+			{
+				"BTBotShootAction",
+				name = "ability_shoot_priority_target",
+				action_data = ACTIONS_DEFAULT.shoot
+			},
+			name = "ability_weapon",
+			condition = "can_activate_ability",
+			condition_args = {
+				"ranged_weapon"
+			}
+		},
+		{
+			"BTSelector",
+			{
 				"BTBotInventorySwitchAction",
 				name = "switch_melee_priority_target",
 				condition = "is_slot_not_wielded",
@@ -291,13 +313,54 @@ BotBehaviors.default = {
 			{
 				"BTSelector",
 				{
-					"BTBotInventorySwitchAction",
-					name = "switch_melee",
+					"BTBotActivateAbilityAction",
+					name = "switch_ability",
 					condition = "is_slot_not_wielded",
 					condition_args = {
-						"slot_melee"
+						"slot_career_skill_weapon"
 					},
-					action_data = ACTIONS_DEFAULT.switch_melee
+					action_data = ACTIONS_DEFAULT.use_ability
+				},
+				{
+					"BTBotShootAction",
+					name = "ability_shoot",
+					action_data = ACTIONS_DEFAULT.shoot
+				},
+				name = "ability_weapon",
+				condition = "can_activate_ability",
+				condition_args = {
+					"ranged_weapon"
+				}
+			},
+			{
+				"BTSelector",
+				{
+					"BTSelector",
+					{
+						"BTBotInventorySwitchAction",
+						name = "switch_alt_melee",
+						condition = "has_better_alt_weapon",
+						condition_args = {
+							"slot_melee",
+							"slot_ranged"
+						},
+						action_data = ACTIONS_DEFAULT.switch_ranged
+					},
+					{
+						"BTBotInventorySwitchAction",
+						name = "switch_melee",
+						condition = "is_slot_not_wielded",
+						condition_args = {
+							"slot_melee"
+						},
+						action_data = ACTIONS_DEFAULT.switch_melee
+					},
+					name = "pick_weapon_slot",
+					condition = "needs_weapon_swap",
+					condition_args = {
+						"slot_melee",
+						"slot_ranged"
+					}
 				},
 				{
 					"BTBotMeleeAction",
@@ -369,7 +432,7 @@ BotBehaviors.default = {
 				"BTSelector",
 				{
 					"BTBotInventorySwitchAction",
-					name = "switch_ranged",
+					name = "switch_ranged_vent",
 					condition = "is_slot_not_wielded",
 					condition_args = {
 						"slot_ranged"
@@ -393,7 +456,7 @@ BotBehaviors.default = {
 				"BTSelector",
 				{
 					"BTBotInventorySwitchAction",
-					name = "switch_ranged",
+					name = "switch_ranged_axe_recall",
 					condition = "is_slot_not_wielded",
 					condition_args = {
 						"slot_ranged"
@@ -408,6 +471,27 @@ BotBehaviors.default = {
 				condition = "should_recall_throwing_axes",
 				condition_args = {
 					ammo_percentage_threshold = 0.2
+				}
+			},
+			{
+				"BTSelector",
+				{
+					"BTBotActivateAbilityAction",
+					name = "switch_ability_charge",
+					condition = "is_slot_not_wielded",
+					condition_args = {
+						"slot_career_skill_weapon"
+					},
+					action_data = ACTIONS_DEFAULT.use_ability
+				},
+				{
+					"BTBotReloadAction",
+					name = "reload"
+				},
+				name = "reload_ability_weapon",
+				condition = "should_reload_ability_weapon",
+				condition_args = {
+					ability_cooldown_theshold = 0
 				}
 			},
 			{

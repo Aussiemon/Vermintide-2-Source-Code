@@ -44,7 +44,8 @@ ItemMasterList.ranger_hat_1010 = {
 	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_fatshark_hat_01",
 	can_wield = {
 		"dr_ironbreaker",
-		"dr_ranger"
+		"dr_ranger",
+		"dr_engineer"
 	}
 }
 ItemMasterList.slayer_hat_1010 = {

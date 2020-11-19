@@ -305,7 +305,7 @@ PassiveAbilitySettings = {
 			"markus_mercenary_passive",
 			"markus_mercenary_ability_cooldown_on_hit",
 			"markus_mercenary_ability_cooldown_on_damage_taken",
-			"markus_mercenary_passive_hit_mass_override",
+			"markus_mercenary_passive_hit_mass_reduction",
 			"markus_mercenary_passive_crit_chance"
 		},
 		perks = {
@@ -519,15 +519,7 @@ PassiveAbilitySettings = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local career_ability_settings = dlc.career_ability_settings
-
-	if career_ability_settings then
-		for _, career_ability_file in ipairs(career_ability_settings) do
-			require(career_ability_file)
-		end
-	end
-end
+DLCUtils.require_list("career_ability_settings")
 
 for career, ability_list in pairs(ActivatedAbilitySettings) do
 	for i = 1, #ability_list, 1 do

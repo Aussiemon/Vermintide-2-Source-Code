@@ -52,7 +52,7 @@ WeaponSystem.on_add_extension = function (self, world, unit, extension_name, ext
 	return extension
 end
 
-WeaponSystem.rpc_alert_enemy = function (self, sender, enemy_unit_id, player_unit_id)
+WeaponSystem.rpc_alert_enemy = function (self, channel_id, enemy_unit_id, player_unit_id)
 	local unit = self.unit_storage:unit(enemy_unit_id)
 
 	if not Unit.alive(unit) then
@@ -181,7 +181,7 @@ end
 
 local BLACKBOARDS = BLACKBOARDS
 
-WeaponSystem.rpc_attack_hit = function (self, sender, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, power_level, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, hit_ragdoll_actor_id, blocking, shield_break_procced, backstab_multiplier, attacker_is_level_unit, first_hit, total_hits)
+WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, power_level, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, hit_ragdoll_actor_id, blocking, shield_break_procced, backstab_multiplier, attacker_is_level_unit, first_hit, total_hits)
 	local hit_unit = self.unit_storage:unit(hit_unit_id)
 	local attacker_unit = self.network_manager:game_object_or_level_unit(attacker_unit_id, attacker_is_level_unit)
 
@@ -396,7 +396,7 @@ WeaponSystem.update_synced_flamethrower_particle_effects = function (self)
 	end
 end
 
-WeaponSystem.rpc_ai_weapon_shoot_start = function (self, sender, owner_unit_id, shoot_time)
+WeaponSystem.rpc_ai_weapon_shoot_start = function (self, channel_id, owner_unit_id, shoot_time)
 	local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
 
 	if not owner_unit then
@@ -412,7 +412,7 @@ WeaponSystem.rpc_ai_weapon_shoot_start = function (self, sender, owner_unit_id, 
 	ai_weapon_extension:shoot_start(owner_unit, shoot_time / 100)
 end
 
-WeaponSystem.rpc_ai_weapon_shoot = function (self, sender, owner_unit_id)
+WeaponSystem.rpc_ai_weapon_shoot = function (self, channel_id, owner_unit_id)
 	local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
 
 	if not owner_unit then
@@ -428,7 +428,7 @@ WeaponSystem.rpc_ai_weapon_shoot = function (self, sender, owner_unit_id)
 	ai_weapon_extension:shoot(owner_unit)
 end
 
-WeaponSystem.rpc_ai_weapon_shoot_end = function (self, sender, owner_unit_id)
+WeaponSystem.rpc_ai_weapon_shoot_end = function (self, channel_id, owner_unit_id)
 	local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
 
 	if not owner_unit then
@@ -444,7 +444,7 @@ WeaponSystem.rpc_ai_weapon_shoot_end = function (self, sender, owner_unit_id)
 	ai_weapon_extension:shoot_end(owner_unit)
 end
 
-WeaponSystem.rpc_change_single_weapon_state = function (self, sender, owner_unit_id, state_id)
+WeaponSystem.rpc_change_single_weapon_state = function (self, channel_id, owner_unit_id, state_id)
 	local owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
 
 	if not owner_unit then
@@ -453,8 +453,9 @@ WeaponSystem.rpc_change_single_weapon_state = function (self, sender, owner_unit
 
 	local single_weapon_state = NetworkLookup.single_weapon_states[state_id]
 	local received_via_network = true
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-	self:change_single_weapon_state(owner_unit, single_weapon_state, sender, received_via_network)
+	self:change_single_weapon_state(owner_unit, single_weapon_state, peer_id, received_via_network)
 end
 
 WeaponSystem.change_single_weapon_state = function (self, owner_unit, state, except_peer, received_via_network)
@@ -477,7 +478,7 @@ WeaponSystem.change_single_weapon_state = function (self, owner_unit, state, exc
 	end
 end
 
-WeaponSystem.rpc_start_beam = function (self, sender, unit_id, beam_effect_id, beam_end_effect_id, range)
+WeaponSystem.rpc_start_beam = function (self, channel_id, unit_id, beam_effect_id, beam_end_effect_id, range)
 	if not LEVEL_EDITOR_TEST then
 		local unit = self.unit_storage:unit(unit_id)
 		local beam_effect = NetworkLookup.effects[beam_effect_id]
@@ -497,12 +498,14 @@ WeaponSystem.rpc_start_beam = function (self, sender, unit_id, beam_effect_id, b
 		}
 
 		if self.is_server then
-			self.network_transmit:send_rpc_clients_except("rpc_start_beam", sender, unit_id, beam_effect_id, beam_end_effect_id, range)
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+			self.network_transmit:send_rpc_clients_except("rpc_start_beam", peer_id, unit_id, beam_effect_id, beam_end_effect_id, range)
 		end
 	end
 end
 
-WeaponSystem.rpc_end_beam = function (self, sender, unit_id)
+WeaponSystem.rpc_end_beam = function (self, channel_id, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
 		local unit = self.unit_storage:unit(unit_id)
@@ -515,16 +518,33 @@ WeaponSystem.rpc_end_beam = function (self, sender, unit_id)
 			self._beam_particle_effects[unit] = nil
 
 			if self.is_server then
-				self.network_transmit:send_rpc_clients_except("rpc_end_beam", sender, unit_id)
+				local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+				self.network_transmit:send_rpc_clients_except("rpc_end_beam", peer_id, unit_id)
 			end
 		end
 	end
 end
 
-WeaponSystem.rpc_start_geiser = function (self, sender, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
+WeaponSystem.rpc_start_geiser = function (self, channel_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
 	if not LEVEL_EDITOR_TEST then
 		if self.is_server then
-			self.network_transmit:send_rpc_clients_except("rpc_start_geiser", sender, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
+			local side_manager = Managers.state.side
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+			local side = side_manager:get_side_from_player_unique_id(peer_id .. ":1")
+
+			self.network_transmit:send_rpc_side_clients_except("rpc_start_geiser", side, true, peer_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle)
+
+			if DEDICATED_SERVER then
+				return
+			end
+
+			local local_player = Managers.player:local_player()
+			local local_side = side_manager:get_side_from_player_unique_id(local_player:unique_id())
+
+			if side_manager:is_enemy_by_side(side, local_side) then
+				return
+			end
 		end
 
 		local unit = self.unit_storage:unit(unit_id)
@@ -544,7 +564,7 @@ WeaponSystem.rpc_start_geiser = function (self, sender, unit_id, geiser_effect_i
 	end
 end
 
-WeaponSystem.rpc_end_geiser = function (self, sender, unit_id)
+WeaponSystem.rpc_end_geiser = function (self, channel_id, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
 		local unit = self.unit_storage:unit(unit_id)
@@ -556,13 +576,15 @@ WeaponSystem.rpc_end_geiser = function (self, sender, unit_id)
 			self._geiser_particle_effects[unit] = nil
 
 			if self.is_server then
-				self.network_transmit:send_rpc_clients_except("rpc_end_geiser", sender, unit_id)
+				local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+				self.network_transmit:send_rpc_clients_except("rpc_end_geiser", peer_id, unit_id)
 			end
 		end
 	end
 end
 
-WeaponSystem.rpc_start_flamethrower = function (self, sender, unit_id, flamethrower_effect_id)
+WeaponSystem.rpc_start_flamethrower = function (self, channel_id, unit_id, flamethrower_effect_id)
 	if not LEVEL_EDITOR_TEST then
 		local unit = self.unit_storage:unit(unit_id)
 		local flamethrower_effect = NetworkLookup.effects[flamethrower_effect_id]
@@ -589,12 +611,14 @@ WeaponSystem.rpc_start_flamethrower = function (self, sender, unit_id, flamethro
 		end
 
 		if self.is_server then
-			self.network_transmit:send_rpc_clients_except("rpc_start_flamethrower", sender, unit_id, flamethrower_effect_id)
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+			self.network_transmit:send_rpc_clients_except("rpc_start_flamethrower", peer_id, unit_id, flamethrower_effect_id)
 		end
 	end
 end
 
-WeaponSystem.rpc_end_flamethrower = function (self, sender, unit_id)
+WeaponSystem.rpc_end_flamethrower = function (self, channel_id, unit_id)
 	if not LEVEL_EDITOR_TEST then
 		local world = self.world
 		local unit = self.unit_storage:unit(unit_id)
@@ -606,13 +630,15 @@ WeaponSystem.rpc_end_flamethrower = function (self, sender, unit_id)
 			self._flamethrower_particle_effects[unit] = nil
 
 			if self.is_server then
-				self.network_transmit:send_rpc_clients_except("rpc_end_flamethrower", sender, unit_id)
+				local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+				self.network_transmit:send_rpc_clients_except("rpc_end_flamethrower", peer_id, unit_id)
 			end
 		end
 	end
 end
 
-WeaponSystem.rpc_weapon_blood = function (self, sender, attacker_unit_id, attack_template_damage_type_id)
+WeaponSystem.rpc_weapon_blood = function (self, channel_id, attacker_unit_id, attack_template_damage_type_id)
 	local attacker_unit = self.unit_storage:unit(attacker_unit_id)
 
 	if not Unit.alive(attacker_unit) then
@@ -622,11 +648,13 @@ WeaponSystem.rpc_weapon_blood = function (self, sender, attacker_unit_id, attack
 	Managers.state.blood:add_weapon_blood(attacker_unit, NetworkLookup.attack_templates[attack_template_damage_type_id])
 
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_weapon_blood", sender, attacker_unit_id, attack_template_damage_type_id)
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_weapon_blood", peer_id, attacker_unit_id, attack_template_damage_type_id)
 	end
 end
 
-WeaponSystem.rpc_play_fx = function (self, sender, vfx_array, sfx_array, position_array)
+WeaponSystem.rpc_play_fx = function (self, channel_id, vfx_array, sfx_array, position_array)
 	local world = self.world
 	local World_create_particles = World.create_particles
 	local vfx_lookup = NetworkLookup.effects
@@ -660,13 +688,15 @@ WeaponSystem.rpc_play_fx = function (self, sender, vfx_array, sfx_array, positio
 	end
 end
 
-WeaponSystem.hot_join_sync = function (self, sender)
+WeaponSystem.hot_join_sync = function (self, peer_id)
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
 	for unit, data in pairs(self._beam_particle_effects) do
 		local unit_id = Managers.state.network:unit_game_object_id(unit)
 		local beam_effect_id = NetworkLookup.effects[data.beam_effect_name]
 		local beam_end_effect_id = NetworkLookup.effects[data.beam_end_effect_name]
 
-		RPC.rpc_start_beam(sender, unit_id, beam_effect_id, beam_end_effect_id, data.range)
+		RPC.rpc_start_beam(channel_id, unit_id, beam_effect_id, beam_end_effect_id, data.range)
 	end
 
 	for unit, data in pairs(self._geiser_particle_effects) do
@@ -678,7 +708,7 @@ WeaponSystem.hot_join_sync = function (self, sender)
 		local angle = data.angle
 		local time_to_shoot = data.time_to_shoot - data.start_time
 
-		RPC.rpc_start_geiser(sender, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle, time_to_shoot)
+		RPC.rpc_start_geiser(channel_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle, time_to_shoot)
 	end
 end
 

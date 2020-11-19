@@ -5,14 +5,6 @@ local widget_definitions = definitions.widget_definitions
 local demo_video = definitions.demo_video
 local VIDEO_REFERENCE_NAME = "TransitionVideo"
 TransitionVideo = class(TransitionVideo)
-local fake_input_service = {
-	get = function ()
-		return
-	end,
-	has = function ()
-		return
-	end
-}
 
 TransitionVideo.init = function (self, world, video_data_table)
 	self._world = world
@@ -83,7 +75,7 @@ TransitionVideo._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, fake_input_service, dt, nil, self.render_settings)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self.render_settings)
 
 	if not self._demo_video.content.video_content.video_completed then
 		if not ui_renderer.video_players[VIDEO_REFERENCE_NAME] then

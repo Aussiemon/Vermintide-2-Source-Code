@@ -207,7 +207,7 @@ weapon_template.actions = {
 	weapon_reload = {
 		default = {
 			charge_sound_stop_event = "stop_weapon_drakegun_cooldown_loop",
-			anim_end_event = "attack_finished",
+			anim_end_event = "cooldown_end",
 			uninterruptible = true,
 			kind = "charge",
 			do_not_validate_with_hold = true,
@@ -250,15 +250,7 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.overcharge_data = {
 	overcharge_value_decrease_rate = 1,

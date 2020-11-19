@@ -47,6 +47,10 @@ end
 require("scripts/settings/dlc_settings")
 require("scripts/helpers/dlc_utils")
 
+local stripping_string = "LUA IS STRIPPED!"
+
+print(stripping_string)
+
 Boot = Boot or {}
 Boot.flow_return_table = Script.new_map(32)
 Boot.is_controlled_exit = false
@@ -114,6 +118,7 @@ Boot.setup = function (self)
 
 	Boot.startup_packages = {
 		"resource_packages/boot_assets",
+		"resource_packages/fonts",
 		"resource_packages/strings",
 		"resource_packages/foundation_scripts",
 		"resource_packages/game_scripts",
@@ -122,6 +127,7 @@ Boot.setup = function (self)
 		"resource_packages/levels/debug_levels",
 		"resource_packages/levels/benchmark_levels",
 		"resource_packages/levels/honduras_levels",
+		"resource_packages/fat_ui",
 		"resource_packages/breeds",
 		"resource_packages/breeds_common_resources"
 	}
@@ -205,6 +211,8 @@ Boot._init_localizer = function (self)
 		language = PS4.locale() or default_language
 	elseif PLATFORM == "xb1" then
 		language = xb1_format_locale(XboxLive.locale() or default_language)
+	elseif PLATFORM == "linux" then
+		language = "en"
 	end
 
 	if language == default_language then
@@ -262,6 +270,7 @@ local function init_development_parameters()
 	print("*****************************************************************")
 
 	script_data.honduras_demo = script_data.settings.honduras_demo or script_data["honduras-demo"]
+	script_data.settings.use_alpha_overlay = script_data.settings.use_alpha_overlay or script_data.use_alpha_overlay
 	script_data.settings.use_beta_overlay = script_data.settings.use_beta_overlay or script_data.use_beta_overlay
 	script_data.settings.use_beta_mode = script_data.settings.use_beta_mode or script_data.use_beta_mode
 end
@@ -324,6 +333,12 @@ Boot.booting_update = function (self, dt)
 			if package_name then
 				Managers.package:load(package_name, "boot", nil, true)
 			end
+
+			local platform_specific_package_name = dlc.platform_specific
+
+			if platform_specific_package_name then
+				Managers.package:load(platform_specific_package_name, "boot", nil, true)
+			end
 		end
 
 		local require_start = os.clock()
@@ -337,26 +352,8 @@ Boot.booting_update = function (self, dt)
 		local done = Managers.package:update()
 
 		if done then
-			for dlc_name, dlc in pairs(DLCSettings) do
-				local additional_settings = dlc.additional_settings
-
-				if additional_settings then
-					for _, settings_path in pairs(additional_settings) do
-						require(settings_path)
-					end
-				end
-			end
-
-			for dlc_name, dlc in pairs(DLCSettings) do
-				local data = dlc.script_data
-
-				if data then
-					for key, value in pairs(data) do
-						script_data[key] = value
-					end
-				end
-			end
-
+			DLCUtils.require_list("additional_settings")
+			DLCUtils.merge("script_data", script_data)
 			Game:require_game_scripts()
 
 			local require_end = os.clock()
@@ -379,17 +376,22 @@ Boot.booting_update = function (self, dt)
 			Boot.startup_state = "ready"
 		end
 	elseif Boot.startup_state == "ready" then
-		Crashify.print_property("project", "vermintide 2")
+		Crashify.print_property("project", "vermintide 2 carousel beta")
 		Crashify.print_property("build", BUILD)
 		Crashify.print_property("platform", PLATFORM)
+		Crashify.print_property("dedicated_server", DEDICATED_SERVER)
 		Crashify.print_property("title_id", GameSettingsDevelopment.backend_settings.title_id)
-		Crashify.print_property("content_revision", script_data.settings.content_revision)
-		Crashify.print_property("engine_revision", script_data.build_identifier)
+		Crashify.print_property("content_revision", (script_data.settings.content_revision == "" and Development.parameter("content_revision")) or script_data.settings.content_revision)
+		Crashify.print_property("engine_revision", script_data.build_identifier or Development.parameter("engine_revision"))
 		Crashify.print_property("release_version", VersionSettings.version)
 		Crashify.print_property("rendering_backend", Renderer.render_device_string())
 		Crashify.print_property("teamcity_build_id", script_data.settings.teamcity_build_id)
 
-		if PLATFORM == "win32" then
+		if script_data.testify then
+			Crashify.print_property("testify", true)
+		end
+
+		if PLATFORM == "win32" or PLATFORM == "linux" then
 			if rawget(_G, "Steam") then
 				Crashify.print_property("steam_id", Steam.user_id())
 				Crashify.print_property("steam_profile_name", Steam.user_name())
@@ -446,7 +448,7 @@ Boot.booting_render = function (self)
 end
 
 Boot._require_foundation_scripts = function (self)
-	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string")
+	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string", "reportify")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
@@ -642,6 +644,7 @@ end
 local EMPTY_TABLE = {}
 
 Boot.game_update = function (self, real_world_dt)
+	local Managers = Managers
 	local dt = Managers.time:scaled_delta_time(real_world_dt)
 
 	if PlayerUnitLocomotionExtension then
@@ -710,12 +713,17 @@ Boot.game_update = function (self, real_world_dt)
 
 		if GameSettingsDevelopment.twitch_enabled then
 			Managers.twitch:update(dt)
+			Managers.irc:update(dt)
 		end
 	elseif PLATFORM == "ps4" then
 		Managers.rest_transport:update(true, dt, t)
 		Managers.irc:update(dt)
 		Managers.twitch:update(dt)
 		Managers.system_dialog:update(dt)
+	elseif PLATFORM == "linux" then
+		Managers.curl:update(true)
+		Managers.irc:update(dt)
+		Managers.twitch:update(dt)
 	end
 
 	Managers.weave:update(dt, t)
@@ -754,6 +762,10 @@ Boot.game_update = function (self, real_world_dt)
 
 	if Managers.beta_overlay then
 		Managers.beta_overlay:update(dt)
+	end
+
+	if Managers.alpha_overlay then
+		Managers.alpha_overlay:update(dt)
 	end
 
 	Managers.play_go:update(dt)
@@ -872,12 +884,6 @@ Game.setup = function (self)
 	profile(p, "set frame times")
 	Framerate.set_playing()
 	profile(p, "set frame times")
-
-	if Development.parameter("network_log_spew") then
-		Network.log(Network.SPEW)
-	elseif Development.parameter("network_log_messages") then
-		Network.log(Network.MESSAGES)
-	end
 
 	if GameSettingsDevelopment.remove_debug_stuff then
 		profile(p, "remove debug stuff")
@@ -1257,9 +1263,9 @@ Game._handle_revision_info = function (self)
 end
 
 Game.require_game_scripts = function (self)
-	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "benchmark/benchmark_handler")
+	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "deadlock_stack", "benchmark/benchmark_handler")
 	game_require("settings", "version_settings")
-	game_require("ui", "views/show_cursor_stack", "ui_fonts")
+	game_require("ui", "fat_ui/fat_ui", "views/show_cursor_stack", "ui_fonts")
 	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
@@ -1272,9 +1278,13 @@ Game.require_game_scripts = function (self)
 			game_require("managers", "steam/steam_manager")
 		end
 	elseif PLATFORM == "xb1" then
-		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager", "twitch/mixer_manager")
+		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager", "twitch/twitch_manager", "irc/irc_manager")
 	elseif PLATFORM == "ps4" then
 		game_require("managers", "irc/irc_manager", "twitch/twitch_manager", "rest_transport/rest_transport_manager", "system_dialog/system_dialog_manager")
+	elseif PLATFORM == "linux" then
+		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
+	elseif PLATFORM == "linux" then
+		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
 	end
 
 	game_require("helpers", "effect_helper", "weapon_helper", "item_helper", "lorebook_helper", "ui_atlas_helper", "scoreboard_helper")
@@ -1473,7 +1483,8 @@ Game._init_managers = function (self)
 		Managers.rest_transport = Managers.rest_transport_online
 
 		if GameSettingsDevelopment.twitch_enabled then
-			Managers.twitch = MixerManager:new()
+			Managers.twitch = TwitchManager:new()
+			Managers.irc = IRCManager:new()
 		end
 	elseif PLATFORM == "ps4" then
 		Managers.rest_transport_online = RestTransportManager:new()
@@ -1481,6 +1492,11 @@ Game._init_managers = function (self)
 		Managers.system_dialog = SystemDialogManager:new()
 		Managers.irc = IRCManager:new()
 		Managers.twitch = TwitchManager:new()
+	elseif PLATFORM == "linux" then
+		Managers.irc = IRCManager:new()
+		Managers.curl = CurlManager:new()
+		Managers.twitch = TwitchManager:new()
+		Managers.unlock = UnlockManager:new()
 	end
 
 	Managers.weave = WeaveManager:new()
@@ -1532,13 +1548,19 @@ end
 
 Game._init_backend_xbox = function (self)
 	local backend = "ScriptBackendPlayFabXbox"
-	local mirror = "PlayFabMirror"
+	local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+	local mechanism_settings = MechanismSettings[mechanism_name]
+	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
+	local mirror = playfab_mirror or "PlayFabMirrorAdventure"
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
 end
 
 Game._init_backend_ps4 = function (self)
 	local backend = "ScriptBackendPlayFabPS4"
-	local mirror = "PlayFabMirror"
+	local mechanism_name = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+	local mechanism_settings = MechanismSettings[mechanism_name]
+	local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
+	local mirror = playfab_mirror or "PlayFabMirrorAdventure"
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
 end
 
@@ -1626,7 +1648,7 @@ Game.select_starting_state = function (self)
 		end
 	end
 
-	script_data.use_optimized_breed_units = PLATFORM ~= "win32"
+	script_data.use_optimized_breed_units = PLATFORM == "xb1" or PLATFORM == "ps4"
 
 	print("[Boot] use baked enemy meshes:", script_data.use_optimized_breed_units)
 

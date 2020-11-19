@@ -137,7 +137,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	self._anim_time_scale = anim_time_scale
 	self._time_to_hit = t + (new_action.hit_time or 0) / anim_time_scale
 	local action_hand = action_init_data and action_init_data.action_hand
-	local damage_profile_name = (action_hand and new_action["damage_profile_" .. action_hand]) or new_action.damage_profile or "default"
+	local damage_profile_name = self:_get_damage_profile_name(action_hand, new_action)
 	self._action_hand = action_hand
 	self._baked_sweep_data = new_action[get_baked_data_name(self._action_hand)]
 	self._baked_data_dt_recip = (self._baked_sweep_data and 1 / #self._baked_sweep_data) or 1
@@ -439,10 +439,7 @@ ActionSweep._get_target_hit_mass = function (self, difficulty_rank, shield_block
 	end
 
 	local buff_extension = self._owner_buff_extension
-
-	if buff_extension:has_buff_perk("hit_mass_override") then
-		hit_mass_total = hit_mass_total * 0.75
-	end
+	hit_mass_total = buff_extension:apply_buffs_to_value(hit_mass_total, "hit_mass_reduction")
 
 	return hit_mass_total
 end
@@ -1187,11 +1184,18 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		EffectHelper.player_critical_hit(world, is_critical_strike, attacker_unit, hit_unit, hit_position)
 	end
 
+	local additional_hit_effects = current_action.additional_hit_effects
+	local is_dummy = unit_get_data(hit_unit, "is_dummy")
+
+	if additional_hit_effects and not is_dummy then
+		for i = 1, #additional_hit_effects, 1 do
+			EffectHelper.player_melee_hit_particles(world, additional_hit_effects[i], hit_position, attack_direction, damage_type, hit_unit, predicted_damage)
+		end
+	end
+
 	if predicted_damage <= 0 then
 		damage_type = "no_damage"
 	end
-
-	local is_dummy = unit_get_data(hit_unit, "is_dummy")
 
 	if hit_effect and not is_dummy then
 		EffectHelper.player_melee_hit_particles(world, hit_effect, hit_position, attack_direction, damage_type, hit_unit, predicted_damage)
@@ -1365,6 +1369,23 @@ ActionSweep.finish = function (self, reason, data)
 	end
 
 	self.action_aborted_flow_event_sent = nil
+
+	if current_action.keep_block then
+		if not LEVEL_EDITOR_TEST then
+			local go_id = Managers.state.unit_storage:go_id(owner_unit)
+
+			if self.is_server then
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", go_id, false)
+			else
+				Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", go_id, false)
+			end
+		end
+
+		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+
+		status_extension:set_blocking(false)
+	end
+
 	local hud_extension = self._owner_hud_extension
 
 	if hud_extension then
@@ -1410,6 +1431,10 @@ ActionSweep._play_hit_animations = function (self, owner_unit, current_action, a
 	if third_person_hit_anim then
 		CharacterStateHelper.play_animation_event(owner_unit, third_person_hit_anim)
 	end
+end
+
+ActionSweep._get_damage_profile_name = function (self, action_hand, action)
+	return (action_hand and action["damage_profile_" .. action_hand]) or action.damage_profile or "default"
 end
 
 return

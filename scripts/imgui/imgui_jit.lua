@@ -224,7 +224,7 @@ ImguiJIT.draw = function (self)
 
 	Imgui.separator()
 
-	if Imgui.tree_node("Parameters", false) then
+	if Imgui.collapsing_header("Parameters", false) then
 		for _, t in pairs(self._params) do
 			local v = Imgui.input_int(t.k, math.max(0, t.v))
 
@@ -240,7 +240,7 @@ ImguiJIT.draw = function (self)
 		Imgui.tree_pop()
 	end
 
-	if Imgui.tree_node("Options", false) then
+	if Imgui.collapsing_header("Options", false) then
 		for _, t in pairs(self._opts) do
 			local v = Imgui.checkbox(t.k, t.v)
 
@@ -254,7 +254,7 @@ ImguiJIT.draw = function (self)
 		Imgui.tree_pop()
 	end
 
-	if Imgui.tree_node("Traces", false) then
+	if Imgui.collapsing_header("Traces", false) then
 		Imgui.text("Traces go here.")
 
 		local traces = self._traces
@@ -266,7 +266,7 @@ ImguiJIT.draw = function (self)
 		Imgui.tree_pop()
 	end
 
-	if Imgui.tree_node("Garbage", false) then
+	if Imgui.collapsing_header("Garbage", false) then
 		local bytes = self._bytes
 		local n = Imgui.input_int("History period", math.max(0, bytes.n))
 		bytes.n = n

@@ -6,10 +6,12 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 	local pickup_name = extension_init_data.pickup_name
 	local has_physics = extension_init_data.has_physics
 	local spawn_type = extension_init_data.spawn_type
+	local dropped_by_breed = extension_init_data.dropped_by_breed or "n/a"
 	local network_transmit = extension_init_context.network_transmit
 	self.pickup_name = pickup_name
 	self.has_physics = has_physics
 	self.spawn_type = spawn_type
+	self.dropped_by_breed = dropped_by_breed
 	self.is_server = network_transmit.is_server
 	self.spawn_index = extension_init_data.spawn_index
 	self.owner_peer_id = extension_init_data.owner_peer_id
@@ -39,10 +41,11 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 end
 
 PickupUnitExtension.extensions_ready = function (self)
-	local outline_extension = ScriptUnit.has_extension(self.unit, "outline_system")
+	local pickup_settings = AllPickups[self.pickup_name]
+	local unit = self.unit
+	local outline_extension = ScriptUnit.has_extension(unit, "outline_system")
 
 	if outline_extension then
-		local pickup_settings = AllPickups[self.pickup_name]
 		local outline_distance_type = pickup_settings.outline_distance
 
 		if outline_distance_type then
@@ -57,6 +60,12 @@ PickupUnitExtension.extensions_ready = function (self)
 				outline_extension.set_method("never")
 			end
 		end
+	end
+
+	local material_settings = pickup_settings.material_settings
+
+	if material_settings then
+		GearUtils.apply_material_settings(unit, material_settings)
 	end
 end
 
@@ -89,6 +98,10 @@ PickupUnitExtension.destroy = function (self)
 
 		Managers.telemetry.events:pickup_destroyed(self.pickup_name, self.spawn_type, position)
 	end
+end
+
+PickupUnitExtension.get_dropped_by_breed = function (self)
+	return self.dropped_by_breed
 end
 
 PickupUnitExtension.can_interact = function (self)

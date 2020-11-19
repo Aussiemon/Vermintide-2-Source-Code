@@ -4,6 +4,7 @@ local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 BackendInterfaceItemPlayfab.init = function (self, backend_mirror)
 	self._loadouts = {}
 	self._items = {}
+	self._game_mode_specific_items = {}
 	self._backend_mirror = backend_mirror
 	self._modified_templates = {}
 
@@ -34,12 +35,19 @@ BackendInterfaceItemPlayfab._refresh_items = function (self)
 	local unlocked_weapon_skins = backend_mirror:get_unlocked_weapon_skins()
 
 	for _, item in pairs(items) do
-		if item.skin and not unlocked_weapon_skins[item.skin] then
+		if not item.bypass_skin_ownership_check and item.skin and not unlocked_weapon_skins[item.skin] then
 			item.skin = nil
 		end
 	end
 
 	self._items = items
+
+	if self._active_game_mode_specific_items then
+		for key, item in pairs(self._active_game_mode_specific_items) do
+			self._items[key] = item
+		end
+	end
+
 	local fake_items = backend_mirror:get_all_fake_inventory_items()
 	self._fake_items = fake_items
 	local new_backend_ids = ItemHelper.get_new_backend_ids()
@@ -240,8 +248,9 @@ end
 
 BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name)
 	local loadouts = self:get_loadout()
+	local loadout = loadouts[career_name]
 
-	return loadouts[career_name][slot_name]
+	return loadout and loadout[slot_name]
 end
 
 BackendInterfaceItemPlayfab.get_cosmetic_loadout = function (self, career_name)
@@ -269,14 +278,31 @@ end
 
 BackendInterfaceItemPlayfab.set_loadout_item = function (self, item_id, career_name, slot_name)
 	local all_items = self:get_all_backend_items()
+	local item = nil
 
 	if item_id then
-		fassert(all_items[item_id], "Trying to equip item that doesn't exist %d", item_id or "nil")
+		item = all_items[item_id]
+
+		fassert(item, "Trying to equip item that doesn't exist %d", item_id or "nil")
+	end
+
+	if not item then
+		print("[BackendInterfaceItemPlayfab] Attempted to equip weapon that doesn't exist:", item_id, career_name, slot_name)
+
+		return false
+	end
+
+	if item.rarity == "magic" then
+		print("[BackendInterfaceItemPlayfab] Attempted to equip magic weapon in adventure:", item_id, career_name, slot_name)
+
+		return false
 	end
 
 	self._backend_mirror:set_character_data(career_name, slot_name, item_id)
 
 	self._dirty = true
+
+	return true
 end
 
 BackendInterfaceItemPlayfab.add_steam_items = function (self, item_list)
@@ -438,6 +464,20 @@ BackendInterfaceItemPlayfab.sum_best_power_levels = function (self)
 	else
 		return self._backend_mirror.sum_best_power_levels
 	end
+end
+
+BackendInterfaceItemPlayfab.configure_game_mode_specific_items = function (self, game_mode, items)
+	self._game_mode_specific_items[game_mode] = items
+end
+
+BackendInterfaceItemPlayfab.set_game_mode_specific_items = function (self, game_mode)
+	self._active_game_mode_specific_items = self._game_mode_specific_items[game_mode]
+
+	self:make_dirty()
+end
+
+BackendInterfaceItemPlayfab.refresh_game_mode_specific_items = function (self)
+	self:make_dirty()
 end
 
 return

@@ -7,20 +7,6 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local input_delay_before_start_new_search = 0
 local platform = PLATFORM
-
-if platform ~= "ps4" or not {
-	LobbyDistanceFilter.CLOSE,
-	LobbyDistanceFilter.MEDIUM,
-	LobbyDistanceFilter.WORLD
-} then
-	local MapLobbyDistanceFilter = {
-		LobbyDistanceFilter.CLOSE,
-		LobbyDistanceFilter.MEDIUM,
-		LobbyDistanceFilter.FAR,
-		LobbyDistanceFilter.WORLD
-	}
-end
-
 local GAME_MODE_LOOKUP_STRINGS = {
 	weave = "lb_game_type_weave",
 	deed = "lb_game_type_deed",
@@ -541,7 +527,7 @@ StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobb
 		local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
 		info_box_widgets_lobbies.info_frame_host_text.content.text = host or Localize("lb_unknown")
 	else
-		local server_name = server_info.server_name
+		local server_name = server_info.name
 		info_box_widgets_servers.info_frame_name_text.content.text = server_name or Localize("lb_unknown")
 		local ip_adress = server_info.ip_address
 		info_box_widgets_servers.info_frame_ip_adress_text.content.text = ip_adress or Localize("lb_unknown")
@@ -877,7 +863,7 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 	if is_server then
 		local wanted_server_name = self._current_server_name
 
-		if wanted_server_name ~= "" and string.find(lobby_data.server_info.server_name, wanted_server_name) == nil then
+		if wanted_server_name ~= "" and string.find(lobby_data.server_info.name, wanted_server_name) == nil then
 			return false
 		end
 	else
@@ -1035,7 +1021,7 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local difficulty_key = difficulty_table[difficulty_index]
 	local only_show_valid_lobbies = not self._base_widgets_by_name.invalid_checkbox.content.checked
 	local distance_index = self.selected_distance_index
-	local distance_filter = MapLobbyDistanceFilter[distance_index]
+	local distance_filter = LobbyAux.map_lobby_distance_filter[distance_index]
 	local show_lobbies_index = self.selected_show_lobbies_index
 	local show_all_lobbies = (show_lobbies_index == 2 and true) or false
 	local matchmaking = not show_all_lobbies
@@ -1054,15 +1040,15 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	if platform == "ps4" then
 		local user_region = Managers.account:region()
 
-		if distance_filter == LobbyDistanceFilter.CLOSE then
+		if distance_filter == "close" then
 			requirements.filters.primary_region = {
-				value = MatchmakingRegionLookup.primary[user_region],
-				comparison = LobbyComparison.EQUAL
+				comparison = "equal",
+				value = MatchmakingRegionLookup.primary[user_region]
 			}
-		elseif distance_filter == LobbyDistanceFilter.MEDIUM then
+		elseif distance_filter == "medium" then
 			requirements.filters.secondary_region = {
-				value = MatchmakingRegionLookup.secondary[user_region],
-				comparison = LobbyComparison.EQUAL
+				comparison = "equal",
+				value = MatchmakingRegionLookup.secondary[user_region]
 			}
 		end
 	end
@@ -1070,42 +1056,42 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local eac_state = EAC.state()
 	local eac_authorized = eac_state == "trusted"
 	requirements.filters.eac_authorized = {
-		value = (eac_authorized and "true") or "false",
-		comparison = LobbyComparison.EQUAL
+		comparison = "equal",
+		value = (eac_authorized and "true") or "false"
 	}
 
 	if difficulty_key ~= "any" and difficulty_key then
 		requirements.filters.difficulty = {
-			value = difficulty_key,
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = difficulty_key
 		}
 	end
 
 	if level_key ~= "any" and level_key then
 		requirements.filters.selected_level_key = {
-			value = level_key,
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = level_key
 		}
 	end
 
 	if game_mode ~= "any" then
 		requirements.filters.game_mode = {
-			value = NetworkLookup.game_modes[game_mode],
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = NetworkLookup.game_modes[game_mode]
 		}
 	end
 
 	if only_show_valid_lobbies then
 		requirements.filters.network_hash = {
-			value = lobby_finder:network_hash(),
-			comparison = LobbyComparison.EQUAL
+			comparison = "equal",
+			value = lobby_finder:network_hash()
 		}
 	end
 
 	if matchmaking and current_lobby_type == "lobbies" then
 		requirements.filters.matchmaking = {
 			value = "false",
-			comparison = LobbyComparison.NOT_EQUAL
+			comparison = "not_equal"
 		}
 	end
 
@@ -1122,10 +1108,12 @@ StartGameWindowLobbyBrowser._search = function (self)
 	local requirements = self:_create_filter_requirements()
 
 	if self._current_lobby_type == "lobbies" then
-		LobbyInternal.clear_filter_requirements()
+		local lobby_finder = self.lobby_finder
+		local lobby_browser = lobby_finder:get_lobby_browser()
+
+		LobbyInternal.clear_filter_requirements(lobby_browser)
 
 		local force_refresh = true
-		local lobby_finder = self.lobby_finder
 
 		lobby_finder:add_filter_requirements(requirements, force_refresh)
 	elseif self._current_lobby_type == "servers" then

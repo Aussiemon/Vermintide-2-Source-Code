@@ -477,12 +477,7 @@ TwitchVoteUI._show_multiple_choice_vote = function (self)
 					content.profile_index = profile_index
 					local vote_widget_index = "hero_vote_" .. index
 					local vote_widget = self._widgets[vote_widget_index]
-
-					if PLATFORM ~= "xb1" then
-						vote_widget.content.text = option_strings[profile_index]
-					else
-						vote_widget.content.text = vote_texts_definition.multiple_choice[index]
-					end
+					vote_widget.content.text = option_strings[profile_index]
 				end
 			end
 		until true

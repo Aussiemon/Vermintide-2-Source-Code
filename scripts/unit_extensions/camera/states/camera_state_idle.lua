@@ -24,6 +24,25 @@ CameraStateIdle.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
+	local external_state_change = camera_extension.external_state_change
+	local external_state_change_params = camera_extension.external_state_change_params
+
+	if external_state_change and external_state_change ~= self.name then
+		csm:change_state(external_state_change, external_state_change_params)
+		camera_extension:set_external_state_change(nil)
+
+		return
+	end
+
+	local unique_id = self.camera_extension.player:unique_id()
+	local side_name = Managers.state.side:get_side_from_player_unique_id(unique_id):name()
+
+	if side_name == "spectators" then
+		csm:change_state("observer")
+
+		return
+	end
+
 	local position = camera_extension:get_idle_position()
 	local rotation = camera_extension:get_idle_rotation()
 

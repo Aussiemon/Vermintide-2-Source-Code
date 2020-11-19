@@ -91,7 +91,7 @@ ActionThrow._throw = function (self)
 
 	CharacterStateHelper.show_inventory_3p(owner_unit, false, include_local_player, self.is_server, self.owner_inventory_extension)
 
-	if projectile_info.pickup_name then
+	if not projectile_info.disable_throwing_dialogue and projectile_info.pickup_name then
 		local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
 		event_data.item_type = projectile_info.pickup_name

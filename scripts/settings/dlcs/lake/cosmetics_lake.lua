@@ -31,7 +31,7 @@ local skin_es_questingknight_black_and_gold = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_gold/mtr_outfit_black_and_gold_1p"
 		}
 	},
-	wwise_dep = table.clone(PlayerWwiseDependencies.markus.knight)
+	wwise_dep = table.clone(PlayerWwiseDependencies.markus.breton)
 }
 local skin_es_questingknight_black_and_yellow = {
 	third_person_husk = "units/beings/player/empire_soldier_breton/third_person_base/chr_third_person_husk_base",
@@ -53,7 +53,7 @@ local skin_es_questingknight_black_and_yellow = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_yellow/mtr_outfit_black_and_yellow_1p"
 		}
 	},
-	wwise_dep = table.clone(PlayerWwiseDependencies.markus.knight)
+	wwise_dep = table.clone(PlayerWwiseDependencies.markus.breton)
 }
 local skin_es_questingknight_blue_and_white = {
 	third_person_husk = "units/beings/player/empire_soldier_breton/third_person_base/chr_third_person_husk_base",
@@ -75,7 +75,7 @@ local skin_es_questingknight_blue_and_white = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/blue_and_white/mtr_outfit_blue_and_white_1p"
 		}
 	},
-	wwise_dep = table.clone(PlayerWwiseDependencies.markus.knight)
+	wwise_dep = table.clone(PlayerWwiseDependencies.markus.breton)
 }
 local skin_es_questingknight_yellow_and_white = {
 	third_person_husk = "units/beings/player/empire_soldier_breton/third_person_base/chr_third_person_husk_base",
@@ -97,7 +97,7 @@ local skin_es_questingknight_yellow_and_white = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/yellow_and_white/mtr_outfit_yellow_and_white_1p"
 		}
 	},
-	wwise_dep = table.clone(PlayerWwiseDependencies.markus.knight)
+	wwise_dep = table.clone(PlayerWwiseDependencies.markus.breton)
 }
 
 return {

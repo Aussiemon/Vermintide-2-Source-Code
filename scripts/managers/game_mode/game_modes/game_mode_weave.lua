@@ -6,8 +6,8 @@ GameModeWeave = class(GameModeWeave, GameModeBase)
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 
-GameModeWeave.init = function (self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer)
-	GameModeWeave.super.init(self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer)
+GameModeWeave.init = function (self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+	GameModeWeave.super.init(self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
 
 	self.about_to_lose = false
 	self.lost_condition_timer = nil
@@ -15,9 +15,8 @@ GameModeWeave.init = function (self, settings, world, network_server, level_tran
 	self.win_condition_timer = nil
 	self._level_transition_handler = level_transition_handler
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
-	local saved_game_mode_data = Managers.weave:get_saved_game_mode_data()
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
-	self._weave_spawning = WeaveSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server, saved_game_mode_data)
+	self._weave_spawning = WeaveSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server, game_mode_settings and game_mode_settings.game_mode_data)
 
 	self:_register_player_spawner(self._weave_spawning)
 
@@ -181,8 +180,8 @@ GameModeWeave._is_time_up = function (self)
 	return time_up
 end
 
-GameModeWeave.player_entered_game_session = function (self, peer_id, local_player_id)
-	GameModeWeave.super.player_entered_game_session(self, peer_id, local_player_id)
+GameModeWeave.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
+	GameModeWeave.super.player_entered_game_session(self, peer_id, local_player_id, wanted_party_index)
 
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		self._adventure_profile_rules:handle_profile_delegation_for_joining_player(peer_id, local_player_id)
@@ -283,7 +282,17 @@ GameModeWeave.get_player_wounds = function (self, profile)
 	return difficulty_settings.wounds
 end
 
+GameModeWeave.get_boss_loot_pickup = function (self)
+	return nil
+end
+
 GameModeWeave.ended = function (self, reason)
+	local all_peers_ingame = self._network_server:are_all_peers_ingame()
+
+	if not all_peers_ingame then
+		self._network_server:disconnect_joining_peers()
+	end
+
 	local weave_manager = Managers.weave
 	local next_objective_index = weave_manager:calculate_next_objective_index()
 	local current_weave_phase = weave_manager:get_active_weave_phase()

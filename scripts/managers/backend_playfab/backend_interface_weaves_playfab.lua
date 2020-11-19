@@ -60,6 +60,8 @@ BackendInterfaceWeavesPlayFab.init = function (self, backend_mirror)
 		Managers.backend:add_talents_interface_override("weave", "weaves")
 	end
 
+	Managers.backend:set_total_power_level_interface_for_game_mode("weave", "weaves")
+
 	self._last_id = 0
 	self._player_entry = {}
 	self._requesting_leaderboard = 0
@@ -116,7 +118,7 @@ BackendInterfaceWeavesPlayFab._parse_loadouts = function (self, read_only_data)
 
 	for career_name, settings in pairs(CareerSettings) do
 		if settings.playfab_name and not settings.excluded_from_weave_loadouts then
-			local dlc_unlocked = settings.is_dlc_unlocked and settings.is_dlc_unlocked()
+			local dlc_unlocked = settings.is_dlc_unlocked()
 
 			if dlc_unlocked == nil or dlc_unlocked then
 				local loadout_json = read_only_data["weaves_loadout_" .. career_name]
@@ -180,8 +182,18 @@ BackendInterfaceWeavesPlayFab._validate_loadout = function (self, career_name, l
 	end
 
 	if loadout.item_loadouts then
-		for _, item_loadout in pairs(loadout.item_loadouts) do
-			self:_validate_loadout(career_name, item_loadout)
+		local inventory_items = self._backend_mirror:get_all_inventory_items()
+
+		for item_backend_id, item_loadout in pairs(loadout.item_loadouts) do
+			local item = inventory_items[item_backend_id]
+
+			if not item or item.rarity ~= "magic" then
+				print("[BackendInterfaceWeavesPlayFab] Loadout weapon not found in local settings, removing it from the loadout!", career_name, item_backend_id)
+
+				loadout.item_loadouts[item_backend_id] = nil
+			else
+				self:_validate_loadout(career_name, item_loadout)
+			end
 		end
 	end
 end
@@ -668,6 +680,7 @@ local CAREER_ID_LOOKUP = {
 	"dr_ranger",
 	"dr_slayer",
 	"dr_ironbreaker",
+	"dr_engineer",
 	"we_waywatcher",
 	"we_shade",
 	"we_maidenguard",
@@ -1259,6 +1272,10 @@ BackendInterfaceWeavesPlayFab.get_talents = function (self, career_name)
 	return TALENTS_RETURN_TABLE
 end
 
+BackendInterfaceWeavesPlayFab.get_total_power_level = function (self, profile_name, career_name)
+	return self:get_average_power_level(career_name)
+end
+
 BackendInterfaceWeavesPlayFab.has_loadout_item_id = function (self, career_name, item_id)
 	local loadout = self._loadouts[career_name]
 
@@ -1282,9 +1299,24 @@ BackendInterfaceWeavesPlayFab.set_loadout_item = function (self, item_backend_id
 	fassert(self._valid_loadout_slots[slot_name], "[BackendInterfaceWeavesPlayFab] Loadout in slot %q shouldn't be set in the weaves interface", tostring(slot_name))
 
 	local all_items = self._backend_mirror:get_all_inventory_items()
+	local item = nil
 
 	if item_backend_id then
-		fassert(all_items[item_backend_id], "[BackendInterfaceWeavesPlayFab] Item %q doesn't exist", tostring(item_backend_id))
+		item = all_items[item_backend_id]
+
+		fassert(item, "[BackendInterfaceWeavesPlayFab] Item %q doesn't exist", tostring(item_backend_id))
+	end
+
+	if not item then
+		print("[BackendInterfaceWeavesPlayFab] Attempted to equip weapon that doesn't exist:", item_backend_id, career_name, slot_name)
+
+		return false
+	end
+
+	if item.rarity ~= "magic" then
+		print("[BackendInterfaceWeavesPlayFab] Attempted to equip non magic weapon in weaves:", item_backend_id, career_name, slot_name)
+
+		return false
 	end
 
 	local loadout = self._loadouts[career_name]
@@ -1293,6 +1325,8 @@ BackendInterfaceWeavesPlayFab.set_loadout_item = function (self, item_backend_id
 		loadout[slot_name] = item_backend_id
 		self._dirty_loadouts[career_name] = true
 	end
+
+	return true
 end
 
 BackendInterfaceWeavesPlayFab.get_dirty_user_data = function (self)

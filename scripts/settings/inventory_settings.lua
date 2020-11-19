@@ -126,6 +126,7 @@ InventorySettings = {
 			}
 		},
 		{
+			hud_index = 6,
 			name = "slot_career_skill_weapon",
 			category = "career_skill_weapon"
 		}
@@ -293,5 +294,7 @@ InventorySettings.item_types = {
 	"ww_sword_and_dagger",
 	"ww_trueflight"
 }
+
+DLCUtils.require_list("inventory_settings")
 
 return

@@ -32,6 +32,32 @@ ActionAssertFuncs = {
 			fassert(DamageProfileTemplates[damage_profile], "Damage profile [\"%s\"] does not exist", damage_profile)
 		end
 	end,
+	charged_sweep = function (weapon_name, action_name, sub_action_name, action)
+		if action.weapon_action_hand == "both" then
+			local left_damage_profile = action.damage_profile_left
+
+			fassert(left_damage_profile, "No left damage profile set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+			fassert(DamageProfileTemplates[left_damage_profile], "Damage profile [\"%s\"] does not exist", left_damage_profile)
+
+			local right_damage_profile = action.damage_profile_right
+
+			fassert(right_damage_profile, "No right damage profile set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+			fassert(DamageProfileTemplates[right_damage_profile], "Damage profile [\"%s\"] does not exist", right_damage_profile)
+		else
+			local damage_profile = action.damage_profile
+
+			fassert(damage_profile, "No damage profile set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+			fassert(DamageProfileTemplates[damage_profile], "Damage profile [\"%s\"] does not exist", damage_profile)
+		end
+
+		fassert(not action.hit_time, "unsupported parameter hit_time set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+
+		if action.discharge_attack then
+			fassert(action.discharge_effects, "Action marked as discharge attack, but no discharge_effects set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+		else
+			fassert(action.overcharge_type, "Action marked as charge attack, but no overcharge_type set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
+		end
+	end,
 	push_stagger = function (weapon_name, action_name, sub_action_name, action)
 		local damage_profile_inner = action.damage_profile_inner
 

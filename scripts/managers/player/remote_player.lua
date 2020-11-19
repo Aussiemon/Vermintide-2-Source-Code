@@ -36,7 +36,7 @@ RemotePlayer.unique_id = function (self)
 end
 
 RemotePlayer.platform_id = function (self)
-	if PLATFORM == "win32" then
+	if PLATFORM == "win32" or PLATFORM == "linux" then
 		return self.peer_id
 	else
 		return self._account_id

@@ -35,7 +35,7 @@ ProgressSystem.destroy = function (self)
 	self._network_event_delegate:unregister(self)
 end
 
-ProgressSystem.rpc_player_in_zone_end_event = function (self, sender, unit_id)
+ProgressSystem.rpc_player_in_zone_end_event = function (self, channel_id, unit_id)
 	local level_unit = LevelHelper:unit_by_index(self._world, unit_id)
 
 	if self._existing_units[level_unit] then
@@ -43,11 +43,12 @@ ProgressSystem.rpc_player_in_zone_end_event = function (self, sender, unit_id)
 	end
 end
 
-ProgressSystem.rpc_player_in_zone_set_active = function (self, sender, unit_index)
+ProgressSystem.rpc_player_in_zone_set_active = function (self, channel_id, unit_index)
 	if self._is_server then
 		local network_manager = Managers.state.network
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		network_manager.network_transmit:send_rpc_clients_except("rpc_player_in_zone_set_active", sender, unit_index)
+		network_manager.network_transmit:send_rpc_clients_except("rpc_player_in_zone_set_active", peer_id, unit_index)
 	end
 
 	local level_unit = LevelHelper:unit_by_index(self._world, unit_index)

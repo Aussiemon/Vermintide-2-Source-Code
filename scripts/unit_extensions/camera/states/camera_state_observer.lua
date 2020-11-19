@@ -26,8 +26,16 @@ local MAX_MIN_PITCH = math.pi / 2 - math.pi / 15
 CameraStateObserver.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local camera_extension = self.camera_extension
-	local viewport_name = camera_extension.viewport_name
-	local camera_manager = Managers.state.camera
+	local external_state_change = camera_extension.external_state_change
+	local external_state_change_params = camera_extension.external_state_change_params
+
+	if external_state_change and external_state_change ~= self.name then
+		csm:change_state(external_state_change, external_state_change_params)
+		camera_extension:set_external_state_change(nil)
+
+		return
+	end
+
 	local input_source = Managers.input:get_service("Player")
 	local find_next_observer_target = input_source:get("next_observer_target") or not Unit.alive(self._follow_unit)
 	local find_previous_observer_target = input_source:get("previous_observer_target")
@@ -46,50 +54,15 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	local external_state_change = camera_extension.external_state_change
-	local external_state_change_params = camera_extension.external_state_change_params
-
-	if external_state_change and external_state_change ~= self.name then
-		csm:change_state(external_state_change, external_state_change_params)
-		camera_extension:set_external_state_change(nil)
-
-		return
-	end
-
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local look_input = (gamepad_active and input_source:get("look_controller_3p")) or input_source:get("look")
-	local look_delta = Vector3(0, 0, 0)
-
-	if look_input then
-		local look_sensitivity = (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
-		look_delta = look_delta + look_input * look_sensitivity
-	end
-
-	local rotation = Unit.local_rotation(unit, 0)
-	local yaw = Quaternion.yaw(rotation) - look_delta.x
-	local pitch = math.clamp(Quaternion.pitch(rotation) + look_delta.y, -MAX_MIN_PITCH, MAX_MIN_PITCH)
-	local yaw_rotation = Quaternion(Vector3.up(), yaw)
-	local pitch_rotation = Quaternion(Vector3.right(), pitch)
-	local look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
-
-	Unit.set_local_rotation(unit, 0, look_rotation)
-
 	local follow_unit = self._follow_unit
 	local follow_node = Unit.node(follow_unit, self._follow_node_name)
-	local position = Unit.world_position(follow_unit, follow_node)
-	local previous_position = Unit.world_position(unit, 0)
-	local lerp_t = math.min(dt * 10, 1)
-	local new_position = Vector3.lerp(previous_position, position, lerp_t)
+	local snap_camera = self._snap_camera
 
-	if self._snap_camera then
-		new_position = position
-		self._snap_camera = false
+	CameraStateHelper.set_camera_rotation(unit, camera_extension)
+	CameraStateHelper.set_follow_camera_position(unit, follow_unit, follow_node, nil, snap_camera, dt)
 
-		Managers.state.event:trigger("camera_teleported")
-	end
+	self._snap_camera = false
 
-	fassert(Vector3.is_valid(new_position), "Camera position invalid.")
-	Unit.set_local_position(unit, 0, new_position)
 	self:_poll_testify_requests()
 end
 
@@ -105,33 +78,49 @@ CameraStateObserver._get_valid_players_to_observe = function (self)
 	local observe_sides = player_side_settings and player_side_settings.observe_sides
 
 	if not observe_sides then
-		return player_manager:players()
+		local valid_players = {}
+		local players = player_manager:players()
+
+		for _, player in pairs(players) do
+			if player.player_unit and ALIVE[player.player_unit] then
+				valid_players[#valid_players + 1] = player
+			end
+		end
+
+		return valid_players
 	end
 
 	local allowed_players_to_observe = {}
 
-	for _, side_name in ipairs(observe_sides) do
-		local side = side_manager:get_side_from_name(side_name)
+	for side_name, is_allowed_func in pairs(observe_sides) do
+		if is_allowed_func() then
+			local side = side_manager:get_side_from_name(side_name)
 
-		for _, player_unit in ipairs(side.PLAYER_AND_BOT_UNITS) do
-			local other_player = player_manager:owner(player_unit)
-			local other_unique_id = other_player:unique_id()
-
-			if unique_id ~= other_unique_id then
+			for _, player_unit in ipairs(side:player_units()) do
+				local other_player = player_manager:owner(player_unit)
+				local other_unique_id = other_player:unique_id()
 				allowed_players_to_observe[other_unique_id] = other_player
 			end
 		end
 	end
 
-	return allowed_players_to_observe
+	local allowed_num_players = table.size(allowed_players_to_observe)
+
+	return (allowed_num_players > 0 and allowed_players_to_observe) or nil
 end
 
 CameraStateObserver.follow_next_unit = function (self)
 	local players = self:_get_valid_players_to_observe()
+
+	if not players or table.is_empty(players) then
+		return false
+	end
+
 	local observed_player_id = self._observed_player_id
 	local follow_unit = nil
+	local num_players = table.size(players)
 
-	for i = 1, table.size(players), 1 do
+	for i = 1, num_players, 1 do
 		if players[observed_player_id] then
 			observed_player_id = next(players, observed_player_id)
 			observed_player_id = not observed_player_id and next(players) and next(players)
@@ -146,11 +135,16 @@ CameraStateObserver.follow_next_unit = function (self)
 		end
 	end
 
-	self:_set_follow_unit(observed_player_id, follow_unit)
+	return self:_set_follow_unit(observed_player_id, follow_unit)
 end
 
 CameraStateObserver.follow_previous_unit = function (self)
 	local players = self:_get_valid_players_to_observe()
+
+	if not players then
+		return false
+	end
+
 	local observed_player_id = self._observed_player_id
 	local current_player_id, current_player, previous_player_id, previous_player_unit = nil
 
@@ -169,10 +163,16 @@ CameraStateObserver.follow_previous_unit = function (self)
 		end
 	until current_player_id == nil
 
-	self:_set_follow_unit(previous_player_id, previous_player_unit)
+	return self:_set_follow_unit(previous_player_id, previous_player_unit)
 end
 
 CameraStateObserver._set_follow_unit = function (self, observed_player_id, follow_unit)
+	if not follow_unit or not Unit.alive(follow_unit) then
+		self:follow_next_unit()
+
+		return false
+	end
+
 	local snap_camera = nil
 
 	if follow_unit then
@@ -213,6 +213,8 @@ CameraStateObserver._set_follow_unit = function (self, observed_player_id, follo
 			self._network_transmit:send_rpc_server("rpc_set_observed_player_id", local_player_go_id, player_to_observe_go_id)
 		end
 	end
+
+	return true
 end
 
 CameraStateObserver._poll_testify_requests = function (self)

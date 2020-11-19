@@ -1,5 +1,6 @@
 require("scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_base_impact_unit_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_raycast_impact_unit_extension")
+require("scripts/unit_extensions/weapons/projectiles/projectile_impact/projectile_fixed_impact_unit_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_impact/player_projectile_impact_unit_extension")
 
 ProjectileImpactSystem = class(ProjectileImpactSystem, ExtensionSystemBase)
@@ -7,7 +8,8 @@ local RPCS = {}
 local extensions = {
 	"ProjectileBaseImpactUnitExtension",
 	"ProjectileRaycastImpactUnitExtension",
-	"PlayerProjectileImpactUnitExtension"
+	"PlayerProjectileImpactUnitExtension",
+	"ProjectileFixedImpactUnitExtension"
 }
 
 ProjectileImpactSystem.init = function (self, entity_system_creation_context, system_name)

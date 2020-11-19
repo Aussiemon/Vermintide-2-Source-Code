@@ -81,13 +81,15 @@ StoreWindowItemPreview._create_viewport_definition = function (self)
 		element = UIElements.Viewport,
 		style = {
 			viewport = {
-				layer = 990,
-				world_name = "item_preview",
 				viewport_type = "default_forward",
+				layer = 990,
 				viewport_name = "item_preview_viewport",
+				world_name = "item_preview",
+				level_name = "levels/ui_store_preview/world",
 				enable_sub_gui = false,
 				fov = 65,
 				shading_environment = shading_environment,
+				object_sets = LevelResource.object_set_names("levels/ui_store_preview/world"),
 				camera_position = {
 					0,
 					0,
@@ -247,9 +249,109 @@ StoreWindowItemPreview.update = function (self, dt, t)
 	end
 end
 
+StoreWindowItemPreview._register_object_sets = function (self, viewport_widget, viewport_definition)
+	local viewport_definition_style = viewport_definition.style.viewport
+	local viewport_widget_style = viewport_widget.style
+	local viewport_widget_content = viewport_widget.content
+	local viewport_widget_element = viewport_widget.element
+	local pass_data = viewport_widget_element.pass_data[1]
+	local level_name = viewport_definition_style.level_name
+	local object_sets = {}
+	local available_level_sets = LevelResource.object_set_names(level_name)
+
+	for _, set_name in ipairs(available_level_sets) do
+		object_sets[set_name] = {
+			set_enabled = true,
+			units = LevelResource.unit_indices_in_object_set(level_name, set_name)
+		}
+	end
+
+	viewport_widget_content.object_set_data = {
+		world = pass_data.world,
+		level = pass_data.level,
+		object_sets = object_sets,
+		level_name = level_name
+	}
+
+	self:_show_object_set(nil, true)
+end
+
+StoreWindowItemPreview._show_object_set = function (self, object_set_name, force_disable)
+	if not self._viewport_widget then
+		print("[StoreWindowItemPreview:show_object_set] Viewport not initiated")
+
+		return
+	end
+
+	local viewport_widget_content = self._viewport_widget.content
+	local object_set_data = viewport_widget_content.object_set_data
+	local world = object_set_data.world
+	local level = object_set_data.level
+	local level_name = object_set_data.level_name
+	local object_sets = object_set_data.object_sets
+
+	if not object_sets[object_set_name] and not force_disable then
+		print(string.format("[StoreWindowItemPreview:show_object_set] No object set called %q in level %q", object_set_name, level_name))
+
+		return
+	end
+
+	for set_name, object_set_data in pairs(object_sets) do
+		local set_enabled = object_set_data.set_enabled
+
+		if set_enabled and set_name ~= object_set_name then
+			local units = object_set_data.units
+
+			for _, unit_index in ipairs(units) do
+				local unit = Level.unit_by_index(level, unit_index)
+
+				Unit.set_unit_visibility(unit, false)
+			end
+
+			object_set_data.set_enabled = false
+		elseif not set_enabled and set_name == object_set_name then
+			local units = object_set_data.units
+
+			for _, unit_index in ipairs(units) do
+				local unit = Level.unit_by_index(level, unit_index)
+
+				Unit.set_unit_visibility(unit, true)
+
+				if Unit.has_data(unit, "LevelEditor", "is_gizmo_unit") then
+					local is_gizmo = Unit.get_data(unit, "LevelEditor", "is_gizmo_unit")
+					local is_reflection_probe = Unit.is_a(unit, "core/stingray_renderer/helper_units/reflection_probe/reflection_probe")
+
+					if is_gizmo and not is_reflection_probe then
+						Unit.flow_event(unit, "hide_helper_mesh")
+					end
+				end
+			end
+
+			object_set_data.set_enabled = true
+		end
+	end
+
+	print("Showing object set:", object_set_name)
+end
+
+StoreWindowItemPreview._update_environment = function (self, item_preview_environment, force_default)
+	if not self._viewport_widget then
+		return
+	end
+
+	local item_preview_environment = item_preview_environment or "default"
+	local viewport_widget_content = self._viewport_widget.content
+	local object_set_data = viewport_widget_content.object_set_data
+	local world = object_set_data.world
+	local shading_settings = World.get_data(world, "shading_settings")
+	shading_settings[1] = (force_default and "default") or item_preview_environment
+end
+
 StoreWindowItemPreview.post_update = function (self, dt, t)
 	if self._viewport_widget_definition and not self._viewport_widget then
 		self._viewport_widget = UIWidget.init(self._viewport_widget_definition)
+
+		self:_register_object_sets(self._viewport_widget, self._viewport_widget_definition)
 	end
 
 	self:_update_loading_overlay_fadeout_animation(dt)
@@ -653,6 +755,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 		local dlc_name = nil
 		local product_id = selected_product.product_id
 		local product_type = selected_product.type
+		local is_item_useable = true
 
 		if product_type == "item" then
 			local item = selected_product.item
@@ -661,13 +764,14 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 			dlc_name = item.dlc_name
 			already_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
 			can_afford = self._parent:can_afford_item(item)
+			is_item_useable = self._parent:can_use_item(item)
 		elseif product_type == "dlc" then
 			local dlc_settings = selected_product.dlc_settings
 			dlc_name = dlc_settings.dlc_name
 			already_owned = Managers.unlock:is_dlc_unlocked(dlc_name)
 		end
 
-		self:_set_unlock_button_states(already_owned, can_afford)
+		self:_set_unlock_button_states(already_owned, can_afford, is_item_useable)
 
 		if reset_presentation then
 			self._delayed_item_unit_presentation_delay = nil
@@ -723,7 +827,8 @@ StoreWindowItemPreview._present_dlc = function (self, settings, product_id)
 
 	local scrollbar_widget = self._dlc_top_widgets_by_name.list_scrollbar
 	self._dlc_scrollbar_logic = ScrollBarLogic:new(scrollbar_widget)
-	local layout = settings.layout
+	local is_console = PLATFORM ~= "win32"
+	local layout = (is_console and settings.layout_console) or settings.layout
 
 	self:_dlc_component_layout(layout)
 end
@@ -755,6 +860,8 @@ StoreWindowItemPreview._present_item = function (self, item)
 		self:_set_price(price)
 	end
 
+	local item_preview_environment = item_data.item_preview_environment
+	local item_preview_object_set_name = item_data.item_preview_object_set_name
 	local type_title_text = ""
 	local disclaimer_text = ""
 	local sub_title_text, career_title_text = self:_get_can_wield_display_text(can_wield)
@@ -763,12 +870,20 @@ StoreWindowItemPreview._present_item = function (self, item)
 		local matching_item_type = ItemMasterList[item_data.matching_item_key].item_type
 		type_title_text = Localize(matching_item_type)
 		disclaimer_text = Localize(item_type)
+		item_preview_environment = item_preview_environment or "weapons_default_01"
+		item_preview_object_set_name = item_preview_object_set_name or "flow_weapon_lights"
 	elseif slot_type == "hat" then
 		type_title_text = Localize(item_type)
+		item_preview_environment = item_preview_environment or "hats_default_01"
+		item_preview_object_set_name = item_preview_object_set_name or "flow_hat_lights"
 	elseif slot_type == "skin" then
 		type_title_text = Localize(item_type)
 		disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
+		item_preview_object_set_name = item_preview_object_set_name or "flow_character_lights"
 	end
+
+	self:_show_object_set(item_preview_object_set_name)
+	self:_update_environment(item_preview_environment)
 
 	local inventory_icon, display_name, _ = UIUtils.get_ui_information_from_item(item)
 
@@ -811,8 +926,14 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 			0,
 			0
 		}
-		local unique_id, invert_start_rotation, display_unit_key = nil
+		local unique_id = nil
+		local invert_start_rotation = true
+		local display_unit_key = nil
 		local use_highest_mip_levels = true
+		local camera = ScriptViewport.camera(viewport)
+
+		ScriptCamera.set_local_rotation(camera, QuaternionBox(0, 0, 1, 0):unbox())
+
 		local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels)
 		local callback = callback(self, "cb_unit_spawned_item_preview", item_previewer, item_key)
 
@@ -821,7 +942,7 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 
 		self._item_previewer = item_previewer
 	elseif slot_type == "hat" then
-		local world_previewer = MenuWorldPreviewer:new(self._ingame_ui_context, UISettings.hero_hat_camera_position_by_character)
+		local world_previewer = MenuWorldPreviewer:new(self._ingame_ui_context, UISettings.hero_hat_camera_position_by_character, "StoreWindowItemPreview")
 
 		world_previewer:on_enter(viewport_widget)
 
@@ -833,7 +954,7 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 
 		self:_spawn_hero_with_hat(world_previewer, profile_name, career_index, base_skin, item_name)
 	elseif slot_type == "skin" then
-		local world_previewer = MenuWorldPreviewer:new(self._ingame_ui_context, UISettings.hero_skin_camera_position_by_character)
+		local world_previewer = MenuWorldPreviewer:new(self._ingame_ui_context, UISettings.hero_skin_camera_position_by_character, "StoreWindowItemPreview")
 
 		world_previewer:on_enter(viewport_widget)
 
@@ -876,7 +997,7 @@ StoreWindowItemPreview._set_price = function (self, price, dlc_name, steam_itemd
 	content.present_currency = price ~= nil
 
 	if steam_itemdefid then
-		content.currency_text = self._parent:get_steam_item_price_text(steam_itemdefid)
+		content.currency_text = self._parent:get_steam_item_price_text(steam_itemdefid, content)
 		content.real_currency = true
 	elseif dlc_name and PLATFORM ~= "win32" then
 		self:_handle_platform_price_data(widget, dlc_name)
@@ -908,7 +1029,12 @@ StoreWindowItemPreview._setup_ps4_price_data = function (self, widget, price_dat
 	local spacing = 20
 	local size = content.size
 	local is_plus_price = price_data.is_plus_price
-	local has_ps_plus = Managers.account:has_access("playstation_plus")
+	local has_ps_plus = false
+
+	if not Managers.account:offline_mode() then
+		has_ps_plus = Managers.account:has_access("playstation_plus")
+	end
+
 	local original_price = price_data.original_price
 	local display_original_price = price_data.display_original_price
 	local display_price = price_data.display_price
@@ -1089,11 +1215,12 @@ StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_dat
 	content.real_currency = true
 end
 
-StoreWindowItemPreview._set_unlock_button_states = function (self, already_owned, can_afford)
-	local enabled = not already_owned and can_afford
+StoreWindowItemPreview._set_unlock_button_states = function (self, already_owned, can_afford, dlc_unlocked)
+	local enabled = not already_owned and can_afford and dlc_unlocked
 	local widget = self._top_widgets_by_name.unlock_button
 	widget.content.button_hotspot.disable_button = not enabled
 	widget.content.owned = already_owned
+	widget.content.dlc_unlocked = dlc_unlocked
 end
 
 StoreWindowItemPreview._owns_product = function (self)

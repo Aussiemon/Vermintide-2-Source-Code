@@ -28,18 +28,7 @@ dofile("scripts/settings/hit_effects/hit_effects_chaos_exalted_sorcerer")
 dofile("scripts/settings/hit_effects/hit_effects_chaos_zombie")
 dofile("scripts/settings/hit_effects/hit_effects_chaos_spawn")
 dofile("scripts/settings/breeds")
-
-for _, dlc in pairs(DLCSettings) do
-	local hit_effects_file_names = dlc.hit_effects
-
-	if hit_effects_file_names then
-		for i = 1, #hit_effects_file_names, 1 do
-			local file_name = hit_effects_file_names[i]
-
-			dofile(file_name)
-		end
-	end
-end
+DLCUtils.dofile_list("hit_effects")
 
 Dismemberments = {}
 HitTemplates = {}

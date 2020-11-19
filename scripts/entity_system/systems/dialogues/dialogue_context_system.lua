@@ -53,6 +53,10 @@ DialogueContextSystem.extensions_ready = function (self, world, unit, extension_
 end
 
 DialogueContextSystem.update = function (self, system_context, t)
+	if self._next_player_key and not Unit.alive(self._next_player_key) then
+		self._next_player_key = nil
+	end
+
 	local next_player_key, extension = next(self.unit_extension_data, self._next_player_key)
 	self._next_player_key = next_player_key
 

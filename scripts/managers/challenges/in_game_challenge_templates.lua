@@ -71,4 +71,12 @@ InGameChallengeTemplates.kill_roamers = {
 	}
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local ingame_challenge_templates = dlc.ingame_challenge_templates
+
+	if ingame_challenge_templates then
+		table.merge(InGameChallengeTemplates, ingame_challenge_templates)
+	end
+end
+
 return

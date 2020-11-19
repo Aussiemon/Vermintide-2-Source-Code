@@ -1629,7 +1629,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					local backend_id = item and item.backend_id
 
 					if item and ItemHelper.is_new_backend_id(backend_id) then
-						local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+						local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 						style.color[1] = 55 + progress * 200
 						local hotspot = content[hotspot_name]
 
@@ -3503,7 +3503,7 @@ UIWidgets.create_background = function (scenegraph_id, size, background_texture,
 	return widget
 end
 
-UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, color, frame_margins)
+UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, color, frame_margins, masked)
 	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.menu_frame_02
 	local widget = {
 		element = {}
@@ -3520,6 +3520,7 @@ UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, colo
 	}
 	local style = {
 		frame = {
+			masked = masked,
 			frame_margins = frame_margins,
 			texture_size = frame_settings.texture_size,
 			texture_sizes = frame_settings.texture_sizes,
@@ -6275,13 +6276,13 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 	}
 end
 
-UIWidgets.create_quest_bar = function (scenegraph_id, size, side_spacing)
+UIWidgets.create_quest_bar = function (scenegraph_id, size)
 	local side_detail_texture = "chain_end"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
 	local amount = 10
 	local spacing = 0
-	local multi_texture_extra_width = side_spacing * 2
+	local multi_texture_extra_width = 116
 	local multi_texture_width = size[1] + multi_texture_extra_width
 	local multi_texture_size = {
 		multi_texture_width,
@@ -6649,7 +6650,7 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size, side_spacing)
 	}
 end
 
-UIWidgets.create_summary_experience_bar = function (scenegraph_id, size)
+UIWidgets.create_summary_experience_bar = function (scenegraph_id, size, masked)
 	return {
 		element = {
 			passes = {
@@ -6686,6 +6687,7 @@ UIWidgets.create_summary_experience_bar = function (scenegraph_id, size)
 			experience_bar = {
 				color = Colors.get_color_table_with_alpha("white", 255),
 				size = size,
+				masked = masked,
 				default_size = size,
 				offset = {
 					0,
@@ -6699,6 +6701,7 @@ UIWidgets.create_summary_experience_bar = function (scenegraph_id, size)
 					132,
 					size[2]
 				},
+				masked = masked,
 				offset = {
 					0,
 					0,
@@ -7002,6 +7005,16 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 	local side_detail_texture = optional_detail_texture or "button_detail_01"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
+	local extra_detail_offset_x, extra_detail_offset_y = nil
+
+	if optional_detail_offset then
+		if type(optional_detail_offset) == "table" then
+			extra_detail_offset_x = optional_detail_offset[1]
+			extra_detail_offset_y = optional_detail_offset[2]
+		else
+			extra_detail_offset_x = optional_detail_offset
+		end
+	end
 
 	return {
 		element = {
@@ -7323,8 +7336,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 					255
 				},
 				offset = {
-					(optional_detail_offset and -optional_detail_offset) or -9,
-					size[2] / 2 - side_detail_texture_size[2] / 2,
+					(extra_detail_offset_x and -extra_detail_offset_x) or -9,
+					size[2] / 2 - side_detail_texture_size[2] / 2 + (extra_detail_offset_y or 0),
 					9
 				},
 				size = {
@@ -7340,8 +7353,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 					255
 				},
 				offset = {
-					size[1] - side_detail_texture_size[1] + (optional_detail_offset or 9),
-					size[2] / 2 - side_detail_texture_size[2] / 2,
+					size[1] - side_detail_texture_size[1] + (extra_detail_offset_x or 9),
+					size[2] / 2 - side_detail_texture_size[2] / 2 + (extra_detail_offset_y or 0),
 					9
 				},
 				size = {
@@ -14170,7 +14183,7 @@ UIWidgets.create_console_craft_button = function (scenegraph_id, icon)
 						return not content.button_hotspot.disable_button
 					end,
 					content_change_function = function (content, style)
-						local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+						local progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 						style.color[1] = 55 + progress * 200
 					end
 				}

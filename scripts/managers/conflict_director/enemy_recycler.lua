@@ -817,14 +817,6 @@ EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_eve
 		travel_dist = math.max(0, travel_dist - (activation_dist or 45))
 	end
 
-	if script_data.debug_ai_recycler then
-		local trigger_pos = MainPathUtils.point_on_mainpath(nil, travel_dist)
-
-		QuickDrawerStay:sphere(trigger_pos + Vector3(0, 0, 2), 0.5, Color(255, 0, 0))
-		QuickDrawerStay:line(trigger_pos + Vector3(0, 0, 2), boxed_pos:unbox() + Vector3(0, 0, 1), Color(255, 0, 0))
-		Debug.world_sticky_text(trigger_pos + Vector3(0, 0, 2), #main_path_events + 1, "green")
-	end
-
 	local num_events = #main_path_events
 	num_events = num_events + 1
 	main_path_events[num_events] = {

@@ -1193,6 +1193,16 @@ PowerLevelTemplates = {
 			impact = 0.05
 		}
 	},
+	default_target_linesman_burn_H = {
+		dot_template_name = "burning_1W_dot",
+		boost_curve_coefficient_headshot = 0.25,
+		boost_curve_type = "linesman_curve",
+		attack_template = "light_burning_linesman",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0.05
+		}
+	},
 	targets_linesman_H = {
 		{
 			boost_curve_coefficient_headshot = 1,
@@ -1276,6 +1286,47 @@ PowerLevelTemplates = {
 		{
 			boost_curve_type = "linesman_curve",
 			attack_template = "slashing_linesman",
+			power_distribution = {
+				attack = 0.125,
+				impact = 0.075
+			}
+		}
+	},
+	targets_linesman_burn_H = {
+		{
+			boost_curve_coefficient_headshot = 1,
+			dot_template_name = "burning_3W_dot",
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient = 2,
+			attack_template = "burning_linesman",
+			power_distribution = {
+				attack = 0.45,
+				impact = 0.275
+			}
+		},
+		{
+			dot_template_name = "burning_3W_dot",
+			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "linesman_curve",
+			attack_template = "burning_linesman",
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.15
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			dot_template_name = "burning_3W_dot",
+			attack_template = "burning_linesman",
+			power_distribution = {
+				attack = 0.15,
+				impact = 0.1
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			dot_template_name = "burning_1W_dot",
+			attack_template = "burning_linesman",
 			power_distribution = {
 				attack = 0.125,
 				impact = 0.075
@@ -1782,7 +1833,7 @@ PowerLevelTemplates = {
 	},
 	default_target_smiter_L_dual_light = {
 		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient_headshot = 1.4,
+		boost_curve_coefficient_headshot = 2,
 		attack_template = "slashing_smiter",
 		power_distribution = {
 			attack = 0.225,
@@ -1934,6 +1985,15 @@ PowerLevelTemplates = {
 		power_distribution = {
 			attack = 0.25,
 			impact = 0.95
+		}
+	},
+	default_target_smiter_burn_H_charged = {
+		boost_curve_type = "smiter_curve",
+		dot_template_name = "burning_3W_dot",
+		attack_template = "burning_smiter",
+		power_distribution = {
+			attack = 0.45,
+			impact = 0.35
 		}
 	},
 	default_target_burning_stab_smiter_M = {
@@ -3422,14 +3482,6 @@ PowerLevelTemplates = {
 	}
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local file_names = dlc.power_level_template_files_names
-
-	if file_names then
-		for _, file_name in ipairs(file_names) do
-			require(file_name)
-		end
-	end
-end
+DLCUtils.require_list("power_level_template_files_names")
 
 return

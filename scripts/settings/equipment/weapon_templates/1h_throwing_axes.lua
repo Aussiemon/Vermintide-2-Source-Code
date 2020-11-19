@@ -5,22 +5,24 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			anim_end_event = "to_noammo",
+			anim_end_event = "attack_finished",
 			kind = "thrown_projectile",
+			anim_event_no_ammo_left = "to_noammo",
 			charge_value = "arrow_hit",
 			weapon_action_hand = "right",
 			apply_recoil = true,
-			ammo_usage = 1,
 			aim_assist_max_ramp_multiplier = 0.8,
+			anim_event_last_ammo = "to_noammo",
 			aim_assist_ramp_decay_delay = 0.3,
+			ammo_usage = 1,
 			fire_time = 0.4,
 			speed = 3500,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_throw",
 			no_out_of_ammo_vo = true,
 			total_time = 0.85,
-			anim_end_event_condition_func = function (unit, end_reason, ammo_extension)
-				return ammo_extension:ammo_count() == 0 and end_reason ~= "reload"
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
 			end,
 			buff_data = {
 				{
@@ -33,7 +35,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
+					start_time = 0.35,
 					action = "weapon_reload",
 					input = "weapon_reload"
 				},
@@ -96,12 +98,13 @@ weapon_template.actions = {
 		},
 		throw_charged = {
 			reset_aim_on_attack = true,
-			attack_template = "arrow_sniper_1",
+			anim_end_event = "attack_finished",
 			kind = "thrown_projectile",
 			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "right",
+			attack_template = "arrow_sniper_1",
 			apply_recoil = true,
-			anim_end_event = "to_noammo",
+			anim_event_last_ammo = "to_noammo",
 			minimum_hold_time = 0.4,
 			ammo_usage = 1,
 			fire_time = 0.2,
@@ -110,8 +113,8 @@ weapon_template.actions = {
 			anim_event = "attack_throw",
 			no_out_of_ammo_vo = true,
 			total_time = 0.85,
-			anim_end_event_condition_func = function (unit, end_reason, ammo_extension)
-				return ammo_extension:ammo_count() == 0
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {
 				{
@@ -332,15 +335,7 @@ weapon_template.actions = {
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
+	action_wield = ActionTemplates.wield
 }
 weapon_template.ammo_data = {
 	ammo_hand = "right",
@@ -377,7 +372,6 @@ weapon_template.default_spread_template = "throwing_axe"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_dw_thrown_axe_01_t1/wpn_dw_thrown_axe_01_t1"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_throwing_axes"
-weapon_template.wield_anim_not_loaded = "to_throwing_axe"
 weapon_template.wield_anim = "to_throwing_axe"
 weapon_template.wield_anim_no_ammo = "to_throwing_axe_noammo"
 weapon_template.crosshair_style = "projectile"

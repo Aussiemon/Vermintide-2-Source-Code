@@ -237,6 +237,40 @@ HordeCompositions = {
 					}
 				}
 			}
+		},
+		{
+			{
+				name = "plain",
+				weight = 7,
+				breeds = {
+					"beastmen_gor",
+					{
+						10,
+						11
+					},
+					"beastmen_ungor",
+					{
+						17,
+						18
+					}
+				}
+			},
+			{
+				name = "mixed",
+				weight = 3,
+				breeds = {
+					"beastmen_gor",
+					{
+						15,
+						16
+					},
+					"beastmen_ungor",
+					{
+						12,
+						13
+					}
+				}
+			}
 		}
 	},
 	event_small_beastmen = {
@@ -19709,6 +19743,24 @@ for _, dlc in pairs(DLCSettings) do
 			for name, composition in pairs(horde_compositions) do
 				HordeCompositions[name] = composition
 			end
+		end
+	end
+end
+
+for horde_composition_name, horde_composition in pairs(HordeCompositions) do
+	local max_composition = nil
+	local already_printed = false
+
+	for i = 1, #Difficulties, 1 do
+		local composition_for_difficulty = horde_composition[i]
+
+		if composition_for_difficulty then
+			max_composition = composition_for_difficulty
+		else
+			fassert(max_composition, horde_composition_name .. " does not define any composition for any difficulty")
+
+			already_printed = already_printed or true
+			horde_composition[i] = max_composition
 		end
 	end
 end

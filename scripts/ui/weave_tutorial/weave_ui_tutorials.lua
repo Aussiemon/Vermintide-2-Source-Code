@@ -77,7 +77,7 @@ WeaveUITutorials.twitch_not_supported_for_weaves = {
 	popup_title = "menu_weave_play_title",
 	optional_button_2 = "input_description_disconnect",
 	onboarding_step = 0,
-	popup_body = (PLATFORM ~= "xb1" and "menu_weave_area_locked_twitch_body") or "menu_weave_area_locked_mixer_body",
+	popup_body = "menu_weave_area_locked_twitch_body",
 	optional_button_2_func = function (self)
 		local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
@@ -99,7 +99,7 @@ WeaveUITutorials.twitch_not_supported_for_weaves_client = {
 	ui_onboarding_bit = 0,
 	onboarding_step = 0,
 	popup_title = "menu_weave_play_title",
-	popup_body = (PLATFORM ~= "xb1" and "menu_weave_area_locked_twitch_client_body") or "menu_weave_area_locked_mixer_client_body"
+	popup_body = "menu_weave_area_locked_twitch_client_body"
 }
 WeaveUITutorials.chat_info = {
 	ui_onboarding_bit = 0,

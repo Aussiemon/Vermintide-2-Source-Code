@@ -336,7 +336,7 @@ local function create_window(scenegraph_id, size)
 				if not content.text_field_active then
 					style.caret_color[1] = 0
 				else
-					style.caret_color[1] = 128 + math.sin(Application.time_since_launch() * 5) * 128
+					style.caret_color[1] = 128 + math.sin(Managers.time:time("ui") * 5) * 128
 				end
 
 				return not Managers.twitch:is_connected() and not Managers.twitch:is_connecting()
@@ -351,7 +351,7 @@ local function create_window(scenegraph_id, size)
 					return
 				end
 
-				local timer = math.ceil(Application.time_since_launch() * 10)
+				local timer = math.ceil(Managers.time:time("ui") * 10)
 				local dots = timer % 5
 				local dot_str = ""
 
@@ -916,7 +916,7 @@ local function connecting_content_check_function(content)
 	return Managers.twitch:is_connecting() or not Managers.twitch:is_connected()
 end
 
-local streaming_desc_str = (PLATFORM ~= "xb1" and "start_game_window_twitch_connect_description") or "start_game_window_mixer_connect_description"
+local streaming_desc_str = "start_game_window_twitch_connect_description"
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	background_mask = UIWidgets.create_simple_texture("mask_rect", "window"),
