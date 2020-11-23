@@ -770,6 +770,12 @@ achievements.cog_hammer_cliff_push = {
 				end
 
 				local attacker_unit = recent_damages[DamageDataIndex.ATTACKER]
+				local local_player_unit = Managers.player:local_player().player_unit
+
+				if not attacker_unit or local_player_unit ~= attacker_unit then
+					return
+				end
+
 				local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 
 				if not career_extension or career_extension:career_name() ~= "dr_engineer" then

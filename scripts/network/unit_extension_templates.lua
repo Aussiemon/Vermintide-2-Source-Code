@@ -1112,10 +1112,12 @@ local unit_templates = {
 		go_type = "ai_unit_pack_master",
 		self_owned_extensions = {
 			"AIInventoryExtension",
+			"GenericUnitAimExtension",
 			"PingTargetExtension"
 		},
 		husk_extensions = {
 			"AIInventoryExtension",
+			"GenericUnitAimExtension",
 			"PingTargetExtension"
 		}
 	},

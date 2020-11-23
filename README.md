@@ -1,10 +1,11 @@
 # Vermintide 2 Source Code
 
-Versions 'Closed-Beta Phase 2' to 3.4 Anniversary and Associated Bundles
+Versions 'Closed-Beta Phase 2' to 3.4.0.1 Anniversary and Associated Bundles
 -------------------------------------------------------------
 
 Date      |  Patch  | Notes
 --------: | :-----: | :--------------
+11-20-20   |  3.4.0.1  | .Patch_041
 11-19-20   |  3.4  | .Patch_041
 10-21-20   |  3.3  | .Patch_041 (Anniversary)
 10-13-20   |  3.3  | .Patch_041

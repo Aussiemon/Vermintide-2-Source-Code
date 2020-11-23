@@ -4,6 +4,7 @@ require("scripts/ui/views/cutscene_overlay_ui")
 
 local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
 local penny_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_penny_intro")
+local cog_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_cog_intro")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -821,7 +822,8 @@ cog_intro_video = {
 	sound_start = "Play_vermintide_2_cog_intro",
 	scenegraph_id = "splash_video",
 	material_name = "vermintide_2_cog_intro",
-	sound_stop = "Stop_vermintide_2_cog_intro"
+	sound_stop = "Stop_vermintide_2_cog_intro",
+	subtitle_template_settings = cog_intro_video_subtitle_settings
 }
 
 local function get_slider_progress(min, max, value)

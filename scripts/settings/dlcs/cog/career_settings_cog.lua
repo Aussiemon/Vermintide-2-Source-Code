@@ -48,7 +48,7 @@ CareerSettings.dr_engineer = {
 			item_name = "bardin_engineer_career_skill_weapon_preview"
 		},
 		{
-			item_name = "ironbreaker_hat_0000"
+			item_name = "engineer_hat_0000"
 		}
 	},
 	is_unlocked_function = function (career, hero_name, hero_level)

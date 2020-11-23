@@ -134,7 +134,7 @@ local talent_buff_templates = {
 			{
 				event = "on_ability_recharged",
 				event_buff = true,
-				buff_func = "remove_buff_stack",
+				buff_func = "bardin_engineer_remove_pump_stacks",
 				remove_buff_stack_data = {
 					{
 						buff_to_remove = "bardin_engineer_pump_buff",

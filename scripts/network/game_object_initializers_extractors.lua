@@ -577,6 +577,7 @@ go_type_table = {
 				breed_name = NetworkLookup.breeds[breed.name],
 				uniform_scale = size_variation,
 				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
+				aim_target = Vector3.zero(),
 				bt_action_name = NetworkLookup.bt_action_names["n/a"],
 				side_id = side_id
 			}
@@ -2936,6 +2937,10 @@ go_type_table = {
 				dialogue_system = {
 					faction = "enemy",
 					breed_name = breed_name
+				},
+				aim_system = {
+					template = "pack_master",
+					is_husk = true
 				},
 				proximity_system = {
 					breed = breed

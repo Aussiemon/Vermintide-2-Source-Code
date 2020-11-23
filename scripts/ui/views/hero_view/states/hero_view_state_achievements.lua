@@ -1849,7 +1849,11 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 
 				if self:_is_button_hover(widget) then
 					widget.content.reward_button_hotspot.draw = true
-					widget.content.dlc_lock_hotspot.draw = true
+					local dlc_lock_hotspot = widget.content.dlc_lock_hotspot
+
+					if dlc_lock_hotspot then
+						dlc_lock_hotspot.draw = true
+					end
 				end
 
 				if self:_is_button_pressed(widget) then

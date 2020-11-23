@@ -278,7 +278,7 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 	end
 
 	local event_text, localization_parameters, social_wheel_event_settings = nil
-	local valid_social_wheel_id = social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"]
+	local valid_social_wheel_id = social_wheel_event_id and social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"]
 
 	if valid_social_wheel_id then
 		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
@@ -490,7 +490,7 @@ PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, positio
 		return
 	end
 
-	if not ping_icon and social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"] then
+	if not ping_icon and social_wheel_event_id and social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"] then
 		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
 		local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event_name]
 		ping_icon = social_wheel_event_settings.icon
@@ -616,7 +616,7 @@ end
 PingSystem._play_ping_vo = function (self, pinger_unit, ping_type, social_wheel_event_id)
 	local vo_event_name = nil
 
-	if social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"] then
+	if social_wheel_event_id and social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"] then
 		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
 		local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event_name]
 		vo_event_name = social_wheel_event_settings.vo_event_name
