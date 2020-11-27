@@ -349,13 +349,21 @@ local function create_weapon_slot_widget(scenegraph_id)
 					style_id = "input_text",
 					pass_type = "text",
 					text_id = "input_text",
-					retained_mode = RETAINED_MODE_ENABLED
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						content.gamepad_active = Managers.input:is_device_active("gamepad")
+
+						return not content.gamepad_active
+					end
 				},
 				{
 					style_id = "input_text_shadow",
 					pass_type = "text",
 					text_id = "input_text",
-					retained_mode = RETAINED_MODE_ENABLED
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return not content.gamepad_active
+					end
 				}
 			}
 		},
@@ -1615,7 +1623,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 				}
 			},
 			reload_button = {
-				vertical_alignment = "center",
+				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
 				color = {
 					255,
@@ -1625,7 +1633,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 				},
 				offset = {
 					0,
-					100,
+					140,
 					20
 				},
 				texture_size = button_size

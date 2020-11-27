@@ -155,7 +155,7 @@ ItemMasterList.frame_0099 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	required_dlc = "lake_upgrade",
+	required_dlc = "cog_upgrade",
 	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0100 = {
@@ -168,7 +168,7 @@ ItemMasterList.frame_0100 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	required_dlc = "lake_upgrade",
+	required_dlc = "cog_upgrade",
 	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0101 = {
@@ -181,7 +181,7 @@ ItemMasterList.frame_0101 = {
 	information_text = "information_text_frame",
 	rarity = "promo",
 	item_type = "frame",
-	required_dlc = "lake_upgrade",
+	required_dlc = "cog_upgrade",
 	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.dr_2h_cog_hammer = {

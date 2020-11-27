@@ -311,7 +311,7 @@ local weapon_template = {
 		max_ammo = 24,
 		ammo_per_clip = 6,
 		play_reload_anim_on_wield_reload = true,
-		reload_time = 1.75,
+		reload_time = 1.55,
 		reload_on_ammo_pickup = true,
 		should_update_anim_ammo = true
 	},

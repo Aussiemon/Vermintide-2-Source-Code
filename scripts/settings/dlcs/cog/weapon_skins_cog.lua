@@ -17,12 +17,15 @@ local skins = {
 		data = {
 			description = "dr_cog_hammer_skin_02_description",
 			rarity = "rare",
+			right_hand_unit = "units/weapons/player/wpn_dw_coghammer_01_t2/wpn_dw_coghammer_01_t2",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_2h_hammers",
 			inventory_icon = "icon_wpn_dw_coghammer_01_t2",
 			display_name = "dr_cog_hammer_skin_02_name",
-			right_hand_unit = "units/weapons/player/wpn_dw_coghammer_01_t2/wpn_dw_coghammer_01_t2",
-			template = "two_handed_cog_hammers_template_1"
+			template = "two_handed_cog_hammers_template_1",
+			display_unit = "units/weapons/weapon_display/display_2h_hammers",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -30,12 +33,15 @@ local skins = {
 		data = {
 			description = "dr_cog_hammer_skin_02_magic_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_dw_coghammer_01_t2/wpn_dw_coghammer_01_t2_magic",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_2h_hammers",
 			inventory_icon = "icon_wpn_dw_coghammer_01_t2_magic",
 			display_name = "dr_cog_hammer_skin_02_magic_01_name",
-			right_hand_unit = "units/weapons/player/wpn_dw_coghammer_01_t2/wpn_dw_coghammer_01_t2_magic",
-			template = "two_handed_cog_hammers_template_1"
+			template = "two_handed_cog_hammers_template_1",
+			display_unit = "units/weapons/weapon_display/display_2h_hammers",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -70,12 +76,15 @@ local skins = {
 		data = {
 			description = "dr_cog_hammer_skin_02_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_dw_coghammer_01_t2/wpn_dw_coghammer_01_t2_runed",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_2h_hammers",
 			inventory_icon = "icon_wpn_dw_coghammer_01_t2_runed_01",
 			display_name = "dr_cog_hammer_skin_02_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_dw_coghammer_01_t2/wpn_dw_coghammer_01_t2_runed",
-			template = "two_handed_cog_hammers_template_1"
+			template = "two_handed_cog_hammers_template_1",
+			display_unit = "units/weapons/weapon_display/display_2h_hammers",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -89,7 +98,10 @@ local skins = {
 			display_name = "dr_cog_hammer_skin_02_runed_02_name",
 			template = "two_handed_cog_hammers_template_1",
 			display_unit = "units/weapons/weapon_display/display_2h_hammers",
-			material_settings = WeaponMaterialSettingsTemplates.purple_glow
+			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -110,12 +122,15 @@ local skins = {
 		data = {
 			description = "dr_steam_pistol_skin_02_description",
 			rarity = "rare",
+			right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
 			inventory_icon = "icon_wpn_dw_steam_pistol_01_t2",
 			display_name = "dr_steam_pistol_skin_02_name",
-			right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2",
-			template = "heavy_steam_pistol_template_1"
+			template = "heavy_steam_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -123,12 +138,15 @@ local skins = {
 		data = {
 			description = "dr_steam_pistol_01_t2_magic_01_desciption",
 			rarity = "magic",
+			right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2_magic_01",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
 			inventory_icon = "icon_wpn_dw_steam_pistol_01_t2_magic",
 			display_name = "dr_steam_pistol_01_t2_magic_01_name",
-			right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2_magic_01",
-			template = "heavy_steam_pistol_template_1"
+			template = "heavy_steam_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -163,12 +181,15 @@ local skins = {
 		data = {
 			description = "dr_steam_pistol_skin_02_runed_01_description",
 			rarity = "unique",
+			right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2_runed_01",
 			hud_icon = "weapon_generic_icon_staff_3",
-			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
 			inventory_icon = "icon_wpn_dw_steam_pistol_01_t2_runed_01",
 			display_name = "dr_steam_pistol_skin_02_runed_01_name",
-			right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2_runed_01",
-			template = "heavy_steam_pistol_template_1"
+			template = "heavy_steam_pistol_template_1",
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	},
 	{
@@ -182,7 +203,10 @@ local skins = {
 			display_name = "dr_steam_pistol_skin_02_runed_02_name",
 			template = "heavy_steam_pistol_template_1",
 			display_unit = "units/weapons/weapon_display/display_drakefire_pistols",
-			material_settings = WeaponMaterialSettingsTemplates.purple_glow
+			material_settings = WeaponMaterialSettingsTemplates.purple_glow,
+			action_anim_overrides = {
+				animation_variation_id = 1
+			}
 		}
 	}
 }

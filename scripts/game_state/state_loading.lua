@@ -1564,11 +1564,12 @@ StateLoading.on_exit = function (self, application_shutdown)
 
 	self._should_start_breed_loading = nil
 	local skip_signin = self.parent.loading_context.skip_signin
+	local release_level_resources = false
 
-	if application_shutdown then
+	if application_shutdown or self._teardown_network then
 		self:_destroy_network(application_shutdown)
-	elseif self._teardown_network then
-		self:_destroy_network()
+
+		release_level_resources = true
 	else
 		local loading_context = {
 			level_transition_handler = self._level_transition_handler,
@@ -1646,6 +1647,8 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 
 	if self._ingame_level_object then
+		Level.finish_spawn_time_sliced(self._ingame_level_object)
+		Level.trigger_level_shutdown(self._ingame_level_object)
 		ScriptWorld.destroy_level_from_reference(self._ingame_world_object, self._ingame_level_object)
 
 		self._ingame_level_object = nil
@@ -1722,6 +1725,14 @@ StateLoading.on_exit = function (self, application_shutdown)
 
 	if not Managers.play_go:installed() then
 		Managers.play_go:set_install_speed("slow")
+	end
+
+	local level_transition_handler = self._level_transition_handler
+
+	if level_transition_handler and release_level_resources then
+		level_transition_handler:release_level_resources(self:get_current_level_keys())
+
+		self._level_transition_handler = nil
 	end
 end
 
@@ -1995,10 +2006,6 @@ StateLoading._destroy_network = function (self, application_shutdown)
 
 	enemy_package_loader:unload_enemy_packages(application_shutdown)
 	enemy_package_loader:network_context_destroyed()
-	level_transition_handler:release_level_resources(self:get_current_level_keys())
-
-	self._level_transition_handler = nil
-
 	Managers.party:network_context_destroyed()
 	Managers.mechanism:network_context_destroyed()
 

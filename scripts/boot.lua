@@ -376,7 +376,7 @@ Boot.booting_update = function (self, dt)
 			Boot.startup_state = "ready"
 		end
 	elseif Boot.startup_state == "ready" then
-		Crashify.print_property("project", "vermintide 2 carousel beta")
+		Crashify.print_property("project", "vermintide 2")
 		Crashify.print_property("build", BUILD)
 		Crashify.print_property("platform", PLATFORM)
 		Crashify.print_property("dedicated_server", DEDICATED_SERVER)
@@ -804,8 +804,11 @@ Boot.game_update = function (self, real_world_dt)
 end
 
 Boot.shutdown = function (self, dt)
-	if Boot.has_booted then
+	if self._machine then
 		self._machine:destroy(true)
+	end
+
+	if Managers then
 		Managers:destroy()
 	end
 

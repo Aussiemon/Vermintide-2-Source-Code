@@ -7,6 +7,11 @@ local extensions = {
 	"AIBotGroupExtension",
 	"BotBreakableExtension"
 }
+local bot_threat_queue_position = 1
+local bot_threat_queue_shape = 2
+local bot_threat_queue_size = 3
+local bot_threat_queue_rotation = 4
+local bot_threat_queue_threat_duration = 5
 AIBotGroupExtension = class(AIBotGroupExtension)
 
 AIBotGroupExtension.init = function (self)
@@ -68,6 +73,7 @@ AIBotGroupSystem.init = function (self, context, system_name)
 		local num_sides = #sides
 		self._last_move_target_unit = Script.new_array(num_sides)
 		self._last_move_target_rotations = {}
+		self._bot_threat_queue = {}
 		local mule_pickups = {}
 
 		for _, pickup_settings in pairs(AllPickups) do
@@ -142,7 +148,9 @@ AIBotGroupSystem.init = function (self, context, system_name)
 		self._update_pickups_at = -math.huge
 		self._used_covers = {}
 		self._pathing_points = {}
-		local rpcs = {}
+		local rpcs = {
+			"rpc_bot_create_threat_oobb"
+		}
 
 		for _, order_data in pairs(AIBotGroupSystem.bot_orders) do
 			rpcs[#rpcs + 1] = order_data.rpc_type
@@ -252,6 +260,20 @@ AIBotGroupSystem.update = function (self, context, t)
 
 	self._t = t
 	local dt = context.dt
+	local bot_threat_queue = self._bot_threat_queue
+
+	for i = 1, #bot_threat_queue, 1 do
+		local threat = bot_threat_queue[i]
+		local threat_position = threat[bot_threat_queue_position]:unbox()
+		local shape = threat[bot_threat_queue_shape]
+		local threat_size = threat[bot_threat_queue_size]:unbox()
+		local threat_rotation = threat[bot_threat_queue_rotation]:unbox()
+		local threat_duration = threat[bot_threat_queue_threat_duration]
+
+		self:aoe_threat_created(threat_position, shape, threat_size, threat_rotation, threat_duration)
+
+		bot_threat_queue[i] = nil
+	end
 
 	self:_update_proximity_bot_breakables(t)
 	self:_update_urgent_targets(dt, t)
@@ -350,6 +372,24 @@ AIBotGroupSystem.rpc_bot_lookup_order = function (self, channel_id, order_type_i
 	if Unit.alive(bot_unit) and ordering_player then
 		self:order(order_type, bot_unit, target, ordering_player)
 	end
+end
+
+AIBotGroupSystem.queue_aoe_threat = function (self, position, shape, size, rotation, duration)
+	if position and shape and size and rotation and duration then
+		local bot_threat_queue = self._bot_threat_queue
+		local new_threat = {
+			Vector3Box(position),
+			shape,
+			Vector3Box(size),
+			QuaternionBox(rotation),
+			duration
+		}
+		bot_threat_queue[#bot_threat_queue + 1] = new_threat
+	end
+end
+
+AIBotGroupSystem.rpc_bot_create_threat_oobb = function (self, channel_id, threat_position, threat_rotation, threat_size, threat_duration)
+	self:queue_aoe_threat(threat_position, "oobb", threat_size, threat_rotation, threat_duration)
 end
 
 AIBotGroupSystem._order_ammo_pickup = function (self, bot_unit, pickup_unit, ordering_player)

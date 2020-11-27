@@ -31,27 +31,51 @@ function flow_callback_disable_animation_state_machine(params)
 end
 
 function flow_callback_enable_actor_draw(params)
-	Managers.state.debug:enable_actor_draw(params.actor, params.color)
+	local debug_manager = Managers.state.debug
+
+	if debug_manager then
+		debug_manager:enable_actor_draw(params.actor, params.color)
+	end
 end
 
 function flow_callback_disable_actor_draw(params)
-	Managers.state.debug:disable_actor_draw(params.actor)
+	local debug_manager = Managers.state.debug
+
+	if debug_manager then
+		debug_manager.debug:disable_actor_draw(params.actor)
+	end
 end
 
 function flow_callback_set_start_area(params)
-	Managers.state.entity:system("round_started_system"):set_start_area(params.volume_name)
+	local entity_manager = Managers.state.entity
+
+	if entity_manager then
+		entity_manager:system("round_started_system"):set_start_area(params.volume_name)
+	end
 end
 
 function flow_callback_add_coop_spawn_point(params)
-	Managers.state.game_mode:flow_callback_add_spawn_point(params.unit)
+	local game_mode = Managers.state.game_mode
+
+	if game_mode then
+		game_mode:flow_callback_add_spawn_point(params.unit)
+	end
 end
 
 function flow_callback_add_game_mode_spawn_point(params)
-	Managers.state.game_mode:flow_callback_add_game_mode_specific_spawn_point(params.unit)
+	local game_mode = Managers.state.game_mode
+
+	if game_mode then
+		game_mode:flow_callback_add_game_mode_specific_spawn_point(params.unit)
+	end
 end
 
 function flow_callback_set_checkpoint(params)
-	Managers.state.spawn:flow_callback_set_checkpoint(params.no_spawn_volume, params.safe_zone_volume, params.unit1, params.unit2, params.unit3, params.unit4)
+	local spawn = Managers.state.spawn
+
+	if spawn then
+		spawn:flow_callback_set_checkpoint(params.no_spawn_volume, params.safe_zone_volume, params.unit1, params.unit2, params.unit3, params.unit4)
+	end
 end
 
 function flow_callback_activate_spawning(params)
@@ -251,16 +275,20 @@ end
 
 function flow_query_number_of_active_players(params)
 	local output_value = 0
-	local side = Managers.state.side:get_side_from_name("heroes")
-	local player_units = side.PLAYER_UNITS
-	local num_player_units = #player_units
+	local side_manager = Managers.state.side
 
-	for i = 1, num_player_units, 1 do
-		local unit = player_units[i]
-		local status_extension = ScriptUnit.extension(unit, "status_system")
+	if side_manager then
+		local side = side_manager:get_side_from_name("heroes")
+		local player_units = side.PLAYER_UNITS
+		local num_player_units = #player_units
 
-		if not status_extension:is_disabled() then
-			output_value = output_value + 1
+		for i = 1, num_player_units, 1 do
+			local unit = player_units[i]
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
+			if not status_extension:is_disabled() then
+				output_value = output_value + 1
+			end
 		end
 	end
 
@@ -282,36 +310,48 @@ end
 
 function flow_callback_idle_camera_dummy_spawned(params)
 	local entity_manager = Managers.state.entity
-	local camera_system = entity_manager:system("camera_system")
 
-	camera_system:idle_camera_dummy_spawned(params.unit)
+	if entity_manager then
+		local camera_system = entity_manager:system("camera_system")
+
+		camera_system:idle_camera_dummy_spawned(params.unit)
+	end
 end
 
 function flow_callback_pickup_gizmo_spawned(params)
 	local entity_manager = Managers.state.entity
-	local pickup_system = entity_manager:system("pickup_system")
 
-	if pickup_system then
-		pickup_system:pickup_gizmo_spawned(params.unit)
+	if entity_manager then
+		local pickup_system = entity_manager:system("pickup_system")
+
+		if pickup_system then
+			pickup_system:pickup_gizmo_spawned(params.unit)
+		end
 	end
 end
 
 function flow_callback_weave_item_gizmo_spawned(params)
 	local entity_manager = Managers.state.entity
-	local weave_item_spawner_system = entity_manager:system("weave_item_spawner_system")
 
-	if weave_item_spawner_system then
-		weave_item_spawner_system:item_gizmo_spawned(params.unit)
+	if entity_manager then
+		local weave_item_spawner_system = entity_manager:system("weave_item_spawner_system")
+
+		if weave_item_spawner_system then
+			weave_item_spawner_system:item_gizmo_spawned(params.unit)
+		end
 	end
 end
 
 function flow_callback_versus_item_gizmo_spawned(params)
 	if Managers.mechanism:current_mechanism_name() == "versus" then
 		local entity_manager = Managers.state.entity
-		local versus_item_spawner_system = entity_manager:system("versus_item_spawner_system")
 
-		if versus_item_spawner_system then
-			versus_item_spawner_system:item_gizmo_spawned(params.unit)
+		if entity_manager then
+			local versus_item_spawner_system = entity_manager:system("versus_item_spawner_system")
+
+			if versus_item_spawner_system then
+				versus_item_spawner_system:item_gizmo_spawned(params.unit)
+			end
 		end
 	end
 end
@@ -1104,72 +1144,116 @@ end
 flow_cb_set_flow_object_set_enabled = flow_callback_set_flow_object_set_enabled
 
 function flow_callback_create_networked_flow_state(params)
-	local created, out_value = Managers.state.networked_flow_state:flow_cb_create_state(params.unit, params.state_name, params.in_value, params.client_state_changed_event, params.client_hot_join_event, params.is_game_object)
+	local networked_flow_state = Managers.state.networked_flow_state
 
-	if created then
-		flow_return_table.created = created
-		flow_return_table.out_value = out_value
+	if networked_flow_state then
+		local created, out_value = networked_flow_state:flow_cb_create_state(params.unit, params.state_name, params.in_value, params.client_state_changed_event, params.client_hot_join_event, params.is_game_object)
 
-		return flow_return_table
+		if created then
+			flow_return_table.created = created
+			flow_return_table.out_value = out_value
+
+			return flow_return_table
+		end
 	end
 end
 
 function flow_callback_change_networked_flow_state(params)
-	local changed, out_value = Managers.state.networked_flow_state:flow_cb_change_state(params.unit, params.state_name, params.in_value)
+	local networked_flow_state = Managers.state.networked_flow_state
 
-	if changed then
-		flow_return_table.changed = changed
+	if networked_flow_state then
+		local changed, out_value = networked_flow_state:flow_cb_change_state(params.unit, params.state_name, params.in_value)
+
+		if changed then
+			flow_return_table.changed = changed
+			flow_return_table.out_value = out_value
+
+			return flow_return_table
+		end
+	end
+end
+
+function flow_callback_get_networked_flow_state(params)
+	local networked_flow_state = Managers.state.networked_flow_state
+
+	if networked_flow_state then
+		local out_value = networked_flow_state:flow_cb_get_state(params.unit, params.state_name)
 		flow_return_table.out_value = out_value
 
 		return flow_return_table
 	end
 end
 
-function flow_callback_get_networked_flow_state(params)
-	local out_value = Managers.state.networked_flow_state:flow_cb_get_state(params.unit, params.state_name)
-	flow_return_table.out_value = out_value
-
-	return flow_return_table
-end
-
 function flow_callback_client_networked_flow_state_changed(params)
-	local out_value = Managers.state.networked_flow_state:flow_cb_get_state(params.unit, params.state_name)
-	flow_return_table.changed = true
-	flow_return_table.out_value = out_value
+	local networked_flow_state = Managers.state.networked_flow_state
 
-	return flow_return_table
+	if networked_flow_state then
+		local out_value = networked_flow_state:flow_cb_get_state(params.unit, params.state_name)
+		flow_return_table.changed = true
+		flow_return_table.out_value = out_value
+
+		return flow_return_table
+	end
 end
 
 function flow_callback_client_networked_flow_state_set(params)
-	local out_value = Managers.state.networked_flow_state:flow_cb_get_state(params.unit, params.state_name)
-	flow_return_table.set = true
-	flow_return_table.out_value = out_value
+	local networked_flow_state = Managers.state.networked_flow_state
 
-	return flow_return_table
+	if networked_flow_state then
+		local out_value = networked_flow_state:flow_cb_get_state(params.unit, params.state_name)
+		flow_return_table.set = true
+		flow_return_table.out_value = out_value
+
+		return flow_return_table
+	end
 end
 
 function flow_callback_create_networked_story(params)
-	return Managers.state.networked_flow_state:flow_cb_create_story(params)
+	local networked_flow_state = Managers.state.networked_flow_state
+
+	if networked_flow_state then
+		return networked_flow_state:flow_cb_create_story(params)
+	end
 end
 
 function flow_callback_networked_story_client_call(params)
-	return Managers.state.networked_flow_state:flow_cb_networked_story_client_call(params)
+	local networked_flow_state = Managers.state.networked_flow_state
+
+	if networked_flow_state then
+		return networked_flow_state:flow_cb_networked_story_client_call(params)
+	end
 end
 
 function flow_callback_has_stopped_networked_story(params)
-	return Managers.state.networked_flow_state:flow_cb_has_stopped_networked_story(params)
+	local networked_flow_state = Managers.state.networked_flow_state
+
+	if networked_flow_state then
+		return networked_flow_state:flow_cb_has_stopped_networked_story(params)
+	end
 end
 
 function flow_callback_has_played_networked_story(params)
-	return Managers.state.networked_flow_state:flow_cb_has_played_networked_story(params)
+	local networked_flow_state = Managers.state.networked_flow_state
+
+	if networked_flow_state then
+		return networked_flow_state:flow_cb_has_played_networked_story(params)
+	end
 end
 
 function flow_callback_play_networked_story(params)
-	return Managers.state.networked_flow_state:flow_cb_play_networked_story(params)
+	local networked_flow_state = Managers.state.networked_flow_state
+
+	if networked_flow_state then
+		return networked_flow_state:flow_cb_play_networked_story(params)
+	end
 end
 
 function flow_callback_stop_networked_story(params)
-	return Managers.state.networked_flow_state:flow_cb_stop_networked_story(params)
+	local networked_flow_state = Managers.state.networked_flow_state
+
+	if networked_flow_state then
+		return networked_flow_state:flow_cb_stop_networked_story(params)
+	end
 end
 
 function flow_callback_invert_bool(params)
@@ -2035,8 +2119,11 @@ function flow_callback_set_wwise_elevation_alignment(params)
 	local elevation_scale = params.scale
 	local elevation_min = params.min
 	local elevation_max = params.max
+	local camera_manager = Managers.state.camera
 
-	Managers.state.camera:set_elevation_offset(elevation_offset, elevation_scale, elevation_min, elevation_max)
+	if camera_manager then
+		camera_manager:set_elevation_offset(elevation_offset, elevation_scale, elevation_min, elevation_max)
+	end
 end
 
 function flow_callback_kill_player_bot_ai(params)

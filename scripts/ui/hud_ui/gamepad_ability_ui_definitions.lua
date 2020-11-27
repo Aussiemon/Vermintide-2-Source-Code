@@ -121,14 +121,16 @@ local function create_cooldown_widget(scenegraph_id, amount)
 	return definition
 end
 
-local texture_by_career = {
+local career_specific_data = {
 	dr_engineer = {
-		ability_effect = "gamepad_ability_effect_cog",
-		ability_top_texture_id = "icon_rotarygun"
+		always_show_activated_ability_input = true,
+		ability_top_texture_id = "icon_rotarygun",
+		ability_effect = "gamepad_ability_effect_cog"
 	},
 	default = {
-		ability_effect = "gamepad_ability_effect",
-		ability_top_texture_id = "ability_glow"
+		always_show_activated_ability_input = false,
+		ability_top_texture_id = "ability_glow",
+		ability_effect = "gamepad_ability_effect"
 	}
 }
 
@@ -146,6 +148,7 @@ local function create_ability_widget()
 						return not content.on_cooldown
 					end,
 					content_change_function = function (content, style)
+						content.gamepad_active = Managers.input:is_device_active("gamepad")
 						local player = Managers.player:local_player()
 						local player_unit = player and player.player_unit
 
@@ -155,10 +158,10 @@ local function create_ability_widget()
 
 						local career_ext = ScriptUnit.extension(player_unit, "career_system")
 						local career_name = career_ext:career_name()
-						local career_textures = texture_by_career[career_name] or texture_by_career.default
+						local career_data = career_specific_data[career_name] or career_specific_data.default
 
-						for texture_id, texture_name in pairs(career_textures) do
-							content[texture_id] = texture_name
+						for content_id, content_value in pairs(career_data) do
+							content[content_id] = content_value
 						end
 					end
 				},
@@ -177,7 +180,7 @@ local function create_ability_widget()
 					texture_id = "activate_ability_id",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return not content.on_cooldown and content.activate_ability_id
+						return (not content.on_cooldown or content.always_show_activated_ability_input) and content.activate_ability_id and content.gamepad_active
 					end
 				},
 				{
@@ -186,7 +189,7 @@ local function create_ability_widget()
 					text_id = "input_text",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return not content.on_cooldown
+						return (not content.on_cooldown or content.always_show_activated_ability_input) and not content.gamepad_active
 					end
 				},
 				{
@@ -195,7 +198,7 @@ local function create_ability_widget()
 					text_id = "input_text",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return not content.on_cooldown
+						return (not content.on_cooldown or content.always_show_activated_ability_input) and not content.gamepad_active
 					end
 				}
 			}

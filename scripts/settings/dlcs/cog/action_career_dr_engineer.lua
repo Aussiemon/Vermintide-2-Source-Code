@@ -1,4 +1,9 @@
 ActionCareerDREngineer = class(ActionCareerDREngineer, ActionRangedBase)
+local BOT_THREAT_REFRESH_TIME = 1
+local BOT_THREAT_DURATION = 1.2
+local BOT_THREAT_AREA_W = 3
+local BOT_THREAT_AREA_H = 2
+local BOT_THREAT_AREA_D = 6
 local MAX_SHOTS_PER_FRAME = 3
 local unit_animation_set_variable = Unit.animation_set_variable
 local unit_set_flow_variable = Unit.set_flow_variable
@@ -11,10 +16,12 @@ ActionCareerDREngineer.init = function (self, world, item_name, is_server, owner
 	self.talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+	self.ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 	self._attack_speed_anim_var_1p = Unit.animation_find_variable(first_person_unit, "attack_speed")
 	self._attack_speed_anim_var_3p = Unit.animation_find_variable(owner_unit, "attack_speed")
 	self._barrel_spin_anim_var_1p = Unit.animation_find_variable(first_person_unit, "barrel_spin_speed")
 	self._time_to_shoot = 0
+	self._last_avoidance_t = 0
 end
 
 ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
@@ -71,6 +78,7 @@ ActionCareerDREngineer._waiting_to_shoot = function (self, t)
 		local ability_charge = max_cooldown - current_cooldown
 
 		self:_update_attack_speed(t)
+		self:_update_bot_avoidance(t)
 
 		local fire_rounds_per_second = self._current_rps * self._attack_speed_mod
 		local max_shots = ability_charge / self._shot_cost
@@ -191,6 +199,23 @@ ActionCareerDREngineer._add_bullet_trail = function (self, end_position, lifetim
 	unit_set_flow_variable(weapon_unit, "trail_life", lifetime)
 	unit_flow_event(weapon_unit, "lua_bullet_trail")
 	unit_flow_event(weapon_unit, "lua_bullet_trail_set")
+end
+
+ActionCareerDREngineer._update_bot_avoidance = function (self, t)
+	if not self.is_bot and t > self._last_avoidance_t + BOT_THREAT_REFRESH_TIME then
+		self._last_avoidance_t = t
+		local current_position, current_rotation = self.first_person_extension:get_projectile_start_position_rotation()
+		local threat_position, threat_rotation, threat_size = AiUtils.calculate_oobb(BOT_THREAT_AREA_D, current_position, current_rotation, BOT_THREAT_AREA_H, BOT_THREAT_AREA_W)
+
+		if self.is_server then
+			self.ai_bot_group_system:queue_aoe_threat(threat_position, "oobb", threat_size, threat_rotation, BOT_THREAT_DURATION)
+		else
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+
+			network_transmit:send_rpc_server("rpc_bot_create_threat_oobb", threat_position, threat_rotation, threat_size, BOT_THREAT_DURATION)
+		end
+	end
 end
 
 return

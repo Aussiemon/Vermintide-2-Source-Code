@@ -300,7 +300,7 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 				event_text, localization_parameters = text_func(pinged_unit, social_wheel_event_settings)
 			end
 
-			if not event_text and chat_message then
+			if not event_text and chat_messages then
 				event_text = chat_messages[math.random(1, #chat_messages)]
 			end
 		end

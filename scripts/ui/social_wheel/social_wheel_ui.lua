@@ -946,7 +946,7 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 		local _, open_animation_duration = table.max(ANIMATION_TIMES.OPEN)
 
 		if time_since_open < open_animation_duration then
-			social_message_sent = self:_ping_unit_attempt(active_context.ping_context_unit, PingTypes.CONTEXT)
+			social_message_sent = self:_ping_unit_attempt(target_unit, PingTypes.CONTEXT)
 		end
 	else
 		local widget = self._current_selection_widgets[self._current_index]
@@ -955,8 +955,8 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 		local ping_type = settings.ping_type or PingTypes.CHAT_ONLY
 		local social_wheel_event_id = NetworkLookup.social_wheel_events[settings.name]
 
-		if active_context.ping_context_unit and (self._world_markers_enabled or ping_type == PingTypes.PLAYER_PICK_UP) then
-			social_message_sent = self:_ping_unit_attempt(active_context.ping_context_unit, ping_type, social_wheel_event_id)
+		if target_unit and (self._world_markers_enabled or ping_type == PingTypes.PLAYER_PICK_UP) then
+			social_message_sent = self:_ping_unit_attempt(target_unit, ping_type, social_wheel_event_id)
 		elseif active_context.position and self._world_markers_enabled then
 			social_message_sent = self:_ping_world_position_attempt(active_context.position, ping_type, social_wheel_event_id)
 		else

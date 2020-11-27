@@ -625,7 +625,7 @@ local function create_dynamic_ability_widget()
 				horizontal_alignment = "right",
 				texture_size = {
 					101,
-					133
+					125
 				},
 				color = {
 					255,

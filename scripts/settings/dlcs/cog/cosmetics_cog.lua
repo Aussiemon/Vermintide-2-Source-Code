@@ -30,7 +30,8 @@ local skin_dr_engineer_black_and_gold = {
 			mtr_body = "units/beings/player/dwarf_ranger_engineer/skins/black_and_gold/mtr_body_black_and_gold"
 		},
 		first_person = {
-			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/black_and_gold/mtr_outfit_black_and_gold_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/black_and_gold/mtr_outfit_black_and_gold_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_engineer/skins/black_and_gold/mtr_skin_black_and_gold_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.engineer)
@@ -54,7 +55,8 @@ local skin_dr_engineer_blue_and_gold = {
 			mtr_body = "units/beings/player/dwarf_ranger_engineer/skins/blue_and_gold/mtr_body_blue_and_gold"
 		},
 		first_person = {
-			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/blue_and_gold/mtr_outfit_blue_and_gold_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/blue_and_gold/mtr_outfit_blue_and_gold_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_engineer/skins/blue_and_gold/mtr_skin_blue_and_gold_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.engineer)
@@ -78,7 +80,8 @@ local skin_dr_engineer_brown_and_iron = {
 			mtr_body = "units/beings/player/dwarf_ranger_engineer/skins/brown_and_iron/mtr_body_brown_and_iron"
 		},
 		first_person = {
-			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/brown_and_iron/mtr_outfit_brown_and_iron_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/brown_and_iron/mtr_outfit_brown_and_iron_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_engineer/skins/brown_and_iron/mtr_skin_brown_and_iron_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.engineer)
@@ -102,7 +105,8 @@ local skin_dr_engineer_purple_and_copper = {
 			mtr_body = "units/beings/player/dwarf_ranger_engineer/skins/purple_and_copper/mtr_body_purple_and_copper"
 		},
 		first_person = {
-			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/purple_and_copper/mtr_outfit_bpurple_and_copper_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_engineer/skins/purple_and_copper/mtr_outfit_purple_and_copper_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_engineer/skins/purple_and_copper/mtr_skin_purple_and_copper_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.engineer)

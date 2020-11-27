@@ -233,7 +233,8 @@ weapon_template_fire_dot.actions = {
 		give_item = ActionTemplates.give_item_on_defend
 	},
 	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield
+	action_wield = ActionTemplates.wield,
+	action_instant_give_item = ActionTemplates.instant_give_item
 }
 weapon_template_fire_dot.ammo_data = {
 	ammo_hand = "right",

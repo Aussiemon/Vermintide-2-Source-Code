@@ -37,8 +37,8 @@ WeaveObjectiveSystem.init = function (self, entity_system_creation_context, syst
 	self._collecting_essence = false
 end
 
-WeaveObjectiveSystem._activate_next_objectives = function (self, objectives)
-	self.super._activate_next_objectives(self, objectives)
+WeaveObjectiveSystem._activate_objectives = function (self, objectives)
+	self.super._activate_objectives(self, objectives)
 
 	for _, _ in pairs(objectives) do
 		local audio_system = Managers.state.entity:system("audio_system")
@@ -60,7 +60,7 @@ WeaveObjectiveSystem.update = function (self, context, t)
 	self.super.update(self, context, t)
 end
 
-WeaveObjectiveSystem._update_activate_next_objectives = function (self)
+WeaveObjectiveSystem._update_activate_objectives = function (self)
 	local num_update_list = #self._main_objectives
 	local only_kill_objective_left = num_update_list == 1 and self._main_objectives[1]:objective_name() == "kill_enemies"
 
@@ -76,7 +76,7 @@ WeaveObjectiveSystem._update_activate_next_objectives = function (self)
 
 		if next_objectives then
 			table.clear(self._main_objectives)
-			self:_activate_next_objectives(next_objectives)
+			self:_activate_objectives(next_objectives)
 
 			self._current_objective_index = next_objective_index
 		elseif not only_kill_objective_left then

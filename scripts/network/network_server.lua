@@ -590,7 +590,6 @@ NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id
 	end
 
 	printf("Client with peer_id %s got APPROVED by server", peer_id)
-	NetworkUtils.announce_chat_peer_joined(peer_id, self.lobby_host)
 
 	return true
 end

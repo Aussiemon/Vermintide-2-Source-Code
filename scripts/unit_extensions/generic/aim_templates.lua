@@ -391,10 +391,11 @@ AimTemplates.pack_master = {
 		end,
 		update = function (unit, t, dt, data)
 			local blackboard = data.blackboard
+			local target_unit = blackboard.target_unit
 
-			if blackboard.target_unit then
-				local head_index = Unit.node(blackboard.target_unit, "j_head")
-				local aim_target = Unit.world_position(blackboard.target_unit, head_index)
+			if ALIVE[target_unit] then
+				local head_index = Unit.node(target_unit, "j_head")
+				local aim_target = Unit.world_position(target_unit, head_index)
 
 				Unit.animation_set_constraint_target(unit, data.constraint_target, aim_target)
 

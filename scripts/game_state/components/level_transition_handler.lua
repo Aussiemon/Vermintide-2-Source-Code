@@ -125,19 +125,18 @@ LevelTransitionHandler.release_level_resources = function (self, level_key)
 	local package_name = LevelSettings[level_key].package_name
 
 	if not LEVEL_EDITOR_TEST and (self.loaded_levels[level_key] or Managers.package:is_loading(package_name)) then
+		self:_unload_meta_packages(level_key)
+		self:_unload_dlc_level_packages(level_key)
+		self:_unload_nested_level_packages(level_key)
+		self:_unload_umbra_tome_package(level_key)
 		Managers.package:unload(package_name, "LevelTransitionHandler")
-
-		self.loaded_levels[level_key] = false
 
 		if level_key == self.level_key then
 			self.level_key = nil
 			self.environment_variation_id = nil
 		end
 
-		self:_unload_meta_packages(level_key)
-		self:_unload_dlc_level_packages(level_key)
-		self:_unload_nested_level_packages(level_key)
-		self:_unload_umbra_tome_package(level_key)
+		self.loaded_levels[level_key] = false
 	end
 end
 

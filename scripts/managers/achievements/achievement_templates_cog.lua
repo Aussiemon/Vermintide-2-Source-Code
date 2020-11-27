@@ -425,7 +425,7 @@ achievements.cog_steam_alt = {
 
 			template_data.shot_counter = template_data.shot_counter + 1
 
-			if template_data.shot_counter - template_data.hit_counter > 1 then
+			if template_data.shot_counter - template_data.hit_counter > 1 or template_data.shot_counter - template_data.hit_counter < -1 then
 				template_data.hit_counter = 0
 				template_data.shot_counter = 0
 			end
@@ -456,7 +456,7 @@ achievements.cog_steam_alt = {
 
 			template_data.hit_counter = template_data.hit_counter + 1
 
-			if template_data.shot_counter - template_data.hit_counter > 1 then
+			if template_data.shot_counter - template_data.hit_counter >= 1 or template_data.shot_counter - template_data.hit_counter <= -1 then
 				template_data.hit_counter = 0
 				template_data.shot_counter = 0
 			end
