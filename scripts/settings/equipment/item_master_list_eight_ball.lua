@@ -309,13 +309,14 @@ ItemMasterList.witchhunter_hat_1001 = {
 	inventory_icon = "icon_witchhunter_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "vw_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_14",
+	steam_itemdefid = 106,
 	can_wield = {
 		"wh_captain"
-	}
+	},
+	steam_store_hidden = not Application or not Application.user_setting("show_test_item")
 }
 ItemMasterList.zealot_hat_1001 = {
 	description = "description_zealot_hat_1001",
@@ -396,6 +397,44 @@ ItemMasterList.maidenguard_hat_1001 = {
 	can_wield = {
 		"we_maidenguard"
 	}
+}
+ItemMasterList.test_item_1017 = {
+	description = "test_item_1017_desc",
+	rarity = "promo",
+	display_name = "test_item_1017",
+	template = "bw_hat",
+	inventory_icon = "icon_waywatcher_hat_1001",
+	slot_type = "hat",
+	information_text = "test_item_1017",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_12",
+	steam_itemdefid = 17,
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	},
+	steam_store_hidden = not Application or not Application.user_setting("show_test_item")
+}
+ItemMasterList.test_item_1018 = {
+	description = "test_item_1018_desc",
+	rarity = "promo",
+	display_name = "test_item_1018",
+	template = "bw_hat",
+	inventory_icon = "icon_waywatcher_hat_1001",
+	slot_type = "hat",
+	information_text = "test_item_1018",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_12",
+	steam_itemdefid = 18,
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	},
+	steam_store_hidden = not Application or not Application.user_setting("show_test_item")
 }
 
 return

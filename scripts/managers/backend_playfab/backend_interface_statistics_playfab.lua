@@ -151,7 +151,7 @@ BackendInterfaceStatisticsPlayFab.reset = function (self)
 	end
 
 	local request = {
-		FunctionName = "resetPlayerStatistics",
+		FunctionName = "devResetPlayerStatistics",
 		FunctionParameter = {
 			stats = stats_to_reset
 		}

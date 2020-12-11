@@ -1,11 +1,11 @@
 return {
 	wind_strength = 3,
-	wind = "death",
+	wind = "light",
 	seed = 571238,
 	objectives = {
 		{
 			display_name = "objective_targets_name",
-			level_id = "dlc_scorpion_pit_death",
+			level_id = "dlc_scorpion_pit_light",
 			objective_type = "targets",
 			conflict_settings = "weave_chaos",
 			end_zone_name = "end_zone_02",
@@ -177,15 +177,52 @@ return {
 						percentage_spawn_offset = 0
 					}
 				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_026 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_019 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_013 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_009 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_003 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_018 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_007 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				}
 			}
 		},
 		{
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_death",
-			objective_start_flow_event = "weave_objective_waves_start",
+			level_id = "dlc_scorpion_arena_temple_light",
 			spawning_seed = 165415,
 			level_seed = 2065462,
 			conflict_settings = "weave_disabled",
+			objective_start_flow_event = "weave_objective_waves_start",
 			system_seeds = {
 				pickups = 7891215
 			},
@@ -196,6 +233,13 @@ return {
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}
+				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_003 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
 				}
 			}
 		}

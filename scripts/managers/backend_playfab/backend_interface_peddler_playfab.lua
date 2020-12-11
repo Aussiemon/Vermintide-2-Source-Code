@@ -14,6 +14,7 @@ BackendInterfacePeddlerPlayFab.init = function (self, backend_mirror)
 	self._app_prices = {}
 	self._stock_ready = false
 	self._chips_ready = false
+	self._steam_stock_ready = not HAS_STEAM
 	self._app_prices_ready = false
 	self._steam_item_prices = {}
 
@@ -25,7 +26,7 @@ BackendInterfacePeddlerPlayFab.init = function (self, backend_mirror)
 end
 
 BackendInterfacePeddlerPlayFab.ready = function (self)
-	return self._stock_ready and self._chips_ready and self._app_prices_ready
+	return self._stock_ready and self._steam_stock_ready and self._chips_ready and self._app_prices_ready
 end
 
 BackendInterfacePeddlerPlayFab.destroy = function (self)
@@ -94,6 +95,7 @@ BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
 end
 
 BackendInterfacePeddlerPlayFab.refresh_stock = function (self, external_cb)
+	self._peddler_stock = {}
 	local request = {
 		StoreId = PEDDLER_ID
 	}
@@ -104,38 +106,38 @@ BackendInterfacePeddlerPlayFab.refresh_stock = function (self, external_cb)
 	request_queue:enqueue_api_request("GetStoreItems", request, request_cb)
 end
 
+local function verify_stock_item(item_master_list_data)
+	local required_dlc = item_master_list_data.required_dlc
+
+	if required_dlc and not Managers.unlock:is_dlc_unlocked(required_dlc) then
+		return false
+	end
+
+	local steam_itemdefid = item_master_list_data.steam_itemdefid
+	local has_platform_id = steam_itemdefid ~= nil
+
+	if has_platform_id then
+		local platform_id_approved = false
+
+		if steam_itemdefid and HAS_STEAM then
+			platform_id_approved = true
+		end
+
+		if not platform_id_approved then
+			return false
+		end
+	end
+
+	return true, has_platform_id
+end
+
 BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, result)
 	local stock = result.Store
-	local peddler_stock = {}
+	local peddler_stock = self._peddler_stock
 	local mirror = self._backend_mirror
 	local inventory_items = mirror:get_all_inventory_items()
 	local has_steam = HAS_STEAM
-	local unlock_manager = Managers.unlock
-
-	local function verify_item(data)
-		local required_dlc = data.required_dlc
-
-		if required_dlc and not unlock_manager:is_dlc_unlocked(required_dlc) then
-			return false
-		end
-
-		local steam_itemdefid = data.steam_itemdefid
-		local has_platform_id = steam_itemdefid ~= nil
-
-		if has_platform_id then
-			local platform_id_approved = false
-
-			if steam_itemdefid and has_steam then
-				platform_id_approved = true
-			end
-
-			if not platform_id_approved then
-				return false
-			end
-		end
-
-		return true
-	end
+	local stock_index = #peddler_stock + 1
 
 	for i = 1, #stock, 1 do
 		local item = stock[i]
@@ -155,8 +157,10 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 				end
 			end
 
-			if verify_item(data) then
-				peddler_stock[i] = {
+			local verified, has_platform = verify_stock_item(data)
+
+			if verified and not has_platform then
+				peddler_stock[stock_index] = {
 					type = "item",
 					data = table.clone(data),
 					key = key,
@@ -168,6 +172,7 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 					dlc_name = data.dlc_name,
 					steam_itemdefid = has_steam and data.steam_itemdefid
 				}
+				stock_index = stock_index + 1
 			end
 		end
 	end
@@ -273,11 +278,50 @@ BackendInterfacePeddlerPlayFab.refresh_platform_item_prices = function (self)
 end
 
 BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, price_list, currency)
+	print("_refresh_steam_item_prices_cb")
+
+	local mirror = self._backend_mirror
+	local inventory_items = mirror:get_all_inventory_items()
+	local peddler_stock = self._peddler_stock
+	local steam_stock_index = #peddler_stock + 1
+
 	for i = 1, #price_list, 2 do
-		self._steam_item_prices[price_list[i]] = price_list[i + 1]
+		local steam_itemdefid = price_list[i]
+		local price = price_list[i + 1]
+		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+
+		if item_key then
+			self._steam_item_prices[steam_itemdefid] = price
+			local master_item = ItemMasterList[item_key]
+
+			if not master_item.steam_store_hidden and verify_stock_item(master_item) then
+				local owned = false
+
+				for backend_id, inventory_item in pairs(inventory_items) do
+					if item_key == inventory_item.key then
+						owned = true
+
+						break
+					end
+				end
+
+				peddler_stock[steam_stock_index] = {
+					type = "item",
+					data = table.clone(master_item),
+					key = item_key,
+					id = item_key,
+					owned = owned,
+					steam_itemdefid = master_item.steam_itemdefid
+				}
+				steam_stock_index = steam_stock_index + 1
+			end
+		else
+			print("Missing item masterlist item for steam_itemdefid:", steam_itemdefid)
+		end
 	end
 
 	self._steam_item_currency = currency
+	self._steam_stock_ready = true
 end
 
 BackendInterfacePeddlerPlayFab.refresh_app_prices = function (self, external_cb)

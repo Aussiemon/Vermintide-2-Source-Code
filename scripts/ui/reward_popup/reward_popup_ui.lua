@@ -286,9 +286,11 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		end
 
 		widget_height = widget_size[2] / 2
-	elseif widget_type == "weapon_skin" then
-		widget.content.texture_id = value.icon
-		widget.content.rarity_texture = UISettings.item_rarity_textures[value.rarity]
+	elseif widget_type == "weapon_skin" or widget_type == "skin" then
+		local data = value.data
+		local rarity = value.rarity or data.rarity
+		widget.content.texture_id = value.icon or data.inventory_icon
+		widget.content.rarity_texture = UISettings.item_rarity_textures[rarity]
 		widget_height = 0
 	elseif widget_type == "career" then
 		local career_settings = CareerSettings[value]

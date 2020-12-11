@@ -5,13 +5,13 @@ return {
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_wall_death",
+			level_id = "dlc_scorpion_mine_death",
 			objective_type = "kill",
 			conflict_settings = "default_weave",
 			level_seed = 789654,
 			end_zone_name = "end_zone_03",
 			show_bar = true,
-			base_level_id = "dlc_scorpion_wall",
+			base_level_id = "dlc_scorpion_mine",
 			objective_start_flow_event = "weave_objective_kill_enemies_start",
 			spawning_seed = 2156845,
 			objective_settings = {

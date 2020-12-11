@@ -4637,15 +4637,6 @@ OptionsView.cb_resolutions_setup = function (self)
 			end
 
 			local text = tostring(width) .. "x" .. tostring(height)
-			local a = width
-			local b = height
-
-			while b ~= 0 do
-				b = a % b
-				a = b
-			end
-
-			text = text .. string.format("    [%d:%d]", width / a, height / a)
 			options[#options + 1] = {
 				text = text,
 				value = {
@@ -10748,63 +10739,6 @@ end
 OptionsView.cb_twitch_difficulty = function (self, content)
 	local value = content.value
 	self.changed_user_settings.twitch_difficulty = value
-end
-
-OptionsView.cb_debug_enabled = function (self, content)
-	if content.current_selection ~= 1 then
-		slot2 = false
-	else
-		local bool = true
-	end
-
-	local input_manager = Managers.input
-
-	if bool then
-		input_manager:device_unblock_service("keyboard", 1, "DebugMenu")
-		input_manager:device_unblock_service("mouse", 1, "DebugMenu")
-		input_manager:device_unblock_service("gamepad", 1, "DebugMenu")
-		input_manager:device_unblock_service("keyboard", 1, "Debug")
-		input_manager:device_unblock_service("mouse", 1, "Debug")
-		input_manager:device_unblock_service("gamepad", 1, "Debug")
-	else
-		input_manager:device_block_service("keyboard", 1, "DebugMenu")
-		input_manager:device_block_service("mouse", 1, "DebugMenu")
-		input_manager:device_block_service("gamepad", 1, "DebugMenu")
-		input_manager:device_block_service("keyboard", 1, "Debug")
-		input_manager:device_block_service("mouse", 1, "Debug")
-		input_manager:device_block_service("gamepad", 1, "Debug")
-	end
-end
-
-OptionsView.cb_debug_enabled_setup = function (self)
-	if script_data.debug_enabled then
-		slot1 = 1
-	else
-		slot1 = 2
-	end
-
-	return slot1, {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
-	}, "debug_enabled", 1
-end
-
-OptionsView.cb_debug_enabled_saved_value = function (self, widget)
-	slot2 = widget.content
-
-	if script_data.debug_enabled then
-		slot3 = 1
-	else
-		slot3 = 2
-	end
-
-	slot2.current_selection = slot3
 end
 
 return

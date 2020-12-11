@@ -49,6 +49,14 @@ local seasonal_list_of_weaves_from_to = {
 	tier_3 = {
 		from = 81,
 		to = 120
+	},
+	tier_4 = {
+		to = 160,
+		from = 121,
+		disable_for_seasons = {
+			2,
+			3
+		}
 	}
 }
 local season_num = ScorpionSeasonalSettings.current_season_id
@@ -57,31 +65,35 @@ local season_offset = 2
 for season_id = season_offset, season_num, 1 do
 	local season_name = ScorpionSeasonalSettings.get_season_name(season_id)
 
-	for tier, table in pairs(seasonal_list_of_weaves_from_to) do
-		local id = "scorpion_" .. tier .. "_season_" .. season_id
-		local from = table.from
-		local to = table.to
-		AchievementTemplates.achievements[id] = {
-			required_dlc = "scorpion",
-			name = "achv_scorpion_" .. tier .. "_seasonal_name",
-			desc = "achv_scorpion_" .. tier .. "_seasonal_desc",
-			icon = "achievement_trophy_scorpion_" .. tier .. "_season_2",
-			disable_on_consoles = season_id ~= season_num,
-			completed = function (statistics_db, stats_id)
-				local has_completed, _ = _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
+	for tier, tbl in pairs(seasonal_list_of_weaves_from_to) do
+		local disable_for_seasons = tbl.disable_for_seasons
 
-				return has_completed
-			end,
-			progress = function (statistics_db, stats_id)
-				local total = to - from + 1
-				local _, completed_amunt = _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
+		if not disable_for_seasons or not table.contains(disable_for_seasons, season_id) then
+			local id = "scorpion_" .. tier .. "_season_" .. season_id
+			local from = tbl.from
+			local to = tbl.to
+			AchievementTemplates.achievements[id] = {
+				required_dlc = "scorpion",
+				name = "achv_scorpion_" .. tier .. "_seasonal_name",
+				desc = "achv_scorpion_" .. tier .. "_seasonal_desc",
+				icon = "achievement_trophy_scorpion_" .. tier .. "_season_" .. season_id,
+				disable_on_consoles = season_id ~= season_num,
+				completed = function (statistics_db, stats_id)
+					local has_completed, _ = _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
 
-				return {
-					completed_amunt,
-					total
-				}
-			end
-		}
+					return has_completed
+				end,
+				progress = function (statistics_db, stats_id)
+					local total = to - from + 1
+					local _, completed_amunt = _has_completed_tier_seasonal(statistics_db, stats_id, season_id, from, to)
+
+					return {
+						completed_amunt,
+						total
+					}
+				end
+			}
+		end
 	end
 
 	local num_quickplay_weaves_required = 40

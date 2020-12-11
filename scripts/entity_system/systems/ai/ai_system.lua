@@ -1414,7 +1414,7 @@ AISystem.rpc_check_trigger_backstab_sfx = function (self, channel_id, unit_id)
 	local unit = network_manager:game_object_or_level_unit(unit_id)
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
-	local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+	local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
 
 	if first_person_extension then
 		local rotation = Quaternion.forward(first_person_extension:current_rotation())

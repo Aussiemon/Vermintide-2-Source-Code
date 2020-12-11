@@ -286,6 +286,7 @@ StateIngame.on_enter = function (self)
 		local session_id = Managers.state.network:session_id()
 
 		Managers.telemetry.events:session_id(session_id)
+		self.network_transmit:send_rpc_clients("rpc_to_client_sync_session_id", session_id)
 	end
 
 	local event_manager = Managers.state.event
@@ -2044,12 +2045,7 @@ StateIngame._commit_playfab_stats = function (self)
 		self._quit_game = true
 	end
 
-	if backend_manager:is_local() then
-		backend_manager:commit(true)
-		callback()
-	else
-		backend_manager:commit(true, callback)
-	end
+	backend_manager:on_shutdown(callback)
 end
 
 StateIngame._check_and_add_end_game_telemetry = function (self, application_shutdown)

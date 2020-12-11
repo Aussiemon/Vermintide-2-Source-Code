@@ -1,11 +1,11 @@
 return {
 	wind_strength = 2,
-	wind = "shadow",
+	wind = "fire",
 	seed = 45654,
 	objectives = {
 		{
 			display_name = "objective_destroy_doom_wheels_name",
-			level_id = "dlc_scorpion_mine_shadow",
+			level_id = "dlc_scorpion_mine_fire",
 			objective_type = "doom_wheels",
 			conflict_settings = "default_weave",
 			end_zone_name = "end_zone_01",
@@ -128,7 +128,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_shadow",
+			level_id = "dlc_scorpion_arena_castle_fire",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 11854541,
 			level_seed = 1268425,

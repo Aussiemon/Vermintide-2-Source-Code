@@ -203,17 +203,12 @@ local transitions = {
 			end
 		end
 
-		if backend_manager:is_local() then
-			backend_manager:commit(true)
-			commit_complete_callback()
-		else
-			local id = backend_manager:commit(true, commit_complete_callback)
+		local id = backend_manager:on_shutdown(commit_complete_callback)
 
-			if not id then
-				local t = Managers.time:time("ui")
-				self.quit_game_retry = true
-				self.delay_quit_game_retry = t + 1
-			end
+		if not id then
+			local t = Managers.time:time("ui")
+			self.quit_game_retry = true
+			self.delay_quit_game_retry = t + 1
 		end
 	end,
 	do_return_to_title_screen = function (self)

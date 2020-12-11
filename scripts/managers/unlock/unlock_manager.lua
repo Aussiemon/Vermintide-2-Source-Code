@@ -94,6 +94,8 @@ UnlockManager.update = function (self, dt)
 				self:_update_console_backend_unlocks()
 			end
 		end
+	elseif not table.is_empty(self._popup_ids) then
+		self:_handle_popups()
 	else
 		self:_update_backend_unlocks()
 	end
@@ -125,7 +127,16 @@ end
 
 UnlockManager._handle_popup_results = function (self, result)
 	if result == "restart_game" then
-		Managers.account:force_exit_to_title_screen()
+		if IS_WINDOWS then
+			local game_mode_manager = Managers.state.game_mode
+			local level_transition_handler = game_mode_manager.level_transition_handler
+
+			level_transition_handler:set_next_level(level_transition_handler:default_level_key(), level_transition_handler:default_environment_id())
+
+			self._ingame_ui.restart_game = true
+		else
+			Managers.account:force_exit_to_title_screen()
+		end
 	end
 end
 
@@ -636,84 +647,133 @@ UnlockManager._update_backend_unlocks = function (self)
 				end
 			end
 
-			if rawget(_G, "Steam") then
+			if HAS_STEAM then
 				local dlcs_interface = Managers.backend:get_interface("dlcs")
+				local owned_dlcs = dlcs_interface:get_owned_dlcs()
+				local platform_dlcs = dlcs_interface:get_platform_dlcs()
+				local new_dlc_unlocked = false
 
-				if not dlcs_interface:updating_dlc_ownership() then
-					local owned_dlcs = dlcs_interface:get_owned_dlcs()
-					local platform_dlcs = dlcs_interface:get_platform_dlcs()
-					local new_dlc_unlocked = false
+				for i = 1, #platform_dlcs, 1 do
+					local unlock_name = platform_dlcs[i]
 
-					for i = 1, #platform_dlcs, 1 do
-						local unlock_name = platform_dlcs[i]
+					if not table.find(owned_dlcs, unlock_name) then
+						local unlock = self._unlocks[unlock_name]
+						local id = unlock and unlock:id()
 
-						if not table.find(owned_dlcs, unlock_name) then
-							local unlock = self._unlocks[unlock_name]
-							local id = unlock and unlock:id()
+						if id and Steam.is_installed(id) then
+							printf("UNLOCKED: %s", unlock_name)
 
-							if id and Steam.is_installed(id) then
-								printf("UNLOCKED: %s", unlock_name)
+							new_dlc_unlocked = true
 
-								new_dlc_unlocked = true
-							end
+							break
 						end
-					end
-
-					if new_dlc_unlocked then
-						dlcs_interface:update_dlc_ownership()
 					end
 				end
-			end
 
-			local is_in_store = false
+				if new_dlc_unlocked then
+					self._state = "update_backend_dlcs"
 
-			if self._ingame_ui then
-				local current_view = self._ingame_ui.current_view
-
-				if current_view == "hero_view" then
-					local hero_view = self._ingame_ui.views.hero_view
-					local current_state = hero_view:current_state()
-
-					if current_state and current_state.NAME == "HeroViewStateStore" then
-						is_in_store = true
-					end
-				end
-			end
-
-			if not is_in_store then
-				local item_interface = backend_manager:get_interface("items")
-				local unseen_rewards = item_interface:get_unseen_item_rewards()
-
-				if unseen_rewards then
-					for i = 1, #unseen_rewards, 1 do
-						local reward = unseen_rewards[i]
-						local item = nil
-
-						if reward.item_type == "weapon_skin" then
-							local item_id = reward.item_id
-							local weapon_skin_data = WeaponSkins.skins[item_id]
-							local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
-							item = {
-								data = weapon_skin_data,
-								backend_id = backend_id,
-								key = item_id
-							}
-						else
-							item = item_interface:get_item_from_id(reward.backend_id)
-						end
-
-						if item then
-							local item_data = item.data
-							local display_name = item_data.display_name
-
-							self:_add_reward({
-								item
-							}, display_name)
-						end
-					end
+					return
 				end
 			end
 		end
+	elseif self._state == "update_backend_dlcs" then
+		local dlcs_interface = Managers.backend:get_interface("dlcs")
+
+		if not dlcs_interface:updating_dlc_ownership() then
+			dlcs_interface:update_dlc_ownership()
+
+			self._state = "waiting_for_backend_dlc_update"
+		end
+	elseif self._state == "waiting_for_backend_dlc_update" then
+		local dlcs_interface = Managers.backend:get_interface("dlcs")
+
+		if not dlcs_interface:updating_dlc_ownership() then
+			Managers.backend:get_interface("dlcs")._backend_mirror:request_characters()
+
+			self._state = "waiting_for_backend_refresh"
+		end
+	elseif self._state == "waiting_for_backend_refresh" then
+		if Managers.backend:get_interface("dlcs")._backend_mirror:ready() then
+			self._state = "check_unseen_rewards"
+		end
+	elseif self._state == "check_unseen_rewards" then
+		local is_in_store = false
+
+		if self._ingame_ui then
+			local current_view = self._ingame_ui.current_view
+
+			if current_view == "hero_view" then
+				local hero_view = self._ingame_ui.views.hero_view
+				local current_state = hero_view:current_state()
+
+				if current_state and current_state.NAME == "HeroViewStateStore" then
+					is_in_store = true
+				end
+			end
+		end
+
+		if not is_in_store then
+			local backend_manager = Managers.backend
+			local item_interface = backend_manager:get_interface("items")
+			local unseen_rewards = item_interface:get_unseen_item_rewards()
+
+			if unseen_rewards then
+				for i = 1, #unseen_rewards, 1 do
+					local reward = unseen_rewards[i]
+					local item = nil
+
+					if reward.item_type == "weapon_skin" then
+						local item_id = reward.item_id
+						local weapon_skin_data = WeaponSkins.skins[item_id]
+						weapon_skin_data.item_type = "weapon_skin"
+						local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
+						item = {
+							data = weapon_skin_data,
+							backend_id = backend_id,
+							key = item_id
+						}
+					else
+						item = item_interface:get_item_from_id(reward.backend_id)
+					end
+
+					if item then
+						local item_data = item.data
+						local display_name = item_data.display_name
+
+						self:_add_reward({
+							item
+						}, display_name)
+					end
+				end
+			end
+
+			self._state = "wait_for_rewards"
+		end
+	elseif self._state == "wait_for_rewards" then
+		if self._ingame_ui and #self._reward_queue <= self._reward_queue_id then
+			local gift_popup_ui = self._ingame_ui:get_hud_component("GiftPopupUI")
+
+			if gift_popup_ui and not gift_popup_ui:has_presentation_data() then
+				self._state = "evaluate_restart"
+			end
+		end
+	elseif self._state == "evaluate_restart" and table.is_empty(self._popup_ids) then
+		local requires_restart = false
+
+		for name, unlock in pairs(self._unlocks) do
+			if unlock:requires_restart() then
+				requires_restart = true
+
+				break
+			end
+		end
+
+		if requires_restart then
+			self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(Localize("popup_console_dlc_needs_restart"), Localize("popup_notice_topic"), "restart_game", Localize("menu_return_to_title_screen"))
+		end
+
+		self._state = "query_unlocked"
 	end
 end
 

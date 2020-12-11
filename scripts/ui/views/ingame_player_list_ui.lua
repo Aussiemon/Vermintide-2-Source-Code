@@ -90,7 +90,13 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 	end
 
 	self:_setup_weave_display_info()
-	Managers.state.event:register(self, "weave_objective_synced", "event_weave_objective_synced")
+
+	local event_manager = Managers.state.event
+
+	event_manager:register(self, "weave_objective_synced", "event_weave_objective_synced")
+	event_manager:register(self, "start_game_time", "event_start_game_time")
+
+	self._start_time = 0
 end
 
 IngamePlayerListUI.create_ui_elements = function (self)
@@ -132,6 +138,8 @@ IngamePlayerListUI.create_ui_elements = function (self)
 	self.input_description_text_widget = UIWidget.init(specific_widget_definitions.input_description_text)
 	self.background = UIWidget.init(specific_widget_definitions.background)
 	self.private_checkbox_widget = UIWidget.init(specific_widget_definitions.private_checkbox)
+	self.game_timer_text_widget = UIWidget.init(specific_widget_definitions.game_timer_text)
+	self.game_timer_text_widget.content.enabled = not Development.parameter("disable_ingame_timer")
 	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
 	if Managers.state.game_mode:game_mode_key() == "weave" or twitch_connection then
@@ -758,6 +766,8 @@ IngamePlayerListUI.update = function (self, dt)
 			self:update_difficulty()
 		end
 
+		local t = Managers.state.network:network_time() - self._start_time
+		self.game_timer_text_widget.content.text = string.format("%.2d:%.2d:%.2d", t * 0.0002777777777777778, (t * 0.016666666666666666) % 60, t % 60)
 		local private_checkbox_content = self.private_checkbox_widget.content
 
 		if self.local_player.is_server and not self.is_in_inn and not private_checkbox_content.is_disabled then
@@ -1083,6 +1093,12 @@ IngamePlayerListUI.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_top_renderer, self.private_checkbox_widget)
 	end
 
+	local game_timer_text_widget = self.game_timer_text_widget
+
+	if game_timer_text_widget.content.enabled then
+		UIRenderer.draw_widget(ui_top_renderer, game_timer_text_widget)
+	end
+
 	if gamepad_active then
 		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
 	end
@@ -1169,6 +1185,10 @@ end
 
 IngamePlayerListUI.event_weave_objective_synced = function (self)
 	self:_setup_weave_display_info()
+end
+
+IngamePlayerListUI.event_start_game_time = function (self, start_time)
+	self._start_time = start_time
 end
 
 return

@@ -9,9 +9,9 @@ SteamManager.destroy = function (self)
 end
 
 SteamManager.update = function (self, t, dt)
-	return
-
-	Steam.run_callbacks(self)
+	if HAS_STEAM then
+		Steam.run_callbacks(self)
+	end
 end
 
 SteamManager.on_overlay_activated = function (self, enabled)
@@ -68,17 +68,17 @@ SteamManager.on_price_result = function (self, result, currency)
 	print("[SteamManager] on_price_result", result, currency)
 
 	if self._refresh_item_prices_callback then
+		local price_list = nil
+
 		if result == 1 then
-			local price_list = SteamInventory.get_items_with_prices()
-
-			self._refresh_item_prices_callback(price_list, currency)
-
-			self._refresh_item_prices_callback = nil
-
-			table.dump(price_list, "price list [item, price]", 3)
+			price_list = SteamInventory.get_items_with_prices()
 		else
 			print("[SteamManager] -> on_price_result ERROR:", result)
 		end
+
+		self._refresh_item_prices_callback(price_list or {}, currency)
+
+		self._refresh_item_prices_callback = nil
 	end
 end
 

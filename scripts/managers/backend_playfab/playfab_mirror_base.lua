@@ -809,13 +809,17 @@ end
 PlayFabMirrorBase._request_steam_user_inventory = function (self)
 	print("steam item server: requesting user inventory")
 
+	self._num_items_to_load = self._num_items_to_load + 1
+
 	local function callback(result, item_list)
 		print("[PlayFabMirrorBase] _request_steam_user_inventory got results")
-		self:_cb_steam_user_inventory(result, item_list)
+
+		local migrate_and_request_characters = true
+
+		self:_cb_steam_user_inventory(result, item_list, migrate_and_request_characters)
 	end
 
 	Managers.steam:request_user_inventory(callback)
-	self:_migrate_characters()
 end
 
 PlayFabMirrorBase._migrate_characters = function (self)
@@ -854,17 +858,22 @@ end
 
 PlayFabMirrorBase.add_steam_items = function (self, item_list)
 	local result_success = 1
+	self._num_items_to_load = self._num_items_to_load + 1
 
-	self:_cb_steam_user_inventory(result_success, item_list)
+	self:_cb_steam_user_inventory(result_success, item_list, false)
 end
 
-PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list)
+PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, migrate_and_request_characters)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	if result == 1 then
 		print("[PlayFabMirrorBase] -> retrieval of steam user inventory, SUCCESS")
 
 		for i = 1, #item_list, 4 do
 			local steam_itemdefid = item_list[i]
 			local steam_backend_unique_id = item_list[i + 1]
+			local flags = item_list[i + 2]
+			local amount = item_list[i + 3]
 			local item_key = SteamitemdefidToMasterList[steam_itemdefid]
 
 			if item_key then
@@ -877,10 +886,16 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list)
 				self:_update_data(steam_item, backend_id)
 
 				self._inventory_items[backend_id] = steam_item
+
+				print("Steam Item: ", item_key, steam_itemdefid, steam_backend_unique_id, flags, amount)
 			end
 		end
 	else
 		print("[PlayFabMirrorBase] ERROR could not retrieve get steam user inventory. result-code:", result)
+	end
+
+	if migrate_and_request_characters then
+		self:_migrate_characters()
 	end
 end
 
@@ -1175,6 +1190,19 @@ end
 
 PlayFabMirrorBase.set_user_data = function (self, key, value)
 	self._user_data[key] = value
+end
+
+PlayFabMirrorBase.log_player_exit = function (self, external_cb)
+	local request = {
+		FunctionName = "logPlayerExit",
+		FunctionParameter = {}
+	}
+	local success_callback = callback(self, "log_player_exit_cb", external_cb)
+	local id = self._request_queue:enqueue(request, success_callback, false)
+end
+
+PlayFabMirrorBase.log_player_exit_cb = function (self, external_cb, result)
+	external_cb(result)
 end
 
 PlayFabMirrorBase._commit_user_data = function (self, new_data, commit, commit_id)

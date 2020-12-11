@@ -1,11 +1,11 @@
 return {
 	wind_strength = 4,
-	wind = "fire",
+	wind = "light",
 	seed = 5923569,
 	objectives = {
 		{
 			display_name = "objective_capture_points_name",
-			level_id = "dlc_scorpion_woods_fire",
+			level_id = "dlc_scorpion_woods_light",
 			objective_type = "capture_points",
 			conflict_settings = "default_weave_light",
 			end_zone_name = "end_zone_03",
@@ -148,15 +148,47 @@ return {
 						percentage_spawn_offset = 0
 					}
 				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_025 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_002 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_026 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_020 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_017 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_015 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				}
 			}
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_fire",
-			objective_start_flow_event = "weave_objective_kill_bosses_start",
+			level_id = "dlc_scorpion_arena_void_light",
 			spawning_seed = 549684,
 			level_seed = 5684648,
 			conflict_settings = "weave_disabled",
+			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			system_seeds = {
 				pickups = 8721685
 			},
@@ -167,6 +199,13 @@ return {
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}
+				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_002 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
 				}
 			}
 		}

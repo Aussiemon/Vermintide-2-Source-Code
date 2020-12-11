@@ -56,7 +56,6 @@ WeaveObjectiveSystem.update = function (self, context, t)
 		return
 	end
 
-	self:_poll_testify_requests()
 	self.super.update(self, context, t)
 end
 
@@ -139,9 +138,12 @@ end
 
 WeaveObjectiveSystem.on_ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
 	local update_list = self._main_objectives
-	local killed_unit_position = POSITION_LOOKUP[killed_unit]
 
-	self:spawn_essence_unit(killed_unit_position + Vector3(0, 0, 0.2))
+	if not death_data or not death_data.despawned then
+		local killed_unit_position = POSITION_LOOKUP[killed_unit]
+
+		self:spawn_essence_unit(killed_unit_position + Vector3(0, 0, 0.2))
+	end
 
 	for _, extension in pairs(update_list) do
 		if extension.on_ai_killed then
@@ -243,19 +245,12 @@ WeaveObjectiveSystem._collect_dropped_essence = function (self, dt)
 	end
 end
 
-WeaveObjectiveSystem._poll_testify_requests = function (self)
-	if Testify:poll_request("spawn_essence_on_first_bot_position") then
-		local first_bot_unit = Managers.player:bots()[1].player_unit
+WeaveObjectiveSystem.only_kill_objective = function (self)
+	local num_update_list = #self._main_objectives
+	local current_objective_name = self._main_objectives[1]:objective_name()
+	local only_kill_objective_left = num_update_list == 1 and current_objective_name == "kill_enemies"
 
-		if first_bot_unit then
-			local player_position = Unit.local_position(first_bot_unit, 0) + Vector3(0, 0, 0.2)
-
-			self:spawn_essence_unit(player_position)
-			self:add_score(2)
-		end
-
-		Testify:respond_to_request("spawn_essence_on_first_bot_position")
-	end
+	return only_kill_objective_left
 end
 
 return

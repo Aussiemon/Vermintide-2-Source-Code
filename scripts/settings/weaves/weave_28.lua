@@ -1,11 +1,11 @@
 return {
 	wind_strength = 3,
-	wind = "heavens",
+	wind = "metal",
 	seed = 238947,
 	objectives = {
 		{
 			display_name = "objective_targets_name",
-			level_id = "dlc_scorpion_mine_heavens",
+			level_id = "dlc_scorpion_mine_metal",
 			objective_type = "targets",
 			conflict_settings = "default_weave",
 			end_zone_name = "end_zone_03",
@@ -67,6 +67,66 @@ return {
 			bonus_time_on_complete = WeaveSettings.bonus_time,
 			system_seeds = {
 				pickups = 95372
+			},
+			spawning_settings = {
+				terror_event_trickle = "trickle_event_armour",
+				main_path_spawning = {
+					{
+						terror_event_name = "main_path_theme_armored_skaven_short",
+						percentage = 15,
+						percentage_spawn_offset = 0
+					},
+					{
+						terror_event_name = "main_path_theme_berzerkers_skaven_short",
+						percentage = 15,
+						percentage_spawn_offset = 0
+					},
+					{
+						terror_event_name = "main_path_specials_disablers_skaven_short",
+						percentage = 15,
+						percentage_spawn_offset = 0
+					},
+					{
+						terror_event_name = "main_path_specials_disablers_mixed_short_cata",
+						percentage = 15,
+						percentage_spawn_offset = 0
+					},
+					{
+						terror_event_name = "main_path_standard_chaos_medium_medium",
+						percentage = 40,
+						percentage_spawn_offset = 10
+					},
+					{
+						terror_event_name = "main_path_theme_armored_chaos_medium",
+						percentage = 40,
+						percentage_spawn_offset = 10
+					},
+					{
+						terror_event_name = "main_path_specials_disablers_chaos_medium",
+						percentage = 40,
+						percentage_spawn_offset = 10
+					},
+					{
+						terror_event_name = "main_path_specials_aoe_skaven_short_cata",
+						percentage = 55,
+						percentage_spawn_offset = 0
+					},
+					{
+						terror_event_name = "main_path_standard_mixed_medium_medium",
+						percentage = 70,
+						percentage_spawn_offset = 10
+					},
+					{
+						terror_event_name = "main_path_specials_ranged_skaven_medium",
+						percentage = 70,
+						percentage_spawn_offset = 10
+					},
+					{
+						terror_event_name = "main_path_theme_armored_chaos_medium",
+						percentage = 70,
+						percentage_spawn_offset = 10
+					}
+				}
 			},
 			spawning_settings = {
 				terror_event_trickle = "trickle_event_chaos_medium",
@@ -146,7 +206,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_heavens",
+			level_id = "dlc_scorpion_arena_castle_metal",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 492374,
 			level_seed = 403826,
@@ -157,7 +217,7 @@ return {
 			spawning_settings = {
 				main_path_spawning = {
 					{
-						terror_event_name = "beastmen_charge_event_short",
+						terror_event_name = "skaven_swarm_event",
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}

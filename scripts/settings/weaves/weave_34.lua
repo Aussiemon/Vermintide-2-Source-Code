@@ -1,11 +1,11 @@
 return {
 	wind_strength = 4,
-	wind = "death",
+	wind = "heavens",
 	seed = 571238,
 	objectives = {
 		{
 			display_name = "objective_capture_points_name",
-			level_id = "dlc_scorpion_swamp_death",
+			level_id = "dlc_scorpion_swamp_heavens",
 			objective_type = "capture_points",
 			conflict_settings = "weave_skaven",
 			end_zone_name = "end_zone_03",
@@ -145,7 +145,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_death",
+			level_id = "dlc_scorpion_arena_void_heavens",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 165415,
 			level_seed = 2065462,

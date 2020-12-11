@@ -239,16 +239,6 @@ local components = {
 	},
 	{
 		use_hud_scale = true,
-		class_name = "GameTimerUI",
-		filename = "scripts/ui/hud_ui/game_timer_ui",
-		visibility_groups = {
-			"game_mode_disable_hud",
-			"dead",
-			"alive"
-		}
-	},
-	{
-		use_hud_scale = true,
 		class_name = "DifficultyUnlockUI",
 		filename = "scripts/ui/hud_ui/difficulty_unlock_ui",
 		visibility_groups = {

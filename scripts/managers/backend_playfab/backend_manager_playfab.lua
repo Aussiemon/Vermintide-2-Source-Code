@@ -146,6 +146,29 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 	self._signin_timeout = os.time() + TIMEOUT_SIGNIN
 end
 
+BackendManagerPlayFab.on_shutdown = function (self, external_callback)
+	local function commit_cb(commit_status)
+		local function log_cb(log_status)
+			external_callback(log_status)
+		end
+
+		if self:is_local() then
+			log_cb(true)
+		elseif self._backend_mirror then
+			self._backend_mirror:log_player_exit(log_cb)
+		end
+	end
+
+	if self:is_local() then
+		self:commit(true)
+		commit_cb()
+
+		return 0
+	else
+		return self:commit(true, commit_cb)
+	end
+end
+
 BackendManagerPlayFab.update_items = function (self, leader_peer_id)
 	local mirror = self._backend_mirror
 

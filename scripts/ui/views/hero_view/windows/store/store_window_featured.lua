@@ -427,6 +427,10 @@ StoreWindowFeatured._get_default_featured_grid_content = function (self)
 	local os_time = os.time() * 1000
 
 	local function comparator(a, b)
+		if a.steam_itemdefid or b.steam_itemdefid then
+			return false
+		end
+
 		local sale_percentage_a = a.current_prices.SM / a.regular_prices.SM
 		local sale_percentage_b = b.current_prices.SM / b.regular_prices.SM
 

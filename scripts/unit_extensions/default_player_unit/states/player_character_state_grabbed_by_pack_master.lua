@@ -52,6 +52,8 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 
 	if self.pack_master_status == "pack_master_pulling" then
 		self._initial_pull_t = t + 0.75
+	else
+		self._initial_pull_t = t
 	end
 
 	if states[self.pack_master_status].enter then

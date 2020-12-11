@@ -148,16 +148,21 @@ end
 GameModeWeave.ai_destroyed = function (self, unit, blackboard, reason)
 	if reason == "far_away" and blackboard then
 		local spawn_type = Unit.get_data(unit, "spawn_type") or "unknown"
+		local enemy_recycler = Managers.state.conflict.enemy_recycler
+		local breed = blackboard.breed
+		local death_data = {
+			despawned = true,
+			breed = breed
+		}
+		local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+		local pos = Vector3Box(POSITION_LOOKUP[unit])
+		local rot = QuaternionBox(Unit.local_rotation(unit, 0))
+		local optional_data = {
+			spawn_type = spawn_type
+		}
 
-		if spawn_type ~= "roam" then
-			local breed = blackboard.breed
-			local death_data = {
-				breed = breed
-			}
-			local weave_objective_system = Managers.state.entity:system("weave_objective_system")
-
-			weave_objective_system:on_ai_killed(unit, nil, death_data)
-		end
+		enemy_recycler:add_breed(breed.name, pos, rot, optional_data)
+		weave_objective_system:on_ai_killed(unit, nil, death_data)
 	end
 end
 

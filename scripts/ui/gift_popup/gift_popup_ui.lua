@@ -107,8 +107,8 @@ GiftPopupUI._generate_presentation_data = function (self, reward_data)
 				}
 			},
 			[#entry + 1] = {
-				widget_type = "item",
-				value = item
+				value = item,
+				widget_type = item_type or "item"
 			}
 		}
 		presentation_data[#presentation_data + 1] = entry

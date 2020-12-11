@@ -99,12 +99,14 @@ settings._tracked_weapon_kill_stats = {
 }
 settings.unlock_settings = {
 	cog = {
+		id = "1443780",
 		class = "UnlockDlc",
-		id = "1443780"
+		requires_restart = true
 	},
 	cog_upgrade = {
+		id = "1443790",
 		class = "UnlockDlc",
-		id = "1443790"
+		requires_restart = true
 	}
 }
 settings.unlock_settings_xb1 = {

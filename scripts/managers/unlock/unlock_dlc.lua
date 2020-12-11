@@ -46,7 +46,11 @@ UnlockDlc.unlocked = function (self)
 	return self._unlocked
 end
 
-UnlockDlc.set_unlocked = function (self, value)
+UnlockDlc.set_unlocked = function (self, value, set_status_change)
+	if set_status_change == nil or set_status_change then
+		self._status_changed = self._status_changed or value ~= self._unlocked
+	end
+
 	self._unlocked = value
 end
 
@@ -55,7 +59,7 @@ UnlockDlc.is_cosmetic = function (self)
 end
 
 UnlockDlc.requires_restart = function (self)
-	return false
+	return self._status_changed and self._requires_restart
 end
 
 return

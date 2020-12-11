@@ -3142,6 +3142,66 @@ ItemMasterList.frame_season_03_tier_3 = {
 	item_type = "frame",
 	can_wield = CanWieldAllItemTemplates
 }
+ItemMasterList.frame_season_04_quickplay = {
+	description = "portrait_frame_season_04_quickplay_description",
+	temporary_template = "frame_season_04_quickplay",
+	display_name = "portrait_frame_season_04_quickplay_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_04_quickplay",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_04_tier_1 = {
+	description = "portrait_frame_season_04_tier_1_description",
+	temporary_template = "frame_season_04_tier_1",
+	display_name = "portrait_frame_season_04_tier_1_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_04_tier_1",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_04_tier_2 = {
+	description = "portrait_frame_season_04_tier_2_description",
+	temporary_template = "frame_season_04_tier_2",
+	display_name = "portrait_frame_season_04_tier_2_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_04_tier_2",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_04_tier_3 = {
+	description = "portrait_frame_season_04_tier_3_description",
+	temporary_template = "frame_season_04_tier_3",
+	display_name = "portrait_frame_season_04_tier_3_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_04_tier_3",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_season_04_tier_4 = {
+	description = "portrait_frame_season_04_tier_4_description",
+	temporary_template = "frame_season_04_tier_4",
+	display_name = "portrait_frame_season_04_tier_4_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_season_04_tier_4",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
 ItemMasterList.crafting_material_scrap = {
 	description = "crafting_material_scrap_description",
 	rarity = "plentiful",

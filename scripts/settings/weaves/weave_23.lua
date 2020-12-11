@@ -1,11 +1,11 @@
 return {
 	wind_strength = 3,
-	wind = "life",
+	wind = "shadow",
 	seed = 123974,
 	objectives = {
 		{
 			display_name = "objective_sockets_name",
-			level_id = "dlc_scorpion_canyon_life",
+			level_id = "dlc_scorpion_canyon_shadow",
 			objective_type = "sockets",
 			conflict_settings = "default_weave",
 			level_seed = 874583,
@@ -148,7 +148,7 @@ return {
 		{
 			allow_mutator_item_respawning = true,
 			display_name = "objective_waves_name",
-			level_id = "dlc_scorpion_arena_temple_life",
+			level_id = "dlc_scorpion_arena_temple_shadow",
 			spawning_seed = 459078,
 			level_seed = 9084502,
 			conflict_settings = "weave_disabled",

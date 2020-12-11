@@ -48,12 +48,14 @@ settings.tracked_weapon_kills_per_breed_stats = {
 }
 settings.unlock_settings = {
 	lake = {
+		id = "1343500",
 		class = "UnlockDlc",
-		id = "1343500"
+		requires_restart = true
 	},
 	lake_upgrade = {
+		id = "1345990",
 		class = "UnlockDlc",
-		id = "1345990"
+		requires_restart = true
 	}
 }
 settings.unlock_settings_xb1 = {

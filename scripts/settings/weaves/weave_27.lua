@@ -1,11 +1,11 @@
 return {
 	wind_strength = 2,
-	wind = "heavens",
+	wind = "life",
 	seed = 23094,
 	objectives = {
 		{
 			display_name = "objective_sockets_name",
-			level_id = "dlc_scorpion_river_heavens",
+			level_id = "dlc_scorpion_river_life",
 			objective_type = "sockets",
 			conflict_settings = "default_weave",
 			end_zone_name = "end_zone_03",
@@ -155,7 +155,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_heavens",
+			level_id = "dlc_scorpion_arena_void_life",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 450982,
 			level_seed = 795483,

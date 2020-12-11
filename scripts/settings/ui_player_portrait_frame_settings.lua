@@ -1940,6 +1940,66 @@ UIPlayerPortraitFrameSettings = {
 				255
 			}
 		}
+	},
+	frame_season_04_quickplay = {
+		{
+			texture = "portrait_frame_season_04_quickplay",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_04_tier_1 = {
+		{
+			texture = "portrait_frame_season_04_tier_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_04_tier_2 = {
+		{
+			texture = "portrait_frame_season_04_tier_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_04_tier_3 = {
+		{
+			texture = "portrait_frame_season_04_tier_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_season_04_tier_4 = {
+		{
+			texture = "portrait_frame_season_04_tier_4",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
 	}
 }
 

@@ -2582,6 +2582,21 @@ Cosmetics = {
 	},
 	frame_season_03_tier_3 = {
 		icon = "unit_frame_02"
+	},
+	frame_season_04_quickplay = {
+		icon = "unit_frame_02"
+	},
+	frame_season_04_tier_1 = {
+		icon = "unit_frame_02"
+	},
+	frame_season_04_tier_2 = {
+		icon = "unit_frame_02"
+	},
+	frame_season_04_tier_3 = {
+		icon = "unit_frame_02"
+	},
+	frame_season_04_tier_4 = {
+		icon = "unit_frame_02"
 	}
 }
 

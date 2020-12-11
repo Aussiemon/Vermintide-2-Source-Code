@@ -3,7 +3,6 @@ local PlayFabSettings = require("PlayFab.PlayFabSettings")
 PlayFabHttpsCurlData = PlayFabHttpsCurlData or {}
 PlayFabHttpsCurlData.request_id = PlayFabHttpsCurlData.request_id or 0
 PlayFabHttpsCurlData.active_requests = PlayFabHttpsCurlData.active_requests or {}
-PlayFabHttpsCurlData.delayed_responses = {}
 local MAX_RETRIES = 2
 local retry_codes = {
 	1199,
@@ -95,58 +94,7 @@ local function on_error(request_data, result, id, error_override)
 	end
 end
 
-local function handle_simulate_latency(success, code, headers, data, id)
-	local delayed_responses = PlayFabHttpsCurlData.delayed_responses
-	local delayed_response_found = false
-
-	for _, data in ipairs(delayed_responses) do
-		if data.id == id then
-			delayed_response_found = true
-
-			break
-		end
-	end
-
-	if not delayed_response_found then
-		local functionName = cjson.decode(data).data.FunctionName
-
-		if functionName then
-			local t = Managers.time:time("main") or 0
-
-			printf("Delaying result from %s (%d) by %d seconds", functionName, id, script_data.backend_response_latency)
-
-			delayed_responses[#delayed_responses + 1] = {
-				success = success,
-				code = code,
-				headers = headers,
-				data = data,
-				id = id,
-				t = t
-			}
-
-			return true
-		else
-			print("Ignoring delayed response for playfab response")
-			table.dump(data)
-		end
-	else
-		local functionName = cjson.decode(data).data.FunctionName
-
-		printf("Handling %s (%d) after delay", functionName, id)
-	end
-
-	return false
-end
-
 function curl_callback(success, code, headers, data, id)
-	if script_data.backend_response_latency then
-		local should_delay = handle_simulate_latency(success, code, headers, data, id)
-
-		if should_delay then
-			return
-		end
-	end
-
 	local request_data = PlayFabHttpsCurlData.active_requests[id]
 
 	if success then

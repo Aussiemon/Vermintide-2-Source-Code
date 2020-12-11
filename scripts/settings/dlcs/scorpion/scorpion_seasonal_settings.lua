@@ -1,5 +1,5 @@
 ScorpionSeasonalSettings = {
-	current_season_id = 3,
+	current_season_id = 4,
 	get_season_name = function (id)
 		if id == 1 then
 			return "season_" .. id

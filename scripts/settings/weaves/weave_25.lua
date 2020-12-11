@@ -1,11 +1,11 @@
 return {
 	wind_strength = 5,
-	wind = "life",
+	wind = "light",
 	seed = 1417,
 	objectives = {
 		{
 			display_name = "objective_capture_points_name",
-			level_id = "dlc_scorpion_pit_life",
+			level_id = "dlc_scorpion_pit_light",
 			objective_type = "capture_points",
 			conflict_settings = "default_weave",
 			end_zone_name = "end_zone_02",
@@ -148,12 +148,44 @@ return {
 						percentage_spawn_offset = 10
 					}
 				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_002 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_016 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_029 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_004 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_013 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				},
+				mutator_item_spawner_007 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
+				}
 			}
 		},
 		{
 			allow_mutator_item_respawning = true,
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_life",
+			level_id = "dlc_scorpion_arena_void_light",
 			spawning_seed = 459078,
 			level_seed = 9084,
 			conflict_settings = "weave_disabled",
@@ -168,6 +200,13 @@ return {
 						percentage = 0,
 						percentage_spawn_offset = 0
 					}
+				}
+			},
+			mutator_item_config = {
+				mutator_item_spawner_002 = {
+					unit_extension_template = "positioned_prop_unit",
+					unit_name = "units/test_unit/light_beacon",
+					extension_init_data = {}
 				}
 			}
 		}

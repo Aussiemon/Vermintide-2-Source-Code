@@ -823,12 +823,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	local update_weapons = features_list.weapons
 	local update_ammo = features_list.ammo
 
-	if update_ammo then
-		widget:set_ammo_percentage(1)
-
-		dirty = true
-	end
-
 	if equipment and (update_equipment or update_weapons or update_ammo) then
 		local wielded = equipment.wielded
 
@@ -866,6 +860,8 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 
 						stored_slot_data.ammo_fraction = ammo_fraction
 					end
+				else
+					widget:set_ammo_percentage(1)
 				end
 			end
 

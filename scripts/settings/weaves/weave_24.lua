@@ -1,11 +1,11 @@
 return {
 	wind_strength = 4,
-	wind = "life",
+	wind = "death",
 	seed = 457892,
 	objectives = {
 		{
 			display_name = "objective_destroy_doom_wheels_name",
-			level_id = "dlc_scorpion_wall_life",
+			level_id = "dlc_scorpion_wall_death",
 			objective_type = "doom_wheels",
 			conflict_settings = "default_weave",
 			end_zone_name = "end_zone_03",
@@ -95,7 +95,7 @@ return {
 		{
 			allow_mutator_item_respawning = true,
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_life",
+			level_id = "dlc_scorpion_arena_castle_death",
 			spawning_seed = 459078,
 			level_seed = 9084502,
 			conflict_settings = "weave_disabled",

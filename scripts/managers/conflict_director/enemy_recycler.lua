@@ -401,12 +401,13 @@ EnemyRecycler.spawn_interest_point = function (self, unit_name, position, do_spa
 	return unit
 end
 
-EnemyRecycler.add_breed = function (self, breed_name, boxed_pos, boxed_rot)
+EnemyRecycler.add_breed = function (self, breed_name, boxed_pos, boxed_rot, optional_data)
 	self.unique_area_id = self.unique_area_id + 1
 	local unit_data = {
 		[2] = breed_name,
 		[3] = boxed_pos,
-		[4] = boxed_rot
+		[4] = boxed_rot,
+		[5] = optional_data
 	}
 	local unit_list = {
 		unit_data
@@ -511,7 +512,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 		optional_data.dead_breed_data = unit_data
 		local breed = Breeds[breed_name]
 		local spawn_category = "enemy_recycler"
-		local spawn_type = "roam"
+		local spawn_type = optional_data.spawn_type or "roam"
 		local id = self.conflict_director:spawn_queued_unit(breed, spawn_pos, spawn_rot, spawn_category, nil, spawn_type, optional_data, nil, unit_data)
 		unit_data[U_UNIT] = id
 		self._roaming_ai = self._roaming_ai + 1

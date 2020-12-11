@@ -220,11 +220,6 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 
 	blackboard.locomotion_extension:set_wanted_rotation(rotation)
 
-	local head_index = Unit.node(blackboard.target_unit, "j_head")
-	local aim_target = Unit.world_position(blackboard.target_unit, head_index)
-
-	Unit.animation_set_constraint_target(unit, blackboard.constraint_target, aim_target)
-
 	if blackboard.time_to_damage < t then
 		local action = blackboard.action
 

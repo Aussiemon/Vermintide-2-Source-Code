@@ -233,19 +233,19 @@ end
 AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id)
 	local is_weave_game_mode = self._current_game_mode == "weave"
 	local kill_count = statistics_db:get_stat(stats_id, "kills_total")
-	local weave_tier, weave_progress, current_weave_index = nil
+	local weave_tier, weave_progress = nil
 
 	if is_weave_game_mode then
 		local weave_manager = Managers.weave
 		weave_tier = weave_manager:get_weave_tier()
 		weave_progress = weave_manager:current_bar_score()
-		local ignore_dlc_check = false
-		local current_weave = LevelUnlockUtils.current_weave(statistics_db, stats_id, ignore_dlc_check)
-		local weave_template = WeaveSettings.templates[current_weave]
-		local weave_templates_ordererd = WeaveSettings.templates_ordered
-		current_weave_index = table.find(weave_templates_ordererd, weave_template)
 	end
 
+	local ignore_dlc_check = false
+	local current_weave = LevelUnlockUtils.current_weave(statistics_db, stats_id, ignore_dlc_check)
+	local weave_template = WeaveSettings.templates[current_weave]
+	local weave_templates_ordererd = WeaveSettings.templates_ordered
+	local current_weave_index = table.find(weave_templates_ordererd, weave_template)
 	local mission_system = Managers.state.entity:system("mission_system")
 	local tome = mission_system:get_level_end_mission_data("tome_bonus_mission")
 	local grimoire = mission_system:get_level_end_mission_data("grimoire_hidden_mission")

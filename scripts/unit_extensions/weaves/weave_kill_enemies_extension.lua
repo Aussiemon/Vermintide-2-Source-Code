@@ -263,9 +263,13 @@ WeaveKillEnemiesExtension.on_ai_killed = function (self, killed_unit, killer_uni
 		local breed_score_multiplier = score_multiplier_per_breed[breed_name] or score_multiplier_per_breed.default
 		local score_multiplier = (spawn_type == "roam" and self._score_multiplier * roaming_multiplier) or self._score_multiplier
 		local score = score_multiplier * breed_score_multiplier
+		local despawned = death_data.despawned
 
-		self._weave_objective_system:add_score(score)
-		print("Spawn type: " .. spawn_type, "Score: " .. score, "Score Multiplier: ", score_multiplier)
+		if not despawned then
+			self._weave_objective_system:add_score(score)
+			print("Spawn type: " .. spawn_type, "Score: " .. score, "Score Multiplier: ", score_multiplier)
+		end
+
 		Unit.set_data(killed_unit, "spawn_type", nil)
 	end
 

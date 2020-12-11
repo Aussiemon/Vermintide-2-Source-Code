@@ -369,6 +369,13 @@ achievements.cog_long_bomb = {
 			end
 
 			local damage_data = event_data[register_kill_damage_data]
+			local local_player_unit = Managers.player:local_player().player_unit
+			local attacker_unit = damage_data[DamageDataIndex.ATTACKER]
+
+			if attacker_unit and local_player_unit ~= attacker_unit then
+				return false
+			end
+
 			local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
 
 			if damage_source ~= "grenade_frag_01" and damage_source ~= "grenade_frag_02" then
@@ -493,6 +500,13 @@ achievements.cog_bomb_grind = {
 		local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
 
 		if damage_type ~= "grenade" and damage_type ~= "grenade_glance" then
+			return false
+		end
+
+		local local_player_unit = Managers.player:local_player().player_unit
+		local attacker_unit = damage_data[DamageDataIndex.ATTACKER]
+
+		if attacker_unit and local_player_unit ~= attacker_unit then
 			return false
 		end
 
@@ -996,7 +1010,7 @@ for i = 1, #difficulties, 1 do
 	add_levels_complete_per_hero_challenge(achievements, name, main_game_levels, DifficultySettings[difficulty_key].rank, "dr_engineer", false, nil, "cog_upgrade", nil, nil)
 end
 
-add_career_mission_count_challenge(achievements, "cog_complete_100_missions", "completed_career_levels", "dr_engineer", difficulties, 25, nil, "achievement_trophy_cog_complete_100_missions_dr_engineer", "cog_upgrade", nil, nil)
+add_career_mission_count_challenge(achievements, "cog_complete_100_missions", "completed_career_levels", "dr_engineer", difficulties, 25, nil, "achievement_trophy_cog_complete_25_missions_dr_engineer", "cog_upgrade", nil, nil)
 
 local all_challenges = {
 	"cog_climb_kill",

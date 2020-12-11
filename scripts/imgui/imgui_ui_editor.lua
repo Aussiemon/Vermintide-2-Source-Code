@@ -162,13 +162,6 @@ local function Imgui_text_fmt(fmt, ...)
 	return Imgui.text(string_format(fmt, ...))
 end
 
-local function centered_text(gui, text, font, font_size, pos, color)
-	local min, max, caret = Gui.text_extents(gui, text, font, font_size)
-	local size = max - min
-
-	return Gui.text(gui, text, font, font_size, nil, pos - 0.5 * size, color)
-end
-
 ImguiUIEditor.draw = function (self)
 	local gui = self:get_gui()
 	local res = Vector2(Gui.resolution())
@@ -213,18 +206,6 @@ ImguiUIEditor.draw = function (self)
 
 	if no_matches then
 		Imgui.text("No matches.")
-	end
-
-	Imgui.end_child_window()
-	Imgui.end_window()
-
-	if gui then
-		local cursor = Mouse.axis(Mouse.axis_id("cursor"))
-		local color = Color(255, 255, 255, 255)
-
-		Gui.rect(gui, Vector3(0, cursor.y, 999), Vector2(res.x, 1), color)
-		Gui.rect(gui, Vector3(cursor.x, 0, 999), Vector2(1, res.y), color)
-		Gui.text(gui, string_format("%.3f %.3f", cursor.x, cursor.y), "materials/fonts/arial", 24, nil, Vector3(100, 100, 999), color)
 	end
 end
 

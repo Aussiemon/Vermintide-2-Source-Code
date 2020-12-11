@@ -1,11 +1,11 @@
 return {
 	wind_strength = 5,
-	wind = "shadow",
+	wind = "death",
 	seed = 45654,
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_river_shadow",
+			level_id = "dlc_scorpion_river_death",
 			objective_type = "kill",
 			conflict_settings = "default_weave",
 			level_seed = 1896357,
@@ -78,7 +78,7 @@ return {
 		},
 		{
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_void_shadow",
+			level_id = "dlc_scorpion_arena_void_death",
 			objective_start_flow_event = "weave_objective_kill_bosses_start",
 			spawning_seed = 11854541,
 			level_seed = 1268425,

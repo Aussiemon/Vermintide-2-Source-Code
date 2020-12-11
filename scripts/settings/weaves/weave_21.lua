@@ -1,11 +1,11 @@
 return {
 	wind_strength = 1,
-	wind = "life",
+	wind = "fire",
 	seed = 4572,
 	objectives = {
 		{
 			display_name = "objective_kill_enemies_name",
-			level_id = "dlc_scorpion_woods_life",
+			level_id = "dlc_scorpion_woods_fire",
 			objective_type = "kill",
 			conflict_settings = "default_weave",
 			level_seed = 6969,
@@ -99,7 +99,7 @@ return {
 		{
 			allow_mutator_item_respawning = true,
 			display_name = "objective_kill_bosses_name",
-			level_id = "dlc_scorpion_arena_castle_life",
+			level_id = "dlc_scorpion_arena_castle_fire",
 			spawning_seed = 459078,
 			level_seed = 9084502,
 			conflict_settings = "weave_disabled",

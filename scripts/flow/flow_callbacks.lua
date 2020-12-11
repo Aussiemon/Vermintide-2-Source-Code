@@ -4243,13 +4243,13 @@ function flow_callback_predict_hitscan(params)
 		local random_pitch = math.random() * math.rad(spread)
 		aim_direction = Quaternion.rotate(Quaternion(Vector3.up(), random_yaw), aim_direction)
 		aim_direction = Quaternion.rotate(Quaternion(Vector3.right(), random_pitch), aim_direction)
-		local result = PhysicsWorld.immediate_raycast_actors(physics_world, aim_position, aim_direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
+		local result = PhysicsWorld.immediate_raycast_actors(physics_world, aim_position, aim_direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 		local INDEX_POSITION = 1
 		local INDEX_DISTANCE = 2
-		local end_position = (result and result[#result][INDEX_POSITION]) or aim_position + aim_direction * range
+		local end_position = (result and result[1][INDEX_POSITION]) or aim_position + aim_direction * range
 		returns.end_position = end_position
 		returns.success = true
-		returns.distance = (result and result[#result][INDEX_DISTANCE]) or range
+		returns.distance = (result and result[1][INDEX_DISTANCE]) or range
 	end
 
 	return returns
