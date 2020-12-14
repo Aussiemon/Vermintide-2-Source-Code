@@ -1,33 +1,13 @@
 ModManager = class(ModManager)
-
-local function mod_name(mod)
-	return mod.name
-end
-
 local LOG_LEVELS = {
-	[0] = {},
-	{
-		error = true
-	},
-	{
-		warning = true,
-		error = true
-	},
-	{
-		warning = true,
-		info = true,
-		error = true
-	},
-	{
-		spew = true,
-		info = true,
-		warning = true,
-		error = true
-	}
+	spew = 4,
+	info = 3,
+	warning = 2,
+	error = 1
 }
 
 ModManager.print = function (self, level, str, ...)
-	if LOG_LEVELS[self._settings.log_level][level] then
+	if self._settings.log_level >= (LOG_LEVELS[level] or 99) then
 		local concat_str = sprintf("[ModManager][" .. level .. "] " .. str, ...)
 
 		print(concat_str)
@@ -54,6 +34,7 @@ ModManager.init = function (self, boot_gui)
 	self._gui = boot_gui
 	self._ui_time = 0
 	self._reload_data = {}
+	self._network_callbacks = {}
 	local in_modded_realm = script_data["eac-untrusted"]
 
 	if HAS_STEAM then
@@ -88,8 +69,8 @@ ModManager._has_enabled_mods = function (self, in_modded_realm)
 		return
 	end
 
-	for i, mod_data in ipairs(mod_settings) do
-		if mod_data.enabled then
+	for i = 1, #mod_settings, 1 do
+		if mod_settings[i].enabled then
 			return true
 		end
 	end
@@ -145,7 +126,7 @@ ModManager.update = function (self, dt)
 				local on_loaded_func = nil
 				mod.state = "running"
 				local object = mod_data.run()
-				local name = mod_name(mod)
+				local name = mod.name
 
 				if object then
 					mod.object = object
@@ -154,7 +135,7 @@ ModManager.update = function (self, dt)
 				else
 					mod.object = {}
 
-					self:print("warning", "Mod %s does not return callback table from run function", name)
+					self:print("info", "Mod %s does not return callback table from run function", name)
 				end
 
 				self:print("info", "%s loaded.", name)
@@ -178,28 +159,18 @@ ModManager.update = function (self, dt)
 
 	if gui then
 		local state = self._state
-		self._ui_time = self._ui_time + dt
-		local t = self._ui_time * 2
-		local num_dots = math.floor(t % 4)
-		local dots_string = ""
-
-		for i = 1, num_dots, 1 do
-			dots_string = dots_string .. "."
-		end
-
-		local pos = Vector3(5, 10, 1)
-		local color = Color(255, 255, 255, 255)
-		local size = 16
-		local font = "arial"
-		local font_material = "materials/fonts/" .. font
+		local t = self._ui_time + dt
+		self._ui_time = t
+		local status_str = "Loading mods"
 
 		if state == "scanning" then
-			Gui.text(gui, "Scanning for mods" .. dots_string, font_material, size, font, pos, color)
+			status_str = "Scanning for mods"
 		elseif state == "loading" then
-			local str = string.format("Loading mod '%s'" .. dots_string, mod_name(self._mods[self._mod_load_index]))
-
-			Gui.text(gui, str, font_material, size, font, pos, color)
+			local mod = self._mods[self._mod_load_index]
+			status_str = string.format("Loading mod %q", mod.name)
 		end
+
+		Gui.text(gui, status_str .. string.rep(".", (2 * t) % 4), "materials/fonts/arial", 16, nil, Vector3(5, 10, 1))
 	end
 
 	if old_state ~= self._state then
@@ -223,18 +194,13 @@ ModManager._run_callback = function (self, mod, callback_name, ...)
 		if mod.disable_pcalls == true or (self._settings.disable_pcalls == true and mod.disable_pcalls ~= false) then
 			return cb(object, ...)
 		else
-			local success, a, b, c, d = pcall(cb, object, ...)
+			local success, val = pcall(cb, object, ...)
 
 			if success then
-				return a, b, c, d
+				return val
 			else
-				if a then
-					local pcall_error = tostring(a):gsub("%%", "%%%%")
-
-					self:print("error", pcall_error)
-				end
-
-				self:print("error", "Failed to run callback %q for mod %q. Disabling callbacks until reload.", callback_name, mod_name(mod))
+				self:print("error", "%s", val or "[unknown mod error]")
+				self:print("error", "Failed to run callback %q for mod %q. Disabling callbacks until reload.", callback_name, mod.name)
 
 				mod.callbacks_disabled = true
 			end
@@ -274,7 +240,7 @@ ModManager._load_mod = function (self, index)
 		local data_file, info_error = loadstring(info)
 
 		if not data_file then
-			self:print("error", "Syntax error in .mod file. Mod %q skipped.", mod_name(mod))
+			self:print("error", "Syntax error in .mod file. Mod %q skipped.", mod.name)
 			self:print("info", info_error)
 
 			mod.enabled = false
@@ -285,7 +251,7 @@ ModManager._load_mod = function (self, index)
 		local success, data_or_error = pcall(data_file)
 
 		if not success then
-			self:print("error", "Error in .mod file return table. Mod %q skipped.", mod_name(mod))
+			self:print("error", "Error in .mod file return table. Mod %q skipped.", mod.name)
 			self:print("info", data_or_error)
 
 			mod.enabled = false
@@ -294,10 +260,10 @@ ModManager._load_mod = function (self, index)
 		end
 
 		mod.data = data_or_error
-		mod.name = mod_name(mod) or data_or_error.NAME or "Mod " .. id
+		mod.name = mod.name or data_or_error.NAME or "Mod " .. id
 		mod.state = "loading"
 
-		Crashify.print_property(string.format("Mod:%s:%s", id, mod_name(mod)), true)
+		Crashify.print_property(string.format("Mod:%s:%s", id, mod.name), true)
 
 		self._mod_load_index = index
 
@@ -424,7 +390,7 @@ ModManager.unload_mod = function (self, index)
 	local mod = self._mods[index]
 
 	if mod then
-		self:print("info", "Unloading %q.", mod_name(mod))
+		self:print("info", "Unloading %q.", mod.name)
 		self:_run_callback(mod, "on_unload")
 
 		for _, handle in ipairs(mod.loaded_packages) do
@@ -444,7 +410,7 @@ ModManager._reload_mods = function (self)
 		local mod = self._mods[i]
 
 		if mod and mod.state == "running" then
-			self:print("info", "reloading %s", mod_name(mod))
+			self:print("info", "reloading %s", mod.name)
 
 			self._reload_data[mod.id] = self:_run_callback(mod, "on_reload")
 		else
@@ -470,6 +436,72 @@ ModManager.on_game_state_changed = function (self, status, state_name, state_obj
 	else
 		self:print("warning", "Ignored on_game_state_changed call due to being in state %q", self._state)
 	end
+end
+
+ModManager.network_bind = function (self, port, callback)
+	local ncbs = self._network_callbacks
+
+	fassert(not ncbs[port], "Port %d already in use", port)
+
+	ncbs[port] = callback
+end
+
+ModManager.network_unbind = function (self, port)
+	local ncbs = self._network_callbacks
+
+	fassert(ncbs[port], "Port %d not in use", port)
+
+	ncbs[port] = nil
+end
+
+ModManager.network_is_occupied = function (self, port)
+	return self._network_callbacks[port] ~= nil
+end
+
+ModManager.network_send = function (self, destination_peer_id, port, payload)
+	if destination_peer_id == self._my_peer_id then
+		Managers.state.network.network_transmit:queue_local_rpc("rpc_mod_user_data", port, payload)
+	end
+
+	local channel_id = PEER_ID_TO_CHANNEL[(self._is_server and destination_peer_id) or self._host_peer_id]
+
+	if channel_id then
+		RPC.rpc_mod_user_data(channel_id, self._my_peer_id, destination_peer_id, port, payload)
+	end
+end
+
+ModManager.rpc_mod_user_data = function (self, relay_channel_id, source_peer_id, destination_peer_id, port, payload)
+	if destination_peer_id == self._my_peer_id then
+		local cb = self._network_callbacks[port]
+
+		if cb then
+			cb(source_peer_id, payload)
+		end
+	elseif self._is_server then
+		local channel_id = PEER_ID_TO_CHANNEL[destination_peer_id]
+
+		if channel_id then
+			RPC.rpc_mod_user_data(channel_id, source_peer_id, destination_peer_id, port, payload)
+		end
+	end
+end
+
+ModManager.register_network_event_delegate = function (self, network_event_delegate)
+	network_event_delegate:register(self, "rpc_mod_user_data")
+
+	self._network_event_delegate = network_event_delegate
+end
+
+ModManager.unregister_network_event_delegate = function (self)
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
+end
+
+ModManager.network_context_created = function (self, host_peer_id, my_peer_id, is_server)
+	self._host_peer_id = host_peer_id
+	self._my_peer_id = my_peer_id
+	self._is_server = is_server
 end
 
 return

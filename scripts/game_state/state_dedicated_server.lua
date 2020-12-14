@@ -262,6 +262,7 @@ StateDedicatedServer.setup_global_managers = function (self, game_server)
 
 	Managers.mechanism:network_context_created(game_server, peer_id, peer_id)
 	Managers.party:network_context_created(game_server, peer_id, peer_id)
+	Managers.mod:network_context_created(peer_id, peer_id, is_server)
 end
 
 StateDedicatedServer._update_network = function (self, dt)

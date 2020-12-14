@@ -881,7 +881,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 			self:setup_chat_manager(lobby_host, host_peer_id, own_peer_id, true)
 			self:setup_deed_manager(lobby_host, host_peer_id, own_peer_id, true, self._network_server)
 			self:setup_enemy_package_loader(lobby_host, host_peer_id, own_peer_id)
-			self:setup_global_managers(lobby_host, host_peer_id, own_peer_id)
+			self:setup_global_managers(lobby_host, host_peer_id, own_peer_id, true)
 			lobby_host:set_network_initialized(true)
 		elseif self._lobby_host.state == LobbyState.FAILED and not self._popup_id then
 			local text_id = nil
@@ -1043,7 +1043,7 @@ StateLoading._verify_joined_lobby = function (self)
 				self:setup_chat_manager(self._lobby_client, host, own_peer_id, false)
 				self:setup_deed_manager(self._lobby_client, host, own_peer_id, false, nil)
 				self:setup_enemy_package_loader(self._lobby_client, host, own_peer_id)
-				self:setup_global_managers(self._lobby_client, host, own_peer_id)
+				self:setup_global_managers(self._lobby_client, host, own_peer_id, false)
 			end
 		else
 			self:_destroy_lobby_client()
@@ -2067,6 +2067,7 @@ StateLoading.register_rpcs = function (self)
 	end
 
 	Managers.chat:register_network_event_delegate(network_event_delegate)
+	Managers.mod:register_network_event_delegate(network_event_delegate)
 	Managers.deed:register_rpcs(network_event_delegate)
 
 	if self._level_end_view_wrappers then
@@ -2091,7 +2092,8 @@ StateLoading._unregister_rpcs = function (self)
 		Managers.matchmaking:unregister_rpcs()
 	end
 
-	Managers.chat:unregister_network_event_delegate(self._network_event_delegate)
+	Managers.chat:unregister_network_event_delegate()
+	Managers.mod:unregister_network_event_delegate()
 	Managers.deed:unregister_rpcs()
 
 	if self._level_end_view_wrappers then
@@ -2305,9 +2307,10 @@ StateLoading.setup_enemy_package_loader = function (self, lobby, host_peer_id, m
 	self._level_transition_handler.enemy_package_loader:network_context_created(lobby, host_peer_id, my_peer_id)
 end
 
-StateLoading.setup_global_managers = function (self, lobby, host_peer_id, my_peer_id)
+StateLoading.setup_global_managers = function (self, lobby, host_peer_id, my_peer_id, is_server)
 	Managers.mechanism:network_context_created(lobby, host_peer_id, my_peer_id)
 	Managers.party:network_context_created(lobby, host_peer_id, my_peer_id)
+	Managers.mod:network_context_created(host_peer_id, my_peer_id, is_server)
 end
 
 StateLoading.setup_network_transmit = function (self, network_handler)

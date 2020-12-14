@@ -108,6 +108,10 @@ GameModeManager.cleanup_game_mode_units = function (self)
 	self._game_mode:cleanup_game_mode_units()
 end
 
+GameModeManager.deactivate_mutators = function (self, is_destroy)
+	self._mutator_handler:deactivate_mutators(is_destroy)
+end
+
 GameModeManager.conflict_director_updated_settings = function (self)
 	self._mutator_handler:conflict_director_updated_settings()
 end

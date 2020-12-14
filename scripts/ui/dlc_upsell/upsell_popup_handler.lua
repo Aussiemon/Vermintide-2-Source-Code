@@ -13,9 +13,9 @@ UpsellPopupHandler.destroy = function (self)
 	Managers.state.event:unregister("ui_dlc_upsell", self)
 
 	if self._ui_popup then
-		self.ui_popup:destroy()
+		self._ui_popup:destroy()
 
-		self.ui_popup = nil
+		self._ui_popup = nil
 	end
 end
 

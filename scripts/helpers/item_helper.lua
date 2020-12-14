@@ -342,6 +342,25 @@ ItemHelper.is_equiped_backend_id = function (backend_id, career)
 	return num_equipped_careers > 0 and (not career or table.contains(career_names, career)), career_names, num_equipped_careers
 end
 
+ItemHelper.get_equipped_slots = function (backend_id, career_name)
+	local slots = {}
+	local slots_n = 0
+	local item_interface = Managers.backend:get_interface("items")
+	local loadouts = item_interface:get_loadout()
+	local career_loadout = loadouts[career_name]
+
+	if career_loadout then
+		for slot, id in pairs(career_loadout) do
+			if backend_id == id then
+				slots_n = slots_n + 1
+				slots[slots_n] = slot
+			end
+		end
+	end
+
+	return slots, slots_n
+end
+
 ItemHelper.mark_keep_decoration_as_new = function (keep_decoration_id)
 	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids or {}
 	new_keep_decoration_ids[keep_decoration_id] = true

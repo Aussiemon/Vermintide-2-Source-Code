@@ -2971,18 +2971,30 @@ AttachmentNodeLinking = {
 				{
 					target = 0,
 					source = "j_rightweaponattach"
+				},
+				{
+					target = "j_rotator",
+					source = "j_rightweaponcomponent9"
 				}
 			},
 			wielded = {
 				{
 					target = 0,
 					source = "j_rightweaponattach"
+				},
+				{
+					target = "j_rotator",
+					source = "j_rightweaponcomponent9"
 				}
 			},
 			unwielded = {
 				{
 					target = 0,
 					source = "a_unwielded_rifle"
+				},
+				{
+					target = "j_rotator",
+					source = "j_rightweaponcomponent9"
 				}
 			}
 		}

@@ -2215,6 +2215,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 	RPC.rpc_status_change_bool(channel_id, lookup.pulled_up, self.pulled_up, self_game_object_id, 0)
 	RPC.rpc_status_change_bool(channel_id, lookup.ladder_climbing, self.on_ladder, self_game_object_id, current_ladder_unit_game_object_id)
 	RPC.rpc_status_change_bool(channel_id, lookup.ledge_hanging, self.is_ledge_hanging, self_game_object_id, ledge_hanging_unit_game_object_id)
+	RPC.rpc_status_change_bool(channel_id, lookup.in_end_zone, self.in_end_zone, self_game_object_id, 0)
 end
 
 GenericStatusExtension.set_in_end_zone = function (self, in_end_zone)

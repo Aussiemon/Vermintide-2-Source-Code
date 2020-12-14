@@ -356,8 +356,11 @@ CraftPageApplySkin.on_craft_completed = function (self)
 	if craft_item_backend_id and ItemHelper.is_equiped_backend_id(craft_item_backend_id, self.career_name) then
 		local item_interface = Managers.backend:get_interface("items")
 		local craft_item = item_interface:get_item_from_id(craft_item_backend_id)
+		local equipped_slots, num_slots = ItemHelper.get_equipped_slots(craft_item_backend_id, self.career_name)
 
-		self.super_parent:_set_loadout_item(craft_item)
+		for i = 1, num_slots, 1 do
+			self.super_parent:_set_loadout_item(craft_item, equipped_slots[i])
+		end
 
 		local item_data = craft_item.data
 		local slot_type = item_data.slot_type

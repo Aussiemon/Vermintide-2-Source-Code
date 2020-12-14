@@ -315,8 +315,7 @@ ItemMasterList.witchhunter_hat_1001 = {
 	steam_itemdefid = 106,
 	can_wield = {
 		"wh_captain"
-	},
-	steam_store_hidden = not Application or not Application.user_setting("show_test_item")
+	}
 }
 ItemMasterList.zealot_hat_1001 = {
 	description = "description_zealot_hat_1001",

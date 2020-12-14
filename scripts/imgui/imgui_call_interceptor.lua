@@ -97,7 +97,7 @@ ImguiCallInterceptor.draw = function (self)
 		self._obj_name = Imgui.input_text("Object", self._obj_name)
 		self._method_name = Imgui.input_text("Method", self._method_name)
 
-		if Imgui.button("Intercept") and pcall(__INTERCEPT_CALLS__, rawget(_G, "obj_name", method_name)) then
+		if Imgui.button("Intercept") and pcall(__INTERCEPT_CALLS__, rawget(_G, self._obj_name), self._method_name) then
 			self._obj_name = ""
 			self._method_name = ""
 		end

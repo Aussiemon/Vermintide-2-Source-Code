@@ -74,6 +74,16 @@ MutatorHandler.activate_mutators = function (self)
 	end
 end
 
+MutatorHandler.deactivate_mutators = function (self, is_destroy)
+	local active_mutators = self._active_mutators
+	local mutator_context = self._mutator_context
+	mutator_context.is_destroy = is_destroy
+
+	for name, _ in pairs(active_mutators) do
+		self:_deactivate_mutator(name, active_mutators, mutator_context, true)
+	end
+end
+
 MutatorHandler.activate_mutator = function (self, name, optional_duration, optional_flag)
 	if self._is_server then
 		local mutator_context = self._mutator_context

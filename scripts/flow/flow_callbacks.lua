@@ -396,7 +396,11 @@ function flow_callback_generic_ai_node_spawned(params)
 end
 
 function flow_callback_respawn_unit_spawned(params)
-	Managers.state.game_mode:respawn_unit_spawned(params.unit)
+	local game_mode = Managers.state.game_mode
+
+	if game_mode then
+		game_mode:respawn_unit_spawned(params.unit)
+	end
 end
 
 function flow_callback_respawn_enabled(params)
@@ -404,9 +408,13 @@ function flow_callback_respawn_enabled(params)
 		return
 	end
 
-	local enabled = params.enabled
+	local game_mode = Managers.state.game_mode
 
-	Managers.state.game_mode:set_respawning_enabled(enabled)
+	if game_mode then
+		local enabled = params.enabled
+
+		game_mode:set_respawning_enabled(enabled)
+	end
 end
 
 function flow_callback_force_respawn_dead_players(params)
@@ -414,9 +422,11 @@ function flow_callback_force_respawn_dead_players(params)
 		return
 	end
 
-	local enabled = params.enabled
+	local game_mode = Managers.state.game_mode
 
-	Managers.state.game_mode:force_respawn_dead_players()
+	if game_mode then
+		game_mode:force_respawn_dead_players()
+	end
 end
 
 function flow_callback_increase_weave_score(params)

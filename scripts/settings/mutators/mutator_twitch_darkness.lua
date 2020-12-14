@@ -3,6 +3,12 @@ return {
 	display_name = "display_name_mutator_darkness",
 	icon = "mutator_icon_darkness",
 	server_update_function = function (context, data)
+		local network_manager = Managers.state.network
+
+		if not network_manager or not network_manager:game() then
+			return
+		end
+
 		local side = Managers.state.side:get_side_from_name("heroes")
 		local PLAYER_UNITS = side.PLAYER_UNITS
 

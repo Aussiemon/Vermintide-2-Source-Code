@@ -507,6 +507,7 @@ StateIngame.on_enter = function (self)
 
 	Managers.music:on_enter_level(network_event_delegate, is_server)
 	Managers.chat:register_network_event_delegate(network_event_delegate)
+	Managers.mod:register_network_event_delegate(network_event_delegate)
 	Managers.state.game_mode:setup_done()
 
 	local environment_variation_name = self.level_transition_handler:get_current_environment_variation_name()
@@ -1796,6 +1797,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	Managers.mechanism:unregister_rpcs()
 	Managers.party:unregister_rpcs()
 	Managers.state.game_mode:cleanup_game_mode_units()
+	Managers.state.game_mode:deactivate_mutators(true)
 
 	local unit_spawner = Managers.state.unit_spawner
 	unit_spawner.locked = false
@@ -1988,6 +1990,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.chat:unregister_network_event_delegate()
+	Managers.mod:unregister_network_event_delegate()
 	self.dice_keeper:unregister_rpc()
 
 	self.dice_keeper = nil
