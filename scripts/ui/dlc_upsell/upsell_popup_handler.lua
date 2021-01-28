@@ -26,14 +26,6 @@ UpsellPopupHandler.update = function (self, dt, t)
 		return
 	end
 
-	local Managers_state = Managers.state
-
-	if Managers_state and Managers_state.voting:vote_in_progress() then
-		popup:hide()
-
-		return
-	end
-
 	popup:update(dt)
 
 	if popup:exit_done() then

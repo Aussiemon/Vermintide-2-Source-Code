@@ -154,8 +154,9 @@ BotActions.default = {
 		es_questingknight = {
 			activation = {
 				max_distance_sq = 20,
-				action = "aim_at_target",
-				dynamic_target_unit = true
+				move_to_target_unit = true,
+				dynamic_target_unit = true,
+				action = "aim_at_target"
 			},
 			end_condition = {
 				is_slot_not_wielded = {

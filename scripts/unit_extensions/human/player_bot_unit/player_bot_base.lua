@@ -1409,6 +1409,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 	local override_box = blackboard.navigation_destination_override
 	local override_melee = blackboard.melee and blackboard.melee.engage_position_set and override_box:unbox()
 	local override_ranged = blackboard.shoot and blackboard.shoot.disengage_position_set and override_box:unbox()
+	local override_ability = blackboard.activate_ability_data and blackboard.activate_ability_data.move_to_position_set and override_box:unbox()
 	local override_liquid_escape = blackboard.use_liquid_escape_destination and blackboard.navigation_liquid_escape_destination_override:unbox()
 	local override_vortex_escape = blackboard.use_vortex_escape_destination and blackboard.navigation_vortex_escape_destination_override:unbox()
 	local moving_towards_follow_position = false
@@ -1473,8 +1474,12 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		if override_ranged then
 			blackboard.shoot.disengage_position_set = false
 		end
-	elseif override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged then
-		local override = transport_unit_override or override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged
+
+		if override_ability then
+			blackboard.activate_ability_data.move_to_position_set = false
+		end
+	elseif override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged or override_ability then
+		local override = transport_unit_override or override_vortex_escape or override_liquid_escape or cover_position or override_melee or override_ranged or override_ability
 		local offset = override - previous_destination
 		local override_allowed = hold_position == nil or Vector3.distance_squared(hold_position, override) <= hold_position_max_distance_sq
 

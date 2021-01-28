@@ -57,7 +57,13 @@ EndViewStateSummary.on_enter = function (self, params)
 
 	local current_level, extra_levels = self:_set_current_experience(current_experience)
 	self._current_level = current_level
-	self._extra_levels = extra_levels
+
+	if self._progress_data.bonus_experience > 0 then
+		self._extra_levels = extra_levels + self._progress_data.start_extra_level
+	else
+		self._extra_levels = extra_levels
+	end
+
 	self._experience_presentation_completed = nil
 
 	self:_play_sound("play_gui_mission_summary_appear")
@@ -444,8 +450,15 @@ EndViewStateSummary._get_total_experience_progress_data = function (self, start_
 	local end_extra_level, end_extra_levels_progress = ExperienceSettings.get_extra_level(end_experience_pool)
 	local total_start_level = start_level + start_extra_level
 	local total_end_level = end_level + end_extra_level
+	local bonus_experience = 0
+
+	if start_level ~= ExperienceSettings.max_level and end_level == ExperienceSettings.max_level then
+		end_progress = start_extra_level_progress
+		bonus_experience = ExperienceSettings.get_experience_required_for_level(ExperienceSettings.max_level) * start_extra_level_progress
+	end
+
 	local progress_length = total_end_level - total_start_level + end_progress - start_progress + end_extra_levels_progress - start_extra_level_progress
-	local experience_gained = end_experience - start_experience + end_experience_pool - start_experience_pool
+	local experience_gained = end_experience - start_experience + end_experience_pool - start_experience_pool + bonus_experience
 
 	if start_level == ExperienceSettings.max_level then
 		start_experience = start_experience + start_experience_pool
@@ -464,6 +477,8 @@ EndViewStateSummary._get_total_experience_progress_data = function (self, start_
 		experience_to_add = experience_gained,
 		total_progress = progress_length,
 		start_progress = start_progress,
+		start_extra_level = start_extra_level,
+		bonus_experience = bonus_experience,
 		total_time = time
 	}
 end
@@ -495,6 +510,10 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 	local has_reached_level = level_reached ~= self._current_level
 
 	if self._extra_levels ~= nil then
+		if self._progress_data.bonus_experience > 0 then
+			extra_levels = extra_levels + self._progress_data.start_extra_level
+		end
+
 		has_reached_level = has_reached_level or extra_levels ~= self._extra_levels
 	end
 

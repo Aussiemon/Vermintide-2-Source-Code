@@ -445,7 +445,7 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 		if end_time and end_time <= t then
 			self:_remove_sub_buff(buff, i, buff_extension_function_params)
 
-			if template.buff_after_delay then
+			if template.buff_after_delay and not buff.aborted then
 				local delayed_buff_name = buff.delayed_buff_name
 
 				self:add_buff(delayed_buff_name)
@@ -500,7 +500,7 @@ BuffExtension.update_stat_buff = function (self, stat_buff_type, difference, ind
 	end
 end
 
-BuffExtension.remove_buff = function (self, id)
+BuffExtension.remove_buff = function (self, id, buff_type)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
@@ -517,7 +517,7 @@ BuffExtension.remove_buff = function (self, id)
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
-		if buff.id == id or (buff.parent_id and buff.parent_id == id) then
+		if (id and buff.id == id) or (buff.parent_id and id and buff.parent_id == id) or (buff_type and buff.buff_type == buff_type) then
 			self:_remove_sub_buff(buff, i, buff_extension_function_params)
 
 			local new_buff_count = #buffs
@@ -539,9 +539,28 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 	local world = self.world
 	local template = buff.template
 	local remove_buff_func = template.remove_buff_func
+	local buffs_to_remove_on_remove = template.buffs_to_remove_on_remove
 
 	if remove_buff_func then
 		BuffFunctionTemplates.functions[remove_buff_func](self._unit, buff, buff_extension_function_params, world)
+	end
+
+	if buffs_to_remove_on_remove then
+		for i = 1, #buffs_to_remove_on_remove, 1 do
+			if buff.buff_type ~= buffs_to_remove_on_remove[i] then
+				for j, all_buff in ipairs(self._buffs) do
+					local buff_type = all_buff.buff_type
+
+					if buff_type == buffs_to_remove_on_remove[i] then
+						if all_buff.delayed_buff_name then
+							all_buff.aborted = true
+						end
+
+						all_buff.duration = 0
+					end
+				end
+			end
+		end
 	end
 
 	if template.stat_buff then

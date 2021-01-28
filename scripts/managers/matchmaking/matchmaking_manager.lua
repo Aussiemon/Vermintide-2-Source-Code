@@ -47,7 +47,7 @@ MatchmakingSettings = {
 	REQUEST_PROFILES_REPLY_TIME = 10,
 	JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL = 20,
 	LOBBY_FINDER_UPDATE_INTERVAL = 1,
-	max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and "close") or Application.user_setting("max_quick_play_search_range") or DefaultUserSettings.get("user_settings", "max_quick_play_search_range"),
+	max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and "close") or (Application.user_setting("max_quick_play_search_range") ~= "medium" and Application.user_setting("max_quick_play_search_range")) or "close" or DefaultUserSettings.get("user_settings", "max_quick_play_search_range"),
 	allowed_profiles = {
 		true,
 		true,
@@ -1776,7 +1776,11 @@ MatchmakingManager.rpc_game_server_reserve_slots = function (self, channel_id, c
 end
 
 MatchmakingManager.rpc_set_quick_game = function (self, channel_id, quick_game)
-	self:set_quick_game(quick_game)
+	local ranked_weave = self.lobby.stored_lobby_data.weave_name
+
+	if not ranked_weave or not self._quick_game then
+		self:set_quick_game(quick_game)
+	end
 end
 
 MatchmakingManager.rpc_start_game_countdown_finished = function (self, channel_id)

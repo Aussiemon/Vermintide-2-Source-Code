@@ -470,8 +470,18 @@ TelemetryEvents.player_spawned = function (self, player)
 	local equipment = inventory_system:equipment()
 	local slot_melee = equipment.slots.slot_melee
 	local slot_ranged = equipment.slots.slot_ranged
+	local cosmetic_slot_melee = CosmeticUtils.get_cosmetic_slot(player, "slot_melee")
+	local cosmetic_slot_ranged = CosmeticUtils.get_cosmetic_slot(player, "slot_ranged")
+	local cosmetic_slot_hat = CosmeticUtils.get_cosmetic_slot(player, "slot_hat")
+	local cosmetic_slot_skin = CosmeticUtils.get_cosmetic_slot(player, "slot_skin")
+	local cosmetic_slot_frame = CosmeticUtils.get_cosmetic_slot(player, "slot_frame")
 	params.slot_melee = slot_melee and slot_melee.item_data.name
+	params.slot_melee_skin = (cosmetic_slot_melee and cosmetic_slot_melee.skin_name) or "default"
 	params.slot_ranged = slot_ranged and slot_ranged.item_data.name
+	params.slot_ranged_skin = (cosmetic_slot_ranged and cosmetic_slot_ranged.skin_name) or "default"
+	params.slot_hat = cosmetic_slot_hat and cosmetic_slot_hat.item_name
+	params.slot_skin = cosmetic_slot_skin and cosmetic_slot_skin.item_name
+	params.slot_frame = cosmetic_slot_frame and cosmetic_slot_frame.item_name
 
 	if ScriptUnit.has_extension(player.player_unit, "talent_system") then
 		params.talents = ScriptUnit.extension(player.player_unit, "talent_system"):get_talent_names()
@@ -679,6 +689,22 @@ TelemetryEvents.player_left = function (self, player)
 	params.player_id = player:telemetry_id()
 
 	self.manager:register_event("player_left", params)
+end
+
+TelemetryEvents.network_ping = function (self, avg, std_dev, p99, p95, p90, p75, p50, p25, observations)
+	table.clear(params)
+
+	params.avg = avg
+	params.std_dev = std_dev
+	params.p99 = p99
+	params.p95 = p95
+	params.p90 = p90
+	params.p75 = p75
+	params.p50 = p50
+	params.p25 = p25
+	params.observations = observations
+
+	self.manager:register_event("network_ping", params)
 end
 
 return

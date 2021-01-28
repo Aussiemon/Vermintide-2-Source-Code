@@ -571,6 +571,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 				self._completed_weave = weave_manager:get_active_weave()
 
 				StatisticsUtil.register_weave_complete(statistics_db, player, is_quickplay, difficulty_key)
+				Managers.matchmaking:set_quick_game(false)
 			else
 				local saved_scoreboard_stats = ScoreboardHelper.get_weave_stats(self.statistics_db, self.profile_synchronizer)
 				self.parent.parent.loading_context.saved_scoreboard_stats = saved_scoreboard_stats
@@ -615,6 +616,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			is_final_objective = true
 		end
 
+		Managers.state.game_mode:game_lost()
 		print("Game lost")
 
 		self.parent.parent.loading_context.saved_scoreboard_stats = nil

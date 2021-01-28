@@ -252,6 +252,7 @@ weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.wood_e
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_crossbow"
 weapon_template.wield_anim = "to_repeating_crossbow_elf"
 weapon_template.wield_anim_no_ammo = "to_repeating_crossbow_elf_noammo"
+weapon_template.wield_anim_not_loaded = "to_repeating_crossbow_elf"
 weapon_template.crosshair_style = "projectile"
 weapon_template.reload_event = "reload"
 weapon_template.buff_type = "RANGED"

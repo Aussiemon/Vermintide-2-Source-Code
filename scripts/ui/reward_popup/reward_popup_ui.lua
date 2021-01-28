@@ -243,10 +243,10 @@ RewardPopupUI.start_presentation_animation = function (self, animation_name, wid
 end
 
 RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
-	local value = entry_data.value
-	local widget_type = entry_data.widget_type
-	local ignore_height = entry_data.ignore_height
 	local widget_definitions = definitions.widget_definitions
+	local value = entry_data.value
+	local widget_type = (entry_data.widget_type and widget_definitions[entry_data.widget_type] and entry_data.widget_type) or "item"
+	local ignore_height = entry_data.ignore_height
 	local widget = UIWidget.init(widget_definitions[widget_type])
 	local scenegraph_id = widget.scenegraph_id
 	local widget_scenegraph_size = scenegraph_definition[scenegraph_id].size
@@ -318,6 +318,18 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(item_icon)
 		local texture_size = texture_settings.size
 		widget.content.texture_id = item_icon
+		widget_height = 0
+	elseif widget_type == "frame" then
+		local backend_id = value.backend_id
+		local item_interface = Managers.backend:get_interface("items")
+		local item = item_interface:get_item_from_id(backend_id)
+		local rarity = item.rarity
+		local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
+		local style = widget.style.texture_id
+		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(inventory_icon)
+		local texture_size = texture_settings.size
+		widget.content.texture_id = inventory_icon
+		widget.content.rarity_texture = UISettings.item_rarity_textures[rarity]
 		widget_height = 0
 	end
 

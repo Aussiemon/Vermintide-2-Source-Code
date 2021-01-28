@@ -280,7 +280,8 @@ local damage_sources = {
 	"charge_ability_hit",
 	"charge_ability_hit_blast",
 	"corpse_explosion",
-	"buff"
+	"buff",
+	"life_tap"
 }
 
 for hazard, _ in pairs(EnvironmentalHazards) do
@@ -989,6 +990,7 @@ NetworkLookup.damage_types = {
 	"sync_health",
 	"killing_blow",
 	"military_finish",
+	"life_tap",
 	"volume_generic_dot",
 	"volume_insta_kill",
 	"inside_forbidden_tag_volume",

@@ -312,7 +312,7 @@ local weapon_template = {
 		ammo_per_clip = 6,
 		play_reload_anim_on_wield_reload = true,
 		reload_time = 1.55,
-		reload_on_ammo_pickup = true,
+		reload_on_ammo_pickup = false,
 		should_update_anim_ammo = true
 	},
 	attack_meta_data = {

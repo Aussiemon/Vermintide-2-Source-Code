@@ -390,10 +390,34 @@ local talent_buff_templates = {
 			}
 		}
 	},
+	bardin_engineer_power_on_max_pump_buff_on_remove = {
+		buffs = {
+			{
+				buffs_to_remove_on_remove = {
+					"bardin_engineer_pump_buff_long",
+					"bardin_engineer_pump_buff"
+				}
+			}
+		}
+	},
 	bardin_engineer_stacks_stay = {
 		buffs = {
 			{
-				perk = "engineer_persistent_pump_stacks"
+				perk = "engineer_persistent_pump_stacks",
+				buffs_to_remove_on_remove = {
+					"bardin_engineer_pump_buff_long",
+					"bardin_engineer_pump_buff"
+				}
+			}
+		}
+	},
+	bardin_engineer_long_stacks_on_remove = {
+		buffs = {
+			{
+				buffs_to_remove_on_remove = {
+					"bardin_engineer_pump_buff_long",
+					"bardin_engineer_pump_buff"
+				}
 			}
 		}
 	},
@@ -441,7 +465,11 @@ local talent_buff_templates = {
 				buff_func = "bardin_engineer_piston_power_add",
 				event = "on_hit",
 				buff_to_check = "bardin_engineer_piston_powered_delay",
-				apply_buff_func = "bardin_engineer_piston_power_add_apply"
+				apply_buff_func = "bardin_engineer_piston_power_add_apply",
+				buffs_to_remove_on_remove = {
+					"bardin_engineer_piston_powered_delay",
+					"bardin_engineer_piston_powered_ready"
+				}
 			}
 		}
 	},
@@ -708,7 +736,9 @@ local talents = {
 				value = buff_tweak_data.bardin_engineer_power_on_max_pump_buff.duration
 			}
 		},
-		buffs = {}
+		buffs = {
+			"bardin_engineer_power_on_max_pump_buff_on_remove"
+		}
 	},
 	{
 		description = "bardin_engineer_stacks_stay_desc",
@@ -731,7 +761,9 @@ local talents = {
 				value = buff_tweak_data.bardin_engineer_pump_buff_long_attack_speed.multiplier
 			}
 		},
-		buffs = {}
+		buffs = {
+			"bardin_engineer_long_stacks_on_remove"
+		}
 	},
 	{
 		description = "bardin_engineer_stacking_damage_reduction_desc",

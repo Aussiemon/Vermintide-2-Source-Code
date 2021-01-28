@@ -630,7 +630,7 @@ achievements.cog_chain_headshot = {
 
 					template_data.combo_headshots = template_data.combo_headshots + 1
 
-					if template_data.combo_headshots >= 5 then
+					if template_data.combo_headshots >= 20 then
 						statistics_db:increment_stat(stats_id, "cog_chain_headshot")
 					end
 				end

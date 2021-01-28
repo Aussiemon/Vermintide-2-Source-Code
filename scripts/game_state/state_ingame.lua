@@ -59,6 +59,7 @@ require("scripts/managers/quest/quest_manager")
 require("scripts/managers/badge/badge_manager")
 require("scripts/managers/challenges/challenge_manager")
 require("scripts/utils/fps_reporter")
+require("scripts/utils/ping_reporter")
 require("scripts/managers/side/side_manager")
 DLCUtils.require_list("statistics_database")
 
@@ -136,13 +137,13 @@ StateIngame.on_enter = function (self)
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
 
-	if PLATFORM == "xb1" or PLATFORM == "ps4" then
-		if self.is_in_tutorial then
-			Managers.backend:set_user_data("prologue_started", true)
-			Managers.backend:commit()
-		elseif self.is_in_inn then
-			Managers.unlock:enable_update_unlocks(true)
-		end
+	if (PLATFORM == "xb1" or PLATFORM == "ps4") and self.is_in_tutorial then
+		Managers.backend:set_user_data("prologue_started", true)
+		Managers.backend:commit()
+	end
+
+	if self.is_in_inn then
+		Managers.unlock:enable_update_unlocks(true)
 	end
 
 	local db = Managers.venture.statistics
@@ -596,6 +597,7 @@ StateIngame.on_enter = function (self)
 	end
 
 	self._fps_reporter = FPSReporter:new()
+	self._ping_reporter = PingReporter:new()
 
 	Managers.state.event:trigger("start_game_time", Managers.state.network:network_time())
 	Managers:on_round_start(network_event_delegate, event_manager)
@@ -927,6 +929,7 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.state.bot_nav_transition:update(dt, t)
 	Managers.state.performance:update(dt, t)
 	self._fps_reporter:update(dt, t)
+	self._ping_reporter:update(dt, t)
 	self:_update_onclose_check(dt, t)
 	self:_generate_ingame_clock()
 	self._camera_carrier:update(dt)
@@ -1536,24 +1539,28 @@ StateIngame._check_exit = function (self, t)
 			local host_migration_info = {
 				host_to_migrate_to = self.network_client.host_to_migrate_to
 			}
-			local level_key = self.level_transition_handler:default_level_key()
-			local environment_variation_id = self.level_transition_handler:default_environment_id()
-			host_migration_info.level_to_load = level_key
-			host_migration_info.environment_to_load = environment_variation_id
+
+			if Managers.state.game_mode:is_game_mode_ended() then
+				local level_key = self.level_transition_handler:default_level_key()
+				local environment_variation_id = self.level_transition_handler:default_environment_id()
+				host_migration_info.level_to_load = level_key
+				host_migration_info.environment_to_load = environment_variation_id
+			end
+
 			local is_private = self._lobby_client:lobby_data("is_private")
 			local game_mode_key = nil
 
 			if PLATFORM == "ps4" then
-				game_mode_key = "n/a"
+				game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
 			else
-				game_mode_key = NetworkLookup.game_modes["n/a"]
+				game_mode_key = self._lobby_client:lobby_data("game_mode") or NetworkLookup.game_modes["n/a"]
 			end
 
 			host_migration_info.lobby_data = {
 				game_mode = game_mode_key,
 				is_private = is_private,
 				difficulty = difficulty,
-				current_level_key = level_key
+				current_level_key = Managers.mechanism:game_mechanism():get_hub_level_key()
 			}
 			self.parent.loading_context.host_migration_info = host_migration_info
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
@@ -1744,6 +1751,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	self._fps_reporter:report()
+	self._ping_reporter:report()
 	self:_check_and_add_end_game_telemetry(application_shutdown)
 
 	if TelemetrySettings.collect_memory then

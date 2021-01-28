@@ -1499,17 +1499,27 @@ StateLoading._handle_popup = function (self)
 			self._first_time_view:force_done()
 		end
 	elseif result then
-		printf("[StateLoading:_handle_join_popup] No such result handled (%q)", result)
+		print(string.format("[StateLoading:_handle_popup] No such result handled (%s)", result))
 	end
 end
 
 StateLoading._handle_join_popup = function (self)
 	local result = Managers.popup:query_result(self._join_popup_id)
 
-	if result == "ok" then
+	if result == "cancel" or result == "timeout" then
 		Managers.popup:cancel_popup(self._join_popup_id)
+
+		self._teardown_network = true
+		self._join_popup_id = nil
+		self._permission_to_go_to_next_state = true
+
+		if self._first_time_view then
+			self._first_time_view:force_done()
+		end
+
+		self._new_state = StateTitleScreen
 	elseif result then
-		printf("[StateLoading:_handle_join_popup] No such result handled (%q)", result)
+		print(string.format("[StateLoading:_handle_join_popup] No such result handled (%s)", result))
 	end
 end
 
@@ -2354,12 +2364,18 @@ StateLoading.create_join_popup = function (self, host_name)
 		return
 	end
 
-	local header = Localize("unknown_error")
+	local header = Localize("popup_migrating_to_host_header")
 	local message = Localize("popup_migrating_to_host_message") .. "\n" .. host_name
+	local time = StateLoading.join_lobby_timeout
 
 	assert(self._join_popup_id == nil, "Tried to show popup even though we already had one.")
 
-	self._join_popup_id = Managers.popup:queue_popup(message, header, "ok", Localize("popup_choice_ok"))
+	self._join_popup_id = Managers.popup:queue_popup(message, header, "cancel", Localize("popup_choice_cancel"))
+	local default_result = "timeout"
+	local timer_alignment = "center"
+	local blink = false
+
+	Managers.popup:activate_timer(self._join_popup_id, time, default_result, timer_alignment, blink)
 end
 
 StateLoading.clear_network_loading_context = function (self)

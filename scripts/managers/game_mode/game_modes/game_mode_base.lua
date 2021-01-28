@@ -157,6 +157,14 @@ GameModeBase.ended = function (self, reason)
 	return
 end
 
+GameModeBase.game_won = function (self)
+	return
+end
+
+GameModeBase.game_lost = function (self)
+	return
+end
+
 GameModeBase.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentages_completed)
 	return
 end

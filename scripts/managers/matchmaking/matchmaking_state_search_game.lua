@@ -334,6 +334,9 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 	local using_strict_matchmaking = search_config.strict_matchmaking
 	local max_distance_filter = search_config.max_distance_filter or MatchmakingSettings.max_distance_filter
 	local reached_max_distance = self._current_distance_filter == max_distance_filter
+
+	mm_printf("max_quick_play_search_range: %s", max_distance_filter)
+
 	local allow_occupied_hero_lobbies = Application.user_setting("allow_occupied_hero_lobbies")
 	local current_first_prio_lobby, current_secondary_prio_lobby = nil
 	local matchmaking_manager = self._matchmaking_manager

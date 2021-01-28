@@ -3113,13 +3113,17 @@ function flow_callback_fade_out_game_logo(params)
 end
 
 function flow_callback_register_main_path_obstacle(params)
-	local unit = params.unit
-	local node = params.unit_node
-	local position = Unit.world_position(unit, Unit.node(unit, node))
-	local _, box_extents = Unit.box(unit)
-	local radius_sq = Vector3.distance_squared(Vector3(0, 0, 0), box_extents)
+	local conflict = Managers.state.conflict
 
-	Managers.state.conflict:register_main_path_obstacle(Vector3Box(position), radius_sq)
+	if conflict then
+		local unit = params.unit
+		local node = params.unit_node
+		local position = Unit.world_position(unit, Unit.node(unit, node))
+		local _, box_extents = Unit.box(unit)
+		local radius_sq = Vector3.distance_squared(Vector3(0, 0, 0), box_extents)
+
+		conflict:register_main_path_obstacle(Vector3Box(position), radius_sq)
+	end
 end
 
 function flow_callback_enter_post_game(params)

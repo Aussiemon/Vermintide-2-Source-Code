@@ -1581,18 +1581,6 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 
 		if previous_status == "pack_master_pulling" then
 			locomotion:set_disabled(false, nil, nil, true)
-		else
-			local equipment = self.inventory_extension:equipment()
-			local weapon_unit = equipment.right_hand_wielded_unit_3p
-
-			if weapon_unit and Unit.is_a(weapon_unit, "units/weapons/player/wpn_packmaster_claw/wpn_packmaster_claw_3p") then
-				Unit.animation_event(weapon_unit, "drag_walk")
-			else
-				Crashify.print_exception("Packmaster", "Wrong weapon equipped when entering pack_master_dragging state")
-			end
-
-			Unit.animation_event(grabber_unit, "drag_walk")
-			Unit.animation_event(unit, "move_bwd")
 		end
 	elseif grabbed_status == "pack_master_unhooked" then
 		if previous_status ~= "pack_master_unhooked" then
@@ -2020,12 +2008,16 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 	end
 
 	if not self.is_husk then
-		local go_id = Managers.state.unit_storage:go_id(unit)
+		local network_manager = Managers.state.network
 
-		if self.is_server then
-			Managers.state.network.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.invisible, invisible, go_id, 0)
-		else
-			Managers.state.network.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.invisible, invisible, go_id, 0)
+		if network_manager and network_manager:game() then
+			local go_id = Managers.state.unit_storage:go_id(unit)
+
+			if self.is_server then
+				network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.invisible, invisible, go_id, 0)
+			else
+				network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.invisible, invisible, go_id, 0)
+			end
 		end
 	end
 end

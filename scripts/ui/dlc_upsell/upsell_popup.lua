@@ -10,7 +10,6 @@ UpsellPopup.init = function (self, ui_context, dlc_name, upsell_settings)
 		alpha_multiplier = 1,
 		snap_pixel_positions = true
 	}
-	self._input_acquired = false
 	self._dlc_name = dlc_name
 	self._upsell_settings = upsell_settings
 	self._animations = {}
@@ -48,7 +47,7 @@ UpsellPopup.setup_input_description = function (self)
 
 	local menu_desc = MenuInputDescriptionUI:new(nil, self._ui_top_renderer, Managers.input:get_service(self._input_service_name), 3, 900, definitions.generic_input_actions.default)
 
-	menu_desc:set_input_description(nil)
+	menu_desc:set_input_description(self._upsell_settings.input_desc)
 
 	self._menu_input_description = menu_desc
 end
@@ -69,11 +68,11 @@ UpsellPopup.show = function (self)
 end
 
 UpsellPopup.hide = function (self)
-	assert(self._is_visible)
+	if self._is_visible then
+		self._is_visible = false
 
-	self._is_visible = false
-
-	self:release_input()
+		self:release_input()
+	end
 end
 
 UpsellPopup.exit_done = function (self)
@@ -163,15 +162,11 @@ end
 UpsellPopup.acquire_input = function (self)
 	self._input_manager:capture_input(ALL_INPUT_METHODS, 1, self._input_service_name, "UpsellPopup")
 	ShowCursorStack.push()
-
-	self._input_acquired = true
 end
 
 UpsellPopup.release_input = function (self)
 	self._input_manager:release_input(ALL_INPUT_METHODS, 1, self._input_service_name, "UpsellPopup")
 	ShowCursorStack.pop()
-
-	self._input_acquired = false
 end
 
 return

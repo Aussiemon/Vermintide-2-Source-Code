@@ -372,6 +372,7 @@ weapon_template.default_spread_template = "throwing_axe"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_dw_thrown_axe_01_t1/wpn_dw_thrown_axe_01_t1"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_throwing_axes"
+weapon_template.wield_anim_not_loaded = "to_throwing_axe"
 weapon_template.wield_anim = "to_throwing_axe"
 weapon_template.wield_anim_no_ammo = "to_throwing_axe_noammo"
 weapon_template.crosshair_style = "projectile"

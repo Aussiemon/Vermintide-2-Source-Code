@@ -192,8 +192,11 @@ PeerStates.Loading = {
 		end
 
 		print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", peer_id, level_key, environment_variation_id)
-		ScriptApplication.send_to_crashify("[PeerStates.Loading]", "level_key: %s", level_key)
-		Crashify.print_exception("[PeerStates.Loading]", string.format("level_key: %s", level_key))
+
+		if PLATFORM == "linux" then
+			Crashify.print_exception("[PeerStates.Loading]", string.format("level_key: %s", level_key))
+		end
+
 		network_transmit:send_rpc("rpc_load_level", peer_id, NetworkLookup.level_keys[level_key], level_seed, difficulty_id, difficulty_tweak, locked_director_function_ids, environment_variation_id)
 	end,
 	rpc_is_ingame = function (self)

@@ -1438,6 +1438,10 @@ DialogueSystem.rpc_play_dialogue_event = function (self, channel_id, go_id, is_l
 	if Unit.has_data(dialogue_actor_unit, "enemy_dialogue_body_anim") and Unit.has_animation_state_machine(dialogue_actor_unit) then
 		Unit.flow_event(dialogue_actor_unit, "action_talk_body")
 	end
+
+	if career_name then
+		Managers.telemetry.events:vo_event_played(dialogue_category, dialogue_name, sound_event, career_name)
+	end
 end
 
 DialogueSystem.rpc_interrupt_dialogue_event = function (self, channel_id, go_id, is_level_unit)

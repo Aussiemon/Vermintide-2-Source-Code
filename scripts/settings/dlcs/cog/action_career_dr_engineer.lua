@@ -131,7 +131,9 @@ end
 ActionCareerDREngineer.finish = function (self, reason)
 	ActionCareerDREngineer.super.finish(self, reason)
 
-	local windup = math.clamp(self._current_rps / self._max_rps, 0, 1)
+	local initial_rps = self._initial_rounds_per_second
+	local rps_range = self._max_rps - initial_rps
+	local windup = math.clamp((self._current_rps - initial_rps) / rps_range, 0, 1)
 
 	self.weapon_extension:set_custom_data("windup", windup)
 	Managers.state.event:trigger("on_engineer_weapon_spin_up", windup)

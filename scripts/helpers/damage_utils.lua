@@ -1817,17 +1817,20 @@ local IGNORED_SHARED_DAMAGE_TYPES = {
 }
 local INVALID_DAMAGE_TO_OVERHEAT_DAMAGE_SOURCES = {
 	temporary_health_degen = true,
-	ground_impact = true,
 	overcharge = true,
+	life_tap = true,
+	ground_impact = true,
 	life_drain = true
 }
 local INVALID_GROMRIL_DAMAGE_SOURCE = {
 	temporary_health_degen = true,
-	ground_impact = true,
 	overcharge = true,
+	life_tap = true,
+	ground_impact = true,
 	life_drain = true
 }
 local IGNORE_DAMAGE_REDUCTION_DAMAGE_SOURCE = {
+	life_tap = true,
 	suicide = true
 }
 

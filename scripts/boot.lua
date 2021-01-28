@@ -395,6 +395,13 @@ Boot.booting_update = function (self, dt)
 			if rawget(_G, "Steam") then
 				Crashify.print_property("steam_id", Steam.user_id())
 				Crashify.print_property("steam_profile_name", Steam.user_name())
+
+				local write_network_debug_output_to_log = Application.user_setting("write_network_debug_output_to_log")
+
+				if write_network_debug_output_to_log then
+					print("Network.write_debug_output_to_log(true)")
+					Network.write_debug_output_to_log(true)
+				end
 			end
 
 			Crashify.print_property("machine_id", Application.machine_id())

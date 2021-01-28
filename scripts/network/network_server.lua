@@ -597,11 +597,13 @@ end
 NetworkServer.close_channel = function (self, peer_id)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	if self._eac_server then
+	if self._eac_server and channel_id then
 		EACServer.remove_peer(self._eac_server, channel_id)
 	end
 
-	self.lobby_host:close_channel(channel_id)
+	if channel_id then
+		self.lobby_host:close_channel(channel_id)
+	end
 
 	self._connections[peer_id] = nil
 	PEER_ID_TO_CHANNEL[peer_id] = nil

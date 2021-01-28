@@ -94,10 +94,12 @@ UnlockManager.update = function (self, dt)
 				self:_update_console_backend_unlocks()
 			end
 		end
-	elseif not table.is_empty(self._popup_ids) then
-		self:_handle_popups()
-	else
-		self:_update_backend_unlocks()
+	elseif self._update_unlocks then
+		if not table.is_empty(self._popup_ids) then
+			self:_handle_popups()
+		else
+			self:_update_backend_unlocks()
+		end
 	end
 end
 

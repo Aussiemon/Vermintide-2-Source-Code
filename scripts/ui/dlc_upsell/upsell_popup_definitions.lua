@@ -536,11 +536,6 @@ local animation_definitions = {
 local generic_input_actions = {
 	default = {
 		{
-			input_action = "confirm",
-			priority = 1,
-			description_text = "menu_weave_area_no_wom_button"
-		},
-		{
 			input_action = "back",
 			priority = 2,
 			description_text = "input_description_close"

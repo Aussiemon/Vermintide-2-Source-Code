@@ -35,9 +35,9 @@ local experience_levels = {
 	3300,
 	3400
 }
-local num_base_levels = 30
+local level_used_for_extra_levels_experience = 30
 local num_defined_levels = #experience_levels
-local experience_for_extra_levels = experience_levels[num_base_levels]
+local experience_for_extra_levels = experience_levels[level_used_for_extra_levels_experience]
 local total_defined_experience = 0
 
 for i = 1, num_defined_levels, 1 do
@@ -138,6 +138,10 @@ ExperienceSettings.get_total_experience_required_for_level = function (level)
 	end
 
 	return experience
+end
+
+ExperienceSettings.get_experience_required_for_level = function (level)
+	return experience_levels[level] or experience_for_extra_levels
 end
 
 ExperienceSettings.get_highest_character_level = function ()

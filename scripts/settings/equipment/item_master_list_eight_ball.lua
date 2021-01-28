@@ -165,10 +165,10 @@ ItemMasterList.unchained_hat_1001 = {
 	inventory_icon = "icon_unchained_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "su_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_12",
+	steam_itemdefid = 107,
 	can_wield = {
 		"bw_unchained"
 	}
@@ -181,10 +181,10 @@ ItemMasterList.adept_hat_1001 = {
 	inventory_icon = "icon_adept_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "sb_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_adept/headpiece/bw_a_hat_13",
+	steam_itemdefid = 108,
 	can_wield = {
 		"bw_adept"
 	}
@@ -197,10 +197,10 @@ ItemMasterList.scholar_hat_1001 = {
 	inventory_icon = "icon_scholar_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "sp_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_15",
+	steam_itemdefid = 109,
 	can_wield = {
 		"bw_scholar"
 	}
@@ -213,10 +213,10 @@ ItemMasterList.ranger_hat_1001 = {
 	inventory_icon = "icon_ranger_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "br_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_10",
+	steam_itemdefid = 110,
 	can_wield = {
 		"dr_ranger"
 	}
@@ -229,10 +229,10 @@ ItemMasterList.ironbreaker_hat_1001 = {
 	inventory_icon = "icon_ironbreaker_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "bi_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_15",
+	steam_itemdefid = 111,
 	can_wield = {
 		"dr_ironbreaker"
 	}
@@ -245,10 +245,10 @@ ItemMasterList.slayer_hat_1001 = {
 	inventory_icon = "icon_slayer_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "bs_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_hat_11",
+	steam_itemdefid = 112,
 	can_wield = {
 		"dr_slayer"
 	}
@@ -261,10 +261,10 @@ ItemMasterList.huntsman_hat_1001 = {
 	inventory_icon = "icon_huntsman_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "mh_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/empire_soldier_huntsman/headpiece/es_h_hat_12",
+	steam_itemdefid = 113,
 	can_wield = {
 		"es_huntsman"
 	}
@@ -277,10 +277,10 @@ ItemMasterList.mercenary_hat_1001 = {
 	inventory_icon = "icon_mercenary_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "mm_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/empire_soldier_mercenary/headpiece/es_m_hat_11",
+	steam_itemdefid = 114,
 	can_wield = {
 		"es_mercenary"
 	}
@@ -293,10 +293,10 @@ ItemMasterList.knight_hat_1001 = {
 	inventory_icon = "icon_knight_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "mk_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/empire_soldier_knight/headpiece/es_k_hat_12",
+	steam_itemdefid = 115,
 	can_wield = {
 		"es_knight"
 	}
@@ -325,10 +325,10 @@ ItemMasterList.zealot_hat_1001 = {
 	inventory_icon = "icon_zealot_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "vz_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_07",
+	steam_itemdefid = 116,
 	can_wield = {
 		"wh_zealot"
 	}
@@ -341,10 +341,10 @@ ItemMasterList.bountyhunter_hat_1001 = {
 	inventory_icon = "icon_bountyhunter_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "vb_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/witch_hunter_bounty_hunter/headpiece/wh_bh_hat_11",
+	steam_itemdefid = 117,
 	can_wield = {
 		"wh_bountyhunter"
 	}
@@ -357,10 +357,10 @@ ItemMasterList.waywatcher_hat_1001 = {
 	inventory_icon = "icon_waywatcher_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "kw_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/way_watcher_upgraded/headpiece/ww_u_hat_13",
+	steam_itemdefid = 118,
 	can_wield = {
 		"we_waywatcher"
 	}
@@ -373,10 +373,10 @@ ItemMasterList.shade_hat_1001 = {
 	inventory_icon = "icon_shade_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "ks_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/way_watcher_shade/headpiece/ww_s_hat_12",
+	steam_itemdefid = 119,
 	can_wield = {
 		"we_shade"
 	}
@@ -389,10 +389,10 @@ ItemMasterList.maidenguard_hat_1001 = {
 	inventory_icon = "icon_maidenguard_hat_1001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
-	dlc_name = "kh_1001",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
 	unit = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_12",
+	steam_itemdefid = 120,
 	can_wield = {
 		"we_maidenguard"
 	}

@@ -1693,6 +1693,8 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 			local ammo_extension = ScriptUnit.extension(equipment.right_hand_wielded_unit, "ammo_system")
 
 			if ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 then
+				local wield_anim_not_loaded = get_wield_anim(item_template.wield_anim_not_loaded, item_template.wield_anim_not_loaded_career, self._career_name)
+				wield_anim = wield_anim_not_loaded or wield_anim
 				local play_reload_animation = ammo_extension:play_reload_anim_on_wield_reload()
 				local has_wield_reload_anim = ammo_extension:has_wield_reload_anim()
 				local override_wield_anim = nil
@@ -1713,6 +1715,8 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 			local ammo_extension = ScriptUnit.extension(equipment.left_hand_wielded_unit, "ammo_system")
 
 			if ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 then
+				local wield_anim_not_loaded = get_wield_anim(item_template.wield_anim_not_loaded, item_template.wield_anim_not_loaded_career, self._career_name)
+				wield_anim = wield_anim_not_loaded or wield_anim
 				local play_reload_animation = ammo_extension:play_reload_anim_on_wield_reload()
 				local has_wield_reload_anim = ammo_extension:has_wield_reload_anim()
 				local override_wield_anim = nil

@@ -666,8 +666,8 @@ TalentBuffTemplates.empire_soldier = {
 				multiplier = 0.45,
 				name = "bloodlust",
 				event_buff = true,
-				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_player_damage_dealt",
+				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
+				event = "on_kill",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}
@@ -1460,8 +1460,8 @@ TalentBuffTemplates.empire_soldier = {
 				multiplier = 0.45,
 				name = "bloodlust",
 				event_buff = true,
-				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_player_damage_dealt",
+				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
+				event = "on_kill",
 				perk = "smiter_healing",
 				heal_cap = 0.25
 			}

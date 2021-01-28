@@ -360,30 +360,33 @@ ProcFunctions = {
 			buff_system:add_buff(revived_unit, buff_to_add, player_unit, false)
 		end
 	end,
-	heal_percent_of_damage_dealt_on_melee = function (player, buff, params)
+	heal_percentage_of_enemy_hp_on_melee_kill = function (player, buff, params)
 		if not Managers.state.network.is_server then
 			return
 		end
 
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) then
-			local buff_type = params[6]
+		if ALIVE[player_unit] then
+			local killing_blow_data = params[1]
 
-			if buff_type == "MELEE_1H" or buff_type == "MELEE_2H" then
-				local hit_unit = params[1]
-				local damage_amount = params[2]
-				local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
+			if not killing_blow_data then
+				return
+			end
 
-				if hit_unit_health_extension and hit_unit_health_extension:current_health() <= damage_amount then
-					local breed = AiUtils.unit_breed(hit_unit)
+			local slot_type = get_killing_blow_slot_type(params)
+			local is_melee = slot_type == "melee"
 
-					if breed and not breed.is_hero then
-						local heal_amount = breed.bloodlust_health or 0
+			if not is_melee then
+				return
+			end
 
-						DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
-					end
-				end
+			local breed = params[2]
+
+			if breed and not breed.is_hero then
+				local heal_amount = breed.bloodlust_health or 0
+
+				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
 			end
 		end
 	end,
@@ -4943,7 +4946,7 @@ BuffTemplates = {
 			},
 			{
 				multiplier = 0.03,
-				name = "attack speed buff",
+				name = "ale_attack_speed",
 				stat_buff = "attack_speed",
 				refresh_durations = true,
 				max_stacks = 3,
@@ -5404,8 +5407,8 @@ BuffTemplates = {
 				multiplier = 0.2,
 				name = "bloodlust",
 				event_buff = true,
-				buff_func = "heal_percent_of_damage_dealt_on_melee",
-				event = "on_player_damage_dealt",
+				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
+				event = "on_kill",
 				perk = "smiter_healing"
 			}
 		}

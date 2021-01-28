@@ -4048,9 +4048,9 @@ BuffFunctionTemplates.functions = {
 				career_extension:reduce_activated_ability_cooldown_percent(0.1)
 
 				local health_extension = ScriptUnit.has_extension(unit, "health_system")
-				local damage = health_extension:get_max_health() / 15
+				local damage = health_extension:get_max_health() / 20
 
-				DamageUtils.add_damage_network(unit, unit, damage, "torso", "overcharge", nil, Vector3(0, 0, 0), nil, nil, unit)
+				DamageUtils.add_damage_network(unit, unit, damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
 			end
 		end
 	end,

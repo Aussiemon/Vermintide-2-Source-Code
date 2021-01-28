@@ -22,8 +22,11 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 	if is_server then
 		printf("Host GameSession.make_game_session_host with session:", session)
 		GameSession.make_game_session_host(session)
+
+		self._session_id = Application.guid()
 	else
 		local game_session_host = GameSession.game_session_host(self.game_session)
+		self._session_id = "<client-session-id>"
 
 		if not game_session_host or game_session_host == "0" then
 			game_session_host = lobby:lobby_host()
@@ -43,7 +46,6 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 	self._lobby_host = lobby:lobby_host()
 	self.is_server = is_server
 	self._left_game = false
-	self._session_id = (is_server and math.uuid()) or "<unassigned-session-id>"
 	self._game_object_types = {}
 	self._object_synchronizing_clients = {}
 	self._game_object_disconnect_callbacks = {}

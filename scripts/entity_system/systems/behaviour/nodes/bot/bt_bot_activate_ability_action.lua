@@ -36,6 +36,7 @@ BTBotActivateAbilityAction.enter = function (self, unit, blackboard, t)
 	activate_ability_data.do_start_input = true
 	activate_ability_data.started = false
 	activate_ability_data.enter_time = t
+	activate_ability_data.next_repath_t = t
 	activate_ability_data.activation = ability_action_data.activation
 	activate_ability_data.wait_action = ability_action_data.wait_action
 	activate_ability_data.end_condition = ability_action_data.end_condition
@@ -60,6 +61,7 @@ BTBotActivateAbilityAction.leave = function (self, unit, blackboard, t, reason, 
 	end
 
 	activate_ability_data.is_using_ability = false
+	activate_ability_data.move_to_position_set = false
 
 	if reason ~= "done" then
 		self:_cancel_ability(activate_ability_data, blackboard, t)
@@ -201,6 +203,13 @@ BTBotActivateAbilityAction.run = function (self, unit, blackboard, t, dt)
 
 			input_extension:set_aiming(true, true, false)
 			input_extension:set_aim_position(aim_position)
+
+			if activation_data.move_to_target_unit and data.next_repath_t <= t then
+				blackboard.navigation_destination_override:store(aim_position)
+
+				data.move_to_position_set = true
+				data.next_repath_t = t + 0.5
+			end
 		else
 			return "failed"
 		end

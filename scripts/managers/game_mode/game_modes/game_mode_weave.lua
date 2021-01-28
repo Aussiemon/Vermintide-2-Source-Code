@@ -309,6 +309,10 @@ GameModeWeave.ended = function (self, reason)
 	end
 end
 
+GameModeWeave.game_lost = function (self)
+	Managers.matchmaking:set_quick_game(false)
+end
+
 GameModeWeave.get_end_screen_config = function (self, game_won, game_lost, player)
 	local screen_name = "none"
 	local screen_config = {}

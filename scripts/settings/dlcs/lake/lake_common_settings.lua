@@ -43,7 +43,7 @@ settings.effects = {
 }
 settings.tracked_weapon_kills_per_breed_stats = {
 	markus_questingknight_career_skill_weapon = {
-		"lake_upgrade"
+		"lake"
 	}
 }
 settings.unlock_settings = {
