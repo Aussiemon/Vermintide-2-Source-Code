@@ -908,7 +908,7 @@ weapon_template.attack_meta_data = {
 	},
 	hold_attack = {
 		penetrating = true,
-		arc = 2
+		arc = 0
 	}
 }
 weapon_template.defense_meta_data = {

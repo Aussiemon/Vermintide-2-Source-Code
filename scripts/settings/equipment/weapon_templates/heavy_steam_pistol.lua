@@ -393,7 +393,8 @@ local weapon_template = {
 			end
 
 			return false
-		end
+		end,
+		effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 	},
 	wwise_dep_right_hand = {
 		"wwise/steampistol"

@@ -3,10 +3,11 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			aim_assist_ramp_decay_delay = 0.1,
+			melee_start = true,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
 			attack_hold_input = "action_one_hold",
+			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_max_ramp_multiplier = 0.3,
 			aim_assist_ramp_multiplier = 0.1,
 			anim_event = "attack_swing_charge",
@@ -61,6 +62,7 @@ weapon_template.actions = {
 			}
 		},
 		default_right = {
+			melee_start = true,
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
@@ -118,6 +120,7 @@ weapon_template.actions = {
 			}
 		},
 		default_right_heavy = {
+			melee_start = true,
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
@@ -175,6 +178,7 @@ weapon_template.actions = {
 			}
 		},
 		default_left = {
+			melee_start = true,
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
@@ -232,6 +236,7 @@ weapon_template.actions = {
 			}
 		},
 		default_last = {
+			melee_start = true,
 			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			kind = "dummy",
@@ -915,7 +920,7 @@ weapon_template.attack_meta_data = {
 	},
 	hold_attack = {
 		penetrating = true,
-		arc = 2
+		arc = 1
 	}
 }
 weapon_template.aim_assist_settings = {

@@ -152,7 +152,6 @@ weapon_template.attack_meta_data = {
 	ignore_allies_for_obstruction = true,
 	minimum_charge_time = 0.55,
 	ignore_allies_for_obstruction_charged = true,
-	charge_against_armored_enemy = true,
 	charge_when_obstructed = true,
 	ignore_enemies_for_obstruction = false
 }

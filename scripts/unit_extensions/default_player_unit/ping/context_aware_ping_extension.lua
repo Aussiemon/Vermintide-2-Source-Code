@@ -150,19 +150,19 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 end
 
 ContextAwarePingExtension._have_free_events = function (self)
-	if self._num_free_events >= 1 then
-		self._num_free_events = self._num_free_events - 1
+	return self._num_free_events > 0
+end
 
-		return true
-	end
+ContextAwarePingExtension._consume_ping_event = function (self)
+	self._num_free_events = self._num_free_events - 1
 end
 
 ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, ping_type, social_wheel_event_id)
-	if t < self._ping_timer then
+	if t < self._ping_timer and not IgnoreCooldownPingTypes[ping_type] then
 		return
 	end
 
-	if self._world_markers_enabled and not self:_have_free_events() then
+	if not self:_have_free_events() then
 		local error_message = Localize("social_wheel_too_many_messages_warning")
 
 		Managers.chat:add_local_system_message(1, error_message, true)
@@ -184,11 +184,13 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 
 	self._ping_timer = t + PING_COOLDOWN
 
+	self:_consume_ping_event()
+
 	return true
 end
 
 ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, position, t, ping_type, social_wheel_event_id)
-	if t < self._ping_timer then
+	if t < self._ping_timer and not IgnoreCooldownPingTypes[ping_type] then
 		return
 	end
 
@@ -217,6 +219,8 @@ ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, po
 
 	self._ping_timer = t + PING_COOLDOWN
 
+	self:_consume_ping_event()
+
 	return true
 end
 
@@ -238,6 +242,7 @@ ContextAwarePingExtension.social_message_attempt = function (self, unit, social_
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
 
 	network_manager.network_transmit:send_rpc_server("rpc_social_message", pinger_unit_id, social_wheel_event_id)
+	self:_consume_ping_event()
 
 	return true
 end

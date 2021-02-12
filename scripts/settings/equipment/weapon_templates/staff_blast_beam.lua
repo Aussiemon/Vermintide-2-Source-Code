@@ -334,17 +334,17 @@ weapon_template.overcharge_data = {
 	overcharge_value_decrease_rate = 1
 }
 weapon_template.attack_meta_data = {
+	max_range = 50,
+	charged_attack_action_name = "shoot_charged",
+	can_charge_shot = true,
+	minimum_charge_time = 0.21,
+	fire_input = "fire_hold",
 	aim_at_node = "j_head",
 	obstruction_fuzzyness_range_charged = 6,
-	charged_attack_action_name = "shoot_charged",
 	charge_when_outside_max_range_charged = false,
-	ignore_enemies_for_obstruction_charged = false,
-	max_range = 50,
 	aim_at_node_charged = "j_spine1",
-	minimum_charge_time = 0.21,
 	max_range_charged = 6,
-	can_charge_shot = true,
-	fire_input = "fire_hold",
+	ignore_enemies_for_obstruction_charged = false,
 	charge_when_obstructed = true,
 	ignore_enemies_for_obstruction = false,
 	obstruction_fuzzyness_range = 1,
@@ -359,7 +359,8 @@ weapon_template.attack_meta_data = {
 		max_radius_pseudo_random_c = 0.01475,
 		min_radius = math.pi / 72,
 		max_radius = math.pi / 16
-	}
+	},
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.aim_assist_settings = {
 	max_range = 50,

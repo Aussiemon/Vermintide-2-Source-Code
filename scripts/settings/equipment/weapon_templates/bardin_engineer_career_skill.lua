@@ -412,21 +412,22 @@ armor_pierce_fire.rps_gain_per_shot = armor_pierce_rps_gain_per_shot
 armor_pierce_fire.fire_sound_event = "Play_player_engineer_shooting_armor_piercing"
 weapon_template.actions.action_one.armor_pierce_fire = armor_pierce_fire
 weapon_template.attack_meta_data = {
+	max_range = 25,
 	aim_at_node = "j_spine1",
 	keep_distance = 6.5,
-	max_range = 25,
 	fire_input = "fire_hold",
 	ignore_enemies_for_obstruction = false,
-	stop_fire_delay = 0.2,
+	stop_fire_delay = 0.3,
 	aim_data = {
-		min_radius_pseudo_random_c = 0.3021,
-		max_radius_pseudo_random_c = 0.03222,
+		min_radius_pseudo_random_c = 1,
+		max_radius_pseudo_random_c = 0.3021,
 		min_radius = math.pi / 72,
 		max_radius = math.pi / 16
 	},
 	hold_fire_condition = function (t, blackboard)
 		return true
-	end
+	end,
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Shielded, BreedCategory.Boss, BreedCategory.Berserker, BreedCategory.Special)
 }
 weapon_template.default_spread_template = "sparks"
 weapon_template.right_hand_unit = ""
@@ -502,6 +503,9 @@ armor_piercing_template.actions.action_two.default.condition_func = shoot_armor_
 armor_piercing_template.actions.action_two.default.chain_condition_func = shoot_armor_pierce_condition_func
 armor_piercing_template.actions.action_two.charged.condition_func = shoot_armor_pierce_condition_func
 armor_piercing_template.actions.action_two.charged.chain_condition_func = shoot_armor_pierce_condition_func
+armor_piercing_template.attack_meta_data = {
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Shielded, BreedCategory.Boss, BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
+}
 weapon_template.custom_data = {
 	windup = 0,
 	windup_loss_per_second = (armor_pierce_max_rps - armor_pierce_initial_rounds_per_second) / armor_pierce_rps_loss_per_second

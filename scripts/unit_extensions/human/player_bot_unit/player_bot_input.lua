@@ -489,6 +489,16 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	local look = self.look
 	look.x = math.half_pi - math.atan2(needed_delta_rotation_forward.y, needed_delta_rotation_forward.x)
 	look.y = math.asin(math.clamp(needed_delta_rotation_forward.z, -1, 1))
+	local ai_bot_group_extension = self._ai_bot_group_extension
+	local threat_data = ai_bot_group_extension.data.aoe_threat
+	self._avoiding_aoe_threat = t < threat_data.expires
+
+	if self._avoiding_aoe_threat then
+		current_goal = threat_data.escape_to:unbox()
+
+		self:dodge()
+	end
+
 	local goal_vector, flat_goal_vector, goal_direction = nil
 
 	if current_goal then
@@ -511,8 +521,6 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		end
 	end
 
-	local ai_bot_group_extension = self._ai_bot_group_extension
-	local threat_data = ai_bot_group_extension.data.aoe_threat
 	local move = self.move
 
 	if on_ladder then
@@ -524,19 +532,11 @@ PlayerBotInput._update_movement = function (self, dt, t)
 			move.x = 0
 			move.y = 0
 		end
-	elseif t < threat_data.expires then
-		local dir = threat_data.escape_direction:unbox()
-
-		self:dodge()
-
-		self._avoiding_aoe_threat = true
-		move.x = Vector3.dot(Quaternion.right(wanted_rotation), dir)
-		move.y = Vector3.dot(Quaternion.forward(wanted_rotation), dir)
 	elseif not current_goal then
 		move.x = 0
 		move.y = 0
 	else
-		local is_last_goal = player_bot_navigation:is_following_last_goal()
+		local is_last_goal = not self._avoiding_aoe_threat and player_bot_navigation:is_following_last_goal()
 		local move_scale = 1
 
 		if is_last_goal then
@@ -553,12 +553,13 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		move.y = move_scale * Vector3.dot(flat_forward, goal_direction)
 	end
 
-	if self._avoiding_aoe_threat and threat_data.expires <= t then
+	if self._avoiding_aoe_threat and (not flat_goal_vector or Vector3.length_squared(flat_goal_vector) < 0.25) then
 		if player_bot_navigation:destination_reached() then
 			player_bot_navigation:stop()
 		end
 
 		self._avoiding_aoe_threat = false
+		threat_data.expires = 0
 	end
 end
 

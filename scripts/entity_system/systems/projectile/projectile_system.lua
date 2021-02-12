@@ -266,6 +266,7 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 				area_damage_system = {
 					area_damage_template = "globadier_area_dot_damage",
 					invisible_unit = false,
+					threat_duration = 0.5,
 					player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 					area_ai_random_death_template = "area_poison_ai_random_death",
 					dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",

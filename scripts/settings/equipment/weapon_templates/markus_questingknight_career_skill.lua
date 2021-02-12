@@ -699,7 +699,6 @@ local weapon_template = {
 		charged_attack_action_name = "default",
 		base_action_name = "action_career_release",
 		ignore_enemies_for_obstruction_charged = true,
-		charge_against_armored_enemy = true,
 		charge_when_obstructed = true,
 		ignore_enemies_for_obstruction = true,
 		tap_attack = {

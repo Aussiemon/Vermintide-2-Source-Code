@@ -274,6 +274,35 @@ weapon_template.default_loaded_projectile_settings = {
 	speed = action.speed,
 	gravity = ProjectileGravitySettings[action.projectile_info.gravity_settings]
 }
+weapon_template.attack_meta_data = {
+	max_range = 20,
+	charged_attack_action_name = "shoot_charged",
+	can_charge_shot = true,
+	minimum_charge_time = 0.21,
+	aim_at_node = "j_head",
+	obstruction_fuzzyness_range_charged = 6,
+	charge_when_outside_max_range_charged = false,
+	aim_at_node_charged = "j_spine1",
+	max_range_charged = 6,
+	ignore_enemies_for_obstruction_charged = true,
+	charge_when_obstructed = true,
+	ignore_enemies_for_obstruction = false,
+	obstruction_fuzzyness_range = 1,
+	aim_data = {
+		min_radius_pseudo_random_c = 0.3021,
+		max_radius_pseudo_random_c = 0.0557,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	},
+	aim_data_charged = {
+		min_radius_pseudo_random_c = 0.0557,
+		max_radius_pseudo_random_c = 0.01475,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	},
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored),
+	effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Armored)
+}
 local charge_action = weapon_template.actions.action_two.default
 charge_action.loaded_projectile_settings = "none"
 weapon_template.default_spread_template = "brace_of_drake_pistols"

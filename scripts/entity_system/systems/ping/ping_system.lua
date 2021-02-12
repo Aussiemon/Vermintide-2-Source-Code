@@ -668,6 +668,10 @@ PingSystem.rpc_ping_unit = function (self, channel_id, pinger_unit_id, pinged_un
 			end
 		end
 
+		if not do_ping then
+			return
+		end
+
 		self:_handle_ping(ping_type, social_wheel_event_id, sender_player, pinger_unit, pinged_unit, nil, flash, parent_pinger_unit)
 		self:_handle_chat(ping_type, social_wheel_event_id, sender_player, pinger_unit, pinged_unit, chat_messages)
 	else

@@ -330,10 +330,11 @@ weapon_template.attack_meta_data = {
 	can_charge_shot = true,
 	aim_at_node_charged = "j_head",
 	minimum_charge_time = 0.55,
-	charge_against_armored_enemy = true,
 	charge_above_range = 30,
 	charge_when_obstructed = false,
-	ignore_enemies_for_obstruction = false
+	ignore_enemies_for_obstruction = false,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special),
+	effective_against_charged = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {

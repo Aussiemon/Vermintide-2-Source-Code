@@ -960,6 +960,17 @@ SimpleInventoryExtension.current_ammo_status = function (self, slot_name)
 	end
 end
 
+SimpleInventoryExtension.ammo_percentage = function (self)
+	local current_ammo, max_ammo = self:current_ammo_status("slot_ranged")
+	local ammo_percentage = 1
+
+	if current_ammo and max_ammo then
+		ammo_percentage = current_ammo / max_ammo
+	end
+
+	return ammo_percentage
+end
+
 SimpleInventoryExtension.current_ammo_kind = function (self, slot_name)
 	local slot_data = self._equipment.slots[slot_name]
 

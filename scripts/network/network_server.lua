@@ -603,11 +603,12 @@ NetworkServer.close_channel = function (self, peer_id)
 
 	if channel_id then
 		self.lobby_host:close_channel(channel_id)
+
+		CHANNEL_TO_PEER_ID[channel_id] = nil
 	end
 
 	self._connections[peer_id] = nil
 	PEER_ID_TO_CHANNEL[peer_id] = nil
-	CHANNEL_TO_PEER_ID[channel_id] = nil
 end
 
 NetworkServer._update_connections = function (self, peer_state_machines)

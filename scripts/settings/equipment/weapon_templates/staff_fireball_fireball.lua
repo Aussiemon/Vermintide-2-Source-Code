@@ -262,7 +262,9 @@ weapon_template.attack_meta_data = {
 	aim_at_node_charged = "j_spine1",
 	ignore_enemies_for_obstruction_charged = false,
 	charge_when_obstructed = true,
-	ignore_enemies_for_obstruction = false
+	ignore_enemies_for_obstruction = false,
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Special),
+	effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {

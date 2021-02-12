@@ -1,5 +1,5 @@
 local CHAT_WIDTH = 500
-local CHAT_HEIGHT = 250
+local CHAT_HEIGHT = 200
 local CHAT_INPUT_TEXT_WIDTH = CHAT_WIDTH - 10
 
 if not rawget(_G, "Irc") then

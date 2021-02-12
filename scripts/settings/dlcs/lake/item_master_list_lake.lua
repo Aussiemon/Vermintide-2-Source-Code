@@ -88,6 +88,7 @@ ItemMasterList.markus_questingknight_career_skill_weapon = {
 	rarity = "plentiful",
 	template = "markus_questingknight_career_skill_weapon",
 	is_local = true,
+	slot_type = "melee",
 	can_wield = {}
 }
 ItemMasterList.questing_knight_hat_0000 = {

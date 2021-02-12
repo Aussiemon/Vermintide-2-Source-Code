@@ -773,7 +773,7 @@ local animations = {
 		{
 			name = "fade_in_blur",
 			start_progress = 0,
-			end_progress = 0.1,
+			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
 			end,
@@ -787,8 +787,8 @@ local animations = {
 		},
 		{
 			name = "background_fade_in",
-			start_progress = 0.1,
-			end_progress = 0.3,
+			start_progress = 0.3,
+			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				if not params.played_start_sound then
 					params.played_start_sound = true
@@ -810,7 +810,7 @@ local animations = {
 		},
 		{
 			name = "background_entry",
-			start_progress = 0.25,
+			start_progress = 0,
 			end_progress = 0.4,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

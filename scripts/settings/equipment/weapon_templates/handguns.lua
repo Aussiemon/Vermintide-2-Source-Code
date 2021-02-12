@@ -217,13 +217,14 @@ weapon_template.ammo_data = {
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_spine1",
-	minimum_charge_time = 0.45,
 	charged_attack_action_name = "zoomed_shot",
 	can_charge_shot = true,
+	aim_at_node_charged = "j_head",
+	minimum_charge_time = 0.45,
 	charge_above_range = 30,
 	charge_when_obstructed = false,
 	ignore_enemies_for_obstruction = true,
-	aim_at_node_charged = "j_head"
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored, BreedCategory.Shielded)
 }
 action_anim_overrides = {
 	animation_variation_id = 1

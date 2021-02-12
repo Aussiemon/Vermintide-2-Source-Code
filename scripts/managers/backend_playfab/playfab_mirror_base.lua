@@ -126,6 +126,7 @@ end
 PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_values)
 	local unlocked_weapon_skins = {}
 	local unlocked_weapon_skins_string = read_only_data_values.unlocked_weapon_skins
+	local unlock_manager = Managers.unlock
 
 	if unlocked_weapon_skins_string then
 		local decoded = cjson.decode(unlocked_weapon_skins_string)
@@ -136,7 +137,7 @@ PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_
 				local item_data = rawget(ItemMasterList, skin_name)
 				local required_dlc = item_data and item_data.required_dlc
 
-				if not required_dlc or table.find(self._owned_dlcs, required_dlc) then
+				if not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc) then
 					unlocked_weapon_skins[skin_name] = true
 				end
 			end
@@ -190,6 +191,11 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	local platform_dlcs = function_result.platform_dlcs
 	self._owned_dlcs = owned_dlcs or {}
 	self._platform_dlcs = platform_dlcs
+	local unlock_manager = Managers.unlock
+	local dlcs = unlock_manager:get_dlcs()
+
+	self:update_owned_dlcs()
+
 	local read_only_data_values = self._read_only_data
 	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
 	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(read_only_data_values)
@@ -751,6 +757,7 @@ end
 PlayFabMirrorBase.inventory_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 	local inventory_items = result.Inventory
+	local unlock_manager = Managers.unlock
 
 	if self._inventory_items then
 		table.clear(self._inventory_items)
@@ -777,9 +784,14 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 
 				local required_dlc = ItemMasterList[item.ItemId].required_dlc
 
-				if required_dlc and not table.find(self._owned_dlcs, required_dlc) then
+				if required_dlc and not unlock_manager:is_dlc_unlocked(required_dlc) then
 					if DEDICATED_SERVER then
 						self._owned_dlcs[#self._owned_dlcs + 1] = required_dlc
+						local dlc = unlock_manager:get_dlc(required_dlc)
+
+						if dlc and dlc.set_owned then
+							dlc:set_owned(true)
+						end
 					else
 						filter = true
 					end
@@ -2077,6 +2089,21 @@ end
 
 PlayFabMirrorBase.get_characters_data = function (self)
 	return self._characters_data
+end
+
+PlayFabMirrorBase.update_owned_dlcs = function (self, set_status_changed)
+	if not HAS_STEAM then
+		return
+	end
+
+	local unlock_manager = Managers.unlock
+	local dlcs = unlock_manager:get_dlcs()
+
+	for dlc_name, unlock in pairs(dlcs) do
+		if unlock.set_owned then
+			unlock:set_owned(table.contains(self._owned_dlcs, dlc_name), set_status_changed)
+		end
+	end
 end
 
 return

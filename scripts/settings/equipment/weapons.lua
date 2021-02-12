@@ -232,6 +232,10 @@ local MeleeBuffTypes = MeleeBuffTypes or {
 	MELEE_1H = true,
 	MELEE_2H = true
 }
+local RangedBuffTypes = RangedBuffTypes or {
+	RANGED_ABILITY = true,
+	RANGED = true
+}
 local WEAPON_DAMAGE_UNIT_LENGTH_EXTENT = 1.919366
 local TAP_ATTACK_BASE_RANGE_OFFSET = 0.6
 local HOLD_ATTACK_BASE_RANGE_OFFSET = 0.65
@@ -244,6 +248,12 @@ for item_template_name, item_template in pairs(Weapons) do
 	local hold_attack_meta_data = attack_meta_data and attack_meta_data.hold_attack
 	local set_default_tap_attack_range = tap_attack_meta_data and tap_attack_meta_data.max_range == nil
 	local set_default_hold_attack_range = hold_attack_meta_data and hold_attack_meta_data.max_range == nil
+
+	if RangedBuffTypes[item_template.buff_type] and attack_meta_data then
+		attack_meta_data.effective_against = attack_meta_data.effective_against or 0
+		attack_meta_data.effective_against_charged = attack_meta_data.effective_against_charged or 0
+		attack_meta_data.effective_against_combined = bit.bor(attack_meta_data.effective_against, attack_meta_data.effective_against_charged)
+	end
 
 	if MeleeBuffTypes[item_template.buff_type] then
 		fassert(attack_meta_data, "Missing attack metadata for weapon %s", item_template_name)

@@ -264,7 +264,7 @@ weapon_template.overcharge_data = {
 	hit_overcharge_threshold_sound = "ui_special_attack_ready"
 }
 weapon_template.attack_meta_data = {
-	max_range = 7,
+	max_range = 10,
 	always_charge_before_firing = false,
 	can_charge_shot = false,
 	charged_attack_action_name = "shoot_charged",
@@ -278,7 +278,8 @@ weapon_template.attack_meta_data = {
 		max_radius_pseudo_random_c = 0.03222,
 		min_radius = math.pi / 72,
 		max_radius = math.pi / 16
-	}
+	},
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Shielded, BreedCategory.Armored, BreedCategory.Special)
 }
 weapon_template.default_spread_template = "drakegun"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_brw_skullstaff/wpn_brw_skullstaff"

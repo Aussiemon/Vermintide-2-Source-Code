@@ -8,8 +8,6 @@ BackendInterfaceDLCsPlayfab.init = function (self, backend_mirror)
 	self._updating_dlc_ownership = false
 	self._owned_dlcs = backend_mirror:get_owned_dlcs()
 	self._platform_dlcs = backend_mirror:get_platform_dlcs()
-
-	self:_update_unlocked_dlcs(false)
 end
 
 BackendInterfaceDLCsPlayfab.ready = function (self)
@@ -55,7 +53,7 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 	self._backend_mirror:set_platform_dlcs(platform_dlcs)
 	print("Finished Updating Owned DLCS")
 	table.dump(self._owned_dlcs, nil, 2)
-	self:_update_unlocked_dlcs(true)
+	self._backend_mirror:update_owned_dlcs(true)
 	self:_execute_dlc_specific_logic()
 end
 
@@ -142,20 +140,6 @@ end
 
 BackendInterfaceDLCsPlayfab.updating_dlc_ownership = function (self)
 	return self._updating_dlc_ownership
-end
-
-BackendInterfaceDLCsPlayfab._update_unlocked_dlcs = function (self, set_status_changed)
-	if not HAS_STEAM then
-		return
-	end
-
-	local dlc_manager = Managers.unlock
-
-	for dlc_name, unlock in pairs(dlc_manager._unlocks) do
-		if unlock.set_unlocked then
-			unlock:set_unlocked(table.contains(self._owned_dlcs, dlc_name), set_status_changed)
-		end
-	end
 end
 
 return

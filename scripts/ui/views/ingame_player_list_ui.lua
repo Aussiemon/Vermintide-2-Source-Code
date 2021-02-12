@@ -554,7 +554,7 @@ IngamePlayerListUI.update_player_information = function (self)
 		local widget = player_data.widget
 		local offset = widget.offset
 		offset[1] = -(total_width / 2) + widget_width * i + (i - 1) * spacing
-		local profile_index = profile_synchronizer:profile_by_peer(player_data.peer_id, player_data.local_player_id)
+		local profile_index, career_index = profile_synchronizer:profile_by_peer(player_data.peer_id, player_data.local_player_id)
 		local profile_settings = profiles[profile_index]
 		local display_name = (profile_settings and profile_settings.display_name) or "unspawned"
 		local ingame_display_name = (profile_settings and profile_settings.ingame_display_name) or "unspawned"
@@ -570,20 +570,18 @@ IngamePlayerListUI.update_player_information = function (self)
 			end
 		end
 
-		local player_unit = player.player_unit
+		local career_settings = profile_settings.careers[career_index]
 
-		if Unit.alive(player_unit) then
-			local career_extension = ScriptUnit.extension(player_unit, "career_system")
-			local career_index = career_extension:career_index()
-			local career_settings = profile_settings.careers[career_index]
+		if career_settings then
 			local career_name = career_settings.name
 			local portrait_image = career_settings.portrait_image
 			local player_level_text = (player_data.is_bot_player and "BOT") or (player_data.level and tostring(player_data.level)) or "-"
-			local portrait_frame = cosmetic_system:get_equipped_frame(player_unit)
+			local portrait_frame = CosmeticUtils.get_cosmetic_slot(player, "slot_frame")
+			local portrait_frame_name = (portrait_frame and portrait_frame.item_name) or "default"
 
 			if player_data.career_index ~= career_index or display_name ~= player_data.hero_name or player_level_text ~= player_data.player_level_text or portrait_frame ~= player_data.portrait_frame then
 				player_data.career_index = career_index
-				local portrait_widget = self:_create_portrait_frame_widget(portrait_frame, portrait_image, player_level_text)
+				local portrait_widget = self:_create_portrait_frame_widget(portrait_frame_name, portrait_image, player_level_text)
 				local background_color = widget.style.background.color
 				local career_color = Colors.color_definitions[career_name]
 				background_color[2] = career_color[2]
@@ -628,7 +626,7 @@ IngamePlayerListUI.update_player_information = function (self)
 				self:_set_widget_text("player_passive_description", Localize(passive_description))
 				self:_set_simple_widget_texture("player_passive_icon", passive_icon)
 				self:_set_widget_text("player_career_name", Localize(career_display_name))
-				self:_create_player_portrait(portrait_frame, portrait_image, player_level_text)
+				self:_create_player_portrait(portrait_frame_name, portrait_image, player_level_text)
 				self:_set_widget_text("player_hero_name", Localize(ingame_display_name))
 			end
 		end
@@ -944,7 +942,7 @@ IngamePlayerListUI.update_player_list = function (self, dt)
 		local ui_id = data.ui_id
 		local player = player_manager:player_from_peer_id(peer_id, data.local_player_id)
 
-		if not player then
+		if not player or temp_players[ui_id] then
 			table.remove(players, i)
 
 			update_widgets = true

@@ -60,7 +60,9 @@ BTConditions.can_activate.dr_engineer = function (blackboard)
 		end
 	end
 
-	return true
+	local threat = Managers.state.conflict:get_threat_value()
+
+	return threat > 10
 end
 
 BTConditions.reload_ability_weapon.dr_engineer = function (blackboard, args)

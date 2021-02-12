@@ -12,6 +12,19 @@ function aiprint(...)
 end
 
 AiUtils = AiUtils or {}
+BreedCategory = {
+	Boss = 8,
+	Special = 64,
+	Armored = 16,
+	Infantry = 1,
+	Shielded = 2,
+	SuperArmor = 32,
+	Berserker = 4
+}
+
+AiUtils.has_breed_categories = function (owned_flags, effective_against)
+	return bit.band(owned_flags, effective_against) == owned_flags
+end
 
 AiUtils.special_dead_cleanup = function (unit, blackboard)
 	if not blackboard.target_unit then
@@ -1406,7 +1419,7 @@ local ARC_IMPORTANCE = {
 	0.4
 }
 local ARMOR_MOD_IMPORTANCE = {
-	1,
+	0.5,
 	2,
 	1.5,
 	1,
@@ -1454,6 +1467,22 @@ AiUtils.get_melee_weapon_score = function (conditions, weapon_item_template)
 	end
 
 	return best_attack_input, best_attack_meta_data, best_utility
+end
+
+local START_THREAT_VALUE = 0
+local MAX_THREAT_VALUE = 30
+local MAX_THREAT_RANGE = MAX_THREAT_VALUE - START_THREAT_VALUE
+
+AiUtils.get_party_danger = function ()
+	local conflict_director = Managers.state.conflict
+
+	if conflict_director then
+		local threat_value = conflict_director:get_threat_value()
+
+		return math.clamp((threat_value - START_THREAT_VALUE) / MAX_THREAT_RANGE, 0, 1)
+	end
+
+	return 0
 end
 
 return

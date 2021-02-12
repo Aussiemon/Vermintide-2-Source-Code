@@ -223,6 +223,11 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1
 	}
 }
+weapon_template.attack_meta_data = {
+	aim_at_node = "j_neck",
+	can_charge_shot = false,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
+}
 weapon_template.aim_assist_settings = {
 	max_range = 22,
 	no_aim_input_multiplier = 0,

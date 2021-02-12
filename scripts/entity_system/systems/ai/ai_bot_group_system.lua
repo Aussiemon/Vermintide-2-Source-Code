@@ -189,7 +189,7 @@ AIBotGroupSystem.on_add_extension = function (self, world, unit, extension_name,
 			blackboard = BLACKBOARDS[unit],
 			aoe_threat = {
 				expires = -math.huge,
-				escape_direction = Vector3Box()
+				escape_to = Vector3Box()
 			},
 			previous_bot_breakables = {},
 			current_bot_breakables = {},
@@ -1218,6 +1218,8 @@ AIBotGroupSystem._update_urgent_targets = function (self, dt, t)
 							best_target = target_unit
 							best_distance = distance
 						end
+					else
+						urgent_targets[target_unit] = nil
 					end
 				else
 					urgent_targets[target_unit] = nil
@@ -1286,7 +1288,7 @@ AIBotGroupSystem._can_revive_with_urgent_target = function (self, bot_unit, self
 	end
 end
 
-local FALLBACK_OPPORTUNITY_DISTANCE = 15
+local FALLBACK_OPPORTUNITY_DISTANCE = 40
 local FALLBACK_OPPORTUNITY_DISTANCE_SQ = FALLBACK_OPPORTUNITY_DISTANCE^2
 
 AIBotGroupSystem._update_opportunity_targets = function (self, dt, t)
@@ -1497,6 +1499,8 @@ AIBotGroupSystem._update_pickups_near_player = function (self, player_unit, t)
 		end
 	end
 
+	local check_player_ammo = true
+	local all_players_have_ammo = true
 	local valid_until = t + 5
 	local ammo_stickiness = 2.5
 	local allowed_distance_to_self = 5
@@ -1530,6 +1534,28 @@ AIBotGroupSystem._update_pickups_near_player = function (self, player_unit, t)
 				local slot_name = pickup_data.slot_name
 				mule_pickups[slot_name][pickup_unit] = valid_until
 			elseif pickup_data.type == "ammo" then
+				if check_player_ammo then
+					local PLAYER_UNITS = side.PLAYER_UNITS
+					local num_human_players = #PLAYER_UNITS
+
+					for i = 1, num_human_players, 1 do
+						local player_unit = PLAYER_UNITS[i]
+
+						if AiUtils.unit_alive(player_unit) then
+							local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
+							local ammo_percentage = inventory_ext:ammo_percentage()
+
+							if ammo_percentage < 1 then
+								all_players_have_ammo = false
+
+								break
+							end
+						end
+					end
+
+					check_player_ammo = false
+				end
+
 				for unit, data in pairs(side_bot_data) do
 					local bb = data.blackboard
 					local ammo_pickup_order_unit = data.ammo_pickup_order_unit
@@ -1553,7 +1579,7 @@ AIBotGroupSystem._update_pickups_near_player = function (self, player_unit, t)
 								allowed_to_take_ammo = true
 							end
 						else
-							allowed_to_take_ammo = (pickup_ammo_kind == "thrown" and true) or (bb.has_ammo_missing and (not pickup_data.only_once or bb.needs_ammo))
+							allowed_to_take_ammo = (pickup_ammo_kind == "thrown" and true) or (bb.has_ammo_missing and (not pickup_data.only_once or (bb.needs_ammo and all_players_have_ammo)))
 						end
 
 						local ammo_condition = (dist < allowed_distance_to_self or (follow_pos and Vector3.distance(follow_pos, pickup_pos) < allowed_distance_to_follow_pos)) and (not current_pickup or dist - ((current_pickup == pickup_unit and ammo_stickiness) or 0) < data.ammo_dist)
@@ -2527,7 +2553,7 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 		success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
 		if success then
-			return escape_dir
+			return to
 		end
 	end
 end
@@ -2565,7 +2591,7 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 		success = GwNavQueries.raycango(nav_world, bot_position, to, traverse_logic)
 
 		if success then
-			return escape_dir
+			return to
 		end
 	end
 end
@@ -2586,13 +2612,15 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 	end
 
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
+	local above = 2
+	local below = 2
 	local sign = (x_offset == 0 and 1 - math.random(0, 1) * 2) or math.sign(x_offset)
-	local to_direction = nil
+	local stop_at = nil
+	local right_offset = x_offset * right_vector
+	local right_extent = (bot_radius + extents_x) * right_vector
 
 	for i = 1, 2, 1 do
-		local to = bot_position - x_offset * right_vector + sign * (bot_radius + extents_x) * right_vector
-		local above = 2
-		local below = 2
+		local to = bot_position - right_offset + sign * right_extent
 		local on_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
 
 		if on_nav_mesh then
@@ -2604,23 +2632,23 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 		if raycango then
 			local in_liquid = area_damage_system:is_position_in_liquid(to, BotNavTransitionManager.NAV_COST_MAP_LAYERS)
 
-			if not in_liquid or (in_liquid and to_direction == nil) then
-				to_direction = Vector3.normalize(to - bot_position)
-			end
+			if not in_liquid or stop_at == nil then
+				stop_at = to
 
-			if not in_liquid then
-				break
+				if not in_liquid then
+					break
+				end
 			end
 		end
 
 		sign = -sign
 	end
 
-	return to_direction
+	return stop_at
 end
 
 AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rotation, duration)
-	local bot_radius = 0.75
+	local bot_radius = 1.25
 	local bot_height = 1.8
 	local t = Managers.time:time("game")
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
@@ -2648,12 +2676,12 @@ AIBotGroupSystem.aoe_threat_created = function (self, position, shape, size, rot
 			local expires = t + duration
 
 			if threat_data.expires < expires then
-				local escape_dir = detect_func(nav_world, traverse_logic, POSITION_LOOKUP[unit], bot_height, bot_radius, pos_x, pos_y, pos_z, rotation, size)
+				local escape_to = detect_func(nav_world, traverse_logic, POSITION_LOOKUP[unit], bot_height, bot_radius, pos_x, pos_y, pos_z, rotation, size)
 
-				if escape_dir then
+				if escape_to then
 					threat_data.expires = expires
 
-					threat_data.escape_direction:store(escape_dir)
+					threat_data.escape_to:store(escape_to)
 				end
 			end
 		end

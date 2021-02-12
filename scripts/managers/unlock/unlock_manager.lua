@@ -447,6 +447,14 @@ UnlockManager.get_unlocked_dlcs = function (self)
 	return unlocked_unlocks
 end
 
+UnlockManager.get_dlcs = function (self)
+	return self._unlocks
+end
+
+UnlockManager.get_dlc = function (self, name)
+	return self._unlocks[name]
+end
+
 UnlockManager.dlc_requires_restart = function (self, dlc_name)
 	local unlock = self._unlocks[dlc_name]
 

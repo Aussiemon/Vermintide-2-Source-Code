@@ -592,8 +592,7 @@ weapon_template.attack_meta_data = {
 	charged_attack_action_name = "shoot_charged",
 	ignore_enemies_for_obstruction_charged = true,
 	aim_at_node_charged = "j_head",
-	minimum_charge_time = 0.55,
-	charge_against_armored_enemy = true,
+	minimum_charge_time = 0.6,
 	charge_when_obstructed = true,
 	ignore_enemies_for_obstruction = true,
 	aim_data = {
@@ -607,7 +606,9 @@ weapon_template.attack_meta_data = {
 		max_radius_pseudo_random_c = 0.01475,
 		min_radius = math.pi / 72,
 		max_radius = math.pi / 16
-	}
+	},
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker),
+	effective_against_charged = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.aim_assist_settings = {
 	max_range = 22,

@@ -260,14 +260,6 @@ StateSplashScreen.unload_packages = function (self)
 			package_manager:unload(name, "state_splash_screen")
 		end
 	end
-
-	if GlobalResources.loaded then
-		GlobalResources.loaded = nil
-
-		for i, name in ipairs(GlobalResources) do
-			package_manager:unload(name, "global")
-		end
-	end
 end
 
 StateSplashScreen.load_packages = function (self)

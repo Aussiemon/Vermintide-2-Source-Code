@@ -158,7 +158,8 @@ weapon_template.ammo_data = {
 weapon_template.attack_meta_data = {
 	max_range = 30,
 	aim_at_node = "j_spine",
-	ignore_enemies_for_obstruction = true
+	ignore_enemies_for_obstruction = true,
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.default_spread_template = "rake_shot"
 weapon_template.right_hand_unit = ""

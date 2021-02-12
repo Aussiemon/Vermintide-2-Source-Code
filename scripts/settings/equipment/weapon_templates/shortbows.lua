@@ -342,13 +342,14 @@ weapon_template.ammo_data = {
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_head",
-	minimum_charge_time = 0.35,
 	charged_attack_action_name = "shoot_charged",
 	can_charge_shot = true,
+	minimum_charge_time = 0.35,
 	charge_above_range = 30,
 	charge_when_obstructed = false,
 	ignore_enemies_for_obstruction = true,
-	charge_against_armored_enemy = true
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special),
+	effective_against_charged = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.aim_assist_settings = {
 	max_range = 50,

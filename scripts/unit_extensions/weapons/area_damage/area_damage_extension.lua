@@ -1,5 +1,6 @@
 AreaDamageExtension = class(AreaDamageExtension)
 script_data.debug_area_damage = script_data.debug_area_damage or Development.parameter("debug_area_damage")
+local approx_player_radius = 0.5
 
 AreaDamageExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
@@ -26,6 +27,7 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	self.owner_player = extension_init_data.owner_player
 	self.slow_modifier = extension_init_data.slow_modifier
 	self.source_attacker_unit = extension_init_data.source_attacker_unit
+	self.threat_duration = extension_init_data.threat_duration
 	self.effect_size = self.radius * 1.5
 	self.damage_timer = 0
 	self.life_timer = 0
@@ -253,13 +255,22 @@ AreaDamageExtension.start = function (self)
 		end
 	end
 
-	if self.is_server and self.create_nav_tag_volume then
-		if self.nav_tag_volume_layer then
-			local volume_system = Managers.state.entity:system("volume_system")
-			local pos = Unit.world_position(self.unit, 0)
-			self.nav_tag_volume_id = volume_system:create_nav_tag_volume_from_data(pos, self.radius, self.nav_tag_volume_layer)
-		else
-			Application.warning(string.format("[AreaDamageExtension] create_nav_tag_volume is set but there are no nav_tag_volume_template set for unit %s", self.unit))
+	if self.is_server then
+		if self.create_nav_tag_volume then
+			if self.nav_tag_volume_layer then
+				local volume_system = Managers.state.entity:system("volume_system")
+				local pos = Unit.world_position(self.unit, 0)
+				self.nav_tag_volume_id = volume_system:create_nav_tag_volume_from_data(pos, self.radius + approx_player_radius, self.nav_tag_volume_layer)
+			else
+				Application.warning(string.format("[AreaDamageExtension] create_nav_tag_volume is set but there are no nav_tag_volume_template set for unit %s", self.unit))
+			end
+		end
+
+		if self.threat_duration and self.threat_duration > 0 then
+			local unit_pos = Unit.world_position(self.unit, 0)
+			local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+
+			ai_bot_group_system:aoe_threat_created(unit_pos, "sphere", self.radius + approx_player_radius, nil, self.threat_duration)
 		end
 	end
 end

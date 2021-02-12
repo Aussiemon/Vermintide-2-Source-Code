@@ -170,7 +170,8 @@ weapon_template.buffs = {
 weapon_template.attack_meta_data = {
 	max_range = 15,
 	aim_at_node = "j_spine",
-	ignore_enemies_for_obstruction = true
+	ignore_enemies_for_obstruction = true,
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_high_damage",

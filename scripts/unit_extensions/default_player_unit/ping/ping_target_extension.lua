@@ -40,6 +40,12 @@ PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, sho
 			if pinger_buff_extension then
 				pinger_buff_extension:trigger_procs("on_enemy_pinged", owner_unit, pinger_unit)
 			end
+
+			local proximity_extension = ScriptUnit.has_extension(owner_unit, "proximity_system")
+
+			if proximity_extension then
+				proximity_extension.has_been_seen = true
+			end
 		end
 	end
 

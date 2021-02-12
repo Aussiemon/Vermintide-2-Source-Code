@@ -10,6 +10,7 @@ BTBotMeleeAction.name = "BTBotMeleeAction"
 local PATROL_PASSIVE_RANGE = 50
 local DEFAULT_MAXIMAL_MELEE_RANGE = 5
 local DEFAULT_ENEMY_HITBOX_RADIUS_APPROXIMATION = 0.5
+local FAR_DISTANCE_FROM_FOLLOW_POS_SQ = 25
 
 local function check_angle(nav_world, target_position, start_direction, angle, distance)
 	local direction = Quaternion.rotate(Quaternion(Vector3.up(), angle), start_direction)
@@ -227,18 +228,15 @@ BTBotMeleeAction._is_in_melee_range = function (self, current_position, aim_posi
 end
 
 BTBotMeleeAction._is_in_engage_range = function (self, self_unit, target_unit, nav_world, action_data, follow_pos)
-	local engage_range_sq = nil
+	local party_danger = AiUtils.get_party_danger()
+	local engage_range_close = math.lerp(action_data.engage_range_near_follow_pos, action_data.engage_range_near_follow_pos_threat, party_danger)
+	local engage_range_far = math.lerp(action_data.engage_range, action_data.engage_range_threat, party_danger)
 	local self_position = POSITION_LOOKUP[self_unit]
-
-	if Vector3.distance_squared(follow_pos, self_position) < 25 then
-		engage_range_sq = action_data.engage_range_near_follow_pos^2
-	else
-		engage_range_sq = action_data.engage_range^2
-	end
-
+	local distance_from_follow_t = math.clamp(Vector3.distance_squared(follow_pos, self_position) / FAR_DISTANCE_FROM_FOLLOW_POS_SQ, 0, 1)
+	local engage_range = math.lerp(engage_range_close, engage_range_far, distance_from_follow_t)
 	local target_unit_position = self:_target_unit_position(self_position, target_unit, nav_world)
 
-	return Vector3.distance_squared(self_position, target_unit_position) < engage_range_sq
+	return Vector3.distance_squared(self_position, target_unit_position) < engage_range * engage_range
 end
 
 BTBotMeleeAction._aim_position = function (self, target_unit, blackboard)
@@ -308,22 +306,10 @@ end
 
 BTBotMeleeAction._allow_engage = function (self, self_unit, target_unit, blackboard, action_data, already_engaged, aim_position, follow_pos)
 	local conflict_director = Managers.state.conflict
-	local threat_value = conflict_director:get_threat_value()
+	local party_danger = AiUtils.get_party_danger()
 	local override_range_default = action_data.override_engage_range_to_follow_pos
 	local threat_override_range = action_data.override_engage_range_to_follow_pos_threat
-	local START_THREAT_VALUE = 10
-	local MAX_THREAT_VALUE = 30
-	local lerp_t = (threat_value - START_THREAT_VALUE) / (MAX_THREAT_VALUE - START_THREAT_VALUE)
-	local override_range = nil
-
-	if lerp_t <= 0 then
-		override_range = override_range_default
-	elseif lerp_t >= 1 then
-		override_range = threat_override_range
-	else
-		override_range = math.lerp(override_range_default, threat_override_range, lerp_t * lerp_t)
-	end
-
+	local override_range = math.lerp(override_range_default, threat_override_range, party_danger)
 	local distance_to_follow_pos = Vector3.distance(aim_position, follow_pos)
 	local fuzziness = (already_engaged and 3) or 0
 

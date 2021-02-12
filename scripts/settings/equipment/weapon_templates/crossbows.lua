@@ -221,9 +221,10 @@ weapon_template.attack_meta_data = {
 	can_charge_shot = true,
 	aim_at_node_charged = "j_neck",
 	minimum_charge_time = 0.45,
-	charge_above_range = 10,
+	charge_above_range = 20,
 	charge_when_obstructed = false,
-	ignore_enemies_for_obstruction = false
+	ignore_enemies_for_obstruction = false,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.aim_assist_settings = {
 	max_range = 50,

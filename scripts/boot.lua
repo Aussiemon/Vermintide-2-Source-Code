@@ -400,6 +400,11 @@ Boot.booting_update = function (self, dt)
 
 				if write_network_debug_output_to_log then
 					print("Network.write_debug_output_to_log(true)")
+
+					local k_ESteamNetworkingConfig_LogLevel_P2PRendezvous = 17
+					local k_ESteamNetworkingSocketsDebugOutputType_Debug = 7
+
+					Network.set_config_value(k_ESteamNetworkingConfig_LogLevel_P2PRendezvous, k_ESteamNetworkingSocketsDebugOutputType_Debug)
 					Network.write_debug_output_to_log(true)
 				end
 			end
@@ -816,6 +821,10 @@ Boot.shutdown = function (self, dt)
 	end
 
 	if Managers then
+		if Managers.mod then
+			Managers.mod:unload_all_mods()
+		end
+
 		Managers:destroy()
 	end
 

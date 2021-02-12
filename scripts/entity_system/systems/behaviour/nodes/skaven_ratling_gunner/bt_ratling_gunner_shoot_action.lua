@@ -3,6 +3,7 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 BTRatlingGunnerShootAction = class(BTRatlingGunnerShootAction, BTNode)
 local PI = math.pi
 local TWO_PI = PI * 2
+local BOT_THREAT_UPDATE_TIME = 1
 CLIENT_CONTROLLED_RATLING_GUN = true
 
 BTRatlingGunnerShootAction.init = function (self, ...)
@@ -33,6 +34,7 @@ BTRatlingGunnerShootAction.enter = function (self, unit, blackboard, t)
 	data.target_obscured = false
 	data.target_check = t + 0.2 + Math.random() * 0.1
 	data.peer_id = data.peer_id or Network.peer_id()
+	data.update_bot_threat_t = t
 	self._use_obstacle = false
 
 	if self._use_obstacle then
@@ -229,6 +231,12 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 		self:_shoot(unit, blackboard, t, dt)
 	end
 
+	if data.update_bot_threat_t < t then
+		self:_create_bot_threat_box(unit, data, BOT_THREAT_UPDATE_TIME)
+
+		data.update_bot_threat_t = t + BOT_THREAT_UPDATE_TIME
+	end
+
 	if self._use_obstacle then
 		local fire_extents = blackboard.action.line_of_fire_nav_obstacle_half_extents:unbox()
 		local sight_extents = blackboard.action.arc_of_sight_nav_obstacle_half_extents:unbox()
@@ -297,15 +305,6 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 		GwNavBoxObstacle.set_does_trigger_tagvolume(sight_obstacle, true)
 		DialogueSystem:trigger_targeted_by_ratling(data.target_unit)
 	end
-
-	local self_pos = POSITION_LOOKUP[unit]
-	local to_target = POSITION_LOOKUP[data.target_unit] - self_pos
-	local distance = Vector3.length(to_target)
-	local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance * 2, self_pos, Quaternion.look(to_target))
-	local bot_threat_duration = 3
-	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-
-	ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
 
 	if CLIENT_CONTROLLED_RATLING_GUN then
 		local action = blackboard.action
@@ -593,6 +592,20 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	local skip_rpc = CLIENT_CONTROLLED_RATLING_GUN
 
 	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, peer_id, nil, skip_rpc)
+end
+
+BTRatlingGunnerShootAction._create_bot_threat_box = function (self, unit, attack_data, duration)
+	local self_pos = POSITION_LOOKUP[unit]
+	local target_pos = POSITION_LOOKUP[attack_data.target_unit]
+
+	if self_pos and target_pos then
+		local to_target = target_pos - self_pos
+		local distance = Vector3.length(to_target)
+		local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance * 2, self_pos, Quaternion.look(to_target))
+		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
+
+		ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, duration)
+	end
 end
 
 return

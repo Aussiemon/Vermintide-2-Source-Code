@@ -19,8 +19,9 @@ local FLAT_MOVE_TO_PREVIOUS_POS_EPSILON_SQ = FLAT_MOVE_TO_PREVIOUS_POS_EPSILON^2
 local Z_MOVE_TO_EPSILON = BotConstants.default.Z_MOVE_TO_EPSILON
 local HOLD_POSITION_MAX_ALLOWED_Z = 0.5
 local SELF_HEAL_STICKINESS = 0.1
+local PLAYER_HEAL_STICKYBESS = 0.11
 local WANTS_TO_HEAL_THRESHOLD = 0.25
-local WANTS_TO_GIVE_HEAL_TO_OTHER = 0.5
+local WANTS_TO_GIVE_HEAL_TO_OTHER = 0.6
 local INTERESTED_IN_BEING_HEALED_THRESHOLD = 0.8
 local VORTEX_ESCAPE_DISTANCE = 10
 local VORTEX_ESCAPE_STICKINESS_WEIGHT = 0.75
@@ -863,6 +864,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 			if not status_ext:is_ready_for_assisted_respawn() and not status_ext.near_vortex and (disable_bot_main_path_teleport_check or self_segment <= (conflict_director:get_player_unit_segment(player_unit) or 1)) then
 				local player = Managers.player:owner(player_unit)
 				local is_bot = not player:is_player_controlled()
+				local heal_player_preference = (is_bot and 0) or PLAYER_HEAL_STICKYBESS
 				local in_need_type = nil
 
 				if status_ext:is_knocked_down() then
@@ -880,7 +882,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					local player_inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 					local player_locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
 					local is_wounded = status_ext:is_wounded()
-					local health_utility = self:_calculate_healing_item_utility(health_percent, is_wounded, can_give_healing_to_other)
+					local health_utility = self:_calculate_healing_item_utility(health_percent, is_wounded, can_give_healing_to_other) + heal_player_preference
 					local heal_other_allowed = self_health_utiliy < health_utility
 					local need_attention_type, extra_utility = self:_player_needs_attention(unit, player_unit, blackboard, player_inventory_extension, player_locomotion_extension, t)
 
@@ -1995,7 +1997,7 @@ PlayerBotBase._update_weapon_metadata = function (self, template)
 			for name, _ in pairs(used_actions.action_one) do
 				local current_attack = weapon_attacks[name]
 
-				if current_attack.kind == "melee_start" then
+				if current_attack.kind == "melee_start" or current_attack.melee_start then
 					local chain_attacks = current_attack.allowed_chain_actions
 					local anim_speed_scale = current_attack.anim_time_scale or 1
 					local min_idx, min, max_idx, max = find_chain_times(chain_attacks)

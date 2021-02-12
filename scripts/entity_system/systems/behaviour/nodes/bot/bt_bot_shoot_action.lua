@@ -100,8 +100,8 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 	local charged_attack_action = base_attack_action[attack_meta_data.charged_attack_action_name or "shoot_charged"] or attack_action
 	blackboard.shoot = {
 		num_aim_rolls = 0,
-		disengage_update_time = 0,
 		charging_shot = false,
+		disengage_update_time = 0,
 		obstructed = true,
 		attack_meta_data = attack_meta_data,
 		attack_action = attack_action,
@@ -123,7 +123,8 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 		charge_when_obstructed = attack_meta_data.charge_when_obstructed,
 		charge_when_outside_max_range = attack_meta_data.charge_when_outside_max_range,
 		charge_when_outside_max_range_charged = attack_meta_data.charge_when_outside_max_range_charged == nil or attack_meta_data.charge_when_outside_max_range_charged,
-		charge_against_armored_enemy = attack_meta_data.charge_against_armored_enemy,
+		effective_against = attack_meta_data.effective_against or 0,
+		effective_against_charged = attack_meta_data.effective_against_charged or 0,
 		always_charge_before_firing = attack_meta_data.always_charge_before_firing,
 		aim_at_node = attack_meta_data.aim_at_node or "j_spine",
 		aim_at_node_charged = attack_meta_data.aim_at_node_charged or attack_meta_data.aim_at_node or "j_spine",
@@ -366,8 +367,11 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 		self:_set_new_aim_target(unit, t, shoot_bb, target_unit, first_person_ext)
 	end
 
-	if shoot_bb.keep_distance and shoot_bb.disengage_update_time < t then
-		self:_update_disengage_position(blackboard, t)
+	local target_breed = shoot_bb.target_breed
+	local breed_distance_override = target_breed and target_breed.bots_stay_ranged
+
+	if (breed_distance_override or shoot_bb.keep_distance) and shoot_bb.disengage_update_time < t then
+		self:_update_disengage_position(blackboard, t, breed_distance_override)
 	end
 
 	local action_data = self._tree_node.action_data
@@ -397,7 +401,7 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 
 	input_ext:set_aim_rotation(actual_aim_rotation)
 
-	if not shoot_bb.fired and self:_aim_good_enough(dt, t, shoot_bb, yaw_offset, pitch_offset) and self:_may_attack(unit, target_unit, shoot_bb, range_squared, t) then
+	if self:_aim_good_enough(dt, t, shoot_bb, yaw_offset, pitch_offset) and self:_may_attack(unit, target_unit, shoot_bb, range_squared, t) then
 		self:_fire_shot(shoot_bb, action_data, input_ext, t)
 	end
 
@@ -488,7 +492,25 @@ BTBotShootAction._should_charge = function (self, shoot_blackboard, range_square
 		return shoot_blackboard.charge_when_outside_max_range
 	end
 
-	return shoot_blackboard.always_charge_before_firing or shoot_blackboard.charging_shot or (shoot_blackboard.charge_range_squared and shoot_blackboard.charge_range_squared < range_squared) or (shoot_blackboard.charge_against_armored_enemy and (not shoot_blackboard.target_breed or shoot_blackboard.target_breed.armor_category == 2))
+	if shoot_blackboard.always_charge_before_firing or shoot_blackboard.charging_shot then
+		return true
+	end
+
+	if shoot_blackboard.charge_range_squared and shoot_blackboard.charge_range_squared < range_squared then
+		return true
+	end
+
+	local target_breed = shoot_blackboard.target_breed
+
+	if target_breed then
+		local target_breed_category_mask = target_breed.category_mask
+		local charge_shot_util = bit.band(target_breed_category_mask, shoot_blackboard.effective_against_charged)
+		local normal_shot_util = bit.band(target_breed_category_mask, shoot_blackboard.effective_against)
+
+		return normal_shot_util < charge_shot_util
+	end
+
+	return false
 end
 
 BTBotShootAction._fire_shot = function (self, shoot_blackboard, action_data, input_extension, t)
@@ -517,11 +539,11 @@ BTBotShootAction._charge_shot = function (self, shoot_blackboard, action_data, i
 	input_extension[input](input_extension)
 end
 
-BTBotShootAction._update_disengage_position = function (self, blackboard, t)
+BTBotShootAction._update_disengage_position = function (self, blackboard, t, breed_distance_override)
 	local first_person_ext = blackboard.first_person_extension
 	local self_position = first_person_ext:current_position()
 	local shoot_bb = blackboard.shoot
-	local keep_distance = shoot_bb.keep_distance
+	local keep_distance = breed_distance_override or shoot_bb.keep_distance
 	local keep_distance_sq = keep_distance * keep_distance
 	local num_close_targets = 0
 	local disengage_vector = Vector3.zero()

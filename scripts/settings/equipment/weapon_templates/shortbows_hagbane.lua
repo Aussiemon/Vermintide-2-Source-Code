@@ -84,8 +84,8 @@ weapon_template.actions = {
 		},
 		shoot_charged = {
 			reset_aim_on_attack = true,
-			charge_value = "zoomed_arrow_hit",
 			kind = "bow",
+			charge_value = "zoomed_arrow_hit",
 			weapon_action_hand = "left",
 			apply_recoil = true,
 			ammo_usage = 1,
@@ -124,6 +124,11 @@ weapon_template.actions = {
 				attack = 0,
 				impact = 0
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
 			projectile_info = Projectiles.carbine_poison_arrow,
 			impact_data = {
 				damage_profile = "shortbow_hagbane_charged",
@@ -185,7 +190,7 @@ weapon_template.actions = {
 					sub_action = "shoot_charged",
 					start_time = 0.3,
 					action = "action_one",
-					input = "action_one_mouse",
+					input = "action_one",
 					end_time = math.huge
 				},
 				{
@@ -237,13 +242,15 @@ weapon_template.ammo_data = {
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_head",
-	minimum_charge_time = 0.35,
 	charged_attack_action_name = "shoot_charged",
 	can_charge_shot = true,
-	charge_above_range = 30,
+	aim_at_node_charged = "j_spine",
+	minimum_charge_time = 0.35,
+	charge_above_range = 20,
 	charge_when_obstructed = false,
 	ignore_enemies_for_obstruction = true,
-	charge_against_armored_enemy = true
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special),
+	effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Shielded)
 }
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {

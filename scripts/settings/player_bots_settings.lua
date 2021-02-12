@@ -55,21 +55,27 @@ BotActions.default = {
 	},
 	fight_melee_priority_target = {
 		engage_range = math.huge,
+		engage_range_threat = math.huge,
 		engage_range_near_follow_pos = math.huge,
+		engage_range_near_follow_pos_threat = math.huge,
 		override_engage_range_to_follow_pos = math.huge,
 		override_engage_range_to_follow_pos_threat = math.huge
 	},
 	fight_melee = {
+		engage_range_threat = 2,
+		override_engage_range_to_follow_pos = 10,
 		engage_range = 6,
-		override_engage_range_to_follow_pos = 12,
-		engage_range_near_follow_pos = 10,
-		override_engage_range_to_follow_pos_threat = 6
+		override_engage_range_to_follow_pos_threat = 3,
+		engage_range_near_follow_pos_threat = 3,
+		engage_range_near_follow_pos = 10
 	},
 	destroy_object_melee = {
-		do_not_update_engage_position = true,
 		destroy_object = true,
+		do_not_update_engage_position = true,
 		engage_range = math.huge,
+		engage_range_threat = math.huge,
 		engage_range_near_follow_pos = math.huge,
+		engage_range_near_follow_pos_threat = math.huge,
 		override_engage_range_to_follow_pos = math.huge,
 		override_engage_range_to_follow_pos_threat = math.huge
 	},

@@ -265,7 +265,7 @@ weapon_template.overcharge_data = {
 	hit_overcharge_threshold_sound = "ui_special_attack_ready"
 }
 weapon_template.attack_meta_data = {
-	max_range = 50,
+	max_range = 15,
 	obstruction_fuzzyness_range_charged = 1,
 	always_charge_before_firing = false,
 	charged_attack_action_name = "shoot_charged",
@@ -274,7 +274,8 @@ weapon_template.attack_meta_data = {
 	minimum_charge_time = 0.1,
 	charge_when_obstructed = false,
 	charge_when_outside_max_range = false,
-	obstruction_fuzzyness_range = 1
+	obstruction_fuzzyness_range = 1,
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Shielded, BreedCategory.Armored, BreedCategory.Special)
 }
 weapon_template.default_spread_template = "drakegun"
 weapon_template.right_hand_unit = ""

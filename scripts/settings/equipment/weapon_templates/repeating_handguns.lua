@@ -298,8 +298,9 @@ weapon_template.ammo_data = {
 	reload_on_ammo_pickup = true
 }
 weapon_template.attack_meta_data = {
-	aim_at_node = "j_spine1",
-	can_charge_shot = false
+	aim_at_node = "j_neck",
+	can_charge_shot = false,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.right_hand_unit = ""
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.repeating_handgun

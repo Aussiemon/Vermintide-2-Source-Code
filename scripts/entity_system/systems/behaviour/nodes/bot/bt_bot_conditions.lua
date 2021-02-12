@@ -886,7 +886,7 @@ BTConditions.bot_should_heal = function (blackboard)
 	local target_unit = blackboard.target_unit
 	local is_safe = not target_unit or ((template.fast_heal or blackboard.is_healing_self) and #blackboard.proximite_enemies == 0) or (target_unit ~= blackboard.priority_target_enemy and target_unit ~= blackboard.urgent_target_enemy and target_unit ~= blackboard.proximity_target_enemy and target_unit ~= blackboard.slot_target_enemy)
 
-	return is_safe and (hurt or force_use_health_pickup or wounded)
+	return is_safe and (force_use_health_pickup or (not has_no_permanent_health_from_item_buff and hurt) or (has_no_permanent_health_from_item_buff and hurt and wounded))
 end
 
 BTConditions.is_slot_not_wielded = function (blackboard, args)
@@ -942,8 +942,8 @@ BTConditions.has_priority_or_opportunity_target = function (blackboard)
 		return false
 	end
 
-	local dist = 25
-	local result = (target == blackboard.priority_target_enemy and blackboard.priority_target_distance < dist) or (target == blackboard.urgent_target_enemy and blackboard.urgent_target_distance < dist)
+	local dist = 40
+	local result = (target == blackboard.priority_target_enemy and blackboard.priority_target_distance < dist) or (target == blackboard.urgent_target_enemy and blackboard.urgent_target_distance < dist) or (target == blackboard.opportunity_target_enemy and blackboard.opportunity_target_distance < dist)
 
 	return result
 end
@@ -959,6 +959,7 @@ BTConditions.bot_in_melee_range = function (blackboard)
 	local wielded_slot = blackboard.inventory_extension:equipment().wielded_slot
 	local melee_range = nil
 	local breed = Unit.get_data(target_unit, "breed")
+	local party_danger = AiUtils.get_party_danger()
 
 	if blackboard.urgent_target_enemy == target_unit or blackboard.opportunity_target_enemy == target_unit or Vector3.is_valid(blackboard.taking_cover.cover_position:unbox()) then
 		melee_range = (breed and breed.bot_opportunity_target_melee_range) or 3
@@ -966,12 +967,10 @@ BTConditions.bot_in_melee_range = function (blackboard)
 		if wielded_slot == "slot_ranged" then
 			melee_range = (breed and breed.bot_opportunity_target_melee_range_while_ranged) or 2
 		end
+	elseif wielded_slot == "slot_ranged" then
+		melee_range = math.lerp(10, 3.5, party_danger)
 	else
-		melee_range = 12
-
-		if wielded_slot == "slot_ranged" then
-			melee_range = 10
-		end
+		melee_range = math.lerp(12, 5, party_danger)
 	end
 
 	local target_aim_position = nil
@@ -995,7 +994,13 @@ end
 BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 	local target_unit = blackboard.target_unit
 
-	if not ALIVE[target_unit] or Unit.get_data(target_unit, "breed") == nil then
+	if not ALIVE[target_unit] then
+		return false
+	end
+
+	local breed = Unit.get_data(target_unit, "breed")
+
+	if breed == nil then
 		return false
 	end
 
@@ -1018,8 +1023,9 @@ BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 	local obstruction = blackboard.ranged_obstruction_by_static
 	local t = Managers.time:time("game")
 	local obstructed = obstruction and obstruction.unit == blackboard.target_unit and t > obstruction.timer + 3
+	local effective_target = AiUtils.has_breed_categories(breed.category_mask, ranged_slot_template.attack_meta_data.effective_against_combined)
 
-	return ammo_ok and overcharge_ok and not obstructed
+	return ammo_ok and overcharge_ok and not obstructed and effective_target
 end
 
 BTConditions.should_vent_overcharge = function (blackboard, args)

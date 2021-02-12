@@ -1382,6 +1382,14 @@ local keybind_settings_definition = {
 		}
 	},
 	{
+		keybind_description = "execute_chat_input_1",
+		keymappings_key = "ChatControllerSettings",
+		widget_type = "keybind",
+		actions = {
+			"execute_chat_input_1"
+		}
+	},
+	{
 		keybind_description = "ingame_vote_yes",
 		keymappings_key = "IngameMenuKeymaps",
 		widget_type = "keybind",

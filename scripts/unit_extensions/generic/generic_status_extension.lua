@@ -97,6 +97,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.ready_for_assisted_respawn = false
 	self.assisted_respawning = false
 	self.player = extension_init_data.player
+	self.is_bot = self.player.bot_player
 	self.in_end_zone = false
 	self.is_husk = self.player.remote
 
@@ -431,7 +432,7 @@ GenericStatusExtension.update_falling = function (self, t)
 		if min_fall_damage_height < fall_distance then
 			fall_distance = math.abs(fall_distance)
 
-			if not global_is_inside_inn and not self.inside_transport_unit and not self.ignore_next_fall_damage then
+			if not global_is_inside_inn and not self.inside_transport_unit and not self.ignore_next_fall_damage and not self.is_bot then
 				local network_height = math.clamp(fall_distance * 4, 0, 255)
 				local network_manager = Managers.state.network
 				local unit_storage = Managers.state.unit_storage

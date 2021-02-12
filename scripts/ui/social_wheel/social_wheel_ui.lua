@@ -100,6 +100,7 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._current_context = nil
 	self._active_context = nil
 	self._num_free_events = MAX_FREE_EVENTS
+	self._valid_selection = true
 	local settings = Managers.state.game_mode:settings()
 	local ping_mode = settings.ping_mode
 
@@ -579,7 +580,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 	self._animations.update_alpha = UIAnimation.init(UIAnimation.function_by_time, self._render_settings, "alpha_multiplier", 0, 1, animation_times.ALPHA, math.easeOutCubic)
 	self._active_context = self._current_context
 	local active_context = self._active_context
-	local social_wheel_unit = active_context.unit
+	local social_wheel_unit = active_context.unit or active_context.ping_context_unit
 
 	if not Unit.alive(social_wheel_unit) then
 		social_wheel_unit = nil
@@ -646,6 +647,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 	animations.animation_bg_size = UIAnimation.init(UIAnimation.function_by_time, widget_content, "size_multiplier", widget_content.final_size_multiplier * 0.5, widget_content.final_size_multiplier, animation_times.SIZE, math.ease_out_elastic)
 	local gamepad_enabled = PLATFORM ~= "win32" or Managers.input:is_device_active("gamepad")
 	local stop_lerp_time = (gamepad_enabled and STOP_LERP_TIME_CONTROLLER) or STOP_LERP_TIME
+	self._valid_selection = true
 	self._selected_widget = nil
 	self._open_start_t = t
 
@@ -788,6 +790,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 		local widget = selection_widgets[self._current_index]
 		widget.content.selected = false
 		self._current_index = nil
+		self._valid_selection = true
 		local bg_widget = self._bg_widget
 		local bg_widget_content = bg_widget.content
 		bg_widget_content.text_id = Localize("tutorial_no_text")
@@ -838,6 +841,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 	if new_widget_content.is_valid then
 		new_widget.content.selected = true
 		self._current_index = selection_index
+		self._valid_selection = true
 
 		if PLATFORM ~= "win32" then
 			local active_context = self._active_context
@@ -857,6 +861,8 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 		local event = SFX_EVENTS[self._side_name].HOVER
 
 		self:_play_sound(event)
+	else
+		self._valid_selection = false
 	end
 end
 
@@ -869,7 +875,7 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 	bg_widget_content.text_id = Localize("tutorial_no_text")
 	animations.animation_bg_size = UIAnimation.init(UIAnimation.function_by_time, bg_widget_content, "size_multiplier", bg_widget_content.size_multiplier, 0, animation_times.SIZE, math.easeOutCubic)
 	local active_context = self._active_context
-	local target_unit = active_context.unit
+	local target_unit = active_context.unit or active_context.ping_context_unit
 	local selection_widgets = self._current_selection_widgets
 	local num_selection_widgets = #selection_widgets
 
@@ -941,26 +947,28 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 		self._world_marker_preview_id = nil
 	end
 
-	if self._current_index == nil then
-		local time_since_open = t - self._open_start_t
-		local _, open_animation_duration = table.max(ANIMATION_TIMES.OPEN)
+	if self._valid_selection then
+		if self._current_index == nil then
+			local time_since_open = t - self._open_start_t
+			local _, open_animation_duration = table.max(ANIMATION_TIMES.OPEN)
 
-		if time_since_open < open_animation_duration then
-			social_message_sent = self:_ping_unit_attempt(target_unit, PingTypes.CONTEXT)
-		end
-	else
-		local widget = self._current_selection_widgets[self._current_index]
-		local widget_content = widget.content
-		local settings = widget_content.settings
-		local ping_type = settings.ping_type or PingTypes.CHAT_ONLY
-		local social_wheel_event_id = NetworkLookup.social_wheel_events[settings.name]
-
-		if target_unit and (self._world_markers_enabled or ping_type == PingTypes.PLAYER_PICK_UP) then
-			social_message_sent = self:_ping_unit_attempt(target_unit, ping_type, social_wheel_event_id)
-		elseif active_context.position and self._world_markers_enabled then
-			social_message_sent = self:_ping_world_position_attempt(active_context.position, ping_type, social_wheel_event_id)
+			if time_since_open < open_animation_duration then
+				social_message_sent = self:_ping_unit_attempt(target_unit, PingTypes.CONTEXT)
+			end
 		else
-			social_message_sent = self:_social_message_attempt(social_wheel_event_id)
+			local widget = self._current_selection_widgets[self._current_index]
+			local widget_content = widget.content
+			local settings = widget_content.settings
+			local ping_type = settings.ping_type or PingTypes.CHAT_ONLY
+			local social_wheel_event_id = NetworkLookup.social_wheel_events[settings.name]
+
+			if target_unit and (self._world_markers_enabled or ping_type == PingTypes.PLAYER_PICK_UP) then
+				social_message_sent = self:_ping_unit_attempt(target_unit, ping_type, social_wheel_event_id)
+			elseif active_context.position and self._world_markers_enabled then
+				social_message_sent = self:_ping_world_position_attempt(active_context.position, ping_type, social_wheel_event_id)
+			else
+				social_message_sent = self:_social_message_attempt(social_wheel_event_id)
+			end
 		end
 	end
 

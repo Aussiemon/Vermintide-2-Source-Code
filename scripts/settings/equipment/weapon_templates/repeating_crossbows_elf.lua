@@ -243,7 +243,8 @@ weapon_template.attack_meta_data = {
 	minimum_charge_time = 0.45,
 	charge_above_range = 10,
 	charge_when_obstructed = false,
-	ignore_enemies_for_obstruction = false
+	ignore_enemies_for_obstruction = false,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.default_spread_template = "repeating_handgun"
 weapon_template.spread_lerp_speed = 2

@@ -469,14 +469,16 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 	local min_health = (buff_extension:has_buff_perk("ignore_death") and 1) or 0
 
-	if damage_source_name ~= "dot_debuff" then
+	print(damage_type)
+
+	if damage_source_name ~= "dot_debuff" and damage_type ~= "temporary_health_degen" and damage_type ~= "overcharge" then
 		local ai_inventory_extension = ScriptUnit.has_extension(attacker_unit, "ai_inventory_system")
 
 		if ai_inventory_extension then
 			ai_inventory_extension:play_hit_sound(unit, damage_type)
 		end
 
-		if self.player.local_player and (buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_duration")) then
+		if self.player.local_player and (buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_taunt_range_and_duration")) then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ironbreaker_hit")

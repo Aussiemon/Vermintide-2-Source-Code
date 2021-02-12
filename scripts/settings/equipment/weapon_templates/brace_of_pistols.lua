@@ -353,7 +353,8 @@ weapon_template.ammo_data = {
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_head",
-	can_charge_shot = false
+	can_charge_shot = false,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.default_spread_template = "brace_of_pistols"
 weapon_template.spread_lerp_speed = 5

@@ -21,6 +21,9 @@ PingTypes = {
 	PLAYER_COVER_ME = 16,
 	ENEMY_ATTACK = 7
 }
+IgnoreCooldownPingTypes = {
+	[PingTypes.PLAYER_PICK_UP] = true
+}
 PingTemplates = {
 	generic_item = {
 		check_func = function (self, pinger_unit, pinged_unit)
@@ -184,7 +187,7 @@ PingTemplates = {
 				return unpack(response)
 			end
 
-			return true, nil, nil
+			return false, nil, nil
 		end
 	},
 	position_only = {
