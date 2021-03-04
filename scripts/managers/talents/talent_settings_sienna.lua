@@ -896,7 +896,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				refresh_durations = true,
 				icon = "sienna_unchained_reduced_damage_taken_after_venting",
-				stat_buff = "damage_taken_secondary"
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -1963,15 +1963,7 @@ Talents.bright_wizard = {
 	}
 }
 
-for name, data in pairs(TalentBuffTemplates.bright_wizard) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(TalentBuffTemplates.bright_wizard)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.bright_wizard, buff_tweak_data)
 
 return

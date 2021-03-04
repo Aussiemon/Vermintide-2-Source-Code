@@ -401,6 +401,10 @@ NetworkServer.has_all_peers_loaded_packages = function (self)
 end
 
 NetworkServer.kick_peer = function (self, peer_id)
+	if not PEER_ID_TO_CHANNEL[peer_id] then
+		return
+	end
+
 	self.network_transmit:send_rpc("rpc_kick_peer", peer_id)
 
 	self.kicked_peers_disconnect_timer[peer_id] = KICK_PEER_WAIT_TIMER
@@ -622,21 +626,11 @@ NetworkServer._update_connections = function (self, peer_state_machines)
 				local state_id = NetworkLookup.connection_states[state]
 
 				self.network_transmit:send_rpc_clients_except("rpc_client_connection_state", peer_id, peer_id, state_id)
+				NetworkUtils.announce_chat_peer_joined(peer_id, self.lobby_host)
 			elseif state == "disconnected" then
 				local peer_state_machine = peer_state_machines[peer_id]
 
 				if peer_state_machine and peer_state_machine.current_state ~= PeerStates.Disconnecting and peer_state_machine.current_state ~= PeerStates.Disconnected then
-					local sender = (rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id)
-
-					if PLATFORM ~= "win32" then
-						sender = self.lobby_host:user_name(peer_id)
-					end
-
-					local message = string.format(Localize("system_chat_player_left_the_game"), sender)
-					local pop_chat = true
-
-					Managers.chat:add_local_system_message(1, message, pop_chat)
-
 					local enemy_package_loader = self.level_transition_handler.enemy_package_loader
 
 					enemy_package_loader:client_disconnected(peer_id)
@@ -645,6 +639,7 @@ NetworkServer._update_connections = function (self, peer_state_machines)
 					local state_id = NetworkLookup.connection_states[state]
 
 					self.network_transmit:send_rpc_clients_except("rpc_client_connection_state", peer_id, peer_id, state_id)
+					NetworkUtils.announce_chat_peer_left(peer_id, self.lobby_host)
 				end
 			end
 
@@ -673,12 +668,6 @@ NetworkServer.update = function (self, dt)
 			network_printf("Creating peer info.")
 
 			self.peer_state_machines[remote_peer_id] = PeerStateMachine.create(self, remote_peer_id)
-
-			NetworkUtils.announce_chat_peer_joined(remote_peer_id, self.lobby_host)
-
-			local state_id = 2
-
-			self.network_transmit:send_rpc_clients_except("rpc_client_connection_state", remote_peer_id, remote_peer_id, state_id)
 		end
 
 		table.clear(joined_peers)
@@ -813,6 +802,9 @@ end
 
 NetworkServer._handle_peer_left_game = function (self, peer_id)
 	if peer_id then
+		local state_id = NetworkLookup.connection_states.disconnected
+
+		self.network_transmit:send_rpc_clients_except("rpc_client_connection_state", peer_id, peer_id, state_id)
 		NetworkUtils.announce_chat_peer_left(peer_id, self.lobby_host)
 
 		local peer_state_machine = self.peer_state_machines[peer_id]

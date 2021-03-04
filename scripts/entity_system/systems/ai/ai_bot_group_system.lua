@@ -1243,7 +1243,7 @@ AIBotGroupSystem._update_urgent_targets = function (self, dt, t)
 				end
 			end
 
-			blackboard.revive_with_urgent_target = best_target and self:_can_revive_with_urgent_target(bot_unit, self_pos, blackboard, best_target)
+			blackboard.revive_with_urgent_target = best_target and self:_can_revive_with_urgent_target(bot_unit, self_pos, blackboard, best_target, t)
 			blackboard.urgent_target_enemy = best_target
 			blackboard.urgent_target_distance = best_distance
 			local hit_by_projectile = blackboard.hit_by_projectile
@@ -1258,20 +1258,22 @@ AIBotGroupSystem._update_urgent_targets = function (self, dt, t)
 end
 
 local URGENT_TARGET_REVIVE_MIN_DISTANCE_SQ = {
-	chaos_vortex_sorcerer = 49,
 	skaven_ratling_gunner = 25,
+	skaven_pack_master = 49,
 	chaos_corruptor_sorcerer = 100,
-	skaven_poison_wind_globadier = 49,
+	skaven_poison_wind_globadier = 25,
 	skaven_warpfire_thrower = 100,
 	chaos_plague_sorcerer = 25
 }
 
-AIBotGroupSystem._can_revive_with_urgent_target = function (self, bot_unit, self_position, blackboard, urgent_target)
+AIBotGroupSystem._can_revive_with_urgent_target = function (self, bot_unit, self_position, blackboard, urgent_target, t)
 	local urgent_target_blackboard = BLACKBOARDS[urgent_target]
 	local breed = urgent_target_blackboard.breed
 	local breed_name = breed.name
 	local target_position = POSITION_LOOKUP[urgent_target]
-	local distance_squared = Vector3.distance_squared(self_position, target_position)
+	local target_ally_unit = blackboard.target_ally_unit
+	local target_ally_position = POSITION_LOOKUP[target_ally_unit]
+	local distance_squared = (target_ally_position and Vector3.distance_squared(target_ally_position, target_position)) or Vector3.distance_squared(self_position, target_position)
 	local revive_min_distance_sq = URGENT_TARGET_REVIVE_MIN_DISTANCE_SQ[breed_name] or 25
 
 	if breed.boss then
@@ -1279,7 +1281,7 @@ AIBotGroupSystem._can_revive_with_urgent_target = function (self, bot_unit, self
 	elseif breed_name == "skaven_ratling_gunner" then
 		local hit_by_projectile = blackboard.hit_by_projectile[urgent_target]
 
-		return not hit_by_projectile and revive_min_distance_sq < distance_squared
+		return (not hit_by_projectile or t > hit_by_projectile + 1) and revive_min_distance_sq < distance_squared
 	else
 		local is_bot_target = urgent_target_blackboard.target_unit == bot_unit
 		revive_min_distance_sq = revive_min_distance_sq * ((is_bot_target and 4) or 1)

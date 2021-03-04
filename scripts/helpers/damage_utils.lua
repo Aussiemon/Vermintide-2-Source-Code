@@ -1868,7 +1868,6 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 
 		if not IGNORE_DAMAGE_REDUCTION_DAMAGE_SOURCE[damage_source] then
 			damage = buff_extension:apply_buffs_to_value(damage, "damage_taken")
-			damage = buff_extension:apply_buffs_to_value(damage, "damage_taken_secondary")
 
 			if ELITES[damage_source] then
 				damage = buff_extension:apply_buffs_to_value(damage, "damage_taken_elites")

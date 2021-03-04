@@ -6343,6 +6343,12 @@ Features that make player mechanics nicer to work with.
 		category = "Bots"
 	},
 	{
+		description = "Make bots not see/attack anyone",
+		is_boolean = true,
+		setting_name = "ai_bots_disable_perception",
+		category = "Bots"
+	},
+	{
 		description = "Bot won't shot at enemy players, but still attack ai enemies.",
 		is_boolean = true,
 		setting_name = "ai_bots_disable_player_range_attacks",

@@ -398,7 +398,7 @@ WeaveTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "necklace_damage_taken_reduction_on_heal",
-				stat_buff = "damage_taken_secondary"
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -781,15 +781,7 @@ for name, data in pairs(WeaveTraits.traits) do
 	data.name = name
 end
 
-for name, data in pairs(WeaveTraits.buff_templates) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "Weave trait buff has more than one sub buff, add multiple buffs from the trait instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(WeaveTraits.buff_templates)
 BuffUtils.apply_buff_tweak_data(WeaveTraits.buff_templates, buff_tweak_data)
 
 WeaveTraits.categories = {

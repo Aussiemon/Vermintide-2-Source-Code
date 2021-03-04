@@ -1664,7 +1664,8 @@ NetworkLookup.connection_fails = {
 	"host_plays_prologue",
 	"client_is_banned",
 	"cannot_join_weave",
-	"game_aborted"
+	"game_aborted",
+	"signal_done_timeout"
 }
 NetworkLookup.health_statuses = {
 	"alive",

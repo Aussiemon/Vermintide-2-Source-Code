@@ -575,15 +575,7 @@ WeaveLoadoutSettings.es_questingknight = {
 	traits = {}
 }
 
-for name, data in pairs(talent_buff_templates) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(talent_buff_templates)
 BuffUtils.apply_buff_tweak_data(talent_buff_templates, buff_tweak_data)
 
 return

@@ -28,7 +28,7 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					display_name = "interact_open_inventory_chest",
@@ -61,7 +61,7 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					display_name = "interact_open_inventory_chest",
@@ -99,7 +99,7 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					display_name = "interact_open_inventory_chest",
@@ -268,7 +268,7 @@ elseif PLATFORM == "xb1" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					display_name = "interact_open_inventory_chest",
@@ -306,7 +306,7 @@ elseif PLATFORM == "xb1" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					display_name = "interact_open_inventory_chest",
@@ -344,7 +344,7 @@ elseif PLATFORM == "xb1" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					display_name = "interact_open_inventory_chest",
@@ -513,7 +513,7 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -544,7 +544,7 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -580,7 +580,7 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,

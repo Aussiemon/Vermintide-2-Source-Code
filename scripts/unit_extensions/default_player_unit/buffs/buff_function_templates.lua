@@ -1660,9 +1660,10 @@ BuffFunctionTemplates.functions = {
 					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 				end
 
-				local is_ai_unit = DamageUtils.is_enemy(attacker_unit, unit)
+				local is_friendly_target = not DamageUtils.is_enemy(attacker_unit, unit)
+				local target_dead = AiUtils.unit_alive(unit)
 
-				if attacker_unit_is_alive and is_ai_unit and not AiUtils.unit_alive(unit) then
+				if attacker_unit_is_alive and is_friendly_target and target_dead then
 					QuestSettings.check_num_enemies_killed_by_warpfire(unit, attacker_unit)
 				end
 			end

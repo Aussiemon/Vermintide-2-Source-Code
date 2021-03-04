@@ -40,7 +40,6 @@ local breed_data = {
 	death_sound_event = "Play_enemy_plague_monk_death_new_vce",
 	dodge_timer = 0.15,
 	smart_targeting_width = 0.2,
-	is_bot_aid_threat = true,
 	behavior = "plague_monk",
 	during_horde_detection_radius = 12,
 	attack_player_sound_event = "Play_plague_monk_frenzy_attack_vce",

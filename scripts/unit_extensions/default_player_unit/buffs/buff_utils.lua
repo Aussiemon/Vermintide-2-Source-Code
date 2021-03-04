@@ -9,12 +9,19 @@ BuffUtils.apply_buff_tweak_data = function (buffs, tweak_data)
 		local data = tweak_data[name]
 
 		if data then
-			local buff = buff_data.buffs[1]
-
-			for key, value in pairs(data) do
-				buff[key] = value
-			end
+			table.merge(buff_data.buffs[1], data)
 		end
+	end
+end
+
+BuffUtils.copy_talent_buff_names = function (buffs)
+	for name, buff_data in pairs(buffs) do
+		local buffs = buff_data.buffs
+
+		fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
+
+		local buff = buffs[1]
+		buff.name = name
 	end
 end
 

@@ -474,7 +474,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 6,
 				icon = "victor_zealot_passive_damage_taken",
-				stat_buff = "damage_taken_secondary"
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -892,7 +892,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_buff = {
 		buffs = {
 			{
-				stat_buff = "damage_taken_secondary",
+				stat_buff = "damage_taken",
 				icon = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill"
 			}
 		}
@@ -2231,15 +2231,7 @@ Talents.witch_hunter = {
 	}
 }
 
-for name, data in pairs(TalentBuffTemplates.witch_hunter) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(TalentBuffTemplates.witch_hunter)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.witch_hunter, buff_tweak_data)
 
 return

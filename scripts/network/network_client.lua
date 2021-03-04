@@ -162,10 +162,11 @@ end
 NetworkClient.rpc_client_connection_state = function (self, channel_id, peer_id, state_id)
 	local reason = NetworkLookup.connection_states[state_id]
 
-	if reason == "disconnected" then
-		printf("rpc_client_connection_state %d, %s, %s", channel_id, peer_id, state_id)
-		NetworkUtils.announce_chat_peer_left(peer_id, self.lobby_client)
-	elseif reason == "joined" then
+	printf("rpc_client_connection_state %d, %s, %s", channel_id, peer_id, reason)
+
+	if reason == "connected" then
+		NetworkUtils.announce_chat_peer_joined(peer_id, self.lobby_client)
+	elseif reason == "disconnected" then
 		NetworkUtils.announce_chat_peer_left(peer_id, self.lobby_client)
 	end
 end

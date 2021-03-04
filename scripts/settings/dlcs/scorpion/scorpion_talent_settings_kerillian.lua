@@ -10,15 +10,7 @@ TalentTrees.wood_elf = {
 Talents = Talents or {}
 Talents.wood_elf = {}
 
-for name, data in pairs(TalentBuffTemplates.wood_elf) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(TalentBuffTemplates.wood_elf)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.wood_elf, buff_tweak_data)
 
 return

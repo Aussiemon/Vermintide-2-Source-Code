@@ -93,7 +93,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	printf("[AchievementManager] Achievements using the %s platform", self.platform)
 	self:event_enable_achievements(true)
 
-	if template_count == 0 or script_data.settings.use_beta_mode or Managers.state.game_mode:setting("disable_achievements") then
+	if template_count == 0 or script_data["eac-untrusted"] or script_data.settings.use_beta_mode or Managers.state.game_mode:setting("disable_achievements") then
 		self._enabled = false
 	end
 
@@ -103,7 +103,7 @@ AchievementManager.init = function (self, world, statistics_db)
 end
 
 AchievementManager.trigger_event = function (self, event_name, ...)
-	if DEDICATED_SERVER then
+	if DEDICATED_SERVER or script_data["eac-untrusted"] then
 		return
 	end
 

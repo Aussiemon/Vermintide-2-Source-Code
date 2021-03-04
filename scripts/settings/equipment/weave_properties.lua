@@ -533,15 +533,7 @@ for name, data in pairs(WeaveProperties.properties) do
 	data.name = name
 end
 
-for name, data in pairs(WeaveProperties.buff_templates) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "Weave property buff has more than one sub buff, add multiple buffs from the property instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(WeaveProperties.buff_templates)
 BuffUtils.apply_buff_tweak_data(WeaveProperties.buff_templates, buff_tweak_data)
 
 WeaveProperties.categories = {

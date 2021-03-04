@@ -370,8 +370,10 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 	local target_breed = shoot_bb.target_breed
 	local breed_distance_override = target_breed and target_breed.bots_stay_ranged
 
-	if (breed_distance_override or shoot_bb.keep_distance) and shoot_bb.disengage_update_time < t then
+	if ((breed_distance_override and not shoot_bb.obstructed) or shoot_bb.keep_distance) and shoot_bb.disengage_update_time < t then
 		self:_update_disengage_position(blackboard, t, breed_distance_override)
+	else
+		shoot_bb.disengage_position_set = false
 	end
 
 	local action_data = self._tree_node.action_data
@@ -380,13 +382,15 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 	if shoot_bb.reevaluate_obstruction_time <= t then
 		if self:_reevaluate_obstruction(unit, shoot_bb, action_data, t, World.get_data(blackboard.world, "physics_world"), camera_position, wanted_aim_rotation, unit, target_unit, actual_aim_position, blackboard.priority_target_enemy, blackboard.target_ally_unit, blackboard.target_ally_needs_aid, blackboard.target_ally_need_type) then
 			if not blackboard.ranged_obstruction_by_static then
-				local obstructed_by_static = {
+				blackboard.ranged_obstruction_by_static = {
+					unit = target_unit,
 					timer = t
 				}
+			else
+				local obstructed_by_static = blackboard.ranged_obstruction_by_static
+				obstructed_by_static.unit = target_unit
+				obstructed_by_static.timer = t
 			end
-
-			obstructed_by_static.unit = target_unit
-			blackboard.ranged_obstruction_by_static = obstructed_by_static
 		else
 			blackboard.ranged_obstruction_by_static = nil
 		end

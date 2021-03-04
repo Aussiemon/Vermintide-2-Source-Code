@@ -287,7 +287,7 @@ BTConditions.can_activate.we_waywatcher = function (blackboard)
 	if is_range_ok then
 		local obstruction = blackboard.ranged_obstruction_by_static
 		local t = Managers.time:time("game")
-		local obstructed = obstruction and obstruction.unit == target and t > obstruction.timer + 3
+		local obstructed = obstruction and obstruction.unit == target and t <= obstruction.timer + 3
 
 		return not obstructed
 	else
@@ -446,7 +446,7 @@ BTConditions.can_activate.wh_bountyhunter = function (blackboard)
 	if is_range_ok then
 		local obstruction = blackboard.ranged_obstruction_by_static
 		local t = Managers.time:time("game")
-		local obstructed = obstruction and obstruction.unit == target and t > obstruction.timer + 3
+		local obstructed = obstruction and obstruction.unit == target and t <= obstruction.timer + 3
 
 		return not obstructed
 	else
@@ -555,7 +555,7 @@ BTConditions.can_activate.bw_scholar = function (blackboard)
 	if is_range_ok then
 		local obstruction = blackboard.ranged_obstruction_by_static
 		local t = Managers.time:time("game")
-		local obstructed = obstruction and obstruction.unit == target and t > obstruction.timer + 3
+		local obstructed = obstruction and obstruction.unit == target and t <= obstruction.timer + 3
 
 		return not obstructed
 	else
@@ -883,10 +883,13 @@ BTConditions.bot_should_heal = function (blackboard)
 
 	local current_health_percent = blackboard.health_extension:current_health_percent()
 	local hurt = current_health_percent <= template.bot_heal_threshold
+	local perma_health_percent = blackboard.health_extension:current_permanent_health_percent()
+	local low_on_perma_health = perma_health_percent <= template.bot_heal_threshold
+	local heavy_curse = blackboard.health_extension:get_max_health() <= 75
 	local target_unit = blackboard.target_unit
 	local is_safe = not target_unit or ((template.fast_heal or blackboard.is_healing_self) and #blackboard.proximite_enemies == 0) or (target_unit ~= blackboard.priority_target_enemy and target_unit ~= blackboard.urgent_target_enemy and target_unit ~= blackboard.proximity_target_enemy and target_unit ~= blackboard.slot_target_enemy)
 
-	return is_safe and (force_use_health_pickup or (not has_no_permanent_health_from_item_buff and hurt) or (has_no_permanent_health_from_item_buff and hurt and wounded))
+	return is_safe and (force_use_health_pickup or (not has_no_permanent_health_from_item_buff and (hurt or (wounded and (low_on_perma_health or heavy_curse)))) or (has_no_permanent_health_from_item_buff and hurt and wounded))
 end
 
 BTConditions.is_slot_not_wielded = function (blackboard, args)
@@ -1022,7 +1025,7 @@ BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 	local overcharge_ok = current_oc == 0 or (overcharge_limit_type == "threshold" and current_oc / threshold_oc < args.overcharge_limit) or (overcharge_limit_type == "maximum" and current_oc / max_oc < args.overcharge_limit)
 	local obstruction = blackboard.ranged_obstruction_by_static
 	local t = Managers.time:time("game")
-	local obstructed = obstruction and obstruction.unit == blackboard.target_unit and t > obstruction.timer + 3
+	local obstructed = obstruction and obstruction.unit == blackboard.target_unit and t <= obstruction.timer + 3
 	local effective_target = AiUtils.has_breed_categories(breed.category_mask, ranged_slot_template.attack_meta_data.effective_against_combined)
 
 	return ammo_ok and overcharge_ok and not obstructed and effective_target

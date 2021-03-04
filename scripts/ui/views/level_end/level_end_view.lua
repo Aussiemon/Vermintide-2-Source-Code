@@ -358,9 +358,14 @@ LevelEndView.update_force_shutdown = function (self, dt)
 		self:signal_done(false)
 
 		self._signaled_done = true
+		self._signal_done_timer = 15
 		self._ready_button_widget.content.button_hotspot.disable_button = true
 		self._retry_button_widget.content.button_hotspot.disable_button = true
 	elseif not self._left_lobby then
+		if self.is_server and self._signal_done_timer then
+			self._signal_done_timer = math.max(0, self._signal_done_timer - dt)
+		end
+
 		local all_done = true
 		local lobby_members = self._lobby:members()
 
@@ -369,6 +374,13 @@ LevelEndView.update_force_shutdown = function (self, dt)
 
 			for i, peer_id in ipairs(members) do
 				if not self._done_peers[peer_id] then
+					if self.is_server and self._signal_done_timer and self._signal_done_timer == 0 then
+						local server = Managers.matchmaking.network_server
+
+						server:disconnect_peer(peer_id, "signal_done_timeout")
+						Crashify.print_exception("LevelEndView", "Client did not RPC signal_done in time")
+					end
+
 					all_done = false
 
 					break

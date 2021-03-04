@@ -68,6 +68,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 	local override_box = Vector3Box(Vector3(0, 0, 0))
 	override_box.value_stored = false
 	self.is_bot = true
+	self._t = 0
 	self._blackboard = {
 		target_ally_needs_aid = false,
 		using_navigation_destination_override = false,
@@ -205,7 +206,7 @@ end
 
 PlayerBotBase.hit_by_projectile = function (self, attacking_unit)
 	local blackboard = self._blackboard
-	blackboard.hit_by_projectile[attacking_unit] = true
+	blackboard.hit_by_projectile[attacking_unit] = self._t
 end
 
 local DEFAULT_STAY_NEAR_PLAYER_RANGE = 5
@@ -284,6 +285,7 @@ PlayerBotBase.blackboard = function (self)
 end
 
 PlayerBotBase.update = function (self, unit, input, dt, context, t)
+	self._t = t
 	local health_extension = self._health_extension
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
@@ -923,22 +925,20 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 							for i = 1, num_alive_bosses, 1 do
 								local boss_unit = alive_bosses[i]
 								local boss_position = POSITION_LOOKUP[boss_unit]
-								local target_to_boss_distance_sq = Vector3.distance_squared(target_pos, boss_position)
 								local self_to_boss_distance_sq = Vector3.distance_squared(self_pos, boss_position)
 								local boss_target = BLACKBOARDS[boss_unit].target_unit
-								local boss_to_target_range_sq = (blackboard.target_ally_unit == player_unit and blackboard.target_ally_needs_aid and 9) or 12
 
-								if boss_target == player_unit then
-									boss_to_target_range_sq = boss_to_target_range_sq + 2
-								end
-
-								if target_to_boss_distance_sq < boss_to_target_range_sq or (boss_target == unit and self_to_boss_distance_sq < 12) then
+								if boss_target == unit and self_to_boss_distance_sq < 36 then
 									in_need_type = nil
 									utility = 0
 
 									break
 								end
 							end
+						end
+
+						if not is_bot then
+							utility = utility * 1.25
 						end
 
 						if in_need_type or not is_bot then

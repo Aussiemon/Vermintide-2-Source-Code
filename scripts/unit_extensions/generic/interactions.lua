@@ -2141,9 +2141,7 @@ InteractionDefinitions.characters_access.client.stop = function (world, interact
 end
 
 InteractionDefinitions.characters_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
-
-	return not is_game_matchmaking
+	return true
 end
 
 InteractionDefinitions.characters_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
@@ -2354,7 +2352,7 @@ end
 InteractionDefinitions.achievement_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
 	local has_access = not script_data.settings.use_beta_mode
 
-	return has_access
+	return has_access and not script_data["eac-untrusted"]
 end
 
 InteractionDefinitions.achievement_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)

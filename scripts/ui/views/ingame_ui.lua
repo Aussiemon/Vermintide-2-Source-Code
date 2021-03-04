@@ -328,6 +328,10 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 	return true
 end
 
+IngameUI.is_not_in_modded_realm = function (self)
+	return not script_data["eac-untrusted"]
+end
+
 local hotkeys_blocked_during_vote = {
 	"hotkey_map"
 }

@@ -10,15 +10,7 @@ TalentTrees.dwarf_ranger = {
 Talents = Talents or {}
 Talents.dwarf_ranger = {}
 
-for name, data in pairs(TalentBuffTemplates.dwarf_ranger) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(TalentBuffTemplates.dwarf_ranger)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.dwarf_ranger, buff_tweak_data)
 
 return

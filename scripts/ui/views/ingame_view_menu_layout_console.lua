@@ -48,7 +48,7 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -85,7 +85,7 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -122,7 +122,7 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -178,7 +178,7 @@ if PLATFORM == "ps4" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -359,7 +359,7 @@ elseif PLATFORM == "xb1" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -396,7 +396,7 @@ elseif PLATFORM == "xb1" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -433,7 +433,7 @@ elseif PLATFORM == "xb1" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -489,7 +489,7 @@ elseif PLATFORM == "xb1" then
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -670,7 +670,7 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -701,7 +701,7 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,
@@ -737,7 +737,7 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
 					fade = true,

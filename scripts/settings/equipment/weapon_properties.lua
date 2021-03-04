@@ -2166,15 +2166,7 @@ WeaponProperties.combinations = {
 	}
 }
 
-for name, data in pairs(WeaponProperties.buff_templates) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "property buff has more than one sub buff, add multiple buffs from the property instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(WeaponProperties.buff_templates)
 BuffUtils.apply_buff_tweak_data(WeaponProperties.buff_templates, buff_tweak_data)
 DLCUtils.require_list("weapon_properties_file_names")
 

@@ -935,6 +935,7 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	if not gamepad_active and menu_active and chat_enabled then
+		UIRenderer.draw_widget(ui_renderer, tab_widget)
 	end
 
 	self:_apply_hud_scale()

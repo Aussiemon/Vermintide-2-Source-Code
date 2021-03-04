@@ -867,7 +867,9 @@ LevelEndViewBase.rpc_signal_end_of_level_done = function (self, channel_id, peer
 			if member_peer_id ~= peer_id and member_peer_id ~= my_peer_id then
 				local channel_id = PEER_ID_TO_CHANNEL[member_peer_id]
 
-				RPC.rpc_signal_end_of_level_done(channel_id, peer_id, do_reload)
+				if channel_id then
+					RPC.rpc_signal_end_of_level_done(channel_id, peer_id, do_reload)
+				end
 			end
 		end
 	end

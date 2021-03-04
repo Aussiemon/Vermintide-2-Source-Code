@@ -1576,16 +1576,19 @@ end
 
 PlayFabMirrorBase.predict_refresh_boons = function (self)
 	local updated_boons = {}
-	local current_time = Managers.time:time("main")
 
-	for _, boon in ipairs(self._active_boons) do
-		local elapsed = current_time - boon.time_of_update
-		local remaining_time = boon.remaining_time - elapsed
+	if self._active_boons then
+		local current_time = Managers.time:time("main")
 
-		if remaining_time > 0 then
-			boon.remaining_time = remaining_time
-			boon.time_of_update = current_time
-			updated_boons[#updated_boons + 1] = boon
+		for _, boon in ipairs(self._active_boons) do
+			local elapsed = current_time - boon.time_of_update
+			local remaining_time = boon.remaining_time - elapsed
+
+			if remaining_time > 0 then
+				boon.remaining_time = remaining_time
+				boon.time_of_update = current_time
+				updated_boons[#updated_boons + 1] = boon
+			end
 		end
 	end
 
@@ -1628,16 +1631,21 @@ end
 PlayFabMirrorBase.handle_boons_result = function (self, result)
 	local function_result = result.FunctionResult
 	local active_boons = function_result.active_boons
+
+	if not active_boons then
+		self._active_boons = {}
+
+		return
+	end
+
 	local current_time = Managers.time:time("main")
 
-	if active_boons then
-		for _, boon in ipairs(active_boons) do
-			boon.time_of_update = current_time
-			boon.remaining_time = boon.remaining_time / 1000
-		end
-
-		self._active_boons = active_boons
+	for _, boon in ipairs(active_boons) do
+		boon.time_of_update = current_time
+		boon.remaining_time = boon.remaining_time / 1000
 	end
+
+	self._active_boons = active_boons
 end
 
 PlayFabMirrorBase.commit = function (self, skip_queue, commit_complete_callback)

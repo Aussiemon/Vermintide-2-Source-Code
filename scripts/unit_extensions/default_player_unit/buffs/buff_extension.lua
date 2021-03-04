@@ -386,7 +386,7 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 		}
 		self.individual_stat_buff_index = index + 1
 	else
-		index = (application_method == "stacking_multiplier_multiplicative" and sub_buff_template.name) or 1
+		index = (application_method == "stacking_multiplier_multiplicative" and (sub_buff_template.stacking_name or sub_buff_template.name)) or 1
 
 		if not stat_buff[index] then
 			stat_buff[index] = {

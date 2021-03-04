@@ -674,6 +674,7 @@ local view_settings = {
 			in_transition_menu = "hero_view"
 		},
 		hotkey_achievements = {
+			can_interact_func = "is_not_in_modded_realm",
 			in_transition = "hero_view_force",
 			error_message = "matchmaking_ready_interaction_message_achievements",
 			view = "hero_view",

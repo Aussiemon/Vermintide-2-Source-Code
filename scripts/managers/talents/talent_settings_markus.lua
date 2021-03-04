@@ -927,14 +927,14 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				icon = "markus_huntsman_damage_reduction_on_monster_kill",
-				stat_buff = "damage_taken_secondary"
+				stat_buff = "damage_taken"
 			}
 		}
 	},
 	markus_huntsman_damage_reduction_on_monster_kill_passive = {
 		buffs = {
 			{
-				stat_buff = "damage_taken_secondary",
+				stat_buff = "damage_taken",
 				max_stacks = 1
 			}
 		}
@@ -1174,8 +1174,9 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_improved_passive_defence_aura_buff = {
 		buffs = {
 			{
-				stat_buff = "damage_taken",
-				max_stacks = 1
+				stacking_name = "markus_knight_passive_defence_aura",
+				max_stacks = 1,
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -1318,8 +1319,9 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_damage_taken_ally_proximity_buff = {
 		buffs = {
 			{
-				stat_buff = "damage_taken_secondary",
-				icon = "markus_knight_damage_taken_ally_proximity"
+				stacking_name = "markus_knight_passive_defence_aura",
+				icon = "markus_knight_damage_taken_ally_proximity",
+				stat_buff = "damage_taken"
 			}
 		}
 	},
@@ -1616,7 +1618,7 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				icon = "markus_mercenary_activated_ability_damage_reduction",
 				name = "markus_mercenary_activated_ability_damage_reduction",
-				stat_buff = "damage_taken_secondary",
+				stat_buff = "damage_taken",
 				max_stacks = 1,
 				refresh_durations = true
 			}
@@ -2609,15 +2611,7 @@ Talents.empire_soldier = {
 	}
 }
 
-for name, data in pairs(TalentBuffTemplates.empire_soldier) do
-	local buffs = data.buffs
-
-	fassert(#buffs == 1, "talent buff has more than one sub buff, add multiple buffs from the talent instead")
-
-	local buff = buffs[1]
-	buff.name = name
-end
-
+BuffUtils.copy_talent_buff_names(TalentBuffTemplates.empire_soldier)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.empire_soldier, buff_tweak_data)
 
 return

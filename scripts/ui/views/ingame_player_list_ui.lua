@@ -570,7 +570,7 @@ IngamePlayerListUI.update_player_information = function (self)
 			end
 		end
 
-		local career_settings = profile_settings.careers[career_index]
+		local career_settings = profile_settings and profile_settings.careers[career_index]
 
 		if career_settings then
 			local career_name = career_settings.name
