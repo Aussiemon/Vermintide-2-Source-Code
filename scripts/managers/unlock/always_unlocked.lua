@@ -32,6 +32,10 @@ AlwaysUnlocked.unlocked = function (self)
 	return self._unlocked
 end
 
+AlwaysUnlocked.installed = function (self)
+	return true
+end
+
 AlwaysUnlocked.is_cosmetic = function (self)
 	return self._cosmetic
 end

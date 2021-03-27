@@ -32,6 +32,10 @@ UnlockGame.unlocked = function (self)
 	return
 end
 
+UnlockGame.installed = function (self)
+	return
+end
+
 UnlockGame.is_cosmetic = function (self)
 	return false
 end

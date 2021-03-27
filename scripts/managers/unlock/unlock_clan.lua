@@ -41,6 +41,10 @@ UnlockClan.unlocked = function (self)
 	return self._unlocked
 end
 
+UnlockClan.installed = function (self)
+	return self._unlocked
+end
+
 UnlockClan.is_cosmetic = function (self)
 	return true
 end

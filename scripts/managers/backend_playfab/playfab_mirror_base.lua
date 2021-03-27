@@ -164,12 +164,12 @@ end
 
 PlayFabMirrorBase._update_dlc_ownership = function (self)
 	local unlock_manager = Managers.unlock
-	local unlocked_dlcs = unlock_manager:get_unlocked_dlcs()
-	local json_string = cjson.encode(unlocked_dlcs)
+	local installed_dlcs = unlock_manager:get_installed_dlcs()
+	local json_string = cjson.encode(installed_dlcs)
 	local request = {
 		FunctionName = "updateDLCOwnership",
 		FunctionParameter = {
-			unlocked_dlcs = json_string
+			installed_dlcs = json_string
 		}
 	}
 	local request_cb = callback(self, "dlc_ownership_request_cb")
@@ -177,7 +177,7 @@ PlayFabMirrorBase._update_dlc_ownership = function (self)
 	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
-	self._unlocked_dlcs = unlocked_dlcs
+	self._unlocked_dlcs = installed_dlcs
 end
 
 PlayFabMirrorBase.dlc_unlocked_at_signin = function (self, dlc_name)
@@ -194,7 +194,7 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	local unlock_manager = Managers.unlock
 	local dlcs = unlock_manager:get_dlcs()
 
-	self:update_owned_dlcs()
+	self:update_owned_dlcs(false)
 
 	local read_only_data_values = self._read_only_data
 	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)

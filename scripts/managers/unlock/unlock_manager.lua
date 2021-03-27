@@ -447,6 +447,19 @@ UnlockManager.get_unlocked_dlcs = function (self)
 	return unlocked_unlocks
 end
 
+UnlockManager.get_installed_dlcs = function (self)
+	local unlocks = self._unlocks
+	local installed_unlocks = {}
+
+	for unlock_name, unlock in pairs(unlocks) do
+		if unlock:installed() then
+			installed_unlocks[#installed_unlocks + 1] = unlock_name
+		end
+	end
+
+	return installed_unlocks
+end
+
 UnlockManager.get_dlcs = function (self)
 	return self._unlocks
 end
@@ -661,7 +674,7 @@ UnlockManager._update_backend_unlocks = function (self)
 				local dlcs_interface = Managers.backend:get_interface("dlcs")
 				local owned_dlcs = dlcs_interface:get_owned_dlcs()
 				local platform_dlcs = dlcs_interface:get_platform_dlcs()
-				local new_dlc_unlocked = false
+				local new_dlc_installed = false
 
 				for i = 1, #platform_dlcs, 1 do
 					local unlock_name = platform_dlcs[i]
@@ -671,16 +684,16 @@ UnlockManager._update_backend_unlocks = function (self)
 						local id = unlock and unlock:id()
 
 						if id and Steam.is_installed(id) then
-							printf("UNLOCKED: %s", unlock_name)
+							printf("INSTALLED: %s", unlock_name)
 
-							new_dlc_unlocked = true
+							new_dlc_installed = true
 
 							break
 						end
 					end
 				end
 
-				if new_dlc_unlocked then
+				if new_dlc_installed then
 					self._state = "update_backend_dlcs"
 
 					return
