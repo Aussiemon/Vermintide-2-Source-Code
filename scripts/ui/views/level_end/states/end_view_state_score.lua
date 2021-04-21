@@ -230,12 +230,12 @@ end
 
 EndViewStateScore.show_gamercard = function (self, peer_id)
 	if peer_id then
-		if PLATFORM == "win32" and rawget(_G, "Steam") then
+		if IS_WINDOWS and rawget(_G, "Steam") then
 			local id = Steam.id_hex_to_dec(peer_id)
 			local url = "http://steamcommunity.com/profiles/" .. id
 
 			Steam.open_url(url)
-		elseif PLATFORM == "xb1" then
+		elseif IS_XB1 then
 			if self._context.lobby and self._context.lobby.lobby then
 				local xuid = self._context.lobby.lobby:xuid(peer_id)
 
@@ -243,7 +243,7 @@ EndViewStateScore.show_gamercard = function (self, peer_id)
 					Managers.account:show_player_profile(xuid)
 				end
 			end
-		elseif PLATFORM == "ps4" then
+		elseif IS_PS4 then
 			Managers.account:show_player_profile_with_account_id(peer_id)
 		end
 	end

@@ -427,7 +427,9 @@ GearUtils.destroy_slot = function (world, unit, slot_data, equipment, allow_dest
 	equipment.slots[slot_name] = nil
 end
 
-GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_equipment)
+local temp_table = {}
+
+GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_items)
 	local slots = equipment.slots
 	local unit_object_id = Managers.state.unit_storage:go_id(unit)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
@@ -449,15 +451,24 @@ GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_equipme
 		until true
 	end
 
-	if equipment.wielded then
+	local profile_synchronizer = Managers.state.network.profile_synchronizer
+	local resyncing_loadout = not profile_synchronizer:is_peer_all_synced(peer_id)
+
+	if not resyncing_loadout and equipment.wielded then
 		RPC.rpc_wield_equipment(channel_id, unit_object_id, NetworkLookup.equipment_slots[equipment.wielded_slot])
 	end
 
-	for slot_name, data in pairs(additional_equipment) do
+	for slot_name, data in pairs(additional_items) do
 		local slot_id = NetworkLookup.equipment_slots[slot_name]
-		local count = data.used_slots or #data.items
 
-		RPC.rpc_update_additional_slot(channel_id, unit_object_id, slot_id, count)
+		table.clear(temp_table)
+
+		for i = 1, #data.items, 1 do
+			local item = data.items[i]
+			temp_table[#temp_table + 1] = NetworkLookup.item_names[item.name]
+		end
+
+		RPC.rpc_update_additional_slot(channel_id, unit_object_id, slot_id, temp_table)
 	end
 end
 

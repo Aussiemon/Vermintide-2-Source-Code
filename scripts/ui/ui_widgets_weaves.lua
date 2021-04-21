@@ -75,7 +75,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				return not content.local_player
 			end,
 			content_change_function = function (content, style)
-				if PLATFORM == "win32" then
+				if IS_WINDOWS then
 					return
 				end
 
@@ -113,7 +113,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				return not content.local_player
 			end,
 			content_change_function = function (content, style)
-				if PLATFORM == "win32" then
+				if IS_WINDOWS then
 					return
 				end
 
@@ -159,7 +159,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				return not content.local_player
 			end,
 			content_change_function = function (content, style)
-				if PLATFORM == "win32" then
+				if IS_WINDOWS then
 					return
 				end
 
@@ -197,7 +197,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 				return not content.local_player
 			end,
 			content_change_function = function (content, style)
-				if PLATFORM == "win32" then
+				if IS_WINDOWS then
 					return
 				end
 

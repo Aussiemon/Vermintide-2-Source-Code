@@ -168,6 +168,11 @@ GenericHealthExtension.set_max_health = function (self, health)
 	local decimal = network_health % 1
 	local rounded_decimal = math.round(decimal * 4) * 0.25
 	network_health = math.floor(network_health) + rounded_decimal
+
+	if network_health <= 0 then
+		network_health = 1
+	end
+
 	self.health = network_health
 	local network_manager = Managers.state.network
 	local go_id, is_level_unit = network_manager:game_object_or_level_id(self.unit)
@@ -273,6 +278,12 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 
 			death_system:kill_unit(unit, damage_table)
 		end
+	end
+
+	local buff_extension = ScriptUnit.has_extension(source_attacker_unit, "buff_system")
+
+	if buff_extension and damage_source_name == "dot_debuff" then
+		buff_extension:trigger_procs("on_dot_damage_dealt", unit, source_attacker_unit, damage_type, damage_source_name)
 	end
 
 	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, source_attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)

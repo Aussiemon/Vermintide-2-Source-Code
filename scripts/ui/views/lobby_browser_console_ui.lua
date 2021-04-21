@@ -5,8 +5,9 @@ require("scripts/settings/level_settings")
 local definitions = local_require("scripts/ui/views/lobby_browser_console_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local base_widget_definition = definitions.base_widget_definition
-local details_widget_definition = definitions.details_widget_definition
+local adventure_details_widget_definition = definitions.adventure_details_widget_definition
 local weave_details_widget_definition = definitions.weave_details_widget_definition
+local deus_details_widget_definition = definitions.deus_details_widget_definition
 local animation_definitions = definitions.animation_definitions
 LobbyBrowserConsoleUI = class(LobbyBrowserConsoleUI)
 
@@ -19,6 +20,7 @@ LobbyBrowserConsoleUI.init = function (self, parent, ingame_ui_context, game_mod
 	self._render_settings = {
 		snap_pixel_positions = true
 	}
+	self._details_type = "adventure"
 	self._ui_renderer = ingame_ui_context.ui_top_renderer
 	self._input_manager = ingame_ui_context.input_manager
 	self._world_manager = ingame_ui_context.world_manager
@@ -46,8 +48,10 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	self._empty_lobby_entry_widgets = {}
 	self._details_widgets = {}
 	self._weave_details_widgets = {}
+	self._deus_details_widgets = {}
 	self._ui_animations = {}
 	self._selected_lobby_index = 1
+	self._mouse_selected_index = 1
 	self._visible_list_index = 1
 	self._hold_up_timer = 0
 	self._hold_down_timer = 0
@@ -64,17 +68,30 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 		self._widgets[name] = UIWidget.init(widget)
 	end
 
-	local details_widget_definition = details_widget_definition
+	local details_widgets = {}
+	local adventure_details_widget_definition = adventure_details_widget_definition
 
-	for name, widget in pairs(details_widget_definition) do
-		self._details_widgets[name] = UIWidget.init(widget)
+	for name, widget in pairs(adventure_details_widget_definition) do
+		details_widgets[name] = UIWidget.init(widget)
 	end
 
+	self._details_widgets.adventure = details_widgets
+	local details_widgets = {}
 	local weave_details_widget_definition = weave_details_widget_definition
 
 	for name, widget in pairs(weave_details_widget_definition) do
-		self._weave_details_widgets[name] = UIWidget.init(widget)
+		details_widgets[name] = UIWidget.init(widget)
 	end
+
+	self._details_widgets.weave = details_widgets
+	local details_widgets = {}
+	local deus_details_widget_definition = deus_details_widget_definition
+
+	for name, widget in pairs(deus_details_widget_definition) do
+		details_widgets[name] = UIWidget.init(widget)
+	end
+
+	self._details_widgets.deus = details_widgets
 
 	self:populate_lobby_list(self._lobbies or {}, false)
 	self:_create_filters()
@@ -110,9 +127,12 @@ LobbyBrowserConsoleUI._create_filters = function (self)
 			input_function_mouse = "_handle_distance_filter_input_mouse"
 		}
 	}
-	local game_mode_data = self._game_mode_data[1]
+	local game_mode_data = self._game_mode_data
+	local game_modes = game_mode_data.game_modes
+	local game_mode_index = self._parent:get_selected_game_mode_index() or game_modes.adventure
+	local game_mode_data = game_mode_data[game_mode_index]
 	local game_mode_key = game_mode_data.game_mode_key
-	local unlockable_levels = table.clone(UnlockableLevelsByGameMode[game_mode_key])
+	local unlockable_levels = (UnlockableLevelsByGameMode[game_mode_key] and table.clone(UnlockableLevelsByGameMode[game_mode_key])) or {}
 	local levels = game_mode_data.levels
 	local difficulties = game_mode_data.difficulties
 	local element_settings = definitions.element_settings
@@ -212,14 +232,7 @@ LobbyBrowserConsoleUI._update_info_text = function (self, dt, t, loading)
 
 	if loading then
 		local text = Localize("start_game_window_lobby_searching")
-		local dots = 1 + math.floor(self._dot_timer + 0.5) % 4
-
-		for i = 1, dots, 1 do
-			if i > 1 then
-				text = text .. "."
-			end
-		end
-
+		text = text .. string.rep(".", self._dot_timer % 4)
 		self._dot_timer = self._dot_timer + dt * 5
 		widget_content.info_text_id = text
 	else
@@ -250,7 +263,7 @@ end
 LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 	local valid_lobbies = {}
 	local num_lobbies = #lobbies
-	local level_settings = table.clone(LevelSettings, true)
+	local mission_ids = NetworkLookup.mission_ids
 	local invalid = false
 
 	for i = 1, num_lobbies, 1 do
@@ -258,10 +271,10 @@ LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 		local lobby = lobbies[i]
 
 		if lobby then
-			local selected_level_key = lobby.selected_level_key
+			local selected_mission_id = lobby.selected_mission_id
 
-			if selected_level_key then
-				if level_settings[selected_level_key] ~= nil then
+			if selected_mission_id then
+				if mission_ids[selected_mission_id] ~= nil then
 					if false then
 						invalid = false
 					end
@@ -270,10 +283,10 @@ LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 				end
 			end
 
-			local level_key = lobby.level_key
+			local mission_id = lobby.mission_id
 
-			if level_key then
-				if level_settings[level_key] ~= nil then
+			if mission_id then
+				if mission_ids[mission_id] ~= nil then
 					if false then
 						invalid = false
 					end
@@ -489,6 +502,8 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 		widget_content.filter_selection = true
 		widget_content.filter_index = self._current_filter_index
 
+		self._parent:play_sound("Play_hud_hover")
+
 		return
 	end
 
@@ -502,16 +517,19 @@ LobbyBrowserConsoleUI._handle_browser_input = function (self, input_service, ele
 			joinable = self._parent:is_lobby_joinable(lobby_data)
 
 			if joinable then
+				self._parent:play_sound("hud_morris_start_menu_play")
 				self._parent:_join(lobby_data)
 			end
 		end
 
 		return
 	elseif input_service:get("special_1") then
+		self._parent:play_sound("hud_morris_start_menu_set")
 		self._parent:refresh()
 
 		return
 	elseif input_service:get("left_stick_press") then
+		self._parent:play_sound("hud_morris_start_menu_set")
 		self._parent:reset_filters()
 
 		return
@@ -587,30 +605,32 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 	local entry_size_y = element_settings.height + element_settings.spacing
 	self._base_pos_y = self._base_pos_y or scenegraph_definition.lobby_entry_anchor.position[2]
 	self._wanted_pos = self._wanted_pos or self._base_pos_y
+	local left_pressed = input_service:get("left_press")
+	local widget = self._widgets.filter_frame
+	local widget_content = widget.content
 
-	if input_service:get("left_press") then
-		local widget = self._widgets.filter_frame
-		local widget_content = widget.content
+	for i = 1, #self._filter_functions, 1 do
+		local hotspot = widget_content["filter_hotspot_" .. i]
 
-		for i = 1, #self._filter_functions, 1 do
-			local hotspot = widget_content["filter_hotspot_" .. i]
+		if hotspot.on_hover_enter then
+			self._parent:play_sound("Play_hud_hover")
+		end
 
-			if hotspot.is_hover then
-				widget_content.filter_active = true
-				self._filter_active = true
-				self._current_active_filter = i
-				self._current_filter_index = i
-				self._filter_list_index = nil
-				self._mouse_scroll_index = nil
-				local widget_content = widget.content
-				widget_content.filter_selection = true
-				widget_content.filter_index = self._current_filter_index
-				local widget = self._widgets.frame
-				local widget_content = widget.content
-				widget_content.filter_active = true
+		if hotspot.is_hover and left_pressed then
+			widget_content.filter_active = true
+			self._filter_active = true
+			self._current_active_filter = i
+			self._current_filter_index = i
+			self._filter_list_index = nil
+			self._mouse_scroll_index = nil
+			local widget_content = widget.content
+			widget_content.filter_selection = true
+			widget_content.filter_index = self._current_filter_index
+			local widget = self._widgets.frame
+			local widget_content = widget.content
+			widget_content.filter_active = true
 
-				return
-			end
+			return
 		end
 	end
 
@@ -632,7 +652,7 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 		local join_button_hotspot = join_button_widget_content.button_hotspot
 
 		if join_button_hotspot.on_pressed then
-			local widget = self._lobby_entry_widgets[self._selected_lobby_index]
+			local widget = self._lobby_entry_widgets[self._mouse_selected_index]
 
 			if widget then
 				local widget_content = widget.content
@@ -655,6 +675,7 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 			local refresh_button_hotspot = refresh_button_widget_content.button_hotspot
 
 			if refresh_button_hotspot.on_pressed then
+				self._parent:play_sound("hud_morris_start_menu_set")
 				self._parent:refresh()
 
 				return
@@ -739,11 +760,17 @@ LobbyBrowserConsoleUI._handle_filter_input = function (self, input_service, elem
 		local widget_content = widget.content
 		widget_content.filter_selection = false
 
+		self._parent:play_sound("Play_hud_hover")
+
 		return
 	elseif input_service:get("move_left") then
+		self._parent:play_sound("Play_hud_hover")
+
 		current_filter_index = math.clamp(current_filter_index - 1, 1, #self._filter_functions)
 		self._filter_list_index = nil
 	elseif input_service:get("move_right") then
+		self._parent:play_sound("Play_hud_hover")
+
 		current_filter_index = math.clamp(current_filter_index + 1, 1, #self._filter_functions)
 		self._filter_list_index = nil
 	end
@@ -767,9 +794,10 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_level_entry_anchor.position[2]
 	self._wanted_list_pos = self._wanted_list_pos or self._list_base_pos_y
 	local num_entries = #self._level_filter_widgets
+	local confirm_pressed = input_service:get("confirm")
 	local back_pressed = input_service:get("back_menu", true)
 
-	if input_service:get("confirm") or back_pressed then
+	if confirm_pressed or back_pressed then
 		local current_filter_list_index = self._filter_list_index
 		local widget = self._level_filter_widgets[current_filter_list_index]
 		local widget_content = widget.content
@@ -786,6 +814,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 			self._ui_scenegraph.filter_level_entry_anchor.position[2] = self._list_base_pos_y
 
 			if not back_pressed then
+				self._parent:play_sound("hud_morris_start_menu_set")
 				self._parent:set_level(widget_content.level)
 				self._parent:refresh()
 			end
@@ -796,6 +825,14 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 			widget_content.filter_selection = true
 
 			return
+		end
+	end
+
+	for i = 1, #self._level_filter_widgets, 1 do
+		if UIUtils.is_button_hover_enter(self._level_filter_widgets[i]) then
+			self._parent:play_sound("Play_hud_hover")
+
+			break
 		end
 	end
 
@@ -867,6 +904,8 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 		end
 
 		self._ui_animations.list_scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
+
+		self._parent:play_sound("Play_hud_hover")
 	end
 end
 
@@ -877,6 +916,11 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_level_entry_anchor.position[2]
 	local num_entries = #self._level_filter_widgets
 	self._mouse_scroll_index = self._mouse_scroll_index or 1
+	local widget = self._level_filter_scroller
+	local widget_content = widget.content
+	local widget_style = widget.style
+	local scroller_hotspot = widget_content.scroller_hotspot
+	local bar_hotspot = widget_content.bar_hotspot
 	local any_selected = false
 	local exiting = input_service:get("back_menu", true)
 
@@ -888,6 +932,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 				any_selected = true
 
 				if widget.content.unlocked then
+					self._parent:play_sound("hud_morris_start_menu_set")
 					self._parent:set_level(widget.content.level)
 					self._parent:refresh()
 
@@ -898,6 +943,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 			end
 		end
 
+		any_selected = bar_hotspot.is_hover or any_selected
 		exiting = exiting or not any_selected
 	end
 
@@ -919,23 +965,38 @@ LobbyBrowserConsoleUI._handle_level_filter_input_mouse = function (self, input_s
 		return
 	end
 
-	local scroll_axis = input_service:get("scroll_axis")
-	local scroll_y = scroll_axis[2]
+	if scroller_hotspot.on_pressed then
+		self._old_mouse_y = input_service:get("cursor")[2]
+	elseif scroller_hotspot.is_held then
+		local total_size_y = (num_entries - num_visible_entries - 3) * element_settings.filter_height
+		local mouse_y = input_service:get("cursor")[2]
+		local diff_y = mouse_y - self._old_mouse_y
+		local progress_diff = diff_y / total_size_y
+		local progress = math.clamp(widget_content.scrollbar_progress - progress_diff, 0, 1)
+		widget_content.scrollbar_progress = progress
+		local new_pos = self._list_base_pos_y + (num_entries - num_visible_entries + 1) * progress * entry_size_y
+		self._ui_scenegraph.filter_level_entry_anchor.position[2] = new_pos
+		self._mouse_scroll_index = math.floor((num_entries - num_visible_entries + 1) * progress)
+		self._old_mouse_y = mouse_y
+	elseif num_visible_entries < num_entries then
+		local scroll_axis = input_service:get("scroll_axis")
+		local scroll_y = scroll_axis[2]
 
-	if math.abs(scroll_y) > 0 then
-		self._mouse_scroll_index = math.clamp(self._mouse_scroll_index - math.sign(scroll_y), 1, num_entries - num_visible_entries + 2)
-		local offset_num = self._mouse_scroll_index - 1
-		local new_pos = self._list_base_pos_y + offset_num * entry_size_y
-		self._ui_animations.move_list = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.filter_level_entry_anchor.position, 2, self._ui_scenegraph.filter_level_entry_anchor.position[2], new_pos, 0.3, math.easeOutCubic)
-		local widget = self._level_filter_scroller
-		local widget_content = widget.content
-		local progress = offset_num / (num_entries - num_visible_entries + 1)
+		if math.abs(scroll_y) > 0 then
+			self._mouse_scroll_index = math.clamp(self._mouse_scroll_index - math.sign(scroll_y), 1, num_entries - num_visible_entries + 2)
+			local offset_num = self._mouse_scroll_index - 1
+			local new_pos = self._list_base_pos_y + offset_num * entry_size_y
+			self._ui_animations.move_list = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.filter_level_entry_anchor.position, 2, self._ui_scenegraph.filter_level_entry_anchor.position[2], new_pos, 0.3, math.easeOutCubic)
+			local widget = self._level_filter_scroller
+			local widget_content = widget.content
+			local progress = offset_num / (num_entries - num_visible_entries + 1)
 
-		if self:_is_nan(progress) then
-			progress = 0
+			if self:_is_nan(progress) then
+				progress = 0
+			end
+
+			self._ui_animations.list_scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 		end
-
-		self._ui_animations.list_scrollbar = UIAnimation.init(UIAnimation.function_by_time, widget_content, "scrollbar_progress", widget_content.scrollbar_progress, progress, 0.3, math.easeOutCubic)
 	end
 end
 
@@ -960,6 +1021,7 @@ LobbyBrowserConsoleUI._handle_difficulty_filter_input = function (self, input_se
 			self._hold_down_list_timer = 0
 
 			if not back_pressed then
+				self._parent:play_sound("hud_morris_start_menu_set")
 				self._parent:set_difficulty(widget_content.difficulty)
 				self._parent:refresh()
 			end
@@ -1006,6 +1068,8 @@ LobbyBrowserConsoleUI._handle_difficulty_filter_input = function (self, input_se
 			local widget_content = widget.content
 			widget_content.selected = false
 		end
+
+		self._parent:play_sound("Play_hud_hover")
 	end
 end
 
@@ -1027,6 +1091,7 @@ LobbyBrowserConsoleUI._handle_difficulty_filter_input_mouse = function (self, in
 				any_selected = true
 
 				if widget.content.unlocked then
+					self._parent:play_sound("hud_morris_start_menu_set")
 					self._parent:set_difficulty(widget.content.difficulty)
 					self._parent:refresh()
 
@@ -1075,6 +1140,7 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input = function (self, input_service
 		self._hold_down_list_timer = 0
 
 		if not back_pressed then
+			self._parent:play_sound("hud_morris_start_menu_set")
 			self._parent:set_lobby_filter(widget_content.lobby_filter)
 			self._parent:refresh()
 		end
@@ -1120,6 +1186,8 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input = function (self, input_service
 			local widget_content = widget.content
 			widget_content.selected = false
 		end
+
+		self._parent:play_sound("Play_hud_hover")
 	end
 end
 
@@ -1138,6 +1206,7 @@ LobbyBrowserConsoleUI._handle_lobby_filter_input_mouse = function (self, input_s
 			local button_hotspot = widget.content.button_hotspot
 
 			if button_hotspot.is_hover then
+				self._parent:play_sound("hud_morris_start_menu_set")
 				self._parent:set_lobby_filter(widget.content.lobby_filter)
 				self._parent:refresh()
 
@@ -1186,6 +1255,7 @@ LobbyBrowserConsoleUI._handle_distance_filter_input = function (self, input_serv
 		self._hold_down_list_timer = 0
 
 		if not back_pressed then
+			self._parent:play_sound("hud_morris_start_menu_set")
 			self._parent:set_distance_filter(widget_content.distance)
 			self._parent:refresh()
 		end
@@ -1231,6 +1301,8 @@ LobbyBrowserConsoleUI._handle_distance_filter_input = function (self, input_serv
 			local widget_content = widget.content
 			widget_content.selected = false
 		end
+
+		self._parent:play_sound("Play_hud_hover")
 	end
 end
 
@@ -1249,6 +1321,7 @@ LobbyBrowserConsoleUI._handle_distance_filter_input_mouse = function (self, inpu
 			local button_hotspot = widget.content.button_hotspot
 
 			if button_hotspot.is_hover then
+				self._parent:play_sound("hud_morris_start_menu_set")
 				self._parent:set_distance_filter(widget.content.distance)
 				self._parent:refresh()
 
@@ -1312,12 +1385,13 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 	local lobby_data = self._lobbies[new_selected_lobby_index]
 
 	if lobby_data then
-		local game_mode_id = lobby_data.game_mode
-		local weave_name = lobby_data.weave_name
-		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
+		local mechanism = lobby_data.mechanism
+		local mission_id = lobby_data.selected_mission_id
 
-		if game_mode == "weave" and weave_name ~= "false" then
+		if mechanism == "weave" and WeaveSettings.templates[mission_id] then
 			self:_fill_weave_details(lobby_data)
+		elseif mechanism == "deus" and DeusJourneySettings[mission_id] then
+			self:_fill_deus_details(lobby_data)
 		else
 			self:_fill_details(lobby_data)
 		end
@@ -1325,14 +1399,27 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 end
 
 LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
-	local details_widgets = self._details_widgets
+	local details_widgets = self._details_widgets.adventure
 	local level_image = "level_image_any"
 	local level_name = nil
-	local level_key = lobby_data and (lobby_data.selected_level_key or lobby_data.level_key)
+	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
+	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
+	local matchmaking_type = matchmaking_type_id and ((IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
+	local mechanism = lobby_data and lobby_data.mechanism
 
-	if level_key then
-		if level_key == "default_start_level" then
-			level_key = LevelSettings[level_key]
+	if selected_mission_id then
+		if selected_mission_id == "default_start_level" then
+			selected_mission_id = LevelSettingsDefaultStartLevel
+		end
+
+		local level_key = selected_mission_id
+
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[selected_mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id
+			end
 		end
 
 		local level_settings = LevelSettings[level_key]
@@ -1350,7 +1437,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 		local num_profiles = #SPProfiles
 
 		for i = 1, num_profiles, 1 do
-			if not SlotAllocator.is_free_in_lobby(i, lobby_data) then
+			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 				occupied_profiles[i] = true
 			end
 		end
@@ -1405,40 +1492,51 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 	local details_information_widget_content = details_information_widget.content
 
 	if lobby_data then
-		local game_mode_lookup = {
+		local matchmaking_type_lookup = {
 			event = "lb_game_type_event",
 			deed = "lb_game_type_deed",
-			weave_find_group = "lb_game_type_weave_find_group",
-			weave_quick_play = "lb_game_type_weave_quick_play",
+			tutorial = "lb_game_type_prologue",
 			weave = "lb_game_type_weave",
 			custom = "lb_game_type_custom",
-			adventure = "lb_game_type_quick_play",
-			tutorial = "lb_game_type_prologue",
-			twitch = "lb_game_type_twitch",
-			["n/a"] = "lb_game_type_none"
+			standard = "lb_game_type_quick_play",
+			weave_quick_play = "lb_game_type_weave_quick_play",
+			["n/a"] = "lb_game_type_none",
+			deus = "area_selection_morris_name"
 		}
-		local game_mode_id = lobby_data.game_mode
-		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
-		local level_setting = LevelSettings[lobby_data.level_key]
+		local mission_id = lobby_data.mission_id
+		local level_key = mission_id
 
-		if game_mode == "weave" and lobby_data.quick_game == "true" then
-			game_mode = "weave_quick_play"
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id
+			end
+
+			if lobby_data.quick_game == "true" then
+				matchmaking_type = "weave_quick_play"
+			else
+				matchmaking_type = "weave"
+			end
+		elseif mechanism == "deus" then
+			matchmaking_type = "deus"
 		end
 
-		details_information_widget_content.game_type_id = (game_mode and (game_mode_lookup[game_mode] or "lb_unknown")) or "lb_game_type_none"
+		local level_setting = LevelSettings[level_key]
+		details_information_widget_content.game_type_id = (matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown")) or "lb_game_type_none"
 		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
 	else
 		details_information_widget_content.game_type_id = "lb_unknown"
 		details_information_widget_content.status_id = "lb_unknown"
 	end
 
-	self._show_weave_description = false
+	self._details_type = "adventure"
 	self._details_filled = true
 end
 
 LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
-	local details_widgets = self._weave_details_widgets
-	local weave_name = lobby_data.weave_name
+	local details_widgets = self._details_widgets.weave
+	local weave_name = lobby_data.selected_mission_id
 	local weave_template = WeaveSettings.templates[weave_name]
 	local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
 	local wind_name = weave_template.wind
@@ -1487,11 +1585,22 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 
 	local level_image = "level_image_any"
 	local level_name = weave_template.display_name
-	local level_key = lobby_data and (lobby_data.selected_level_key or lobby_data.level_key)
+	local mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
+	local mechanism = lobby_data.mechanism
 
-	if level_key then
+	if mission_id then
+		local level_key = mission_id
+
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id
+			end
+		end
+
 		if level_key == "default_start_level" then
-			level_key = LevelSettings[level_key]
+			level_key = LevelSettingsDefaultStartLevel
 		end
 
 		local level_settings = LevelSettings[level_key]
@@ -1514,7 +1623,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 		local num_profiles = #SPProfiles
 
 		for i = 1, num_profiles, 1 do
-			if not SlotAllocator.is_free_in_lobby(i, lobby_data) then
+			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 				occupied_profiles[i] = true
 			end
 		end
@@ -1558,35 +1667,169 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 	local details_information_widget_content = details_information_widget.content
 
 	if lobby_data then
-		local game_mode_lookup = {
+		local matchmaking_type_lookup = {
 			event = "lb_game_type_event",
 			deed = "lb_game_type_deed",
-			weave_find_group = "lb_game_type_weave_find_group",
-			weave_quick_play = "lb_game_type_weave_quick_play",
+			tutorial = "lb_game_type_prologue",
 			weave = "lb_game_type_weave",
 			custom = "lb_game_type_custom",
-			adventure = "lb_game_type_quick_play",
-			tutorial = "lb_game_type_prologue",
-			twitch = "lb_game_type_twitch",
-			["n/a"] = "lb_game_type_none"
+			standard = "lb_game_type_quick_play",
+			weave_quick_play = "lb_game_type_weave_quick_play",
+			["n/a"] = "lb_game_type_none",
+			deus = "area_selection_morris_name"
 		}
-		local game_mode_id = lobby_data.game_mode
-		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
-		local level_setting = LevelSettings[lobby_data.level_key]
+		local mechanism = lobby_data.mechanism
+		local matchmaking_type_id = lobby_data.matchmaking_type
+		local matchmaking_type = (IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
+		local mission_id = lobby_data.mission_id
+		local level_key = mission_id
 
-		if game_mode == "weave" and lobby_data.quick_game == "true" then
-			game_mode = "weave_quick_play"
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id
+			end
+
+			if lobby_data.quick_game == "true" then
+				matchmaking_type = "weave_quick_play"
+			end
+		elseif mechanism == "deus" then
+			matchmaking_type = "deus"
 		end
 
-		details_information_widget_content.game_type_id = (game_mode and (game_mode_lookup[game_mode] or "lb_unknown")) or "lb_game_type_none"
+		local level_setting = LevelSettings[level_key]
+		details_information_widget_content.game_type_id = (matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown")) or "lb_game_type_none"
 		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
 	else
 		details_information_widget_content.game_type_id = "lb_unknown"
 		details_information_widget_content.status_id = "lb_unknown"
 	end
 
+	self._details_type = "weave"
 	self._details_filled = true
-	self._show_weave_description = true
+end
+
+LobbyBrowserConsoleUI._gather_unlocked_journeys = function (self)
+	local unlocked_journeys = {}
+	local statistics_db = Managers.player:statistics_db()
+	local stats_id = Managers.player:local_player():stats_id()
+
+	for _, journey_name in ipairs(LevelUnlockUtils.unlocked_journeys(statistics_db, stats_id)) do
+		unlocked_journeys[journey_name] = true
+	end
+
+	return unlocked_journeys
+end
+
+LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
+	local unlocked_journeys, completed_difficulty_index = self:_gather_unlocked_journeys()
+	local details_widgets = self._details_widgets.deus
+	local level_image = "level_image_any"
+	local level_name = nil
+	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
+	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
+	local matchmaking_type = matchmaking_type_id and ((IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
+	local mechanism = lobby_data and lobby_data.mechanism
+	local journey_name = selected_mission_id
+	local journey_data = DeusJourneySettings[journey_name]
+	local widget = details_widgets.expedition_icon
+	local content = widget.content
+	content.level_icon = journey_data.level_image
+	content.locked = not unlocked_journeys[journey_name]
+	local backend_deus = Managers.backend:get_interface("deus")
+	local journey_cycle = backend_deus:get_journey_cycle()
+	local theme = journey_cycle.journey_data[journey_name].dominant_god
+	local theme_settings = DeusThemeSettings[theme]
+	content.theme_icon = theme_settings.icon
+	local level_name_widget = details_widgets.level_name
+	level_name_widget.content.text = Localize(journey_data.display_name)
+	local occupied_profiles = {}
+
+	if lobby_data then
+		local num_profiles = #SPProfiles
+
+		for i = 1, num_profiles, 1 do
+			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
+				occupied_profiles[i] = true
+			end
+		end
+	end
+
+	local content = details_widgets.hero_tabs.content
+
+	for i = 1, #ProfilePriority, 1 do
+		local profile_index = ProfilePriority[i]
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot_content = content[hotspot_name]
+
+		if occupied_profiles[profile_index] then
+			hotspot_content.disable_button = true
+		else
+			hotspot_content.disable_button = false
+		end
+	end
+
+	local join_button_widget = self._widgets.join_button
+	local join_button_widget_content = join_button_widget.content
+	local button_hotspot = join_button_widget_content.button_hotspot
+	local locked_reason_widget = details_widgets.locked_reason
+	local locked_reason_widget_content = locked_reason_widget.content
+
+	if lobby_data then
+		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
+		locked_reason_widget_content.text = locked_reason or "tutorial_no_text"
+		button_hotspot.disable_button = not joinable
+	else
+		locked_reason_widget_content.text = "tutorial_no_text"
+		button_hotspot.disable_button = true
+	end
+
+	local details_information_widget = details_widgets.details_information
+	local details_information_widget_content = details_information_widget.content
+
+	if lobby_data then
+		local matchmaking_type_lookup = {
+			event = "lb_game_type_event",
+			deed = "lb_game_type_deed",
+			tutorial = "lb_game_type_prologue",
+			weave = "lb_game_type_weave",
+			custom = "lb_game_type_custom",
+			standard = "lb_game_type_quick_play",
+			weave_quick_play = "lb_game_type_weave_quick_play",
+			["n/a"] = "lb_game_type_none",
+			deus = "area_selection_morris_name"
+		}
+		local mission_id = lobby_data.mission_id
+		local level_key = mission_id
+
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id
+			end
+
+			if lobby_data.quick_game == "true" then
+				matchmaking_type = "weave_quick_play"
+			else
+				matchmaking_type = "weave"
+			end
+		elseif mechanism == "deus" then
+			matchmaking_type = "deus"
+		end
+
+		local level_setting = LevelSettings[level_key]
+		details_information_widget_content.game_type_id = (matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown")) or "lb_game_type_none"
+		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
+	else
+		details_information_widget_content.game_type_id = "lb_unknown"
+		details_information_widget_content.status_id = "lb_unknown"
+	end
+
+	self._details_type = "deus"
+	self._details_filled = true
 end
 
 LobbyBrowserConsoleUI._assign_objective = function (self, index, text, icon, spacing)
@@ -1688,14 +1931,10 @@ LobbyBrowserConsoleUI._render_lobby_browser = function (self, ui_renderer, ui_sc
 	end
 
 	if self._details_filled then
-		if self._show_weave_description then
-			for _, widget in pairs(self._weave_details_widgets) do
-				UIRenderer.draw_widget(ui_renderer, widget)
-			end
-		else
-			for _, widget in pairs(self._details_widgets) do
-				UIRenderer.draw_widget(ui_renderer, widget)
-			end
+		local details_widgets = self._details_widgets[self._details_type]
+
+		for _, widget in pairs(details_widgets) do
+			UIRenderer.draw_widget(ui_renderer, widget)
 		end
 	end
 

@@ -256,18 +256,18 @@ end
 EndViewStateWeave._show_profile_by_peer_id = function (self, peer_id)
 	local platform = self.platform
 
-	if platform == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		local id = Steam.id_hex_to_dec(peer_id)
 		local url = "http://steamcommunity.com/profiles/" .. id
 
 		Steam.open_url(url)
-	elseif platform == "xb1" then
+	elseif IS_XB1 then
 		local xuid = self._context.lobby.lobby:xuid(peer_id)
 
 		if xuid then
 			XboxLive.show_gamercard(Managers.account:user_id(), xuid)
 		end
-	elseif platform == "ps4" then
+	elseif IS_PS4 then
 		Managers.account:show_player_profile_with_account_id(peer_id)
 	end
 end

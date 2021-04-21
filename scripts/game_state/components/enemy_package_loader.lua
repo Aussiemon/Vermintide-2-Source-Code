@@ -597,7 +597,7 @@ EnemyPackageLoader._remove_locked_directors = function (self, director_list, fai
 		local conflict_director = ConflictDirectors[director_name]
 		local locked_func_name = conflict_director.locked_func_name
 
-		if locked_func_name and failed_locked_functions[locked_func_name] then
+		if locked_func_name and table.find(failed_locked_functions, locked_func_name) then
 			table.swap_delete(director_list, i)
 			printf("- removing conflict director '%s'", conflict_director.name)
 		end
@@ -811,7 +811,7 @@ EnemyPackageLoader._remove_directors_not_in_factions = function (self, director_
 	end)
 end
 
-EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, failed_locked_functions, use_random_directors, overriden_conflict_setting_name)
+EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, failed_locked_functions, use_random_directors, conflict_director_name, difficulty, difficulty_tweak)
 	local level_settings = LevelSettings[level_key]
 	local level_name = level_settings.level_name
 	local num_nested_levels = LevelResource.nested_level_count(level_name)
@@ -827,7 +827,6 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 	end
 
 	local breed_lookup = {}
-	local difficulty, difficulty_tweak = Managers.mechanism:get_difficulty()
 	local composition_difficulty = DifficultyTweak.converters.composition(difficulty, difficulty_tweak)
 	local composition_difficulty_rank = DifficultySettings[composition_difficulty].rank
 	local terror_events = TerrorEventBlueprints[level_key]
@@ -851,9 +850,8 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 		num_main_zones = altered_amount_num_main_zones
 	end
 
-	local default_conflict_settings_name = overriden_conflict_setting_name or level_settings.conflict_settings or "default"
 	local non_random_conflict_directors, num_random_conflict_directors = nil
-	non_random_conflict_directors, num_random_conflict_directors, level_seed = MainPathSpawningGenerator.process_conflict_directors_zones(default_conflict_settings_name, zones, num_main_zones, level_seed)
+	non_random_conflict_directors, num_random_conflict_directors, level_seed = MainPathSpawningGenerator.process_conflict_directors_zones(conflict_director_name, zones, num_main_zones, level_seed)
 
 	for conflict_settings_name, _ in pairs(non_random_conflict_directors) do
 		local conflict_setting = ConflictDirectors[conflict_settings_name]
@@ -927,7 +925,7 @@ EnemyPackageLoader._get_startup_breeds = function (self, level_key, level_seed, 
 	return breed_lookup
 end
 
-EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed, failed_locked_functions, use_random_directors, overriden_conflict_setting_name)
+EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed, failed_locked_functions, use_random_directors, conflict_director_name, difficulty, difficulty_tweak)
 	fassert(level_seed, "Cannot setup_startup_enemies without level_seed!")
 
 	local breeds_to_load_at_startup = self._breeds_to_load_at_startup
@@ -935,14 +933,14 @@ EnemyPackageLoader.setup_startup_enemies = function (self, level_key, level_seed
 
 	if not breeds_to_load_at_startup.loaded then
 		self:_reset_dynamic_breed_lookups()
-		print("[EnemyPackageLoader] setup_startup_enemies - level_key:", level_key, "- level_seed:", level_seed, "- use_random_directors:", use_random_directors, "- overriden_conflict:", overriden_conflict_setting_name)
+		print("[EnemyPackageLoader] setup_startup_enemies - level_key:", level_key, "- level_seed:", level_seed, "- use_random_directors:", use_random_directors, "- conflict_director_name:", conflict_director_name)
 
 		local level_settings = LevelSettings[level_key]
 
 		if level_settings.load_no_enemies then
 			print("[EnemyPackageLoader] Load no enemies on this level")
 		else
-			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions, use_random_directors, overriden_conflict_setting_name)
+			local startup_breeds = self:_get_startup_breeds(level_key, level_seed, failed_locked_functions, use_random_directors, conflict_director_name, difficulty, difficulty_tweak)
 			local breed_category_lookup = self._breed_category_lookup
 			local breeds_to_load_lookup = {}
 			local breed_categories = level_settings.breed_categories or EnemyPackageLoaderSettings.categories

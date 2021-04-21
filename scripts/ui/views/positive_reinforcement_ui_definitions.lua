@@ -15,9 +15,37 @@ local scenegraph_definition = {
 			1080
 		}
 	},
-	message_animated = {
+	pivot = {
 		vertical_alignment = "top",
 		parent = "root",
+		horizontal_alignment = "right",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			0,
+			0
+		}
+	},
+	pivot_dragger = {
+		vertical_alignment = "bottom",
+		parent = "message_animated",
+		horizontal_alignment = "left",
+		size = {
+			232,
+			68
+		},
+		position = {
+			-41,
+			-34,
+			0
+		}
+	},
+	message_animated = {
+		vertical_alignment = "top",
+		parent = "pivot",
 		horizontal_alignment = "right",
 		position = {
 			-190,
@@ -31,7 +59,7 @@ local scenegraph_definition = {
 	},
 	message_animated_base = {
 		vertical_alignment = "top",
-		parent = "root",
+		parent = "pivot",
 		horizontal_alignment = "right",
 		position = {
 			-190,
@@ -45,7 +73,7 @@ local scenegraph_definition = {
 	},
 	message_animated_offset = {
 		vertical_alignment = "top",
-		parent = "root",
+		parent = "pivot",
 		horizontal_alignment = "right",
 		position = {
 			-465,
@@ -427,6 +455,54 @@ local function create_reinforcement_widget(scenegraph_id, frame_settings_name, s
 		texte_style_ids[#texte_style_ids + 1] = portrait_name
 	end
 
+	passes[#passes + 1] = {
+		style_id = "count_text",
+		pass_type = "text",
+		text_id = "count_text",
+		content_check_function = function (content)
+			return content.count_text
+		end
+	}
+	passes[#passes + 1] = {
+		style_id = "count_text_shadow",
+		pass_type = "text",
+		text_id = "count_text",
+		content_check_function = function (content)
+			return content.count_text
+		end
+	}
+	content.count = nil
+	content.count_text = nil
+	style.count_text = {
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		use_shadow = true,
+		font_size = 26,
+		horizontal_alignment = "right",
+		text_color = Colors.get_table("white"),
+		offset = {
+			-37,
+			0,
+			1
+		}
+	}
+	style.count_text_shadow = {
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		use_shadow = true,
+		font_size = 26,
+		horizontal_alignment = "right",
+		text_color = Colors.get_table("black"),
+		offset = {
+			-35.5,
+			-1.5,
+			0
+		}
+	}
+	style.count_text.color = style.count_text.text_color
+	style.count_text_shadow.color = style.count_text.text_color
+	texte_style_ids[#texte_style_ids + 1] = "count_text"
+	texte_style_ids[#texte_style_ids + 1] = "count_text_shadow"
 	content.texte_style_ids = texte_style_ids
 	widget.element.passes = passes
 	widget.content = content

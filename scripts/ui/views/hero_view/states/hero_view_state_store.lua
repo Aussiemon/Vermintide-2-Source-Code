@@ -26,6 +26,10 @@ local item_widget_size_by_type = {
 		260,
 		220
 	},
+	bundle = {
+		800,
+		220
+	},
 	dlc = {
 		800,
 		220
@@ -69,6 +73,10 @@ local item_widget_size_by_type = {
 	spacing = {
 		800,
 		40
+	},
+	big_image = {
+		800,
+		592
 	}
 }
 local item_widget_definition_functions = {
@@ -83,6 +91,7 @@ local item_widget_definition_functions = {
 	divider_horizontal = "create_store_list_divider_definition",
 	spacing = "create_store_list_spacing_definition",
 	dlc_feature_vertical = "create_store_dlc_feature_vertical_definition",
+	big_image = "create_store_dlc_feature_horizontal_definition",
 	dlc_header_video = "create_store_header_video_definition",
 	dlc_logo = "create_store_dlc_logo_definition"
 }
@@ -121,8 +130,9 @@ HeroViewStateStore.on_enter = function (self, params)
 	self._ui_animations = {}
 	self._unload_list = {}
 	self._unseen_product_reward_queue = {}
+	self.tab_cat = {}
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
 	end
 
@@ -285,7 +295,7 @@ HeroViewStateStore.change_generic_actions = function (self, input_actions)
 end
 
 HeroViewStateStore._setup_menu_layout = function (self)
-	local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
 
 	if use_gamepad_layout then
 		self._layout_settings = local_require("scripts/ui/views/hero_view/states/store_window_layout")
@@ -599,18 +609,10 @@ HeroViewStateStore.go_to_store_path = function (self, path_array)
 	self:set_layout_by_name(layout)
 end
 
-HeroViewStateStore.go_to_product = function (self, product_id, optional_path)
+HeroViewStateStore.go_to_product = function (self, product_id, optional_path, optional_product_settings)
 	local new_path = optional_path
 	local dlc_settings = nil
-
-	for _, settings in ipairs(StoreDlcSettings) do
-		if settings.dlc_name == product_id then
-			dlc_settings = settings
-
-			break
-		end
-	end
-
+	dlc_settings = StoreDlcSettingsByName[product_id]
 	local current_store_path = self:get_store_path()
 	local product = nil
 
@@ -627,15 +629,32 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path)
 		end
 	else
 		local item = self:get_item_by_key(product_id)
-		product = {
-			type = "item",
-			item = item,
-			product_id = product_id
-		}
+		local item_type = item.data.item_type
 
-		if not new_path then
-			new_path = table.clone(current_store_path)
-			new_path[#new_path + 1] = "item_details"
+		if item_type == "bundle" then
+			product = {
+				type = "item",
+				item = item,
+				product_id = product_id,
+				settings = optional_product_settings
+			}
+
+			if not new_path then
+				new_path = table.clone(current_store_path)
+				new_path[#new_path + 1] = "bundles"
+			end
+		else
+			product = {
+				type = "item",
+				item = item,
+				product_id = product_id,
+				settings = optional_product_settings
+			}
+
+			if not new_path then
+				new_path = table.clone(current_store_path)
+				new_path[#new_path + 1] = "item_details"
+			end
 		end
 	end
 
@@ -763,6 +782,7 @@ HeroViewStateStore.on_exit = function (self, params)
 	end
 
 	self:_clear_unload_list()
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
 	Managers.telemetry.events:store_closed()
 end
 
@@ -1073,7 +1093,7 @@ HeroViewStateStore._handle_input = function (self, dt, t)
 
 	local widgets_by_name = self._widgets_by_name
 	local input_service = self:input_service()
-	local input_pressed = input_service:get("toggle_menu", true)
+	local input_pressed = input_service:get("toggle_menu", true) or input_service:get("back_menu_alt", true)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local back_pressed = gamepad_active and input_service:get("back_menu", true)
 	local close_on_exit = self._close_on_exit
@@ -1257,7 +1277,7 @@ HeroViewStateStore.enqueue_acquired_product = function (self, product)
 end
 
 HeroViewStateStore._show_storepage = function (self, url, dlc_name)
-	if PLATFORM == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		if url then
 			Steam.open_url(url)
 		else
@@ -1265,7 +1285,7 @@ HeroViewStateStore._show_storepage = function (self, url, dlc_name)
 
 			Steam.open_overlay_store(product_id)
 		end
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then
@@ -1279,7 +1299,7 @@ HeroViewStateStore._show_storepage = function (self, url, dlc_name)
 		else
 			Application.error("[HeroViewStateStore:_show_storepage] No dlc name")
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then
@@ -1318,12 +1338,25 @@ end
 
 HeroViewStateStore.create_item_widget = function (self, product, scenegraph_id, masked)
 	local product_type = product.type
-	local size = item_widget_size_by_type[product_type] or item_widget_size_by_type.default
-	local definition_function_name = item_widget_definition_functions[product_type] or item_widget_size_by_type.default
+	local product_settings = product.settings
+	local size = nil
+
+	if product_settings and product_settings.size then
+		size = product_settings.size
+	elseif product_type == "item" then
+		local item = product.item
+		local item_data = item.data
+		local item_type = item_data.item_type or item.item_type
+		size = item_widget_size_by_type[item_type] or item_widget_size_by_type[product_type] or item_widget_size_by_type.default
+	else
+		size = item_widget_size_by_type[product_type] or item_widget_size_by_type.default
+	end
+
+	local definition_function_name = item_widget_definition_functions[product_type] or item_widget_definition_functions.default
 	local definition_function = UIWidgets[definition_function_name]
 
 	if definition_function then
-		local definition = definition_function(scenegraph_id, size, masked)
+		local definition = definition_function(scenegraph_id, size, masked, product)
 		local widget = UIWidget.init(definition)
 		widget.product_type = product_type
 
@@ -1338,13 +1371,12 @@ HeroViewStateStore.populate_product_widget = function (self, widget, product)
 	local product_type = product.type
 
 	if product_type == "item" then
-		local item = product.item
-
-		self:_populate_item_widget(widget, item, product_id)
+		self:_populate_item_widget(widget, product, product_id)
 	elseif product_type == "dlc" then
 		local dlc_settings = product.dlc_settings
+		local show_old_price = false
 
-		self:_populate_dlc_widget(widget, dlc_settings, product_id)
+		self:_populate_dlc_widget(widget, dlc_settings, product_id, show_old_price)
 	elseif product_type == "dlc_header_video" then
 		local settings = product.settings
 
@@ -1353,7 +1385,7 @@ HeroViewStateStore.populate_product_widget = function (self, widget, product)
 		local settings = product.settings
 
 		self:_populate_text_widget(widget, settings, product_id)
-	elseif product_type == "dlc_feature_horizontal" then
+	elseif product_type == "dlc_feature_horizontal" or product_type == "big_image" then
 		local settings = product.settings
 
 		self:_populate_dlc_feature_horizontal_widget(widget, settings, product_id)
@@ -1450,9 +1482,11 @@ local item_backgrounds_by_rarirty = {
 	unique = "store_thumbnail_bg_unique"
 }
 
-HeroViewStateStore._populate_item_widget = function (self, widget, item, product_id)
+HeroViewStateStore._populate_item_widget = function (self, widget, product, product_id)
 	local item_rarity_textures = UISettings.item_rarity_textures
 	local item_type_store_icons = UISettings.item_type_store_icons
+	local item = product.item
+	local settings = product.settings
 	local inventory_icon, display_name, description = UIUtils.get_ui_information_from_item(item)
 	local item_data = item.data
 	local rarity = item.rarity or item_data.rarity
@@ -1467,7 +1501,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 	content.background = rarity_background
 	local end_time = item.end_time
 	content.has_expire_date = end_time ~= nil
-	local price_text, real_currency, platform_price_data = nil
+	local price_text, price_text_original, real_currency, platform_price_data = nil
 	local dlc_name = item.dlc_name
 	content.dlc_name = dlc_name
 	local steam_itemdefid = item.steam_itemdefid
@@ -1476,34 +1510,62 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 	local icon_z = style.icon.offset[3]
 	style.icon.offset[3] = overlay_z
 	style.overlay.offset[3] = icon_z
+	local hide_price = settings and settings.hide_price
 
-	if steam_itemdefid then
-		real_currency = true
-		price_text, platform_price_data = self:get_steam_item_price_text(steam_itemdefid, content)
-	elseif dlc_name then
-		real_currency = true
-		price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
-	elseif not can_use_item then
-		real_currency = true
-		price_text = Localize(reason)
+	if hide_price then
+		content.draw_price_icon = false
+		content.discount = false
+		content.hide_price = true
+		content.old_price = false
 	else
-		local currency_type = "SM"
-		local regular_prices = item.regular_prices
-		local current_prices = item.current_prices
-		local price = current_prices[currency_type] or regular_prices[currency_type]
-		local price_difference = regular_prices[currency_type] - current_prices[currency_type]
-
-		if price_difference ~= 0 then
-			local discount = price_difference / price * 100
-
-			self:_calculate_discount_textures(widget, discount)
-		end
-
-		real_currency = false
-		price_text = UIUtils.comma_value(tostring(price))
+		content.discount = item_data.show_discount
+		content.old_price = item_data.show_old_price
 	end
 
-	self:_set_product_price_text(widget, price_text, real_currency, platform_price_data)
+	local optional_item_name = item_data.optional_item_name
+
+	if optional_item_name then
+		content.optional_item_name = Localize(item_data.display_name)
+		content.optional_subtitle = Localize(item_data.subtitle)
+	end
+
+	if not hide_price then
+		if steam_itemdefid then
+			real_currency = true
+			price_text, price_text_original = self:get_steam_item_price_text(steam_itemdefid, content, item_data)
+
+			if item_data.show_discount then
+				self:_calculate_discount_textures(widget, item_data.discount)
+			end
+		elseif dlc_name then
+			real_currency = true
+			price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
+		elseif not can_use_item then
+			real_currency = true
+			price_text = Localize(reason)
+		else
+			local currency_type = "SM"
+			local regular_prices = item.regular_prices
+			local current_prices = item.current_prices
+			local price = current_prices[currency_type] or regular_prices[currency_type]
+			local price_difference = regular_prices[currency_type] - current_prices[currency_type]
+
+			if price_difference ~= 0 then
+				local discount = price_difference / price * 100
+
+				self:_calculate_discount_textures(widget, discount)
+			end
+
+			real_currency = false
+			price_text = UIUtils.comma_value(tostring(price))
+		end
+
+		if item_data.show_old_price then
+			self:_set_product_price_text_comparison(widget, price_text, price_text_original, real_currency, platform_price_data)
+		else
+			self:_set_product_price_text(widget, price_text, real_currency, platform_price_data, "price_text")
+		end
+	end
 
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
@@ -1516,7 +1578,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 	self._reference_id = (self._reference_id or 0) + 1
 	local reference_name = product_id .. "_" .. self._reference_id
 	local texture_name = "store_item_icon_" .. product_id
-	local package_name = "resource_packages/store/item_icons/" .. texture_name
+	local package_name = item_data.store_texture_package or "resource_packages/store/item_icons/" .. texture_name
 	local package_available = Application.can_get("package", package_name)
 
 	if package_available then
@@ -1528,7 +1590,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
 
 		local function callback()
-			local texture_path = "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
+			local texture_path = item_data.store_texture or "gui/1080p/single_textures/store_item_icons/" .. texture_name .. "/" .. texture_name
 
 			self:_set_material_diffuse(top_gui, new_material_name, texture_path)
 
@@ -1540,10 +1602,28 @@ HeroViewStateStore._populate_item_widget = function (self, widget, item, product
 		return
 	end
 
-	Application.warning("Icon package not accessable for product_id: (%s) and texture_name: (%s)", product_id, texture_name)
+	Application.warning("Icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 end
 
-HeroViewStateStore._set_product_price_text = function (self, widget, price_text, real_currency, platform_price_data)
+HeroViewStateStore._set_product_price_text_comparison = function (self, widget, price_text_now, price_text_before, real_currency, platform_price_data)
+	local content = widget.content
+	local style = widget.style
+	local text_style_now = style.price_text_now
+	text_style_now.offset[1] = 23
+	content.price_text_now = price_text_now
+	local text_length = UIUtils.get_text_width(self._ui_top_renderer, text_style_now, price_text_now)
+	local text_style_before = style.price_text_before
+	local before_text_pos_x = text_style_now.offset[1] + 20 + text_length
+	text_style_before.offset[1] = before_text_pos_x
+	content.price_text_before = price_text_before
+	local text_style_strike_through = style.price_strike_through
+	text_style_strike_through.texture_size[1] = text_length + 10
+	text_style_strike_through.offset[1] = before_text_pos_x - 10
+	content.draw_price_icon = false
+end
+
+HeroViewStateStore._set_product_price_text = function (self, widget, price_text, real_currency, platform_price_data, price_text_var_name)
+	price_text_var_name = price_text_var_name or "price_text"
 	local content = widget.content
 	local style = widget.style
 	local text_style = nil
@@ -1551,24 +1631,27 @@ HeroViewStateStore._set_product_price_text = function (self, widget, price_text,
 	content.real_currency = real_currency
 
 	if real_currency then
-		text_style = style.price_text
+		text_style = style[price_text_var_name]
 		text_style.offset[1] = 23
-		content.price_text = price_text
+		content[price_text_var_name] = price_text
 		content.draw_price_icon = false
 		extra_spacing = -20
 	else
-		text_style = style.price_text
+		text_style = style[price_text_var_name]
 		text_style.offset[1] = 50
-		content.price_text = price_text
+		content[price_text_var_name] = price_text
 		content.draw_price_icon = true
 		extra_spacing = 5
 	end
 
+	local background_price_center, background_price_right = nil
+	background_price_center = "background_price_center"
+	background_price_right = "background_price_right"
 	local text_length = UIUtils.get_text_width(self._ui_top_renderer, text_style, price_text)
-	local price_tag_style_right = style.background_price_right
+	local price_tag_style_right = style[background_price_right]
 	local tag_right_width = price_tag_style_right.default_size[1]
 	local center_width = math.max(math.ceil(text_length - tag_right_width) + extra_spacing, 0)
-	local price_tag_style_center = style.background_price_center
+	local price_tag_style_center = style[background_price_center]
 	price_tag_style_center.texture_size[1] = center_width
 	local tag_right_offset = price_tag_style_right.offset
 	local tag_right_default_offset = price_tag_style_right.default_offset
@@ -1580,9 +1663,9 @@ HeroViewStateStore._set_product_price_text = function (self, widget, price_text,
 end
 
 HeroViewStateStore._handle_platform_price_data = function (self, widget, price_data)
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		self:_setup_ps4_price_data(widget, price_data)
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		self:_setup_xb1_price_data(widget, price_data)
 	end
 end
@@ -1746,20 +1829,27 @@ HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
 	end
 end
 
-HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, content)
+HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, content, item_data)
+	local discount = item_data and item_data.discount
 	local backend_store = Managers.backend:get_interface("peddler")
 	local price, currency = backend_store:get_steam_item_price(steam_itemdefid)
-	local price_text = nil
+	local price_text, price_text_original = nil
 
 	if not content.can_use_item then
 		price_text = Localize(content.can_not_use_item_reason or "dlc_price_unavailable")
 	elseif price then
 		price_text = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
+
+		if item_data and item_data.item_type == "bundle" then
+			price_text_original = tostring(currency) .. " " .. string.format("%.2f", item_data.bundle_price * 0.01)
+		else
+			price_text_original = discount and tostring(currency) .. " " .. string.format("%.2f", price * 100 / (100 - discount) * 0.01)
+		end
 	else
 		price_text = Localize("dlc_price_unavailable")
 	end
 
-	return price_text
+	return price_text, price_text_original
 end
 
 HeroViewStateStore.can_use_item = function (self, item)
@@ -1806,11 +1896,11 @@ end
 HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)
 	local dlc_id = Managers.unlock:dlc_exists(dlc_name) and Managers.unlock:dlc_id(dlc_name)
 	local backend_store = Managers.backend:get_interface("peddler")
-	local price_data = backend_store:get_app_price((PLATFORM == "win32" and dlc_id) or dlc_name) or {}
+	local price_data = backend_store:get_app_price((IS_WINDOWS and dlc_id) or dlc_name) or {}
 	local price_text = Localize("dlc_price_unavailable")
 
 	if price_data then
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			local currency = price_data.currency
 			local regular_price = price_data.regular_price
 			local current_price = price_data.current_price
@@ -1821,9 +1911,9 @@ HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)
 			else
 				price_text = price_data.display_price or Localize("dlc_price_unavailable")
 			end
-		elseif PLATFORM == "ps4" then
+		elseif IS_PS4 then
 			price_text = price_data.display_price or Localize("dlc_price_unavailable")
-		elseif PLATFORM == "xb1" then
+		elseif IS_XB1 then
 			price_text = (price_data.availabilities and price_data.availabilities[1] and price_data.availabilities[1].DisplayPrice) or Localize("dlc_price_unavailable")
 		end
 	end
@@ -2099,7 +2189,7 @@ HeroViewStateStore._populate_dlc_feature_vertical_widget = function (self, widge
 	Application.warning("DLC icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
 end
 
-HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, product_id)
+HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, product_id, show_old_price)
 	local item_rarity_textures = UISettings.item_rarity_textures
 	local item_type_store_icons = UISettings.item_type_store_icons
 	local display_name = settings.name
@@ -2112,7 +2202,11 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	local price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
 	local real_currency = true
 
-	self:_set_product_price_text(widget, price_text, real_currency, platform_price_data)
+	if show_old_price then
+		self:_set_product_price_text_comparison(widget, price_text, price_text_original, real_currency, platform_price_data)
+	else
+		self:_set_product_price_text(widget, price_text, real_currency, platform_price_data, "price_text")
+	end
 
 	content.icon = texture
 	content.owned = Managers.unlock:is_dlc_unlocked(dlc_name)

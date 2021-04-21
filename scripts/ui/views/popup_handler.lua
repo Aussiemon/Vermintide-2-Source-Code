@@ -1652,7 +1652,7 @@ end
 PopupHandler.get_gamepad_input_texture_data = function (self, input_service, input_action, ignore_keybinding)
 	local platform = PLATFORM
 
-	if platform == "win32" then
+	if IS_WINDOWS then
 		platform = "xb1"
 	end
 

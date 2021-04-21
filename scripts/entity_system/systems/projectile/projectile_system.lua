@@ -158,6 +158,7 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 	local trajectory_template_name = projectile_info.trajectory_template_name
 	local linear_dampening = projectile_info.linear_dampening
 	local rotation_speed = projectile_info.rotation_speed or 0
+	local rotation_offset = projectile_info.rotation_offset
 	scale = scale / 100
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
@@ -186,7 +187,8 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 				sub_action_name
 			},
 			fast_forward_time = fast_forward_time,
-			rotation_speed = rotation_speed
+			rotation_speed = rotation_speed,
+			rotation_offset = rotation_offset
 		},
 		projectile_impact_system = {
 			item_name = item_name,

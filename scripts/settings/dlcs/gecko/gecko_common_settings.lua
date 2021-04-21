@@ -5,19 +5,26 @@ settings.network_lookups = {
 settings.keep_decoration_file_names = {
 	"scripts/settings/paintings_01"
 }
-settings.level_packages = {}
-local hub_levels = {
-	inn_level_sonnstill = true,
-	inn_level_celebrate = true,
-	inn_level_skulls = true,
-	inn_level_halloween = true,
-	inn_level = true
-}
-
-for level_name, _ in pairs(hub_levels) do
-	settings.level_packages[level_name] = {
-		"resource_packages/keep_paintings/keep_paintings_inn_level_sounds_01"
+local extra_sound_package = "resource_packages/keep_paintings/keep_paintings_inn_level_sounds_01"
+settings.extra_level_packages = {
+	inn_level = {
+		extra_sound_package
+	},
+	inn_level_celebrate = {
+		extra_sound_package
+	},
+	inn_level_halloween = {
+		extra_sound_package
+	},
+	inn_level_skulls = {
+		extra_sound_package
+	},
+	inn_level_sonnstill = {
+		extra_sound_package
+	},
+	keep_base = {
+		extra_sound_package
 	}
-end
+}
 
 return

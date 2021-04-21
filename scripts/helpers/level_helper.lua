@@ -68,7 +68,7 @@ LevelHelper.get_environment_variation_id = function (self, level_key)
 end
 
 LevelHelper.get_random_variation_id = function (self, level_key)
-	local settings = LevelSettings[level_key]
+	local settings = rawget(LevelSettings, level_key)
 	local variations = settings and settings.environment_variations
 
 	return (variations and math.random(0, #variations)) or 0
@@ -98,6 +98,26 @@ LevelHelper.unit_by_index = function (self, world, index)
 	local level = self:current_level(world)
 
 	return Level.unit_by_index(level, index)
+end
+
+LevelHelper.find_dialogue_unit = function (self, world, dialogue_profile)
+	local level = LevelHelper:current_level(world)
+	local units = Level.units(level)
+	local intro_vo_unit = nil
+
+	for _, unit in ipairs(units) do
+		if Unit.has_data(unit, "dialogue_profile") then
+			local found_dialogue_profile = Unit.get_data(unit, "dialogue_profile")
+
+			if found_dialogue_profile == dialogue_profile then
+				intro_vo_unit = unit
+
+				break
+			end
+		end
+	end
+
+	return intro_vo_unit
 end
 
 return

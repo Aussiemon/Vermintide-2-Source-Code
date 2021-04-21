@@ -72,7 +72,18 @@ BossHealthUI._set_portrait_by_breed = function (self, breed_name)
 	bar_widget.content.portrait = portrait_texture
 end
 
+local customizer_data = {
+	root_scenegraph_id = "pivot",
+	label = "Boss health",
+	registry_key = "boss_health",
+	drag_scenegraph_id = "pivot_dragger"
+}
+
 BossHealthUI.update = function (self, dt, t)
+	if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data) then
+		UISceneGraph.update_scenegraph(self.ui_scenegraph)
+	end
+
 	self:_sync_boss_health(dt, t)
 	self:_update_targeted_boss(dt, t)
 
@@ -203,6 +214,7 @@ BossHealthUI._sync_boss_health = function (self, dt, t)
 	if unit and Unit.alive(unit) then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local health_percentage = health_extension:current_health_percent()
+		health_percentage = math.clamp(health_percentage, 0, 1)
 		local health_max_percentage = health_extension:current_max_health_percent()
 		progress = health_percentage * health_max_percentage
 		max_health_fraction = health_max_percentage

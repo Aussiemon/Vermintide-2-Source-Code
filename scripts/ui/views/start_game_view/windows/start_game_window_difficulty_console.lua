@@ -443,9 +443,9 @@ end
 StartGameWindowDifficultyConsole._show_storepage = function (self, store_page_url, dlc_name)
 	local platform = PLATFORM
 
-	if platform == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		Steam.open_url(store_page_url)
-	elseif platform == "xb1" then
+	elseif IS_XB1 then
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then
@@ -459,7 +459,7 @@ StartGameWindowDifficultyConsole._show_storepage = function (self, store_page_ur
 		else
 			Application.error("[StartGameWindowAreaSelection:_show_storepage] No dlc name")
 		end
-	elseif platform == "ps4" then
+	elseif IS_PS4 then
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then

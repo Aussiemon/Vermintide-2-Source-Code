@@ -139,6 +139,29 @@ local settings = {
 		end
 	},
 	{
+		description = "Teleports the bots to the local player.",
+		category = "Allround useful stuff!",
+		setting_name = "teleport bots to local player",
+		func = function ()
+			local bots = Managers.player:bots()
+			local local_player = Managers.player:local_player()
+
+			if local_player and local_player.player_unit then
+				local player_unit = local_player.player_unit
+				local player_locomotion_ext = ScriptUnit.extension(player_unit, "locomotion_system")
+				local mover = Unit.mover(player_unit)
+				local pos = Mover.position(mover)
+				local rot = player_locomotion_ext:current_rotation()
+
+				for _, bot in pairs(bots) do
+					local locomotion_ext = ScriptUnit.extension(bot.player_unit, "locomotion_system")
+
+					locomotion_ext:teleport_to(pos, rot)
+				end
+			end
+		end
+	},
+	{
 		description = "Will change the network pong timeout from 15 seconds to 10000 seconds.",
 		is_boolean = true,
 		setting_name = "network_timeout_really_long",
@@ -172,6 +195,12 @@ local settings = {
 		description = "When resetting saves, give all items",
 		is_boolean = true,
 		setting_name = "give_all_lan_backend_items",
+		category = "Allround useful stuff!"
+	},
+	{
+		description = "In the shop, write the master list key on each item icon",
+		is_boolean = true,
+		setting_name = "show_shop_item_keys",
 		category = "Allround useful stuff!"
 	},
 	{
@@ -224,13 +253,7 @@ local settings = {
 		item_source = {},
 		load_items_source_func = function (options)
 			table.clear(options)
-
-			for key, settings in pairs(LevelSettings) do
-				if type(settings) == "table" then
-					options[#options + 1] = key
-				end
-			end
-
+			table.keys(LevelSettings, options)
 			table.sort(options, function (a, b)
 				local settings_a = LevelSettings[a]
 				local settings_b = LevelSettings[b]
@@ -292,8 +315,7 @@ local settings = {
 			local level_settings = LevelSettings[level_name]
 
 			if level_settings.hub_level then
-				Managers.mechanism._game_mechanism._debug_hub_level_key = level_name
-				Managers.mechanism._game_mechanism._hub_level_key = level_name
+				Managers.mechanism:override_hub_level(level_name)
 			end
 
 			debug.load_level(level_name, environment_id, level_settings.debug_environment_level_flow_event)
@@ -560,6 +582,12 @@ local settings = {
 		category = "Player mechanics recommended"
 	},
 	{
+		description = "Everything dies instantly when it receives damage",
+		is_boolean = true,
+		setting_name = "insta_death",
+		category = "Player mechanics recommended"
+	},
+	{
 		description = "Toggles player invisibility for local player.",
 		setting_name = "toggle_player_invisibility",
 		category = "Player mechanics recommended",
@@ -706,30 +734,30 @@ Features that make player mechanics nicer to work with.
 
 					if player and player:needs_despawn() then
 						Managers.state.spawn:delayed_despawn(player)
+					end
 
-						local available_profiles = side.available_profiles or PROFILES_BY_AFFILIATION.heroes
+					local available_profiles = side.available_profiles or PROFILES_BY_AFFILIATION.heroes
 
-						if available_profiles then
-							for k = 1, #available_profiles, 1 do
-								local profile_name = available_profiles[k]
+					if available_profiles then
+						for k = 1, #available_profiles, 1 do
+							local profile_name = available_profiles[k]
 
-								if profile_name then
-									local profile_index = FindProfileIndex(profile_name)
-									local career_index = 1
-									local career_name = SPProfiles[profile_index].careers[career_index].display_name
+							if profile_name then
+								local profile_index = FindProfileIndex(profile_name)
+								local career_index = 1
+								local career_name = SPProfiles[profile_index].careers[career_index].display_name
 
-									if Managers.mechanism:profile_available(profile_name, career_name) then
-										local force_respawn = true
+								if Managers.mechanism:profile_available(profile_name, career_name) then
+									local force_respawn = true
 
-										Managers.state.network:request_profile(1, profile_name, career_name, force_respawn)
+									Managers.state.network:request_profile(1, profile_name, career_name, force_respawn)
 
-										local camera_system = Managers.state.entity:system("camera_system")
-										local player = Managers.player:local_player()
+									local camera_system = Managers.state.entity:system("camera_system")
+									local player = Managers.player:local_player()
 
-										camera_system:initialize_camera_states(player, profile_index, career_index)
+									camera_system:initialize_camera_states(player, profile_index, career_index)
 
-										break
-									end
+									break
 								end
 							end
 						end
@@ -1235,6 +1263,24 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
+		description = "Stops Manny from cheating in playtests. Hopefully.",
+		is_boolean = true,
+		setting_name = "disable_time_travel",
+		category = "Player mechanics"
+	},
+	{
+		description = "Disables external velocity influences (Knockback from punches or enemies pushing the player)",
+		is_boolean = true,
+		setting_name = "disable_external_velocity",
+		category = "Player mechanics"
+	},
+	{
+		description = "Disables catapulting players (Ratogre has a attack that catapults the player for example)",
+		is_boolean = true,
+		setting_name = "disable_catapulting",
+		category = "Player mechanics"
+	},
+	{
 		description = "Will show debug lines for projectiles when true",
 		is_boolean = true,
 		setting_name = "debug_projectiles",
@@ -1244,6 +1290,12 @@ Features that make player mechanics nicer to work with.
 		description = "Will show debug lines for projectiles when true",
 		is_boolean = true,
 		setting_name = "debug_light_weight_projectiles",
+		category = "Weapons"
+	},
+	{
+		description = "Writes into the console whenever a new action starts or finishes",
+		is_boolean = true,
+		setting_name = "log_actions",
 		category = "Weapons"
 	},
 	{
@@ -1563,6 +1615,12 @@ Features that make player mechanics nicer to work with.
 		description = "Make AI not perceive anyone",
 		is_boolean = true,
 		setting_name = "disable_ai_perception",
+		category = "AI"
+	},
+	{
+		description = "Check no spawn volumes when spawning specials",
+		is_boolean = true,
+		setting_name = "check_no_spawn_volumes_for_special_spawning",
 		category = "AI"
 	},
 	{
@@ -5568,9 +5626,15 @@ Features that make player mechanics nicer to work with.
 		category = "Network"
 	},
 	{
-		description = "Debug draw the profile synchronizer state.",
+		description = "Logs information about the profile synchronizer. Best used together with shared_state_debug.",
 		is_boolean = true,
-		setting_name = "network_draw_profile_synchronizer",
+		setting_name = "profile_synchronizer_debug_logging",
+		category = "Network"
+	},
+	{
+		description = "Allows host to query himself. Fixes the time_left of votes to 1s.",
+		is_boolean = true,
+		setting_name = "debug_vote_manager",
 		category = "Network"
 	},
 	{
@@ -5681,6 +5745,12 @@ Features that make player mechanics nicer to work with.
 		category = "Input"
 	},
 	{
+		description = "Reverts back to the old Deus Map UI in case the new one is buggy",
+		is_boolean = true,
+		setting_name = "FEATURE_old_map_ui",
+		category = "UI"
+	},
+	{
 		description = "Will load the ui debug package on startup if true",
 		is_boolean = true,
 		setting_name = "load_ui_debug_package",
@@ -5748,12 +5818,6 @@ Features that make player mechanics nicer to work with.
 		category = "UI"
 	},
 	{
-		description = "Disable Game Timer UI Rendering.",
-		is_boolean = true,
-		setting_name = "disable_ingame_timer",
-		category = "UI"
-	},
-	{
 		description = "Disables the loading icon.",
 		is_boolean = true,
 		setting_name = "disable_loading_icon",
@@ -5769,6 +5833,12 @@ Features that make player mechanics nicer to work with.
 		description = "Looks through all the localizations and selects the longest text for each item.",
 		is_boolean = true,
 		setting_name = "show_longest_localizations",
+		category = "UI"
+	},
+	{
+		description = "Disable localization and show the source strings instead. Useful to find the string being used somewhere.",
+		is_boolean = true,
+		setting_name = "disable_localization",
 		category = "UI"
 	},
 	{
@@ -5951,6 +6021,12 @@ Features that make player mechanics nicer to work with.
 		description = "Will log transitions fade in/fade out",
 		is_boolean = true,
 		setting_name = "debug_transition_manager",
+		category = "Misc"
+	},
+	{
+		description = "Disable that the vortex can attract anything / swirl anything around in the air",
+		is_boolean = true,
+		setting_name = "disable_vortex_attraction",
 		category = "Misc"
 	},
 	{
@@ -6335,6 +6411,12 @@ Features that make player mechanics nicer to work with.
 		func = function ()
 			DebugScreen.set_texture_quality(3)
 		end
+	},
+	{
+		description = "Don't render the game if the window is not focused",
+		is_boolean = true,
+		setting_name = "only_render_if_window_focused",
+		category = "Render Settings"
 	},
 	{
 		description = "Show bot debug visualizers",
@@ -7681,28 +7763,8 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
-		description = "Adds 1 to the meta progression currency, currently only works with local backend",
-		setting_name = "Add 1 deus meta progression currency",
-		category = "Deus",
-		func = function ()
-			local deus_interface = Managers.backend:get_interface("deus")
-
-			deus_interface:debug_add_meta_currency(1)
-		end
-	},
-	{
-		description = "Adds 10 to the meta progression currency, currently only works with local backend",
-		setting_name = "Add 10 deus meta progression currency",
-		category = "Deus",
-		func = function ()
-			local deus_interface = Managers.backend:get_interface("deus")
-
-			deus_interface:debug_add_meta_currency(10)
-		end
-	},
-	{
-		description = "Finishes a journey",
-		setting_name = "Debug Finish Journey",
+		description = "Clears a finished a journey",
+		setting_name = "Clear Finished Journey",
 		category = "Deus",
 		item_source = {},
 		load_items_source_func = function (options)
@@ -7716,9 +7778,8 @@ Features that make player mechanics nicer to work with.
 		end,
 		func = function (options, index)
 			local journey = options[index]
-			local deus_interface = Managers.backend:get_interface("deus")
 
-			deus_interface:debug_finish_journey(journey)
+			LevelUnlockUtils.debug_set_completed_journey_difficulty(journey, 0)
 		end
 	},
 	{
@@ -7745,7 +7806,33 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
-		description = "Clears all the current weapon unlocks for the player, currently only works with local backend",
+		description = "Sets the hero completed difficulty for the selected journey temporary.",
+		setting_name = "Set completed hero journey difficulty",
+		category = "Deus",
+		item_source = {},
+		load_items_source_func = function (options)
+			local journey_name = "journey_citadel"
+
+			table.clear(options)
+
+			for _, hero in ipairs(SPProfilesAbbreviation) do
+				for _, difficulty_name in ipairs(DefaultDifficulties) do
+					options[#options + 1] = hero .. "/" .. journey_name .. "/" .. difficulty_name
+				end
+			end
+		end,
+		func = function (options, index)
+			local hero_journey_and_difficulty = string.split(options[index], "/")
+			local hero = hero_journey_and_difficulty[1]
+			local journey_name = hero_journey_and_difficulty[2]
+			local difficulty_name = hero_journey_and_difficulty[3]
+			local difficulty_id = table.index_of(DefaultDifficulties, difficulty_name)
+
+			LevelUnlockUtils.debug_set_completed_hero_journey_difficulty(hero, journey_name, difficulty_id)
+		end
+	},
+	{
+		description = "Clears all deus meta progression, which is just rolled over coins at the moment.",
 		setting_name = "Clear Deus meta progression",
 		category = "Deus",
 		func = function ()
@@ -7763,8 +7850,8 @@ Features that make player mechanics nicer to work with.
 			table.clear(options)
 
 			for rarity, powerups_for_rarity in pairs(DeusPowerUps) do
-				for powerup_name, powerup in pairs(powerups_for_rarity) do
-					options[#options + 1] = rarity .. "/" .. powerup_name
+				for power_up_name, powerup in pairs(powerups_for_rarity) do
+					options[#options + 1] = rarity .. "/" .. power_up_name
 				end
 			end
 
@@ -7786,16 +7873,95 @@ Features that make player mechanics nicer to work with.
 			local rarity_and_power_up_name = string.split(option, "/")
 			local rarity = rarity_and_power_up_name[1]
 			local power_up_name = rarity_and_power_up_name[2]
-			local power_up = DeusPowerUpUtils.debug_generate_power_up(power_up_name, rarity)
+			local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
+			local local_player = Managers.player:local_player()
+			local local_player_id = local_player:local_player_id()
 
 			deus_run_controller:add_power_ups({
 				power_up
-			})
+			}, local_player_id)
 
 			local buff_system = Managers.state.entity:system("buff_system")
-			local player_unit = Managers.player:local_player().player_unit
+			local talent_interface = Managers.backend:get_talents_interface()
+			local deus_backend = Managers.backend:get_interface("deus")
+			local local_player_unit = local_player.player_unit
+			local profile_index = local_player:profile_index()
+			local career_index = local_player:career_index()
 
-			buff_system:add_buff(player_unit, power_up.buff_name, player_unit)
+			DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, local_player_unit, profile_index, career_index)
+		end
+	},
+	{
+		description = "Activates all non talent Deus PowerUps ",
+		setting_name = "Activate all non talent Deus PowerUps",
+		category = "Deus",
+		item_source = {},
+		func = function (options, index)
+			if not Managers.mechanism:current_mechanism_name() == "deus" then
+				return
+			end
+
+			local mechanism = Managers.mechanism:game_mechanism()
+			local deus_run_controller = mechanism:get_deus_run_controller()
+
+			if not deus_run_controller then
+				return
+			end
+
+			local local_player = Managers.player:local_player()
+			local local_player_id = local_player:local_player_id()
+			local local_peer_id = local_player:network_id()
+			local buff_system = Managers.state.entity:system("buff_system")
+			local talent_interface = Managers.backend:get_talents_interface()
+			local deus_backend = Managers.backend:get_interface("deus")
+			local local_player_unit = local_player.player_unit
+			local profile_index = local_player:profile_index()
+			local career_index = local_player:career_index()
+			local existing_power_ups = deus_run_controller:get_player_power_ups(local_peer_id, local_player_id)
+
+			for rarity, power_ups_for_rarity in pairs(DeusPowerUps) do
+				for power_up_name, power_up in pairs(power_ups_for_rarity) do
+					if not power_up.talent then
+						local already_added = nil
+
+						for _, existing_power_up in ipairs(existing_power_ups) do
+							if existing_power_up.name == power_up_name then
+								already_added = true
+
+								break
+							end
+						end
+
+						if not already_added then
+							local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
+
+							deus_run_controller:add_power_ups({
+								power_up
+							}, local_player_id)
+							DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, local_player_unit, profile_index, career_index)
+						end
+					end
+				end
+			end
+		end
+	},
+	{
+		description = "Draw the positions of the weapons as a path",
+		setting_name = "Draw Weapon Position",
+		category = "Weapons",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+			table.insert(options, "all")
+			table.insert(options, "right_hand")
+			table.insert(options, "left_hand")
+			table.insert(options, "right_hand_ammo")
+			table.insert(options, "left_hand_ammo")
+			table.insert(options, "[clear value]")
+			table.sort(options)
+		end,
+		func = function (options, index)
+			script_data.debug_draw_weapon_position = options[index]
 		end
 	},
 	{
@@ -7807,7 +7973,7 @@ Features that make player mechanics nicer to work with.
 	{
 		description = "debug any changes to the deus shared state.",
 		is_boolean = true,
-		setting_name = "deus_shared_state_debug",
+		setting_name = "shared_state_debug",
 		category = "Deus"
 	},
 	{
@@ -7892,44 +8058,22 @@ Features that make player mechanics nicer to work with.
 		category = "Deus"
 	},
 	{
-		description = "Lists all boons with functionality to activate them. Needs respawn (e.g. career change).",
-		setting_name = "Activate Boon",
-		category = "Boons",
-		item_source = {},
-		load_items_source_func = function (options)
-			table.clear(options)
-
-			for boon_name, _ in pairs(BoonTemplates) do
-				options[#options + 1] = boon_name
-			end
-
-			table.sort(options)
-		end,
-		func = function (options, index)
-			local boons_interface = Managers.backend:get_interface("boons")
-
-			boons_interface:debug_activate_boon(options[index])
-		end
+		description = "Check how the curse UI looks with all the different curses. Use left shift + q in order to cycle all the variations",
+		is_boolean = true,
+		setting_name = "deus_curse_ui",
+		category = "Deus"
 	},
 	{
-		description = "Expire all boons, clearing the boon list.",
-		setting_name = "Expire All Boons",
-		category = "Boons",
-		func = function ()
-			local boons_interface = Managers.backend:get_interface("boons")
-
-			boons_interface:debug_expire_all_boons()
-		end
+		description = "Requires a restart/loading the next level/switching career. Unlocks all weapons in the pool used for generating random weapon at reliquaries.",
+		is_boolean = true,
+		setting_name = "deus_full_weapon_pool",
+		category = "Deus"
 	},
 	{
-		description = "Refreshes the boon data from the backend.",
-		setting_name = "Refresh Boons",
-		category = "Boons",
-		func = function ()
-			local boons_interface = Managers.backend:get_interface("boons")
-
-			boons_interface:refresh_boons()
-		end
+		description = "When active the next run you will start will consist only of shops (except start node and arena)",
+		is_boolean = true,
+		setting_name = "deus_shoppify_run",
+		category = "Deus"
 	}
 }
 
@@ -8223,7 +8367,7 @@ end
 
 local platform = PLATFORM
 
-if platform == "ps4" then
+if IS_PS4 then
 	local settings_ps4 = {
 		{
 			description = "Debug PSN Features",
@@ -8236,7 +8380,7 @@ if platform == "ps4" then
 	table.append(settings, settings_ps4)
 end
 
-if platform == "ps4" or platform == "xb1" then
+if IS_CONSOLE then
 	local settings_console = {
 		{
 			setting_name = "Spawn/Unspawn",
@@ -8324,7 +8468,7 @@ end
 
 local callbacks = {
 	enable_locale_cycling = function (option)
-		enable_locale_cycling(option)
+		error("Broken (for now). Use the ImguiLocalization window instead.")
 	end,
 	visualize_sound_occlusion = function (option)
 		World.visualize_sound_occlusion()

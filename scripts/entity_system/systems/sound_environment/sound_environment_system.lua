@@ -179,21 +179,39 @@ SoundEnvironmentSystem.unregister_source_environment_update = function (self, so
 end
 
 local UPDATE_MAX_AMOUNT = 3
+local sources_to_unregister = {}
 
 SoundEnvironmentSystem._update_source_environments = function (self)
 	local num_sources = self._num_sources
 	local amount_to_update = math.min(num_sources, UPDATE_MAX_AMOUNT)
 	local current_index = math.min(self._current_source_index, num_sources)
 	local updated_sources = self._updated_sources
+	local wwise_world_has_source = WwiseWorld.has_source
+	local num_sources_to_unregister = 0
 
 	for i = 1, amount_to_update, 1 do
 		current_index = current_index % num_sources + 1
 		local data = updated_sources[current_index]
-		local pos = Unit.world_position(data.unit, data.node)
-		slot11 = self:set_source_environment(data.source, pos)
+		local source = data.source
+
+		if wwise_world_has_source(self.wwise_world, source) then
+			local pos = Unit.world_position(data.unit, data.node)
+			slot14 = self:set_source_environment(source, pos)
+		else
+			sources_to_unregister[#sources_to_unregister + 1] = source
+			num_sources_to_unregister = num_sources_to_unregister + 1
+		end
 	end
 
-	self._current_index = current_index
+	self._current_source_index = current_index
+
+	for i = 1, num_sources_to_unregister, 1 do
+		local source = sources_to_unregister[i]
+
+		self:unregister_source_environment_update(source)
+
+		sources_to_unregister[i] = nil
+	end
 end
 
 SoundEnvironmentSystem.local_player_created = function (self, player)

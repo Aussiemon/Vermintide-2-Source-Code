@@ -1,3 +1,5 @@
+require("foundation/scripts/util/table")
+
 script_data = script_data or {}
 Development = Development or {}
 Development.application_parameter = {}
@@ -62,7 +64,7 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 			}
 		end
 
-		printf("[parse_application_parameters] multiple defintions of '%s' using [%s]. old value [%s]", parameter_name, table.concat(t, ", "), table.concat(old, ", "))
+		printf("[parse_application_parameters] multiple defintions of '%s' using [%s]. old value [%s]", parameter_name, table.tostring(t), table.tostring(old))
 	end
 
 	local function copy_parameter_value(parameter_name)

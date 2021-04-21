@@ -10,7 +10,8 @@ return {
 		"skaven_plague_monk",
 		"chaos_raider",
 		"chaos_warrior",
-		"chaos_berzerker"
+		"chaos_berzerker",
+		"beastmen_bestigor"
 	},
 	server_start_function = function (context, data)
 		data.player_units = {}

@@ -24,6 +24,10 @@ BeastmenStandardExtension.init = function (self, extension_init_context, unit, e
 		is_server = self.is_server,
 		standard_bearer_unit = self.standard_bearer_unit
 	}
+	local side_manager = Managers.state.side
+	local side = side_manager.side_by_unit[self.standard_bearer_unit] or side_manager:get_side_from_name("dark_pact")
+
+	side_manager:add_unit_to_side(self.unit, side.side_id)
 
 	if self.is_server then
 		self.astar_check_frequency = standard_template.astar_check_frequency or 15
@@ -75,6 +79,8 @@ BeastmenStandardExtension.init = function (self, extension_init_context, unit, e
 end
 
 BeastmenStandardExtension.destroy = function (self)
+	Managers.state.side:remove_unit_from_side(self.unit)
+
 	if not self.dead then
 		self:on_death()
 	end

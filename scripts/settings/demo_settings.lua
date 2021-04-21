@@ -202,9 +202,6 @@ DemoOfflineBackendTitleInternalData = {
 	},
 	starting_inventory_items = {
 		{
-			name = "starting_inventory_items"
-		},
-		{
 			name = "mercenary_hat_0000"
 		},
 		{

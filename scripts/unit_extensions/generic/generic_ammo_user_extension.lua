@@ -12,6 +12,12 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self._override_reload_time = nil
 	self._override_reload_anim = nil
 	self._single_clip = ammo_data.single_clip
+	self._infinite_ammo = ammo_data.infinite_ammo or script_data.infinite_ammo
+
+	if ammo_data.infinite_ammo then
+		ammo_percent = 1
+	end
+
 	self._max_ammo = ammo_data.max_ammo
 	self._start_ammo = math.round(ammo_percent * self._max_ammo)
 	self._ammo_per_clip = ammo_data.ammo_per_clip or self._max_ammo
@@ -354,10 +360,6 @@ GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
 end
 
 GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
-	if not self._destroy_when_out_of_ammo and script_data.infinite_ammo then
-		ammo_used = 0
-	end
-
 	local buff_extension = self.owner_buff_extension
 	local infinite_ammo = false
 
@@ -366,6 +368,10 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 	end
 
 	if infinite_ammo then
+		ammo_used = 0
+	end
+
+	if infinite_ammo or self._infinite_ammo then
 		ammo_used = 0
 	end
 
@@ -461,7 +467,7 @@ GenericAmmoUserExtension.can_reload = function (self)
 		return false
 	end
 
-	if script_data.infinite_ammo then
+	if self._infinite_ammo then
 		return true
 	end
 
@@ -510,6 +516,10 @@ end
 
 GenericAmmoUserExtension.ammo_type = function (self)
 	return self._ammo_type
+end
+
+GenericAmmoUserExtension.infinite_ammo = function (self)
+	return self._infinite_ammo
 end
 
 GenericAmmoUserExtension.ammo_kind = function (self)

@@ -66,7 +66,7 @@ end
 StartGameWindowTwitchLogin.set_active = function (self, active, skip_block)
 	self._active = active
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		if active then
 			Managers.irc:register_message_callback("twitch", Irc.CHANNEL_MSG, callback(self, "cb_on_message_received"))
 		else
@@ -94,7 +94,7 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 		local is_connected = Managers.twitch:is_connected()
 		local frame_widget = self._widgets_by_name.frame_widget
 
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			local frame_widget_content = frame_widget.content
 			local text_input_hotspot = frame_widget_content.text_input_hotspot
 			local screen_hotspot = frame_widget_content.screen_hotspot

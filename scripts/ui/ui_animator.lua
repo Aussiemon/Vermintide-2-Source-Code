@@ -13,6 +13,10 @@ UIAnimator.start_animation = function (self, anim_name, widget, scenegraph_def, 
 	initial_delay = initial_delay or 0
 	local anim_def = self._animation_definitions[anim_name]
 
+	if #anim_def == 0 then
+		printf("[UIAnimator] Warning: Playing an animation with no components. Animation name: %q", anim_name)
+	end
+
 	for i = 1, #anim_def, 1 do
 		local anim = anim_def[i]
 		anim.is_completed = nil
@@ -100,10 +104,6 @@ UIAnimator.update = function (self, dt)
 			end
 		end
 	end
-end
-
-UIAnimator.toggle_debug = function ()
-	return
 end
 
 return

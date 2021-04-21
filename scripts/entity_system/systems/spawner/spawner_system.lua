@@ -220,11 +220,11 @@ local spawn_list = {}
 local spawn_list_hidden = {}
 local copy_list = {}
 
-SpawnerSystem.spawn_horde = function (self, spawner, breed_list, side_id, group_template)
+SpawnerSystem.spawn_horde = function (self, spawner, breed_list, side_id, group_template, optional_data)
 	local extension = ScriptUnit.extension(spawner, "spawner_system")
 	self._active_spawners[spawner] = extension
 
-	extension:on_activate(breed_list, side_id, group_template)
+	extension:on_activate(breed_list, side_id, group_template, optional_data)
 
 	local spawn_rate = extension:spawn_rate()
 
@@ -309,7 +309,7 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 	return active_enemies
 end
 
-SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit)
+SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit, optional_data)
 	local total_amount = #spawn_list
 
 	if total_amount <= 0 then
@@ -359,7 +359,7 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 
 		table.clear_array(copy_list, #copy_list)
 		copy_array(spawn_list, start_index, (start_index + to_spawn) - 1, copy_list)
-		extension:on_activate(copy_list, side_id, group_template)
+		extension:on_activate(copy_list, side_id, group_template, optional_data)
 
 		start_index = start_index + to_spawn
 	end
@@ -367,27 +367,20 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 	return #spawn_list
 end
 
-SpawnerSystem.spawn_horde_from_terror_event_ids_composition = function (self, event_ids, composition_type, limit_spawners, group_template, strictly_not_close_to_players, side_id)
-	local composition = CurrentHordeSettings.compositions[composition_type]
-	local index = LoadedDice.roll_easy(composition.loaded_probs)
-	local variant = composition[index]
-
-	self:spawn_horde_from_terror_event_ids(event_ids, variant, limit_spawners, group_template, strictly_not_close_to_players, composition_type, side_id)
-end
-
 local ok_spawner_breeds = {
 	skaven_clan_rat = true,
 	skaven_slave = true
 }
 
-SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id, use_closest_spawners, source_unit)
+SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id, use_closest_spawners, source_unit, optional_data)
 	local ConflictUtils = ConflictUtils
 	local must_use_hidden_spawners = variant.must_use_hidden_spawners
-	local spawners, hidden_spawners, event_spawn = nil
+	local spawners, hidden_spawners = nil
 	local dont_remove_this = math.random()
 
 	if event_ids and #event_ids > 0 then
 		spawners = {}
+		hidden_spawners = {}
 
 		for _, event_id in ipairs(event_ids) do
 			local source_spawners = self._id_lookup[event_id]
@@ -397,6 +390,12 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 					local source_spawner = source_spawners[i]
 
 					if not self._disabled_spawners[source_spawner] then
+						local hidden = Unit.get_data(source_spawner, "hidden")
+
+						if hidden then
+							hidden_spawners[#hidden_spawners + 1] = source_spawner
+						end
+
 						spawners[#spawners + 1] = source_spawner
 					end
 				end
@@ -410,8 +409,6 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 		if #spawners == 0 then
 			return
 		end
-
-		event_spawn = true
 	else
 		local side = Managers.state.side:get_side_from_name("heroes")
 		local player_positions = side.PLAYER_POSITIONS
@@ -486,7 +483,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 	for i = 1, num_breeds, 1 do
 		local breed_name = exchange_order[i]
 
-		if event_spawn or ok_spawner_breeds[breed_name] then
+		if ok_spawner_breeds[breed_name] then
 			self:_try_spawn_breed(breed_name, temp_spawn_list_per_breed, spawn_list, breed_limits, active_enemies, side_id, group_template)
 		else
 			self:_try_spawn_breed(breed_name, temp_spawn_list_per_breed, spawn_list_hidden, breed_limits, active_enemies, side_id, group_template)
@@ -498,10 +495,10 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 
 	local count = 0
 	local hidden_count = 0
-	count = self:_fill_spawners(spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit)
+	count = self:_fill_spawners(spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit, optional_data)
 
-	if not event_spawn and must_use_hidden_spawners then
-		hidden_count = self:_fill_spawners(spawn_list_hidden, hidden_spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit)
+	if must_use_hidden_spawners then
+		hidden_count = self:_fill_spawners(spawn_list_hidden, hidden_spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit, optional_data)
 
 		if hidden_count > 0 then
 			return "success", count + hidden_count

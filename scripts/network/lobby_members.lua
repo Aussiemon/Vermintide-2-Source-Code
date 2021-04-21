@@ -15,7 +15,7 @@ LobbyMembers.init = function (self, lobby)
 	self.members = my_members
 	self._members_changed = true
 
-	if (PLATFORM == "xb1" or PLATFORM == "ps4") and not Managers.account:offline_mode() then
+	if IS_CONSOLE and not Managers.account:offline_mode() then
 		self.lobby:update_user_names()
 	end
 end
@@ -40,10 +40,10 @@ LobbyMembers.update = function (self)
 
 			printf("[LobbyMembers] Member joined %s", tostring(peer_id))
 
-			if PLATFORM == "xb1" or PLATFORM == "ps4" then
+			if IS_CONSOLE then
 				local account_manager = Managers.account
 
-				if PLATFORM == "xb1" then
+				if IS_XB1 then
 					account_manager:query_bandwidth()
 
 					self._members_changed = true
@@ -67,7 +67,7 @@ LobbyMembers.update = function (self)
 			members_left[#members_left + 1] = peer_id
 			members[peer_id] = nil
 
-			if PLATFORM == "xb1" then
+			if IS_XB1 then
 				if table.size(members) <= 1 then
 					Managers.account:reset_bandwidth_query()
 				end
@@ -94,7 +94,7 @@ LobbyMembers.members_map = function (self)
 	return self.members
 end
 
-if PLATFORM == "xb1" then
+if IS_XB1 then
 	LobbyMembers.check_members_changed = function (self)
 		local members_changed = self._members_changed
 		self._members_changed = nil

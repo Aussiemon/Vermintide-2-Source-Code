@@ -1,7 +1,9 @@
 SpecialsPacing = class(SpecialsPacing)
 local ai_utils_unit_alive = AiUtils.unit_alive
 
-SpecialsPacing.init = function (self, nav_world, specials_side)
+SpecialsPacing.init = function (self, world, nav_world, nav_tag_volume_handler, specials_side)
+	self._level = LevelHelper:current_level(world)
+	self._nav_tag_volume_handler = nav_tag_volume_handler
 	self.nav_world = nav_world
 	self._specials_timer = 0
 	self._disabled = false
@@ -513,13 +515,15 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 			local spawn_pos = self:get_special_spawn_pos(breed.spawning_rule)
 
 			if spawn_pos then
-				Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Vector3.up(), 0), "specials_pacing", nil, nil, {
+				local optional_data = {
 					spawned_func = cb_special_spawned,
 					alive_specials = alive_specials,
 					slot = slot,
 					parent = self,
 					max_health_modifier = slot.health_modifier
-				})
+				}
+
+				Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Vector3.up(), 0), "specials_pacing", nil, nil, optional_data)
 
 				slot.state = "wants_to_spawn"
 				slot.spawn_type = nil
@@ -609,7 +613,10 @@ SpecialsPacing.debug_spawn = function (self)
 	if spawn_pos then
 		QuickDrawerStay:sphere(spawn_pos, 4, Color(125, 255, 47))
 		print("debug spawning special: ", breed_name)
-		Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Quaternion(Vector3.up(), 0)), "specials_pacing")
+
+		local optional_data = nil
+
+		Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(Quaternion(Vector3.up(), 0)), "specials_pacing", nil, nil, optional_data)
 	else
 		print("debug spawning special could not find spawn position")
 	end
@@ -619,6 +626,8 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	local conflict_director = Managers.state.conflict
 	local main_path_info = conflict_director.main_path_info
 	local main_path_player_info = conflict_director.main_path_player_info
+	local level = self._level
+	local nav_tag_volume_handler = self._nav_tag_volume_handler
 	local main_paths = conflict_director.level_analysis:get_main_paths()
 	local _, _, loneliness_value, loneliest_player_unit = conflict_director:get_cluster_and_loneliness(10)
 	local ahead_unit = main_path_info.ahead_unit
@@ -668,10 +677,12 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 
 	local world = conflict_director._world
 	local avoid_positions = self._side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local level_settings = LevelHelper.current_level_settings()
+	local check_no_spawn_volumes = level_settings.check_no_spawn_volumes_for_special_spawning
 	local pos = nil
 
 	if epicenter then
-		pos = ConflictUtils.get_hidden_pos(world, self.nav_world, epicenter, avoid_positions, 30, 10, 225, 10)
+		pos = ConflictUtils.get_hidden_pos(world, self.nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, epicenter, avoid_positions, 30, 10, 225, 10)
 
 		if not pos then
 			local spawner = ConflictUtils.get_random_hidden_spawner(epicenter, 40)
@@ -679,7 +690,7 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 			if spawner then
 				pos = Unit.local_position(spawner, 0)
 			else
-				pos = ConflictUtils.get_hidden_pos(world, self.nav_world, epicenter, avoid_positions, 16, 5, 225, 3)
+				pos = ConflictUtils.get_hidden_pos(world, self.nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, epicenter, avoid_positions, 16, 5, 225, 3)
 			end
 		end
 	end
@@ -694,9 +705,9 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	return pos
 end
 
-local function find_suitable_intervention_spawn_position(world, nav_world, center_pos, avoid_dist_sqr, party)
+local function find_suitable_intervention_spawn_position(world, nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, center_pos, avoid_dist_sqr, party)
 	local avoid_positions = party.ENEMY_PLAYER_AND_BOT_POSITIONS
-	local spawn_pos = ConflictUtils.get_hidden_pos(world, nav_world, center_pos, avoid_positions, 30, 10, avoid_dist_sqr, 15)
+	local spawn_pos = ConflictUtils.get_hidden_pos(world, nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, center_pos, avoid_positions, 30, 10, avoid_dist_sqr, 15)
 
 	if not spawn_pos then
 		print("Intervention Spawn: Failed to find spawn pos, trying hidden spawner")
@@ -789,17 +800,18 @@ SpecialsPacing.request_rushing_intervention = function (self, t, player_unit, ma
 		local main_paths = conflict_director.level_analysis:get_main_paths()
 		local world = conflict_director._world
 		local nav_world = self.nav_world
+		local level = self._level
+		local nav_tag_volume_handler = self._nav_tag_volume_handler
 		local avoid_dist_sqr = 25
-		local player_pos = POSITION_LOOKUP[main_path_info.ahead_unit]
 		local epicenter = self:get_relative_main_path_pos(main_paths, main_path_player_info[main_path_info.ahead_unit], 20)
-		local forward_path_dir = epicenter - player_pos
-		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, epicenter, avoid_dist_sqr, self._side)
+		local level_settings = LevelHelper.current_level_settings()
+		local check_no_spawn_volumes = level_settings.check_no_spawn_volumes_for_special_spawning
+		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, epicenter, avoid_dist_sqr, self._side)
 
 		if not spawn_pos then
 			return false, description
 		end
 
-		local conflict_director = Managers.state.conflict
 		local alive_specials = conflict_director:alive_specials()
 		local optional_data = {
 			spawned_func = cb_rush_intervention_unit_spawned,
@@ -857,16 +869,18 @@ SpecialsPacing.request_speed_running_intervention = function (self, t, player_un
 		local main_paths = conflict_director.level_analysis:get_main_paths()
 		local world = conflict_director._world
 		local nav_world = self.nav_world
+		local level = self._level
+		local nav_tag_volume_handler = self._nav_tag_volume_handler
 		local avoid_dist_sqr = 25
-		local player_pos = POSITION_LOOKUP[player_unit]
 		local epicenter = self:get_relative_main_path_pos(main_paths, main_path_player_info[player_unit], 20)
-		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, epicenter, avoid_dist_sqr, self._side)
+		local level_settings = LevelHelper.current_level_settings()
+		local check_no_spawn_volumes = level_settings.check_no_spawn_volumes_for_special_spawning
+		local spawn_pos, description = find_suitable_intervention_spawn_position(world, nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, epicenter, avoid_dist_sqr, self._side)
 
 		if not spawn_pos then
 			return false, description
 		end
 
-		local conflict_director = Managers.state.conflict
 		local alive_specials = conflict_director:alive_specials()
 		local optional_data = {
 			spawned_func = cb_speed_running_intervention_unit_spawned,

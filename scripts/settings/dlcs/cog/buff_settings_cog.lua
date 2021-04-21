@@ -86,6 +86,25 @@ settings.proc_functions = {
 				WwiseWorld.trigger_event(wwise_world, "talent_power_swing")
 			end
 		end
+	end,
+	bardin_engineer_power_on_next_range = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] then
+			local action = params[1]
+
+			if action and action.ranged_attack then
+				local buff_system = Managers.state.entity:system("buff_system")
+				local template = buff.template
+				local buff_to_add = template.buff_to_add
+
+				buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+				buff_extension:remove_buff(buff.id)
+			end
+		end
 	end
 }
 settings.buff_function_templates = {

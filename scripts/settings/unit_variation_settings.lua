@@ -252,8 +252,7 @@ UnitVariationSettings.skaven_slave = {
 		"skin_tint",
 		"cloth_tint",
 		"dirt_threshold",
-		"dirt_offset_u",
-		"dirt_offset_v"
+		"dirt_variation"
 	},
 	material_variations = {
 		skin_tint = {
@@ -286,7 +285,7 @@ UnitVariationSettings.skaven_slave = {
 			}
 		},
 		dirt_threshold = {
-			min = 3,
+			min = 50,
 			scale = 0.01,
 			max = 100,
 			materials = {
@@ -296,26 +295,14 @@ UnitVariationSettings.skaven_slave = {
 				"dirt_threshold"
 			}
 		},
-		dirt_offset_u = {
+		dirt_variation = {
 			min = 0,
-			scale = 0.5,
-			max = 1,
+			max = 3,
 			materials = {
 				"mtr_skin"
 			},
 			variables = {
-				"dirt_u_offset"
-			}
-		},
-		dirt_offset_v = {
-			min = 0,
-			scale = 0.5,
-			max = 1,
-			materials = {
-				"mtr_skin"
-			},
-			variables = {
-				"dirt_v_offset"
+				"dirt_variation"
 			}
 		},
 		leg_straps = {
@@ -1647,8 +1634,7 @@ UnitVariationSettings.chaos_fanatic = {
 		"outfit_tint",
 		"dirt_threshold_skin",
 		"dirt_threshold_outfit",
-		"dirt_offset_u",
-		"dirt_offset_v"
+		"dirt_variation"
 	},
 	material_variations = {
 		body_tint = {
@@ -1672,7 +1658,7 @@ UnitVariationSettings.chaos_fanatic = {
 			}
 		},
 		dirt_threshold_skin = {
-			min = 50,
+			min = 80,
 			scale = 0.01,
 			max = 100,
 			materials = {
@@ -1683,7 +1669,7 @@ UnitVariationSettings.chaos_fanatic = {
 			}
 		},
 		dirt_threshold_outfit = {
-			min = 50,
+			min = 80,
 			scale = 0.01,
 			max = 100,
 			materials = {
@@ -1693,28 +1679,15 @@ UnitVariationSettings.chaos_fanatic = {
 				"dirt_threshold"
 			}
 		},
-		dirt_offset_u = {
+		dirt_variation = {
 			min = 0,
-			scale = 0.5,
-			max = 1,
+			max = 3,
 			materials = {
 				"mtr_body",
 				"mtr_outfit"
 			},
 			variables = {
-				"dirt_u_offset"
-			}
-		},
-		dirt_offset_v = {
-			min = 0,
-			scale = 0.5,
-			max = 1,
-			materials = {
-				"mtr_body",
-				"mtr_outfit"
-			},
-			variables = {
-				"dirt_v_offset"
+				"dirt_variation"
 			}
 		}
 	}

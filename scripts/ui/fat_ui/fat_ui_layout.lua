@@ -12,12 +12,12 @@ FatUILayout.SOUTH_WEST = FatUILayout.SOUTH_WEST or {
 	0
 }
 FatUILayout.SOUTH_EAST = FatUILayout.SOUTH_EAST or {
-	0,
-	1
-}
-FatUILayout.NORTH_WEST = FatUILayout.NORTH_WEST or {
 	1,
 	0
+}
+FatUILayout.NORTH_WEST = FatUILayout.NORTH_WEST or {
+	0,
+	1
 }
 FatUILayout.NORTH_EAST = FatUILayout.NORTH_EAST or {
 	1,

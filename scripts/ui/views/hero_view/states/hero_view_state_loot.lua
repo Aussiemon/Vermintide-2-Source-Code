@@ -1441,7 +1441,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 
 			local console_input = false
 
-			if PLATFORM == "ps4" then
+			if IS_PS4 then
 				console_input = Pad1.pressed(Pad1.button_index("triangle"))
 			else
 				console_input = Pad1.pressed(Pad1.button_index("y"))

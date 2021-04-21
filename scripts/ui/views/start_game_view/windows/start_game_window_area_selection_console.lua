@@ -554,11 +554,11 @@ end
 StartGameWindowAreaSelectionConsole._show_storepage = function (self, url, dlc_name)
 	local platform = PLATFORM
 
-	if platform == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		if url then
 			Steam.open_url(url)
 		end
-	elseif platform == "xb1" then
+	elseif IS_XB1 then
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then
@@ -572,7 +572,7 @@ StartGameWindowAreaSelectionConsole._show_storepage = function (self, url, dlc_n
 		else
 			Application.error("[StartGameWindowAreaSelection:_show_storepage] No dlc name")
 		end
-	elseif platform == "ps4" then
+	elseif IS_PS4 then
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then

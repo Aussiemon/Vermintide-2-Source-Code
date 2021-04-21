@@ -198,6 +198,13 @@ ScoreboardHelper.scoreboard_grouped_topic_stats = {
 		stats = {}
 	}
 }
+local score_count_per_player = 0
+
+for _, group_settings in ipairs(ScoreboardHelper.scoreboard_grouped_topic_stats) do
+	score_count_per_player = score_count_per_player + #group_settings.stats
+end
+
+ScoreboardHelper.num_stats_per_player = score_count_per_player
 local TEMP_TABLE = {}
 
 local function get_score(statistics_db, stats_id, stat_type)

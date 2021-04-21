@@ -35,6 +35,10 @@ FPSReporter.report = function (self)
 	Managers.telemetry.events:fps(self._avg_fps, self._histogram)
 end
 
+FPSReporter.avg_fps = function (self)
+	return self._avg_fps
+end
+
 FPSReporter._normalize_histogram = function (self)
 	local num_frames = 0
 

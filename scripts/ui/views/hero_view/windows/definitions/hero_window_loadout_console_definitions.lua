@@ -27,11 +27,55 @@ local scenegraph_definition = {
 			-250,
 			1
 		}
+	},
+	disclaimer_text_background = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "right",
+		size = {
+			520,
+			60
+		},
+		position = {
+			-20,
+			-80,
+			9
+		}
+	},
+	disclaimer_text = {
+		vertical_alignment = "center",
+		parent = "disclaimer_text_background",
+		horizontal_alignment = "center",
+		size = {
+			520,
+			50
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	}
+}
+local disclaimer_text_style = {
+	vertical_alignment = "bottom",
+	font_size = 20,
+	localize = false,
+	horizontal_alignment = "center",
+	word_wrap = true,
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
 	}
 }
 local num_equipment_slots = #InventorySettings.equipment_slots
 local widgets = {
-	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing)
+	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing),
+	disclaimer_text = UIWidgets.create_simple_text(Localize("inventory_morris_note"), "disclaimer_text", scenegraph_definition.disclaimer_text.size, nil, disclaimer_text_style),
+	disclaimer_text_background = UIWidgets.create_rect_with_outer_frame("disclaimer_text_background", scenegraph_definition.disclaimer_text_background.size, "frame_outer_fade_02", nil, Colors.get_color_table_with_alpha("black", 125))
 }
 local generic_input_actions = {
 	default = {

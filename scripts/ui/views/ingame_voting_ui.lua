@@ -15,7 +15,6 @@ IngameVotingUI.init = function (self, parent, ingame_ui_context)
 	self.peer_id = Network.peer_id()
 
 	self:create_ui_elements()
-	rawset(_G, "ingame_voting_ui", self)
 end
 
 local RELOAD_UI = false
@@ -34,8 +33,6 @@ IngameVotingUI.destroy = function (self)
 	self.voting_manager:allow_vote_input(false)
 
 	self.voting_manager = nil
-
-	rawset(_G, "ingame_voting_ui", nil)
 end
 
 IngameVotingUI.get_text_width = function (self, text, text_style)
@@ -354,7 +351,7 @@ IngameVotingUI.on_gamepad_activated = function (self, active_voting)
 
 	local platform = PLATFORM
 
-	if platform == "win32" then
+	if IS_WINDOWS then
 		platform = "xb1"
 	end
 

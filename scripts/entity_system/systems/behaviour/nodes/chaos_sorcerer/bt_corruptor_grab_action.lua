@@ -209,21 +209,34 @@ BTCorruptorGrabAction.overlap_players = function (self, unit, t, dt, blackboard)
 	local dist = Vector3.length(Vector3.flat(to_target))
 
 	if dist < radius then
-		self:grab_player(unit, blackboard)
+		self:grab_player(t, unit, blackboard)
 	end
 end
 
-BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
+BTCorruptorGrabAction.grab_player = function (self, t, unit, blackboard)
 	local target_unit = blackboard.corruptor_target
 	local self_pos = POSITION_LOOKUP[unit]
 	local target_unit_pos = POSITION_LOOKUP[target_unit]
+	local action = blackboard.action
+
+	if action.grab_delay then
+		if not blackboard.grab_at then
+			blackboard.grab_at = t + action.grab_delay
+		end
+
+		if blackboard.grab_at and blackboard.grab_at <= t then
+			blackboard.grab_at = nil
+		else
+			return
+		end
+	end
+
 	local projectile_position = blackboard.projectile_position:unbox()
 	local projectile_target_position = blackboard.projectile_target_position:unbox()
 	local target_status_ext = blackboard.target_unit_status_extension
 	local world = blackboard.world
 	local physics_world = World.physics_world(world)
 	local target_distance_squared = Vector3.distance_squared(projectile_target_position, target_unit_pos)
-	local action = blackboard.action
 
 	if (not action.ignore_dodge and blackboard.target_dodged) or target_status_ext:is_invisible() then
 		local dodge_pos = target_unit_pos
@@ -254,7 +267,7 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 		end
 
 		blackboard.grabbed_unit = blackboard.corruptor_target
-		slot14 = blackboard.action.grabbed_sound_event_2d
+		slot15 = blackboard.action.grabbed_sound_event_2d
 	else
 		blackboard.attack_aborted = true
 	end

@@ -90,6 +90,10 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 
 		network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
 	end
+
+	if lunge_data.noclip then
+		status_extension:set_noclip(true)
+	end
 end
 
 PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, t, next_state)
@@ -131,6 +135,10 @@ PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, 
 		local unit_id = network_manager:unit_game_object_id(unit)
 
 		network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
+	end
+
+	if data.noclip then
+		self.status_extension:set_noclip(false)
 	end
 
 	if self._falling and next_state ~= "falling" then

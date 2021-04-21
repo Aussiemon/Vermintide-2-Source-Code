@@ -59,10 +59,11 @@ end
 UIWidget = UIWidget or {}
 
 UIWidget.init = function (widget_definition)
-	local content = table.clone(widget_definition.content)
-	local style = table.clone(widget_definition.style or {})
-	local style_global = table.clone(widget_definition.style_global or {})
-	local offset = widget_definition.offset and table.clone(widget_definition.offset)
+	local skip_metatable = true
+	local content = table.clone(widget_definition.content, skip_metatable)
+	local style = table.clone(widget_definition.style or {}, skip_metatable)
+	local style_global = table.clone(widget_definition.style_global or {}, skip_metatable)
+	local offset = widget_definition.offset and table.clone(widget_definition.offset, skip_metatable)
 
 	return {
 		element = UIElement.init(widget_definition.element, content, style, style_global),

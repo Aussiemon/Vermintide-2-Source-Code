@@ -42,7 +42,7 @@ local generic_input_actions = {
 				priority = 49,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -61,7 +61,7 @@ local generic_input_actions = {
 				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -85,7 +85,7 @@ local generic_input_actions = {
 				priority = 45,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -114,7 +114,7 @@ local generic_input_actions = {
 				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -140,7 +140,7 @@ local generic_input_actions = {
 				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -159,7 +159,7 @@ local generic_input_actions = {
 				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -183,7 +183,7 @@ local generic_input_actions = {
 				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -212,7 +212,7 @@ local generic_input_actions = {
 				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (PLATFORM == "ps4" and "l2") or "left_trigger"
+				input_action = (IS_PS4 and "l2") or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -264,7 +264,6 @@ OptionsView.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
-	self.level_transition_handler = ingame_ui_context.level_transition_handler
 	self.voip = ingame_ui_context.voip
 	self.render_settings = {
 		snap_pixel_positions = false
@@ -820,7 +819,7 @@ OptionsView.create_ui_elements = function (self)
 	}
 	local settings_lists = {}
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		if rawget(_G, "Tobii") then
 			local tobii_settings_definition = nil
 			local tobii_is_connected = Tobii.get_is_connected()
@@ -879,7 +878,7 @@ OptionsView.create_ui_elements = function (self)
 		settings_lists.network_settings = self:build_settings_list(settings_definitions.network_settings_definition, "network_settings_list")
 		settings_lists.video_settings.hide_reset = true
 		settings_lists.video_settings.needs_apply_confirmation = true
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		if Managers.voice_chat or self.voip then
 			settings_lists.audio_settings = self:build_settings_list(settings_definitions.audio_settings_definition, "audio_settings_list")
 		else
@@ -1278,7 +1277,7 @@ OptionsView.clear_gamepad_layout_widget = function (self)
 	widget_content.background2 = background2_texture
 	widget_content.saved_value_cb = saved_value_cb
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local gamepad_use_ps4_style_input_icons = assigned(self.changed_user_settings.gamepad_use_ps4_style_input_icons, Application.user_setting("gamepad_use_ps4_style_input_icons"))
 		widget_content.use_texture2_layout = gamepad_use_ps4_style_input_icons
 	end
@@ -1652,7 +1651,7 @@ OptionsView.set_wwise_parameter = function (self, name, value)
 end
 
 OptionsView.changes_been_made = function (self)
-	return table.size(self.changed_user_settings) > 0 or table.size(self.changed_render_settings) > 0 or self.changed_keymaps or self.changed_bot_spawn_priority
+	return not table.is_empty(self.changed_user_settings) or not table.is_empty(self.changed_render_settings) or self.changed_keymaps or self.changed_bot_spawn_priority
 end
 
 local needs_reload_settings = settings_definitions.needs_reload_settings
@@ -1789,7 +1788,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	if voip_enabled ~= nil then
 		self.voip:set_enabled(voip_enabled)
 
-		if PLATFORM == "xb1" and Managers.voice_chat then
+		if IS_XB1 and Managers.voice_chat then
 			Managers.voice_chat:set_enabled(voip_enabled)
 		end
 	end
@@ -1870,7 +1869,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local gamepad_look_sensitivity = user_settings.gamepad_look_sensitivity
 
 	if gamepad_look_sensitivity then
-		local platform_key = (self.platform == "win32" and "xb1") or self.platform
+		local platform_key = (IS_WINDOWS and "xb1") or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller.multiplier_x
 		local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
@@ -1893,7 +1892,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local gamepad_look_sensitivity_y = user_settings.gamepad_look_sensitivity_y
 
 	if gamepad_look_sensitivity_y then
-		local platform_key = (self.platform == "win32" and "xb1") or self.platform
+		local platform_key = (IS_WINDOWS and "xb1") or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller.multiplier_y
 		local base_melee_look_multiplier = base_filter.look_controller.multiplier_y
@@ -1913,7 +1912,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local gamepad_zoom_sensitivity = user_settings.gamepad_zoom_sensitivity
 
 	if gamepad_zoom_sensitivity then
-		local platform_key = (self.platform == "win32" and "xb1") or self.platform
+		local platform_key = (IS_WINDOWS and "xb1") or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
 		local input_filters = player_input_service:get_active_filters(platform_key)
@@ -1926,7 +1925,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local gamepad_zoom_sensitivity_y = user_settings.gamepad_zoom_sensitivity_y
 
 	if gamepad_zoom_sensitivity_y then
-		local platform_key = (self.platform == "win32" and "xb1") or self.platform
+		local platform_key = (IS_WINDOWS and "xb1") or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
 		local input_filters = player_input_service:get_active_filters(platform_key)
@@ -1964,7 +1963,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local gamepad_look_invert_y = user_settings.gamepad_look_invert_y
 
 	if gamepad_look_invert_y ~= nil then
-		local platform_key = (self.platform == "win32" and "xb1") or self.platform
+		local platform_key = (IS_WINDOWS and "xb1") or self.platform
 		local input_filters = player_input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
@@ -2077,81 +2076,6 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 				if outline_extension.update_override_method_player_setting then
 					outline_extension.update_override_method_player_setting()
 				end
-			end
-		end
-	end
-
-	local toggle_crouch = user_settings.toggle_crouch
-
-	if toggle_crouch ~= nil then
-		local units = (Managers.state.entity and Managers.state.entity:get_entities("PlayerInputExtension")) or {}
-
-		for unit, extension in pairs(units) do
-			local player = Managers.player:owner(unit)
-
-			if player.local_player and not player.bot_player then
-				local input_extension = ScriptUnit.extension(unit, "input_system")
-				input_extension.toggle_crouch = toggle_crouch
-			end
-		end
-	end
-
-	local double_tap_dodge = user_settings.double_tap_dodge
-
-	if double_tap_dodge ~= nil and Managers.state.entity then
-		local units = Managers.state.entity:get_entities("PlayerInputExtension")
-
-		for unit, extension in pairs(units) do
-			local player = Managers.player:owner(unit)
-
-			if player.local_player and not player.bot_player then
-				local input_extension = ScriptUnit.extension(unit, "input_system")
-				input_extension.double_tap_dodge = double_tap_dodge
-			end
-		end
-	end
-
-	local input_buffer = user_settings.input_buffer
-
-	if input_buffer ~= nil and Managers.state.entity then
-		local units = Managers.state.entity:get_entities("PlayerInputExtension")
-
-		for unit, extension in pairs(units) do
-			local player = Managers.player:owner(unit)
-
-			if player.local_player and not player.bot_player then
-				local input_extension = ScriptUnit.extension(unit, "input_system")
-				input_extension.input_buffer_user_setting = input_buffer
-			end
-		end
-	end
-
-	local priority_input_buffer = user_settings.priority_input_buffer
-
-	if priority_input_buffer ~= nil and Managers.state.entity then
-		local units = Managers.state.entity:get_entities("PlayerInputExtension")
-
-		for unit, extension in pairs(units) do
-			local player = Managers.player:owner(unit)
-
-			if player.local_player and not player.bot_player then
-				local input_extension = ScriptUnit.extension(unit, "input_system")
-				input_extension.priority_input_buffer_user_setting = priority_input_buffer
-			end
-		end
-	end
-
-	local toggle_alternate_attack = user_settings.toggle_alternate_attack
-
-	if toggle_alternate_attack ~= nil and Managers.state.entity then
-		local units = Managers.state.entity:get_entities("PlayerInputExtension")
-
-		for unit, extension in pairs(units) do
-			local player = Managers.player:owner(unit)
-
-			if player.local_player and not player.bot_player then
-				local input_extension = ScriptUnit.extension(unit, "input_system")
-				input_extension.toggle_alternate_attack = toggle_alternate_attack
 			end
 		end
 	end
@@ -2295,7 +2219,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 
 	self:apply_bot_spawn_priority_changes(bot_spawn_priority, show_bot_spawn_priority_popup)
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		Managers.save:auto_save(SaveFileName, SaveData)
 		Application.save_user_settings()
 	else
@@ -2308,6 +2232,8 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	end
 
 	ShowCursorStack.update_clip_cursor()
+	print("[OptionsView] Triggering `on_game_options_changed`")
+	Managers.state.event:trigger("on_game_options_changed")
 end
 
 OptionsView.apply_bot_spawn_priority_changes = function (self, new_priority_order, show_popup)
@@ -2360,7 +2286,7 @@ OptionsView.apply_keymap_changes = function (self, keymaps_data, save_keymaps)
 	end
 
 	if save_keymaps then
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			Managers.save:auto_save(SaveFileName, SaveData)
 		else
 			Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_done"))
@@ -2720,12 +2646,7 @@ OptionsView.handle_apply_popup_results = function (self, result)
 end
 
 OptionsView.restart = function (self)
-	local mechanism = Managers.mechanism:game_mechanism()
-	local inn_level_name = mechanism:get_hub_level_key()
-	local environment_variation_id = LevelHelper:get_environment_variation_id(inn_level_name)
-
-	self.level_transition_handler:set_next_level(inn_level_name, environment_variation_id)
-	self.ingame_ui:handle_transition("restart_game")
+	self.ingame_ui:handle_transition("leave_game")
 end
 
 OptionsView.handle_title_buttons_popup_results = function (self, result)
@@ -2789,7 +2710,7 @@ OptionsView.handle_apply_changes = function (self)
 		self:apply_changes(self.changed_user_settings, self.changed_render_settings, self.session_bot_spawn_priority, self.changed_bot_spawn_priority)
 	end
 
-	if PLATFORM == "win32" and self.selected_settings_list.needs_apply_confirmation then
+	if IS_WINDOWS and self.selected_settings_list.needs_apply_confirmation then
 		local text = Localize("keep_changes_popup_text")
 		self.apply_popup_id = Managers.popup:queue_popup(text, Localize("popup_keep_changes_topic"), "keep_changes", Localize("popup_choice_keep"), "revert_changes", Localize("popup_choice_revert"))
 
@@ -3146,7 +3067,13 @@ OptionsView.update_scrollbar = function (self, settings_list, ui_scenegraph)
 	local value = scrollbar.content.scroll_bar_info.value
 	local max_offset_y = settings_list.max_offset_y
 	local offset_y = max_offset_y * value
-	local scenegraph = ui_scenegraph[settings_list.scenegraph_id]
+	local scenegraph_id = settings_list.scenegraph_id
+	local scenegraph = ui_scenegraph[scenegraph_id]
+	scenegraph.offset = scenegraph.offset or {
+		0,
+		0,
+		0
+	}
 	scenegraph.offset[2] = offset_y
 end
 
@@ -5419,7 +5346,7 @@ OptionsView.cb_motion_blur_setup = function (self)
 		local default_option = 1
 	end
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		Application.set_render_setting("motion_blur_enabled", tostring(motion_blur_enabled))
 	end
 
@@ -5442,9 +5369,9 @@ OptionsView.cb_motion_blur = function (self, content, style, called_from_graphic
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.motion_blur_enabled = value
 
-	if PLATFORM == "win32" and not called_from_graphics_quality then
+	if IS_WINDOWS and not called_from_graphics_quality then
 		self:force_set_widget_value("graphics_quality_settings", "custom")
-	elseif PLATFORM ~= "win32" then
+	elseif not IS_WINDOWS then
 		Application.set_render_setting("motion_blur_enabled", tostring(value))
 	end
 end
@@ -6365,7 +6292,7 @@ OptionsView.cb_safe_rect_saved_value = function (self, widget)
 	local min = 0
 	local max = 20
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		min = 5
 	end
 
@@ -6386,7 +6313,7 @@ OptionsView.cb_safe_rect = function (self, content)
 	local min = 0
 	local max = 20
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		min = 5
 	end
 
@@ -6417,7 +6344,7 @@ OptionsView.cb_gamepad_look_sensitivity_setup = function (self)
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	if self.platform == "win32" then
+	if IS_WINDOWS then
 		slot6 = "xb1"
 	else
 		local platform_key = self.platform
@@ -6490,7 +6417,7 @@ OptionsView.cb_gamepad_look_sensitivity_y_setup = function (self)
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	if self.platform == "win32" then
+	if IS_WINDOWS then
 		slot6 = "xb1"
 	else
 		local platform_key = self.platform
@@ -6545,7 +6472,7 @@ OptionsView.cb_gamepad_zoom_sensitivity_setup = function (self)
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	if self.platform == "win32" then
+	if IS_WINDOWS then
 		slot6 = "xb1"
 	else
 		local platform_key = self.platform
@@ -6598,7 +6525,7 @@ OptionsView.cb_gamepad_zoom_sensitivity_y_setup = function (self)
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
 
-	if self.platform == "win32" then
+	if IS_WINDOWS then
 		slot6 = "xb1"
 	else
 		local platform_key = self.platform
@@ -6810,57 +6737,6 @@ OptionsView.cb_max_quick_play_search_range_saved_value = function (self, widget)
 	widget.content.current_selection = selected_option
 end
 
-OptionsView.cb_allow_occupied_hero_lobbies = function (self, content)
-	local options_values = content.options_values
-	local current_selection = content.current_selection
-	self.changed_user_settings.allow_occupied_hero_lobbies = options_values[current_selection]
-end
-
-OptionsView.cb_allow_occupied_hero_lobbies_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
-	}
-	local default_value = DefaultUserSettings.get("user_settings", "allow_occupied_hero_lobbies")
-	local allow_occupied_hero_lobbies = Application.user_setting("allow_occupied_hero_lobbies")
-
-	if allow_occupied_hero_lobbies then
-		slot4 = 2
-	else
-		local selection = 1
-	end
-
-	if default_value then
-		slot5 = 2
-	else
-		local default_option = 1
-	end
-
-	return selection, options, "menu_settings_allow_occupied_hero_lobbies", default_option
-end
-
-OptionsView.cb_allow_occupied_hero_lobbies_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.allow_occupied_hero_lobbies, Application.user_setting("allow_occupied_hero_lobbies")) then
-		local allow_occupied_hero_lobbies = false
-	end
-
-	slot3 = widget.content
-
-	if allow_occupied_hero_lobbies then
-		slot4 = 2
-	else
-		slot4 = 1
-	end
-
-	slot3.current_selection = slot4
-end
-
 OptionsView.cb_mouse_look_invert_y_setup = function (self)
 	local options = {
 		{
@@ -6944,7 +6820,7 @@ OptionsView.cb_gamepad_look_invert_y_setup = function (self)
 	local invert_gamepad_y = Application.user_setting("gamepad_look_invert_y")
 	local input_service = self.input_manager:get_service("Player")
 
-	if self.platform == "win32" then
+	if IS_WINDOWS then
 		slot5 = "xb1"
 	else
 		local platform_key = self.platform
@@ -9118,7 +8994,7 @@ OptionsView.cb_fov_setup = function (self)
 	local min = 45
 	local max = 120
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		max = 90
 		min = 65
 	end
@@ -9501,7 +9377,7 @@ OptionsView.cb_chat_enabled_setup = function (self)
 
 	local setting_name = "menu_settings_chat_enabled"
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		setting_name = "menu_settings_chat_enabled_" .. PLATFORM
 	end
 

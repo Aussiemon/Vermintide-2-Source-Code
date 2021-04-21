@@ -39,7 +39,6 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 	self.input_manager = ingame_ui_context.input_manager
 	self.player_manager = ingame_ui_context.player_manager
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
-	self.level_transition_handler = ingame_ui_context.level_transition_handler
 	self.render_settings = {
 		alpha_multiplier = 0,
 		snap_pixel_positions = true
@@ -69,7 +68,7 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 
 	self:create_ui_elements()
 
-	local level_key = self.level_transition_handler:get_current_level_keys()
+	local level_key = Managers.level_transition_handler:get_current_level_keys()
 	local level_settings = LevelSettings[level_key]
 
 	self:set_level_name(Localize(level_settings.display_name))
@@ -90,13 +89,7 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 	end
 
 	self:_setup_weave_display_info()
-
-	local event_manager = Managers.state.event
-
-	event_manager:register(self, "weave_objective_synced", "event_weave_objective_synced")
-	event_manager:register(self, "start_game_time", "event_start_game_time")
-
-	self._start_time = 0
+	Managers.state.event:register(self, "weave_objective_synced", "event_weave_objective_synced")
 end
 
 IngamePlayerListUI.create_ui_elements = function (self)
@@ -138,8 +131,6 @@ IngamePlayerListUI.create_ui_elements = function (self)
 	self.input_description_text_widget = UIWidget.init(specific_widget_definitions.input_description_text)
 	self.background = UIWidget.init(specific_widget_definitions.background)
 	self.private_checkbox_widget = UIWidget.init(specific_widget_definitions.private_checkbox)
-	self.game_timer_text_widget = UIWidget.init(specific_widget_definitions.game_timer_text)
-	self.game_timer_text_widget.content.enabled = not Development.parameter("disable_ingame_timer")
 	local twitch_connection = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
 
 	if Managers.state.game_mode:game_mode_key() == "weave" or twitch_connection then
@@ -433,7 +424,6 @@ IngamePlayerListUI.update_widgets = function (self)
 	local num_players = self.num_players
 	local vote_manager = Managers.state.voting
 	local vote_kick_enabled = vote_manager:vote_kick_enabled()
-	local is_not_ps4 = self.platform ~= "ps4"
 	local leader = Managers.party:leader()
 
 	for i = 1, num_players, 1 do
@@ -471,11 +461,11 @@ IngamePlayerListUI.update_widgets = function (self)
 			end
 
 			widget_content.show_profile_button = true
-			widget_content.show_chat_button = is_not_ps4
+			widget_content.show_chat_button = not IS_PS4
 			widget_content.show_voice_button = true
 			widget_content.show_ping = not is_server
 			widget_content.profile_button_hotspot.disable_button = false
-			widget_content.chat_button_hotspot.disable_button = not is_not_ps4
+			widget_content.chat_button_hotspot.disable_button = IS_PS4
 			widget_content.voice_button_hotspot.disable_button = false
 			widget_content.chat_button_hotspot.is_selected = self:ignoring_chat_peer_id(peer_id)
 			widget_content.voice_button_hotspot.is_selected = self:muted_peer_id(peer_id)
@@ -653,37 +643,37 @@ IngamePlayerListUI.get_ping_texture_by_ping_value = function (self, ping_value)
 end
 
 IngamePlayerListUI.ignoring_chat_peer_id = function (self, peer_id)
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local chat_gui = Managers.chat.chat_gui
 
 		return chat_gui:ignoring_peer_id(peer_id)
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		return Managers.chat:ignoring_peer_id(peer_id)
 	end
 end
 
 IngamePlayerListUI.ignore_chat_message_from_peer_id = function (self, peer_id)
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local chat_gui = Managers.chat.chat_gui
 
 		chat_gui:ignore_peer_id(peer_id)
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		Managers.chat:ignore_peer_id(peer_id)
 	end
 end
 
 IngamePlayerListUI.remove_ignore_chat_message_from_peer_id = function (self, peer_id)
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local chat_gui = Managers.chat.chat_gui
 
 		chat_gui:remove_ignore_peer_id(peer_id)
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		Managers.chat:remove_ignore_peer_id(peer_id)
 	end
 end
 
 IngamePlayerListUI.muted_peer_id = function (self, peer_id)
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if Managers.voice_chat then
 			return Managers.voice_chat:is_peer_muted(peer_id)
 		else
@@ -695,7 +685,7 @@ IngamePlayerListUI.muted_peer_id = function (self, peer_id)
 end
 
 IngamePlayerListUI.ignore_voice_message_from_peer_id = function (self, peer_id)
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if Managers.voice_chat then
 			Managers.voice_chat:mute_peer(peer_id)
 		end
@@ -705,7 +695,7 @@ IngamePlayerListUI.ignore_voice_message_from_peer_id = function (self, peer_id)
 end
 
 IngamePlayerListUI.remove_ignore_voice_message_from_peer_id = function (self, peer_id)
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if Managers.voice_chat then
 			Managers.voice_chat:unmute_peer(peer_id)
 		end
@@ -722,11 +712,12 @@ IngamePlayerListUI.update = function (self, dt)
 	local input_manager = self.input_manager
 	local in_fade_active = Managers.transition:in_fade_active()
 	local input_service = input_manager:get_service("player_list_input")
+	local is_matchmaking = self.is_in_inn and Managers.matchmaking:is_game_matchmaking()
 
 	if not in_fade_active and (input_service:get("ingame_player_list_exit") or input_service:get("ingame_player_list_toggle") or input_service:get("back")) and self.active and self.cursor_active then
 		self:set_active(false)
 	elseif not self.cursor_active then
-		if not in_fade_active and input_service:get("ingame_player_list_toggle") then
+		if not in_fade_active and input_service:get("ingame_player_list_toggle") and not is_matchmaking then
 			if not self.active then
 				self:set_active(true)
 
@@ -764,8 +755,6 @@ IngamePlayerListUI.update = function (self, dt)
 			self:update_difficulty()
 		end
 
-		local t = Managers.state.network:network_time() - self._start_time
-		self.game_timer_text_widget.content.text = string.format("%.2d:%.2d:%.2d", t * 0.0002777777777777778, (t * 0.016666666666666666) % 60, t % 60)
 		local private_checkbox_content = self.private_checkbox_widget.content
 
 		if self.local_player.is_server and not self.is_in_inn and not private_checkbox_content.is_disabled then
@@ -1091,12 +1080,6 @@ IngamePlayerListUI.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_top_renderer, self.private_checkbox_widget)
 	end
 
-	local game_timer_text_widget = self.game_timer_text_widget
-
-	if game_timer_text_widget.content.enabled then
-		UIRenderer.draw_widget(ui_top_renderer, game_timer_text_widget)
-	end
-
 	if gamepad_active then
 		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
 	end
@@ -1165,28 +1148,24 @@ end
 IngamePlayerListUI.show_profile_by_peer_id = function (self, peer_id)
 	local platform = self.platform
 
-	if platform == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		local id = Steam.id_hex_to_dec(peer_id)
 		local url = "http://steamcommunity.com/profiles/" .. id
 
 		Steam.open_url(url)
-	elseif platform == "xb1" then
+	elseif IS_XB1 then
 		local xuid = self.network_lobby.lobby:xuid(peer_id)
 
 		if xuid then
 			XboxLive.show_gamercard(Managers.account:user_id(), xuid)
 		end
-	elseif platform == "ps4" then
+	elseif IS_PS4 then
 		Managers.account:show_player_profile_with_account_id(peer_id)
 	end
 end
 
 IngamePlayerListUI.event_weave_objective_synced = function (self)
 	self:_setup_weave_display_info()
-end
-
-IngamePlayerListUI.event_start_game_time = function (self, start_time)
-	self._start_time = start_time
 end
 
 return

@@ -9,6 +9,7 @@ local function voip_warning_print(...)
 end
 
 Voip = class(Voip)
+local TALKING_THRESHOLD = -30
 local has_steam = rawget(_G, "Steam") and rawget(_G, "Steam").connected() and not Development.parameter("use_lan_backend")
 local disable_voip = Development.parameter("disable_voip")
 
@@ -253,16 +254,17 @@ if has_steam and not disable_voip then
 				Debug.text("VoIP - Client members")
 
 				for peer_index, peer_id in pairs(SteamVoipClient.members(self.voip_client)) do
-					local speaking = (SteamVoip.is_peer_speaking and SteamVoip.is_peer_speaking(peer_id)) or false
+					local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
 
-					Debug.text("%s [%s] %s", tostring(peer_index), tostring(peer_id), (speaking and "speaking") or "")
+					Debug.text("%s [%s] %s", tostring(peer_index), tostring(peer_id), level)
 				end
 
 				if self.is_server and self.room_id then
 					Debug.text("VoIP - Room members %s", tostring(self.room_id))
 
 					for peer_index, peer_id in pairs(SteamVoipRoom.members(self.room_id)) do
-						local speaking = (SteamVoip.is_peer_speaking and SteamVoip.is_peer_speaking(peer_id)) or false
+						local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
+						local speaking = level > -30
 
 						Debug.text("%s [%s] %s", tostring(peer_index), tostring(peer_id), (speaking and "speaking") or "")
 					end
@@ -395,7 +397,15 @@ if has_steam and not disable_voip then
 	end
 
 	Voip.is_talking = function (self, peer_id)
-		return false
+		local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
+
+		return TALKING_THRESHOLD < level
+	end
+
+	Voip.audio_level = function (self, peer_id)
+		local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
+
+		return level
 	end
 else
 	Voip.init = function (self)
@@ -456,6 +466,10 @@ else
 
 	Voip.is_talking = function (self)
 		return
+	end
+
+	Voip.audio_level = function (self)
+		return -96
 	end
 end
 

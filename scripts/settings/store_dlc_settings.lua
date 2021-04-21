@@ -1,5 +1,148 @@
 StoreDlcSettings = {
 	{
+		dlc_name = "grass",
+		name = "store_grass_title",
+		store_texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass",
+		information_text = "store_grass_desc",
+		store_page_url = "https://store.steampowered.com/app/1592630",
+		slideshow_texture = "store_slideshow_dlc_grass",
+		slideshow_text = "store_grass_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/grass/dlc_store_banner_grass",
+		layout = {
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						177.5,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "big_image",
+				settings = {
+					text = "",
+					texture_path = "gui/1080p/single_textures/dlc_store/grass/dlc_store_logo_grass",
+					localize = false,
+					texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass",
+					image_size = {
+						440,
+						64
+					},
+					size = {
+						440,
+						64
+					}
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_grass_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_grass_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/grass/slate_grass_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass"
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_grass_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/grass/slate_grass_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_grass_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/grass/slate_grass_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_grass_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/grass/slate_grass_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass"
+				}
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_grass_slate_05_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/grass/slate_grass_05",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_7",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_grass_slate_07_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/grass/slate_grass_07",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		}
+	},
+	{
 		dlc_name = "cog",
 		name = "store_cog_title",
 		store_texture_package = "resource_packages/store/dlc_icons/cog/store_dlc_icons_cog",
@@ -255,15 +398,19 @@ StoreDlcSettings = {
 		}
 	},
 	{
-		information_text = "store_cog_upgrade_desc",
 		name = "store_cog_upgrade_title",
 		store_page_url = "https://store.steampowered.com/app/1443790",
 		store_texture_package = "resource_packages/store/dlc_icons/cog/store_dlc_icons_cog",
-		disable_on_consoles = true,
+		information_text = "store_cog_upgrade_desc",
 		dlc_name = "cog_upgrade",
+		hide_from_slideshow = true,
 		slideshow_texture = "store_slideshow_dlc_cog",
-		slideshow_text = "store_cog_upgrade_slideshow_desc",
+		slideshow_text = "store_cog_upgrade_desc",
 		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/cog/dlc_store_banner_cog_upgrade",
+		unavailable_platforms = {
+			"xb1",
+			"ps4"
+		},
 		layout = {
 			{
 				id = "header_video",
@@ -627,15 +774,19 @@ StoreDlcSettings = {
 		}
 	},
 	{
-		information_text = "store_lake_upgrade_desc",
 		name = "store_lake_upgrade_title",
 		store_page_url = "https://store.steampowered.com/app/1345990",
 		store_texture_package = "resource_packages/store/dlc_icons/lake/store_dlc_icons_lake",
-		disable_on_consoles = true,
+		information_text = "store_lake_upgrade_desc",
 		dlc_name = "lake_upgrade",
+		hide_from_slideshow = true,
 		slideshow_texture = "store_slideshow_dlc_lake",
 		slideshow_text = "store_lake_upgrade_slideshow_desc",
 		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/lake/dlc_store_banner_lake_upgrade",
+		unavailable_platforms = {
+			"xb1",
+			"ps4"
+		},
 		layout = {
 			{
 				id = "header_video",

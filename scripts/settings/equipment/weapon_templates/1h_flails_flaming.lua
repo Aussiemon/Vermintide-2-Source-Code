@@ -103,10 +103,16 @@ local weapon_template = {
 					},
 					{
 						sub_action = "default_charge",
-						send_buffer = true,
+						start_time = 0.5,
 						action = "action_one",
-						auto_chain = true,
-						start_time = 0.5
+						send_buffer = true,
+						input = "action_one_hold"
+					},
+					{
+						sub_action = "heavy_attack",
+						start_time = 0.5,
+						action = "action_one",
+						auto_chain = true
 					}
 				}
 			},
@@ -161,10 +167,16 @@ local weapon_template = {
 					},
 					{
 						sub_action = "default_charge_2",
-						send_buffer = true,
+						start_time = 0.5,
 						action = "action_one",
-						auto_chain = true,
-						start_time = 0.5
+						send_buffer = true,
+						input = "action_one_hold"
+					},
+					{
+						sub_action = "heavy_attack",
+						start_time = 0.5,
+						action = "action_one",
+						auto_chain = true
 					}
 				}
 			},
@@ -955,39 +967,116 @@ local weapon_template = {
 			arc = 1
 		},
 		hold_attack = {
-			arc = 1
+			penetrating = true,
+			arc = 1,
+			attack_chain = {
+				start_sub_action_name = "default",
+				start_action_name = "action_one",
+				transitions = {
+					action_one = {
+						default = {
+							wanted_sub_action_name = "default_charge",
+							wanted_action_name = "action_one",
+							bot_wait_input = "hold_attack",
+							bot_wanted_input = "hold_attack"
+						},
+						default_charge = {
+							wanted_sub_action_name = "heavy_attack",
+							wanted_action_name = "action_one",
+							bot_wait_input = "hold_attack"
+						},
+						default_charge_2 = {
+							wanted_sub_action_name = "heavy_attack_left",
+							wanted_action_name = "action_one",
+							bot_wait_input = "hold_attack"
+						},
+						default_right = {
+							wanted_sub_action_name = "default_charge",
+							wanted_action_name = "action_one",
+							bot_wait_input = "hold_attack",
+							bot_wanted_input = "hold_attack"
+						},
+						default_left = {
+							wanted_sub_action_name = "default_charge_2",
+							wanted_action_name = "action_one",
+							bot_wait_input = "hold_attack",
+							bot_wanted_input = "hold_attack"
+						},
+						default_last = {
+							wanted_sub_action_name = "default_charge",
+							wanted_action_name = "action_one",
+							bot_wait_input = "hold_attack",
+							bot_wanted_input = "hold_attack"
+						},
+						heavy_attack = {
+							wanted_sub_action_name = "default_left",
+							wanted_action_name = "action_one",
+							bot_wanted_input = "hold_attack"
+						},
+						heavy_attack_left = {
+							wanted_sub_action_name = "default",
+							wanted_action_name = "action_one",
+							bot_wanted_input = "hold_attack"
+						},
+						light_attack_left = {
+							wanted_sub_action_name = "default_left",
+							wanted_action_name = "action_one",
+							bot_wanted_input = "tap_attack"
+						},
+						light_attack_right = {
+							wanted_sub_action_name = "default_right",
+							wanted_action_name = "action_one",
+							bot_wanted_input = "tap_attack"
+						},
+						light_attack_last = {
+							wanted_sub_action_name = "default_last",
+							wanted_action_name = "action_one",
+							bot_wanted_input = "tap_attack"
+						},
+						light_attack_down = {
+							wanted_sub_action_name = "default",
+							wanted_action_name = "action_one",
+							bot_wanted_input = "tap_attack"
+						}
+					},
+					action_two = {}
+				}
+			}
 		}
-	},
-	aim_assist_settings = {
-		max_range = 5,
-		no_aim_input_multiplier = 0,
-		vertical_only = true,
-		base_multiplier = 0,
-		effective_max_range = 4,
-		breed_scalars = {
-			skaven_storm_vermin = 1,
-			skaven_clan_rat = 1,
-			skaven_slave = 1
-		}
-	},
-	tooltip_keywords = {
-		"weapon_keyword_ignore_shields",
-		"weapon_keyword_wide_sweeps",
-		"weapon_keyword_crowd_control"
-	},
-	tooltip_compare = {
-		light = {
-			action_name = "action_one",
-			sub_action_name = "light_attack_left"
-		},
-		heavy = {
-			action_name = "action_one",
-			sub_action_name = "heavy_attack"
-		}
-	},
-	wwise_dep_right_hand = {
-		"wwise/flail"
 	}
+}
+
+WeaponUtils.add_bot_meta_data_chain_actions(weapon_template.actions, weapon_template.attack_meta_data.hold_attack.attack_chain.transitions)
+
+weapon_template.aim_assist_settings = {
+	max_range = 5,
+	no_aim_input_multiplier = 0,
+	vertical_only = true,
+	base_multiplier = 0,
+	effective_max_range = 4,
+	breed_scalars = {
+		skaven_storm_vermin = 1,
+		skaven_clan_rat = 1,
+		skaven_slave = 1
+	}
+}
+weapon_template.tooltip_keywords = {
+	"weapon_keyword_ignore_shields",
+	"weapon_keyword_wide_sweeps",
+	"weapon_keyword_crowd_control"
+}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_left"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack"
+	}
+}
+weapon_template.wwise_dep_right_hand = {
+	"wwise/flail"
 }
 
 return {

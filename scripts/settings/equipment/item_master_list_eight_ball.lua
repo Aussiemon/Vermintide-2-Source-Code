@@ -115,7 +115,7 @@ ItemMasterList.maidenguard_hat_1010 = {
 	description = "description_huntsman_hat_1006",
 	rarity = "promo",
 	display_name = "display_name_huntsman_hat_1006",
-	template = "ww_half_mask_jaw",
+	template = "ww_masks",
 	inventory_icon = "icon_maidenguard_hat_1010",
 	slot_type = "hat",
 	information_text = "information_text_hat",
@@ -152,7 +152,7 @@ ItemMasterList.zealot_hat_1010 = {
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
-	unit = "units/beings/player/witch_hunter_bounty_hunter/headpiece/wh_bh_fatshark_hat_01",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_fatshark_hat_01",
 	can_wield = {
 		"wh_zealot"
 	}
@@ -396,6 +396,299 @@ ItemMasterList.maidenguard_hat_1001 = {
 	can_wield = {
 		"we_maidenguard"
 	}
+}
+ItemMasterList.scholar_hat_1002 = {
+	description = "description_scholar_hat_1002",
+	rarity = "promo",
+	display_name = "display_name_scholar_hat_1002",
+	template = "bw_hat_no_hair",
+	inventory_icon = "icon_scholar_hat_1002",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/bright_wizard_scholar/headpiece/bw_s_hat_16",
+	steam_itemdefid = 128,
+	store_optional_skin = "skin_bw_myrmidia",
+	can_wield = {
+		"bw_scholar"
+	}
+}
+ItemMasterList.skin_bw_myrmidia = {
+	description = "description_skin_bw_myrmidia",
+	temporary_template = "skin_bw_default",
+	display_name = "skin_bw_myrmidia",
+	name = "skin_bw_blazing_sun_01",
+	store_optional_hat = "scholar_hat_1002",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	skin_type = "unit",
+	inventory_icon = "icon_skin_bw_myrmidia",
+	rarity = "unique",
+	hud_icon = "unit_frame_portrait_bright_wizard",
+	item_type = "skin",
+	steam_itemdefid = 129,
+	can_wield = {
+		"bw_scholar"
+	}
+}
+ItemMasterList.scholar_bundle_0001 = {
+	optional_item_name = true,
+	slot_type = "bundle",
+	display_name = "pyromancer_bundle_01",
+	template = "",
+	rarity = "promo",
+	store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_scholar_bundle_0001",
+	information_text = "scholar_bundle_0001",
+	description = "pyromancer_bundle_01_desc",
+	show_old_price = true,
+	show_discount = false,
+	hud_icon = "",
+	item_type = "bundle",
+	unit = "",
+	steam_itemdefid = 805,
+	store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_scholar_bundle_0001",
+	subtitle = "bw_scholar",
+	inventory_icon = "",
+	discount = 99,
+	can_wield = {},
+	steam_store_hidden = store_item_hidden,
+	bundle_contains = {}
+}
+ItemMasterList.ironbreaker_hat_1004 = {
+	description = "description_ironbreaker_hat_1004",
+	rarity = "promo",
+	display_name = "display_name_ironbreaker_hat_1004",
+	template = "dr_helmets_hide_beard",
+	inventory_icon = "icon_ironbreaker_hat_1004",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_17",
+	steam_itemdefid = 126,
+	store_optional_skin = "skin_dr_irondrake",
+	can_wield = {
+		"dr_ironbreaker"
+	}
+}
+ItemMasterList.skin_dr_irondrake = {
+	description = "description_skin_dr_irondrake",
+	temporary_template = "skin_dr_ironbreaker",
+	display_name = "skin_dr_irondrake",
+	name = "skin_dr_irondrake",
+	store_optional_hat = "ironbreaker_hat_1004",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	skin_type = "unit",
+	inventory_icon = "icon_skin_ironbreaker_irondrake_01",
+	rarity = "unique",
+	hud_icon = "career_dwarf_ironbreaker",
+	item_type = "skin",
+	steam_itemdefid = 127,
+	can_wield = {
+		"dr_ironbreaker"
+	}
+}
+ItemMasterList.ironbreaker_bundle_0001 = {
+	optional_item_name = true,
+	slot_type = "bundle",
+	display_name = "ironbreaker_bundle_01",
+	template = "",
+	rarity = "promo",
+	store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_ironbreaker_bundle_0001",
+	information_text = "ironbreaker_bundle_0001",
+	description = "ironbreaker_bundle_01_desc",
+	show_old_price = true,
+	show_discount = false,
+	hud_icon = "",
+	item_type = "bundle",
+	unit = "",
+	steam_itemdefid = 804,
+	store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_ironbreaker_bundle_0001",
+	subtitle = "dr_ironbreaker",
+	inventory_icon = "",
+	discount = 99,
+	can_wield = {},
+	steam_store_hidden = store_item_hidden,
+	bundle_contains = {}
+}
+ItemMasterList.bountyhunter_hat_1002 = {
+	description = "description_bountyhunter_hat_1002",
+	rarity = "promo",
+	display_name = "display_name_bountyhunter_hat_1002",
+	template = "wh_hats",
+	inventory_icon = "icon_bountyhunter_hat_1002",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_bounty_hunter/headpiece/wh_bh_hat_12",
+	steam_itemdefid = 124,
+	store_optional_skin = "skin_wh_bountyhunter_1001",
+	can_wield = {
+		"wh_bountyhunter"
+	}
+}
+ItemMasterList.skin_wh_bountyhunter_1001 = {
+	description = "description_skin_wh_bountyhunter_1001",
+	temporary_template = "skin_wh_bountyhunter_1001",
+	display_name = "display_name_skin_wh_bountyhunter_1001",
+	name = "skin_wh_bountyhunter_1001",
+	store_optional_hat = "bountyhunter_hat_1002",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	skin_type = "unit",
+	inventory_icon = "icon_skin_wh_bountyhunter_1001",
+	rarity = "promo",
+	hud_icon = "unit_frame_portrait_witch_hunter",
+	item_type = "skin",
+	steam_itemdefid = 125,
+	can_wield = {
+		"wh_bountyhunter"
+	}
+}
+ItemMasterList.bountyhunter_bundle_0001 = {
+	optional_item_name = true,
+	slot_type = "bundle",
+	display_name = "bounty_hunter_bundle_01",
+	template = "",
+	rarity = "promo",
+	store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_bountyhunter_bundle_0001",
+	information_text = "bountyhunter_bundle_0001",
+	description = "bounty_hunter_bundle_01_desc",
+	store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_bountyhunter",
+	show_old_price = true,
+	hud_icon = "",
+	show_discount = false,
+	item_type = "bundle",
+	unit = "",
+	steam_itemdefid = 803,
+	store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_bountyhunter_bundle_0001",
+	subtitle = "wh_bountyhunter",
+	inventory_icon = "",
+	discount = 99,
+	can_wield = {},
+	steam_store_hidden = store_item_hidden,
+	bundle_contains = {}
+}
+ItemMasterList.mercenary_hat_1002 = {
+	description = "description_mercenary_hat_1002",
+	rarity = "promo",
+	display_name = "display_name_mercenary_hat_1002",
+	template = "es_hats",
+	inventory_icon = "icon_mercenary_hat_1002",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/empire_soldier_mercenary/headpiece/es_m_hat_12",
+	steam_itemdefid = 122,
+	store_optional_skin = "skin_es_mercenary_1001",
+	can_wield = {
+		"es_mercenary"
+	}
+}
+ItemMasterList.skin_es_mercenary_1001 = {
+	description = "description_skin_es_mercenary_1001",
+	temporary_template = "skin_es_mercenary_1001",
+	display_name = "display_name_skin_es_mercenary_1001",
+	name = "skin_es_mercenary_1001",
+	store_optional_hat = "mercenary_hat_1002",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	skin_type = "unit",
+	inventory_icon = "icon_skin_es_mercenary_1001",
+	rarity = "promo",
+	hud_icon = "unit_frame_portrait_empire_soldier",
+	item_type = "skin",
+	steam_itemdefid = 123,
+	can_wield = {
+		"es_mercenary"
+	}
+}
+ItemMasterList.mercenary_bundle_0001 = {
+	optional_item_name = true,
+	slot_type = "bundle",
+	display_name = "mercenary_bundle_01",
+	template = "",
+	rarity = "promo",
+	store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_mercenary_bundle_0001",
+	information_text = "mercenary_bundle_0001",
+	description = "mercenary_bundle_01_desc",
+	show_old_price = true,
+	show_discount = false,
+	hud_icon = "",
+	item_type = "bundle",
+	unit = "",
+	steam_itemdefid = 802,
+	store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_mercenary_bundle_0001",
+	subtitle = "es_mercenary",
+	inventory_icon = "",
+	discount = 99,
+	can_wield = {},
+	steam_store_hidden = store_item_hidden,
+	bundle_contains = {}
+}
+ItemMasterList.shade_hat_1002 = {
+	description = "description_shade_hat_1002",
+	rarity = "promo",
+	display_name = "display_name_shade_hat_1002",
+	inventory_icon = "icon_shade_hat_1002",
+	slot_type = "hat",
+	information_text = "information_text_hat",
+	hud_icon = "hud_icon_default",
+	steam_store_hidden = false,
+	template = "ww_half_mask_full_face",
+	item_type = "hat",
+	unit = "units/beings/player/way_watcher_shade/headpiece/ww_s_hat_13",
+	steam_itemdefid = 103,
+	store_optional_skin = "skin_ww_shade_1001",
+	can_wield = {
+		"we_shade"
+	}
+}
+ItemMasterList.skin_ww_shade_1001 = {
+	description = "description_skin_ww_shade_1001",
+	name = "skin_ww_shade_1001",
+	display_name = "display_name_skin_ww_shade_1001",
+	store_optional_hat = "shade_hat_1002",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	skin_type = "unit",
+	inventory_icon = "icon_skin_ww_shade_1001",
+	rarity = "promo",
+	hud_icon = "unit_frame_portrait_way_watcher",
+	temporary_template = "skin_ww_shade_1001",
+	item_type = "skin",
+	steam_itemdefid = 121,
+	can_wield = {
+		"we_shade"
+	}
+}
+ItemMasterList.shade_bundle_0001 = {
+	optional_item_name = true,
+	slot_type = "bundle",
+	display_name = "shade_bundle_01",
+	template = "",
+	rarity = "promo",
+	store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_shade_bundle_0001",
+	information_text = "shade_bundle_0001",
+	store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_shade_bundle_0001",
+	store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_shade",
+	show_old_price = true,
+	hud_icon = "",
+	show_discount = false,
+	item_type = "bundle",
+	unit = "",
+	steam_itemdefid = 801,
+	description = "shade_bundle_01_desc",
+	subtitle = "we_shade",
+	inventory_icon = "",
+	discount = 99,
+	can_wield = {},
+	steam_store_hidden = store_item_hidden,
+	bundle_contains = {}
 }
 ItemMasterList.test_item_1017 = {
 	description = "test_item_1017_desc",

@@ -128,7 +128,9 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 		callback_context.num_hits = 0
 		local physics_world = World.get_data(world, "physics_world")
 		local pos = POSITION_LOOKUP[owner_unit]
-		local radius = math.max(current_action.push_radius, 2.5)
+		local buff_extension = self.owner_buff_extension
+		local push_range = buff_extension:apply_buffs_to_value(2.5, "push_range")
+		local radius = math.max(current_action.push_radius, push_range)
 		local collision_filter = "filter_melee_push"
 
 		PhysicsWorld.overlap(physics_world, callback, "shape", "sphere", "position", pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter)

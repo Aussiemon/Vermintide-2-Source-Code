@@ -23,6 +23,12 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 			local status_extension = self._status_extension
 			local buff_extension = self._buff_extension
 			local buff_name = "kerillian_shade_activated_ability"
+			local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
+
+			if talent_extension:has_talent("kerillian_shade_activated_ability_quick_cooldown", "wood_elf", true) then
+				buff_name = "kerillian_shade_activated_ability_quick_cooldown"
+			end
+
 			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 			local unit_object_id = network_manager:unit_game_object_id(owner_unit)
 

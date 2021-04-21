@@ -1,4 +1,5 @@
 require("scripts/helpers/weave_utils")
+require("scripts/settings/weaves/weave_loadout/weave_loadout_settings")
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_weave_properties_definitions")
 local top_widget_definitions = definitions.top_widgets
@@ -16,7 +17,6 @@ local create_talent_slot_definition = definitions.create_talent_slot_definition
 local create_property_slot_definition = definitions.create_property_slot_definition
 local OPTIONS_MASK_MARGIN = 100
 local OPTIONS_MASK_OFFSET = 40
-local DO_RELOAD = false
 local SLOT_SELECT_ANIM_DURATION = 0.3
 local UPGRADE_REQUEST_LIMIT = 1.6
 local amulet_slot_layout = {
@@ -92,9 +92,10 @@ local localized_strings = {
 	ranged = Localize("inventory_screen_ranged_weapon_title"),
 	ranged_ammo = Localize("inventory_screen_ranged_weapon_title"),
 	ranged_heat = Localize("inventory_screen_ranged_weapon_title"),
-	slot_clear_input_description_property = (PLATFORM == "win32" and Localize("menu_weave_forge_option_property_remove_desc")) or "",
-	slot_clear_input_description_trait = (PLATFORM == "win32" and Localize("menu_weave_forge_option_trait_remove_desc")) or "",
-	slot_clear_input_description_talent = (PLATFORM == "win32" and Localize("menu_weave_forge_option_talent_remove_desc")) or "",
+	ranged_energy = Localize("inventory_screen_ranged_weapon_title"),
+	slot_clear_input_description_property = (IS_WINDOWS and Localize("menu_weave_forge_option_property_remove_desc")) or "",
+	slot_clear_input_description_trait = (IS_WINDOWS and Localize("menu_weave_forge_option_trait_remove_desc")) or "",
+	slot_clear_input_description_talent = (IS_WINDOWS and Localize("menu_weave_forge_option_talent_remove_desc")) or "",
 	tooltip_slot_title_trait = Localize("menu_weave_forge_option_tooltip_title_trait"),
 	tooltip_slot_title_talent = Localize("menu_weave_forge_option_tooltip_title_talent"),
 	tooltip_slot_title_property = Localize("menu_weave_forge_option_tooltip_title_property"),
@@ -600,7 +601,7 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 	end
 
 	if text then
-		content.text = text
+		content.text = text:gsub("\n\n", "\n")
 	end
 
 	if icon then
@@ -1039,12 +1040,6 @@ HeroWindowWeaveProperties.on_exit = function (self, params)
 end
 
 HeroWindowWeaveProperties.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	local parent = self._parent
 	local input_service = parent:window_input_service()
 	local widgets_by_name = self._widgets_by_name

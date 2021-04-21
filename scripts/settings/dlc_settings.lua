@@ -23,6 +23,25 @@ DLCSettings = DLCSettings or {
 			level = "scripts/settings/dlcs/bogenhafen/bogenhafen_level_settings"
 		}
 	},
+	morris = {
+		platform_specific = "resource_packages/dlcs/morris_platform_specific",
+		package_name = "resource_packages/dlcs/morris",
+		additional_settings = {
+			level = "scripts/settings/dlcs/morris/morris_level_settings",
+			ai = "scripts/settings/dlcs/morris/morris_ai_settings",
+			journey_settings = "scripts/settings/dlcs/morris/deus_journey_settings",
+			buff = "scripts/settings/dlcs/morris/morris_buff_settings",
+			common = "scripts/settings/dlcs/morris/morris_common_settings",
+			sound = "scripts/settings/dlcs/morris/morris_sound_settings",
+			achievements = "scripts/settings/dlcs/morris/morris_achievements_settings",
+			challenges = "scripts/settings/dlcs/morris/morris_ingame_challenge",
+			equipment = "scripts/settings/dlcs/morris/morris_equipment_settings",
+			pickups = "scripts/settings/dlcs/morris/morris_pickups_settings",
+			imgui = "scripts/settings/dlcs/morris/morris_imgui",
+			ui = "scripts/settings/dlcs/morris/morris_ui_settings",
+			backend = "scripts/settings/dlcs/morris/morris_backend_settings"
+		}
+	},
 	holly = {
 		package_name = "resource_packages/dlcs/holly",
 		additional_settings = {
@@ -89,23 +108,6 @@ DLCSettings = DLCSettings or {
 		package_name = "resource_packages/dlcs/scorpion",
 		level_settings = "levels/honduras_dlcs/scorpion/level_settings_scorpion",
 		manager_settings = {},
-		start_game_windows = {
-			"scripts/ui/views/start_game_view/windows/start_game_window_weave_list",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_definitions",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_console_definitions",
-			"scripts/ui/views/start_game_view/windows/start_game_window_weave_info",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_info_definitions",
-			"scripts/ui/views/start_game_view/windows/start_game_window_weave_background",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_background_definitions",
-			"scripts/ui/views/start_game_view/windows/start_game_window_weave_panel",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_panel_definitions",
-			"scripts/ui/views/start_game_view/windows/start_game_window_weave_quickplay",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_quickplay_definitions",
-			"scripts/ui/views/start_game_view/windows/start_game_window_weave_background_console",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_background_console_definitions",
-			"scripts/ui/views/start_game_view/windows/start_game_window_weave_panel_console",
-			"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_panel_console_definitions"
-		},
 		additional_settings = {
 			common = "scripts/settings/dlcs/scorpion/scorpion_common_settings",
 			conflict = "scripts/settings/dlcs/scorpion/scorpion_conflict_settings",
@@ -115,163 +117,6 @@ DLCSettings = DLCSettings or {
 			achievements = "scripts/settings/dlcs/scorpion/scorpion_achievements_settings",
 			ui = "scripts/settings/dlcs/scorpion/scorpion_ui_settings",
 			backend = "scripts/settings/dlcs/scorpion/scorpion_backend_settings"
-		},
-		start_game_window_layout = {
-			windows = {
-				weave_list = {
-					class_name = "StartGameWindowWeaveList",
-					name = "weave"
-				},
-				weave_info = {
-					class_name = "StartGameWindowWeaveInfo",
-					name = "weave_info"
-				},
-				weave_background = {
-					class_name = "StartGameWindowWeaveBackground",
-					name = "weave_background"
-				},
-				weave_panel = {
-					class_name = "StartGameWindowWeavePanel",
-					name = "weave_panel"
-				},
-				weave_quickplay = {
-					class_name = "StartGameWindowWeaveQuickplay",
-					name = "weave_quickplay"
-				}
-			},
-			window_layouts = {
-				{
-					background_icon_name = "button_image_09",
-					save_data_table = "weave",
-					display_name = "start_game_window_ranked_weave_title",
-					game_mode_option = false,
-					name = "weave",
-					weave_game_mode_option = true,
-					close_on_exit = true,
-					icon_name = "options_button_icon_event",
-					windows = {
-						weave_info = 4,
-						weave_background = 1,
-						weave_list = 3,
-						weave_panel = 2
-					}
-				},
-				{
-					background_icon_name = "button_image_09",
-					save_data_table = "weave",
-					display_name = "start_game_window_weave_quickplay_title",
-					game_mode_option = false,
-					name = "weave_quickplay",
-					weave_game_mode_option = true,
-					close_on_exit = true,
-					icon_name = "options_button_icon_event",
-					windows = {
-						weave_quickplay = 3,
-						weave_background = 1,
-						weave_panel = 2
-					}
-				}
-			}
-		},
-		start_game_window_layout_console = {
-			windows = {
-				weave_background = {
-					class_name = "StartGameWindowWeaveBackgroundConsole",
-					name = "weave_background"
-				},
-				weave_overview = {
-					class_name = "StartGameWindowWeaveOverviewConsole",
-					name = "weave_info"
-				},
-				weave_list = {
-					class_name = "StartGameWindowWeaveList",
-					name = "weave"
-				},
-				weave_info = {
-					class_name = "StartGameWindowWeaveInfo",
-					name = "weave_info"
-				},
-				weave_quickplay = {
-					class_name = "StartGameWindowWeaveQuickplay",
-					name = "weave_quickplay"
-				},
-				weave_panel = {
-					class_name = "StartGameWindowWeavePanelConsole",
-					name = "weave_panel"
-				}
-			},
-			window_layouts = {
-				{
-					sound_event_enter = "play_gui_lobby_button_00_lobby_browser",
-					name = "lobby_browser_weave",
-					display_name = "start_game_window_lobby_browser",
-					can_add_function_name = "_can_add_weave_lobby_browser_option",
-					save_data_table = "lobby_browser",
-					close_on_exit = true,
-					weave_game_mode_option = true,
-					windows = {
-						lobby_browser = 3,
-						weave_background = 2,
-						weave_panel = 1
-					}
-				},
-				{
-					sound_event_enter = "play_gui_lobby_button_00_quickplay",
-					save_data_table = "weave",
-					display_name = "start_game_window_ranked_weave_title",
-					game_mode_option = true,
-					disable_function_name = "_weave_disable_function",
-					weave_game_mode_option = true,
-					name = "weave_ranked",
-					can_add_function_name = "_can_add_weave_game_mode_option",
-					close_on_exit = true,
-					windows = {
-						weave_info = 4,
-						weave_background = 2,
-						weave_list = 3,
-						weave_panel = 1
-					}
-				},
-				{
-					sound_event_enter = "play_gui_lobby_button_00_quickplay",
-					name = "weave_selection",
-					save_data_table = "weave",
-					windows = {
-						weave_info = 4,
-						weave_background = 2,
-						weave_list = 3,
-						weave_panel = 1
-					}
-				},
-				{
-					sound_event_enter = "play_gui_lobby_button_00_quickplay",
-					save_data_table = "weave",
-					display_name = "start_game_window_weave_quickplay_title",
-					game_mode_option = true,
-					disable_function_name = "_weave_disable_function",
-					weave_game_mode_option = true,
-					name = "weave_quickplay",
-					can_add_function_name = "_can_add_weave_game_mode_option",
-					close_on_exit = true,
-					windows = {
-						weave_quickplay = 3,
-						weave_background = 2,
-						weave_panel = 1
-					}
-				},
-				{
-					sound_event_enter = "play_gui_lobby_button_00_custom",
-					name = "difficulty_selection_weave_quick_play",
-					save_data_table = "weave",
-					input_focus_window = "difficulty",
-					close_on_exit = false,
-					windows = {
-						weave_background = 2,
-						difficulty = 3,
-						weave_panel = 1
-					}
-				}
-			}
 		}
 	},
 	gecko = {

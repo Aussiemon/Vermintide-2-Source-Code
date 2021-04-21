@@ -61,10 +61,19 @@ MissionObjectiveUI.block_mission_ui = function (self, ui_blocked)
 	self._ui_blocked = ui_blocked
 end
 
+local customizer_data = {
+	root_scenegraph_id = "pivot",
+	label = "Objectives",
+	registry_key = "mission_objective",
+	drag_scenegraph_id = "background"
+}
+
 MissionObjectiveUI.update = function (self, dt)
 	if DO_RELOAD then
 		self:create_ui_elements()
 	end
+
+	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
 
 	if self._ui_blocked then
 		return

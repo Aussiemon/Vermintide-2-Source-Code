@@ -108,6 +108,9 @@ return {
 			table.remove(spawn_queue, delete_index)
 		end
 	end,
+	on_split_enemy = function (killer_unit)
+		return
+	end,
 	server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data)
 		local breed_tier_list = data.breed_tier_list
 		local breed_explosion_templates = data.breed_explosion_templates
@@ -195,6 +198,8 @@ return {
 			end
 
 			blackboard.about_to_be_destroyed = true
+
+			data.template.on_split_enemy(killer_unit)
 		end
 	end
 }

@@ -1453,6 +1453,66 @@ Paintings.hor_dwarfs_page_48 = {
 		wood = true
 	}
 }
+Paintings.hor_warriors_of_chaos_page_04 = {
+	sound_event = "painting_warriors_of_chaos_page_04_description",
+	rarity = "common",
+	display_name = "painting_warriors_of_chaos_page_04_name",
+	icon = "icon_painting_1",
+	frame = "wood",
+	description = "painting_warriors_of_chaos_page_04_description",
+	artist = "painting_warriors_of_chaos_page_04_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_warriors_of_chaos_page_22 = {
+	sound_event = "painting_warriors_of_chaos_page_22_description",
+	rarity = "common",
+	display_name = "painting_warriors_of_chaos_page_22_name",
+	icon = "icon_painting_1",
+	frame = "painted",
+	description = "painting_warriors_of_chaos_page_22_description",
+	artist = "painting_warriors_of_chaos_page_22_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_warriors_of_chaos_page_17 = {
+	sound_event = "painting_warriors_of_chaos_page_17_description",
+	rarity = "common",
+	display_name = "painting_warriors_of_chaos_page_17_name",
+	icon = "icon_painting_2",
+	frame = "painted",
+	description = "painting_warriors_of_chaos_page_17_description",
+	artist = "painting_warriors_of_chaos_page_17_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_warriors_of_chaos_page_46 = {
+	sound_event = "painting_warriors_of_chaos_page_46_description",
+	rarity = "common",
+	display_name = "painting_warriors_of_chaos_page_46_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_warriors_of_chaos_page_46_description",
+	artist = "painting_warriors_of_chaos_page_46_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1493,6 +1553,8 @@ local painting_order = {
 	"hor_wfrp2_knights_of_the_grail_Page_017",
 	"hor_dwarfs_page_30",
 	"hor_dwarfs_page_48",
+	"hor_warriors_of_chaos_page_22",
+	"hor_warriors_of_chaos_page_04",
 	"ver_none",
 	"ver_bw01",
 	"ver_khorne04",
@@ -1553,7 +1615,9 @@ local painting_order = {
 	"ver_dwarfs_page_50",
 	"ver_dwarfs_page_56",
 	"ver_dwarfs_page_51",
-	"ver_whf17_masterengineer"
+	"ver_whf17_masterengineer",
+	"ver_warriors_of_chaos_page_17",
+	"ver_warriors_of_chaos_page_46"
 }
 PaintingOrder = PaintingOrder or {}
 

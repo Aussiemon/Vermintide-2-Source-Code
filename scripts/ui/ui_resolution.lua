@@ -44,10 +44,10 @@ local function resolution_supported(width, height)
 end
 
 local function determine_native_aspect_ratio_and_resolution()
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		native_screen_height = RESOLUTION_PS4[2]
 		native_screen_width = RESOLUTION_PS4[1]
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		native_screen_height = RESOLUTION_XB1[2]
 		native_screen_width = RESOLUTION_XB1[1]
 	else
@@ -176,17 +176,9 @@ function UIScalePositionTableToResolution(position, pixel_snap)
 	local scale = RESOLUTION_LOOKUP.scale
 
 	if pixel_snap then
-		return {
-			math.round(position[1] * scale),
-			math.round(position[2] * scale),
-			position[3] or 0
-		}
+		return Vector3(math.round(position[1] * scale), math.round(position[2] * scale), position[3] or 0)
 	else
-		return {
-			position[1] * scale,
-			position[2] * scale,
-			position[3] or 0
-		}
+		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end
 end
 
@@ -402,9 +394,9 @@ function InitVideo()
 
 	local resolution_setting = nil
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		resolution_setting = RESOLUTION_PS4
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		resolution_setting = RESOLUTION_XB1
 	else
 		resolution_setting = Application.user_setting("screen_resolution")

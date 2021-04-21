@@ -72,11 +72,23 @@ PlayerUnitEnergyExtension.update = function (self, unit, input, dt, context, t)
 end
 
 PlayerUnitEnergyExtension.drain = function (self, amount)
+	assert(amount >= 0, "Use add_energy()")
+
 	local energy = self._energy
 	local new_energy_amount = energy - amount
 	new_energy_amount = math.clamp(new_energy_amount, 0, energy)
 	self._energy = new_energy_amount
 	self._recharge_delay_timer = Managers.time:time("game") + self._recharge_delay
+end
+
+PlayerUnitEnergyExtension.add_energy = function (self, amount)
+	assert(amount >= 0, "Use drain()")
+
+	local energy = self._energy
+	local new_energy_amount = energy + amount
+	local max_energy = self._max_energy
+	new_energy_amount = math.clamp(new_energy_amount, 0, max_energy)
+	self._energy = new_energy_amount
 end
 
 PlayerUnitEnergyExtension.get_max = function (self)

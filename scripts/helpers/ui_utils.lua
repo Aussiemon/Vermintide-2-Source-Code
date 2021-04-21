@@ -332,13 +332,13 @@ UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_globa
 	return text_width
 end
 
-UIUtils.is_button_pressed = function (widget)
+UIUtils.is_button_pressed = function (widget, hotspot_name)
 	if not widget then
 		return false
 	end
 
 	local content = widget.content
-	local hotspot = content.button_hotspot or content.hotspot
+	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
 
 	if hotspot.on_release then
 		hotspot.on_release = false
@@ -347,15 +347,54 @@ UIUtils.is_button_pressed = function (widget)
 	end
 end
 
-UIUtils.is_button_hover_enter = function (widget)
+UIUtils.is_button_held = function (widget, hotspot_name)
 	if not widget then
 		return false
 	end
 
 	local content = widget.content
-	local hotspot = content.button_hotspot or content.hotspot
+	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+	if hotspot.is_held then
+		return true
+	end
+end
+
+UIUtils.is_button_hover_enter = function (widget, hotspot_name)
+	if not widget then
+		return false
+	end
+
+	local content = widget.content
+	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
 
 	return hotspot.on_hover_enter
+end
+
+UIUtils.is_button_hover = function (widget, hotspot_name)
+	if not widget then
+		return false
+	end
+
+	local content = widget.content
+	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+	return hotspot.is_hover
+end
+
+UIUtils.is_button_selected = function (widget, hotspot_name)
+	local content = widget.content
+	local hotspot = content[hotspot_name] or content.button_hotspot
+
+	return hotspot.is_selected
+end
+
+UIUtils.animate_value = function (x, dx, dir)
+	if dir then
+		return math.min(x + dx, 1)
+	else
+		return math.max(x - dx, 0)
+	end
 end
 
 UIUtils.comma_value = function (amount, comma)
@@ -386,9 +425,9 @@ end
 UIUtils.get_input_texture_data = function (input_service, input_action, gamepad_active)
 	local platform = PLATFORM
 
-	if platform == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
+	if IS_XB1 and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
 		platform = "win32"
-	elseif platform == "win32" and gamepad_active then
+	elseif IS_WINDOWS and gamepad_active then
 		platform = "xb1"
 	end
 
@@ -493,6 +532,12 @@ UIUtils.destroy_widgets = function (widget_list)
 	end
 end
 
+UIUtils.mark_dirty = function (widget_list)
+	for _, widget in pairs(widget_list) do
+		widget.element.dirty = true
+	end
+end
+
 UIUtils.align = function (alignment, position, offset)
 	if alignment == "right" or alignment == "top" then
 		position = position + offset
@@ -508,6 +553,12 @@ UIUtils.format_time = function (t)
 	local min = (t - sec) / 60
 
 	return string.format("%02d:%02d", min, sec)
+end
+
+UIUtils.get_color_for_consumable_item = function (item_key)
+	local default_color = UISettings.inventory_consumable_slot_colors.default
+
+	return (item_key and UISettings.inventory_consumable_slot_colors[item_key]) or default_color
 end
 
 return

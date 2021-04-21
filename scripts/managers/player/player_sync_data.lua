@@ -4,7 +4,7 @@ PlayerSyncData.init = function (self, player, network_manager)
 	self._player = player
 	self._network_manager = network_manager
 
-	if player.local_player then
+	if player.local_player or (player.bot_player and player.is_server) then
 		local highest_unlocked_difficulty = self:_calc_highest_unlocked_difficulty()
 		local game_object_data_table = {
 			best_aquired_power_level = 0,

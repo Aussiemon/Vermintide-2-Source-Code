@@ -6,14 +6,13 @@ GameModeWeave = class(GameModeWeave, GameModeBase)
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 
-GameModeWeave.init = function (self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
-	GameModeWeave.super.init(self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+GameModeWeave.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+	GameModeWeave.super.init(self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
 
 	self.about_to_lose = false
 	self.lost_condition_timer = nil
 	self.about_to_win = false
 	self.win_condition_timer = nil
-	self._level_transition_handler = level_transition_handler
 	self._adventure_profile_rules = AdventureProfileRules:new(self._profile_synchronizer, self._network_server)
 	local hero_side = Managers.state.side:get_side_from_name("heroes")
 	self._weave_spawning = WeaveSpawning:new(self._profile_synchronizer, hero_side, self._is_server, self._network_server, game_mode_settings and game_mode_settings.game_mode_data)
@@ -126,17 +125,6 @@ GameModeWeave.mutators = function (self)
 	local mutators = weave_manager:mutators()
 
 	return mutators
-end
-
-GameModeWeave.get_conflict_settings = function (self)
-	local weave_manager = Managers.weave
-	local objective_template = weave_manager:get_active_objective_template()
-
-	if not objective_template then
-		return nil
-	end
-
-	return objective_template.conflict_settings or "default"
 end
 
 GameModeWeave.ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
@@ -371,9 +359,8 @@ GameModeWeave._get_first_available_bot_profile = function (self)
 	for i = 1, #available_profiles, 1 do
 		local profile_name = available_profiles[i]
 		local profile_index = FindProfileIndex(profile_name)
-		local owners = profile_synchronizer:owners(profile_index)
 
-		if table.is_empty(owners) then
+		if not profile_synchronizer:is_profile_in_use(profile_index) then
 			available_profile_by_priority[#available_profile_by_priority + 1] = profile_index
 		end
 	end
@@ -388,9 +375,8 @@ GameModeWeave._get_first_available_bot_profile = function (self)
 
 	if script_data.wanted_bot_profile then
 		local wanted_profile_index = FindProfileIndex(script_data.wanted_bot_profile)
-		local owners = profile_synchronizer:owners(wanted_profile_index)
 
-		if script_data.allow_same_bots or table.is_empty(owners) then
+		if script_data.allow_same_bots or not profile_synchronizer:is_profile_in_use(wanted_profile_index) then
 			profile_index = wanted_profile_index
 		end
 	end

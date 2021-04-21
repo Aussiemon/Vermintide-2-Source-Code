@@ -41,6 +41,12 @@ ActionThrow._throw = function (self)
 	local first_person_unit = first_person_extension:get_first_person_unit()
 	local first_person_unit_pos = POSITION_LOOKUP[first_person_unit]
 	local speed = current_action.speed
+	local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+
+	if buff_extension then
+		speed = buff_extension:apply_buffs_to_value(speed, "throw_speed_increase")
+	end
+
 	local velocity_multiplier = current_action.velocity_multiplier or 0.25
 	local fp_pose = Unit.local_pose(first_person_unit, 0)
 	local rotation = Unit.local_rotation(first_person_unit, 0)

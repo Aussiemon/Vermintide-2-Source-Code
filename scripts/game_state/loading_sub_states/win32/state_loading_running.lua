@@ -8,13 +8,12 @@ StateLoadingRunning.on_enter = function (self, params)
 	self:_init_network()
 
 	self._loading_view = params.loading_view
-	self._level_transition_handler = params.level_transition_handler
 	self._previous_session_error_headers_lookup = {
 		host_left_game = "popup_notice_topic",
 		kicked_by_server = "popup_notice_topic",
 		afk_kick = "popup_notice_topic"
 	}
-	local level_key = self._level_transition_handler:get_next_level_key()
+	local level_key = Managers.level_transition_handler:get_current_level_key()
 
 	self.parent:set_lobby_host_data(level_key)
 
@@ -57,11 +56,13 @@ StateLoadingRunning._init_network = function (self)
 		if network_client_setup_successful then
 			local peer_id = Network.peer_id()
 			local lobby_host = lobby_client:lobby_host()
+			local is_server = false
+			local network_handler = self.parent._network_client
 
-			self.parent:setup_chat_manager(lobby_client, lobby_host, peer_id, false)
-			self.parent:setup_deed_manager(lobby_client, lobby_host, peer_id)
+			self.parent:setup_chat_manager(lobby_client, lobby_host, peer_id, is_server)
+			self.parent:setup_deed_manager(lobby_client, lobby_host, peer_id, network_handler)
 			self.parent:setup_enemy_package_loader(lobby_client, lobby_host, peer_id)
-			self.parent:setup_global_managers(lobby_client, lobby_host, peer_id)
+			self.parent:setup_global_managers(lobby_client, lobby_host, peer_id, is_server, network_handler)
 		end
 
 		loading_context.start_lobby_data = nil
@@ -90,13 +91,15 @@ StateLoadingRunning._init_network = function (self)
 end
 
 StateLoadingRunning.update = function (self, dt)
-	if PLATFORM == "xb1" and self.parent:waiting_for_cleanup() then
+	if IS_XB1 and self.parent:waiting_for_cleanup() then
 		return
 	end
 
-	if not LEVEL_EDITOR_TEST and self._level_transition_handler.transition_type ~= nil then
+	local level_transition_handler = Managers.level_transition_handler
+
+	if not LEVEL_EDITOR_TEST and level_transition_handler:needs_level_load() then
 		if not self.parent:loading_view_setup_done() then
-			local level_key = self.parent:get_next_level_key()
+			local level_key = level_transition_handler:get_current_level_key()
 
 			self.parent:setup_loading_view(level_key)
 		end
@@ -105,12 +108,12 @@ StateLoadingRunning.update = function (self, dt)
 			self.parent:setup_menu_assets()
 		end
 
-		self._level_transition_handler:load_next_level()
+		level_transition_handler:load_current_level()
 		self.parent:should_start_breed_load_process()
 	end
 
 	if script_data.honduras_demo and not self.parent:loading_view_setup_done() then
-		local level_key = self.parent:get_next_level_key()
+		local level_key = level_transition_handler:get_current_level_key()
 
 		self.parent:setup_loading_view(level_key)
 	end

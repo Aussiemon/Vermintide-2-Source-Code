@@ -1517,7 +1517,7 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 				local cursor = UIInverseScaleVectorToResolution(base_cursor)
 				local cursor_y = cursor[axis]
 
-				if PLATFORM == "xb1" and not gamepad_active then
+				if IS_XB1 and not gamepad_active then
 					cursor_y = 1080 - base_cursor.y
 				end
 
@@ -1861,7 +1861,7 @@ UIWidgets.create_horizontal_chain_scrollbar = function (scenegraph_id, scroll_ar
 				local cursor = UIInverseScaleVectorToResolution(base_cursor)
 				local cursor_y = cursor[axis]
 
-				if PLATFORM == "xb1" and not gamepad_active then
+				if IS_XB1 and not gamepad_active then
 					cursor_y = 1080 - base_cursor.y
 				end
 
@@ -2168,7 +2168,7 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size, scroll_area_scenegra
 				local cursor = UIInverseScaleVectorToResolution(base_cursor)
 				local cursor_y = cursor[axis]
 
-				if PLATFORM == "xb1" and not gamepad_active then
+				if IS_XB1 and not gamepad_active then
 					cursor_y = 1080 - base_cursor.y
 				end
 
@@ -5187,7 +5187,24 @@ UIWidgets.create_simple_rounded_rect = function (scenegraph_id, corner_radius, c
 	}
 end
 
-UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, retained, color, layer)
+UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, retained, color, offset, texture_size)
+	if type(offset) ~= "table" then
+		offset = {
+			0,
+			0,
+			offset or 0
+		}
+	end
+
+	if texture_size == "native" then
+		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+		local settings_size = texture_settings.size
+		texture_size = {
+			settings_size[1],
+			settings_size[2]
+		}
+	end
+
 	return {
 		element = {
 			passes = {
@@ -5215,14 +5232,11 @@ UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, reta
 					0,
 					0
 				},
-				masked = masked
+				masked = masked,
+				texture_size = texture_size
 			}
 		},
-		offset = {
-			0,
-			0,
-			layer or 0
-		},
+		offset = offset,
 		scenegraph_id = scenegraph_id
 	}
 end
@@ -5578,7 +5592,15 @@ UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivo
 	}
 end
 
-UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color, layer)
+UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color, offset)
+	if type(offset) ~= "table" then
+		offset = {
+			0,
+			0,
+			offset or 0
+		}
+	end
+
 	return {
 		element = {
 			passes = {
@@ -5602,7 +5624,7 @@ UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, mask
 				offset = {
 					0,
 					0,
-					layer or 0
+					0
 				},
 				color = color or {
 					255,
@@ -5612,11 +5634,7 @@ UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, mask
 				}
 			}
 		},
-		offset = {
-			0,
-			0,
-			0
-		},
+		offset = offset,
 		scenegraph_id = scenegraph_id
 	}
 end
@@ -5734,6 +5752,7 @@ UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_
 		text_offset[2] - text_shadow_offset[2],
 		text_offset[3] - 1
 	}
+	text_shadow_style.skip_button_rendering = true
 
 	return {
 		element = {
@@ -5757,6 +5776,7 @@ UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_
 		},
 		content = {
 			text = text,
+			original_text = text,
 			color = text_color,
 			use_shadow = (text_style and text_style.use_shadow) or false
 		},
@@ -9150,7 +9170,7 @@ UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optiona
 	}
 end
 
-UIWidgets.create_console_panel_button = function (scenegraph_id, size, text, font_size, optional_offset, optional_horizontal_alignment)
+UIWidgets.create_console_panel_button = function (scenegraph_id, size, text, font_size, optional_offset, optional_horizontal_alignment, highlight_color)
 	local new_marker_offset = {
 		-19,
 		-25,
@@ -9347,7 +9367,7 @@ UIWidgets.create_console_panel_button = function (scenegraph_id, size, text, fon
 					169,
 					35
 				},
-				color = Colors.get_color_table_with_alpha("font_title", 255),
+				color = highlight_color or Colors.get_color_table_with_alpha("font_title", 255),
 				offset = selection_offset
 			},
 			marker_left = {

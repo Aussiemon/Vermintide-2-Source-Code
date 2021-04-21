@@ -257,6 +257,10 @@ BTLeaveHooks.mutator_sorcerer_activate_teleport = function (unit, blackboard, t)
 	end
 end
 
+BTLeaveHooks.mutator_sorcerer_force_teleport = function (unit, blackboard, t)
+	blackboard.quick_teleport = true
+end
+
 BTLeaveHooks.destroy_unit_leave_hook = function (unit, blackboard, t)
 	Managers.state.conflict:destroy_unit(unit, blackboard, "debug")
 end

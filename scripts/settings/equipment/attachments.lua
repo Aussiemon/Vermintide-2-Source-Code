@@ -62,7 +62,7 @@ local wh_hats_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_show_ears",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -84,7 +84,7 @@ local wh_hats_no_ears_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_hide_ears",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -253,7 +253,7 @@ local ww_hoods = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_mask",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -264,7 +264,7 @@ local ww_full_face = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_head_default",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -275,7 +275,7 @@ local ww_half_masks = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_half_mask",
-	attachment_node_linking = AttachmentNodeLinking.ww_mask,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_long,
 	slots = {
 		"slot_hat"
 	},
@@ -286,7 +286,7 @@ local ww_masks = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_mask",
-	attachment_node_linking = AttachmentNodeLinking.ww_mask,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_long,
 	slots = {
 		"slot_hat"
 	},
@@ -330,7 +330,7 @@ local ww_helmet_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_helmet",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -341,7 +341,7 @@ local ww_helmet_mask = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_helmet_mask",
-	attachment_node_linking = AttachmentNodeLinking.ww_mask,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_long,
 	slots = {
 		"slot_hat"
 	},
@@ -359,50 +359,28 @@ local ww_helmet_mask_jaw = {
 	buffs = {}
 }
 Attachments.ww_helmet_mask_jaw = table.clone(ww_helmet_mask_jaw)
-local ww_helmet_jaw_skinned = {
+local ww_helmet_jaw = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_helmet",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_long,
 	slots = {
 		"slot_hat"
 	},
 	buffs = {}
 }
-Attachments.ww_helmet_jaw_skinned = table.clone(ww_helmet_jaw_skinned)
-local ww_helmet_jaw_spine_skinned = {
-	unit = "",
-	display_unit = "units/weapons/weapon_display/display_helmet",
-	show_attachments_event = "lua_helmet",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face,
-	slots = {
-		"slot_hat"
-	},
-	buffs = {}
-}
-Attachments.ww_helmet_jaw_spine_skinned = table.clone(ww_helmet_jaw_spine_skinned)
-local ww_half_mask = {
+Attachments.ww_helmet_jaw = table.clone(ww_helmet_jaw)
+local ww_half_mask_full_face = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
 	show_attachments_event = "lua_head_default",
-	attachment_node_linking = AttachmentNodeLinking.ww_half_mask,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_long,
 	slots = {
 		"slot_hat"
 	},
 	buffs = {}
 }
-Attachments.ww_half_mask = table.clone(ww_half_mask)
-local ww_half_mask_jaw = {
-	unit = "",
-	display_unit = "units/weapons/weapon_display/display_helmet",
-	show_attachments_event = "lua_mask",
-	attachment_node_linking = AttachmentNodeLinking.ww_half_mask,
-	slots = {
-		"slot_hat"
-	},
-	buffs = {}
-}
-Attachments.ww_half_mask_jaw = table.clone(ww_half_mask_jaw)
+Attachments.ww_half_mask_full_face = table.clone(ww_half_mask_full_face)
 local es_hats = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -484,7 +462,7 @@ local es_hats_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet_es_hood",
 	show_attachments_event = "lua_show_ears",
-	attachment_node_linking = AttachmentNodeLinking.es_hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.es_hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -495,7 +473,7 @@ local es_hats_no_ears_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet_es_hood",
 	show_attachments_event = "lua_hide_ears",
-	attachment_node_linking = AttachmentNodeLinking.es_hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.es_hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -506,7 +484,7 @@ local es_hats_no_beard_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet_es_hood",
 	show_attachments_event = "lua_hide_beard",
-	attachment_node_linking = AttachmentNodeLinking.es_hat_skinned,
+	attachment_node_linking = AttachmentNodeLinking.es_hat_skinned_wide,
 	slots = {
 		"slot_hat"
 	},
@@ -528,7 +506,7 @@ local es_beard_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet_es_hood",
 	show_attachments_event = "lua_hide_beard",
-	attachment_node_linking = AttachmentNodeLinking.es_beard_skinned,
+	attachment_node_linking = AttachmentNodeLinking.es_beard,
 	slots = {
 		"slot_hat"
 	},
@@ -550,7 +528,7 @@ local dr_helmets_skinned_long = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet_dr_hood",
 	show_attachments_event = "lua_show_ears",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned_long,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide_arms,
 	slots = {
 		"slot_hat"
 	},
@@ -561,7 +539,7 @@ local dr_helmets_skinned_long_no_head = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet_dr_hood",
 	show_attachments_event = "lua_hide_head",
-	attachment_node_linking = AttachmentNodeLinking.hat_skinned_long,
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide_arms,
 	slots = {
 		"slot_hat"
 	},
@@ -913,7 +891,7 @@ Attachments.bw_gates_facemask = table.clone(bw_gates_facemask)
 local bw_gates_no_breastplate = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
-	show_attachments_event = "lua_show_ears",
+	show_attachments_event = "lua_hide_breastplate",
 	attachment_node_linking = AttachmentNodeLinking.bw_gate,
 	slots = {
 		"slot_hat"
@@ -924,7 +902,7 @@ Attachments.bw_gates_no_breastplate = table.clone(bw_gates_no_breastplate)
 local bw_gates_facemask_no_breastplate = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
-	show_attachments_event = "lua_show_ears",
+	show_attachments_event = "lua_hide_breastplate",
 	attachment_node_linking = AttachmentNodeLinking.bw_gate_facemask,
 	slots = {
 		"slot_hat"

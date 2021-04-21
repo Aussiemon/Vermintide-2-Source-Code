@@ -1,3 +1,7 @@
+local function localize_err_string(text_id)
+	return "<" .. tostring(text_id) .. ">"
+end
+
 LocalizationManager = class(LocalizationManager)
 
 LocalizationManager.init = function (self, language_id)
@@ -62,29 +66,21 @@ LocalizationManager.text_to_upper = function (self, text)
 end
 
 LocalizationManager.lookup = function (self, text_id)
-	if script_data.show_longest_localizations then
-		return localize_longest(text_id)
-	end
-
 	fassert(self._localizers, "LocalizationManager not initialized")
 
-	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
+	local str = self:_base_lookup(text_id) or localize_err_string(text_id)
 
 	return self:apply_macro(str)
 end
 
 LocalizationManager.apply_macro = function (self, str)
-	local result, _ = string.gsub(str, "%b$;[%a%d_]*:", self._find_macro_callback_to_self)
-
-	return result
+	return string.gsub(str, "%b$;[%a%d_]*:", self._find_macro_callback_to_self)
 end
 
 LocalizationManager.simple_lookup = function (self, text_id)
 	fassert(self._localizers, "LocalizationManager not initialized")
 
-	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
-
-	return str
+	return self:_base_lookup(text_id) or localize_err_string(text_id)
 end
 
 LocalizationManager._find_macro = function (self, macro_string)
@@ -119,119 +115,16 @@ function TextToUpper(text)
 	return Managers.localizer:text_to_upper(text)
 end
 
-local locales = {
-	"en",
-	"fr",
-	"de",
-	"it",
-	"sv"
-}
-local cached_strings = {}
-local current_locale = 1
-local cycle_last_frame = false
-local updator_id = nil
-
-local function change_locale(locale)
-	Managers.package:unload("resource_packages/strings", "boot")
-	Application.set_resource_property_preference_order(locale)
-	Managers.package:load("resource_packages/strings", "boot")
-end
-
-local function update_locale_cycling(dt)
-	local pressed = false
-	pressed = (true or not DebugKeyHandler.enabled or DebugKeyHandler.key_pressed("k", "cycle locale", "gui", "left shift")) and cycle and shift
-
-	if not cycle_last_frame and pressed then
-		current_locale = current_locale + 1
-
-		if current_locale > #locales then
-			current_locale = 1
-		end
-
-		local locale = locales[current_locale]
-
-		print("switching locale to", locale)
-		change_locale(locale)
-	end
-
-	cycle_last_frame = pressed
-end
-
-function enable_locale_cycling(enable)
-	if enable then
-		updator_id = updator_id or Managers.debug_updator:add_updator(update_locale_cycling)
-	elseif updator_id then
-		Managers.debug_updator:remove_updator(updator_id)
-
-		updator_id = nil
-	end
-end
-
-local function localize_one(text_id, locale)
-	change_locale(locale)
-
-	local path = Managers.localizer.path
-	local localizer = Localizer(path)
-
-	return self:_base_lookup(text_id) or "<>"
-end
-
-local function get_localizations(text_id)
-	local localizations = {}
-
-	for _, locale in ipairs(locales) do
-		local localization = localize_one(text_id, locale)
-		localizations[locale] = localization
-	end
-
-	return localizations
-end
-
-local function pick_longest(localizations)
-	local final_localization = nil
-	local longest = 0
-	local debug_manager = nil
-
-	for locale, localization in pairs(localizations) do
-		local text = Managers.localizer:apply_macro(localization)
-		local size = 10
-		local length = 0
-
-		if debug_manager then
-			local width, height = Managers.state.debug:screen_text_extents(text, size)
-			length = width
-		else
-			length = string.len(text)
-		end
-
-		if longest < length then
-			longest = length
-			final_localization = text
-		end
-	end
-
-	return final_localization
-end
-
-function localize_longest(text_id)
-	local localizations = cached_strings[text_id]
-
-	if not localizations then
-		localizations = get_localizations(text_id)
-		cached_strings[text_id] = localizations
-	end
-
-	return pick_longest(localizations)
-end
-
 local INPUT_ACTIONS = {}
+local INPUT_SERVICE_NAMES = {}
 
 LocalizationManager.get_input_action = function (self, text_id)
-	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
+	local str = self:_base_lookup(text_id) or localize_err_string(text_id)
 	local macro = string.match(str, "%b$;[%a%d_]*:")
 	local input_service_name = nil
 
 	table.clear(INPUT_ACTIONS)
+	table.clear(INPUT_SERVICE_NAMES)
 
 	while macro do
 		local start_index, end_index = string.find(str, macro)
@@ -239,19 +132,111 @@ LocalizationManager.get_input_action = function (self, text_id)
 		local arg_start = string.find(macro, ";")
 		local input_service_and_action = string.sub(macro, arg_start + 1, -2)
 		local split_start, split_end = string.find(input_service_and_action, "__")
-		input_service_name = string.sub(input_service_and_action, 1, split_start - 1)
+		INPUT_SERVICE_NAMES[#INPUT_SERVICE_NAMES + 1] = string.sub(input_service_and_action, 1, split_start - 1)
 		INPUT_ACTIONS[#INPUT_ACTIONS + 1] = string.sub(input_service_and_action, split_end + 1)
 		macro = string.match(str, "%b$;[%a%d_]*:")
 	end
 
-	return INPUT_ACTIONS[1], INPUT_ACTIONS, input_service_name
+	return INPUT_ACTIONS[1], INPUT_ACTIONS, INPUT_SERVICE_NAMES[1], INPUT_SERVICE_NAMES
 end
 
-LocalizationManager.replace_macro_in_string = function (self, text_id, replacement_str)
-	local str = self:_base_lookup(text_id) or "<" .. tostring(text_id) .. ">"
-	local result, num_replacements = string.gsub(str, "%b$;[%a%d_]*:", replacement_str)
+LocalizationManager.replace_macro_in_string = function (self, text_id, replacement_str, skip_localization, number_of_replacements)
+	local str = text_id
 
-	return result, str, Localize(text_id), num_replacements
+	if not skip_localization then
+		str = self:_base_lookup(text_id) or localize_err_string(text_id)
+	end
+
+	local result, num_replacements = string.gsub(str, "%b$;[%a%d_]*:", replacement_str, number_of_replacements)
+
+	return result, str, self:lookup(text_id), num_replacements
+end
+
+LocalizationManager._set_locale = function (self, locale, lightweight)
+	print("[LocalizationManager] Setting locale to:", locale)
+	DeadlockStack.pause()
+
+	self._language_id = locale
+
+	self:_reload_locale_packages(locale, lightweight)
+
+	if not lightweight then
+		Managers.backend:get_interface("cdn"):load_backend_localizations(locale, function (localizations)
+			if localizations then
+				self:append_backend_localizations(localizations)
+			end
+		end)
+	end
+
+	self:_reload_ui()
+	collectgarbage()
+	DeadlockStack.unpause()
+end
+
+LocalizationManager._reload_locale_packages = function (self, locale, dont_reload_fonts)
+	printf("[LocalizationManager] reload_locale_packages(%q)", locale)
+	Application.set_resource_property_preference_order(locale, "en")
+	self:_reload_boot_package("resource_packages/strings")
+
+	if not dont_reload_fonts then
+		self:_reload_boot_package("resource_packages/fonts")
+	end
+end
+
+LocalizationManager._reload_boot_package = function (self, package_name)
+	DeadlockStack.pause()
+
+	local packages = Boot.startup_package_handles
+	local handle = packages[package_name]
+
+	ResourcePackage.unload(handle)
+	Application.release_resource_package(handle)
+
+	handle = Application.resource_package(package_name)
+
+	ResourcePackage.load(handle)
+	ResourcePackage.flush(handle)
+
+	packages[package_name] = handle
+
+	DeadlockStack.unpause()
+end
+
+LocalizationManager.set_locale_override_setting = function (self, locale)
+	Application.set_user_setting("language_id", locale)
+	Application.save_user_settings()
+end
+
+LocalizationManager._reload_ui = function (self)
+	printf("[LocalizationManager] reload_ui()")
+
+	for pkg in pairs(package.loaded) do
+		if string.find(pkg, "^scripts/ui") then
+			package.loaded[pkg] = nil
+		end
+	end
+
+	require("scripts/ui/views/ingame_ui")
+
+	local state_in_game_running = rawget(_G, "_state_in_game_running")
+
+	if not state_in_game_running then
+		return
+	end
+
+	local ingame_ui = state_in_game_running.ingame_ui
+
+	if ingame_ui then
+		local current_transition = ingame_ui.last_transition_name
+		local current_params = ingame_ui.last_transition_params
+
+		print(current_transition)
+		state_in_game_running:create_ingame_ui(state_in_game_running.ingame_ui_context)
+
+		if current_transition then
+			ingame_ui:handle_transition(current_transition, current_params)
+		end
+	end
 end
 
 return

@@ -66,6 +66,8 @@ local components = {
 		class_name = "RewardsPopupUI",
 		filename = "scripts/ui/hud_ui/rewards_popup_ui",
 		visibility_groups = {
+			"deus_run_stats",
+			"game_mode_disable_hud",
 			"entering_mission",
 			"hero_selection_popup",
 			"mission_vote",
@@ -76,7 +78,7 @@ local components = {
 			"alive"
 		},
 		validation_function = function (context, is_in_inn)
-			return is_in_inn
+			return is_in_inn or Managers.mechanism:current_mechanism_name() == "deus"
 		end
 	},
 	{
@@ -236,6 +238,17 @@ local components = {
 
 			return use_twitch_ui
 		end
+	},
+	{
+		use_hud_scale = true,
+		class_name = "GameTimerUI",
+		filename = "scripts/ui/hud_ui/game_timer_ui",
+		visibility_groups = {
+			"game_mode_disable_hud",
+			"dead",
+			"alive",
+			"in_endscreen"
+		}
 	},
 	{
 		use_hud_scale = true,

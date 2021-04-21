@@ -38,9 +38,13 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	local slideshow_content = current_page.slideshow and table.clone(current_page.slideshow)
 	local grid_content = current_page.grid and table.clone(current_page.grid)
 
+	self:_add_bundle_featured_slideshow_content(slideshow_content)
+
 	if slideshow_content and #slideshow_content == 0 then
 		slideshow_content = self:_get_default_featured_slideshow_content()
 	end
+
+	self:_sort_slideshow(slideshow_content)
 
 	if grid_content and #grid_content == 0 then
 		grid_content = self:_get_default_featured_grid_content()
@@ -399,22 +403,71 @@ StoreWindowFeatured._align_grid_widgets = function (self)
 	self._total_list_height = total_height
 end
 
+StoreWindowFeatured._sort_slideshow = function (self, slideshow_content)
+	local num_slides = #slideshow_content
+
+	for k, settings in ipairs(slideshow_content) do
+		if not settings.prio then
+			settings.prio = num_slides - k
+		end
+	end
+
+	local function sort_func(a, b)
+		return b.prio < a.prio
+	end
+
+	table.sort(slideshow_content, sort_func)
+end
+
 StoreWindowFeatured._get_default_featured_slideshow_content = function (self)
 	local default_slideshow_content = {}
 
 	for index, dlc_settings in ipairs(StoreDlcSettings) do
-		if PLATFORM == "win32" or not dlc_settings.disable_on_consoles then
+		if not dlc_settings.hide_from_slideshow then
 			default_slideshow_content[#default_slideshow_content + 1] = {
 				product_type = "dlc",
 				texture = dlc_settings.slideshow_texture,
 				description = dlc_settings.slideshow_text,
 				header = dlc_settings.name,
-				product_id = dlc_settings.dlc_name
+				product_id = dlc_settings.dlc_name,
+				prio = dlc_settings.prio or 0
 			}
 		end
 	end
 
 	return default_slideshow_content
+end
+
+StoreWindowFeatured._add_bundle_featured_slideshow_content = function (self, slideshow_content)
+	if not IS_WINDOWS then
+		return
+	end
+
+	local backend_store = Managers.backend:get_interface("peddler")
+
+	if not backend_store.get_steam_item_price then
+		return
+	end
+
+	for index, settings in ipairs(StoreBundleFeaturedSettings) do
+		local item_key = settings.item_key
+		local item_data = ItemMasterList[item_key]
+
+		if item_data then
+			local item_in_store = backend_store:get_steam_item_price(item_data.steam_itemdefid)
+
+			if item_in_store and not settings.hide_from_slideshow then
+				slideshow_content[#slideshow_content + 1] = {
+					product_type = "item",
+					texture = settings.slideshow_texture,
+					description = settings.description_text,
+					header = settings.header,
+					product_id = item_key,
+					prio = settings.prio or 0
+				}
+			end
+		end
+	end
 end
 
 StoreWindowFeatured._get_default_featured_grid_content = function (self)
@@ -451,6 +504,8 @@ StoreWindowFeatured._get_default_featured_grid_content = function (self)
 	for i = 1, 9, 1 do
 		default_grid_content[i] = hero_items[i]
 	end
+
+	ItemHelper.update_featured_unseen(default_grid_content, self._parent.tab_cat)
 
 	return default_grid_content
 end
@@ -794,7 +849,9 @@ StoreWindowFeatured._on_list_index_pressed = function (self, index)
 	local entry = layout[index]
 	local product_id = entry.product_id
 	local parent = self._parent
+	local item_data = entry.item.data
 
+	ItemHelper.set_shop_item_seen(product_id, item_data.item_type, self._parent.tab_cat, "featured")
 	parent:go_to_product(product_id)
 end
 

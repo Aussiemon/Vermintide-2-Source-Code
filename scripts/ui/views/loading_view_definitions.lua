@@ -345,7 +345,7 @@ local press_to_continue_widget = {
 		}
 	},
 	content = {
-		text = (PLATFORM == "win32" and "press_any_key_to_continue") or "press_any_button_to_continue",
+		text = (IS_WINDOWS and "press_any_key_to_continue") or "press_any_button_to_continue",
 		color = Colors.get_color_table_with_alpha("white", 255)
 	}
 }

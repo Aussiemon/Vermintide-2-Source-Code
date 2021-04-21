@@ -174,6 +174,13 @@ TwitchVoteUI._create_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 end
 
+local customizer_data = {
+	root_scenegraph_id = "pivot",
+	label = "Twitch",
+	registry_key = "twitch",
+	drag_scenegraph_id = "pivot_dragger"
+}
+
 TwitchVoteUI.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
@@ -184,6 +191,8 @@ TwitchVoteUI.update = function (self, dt, t)
 		self._animation_callbacks = {}
 		self._active_vote = nil
 	end
+
+	HudCustomizer.run(self._ui_renderer, self._ui_scenegraph, customizer_data)
 
 	if not self.active then
 		return

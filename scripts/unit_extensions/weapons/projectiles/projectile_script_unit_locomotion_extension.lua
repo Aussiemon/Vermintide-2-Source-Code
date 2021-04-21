@@ -10,6 +10,7 @@ ProjectileScriptUnitLocomotionExtension.init = function (self, extension_init_co
 	self.t = self.spawn_time
 	self.gravity_settings = extension_init_data.gravity_settings or "default"
 	self.rotation_speed = extension_init_data.rotation_speed or 0
+	self.rotation_offset = extension_init_data.rotation_offset
 	self.gravity = ProjectileGravitySettings[self.gravity_settings]
 	self.velocity = Vector3Box()
 	self.angle = extension_init_data.angle
@@ -95,6 +96,10 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 
 	local direction_norm = Vector3.normalize(direction)
 	local rotation = Quaternion.look(direction_norm)
+
+	if self.rotation_offset then
+		rotation = Quaternion.multiply(rotation, Quaternion.from_euler_angles_xyz(self.rotation_offset.x, self.rotation_offset.y, self.rotation_offset.z))
+	end
 
 	if self.rotation_speed ~= 0 then
 		local left = -Quaternion.right(Quaternion.look(direction_norm, Vector3.up()))

@@ -732,7 +732,7 @@ achievements.cog_clutch_pump = {
 		return statistics_db:get_persistent_stat(stats_id, "clutch_pumps") >= 100
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
-		local level_transition_handler = Managers.state.game_mode.level_transition_handler
+		local level_transition_handler = Managers.level_transition_handler
 		local level_key = level_transition_handler:get_current_level_keys()
 		local level_settings = level_key and LevelSettings[level_key]
 		local is_hub_level = level_settings and level_settings.hub_level

@@ -45,7 +45,19 @@ local scenegraph_definition = {
 			0
 		}
 	},
-	portrait_pivot = {
+	player_status = {
+		parent = "pivot",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			86,
+			108
+		}
+	},
+	portrait_pivot_parent = {
 		vertical_alignment = "bottom",
 		parent = "root",
 		horizontal_alignment = "left",
@@ -57,6 +69,34 @@ local scenegraph_definition = {
 		size = {
 			0,
 			0
+		}
+	},
+	portrait_pivot = {
+		vertical_alignment = "bottom",
+		parent = "portrait_pivot_parent",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			0,
+			0
+		}
+	},
+	portrait_pivot_dragger = {
+		vertical_alignment = "center",
+		parent = "portrait_pivot",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			86,
+			108
 		}
 	},
 	respawn_countdown_pivot = {
@@ -457,7 +497,7 @@ end
 
 local function create_dynamic_health_widget()
 	return {
-		scenegraph_id = "pivot",
+		scenegraph_id = "player_status",
 		element = {
 			passes = {
 				{
@@ -662,7 +702,7 @@ end
 
 local function create_dynamic_ability_widget()
 	return {
-		scenegraph_id = "pivot",
+		scenegraph_id = "player_status",
 		element = {
 			passes = {
 				{

@@ -319,7 +319,7 @@ GameModeInn.local_player_game_starts = function (self, player, loading_context)
 	if show_profile_on_startup and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
 		local platform = PLATFORM
 
-		if platform == "ps4" or platform == "xb1" then
+		if IS_CONSOLE then
 			local transition_params = {
 				menu_state_name = "character"
 			}

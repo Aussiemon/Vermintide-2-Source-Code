@@ -23,7 +23,7 @@ local scenegraph_definition = {
 		parent = "screen",
 		horizontal_alignment = "right",
 		position = {
-			0,
+			1,
 			155,
 			0
 		},
@@ -37,7 +37,7 @@ local scenegraph_definition = {
 		parent = "pivot",
 		horizontal_alignment = "right",
 		position = {
-			1,
+			0,
 			0,
 			0
 		},

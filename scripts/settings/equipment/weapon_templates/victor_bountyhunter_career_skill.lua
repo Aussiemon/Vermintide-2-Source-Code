@@ -158,7 +158,7 @@ weapon_template.attack_meta_data = {
 	ignore_enemies_for_obstruction = true
 }
 weapon_template.default_spread_template = "bounty_hunter_handgun"
-weapon_template.left_hand_unit = "units/weapons/player/wpn_emp_shotgun/wpn_emp_shotgun"
+weapon_template.left_hand_unit = "units/weapons/player/wpn_emp_shotgun/pn_emp_shotgunw"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.bounty_hunter_handgun
 weapon_template.display_unit = "units/weapons/weapon_display/display_pistols"
 weapon_template.wield_anim = "bounty_hunter_ability_draw"
@@ -189,7 +189,7 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.wwise_dep_left_hand = {
-	"wwise/handgun_rifle"
+	"wwise/rakegun"
 }
 
 return {

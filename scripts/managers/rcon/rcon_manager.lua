@@ -41,7 +41,7 @@ RconManager.init = function (self)
 	self._server_id = nil
 	self._intercept_ids = {}
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self:_create_rcon_ui()
 	end
 end

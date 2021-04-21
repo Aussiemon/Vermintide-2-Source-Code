@@ -21,7 +21,6 @@ local VOTING_RPCS = {
 VoteManager.init = function (self, ingame_context)
 	self.is_server = ingame_context.is_server
 	self.network_event_delegate = ingame_context.network_event_delegate
-	self.level_transition_handler = ingame_context.level_transition_handler
 	self.input_manager = ingame_context.input_manager
 	self.wwise_world = ingame_context.wwise_world
 	self.ingame_context = ingame_context
@@ -36,16 +35,11 @@ local DLC_DEPENDENCIES = {}
 VoteManager._gather_dlc_dependencies = function (self, vote_data)
 	table.clear(DLC_DEPENDENCIES)
 
-	local game_mode = vote_data.game_mode
+	local mechanism = vote_data.mechanism
+	local mechanism_settings = mechanism and MechanismSettings[mechanism]
 
-	if game_mode == "weave_find_group" then
-		game_mode = "weave"
-	end
-
-	local game_mode_settings = game_mode and GameModeSettings[game_mode]
-
-	if game_mode_settings and game_mode_settings.required_dlc then
-		DLC_DEPENDENCIES[#DLC_DEPENDENCIES + 1] = NetworkLookup.dlcs[game_mode_settings.required_dlc]
+	if mechanism_settings and mechanism_settings.required_dlc then
+		DLC_DEPENDENCIES[#DLC_DEPENDENCIES + 1] = NetworkLookup.dlcs[mechanism_settings.required_dlc]
 	end
 
 	local difficulty = vote_data.difficulty
@@ -86,7 +80,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 					results = {},
 					voters = self:_active_peers(),
 					vote_data = vote_data,
-					voter_peer_id = voter_peer_id or NetworkLookup.peer_id()
+					voter_peer_id = voter_peer_id or Network.peer_id()
 				}
 
 				Managers.state.network.network_transmit:send_rpc_all("rpc_client_check_dlc", dlc_dependencies)
@@ -100,15 +94,25 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 				local server_start_vote_rpc = vote_template.server_start_vote_rpc
 				local voters = self.active_voting.voters
 
-				Managers.state.network.network_transmit:send_rpc_clients(server_start_vote_rpc, vote_type_id, sync_data, voters)
+				if script_data.debug_vote_manager then
+					Managers.state.network.network_transmit:send_rpc_all(server_start_vote_rpc, vote_type_id, sync_data, voters)
+				else
+					Managers.state.network.network_transmit:send_rpc_clients(server_start_vote_rpc, vote_type_id, sync_data, voters)
+				end
 
-				if vote_template.initial_vote_func then
+				if not script_data.debug_vote_manager and vote_template.initial_vote_func then
 					local votes = vote_template.initial_vote_func(vote_data)
 
 					for peer_id, vote in pairs(votes) do
 						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 						self:rpc_vote(channel_id, vote)
+					end
+
+					local my_peer_id = Network.peer_id()
+
+					if votes[my_peer_id] then
+						self:play_sound("play_gui_mission_vote")
 					end
 				end
 
@@ -119,7 +123,18 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id, ignor
 		local client_start_vote_rpc = vote_template.client_start_vote_rpc
 		local sync_data = vote_template.pack_sync_data(vote_data)
 
+		Managers.matchmaking:set_local_quick_game(false)
+		Managers.matchmaking:set_quick_game(false)
 		Managers.state.network.network_transmit:send_rpc_server(client_start_vote_rpc, vote_type_id, sync_data)
+
+		if vote_template.initial_vote_func then
+			local votes = vote_template.initial_vote_func(vote_data)
+			local my_peer_id = Network.peer_id()
+
+			if votes[my_peer_id] then
+				self:play_sound("play_gui_mission_vote")
+			end
+		end
 	end
 end
 
@@ -708,6 +723,14 @@ VoteManager.rpc_client_complete_vote = function (self, channel_id, vote_result)
 			vote_result = vote_result,
 			votes = self.active_voting.votes
 		}
+
+		if self:is_mission_vote() then
+			if vote_result == 1 then
+				self:play_sound("play_gui_mission_vote_outcome_yes")
+			else
+				self:play_sound("play_gui_mission_vote_outcome_no")
+			end
+		end
 	end
 
 	self.active_voting = nil

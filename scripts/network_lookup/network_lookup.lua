@@ -5,7 +5,6 @@ require("scripts/settings/game_mode_settings")
 require("scripts/settings/player_data")
 require("scripts/settings/equipment/attachments")
 require("scripts/settings/equipment/cosmetics")
-require("scripts/settings/equipment/player_wwise_dependencies")
 require("scripts/settings/profiles/career_settings")
 require("scripts/settings/equipment/weapons")
 require("scripts/settings/equipment/pickups")
@@ -133,7 +132,9 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_empire_soldier_generic_vo",
 	"dialogues/generated/lookup_bright_wizard_generic_vo",
 	"dialogues/generated/lookup_dwarf_ranger_generic_vo",
-	"dialogues/generated/lookup_witch_hunter_generic_vo"
+	"dialogues/generated/lookup_witch_hunter_generic_vo",
+	"dialogues/generated/lookup_weather_vo",
+	"dialogues/generated/lookup_fleur_conversations"
 }
 NetworkLookup = {}
 
@@ -635,6 +636,7 @@ NetworkLookup.heal_types = {
 	"leech",
 	"career_skill",
 	"career_passive",
+	"health_conversion",
 	"health_regen",
 	"healing_draught_temp_health",
 	"bandage_temp_health",
@@ -677,8 +679,9 @@ NetworkLookup.hit_zones = {
 	"ward"
 }
 NetworkLookup.lobby_data = {
-	"level_key",
-	"selected_level_key",
+	"network_hash",
+	"mission_id",
+	"selected_mission_id",
 	"num_players",
 	"matchmaking",
 	"player_slot_1",
@@ -687,21 +690,27 @@ NetworkLookup.lobby_data = {
 	"player_slot_4",
 	"player_slot_5",
 	"host",
-	"network_hash",
 	"unique_server_name",
 	"difficulty",
 	"game_started",
 	"room_id",
 	"session_id",
 	"is_private",
-	"time_of_search",
-	"game_mode"
+	"matchmaking_type",
+	"mechanism"
 }
 NetworkLookup.lobby_data_values = {
 	"false",
 	"true",
 	"searching"
 }
+NetworkLookup.mechanisms = {
+	"weave",
+	"adventure"
+}
+
+DLCUtils.append("mechanisms", NetworkLookup.mechanisms)
+
 NetworkLookup.game_modes = {
 	"adventure",
 	"custom",
@@ -712,11 +721,22 @@ NetworkLookup.game_modes = {
 	"twitch",
 	"deed",
 	"weave",
-	"weave_find_group",
 	"adventure_mode"
 }
 
 DLCUtils.append("game_modes", NetworkLookup.game_modes)
+
+NetworkLookup.matchmaking_types = {
+	"standard",
+	"custom",
+	"n/a",
+	"tutorial",
+	"demo",
+	"event",
+	"deed"
+}
+
+DLCUtils.append("matchmaking_types", NetworkLookup.matchmaking_types)
 
 NetworkLookup.buff_attack_types = {
 	"n/a",
@@ -1116,6 +1136,11 @@ NetworkLookup.level_keys = create_lookup({
 	"next_level",
 	"n/a"
 }, LevelSettings)
+NetworkLookup.mission_ids = create_lookup({
+	"next_level",
+	"n/a"
+}, LevelSettings)
+NetworkLookup.mission_ids = create_lookup(NetworkLookup.mission_ids, WeaveSettings.templates)
 NetworkLookup.act_keys = create_lookup({
 	"n/a"
 }, GameActs)
@@ -1498,9 +1523,6 @@ NetworkLookup.sound_events = {
 	"Stop_enemy_mutator_chaos_sorcerer_skulking_loop",
 	"Play_enemy_mutator_chaos_sorcerer_hunting_loop",
 	"Stop_enemy_mutator_chaos_sorcerer_hunting_loop",
-	"stop_player_combat_weapon_bw_deus_01_charge_husk",
-	"player_combat_weapon_bw_deus_01_charge_husk",
-	"player_combat_weapon_bw_deus_01_magma_fire",
 	"player_combat_weapon_steampistol_fire",
 	"player_combat_weapon_steampistol_fire_fast",
 	"Play_wpn_engineer_pistol_charge",
@@ -1537,7 +1559,8 @@ NetworkLookup.global_parameter_names = {
 	"demo_slowmo",
 	"champion_crowd_voices",
 	"champion_crowd_voices_walla",
-	"charge_parameter"
+	"charge_parameter",
+	"morris_music_intensity"
 }
 local weapon_sound_events = {}
 
@@ -1814,7 +1837,33 @@ NetworkLookup.music_group_states = {
 	"champion_chaos_exalted_norsca",
 	"champion_chaos_exalted_sorcerer",
 	"champion_skaven_stormvermin_warlord",
-	"champion_skaven_grey_seer"
+	"champion_skaven_grey_seer",
+	"attract_mode",
+	"dungeon",
+	"escape_mb1",
+	"escape_mb2",
+	"escape_mb3",
+	"false",
+	"mission",
+	"mission_2",
+	"mission_no_horn",
+	"no_music",
+	"no_music_no_horn",
+	"skittergate_run",
+	"survival",
+	"terror_crawlbrawl",
+	"terror_mb1",
+	"terror_mb2",
+	"terror_mb3",
+	"terror_mb4",
+	"terror_mb5",
+	"terror_mb6",
+	"terror_mb7",
+	"terror_remix1",
+	"terror_remix2",
+	"terror_remix3",
+	"ussingen",
+	"winds"
 }
 NetworkLookup.locations = {
 	"test",
@@ -2024,6 +2073,7 @@ NetworkLookup.connection_states = {
 	"disconnecting",
 	"disconnected"
 }
+NetworkLookup.rarities = create_lookup({}, RaritySettings)
 NetworkLookup.bot_orders = create_lookup({}, AIBotGroupSystem.bot_orders)
 NetworkLookup.twitch_vote_templates = create_lookup({
 	"draw",
@@ -2155,6 +2205,20 @@ NetworkLookup.markers = MarkerLookup or {}
 
 for key, lookup_table in pairs(NetworkLookup) do
 	init(lookup_table, key)
+end
+
+temp_aws_test_dumped = false
+
+if not temp_aws_test_dumped and Development.parameter("mechanism") == "versus" then
+	print("AWS_TEST LEVEL_KEYS:")
+
+	local level_keys = NetworkLookup.level_keys
+
+	for i = 1, #level_keys, 1 do
+		print(i, level_keys[i])
+	end
+
+	temp_aws_test_dumped = true
 end
 
 return

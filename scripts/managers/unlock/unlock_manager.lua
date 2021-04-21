@@ -15,8 +15,9 @@ UnlockManager.init = function (self)
 	self._update_unlocks = false
 	self._popup_ids = {}
 	self._xbox_dlc_package_names = {}
+	self._excluded_dlcs = {}
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		self._unlocks_ready = false
 		self._licensed_packages = XboxDLC.licensed_packages() or {}
 
@@ -49,7 +50,7 @@ UnlockManager._init_unlocks = function (self)
 		for unlock_name, unlock_config in pairs(settings.unlocks) do
 			local class_name = unlock_config.class
 			local id = unlock_config.id
-			local fallback_id = PLATFORM == "ps4" and unlock_config.fallback_id
+			local fallback_id = IS_PS4 and unlock_config.fallback_id
 			local backend_reward_id = unlock_config.backend_reward_id
 			local always_unlocked_game_app_ids = unlock_config.always_unlocked_game_app_ids
 			local requires_restart = unlock_config.requires_restart
@@ -68,7 +69,7 @@ end
 local POPUP_IDS_TO_REMOVE = {}
 
 UnlockManager.update = function (self, dt)
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if self._update_unlocks then
 			self._dlc_status_changed = nil
 			local status = XboxDLC.status()
@@ -84,7 +85,7 @@ UnlockManager.update = function (self, dt)
 				self:_update_console_backend_unlocks()
 			end
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		if self._update_unlocks then
 			self:_check_ps4_dlc_status()
 
@@ -130,11 +131,6 @@ end
 UnlockManager._handle_popup_results = function (self, result)
 	if result == "restart_game" then
 		if IS_WINDOWS then
-			local game_mode_manager = Managers.state.game_mode
-			local level_transition_handler = game_mode_manager.level_transition_handler
-
-			level_transition_handler:set_next_level(level_transition_handler:default_level_key(), level_transition_handler:default_environment_id())
-
 			self._ingame_ui.restart_game = true
 		else
 			Managers.account:force_exit_to_title_screen()
@@ -317,7 +313,7 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 							if is_unlocked and not reward_claimed then
 								unlock_interface:claim_reward(reward_id, callback(self, "cb_reward_claimed", unlock))
-							elseif not is_unlocked and reward_claimed and PLATFORM == "ps4" then
+							elseif not is_unlocked and reward_claimed and IS_PS4 then
 								unlock_interface:remove_reward(reward_id, callback(self, "cb_reward_removed", unlock))
 							end
 						end
@@ -341,37 +337,7 @@ UnlockManager._update_console_backend_unlocks = function (self)
 		end
 	elseif self._state == "check_unseen_rewards" then
 		if self._ingame_ui and not self._ingame_ui:is_in_view_state("HeroViewStateStore") then
-			local item_interface = Managers.backend:get_interface("items")
-			local unseen_rewards = item_interface:get_unseen_item_rewards()
-
-			if unseen_rewards then
-				for i = 1, #unseen_rewards, 1 do
-					local reward = unseen_rewards[i]
-					local item = nil
-
-					if reward.item_type == "weapon_skin" then
-						local item_id = reward.item_id
-						local weapon_skin_data = WeaponSkins.skins[item_id]
-						local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
-						item = {
-							data = weapon_skin_data,
-							backend_id = backend_id,
-							key = item_id
-						}
-					else
-						item = item_interface:get_item_from_id(reward.backend_id)
-					end
-
-					if item then
-						local item_data = item.data
-						local display_name = item_data.display_name
-
-						self:_add_reward({
-							item
-						}, display_name)
-					end
-				end
-			end
+			self:_handle_unseen_rewards()
 
 			self._state = "wait_for_rewards"
 		end
@@ -481,7 +447,7 @@ UnlockManager.is_dlc_unlocked = function (self, name)
 
 	local unlock = self._unlocks[name]
 
-	if PLATFORM ~= "win32" and not unlock then
+	if not IS_WINDOWS and not IS_LINUX and not unlock then
 		return false
 	end
 
@@ -493,7 +459,7 @@ end
 UnlockManager.is_dlc_cosmetic = function (self, name)
 	local unlock = self._unlocks[name]
 
-	if PLATFORM ~= "win32" and not unlock then
+	if not IS_WINDOWS and not IS_LINUX and not unlock then
 		return true
 	end
 
@@ -525,7 +491,7 @@ local function find_steam_store_page_url(dlc_name)
 end
 
 UnlockManager.open_dlc_page = function (self, dlc_name)
-	if IS_WINDOWS and rawget(_G, "Steam") then
+	if IS_WINDOWS and HAS_STEAM then
 		local url = find_steam_store_page_url(dlc_name)
 
 		if url then
@@ -547,7 +513,7 @@ UnlockManager.open_dlc_page = function (self, dlc_name)
 end
 
 UnlockManager.ps4_dlc_product_label = function (self, name)
-	assert(PLATFORM == "ps4", "Only call this function on a PS4")
+	assert(IS_PS4, "Only call this function on a PS4")
 
 	local unlock = self._unlocks[name]
 
@@ -650,6 +616,10 @@ UnlockManager._update_backend_unlocks = function (self)
 				return
 			end
 
+			if script_data["eac-untrusted"] then
+				return
+			end
+
 			if not self._unlocks_ready then
 				local all_ready = true
 
@@ -679,7 +649,7 @@ UnlockManager._update_backend_unlocks = function (self)
 				for i = 1, #platform_dlcs, 1 do
 					local unlock_name = platform_dlcs[i]
 
-					if not table.find(owned_dlcs, unlock_name) then
+					if not self._excluded_dlcs[unlock_name] and not table.find(owned_dlcs, unlock_name) then
 						local unlock = self._unlocks[unlock_name]
 						local id = unlock and unlock:id()
 
@@ -698,6 +668,8 @@ UnlockManager._update_backend_unlocks = function (self)
 
 					return
 				end
+
+				self._state = (new_dlc_installed and "update_backend_dlcs") or "check_unseen_rewards"
 			end
 		end
 	elseif self._state == "update_backend_dlcs" then
@@ -737,39 +709,7 @@ UnlockManager._update_backend_unlocks = function (self)
 		end
 
 		if not is_in_store then
-			local backend_manager = Managers.backend
-			local item_interface = backend_manager:get_interface("items")
-			local unseen_rewards = item_interface:get_unseen_item_rewards()
-
-			if unseen_rewards then
-				for i = 1, #unseen_rewards, 1 do
-					local reward = unseen_rewards[i]
-					local item = nil
-
-					if reward.item_type == "weapon_skin" then
-						local item_id = reward.item_id
-						local weapon_skin_data = WeaponSkins.skins[item_id]
-						weapon_skin_data.item_type = "weapon_skin"
-						local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
-						item = {
-							data = weapon_skin_data,
-							backend_id = backend_id,
-							key = item_id
-						}
-					else
-						item = item_interface:get_item_from_id(reward.backend_id)
-					end
-
-					if item then
-						local item_data = item.data
-						local display_name = item_data.display_name
-
-						self:_add_reward({
-							item
-						}, display_name)
-					end
-				end
-			end
+			self:_handle_unseen_rewards()
 
 			self._state = "wait_for_rewards"
 		end
@@ -797,6 +737,69 @@ UnlockManager._update_backend_unlocks = function (self)
 		end
 
 		self._state = "query_unlocked"
+	end
+end
+
+UnlockManager._handle_unseen_rewards = function (self)
+	local backend_manager = Managers.backend
+	local item_interface = backend_manager:get_interface("items")
+	local unseen_rewards = item_interface:get_unseen_item_rewards()
+
+	if unseen_rewards then
+		for i = 1, #unseen_rewards, 1 do
+			local reward = unseen_rewards[i]
+			local item = nil
+
+			if reward.item_type == "weapon_skin" then
+				local item_id = reward.item_id
+				local weapon_skin_data = WeaponSkins.skins[item_id]
+				weapon_skin_data.item_type = "weapon_skin"
+				local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
+				item = {
+					data = weapon_skin_data,
+					backend_id = backend_id,
+					key = item_id
+				}
+			elseif reward.reward_type == "keep_decoration_painting" then
+				local painting_data = Paintings[reward.keep_decoration_name]
+				item = {
+					data = {
+						item_type = "keep_decoration_painting",
+						display_name = painting_data.display_name,
+						description = painting_data.description,
+						inventory_icon = painting_data.icon,
+						rarity = painting_data.rarity
+					},
+					key = reward.keep_decoration_name
+				}
+			else
+				item = item_interface:get_item_from_id(reward.backend_id)
+			end
+
+			if item then
+				local item_data = item.data
+				local display_name = item_data.display_name
+
+				self:_add_reward({
+					item
+				}, display_name)
+			end
+		end
+	end
+end
+
+UnlockManager.set_excluded_dlcs = function (self, dlcs_to_exclude)
+	local excluded_dlcs = self._excluded_dlcs
+
+	table.clear(excluded_dlcs)
+
+	if not dlcs_to_exclude then
+		return
+	end
+
+	for i = 1, #dlcs_to_exclude, 1 do
+		local dlc = dlcs_to_exclude[i]
+		excluded_dlcs[dlc] = true
 	end
 end
 

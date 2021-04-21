@@ -65,6 +65,7 @@ local scenegraph_definition = {
 	},
 	sidebar_fade_bg = {
 		scale = "fit_height",
+		horizontal_alignment = "left",
 		size = {
 			256,
 			256
@@ -77,6 +78,7 @@ local scenegraph_definition = {
 	},
 	sidebar = {
 		scale = "fit_height",
+		horizontal_alignment = "left",
 		size = {
 			544,
 			1080
@@ -89,6 +91,7 @@ local scenegraph_definition = {
 	},
 	sidebar_mask = {
 		scale = "fit_height",
+		horizontal_alignment = "left",
 		size = {
 			1920,
 			1080
@@ -671,7 +674,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM == "ps4" then
+if IS_PS4 then
 	scenegraph_definition.update_offline_data_input_icon.position[1] = 35
 	scenegraph_definition.update_offline_data_input_icon.position[2] = 50
 end
@@ -742,7 +745,7 @@ local function create_engage_prompt(ui_renderer)
 		},
 		content = {
 			press_str = press_str,
-			button_id = (PLATFORM == "ps4" and "ps4_button_icon_cross_large") or "xbone_button_icon_a_large",
+			button_id = (IS_PS4 and "ps4_button_icon_cross_large") or "xbone_button_icon_a_large",
 			to_start_str = to_start_str
 		},
 		style = {
@@ -1172,7 +1175,7 @@ local function create_menu_button(scenegraph_id, text, font_size, optional_defau
 	}
 end
 
-if PLATFORM == "ps4" then
+if IS_PS4 then
 	scenegraph_definition.user_gamertag.position[1] = 0
 	scenegraph_definition.user_gamertag.position[2] = 45
 end
@@ -1247,7 +1250,7 @@ local single_widget_definitions = {
 	change_profile_input_icon = UIWidgets.create_simple_texture("xbone_button_icon_x", "change_profile_input_icon"),
 	change_profile_input_text = UIWidgets.create_simple_rect_text("change_profile_input_text", Localize("xb1_switch_profile"), 20),
 	support_info = UIWidgets.create_simple_text("", "support_info", 20, Colors.get_color_table_with_alpha("white", 150)),
-	update_offline_data_input_icon = UIWidgets.create_simple_texture((PLATFORM == "xb1" and "xbone_button_icon_y") or "ps4_button_icon_triangle", "update_offline_data_input_icon"),
+	update_offline_data_input_icon = UIWidgets.create_simple_texture((IS_XB1 and "xbone_button_icon_y") or "ps4_button_icon_triangle", "update_offline_data_input_icon"),
 	update_offline_data_input_text = UIWidgets.create_simple_rect_text("update_offline_data_input_text", Localize("update_offline_data"), 20),
 	sidebar_mask = UIWidgets.create_simple_texture("mask_rect", "sidebar_mask", false, false, {
 		255,
@@ -1295,7 +1298,7 @@ elseif script_data.settings.use_beta_mode then
 		}
 	end
 elseif BUILD == "dev" or BUILD == "debug" then
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if GameSettingsDevelopment.additional_content_view_enabled then
 			menu_button_definitions = {
 				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
@@ -1312,7 +1315,7 @@ elseif BUILD == "dev" or BUILD == "debug" then
 				create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
 			}
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		if GameSettingsDevelopment.additional_content_view_enabled then
 			menu_button_definitions = {
 				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
@@ -1337,7 +1340,7 @@ elseif BUILD == "dev" or BUILD == "debug" then
 			create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
 		}
 	end
-elseif PLATFORM == "xb1" then
+elseif IS_XB1 then
 	if GameSettingsDevelopment.additional_content_view_enabled then
 		menu_button_definitions = {
 			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
@@ -1354,7 +1357,7 @@ elseif PLATFORM == "xb1" then
 			create_menu_button("menu_option_4", "credits_menu_button_name", menu_button_font_size, "font_title")
 		}
 	end
-elseif PLATFORM == "ps4" then
+elseif IS_PS4 then
 	if GameSettingsDevelopment.additional_content_view_enabled then
 		menu_button_definitions = {
 			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),

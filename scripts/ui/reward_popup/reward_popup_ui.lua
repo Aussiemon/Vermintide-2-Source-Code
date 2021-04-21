@@ -17,6 +17,7 @@ RewardPopupUI.init = function (self, level_end_view_context)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self._skip_blur = false
 
 	self:create_ui_elements()
 	rawset(_G, "reward_popup_ui", self)
@@ -32,6 +33,10 @@ RewardPopupUI.create_ui_elements = function (self)
 	self.background_bottom_glow_widget = UIWidget.init(widget_definitions.background_bottom_glow)
 	self.background_top_glow_widget = UIWidget.init(widget_definitions.background_top_glow)
 	self.screen_background_widget = UIWidget.init(widget_definitions.screen_background)
+	self.deus_background_top_widget = UIWidget.init(widget_definitions.deus_background_top)
+	self.deus_background_bottom_widget = UIWidget.init(widget_definitions.deus_background_bottom)
+	self.deus_background_top_glow_widget = UIWidget.init(widget_definitions.deus_background_top_glow)
+	self.deus_background_bottom_glow_widget = UIWidget.init(widget_definitions.deus_background_bottom_glow)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -150,7 +155,7 @@ RewardPopupUI.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
-	local input_service = self.input_manager:get_service("end_of_level")
+	local input_service = self.input_manager:get_service(INPUT_SERVICE_NAME)
 	local render_settings = self.render_settings
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
@@ -160,6 +165,10 @@ RewardPopupUI.draw = function (self, dt)
 	UIRenderer.draw_widget(ui_top_renderer, self.background_bottom_glow_widget)
 	UIRenderer.draw_widget(ui_top_renderer, self.background_top_glow_widget)
 	UIRenderer.draw_widget(ui_top_renderer, self.screen_background_widget)
+	UIRenderer.draw_widget(ui_top_renderer, self.deus_background_top_widget)
+	UIRenderer.draw_widget(ui_top_renderer, self.deus_background_bottom_widget)
+	UIRenderer.draw_widget(ui_top_renderer, self.deus_background_bottom_glow_widget)
+	UIRenderer.draw_widget(ui_top_renderer, self.deus_background_top_glow_widget)
 
 	local animation_presentation_data = self._animation_presentation_data
 
@@ -198,7 +207,9 @@ RewardPopupUI.display_presentation = function (self, data)
 	self._presentation_complete = false
 	self._speed_up_popup = false
 
-	self:_acquire_input()
+	if not data.keep_input then
+		self:_acquire_input()
+	end
 end
 
 RewardPopupUI.is_presentation_active = function (self)
@@ -230,7 +241,11 @@ RewardPopupUI.start_presentation_animation = function (self, animation_name, wid
 			background_center = self.background_center_widget,
 			background_bottom = self.background_bottom_widget,
 			background_bottom_glow = self.background_bottom_glow_widget,
-			background_top_glow = self.background_top_glow_widget
+			background_top_glow = self.background_top_glow_widget,
+			deus_background_top = self.deus_background_top_widget,
+			deus_background_bottom = self.deus_background_bottom_widget,
+			deus_background_bottom_glow = self.deus_background_bottom_glow_widget,
+			deus_background_top_glow = self.deus_background_top_glow_widget
 		}
 	end
 
@@ -286,7 +301,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		end
 
 		widget_height = widget_size[2] / 2
-	elseif widget_type == "weapon_skin" or widget_type == "skin" then
+	elseif widget_type == "weapon_skin" or widget_type == "skin" or widget_type == "keep_decoration_painting" then
 		local data = value.data
 		local rarity = value.rarity or data.rarity
 		widget.content.texture_id = value.icon or data.inventory_icon
@@ -310,6 +325,82 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		widget.content.texture_id = inventory_icon
 		widget.content.rarity_texture = UISettings.item_rarity_textures[rarity]
 		widget_height = 0
+	elseif widget_type == "deus_item" then
+		local backend_id = value.backend_id
+		local item_interface = Managers.backend:get_interface("items")
+		local item = item_interface:get_item_from_id(backend_id)
+		local rarity = item.rarity
+		local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
+		local style = widget.style.texture_id
+		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(inventory_icon)
+		local texture_size = texture_settings.size
+		widget.content.texture_id = inventory_icon
+		widget.content.rarity_texture = UISettings.item_rarity_textures[rarity]
+		widget_height = 0
+	elseif widget_type == "deus_icon" then
+		local player = Managers.player:local_player()
+		local profile_index = player:profile_index()
+		local career_index = player:career_index()
+		widget.content.icon = DeusPowerUpUtils.get_power_up_icon(value, profile_index, career_index)
+		widget_height = 0
+	elseif widget_type == "deus_item_tooltip" then
+		local backend_id = value.backend_id
+		local item_interface = Managers.backend:get_interface("items")
+		local item = item_interface:get_item_from_id(backend_id)
+		widget.content.item = item
+		widget.style.item.draw_end_passes = true
+		local ui_renderer = self.ui_renderer
+		local ui_top_renderer = self.ui_top_renderer
+		local ui_scenegraph = self.ui_scenegraph
+		local input_service = self.input_manager:get_service(INPUT_SERVICE_NAME)
+		local render_settings = {
+			alpha_multiplier = 0
+		}
+
+		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, 0, nil, render_settings)
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+		UIRenderer.end_pass(ui_top_renderer)
+
+		widget_height = widget.style.item.item_presentation_height - 20
+	elseif widget_type == "item_tooltip" then
+		local backend_id = value.backend_id
+		local item_interface = Managers.backend:get_interface("items")
+		local item = item_interface:get_item_from_id(backend_id)
+		widget.content.item = item
+		widget.style.item.draw_end_passes = true
+		local ui_renderer = self.ui_renderer
+		local ui_top_renderer = self.ui_top_renderer
+		local ui_scenegraph = self.ui_scenegraph
+		local input_service = self.input_manager:get_service(INPUT_SERVICE_NAME)
+		local render_settings = {
+			alpha_multiplier = 0
+		}
+
+		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, 0, nil, render_settings)
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+		UIRenderer.end_pass(ui_top_renderer)
+
+		widget_height = widget.style.item.item_presentation_height - 20
+	elseif widget_type == "deus_power_up" then
+		local power_up = DeusPowerUps[value.rarity][value.name]
+		local content = widget.content
+		local style = widget.style
+		local player = Managers.player:local_player()
+		local profile_index = player:profile_index()
+		local career_index = player:career_index()
+		local rarity = power_up.rarity
+		local rarity_settings = RaritySettings[rarity]
+		local content = widget.content
+		content.title_text = DeusPowerUpUtils.get_power_up_name_text(power_up.name, power_up.talent_index, power_up.talent_tier, profile_index, career_index)
+		content.rarity_text = Localize(rarity_settings.display_name)
+		widget.style.icon_frame.color = rarity_settings.frame_color
+		widget.style.icon_glow.color = rarity_settings.color
+		content.description_text = DeusPowerUpUtils.get_power_up_description(power_up, profile_index, career_index)
+		content.icon = DeusPowerUpUtils.get_power_up_icon(power_up, profile_index, career_index)
+		local style = widget.style
+		local rarity_color = Colors.get_table(rarity)
+		style.rarity_text.text_color = rarity_color
+		widget_height = 160
 	elseif widget_type == "loot_chest" then
 		local item_template = ItemMasterList[value]
 		local rarity = item_template.rarity
@@ -353,8 +444,15 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 		amount = amount,
 		entries = entries
 	}
+	local presentation_animation_data = presentation_data.animation_data or {}
+
+	for key, value in pairs(presentation_animation_data) do
+		animation_data[key] = value
+	end
+
 	local spacing = 20
 	local min_height = 80
+	self._skip_blur = presentation_data.skip_blur
 
 	for i, presentation_entries in ipairs(presentation_data) do
 		local widgets_data = {}
@@ -519,6 +617,10 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 end
 
 RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, progress)
+	if self._skip_blur then
+		return
+	end
+
 	local world = self.ui_renderer.world
 	local shading_env = World.get_data(world, "shading_environment")
 	progress = progress or (enabled and 1) or 0

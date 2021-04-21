@@ -195,9 +195,9 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 			content.career_settings = career
 			local portrait_image = career.portrait_image
 			content.portrait = "medium_" .. portrait_image
-			local is_career_unlocked, reason, dlc_name = career:is_unlocked_function(hero_name, hero_level)
+			local is_career_unlocked, reason, dlc_name, localized = career:is_unlocked_function(hero_name, hero_level)
 			content.locked = not is_career_unlocked
-			content.locked_reason = not is_career_unlocked and reason and Localize(reason)
+			content.locked_reason = not is_career_unlocked and ((localized and reason) or Localize(reason))
 			content.dlc_name = dlc_name
 
 			if reason == "dlc_not_owned" then
@@ -508,17 +508,18 @@ CharacterSelectionStateCharacter.post_update = function (self, dt, t)
 		end
 	end
 
-	if self._despawning_player_unit_career_change and not Unit.alive(self._despawning_player_unit_career_change) and self.profile_synchronizer:all_clients_have_loaded_sync_id(self._resync_id) then
-		local player_manager = self.player_manager
-		local peer_id = self.peer_id
-		local player = player_manager:player_from_peer_id(peer_id)
+	local profile_synchronizer = Managers.state.network.profile_synchronizer
+	local peer_id = self.local_player:network_id()
+	local local_player_id = self.local_player:local_player_id()
+
+	if self._despawning_player_unit_career_change and not Unit.alive(self._despawning_player_unit_career_change) and profile_synchronizer:all_ingame_synced_for_peer(peer_id, local_player_id) then
 		local position = self._respawn_position:unbox()
 		local rotation = self._respawn_rotation:unbox()
 
-		player:spawn(position, rotation)
+		self.local_player:spawn(position, rotation)
 
 		self._despawning_player_unit_career_change = nil
-		self._resync_id = nil
+		self._resyncing_loadout = nil
 
 		self.parent:close_menu()
 	end
@@ -757,7 +758,7 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 		self:_play_sound("play_gui_start_menu_button_click")
 
 		if select_button.content.dlc_name then
-			Managers.state.event:trigger("ui_dlc_upsell", select_button.content.dlc_name)
+			Managers.state.event:trigger("ui_show_popup", select_button.content.dlc_name, "upsell")
 		elseif current_profile_index ~= self._selected_profile_index or current_career_index ~= self._selected_career_index then
 			local dlc_name = select_button.content.verify_dlc_name
 
@@ -790,7 +791,7 @@ CharacterSelectionStateCharacter._set_select_button_enabled = function (self, en
 	if enabled then
 		button_content.title_text = Localize("input_description_confirm")
 		button_content.button_hotspot.disable_button = false
-		button_content.verify_dlc_name = PLATFORM ~= "win32" and dlc_name
+		button_content.verify_dlc_name = not IS_WINDOWS and dlc_name
 		button_content.dlc_name = nil
 
 		self.menu_input_description:set_input_description(generic_input_actions.available)
@@ -880,7 +881,13 @@ CharacterSelectionStateCharacter._change_career = function (self, profile_index,
 	hero_attributes:set(hero_name, "career", career_index)
 	self:_save_selected_profile(profile_index)
 
-	self._resync_id = self.profile_synchronizer:resync_loadout(self._selected_profile_index, career_index, player)
+	local peer_id = player:network_id()
+	local local_player_id = player:local_player_id()
+
+	self._profile_synchronizer:resync_loadout(peer_id, local_player_id)
+	CosmeticUtils.sync_local_player_cosmetics(player, profile_index, career_index)
+
+	self._resyncing_loadout = true
 end
 
 CharacterSelectionStateCharacter.pending_profile_request = function (self)
@@ -986,7 +993,7 @@ CharacterSelectionStateCharacter._animate_element_by_catmullrom = function (self
 end
 
 CharacterSelectionStateCharacter.input_service = function (self)
-	return ((self._pending_profile_request or self._resync_id or self.parent:input_blocked()) and FAKE_INPUT_SERVICE) or self.parent:input_service(true)
+	return ((self._pending_profile_request or self._resyncing_loadout or self.parent:input_blocked()) and FAKE_INPUT_SERVICE) or self.parent:input_service(true)
 end
 
 return

@@ -170,18 +170,12 @@ ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt
 	local new_position = nil
 
 	if not has_good_target then
-		if not self.target_players and target and Unit.alive(target) and ScriptUnit.has_extension(target, "outline_system") then
-			local target_outline_extension = ScriptUnit.extension(target, "outline_system")
-
-			target_outline_extension.set_method("never")
-
-			local max_on_target_time = template.max_on_target_time or 0.75
-			local seek = self.on_target_time < max_on_target_time
-			local position, new_target = self:update_seeking_target(current_position, dt, t, seek)
-			new_position = position
-			self.target_unit = new_target
-			has_good_target, can_see_target = self:_check_target_valid(new_target, current_position, template)
-		end
+		local max_on_target_time = template.max_on_target_time or 0.75
+		local seek = self.on_target_time < max_on_target_time
+		local position, new_target = self:update_seeking_target(current_position, dt, t, seek)
+		new_position = position
+		self.target_unit = new_target
+		has_good_target, can_see_target = self:_check_target_valid(new_target, current_position, template)
 	end
 
 	if can_see_target then
@@ -652,6 +646,11 @@ ProjectileTrueFlightLocomotionExtension.legitimate_target = function (self, unit
 	local target_position = get_target_head_node_position(unit, "c_head")
 	local current_direction = self.current_direction:unbox()
 	local direction_to_target = target_position - position
+
+	if Vector3.length_squared(direction_to_target) == 0 then
+		return true
+	end
+
 	local wanted_direction = Vector3.normalize(direction_to_target)
 	local dot_value = Vector3.dot(current_direction, wanted_direction)
 
@@ -679,14 +678,6 @@ ProjectileTrueFlightLocomotionExtension.legitimate_target = function (self, unit
 			end
 		end
 	else
-		local target = self.target_unit
-
-		if not self.target_players and target and Unit.alive(target) and ScriptUnit.has_extension(target, "outline_system") then
-			local target_outline_extension = ScriptUnit.extension(target, "outline_system")
-
-			target_outline_extension.set_method("never")
-		end
-
 		self.target_unit = nil
 	end
 
@@ -697,6 +688,11 @@ ProjectileTrueFlightLocomotionExtension.legitimate_target_keep_target = function
 	local target_position = get_target_head_node_position(unit, "c_head")
 	local current_direction = self.current_direction:unbox()
 	local direction_to_target = target_position - position
+
+	if Vector3.length_squared(direction_to_target) == 0 then
+		return true
+	end
+
 	local wanted_direction = Vector3.normalize(direction_to_target)
 	local dot_value = Vector3.dot(current_direction, wanted_direction)
 
@@ -732,10 +728,13 @@ ProjectileTrueFlightLocomotionExtension.legitimate_player_target = function (sel
 	local target_position = Unit.world_position(unit, Unit.node(unit, "c_spine"))
 	local current_direction = self.current_direction:unbox()
 	local direction_to_target = target_position - position
+
+	if Vector3.length_squared(direction_to_target) == 0 then
+		return true
+	end
+
 	local wanted_direction = Vector3.normalize(direction_to_target)
 	local dot_value = Vector3.dot(current_direction, wanted_direction)
-
-	print(dot_value)
 
 	if dot_value > -0.99 then
 		local physics_world = World.get_data(self.world, "physics_world")
@@ -785,14 +784,6 @@ ProjectileTrueFlightLocomotionExtension.current_position = function (self)
 end
 
 ProjectileTrueFlightLocomotionExtension.destroy = function (self)
-	local target = self.target_unit
-
-	if target and Unit.alive(target) and not self.target_players and ScriptUnit.has_extension(target, "outline_system") then
-		local target_outline_extension = ScriptUnit.extension(target, "outline_system")
-
-		target_outline_extension.set_method("never")
-	end
-
 	local template = self.true_flight_template
 
 	if template.create_bot_threat then
@@ -830,13 +821,6 @@ ProjectileTrueFlightLocomotionExtension.stop = function (self)
 	end
 
 	self.stopped = true
-	local target = self.target_unit
-
-	if not self.target_players and target and Unit.alive(target) and ScriptUnit.has_extension(target, "outline_system") then
-		local target_outline_extension = ScriptUnit.extension(target, "outline_system")
-
-		target_outline_extension.set_method("never")
-	end
 end
 
 return

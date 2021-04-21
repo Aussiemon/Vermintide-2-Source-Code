@@ -133,7 +133,7 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 	local game_mode = level_settings.game_mode or "adventure"
 	local bg_material = "materials/ui/loading_screens/" .. (loading_ui_package_name or self.default_loading_screen)
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		local gui = World.create_screen_gui(self.world, "immediate", "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 		local gui_retained = World.create_screen_gui(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 		self.ui_renderer = UIRenderer.create_ui_renderer(self.world, gui, gui_retained)

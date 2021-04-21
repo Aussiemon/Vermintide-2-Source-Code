@@ -22,13 +22,6 @@ local GAME_MODE_LOOKUP_STRINGS = {
 	["n/a"] = "lb_game_type_none",
 	any = "lobby_browser_mission"
 }
-local GAME_TYPES = {
-	"adventure",
-	"custom",
-	"event",
-	"weave",
-	"any"
-}
 StartGameWindowLobbyBrowserConsole = class(StartGameWindowLobbyBrowserConsole)
 StartGameWindowLobbyBrowserConsole.NAME = "StartGameWindowLobbyBrowserConsole"
 
@@ -44,7 +37,7 @@ StartGameWindowLobbyBrowserConsole.on_enter = function (self, params, offset)
 	self._career_name = local_player:career_name()
 	self._stats_id = local_player:stats_id()
 	self._friend_names = {}
-	local lobby_finder = LobbyFinder:new(network_options, MatchmakingSettings.MAX_NUM_LOBBIES, true)
+	local lobby_finder = LobbyFinder:new(network_options, MatchmakingSettings.MAX_NUM_LOBBIES, IS_WINDOWS and true)
 	self._lobby_finder = lobby_finder
 	local ignore_dlc_check = false
 	self._current_weave = LevelUnlockUtils.current_weave(self._statistics_db, self._stats_id, ignore_dlc_check)
@@ -57,6 +50,12 @@ StartGameWindowLobbyBrowserConsole.on_enter = function (self, params, offset)
 	self:change_generic_actions("default_lobby_browser")
 	self:set_input_description(nil)
 	Managers.account:get_friends(2000, callback(self, "cb_friends_collected"))
+end
+
+StartGameWindowLobbyBrowserConsole.get_selected_game_mode_index = function (self)
+	local game_modes = self._game_mode_data.game_modes
+
+	return self._selected_game_mode_index or game_modes.adventure
 end
 
 local EMPTY_DATA = {}
@@ -114,7 +113,7 @@ StartGameWindowLobbyBrowserConsole._is_refreshing = function (self)
 	return self._lobby_finder:is_refreshing()
 end
 
-StartGameWindowLobbyBrowserConsole._play_sound = function (self, event)
+StartGameWindowLobbyBrowserConsole.play_sound = function (self, event)
 	self._parent:play_sound(event)
 end
 
@@ -131,13 +130,13 @@ StartGameWindowLobbyBrowserConsole._populate_lobby_list = function (self, auto_u
 	local lobby_count = 0
 
 	for _, lobby_data in pairs(lobbies) do
-		local game_mode_id = lobby_data.game_mode
+		local matchmaking_type_id = lobby_data.matchmaking_type
 
-		if PLATFORM == "ps4" then
-			game_mode_id = NetworkLookup.game_modes[game_mode_id]
+		if IS_PS4 then
+			matchmaking_type_id = NetworkLookup.matchmaking_types[matchmaking_type_id]
 		end
 
-		if tonumber(game_mode_id) <= #NetworkLookup.game_modes then
+		if tonumber(matchmaking_type_id) <= #NetworkLookup.matchmaking_types then
 			if show_filter == "lb_show_joinable" then
 				if self:_valid_lobby(lobby_data) then
 					lobby_count = lobby_count + 1
@@ -168,6 +167,8 @@ StartGameWindowLobbyBrowserConsole._get_lobbies = function (self)
 	return lobby_finder:lobbies() or empty_lobby_list
 end
 
+local REQUIRED_DLCS = {}
+
 StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 	local is_valid = lobby_data.valid
 
@@ -175,34 +176,79 @@ StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 		return false
 	end
 
+	table.clear(REQUIRED_DLCS)
+
 	local is_server = lobby_data.server_info ~= nil
 
 	if not is_server then
 		local is_matchmaking = lobby_data.matchmaking and lobby_data.matchmaking ~= "false"
-		local level_key = lobby_data.selected_level_key or lobby_data.level_key
+		local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 		local difficulty = lobby_data.difficulty
+		local matchmaking_types_index = tonumber(lobby_data.matchmaking_type)
+		local matchmaking_type = NetworkLookup.matchmaking_types[matchmaking_types_index]
 		local num_players = tonumber(lobby_data.num_players)
+		local quick_play = lobby_data.quick_play
+		local mechanism = lobby_data.mechanism
 
-		if not is_matchmaking or not level_key or not difficulty or num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS then
+		if not is_matchmaking or not mission_id or not difficulty or num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS then
 			return false
+		end
+
+		if difficulty and mechanism ~= "weave" then
+			local difficulty_settings = DifficultySettings[difficulty]
+
+			if difficulty_settings.extra_requirement_name then
+				local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
+
+				if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
+					return false
+				end
+			end
+
+			if difficulty_settings.dlc_requirement then
+				REQUIRED_DLCS[difficulty_settings.dlc_requirement] = true
+			end
 		end
 
 		local player_manager = Managers.player
 		local player = player_manager:local_player()
 		local statistics_db = player_manager:statistics_db()
 		local player_stats_id = player:stats_id()
+		local level_key = mission_id
+		local mechanism_settings = MechanismSettings[mechanism]
+
+		if mechanism_settings and mechanism_settings.required_dlc then
+			REQUIRED_DLCS[mechanism_settings.required_dlc] = true
+		end
+
+		for dlc_name, _ in pairs(REQUIRED_DLCS) do
+			if not Managers.unlock:is_dlc_unlocked(dlc_name) then
+				return false
+			end
+		end
+
+		if mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[mission_id]
+
+			if weave_template then
+				level_key = weave_template.objectives[1].level_id or level_key
+			end
+		end
+
 		local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
 
 		if not level_unlocked then
 			return false
 		end
 
-		local profile_name = player:profile_display_name()
-		local career_name = player:career_name()
-		local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, profile_name, career_name)
+		if mechanism ~= "weave" then
+			local profile_name = player:profile_display_name()
+			local career_name = player:career_name()
+			local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, profile_name, career_name)
 
-		if not has_required_power_level then
-			return false
+			if not has_required_power_level then
+				return false
+			end
 		end
 	elseif is_server then
 		local wanted_server_name = self._current_server_name
@@ -253,8 +299,8 @@ end
 
 StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	local lobby_finder = self._lobby_finder
-	local game_mode_index = self.selected_game_mode_index
-	local game_mode = GAME_TYPES[game_mode_index]
+	local game_mode_index = self._selected_game_mode_index
+	local mechanism = self._game_mode_data.game_modes[self._selected_game_mode_index] or "any"
 	local level_index = self._selected_level_index
 	local levels_table = self:_get_levels()
 	local level_key = levels_table[level_index]
@@ -271,10 +317,10 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 		filters = {},
 		near_filters = {},
 		free_slots = free_slots,
-		distance_filter = PLATFORM ~= "ps4" and distance_filter
+		distance_filter = not IS_PS4 and distance_filter
 	}
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		local user_region = Managers.account:region()
 
 		if distance_filter == "close" then
@@ -305,16 +351,16 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	end
 
 	if level_key ~= "any" and level_key then
-		requirements.filters.selected_level_key = {
+		requirements.filters.selected_mission_id = {
 			comparison = "equal",
 			value = level_key
 		}
 	end
 
-	if game_mode ~= "any" and game_mode then
-		requirements.filters.game_mode = {
+	if mechanism ~= "any" and mechanism then
+		requirements.filters.mechanism = {
 			comparison = "equal",
-			value = NetworkLookup.game_modes[game_mode]
+			value = mechanism
 		}
 	end
 
@@ -345,7 +391,7 @@ StartGameWindowLobbyBrowserConsole._search = function (self)
 	local requirements = self:_create_filter_requirements()
 	local lobby_finder = self._lobby_finder
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local lobby_browser = lobby_finder:get_lobby_browser()
 
 		LobbyInternal.clear_filter_requirements(lobby_browser)
@@ -362,7 +408,8 @@ end
 
 StartGameWindowLobbyBrowserConsole._get_levels = function (self)
 	local game_mode_data = self._game_mode_data
-	local game_mode_index = self._selected_game_mode_index or 1
+	local game_modes = game_mode_data.game_modes
+	local game_mode_index = self._selected_game_mode_index or game_modes.adventure
 	local data = game_mode_data[game_mode_index]
 	local levels = data.levels
 
@@ -371,15 +418,16 @@ end
 
 StartGameWindowLobbyBrowserConsole._get_difficulties = function (self)
 	local game_mode_data = self._game_mode_data
-	local game_mode_index = self._selected_game_mode_index or 1
-	local data = game_mode_data[game_mode_index]
+	local game_modes = game_mode_data.game_modes
+	local game_mode_index = self._selected_game_mode_index or game_modes.adventure
+	local data = game_mode_data[game_mode_index] or game_mode_data[1]
 	local difficulties = data.difficulties
 
 	return difficulties
 end
 
 StartGameWindowLobbyBrowserConsole.completed_level_difficulty_index = function (self, lobby_data)
-	local level_key = lobby_data.selected_level_key
+	local level_key = lobby_data.selected_mission_id
 	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, level_key) or 0
 
 	return completed_difficulty_index
@@ -446,7 +494,7 @@ StartGameWindowLobbyBrowserConsole.set_distance_filter = function (self, distanc
 end
 
 StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_data)
-	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 	local difficulty = lobby_data.difficulty
 	local num_players = tonumber(lobby_data.num_players)
 
@@ -454,7 +502,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 		return false, "cannot_join_while_matchmaking"
 	end
 
-	if not level_key or not difficulty or level_key == "n/a" then
+	if not mission_id or not difficulty or mission_id == "n/a" then
 		return false, "dlc1_2_difficulty_unavailable"
 	end
 
@@ -482,48 +530,14 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 	local profile_name = self._profile_name
 	local career_name = self._career_name
 	local required_dlcs = {}
-	local weave_name = lobby_data.weave_name
-	local difficulty = lobby_data.difficulty
-
-	if difficulty then
-		local difficulty_settings = DifficultySettings[difficulty]
-
-		if difficulty_settings.extra_requirement_name then
-			local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
-
-			if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
-				return false, "difficulty_requirements_not_met"
-			end
-		end
-
-		if difficulty_settings.dlc_requirement then
-			required_dlcs[difficulty_settings.dlc_requirement] = true
-		end
-	end
-
-	local game_mode_index = tonumber(lobby_data.game_mode)
-	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
-	local game_mode = (PLATFORM == "ps4" and game_mode_index) or game_mode_names[game_mode_index]
-	local game_mode_settings = GameModeSettings[game_mode]
-	local weave_name = lobby_data.weave_name
 	local quick_game = lobby_data.quick_game == "true"
+	local mechanism = lobby_data.mechanism
+	local mechanism_settings = MechanismSettings[mechanism]
+	local difficulty_lock_reason = nil
 
-	if game_mode_settings and game_mode_settings.required_dlc then
-		required_dlcs[game_mode_settings.required_dlc] = true
-	end
-
-	for dlc_name, _ in pairs(required_dlcs) do
-		if not Managers.unlock:is_dlc_unlocked(dlc_name) then
-			return false, "dlc1_2_dlc_level_locked_tooltip"
-		end
-	end
-
-	if game_mode_settings and game_mode_settings.extra_requirements_function and not game_mode_settings.extra_requirements_function() then
-		return false, "game_mode_requirements_not_met"
-	end
-
-	if game_mode == "weave" then
-		if weave_name ~= "false" and not quick_game then
+	if mechanism == "weave" then
+		if mission_id ~= "false" and not quick_game then
+			local weave_name = mission_id
 			local ignore_dlc_check = false
 			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
 
@@ -531,7 +545,31 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 				return false, "weave_not_unlocked"
 			end
 		end
+	elseif mechanism == "deus" and DeusJourneySettings[mission_id] then
+		local unlocked_journeys = LevelUnlockUtils.unlocked_journeys(statistics_db, player_stats_id)
+		local journey_unlocked = table.find(unlocked_journeys, mission_id)
+
+		if not journey_unlocked then
+			return false, "start_game_level_locked"
+		end
+
+		if difficulty then
+			local difficulty_settings = DifficultySettings[difficulty]
+
+			if difficulty_settings.extra_requirement_name then
+				local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
+
+				if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
+					return false, "difficulty_requirements_not_met"
+				end
+			end
+
+			if difficulty_settings.dlc_requirement then
+				required_dlcs[difficulty_settings.dlc_requirement] = true
+			end
+		end
 	else
+		local level_key = mission_id
 		local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
 
 		if not level_unlocked then
@@ -551,11 +589,47 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 			end
 		end
 
-		local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, profile_name, career_name)
-
-		if not has_required_power_level then
-			return false, "difficulty_blocked_by_me"
+		if mechanism_settings and mechanism_settings.extra_requirements_function and not mechanism_settings.extra_requirements_function() then
+			return false, "game_mode_requirements_not_met"
 		end
+
+		if mechanism ~= "deus" then
+			local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, profile_name, career_name)
+
+			if not has_required_power_level then
+				return false, "difficulty_blocked_by_me"
+			end
+		end
+
+		if difficulty then
+			local difficulty_settings = DifficultySettings[difficulty]
+
+			if difficulty_settings.extra_requirement_name then
+				local extra_requirement = ExtraDifficultyRequirements[difficulty_settings.extra_requirement_name]
+
+				if not Development.parameter("unlock_all_difficulties") and not extra_requirement.requirement_function() then
+					difficulty_lock_reason = "difficulty_requirements_not_met"
+				end
+			end
+
+			if difficulty_settings.dlc_requirement then
+				required_dlcs[difficulty_settings.dlc_requirement] = true
+			end
+		end
+	end
+
+	if mechanism_settings and mechanism_settings.required_dlc then
+		required_dlcs[mechanism_settings.required_dlc] = true
+	end
+
+	for dlc_name, _ in pairs(required_dlcs) do
+		if not Managers.unlock:is_dlc_unlocked(dlc_name) then
+			return false, "dlc1_2_dlc_level_locked_tooltip"
+		end
+	end
+
+	if difficulty_lock_reason then
+		return false, difficulty_lock_reason
 	end
 
 	return true, "tutorial_no_text"

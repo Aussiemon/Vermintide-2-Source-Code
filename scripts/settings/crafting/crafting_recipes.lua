@@ -80,20 +80,44 @@ local crafting_recipes = {
 		end,
 		input_func = function (self, input_service)
 			local backend_ids = nil
+			local gamepad_active = Managers.input:is_device_active("gamepad")
 
-			if input_service:get("right_stick_press") then
-				local item_grid = self._item_grid
-				local item, is_equipped = item_grid:get_item_hovered()
+			if gamepad_active then
+				if input_service:get("right_stick_press") then
+					local item_grid = self._item_grid
+					local item, is_equipped = item_grid:get_item_hovered()
 
-				if not item then
-					item, is_equipped = item_grid:selected_item()
+					if not item then
+						item, is_equipped = item_grid:selected_item()
+					end
+
+					backend_ids = {}
+
+					if item and not is_equipped then
+						local rarity = item.rarity
+						backend_ids[#backend_ids + 1] = item.backend_id
+						local items = item_grid:items()
+
+						for idx, item in ipairs(items) do
+							local backend_id = item.backend_id
+							local item_rarity = item.rarity
+
+							if item_rarity == rarity and not table.find(backend_ids, backend_id) then
+								backend_ids[#backend_ids + 1] = backend_id
+
+								if table.size(backend_ids) == CraftingSettings.NUM_SALVAGE_SLOTS then
+									break
+								end
+							end
+						end
+					end
 				end
-
+			else
 				backend_ids = {}
+				local rarity = self.parent:get_auto_fill_rarity()
 
-				if item and not is_equipped then
-					local rarity = item.rarity
-					backend_ids[#backend_ids + 1] = item.backend_id
+				if rarity then
+					local item_grid = self._item_grid
 					local items = item_grid:items()
 
 					for idx, item in ipairs(items) do

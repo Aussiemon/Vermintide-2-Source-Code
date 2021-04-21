@@ -1969,6 +1969,16 @@ PowerLevelTemplates = {
 			impact = 0.25
 		}
 	},
+	default_target_slashing_smiter_burn_M = {
+		dot_template_name = "burning_3W_dot",
+		boost_curve_type = "smiter_curve",
+		boost_curve_coefficient = 2,
+		attack_template = "slashing_smiter",
+		power_distribution = {
+			attack = 0.4,
+			impact = 0.25
+		}
+	},
 	default_target_smiter_burn_M = {
 		boost_curve_type = "smiter_curve",
 		dot_template_name = "burning_3W_dot",

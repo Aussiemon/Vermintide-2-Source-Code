@@ -13,11 +13,11 @@ end
 TelemetryManager = class(TelemetryManager)
 
 TelemetryManager.create = function ()
-	if PLATFORM == "win32" and rawget(_G, "lcurl") == nil then
+	if IS_WINDOWS and rawget(_G, "lcurl") == nil then
 		print("[TelemetryManager] No lcurl interface found! Fallback to dummy...")
 
 		return TelemetryManagerDummy:new()
-	elseif PLATFORM ~= "win32" and rawget(_G, "REST") == nil then
+	elseif not IS_WINDOWS and rawget(_G, "REST") == nil then
 		print("[TelemetryManager] No REST interface found! Fallback to dummy...")
 
 		return TelemetryManagerDummy:new()
@@ -101,7 +101,7 @@ TelemetryManager.send = function (self, cb)
 
 	local payload = "[" .. table.concat(self._events_json, ", \n") .. "]"
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local headers = {
 			string.format("title_id: %s", self._title_id)
 		}

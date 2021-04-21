@@ -1,74 +1,44 @@
-local definitions = local_require("scripts/ui/hud_ui/game_timer_ui_definitions")
 GameTimerUI = class(GameTimerUI)
 
 GameTimerUI.init = function (self, parent, ingame_ui_context)
-	self._parent = parent
-	self.ui_renderer = ingame_ui_context.ui_renderer
-	self.ingame_ui = ingame_ui_context.ingame_ui
-	self.input_manager = ingame_ui_context.input_manager
+	self._gui = ingame_ui_context.ui_renderer.gui
+	self._visible = true
+	self._enabled = Application.make_hash(Application.user_setting("enable_ingame_timer")) == "473df4ed7fa71691" and not Development.parameter("disable_ingame_timer")
 
-	self:create_ui_elements()
-
-	local event_manager = Managers.state.event
-
-	event_manager:register(self, "start_game_time", "event_start_game_time")
-
-	self._disabled = Development.parameter("disable_ingame_timer")
+	Managers.state.event:register(self, "start_game_time", "event_start_game_time")
 end
 
-GameTimerUI.create_ui_elements = function (self)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
-	self.timer_text_box = UIWidget.init(definitions.widget_definitions.timer_text_box)
-	self.timer_widget_content = self.timer_text_box.content
-
-	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
+GameTimerUI.destroy = function (self)
+	Managers.state.event:unregister("start_game_time", self)
 end
 
 GameTimerUI.event_start_game_time = function (self, start_time)
 	self._start_time = start_time
 end
 
-GameTimerUI.destroy = function (self)
-	local event_manager = Managers.state.event
-
-	event_manager:unregister("start_game_time", self)
-	self:set_visible(false)
-end
-
 GameTimerUI.set_visible = function (self, visible)
-	return
+	self._visible = visible
 end
 
-GameTimerUI.update = function (self, dt)
-	if self._disabled then
+GameTimerUI.update = function (self)
+	if not self._enabled or not self._visible then
 		return
 	end
 
 	local start_time = self._start_time
 
 	if start_time then
-		local current_network_time = Managers.state.network:network_time()
-		local time = current_network_time - start_time
+		local gui = self._gui
+		local time = Managers.state.network:network_time() - start_time
+		local text = string.format("%.2d:%.2d:%06.3f", time / 3600, (time / 60) % 60, time % 60)
+		local screen_width, screen_height = Gui.resolution()
+		local scale = math.min(screen_width / 1920, screen_height / 1080, 1)
+		local font = "materials/fonts/arial"
+		local font_size = 28 * scale
+		local _, _, car = Gui.slug_text_extents(gui, text, font, font_size)
 
-		self:set_time(time)
-		self:draw(dt)
+		Gui.slug_text(gui, text, font, font_size, Vector3(screen_width - scale * 14 * 13, screen_height - scale * 14, 1000), Color(255, 255, 255), "shadow", Color(0, 0, 0))
 	end
-end
-
-GameTimerUI.draw = function (self, dt)
-	local ui_renderer = self.ui_renderer
-	local ui_scenegraph = self.ui_scenegraph
-	local input_service = self.input_manager:get_service("ingame_menu")
-
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
-	UIRenderer.draw_widget(ui_renderer, self.timer_text_box)
-	UIRenderer.end_pass(ui_renderer)
-end
-
-GameTimerUI.set_time = function (self, time)
-	local floor = math.floor
-	local timer_text = string.format("%.2d:%.2d:%.2d", floor(time / 3600), floor(time / 60) % 60, floor(time) % 60)
-	self.timer_widget_content.timer_text = timer_text
 end
 
 return

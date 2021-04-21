@@ -75,8 +75,7 @@ ActionThrownProjectile.client_owner_post_update = function (self, dt, t, world, 
 	end
 
 	if self.state == "shooting" then
-		local buff_extension = self._owner_buff_extension
-		local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
+		local procced = self:_check_extra_shot_proc(self._owner_buff_extension)
 		local add_spread = not self._extra_buff_shot
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -97,7 +96,7 @@ ActionThrownProjectile.client_owner_post_update = function (self, dt, t, world, 
 			end
 		end
 
-		if procced and not self._extra_buff_shot then
+		if procced then
 			self.state = "waiting_to_shoot"
 			self._time_to_shoot = t + 0.1
 			self._extra_buff_shot = true

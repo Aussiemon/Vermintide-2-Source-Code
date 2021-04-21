@@ -47,7 +47,9 @@ GameModeHelper.change_player_to_selected_profile = function (profile_synchronize
 		if current_profile_index ~= selected_profile_index or current_career_index ~= selected_career_index then
 			local is_bot = false
 
-			profile_synchronizer:select_profile(peer_id, local_player_id, selected_profile_index, selected_career_index, is_bot)
+			if profile_synchronizer:try_reserve_profile_for_peer(peer_id, selected_profile_index) then
+				profile_synchronizer:assign_full_profile(peer_id, local_player_id, selected_profile_index, selected_career_index, is_bot)
+			end
 		end
 	end
 end

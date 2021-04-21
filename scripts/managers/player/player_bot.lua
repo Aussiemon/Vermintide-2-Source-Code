@@ -10,7 +10,7 @@ local BOT_COLORS = {
 	empire_soldier = QuaternionBox(255, 220, 20, 60)
 }
 
-PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profile_index, career_index, local_player_id, unique_id, ui_id, account_id)
+PlayerBot.init = function (self, network_manager, player_name, bot_profile_name, is_server, profile_index, career_index, local_player_id, unique_id, ui_id, account_id)
 	self.player_name = player_name
 	self.bot_profile = PlayerBots[bot_profile_name]
 	self._profile_index = profile_index
@@ -22,6 +22,7 @@ PlayerBot.init = function (self, player_name, bot_profile_name, is_server, profi
 	self.peer_id = Network.peer_id()
 	self.color = BOT_COLORS[player_name]
 	self.viewport_name = player_name
+	self.network_manager = network_manager
 	local profile = SPProfiles[self._profile_index]
 	self.character_name = Localize(profile.character_name)
 	self._local_player_id = local_player_id
@@ -100,7 +101,7 @@ PlayerBot.telemetry_id = function (self)
 	return self._telemetry_id
 end
 
-PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int)
+PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, additional_items)
 	local profile_index = self._profile_index
 	local profile = SPProfiles[profile_index]
 	local career_index = self:career_index()
@@ -120,12 +121,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		character_state_class_list[#character_state_class_list + 1] = rawget(_G, character_state_name)
 	end
 
-	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, profile)
-
-	if is_initial_spawn and career.additional_starting_inventory then
-		initial_inventory.additional_items = career.additional_starting_inventory
-	end
-
+	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, additional_items, profile)
 	local hero_name = profile.display_name
 	local base_skin = career.base_skin
 	local base_frame = "default"
@@ -299,11 +295,17 @@ PlayerBot.create_game_object = function (self)
 	local callback = callback(self, "cb_game_session_disconnect")
 	local game_object_id = Managers.state.network:create_player_game_object("bot_player", game_object_data_table, callback)
 	self.game_object_id = game_object_id
+
+	self:create_sync_data()
 end
 
 PlayerBot.destroy = function (self)
 	if self.is_server and self.game_object_id then
 		Managers.state.network:destroy_game_object(self.game_object_id)
+	end
+
+	if self._player_sync_data then
+		self._player_sync_data:destroy()
 	end
 end
 

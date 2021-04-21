@@ -12,6 +12,7 @@ end
 PlayerHuskVisualEffectsExtension.extensions_ready = function (self, world, unit)
 	self.inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 	self.overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
+	self.flow_unit_attachments = Unit.get_data(self.unit, "flow_unit_attachments") or {}
 end
 
 PlayerHuskVisualEffectsExtension.destroy = function (self)
@@ -60,6 +61,13 @@ PlayerHuskVisualEffectsExtension._set_character_overcharge = function (self, val
 	if unit and Unit.alive(unit) then
 		unit_set_flow_variable(unit, "current_overcharge", value)
 		unit_flow_event(unit, "lua_update_overcharge")
+
+		for k, v in pairs(self.flow_unit_attachments) do
+			if Unit.alive(v) then
+				unit_set_flow_variable(v, "current_overcharge", value)
+				unit_flow_event(v, "lua_update_overcharge")
+			end
+		end
 	end
 end
 

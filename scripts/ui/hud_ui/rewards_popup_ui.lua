@@ -42,6 +42,7 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 
 		for _, data in ipairs(rewards) do
 			local reward_type = data.type
+			local sounds = data.sounds
 
 			if reward_type == "item" or reward_type == "frame" then
 				local backend_id = data.backend_id
@@ -60,6 +61,90 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 					value = reward_item
 				}
 				presentation_data[#presentation_data + 1] = entry
+				presentation_data.sounds = sounds
+			elseif reward_type == "item_tooltip" then
+				local backend_id = data.backend_id
+				local reward_item = item_interface:get_item_from_id(backend_id)
+				local entry = {
+					[#entry + 1] = {
+						widget_type = "item_tooltip",
+						value = reward_item
+					},
+					[#entry + 1] = {
+						widget_type = "item",
+						value = reward_item
+					}
+				}
+				presentation_data[#presentation_data + 1] = entry
+				presentation_data.sounds = sounds
+			elseif reward_type == "deus_item_tooltip" then
+				local backend_id = data.backend_id
+				local reward_item = item_interface:get_item_from_id(backend_id)
+				local entry = {
+					[#entry + 1] = {
+						widget_type = "deus_item_tooltip",
+						value = reward_item
+					},
+					[#entry + 1] = {
+						widget_type = "deus_item",
+						value = reward_item
+					}
+				}
+				local animation_data = {
+					end_animation = "deus_close",
+					start_animation = "deus_open"
+				}
+				presentation_data[#presentation_data + 1] = entry
+				presentation_data.animation_data = animation_data
+				presentation_data.keep_input = true
+				presentation_data.skip_blur = true
+				presentation_data.sounds = sounds
+			elseif reward_type == "deus_power_up" then
+				local deus_power_up = data.power_up
+				local entry = {
+					[#entry + 1] = {
+						widget_type = "deus_power_up",
+						value = deus_power_up
+					},
+					[#entry + 1] = {
+						widget_type = "deus_icon",
+						value = deus_power_up
+					}
+				}
+				local animation_data = {
+					end_animation = "deus_close",
+					start_animation = "deus_open"
+				}
+				presentation_data[#presentation_data + 1] = entry
+				presentation_data.animation_data = animation_data
+				presentation_data.keep_input = true
+				presentation_data.skip_blur = true
+				presentation_data.sounds = sounds
+			elseif reward_type == "deus_power_up_end_of_level" then
+				local deus_power_up = data.power_up
+				local entry = {
+					[#entry + 1] = {
+						widget_type = "deus_power_up",
+						value = deus_power_up
+					},
+					[#entry + 1] = {
+						widget_type = "deus_icon",
+						value = deus_power_up
+					}
+				}
+				local animation_data = {
+					end_animation = "deus_close",
+					start_animation = "deus_open",
+					animation_wait_time = 3,
+					animations_list = {
+						"present_entry_end_of_level"
+					}
+				}
+				presentation_data[#presentation_data + 1] = entry
+				presentation_data.animation_data = animation_data
+				presentation_data.keep_input = true
+				presentation_data.skip_blur = true
+				presentation_data.sounds = sounds
 			elseif reward_type == "keep_decoration_painting" then
 				local keep_decoration_name = data.keep_decoration_name
 				local painting_data = Paintings[keep_decoration_name]
@@ -78,6 +163,7 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 					value = icon
 				}
 				presentation_data[#presentation_data + 1] = entry
+				presentation_data.sounds = sounds
 			elseif reward_type == "weapon_skin" then
 				local weapon_skin_name = data.weapon_skin_name
 				local weapon_skin_data = WeaponSkins.skins[weapon_skin_name]
@@ -96,6 +182,7 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 					value = icon
 				}
 				presentation_data[#presentation_data + 1] = entry
+				presentation_data.sounds = sounds
 			end
 		end
 
@@ -109,6 +196,13 @@ end
 
 RewardsPopupUI._is_reward_presentation_complete = function (self)
 	return self._reward_popup:is_presentation_complete()
+end
+
+RewardsPopupUI.all_presentations_done = function (self)
+	local reward_presentation_complete = not self:_displaying_reward_presentation()
+	local reward_queue_length = #self._reward_presentation_queue
+
+	return reward_presentation_complete and reward_queue_length == 0
 end
 
 RewardsPopupUI._handle_queued_presentations = function (self)
@@ -126,6 +220,18 @@ RewardsPopupUI._handle_queued_presentations = function (self)
 	end
 end
 
+RewardsPopupUI._play_sounds = function (self, sounds)
+	if not sounds then
+		return
+	end
+
+	for i = 1, #sounds, 1 do
+		local event_name = sounds[i]
+
+		Managers.music:trigger_event(event_name)
+	end
+end
+
 RewardsPopupUI._present_reward = function (self, data)
 	local reward_popup = self._reward_popup
 
@@ -133,6 +239,7 @@ RewardsPopupUI._present_reward = function (self, data)
 		local reward_presentation_queue = self._reward_presentation_queue
 		reward_presentation_queue[#reward_presentation_queue + 1] = data
 	else
+		self:_play_sounds(data.sounds)
 		reward_popup:display_presentation(data)
 
 		self._reward_presentation_active = true

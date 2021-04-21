@@ -18,14 +18,25 @@ CutsceneUI.init = function (self, parent, ingame_ui_context)
 	input_manager:map_device_to_service("cutscene", "mouse")
 	input_manager:map_device_to_service("cutscene", "gamepad")
 
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph)
-	self.letterbox_widget = UIWidget.init(definitions.widgets.letterbox)
 	self.ui_animations = {}
 	self.fx_fade_widgets = {}
 	self.fx_fade_widgets_pool = {}
 	self.fx_text_popup_widgets = {}
 	self.fx_text_popup_widgets_pool = {}
 	self.letterbox_enabled = false
+
+	self:_create_ui_elements()
+end
+
+CutsceneUI._create_ui_elements = function (self)
+	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph)
+	self.letterbox_widget = UIWidget.init(definitions.widgets.letterbox)
+	self.checkboxes = {
+		checkbox_1 = UIWidget.init(definitions.widgets.checkbox_1),
+		checkbox_2 = UIWidget.init(definitions.widgets.checkbox_2),
+		checkbox_3 = UIWidget.init(definitions.widgets.checkbox_3),
+		checkbox_4 = UIWidget.init(definitions.widgets.checkbox_4)
+	}
 end
 
 CutsceneUI.destroy = function (self)
@@ -49,10 +60,6 @@ CutsceneUI.update = function (self, dt)
 
 		if UIAnimation.completed(ui_animation) then
 			self.ui_animations[name] = nil
-
-			if name == "logo_fade_out" then
-				self:on_fade_out_complete()
-			end
 		end
 	end
 
@@ -76,8 +83,6 @@ CutsceneUI.update = function (self, dt)
 		self:prepare_draw()
 		self:draw(dt)
 	end
-
-	self:draw_game_logo_widget(dt)
 end
 
 CutsceneUI.do_draw = function (self)
@@ -122,6 +127,10 @@ CutsceneUI.draw = function (self, dt)
 
 	if self.letterbox_enabled then
 		UIRenderer.draw_widget(ui_renderer, self.letterbox_widget)
+
+		if ui_settings.skippable then
+			UIRenderer.draw_all_widgets(ui_renderer, self.checkboxes)
+		end
 	end
 
 	local fx_fade_widgets = self.fx_fade_widgets
@@ -141,17 +150,6 @@ CutsceneUI.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-end
-
-CutsceneUI.draw_game_logo_widget = function (self, dt)
-	if self.draw_game_logo then
-		local ui_renderer = self.ui_renderer
-		local ui_scenegraph = self.ui_scenegraph
-		local input_service = self.input_manager:get_service("cutscene")
-
-		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
-		UIRenderer.end_pass(ui_renderer)
-	end
 end
 
 CutsceneUI.handle_event_queue = function (self, queue)
@@ -288,20 +286,6 @@ CutsceneUI.check_for_fade = function (self)
 			self:fade_out_logo(fade_time)
 		end
 	end
-end
-
-CutsceneUI.fade_in_logo = function (self, fade_time)
-	local ui_animations = self.ui_animations
-	self.draw_game_logo = true
-end
-
-CutsceneUI.fade_out_logo = function (self, fade_time)
-	local ui_animations = self.ui_animations
-	self.draw_game_logo = true
-end
-
-CutsceneUI.on_fade_out_complete = function (self)
-	self.draw_game_logo = nil
 end
 
 return

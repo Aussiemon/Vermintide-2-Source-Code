@@ -1,3 +1,5 @@
+require("scripts/managers/account/presence/presence_helper")
+
 AccountManager = class(AccountManager)
 AccountManager.VERSION = "win32"
 local debug_friends_list = Development.parameter("debug_friends_list")
@@ -7,10 +9,6 @@ local function dprint(...)
 end
 
 AccountManager.init = function (self)
-	return
-end
-
-AccountManager.set_level_transition_handler = function (self, level_transition_handler)
 	return
 end
 
@@ -46,19 +44,7 @@ AccountManager.reset = function (self)
 	return
 end
 
-AccountManager.set_presence_menu = function (self)
-	return
-end
-
-AccountManager.set_presence_idle = function (self)
-	return
-end
-
-AccountManager.set_presence_credits = function (self)
-	return
-end
-
-AccountManager.set_presence_ingame = function (self, level_key)
+AccountManager.update_presence = function (self)
 	return
 end
 
@@ -152,6 +138,10 @@ AccountManager.region = function (self)
 end
 
 AccountManager.has_access = function (self)
+	return false
+end
+
+AccountManager.should_throttle = function (self)
 	return false
 end
 

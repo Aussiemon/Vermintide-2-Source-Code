@@ -36,7 +36,7 @@ TitleMainUI.init = function (self, world)
 	self._alpha_multiplier = 0
 	self._disabled_buttons = {}
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", attract_mode_video.video_name, "material", menu_videos.main.video_name, "material", menu_videos.main_menu.video_name)
 	else
 		self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/ui/ui_1080p_news_splash", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", attract_mode_video.video_name, "material", menu_videos.main.video_name, "material", menu_videos.main_menu.video_name)
@@ -112,7 +112,7 @@ TitleMainUI._create_ui_elements = function (self)
 	self._change_profile_input_icon_widget = UIWidget.init(single_widget_definitions.change_profile_input_icon)
 	self._change_profile_input_text_widget = UIWidget.init(single_widget_definitions.change_profile_input_text)
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		self._update_offline_data_input_icon_widget = UIWidget.init(single_widget_definitions.update_offline_data_input_icon)
 		self._update_offline_data_input_text_widget = UIWidget.init(single_widget_definitions.update_offline_data_input_text)
 	end
@@ -767,7 +767,7 @@ TitleMainUI.set_user_name = function (self, username)
 
 	print("Username:", username)
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		self._switch_profile_blocked = true
 	end
 end

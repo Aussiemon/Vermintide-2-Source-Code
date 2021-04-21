@@ -105,6 +105,8 @@ IngameView.on_exit = function (self)
 		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0)
 		ShadingEnvironment.apply(shading_env)
 	end
+
+	Managers.state.event:trigger("ingame_menu_closed")
 end
 
 IngameView.input_service = function (self)

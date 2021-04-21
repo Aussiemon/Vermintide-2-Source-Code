@@ -1185,7 +1185,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 	end
 end
 
-local MAX_PRIO_UPDATES_PER_FRAME = (PLATFORM == "win32" and 40) or 20
+local MAX_PRIO_UPDATES_PER_FRAME = (IS_WINDOWS and 40) or 20
 
 AISystem.update_ai_blackboards_prioritized = function (self, t, dt)
 	local ai_blackboard_updates = self.ai_blackboard_updates
@@ -1413,7 +1413,12 @@ AISystem.rpc_check_trigger_backstab_sfx = function (self, channel_id, unit_id)
 	local network_manager = Managers.state.network
 	local unit = network_manager:game_object_or_level_unit(unit_id)
 	local local_player = Managers.player:local_player()
-	local player_unit = local_player.player_unit
+	local player_unit = local_player and local_player.player_unit
+
+	if not ALIVE[player_unit] then
+		return
+	end
+
 	local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
 
 	if first_person_extension then

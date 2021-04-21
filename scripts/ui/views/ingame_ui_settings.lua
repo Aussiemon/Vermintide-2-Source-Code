@@ -154,7 +154,7 @@ local transitions = {
 
 		local input_service = Managers.input:get_service("Player")
 
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			local platform_key = "win32"
 			local input_filters = input_service:get_active_filters(platform_key)
 			local look_filter = input_filters.look
@@ -162,7 +162,7 @@ local transitions = {
 			function_data.filter_type = (function_data.filter_type == "scale_vector3" and "scale_vector3_invert_y") or "scale_vector3"
 		end
 
-		local platform_key = (PLATFORM == "ps4" and "ps4") or "xb1"
+		local platform_key = (IS_PS4 and "ps4") or "xb1"
 		local input_filters = input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
@@ -293,7 +293,7 @@ local transitions = {
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
 		elseif Managers.matchmaking:is_joining_friend() then
 			local text = Localize("player_join_block_exit_game")
-			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
 		else
 			self.input_manager:block_device_except_service(nil, "keyboard", 1)
 			self.input_manager:block_device_except_service(nil, "mouse", 1)
@@ -534,7 +534,7 @@ local view_settings = {
 			materials[#materials + 1] = video.resource
 		end
 
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			return UIRenderer.create(world, unpack(materials))
 		else
 			return UIRenderer.create(world, unpack(materials))
@@ -604,7 +604,7 @@ local view_settings = {
 			materials[#materials + 1] = video.resource
 		end
 
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			return UIRenderer.create(world, unpack(materials))
 		else
 			return UIRenderer.create(world, unpack(materials))
@@ -620,7 +620,7 @@ local view_settings = {
 			start_menu_view = StartMenuView:new(ingame_ui_context),
 			start_game_view = StartGameView:new(ingame_ui_context),
 			ingame_menu = IngameView:new(ingame_ui_context),
-			chat_view = (PLATFORM == "win32" and ChatView:new(ingame_ui_context)) or nil,
+			chat_view = (IS_WINDOWS and ChatView:new(ingame_ui_context)) or nil,
 			console_friends_view = ConsoleFriendsView:new(ingame_ui_context)
 		}
 
@@ -649,6 +649,7 @@ local view_settings = {
 	end,
 	hotkey_mapping = {
 		hotkey_hero = {
+			disable_when_matchmaking = false,
 			in_transition = "character_selection_force",
 			error_message = "matchmaking_ready_interaction_message_profile_view",
 			view = "character_selection",
@@ -674,7 +675,6 @@ local view_settings = {
 			in_transition_menu = "hero_view"
 		},
 		hotkey_achievements = {
-			can_interact_func = "is_not_in_modded_realm",
 			in_transition = "hero_view_force",
 			error_message = "matchmaking_ready_interaction_message_achievements",
 			view = "hero_view",

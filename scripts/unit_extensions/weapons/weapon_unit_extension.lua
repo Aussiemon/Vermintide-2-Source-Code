@@ -332,6 +332,8 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			end
 		end
 
+		self.current_action_name = new_action
+		self.current_sub_action_name = new_sub_action
 		self.current_action_settings = current_action_settings
 		local first_person_unit = self.first_person_unit
 
@@ -433,7 +435,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 				end
 			end
 
-			if PLATFORM ~= "win32" and event == "attack_shoot" then
+			if not IS_WINDOWS and not IS_LINUX and event == "attack_shoot" then
 				anim_time_scale = anim_time_scale * 1.2
 			end
 
@@ -492,8 +494,12 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 end
 
 WeaponUnitExtension.stop_action = function (self, reason, data)
-	if self:has_current_action() then
+	if self:has_current_action() and not self._currently_stopping_action then
+		self._currently_stopping_action = true
+
 		self:_finish_action(reason, data)
+
+		self._currently_stopping_action = false
 	end
 end
 
@@ -541,7 +547,7 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 	end
 
 	if current_action_settings.finish_function then
-		current_action_settings.finish_function(self.owner_unit)
+		current_action_settings.finish_function(self.owner_unit, reason)
 	end
 
 	local first_person_extension = ScriptUnit.has_extension(self.owner_unit, "first_person_system")

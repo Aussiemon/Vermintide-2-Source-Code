@@ -59,8 +59,8 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	end
 
 	if self.state == "shooting" then
-		local buff_extension = self.owner_buff_extension
-		local extra_shot_perk = buff_extension:has_buff_perk("extra_shot") and not current_action.career_skill
+		local procced = self:_check_extra_shot_proc(self.owner_buff_extension)
+		local extra_shot_perk = procced and not current_action.career_skill
 		local add_spread = not self.extra_buff_shot
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -83,7 +83,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 			end
 		end
 
-		if extra_shot_perk and not self.extra_buff_shot then
+		if extra_shot_perk then
 			self.state = "waiting_to_shoot"
 			self.time_to_shoot = t + 0.1
 			self.extra_buff_shot = true

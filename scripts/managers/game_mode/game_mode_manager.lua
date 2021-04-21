@@ -31,9 +31,8 @@ end
 
 GameModeManager = class(GameModeManager)
 
-GameModeManager.init = function (self, world, lobby_host, lobby_client, level_transition_handler, network_event_delegate, statistics_db, game_mode_key, network_server, network_transmit, profile_synchronizer, game_mode_settings)
-	local level_key = level_transition_handler:get_current_level_keys()
-	self.level_transition_handler = level_transition_handler
+GameModeManager.init = function (self, world, lobby_host, lobby_client, network_event_delegate, statistics_db, game_mode_key, network_server, network_transmit, profile_synchronizer, game_mode_settings)
+	local level_key = Managers.level_transition_handler:get_current_level_keys()
 	self._lobby_host = lobby_host
 	self._lobby_client = lobby_client
 	self.is_server = not not lobby_host
@@ -75,8 +74,7 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, level_tr
 		ring_buffer = Script.new_array(max_size),
 		max_size = max_size
 	}
-	local debug_activated_mutators = nil
-	local mutators = debug_activated_mutators or self._game_mode:mutators()
+	local mutators = self._game_mode:mutators()
 	local has_local_client = not DEDICATED_SERVER
 	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client, world, network_event_delegate, network_transmit)
 	self._looping_event_timers = {}
@@ -94,7 +92,6 @@ GameModeManager.destroy = function (self)
 
 	self._lobby_host = nil
 	self._lobby_client = nil
-	self.level_transition_handler = nil
 
 	self._game_mode:unregister_rpcs()
 	self._game_mode:destroy()
@@ -145,10 +142,6 @@ end
 GameModeManager.setup_done = function (self)
 	self._game_mode:setup_done()
 	self._mutator_handler:activate_mutators()
-end
-
-GameModeManager.has_activated_mutator = function (self, mutator_name)
-	self._mutator_handler:has_activated_mutator(mutator_name)
 end
 
 GameModeManager.deactivate_mutator = function (self, mutator_name)
@@ -205,8 +198,8 @@ GameModeManager.player_hit = function (self, hit_unit, attacking_unit, attack_da
 	self._mutator_handler:player_hit(hit_unit, attacking_unit, attack_data)
 end
 
-GameModeManager.modify_player_base_damage = function (self, damaged_unit, damage, damage_type)
-	return self._mutator_handler:modify_player_base_damage(damaged_unit, damage, damage_type)
+GameModeManager.modify_player_base_damage = function (self, damaged_unit, attacker_unit, damage, damage_type)
+	return self._mutator_handler:modify_player_base_damage(damaged_unit, attacker_unit, damage, damage_type)
 end
 
 GameModeManager.player_respawned = function (self, spawned_unit)
@@ -243,6 +236,14 @@ GameModeManager.activated_mutators = function (self)
 	return self._mutator_handler:activated_mutators()
 end
 
+GameModeManager.has_mutator = function (self, mutator_name)
+	return self._mutator_handler:has_mutator(mutator_name)
+end
+
+GameModeManager.mutators = function (self)
+	return self._mutator_handler:mutators()
+end
+
 GameModeManager.evaluate_end_zone_activation_conditions = function (self)
 	return self._mutator_handler:evaluate_end_zone_activation_conditions()
 end
@@ -262,13 +263,6 @@ GameModeManager.get_saved_game_mode_data = function (self)
 	if self._game_mode.get_saved_game_mode_data then
 		return self._game_mode:get_saved_game_mode_data()
 	end
-end
-
-GameModeManager.get_conflict_settings = function (self)
-	local game_mode = self._game_mode
-	local conflict_settings = game_mode:get_conflict_settings()
-
-	return conflict_settings
 end
 
 GameModeManager.set_object_set_enabled = function (self, set_name, enable)
@@ -484,20 +478,20 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 end
 
 GameModeManager.get_end_screen_config = function (self, game_won, game_lost, player)
-	local screen_name, screen_config = self._game_mode:get_end_screen_config(game_won, game_lost, player)
+	local screen_name, screen_config, screen_params = self._game_mode:get_end_screen_config(game_won, game_lost, player)
 
 	fassert(screen_name ~= nil, "No screen name returned")
 	fassert(screen_config ~= nil, "No screen config returned")
 
-	return screen_name, screen_config
+	return screen_name, screen_config, screen_params
 end
 
 GameModeManager.get_player_wounds = function (self, profile)
 	return self._game_mode:get_player_wounds(profile)
 end
 
-GameModeManager.get_initial_inventory = function (self, healthkit, potion, grenade, profile)
-	return self._game_mode:get_initial_inventory(healthkit, potion, grenade, profile)
+GameModeManager.get_initial_inventory = function (self, healthkit, potion, grenade, additional_items, profile)
+	return self._game_mode:get_initial_inventory(healthkit, potion, grenade, additional_items, profile)
 end
 
 GameModeManager.flow_cb_set_flow_object_set_enabled = function (self, set_name, enabled)
@@ -534,7 +528,7 @@ GameModeManager._init_game_mode = function (self, game_mode_key, game_mode_setti
 
 	local settings = GameModeSettings[game_mode_key]
 	local class = rawget(_G, settings.class_name)
-	self._game_mode = class:new(settings, self._world, self.network_server, self.level_transition_handler, self.is_server, self._profile_synchronizer, self._level_key, self.statistics_db, game_mode_settings)
+	self._game_mode = class:new(settings, self._world, self.network_server, self.is_server, self._profile_synchronizer, self._level_key, self.statistics_db, game_mode_settings)
 end
 
 GameModeManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn)
@@ -590,7 +584,9 @@ GameModeManager.fail_level = function (self)
 end
 
 GameModeManager.retry_level = function (self)
-	self.level_transition_handler:reload_level()
+	local level_seed = Managers.mechanism:generate_level_seed()
+
+	Managers.level_transition_handler:reload_level(nil, level_seed)
 end
 
 GameModeManager.disable_player_spawning = function (self, disable, reason, safe_position, safe_rotation)
@@ -622,12 +618,7 @@ GameModeManager.start_specific_level = function (self, level_key, time_until_sta
 	else
 		self.specific_level_to_start = nil
 		self.specific_level_start_timer = nil
-		local level_transition_handler = self.level_transition_handler
-
-		if level_transition_handler:transition_in_progress() then
-			return
-		end
-
+		local level_transition_handler = Managers.level_transition_handler
 		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
 
 		level_transition_handler:set_next_level(level_key, environment_variation_id)
@@ -733,8 +724,7 @@ GameModeManager.server_update = function (self, dt, t)
 
 			if ended then
 				game_mode:ended(reason)
-
-				local level_key = Managers.mechanism:game_round_ended(t, dt, reason, reason_data)
+				Managers.mechanism:game_round_ended(t, dt, reason, reason_data)
 
 				if reason ~= "reload" then
 					Managers.mechanism:progress_state()
@@ -778,7 +768,7 @@ GameModeManager.server_update = function (self, dt, t)
 				end
 			end
 
-			if everyone_ready then
+			if everyone_ready and not self._have_signalled_ready_to_transition then
 				game_mode:ready_to_transition()
 
 				self._have_signalled_ready_to_transition = true
@@ -816,6 +806,10 @@ end
 
 GameModeManager.set_end_reason = function (self, end_reason)
 	self._end_reason = end_reason
+end
+
+GameModeManager.get_end_reason = function (self)
+	return self._end_reason
 end
 
 GameModeManager.level_key = function (self)

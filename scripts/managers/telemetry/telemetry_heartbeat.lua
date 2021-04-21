@@ -28,7 +28,7 @@ TelemetryHeartbeat._send = function (self)
 			printf("[TelemetryHeartbeat] Sending heartbeat '%s'", payload)
 		end
 
-		if PLATFORM == "win32" or PLATFORM == "linux" then
+		if IS_WINDOWS or IS_LINUX then
 			local headers = {
 				"Content-Type: application/json"
 			}

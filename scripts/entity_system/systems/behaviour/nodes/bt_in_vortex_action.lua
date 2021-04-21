@@ -18,11 +18,7 @@ BTInVortexAction.enter = function (self, unit, blackboard, t)
 	locomotion_extension:set_movement_type("script_driven")
 	locomotion_extension:set_wanted_rotation(nil)
 
-	local network_manager = Managers.state.network
-
-	network_manager:anim_event(unit, "vortex_loop")
-
-	blackboard.in_vortex_state = "in_vortex"
+	blackboard.in_vortex_state = "in_vortex_init"
 	blackboard.stagger_prohibited = true
 	blackboard.move_state = "idle"
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
@@ -56,7 +52,13 @@ end
 BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 	local state = blackboard.in_vortex_state
 
-	if state == "ejected_from_vortex" then
+	if state == "in_vortex_init" then
+		local network_manager = Managers.state.network
+
+		network_manager:anim_event(unit, "vortex_loop")
+
+		blackboard.in_vortex_state = "in_vortex"
+	elseif state == "ejected_from_vortex" then
 		local velocity = blackboard.ejected_from_vortex:unbox()
 		velocity = velocity - Vector3(0, 0, 9.82) * dt
 		local locomotion_extension = blackboard.locomotion_extension

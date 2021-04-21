@@ -118,7 +118,7 @@ Debug.update = function (t, dt)
 
 	if script_data.debug_cycle_select_inventory_item then
 		local matchmaking_manager = Managers.matchmaking
-		local ingame_ui = matchmaking_manager and matchmaking_manager.ingame_ui
+		local ingame_ui = matchmaking_manager and matchmaking_manager._ingame_ui
 		local inventory_view = ingame_ui and ingame_ui.current_view == "inventory_view"
 
 		if inventory_view then
@@ -421,8 +421,8 @@ debug.level_loaded = function (level_name)
 		return false
 	end
 
-	local level_transition_handler = game_mode_manager.level_transition_handler
-	local level_key = level_transition_handler.level_key
+	local level_transition_handler = Managers.level_transition_handler
+	local level_key = level_transition_handler:get_current_level_key()
 
 	if level_key ~= level_name then
 		return false
@@ -580,6 +580,48 @@ Debug.create_jira_issue = function ()
 	if valid then
 		Reporter.create_jira_issue("honduras")
 	end
+end
+
+Debug._hook_data = Debug._hook_data or {}
+
+Debug.hook = function (obj, method, handler)
+	local data_for_obj = Debug._hook_data[obj]
+
+	if not data_for_obj then
+		data_for_obj = {}
+		Debug._hook_data[obj] = data_for_obj
+	end
+
+	local orig = data_for_obj[method]
+
+	if not orig then
+		orig = rawget(obj, method)
+		data_for_obj[method] = orig
+
+		assert(orig)
+	end
+
+	rawset(obj, method, function (...)
+		return handler(orig, ...)
+	end)
+end
+
+Debug.unhook = function (obj, method, silent)
+	local data_for_obj = Debug._hook_data[obj]
+
+	if not data_for_obj then
+		return assert(silent)
+	end
+
+	local orig = data_for_obj[method]
+
+	if not orig then
+		return assert(silent)
+	end
+
+	rawset(obj, method, orig)
+
+	return true
 end
 
 return

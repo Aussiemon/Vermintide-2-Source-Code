@@ -6,7 +6,6 @@ MatchmakingStateSearchGame.init = function (self, params)
 	self._lobby_finder = params.lobby_finder
 	self._peer_id = Network.peer_id()
 	self._matchmaking_manager = params.matchmaking_manager
-	self._level_transition_handler = params.level_transition_handler
 	self._network_server = params.network_server
 	self._statistics_db = params.statistics_db
 	Managers.matchmaking.countdown_has_finished = false
@@ -34,12 +33,12 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	local quick_game = search_config.quick_game
 
 	if not quick_game then
-		local level_key = search_config.level_key
+		local mission_id = search_config.mission_id
 
-		if level_key then
-			current_filters.selected_level_key = {
+		if mission_id then
+			current_filters.selected_mission_id = {
 				comparison = "equal",
-				value = level_key
+				value = mission_id
 			}
 		end
 
@@ -53,28 +52,28 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 		end
 	end
 
-	local game_mode = search_config.game_mode
+	local matchmaking_type = search_config.matchmaking_type
 
-	if game_mode then
-		if game_mode == "adventure" then
-			local game_mode = "custom"
-			local game_mode_index = NetworkLookup.game_modes[game_mode]
-			current_filters.game_mode = {
+	if matchmaking_type then
+		if matchmaking_type == "standard" then
+			local matchmaking_type = "custom"
+			local matchmaking_type_index = NetworkLookup.matchmaking_types[matchmaking_type]
+			current_filters.matchmaking_type = {
 				comparison = "less_or_equal",
-				value = game_mode_index
+				value = matchmaking_type_index
 			}
 		else
-			local game_mode_index = NetworkLookup.game_modes[game_mode]
-			current_filters.game_mode = {
+			local matchmaking_type_index = NetworkLookup.matchmaking_types[matchmaking_type]
+			current_filters.matchmaking_type = {
 				comparison = "equal",
-				value = game_mode_index
+				value = matchmaking_type_index
 			}
 		end
 	end
 
 	local eac_authorized = false
 
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		local eac_state = EAC.state()
 		eac_authorized = eac_state == "trusted"
 	end
@@ -85,7 +84,7 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	}
 	current_filters.mechanism = {
 		comparison = "equal",
-		value = Managers.mechanism:current_mechanism_name()
+		value = self.search_config.mechanism
 	}
 	self._current_filters = current_filters
 	self._current_distance_filter = "close"
@@ -105,7 +104,7 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	lobby_data.time_of_search = tostring(os.time())
 
 	self._lobby:set_lobby_data(lobby_data)
-	self._level_transition_handler:set_next_level(nil)
+	Managers.level_transition_handler:clear_next_level()
 	self._lobby_finder:refresh()
 	self._matchmaking_manager:send_system_chat_message("matchmaking_status_start_search")
 
@@ -113,10 +112,17 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 		self._matchmaking_manager:send_system_chat_message(search_config.act_key)
 	end
 
-	if search_config.level_key then
-		local level_display_name = LevelSettings[search_config.level_key].display_name
+	if search_config.mission_id then
+		if search_config.mechanism == "weave" then
+			local weave_template = WeaveSettings.templates[search_config.mission_id]
+			local mission_display_name = weave_template.display_name
 
-		self._matchmaking_manager:send_system_chat_message(level_display_name)
+			self._matchmaking_manager:send_system_chat_message(mission_display_name)
+		else
+			local mission_display_name = LevelSettings[search_config.mission_id].display_name
+
+			self._matchmaking_manager:send_system_chat_message(mission_display_name)
+		end
 	end
 
 	local difficulty_display_name = DifficultySettings[search_config.difficulty].display_name
@@ -212,8 +218,8 @@ MatchmakingStateSearchGame._search_for_game = function (self, dt)
 	local matchmaking_manager = self._matchmaking_manager
 	local chosen_level = nil
 	local preferred_levels = {}
-	local game_mode = search_config.game_mode
-	local selected_level_key = search_config.level_key
+	local matchmaking_type = search_config.matchmaking_type
+	local mission_id = search_config.mission_id
 	local preferred_level_keys = search_config.preferred_level_keys
 	local any_level = search_config.any_level
 
@@ -221,9 +227,9 @@ MatchmakingStateSearchGame._search_for_game = function (self, dt)
 		preferred_levels = {
 			"any"
 		}
-	elseif selected_level_key then
+	elseif mission_id then
 		preferred_levels = {
-			selected_level_key
+			mission_id
 		}
 	elseif preferred_level_keys then
 		preferred_levels = table.clone(preferred_level_keys)
@@ -280,15 +286,16 @@ MatchmakingStateSearchGame._compare_first_prio_lobbies = function (self, current
 
 	local search_config = self.search_config
 	local quick_game = search_config.quick_game
-	local game_mode = search_config.game_mode
-	local current_level_key = current_lobby.selected_level_key
-	local new_level_key = new_lobby.selected_level_key
-	local current_level_settings = current_level_key and LevelSettings[current_level_key]
-	local new_level_settings = new_level_key and LevelSettings[new_level_key]
+	local matchmaking_type = search_config.matchmaking_type
+	local mechanism = search_config.mechanism
+	local current_mission_id = current_lobby.selected_mission_id
+	local new_mission_id = new_lobby.selected_mission_id
+	local current_level_settings = current_mission_id and LevelSettings[current_mission_id]
+	local new_level_settings = new_mission_id and LevelSettings[new_mission_id]
 
-	if game_mode ~= "weave" and game_mode ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
-		local current_times_completed = self:_times_party_completed_level(current_level_key)
-		local new_times_completed = self:_times_party_completed_level(new_level_key)
+	if mechanism ~= "weave" and mechanism ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
+		local current_times_completed = self:_times_party_completed_level(current_mission_id)
+		local new_times_completed = self:_times_party_completed_level(new_mission_id)
 
 		if new_times_completed < current_times_completed then
 			return new_lobby
@@ -305,17 +312,16 @@ MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, cur
 
 	local search_config = self.search_config
 	local quick_game = search_config.quick_game
-	local game_mode = search_config.game_mode
-	local current_level_key = current_lobby.selected_level_key
-	local new_level_key = new_lobby.selected_level_key
-	local current_level_settings = current_level_key and LevelSettings[current_level_key]
-	local new_level_settings = new_level_key and LevelSettings[new_level_key]
+	local matchmaking_type = search_config.matchmaking_type
+	local mechanism = search_config.mechanism
+	local current_mission_id = current_lobby.selected_mission_id
+	local new_mission_id = new_lobby.selected_mission_id
+	local current_level_settings = current_mission_id and LevelSettings[current_mission_id]
+	local new_level_settings = new_mission_id and LevelSettings[new_mission_id]
 
-	if game_mode ~= "weave" and game_mode ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
-		local current_level_key = current_lobby.selected_level_key
-		local current_times_completed = self:_times_party_completed_level(current_level_key)
-		local new_level_key = current_lobby.selected_level_key
-		local new_times_completed = self:_times_party_completed_level(new_level_key)
+	if mechanism ~= "weave" and mechanism ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
+		local current_times_completed = self:_times_party_completed_level(current_mission_id)
+		local new_times_completed = self:_times_party_completed_level(new_mission_id)
 
 		if new_times_completed < current_times_completed then
 			return new_lobby
@@ -326,11 +332,12 @@ MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, cur
 end
 
 MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, search_config, wanted_profile_id, preferred_levels)
-	local selected_level_key = search_config.level_key
+	local selected_mission_id = search_config.mission_id
 	local difficulty = search_config.difficulty
-	local game_mode = search_config.game_mode
-	local weave_name = search_config.weave_name or "false"
+	local matchmaking_type = search_config.matchmaking_type
+	local weave_name = (search_config.mechanism == "weave" and selected_mission_id) or "false"
 	local act_key = search_config.act_key
+	local mechanism = search_config.mechanism
 	local using_strict_matchmaking = search_config.strict_matchmaking
 	local max_distance_filter = search_config.max_distance_filter or MatchmakingSettings.max_distance_filter
 	local reached_max_distance = self._current_distance_filter == max_distance_filter
@@ -350,19 +357,19 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 
 		for _, lobby_data in ipairs(lobbies) do
 			local host_name = lobby_data.unique_server_name or lobby_data.host
-			local lobby_match, reason = matchmaking_manager:lobby_match(lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id, weave_name)
+			local lobby_match, reason = matchmaking_manager:lobby_match(lobby_data, act_key, level_key, difficulty, matchmaking_type, self._peer_id, weave_name, mechanism)
 
 			if lobby_match then
 				local discard = false
 				local discard_reason = nil
 				local secondary_option = false
-				local lobby_level_key = lobby_data.selected_level_key or lobby_data.level_key
+				local lobby_mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 				local ignore_dlc_check = search_config.quick_game
-				local is_event_mode = search_config.game_mode == "event"
+				local is_event_mode = search_config.matchmaking_type == "event"
 
-				if not selected_level_key and not discard and not matchmaking_manager:party_has_level_unlocked(lobby_level_key, ignore_dlc_check, nil, is_event_mode) then
+				if mechanism ~= "weave" and not selected_mission_id and not discard and not matchmaking_manager:party_has_level_unlocked(lobby_mission_id, ignore_dlc_check, nil, is_event_mode) then
 					discard = true
-					discard_reason = string.format("level(%s) is not unlocked by party", lobby_level_key)
+					discard_reason = string.format("Mission(%s) is not unlocked by party", lobby_mission_id)
 				end
 
 				if not discard and not matchmaking_manager:hero_available_in_lobby_data(wanted_profile_id, lobby_data) then
@@ -388,7 +395,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 					end
 				end
 
-				local level_settings = LevelSettings[lobby_data.level_key]
+				local level_settings = LevelSettings[lobby_data.mission_id]
 
 				if not discard and not level_settings.hub_level then
 					if using_strict_matchmaking then
@@ -399,7 +406,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 					end
 				end
 
-				if not discard and using_strict_matchmaking and lobby_data.selected_level_key ~= selected_level_key then
+				if not discard and using_strict_matchmaking and lobby_data.selected_mission_id ~= selected_mission_id then
 					discard = true
 					discard_reason = "strict matchmaking"
 				end

@@ -1591,11 +1591,32 @@ local network_settings_definition = {
 		widget_type = "title"
 	},
 	{
-		setup = "cb_allow_occupied_hero_lobbies_setup",
-		saved_value = "cb_allow_occupied_hero_lobbies_saved_value",
-		callback = "cb_allow_occupied_hero_lobbies",
-		tooltip_text = "tooltip_allow_occupied_hero_lobbies",
-		widget_type = "stepper"
+		setting_name = "allow_occupied_hero_lobbies",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
+		setting_name = "always_ask_hero_when_joining",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
 	},
 	{
 		size_y = 30,

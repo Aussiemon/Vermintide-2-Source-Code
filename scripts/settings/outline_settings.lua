@@ -88,6 +88,62 @@ OutlineSettings.ranges = {
 	player_husk = 40,
 	small_pickup = 2
 }
+OutlineSettings.flags = {
+	non_wall_occluded = "outline_unit",
+	wall_occluded = "outline_unit_z"
+}
+OutlineSettings.templates = {
+	ready_for_assisted_respawn_husk = {
+		priority = 1,
+		method = "within_distance",
+		outline_color = OutlineSettings.colors.ally,
+		distance = OutlineSettings.ranges.revive,
+		flag = OutlineSettings.flags.non_wall_occluded
+	},
+	ready_for_assisted_respawn = {
+		method = "never",
+		priority = 1
+	},
+	dead = {
+		method = "never",
+		priority = 100
+	},
+	incapacitated = {
+		priority = 1,
+		method = "within_distance",
+		outline_color = OutlineSettings.colors.knocked_down,
+		distance = OutlineSettings.ranges.revive,
+		flag = OutlineSettings.flags.non_wall_occluded
+	},
+	invisible = {
+		method = "never",
+		priority = 10
+	},
+	target_enemy = {
+		priority = 9,
+		method = "ai_alive",
+		outline_color = OutlineSettings.colors.knocked_down,
+		flag = OutlineSettings.flags.non_wall_occluded
+	},
+	target_ally = {
+		priority = 15,
+		method = "ai_alive",
+		outline_color = OutlineSettings.colors.player_attention,
+		flag = OutlineSettings.flags.non_wall_occluded
+	},
+	ping_unit = {
+		priority = 8,
+		method = "ai_alive",
+		outline_color = OutlineSettings.colors.player_attention,
+		flag = OutlineSettings.flags.non_wall_occluded
+	},
+	tutorial_highlight = {
+		priority = 99,
+		method = "always",
+		outline_color = OutlineSettings.colors.interactable,
+		flag = OutlineSettings.flags.non_wall_occluded
+	}
+}
 
 DLCUtils.require_list("outline_settings")
 

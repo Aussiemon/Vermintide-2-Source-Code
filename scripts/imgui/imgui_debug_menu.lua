@@ -161,7 +161,7 @@ ImguiDebugMenu._show_debug_setting = function (self, setting)
 
 		Imgui.push_item_width(200)
 
-		index = Imgui.combo("Choice", index - 1, options)
+		index = Imgui.combo("Choice", index, options)
 
 		Imgui.pop_item_width()
 		Imgui.same_line()

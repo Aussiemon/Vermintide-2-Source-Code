@@ -31,6 +31,14 @@ WeaveUIOnboardingTutorial.destroy = function (self)
 end
 
 WeaveUIOnboardingTutorial.update = function (self, dt, t)
+	if Managers.state.voting:vote_in_progress() then
+		if self:is_showing_tutorial() then
+			self:clear_all_popups()
+		end
+
+		return
+	end
+
 	if self.tutorial_popup then
 		if not self:is_showing_tutorial() then
 			local tutorial_queue = self.tutorial_queue

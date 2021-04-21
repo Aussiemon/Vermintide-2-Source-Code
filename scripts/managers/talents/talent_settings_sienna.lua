@@ -662,10 +662,11 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_damage_reduction_on_ignited_enemy = {
 		buffs = {
 			{
-				event = "on_enemy_ignited",
 				buff_to_add = "sienna_adept_damage_reduction_on_ignited_enemy_buff",
+				require_alive_enemy = true,
 				event_buff = true,
-				buff_func = "add_buff"
+				buff_func = "sienna_adept_add_damage_reduction_buff_on_ignited_enemy",
+				event = "on_enemy_ignited"
 			}
 		}
 	},
@@ -704,8 +705,19 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_ability_trail_double = {
 		buffs = {
 			{
-				max_stacks = 1,
+				buff_to_add = "sienna_adept_ability_trail_double_remove",
 				icon = "sienna_adept_activated_ability_dump_overcharge",
+				remove_buff_func = "sienna_adept_double_trail_talent_start_ability_cooldown_add",
+				max_stacks = 1,
+				perk = "free_ability"
+			}
+		}
+	},
+	sienna_adept_ability_trail_double_remove = {
+		buffs = {
+			{
+				max_stacks = 1,
+				duration = 0,
 				remove_buff_func = "sienna_adept_double_trail_talent_start_ability_cooldown"
 			}
 		}
@@ -1568,6 +1580,7 @@ Talents.bright_wizard = {
 		name = "sienna_adept_activated_ability_explosion",
 		num_ranks = 1,
 		icon = "sienna_adept_activated_ability_explosion",
+		description_values = {},
 		buffs = {}
 	},
 	{

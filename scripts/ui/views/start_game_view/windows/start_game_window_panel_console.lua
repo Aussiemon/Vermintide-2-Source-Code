@@ -1,7 +1,4 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_panel_console_definitions")
-local widget_definitions = definitions.widgets
-local scenegraph_definition = definitions.scenegraph_definition
-local animation_definitions = definitions.animation_definitions
 local INPUT_ACTION_NEXT = "cycle_next"
 local INPUT_ACTION_PREVIOUS = "cycle_previous"
 StartGameWindowPanelConsole = class(StartGameWindowPanelConsole)
@@ -20,42 +17,34 @@ StartGameWindowPanelConsole.on_enter = function (self, params, offset)
 		snap_pixel_positions = true
 	}
 	self._layout_settings = params.layout_settings
+	self._mechanism_name = params.mechanism_name
 	self._animations = {}
 	self._ui_animations = {}
 
-	self:create_ui_elements(params, offset)
+	self:_create_ui_elements(definitions, params, offset)
 	self:_setup_text_buttons_width_and_position()
 	self:_setup_input_buttons()
 end
 
-StartGameWindowPanelConsole.create_ui_elements = function (self, params, offset)
+StartGameWindowPanelConsole._create_ui_elements = function (self, definitions, params, offset)
+	local scenegraph_definition = definitions.scenegraph_definition
 	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.ui_scenegraph = ui_scenegraph
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(definitions.widget_definitions)
 	local title_button_widgets = {}
-	local layout_settings = self._layout_settings
-	local window_layouts = layout_settings.window_layouts
+	local window_layouts = self._layout_settings.window_layouts
+	local parent = self.parent
 
 	for i = 1, #window_layouts, 1 do
 		local settings = window_layouts[i]
 
-		if self.parent:is_valid_game_mode_option(settings) then
+		if settings.panel_sorting and parent:can_add_layout(settings) then
 			local scenegraph_id = "game_mode_option"
 			local size = scenegraph_definition[scenegraph_id].size
 			local display_name = settings.display_name or "n/a"
 			local font_size = 32
 			local horizontal_alignment = "center"
-			local widget_definition = UIWidgets.create_console_panel_button(scenegraph_id, size, display_name, font_size, nil, horizontal_alignment)
+			local widget_definition = definitions.create_panel_button(scenegraph_id, size, display_name, font_size, nil, horizontal_alignment)
 			local widget = UIWidget.init(widget_definition)
 			local layout_name = settings.name
 			widget.content.layout_name = layout_name
@@ -64,19 +53,11 @@ StartGameWindowPanelConsole.create_ui_elements = function (self, params, offset)
 		end
 	end
 
-	if PLATFORM ~= "xb1" and self.parent:_can_add_lobby_browser_function() then
-		local widget_definition = UIWidgets.create_console_panel_button("game_mode_option", scenegraph_definition.game_mode_option.size, "start_game_window_lobby_browser", 32, nil, "center")
-		local widget = UIWidget.init(widget_definition)
-		widget.content.layout_name = "lobby_browser"
-		widget.disable_function_name = "_lobby_browser_disable_function"
-		title_button_widgets[#title_button_widgets + 1] = widget
-	end
-
 	self._title_button_widgets = title_button_widgets
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_animator = UIAnimator:new(ui_scenegraph, animation_definitions)
+	self.ui_animator = UIAnimator:new(ui_scenegraph, definitions.animation_definitions)
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
@@ -135,7 +116,7 @@ StartGameWindowPanelConsole.update = function (self, dt, t)
 	self:_handle_back_button_visibility()
 	self:_update_title_buttons_disable_status()
 	self:_update_selected_option()
-	self:_update_animations(dt)
+	self:_update_animations(dt, t)
 	self:draw(dt)
 end
 
@@ -168,7 +149,7 @@ StartGameWindowPanelConsole.post_update = function (self, dt, t)
 	self:_handle_input(dt, t)
 end
 
-StartGameWindowPanelConsole._update_animations = function (self, dt)
+StartGameWindowPanelConsole._update_animations = function (self, dt, t)
 	local ui_animations = self._ui_animations
 
 	for name, animation in pairs(ui_animations) do
@@ -187,8 +168,6 @@ StartGameWindowPanelConsole._update_animations = function (self, dt)
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
-			ui_animator:stop_animation(animation_id)
-
 			animations[animation_name] = nil
 		end
 	end
@@ -196,38 +175,11 @@ StartGameWindowPanelConsole._update_animations = function (self, dt)
 	local title_button_widgets = self._title_button_widgets
 
 	for i = 1, #title_button_widgets, 1 do
-		local widget = title_button_widgets[i]
-
-		self:_animate_title_entry(widget, dt)
+		self:_animate_title_entry(title_button_widgets[i], dt, t)
 	end
 
 	self:_animate_back_button(self._widgets_by_name.back_button, dt)
 	self:_animate_back_button(self._widgets_by_name.close_button, dt)
-end
-
-StartGameWindowPanelConsole._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot or content.button_text
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-StartGameWindowPanelConsole._is_button_hover_enter = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.on_hover_enter
-end
-
-StartGameWindowPanelConsole._is_button_selected = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.is_selected
 end
 
 StartGameWindowPanelConsole._find_next_layout_name = function (self, direction)
@@ -273,12 +225,12 @@ StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 	for i = 1, #title_button_widgets, 1 do
 		local widget = title_button_widgets[i]
 
-		if not self:_is_button_selected(widget) then
-			if self:_is_button_hover_enter(widget) then
+		if not UIUtils.is_button_selected(widget) then
+			if UIUtils.is_button_hover_enter(widget) then
 				self:_play_sound("Play_hud_hover")
 			end
 
-			if self:_is_button_pressed(widget) then
+			if UIUtils.is_button_pressed(widget) then
 				selected_layout_name = widget.content.layout_name
 				input_made = true
 			end
@@ -289,14 +241,14 @@ StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 	local close_button = widgets_by_name.close_button
 	local back_button = widgets_by_name.back_button
 
-	if self:_is_button_hover_enter(back_button) or self:_is_button_hover_enter(close_button) then
+	if UIUtils.is_button_hover_enter(back_button) or UIUtils.is_button_hover_enter(close_button) then
 		self:_play_sound("Play_hud_hover")
 	end
 
 	local parent = self.parent
 	local close_on_exit = parent:close_on_exit()
 
-	if not close_on_exit and not input_made and self:_is_button_pressed(back_button) then
+	if not close_on_exit and not input_made and UIUtils.is_button_pressed(back_button) then
 		local return_layout_name = nil
 		local params = self.params
 
@@ -315,7 +267,7 @@ StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 		end
 	end
 
-	if not input_made and self:_is_button_pressed(close_button) then
+	if not input_made and UIUtils.is_button_pressed(close_button) then
 		parent:close_menu()
 
 		input_made = true
@@ -357,23 +309,8 @@ StartGameWindowPanelConsole.draw = function (self, dt)
 	local input_service = self.parent:window_input_service()
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
-
-	local widgets = self._widgets
-
-	for i = 1, #widgets, 1 do
-		local widget = widgets[i]
-
-		UIRenderer.draw_widget(ui_renderer, widget)
-	end
-
-	local title_button_widgets = self._title_button_widgets
-
-	for i = 1, #title_button_widgets, 1 do
-		local widget = title_button_widgets[i]
-
-		UIRenderer.draw_widget(ui_renderer, widget)
-	end
-
+	UIRenderer.draw_all_widgets(ui_renderer, self._widgets)
+	UIRenderer.draw_all_widgets(ui_renderer, self._title_button_widgets)
 	UIRenderer.end_pass(ui_renderer)
 end
 
@@ -444,94 +381,65 @@ StartGameWindowPanelConsole._handle_gamepad_activity = function (self)
 	end
 end
 
-StartGameWindowPanelConsole._event_disable_function = function (self)
-	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
+StartGameWindowPanelConsole._is_in_quickplay_weave_menu = function (self)
+	return self.parent.parent:on_enter_sub_state() == "weave_quickplay"
+end
 
-	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("event"))
+StartGameWindowPanelConsole._is_supported_with_twitch = function (self, game_mode)
+	local twich_manager = Managers.twitch
+
+	if twich_manager and (twich_manager:is_connecting() or twich_manager:is_connected()) then
+		return twich_manager:game_mode_supported(game_mode)
+	end
+
+	return true
+end
+
+StartGameWindowPanelConsole._event_disable_function = function (self)
+	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("event")
 end
 
 StartGameWindowPanelConsole._adventure_disable_function = function (self)
-	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
-
-	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("adventure"))
+	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("adventure")
 end
 
 StartGameWindowPanelConsole._custom_game_disable_function = function (self)
-	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
-
-	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("custom"))
+	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("custom")
 end
 
 StartGameWindowPanelConsole._heroic_deed_disable_function = function (self)
-	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
-	local running_beta = script_data.use_beta_mode
-
-	return is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("deed")) or running_beta
+	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("deed") or script_data.use_beta_mode
 end
 
 StartGameWindowPanelConsole._lobby_browser_disable_function = function (self)
-	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
-
-	return is_connected and not Managers.twitch:game_mode_supported("lobby_browser")
+	return not self:_is_supported_with_twitch("lobby_browser")
 end
 
 StartGameWindowPanelConsole._weave_disable_function = function (self)
-	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-	local is_connected = Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected())
-
-	return not is_weave_menu or (is_connected and not Managers.twitch:game_mode_supported("weave"))
+	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("weave")
 end
 
 StartGameWindowPanelConsole._streaming_disable_function = function (self)
-	local on_enter_sub_state = self.parent.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
+	if self:_is_in_quickplay_weave_menu() then
+		return true
+	end
+
 	local twitch_enabled = GameSettingsDevelopment.twitch_enabled
 	local is_offline = Managers.account:offline_mode()
 
-	return is_weave_menu or not twitch_enabled or is_offline
+	return not twitch_enabled or is_offline
 end
 
-StartGameWindowPanelConsole._animate_title_entry = function (self, widget, dt)
+StartGameWindowPanelConsole._animate_title_entry = function (self, widget, dt, t)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 	local is_selected = hotspot.is_selected
 	local input_speed = 20
-	local input_progress = hotspot.input_progress or 0
 	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
-
-	if input_pressed then
-		input_progress = math.min(input_progress + dt * input_speed, 1)
-	else
-		input_progress = math.max(input_progress - dt * input_speed, 0)
-	end
-
+	local input_progress = UIUtils.animate_value(hotspot.input_progress or 0, dt * input_speed, input_pressed)
 	local speed = 8
-	local hover_progress = hotspot.hover_progress or 0
-	local is_hover = hotspot.is_hover
-
-	if is_hover then
-		hover_progress = math.min(hover_progress + dt * speed, 1)
-	else
-		hover_progress = math.max(hover_progress - dt * speed, 0)
-	end
-
-	local selection_progress = hotspot.selection_progress or 0
-
-	if is_selected then
-		selection_progress = math.min(selection_progress + dt * speed, 1)
-	else
-		selection_progress = math.max(selection_progress - dt * speed, 0)
-	end
-
+	local hover_progress = UIUtils.animate_value(hotspot.hover_progress or 0, dt * speed, hotspot.is_hover)
+	local selection_progress = UIUtils.animate_value(hotspot.selection_progress or 0, dt * speed, is_selected)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local hover_alpha = 255 * combined_progress
 	local style = widget.style
@@ -541,7 +449,7 @@ StartGameWindowPanelConsole._animate_title_entry = function (self, widget, dt)
 	style.text_shadow.offset[2] = 3 - text_height_offset
 	style.text_hover.offset[2] = 5 - text_height_offset
 	style.text_disabled.offset[2] = 5 - text_height_offset
-	local new_marker_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
+	local new_marker_progress = 0.5 + math.sin(t * 5) * 0.5
 	style.new_marker.color[1] = 100 + 155 * new_marker_progress
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
@@ -554,33 +462,11 @@ StartGameWindowPanelConsole._animate_back_button = function (self, widget, dt)
 	local hotspot = content.button_hotspot
 	local is_selected = hotspot.is_selected
 	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
-	local input_progress = hotspot.input_progress or 0
 	local input_speed = 20
-
-	if input_pressed then
-		input_progress = math.min(input_progress + dt * input_speed, 1)
-	else
-		input_progress = math.max(input_progress - dt * input_speed, 0)
-	end
-
+	local input_progress = UIUtils.animate_value(hotspot.input_progress or 0, dt * input_speed, input_pressed)
 	local speed = 8
-	local hover_progress = hotspot.hover_progress or 0
-	local is_hover = hotspot.is_hover
-
-	if is_hover then
-		hover_progress = math.min(hover_progress + dt * speed, 1)
-	else
-		hover_progress = math.max(hover_progress - dt * speed, 0)
-	end
-
-	local selection_progress = hotspot.selection_progress or 0
-
-	if is_selected then
-		selection_progress = math.min(selection_progress + dt * speed, 1)
-	else
-		selection_progress = math.max(selection_progress - dt * speed, 0)
-	end
-
+	local hover_progress = UIUtils.animate_value(hotspot.hover_progress or 0, speed * dt, hotspot.is_hover)
+	local selection_progress = UIUtils.animate_value(hotspot.selection_progress or 0, speed * dt, is_selected)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local hover_alpha = 255 * combined_progress
 	style.texture_id.color[1] = 255 - hover_alpha

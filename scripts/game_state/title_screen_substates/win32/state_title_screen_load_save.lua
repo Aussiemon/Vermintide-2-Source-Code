@@ -25,7 +25,7 @@ StateTitleScreenLoadSave.on_enter = function (self, params)
 end
 
 StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
-	if PLATFORM == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		local app_id = Steam.app_id()
 
 		if app_id == 1085780 then
@@ -39,11 +39,8 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 		return
 	end
 
-	local level_transition_handler = LevelTransitionHandler:new()
+	Managers.level_transition_handler:set_next_level("prologue", 0)
 
-	level_transition_handler:set_next_level("prologue", 0)
-
-	self.parent.parent.loading_context.level_transition_handler = level_transition_handler
 	self.parent.parent.loading_context.switch_to_tutorial_backend = run_tutorial
 	self.parent.parent.loading_context.wanted_tutorial_state = tutorial_state
 	self.parent.parent.loading_context.first_time = true

@@ -122,8 +122,9 @@ HeroWindowWeaveForgeWeapons._setup_weapon_list = function (self)
 
 		for i = #weapon_layout, 1, -1 do
 			local item = weapon_layout[i]
+			local item_cost = backend_interface_weaves:magic_item_cost(item.key)
 
-			if backend_interface_weaves:magic_item_cost(item.key) then
+			if item_cost and item_cost > 0 then
 				table.remove(weapon_layout, i)
 			end
 		end
@@ -742,8 +743,8 @@ HeroWindowWeaveForgeWeapons._present_item = function (self, item_key, activate_s
 
 	if not item then
 		local current_essence_amount = backend_interface_weaves:get_essence()
-		local essence_cost = backend_interface_weaves:magic_item_cost(item_key) or 0
-		local can_afford = current_essence_amount >= essence_cost
+		local essence_cost = backend_interface_weaves:magic_item_cost(item_key)
+		local can_afford = essence_cost and essence_cost <= current_essence_amount
 
 		self:_set_essence_upgrade_cost(essence_cost, can_afford)
 	end
@@ -781,23 +782,25 @@ HeroWindowWeaveForgeWeapons._set_essence_upgrade_cost = function (self, essence_
 	if essence_cost then
 		local value_string = UIUtils.comma_value(essence_cost)
 		button_text = Localize("menu_weave_forge_unlock_weapon_button") .. " " .. value_string
-		local ui_renderer = self._ui_top_renderer
-		local text_width = UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text)
-		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(button_content.price_icon)
-		local icon_size = icon_texture_settings.size
-		local icon_width = icon_size[1]
-		local spacing = 0
-		local total_width = icon_width + text_width + spacing
-		local text_offset = -(total_width / 2 - (text_width / 2 + 5))
-		button_style.title_text.offset[1] = button_style.title_text.default_offset[1] + text_offset
-		button_style.title_text_shadow.offset[1] = button_style.title_text_shadow.default_offset[1] + text_offset
-		button_style.title_text_disabled.offset[1] = button_style.title_text_disabled.default_offset[1] + text_offset
-		button_style.price_icon.offset[1] = text_offset + icon_width / 2 + text_width / 2 + spacing
-		button_style.price_icon_disabled.offset[1] = button_style.price_icon.offset[1]
-		button_style.price_icon.color[1] = 255
-		button_style.price_icon_disabled.color[1] = 255
+	else
+		button_text = "Error: Not found in backend"
 	end
 
+	local ui_renderer = self._ui_top_renderer
+	local text_width = UIUtils.get_text_width(ui_renderer, button_style.title_text, button_text)
+	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(button_content.price_icon)
+	local icon_size = icon_texture_settings.size
+	local icon_width = icon_size[1]
+	local spacing = 0
+	local total_width = icon_width + text_width + spacing
+	local text_offset = -(total_width / 2 - (text_width / 2 + 5))
+	button_style.title_text.offset[1] = button_style.title_text.default_offset[1] + text_offset
+	button_style.title_text_shadow.offset[1] = button_style.title_text_shadow.default_offset[1] + text_offset
+	button_style.title_text_disabled.offset[1] = button_style.title_text_disabled.default_offset[1] + text_offset
+	button_style.price_icon.offset[1] = text_offset + icon_width / 2 + text_width / 2 + spacing
+	button_style.price_icon_disabled.offset[1] = button_style.price_icon.offset[1]
+	button_style.price_icon.color[1] = 255
+	button_style.price_icon_disabled.color[1] = 255
 	button_content.button_hotspot.disable_button = not essence_cost or not can_afford
 	button_content.title_text = button_text
 end

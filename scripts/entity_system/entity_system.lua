@@ -65,6 +65,7 @@ require("scripts/entity_system/systems/props/props_system")
 require("scripts/entity_system/systems/status/status_system")
 require("scripts/entity_system/systems/transportation/transportation_system")
 require("scripts/entity_system/systems/weapon/weapon_system")
+require("scripts/entity_system/systems/weapon/ammo_system")
 require("scripts/entity_system/systems/hud/hud_system")
 require("scripts/entity_system/systems/tutorial/tutorial_system")
 require("scripts/entity_system/systems/play_go_tutorial/play_go_tutorial_system")
@@ -256,7 +257,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 
 	self:_add_system("world_marker_system", WorldMarkerSystem, entity_system_creation_context)
 
-	if GameSettingsDevelopment.disable_carousel or not DLCSettings.carousel then
+	if GameSettingsDevelopment.disable_carousel then
 		self.entity_manager:add_ignore_extensions({
 			"VersusVolumeObjectiveExtension",
 			"VersusInteractObjectiveExtension",
@@ -274,10 +275,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"BuffAreaExtension"
 	})
 	self:_add_system("talent_system", TalentSystem, entity_system_creation_context)
-	self:_add_system("ammo_system", ExtensionSystemBase, entity_system_creation_context, {
-		"ActiveReloadAmmoUserExtension",
-		"GenericAmmoUserExtension"
-	})
+	self:_add_system("ammo_system", AmmoSystem, entity_system_creation_context)
 	self:_add_system("spread_system", ExtensionSystemBase, entity_system_creation_context, {
 		"WeaponSpreadExtension"
 	})
@@ -324,7 +322,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	})
 	self:_add_system("ai_beam_effect_system", ExtensionSystemBase, entity_system_creation_context, {
 		"CorruptorBeamExtension",
-		"StormfiendBeamExtension"
+		"StormfiendBeamExtension",
+		"CurseCorruptorBeamExtension"
 	})
 	self:_add_system("door_system", DoorSystem, entity_system_creation_context)
 	self:_add_system("payload_system", PayloadSystem, entity_system_creation_context)
@@ -351,7 +350,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("locomotion_system", LocomotionSystem, entity_system_creation_context, nil, nil, no_pre_update, has_post_update)
 	self:_add_system("animation_system", AnimationSystem, entity_system_creation_context)
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self:_add_system("eyetracking_system", ExtensionSystemBase, entity_system_creation_context, {
 			"PlayerEyeTrackingExtension"
 		})

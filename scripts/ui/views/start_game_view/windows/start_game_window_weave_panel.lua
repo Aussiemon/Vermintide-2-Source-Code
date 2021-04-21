@@ -58,12 +58,11 @@ StartGameWindowWeavePanel._create_ui_elements = function (self, params, offset)
 		font_type = "hell_shark_header",
 		font_size = font_size
 	}
+	local parent = self._parent
 	local total_length = 0
 
 	for index, settings in ipairs(window_layouts) do
-		local weave_game_mode_option = settings.weave_game_mode_option
-
-		if weave_game_mode_option then
+		if settings.panel_sorting and parent:can_add_layout(settings) then
 			local settings_name = settings.name
 			local display_name = settings.display_name or "n/a"
 			local text_width = self:_get_text_width(temp_text_style, display_name)

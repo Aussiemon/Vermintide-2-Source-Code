@@ -425,7 +425,7 @@ ConflictUtils.filter_horde_spawners_strictly = function (player_positions, spawn
 	return list, hidden_list
 end
 
-ConflictUtils.get_hidden_pos = function (world, nav_world, center_pos, avoid_positions, radius, radius_spread, avoid_dist_sqr, max_tries, cake_slice_dir, cake_slice_angle_radians)
+ConflictUtils.get_hidden_pos = function (world, nav_world, level, nav_tag_volume_handler, check_no_spawn_volumes, center_pos, avoid_positions, radius, radius_spread, avoid_dist_sqr, max_tries, cake_slice_dir, cake_slice_angle_radians)
 	local h = Vector3(0, 0, 1)
 	local half_radius_spread = radius_spread * 0.5
 	local ignore_umbra = not World.umbra_available(world)
@@ -434,9 +434,9 @@ ConflictUtils.get_hidden_pos = function (world, nav_world, center_pos, avoid_pos
 		local check_pos = nil
 
 		if cake_slice_dir then
-			check_pos = ConflictUtils.get_spawn_pos_on_cake_slice(nav_world, center_pos, radius - half_radius_spread, radius + half_radius_spread, cake_slice_dir, cake_slice_angle_radians, 10)
+			check_pos = ConflictUtils.get_spawn_pos_on_cake_slice(nav_world, center_pos, radius - half_radius_spread, radius + half_radius_spread, cake_slice_dir, cake_slice_angle_radians, 10, check_no_spawn_volumes, level, nav_tag_volume_handler)
 		else
-			check_pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, center_pos, radius, radius_spread, 10)
+			check_pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, center_pos, radius, radius_spread, 10, check_no_spawn_volumes, level, nav_tag_volume_handler)
 		end
 
 		if check_pos then
@@ -458,6 +458,10 @@ ConflictUtils.get_hidden_pos = function (world, nav_world, center_pos, avoid_pos
 			end
 		end
 	end
+end
+
+ConflictUtils.is_position_inside_no_spawn_volume = function (level, nav_tag_volume_handler, pos)
+	return NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_SPAWN") or NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_BOTS_NO_SPAWN")
 end
 
 ConflictUtils.find_center_tri = function (nav_world, pos)
@@ -500,7 +504,7 @@ ConflictUtils.test_cake_slice = function (nav_world, center_pos, t)
 	end
 end
 
-ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, radius1, radius2, cake_slice_dir, cake_slice_angle_radians, tries)
+ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, radius1, radius2, cake_slice_dir, cake_slice_angle_radians, tries, check_no_spawn_volumes, level, nav_tag_volume_handler)
 	local slice_angle = math.atan2(cake_slice_dir.x, cake_slice_dir.y)
 	local half_slice_angle = cake_slice_angle_radians * 0.5
 	local angle1 = slice_angle - half_slice_angle
@@ -514,20 +518,22 @@ ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, rad
 		if success then
 			Vector3.set_z(pos, z)
 
-			return pos
+			if not check_no_spawn_volumes or not ConflictUtils.is_position_inside_no_spawn_volume(level, nav_tag_volume_handler, pos) then
+				return pos
+			end
 		end
 	end
 
 	return false
 end
 
-ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, spread, tries)
+ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, spread, tries, check_no_spawn_volumes, level, nav_tag_volume_handler)
 	for i = 1, tries, 1 do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
-		if pos then
+		if pos and (not check_no_spawn_volumes or not ConflictUtils.is_position_inside_no_spawn_volume(level, nav_tag_volume_handler, pos)) then
 			return pos
 		end
 	end
@@ -1233,24 +1239,13 @@ ConflictUtils.patch_terror_events_with_weaves = function (level_key, weave_data,
 	end
 end
 
-ConflictUtils.generate_conflict_director_locked_function_ids = function (level_key)
-	local locked_director_function_ids = {}
+ConflictUtils.generate_conflict_director_locked_functions = function (level_key)
+	local locked_director_functions = {}
 
 	for director_name, locked_func in pairs(ConflictDirectorLockedFunctions) do
 		if locked_func(level_key) then
-			local conflict_director_lock_lookup = NetworkLookup.conflict_director_lock_lookup[director_name]
-			locked_director_function_ids[#locked_director_function_ids + 1] = conflict_director_lock_lookup
+			locked_director_functions[#locked_director_functions + 1] = director_name
 		end
-	end
-
-	return locked_director_function_ids
-end
-
-ConflictUtils.extract_conflict_director_locked_functions = function (locked_director_function_ids)
-	local locked_director_functions = {}
-
-	for _, locked_function_id in ipairs(locked_director_function_ids) do
-		locked_director_functions[NetworkLookup.conflict_director_lock_lookup[locked_function_id]] = true
 	end
 
 	return locked_director_functions

@@ -32,13 +32,19 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 			game_session_host = lobby:lobby_host()
 		end
 
-		fassert(game_session_host and game_session_host ~= "0", "Missing game session host")
+		if not game_session_host or game_session_host == "0" then
+			ScriptApplication.send_to_crashify("[GameNetworkManager]", "did not join GameSession %s as game_session_host was equal to \"0\". This probably means the host left at a weird timing.", session)
+		else
+			self._game_session_host = game_session_host
+			local channel_id = PEER_ID_TO_CHANNEL[game_session_host]
 
-		self._game_session_host = game_session_host
-		local channel_id = PEER_ID_TO_CHANNEL[game_session_host]
-
-		GameSession.join(session, channel_id)
-		printf("Joning GameSession %s as a client through channel_id %d", session, channel_id)
+			if not channel_id or channel_id == 0 then
+				ScriptApplication.send_to_crashify("[GameNetworkManager]", "did not join GameSession %s as channel_id was invalid. This happens when the host leaves while the client transitions between state_loading and state_ingame.", session)
+			else
+				GameSession.join(session, channel_id)
+				printf("Joining GameSession %s as a client through channel_id %d", session, channel_id)
+			end
+		end
 	end
 
 	self._world = world
@@ -62,7 +68,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self._event_delegate = event_delegate
 
-	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
+	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_play_particle_effect_with_variable", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
 end
 
 GameNetworkManager.lobby = function (self)
@@ -468,7 +474,9 @@ GameNetworkManager.game_object_created_player_sync_data = function (self, go_id,
 
 	local player = self.player_manager:player(peer_id, local_player_id)
 
-	player:set_sync_data_game_object_id(go_id)
+	if player then
+		player:set_sync_data_game_object_id(go_id)
+	end
 end
 
 GameNetworkManager.game_object_destroyed_player_sync_data = function (self, go_id, owner_peer_id)
@@ -661,6 +669,8 @@ GameNetworkManager.game_object_destroyed_player_unit = function (self, go_id, ow
 		self.network_server:peer_despawned_player(owner_id)
 	end
 
+	self:game_object_destroyed_network_unit(go_id, owner_id, go_template)
+
 	if DEDICATED_SERVER then
 		return false
 	end
@@ -678,8 +688,6 @@ GameNetworkManager.game_object_destroyed_player_unit = function (self, go_id, ow
 			Managers.telemetry.events:local_player_killed_player(local_player, position, target_position)
 		end
 	end
-
-	self:game_object_destroyed_network_unit(go_id, owner_id, go_template)
 end
 
 GameNetworkManager.game_object_destroyed_network_unit = function (self, go_id, owner_id, go_template)
@@ -864,6 +872,19 @@ GameNetworkManager.rpc_play_particle_effect_no_rotation = function (self, sender
 	local effect_name = NetworkLookup.effects[effect_id]
 
 	Managers.state.event:trigger("event_play_particle_effect", effect_name, unit, node_id, offset, Quaternion.identity(), linked)
+end
+
+GameNetworkManager.rpc_play_particle_effect_with_variable = function (self, sender, effect_id, position, rotation, variable, value)
+	if self.is_server then
+		self.network_transmit:send_rpc_clients("rpc_play_particle_effect_with_variable", effect_id, position, rotation, variable, value)
+	end
+
+	local effect_name = NetworkLookup.effects[effect_id]
+	local world = self._world
+	local particle_variable = World.find_particles_variable(world, effect_name, variable)
+	local beam_effect_id = World.create_particles(world, effect_name, position, rotation)
+
+	World.set_particles_variable(world, beam_effect_id, particle_variable, value)
 end
 
 GameNetworkManager._pack_percentages_completed_arrays = function (self, percentages_completed)
@@ -1124,7 +1145,7 @@ GameNetworkManager.rpc_coop_feedback = function (self, channel_id, player1_peer_
 		local is_player_controlled = player1:is_player_controlled()
 		local player_1_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(player_1_peer_id)) or tostring(player_1_peer_id))) or player1:name()
 
-		if (PLATFORM == "xb1" or PLATFORM == "ps4") and not Managers.account:offline_mode() then
+		if IS_CONSOLE and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
 			player_1_name = (is_player_controlled and (lobby:user_name(player_1_peer_id) or tostring(player_1_peer_id))) or player1:name()
 		end

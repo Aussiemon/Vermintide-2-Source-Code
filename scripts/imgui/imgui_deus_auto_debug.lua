@@ -24,9 +24,9 @@ ImguiDeusAutoDebug.is_persistent = function (self)
 end
 
 ImguiDeusAutoDebug.draw = function (self)
-	Imgui.Begin("DeusAutoDebug", "always_auto_resize")
+	Imgui.begin_window("DeusAutoDebug", "always_auto_resize")
 
-	if Imgui.Button("Automatically debug my problems") then
+	if Imgui.button("Automatically debug my problems") then
 		local possible_responses = table.clone(helpful_responses)
 
 		table.array_remove_if(possible_responses, function (response)
@@ -37,8 +37,8 @@ ImguiDeusAutoDebug.draw = function (self)
 		self._current_response = possible_responses[index]
 	end
 
-	Imgui.Text(self._current_response)
-	Imgui.End()
+	Imgui.text(self._current_response)
+	Imgui.end_window()
 end
 
 return

@@ -122,8 +122,9 @@ FormationUtils.spawn_formation = function (formation, pos, rot, breed_name, grou
 			local spawn_type = "roam"
 			local spawn_category = "encampment"
 			local breed = Breeds[breed_name]
+			local optional_data = nil
 
-			conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(formation_rot), spawn_category, nil, spawn_type, nil, group_template)
+			conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(formation_rot), spawn_category, nil, spawn_type, optional_data, group_template)
 		end
 	end
 end

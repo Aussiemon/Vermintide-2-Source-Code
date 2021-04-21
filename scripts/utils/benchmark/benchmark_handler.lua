@@ -59,7 +59,7 @@ BenchmarkHandler.init = function (self, ingame_ui, world)
 
 	Development.set_parameter("disable_loading_icon", true)
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local package_name = "resource_packages/breeds/chaos_troll"
 		local async = true
 		local prioritize = false

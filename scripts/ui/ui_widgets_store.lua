@@ -272,7 +272,7 @@ UIWidgets.create_store_category_entry_definition = function (scenegraph_id, size
 	return widget
 end
 
-UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
+UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, product)
 	local frame_name = "menu_frame_16"
 	local frame_settings = UIFrameSettings[frame_name]
 	local hover_frame_name = "frame_outer_glow_04"
@@ -321,7 +321,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "background_price",
 			texture_id = "background_price",
 			content_check_function = function (content)
-				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and not content.old_price
 			end
 		},
 		{
@@ -329,7 +329,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "background_price_center",
 			texture_id = "background_price_center",
 			content_check_function = function (content)
-				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and not content.old_price
 			end
 		},
 		{
@@ -337,7 +337,23 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "background_price_right",
 			texture_id = "background_price_right",
 			content_check_function = function (content)
-				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and not content.old_price
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "price_gradient",
+			texture_id = "price_gradient",
+			content_check_function = function (content)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price
+			end
+		},
+		{
+			texture_id = "price_strike_through",
+			style_id = "price_strike_through",
+			pass_type = "rotated_texture",
+			content_check_function = function (content)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price
 			end
 		},
 		{
@@ -349,11 +365,43 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			end
 		},
 		{
+			style_id = "optional_item_name",
+			pass_type = "text",
+			text_id = "optional_item_name",
+			content_check_function = function (content)
+				return content.optional_item_name ~= ""
+			end
+		},
+		{
+			style_id = "optional_subtitle",
+			pass_type = "text",
+			text_id = "optional_subtitle",
+			content_check_function = function (content)
+				return content.optional_item_name ~= ""
+			end
+		},
+		{
 			style_id = "price_text",
 			pass_type = "text",
 			text_id = "price_text",
 			content_check_function = function (content)
-				return not content.owned and (PLATFORM == "win32" or not content.real_currency)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and not content.old_price
+			end
+		},
+		{
+			style_id = "price_text_now",
+			pass_type = "text",
+			text_id = "price_text_now",
+			content_check_function = function (content)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price
+			end
+		},
+		{
+			style_id = "price_text_before",
+			pass_type = "text",
+			text_id = "price_text_before",
+			content_check_function = function (content)
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price
 			end
 		},
 		{
@@ -385,7 +433,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "discount_bg",
 			texture_id = "discount_bg",
 			content_check_function = function (content)
-				return content.discount
+				return content.discount and not content.hide_price
 			end
 		},
 		{
@@ -393,7 +441,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "discont_number_icons",
 			texture_id = "discont_number_icons",
 			content_check_function = function (content)
-				return content.discount
+				return content.discount and not content.hide_price
 			end
 		},
 		{
@@ -444,7 +492,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "psplus_icon",
 			texture_id = "psplus_icon",
 			content_check_function = function (content)
-				return content.show_ps4_plus and PLATFORM == "ps4" and content.real_currency
+				return content.show_ps4_plus and IS_PS4 and content.real_currency
 			end
 		},
 		{
@@ -452,7 +500,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "console_background_rect_bottom",
 			texture_id = "console_background_rect",
 			content_check_function = function (content)
-				return PLATFORM ~= "win32" and content.real_currency
+				return not IS_WINDOWS and content.real_currency
 			end
 		},
 		{
@@ -460,7 +508,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "console_background_rect_top",
 			texture_id = "console_background_rect",
 			content_check_function = function (content)
-				return PLATFORM ~= "win32" and content.real_currency and content.console_secondary_price_text ~= ""
+				return not IS_WINDOWS and content.real_currency and content.console_secondary_price_text ~= ""
 			end
 		},
 		{
@@ -468,7 +516,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "console_secondary_price_stroke",
 			pass_type = "texture",
 			content_check_function = function (content)
-				return content.show_secondary_stroke and PLATFORM ~= "win32" and content.real_currency
+				return content.show_secondary_stroke and not IS_WINDOWS and content.real_currency
 			end
 		},
 		{
@@ -476,7 +524,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			style_id = "console_third_price_stroke",
 			pass_type = "texture",
 			content_check_function = function (content)
-				return content.show_third_stroke and PLATFORM == "ps4" and content.real_currency
+				return content.show_third_stroke and IS_PS4 and content.real_currency
 			end
 		},
 		{
@@ -484,7 +532,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			pass_type = "text",
 			text_id = "console_first_price_text",
 			content_check_function = function (content)
-				return PLATFORM ~= "win32" and content.real_currency
+				return not IS_WINDOWS and content.real_currency
 			end,
 			content_change_function = function (content, style)
 				style.text_color = (content.show_ps4_plus and style.ps_plus_color) or style.base_color
@@ -495,7 +543,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			pass_type = "text",
 			text_id = "console_secondary_price_text",
 			content_check_function = function (content)
-				return content.console_secondary_price_text ~= "" and PLATFORM ~= "win32" and content.real_currency
+				return content.console_secondary_price_text ~= "" and not IS_WINDOWS and content.real_currency
 			end
 		},
 		{
@@ -503,36 +551,61 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 			pass_type = "text",
 			text_id = "console_third_price_text",
 			content_check_function = function (content)
-				return content.console_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+				return content.console_third_price_text ~= "" and IS_PS4 and content.real_currency
+			end
+		},
+		{
+			style_id = "new_marker",
+			pass_type = "texture",
+			texture_id = "new_marker",
+			content_check_function = function (content)
+				return not PlayerData.seen_shop_items[content.item_key] and not content.hide_new
+			end,
+			content_change_function = function (content, style)
+				if not PlayerData.seen_shop_items[content.item_key] then
+					local new_marker_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
+					style.color[1] = 100 + 155 * new_marker_progress
+				end
 			end
 		}
 	}
 	local content = {
 		expire_time_icon = "store_icon_hourglass",
 		price_icon = "store_icon_currency_ingame",
-		owned_icon = "store_owned_sigil",
-		price_text = "-",
-		draw_price_icon = true,
+		old_price = false,
+		price_strike_through = "shop_bundle_line",
 		background_price_center = "store_thumbnail_pricetag_middle",
-		console_first_price_text = "",
-		background_price = "store_thumbnail_pricetag_left",
-		show_third_stroke = false,
-		loading_icon = "loot_loading",
+		price_text_now = "-",
 		has_expire_date = false,
+		hide_price = false,
+		owned_icon = "store_owned_sigil",
+		optional_item_name = "",
+		console_first_price_text = "",
+		price_text = "-",
 		console_third_price_text = "",
-		show_ps4_plus = false,
 		show_secondary_stroke = false,
+		show_ps4_plus = false,
+		price_text_before = "-",
+		draw_price_icon = true,
 		type_tag_icon = "store_tag_icon_dlc",
 		discount = false,
+		show_third_stroke = false,
+		loading_icon = "loot_loading",
+		new_marker = "list_item_tag_new",
+		background_price = "store_thumbnail_pricetag_left",
+		price_gradient = "gradient",
 		real_currency = false,
 		limited_time = false,
 		owned = false,
 		console_secondary_price_text = "",
+		optional_subtitle = "",
 		owned_icon_bg = "store_owned_ribbon",
 		background_price_right = "store_thumbnail_pricetag_right",
 		discount_bg = "store_thumbnail_sale",
 		timer_icon = "store_owned_sigil",
 		psplus_icon = "psplus_logo",
+		hide_new = product.settings and product.settings.hide_new,
+		item_key = product.product_id,
 		hotspot = {},
 		discont_number_icons = {},
 		rect = (masked and "rect_masked") or "simple_rect_texture",
@@ -595,6 +668,107 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				50,
 				-(size[2] + 4),
 				12
+			}
+		},
+		optional_item_name = {
+			upper_case = false,
+			localize = false,
+			font_size = 40,
+			horizontal_alignment = "left",
+			vertical_alignment = "top",
+			dynamic_font_size = true,
+			size = {
+				320,
+				60
+			},
+			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				40,
+				-100,
+				12
+			}
+		},
+		optional_subtitle = {
+			upper_case = false,
+			localize = false,
+			font_size = 28,
+			horizontal_alignment = "left",
+			vertical_alignment = "top",
+			dynamic_font_size = true,
+			size = {
+				320,
+				60
+			},
+			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				40,
+				-150,
+				12
+			}
+		},
+		price_text_now = {
+			upper_case = false,
+			localize = false,
+			font_size = 28,
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			dynamic_font_size = false,
+			size = {
+				45,
+				40
+			},
+			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				50,
+				-(size[2] + 0),
+				12
+			}
+		},
+		price_text_before = {
+			upper_case = false,
+			localize = false,
+			font_size = 24,
+			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			dynamic_font_size = false,
+			size = {
+				45,
+				40
+			},
+			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("slate_gray", 255),
+			offset = {
+				50,
+				-(size[2] - 1),
+				12
+			}
+		},
+		price_strike_through = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = true,
+			angle = -0.17,
+			pivot = {
+				0,
+				0
+			},
+			color = {
+				255,
+				255,
+				0,
+				0
+			},
+			offset = {
+				50,
+				-(size[2] - 12),
+				13
+			},
+			texture_size = {
+				110,
+				3
 			}
 		},
 		background_rect = {
@@ -759,6 +933,26 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				58,
 				-(size[2] - 38),
 				11
+			}
+		},
+		price_gradient = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				313,
+				34
+			},
+			color = {
+				255,
+				255,
+				0,
+				0
+			},
+			offset = {
+				6,
+				-(size[2] - 40),
+				10
 			}
 		},
 		price_icon = {
@@ -1155,6 +1349,22 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked)
 				-size[2] + 25,
 				10
 			}
+		},
+		new_marker = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = {
+				math.floor(88.19999999999999),
+				math.floor(35.699999999999996)
+			},
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				-35,
+				-size[2] - 5,
+				10
+			},
+			size = size
 		}
 	}
 	widget.element.passes = passes
@@ -1742,11 +1952,21 @@ UIWidgets.create_store_dlc_feature_vertical_definition = function (scenegraph_id
 	return widget
 end
 
-UIWidgets.create_store_dlc_feature_horizontal_definition = function (scenegraph_id, size, masked)
-	local image_size = {
+UIWidgets.create_store_dlc_feature_horizontal_definition = function (scenegraph_id, size, masked, product)
+	local image_size, frame_name = nil
+	local settings = product.settings
+
+	if settings then
+		image_size = settings.image_size
+		frame_name = settings.frame_name
+	end
+
+	image_size = image_size or {
 		260,
 		size[2]
 	}
+	local frame_name = frame_name or "menu_frame_16"
+	local frame_settings = frame_name and UIFrameSettings[frame_name]
 	local default_height_offset = -size[2]
 	local edge_spacing = 20
 	local widget = {
@@ -1767,12 +1987,22 @@ UIWidgets.create_store_dlc_feature_horizontal_definition = function (scenegraph_
 			style_id = "text_shadow",
 			pass_type = "text",
 			text_id = "text"
+		},
+		{
+			texture_id = "frame",
+			style_id = "frame",
+			pass_type = "texture_frame",
+			content_check_function = function (content)
+				return content.show_frame
+			end
 		}
 	}
 	local content = {
 		text = "n/a",
 		image = (masked and "rect_masked") or "simple_rect_texture",
-		size = size
+		size = size,
+		show_frame = settings.show_frame,
+		frame = frame_settings.texture
 	}
 	local style = {
 		text = {
@@ -1830,6 +2060,25 @@ UIWidgets.create_store_dlc_feature_horizontal_definition = function (scenegraph_
 				0,
 				0,
 				8
+			}
+		},
+		frame = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = frame_settings.texture_size,
+			texture_sizes = frame_settings.texture_sizes,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = image_size,
+			offset = {
+				0,
+				-image_size[2],
+				9
 			}
 		}
 	}
@@ -1950,7 +2199,7 @@ UIWidgets.create_store_dlc_feature_pullet_point_definition = function (scenegrap
 	return widget
 end
 
-UIWidgets.create_store_list_spacing_definition = function (scenegraph_id, size, masked)
+UIWidgets.create_store_list_spacing_definition = function (scenegraph_id, size, masked, product)
 	local widget = {
 		element = {}
 	}
@@ -2429,7 +2678,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button and content.title_text and (PLATFORM == "win32" or not content.real_currency)
+						return not button_hotspot.disable_button and content.title_text and (IS_WINDOWS or not content.real_currency)
 					end
 				},
 				{
@@ -2439,7 +2688,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return button_hotspot.disable_button and not content.owned and content.title_text and (PLATFORM == "win32" or not content.real_currency)
+						return button_hotspot.disable_button and not content.owned and content.title_text and (IS_WINDOWS or not content.real_currency)
 					end
 				},
 				{
@@ -2447,7 +2696,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					pass_type = "text",
 					text_id = "title_text",
 					content_check_function = function (content)
-						return not content.owned and content.title_text and (PLATFORM == "win32" or not content.real_currency)
+						return not content.owned and content.title_text and (IS_WINDOWS or not content.real_currency)
 					end
 				},
 				{
@@ -2457,7 +2706,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button and content.title_text and (PLATFORM == "win32" or not content.real_currency)
+						return not button_hotspot.disable_button and content.title_text and (IS_WINDOWS or not content.real_currency)
 					end
 				},
 				{
@@ -2467,7 +2716,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button and (PLATFORM == "win32" or not content.real_currency)
+						return not button_hotspot.disable_button and (IS_WINDOWS or not content.real_currency)
 					end
 				},
 				{
@@ -2511,7 +2760,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					style_id = "psplus_icon",
 					texture_id = "psplus_icon",
 					content_check_function = function (content)
-						return content.show_ps4_plus and PLATFORM == "ps4" and content.real_currency
+						return content.show_ps4_plus and IS_PS4 and content.real_currency
 					end
 				},
 				{
@@ -2519,7 +2768,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					style_id = "console_background_rect",
 					texture_id = "console_background_rect",
 					content_check_function = function (content)
-						return PLATFORM ~= "win32" and content.real_currency
+						return not IS_WINDOWS and content.real_currency
 					end
 				},
 				{
@@ -2527,7 +2776,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					style_id = "console_secondary_price_stroke",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.show_secondary_stroke and PLATFORM ~= "win32" and content.real_currency
+						return content.show_secondary_stroke and not IS_WINDOWS and content.real_currency
 					end
 				},
 				{
@@ -2535,7 +2784,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					style_id = "console_third_price_stroke",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.show_third_stroke and PLATFORM == "ps4" and content.real_currency
+						return content.show_third_stroke and IS_PS4 and content.real_currency
 					end
 				},
 				{
@@ -2543,7 +2792,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					pass_type = "text",
 					text_id = "console_first_price_text",
 					content_check_function = function (content)
-						return PLATFORM ~= "win32" and content.real_currency
+						return not IS_WINDOWS and content.real_currency
 					end,
 					content_change_function = function (content, style)
 						style.text_color = (content.show_ps4_plus and style.ps_plus_color) or style.base_color
@@ -2554,7 +2803,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					pass_type = "text",
 					text_id = "console_secondary_price_text",
 					content_check_function = function (content)
-						return content.console_secondary_price_text ~= "" and PLATFORM ~= "win32" and content.real_currency
+						return content.console_secondary_price_text ~= "" and not IS_WINDOWS and content.real_currency
 					end
 				},
 				{
@@ -2562,7 +2811,7 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					pass_type = "text",
 					text_id = "console_third_price_text",
 					content_check_function = function (content)
-						return content.console_third_price_text ~= "" and PLATFORM == "ps4" and content.real_currency
+						return content.console_third_price_text ~= "" and IS_PS4 and content.real_currency
 					end
 				}
 			}
@@ -3195,8 +3444,8 @@ end
 
 UIWidgets.create_store_panel_button = function (scenegraph_id, size, text, font_size, optional_offset, optional_horizontal_alignment)
 	local new_marker_offset = {
-		-19,
-		-25,
+		-55,
+		2,
 		10
 	}
 	local selection_offset = {
@@ -3355,7 +3604,7 @@ UIWidgets.create_store_panel_button = function (scenegraph_id, size, text, font_
 			},
 			new_marker = {
 				vertical_alignment = "center",
-				horizontal_alignment = "center",
+				horizontal_alignment = "left",
 				texture_size = {
 					math.floor(88.19999999999999),
 					math.floor(35.699999999999996)

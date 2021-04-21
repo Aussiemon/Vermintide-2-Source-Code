@@ -1,9 +1,6 @@
-require("scripts/managers/matchmaking/matchmaking_handshaker")
-
 GameServerManager = class(GameServerManager)
 
 GameServerManager.init = function (self, level_transition_handler)
-	self._level_transition_handler = level_transition_handler
 	self._last_error_reason = ""
 end
 
@@ -15,8 +12,6 @@ GameServerManager.setup_network_context = function (self, network_context)
 end
 
 GameServerManager.destroy = function (self)
-	self._level_transition_handler = nil
-
 	if self._network_transmit then
 		self._network_transmit:destroy()
 
@@ -98,7 +93,7 @@ GameServerManager.set_start_game_params = function (self, sender, level_key, gam
 	local stored_lobby_data = self._game_server:get_stored_lobby_data()
 	stored_lobby_data.level_key = level_key
 	stored_lobby_data.difficulty = difficulty
-	stored_lobby_data.game_mode = (PLATFORM ~= "ps4" and NetworkLookup.game_modes[game_mode]) or game_mode
+	stored_lobby_data.game_mode = (not IS_PS4 and NetworkLookup.game_modes[game_mode]) or game_mode
 	stored_lobby_data.is_private = (private_game and "true") or "false"
 
 	self._game_server:set_lobby_data(stored_lobby_data)

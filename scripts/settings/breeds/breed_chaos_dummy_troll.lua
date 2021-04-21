@@ -28,6 +28,7 @@ for key, value in pairs(Breeds.chaos_troll) do
 end
 
 Breeds.chaos_dummy_troll = table.create_copy(Breeds.chaos_dummy_troll, breed_data)
+Breeds.chaos_dummy_troll.is_always_spawnable = nil
 local action_data = {}
 
 for key, value in pairs(BreedActions.chaos_troll) do

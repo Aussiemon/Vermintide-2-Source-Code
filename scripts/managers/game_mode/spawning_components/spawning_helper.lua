@@ -17,6 +17,46 @@ SpawningHelper.netpack_consumables = function (consumables)
 	return temp_table
 end
 
+local temp_table_2 = {}
+
+SpawningHelper.netpack_additional_items = function (additional_items)
+	table.clear(temp_table_2)
+
+	for slot_name, slot_data in pairs(additional_items) do
+		for i = 1, #slot_data.items, 1 do
+			local item_name = slot_data.items[i].key
+			local slot_id = NetworkLookup.equipment_slots[slot_name]
+			local item_id = NetworkLookup.item_names[item_name]
+			temp_table_2[#temp_table_2 + 1] = slot_id
+			temp_table_2[#temp_table_2 + 1] = item_id
+		end
+	end
+
+	return temp_table_2
+end
+
+SpawningHelper.unnetpack_additional_items = function (encoded_additional_items)
+	local decoded_table = {}
+
+	for i = 1, #encoded_additional_items, 2 do
+		local slot_id = tonumber(encoded_additional_items[i])
+		local item_id = tonumber(encoded_additional_items[i + 1])
+		local slot_name = NetworkLookup.equipment_slots[slot_id]
+		local item_name = NetworkLookup.item_names[item_id]
+
+		if not decoded_table[slot_name] then
+			decoded_table[slot_name] = {
+				items = {}
+			}
+		end
+
+		local items = decoded_table[slot_name].items
+		items[#items + 1] = ItemMasterList[item_name]
+	end
+
+	return decoded_table
+end
+
 SpawningHelper.fill_consumable_table = function (consumables, inventory_extension)
 	for i = 1, #CONSUMABLE_SLOTS, 1 do
 		local slot_name = CONSUMABLE_SLOTS[i]

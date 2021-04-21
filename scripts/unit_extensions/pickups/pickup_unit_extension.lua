@@ -47,9 +47,12 @@ PickupUnitExtension.extensions_ready = function (self)
 
 	if outline_extension then
 		local outline_distance_type = pickup_settings.outline_distance
+		local outline_distance = OutlineSettings.ranges[outline_distance_type]
 
-		if outline_distance_type then
-			outline_extension.set_distance(outline_distance_type)
+		if outline_distance then
+			outline_extension:update_outline({
+				distance = outline_distance
+			}, 0)
 		end
 
 		if pickup_settings.outline_available_func then
@@ -57,7 +60,9 @@ PickupUnitExtension.extensions_ready = function (self)
 			local available = pickup_settings.outline_available_func(local_player_unit)
 
 			if not available then
-				outline_extension.set_method("never")
+				outline_extension:update_outline({
+					method = "never"
+				}, 0)
 			end
 		end
 	end

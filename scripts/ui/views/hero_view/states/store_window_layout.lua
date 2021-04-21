@@ -109,6 +109,24 @@ local window_layouts = {
 		}
 	},
 	{
+		name = "bundle_list",
+		display_name = "bundle_list",
+		draw_character = true,
+		close_on_exit = true,
+		menu_option = false,
+		windows = {
+			path_title = 3,
+			background = 2,
+			item_list = 4,
+			item_preview = 5,
+			panel = 1
+		},
+		object_sets = {},
+		level_events = {
+			"main_menu"
+		}
+	},
+	{
 		name = "dlc_list",
 		display_name = "dlc_list",
 		draw_character = true,

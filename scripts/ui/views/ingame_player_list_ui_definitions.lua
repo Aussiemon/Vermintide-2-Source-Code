@@ -432,20 +432,6 @@ local scenegraph_definition = {
 			-35,
 			1
 		}
-	},
-	game_timer_text = {
-		vertical_alignment = "top",
-		parent = "private_checkbox",
-		horizontal_alignment = "right",
-		size = {
-			250,
-			40
-		},
-		position = {
-			0,
-			-45,
-			1
-		}
 	}
 }
 
@@ -877,19 +863,6 @@ local input_description_style = {
 		1
 	}
 }
-local game_timer_text_style = {
-	vertical_alignment = "center",
-	use_shadow = true,
-	horizontal_alignment = "center",
-	font_size = 24,
-	font_type = "hell_shark",
-	text_color = Colors.get_table("white"),
-	offset = {
-		0,
-		0,
-		1
-	}
-}
 local banner_color = {
 	200,
 	10,
@@ -935,7 +908,6 @@ local widget_definitions = {
 local specific_widget_definitions = {
 	input_description_text = UIWidgets.create_simple_text("player_list_show_mouse_description", "player_list_input_description", nil, nil, input_description_style),
 	private_checkbox = UIWidgets.create_checkbox_widget("start_game_window_private_game", "", "private_checkbox", private_checkbox_offset, nil),
-	game_timer_text = UIWidgets.create_simple_text("00:00:00", "game_timer_text", nil, nil, difficulty_text_style),
 	background = {
 		scenegraph_id = "screen",
 		element = UIElements.SimpleTexture,

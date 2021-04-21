@@ -400,18 +400,25 @@ InventorySystem.rpc_stop_weapon_fx = function (self, channel_id, go_id, item_nam
 	end
 end
 
-InventorySystem.rpc_update_additional_slot = function (self, channel_id, go_id, slot_id, item_count)
+InventorySystem.rpc_update_additional_slot = function (self, channel_id, go_id, slot_id, items)
 	if self.is_server then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		self.network_transmit:send_rpc_clients_except("rpc_update_additional_slot", peer_id, go_id, slot_id, item_count)
+		self.network_transmit:send_rpc_clients_except("rpc_update_additional_slot", peer_id, go_id, slot_id, items)
+	end
+
+	local looked_up_items = {}
+
+	for i = 1, #items, 1 do
+		local item = items[i]
+		looked_up_items[#looked_up_items + 1] = NetworkLookup.item_names[item]
 	end
 
 	local unit = self.unit_storage:unit(go_id)
 	local inventory = ScriptUnit.extension(unit, "inventory_system")
 	local slot_name = NetworkLookup.equipment_slots[slot_id]
 
-	inventory:update_additional_item_count(slot_name, item_count)
+	inventory:update_additional_items(slot_name, looked_up_items)
 end
 
 return

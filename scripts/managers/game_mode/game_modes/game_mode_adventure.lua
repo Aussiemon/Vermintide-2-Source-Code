@@ -32,8 +32,10 @@ GameModeAdventure.init = function (self, settings, world, ...)
 		local profile_index = FindProfileIndex(profile_name)
 		local career_index = 1
 		local is_bot = false
+		local success = self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index)
 
-		self._profile_synchronizer:select_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
+		fassert(success, "this should never happen in this particular situation")
+		self._profile_synchronizer:assign_full_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
 
 		local party_id = 1
 
@@ -279,9 +281,8 @@ GameModeAdventure._get_first_available_bot_profile = function (self)
 	for i = 1, #available_profiles, 1 do
 		local profile_name = available_profiles[i]
 		local profile_index = FindProfileIndex(profile_name)
-		local owners = profile_synchronizer:owners(profile_index)
 
-		if table.is_empty(owners) then
+		if not profile_synchronizer:is_profile_in_use(profile_index) then
 			available_profile_by_priority[#available_profile_by_priority + 1] = profile_index
 		end
 	end
@@ -301,8 +302,9 @@ GameModeAdventure._get_first_available_bot_profile = function (self)
 	local hero_experience = hero_attributes:get(display_name, "experience") or 0
 	local hero_level = ExperienceSettings.get_level(hero_experience)
 
-	if not career:is_unlocked_function(display_name, hero_level) then
+	if not career and not career:is_unlocked_function(display_name, hero_level) then
 		career_index = 1
+		career = profile.careers[career_index]
 
 		hero_attributes:set(display_name, "career", career_index)
 	end

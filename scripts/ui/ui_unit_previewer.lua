@@ -29,6 +29,9 @@ UIUnitPreviewer.destroy = function (self)
 	self:_unload_package()
 	table.clear(self._loaded_packages)
 	table.clear(self._packages_to_load)
+
+	self._background_viewport = nil
+	self._background_world = nil
 end
 
 UIUnitPreviewer._destroy_unit = function (self)
@@ -82,6 +85,11 @@ end
 
 UIUnitPreviewer.set_zoom_fraction = function (self, fraction)
 	self._zoom_fraction = math.clamp(fraction, 0, 1)
+	self._zoom_dirty = true
+end
+
+UIUnitPreviewer.set_zoom_fraction_unclamped = function (self, fraction)
+	self._zoom_fraction = fraction
 	self._zoom_dirty = true
 end
 
@@ -207,7 +215,7 @@ end
 UIUnitPreviewer._on_load_complete = function (self, package_name)
 	self._package_loaded = true
 
-	if self._unit_to_spawn then
+	if self._unit_to_spawn and self._background_viewport then
 		self._spawned_unit = self:_spawn_unit(self._unit_to_spawn, true)
 		self._unit_to_spawn = nil
 		self._unit_spawned = true

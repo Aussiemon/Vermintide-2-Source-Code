@@ -673,7 +673,7 @@ local generic_input_actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = (PLATFORM == "ps4" and "matchmaking_join_game") or "menu_description_refresh"
+				description_text = (IS_PS4 and "matchmaking_join_game") or "menu_description_refresh"
 			}
 		}
 	},
@@ -691,7 +691,7 @@ local generic_input_actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = (PLATFORM == "ps4" and "matchmaking_join_game") or "menu_description_refresh"
+				description_text = (IS_PS4 and "matchmaking_join_game") or "menu_description_refresh"
 			},
 			{
 				input_action = "confirm",
@@ -719,7 +719,7 @@ local generic_input_actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = (PLATFORM == "ps4" and "matchmaking_join_game") or "menu_description_refresh"
+				description_text = (IS_PS4 and "matchmaking_join_game") or "menu_description_refresh"
 			},
 			{
 				input_action = "confirm",

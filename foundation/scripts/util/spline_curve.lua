@@ -3,17 +3,22 @@ require("foundation/scripts/util/hermite")
 
 SplineCurve = class(SplineCurve)
 
-SplineCurve.init = function (self, points, class_name, movement_class, name, ...)
+SplineCurve.init = function (self, points, class_name, movement_class, name, subdivisions, cached_spline, ...)
 	self._t = 0
 	self._name = name
-	local splines = {}
 	local spline_class = rawget(_G, class_name)
 	self._spline_class = spline_class
+	local splines = {}
 
-	self:_build_splines(splines, points, spline_class)
+	if cached_spline then
+		self._splines = cached_spline
+	else
+		self:_build_splines(splines, points, spline_class)
 
-	self._splines = splines
-	self._movement = rawget(_G, movement_class):new(self, splines, spline_class, ...)
+		self._splines = splines
+	end
+
+	self._movement = rawget(_G, movement_class):new(self, splines, spline_class, subdivisions, cached_spline, ...)
 end
 
 SplineCurve.splines = function (self)
@@ -229,8 +234,8 @@ end
 
 SplineMovementHermiteInterpolatedMetered = class(SplineMovementHermiteInterpolatedMetered)
 
-SplineMovementHermiteInterpolatedMetered.init = function (self, spline_curve, splines, spline_class, subdivisions)
-	self._splines = splines
+SplineMovementHermiteInterpolatedMetered.init = function (self, spline_curve, splines, spline_class, subdivisions, cached_spline)
+	self._splines = cached_spline or splines
 	self._spline_curve = spline_curve
 	self._spline_class = spline_class
 	self._speed = 0
@@ -239,7 +244,9 @@ SplineMovementHermiteInterpolatedMetered.init = function (self, spline_curve, sp
 	self._current_subdivision_index = 1
 	self._current_spline_curve_distance = 0
 
-	self:_build_subdivisions(subdivisions, splines, spline_class)
+	if not cached_spline then
+		self:_build_subdivisions(subdivisions, splines, spline_class)
+	end
 end
 
 SplineMovementHermiteInterpolatedMetered.recalc_splines = function (self)

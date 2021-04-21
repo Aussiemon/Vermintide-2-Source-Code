@@ -4065,11 +4065,11 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 			},
 			size = {
 				size[1] - 150,
-				130
+				125
 			}
 		},
 		text = {
-			font_size = 18,
+			font_size = 17,
 			word_wrap = true,
 			dynamic_font_size_word_wrap = true,
 			horizontal_alignment = "center",
@@ -4084,7 +4084,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				100,
-				size[2] - 185,
+				size[2] - 185 + 10,
 				5
 			},
 			size = {
@@ -4093,7 +4093,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 			}
 		},
 		text_shadow = {
-			font_size = 18,
+			font_size = 17,
 			word_wrap = true,
 			dynamic_font_size_word_wrap = true,
 			horizontal_alignment = "center",
@@ -4108,7 +4108,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				102,
-				size[2] - 185 - 2,
+				size[2] - 185 - 2 + 10,
 				4
 			},
 			size = {

@@ -75,8 +75,9 @@ local DEFAULT_NAVTAG_LAYERS = {
 	barrel_explosion = 10,
 	jumps = 1.5,
 	bot_ratling_gun_fire = 3,
-	big_boy_destructible = 0,
+	temporary_wall = 0,
 	planks = 1.5,
+	big_boy_destructible = 0,
 	ledges_with_fence = 1.5,
 	doors = 1.5,
 	teleporters = 5,
@@ -102,27 +103,7 @@ local armor_category_mapping = {
 	[6] = BreedCategory.SuperArmor
 }
 
-for breed_name, breed_data in pairs(Breeds) do
-	local lookup = BreedHitZonesLookup[breed_name]
-
-	if lookup then
-		breed_data.hit_zones_lookup = lookup
-
-		fassert(breed_data.debug_color, "breed needs a debug color")
-	end
-
-	local allowed_layers = breed_data.allowed_layers
-
-	if allowed_layers then
-		table.merge(available_nav_tag_layers, allowed_layers)
-	end
-
-	local nav_cost_map_allowed_layers = breed_data.nav_cost_map_allowed_layers
-
-	if nav_cost_map_allowed_layers then
-		table.merge(available_nav_cost_map_layers, nav_cost_map_allowed_layers)
-	end
-
+local function inject_breed_category_mask(breed_data)
 	local category_mask = 0
 
 	if breed_data.special then
@@ -145,6 +126,34 @@ for breed_name, breed_data in pairs(Breeds) do
 	end
 
 	breed_data.category_mask = category_mask
+end
+
+for breed_name, breed_data in pairs(Breeds) do
+	local lookup = BreedHitZonesLookup[breed_name]
+
+	if lookup then
+		breed_data.hit_zones_lookup = lookup
+
+		fassert(breed_data.debug_color, "breed needs a debug color")
+	end
+
+	local allowed_layers = breed_data.allowed_layers
+
+	if allowed_layers then
+		table.merge(available_nav_tag_layers, allowed_layers)
+	end
+
+	local nav_cost_map_allowed_layers = breed_data.nav_cost_map_allowed_layers
+
+	if nav_cost_map_allowed_layers then
+		table.merge(available_nav_cost_map_layers, nav_cost_map_allowed_layers)
+	end
+
+	inject_breed_category_mask(breed_data)
+end
+
+for breed_name, breed_data in pairs(PlayerBreeds) do
+	inject_breed_category_mask(breed_data)
 end
 
 for _, breed_actions in pairs(BreedActions) do

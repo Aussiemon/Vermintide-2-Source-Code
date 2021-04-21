@@ -15,6 +15,7 @@ PlayerManager.init = function (self)
 	self._human_players = {}
 	self._unit_owners = {}
 	self._player_units_owners = {}
+	self._local_human_player = nil
 	self._ui_id_increment = 0
 end
 
@@ -48,7 +49,7 @@ PlayerManager.statistics_db = function (self)
 	return self._statistics_db
 end
 
-PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_buff_ids)
+PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
 	if script_data.network_debug_connections then
 		printf("PlayerManager:rpc_to_client_spawn_player(%s, %s, %s, %s)", tostring(channel_id), tostring(profile_index), tostring(position), tostring(rotation))
 	end
@@ -74,10 +75,11 @@ PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_pla
 	player:set_profile_index(profile_index)
 	player:set_career_index(career_index)
 
+	local additional_items = SpawningHelper.unnetpack_additional_items(network_additional_items)
 	local player_unit = player.player_unit
 
 	if player_unit == nil or not Unit.alive(player_unit) then
-		player:spawn(position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, NetworkLookup.item_names[healthkit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], ability_cooldown_percent_int, initial_buff_names)
+		player:spawn(position, rotation, is_initial_spawn, ammo_melee, ammo_ranged, NetworkLookup.item_names[healthkit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], ability_cooldown_percent_int, additional_items, initial_buff_names)
 	else
 		if player:needs_despawn() then
 			Managers.state.spawn:delayed_despawn(player)
@@ -88,7 +90,7 @@ PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_pla
 
 		local function respawn_func()
 			if not player._destroyed and not player.player_unit then
-				player:spawn(position:unbox(), rotation:unbox(), is_initial_spawn, ammo_melee, ammo_ranged, NetworkLookup.item_names[healthkit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], ability_cooldown_percent_int, initial_buff_names)
+				player:spawn(position:unbox(), rotation:unbox(), is_initial_spawn, ammo_melee, ammo_ranged, NetworkLookup.item_names[healthkit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], ability_cooldown_percent_int, additional_items, initial_buff_names)
 			end
 		end
 
@@ -198,6 +200,7 @@ PlayerManager.add_player = function (self, input_source, viewport_name, viewport
 	self._players[unique_id] = player
 	self._num_human_players = self._num_human_players + 1
 	self._human_players[unique_id] = player
+	self._local_human_player = player
 	local player_table = self._players_by_peer
 	player_table[peer_id] = player_table[peer_id] or {}
 	player_table[peer_id][local_player_id] = player
@@ -207,7 +210,11 @@ PlayerManager.add_player = function (self, input_source, viewport_name, viewport
 	Managers.party:register_player(player, unique_id)
 
 	if self.is_server and player:is_player_controlled() then
-		Managers.telemetry.events:player_joined(player)
+		Managers.telemetry.events:player_joined(player, self._num_human_players)
+	end
+
+	if IS_WINDOWS then
+		Managers.account:update_presence()
 	end
 
 	return player
@@ -231,7 +238,7 @@ PlayerManager.add_remote_player = function (self, peer_id, player_controlled, lo
 	end
 
 	if self.is_server and player_controlled then
-		Managers.telemetry.events:player_joined(player)
+		Managers.telemetry.events:player_joined(player, self._num_human_players)
 	end
 
 	local player_table = self._players_by_peer
@@ -275,7 +282,7 @@ PlayerManager.add_bot_player = function (self, player_name, bot_player_peer_id, 
 	local peer_id = Network.peer_id()
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local ui_id = self:_create_ui_id()
-	local player = PlayerBot:new(player_name, bot_profile_index, self.is_server, profile_index, career_index, local_player_id, unique_id, ui_id)
+	local player = PlayerBot:new(self.network_manager, player_name, bot_profile_index, self.is_server, profile_index, career_index, local_player_id, unique_id, ui_id)
 	self._players[unique_id] = player
 	local player_table = self._players_by_peer
 	player_table[peer_id] = player_table[peer_id] or {}
@@ -322,6 +329,10 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 	local player = self._players[unique_id]
 
 	if player then
+		if player == self._local_human_player then
+			self._local_human_player = nil
+		end
+
 		local owned_units = player.owned_units
 
 		for unit, _ in pairs(owned_units) do
@@ -342,11 +353,15 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 		end
 
 		if self.is_server and player:is_player_controlled() then
-			Managers.telemetry.events:player_left(player)
+			Managers.telemetry.events:player_left(player, self._num_human_players)
 		end
 
 		self._statistics_db:unregister(player:stats_id())
 		player:destroy()
+
+		if IS_WINDOWS then
+			Managers.account:update_presence()
+		end
 	end
 end
 
@@ -465,6 +480,10 @@ end
 
 PlayerManager.local_player = function (self, local_player_id)
 	return self:player(Network.peer_id(), local_player_id or 1)
+end
+
+PlayerManager.local_human_player = function (self)
+	return self._local_human_player
 end
 
 PlayerManager.bots = function (self)

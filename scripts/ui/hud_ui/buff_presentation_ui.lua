@@ -33,7 +33,18 @@ BuffPresentationUI.destroy = function (self)
 	rawset(_G, "buff_presentation_ui", nil)
 end
 
+local customizer_data = {
+	root_scenegraph_id = "presentation_widget",
+	label = "Buff",
+	registry_key = "buff_present",
+	drag_scenegraph_id = "presentation_widget_dragger"
+}
+
 BuffPresentationUI.update = function (self, dt)
+	if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data) then
+		UISceneGraph.update_scenegraph(self.ui_scenegraph)
+	end
+
 	self:_sync_buffs()
 	self:_next_buff(dt)
 

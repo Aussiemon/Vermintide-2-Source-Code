@@ -935,6 +935,153 @@ UIFrameSettings = {
 				2
 			}
 		}
+	},
+	border_tiled = {
+		texture = "border_tiled",
+		texture_size = {
+			256,
+			256
+		},
+		texture_sizes = {
+			corner = {
+				27,
+				27
+			},
+			vertical = {
+				27,
+				202
+			},
+			horizontal = {
+				202,
+				27
+			}
+		}
+	},
+	menu_frame_04_morris = {
+		texture = "menu_frame_04_morris",
+		texture_size = {
+			300,
+			300
+		},
+		texture_sizes = {
+			corner = {
+				150,
+				150
+			},
+			vertical = {
+				55,
+				1
+			},
+			horizontal = {
+				1,
+				55
+			}
+		}
+	},
+	menu_frame_02_morris = {
+		texture = "menu_frame_02_morris",
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				12,
+				12
+			},
+			vertical = {
+				10,
+				1
+			},
+			horizontal = {
+				1,
+				10
+			}
+		}
+	},
+	menu_frame_06_morris = {
+		texture = "menu_frame_06_morris",
+		texture_size = {
+			70,
+			70
+		},
+		texture_sizes = {
+			corner = {
+				12,
+				12
+			},
+			vertical = {
+				13,
+				1
+			},
+			horizontal = {
+				1,
+				13
+			}
+		}
+	},
+	menu_frame_01_morris = {
+		texture = "menu_frame_01_morris",
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				11,
+				11
+			},
+			vertical = {
+				5,
+				1
+			},
+			horizontal = {
+				1,
+				5
+			}
+		}
+	},
+	menu_frame_03_morris = {
+		texture = "menu_frame_03_morris",
+		texture_size = {
+			58,
+			58
+		},
+		texture_sizes = {
+			corner = {
+				5,
+				5
+			},
+			vertical = {
+				5,
+				1
+			},
+			horizontal = {
+				1,
+				5
+			}
+		}
+	},
+	menu_frame_05_morris = {
+		texture = "menu_frame_05_morris",
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				10,
+				10
+			},
+			vertical = {
+				10,
+				44
+			},
+			horizontal = {
+				44,
+				10
+			}
+		}
 	}
 }
 

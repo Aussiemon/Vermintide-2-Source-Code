@@ -90,7 +90,7 @@ TutorialInputUI._button_texture_data_by_input_action = function (self, input_act
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if IS_WINDOWS and gamepad_active then
 		platform = "xb1"
 	end
 
@@ -153,7 +153,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 	local texture_size_y = 0
 	local texture_size_x = 0
 	local gamepad_active = self._input_manager:is_device_active("gamepad")
-	local inputs = ((gamepad_active or PLATFORM == "ps4") and active_template.tooltip_gamepad_inputs) or active_template.tooltip_inputs
+	local inputs = ((gamepad_active or IS_PS4) and active_template.tooltip_gamepad_inputs) or active_template.tooltip_inputs
 
 	if not active_tooltip_name then
 		self:fade_in()

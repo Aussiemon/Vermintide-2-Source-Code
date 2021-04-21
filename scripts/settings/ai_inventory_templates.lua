@@ -363,11 +363,6 @@ local items = {
 		unit_name = "units/beings/enemies/skaven_clan_rat/outfits/chr_skaven_clan_rat_outfit_baked_04",
 		attachment_node_linking = AttachmentNodeLinking.ai_outfit_scale_w_tail
 	},
-	wpn_skaven_triangle_shield = {
-		unit_extension_template = "ai_shield_unit",
-		unit_name = "units/weapons/enemy/wpn_skaven_triangle_shield/wpn_skaven_triangle_shield",
-		attachment_node_linking = AttachmentNodeLinking.ai_shield
-	},
 	wpn_skaven_shield_38 = {
 		unit_extension_template = "ai_shield_unit",
 		unit_name = "units/weapons/enemy/wpn_skaven_set/wpn_skaven_shield_38",

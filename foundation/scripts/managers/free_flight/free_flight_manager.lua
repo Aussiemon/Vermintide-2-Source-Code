@@ -1,11 +1,12 @@
 require("foundation/scripts/managers/free_flight/free_flight_controller_settings")
 require("foundation/scripts/managers/free_flight/control_points")
 
+local free_flight_manager_testify = script_data.testify and require("foundation/scripts/managers/free_flight/free_flight_manager_testify")
 FreeFlightManager = class(FreeFlightManager)
 
 FreeFlightManager.init = function (self)
 	self.current_control_point = 1
-	self._has_terrain = not not rawget(_G, "TerrainDecoration")
+	self._has_terrain = not not rawget(s3d, "TerrainDecoration")
 	self.data = {}
 
 	self:_setup_data(self.data)
@@ -76,6 +77,10 @@ FreeFlightManager.update = function (self, dt)
 			self:_update_player(dt, player, data)
 		end
 	end
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(free_flight_manager_testify, self)
+	end
 end
 
 FreeFlightManager.set_teleport_override = function (self, cb)
@@ -145,7 +150,7 @@ FreeFlightManager._update_global = function (self, dt)
 	local data = self.data.global
 	local input_service = self:_resolve_input_service()
 
-	if PLATFORM == "linux" then
+	if IS_LINUX then
 		return
 	end
 
@@ -305,7 +310,7 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 		local x_trans = input_service:get("move_right") - input_service:get("move_left")
 		local y_trans = input_service:get("move_forward") - input_service:get("move_back")
 
-		if PLATFORM == "xb1" then
+		if IS_XB1 then
 			local move = input_service:get("move")
 			x_trans = move.x * 2
 			y_trans = move.y * 2
@@ -480,7 +485,7 @@ FreeFlightManager._update_player = function (self, dt, player, data)
 		self:_toggle_frustum_freeze(dt, data, world, ScriptWorld.free_flight_viewport(world, data.viewport_name))
 	elseif data.active and free_flight_toggle then
 		self:_exit_free_flight(player, data)
-	elseif free_flight_toggle then
+	elseif free_flight_toggle or Testify:poll_request("activate_free_flight") then
 		self:_enter_free_flight(player, data)
 	elseif data.active and not self.data.global.active then
 		self:_update_free_flight(dt, player, data)
@@ -566,6 +571,10 @@ FreeFlightManager._enter_free_flight = function (self, player, data)
 	self.input_manager:block_device_except_service("FreeFlight", "keyboard", nil, "free_flight")
 	self.input_manager:block_device_except_service("FreeFlight", "mouse", nil, "free_flight")
 	self.input_manager:block_device_except_service("FreeFlight", "gamepad", nil, "free_flight")
+
+	if script_data.testify and Testify:poll_request("activate_free_flight") then
+		Testify:respond_to_request("activate_free_flight")
+	end
 end
 
 FreeFlightManager._exit_free_flight = function (self, player, data)

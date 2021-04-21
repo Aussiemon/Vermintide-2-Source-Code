@@ -29,6 +29,11 @@ HeroWindowLoadoutConsole.on_enter = function (self, params, offset)
 	self._equipment_items = {}
 
 	self:create_ui_elements(params, offset)
+	self:_show_weapon_disclaimer(false)
+
+	if Managers.mechanism:mechanism_setting("should_display_weapon_disclaimer") then
+		self:_show_weapon_disclaimer(true)
+	end
 
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
@@ -530,6 +535,13 @@ HeroWindowLoadoutConsole._highlight_equipment_slot_by_type = function (self, ite
 			style[slot_hover_name].color[1] = (enabled and alpha) or 255
 		end
 	end
+end
+
+HeroWindowLoadoutConsole._show_weapon_disclaimer = function (self, should_show)
+	local disclaimer_text_content = self._widgets_by_name.disclaimer_text.content
+	local disclaimer_text_background_content = self._widgets_by_name.disclaimer_text_background.content
+	disclaimer_text_background_content.visible = should_show
+	disclaimer_text_content.visible = should_show
 end
 
 return

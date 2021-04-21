@@ -58,6 +58,7 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	self.tagquery_database = TagQueryDatabase:new()
 	self.dialogues = {}
 	self.markers = {}
+	self._story_trigger_freezes = 0
 	self.tagquery_loader = TagQueryLoader:new(self.tagquery_database, self.dialogues)
 	local max_num_args = 2
 	self.function_command_queue = FunctionCommandQueue:new(max_num_args)
@@ -171,9 +172,9 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 		self.global_context.current_wind = current_wind
 	end
 
-	local level_theme = level_settings.theme
-	self.global_context.current_theme = level_theme
+	local dlc_level_dialogue_context = Managers.mechanism:get_level_dialogue_context()
 
+	table.merge(self.global_context, dlc_level_dialogue_context)
 	self.tagquery_database:set_global_context(self.global_context)
 
 	self.global_context.level_time = 0
@@ -1159,7 +1160,7 @@ end
 DialogueSystem._update_story_lines = function (self, t)
 	local next_story_line_update_t = self.next_story_line_update_t
 
-	if next_story_line_update_t < t then
+	if not self:_is_story_trigger_frozen() and next_story_line_update_t < t then
 		self.next_story_line_update_t = t + DialogueSettings.story_tick_time
 		local random_player = DialogueSystem:get_random_player()
 
@@ -1170,6 +1171,18 @@ DialogueSystem._update_story_lines = function (self, t)
 			dialogue_input:trigger_dialogue_event("story_trigger", event_data)
 		end
 	end
+end
+
+DialogueSystem.freeze_story_trigger = function (self)
+	self._story_trigger_freezes = self._story_trigger_freezes + 1
+end
+
+DialogueSystem.unfreeze_story_trigger = function (self)
+	self._story_trigger_freezes = math.max(0, self._story_trigger_freezes - 1)
+end
+
+DialogueSystem._is_story_trigger_frozen = function (self)
+	return self._story_trigger_freezes and self._story_trigger_freezes > 0
 end
 
 local current_cutscene_subs = {}
@@ -1244,7 +1257,7 @@ DialogueSystem.reset_memory_time = function (self, memory, name, unit)
 end
 
 DialogueSystem.trigger_story_dialogue = function (self, unit)
-	if Unit.alive(unit) then
+	if Unit.alive(unit) and not self:_is_story_trigger_frozen() then
 		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
 		event_data.is_forced = true

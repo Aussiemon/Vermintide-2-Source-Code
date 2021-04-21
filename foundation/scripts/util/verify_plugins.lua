@@ -1,4 +1,4 @@
-if false and PLATFORM == "win32" and BUILD == "release" then
+if false and IS_WINDOWS and BUILD == "release" then
 	local loaded_plugins = Application.all_plugin_names()
 	local plugin_check_list = {
 		"fishtank",

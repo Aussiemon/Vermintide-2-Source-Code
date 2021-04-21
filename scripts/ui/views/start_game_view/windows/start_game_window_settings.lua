@@ -337,7 +337,7 @@ StartGameWindowSettings._update_difficulty_option = function (self)
 		self:_set_difficulty_option(difficulty_key)
 
 		self._difficulty_key = difficulty_key
-		self._enable_play = DifficultySettings[difficulty_key] ~= nil
+		self._enable_play = DifficultySettings[difficulty_key] ~= nil and rawget(LevelSettings, self._selected_level_id) ~= nil
 
 		if not Managers.account:offline_mode() then
 			self:_set_additional_options_enabled_state(true)
@@ -368,20 +368,14 @@ end
 StartGameWindowSettings._update_mission_selection = function (self)
 	local parent = self.parent
 	local selected_level_id = parent:get_selected_level_id()
-	local selected_journey = parent:get_selected_deus_journey()
-	local selected_mission = selected_level_id or selected_journey
 
-	if not selected_mission or selected_mission ~= self._selected_mission then
-		if selected_journey then
-			self:_set_selected_journey(selected_journey)
-		else
-			self:_set_selected_level(selected_level_id)
-		end
+	if not selected_level_id or selected_level_id ~= self._selected_level_id then
+		self:_set_selected_level(selected_level_id)
 
-		self._selected_mission = selected_mission
+		self._selected_level_id = selected_level_id
 	end
 
-	self._widgets_by_name.game_option_2.content.button_hotspot.disable_button = selected_mission == nil
+	self._widgets_by_name.game_option_2.content.button_hotspot.disable_button = selected_level_id == nil
 end
 
 StartGameWindowSettings._set_selected_level = function (self, level_id)
@@ -398,29 +392,7 @@ StartGameWindowSettings._set_selected_level = function (self, level_id)
 		texture_size[1] = icon_texture_settings.size[1]
 		texture_size[2] = icon_texture_settings.size[2]
 		widget.content.icon = level_image
-		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id) or 0
-		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
-		widget.content.icon_frame = level_frame
-	end
-
-	widget.content.option_text = text
-end
-
-StartGameWindowSettings._set_selected_journey = function (self, journey_name)
-	local widget = self._widgets_by_name.game_option_1
-	local text = "n/a"
-
-	if journey_name then
-		local journey_settings = DeusJourneySettings[journey_name]
-		local display_name = journey_settings.display_name
-		local level_image = journey_settings.level_image
-		text = Localize(display_name)
-		local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
-		local texture_size = widget.style.icon.texture_size
-		texture_size[1] = icon_texture_settings.size[1]
-		texture_size[2] = icon_texture_settings.size[2]
-		widget.content.icon = level_image
-		local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(self.statistics_db, self._stats_id, journey_name)
+		local completed_difficulty_index = self.parent:get_completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id)
 		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
 		widget.content.icon_frame = level_frame
 	end

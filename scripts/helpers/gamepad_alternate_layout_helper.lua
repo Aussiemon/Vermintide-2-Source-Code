@@ -8,7 +8,7 @@ DefaultGamepadLayoutKeymaps = {
 	}
 }
 
-if platform == "win32" then
+if IS_WINDOWS then
 	local keymap_override_1 = table.clone(DefaultPlayerControllerKeymaps)
 	keymap_override_1.action_one = {
 		"gamepad",
@@ -273,6 +273,132 @@ if platform == "win32" then
 	KeymapOverride7 = {
 		PlayerControllerKeymaps = {
 			xb1 = keymap_override_7
+		}
+	}
+	local keymap_override_9 = table.clone(DefaultPlayerControllerKeymaps)
+	keymap_override_9.action_one = {
+		"gamepad",
+		"right_shoulder",
+		"pressed"
+	}
+	keymap_override_9.action_one_hold = {
+		"gamepad",
+		"right_shoulder",
+		"held"
+	}
+	keymap_override_9.action_one_release = {
+		"gamepad",
+		"right_shoulder",
+		"released"
+	}
+	keymap_override_9.action_two = {
+		"gamepad",
+		"left_shoulder",
+		"pressed"
+	}
+	keymap_override_9.action_two_hold = {
+		"gamepad",
+		"left_shoulder",
+		"held"
+	}
+	keymap_override_9.action_two_release = {
+		"gamepad",
+		"left_shoulder",
+		"released"
+	}
+	keymap_override_9.action_one_softbutton_gamepad = {
+		"gamepad",
+		"right_shoulder",
+		"soft_button"
+	}
+	keymap_override_9.action_inspect = {
+		"gamepad",
+		"right_thumb",
+		"pressed"
+	}
+	keymap_override_9.action_inspect_hold = {
+		"gamepad",
+		"right_thumb",
+		"held"
+	}
+	keymap_override_9.action_inspect_release = {
+		"gamepad",
+		"right_thumb",
+		"released"
+	}
+	keymap_override_9.action_three = {
+		"gamepad",
+		"b",
+		"pressed"
+	}
+	keymap_override_9.action_three_hold = {
+		"gamepad",
+		"b",
+		"held"
+	}
+	keymap_override_9.action_three_release = {
+		"gamepad",
+		"b",
+		"released"
+	}
+	keymap_override_9.ability = {
+		"gamepad",
+		"left_trigger",
+		"pressed"
+	}
+	keymap_override_9.ability_hold = {
+		"gamepad",
+		"left_trigger",
+		"held"
+	}
+	keymap_override_9.ability_release = {
+		"gamepad",
+		"left_trigger",
+		"released"
+	}
+	keymap_override_9.dodge_1 = {
+		"gamepad",
+		"right_trigger",
+		"held"
+	}
+	keymap_override_9.crouch = {
+		"gamepad",
+		"right_thumb",
+		"pressed"
+	}
+	keymap_override_9.crouching = {
+		"gamepad",
+		"right_thumb",
+		"held"
+	}
+	keymap_override_9.ping = {
+		"gamepad",
+		"left_thumb",
+		"pressed"
+	}
+	keymap_override_9.ping_hold = {
+		"gamepad",
+		"left_thumb",
+		"held"
+	}
+	keymap_override_9.ability = {
+		"gamepad",
+		"left_trigger",
+		"pressed"
+	}
+	keymap_override_9.ability_hold = {
+		"gamepad",
+		"left_trigger",
+		"held"
+	}
+	keymap_override_9.ability_release = {
+		"gamepad",
+		"left_trigger",
+		"released"
+	}
+	KeymapOverride9 = {
+		PlayerControllerKeymaps = {
+			xb1 = keymap_override_9
 		}
 	}
 	local keymap_override_left = table.clone(DefaultPlayerControllerKeymaps)
@@ -750,7 +876,118 @@ if platform == "win32" then
 			xb1 = keymap_override_8
 		}
 	}
-elseif platform == "xb1" then
+	local keymap_override_10 = table.clone(keymap_override_left)
+	keymap_override_10.action_one = {
+		"gamepad",
+		"left_shoulder",
+		"pressed"
+	}
+	keymap_override_10.action_one_hold = {
+		"gamepad",
+		"left_shoulder",
+		"held"
+	}
+	keymap_override_10.action_one_release = {
+		"gamepad",
+		"left_shoulder",
+		"released"
+	}
+	keymap_override_10.action_two = {
+		"gamepad",
+		"right_shoulder",
+		"pressed"
+	}
+	keymap_override_10.action_two_hold = {
+		"gamepad",
+		"right_shoulder",
+		"held"
+	}
+	keymap_override_10.action_two_release = {
+		"gamepad",
+		"right_shoulder",
+		"released"
+	}
+	keymap_override_10.action_one_softbutton_gamepad = {
+		"gamepad",
+		"left_shoulder",
+		"soft_button"
+	}
+	keymap_override_10.action_three = {
+		"gamepad",
+		"left_thumb",
+		"pressed"
+	}
+	keymap_override_10.action_three_hold = {
+		"gamepad",
+		"left_thumb",
+		"held"
+	}
+	keymap_override_10.action_three_release = {
+		"gamepad",
+		"left_thumb",
+		"released"
+	}
+	keymap_override_10.ability = {
+		"gamepad",
+		"right_trigger",
+		"pressed"
+	}
+	keymap_override_10.ability_hold = {
+		"gamepad",
+		"right_trigger",
+		"held"
+	}
+	keymap_override_10.ability_release = {
+		"gamepad",
+		"right_trigger",
+		"released"
+	}
+	keymap_override_10.dodge_1 = {
+		"gamepad",
+		"b",
+		"held"
+	}
+	keymap_override_10.crouch = {
+		"gamepad",
+		"right_thumb",
+		"pressed"
+	}
+	keymap_override_10.crouching = {
+		"gamepad",
+		"right_thumb",
+		"held"
+	}
+	keymap_override_10.ping = {
+		"gamepad",
+		"left_trigger",
+		"pressed"
+	}
+	keymap_override_10.ping_hold = {
+		"gamepad",
+		"left_trigger",
+		"held"
+	}
+	keymap_override_10.ability = {
+		"gamepad",
+		"right_trigger",
+		"pressed"
+	}
+	keymap_override_10.ability_hold = {
+		"gamepad",
+		"right_trigger",
+		"held"
+	}
+	keymap_override_10.ability_release = {
+		"gamepad",
+		"right_trigger",
+		"released"
+	}
+	KeymapOverride10 = {
+		PlayerControllerKeymaps = {
+			xb1 = keymap_override_10
+		}
+	}
+elseif IS_XB1 then
 	local keymap_override_1 = table.clone(DefaultPlayerControllerKeymaps)
 	keymap_override_1.action_one = {
 		"gamepad",
@@ -1003,6 +1240,117 @@ elseif platform == "xb1" then
 	KeymapOverride7 = {
 		PlayerControllerKeymaps = {
 			xb1 = keymap_override_7
+		}
+	}
+	local keymap_override_9 = table.clone(DefaultPlayerControllerKeymaps)
+	keymap_override_9.action_one = {
+		"gamepad",
+		"right_shoulder",
+		"pressed"
+	}
+	keymap_override_9.action_one_hold = {
+		"gamepad",
+		"right_shoulder",
+		"held"
+	}
+	keymap_override_9.action_one_release = {
+		"gamepad",
+		"right_shoulder",
+		"released"
+	}
+	keymap_override_9.action_two = {
+		"gamepad",
+		"left_trigger",
+		"pressed"
+	}
+	keymap_override_9.action_two_hold = {
+		"gamepad",
+		"left_trigger",
+		"held"
+	}
+	keymap_override_9.action_two_release = {
+		"gamepad",
+		"left_trigger",
+		"released"
+	}
+	keymap_override_9.action_one_softbutton_gamepad = {
+		"gamepad",
+		"right_shoulder",
+		"soft_button"
+	}
+	keymap_override_9.action_inspect = {
+		"gamepad",
+		"right_thumb",
+		"pressed"
+	}
+	keymap_override_9.action_inspect_hold = {
+		"gamepad",
+		"right_thumb",
+		"held"
+	}
+	keymap_override_9.action_inspect_release = {
+		"gamepad",
+		"right_thumb",
+		"released"
+	}
+	keymap_override_9.action_three = {
+		"gamepad",
+		"right_thumb",
+		"pressed"
+	}
+	keymap_override_9.action_three_hold = {
+		"gamepad",
+		"right_thumb",
+		"held"
+	}
+	keymap_override_9.action_three_release = {
+		"gamepad",
+		"right_thumb",
+		"released"
+	}
+	keymap_override_9.ability = {
+		"gamepad",
+		"right_trigger",
+		"pressed"
+	}
+	keymap_override_9.ability_hold = {
+		"gamepad",
+		"right_trigger",
+		"held"
+	}
+	keymap_override_9.ability_release = {
+		"gamepad",
+		"right_trigger",
+		"released"
+	}
+	keymap_override_9.dodge_1 = {
+		"gamepad",
+		"left_shoulder",
+		"held"
+	}
+	keymap_override_9.crouch = {
+		"gamepad",
+		"b",
+		"pressed"
+	}
+	keymap_override_9.crouching = {
+		"gamepad",
+		"b",
+		"held"
+	}
+	keymap_override_9.ping = {
+		"gamepad",
+		"left_thumb",
+		"pressed"
+	}
+	keymap_override_9.ping_hold = {
+		"gamepad",
+		"left_thumb",
+		"held"
+	}
+	KeymapOverride9 = {
+		PlayerControllerKeymaps = {
+			xb1 = keymap_override_9
 		}
 	}
 	local keymap_override_left = table.clone(DefaultPlayerControllerKeymaps)
@@ -1394,7 +1742,7 @@ elseif platform == "xb1" then
 			xb1 = keymap_override_6
 		}
 	}
-	local keymap_override_8 = table.clone(DefaultPlayerControllerKeymaps)
+	local keymap_override_8 = table.clone(keymap_override_left)
 	keymap_override_8.action_one = {
 		"gamepad",
 		"left_trigger",
@@ -1495,7 +1843,118 @@ elseif platform == "xb1" then
 			xb1 = keymap_override_8
 		}
 	}
-elseif platform == "ps4" then
+	local keymap_override_10 = table.clone(keymap_override_left)
+	keymap_override_10.action_one = {
+		"gamepad",
+		"left_shoulder",
+		"pressed"
+	}
+	keymap_override_10.action_one_hold = {
+		"gamepad",
+		"left_shoulder",
+		"held"
+	}
+	keymap_override_10.action_one_release = {
+		"gamepad",
+		"left_shoulder",
+		"released"
+	}
+	keymap_override_10.action_two = {
+		"gamepad",
+		"right_shoulder",
+		"pressed"
+	}
+	keymap_override_10.action_two_hold = {
+		"gamepad",
+		"right_shoulder",
+		"held"
+	}
+	keymap_override_10.action_two_release = {
+		"gamepad",
+		"right_shoulder",
+		"released"
+	}
+	keymap_override_10.action_one_softbutton_gamepad = {
+		"gamepad",
+		"left_shoulder",
+		"soft_button"
+	}
+	keymap_override_10.action_three = {
+		"gamepad",
+		"left_thumb",
+		"pressed"
+	}
+	keymap_override_10.action_three_hold = {
+		"gamepad",
+		"left_thumb",
+		"held"
+	}
+	keymap_override_10.action_three_release = {
+		"gamepad",
+		"left_thumb",
+		"released"
+	}
+	keymap_override_10.ability = {
+		"gamepad",
+		"right_trigger",
+		"pressed"
+	}
+	keymap_override_10.ability_hold = {
+		"gamepad",
+		"right_trigger",
+		"held"
+	}
+	keymap_override_10.ability_release = {
+		"gamepad",
+		"right_trigger",
+		"released"
+	}
+	keymap_override_10.dodge_1 = {
+		"gamepad",
+		"b",
+		"held"
+	}
+	keymap_override_10.crouch = {
+		"gamepad",
+		"right_thumb",
+		"pressed"
+	}
+	keymap_override_10.crouching = {
+		"gamepad",
+		"right_thumb",
+		"held"
+	}
+	keymap_override_10.ping = {
+		"gamepad",
+		"left_trigger",
+		"pressed"
+	}
+	keymap_override_10.ping_hold = {
+		"gamepad",
+		"left_trigger",
+		"held"
+	}
+	keymap_override_10.ability = {
+		"gamepad",
+		"right_trigger",
+		"pressed"
+	}
+	keymap_override_10.ability_hold = {
+		"gamepad",
+		"right_trigger",
+		"held"
+	}
+	keymap_override_10.ability_release = {
+		"gamepad",
+		"right_trigger",
+		"released"
+	}
+	KeymapOverride10 = {
+		PlayerControllerKeymaps = {
+			xb1 = keymap_override_10
+		}
+	}
+elseif IS_PS4 then
 	local keymap_override_1 = table.clone(DefaultPlayerControllerKeymaps)
 	keymap_override_1.action_one = {
 		"gamepad",
@@ -2247,6 +2706,10 @@ AlternatateGamepadKeymapsOptionsMenu = {
 	{
 		text = "layout_alternate_4",
 		value = "alternate_4"
+	},
+	{
+		text = "layout_alternate_5",
+		value = "alternate_5"
 	}
 }
 AlternatateGamepadKeymapsLayouts = {
@@ -2254,17 +2717,19 @@ AlternatateGamepadKeymapsLayouts = {
 	alternate_1 = KeymapOverride1,
 	alternate_2 = KeymapOverride2,
 	alternate_3 = KeymapOverride3,
-	alternate_4 = KeymapOverride7
+	alternate_4 = KeymapOverride7,
+	alternate_5 = KeymapOverride9
 }
 AlternatateGamepadKeymapsLayoutsLeftHanded = {
 	default = KeymapOverrideLeft,
 	alternate_1 = KeymapOverride4,
 	alternate_2 = KeymapOverride5,
 	alternate_3 = KeymapOverride6,
-	alternate_4 = KeymapOverride8
+	alternate_4 = KeymapOverride8,
+	alternate_5 = KeymapOverride10
 }
 
-if platform == "win32" then
+if IS_WINDOWS then
 	AlternatateGamepadSettings = {
 		default = {
 			ignore_gamepad_action_names = {
@@ -2358,7 +2823,7 @@ if platform == "win32" then
 			}
 		}
 	}
-elseif platform == "xb1" then
+elseif IS_XB1 then
 	AlternatateGamepadSettings = {
 		default = {
 			ignore_gamepad_action_names = {
@@ -2452,7 +2917,7 @@ elseif platform == "xb1" then
 			}
 		}
 	}
-elseif platform == "ps4" then
+elseif IS_PS4 then
 	AlternatateGamepadSettings = {
 		default = {
 			ignore_gamepad_action_names = {

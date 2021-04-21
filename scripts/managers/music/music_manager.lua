@@ -159,6 +159,8 @@ MusicManager.update = function (self, dt, t)
 			self:_update_game_state(dt, t, conflict_director)
 		end
 
+		self:_update_boss_state(conflict_director)
+
 		if not DEDICATED_SERVER then
 			self:_update_boss_music_intensity(conflict_director)
 		end
@@ -253,10 +255,12 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 		local intensity_state_id = NetworkLookup.music_group_states.low_battle
 		local game_state_id = NetworkLookup.music_group_states.explore
 		local boss_state_id = NetworkLookup.music_group_states.no_boss
+		local override_state_id = NetworkLookup.music_group_states.false
 		local init_data = {
 			go_type = go_type,
 			combat_intensity = intensity_state_id,
-			boss_state = boss_state_id
+			boss_state = boss_state_id,
+			override = override_state_id
 		}
 		local parties = Managers.party:parties()
 		local game_states = {}
@@ -939,6 +943,7 @@ MusicManager.register_active_player = function (self, player_id)
 	fassert(not self._active_local_player_id, "Active player %q already registered!", player_id)
 
 	self._active_local_player_id = player_id
+	self._player = nil
 end
 
 MusicManager.unregister_active_player = function (self, player_id)
@@ -946,6 +951,7 @@ MusicManager.unregister_active_player = function (self, player_id)
 	fassert(self._active_local_player_id == player_id, "Trying to unregister player %q when player %q is active player", player_id, self._player_id)
 
 	self._active_local_player_id = nil
+	self._player = nil
 end
 
 MusicManager.set_music_group_state = function (self, music_player, group, state)

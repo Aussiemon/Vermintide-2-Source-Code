@@ -1,6 +1,7 @@
 require("scripts/network/game_server/game_server_aux")
 
 GameServerInternal = GameServerInternal or {}
+GameServerInternal.lobby_data_version = 2
 
 GameServerInternal.join_server = function (game_server_info, password)
 	local ip_address = game_server_info.ip_port

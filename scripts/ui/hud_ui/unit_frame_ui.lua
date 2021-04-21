@@ -246,9 +246,48 @@ UnitFrameUI.on_resolution_modified = function (self)
 	self:set_dirty()
 end
 
+local customizer_data_player_portrait = {
+	root_scenegraph_id = "portrait_pivot",
+	label = "You",
+	registry_key = "player_portrait",
+	drag_scenegraph_id = "portrait_pivot_dragger"
+}
+local customizer_data_player_status = {
+	root_scenegraph_id = "player_status",
+	is_child = true,
+	registry_key = "player_status"
+}
+local customizer_data_teammate_status = {
+	root_scenegraph_id = "pivot",
+	label = "Team",
+	registry_key = "teammate_portrait",
+	drag_scenegraph_id = "pivot_dragger"
+}
+
 UnitFrameUI.draw = function (self, dt)
 	if not self._is_visible then
 		return
+	end
+
+	if self._frame_type == "player" then
+		if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data_player_portrait) then
+			UIUtils.mark_dirty(self._portrait_widgets)
+			UIUtils.mark_dirty(self._default_widgets)
+
+			self._dirty = true
+		elseif HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data_player_status) then
+			UIUtils.mark_dirty(self._health_widgets)
+			UIUtils.mark_dirty(self._ability_widgets)
+
+			self._dirty = true
+		end
+	elseif self._frame_type == "team" and HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data_teammate_status) then
+		UIUtils.mark_dirty(self._portrait_widgets)
+		UIUtils.mark_dirty(self._default_widgets)
+		UIUtils.mark_dirty(self._health_widgets)
+		UIUtils.mark_dirty(self._ability_widgets)
+
+		self._dirty = true
 	end
 
 	if not self._dirty then
@@ -440,7 +479,7 @@ UnitFrameUI.set_player_name = function (self, name_text)
 		local display_name = name_text
 		local max_width = 170 * RESOLUTION_LOOKUP.scale
 
-		if PLATFORM == "ps4" then
+		if IS_PS4 then
 			local player_name_style = widget.style.player_name
 			local player_name_shadow_style = widget.style.player_name_shadow
 			player_name_style.font_size = 18

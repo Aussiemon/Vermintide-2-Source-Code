@@ -1,4 +1,4 @@
-local window_default_settings = (PLATFORM ~= "ps4" and UISettings.game_start_windows) or UISettings.game_start_windows_console
+local window_default_settings = (not IS_PS4 and UISettings.game_start_windows) or UISettings.game_start_windows_console
 local window_frame = window_default_settings.frame
 local small_window_size = window_default_settings.size
 local small_window_spacing = window_default_settings.spacing
@@ -95,6 +95,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	deus_window = {
+		vertical_alignment = "center",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1] + 30,
+			window_size[2] + 30
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
 	twitch_mode_info = {
 		vertical_alignment = "top",
 		parent = "screen",
@@ -141,7 +155,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			(PLATFORM ~= "ps4" and 25) or 15,
+			(not IS_PS4 and 25) or 15,
 			3
 		}
 	},
@@ -173,13 +187,27 @@ local scenegraph_definition = {
 			3
 		}
 	},
+	deus_button_confirm = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 60,
+			(not IS_PS4 and 72) or 0
+		},
+		position = {
+			0,
+			38,
+			20
+		}
+	},
 	button_confirm = {
 		vertical_alignment = "bottom",
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1],
-			(PLATFORM ~= "ps4" and 72) or 0
+			(not IS_PS4 and 72) or 0
 		},
 		position = {
 			0,
@@ -293,52 +321,72 @@ local scenegraph_definition = {
 			0
 		}
 	},
-	weave_find_group_frame = {
+	switch_mechanism_title = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
-		size = small_window_size,
-		position = {
-			0,
-			-36,
-			3
-		}
-	},
-	weave_find_group_title_text = {
-		vertical_alignment = "center",
-		parent = "weave_find_group_frame",
-		horizontal_alignment = "center",
-		size = small_window_size,
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	weave_find_group_title_divider = {
-		vertical_alignment = "center",
-		parent = "weave_find_group_title_text",
-		horizontal_alignment = "center",
 		size = {
-			264,
-			32
+			game_option_size[1],
+			100
 		},
 		position = {
 			0,
-			120,
-			1
+			-66,
+			2
 		}
 	},
-	weave_find_group_desc = {
-		vertical_alignment = "center",
-		parent = "weave_find_group_frame",
+	switch_mechanism_subtitle = {
+		vertical_alignment = "bottom",
+		parent = "switch_mechanism_title",
 		horizontal_alignment = "center",
 		size = {
-			450,
-			small_window_size[2]
+			game_option_size[1],
+			40
 		},
 		position = {
 			0,
+			0,
+			2
+		}
+	},
+	switch_mechanism_description = {
+		vertical_alignment = "bottom",
+		parent = "switch_mechanism_subtitle",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 40,
+			100
+		},
+		position = {
+			0,
+			-150,
+			2
+		}
+	},
+	journey_name = {
+		vertical_alignment = "top",
+		parent = "game_option_1",
+		horizontal_alignment = "left",
+		size = {
+			game_option_size[1] / 2,
+			30
+		},
+		position = {
+			15,
+			-55,
+			1
+		}
+	},
+	journey_theme = {
+		vertical_alignment = "center",
+		parent = "game_option_1",
+		horizontal_alignment = "left",
+		size = {
+			game_option_size[1] / 2,
+			30
+		},
+		position = {
+			15,
 			10,
 			1
 		}
@@ -883,6 +931,267 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 					0,
 					size[2] - 38 - frame_width,
 					4
+				}
+			},
+			title_text = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10
+				}
+			},
+			title_text_shadow = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2),
+					9
+				}
+			},
+			option_text = {
+				font_size = 28,
+				upper_case = false,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					frame_width + 5,
+					-55,
+					10
+				}
+			},
+			option_text_shadow = {
+				font_size = 28,
+				upper_case = false,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-57,
+					9
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+local function create_settings_option_deus(scenegraph_id, size, title_text, icon_texture, background_texture, icon_visible)
+	icon_texture = icon_texture or "map_frame_fade"
+	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
+	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+		150,
+		150
+	}
+
+	if icon_visible ~= nil then
+		if false then
+			icon_visible = false
+		end
+	else
+		icon_visible = true
+	end
+
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name("vote_background_morris")
+	local frame_settings = UIFrameSettings.menu_frame_02_morris
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local widget = {
+		element = {
+			passes = {
+				{
+					style_id = "background",
+					pass_type = "texture",
+					content_id = "background"
+				},
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame"
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "icon_mask",
+					texture_id = "icon_mask",
+					content_check_function = function (content)
+						return content.icon_visible
+					end
+				},
+				{
+					texture_id = "icon",
+					style_id = "icon",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.icon_visible
+					end
+				},
+				{
+					texture_id = "journey_border",
+					style_id = "journey_border",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.icon_visible and content.show_journey_border
+					end
+				},
+				{
+					style_id = "option_text",
+					pass_type = "text",
+					text_id = "option_text"
+				},
+				{
+					style_id = "option_text_shadow",
+					pass_type = "text",
+					text_id = "option_text"
+				},
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text"
+				}
+			}
+		},
+		content = {
+			journey_border = "vote_expedition_border",
+			show_journey_border = false,
+			option_text = "",
+			icon_mask = "mask_rect",
+			frame = frame_settings.texture,
+			title_text = title_text or "n/a",
+			icon = icon_texture,
+			icon_visible = icon_visible,
+			background = {
+				uvs = {
+					{
+						0,
+						1 - math.min(size[2] / background_texture_settings.size[2], 1)
+					},
+					{
+						math.min(size[1] / background_texture_settings.size[1], 1),
+						1
+					}
+				},
+				texture_id = background_texture_settings.texture_name
+			}
+		},
+		style = {
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes
+			},
+			background = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			icon_mask = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					117,
+					117
+				},
+				angle = math.degrees_to_radians(45),
+				pivot = {
+					58.5,
+					58.5
+				},
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					5
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				masked = true,
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				texture_size = icon_texture_size,
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					5
+				}
+			},
+			journey_border = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					180,
+					180
+				},
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					5
 				}
 			},
 			title_text = {
@@ -1569,11 +1878,10 @@ local function create_weave_settings_option(scenegraph_id, size, title_text, ico
 	return widget
 end
 
-local function create_additional_settings_option(scenegraph_id, size, title_text, background_texture)
-	background_texture = background_texture or "game_options_bg_02"
-	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_name = "menu_frame_08"
-	local frame_settings = UIFrameSettings[frame_name]
+local function create_additional_settings_option(scenegraph_id, size, title_text, background_texture, frame_settings_name)
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture or "game_options_bg_02")
+	frame_settings_name = frame_settings_name or "menu_frame_08"
+	local frame_settings = UIFrameSettings[frame_settings_name]
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	local widget = {
 		element = {
@@ -1637,7 +1945,7 @@ local function create_additional_settings_option(scenegraph_id, size, title_text
 						1
 					}
 				},
-				texture_id = background_texture
+				texture_id = background_texture_settings.texture_name
 			}
 		},
 		style = {
@@ -1663,7 +1971,7 @@ local function create_additional_settings_option(scenegraph_id, size, title_text
 					150
 				},
 				color = {
-					255,
+					(background_texture and 255) or 0,
 					255,
 					255,
 					255
@@ -1784,11 +2092,11 @@ local function create_additional_settings_option(scenegraph_id, size, title_text
 	return widget
 end
 
-local function create_reward_presentation(scenegraph_id, size)
+local function create_reward_presentation(scenegraph_id, size, frame_settings_name)
 	local background_texture = "game_options_bg_05"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_name = "menu_frame_08"
-	local frame_settings = UIFrameSettings[frame_name]
+	frame_settings_name = frame_settings_name or "menu_frame_08"
+	local frame_settings = UIFrameSettings[frame_settings_name]
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	local widget = {
 		element = {
@@ -3043,39 +3351,81 @@ local function create_objective(scenegraph_id, size)
 	}
 end
 
-local weave_find_group_title_text_style = {
-	font_size = 30,
-	upper_case = true,
-	localize = true,
-	use_shadow = true,
-	word_wrap = false,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
-	dynamic_font_size = false,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		160,
-		2
+local function create_modifier_info(scenegraph_id, icon)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "icon",
+					style_id = "icon",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return #content.text > 0
+					end
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return #content.text > 0
+					end
+				}
+			}
+		},
+		content = {
+			text = "",
+			icon = icon
+		},
+		style = {
+			icon = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				texture_size = {
+					30,
+					30
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			text = {
+				font_size = 26,
+				upper_case = false,
+				localize = true,
+				use_shadow = true,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					40,
+					0,
+					0
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
 	}
-}
-local weave_find_group_description_text_style = {
-	font_size = 24,
-	use_shadow = true,
-	localize = true,
-	dynamic_font_size_word_wrap = true,
-	word_wrap = true,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
+
+	return widget
+end
+
 local mutator_title_text_style = {
 	font_size = 32,
 	upper_case = false,
@@ -3125,6 +3475,73 @@ local objective_title_text_style = {
 		2
 	}
 }
+local switch_mechanism_title_text_style = {
+	font_size = 55,
+	upper_case = true,
+	localize = true,
+	use_shadow = true,
+	word_wrap = false,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = {
+		255,
+		162,
+		102,
+		74
+	},
+	adventure_text_color = {
+		255,
+		162,
+		102,
+		74
+	},
+	morris_text_color = {
+		255,
+		255,
+		107,
+		0
+	},
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local switch_mechanism_subtitle_text_style = {
+	font_size = 40,
+	upper_case = false,
+	localize = true,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark_header",
+	adventure_text_color = {
+		255,
+		255,
+		255,
+		255
+	},
+	morris_text_color = {
+		255,
+		255,
+		107,
+		0
+	},
+	text_color = {
+		255,
+		255,
+		255,
+		255
+	},
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local switch_mechanism_description_text_style = table.clone(switch_mechanism_subtitle_text_style)
 local score_text_style = {
 	font_size = 36,
 	upper_case = true,
@@ -3139,6 +3556,22 @@ local score_text_style = {
 		10,
 		0,
 		2
+	}
+}
+local journey_name_text_style = {
+	font_size = 28,
+	upper_case = false,
+	localize = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	dynamic_font_size = true,
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		0
 	}
 }
 local disable_with_gamepad = true
@@ -3195,6 +3628,134 @@ local widgets = {
 	}, "timer_fg"),
 	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow")
 }
+local widgets_deus = {
+	background = {
+		scenegraph_id = "screen",
+		element = UIElements.SimpleTexture,
+		content = {
+			texture_id = "gradient_dice_game_reward"
+		},
+		style = {
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	deus_window = UIWidgets.create_frame("deus_window", scenegraph_definition.deus_window.size, "menu_frame_04_morris", 10),
+	window_background = UIWidgets.create_tiled_texture("window", "menu_frame_bg_01", {
+		960,
+		1080
+	}, nil, nil, {
+		255,
+		100,
+		100,
+		100
+	}),
+	window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window_fade"),
+	button_confirm = UIWidgets.create_start_game_deus_play_button("deus_button_confirm", scenegraph_definition.deus_button_confirm.size, "n/a", 34, disable_with_gamepad),
+	button_abort = UIWidgets.create_deus_default_button("button_abort", scenegraph_definition.button_abort.size, "n/a", 24, disable_with_gamepad),
+	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
+		16,
+		19
+	}),
+	game_options_right_chain = UIWidgets.create_tiled_texture("game_options_right_chain", "chain_link_01", {
+		16,
+		19
+	}),
+	title = UIWidgets.create_simple_texture("header_vote_morris", "title"),
+	title_text = UIWidgets.create_simple_text("", "title_text", nil, nil, title_text_style),
+	timer_bg = UIWidgets.create_simple_texture("timer_bg_morris", "timer_bg"),
+	timer_fg = UIWidgets.create_simple_uv_texture("timer_fg", {
+		{
+			0,
+			0
+		},
+		{
+			1,
+			1
+		}
+	}, "timer_fg"),
+	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow"),
+	window_decorations = {
+		scenegraph_id = "deus_window",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "left"
+				},
+				{
+					pass_type = "texture_uv",
+					style_id = "right"
+				}
+			}
+		},
+		content = {
+			texture_id = "menu_frame_detail_morris",
+			uvs = {
+				{
+					1,
+					0
+				},
+				{
+					0,
+					1
+				}
+			}
+		},
+		style = {
+			rect = {
+				color = {
+					127,
+					255,
+					255,
+					255
+				}
+			},
+			left = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				offset = {
+					-15,
+					0,
+					10
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					33,
+					846
+				}
+			},
+			right = {
+				vertical_alignment = "center",
+				horizontal_alignment = "right",
+				offset = {
+					15,
+					0,
+					10
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					33,
+					846
+				}
+			}
+		}
+	}
+}
 local rating_texture_sizes = {}
 local rating_textures = {}
 local rating_bg_textures = {}
@@ -3222,7 +3783,11 @@ local game_mode_widgets = {
 	bg = UIWidgets.create_simple_texture("game_options_bg_04", "deed_option_bg")
 }
 local switch_mechanism_widgets = {
-	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("switch_mechanism_deus"), nil, "game_options_bg_02")
+	title = UIWidgets.create_simple_text("n/a", "switch_mechanism_title", nil, nil, switch_mechanism_title_text_style),
+	subtitle = UIWidgets.create_simple_text("n/a", "switch_mechanism_subtitle", nil, nil, switch_mechanism_subtitle_text_style),
+	description = UIWidgets.create_simple_text("n/a", "switch_mechanism_description", nil, nil, switch_mechanism_description_text_style),
+	frame = UIWidgets.create_frame("deed_option_bg", scenegraph_definition.deed_option_bg.size, deed_frame_name, 20),
+	background = UIWidgets.create_simple_texture("vote_switch_mechanism_adventure_background", "deed_option_bg")
 }
 local weave_quickplay_widgets = {
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
@@ -3274,11 +3839,32 @@ local weave_game_widgets = {
 		description = Localize("start_game_window_disallow_join_description")
 	}, true)
 }
-local weave_find_group_widgets = {
-	weave_find_group_frame = UIWidgets.create_background_with_frame("weave_find_group_frame", scenegraph_definition.weave_find_group_frame.size, "game_options_bg_04", "menu_frame_08", true),
-	weave_info_title_text = UIWidgets.create_simple_text("start_game_window_weave_find_group", "weave_find_group_title_text", nil, nil, weave_find_group_title_text_style),
-	weave_find_group_title_divider = UIWidgets.create_simple_texture("divider_01_top", "weave_find_group_title_divider"),
-	weave_find_group_description_text = UIWidgets.create_simple_text("start_game_window_weave_find_group_description", "mutator_description_text", nil, nil, weave_find_group_description_text_style)
+local deus_quickplay_widget = {
+	game_option_1 = create_settings_option_deus("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), nil, true),
+	reward_presentation = create_reward_presentation("reward_presentation", scenegraph_definition.reward_presentation.size, "menu_frame_02_morris")
+}
+local deus_window_frame = "menu_frame_01_morris"
+local deus_custom_widget = {
+	game_option_1 = create_settings_option_deus("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), nil, true),
+	journey_name = UIWidgets.create_simple_text("n/a", "journey_name", nil, nil, journey_name_text_style),
+	journey_theme = create_modifier_info("journey_theme"),
+	game_option_2 = create_settings_option_deus("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_difficulty"), "difficulty_option_1", nil),
+	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), false, "menu_frame_02_morris"),
+	private_frame = UIWidgets.create_frame("private_button_frame", scenegraph_definition.private_button_frame.size, deus_window_frame, 1),
+	private_button = UIWidgets.create_default_checkbox_button("private_button", scenegraph_definition.private_button.size, Localize("start_game_window_other_options_private"), 24, {
+		title = Localize("start_game_window_other_options_private"),
+		description = Localize("start_game_window_other_options_private_description")
+	}, nil, "menu_frame_03_morris"),
+	host_frame = UIWidgets.create_frame("host_button_frame", scenegraph_definition.host_button_frame.size, deus_window_frame, 1),
+	host_button = UIWidgets.create_default_checkbox_button("host_button", scenegraph_definition.host_button.size, Localize("start_game_window_other_options_always_host"), 24, {
+		title = Localize("start_game_window_other_options_always_host"),
+		description = Localize("start_game_window_other_options_always_host_description")
+	}, nil, "menu_frame_03_morris"),
+	strict_matchmaking_frame = UIWidgets.create_frame("strict_matchmaking_button_frame", scenegraph_definition.strict_matchmaking_button_frame.size, deus_window_frame, 1),
+	strict_matchmaking_button = UIWidgets.create_default_checkbox_button("strict_matchmaking_button", scenegraph_definition.strict_matchmaking_button.size, Localize("start_game_window_other_options_strict_matchmaking"), 24, {
+		title = Localize("start_game_window_other_options_strict_matchmaking"),
+		description = Localize("start_game_window_other_options_strict_matchmaking_description")
+	}, nil, "menu_frame_03_morris")
 }
 local twitch_mode_widget_funcs = {
 	twitch_disclaimer = create_twitch_disclaimer,
@@ -3311,9 +3897,11 @@ return {
 	deed_game_widgets = deed_game_widgets,
 	event_game_widgets = event_game_widgets,
 	weave_game_widgets = weave_game_widgets,
-	weave_find_group_widgets = weave_find_group_widgets,
+	deus_quickplay_widget = deus_quickplay_widget,
+	deus_custom_widget = deus_custom_widget,
 	weave_quickplay_widgets = weave_quickplay_widgets,
 	twitch_mode_widget_funcs = twitch_mode_widget_funcs,
 	switch_mechanism_widgets = switch_mechanism_widgets,
-	widgets = widgets
+	widgets = widgets,
+	widgets_deus = widgets_deus
 }

@@ -173,7 +173,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 			definitions = local_require("scripts/ui/hud_ui/dark_pact_team_member_unit_frame_ui_definitions")
 		end
 	elseif frame_type == "player" then
-		local gamepad_active = self.input_manager:is_device_active("gamepad") or PLATFORM ~= "win32"
+		local gamepad_active = self.input_manager:is_device_active("gamepad") or not IS_WINDOWS
 		local should_use_game_pad = self.platform ~= "win32" or ((gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never")
 
 		if is_dark_pact then
@@ -1057,7 +1057,7 @@ UnitFramesHandler.update = function (self, dt, t)
 
 	local parent = self._parent
 	local ignore_own_player = parent:is_own_player_dead() and not self._is_spectator
-	local gamepad_active = self.input_manager:is_device_active("gamepad") or PLATFORM ~= "win32"
+	local gamepad_active = self.input_manager:is_device_active("gamepad") or not IS_WINDOWS
 	local use_game_pad = (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never"
 
 	if use_game_pad then

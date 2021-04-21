@@ -37,7 +37,7 @@ FriendsUIComponent.is_active = function (self)
 end
 
 FriendsUIComponent.activate_friends_ui = function (self)
-	if PLATFORM == "xb1" and not Managers.account:friends_list_initiated() then
+	if IS_XB1 and not Managers.account:friends_list_initiated() then
 		Managers.account:setup_friendslist()
 	end
 
@@ -59,7 +59,7 @@ FriendsUIComponent._refresh_friends_list = function (self)
 	self:_populate_tab(widgets_by_name.online_tab, empty_list)
 	self:_populate_tab(widgets_by_name.offline_tab, empty_list)
 
-	local friend_list_limit = definitions.scenegraph_info.friend_list_limit
+	local friend_list_limit = definitions.list_info.friend_list_limit
 
 	Managers.account:get_friends(friend_list_limit, callback(self, "cb_refresh_friends_done"))
 end
@@ -377,7 +377,7 @@ FriendsUIComponent._populate_tab = function (self, widget, list, allow_invite)
 	local list_content = content.list_content
 	local item_styles = style.item_styles
 	local allowed_to_initiate_join_lobby = Managers.matchmaking:allowed_to_initiate_join_lobby()
-	local num_friends = #list
+	local num_friends = math.min(#list, definitions.list_info.friend_list_limit)
 
 	for i = 1, num_friends, 1 do
 		local friend = list[i]
@@ -486,7 +486,7 @@ end
 FriendsUIComponent._open_player_profile = function (self, content)
 	local id = content.id
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		Managers.account:show_player_profile_with_account_id(id)
 	else
 		Managers.account:show_player_profile(id)

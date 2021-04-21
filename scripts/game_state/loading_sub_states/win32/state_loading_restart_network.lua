@@ -51,7 +51,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 	local host_to_join = nil
 	local lobby_is_server = lobby_to_join ~= nil
 	local loading_context = self.parent.parent.loading_context
-	local increment_lobby_port = true
+	local increment_lobby_port = IS_WINDOWS and true
 
 	Managers.lobby:setup_network_options(increment_lobby_port)
 
@@ -59,7 +59,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 	local platform = PLATFORM
 
 	if not rawget(_G, "LobbyInternal") or not LobbyInternal.network_initialized() then
-		if platform == "win32" or platform == "linux" then
+		if IS_WINDOWS or IS_LINUX then
 			if rawget(_G, "Steam") and not LEVEL_EDITOR_TEST and not Development.parameter("use_lan_backend") then
 				require("scripts/network/lobby_steam")
 				require("scripts/network/game_server/game_server_user_steam")
@@ -85,7 +85,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 				host_to_join = script_data.host_to_join
 			end
-		elseif platform == "xb1" then
+		elseif IS_XB1 then
 			if Managers.account:offline_mode() then
 				if package.loaded["scripts/network/lobby_xbox_live"] then
 					package.loaded["scripts/network/lobby_xbox_live"] = nil
@@ -101,7 +101,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 				require("scripts/network/lobby_xbox_live")
 			end
-		elseif platform == "ps4" then
+		elseif IS_PS4 then
 			if Managers.account:offline_mode() then
 				if package.loaded["scripts/network/lobby_psn"] then
 					package.loaded["scripts/network/lobby_psn"] = nil
@@ -120,7 +120,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 		end
 
 		LobbyInternal.init_client(network_options)
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		if Managers.account:offline_mode() then
 			if package.loaded["scripts/network/lobby_xbox_live"] then
 				package.loaded["scripts/network/lobby_xbox_live"] = nil
@@ -137,7 +137,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 			require("scripts/network/lobby_xbox_live")
 			LobbyInternal.init_client(network_options)
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		if Managers.account:offline_mode() then
 			if package.loaded["scripts/network/lobby_psn"] then
 				package.loaded["scripts/network/lobby_psn"] = nil
@@ -180,7 +180,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 		self.parent:setup_lobby_finder(callback(self, "cb_lobby_joined"), lobby_to_join, host_to_join, lobby_is_server)
 
 		self._lobby_joined = false
-	elseif platform == "xb1" or platform == "ps4" then
+	elseif IS_CONSOLE then
 		self._server_created = false
 		self._creating_lobby = false
 	elseif loading_context.rejoin_lobby then
@@ -262,6 +262,10 @@ end
 
 StateLoadingRestartNetwork.cb_server_created = function (self)
 	self._server_created = true
+
+	assert(self.parent:loadout_resync_state() == StateLoading.LoadoutResyncStates.WAIT_FOR_RPC_LOAD_LEVEL, "[StateLoadingRestartNetwork] loadout_resync_state wasn't WAIT_FOR_RPC_LOAD_LEVEL")
+	print("[StateLoadingRestartNetwork] cb_server_created WAIT_FOR_RPC_LOAD_LEVEL ->", StateLoading.LoadoutResyncStates.CHECK_RESYNC)
+	self.parent:set_loadout_resync_state(StateLoading.LoadoutResyncStates.CHECK_RESYNC)
 end
 
 StateLoadingRestartNetwork.cb_lobby_joined = function (self)

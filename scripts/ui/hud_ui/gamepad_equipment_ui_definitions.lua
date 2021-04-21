@@ -273,7 +273,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.root.scale = "hud_fit"
 	scenegraph_definition.root.is_root = nil
 	scenegraph_definition.screen.scale = "hud_fit"
@@ -1366,20 +1366,7 @@ local function create_equipment_background(texture, scenegraph_id, masked, retai
 end
 
 local function create_engineer_background(scenegraph_id, layer, retained)
-	local button_texture_data = nil
-
-	if PLATFORM == "win32" then
-		if Application.user_setting("gamepad_use_ps4_style_input_icons") then
-			button_texture_data = ButtonTextureByName("square", "ps4")
-		else
-			button_texture_data = ButtonTextureByName("x", "xb1")
-		end
-	elseif PLATFORM == "xb1" then
-		button_texture_data = ButtonTextureByName("x", "xb1")
-	else
-		button_texture_data = ButtonTextureByName("square", "ps4")
-	end
-
+	local button_texture_data = ButtonTextureByName("x", "xb1")
 	local button_texture = button_texture_data.texture
 	local button_size = button_texture_data.size
 
@@ -1397,7 +1384,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 						local player = Managers.player:local_player()
 						local player_unit = player and player.player_unit
 
-						if not Unit.alive(player_unit) then
+						if not ALIVE[player_unit] then
 							return false
 						end
 
@@ -1432,7 +1419,16 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 					style_id = "ability_effect",
 					texture_id = "ability_effect",
 					content_check_function = function (content, style)
-						return not content.on_cooldown and content.using_career_skill_weapon
+						return not content.on_cooldown and content.using_career_skill_weapon and content.visible
+					end
+				},
+				{
+					texture_id = "reload_icon_frame_id",
+					style_id = "reload_icon_frame",
+					pass_type = "texture",
+					retained_mode = retained,
+					content_check_function = function (content, style)
+						return not content.on_cooldown and content.using_career_skill_weapon and content.visible
 					end
 				},
 				{
@@ -1518,10 +1514,11 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 			}
 		},
 		content = {
-			input_text = "",
 			time = 0,
+			reload_icon_frame_id = "lit_frame_engineer",
 			minigun_id = "rotarygun_bg",
 			reload_overlay_id = "glowtexture_mask_red",
+			input_text = "",
 			reload_mask_id = "minigun_icon_mask",
 			ability_effect = "gamepad_ability_effect_cog",
 			reload_icon_id = "icon_reload",
@@ -1657,6 +1654,25 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 					137
 				}
 			},
+			reload_icon_frame = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-1,
+					2,
+					101
+				},
+				texture_size = {
+					118,
+					136
+				}
+			},
 			reload_mask = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
@@ -1757,7 +1773,7 @@ local career_widget_definitions = {
 	engineer_base = create_engineer_background("gamepad_icon_base", 10)
 }
 local frame_definitions = {
-	health_bar_frame = UIWidgets.create_simple_texture("console_hp_bar_frame", "health_bar_frame", nil, RETAINED_MODE_ENABLED, nil, nil, "center", "bottom"),
+	health_bar_frame = UIWidgets.create_simple_texture("console_hp_bar_frame", "health_bar_frame", nil, RETAINED_MODE_ENABLED),
 	background_panel_bg = UIWidgets.create_simple_texture("console_hp_bar_background", "health_bar_frame_bg", nil, RETAINED_MODE_ENABLED)
 }
 local ammo_widget_definitions = {

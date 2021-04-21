@@ -16,18 +16,42 @@ local scenegraph_definition = {
 			SIZE_Y
 		}
 	},
-	pivot = {
+	pivot_parent = {
 		vertical_alignment = "top",
 		parent = "root",
 		horizontal_alignment = "left",
 		position = {
-			70,
+			0,
 			0,
 			1
 		},
 		size = {
 			0,
 			0
+		}
+	},
+	pivot = {
+		parent = "pivot_parent",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			0,
+			0
+		}
+	},
+	pivot_dragger = {
+		parent = "pivot",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			100,
+			200
 		}
 	},
 	portrait_pivot = {
@@ -52,7 +76,7 @@ if platform ~= "win32" then
 	scenegraph_definition.root.is_root = nil
 end
 
-local inventory_consumable_icons = (platform == "win32" and {
+local inventory_consumable_icons = (IS_WINDOWS and {
 	wpn_grimoire_01 = "teammate_consumable_icon_grimoire",
 	potion_cooldown_reduction_01 = "teammate_consumable_icon_speed",
 	potion_healing_draught_01 = "teammate_consumable_icon_potion_01",
@@ -87,7 +111,7 @@ local inventory_consumable_icons = (platform == "win32" and {
 	healthkit_first_aid_kit_01 = "consumables_medpack",
 	potion_speed_boost_01 = "consumables_speed"
 }
-local inventory_index_by_slot = (platform == "win32" and {
+local inventory_index_by_slot = (IS_WINDOWS and {
 	slot_healthkit = 1,
 	slot_grenade = 3,
 	slot_potion = 2
@@ -233,9 +257,9 @@ local function create_static_widget()
 				font_type = "arial",
 				font_size = 18,
 				text_color = Colors.get_table("white"),
-				horizontal_alignment = (PLATFORM == "ps4" and "left") or "center",
+				horizontal_alignment = (IS_PS4 and "left") or "center",
 				offset = {
-					(PLATFORM == "ps4" and -43 * portrait_scale) or 0,
+					(IS_PS4 and -43 * portrait_scale) or 0,
 					110 * portrait_scale,
 					health_bar_offset[3] + 15
 				}
@@ -245,9 +269,9 @@ local function create_static_widget()
 				font_type = "arial",
 				font_size = 18,
 				text_color = Colors.get_table("black"),
-				horizontal_alignment = (PLATFORM == "ps4" and "left") or "center",
+				horizontal_alignment = (IS_PS4 and "left") or "center",
 				offset = {
-					((PLATFORM == "ps4" and -43 * portrait_scale) or 0) + 2,
+					((IS_PS4 and -43 * portrait_scale) or 0) + 2,
 					110 * portrait_scale - 2,
 					health_bar_offset[3] + 14
 				}

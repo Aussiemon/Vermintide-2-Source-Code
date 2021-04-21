@@ -4,7 +4,10 @@ local extension_list = {
 }
 local RPCS = {
 	"rpc_server_reduce_activated_ability_cooldown",
-	"rpc_reduce_activated_ability_cooldown"
+	"rpc_server_reduce_activated_ability_cooldown_percent",
+	"rpc_reduce_activated_ability_cooldown",
+	"rpc_reduce_activated_ability_cooldown_percent",
+	"rpc_ability_activated"
 }
 
 CareerSystem.init = function (self, entity_system_creation_context, system_name)
@@ -93,6 +96,51 @@ CareerSystem.rpc_reduce_activated_ability_cooldown = function (self, sender, uni
 
 	if career_extension then
 		career_extension:reduce_activated_ability_cooldown(amount, ability_id, ignore_paused)
+	end
+end
+
+CareerSystem.rpc_server_reduce_activated_ability_cooldown_percent = function (self, sender, unit_game_object_id, amount, ability_id, ignore_paused)
+	local network_transmit = self.network_transmit
+
+	if self.is_server then
+		local unit_storage = self.unit_storage
+		local player_manager = self.player_manager
+		local unit = unit_storage:unit(unit_game_object_id)
+
+		if unit then
+			local owner_player = player_manager:owner(unit)
+			local peer_id = owner_player:network_id()
+
+			network_transmit:send_rpc("rpc_reduce_activated_ability_cooldown_percent", peer_id, unit_game_object_id, amount, ability_id, ignore_paused)
+		end
+	else
+		network_transmit:send_rpc_server("rpc_server_rpc_reduce_activated_ability_cooldown_percent", unit_game_object_id, amount, ability_id, ignore_paused)
+	end
+end
+
+CareerSystem.rpc_reduce_activated_ability_cooldown_percent = function (self, sender, unit_game_object_id, amount, ability_id, ignore_paused)
+	local unit = self.unit_storage:unit(unit_game_object_id)
+	local career_extension = self.unit_extensions[unit]
+
+	if career_extension then
+		career_extension:reduce_activated_ability_cooldown_percent(amount, ability_id, ignore_paused)
+	end
+end
+
+CareerSystem.rpc_ability_activated = function (self, channel_id, unit_game_object_id, ability_id)
+	local local_player = Managers.player:local_player()
+	local local_player_unit = local_player.player_unit
+	local buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
+	local unit = self.unit_storage:unit(unit_game_object_id)
+
+	if unit and local_player_unit and buff_extension then
+		buff_extension:trigger_procs("on_ability_activated", unit, ability_id)
+	end
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_ability_activated", peer_id, unit_game_object_id, ability_id)
 	end
 end
 

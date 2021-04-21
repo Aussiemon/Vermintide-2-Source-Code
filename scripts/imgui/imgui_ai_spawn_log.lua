@@ -96,53 +96,53 @@ ImguiAISpawnLog.draw = function (self)
 		return
 	end
 
-	Imgui.Begin("AI Spawn Log")
+	Imgui.begin_window("AI Spawn Log")
 
-	if Imgui.Button("Export Log") then
+	if Imgui.button("Export Log") then
 		self:_export_log_data()
 	end
 
-	self._show_totals = Imgui.Checkbox("Show Totals", self._show_totals)
-	self._keep_on_screen = Imgui.Checkbox("Keep On Screen", self._keep_on_screen)
-	self._visualize_locations = Imgui.Checkbox("Visualize Locaitons", self._visualize_locations)
-	self._sticky_hover = Imgui.Checkbox("Sticky Hover", self._sticky_hover)
-	self._live_log = Imgui.Checkbox("Live Log", self._live_log)
-	self._specials_only = Imgui.Checkbox("Specials Only", self._specials_only)
+	self._show_totals = Imgui.checkbox("Show Totals", self._show_totals)
+	self._keep_on_screen = Imgui.checkbox("Keep On Screen", self._keep_on_screen)
+	self._visualize_locations = Imgui.checkbox("Visualize Locaitons", self._visualize_locations)
+	self._sticky_hover = Imgui.checkbox("Sticky Hover", self._sticky_hover)
+	self._live_log = Imgui.checkbox("Live Log", self._live_log)
+	self._specials_only = Imgui.checkbox("Specials Only", self._specials_only)
 
 	if self._live_log then
 		self._timeline_end = game_time
 	end
 
-	self._timeline_slice_size = Imgui.SliderFloat("Capture Size", self._timeline_slice_size, 1, 120)
+	self._timeline_slice_size = Imgui.slider_float("Capture Size", self._timeline_slice_size, 1, 120)
 	self._timeline_end = math.max(self._timeline_end, self._timeline_slice_size)
-	self._timeline_end = Imgui.SliderFloat("Capture Location", self._timeline_end, self._timeline_slice_size, game_time)
+	self._timeline_end = Imgui.slider_float("Capture Location", self._timeline_end, self._timeline_slice_size, game_time)
 
 	if self._show_totals then
-		Imgui.Begin("AI Spawn Totals")
+		Imgui.begin_window("AI Spawn Totals")
 
-		if Imgui.Button("Export") then
+		if Imgui.button("Export") then
 			self:_export_recap_data()
 		end
 
 		local arg_c = #self._event_type_names
 		local legend_format = "Legend -" .. string.rep(" %s,", arg_c)
 
-		Imgui.Text(string.format(legend_format, unpack(self._event_type_names)))
+		Imgui.text(string.format(legend_format, unpack(self._event_type_names)))
 
 		local format = "%32s -" .. string.rep(" %d,", arg_c)
 
 		for name, counts in pairs(self._totals) do
-			Imgui.Text(string.format(format, name, unpack(counts)))
+			Imgui.text(string.format(format, name, unpack(counts)))
 		end
 
-		Imgui.End()
+		Imgui.end_window()
 	end
 
-	if Imgui.Button("Clear") then
+	if Imgui.button("Clear") then
 		self:_clear()
 	end
 
-	Imgui.Separator()
+	Imgui.separator()
 
 	local type_names = self._event_type_names
 	local vislualize = self._visualize_locations
@@ -187,9 +187,9 @@ ImguiAISpawnLog.draw = function (self)
 				local is_selected = last_hovered_id == queue_id
 				local color = (is_selected and selected_color) or normal_color
 
-				Imgui.TextColored(text, color[1], color[2], color[3], 255)
+				Imgui.text_colored(text, color[1], color[2], color[3], 255)
 
-				if Imgui.IsItemHovered() then
+				if Imgui.is_item_hovered() then
 					hovered_id = queue_id
 					hovered_time = timestamp
 				end
@@ -210,7 +210,7 @@ ImguiAISpawnLog.draw = function (self)
 	self._hovered_id = hovered_id
 	self._hovered_time = hovered_time
 
-	Imgui.End("AI Spawn Log")
+	Imgui.end_window("AI Spawn Log")
 end
 
 ImguiAISpawnLog.log_queue = function (self, ...)

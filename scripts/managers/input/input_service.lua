@@ -136,11 +136,11 @@ end
 InputService.get_active_keymaps = function (self, optional_platform, optional_input_name)
 	local platform = optional_platform or self.platform
 
-	if not optional_platform and platform == "win32" and self.input_manager:is_device_active("gamepad") then
+	if not optional_platform and IS_WINDOWS and self.input_manager:is_device_active("gamepad") then
 		platform = "xb1"
 	end
 
-	if not optional_platform and platform == "xb1" and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
+	if not optional_platform and IS_XB1 and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
 		local keymaps_name = self.keymaps_name
 		local keymaps_data = self.input_manager:keymaps_data(keymaps_name)
 		local data = keymaps_data.win32
@@ -168,11 +168,11 @@ InputService.get_active_filters = function (self, optional_platform, optional_in
 
 	local platform = optional_platform or self.platform
 
-	if not optional_platform and platform == "win32" and self.input_manager:is_device_active("gamepad") then
+	if not optional_platform and IS_WINDOWS and self.input_manager:is_device_active("gamepad") then
 		platform = "xb1"
 	end
 
-	if not optional_platform and platform == "xb1" and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
+	if not optional_platform and IS_XB1 and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
 		local filters_data = self.input_manager:filters_data(filters_name)
 		local filters = filters_data.win32
 

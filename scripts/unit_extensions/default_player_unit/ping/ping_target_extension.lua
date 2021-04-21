@@ -3,7 +3,9 @@ PingTargetExtension = class(PingTargetExtension)
 PingTargetExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._world = extension_init_context.world
 	self._unit = unit
-	self._pinged = false
+	self._pinged = 0
+	self._outline_ids = {}
+	self.always_pingable = extension_init_data.always_pingable
 end
 
 PingTargetExtension.extensions_ready = function (self, world, unit)
@@ -19,11 +21,26 @@ PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, sho
 		show_outline = true
 	end
 
-	self._pinged = pinged
+	if pinged then
+		self._pinged = self._pinged + 1
+	else
+		self._pinged = self._pinged - 1
+	end
 
 	if self._outline_extension then
 		if show_outline then
-			self._outline_extension.set_pinged(pinged, flash)
+			if pinged then
+				local ping_outline_template = table.shallow_copy(OutlineSettings.templates.ping_unit, true)
+				ping_outline_template.method = self._outline_extension.pinged_method
+				local outline_id = self._outline_extension:add_outline(ping_outline_template)
+				self._outline_ids[pinger_unit] = outline_id
+			else
+				local outline_id = self._outline_ids[pinger_unit]
+
+				self._outline_extension:remove_outline(outline_id)
+
+				self._outline_ids[pinger_unit] = nil
+			end
 		end
 
 		if pinged then
@@ -57,7 +74,7 @@ PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, sho
 end
 
 PingTargetExtension.pinged = function (self)
-	return self._pinged
+	return self._pinged > 0
 end
 
 PingTargetExtension.update = function (self, unit, input, dt, context, t)

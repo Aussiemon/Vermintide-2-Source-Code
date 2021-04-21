@@ -1175,38 +1175,37 @@ local function sort_level_list(a, b)
 	return a_sorting_index < b_sorting_index
 end
 
-local function setup_game_mode_data(statistics_db, player_stats_id, game_mode_indices)
+local function setup_game_mode_data(statistics_db, player_stats_id)
 	local game_mode_data = {}
 	local game_modes = {}
 	local only_release = GameSettingsDevelopment.release_levels_only
 
 	for name, level_data in pairs(LevelSettings) do
-		if type(level_data) == "table" then
-			local debug_level = string.match(level_data.package_name, "resource_packages/levels/debug/")
+		if type(level_data) == "table" and (not only_release or not DebugLevels[name]) then
+			local game_mode = level_data.game_mode
 
-			if not only_release or not debug_level then
-				local game_mode = level_data.game_mode
+			if game_mode and game_mode ~= "tutorial" and game_mode ~= "demo" then
+				local unlockable = level_data.unlockable and not level_data.default
 
-				if game_mode and game_mode ~= "tutorial" and game_mode ~= "demo" then
-					local unlockable = level_data.unlockable
+				if unlockable and LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, name) then
+					if not game_modes[game_mode] then
+						local index = #game_mode_data + 1
+						local game_mode_settings = GameModeSettings[game_mode]
+						local game_mode_difficulties = game_mode_settings.difficulties
+						local game_mode_display_name = game_mode_settings.display_name
+						local difficulties = table.clone(game_mode_difficulties)
+						difficulties[#difficulties + 1] = "any"
+						game_modes[game_mode] = index
+						game_modes[index] = game_mode
+						game_mode_data[index] = {
+							levels = {},
+							difficulties = difficulties,
+							game_mode_key = game_mode,
+							game_mode_display_name = game_mode_display_name
+						}
+					end
 
-					if unlockable and LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, name) then
-						if not game_modes[game_mode] then
-							local index = table.find(game_mode_indices, game_mode)
-							local game_mode_settings = GameModeSettings[game_mode]
-							local game_mode_difficulties = game_mode_settings.difficulties
-							local game_mode_display_name = game_mode_settings.display_name
-							local difficulties = table.clone(game_mode_difficulties)
-							difficulties[#difficulties + 1] = "any"
-							game_modes[game_mode] = index
-							game_mode_data[index] = {
-								levels = {},
-								difficulties = difficulties,
-								game_mode_key = game_mode,
-								game_mode_display_name = game_mode_display_name
-							}
-						end
-
+					if not level_data.supported_game_modes or level_data.supported_game_modes[game_mode] then
 						local data = game_mode_data[game_modes[game_mode]]
 						local levels = data.levels
 						levels[#levels + 1] = name
@@ -1225,11 +1224,24 @@ local function setup_game_mode_data(statistics_db, player_stats_id, game_mode_in
 		levels[#levels + 1] = "any"
 	end
 
-	local adventure_game_mode_index = table.find(game_mode_indices, "adventure")
-	local custom_game_mode_index = table.find(game_mode_indices, "custom")
-	local any_game_mode_index = table.find(game_mode_indices, "any")
-	game_mode_data[custom_game_mode_index] = table.clone(game_mode_data[adventure_game_mode_index])
-	game_mode_data[any_game_mode_index] = table.clone(game_mode_data[adventure_game_mode_index])
+	local game_mode = "weave"
+	local game_mode_settings = GameModeSettings[game_mode]
+	local game_mode_difficulties = game_mode_settings.difficulties
+	local game_mode_display_name = game_mode_settings.display_name
+	local index = #game_mode_data + 1
+	local difficulties = table.clone(game_mode_difficulties)
+	difficulties[#difficulties + 1] = "any"
+	game_mode_data[index] = {
+		difficulties = difficulties,
+		game_mode_key = game_mode,
+		game_mode_display_name = game_mode_display_name
+	}
+	game_modes[game_mode] = #game_modes + 1
+	game_modes[#game_modes + 1] = game_mode
+	local game_mode = "any"
+	game_modes[game_mode] = #game_modes + 1
+	game_modes[#game_modes + 1] = game_mode
+	game_mode_data.game_modes = game_modes
 
 	return game_mode_data
 end
@@ -1238,7 +1250,7 @@ local show_lobbies_array = {
 	"lb_show_joinable",
 	"lb_show_all"
 }
-local distance_array = (PLATFORM == "ps4" and {
+local distance_array = (IS_PS4 and {
 	"map_zone_options_2",
 	"map_zone_options_3",
 	"map_zone_options_5"
@@ -2167,6 +2179,17 @@ local widgets = {
 		weave_name = UIWidgets.create_simple_text("weave_name", "lobby_info_weave_level_text", nil, nil, weave_name_style),
 		wind_name = UIWidgets.create_simple_text("wind_name", "lobby_info_wind_text", nil, nil, wind_name_style)
 	},
+	lobby_info_box_deus = {
+		expedition_icon = UIWidgets.create_expedition_widget_func("lobby_info_level_image", nil, DeusJourneySettings.journey_cave, "journey_cave", {
+			width = 800,
+			spacing_x = 40
+		}, 1.2),
+		level_name = UIWidgets.create_simple_text("level_name", "lobby_info_level_text", nil, nil, level_name_style),
+		hero_tabs = UIWidgets.create_icon_selector("lobby_info_hero_tabs", {
+			hero_entry_width,
+			hero_entry_height
+		}, hero_icons, hero_entry_spacing, true, hero_entry_frame_size, true)
+	},
 	lobby_info_box_lobbies_weaves = {
 		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_lobbies_weaves", scenegraph_definition.lobby_info_box_info_frame_lobbies_weaves.size, window_frame, 5),
 		info_frame_host_title = UIWidgets.create_simple_text(Localize("lb_host") .. ":", "lobby_info_box_host_lobbies_weaves", nil, nil, info_frame_text_title_style),
@@ -2177,6 +2200,21 @@ local widgets = {
 		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_lobbies_weaves", nil, nil, info_frame_text_style),
 		info_frame_game_type_title = UIWidgets.create_simple_text(Localize("lb_game_type") .. ":", "lobby_info_box_game_type_lobbies_weaves", nil, nil, info_frame_text_title_style),
 		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_weave"), "lobby_info_box_game_type_lobbies_weaves", nil, nil, info_frame_text_style)
+	},
+	lobby_info_box_lobbies_deus = {
+		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_lobbies", scenegraph_definition.lobby_info_box_info_frame_lobbies.size, window_frame, 5),
+		info_frame_host_title = UIWidgets.create_simple_text(Localize("lb_host") .. ":", "lobby_info_box_host_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_host_text = UIWidgets.create_simple_text("host", "lobby_info_box_host_lobbies", nil, nil, info_frame_text_style),
+		info_frame_level_name_title = UIWidgets.create_simple_text(Localize("lb_level") .. ":", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_level_name_text = UIWidgets.create_simple_text("level_name", "lobby_info_box_level_name_lobbies", nil, nil, info_frame_text_style),
+		info_frame_difficulty_title = UIWidgets.create_simple_text(Localize("lb_difficulty") .. ":", "lobby_info_box_difficulty_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_difficulty_text = UIWidgets.create_simple_text("difficulty", "lobby_info_box_difficulty_lobbies", nil, nil, info_frame_text_style),
+		info_frame_players_title = UIWidgets.create_simple_text(Localize("lb_players") .. ":", "lobby_info_box_players_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_players_text = UIWidgets.create_simple_text("1/4", "lobby_info_box_players_lobbies", nil, nil, info_frame_text_style),
+		info_frame_status_title = UIWidgets.create_simple_text(Localize("lb_status") .. ":", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_style),
+		info_frame_game_type_title = UIWidgets.create_simple_text(Localize("lb_game_type") .. ":", "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_title_style),
+		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_none"), "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_style)
 	},
 	lobby_info_box_lobbies = {
 		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_lobbies", scenegraph_definition.lobby_info_box_info_frame_lobbies.size, window_frame, 5),

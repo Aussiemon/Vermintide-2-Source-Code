@@ -1,6 +1,7 @@
 require("foundation/scripts/util/table")
 require("scripts/settings/attachment_node_linking")
 require("scripts/settings/ai_inventory_templates")
+require("scripts/settings/equipment/item_master_list_editor")
 
 local unit_alive = Unit.alive
 
@@ -462,6 +463,222 @@ function flow_callback_attach_unit(params)
 	}
 end
 
+function flow_callback_attach_player_hat(params)
+	local parent_unit = params.unit
+	local world = Unit.world(parent_unit)
+	local source_node_index = Unit.node(parent_unit, "a_hat")
+	item_position = Unit.world_position(parent_unit, source_node_index)
+	item_rotation = Unit.world_rotation(parent_unit, source_node_index)
+	local child_unit = World.spawn_unit(world, params.hat, item_position, item_rotation)
+	node_linking_data = Unit.get_data(child_unit, "node_linking") or nil
+
+	if not node_linking_data then
+		print("Missing node link data in unit %s", tostring(params.hat))
+
+		return
+	end
+
+	local node_link_table = AttachmentNodeLinking
+	node_link_table = node_link_table[node_linking_data] or nil
+	node_link_table = node_link_table.slot_hat or nil
+
+	if not node_link_table then
+		print("No attachment node linking with name %s", node_linking_data)
+
+		return
+	end
+
+	link_attachment(node_link_table, world, child_unit, parent_unit)
+
+	node_linking_event = Unit.get_data(child_unit, "equip_event") or nil
+
+	if node_linking_event then
+		local unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
+
+		for i = 1, #unit_attachments, 1 do
+			Unit.flow_event(unit_attachments[i], node_linking_event)
+		end
+	else
+		print("Missing equip event in unit %s", tostring(params.hat))
+	end
+
+	local index_offset = Script.index_offset()
+
+	if Unit.num_lod_objects(parent_unit) ~= 0 and Unit.num_lod_objects(child_unit) ~= 0 then
+		local parent_lod_object = Unit.lod_object(parent_unit, index_offset)
+		local child_lod_object = Unit.lod_object(child_unit, index_offset)
+
+		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
+		LODObject.set_orientation_node(child_lod_object, parent_unit, LODObject.node(parent_lod_object))
+	end
+
+	local hat_attachments = Unit.get_data(parent_unit, "flow_hat_attachments") or {}
+
+	table.insert(hat_attachments, child_unit)
+	Unit.set_data(parent_unit, "flow_hat_attachments", hat_attachments)
+end
+
+function flow_callback_remove_player_hat(params)
+	local parent_unit = params.unit
+	local world = Unit.world(parent_unit)
+	local hat_attachments = Unit.get_data(parent_unit, "flow_hat_attachments") or {}
+
+	for i = 1, #hat_attachments, 1 do
+		World.destroy_unit(world, hat_attachments[i])
+	end
+
+	Unit.set_data(parent_unit, "flow_hat_attachments", {})
+end
+
+function flow_callback_attach_player_item(params)
+	if params.item == nil then
+		return
+	end
+
+	local parent_unit = params.unit
+	local world = Unit.world(parent_unit)
+	local item_table = ItemMasterList
+	local item = item_table[params.item]
+
+	if item ~= nil then
+		if params.career_filter and not table.is_empty(item.can_wield) and not table.find(item.can_wield, params.career_filter) then
+			print("SKIPPED ITEM! Career " .. params.career_filter .. " can't wield " .. params.item)
+			table.dump(item.can_wield)
+
+			return
+		end
+
+		if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" then
+			local weapon_template = Weapons[item.template]
+
+			if item.right_hand_unit ~= nil then
+				item_unit = attach_player_item(parent_unit, item.right_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+			end
+
+			if item.left_hand_unit ~= nil then
+				if item.left_hand_unit ~= item.ammo_unit then
+					item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.left_hand_attachment_node_linking.third_person, params.unwielded)
+				else
+					item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+				end
+			end
+
+			if weapon_template.ammo_data ~= nil and weapon_template.actions.action_one.default.projectile_info ~= nil then
+				local projectile_units = ProjectileUnits
+
+				if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
+					item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, params.unwielded)
+				end
+			end
+
+			if weapon_template.wield_anim ~= nil and not params.skip_wield_anim then
+				Unit.animation_event(parent_unit, weapon_template.wield_anim)
+			end
+		elseif item.slot_type == "hat" then
+			local hat_template = Attachments[item.template]
+
+			if item.unit ~= nil then
+				item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, params.unwielded)
+				equip_event = Unit.get_data(item_unit, "equip_event") or hat_template.show_attachments_event or nil
+				material_switches = nil
+
+				if hat_template.character_material_changes ~= nil then
+					material_switches = hat_template.character_material_changes.third_person
+				end
+
+				local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
+
+				for _, attached_unit in pairs(flow_unit_attachments) do
+					if equip_event then
+						Unit.flow_event(attached_unit, equip_event)
+					end
+
+					if material_switches ~= nil then
+						for slot_name, material_name in pairs(material_switches) do
+							Unit.set_material(attached_unit, slot_name, material_name)
+						end
+					end
+				end
+			end
+		elseif item.slot_type == "skin" then
+			local skin_template = Cosmetics[item.temporary_template]
+
+			if skin_template.material_changes ~= nil then
+				local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
+
+				if flow_unit_attachments then
+					for slot_name, material_name in pairs(skin_template.material_changes.third_person) do
+						for _, attached_unit in pairs(flow_unit_attachments) do
+							Unit.set_material(attached_unit, slot_name, material_name)
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+function attach_player_item(parent_unit, child_unit_name, node_link_template, unwielded)
+	local index_offset = Script.index_offset()
+
+	if unwieled then
+		node_link_template = node_link_template.unwielded or node_link_template
+	else
+		node_link_template = node_link_template.wielded or node_link_template
+	end
+
+	local item_position, item_rotation = nil
+
+	for target_node, source_node in pairs(node_link_template) do
+		if target_node == 0 then
+			local source_node_index = (type(source_node) == "string" and Unit.node(parent_unit, source_node)) or source_node + index_offset
+			item_position = Unit.world_position(parent_unit, source_node_index)
+			item_rotation = Unit.world_rotation(parent_unit, source_node_index)
+
+			break
+		end
+	end
+
+	local world = Unit.world(parent_unit)
+	local child_unit = World.spawn_unit(world, child_unit_name, item_position, item_rotation)
+
+	for _, link_data in ipairs(node_link_template) do
+		local parent_node = link_data.source
+		local child_node = link_data.target
+		local parent_node_index = (type(parent_node) == "string" and Unit.node(parent_unit, parent_node)) or parent_node + index_offset
+		local child_node_index = (type(child_node) == "string" and Unit.node(child_unit, child_node)) or child_node + index_offset
+
+		World.link_unit(world, child_unit, child_node_index, parent_unit, parent_node_index)
+	end
+
+	if Unit.num_lod_objects(parent_unit) ~= 0 and Unit.num_lod_objects(child_unit) ~= 0 then
+		local parent_lod_object = Unit.lod_object(parent_unit, index_offset)
+		local child_lod_object = Unit.lod_object(child_unit, index_offset)
+
+		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
+		LODObject.set_orientation_node(child_lod_object, parent_unit, LODObject.node(parent_lod_object))
+	end
+
+	local item_attachments = Unit.get_data(parent_unit, "flow_item_attachments") or {}
+
+	table.insert(item_attachments, child_unit)
+	Unit.set_data(parent_unit, "flow_item_attachments", item_attachments)
+
+	return child_unit
+end
+
+function flow_callback_remove_player_items(params)
+	local parent_unit = params.unit
+	local world = Unit.world(parent_unit)
+	local item_attachments = Unit.get_data(parent_unit, "flow_item_attachments") or {}
+
+	for i = 1, #item_attachments, 1 do
+		World.destroy_unit(world, item_attachments[i])
+	end
+
+	Unit.set_data(parent_unit, "flow_item_attachments", {})
+end
+
 function flow_callback_unattach_unit(params)
 	local parentunit = params.parent_unit
 	local childunit = params.child_unit
@@ -480,6 +697,18 @@ function flow_callback_unattach_unit(params)
 
 	return {
 		unlinked = true
+	}
+end
+
+function flow_callback_trigger_event_on_attachments(params)
+	local unit_attachments = Unit.get_data(params.unit, "flow_unit_attachments") or {}
+
+	for i = 1, #unit_attachments, 1 do
+		Unit.flow_event(unit_attachments[i], params.event)
+	end
+
+	return {
+		triggered = true
 	}
 end
 
@@ -655,6 +884,214 @@ function flow_callback_set_material_property_color(params)
 	end
 end
 
+function do_material_dissolve(material, timer_var, timer_data, start_state_var, start_state)
+	Material.set_scalar(material, start_state_var, start_state)
+	Material.set_vector2(material, timer_var, timer_data)
+end
+
+function flow_callback_material_dissolve(params)
+	assert(params.unit, "[flow_callback_material_dissolve] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_material_dissolve] You need to specify duration")
+
+	local timer_var = params.timer_var_name or "dissolve_timer"
+	local start_time = World.time(Application.main_world())
+	local timer_data = Vector2(start_time, start_time + params.duration)
+	local start_state_var = params.dissolve_start_state_var_name or "dissolve_start_value"
+	local start_state = math.floor(0.5 + params.dissolve_start_state or 1)
+	local unit = params.unit
+	local index_offset = Script.index_offset()
+	local mesh = nil
+	local mesh_name = params.mesh_name
+
+	if mesh_name then
+		fassert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_material_dissolve] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
+
+		mesh = Unit.mesh(unit, mesh_name)
+	end
+
+	local material = nil
+	local material_name = params.material_name
+
+	if mesh and material_name then
+		fassert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_material_dissolve] The material %s doesn't exist for mesh %s", mesh_name, material_name))
+
+		material = Mesh.material(mesh, material_name)
+	end
+
+	if mesh and material then
+		do_material_dissolve(material, timer_var, timer_data, start_state_var, start_state)
+	elseif mesh then
+		local num_materials = Mesh.num_materials(mesh)
+
+		for i = 0, num_materials - 1, 1 do
+			do_material_dissolve(Mesh.material(mesh, i + index_offset), timer_var, timer_data, start_state_var, start_state)
+		end
+	elseif material_name then
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i + index_offset)
+
+			if Mesh.has_material(unit_mesh, material_name) then
+				do_material_dissolve(Mesh.material(unit_mesh, material_name), timer_var, timer_data, start_state_var, start_state)
+			end
+		end
+	else
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i + index_offset)
+			local num_materials = Mesh.num_materials(unit_mesh)
+
+			for j = 0, num_materials - 1, 1 do
+				do_material_dissolve(Mesh.material(unit_mesh, j + index_offset), timer_var, timer_data, start_state_var, start_state)
+			end
+		end
+	end
+end
+
+function flow_callback_material_dissolve_chr(params)
+	assert(params.unit, "[flow_callback_material_dissolve_chr] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_material_dissolve_chr] You need to specify duration")
+	flow_callback_material_dissolve(params)
+
+	local unit = params.unit
+	local items = {}
+
+	for _, v in ipairs({
+		"outfit",
+		"stump",
+		"helmet"
+	}) do
+		items = Unit.get_data(unit, v .. "_items") or {}
+
+		for i = 1, #items, 1 do
+			params.unit = items[i]
+
+			flow_callback_material_dissolve(params)
+		end
+	end
+end
+
+function flow_callback_material_dissolve_chr_inventory(params)
+	assert(params.unit, "[flow_callback_material_dissolve_chr_outfit] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_material_dissolve_chr_outfit] You need to specify duration")
+	assert(params.inventory_type, "[flow_callback_material_dissolve_chr_inventory] You need to specify inventory type")
+
+	local unit = params.unit
+	local outfit_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
+
+	for i = 1, #outfit_items, 1 do
+		params.unit = outfit_items[i]
+
+		flow_callback_material_dissolve(params)
+	end
+end
+
+function do_material_fade(material, timer_var, timer_data, fade_range_var, fade_interval)
+	Material.set_vector2(material, fade_range_var, fade_interval)
+	Material.set_vector2(material, timer_var, timer_data)
+end
+
+function flow_callback_material_fade(params)
+	assert(params.unit, "[flow_callback_material_fade] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_material_fade] You need to specify duration")
+
+	local timer_var = params.timer_var_name or "fade_timer"
+	local start_time = World.time(Application.main_world())
+	local timer_data = Vector2(start_time, start_time + params.duration)
+	local fade_range_var = params.fade_range_var_name or "fade_interval"
+	local fade_interval = Vector2(params.fade_range_from or 1, params.fade_range_to or 0)
+	local unit = params.unit
+	local index_offset = Script.index_offset()
+	local mesh = nil
+	local mesh_name = params.mesh_name
+
+	if mesh_name then
+		fassert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_material_fade] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
+
+		mesh = Unit.mesh(unit, mesh_name)
+	end
+
+	local material = nil
+	local material_name = params.material_name
+
+	if mesh and material_name then
+		fassert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_material_fade] The material %s doesn't exist for mesh %s", mesh_name, material_name))
+
+		material = Mesh.material(mesh, material_name)
+	end
+
+	if mesh and material then
+		do_material_fade(material, timer_var, timer_data, fade_range_var, fade_interval)
+	elseif mesh then
+		local num_materials = Mesh.num_materials(mesh)
+
+		for i = 0, num_materials - 1, 1 do
+			do_material_fade(Mesh.material(mesh, i + index_offset), timer_var, timer_data, fade_range_var, fade_interval)
+		end
+	elseif material_name then
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i + index_offset)
+
+			if Mesh.has_material(unit_mesh, material_name) then
+				do_material_fade(Mesh.material(unit_mesh, material_name), timer_var, timer_data, fade_range_var, fade_interval)
+			end
+		end
+	else
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i + index_offset)
+			local num_materials = Mesh.num_materials(unit_mesh)
+
+			for j = 0, num_materials - 1, 1 do
+				do_material_fade(Mesh.material(unit_mesh, j + index_offset), timer_var, timer_data, fade_range_var, fade_interval)
+			end
+		end
+	end
+end
+
+function flow_callback_material_fade_chr(params)
+	assert(params.unit, "[flow_callback_material_fade_chr] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_material_fade_chr] You need to specify duration")
+	flow_callback_material_fade(params)
+
+	local unit = params.unit
+	local items = {}
+
+	for _, v in ipairs({
+		"outfit",
+		"stump",
+		"helmet"
+	}) do
+		items = Unit.get_data(unit, v .. "_items") or {}
+
+		for i = 1, #items, 1 do
+			params.unit = items[i]
+
+			flow_callback_material_fade(params)
+		end
+	end
+end
+
+function flow_callback_material_fade_chr_inventory(params)
+	assert(params.unit, "[flow_callback_material_fade_chr_inventory] You need to specify the Unit")
+	assert(params.duration, "[flow_callback_material_fade_chr_inventory] You need to specify duration")
+	assert(params.inventory_type, "[flow_callback_material_fade_chr_inventory] You need to specify inventory type")
+
+	local unit = params.unit
+	local outfit_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
+
+	for i = 1, #outfit_items, 1 do
+		params.unit = outfit_items[i]
+
+		flow_callback_material_fade(params)
+	end
+end
+
 function start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 	if start_fade_name and start_fade_value then
 		Material.set_scalar(material, start_fade_name, start_fade_value)
@@ -737,78 +1174,6 @@ function flow_callback_start_fade(params)
 				start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 			end
 		end
-	end
-end
-
-function flow_callback_start_fade_chr_inventory(params)
-	assert(params.unit, "[flow_callback_start_fade_chr_outfit] You need to specify the Unit")
-	assert(params.duration, "[flow_callback_start_fade_chr_outfit] You need to specify duration")
-	assert(params.fade_switch, "[flow_callback_start_fade_chr_outfit] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
-
-	for i = 1, #outfit_items, 1 do
-		params.unit = outfit_items[i]
-
-		flow_callback_start_fade(params)
-	end
-
-	local stump_items = Unit.get_data(unit, "stump_items") or {}
-
-	for i = 1, #stump_items, 1 do
-		params.unit = stump_items[i]
-
-		flow_callback_start_fade(params)
-	end
-end
-
-function flow_callback_start_fade_chr_outfit(params)
-	assert(params.unit, "[flow_callback_start_fade_chr_outfit] You need to specify the Unit")
-	assert(params.duration, "[flow_callback_start_fade_chr_outfit] You need to specify duration")
-	assert(params.fade_switch, "[flow_callback_start_fade_chr_outfit] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
-
-	for i = 1, #outfit_items, 1 do
-		params.unit = outfit_items[i]
-
-		flow_callback_start_fade(params)
-	end
-end
-
-function flow_callback_start_fade_chr_stumps(params)
-	assert(params.unit, "[flow_callback_start_fade_chr_stumps] You need to specify the Unit")
-	assert(params.duration, "[flow_callback_start_fade_chr_stumps] You need to specify duration")
-	assert(params.fade_switch, "[flow_callback_start_fade_chr_stumps] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local stump_items = Unit.get_data(unit, "stump_items") or {}
-
-	for i = 1, #stump_items, 1 do
-		params.unit = stump_items[i]
-
-		flow_callback_start_fade(params)
-	end
-end
-
-function flow_callback_start_fade_chr_helmet(params)
-	assert(params.unit, "[flow_callback_start_fade_chr_helmet] You need to specify the Unit")
-	assert(params.duration, "[flow_callback_start_fade_chr_helmet] You need to specify duration")
-	assert(params.fade_switch, "[flow_callback_start_fade_chr_helmet] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local helmet_items = Unit.get_data(unit, "helmet_items") or {}
-
-	for i = 1, #helmet_items, 1 do
-		params.unit = helmet_items[i]
-
-		flow_callback_start_fade(params)
 	end
 end
 

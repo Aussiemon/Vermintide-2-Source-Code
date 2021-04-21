@@ -36,7 +36,7 @@ StartGameWindowWeaveList.on_enter = function (self, params, offset)
 end
 
 StartGameWindowWeaveList._setup_definitions = function (self, params)
-	local gamepad_active = params.use_gamepad_layout or PLATFORM ~= "win32"
+	local gamepad_active = params.use_gamepad_layout or not IS_WINDOWS
 
 	if gamepad_active then
 		definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_list_console_definitions")

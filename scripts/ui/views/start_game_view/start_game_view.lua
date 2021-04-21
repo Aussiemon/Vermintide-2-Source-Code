@@ -18,7 +18,7 @@ local debug_draw_scenegraph = false
 local debug_menu = true
 local menu_functions = {}
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	menu_functions.console_friends_menu = function (this)
 		local input_manager = Managers.input
 
@@ -161,6 +161,14 @@ StartGameView.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
 
+StartGameView.play_mechanism_sound = function (self, event_setting_name, default_event)
+	local sound_event = Managers.mechanism:mechanism_setting(event_setting_name) or default_event
+
+	if sound_event then
+		self:play_sound(sound_event)
+	end
+end
+
 StartGameView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._static_widgets = {}
@@ -292,6 +300,7 @@ StartGameView.on_enter = function (self, params)
 	self._on_enter_transition_params = params
 	self._on_enter_sub_state = params.menu_sub_state_name
 
+	self:play_mechanism_sound("start_game_open_sound_event")
 	Managers.music:duck_sounds()
 
 	self._draw_loading = false
@@ -490,6 +499,7 @@ StartGameView.on_exit = function (self)
 
 	self._active_view = nil
 
+	self:play_mechanism_sound("start_game_close_sound_event")
 	Managers.music:unduck_sounds()
 
 	self._draw_loading = false
@@ -586,50 +596,12 @@ StartGameView.number_of_players = function (self)
 	return player_manager:num_human_players()
 end
 
-StartGameView.start_game = function (self, request_type, params)
-	Managers.mechanism:request_vote(request_type, params)
-	self:play_sound("play_gui_lobby_button_play")
+StartGameView.start_game = function (self, params)
+	local mechanism_manager = Managers.mechanism
+
+	mechanism_manager:request_vote(params)
+	self:play_mechanism_sound("start_game_play_sound_event", "play_gui_lobby_button_play")
 	self:close_menu()
-end
-
-StartGameView.start_game_weave = function (self, weave_name, objective_index, private_game, always_host)
-	local weave_template = WeaveSettings.templates[weave_name]
-	local level_key = weave_template.objectives[objective_index].level_id
-	local difficulty = weave_template.difficulty_key
-	local vote_data = {
-		game_mode = "weave",
-		level_key = level_key,
-		difficulty = difficulty,
-		private_game = private_game,
-		weave_name = weave_name,
-		objective_index = objective_index,
-		always_host = always_host
-	}
-
-	Managers.state.voting:request_vote("game_settings_weave_vote", vote_data, Network.peer_id())
-	self:play_sound("menu_wind_level_choose_wind")
-	self:close_menu()
-end
-
-StartGameView.start_game_weave_find_group = function (self, force_close)
-	local ignore_dlc_checks = false
-	local statistics_db = Managers.player:statistics_db()
-	local local_player = Managers.player:local_player()
-	local stats_id = local_player:stats_id()
-	local current_weave = LevelUnlockUtils.current_weave(statistics_db, stats_id, ignore_dlc_checks)
-	local weave_template = WeaveSettings.templates[current_weave]
-	local difficulty_key = weave_template.difficulty_key
-	local vote_data = {
-		game_mode = "weave_find_group",
-		difficulty = difficulty_key
-	}
-
-	Managers.state.voting:request_vote("game_settings_weave_find_group_vote", vote_data, Network.peer_id())
-	self:play_sound("play_gui_lobby_button_play")
-
-	if force_close then
-		self:close_menu()
-	end
 end
 
 StartGameView.cancel_matchmaking = function (self)

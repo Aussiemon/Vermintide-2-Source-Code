@@ -347,6 +347,20 @@ local scenegraph_definition = {
 			0,
 			1
 		}
+	},
+	mark_all_as_seen = {
+		vertical_alignment = "bottom",
+		parent = "panel",
+		horizontal_alignment = "right",
+		size = {
+			270,
+			70
+		},
+		position = {
+			-30,
+			-80,
+			8
+		}
 	}
 }
 local currency_text_style = {
@@ -481,7 +495,8 @@ local widgets = {
 	}),
 	back_button = UIWidgets.create_layout_button("back_button", "layout_button_back", "layout_button_back_glow"),
 	close_button = UIWidgets.create_layout_button("close_button", "layout_button_close", "layout_button_close_glow"),
-	entry_panel_selection = create_panel_button_selection("entry_panel_selection", scenegraph_definition.entry_panel_selection.size)
+	entry_panel_selection = create_panel_button_selection("entry_panel_selection", scenegraph_definition.entry_panel_selection.size),
+	mark_all_seen_button = UIWidgets.create_store_panel_button("mark_all_as_seen", scenegraph_definition.mark_all_as_seen.size, "mark_all_as_seen", 22)
 }
 local top_widgets = {
 	currency_icon = UIWidgets.create_simple_texture("store_icon_currency_ingame_big", "currency_icon"),

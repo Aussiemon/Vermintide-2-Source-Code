@@ -59,7 +59,7 @@ function flow_callback_ai_load_breed_package(params)
 	end
 
 	local breed_name = params.breed_name
-	local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 	if not enemy_package_loader.breed_processed[breed_name] then
 		local ignore_breed_limits = true
@@ -74,7 +74,7 @@ function flow_callback_ai_lock_breed_package(params)
 	end
 
 	local breed_name = params.breed_name
-	local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 	enemy_package_loader:lock_breed_package(breed_name)
 end
@@ -87,7 +87,7 @@ function flow_callback_ai_unlock_breed_package(params)
 	end
 
 	local breed_name = params.breed_name
-	local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 	enemy_package_loader:unlock_breed_package(breed_name)
 end

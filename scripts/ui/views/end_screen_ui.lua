@@ -57,7 +57,7 @@ EndScreenUI.input_service = function (self)
 	return self.input_manager:get_service("end_screen_ui")
 end
 
-EndScreenUI.on_enter = function (self, screen_name, screen_context)
+EndScreenUI.on_enter = function (self, screen_name, screen_context, screen_params)
 	local screen_definition = screens[screen_name]
 
 	fassert(screen_definition, "Unknown screen name: %s", screen_name)
@@ -77,7 +77,7 @@ EndScreenUI.on_enter = function (self, screen_name, screen_context)
 	local input_service = self:input_service()
 	local class_name = screen_definition.class_name
 	local screen_class = rawget(_G, class_name)
-	self._screen = screen_class:new(self._ingame_ui_context, input_service, screen_context)
+	self._screen = screen_class:new(self._ingame_ui_context, input_service, screen_context, screen_params)
 
 	self._screen:on_fade_in()
 	Wwise.set_state("override", "false")
@@ -112,7 +112,7 @@ EndScreenUI._fade_in_background = function (self)
 	}, scenegraph_definition, self.draw_flags)
 end
 
-EndScreenUI.update = function (self, dt)
+EndScreenUI.update = function (self, dt, t)
 	if DO_RELOAD then
 		self:create_ui_elements()
 	end
@@ -123,7 +123,7 @@ EndScreenUI.update = function (self, dt)
 
 	local screen = self._screen
 
-	screen:update(dt)
+	screen:update(dt, t)
 
 	local ui_animator = self.ui_animator
 

@@ -21,7 +21,6 @@ StateDedicatedServer.packages_to_load = {}
 StateDedicatedServer.on_enter = function (self, params)
 	VisualAssertLog.setup(nil)
 	self:_setup_garbage_collection()
-	self:_setup_level_transition()
 	self:_setup_network()
 	self:_setup_state_machine()
 	self:_setup_popup_manager()
@@ -40,18 +39,6 @@ StateDedicatedServer._setup_garbage_collection = function (self)
 
 	GarbageLeakDetector.run_leak_detection(assert_on_leak)
 	GarbageLeakDetector.register_object(self, "StateDedicatedServer")
-end
-
-StateDedicatedServer._setup_level_transition = function (self)
-	local loading_context = self.parent.loading_context
-
-	if loading_context.level_transition_handler then
-		self._level_transition_handler = loading_context.level_transition_handler
-	else
-		self._level_transition_handler = LevelTransitionHandler:new()
-
-		self._level_transition_handler:set_next_level(self._level_transition_handler:default_level_key(), self._level_transition_handler:default_environment_id())
-	end
 end
 
 StateDedicatedServer._init_input = function (self)
@@ -157,12 +144,15 @@ StateDedicatedServer.update = function (self, dt, t)
 		if start_game_params then
 			local level_key = start_game_params.level_key
 			local environment_variation_id = start_game_params.environment_variation_id or 0
-			local level_transition_handler = self._level_transition_handler
+			local game_mode = start_game_params.game_mode
+			local difficulty = start_game_params.difficulty
+			local level_transition_handler = Managers.level_transition_handler
+			local locked_director_functions = Managers.mechanism:generate_locked_director_functions(level_key)
+			local level_seed = Managers.mechanism:generate_level_seed()
+			local mechanism = nil
 
-			Managers.mechanism:generate_locked_director_functions(level_key)
-			Managers.mechanism:generate_level_seed()
-			level_transition_handler:set_next_level(level_key, environment_variation_id)
-			self._network_server:set_current_level(level_key, environment_variation_id)
+			level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode, nil, locked_director_functions, difficulty)
+			level_transition_handler:promote_next_level_data()
 			level_transition_handler:level_completed()
 
 			self._wanted_state = StateLoading
@@ -180,15 +170,13 @@ end
 
 StateDedicatedServer.setup_network_server = function (self, game_server)
 	self._game_server = game_server
-	local level_transition_handler = self._level_transition_handler
-	local initial_level = level_transition_handler:default_level_key()
-	local initial_environment = level_transition_handler:default_environment_id()
+	local initial_level = Managers.mechanism:default_level_key()
 	local loading_context = self.parent.loading_context
 
 	fassert(Managers.game_server == nil, "Already has a game server manager.")
 
-	Managers.game_server = GameServerManager:new(level_transition_handler)
-	self._network_server = NetworkServer:new(Managers.player, game_server, initial_level, initial_environment, nil, level_transition_handler, Managers.game_server)
+	Managers.game_server = GameServerManager:new()
+	self._network_server = NetworkServer:new(Managers.player, game_server, nil, Managers.game_server)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -210,10 +198,8 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 		network_transmit = self._network_transmit,
 		lobby = game_server,
 		peer_id = Network.peer_id(),
-		level_transition_handler = level_transition_handler,
 		profile_synchronizer = self._profile_synchronizer,
-		network_server = self._network_server,
-		slot_allocator = self._network_server.slot_allocator
+		network_server = self._network_server
 	}
 	Managers.matchmaking = MatchmakingManager:new(matchmaking_params)
 
@@ -224,9 +210,10 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 
 	Managers.mechanism:generate_locked_director_functions(initial_level)
 	Managers.mechanism:generate_level_seed()
-	level_transition_handler:set_next_level(initial_level, initial_environment)
-	self._network_server:set_current_level(initial_level, initial_environment)
-	level_transition_handler:set_next_level(initial_level, initial_environment)
+
+	local level_transition_handler = Managers.level_transition_handler
+
+	level_transition_handler:set_next_level(initial_level)
 	level_transition_handler:level_completed()
 end
 
@@ -254,15 +241,16 @@ end
 StateDedicatedServer.setup_enemy_package_loader = function (self, game_server)
 	local peer_id = Network.peer_id()
 
-	self._level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id)
+	Managers.level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id)
 end
 
 StateDedicatedServer.setup_global_managers = function (self, game_server)
 	local peer_id = Network.peer_id()
+	local is_server = true
+	local network_server = self._network_server
 
-	Managers.mechanism:network_context_created(game_server, peer_id, peer_id)
+	Managers.mechanism:network_context_created(game_server, peer_id, peer_id, is_server, network_server)
 	Managers.party:network_context_created(game_server, peer_id, peer_id)
-	Managers.mod:network_context_created(peer_id, peer_id, is_server)
 end
 
 StateDedicatedServer._update_network = function (self, dt)
@@ -323,7 +311,6 @@ StateDedicatedServer.on_exit = function (self, application_shutdown)
 		loading_context.network_server = self._network_server
 		loading_context.network_transmit = self._network_transmit
 		loading_context.lobby_host = self._game_server
-		loading_context.level_transition_handler = self._level_transition_handler
 	end
 
 	self._network_event_delegate:destroy()

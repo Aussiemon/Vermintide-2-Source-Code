@@ -132,6 +132,19 @@ CameraSettings.first_person = {
 			}
 		},
 		{
+			_node = {
+				name = "map_deus",
+				class = "RotationCamera",
+				offset_yaw = -90,
+				offset_position = {
+					z = 0,
+					x = 0,
+					y = 0
+				},
+				node_transitions = THIRD_PERSON_TRANSITIONS
+			}
+		},
+		{
 			{
 				{
 					_node = {

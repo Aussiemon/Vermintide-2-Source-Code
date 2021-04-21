@@ -96,6 +96,7 @@ ImguiLuaScratchpad.draw = function (self)
 end
 
 ImguiLuaScratchpad._inspect_pair = function (self, k, v)
+	k = tostring(k)
 	local t = type(v)
 
 	if t == "table" then
@@ -106,7 +107,7 @@ ImguiLuaScratchpad._inspect_pair = function (self, k, v)
 		v = "%q":format(v):gsub("\\\n", "\\n")
 	end
 
-	Imgui.text(tostring(k) .. " =")
+	Imgui.text(k .. " =")
 	Imgui.same_line()
 	Imgui.text_colored(string.format("%s", v), unpack(self._TYPE_TO_COLOR[t]))
 end

@@ -57,7 +57,7 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 		local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
 
 		if not has_dlc then
-			Managers.state.event:trigger("ui_dlc_upsell", dlc_name)
+			Managers.state.event:trigger("ui_show_popup", dlc_name, "upsell")
 
 			return
 		end
@@ -113,7 +113,7 @@ InteractionDefinitions.weave_magic_forge_access.client.stop = function (world, i
 		local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
 
 		if not has_dlc then
-			Managers.state.event:trigger("ui_dlc_upsell", dlc_name)
+			Managers.state.event:trigger("ui_show_popup", dlc_name, "upsell")
 
 			return
 		end
@@ -152,7 +152,7 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 		local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
 
 		if not has_dlc then
-			Managers.state.event:trigger("ui_dlc_upsell", dlc_name)
+			Managers.state.event:trigger("ui_show_popup", dlc_name, "upsell")
 
 			return
 		end

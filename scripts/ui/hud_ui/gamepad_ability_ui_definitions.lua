@@ -30,7 +30,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.root.scale = "hud_fit"
 	scenegraph_definition.root.is_root = false
 end
@@ -125,12 +125,14 @@ local career_specific_data = {
 	dr_engineer = {
 		always_show_activated_ability_input = true,
 		ability_top_texture_id = "icon_rotarygun",
-		ability_effect = "gamepad_ability_effect_cog"
+		ability_effect = "gamepad_ability_effect_cog",
+		lit_frame_id = "lit_frame_engineer"
 	},
 	default = {
 		always_show_activated_ability_input = false,
 		ability_top_texture_id = "ability_glow",
-		ability_effect = "gamepad_ability_effect"
+		ability_effect = "gamepad_ability_effect",
+		lit_frame_id = false
 	}
 }
 
@@ -172,6 +174,15 @@ local function create_ability_widget()
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
 						return not content.on_cooldown
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_effect_top",
+					texture_id = "lit_frame_id",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return not content.on_cooldown and content.lit_frame_id
 					end
 				},
 				{
@@ -275,7 +286,7 @@ local function create_ability_widget()
 				},
 				offset = {
 					-3,
-					0,
+					2,
 					101
 				},
 				color = {

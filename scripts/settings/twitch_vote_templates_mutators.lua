@@ -169,7 +169,7 @@ TwitchVoteTemplates.twitch_vote_activate_darkness = {
 		70
 	},
 	condition_func = function (current_vote)
-		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("twitch_darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("night_mode") and not Managers.state.game_mode.level_transition_handler:get_current_environment_variation_name() and not twitch_settings.disable_mutators
+		return not Managers.state.game_mode._mutator_handler:has_activated_mutator("darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("twitch_darkness") and not Managers.state.game_mode._mutator_handler:has_activated_mutator("night_mode") and Managers.level_transition_handler:get_current_environment_variation_id() ~= 0 and not twitch_settings.disable_mutators
 	end,
 	on_success = function (is_server)
 		if is_server then

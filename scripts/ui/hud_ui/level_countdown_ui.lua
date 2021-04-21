@@ -4,7 +4,6 @@ LevelCountdownUI = class(LevelCountdownUI)
 
 LevelCountdownUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
-	self.level_transition_handler = ingame_ui_context.level_transition_handler
 	self.network_event_delegate = ingame_ui_context.network_event_delegate
 	self.camera_manager = ingame_ui_context.camera_manager
 	self.ui_renderer = ingame_ui_context.ui_renderer

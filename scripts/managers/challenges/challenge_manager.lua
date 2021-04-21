@@ -177,19 +177,14 @@ ChallengeManager.remove_filtered_challenges = function (self, category, owner_un
 	end
 
 	for _, challenge in ipairs(challenges_to_remove) do
-		challenge:cancel()
-
 		local challenge_id = table.index_of(all_challenges, challenge)
-
-		if challenge_id then
-			table.swap_delete(all_challenges, challenge_id)
-		end
-
 		challenge_id = table.index_of(completed_challenges, challenge)
 
 		if challenge_id then
 			table.swap_delete(completed_challenges, challenge_id)
 		end
+
+		self:_cancel_challenge_instant(challenge)
 	end
 end
 

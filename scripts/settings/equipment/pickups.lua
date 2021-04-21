@@ -382,6 +382,7 @@ Pickups.ammo.all_ammo = {
 	debug_pickup_category = "consumables",
 	unit_name = "units/weapons/player/pup_ammo_box/pup_ammo_box",
 	unit_template_name = "pickup_unit",
+	consumable_item = true,
 	local_pickup_sound = true,
 	hud_description = "interaction_ammunition_crate",
 	pickup_sound_event_func = function (interactor_unit, interactable_unit, data)
@@ -399,8 +400,9 @@ Pickups.ammo.all_ammo = {
 
 		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
 		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+		local infinite_ammo = inventory_extension:has_infinite_ammo()
 
-		return has_ammo_consuming_weapon and not is_throwing_axe
+		return has_ammo_consuming_weapon and not is_throwing_axe and not infinite_ammo
 	end
 }
 Pickups.ammo.all_ammo_small = {
@@ -424,8 +426,9 @@ Pickups.ammo.all_ammo_small = {
 
 		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
 		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+		local infinite_ammo = inventory_extension:has_infinite_ammo()
 
-		return has_ammo_consuming_weapon and not is_throwing_axe
+		return has_ammo_consuming_weapon and not is_throwing_axe and not infinite_ammo
 	end
 }
 Pickups.ammo.ammo_ranger = {
@@ -451,8 +454,9 @@ Pickups.ammo.ammo_ranger = {
 
 		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
 		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+		local infinite_ammo = inventory_extension:has_infinite_ammo()
 
-		return has_ammo_consuming_weapon and not is_throwing_axe
+		return has_ammo_consuming_weapon and not is_throwing_axe and not infinite_ammo
 	end
 }
 Pickups.ammo.ammo_ranger_improved = {
@@ -478,8 +482,9 @@ Pickups.ammo.ammo_ranger_improved = {
 
 		local has_ammo_consuming_weapon = inventory_extension:has_ammo_consuming_weapon_equipped()
 		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+		local infinite_ammo = inventory_extension:has_infinite_ammo()
 
-		return has_ammo_consuming_weapon and not is_throwing_axe
+		return has_ammo_consuming_weapon and not is_throwing_axe and not infinite_ammo
 	end
 }
 Pickups.grenades = Pickups.grenades or {}
@@ -712,24 +717,44 @@ Pickups.painting_scrap = {
 DLCUtils.merge("pickups", Pickups, true)
 
 LootRatPickups = {
-	first_aid_kit = 3,
-	healing_draught = 2,
-	damage_boost_potion = 1,
-	speed_boost_potion = 1,
-	cooldown_reduction_potion = 1,
-	frag_grenade_t2 = 1,
-	fire_grenade_t2 = 1,
-	boss_loot = 4,
-	lorebook_page = 4
+	default = {
+		lorebook_page = 4,
+		speed_boost_potion = 1,
+		fire_grenade_t2 = 1,
+		boss_loot = 4,
+		frag_grenade_t2 = 1,
+		healing_draught = 2,
+		first_aid_kit = 3,
+		damage_boost_potion = 1,
+		cooldown_reduction_potion = 1
+	}
 }
-local total_loot_rat_spawn_weighting = 0
+BardinScavengerCustomPotions = {}
 
-for _, spawn_weighting in pairs(LootRatPickups) do
-	total_loot_rat_spawn_weighting = total_loot_rat_spawn_weighting + spawn_weighting
+for _, dlc in pairs(DLCSettings) do
+	local loot_rat_pickups = dlc.loot_rat_pickups
+
+	if loot_rat_pickups then
+		table.merge(LootRatPickups, loot_rat_pickups)
+	end
+
+	local bardin_scavenger_custom_potions = dlc.bardin_scavenger_custom_potions
+
+	if bardin_scavenger_custom_potions then
+		table.merge(BardinScavengerCustomPotions, bardin_scavenger_custom_potions)
+	end
 end
 
-for pickup_name, spawn_weighting in pairs(LootRatPickups) do
-	LootRatPickups[pickup_name] = spawn_weighting / total_loot_rat_spawn_weighting
+for _, pickup_settings in pairs(LootRatPickups) do
+	local total_loot_rat_spawn_weighting = 0
+
+	for _, spawn_weighting in pairs(pickup_settings) do
+		total_loot_rat_spawn_weighting = total_loot_rat_spawn_weighting + spawn_weighting
+	end
+
+	for pickup_name, spawn_weighting in pairs(pickup_settings) do
+		pickup_settings[pickup_name] = spawn_weighting / total_loot_rat_spawn_weighting
+	end
 end
 
 NearPickupSpawnChance = NearPickupSpawnChance or {
@@ -748,6 +773,7 @@ for group, pickups in pairs(Pickups) do
 
 	for pickup_name, settings in pairs(pickups) do
 		settings.spawn_weighting = settings.spawn_weighting / total_spawn_weighting
+		settings.pickup_name = pickup_name
 		AllPickups[pickup_name] = settings
 	end
 

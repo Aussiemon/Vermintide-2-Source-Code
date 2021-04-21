@@ -108,6 +108,15 @@ CrosshairUI.update_enabled_crosshair_styles = function (self)
 end
 
 CrosshairUI.update_crosshair_style = function (self, equipment)
+	local game_mode_manager = Managers.state.game_mode
+	local has_realism = game_mode_manager and game_mode_manager:has_activated_mutator("realism")
+
+	if has_realism then
+		self.crosshair_style = "dot"
+
+		return
+	end
+
 	local wielded_item_data = equipment.wielded
 	local item_template = BackendUtils.get_item_template(wielded_item_data)
 	local crosshair_style = item_template.crosshair_style

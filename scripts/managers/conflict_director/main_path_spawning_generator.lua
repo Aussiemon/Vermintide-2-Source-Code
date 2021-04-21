@@ -251,7 +251,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 	return true, num_main_zones, removed_path_distances
 end
 
-MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, zones, zone_convert, num_main_zones, spawn_cycle_length, level_seed)
+MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, mutator_list, zones, zone_convert, num_main_zones, spawn_cycle_length, level_seed)
 	local cycle_length = 0
 	local cycle_zones = {}
 	local great_cycles = {}
@@ -260,7 +260,7 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, z
 	local random_director_list = Managers.state.conflict.enemy_package_loader.random_director_list
 	local random_director_index = 1
 	_, _, _ = MainPathSpawningGenerator.process_conflict_directors_zones(conflict_director.name, zones, num_main_zones, level_seed)
-	local current_mutator_list = {}
+	local zone_mutator_list = {}
 	local current_director_name = conflict_director.name
 
 	for i = 1, num_main_zones, 1 do
@@ -274,25 +274,25 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, z
 				mutators_split[#mutators_split + 1] = name
 			end
 
-			if #mutators_split ~= #current_mutator_list then
+			if #mutators_split ~= #zone_mutator_list then
 				table.sort(mutators_split)
 
-				current_mutator_list = mutators_split
+				zone_mutator_list = mutators_split
 				mutators_updated = true
 			else
 				table.sort(mutators_split)
 
 				for index, mutator in ipairs(mutators_split) do
-					if mutator ~= current_mutator_list[index] then
-						current_mutator_list = mutators_split
+					if mutator ~= zone_mutator_list[index] then
+						zone_mutator_list = mutators_split
 						mutators_updated = true
 
 						break
 					end
 				end
 			end
-		elseif #current_mutator_list > 0 then
-			current_mutator_list = {}
+		elseif #zone_mutator_list > 0 then
+			zone_mutator_list = {}
 			mutators_updated = true
 		end
 
@@ -314,7 +314,7 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, z
 			local pack_spawning = conflict_director.pack_spawning
 
 			if pack_spawning then
-				pack_spawning_setting = MutatorHandler.tweak_pack_spawning_settings(current_mutator_list, current_director_name, pack_spawning)
+				pack_spawning_setting = MutatorHandler.tweak_pack_spawning_settings(zone_mutator_list, mutator_list, current_director_name, pack_spawning)
 			end
 		end
 
@@ -330,7 +330,7 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, z
 			pack_spawning_setting = pack_spawning_setting,
 			conflict_setting = conflict_director,
 			unique_zone_id = zone_layer.unique_zone_id,
-			mutators = current_mutator_list
+			mutators = zone_mutator_list
 		}
 
 		for j = 2, #zone_layer.sub, 1 do

@@ -107,13 +107,14 @@ ActionGeiser.fire = function (self, reason)
 	local small_charge_value = current_action.small_charge_value or 0.33
 	local medium_charge_value = current_action.medium_charge_value or 0.66
 	local large_charge_value = current_action.large_charge_value or 1
+	local can_create_aoe = not global_is_inside_inn or current_action.can_proc_in_inn
 	local size = "_large"
 
 	if charge_value < small_charge_value then
 		size = "_small"
 	elseif charge_value < medium_charge_value then
 		size = "_medium"
-	elseif large_charge_value <= charge_value and not global_is_inside_inn then
+	elseif large_charge_value <= charge_value and can_create_aoe then
 		size = "_large"
 		local owner_unit_id = network_manager:unit_game_object_id(owner_unit)
 		local damage_source_id = NetworkLookup.damage_sources[self.item_name]

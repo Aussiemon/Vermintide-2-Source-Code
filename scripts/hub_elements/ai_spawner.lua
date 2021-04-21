@@ -86,10 +86,11 @@ AISpawner.check_for_enabled = function (self)
 	until true
 end
 
-AISpawner.on_activate = function (self, breed_list, side_id, group_template)
+AISpawner.on_activate = function (self, breed_list, side_id, group_template, optional_data)
 	local spawn_data = {
 		side_id,
-		group_template
+		group_template,
+		optional_data
 	}
 	local list = self._breed_list
 	local size = #list
@@ -158,9 +159,8 @@ AISpawner.spawn_unit = function (self)
 
 	local spawn_animation = spawn_type == "horde" and animation_events[math.random(#animation_events)]
 	local side_id = spawn_data[1]
-	local optional_data = {
-		side_id = side_id
-	}
+	local optional_data = spawn_data[3] or {}
+	optional_data.side_id = side_id
 	local group_template = spawn_data[2]
 
 	conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(spawn_rotation), spawn_category, spawn_animation, spawn_type, optional_data, group_template)

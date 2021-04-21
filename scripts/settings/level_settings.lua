@@ -19,46 +19,52 @@ LevelSettings = LevelSettings or {}
 require("scripts/settings/dlc_settings")
 DLCUtils.dofile("level_settings")
 
-local default_start_level = (Development.parameter("gdc") and "magnus") or "inn_level"
-LevelSettings.default_start_level = default_start_level
+LevelSettingsDefaultStartLevel = (Development.parameter("gdc") and "magnus") or "inn_level"
 LevelSettings.editor_level = {
 	conflict_settings = "level_editor",
 	no_terror_events = true,
-	package_name = "resource_packages/levels/debug/whitebox",
+	display_name = "level_editor",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	knocked_down_setting = "knocked_down",
 	ambient_sound_event = "silent_default_world_sound",
 	level_name = "__level_editor_test",
 	level_image = "level_image_any",
 	loading_ui_package_name = "loading_screen_1",
-	display_name = "level_editor",
+	knocked_down_setting = "knocked_down",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/debug/whitebox"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {}
 }
 LevelSettings.inn_level = {
 	conflict_settings = "inn_level",
-	tome_package_name = "resource_packages/levels/tomes/inn_tome",
-	package_name = "resource_packages/levels/inn",
-	player_aux_bus_name = "environment_reverb_outside",
 	display_name = "level_name_keep",
+	player_aux_bus_name = "environment_reverb_outside",
+	mechanism = "adventure",
 	use_keep_decorations = true,
 	no_bots_allowed = true,
 	environment_state = "interior",
 	level_image = "level_icon_inn_level",
 	skip_generate_spawns = true,
+	loading_ui_package_name = "loading_screen_15",
 	hub_level = true,
 	ambient_sound_event = "silent_default_world_sound",
 	load_no_enemies = false,
-	has_multiple_loading_images = true,
 	no_terror_events = true,
-	loading_ui_package_name = "loading_screen_15",
+	game_mode = "inn",
+	has_multiple_loading_images = true,
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/inn/world",
 	no_nav_mesh = false,
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/inn_dependencies",
+		"resource_packages/levels/inn",
+		"resource_packages/levels/tomes/inn_tome"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	breed_categories = {
@@ -100,28 +106,32 @@ LevelSettings.inn_level = {
 	}
 }
 LevelSettings.inn_level_celebrate = {
-	knocked_down_setting = "knocked_down",
-	tome_package_name = "resource_packages/levels/tomes/inn_celebrate_tome",
+	conflict_settings = "inn_level",
 	display_name = "level_name_keep",
 	player_aux_bus_name = "environment_reverb_outside",
-	no_bots_allowed = true,
+	mechanism = "adventure",
 	use_keep_decorations = true,
-	level_name = "levels/inn/event_decoration/celebrate/world",
+	no_bots_allowed = true,
 	environment_state = "interior",
+	small_level_image = "inn_level_small_image",
 	skip_generate_spawns = true,
-	level_image = "level_icon_inn_level",
+	loading_ui_package_name = "loading_screen_15",
 	hub_level = true,
 	ambient_sound_event = "silent_default_world_sound",
 	load_no_enemies = false,
 	no_terror_events = true,
-	loading_ui_package_name = "loading_screen_15",
+	game_mode = "inn",
 	has_multiple_loading_images = true,
-	conflict_settings = "inn_level",
-	package_name = "resource_packages/levels/inn_celebrate",
+	knocked_down_setting = "knocked_down",
+	level_image = "level_icon_inn_level",
+	level_name = "levels/inn/event_decoration/celebrate/world",
 	no_nav_mesh = false,
 	source_aux_bus_name = "environment_reverb_outside_source",
-	nested_level_package_names = {
-		"resource_packages/levels/inn"
+	packages = {
+		"resource_packages/levels/inn_dependencies",
+		"resource_packages/levels/inn",
+		"resource_packages/levels/inn_celebrate",
+		"resource_packages/levels/tomes/inn_celebrate_tome"
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -150,28 +160,32 @@ LevelSettings.inn_level_celebrate = {
 	}
 }
 LevelSettings.inn_level_halloween = {
-	knocked_down_setting = "knocked_down",
-	tome_package_name = "resource_packages/levels/tomes/inn_halloween_tome",
+	conflict_settings = "inn_level",
 	display_name = "level_name_keep",
 	player_aux_bus_name = "environment_reverb_outside",
-	no_bots_allowed = true,
+	mechanism = "adventure",
 	use_keep_decorations = true,
-	package_name = "resource_packages/levels/inn_halloween",
+	no_bots_allowed = true,
 	environment_state = "interior",
+	small_level_image = "inn_level_small_image",
 	skip_generate_spawns = true,
-	level_image = "level_icon_inn_level",
+	loading_ui_package_name = "loading_screen_15",
 	hub_level = true,
 	ambient_sound_event = "silent_default_world_sound",
 	load_no_enemies = false,
 	no_terror_events = true,
-	loading_ui_package_name = "loading_screen_15",
+	game_mode = "inn",
 	has_multiple_loading_images = true,
-	conflict_settings = "inn_level",
+	knocked_down_setting = "knocked_down",
+	level_image = "level_icon_inn_level",
 	level_name = "levels/inn/event_decoration/halloween/world",
 	no_nav_mesh = false,
 	source_aux_bus_name = "environment_reverb_outside_source",
-	nested_level_package_names = {
-		"resource_packages/levels/inn"
+	packages = {
+		"resource_packages/levels/inn_dependencies",
+		"resource_packages/levels/inn",
+		"resource_packages/levels/inn_halloween",
+		"resource_packages/levels/tomes/inn_halloween_tome"
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -200,29 +214,33 @@ LevelSettings.inn_level_halloween = {
 	}
 }
 LevelSettings.inn_level_skulls = {
-	knocked_down_setting = "knocked_down",
-	tome_package_name = "resource_packages/levels/tomes/inn_skulls_tome",
+	conflict_settings = "inn_level",
 	debug_environment_level_flow_event = "keep_event_skulls",
 	player_aux_bus_name = "environment_reverb_outside",
-	no_bots_allowed = true,
+	mechanism = "adventure",
 	use_keep_decorations = true,
-	package_name = "resource_packages/levels/inn_skulls",
+	no_bots_allowed = true,
 	environment_state = "interior",
+	small_level_image = "inn_level_small_image",
 	skip_generate_spawns = true,
-	level_image = "level_icon_inn_level",
+	loading_ui_package_name = "loading_screen_15",
 	hub_level = true,
 	ambient_sound_event = "silent_default_world_sound",
 	load_no_enemies = false,
 	no_terror_events = true,
-	loading_ui_package_name = "loading_screen_15",
+	game_mode = "inn",
 	has_multiple_loading_images = true,
-	conflict_settings = "inn_level",
+	knocked_down_setting = "knocked_down",
 	display_name = "level_name_keep",
 	level_name = "levels/inn/event_decoration/skulls/world",
 	no_nav_mesh = false,
+	level_image = "level_icon_inn_level",
 	source_aux_bus_name = "environment_reverb_outside_source",
-	nested_level_package_names = {
-		"resource_packages/levels/inn"
+	packages = {
+		"resource_packages/levels/inn_dependencies",
+		"resource_packages/levels/inn",
+		"resource_packages/levels/inn_skulls",
+		"resource_packages/levels/tomes/inn_skulls_tome"
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -251,29 +269,33 @@ LevelSettings.inn_level_skulls = {
 	}
 }
 LevelSettings.inn_level_sonnstill = {
-	knocked_down_setting = "knocked_down",
-	tome_package_name = "resource_packages/levels/tomes/inn_sonnstill_tome",
+	conflict_settings = "inn_level",
 	debug_environment_level_flow_event = "keep_event_sonnstill",
 	player_aux_bus_name = "environment_reverb_outside",
-	no_bots_allowed = true,
+	mechanism = "adventure",
 	use_keep_decorations = true,
-	package_name = "resource_packages/levels/inn_sonnstill",
+	no_bots_allowed = true,
 	environment_state = "interior",
+	small_level_image = "inn_level_small_image",
 	skip_generate_spawns = true,
-	level_image = "level_icon_inn_level",
+	loading_ui_package_name = "loading_screen_15",
 	hub_level = true,
 	ambient_sound_event = "silent_default_world_sound",
 	load_no_enemies = false,
 	no_terror_events = true,
-	loading_ui_package_name = "loading_screen_15",
+	game_mode = "inn",
 	has_multiple_loading_images = true,
-	conflict_settings = "inn_level",
+	knocked_down_setting = "knocked_down",
 	display_name = "level_name_keep",
 	level_name = "levels/inn/event_decoration/sonnstill/world",
 	no_nav_mesh = false,
+	level_image = "level_icon_inn_level",
 	source_aux_bus_name = "environment_reverb_outside_source",
-	nested_level_package_names = {
-		"resource_packages/levels/inn"
+	packages = {
+		"resource_packages/levels/inn_dependencies",
+		"resource_packages/levels/inn",
+		"resource_packages/levels/inn_sonnstill",
+		"resource_packages/levels/tomes/inn_sonnstill_tome"
 	},
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -306,22 +328,25 @@ LevelSettings.farmlands = {
 	display_name = "level_name_farmlands",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	ambient_sound_event = "silent_default_world_sound",
+	description_text = "nik_loading_screen_farmland_01",
 	level_image = "level_icon_09",
 	unlockable = true,
 	boss_spawning_method = "hand_placed",
 	main_game_level = true,
 	loading_ui_package_name = "loading_screen_7",
-	description_text = "nik_loading_screen_farmland_01",
 	act_presentation_order = 1,
 	use_mini_patrols = false,
-	level_name = "levels/honduras/farmlands/world",
+	ambient_sound_event = "silent_default_world_sound",
 	act = "act_3",
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/farmlands",
-	meta_package_name = "resource_packages/levels/honduras/farmlands_meta",
+	level_name = "levels/honduras/farmlands/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/farmlands_common",
+		"resource_packages/levels/honduras/farmlands",
+		"resource_packages/levels/honduras/farmlands_meta"
+	},
 	environment_variations = {
 		"wv_dawn_rain_01"
 	},
@@ -388,11 +413,10 @@ LevelSettings.farmlands = {
 }
 LevelSettings.catacombs = {
 	act_unlock_order = 1,
-	display_name = "level_name_catacombs",
-	package_name = "resource_packages/levels/honduras/catacombs",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_catacombs",
 	act = "act_1",
 	loading_ui_package_name = "loading_screen_4",
 	unlockable = true,
@@ -406,6 +430,10 @@ LevelSettings.catacombs = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/catacombs/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/catacombs_common",
+		"resource_packages/levels/honduras/catacombs"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
@@ -480,7 +508,6 @@ LevelSettings.catacombs = {
 LevelSettings.elven_ruins = {
 	act_unlock_order = 0,
 	display_name = "level_name_elven_ruins",
-	level_name = "levels/honduras/elven_ruins/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
 	level_image = "level_icon_05",
@@ -494,8 +521,12 @@ LevelSettings.elven_ruins = {
 	boss_spawning_method = "hand_placed",
 	default_surface_material = "forest_grass",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/elven_ruins",
+	level_name = "levels/honduras/elven_ruins/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/elven_ruins_common",
+		"resource_packages/levels/honduras/elven_ruins"
+	},
 	environment_variations = {
 		"wv_dawn_rain_01"
 	},
@@ -564,7 +595,7 @@ LevelSettings.elven_ruins = {
 LevelSettings.mines = {
 	act_unlock_order = 2,
 	display_name = "level_name_mines",
-	level_name = "levels/honduras/mines/world",
+	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
 	description_text = "nik_loading_screen_mines_01",
 	act = "act_1",
@@ -575,12 +606,15 @@ LevelSettings.mines = {
 	unlockable = true,
 	boss_spawning_method = "hand_placed",
 	act_presentation_order = 3,
-	player_aux_bus_name = "environment_reverb_outside",
 	default_surface_material = "stone",
 	use_mini_patrols = false,
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/mines",
+	level_name = "levels/honduras/mines/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/mines_common",
+		"resource_packages/levels/honduras/mines"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	camera_backlight = COLD_CAMERA_BACKLIGHT,
@@ -665,7 +699,6 @@ LevelSettings.mines = {
 LevelSettings.ground_zero = {
 	act_unlock_order = 3,
 	display_name = "level_name_ground_zero",
-	level_name = "levels/honduras/ground_zero/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
 	boss_level = true,
@@ -680,8 +713,12 @@ LevelSettings.ground_zero = {
 	loading_ui_package_name = "loading_screen_10",
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/ground_zero",
+	level_name = "levels/honduras/ground_zero/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/ground_zero_common",
+		"resource_packages/levels/honduras/ground_zero"
+	},
 	environment_variations = {
 		"wv_dusk_snow_01"
 	},
@@ -750,24 +787,27 @@ LevelSettings.ground_zero = {
 }
 LevelSettings.fort = {
 	act_unlock_order = 2,
-	display_name = "level_name_forest_fort",
-	ambient_sound_event = "silent_default_world_sound",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	package_name = "resource_packages/levels/honduras/fort",
+	ambient_sound_event = "silent_default_world_sound",
+	display_name = "level_name_forest_fort",
 	default_surface_material = "stone_wet",
 	unlockable = true,
 	act = "act_2",
 	main_game_level = true,
 	act_presentation_order = 3,
-	level_image = "level_icon_06",
-	boss_spawning_method = "hand_placed",
 	description_text = "nik_loading_screen_fort_01",
+	boss_spawning_method = "hand_placed",
+	level_image = "level_icon_06",
 	loading_ui_package_name = "loading_screen_8",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/fort/world",
-	meta_package_name = "resource_packages/levels/honduras/fort_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/fort_common",
+		"resource_packages/levels/honduras/fort",
+		"resource_packages/levels/honduras/fort_meta"
+	},
 	environment_variations = {
 		"wv_dawn_snow_01"
 	},
@@ -838,11 +878,10 @@ LevelSettings.fort = {
 }
 LevelSettings.ussingen = {
 	act_unlock_order = 1,
-	display_name = "level_name_ussingen",
 	climate_type = "",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	package_name = "resource_packages/levels/honduras/ussingen",
+	display_name = "level_name_ussingen",
 	unlockable = true,
 	loading_ui_package_name = "loading_screen_11",
 	main_game_level = true,
@@ -857,6 +896,10 @@ LevelSettings.ussingen = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/ussingen/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/ussingen_common",
+		"resource_packages/levels/honduras/ussingen"
+	},
 	environment_variations = {
 		"wv_midnight_fog_01"
 	},
@@ -929,24 +972,27 @@ LevelSettings.ussingen = {
 LevelSettings.ussingen_demo = {
 	act_unlock_order = 1,
 	climate_type = "",
-	knocked_down_setting = "knocked_down",
+	game_mode = "demo",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	package_name = "resource_packages/levels/debug/ussingen_demo",
+	mechanism = "adventure",
+	display_name = "level_name_ussingen",
 	act = "act_3",
-	ambient_sound_event = "silent_default_world_sound",
+	conflict_settings = "demo",
 	unlockable = true,
+	level_image = "level_icon_10",
 	loading_ui_package_name = "loading_screen_how_to_play",
 	use_mini_patrols = true,
-	display_name = "level_name_ussingen",
-	level_image = "level_icon_10",
 	boss_spawning_method = "hand_placed",
 	no_terror_events = true,
+	ambient_sound_event = "silent_default_world_sound",
 	default_surface_material = "dirt",
-	game_mode = "demo",
-	conflict_settings = "demo",
+	knocked_down_setting = "knocked_down",
 	level_name = "levels/debug/ussingen_demo/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/debug/ussingen_demo"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {},
@@ -1005,8 +1051,6 @@ LevelSettings.ussingen_demo = {
 }
 LevelSettings.skaven_stronghold = {
 	act_unlock_order = 3,
-	display_name = "level_name_skaven_stronghold",
-	package_name = "resource_packages/levels/honduras/skaven_stronghold",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
@@ -1019,11 +1063,16 @@ LevelSettings.skaven_stronghold = {
 	act_presentation_order = 4,
 	description_text = "nik_loading_screen_skaven_stronghold_01",
 	boss_spawning_method = "hand_placed",
+	display_name = "level_name_skaven_stronghold",
 	conflict_settings = "skaven",
 	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/skaven_stronghold/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/skaven_stronghold_common",
+		"resource_packages/levels/honduras/skaven_stronghold"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {
@@ -1094,7 +1143,6 @@ LevelSettings.military = {
 	display_name = "level_name_military",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	package_name = "resource_packages/levels/honduras/military",
 	level_image = "level_icon_01",
 	unlockable = true,
 	use_mini_patrols = false,
@@ -1108,8 +1156,12 @@ LevelSettings.military = {
 	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/military/world",
-	meta_package_name = "resource_packages/levels/honduras/military_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/military_common",
+		"resource_packages/levels/honduras/military",
+		"resource_packages/levels/honduras/military_meta"
+	},
 	environment_variations = {
 		"wv_midnight_storm_01"
 	},
@@ -1182,24 +1234,27 @@ LevelSettings.military = {
 	}
 }
 LevelSettings.prologue = {
-	display_name = "level_name_prologue",
 	default_surface_material = "stone_wet",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
-	player_aux_bus_name = "environment_reverb_outside",
+	mechanism = "adventure",
+	display_name = "level_name_prologue",
 	act = "prologue",
 	unlockable = true,
 	conflict_settings = "tutorial",
 	main_game_level = true,
-	level_name = "levels/honduras/prologue/world",
-	level_image = "level_icon_00",
-	boss_spawning_method = "hand_placed",
-	use_mini_patrols = false,
 	game_mode = "tutorial",
+	level_image = "level_icon_00",
+	use_mini_patrols = false,
+	boss_spawning_method = "hand_placed",
+	player_aux_bus_name = "environment_reverb_outside",
 	loading_ui_package_name = "loading_screen_9",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/prologue",
+	level_name = "levels/honduras/prologue/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/prologue"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
@@ -1219,7 +1274,6 @@ LevelSettings.prologue = {
 LevelSettings.skittergate = {
 	act_unlock_order = 0,
 	display_name = "level_name_skittergate",
-	level_name = "levels/honduras/skittergate/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
 	boss_level = true,
@@ -1235,8 +1289,12 @@ LevelSettings.skittergate = {
 	description_text = "nik_loading_screen_skittergate_01",
 	knocked_down_setting = "knocked_down",
 	act = "act_4",
-	package_name = "resource_packages/levels/honduras/skittergate",
+	level_name = "levels/honduras/skittergate/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/skittergate_common",
+		"resource_packages/levels/honduras/skittergate"
+	},
 	environment_variations = {
 		"wv_midnight_snow_01"
 	},
@@ -1313,22 +1371,25 @@ LevelSettings.bell = {
 	display_name = "level_name_bell",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	ambient_sound_event = "silent_default_world_sound",
+	description_text = "nik_loading_screen_bell_01",
 	level_image = "level_icon_07",
 	unlockable = true,
 	boss_spawning_method = "hand_placed",
 	main_game_level = true,
 	loading_ui_package_name = "loading_screen_1",
-	description_text = "nik_loading_screen_bell_01",
 	act_presentation_order = 2,
 	use_mini_patrols = false,
-	level_name = "levels/honduras/bell/world",
+	ambient_sound_event = "silent_default_world_sound",
 	act = "act_2",
 	default_surface_material = "stone_wet",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/bell",
-	meta_package_name = "resource_packages/levels/honduras/bell_meta",
+	level_name = "levels/honduras/bell/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/bell_common",
+		"resource_packages/levels/honduras/bell",
+		"resource_packages/levels/honduras/bell_meta"
+	},
 	environment_variations = {
 		"wv_dusk_snow_01"
 	},
@@ -1403,7 +1464,6 @@ LevelSettings.bell = {
 LevelSettings.nurgle = {
 	act_unlock_order = 2,
 	display_name = "level_name_nurgle",
-	level_name = "levels/honduras/nurgle/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
 	description_text = "nik_loading_screen_nurgle_01",
@@ -1418,8 +1478,11 @@ LevelSettings.nurgle = {
 	default_surface_material = "mud",
 	loading_ui_package_name = "loading_screen_5",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/nurgle",
+	level_name = "levels/honduras/nurgle/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/nurgle"
+	},
 	environment_variations = {
 		"wv_midnight_storm_01"
 	},
@@ -1502,7 +1565,6 @@ LevelSettings.nurgle = {
 LevelSettings.warcamp = {
 	act_unlock_order = 3,
 	display_name = "level_name_warcamp",
-	level_name = "levels/honduras/warcamp/world",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
 	boss_level = true,
@@ -1518,8 +1580,12 @@ LevelSettings.warcamp = {
 	default_surface_material = "mud",
 	act = "act_3",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/honduras/warcamp",
+	level_name = "levels/honduras/warcamp/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/honduras/warcamp_common",
+		"resource_packages/levels/honduras/warcamp"
+	},
 	environment_variations = {
 		"wv_midnight_fog_01"
 	},
@@ -1594,6 +1660,7 @@ for level_key, level_data in pairs(LevelSettings) do
 	if level_data.display_name then
 		level_data.level_id = level_key
 		level_data.game_mode = level_data.game_mode or "adventure"
+		level_data.mechanism = level_data.mechanism or "adventure"
 		level_data.act_unlock_order = level_data.act_unlock_order or 0
 
 		if level_data.game_mode == "adventure" then
@@ -1607,17 +1674,34 @@ for level_key, level_data in pairs(LevelSettings) do
 	end
 end
 
+local level_settings = LevelSettings
+
+for _, dlc in pairs(DLCSettings) do
+	local extra_level_packages = dlc.extra_level_packages
+
+	if extra_level_packages then
+		for level_key, extra_packages in pairs(extra_level_packages) do
+			local settings = level_settings[level_key]
+
+			if settings then
+				local packages = settings.packages
+
+				table.append(packages, extra_packages)
+			end
+		end
+	end
+end
+
 LevelSettingsMeta = LevelSettingsMeta or {}
 
 LevelSettingsMeta.__index = function (table, key)
-	Application.error(string.format("LevelSettings has no level %q\n", tostring(key)))
-	Application.error("Maybe you were looking for one of these:")
+	local message = string.format("LevelSettings has no level %q\nMaybe you were looking for one of these:\n", tostring(key))
 
 	for level_key, _ in pairs(LevelSettings) do
-		Application.error(level_key)
+		message = string.format("%s\n%s", message, level_key)
 	end
 
-	error("")
+	error(message)
 end
 
 setmetatable(LevelSettings, LevelSettingsMeta)

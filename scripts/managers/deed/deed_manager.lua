@@ -19,11 +19,11 @@ DeedManager.destroy = function (self)
 	end
 end
 
-DeedManager.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_server)
+DeedManager.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_handler)
 	self._lobby = lobby
 	self._server_peer_id = server_peer_id
 	self._peer_id = own_peer_id
-	self._network_server = network_server
+	self._network_server = (is_server and network_handler) or nil
 	self._is_server = is_server
 	local ignore_send = true
 

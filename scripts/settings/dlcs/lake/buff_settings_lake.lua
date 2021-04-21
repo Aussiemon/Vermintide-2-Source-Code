@@ -9,7 +9,8 @@ settings.buff_templates = {
 				stat_buff = "cooldown_regen",
 				refresh_durations = true,
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_cdr"
+				icon = "markus_questing_knight_buff_cdr",
+				priority_buff = true
 			}
 		}
 	},
@@ -45,7 +46,8 @@ settings.buff_templates = {
 				stat_buff = "attack_speed",
 				refresh_durations = true,
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_attackspeed"
+				icon = "markus_questing_knight_buff_attackspeed",
+				priority_buff = true
 			}
 		}
 	},
@@ -57,7 +59,8 @@ settings.buff_templates = {
 				stat_buff = "power_level",
 				refresh_durations = true,
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_powerlevel"
+				icon = "markus_questing_knight_buff_powerlevel",
+				priority_buff = true
 			}
 		}
 	},
@@ -81,7 +84,8 @@ settings.buff_templates = {
 				stat_buff = "damage_taken",
 				refresh_durations = true,
 				max_stacks = 1,
-				icon = "markus_questing_knight_buff_damage_taken"
+				icon = "markus_questing_knight_buff_damage_taken",
+				priority_buff = true
 			}
 		}
 	},
@@ -100,14 +104,15 @@ settings.buff_templates = {
 	markus_questing_knight_passive_health_regen = {
 		buffs = {
 			{
-				icon = "markus_questing_knight_buff_health_regen",
-				name = "markus_questing_knight_passive_health_regen",
 				heal = 1,
-				max_stacks = 1,
+				heal_type = "career_passive",
+				name = "markus_questing_knight_passive_health_regen",
+				icon = "markus_questing_knight_buff_health_regen",
 				time_between_heal = 5,
-				update_func = "health_regen_update",
+				priority_buff = true,
 				apply_buff_func = "health_regen_start",
-				heal_type = "career_passive"
+				max_stacks = 1,
+				update_func = "health_regen_update"
 			}
 		}
 	},
@@ -196,18 +201,18 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	check_for_instantly_killing_crit = function (player, buff, params)
+	check_for_instantly_killing_crit = function (player, buff, params, world, param_order)
 		if not Managers.player.is_server then
 			return
 		end
 
 		local player_unit = player.player_unit
-		local hit_unit = params[1]
-		local damage_amount = params[2]
-		local is_critical_strike = params[5]
-		local modifables_params = params[8]
+		local hit_unit = params[param_order.attacked_unit]
+		local damage_amount = params[param_order.damage_amount]
+		local is_critical_strike = params[param_order.is_critical_strike]
+		local modifables_params = params[param_order.PROC_MODIFIABLE]
 
-		if Unit.alive(player_unit) and Unit.alive(hit_unit) and is_critical_strike then
+		if is_critical_strike and ALIVE[player_unit] and ALIVE[hit_unit] then
 			local enemy_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 			local buff_template = buff.template
 			local breed = Unit.get_data(hit_unit, "breed")

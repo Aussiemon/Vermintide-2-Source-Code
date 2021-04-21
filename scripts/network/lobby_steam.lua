@@ -6,6 +6,7 @@ require("scripts/network/lobby_members")
 
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.TYPE = "steam"
+LobbyInternal.lobby_data_version = 2
 
 LobbyInternal.network_initialized = function ()
 	return not not LobbyInternal.client

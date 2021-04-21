@@ -9,6 +9,7 @@ local animation_definitions = definitions.animations
 local generic_input_actions = definitions.generic_input_actions
 local debug_draw_scenegraph = false
 local debug_menu = false
+local level_end_view_weave_testify = script_data.testify and require("scripts/ui/views/level_end/level_end_view_weave_testify")
 LevelEndViewWeave = class(LevelEndViewWeave, LevelEndViewBase)
 
 LevelEndViewWeave.init = function (self, context)
@@ -90,7 +91,9 @@ LevelEndViewWeave.update = function (self, dt, t)
 		self:play_sound(self._start_music_event)
 	end
 
-	self:_poll_testify_requests()
+	if script_data.testify then
+		Testify:poll_requests_through_handler(level_end_view_weave_testify, self)
+	end
 end
 
 LevelEndViewWeave.set_input_description = function (self, input_desc)
@@ -144,6 +147,7 @@ LevelEndViewWeave._setup_weave_data = function (self)
 	local current_objective = current_weave_template.objectives[current_objective_index]
 	local level_key = current_objective.level_id
 	local game_mode = "weave"
+	local mechanism = "weave"
 
 	if self.is_server then
 		Managers.mechanism:choose_next_state(game_mode)
@@ -166,7 +170,7 @@ LevelEndViewWeave._setup_weave_data = function (self)
 			eac_authorized = eac_state == "trusted"
 		end
 
-		Managers.matchmaking:set_matchmaking_data(level_key, difficulty_key, act_key, game_mode, private_game, quick_game, eac_authorized)
+		Managers.matchmaking:set_matchmaking_data(level_key, difficulty_key, act_key, game_mode, private_game, quick_game, eac_authorized, nil, mechanism)
 	end
 
 	Managers.weave:set_next_weave(current_weave)
@@ -431,12 +435,6 @@ end
 
 LevelEndViewWeave.get_all_signaled_done = function (self)
 	return self._all_signaled_done
-end
-
-LevelEndViewWeave._poll_testify_requests = function (self)
-	if Testify:poll_request("make_game_ready_for_next_weave") and not self._started_exit then
-		self:exit_to_game()
-	end
 end
 
 return

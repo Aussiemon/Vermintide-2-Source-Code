@@ -6,7 +6,7 @@ local script_data = rawget(_G, "script_data")
 local Color = rawget(_G, "Color")
 local Gui = rawget(_G, "Gui")
 
-if PLATFORM ~= "win32" then
+if IS_CONSOLE then
 	local to_remove = {}
 	local achievements = AchievementTemplates.achievements
 	local outline_categories = outline.categories
@@ -49,15 +49,15 @@ AchievementManager.init = function (self, world, statistics_db)
 	local backend_interface_loot = Managers.backend:get_interface("loot")
 	self._backend_interface_loot = backend_interface_loot
 
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		if rawget(_G, "Steam") and GameSettingsDevelopment.network_mode == "steam" then
 			self.platform = "steam"
 		else
 			self.platform = "debug"
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		self.platform = "ps4"
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		self.platform = "xb1"
 	else
 		self.platform = "debug"
@@ -67,7 +67,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	local template_count = 0
 
 	for _, template in pairs(AchievementTemplates.achievements) do
-		if (self.platform == "steam" and template.ID_STEAM) or (self.platform == "ps4" and template.ID_PS4) or (self.platform == "xb1" and template.ID_XB1) or self.platform == "debug" then
+		if (self.platform == "steam" and template.ID_STEAM) or (IS_PS4 and template.ID_PS4) or (IS_XB1 and template.ID_XB1) or self.platform == "debug" then
 			local idx = template_count + 1
 			self._templates[idx] = template
 			template_count = idx
@@ -93,7 +93,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	printf("[AchievementManager] Achievements using the %s platform", self.platform)
 	self:event_enable_achievements(true)
 
-	if template_count == 0 or script_data["eac-untrusted"] or script_data.settings.use_beta_mode or Managers.state.game_mode:setting("disable_achievements") then
+	if template_count == 0 or script_data.settings.use_beta_mode or Managers.state.game_mode:setting("disable_achievements") then
 		self._enabled = false
 	end
 
@@ -148,7 +148,7 @@ end
 AchievementManager.update = function (self, dt, t)
 	self:debug_draw()
 
-	if not self._enabled or not self:_check_version_number() or not self:_check_initialized_achievements() then
+	if not self._enabled or not self:_check_version_number() or not self:_check_initialized_achievements() or script_data["eac-untrusted"] then
 		return
 	end
 
@@ -233,7 +233,7 @@ AchievementManager.update = function (self, dt, t)
 		end
 
 		if token then
-			if PLATFORM == "xb1" then
+			if IS_XB1 then
 				self._console_achievement_check_delay = t + ACHIEVEMENT_CHECK_DELAY
 			end
 
@@ -351,11 +351,13 @@ AchievementManager.polling_reward = function (self)
 end
 
 AchievementManager.has_any_unclaimed_achievement = function (self)
+	local unlock_manager = Managers.unlock
+
 	for achievement_id, data in pairs(self._achievement_data) do
 		if data.completed and not data.claimed then
 			local required_dlc = data.required_dlc
 			local required_dlc_extra = data.required_dlc_extra
-			local is_unlocked = (not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)) and (not required_dlc_extra or Managers.unlock:is_dlc_unlocked(required_dlc_extra))
+			local is_unlocked = (not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc)) and (not required_dlc_extra or unlock_manager:is_dlc_unlocked(required_dlc_extra))
 
 			if is_unlocked then
 				return true

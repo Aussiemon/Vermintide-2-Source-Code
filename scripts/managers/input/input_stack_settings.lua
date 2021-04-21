@@ -21,16 +21,16 @@ InputStackSettings = {
 	{
 		group_name = "game_popups",
 		services = {
-			"upsell_popup",
 			"weave_tutorial",
-			"rewards_popups"
+			"rewards_popups",
+			"common_popup"
 		}
 	},
 	{
 		group_name = "network_popups",
 		services = {
 			"mission_voting",
-			"popup_join_lobby_handler"
+			"popup_profile_picker"
 		}
 	},
 	{

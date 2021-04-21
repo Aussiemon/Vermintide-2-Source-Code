@@ -190,7 +190,7 @@ AbilityUI._set_elements_visible = function (self, visible)
 end
 
 AbilityUI._handle_gamepad = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM ~= "win32"
+	local gamepad_active = Managers.input:is_device_active("gamepad") or not IS_WINDOWS
 
 	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
 		if self._retained_elements_visible then
@@ -208,6 +208,12 @@ AbilityUI._handle_gamepad = function (self)
 	end
 end
 
+local customizer_data = {
+	root_scenegraph_id = "ability_root",
+	is_child = true,
+	registry_key = "player_status"
+}
+
 AbilityUI.update = function (self, dt, t)
 	if not self._is_visible then
 		return
@@ -223,6 +229,10 @@ AbilityUI.update = function (self, dt, t)
 		self:_setup_activated_ability()
 	else
 		local dirty = false
+
+		if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data) then
+			UIUtils.mark_dirty(self._widgets)
+		end
 
 		if self._current_cooldown_fraction == 0 then
 			dirty = self:_update_ability_animations(dt, t)
@@ -330,7 +340,7 @@ AbilityUI._get_input_texture_data = function (self, input_action)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if IS_WINDOWS and gamepad_active then
 		platform = "xb1"
 	end
 

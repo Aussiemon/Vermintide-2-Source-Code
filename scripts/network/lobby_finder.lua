@@ -14,7 +14,7 @@ LobbyFinder.init = function (self, network_options, max_num_lobbies)
 	self._max_num_lobbies = max_num_lobbies
 	self._refreshing = false
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		self._browser = LobbyInternal.lobby_browser()
 	else
 		self._browser = LobbyInternal.client:create_lobby_browser()
@@ -28,7 +28,7 @@ LobbyFinder.get_lobby_browser = function (self)
 end
 
 LobbyFinder.destroy = function (self)
-	if PLATFORM ~= "xb1" then
+	if not IS_XB1 then
 		LobbyInternal.client.destroy_lobby_browser(LobbyInternal.client, self._browser)
 		print("===========Lobbyfinder DESTROYED", self._browser)
 	end

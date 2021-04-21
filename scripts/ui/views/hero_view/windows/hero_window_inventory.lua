@@ -230,10 +230,12 @@ HeroWindowInventory._update_crafting_material_panel = function (self)
 		local content = widget.content
 		local amount_text = nil
 
-		if amount >= 1000 then
-			amount_text = "+999"
-		else
+		if amount < 10000 then
 			amount_text = tostring(amount)
+		elseif amount < 100000 then
+			amount_text = string.format("%.1fk", amount * 0.001)
+		else
+			amount_text = "+99k"
 		end
 
 		content.text = amount_text

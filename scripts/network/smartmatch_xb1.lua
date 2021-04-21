@@ -29,14 +29,6 @@ local HOPPER_PARAMS_LUT = {
 		"profiles",
 		"network_hash",
 		"matchmaking_types"
-	},
-	weave_find_group_hopper = {
-		"difficulty",
-		"powerlevel",
-		"profiles",
-		"network_hash",
-		"matchmaking_types",
-		"weave_index"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {
@@ -57,12 +49,6 @@ local OPTIONAL_HOPPER_PARAM_LUT = {
 	},
 	safe_profiles_hopper = {
 		strict_matchmaking = true
-	},
-	weave_find_group_hopper = {
-		profiles = true,
-		weave_index = true,
-		difficulty = true,
-		powerlevel = true
 	}
 }
 local SMARTMATCH_STATUS_LUT = {

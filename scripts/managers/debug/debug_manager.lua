@@ -118,7 +118,7 @@ end
 DebugManager.update = function (self, dt, t)
 	local dt = dt / (time_scale_list[self.time_scale_index] / 100)
 
-	if PLATFORM == "linux" then
+	if IS_LINUX then
 		return
 	end
 
@@ -164,7 +164,7 @@ DebugManager.update = function (self, dt, t)
 	end
 
 	if script_data.debug_enemy_package_loader then
-		Managers.state.game_mode.level_transition_handler.enemy_package_loader:debug_loaded_breeds()
+		Managers.level_transition_handler.enemy_package_loader:debug_loaded_breeds()
 	end
 
 	self:_update_actor_draw(dt)
@@ -251,7 +251,7 @@ DebugManager.update_time_scale = function (self, dt)
 	local time_scale_index = self.time_scale_index
 	local input_manager = Managers.input
 
-	if Keyboard.button(Keyboard.button_index("left shift")) > 0.5 then
+	if not script_data.disable_time_travel and Keyboard.button(Keyboard.button_index("left shift")) > 0.5 then
 		local wheel_axis = Mouse.axis_index("wheel")
 
 		if Vector3.y(Mouse.axis(wheel_axis)) > 0 then
@@ -264,7 +264,7 @@ DebugManager.update_time_scale = function (self, dt)
 			self:set_time_scale(time_scale_index)
 		end
 	elseif input_manager:is_device_active("gamepad") then
-		if PLATFORM == "linux" then
+		if IS_LINUX then
 			return
 		end
 
@@ -364,7 +364,7 @@ DebugManager._adjust_gamepad_player_speed = function (self)
 
 	local right_held = nil
 
-	if PLATFORM ~= "ps4" then
+	if not IS_PS4 then
 		right_held = active_controller.button(active_controller.button_index("right_thumb")) > 0.5
 	else
 		right_held = active_controller.button(active_controller.button_index("r3")) > 0.5
@@ -373,7 +373,7 @@ DebugManager._adjust_gamepad_player_speed = function (self)
 	if right_held then
 		local up_pressed, down_pressed = nil
 
-		if PLATFORM ~= "ps4" then
+		if not IS_PS4 then
 			up_pressed = active_controller.pressed(active_controller.button_index("d_up"))
 			down_pressed = active_controller.pressed(active_controller.button_index("d_down"))
 		else

@@ -111,9 +111,9 @@ ItemHelper.has_new_sign_in_reward = function (reward_id)
 	end
 end
 
-ItemHelper.mark_backend_id_as_new = function (backend_id)
+ItemHelper.mark_backend_id_as_new = function (backend_id, item)
 	local item_interface = Managers.backend:get_interface("items")
-	local item = item_interface:get_item_from_id(backend_id)
+	local item = item or item_interface:get_item_from_id(backend_id)
 	local item_data = item.data
 	local slot_type = item_data.slot_type
 	local can_wield = item_data.can_wield
@@ -384,6 +384,106 @@ ItemHelper.is_new_keep_decoration_id = function (keep_decoration_id)
 	local new_keep_decoration_ids = PlayerData.new_keep_decoration_ids
 
 	return new_keep_decoration_ids and new_keep_decoration_ids[keep_decoration_id]
+end
+
+ItemHelper.tab_conversions = {
+	dlc = "dlc",
+	weapon_skin = "cosmetics",
+	hat = "cosmetics",
+	bundle = "bundles",
+	featured = "featured",
+	skin = "cosmetics"
+}
+local tab_conversions = ItemHelper.tab_conversions
+local skip_items = {
+	skin = true,
+	weapon_skin = true,
+	hat = true
+}
+
+ItemHelper.create_tab_unseen_item_stars = function (tab_cat)
+	local menu_options = StoreLayoutConfig.menu_options
+
+	for i = 1, #menu_options, 1 do
+		local key = menu_options[i]
+		tab_cat[key] = 0
+	end
+
+	local backend_store = Managers.backend:get_interface("peddler")
+	local store_items = backend_store:get_peddler_stock()
+	local seen_items = PlayerData.seen_shop_items
+
+	for item_key, peddler_item in pairs(store_items) do
+		local master_item_data = peddler_item.data
+		local seen_item = seen_items[peddler_item.key]
+
+		if not seen_item then
+			local item_type = master_item_data.item_type
+			local tab_name = tab_conversions[item_type]
+
+			if tab_cat[tab_name] ~= nil then
+				tab_cat[tab_name] = tab_cat[tab_name] + 1
+			end
+		end
+	end
+
+	for dlc_name, dlc_settings in pairs(StoreDlcSettingsByName) do
+		local seen_dlc = seen_items[dlc_name]
+
+		if not seen_dlc and tab_cat.dlc ~= nil then
+			tab_cat.dlc = tab_cat.dlc + 1
+		end
+	end
+end
+
+ItemHelper.update_featured_unseen = function (featured_peddler_items, tab_cat)
+	local seen_items = PlayerData.seen_shop_items
+	tab_cat.featured = 0
+
+	for i = 1, #featured_peddler_items, 1 do
+		local peddler_item = featured_peddler_items[i]
+		local seen_item = seen_items[peddler_item.key]
+
+		if not seen_item and tab_cat.featured ~= nil then
+			tab_cat.featured = tab_cat.featured + 1
+		end
+	end
+end
+
+ItemHelper.set_shop_item_seen = function (item_key, item_type, tab_cat, optional_tab_name)
+	local seen_shop_items = PlayerData.seen_shop_items
+
+	if not seen_shop_items[item_key] then
+		seen_shop_items[item_key] = true
+		local tab_name = tab_conversions[item_type]
+
+		if tab_cat[tab_name] ~= nil then
+			tab_cat[tab_name] = tab_cat[tab_name] - 1
+		end
+
+		if optional_tab_name and tab_cat[optional_tab_name] ~= nil then
+			tab_cat[optional_tab_name] = tab_cat[optional_tab_name] - 1
+		end
+	end
+end
+
+ItemHelper.set_all_shop_item_seen = function (tab_cat)
+	local backend_store = Managers.backend:get_interface("peddler")
+	local store_items = backend_store:get_peddler_stock()
+	local seen_items = PlayerData.seen_shop_items
+
+	for item_key, pedler_item in pairs(store_items) do
+		local master_item_data = pedler_item.data
+		seen_items[master_item_data.key] = true
+	end
+
+	for dlc_name, dlc_settings in pairs(StoreDlcSettingsByName) do
+		seen_items[dlc_name] = true
+	end
+
+	for tab_name, _ in pairs(tab_cat) do
+		tab_cat[tab_name] = 0
+	end
 end
 
 return

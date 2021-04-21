@@ -210,10 +210,10 @@ BTMutatorSorcererFollowAction.handle_movement_speed_bonus = function (self, unit
 
 		navigation_extension:set_max_speed(catchup_speed)
 
-		if blackboard.played_fast_movespeed_sound then
+		if not blackboard.played_fast_movespeed_sound then
 			self:play_movement_sound(unit, fast_move_speed_sound_event)
 
-			blackboard.played_fast_movespeed_sound = nil
+			blackboard.played_fast_movespeed_sound = true
 		end
 	else
 		local move_speed = (action.slow_down_on_look_at and action.fast_move_speed * 4) or action.slow_move_speed

@@ -95,7 +95,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 
@@ -224,7 +224,7 @@ local function create_social_widget(settings, widget_angle, category_settings, g
 							style.text_color = style.base_color
 						end
 
-						return PLATFORM == "win32"
+						return IS_WINDOWS
 					end
 				},
 				{
@@ -238,7 +238,7 @@ local function create_social_widget(settings, widget_angle, category_settings, g
 							style.text_color = style.base_color
 						end
 
-						return PLATFORM == "win32"
+						return IS_WINDOWS
 					end
 				}
 			}
@@ -448,7 +448,7 @@ local function create_social_widget(settings, widget_angle, category_settings, g
 			dir[2] * size[2],
 			1
 		},
-		scenegraph_id = (PLATFORM == "win32" and "pivot") or "pivot_console"
+		scenegraph_id = (IS_WINDOWS and "pivot") or "pivot_console"
 	}
 end
 
@@ -771,7 +771,7 @@ local function create_bg_widget()
 			0,
 			0
 		},
-		scenegraph_id = (PLATFORM == "win32" and "pivot") or "pivot_console"
+		scenegraph_id = (IS_WINDOWS and "pivot") or "pivot_console"
 	}
 end
 
@@ -850,7 +850,7 @@ local function create_arrow_widget()
 			0,
 			10
 		},
-		scenegraph_id = (PLATFORM == "win32" and "pivot") or "pivot_console"
+		scenegraph_id = (IS_WINDOWS and "pivot") or "pivot_console"
 	}
 end
 

@@ -122,7 +122,7 @@ if InputUtils.keymaps_key_approved("win32") then
 			"3",
 			"pressed"
 		},
-		wield_4 = (PLATFORM == "xb1" and {
+		wield_4 = (IS_XB1 and {
 			"keyboard",
 			"5",
 			"pressed"
@@ -131,7 +131,7 @@ if InputUtils.keymaps_key_approved("win32") then
 			"4",
 			"pressed"
 		},
-		wield_5 = (PLATFORM == "xb1" and {
+		wield_5 = (IS_XB1 and {
 			"keyboard",
 			"4",
 			"pressed"
@@ -1162,6 +1162,13 @@ PlayerControllerFilters = {
 				button_2 = "dodge_2"
 			}
 		},
+		dodge = {
+			filter_type = "or",
+			input_mappings = {
+				button_1 = "dodge_1",
+				button_2 = "dodge_2"
+			}
+		},
 		action_career = {
 			max_delay = 0.05,
 			filter_type = "or",
@@ -1318,6 +1325,13 @@ PlayerControllerFilters = {
 			}
 		},
 		dodge_hold = {
+			filter_type = "or",
+			input_mappings = {
+				button_1 = "dodge_1",
+				button_2 = "dodge_2"
+			}
+		},
+		dodge = {
 			filter_type = "or",
 			input_mappings = {
 				button_1 = "dodge_1",
@@ -4111,7 +4125,7 @@ if InputUtils.keymaps_key_approved("win32") then
 		},
 		cancel_matchmaking = {
 			"keyboard",
-			(PLATFORM == "xb1" and "b") or "f10",
+			(IS_XB1 and "b") or "f10",
 			"pressed"
 		},
 		xbox_cancel_matchmaking = {
@@ -4144,6 +4158,11 @@ if InputUtils.keymaps_key_approved("win32") then
 			"right",
 			"pressed"
 		},
+		back_menu_alt = {
+			"mouse",
+			"extra_1",
+			"released"
+		},
 		move_up_raw = {},
 		move_down_raw = {},
 		move_left_raw = {},
@@ -4153,11 +4172,6 @@ if InputUtils.keymaps_key_approved("win32") then
 		move_left_hold_raw = {},
 		move_right_hold_raw = {},
 		analog_input = {},
-		switch_dark_pact_profile = {
-			"keyboard",
-			"r",
-			"pressed"
-		},
 		skip = {
 			"keyboard",
 			"space",
@@ -4218,6 +4232,11 @@ if InputUtils.keymaps_key_approved("win32") then
 		gamepad_left_axis = {},
 		gamepad_right_axis = {},
 		look_raw_controller = {},
+		show_information = {
+			"mouse",
+			"left",
+			"pressed"
+		},
 		hotkey_map = {
 			"keyboard",
 			"m",
@@ -4395,7 +4414,7 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	},
 	cancel_matchmaking = {
 		"gamepad",
-		"b",
+		"back",
 		"pressed"
 	},
 	matchmaking_ready_instigate = {
@@ -4503,11 +4522,6 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"y",
 		"pressed"
 	},
-	switch_dark_pact_profile = {
-		"gamepad",
-		"y",
-		"pressed"
-	},
 	special_1 = {
 		"gamepad",
 		"x",
@@ -4606,6 +4620,11 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	hotkey_mark_favorite_item = {
 		"gamepad",
 		"back",
+		"pressed"
+	},
+	show_information = {
+		"gamepad",
+		"right_trigger",
 		"pressed"
 	},
 	axis_cursor = {
@@ -4778,11 +4797,6 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"triangle",
 		"pressed"
 	},
-	switch_dark_pact_profile = {
-		"gamepad",
-		"triangle",
-		"pressed"
-	},
 	special_1 = {
 		"gamepad",
 		"square",
@@ -4904,6 +4918,11 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	hotkey_mark_favorite_item = {
 		"gamepad",
 		"touch",
+		"pressed"
+	},
+	show_information = {
+		"gamepad",
+		"r2",
 		"pressed"
 	},
 	scroll_axis = {

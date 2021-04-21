@@ -15,7 +15,7 @@ local scenegraph_definition = {
 			UILayer.default
 		}
 	},
-	message_animated = {
+	message_animated_parent = {
 		vertical_alignment = "center",
 		parent = "root",
 		horizontal_alignment = "center",
@@ -25,6 +25,30 @@ local scenegraph_definition = {
 		},
 		position = {
 			-300,
+			0,
+			0
+		}
+	},
+	message_animated = {
+		parent = "message_animated_parent",
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	message_animated_dragger = {
+		parent = "message_animated",
+		size = {
+			200,
+			50
+		},
+		position = {
+			0,
 			0,
 			0
 		}

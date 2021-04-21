@@ -1,5 +1,5 @@
 local ai_locomotion_name = (_G.GameSettingsDevelopment and GameSettingsDevelopment.use_engine_optimized_ai_locomotion and "AILocomotionExtensionC") or "AILocomotionExtension"
-local eye_tracking_name = (PLATFORM == "win32" and "PlayerEyeTrackingExtension") or nil
+local eye_tracking_name = (IS_WINDOWS and "PlayerEyeTrackingExtension") or nil
 local unit_templates = {
 	player_unit_base = {
 		go_type = "player_unit",
@@ -112,6 +112,7 @@ local unit_templates = {
 			"GenericStatusExtension",
 			"TalentExtension",
 			"PlayerUnitOverchargeExtension",
+			"PlayerUnitEnergyExtension",
 			"PlayerUnitVisualEffectsExtension",
 			"PlayerUnitWeaveLoadoutExtension",
 			"DialogueActorExtension",
@@ -125,6 +126,7 @@ local unit_templates = {
 			"GenericStatusExtension",
 			"TalentExtension",
 			"PlayerUnitOverchargeExtension",
+			"PlayerUnitEnergyExtension",
 			"PlayerUnitVisualEffectsExtension",
 			"PlayerUnitWeaveLoadoutExtension",
 			"DialogueActorExtension",
@@ -139,6 +141,7 @@ local unit_templates = {
 		husk_extensions = {
 			"GenericStatusExtension",
 			"PlayerHuskOverchargeExtension",
+			"PlayerHuskEnergyExtension",
 			"PlayerHuskVisualEffectsExtension",
 			"PlayerHuskWeaveLoadoutExtension",
 			"DialogueActorExtension",
@@ -153,6 +156,7 @@ local unit_templates = {
 			"GenericStatusExtension",
 			"HuskTalentExtension",
 			"PlayerHuskOverchargeExtension",
+			"PlayerHuskEnergyExtension",
 			"PlayerHuskVisualEffectsExtension",
 			"PlayerHuskWeaveLoadoutExtension",
 			"DialogueActorExtension",
@@ -200,6 +204,7 @@ local unit_templates = {
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
+			"PlayerUnitEnergyExtension",
 			"PlayerSoundEffectExtension",
 			"PlayerUnitVisualEffectsExtension",
 			eye_tracking_name
@@ -242,6 +247,7 @@ local unit_templates = {
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
+			"PlayerUnitEnergyExtension",
 			"PlayerSoundEffectExtension",
 			"PlayerUnitVisualEffectsExtension",
 			"PlayerUnitAttackIntensityExtension",
@@ -271,6 +277,7 @@ local unit_templates = {
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
 			"PlayerHuskOverchargeExtension",
+			"PlayerHuskEnergyExtension",
 			"PlayerHuskVisualEffectsExtension"
 		},
 		husk_extensions_server = {
@@ -304,6 +311,7 @@ local unit_templates = {
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
 			"PlayerHuskOverchargeExtension",
+			"PlayerHuskEnergyExtension",
 			"PlayerHuskVisualEffectsExtension"
 		}
 	},
@@ -347,6 +355,7 @@ local unit_templates = {
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitCosmeticExtension",
 			"PlayerUnitOverchargeExtension",
+			"PlayerUnitEnergyExtension",
 			"PlayerUnitVisualEffectsExtension",
 			"PlayerUnitAttackIntensityExtension"
 		},
@@ -376,6 +385,7 @@ local unit_templates = {
 			"PlayerUnitCosmeticExtension",
 			"PlayerUnitDarknessExtension",
 			"PlayerHuskOverchargeExtension",
+			"PlayerHuskEnergyExtension",
 			"PlayerHuskVisualEffectsExtension"
 		}
 	},
@@ -1193,6 +1203,30 @@ local unit_templates = {
 			}
 		}
 	},
+	ai_unit_curse_corruptor_sorcerer = {
+		base_template = "ai_unit_base",
+		go_type = "ai_unit_with_inventory",
+		self_owned_extensions = {
+			"AIInventoryExtension",
+			"PingTargetExtension",
+			"CurseCorruptorBeamExtension"
+		},
+		husk_extensions = {
+			"AIInventoryExtension",
+			"PingTargetExtension",
+			"CurseCorruptorBeamExtension"
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"PingTargetExtension",
+				"CurseCorruptorBeamExtension"
+			},
+			husk_extensions = {
+				"PingTargetExtension",
+				"CurseCorruptorBeamExtension"
+			}
+		}
+	},
 	ai_unit_chaos_exalted_sorcerer = {
 		base_template = "ai_unit_base",
 		go_type = "ai_lord_with_inventory_and_target",
@@ -1353,13 +1387,17 @@ local unit_templates = {
 			"BeastmenStandardHealthExtension",
 			"GenericDeathExtension",
 			"BeastmenStandardExtension",
-			"ProjectileLinkerExtension"
+			"ProjectileLinkerExtension",
+			"PingTargetExtension",
+			"EnemyOutlineExtension"
 		},
 		husk_extensions = {
 			"BeastmenStandardHealthExtension",
 			"GenericDeathExtension",
 			"BeastmenStandardExtension",
-			"ProjectileLinkerExtension"
+			"ProjectileLinkerExtension",
+			"PingTargetExtension",
+			"EnemyOutlineExtension"
 		}
 	},
 	ai_unit_vortex = {

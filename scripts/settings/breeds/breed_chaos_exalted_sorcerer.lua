@@ -396,6 +396,11 @@ local action_data = {
 				15,
 				1,
 				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -426,6 +431,11 @@ local action_data = {
 			},
 			{
 				18,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			},
@@ -507,6 +517,11 @@ local action_data = {
 				15,
 				1,
 				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -537,6 +552,11 @@ local action_data = {
 			},
 			{
 				18,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			},
@@ -621,6 +641,11 @@ local action_data = {
 				15,
 				1,
 				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -651,6 +676,11 @@ local action_data = {
 			},
 			{
 				18,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			},
@@ -734,6 +764,11 @@ local action_data = {
 				15,
 				1,
 				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -771,6 +806,11 @@ local action_data = {
 				20,
 				0,
 				0
+			},
+			{
+				20,
+				1,
+				0
 			}
 		},
 		radius = MISSILE_RADIUS,
@@ -794,7 +834,18 @@ local action_data = {
 	},
 	intro_idle = {
 		duration = 21,
-		animation = "intro_lord"
+		animation = "intro_lord",
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
+		}
 	},
 	defensive_idle = {
 		animation = "idle_guard",
@@ -802,6 +853,9 @@ local action_data = {
 		action_weight = 1,
 		considerations = UtilityConsiderations.defensive_sorcerer_idle,
 		ignore_staggers = {
+			true,
+			true,
+			true,
 			true,
 			true,
 			true,
@@ -841,6 +895,9 @@ local action_data = {
 			true,
 			true,
 			true,
+			true,
+			true,
+			true,
 			true
 		}
 	},
@@ -867,6 +924,9 @@ local action_data = {
 			true,
 			true,
 			true,
+			true,
+			true,
+			true,
 			true
 		}
 	},
@@ -887,6 +947,9 @@ local action_data = {
 			easy = "sorcerer_extra_spawn"
 		},
 		ignore_staggers = {
+			true,
+			true,
+			true,
 			true,
 			true,
 			true,

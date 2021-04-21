@@ -7,14 +7,7 @@ HuskTalentExtension.init = function (self, extension_init_context, unit, extensi
 	self.player = extension_init_data.player
 	self._profile_index = extension_init_data.profile_index
 	self._talent_buff_ids = {}
-	self._talent_ids = {
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
-	}
+	self._talent_ids = {}
 	self._initial_talent_sync_completed = false
 end
 
@@ -141,16 +134,11 @@ end
 HuskTalentExtension.get_talent_names = function (self)
 	local talent_ids = self._talent_ids
 	local talent_names = {}
-	local talent_interface = Managers.backend:get_talents_interface()
-	local career_name = self._career_name
-	local talent_tree = talent_interface:get_talent_tree(career_name)
+	local hero_name = self._hero_name
 
-	for row, column in pairs(talent_ids) do
-		if column == 0 then
-			talent_names[#talent_names + 1] = "none"
-		else
-			talent_names[#talent_names + 1] = talent_tree[row][column]
-		end
+	for _, talent_id in ipairs(talent_ids) do
+		local talent_data = Talents[hero_name][talent_id]
+		talent_names[#talent_names + 1] = talent_data.name
 	end
 
 	return talent_names

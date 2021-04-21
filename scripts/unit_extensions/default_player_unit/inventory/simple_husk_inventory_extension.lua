@@ -27,8 +27,9 @@ SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit
 			slot_ranged = {}
 		}
 	}
-	self._additional_equipment = {}
+	self._additional_items = {}
 	local player = extension_init_data.player
+	self._player = player
 
 	if player then
 		local career_name = player:career_name()
@@ -37,9 +38,10 @@ SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit
 
 		if additional_item_slots then
 			for slot_name, slot_count in pairs(additional_item_slots) do
-				self._additional_equipment[slot_name] = {
+				self._additional_items[slot_name] = {
 					used_slots = 0,
-					max_slots = slot_count
+					max_slots = slot_count,
+					items = {}
 				}
 			end
 		end
@@ -503,7 +505,7 @@ SimpleHuskInventoryExtension.get_wielded_slot_item_template = function (self)
 end
 
 SimpleHuskInventoryExtension.hot_join_sync = function (self, sender)
-	GearUtils.hot_join_sync(sender, self._unit, self._equipment, self._additional_equipment)
+	GearUtils.hot_join_sync(sender, self._unit, self._equipment, self._additional_items)
 end
 
 SimpleHuskInventoryExtension.get_wielded_slot_name = function (self)
@@ -695,21 +697,31 @@ SimpleHuskInventoryExtension._stop_all_weapon_fx = function (self)
 end
 
 SimpleHuskInventoryExtension.has_additional_item_slots = function (self, slot_name)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+	local additional_items_slot = self._additional_items[slot_name]
 
-	return additional_equipment_slot ~= nil
+	return additional_items_slot ~= nil
 end
 
 SimpleHuskInventoryExtension.can_store_additional_item = function (self, slot_name)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+	local additional_items_slot = self._additional_items[slot_name]
 
-	return additional_equipment_slot and additional_equipment_slot.used_slots < additional_equipment_slot.max_slots
+	return additional_items_slot and #additional_items_slot.items < additional_items_slot.max_slots
 end
 
 SimpleHuskInventoryExtension.has_additional_items = function (self, slot_name)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+	local additional_items_slot = self._additional_items[slot_name]
 
-	return additional_equipment_slot and additional_equipment_slot.used_slots > 0
+	return additional_items_slot and #additional_items_slot.items > 0
+end
+
+SimpleHuskInventoryExtension.get_additional_items = function (self, slot_name)
+	local additional_items_slot = self._additional_items[slot_name]
+
+	return additional_items_slot and additional_items_slot.items
+end
+
+SimpleHuskInventoryExtension.get_additional_items_table = function (self)
+	return self._additional_items
 end
 
 SimpleHuskInventoryExtension.get_total_item_count = function (self, slot_name)
@@ -719,7 +731,7 @@ SimpleHuskInventoryExtension.get_total_item_count = function (self, slot_name)
 		count = 1
 	end
 
-	local stored_items = self._additional_equipment[slot_name]
+	local stored_items = self._additional_items[slot_name]
 
 	if stored_items then
 		count = count + stored_items.used_slots
@@ -728,11 +740,18 @@ SimpleHuskInventoryExtension.get_total_item_count = function (self, slot_name)
 	return count
 end
 
-SimpleHuskInventoryExtension.update_additional_item_count = function (self, slot_name, used_slots)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+SimpleHuskInventoryExtension.update_additional_items = function (self, slot_name, items)
+	local additional_items_slot = self._additional_items[slot_name]
 
-	if additional_equipment_slot then
-		additional_equipment_slot.used_slots = used_slots
+	if additional_items_slot then
+		additional_items_slot.used_slots = #items
+
+		table.clear(additional_items_slot.items)
+
+		for i = 1, #items, 1 do
+			local item_name = items[i]
+			additional_items_slot.items[#additional_items_slot.items + 1] = ItemMasterList[item_name]
+		end
 	end
 end
 

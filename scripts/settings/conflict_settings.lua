@@ -5171,8 +5171,9 @@ ConflictDirectors = {
 		horde = HordeSettings.disabled
 	}
 }
+local force_local_require = true
 
-DLCUtils.require_list("conflict_settings_files")
+DLCUtils.require_list("conflict_settings_files", force_local_require)
 
 local difficulties = Difficulties
 local start_time = os.clock()

@@ -28,12 +28,12 @@ DLCUtils.map_list = function (table_path, func)
 	end
 end
 
-DLCUtils.require = function (table_path)
-	return DLCUtils.map(table_path, require)
+DLCUtils.require = function (table_path, force_local_require)
+	return DLCUtils.map(table_path, (force_local_require and local_require) or require)
 end
 
-DLCUtils.require_list = function (table_path)
-	return DLCUtils.map_list(table_path, require)
+DLCUtils.require_list = function (table_path, force_local_require)
+	return DLCUtils.map_list(table_path, (force_local_require and local_require) or require)
 end
 
 DLCUtils.dofile = function (table_path)

@@ -412,7 +412,7 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 end
 
 GenericHitReactionExtension._is_dismembering_allowed = function (self, parameters)
-	if PLATFORM ~= "win32" and not parameters.is_critical_strike then
+	if not IS_WINDOWS and not IS_LINUX and not parameters.is_critical_strike then
 		return false
 	end
 

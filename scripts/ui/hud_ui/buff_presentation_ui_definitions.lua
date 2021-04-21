@@ -13,7 +13,7 @@ local scenegraph_definition = {
 			SIZE_Y
 		}
 	},
-	presentation_widget = {
+	presentation_widget_parent = {
 		vertical_alignment = "center",
 		parent = "screen",
 		horizontal_alignment = "center",
@@ -24,6 +24,34 @@ local scenegraph_definition = {
 		},
 		size = {
 			66,
+			66
+		}
+	},
+	presentation_widget = {
+		vertical_alignment = "bottom",
+		parent = "presentation_widget_parent",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			66,
+			66
+		}
+	},
+	presentation_widget_dragger = {
+		vertical_alignment = "center",
+		parent = "presentation_widget",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			198,
 			66
 		}
 	}

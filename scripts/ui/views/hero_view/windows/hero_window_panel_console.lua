@@ -301,7 +301,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 			end
 		end
 
-		if not input_made and self._present_purchase_add and input_service:get(INPUT_ACTION_PURCHASE) and PLATFORM == "xb1" then
+		if not input_made and self._present_purchase_add and input_service:get(INPUT_ACTION_PURCHASE) and IS_XB1 then
 			input_made = true
 
 			self:_open_marketplace_xb1()
@@ -521,7 +521,7 @@ end
 HeroWindowPanelConsole._validate_product_owner = function (self)
 	local present_purchase_add = nil
 
-	if PLATFORM == "xb1" and script_data.settings.use_beta_mode then
+	if IS_XB1 and script_data.settings.use_beta_mode then
 		local owns_game = Managers.unlock:is_dlc_unlocked("vt2")
 		present_purchase_add = not owns_game
 	else

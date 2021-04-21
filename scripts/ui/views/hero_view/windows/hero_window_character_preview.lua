@@ -36,6 +36,11 @@ HeroWindowCharacterPreview.on_enter = function (self, params, offset)
 	self._animations = {}
 
 	self:create_ui_elements(params, offset)
+	self:_show_weapon_disclaimer(false)
+
+	if Managers.mechanism:mechanism_setting("should_display_weapon_disclaimer") then
+		self:_show_weapon_disclaimer(true)
+	end
 end
 
 HeroWindowCharacterPreview.create_ui_elements = function (self, params, offset)
@@ -548,6 +553,13 @@ HeroWindowCharacterPreview._setup_tab_scrollbar = function (self, widget)
 		scrollbar_content.percentage = 1
 		scrollbar_content.scroll_value = 1
 	end
+end
+
+HeroWindowCharacterPreview._show_weapon_disclaimer = function (self, should_show)
+	local disclaimer_text_content = self._widgets_by_name.disclaimer_text.content
+	local disclaimer_text_background_content = self._widgets_by_name.disclaimer_text_background.content
+	disclaimer_text_background_content.visible = should_show
+	disclaimer_text_content.visible = should_show
 end
 
 return

@@ -202,7 +202,10 @@ ProgressionUnlocks = {
 		end
 
 		if level < template.level_requirement then
-			return false, Localize("career_locked_info") .. " " .. tostring(template.level_requirement)
+			local localized = true
+			local dlc_name = nil
+
+			return false, Localize("career_locked_info") .. " " .. tostring(template.level_requirement), dlc_name, localized
 		end
 
 		return true

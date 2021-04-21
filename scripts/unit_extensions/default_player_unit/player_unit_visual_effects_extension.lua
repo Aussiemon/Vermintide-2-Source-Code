@@ -18,6 +18,7 @@ PlayerUnitVisualEffectsExtension.extensions_ready = function (self, world, unit)
 	self.first_person_extension = first_person_extension
 	self.first_person_unit = first_person_unit
 	self.first_person_mesh_unit = first_person_mesh_unit
+	self.flow_unit_attachments = Unit.get_data(self.unit, "flow_unit_attachments") or {}
 end
 
 PlayerUnitVisualEffectsExtension.destroy = function (self)
@@ -68,6 +69,13 @@ PlayerUnitVisualEffectsExtension._set_character_overcharge = function (self, val
 	if unit and Unit.alive(unit) then
 		unit_set_flow_variable(unit, "current_overcharge", value)
 		unit_flow_event(unit, "lua_update_overcharge")
+
+		for k, v in pairs(self.flow_unit_attachments) do
+			if Unit.alive(v) then
+				unit_set_flow_variable(v, "current_overcharge", value)
+				unit_flow_event(v, "lua_update_overcharge")
+			end
+		end
 	end
 
 	if first_person_unit and Unit.alive(first_person_unit) then

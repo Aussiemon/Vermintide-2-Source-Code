@@ -44,12 +44,16 @@ GamePadEquipmentUI.init = function (self, parent, ingame_ui_context)
 	self._retained_elements_visible = false
 	local player = ingame_ui_context.player
 	self.player = player
+	self._game_options_dirty = true
+
+	self:_create_ui_elements()
+
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "input_changed", "event_input_changed")
 	event_manager:register(self, "swap_equipment_from_storage", "event_swap_equipment_from_storage")
-	self:_create_ui_elements()
-	rawset(_G, "gamepad_equipment_ui", self)
+	event_manager:register(self, "on_game_options_changed", "_set_game_options_dirty")
+	self:_update_game_options()
 end
 
 GamePadEquipmentUI._create_ui_elements = function (self)
@@ -231,9 +235,9 @@ GamePadEquipmentUI._get_input_texture_data = function (self, input_action)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if IS_WINDOWS and gamepad_active then
 		platform = "xb1"
-	elseif platform == "xb1" and not gamepad_active then
+	elseif IS_XB1 and not gamepad_active then
 		platform = "win32"
 	end
 
@@ -260,7 +264,7 @@ GamePadEquipmentUI._get_input_texture_data = function (self, input_action)
 	if device_type == "keyboard" then
 		button_name = (is_button_unassigned and "") or Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
 
-		if PLATFORM == "xb1" then
+		if IS_XB1 then
 			button_name = string.upper(button_name)
 		end
 
@@ -278,6 +282,10 @@ GamePadEquipmentUI._get_input_texture_data = function (self, input_action)
 			button_name = ""
 		else
 			button_name = Pad1.button_name(key_index)
+		end
+
+		if UISettings.use_ps4_input_icons and IS_WINDOWS then
+			platform = "win32_ps4"
 		end
 
 		local button_texture_data = ButtonTextureByName(button_name, platform)
@@ -1143,8 +1151,8 @@ GamePadEquipmentUI.destroy = function (self)
 
 	event_manager:unregister("input_changed", self)
 	event_manager:unregister("swap_equipment_from_storage", self)
+	event_manager:unregister("on_game_options_changed", self)
 	self:set_visible(false)
-	rawset(_G, "gamepad_equipment_ui", nil)
 	print("[GamePadEquipmentUI] - Destroy")
 end
 
@@ -1180,6 +1188,9 @@ end
 
 GamePadEquipmentUI.update = function (self, dt, t)
 	local dirty = false
+
+	self:_update_game_options()
+
 	local parent = self._parent
 	local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
 
@@ -1243,6 +1254,10 @@ GamePadEquipmentUI._on_resolution_modified = function (self)
 		self:_set_widget_dirty(widget)
 	end
 
+	for _, widget in pairs(self._frame_widgets) do
+		self:_set_widget_dirty(widget)
+	end
+
 	self:set_dirty()
 end
 
@@ -1250,7 +1265,7 @@ GamePadEquipmentUI._handle_gamepad_activity = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local force_update = self.gamepad_active_last_frame == nil
 
-	if gamepad_active or PLATFORM == "ps4" then
+	if gamepad_active or IS_PS4 then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 
@@ -1263,8 +1278,41 @@ GamePadEquipmentUI._handle_gamepad_activity = function (self)
 	end
 end
 
+GamePadEquipmentUI._set_game_options_dirty = function (self)
+	self._game_options_dirty = true
+end
+
+GamePadEquipmentUI._update_game_options = function (self)
+	if not self._game_options_dirty then
+		return
+	end
+
+	local use_ps4_icons = UISettings.use_ps4_input_icons
+
+	if self._use_ps4_icons ~= use_ps4_icons then
+		self._use_ps4_icons = use_ps4_icons
+		local button_texture_data = nil
+
+		if use_ps4_icons then
+			button_texture_data = ButtonTextureByName("square", "ps4")
+		else
+			button_texture_data = ButtonTextureByName("x", "xb1")
+		end
+
+		local widget = self._widgets_by_name.engineer_base
+		widget.content.reload_button_id = button_texture_data.texture
+		widget.style.reload_button.texture_size = button_texture_data.size
+
+		self:_set_widget_dirty(widget)
+	end
+
+	self._game_options_dirty = false
+
+	self:event_input_changed()
+end
+
 GamePadEquipmentUI._handle_gamepad = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM ~= "win32"
+	local gamepad_active = Managers.input:is_device_active("gamepad") or not IS_WINDOWS
 
 	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" then
 		if self._retained_elements_visible then

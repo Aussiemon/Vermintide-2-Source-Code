@@ -66,6 +66,10 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 		font_type = "hell_shark_header",
 		font_size = font_size
 	}
+	local tab_cat = self._parent.tab_cat
+
+	ItemHelper.create_tab_unseen_item_stars(tab_cat)
+
 	local total_length = 0
 
 	for index, page_name in ipairs(menu_options) do
@@ -89,11 +93,25 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 
 		local content = widget.content
 		content.page_name = page_name
+
+		if tab_cat[page_name] > 0 then
+			content.new = true
+		end
+
 		title_button_widgets[#title_button_widgets + 1] = widget
 	end
 
+	self.tab_cat = tab_cat
 	self._ui_scenegraph.panel_entry_area.size[1] = total_length
 	self._title_button_widgets = title_button_widgets
+	local widgets_by_name = self._widgets_by_name
+	local mark_all_seen_button = widgets_by_name.mark_all_seen_button
+	mark_all_seen_button.content.new = true
+	mark_all_seen_button.style.new_marker.offset = {
+		-80,
+		8,
+		10
+	}
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
@@ -150,12 +168,22 @@ StoreWindowPanel._update_animations = function (self, dt)
 		end
 	end
 
+	local tab_cat = self._parent.tab_cat
 	local title_button_widgets = self._title_button_widgets
+	local sum_unseen = 0
 
 	for i, widget in ipairs(title_button_widgets) do
 		self:_animate_title_entry(widget, dt)
+
+		local num_unseen = tab_cat[widget.content.page_name]
+		widget.content.new = num_unseen > 0
+		sum_unseen = sum_unseen + num_unseen
 	end
 
+	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
+	local mark_all_shown = sum_unseen > 0
+	mark_all_seen_button.content.visible = mark_all_shown
+	mark_all_seen_button.content.enabled = mark_all_shown
 	local widgets_by_name = self._widgets_by_name
 	local back_button = widgets_by_name.back_button
 	local close_button = widgets_by_name.close_button
@@ -221,6 +249,7 @@ StoreWindowPanel._handle_input = function (self, dt, t)
 	local close_button = widgets_by_name.close_button
 	local back_button = widgets_by_name.back_button
 	local golden_key_button = self._top_widgets_by_name.golden_key_button
+	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
 
 	if self:_is_button_hover_enter(golden_key_button) or self:_is_button_hover_enter(back_button) or self:_is_button_hover_enter(close_button) then
 		self:_play_sound("Play_hud_hover")
@@ -234,6 +263,14 @@ StoreWindowPanel._handle_input = function (self, dt, t)
 
 	if not input_made and self:_is_button_pressed(close_button) then
 		parent:close_menu()
+
+		input_made = true
+	end
+
+	if not input_made and self:_is_button_pressed(mark_all_seen_button) then
+		mark_all_seen_button.content.new = false
+
+		ItemHelper.set_all_shop_item_seen(self._parent.tab_cat)
 
 		input_made = true
 	end

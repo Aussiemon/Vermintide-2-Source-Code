@@ -321,6 +321,12 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
+					sub_action = "default_normal",
+					start_time = 2.2,
+					action = "action_one",
+					input = "action_one_hold"
+				},
+				{
 					sub_action = "default",
 					start_time = 0,
 					action = "action_two",
@@ -378,6 +384,12 @@ weapon_template.actions = {
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
+				},
+				{
+					sub_action = "default_normal",
+					start_time = 2,
+					action = "action_one",
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",

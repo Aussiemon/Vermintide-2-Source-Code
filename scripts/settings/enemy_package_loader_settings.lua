@@ -117,7 +117,7 @@ end
 
 local category_changes = nil
 
-if PLATFORM == "xb1" or PLATFORM == "ps4" or script_data.enemy_package_loader_policy == "console" then
+if IS_CONSOLE or script_data.enemy_package_loader_policy == "console" then
 	EnemyPackageLoaderSettings.policy = "console"
 	EnemyPackageLoaderSettings.unload_startup_packages_between_levels = true
 	EnemyPackageLoaderSettings.max_loaded_breed_cap = 35

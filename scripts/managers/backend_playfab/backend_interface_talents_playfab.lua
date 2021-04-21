@@ -42,6 +42,32 @@ BackendInterfaceTalentsPlayfab.make_dirty = function (self)
 	self._dirty = true
 end
 
+BackendInterfaceTalentsPlayfab.get_talent_ids = function (self, career_name)
+	local career_settings = CareerSettings[career_name]
+	local profile_name = career_settings.profile_name
+	local talent_tree_index = career_settings.talent_tree_index
+	local talent_tree = talent_tree_index and TalentTrees[profile_name][talent_tree_index]
+	local talent_ids = {}
+	local talents = self:get_talents(career_name)
+
+	if talents then
+		for i = 1, #talents, 1 do
+			local column = talents[i]
+
+			if column ~= 0 then
+				local talent_name = talent_tree[i][column]
+				local talent_lookup = TalentIDLookup[talent_name]
+
+				if talent_lookup and talent_lookup.talent_id then
+					talent_ids[#talent_ids + 1] = talent_lookup.talent_id
+				end
+			end
+		end
+	end
+
+	return talent_ids
+end
+
 BackendInterfaceTalentsPlayfab.get_talent_tree = function (self, career_name)
 	local career_settings = CareerSettings[career_name]
 	local profile_name = career_settings.profile_name

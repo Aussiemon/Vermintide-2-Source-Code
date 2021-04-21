@@ -247,7 +247,7 @@ BuffUI._add_buff = function (self, buff, infinite, end_time)
 	}
 	active_buffs[#active_buffs + 1] = data
 
-	self:_set_widget_time_progress(widget, 1, duration, is_cooldown)
+	self:_set_widget_time_progress(widget, 1, duration)
 
 	local n = #self._active_buffs
 	local i = (n - 1) % MAX_BUFF_COLUMNS
@@ -380,8 +380,22 @@ BuffUI.set_visible = function (self, visible)
 	self:set_dirty()
 end
 
+local customizer_data = {
+	root_scenegraph_id = "pivot",
+	label = "Buff bar",
+	registry_key = "buff_ui",
+	drag_scenegraph_id = "pivot_dragger"
+}
+
 BuffUI.update = function (self, dt, t)
 	local dirty = false
+
+	if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data) then
+		UIUtils.mark_dirty(self._buff_widgets)
+
+		dirty = true
+	end
+
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
 
 	if gamepad_active then
@@ -472,14 +486,13 @@ BuffUI._update_buffs = function (self, dt)
 		if end_time then
 			local duration = data.duration
 			local infinite = widget.content.is_infinite
-			local is_cooldown = widget.content.is_cooldown
 
 			if not infinite then
 				if t < end_time then
 					local time_left = math.max(end_time - t, 0)
 					local progress = 1 - math.min(time_left / duration, 1)
 
-					self:_set_widget_time_progress(widget, progress, time_left, is_cooldown)
+					self:_set_widget_time_progress(widget, progress, time_left)
 				end
 
 				dirty = true
@@ -518,32 +531,16 @@ BuffUI._handle_career_change = function (self)
 	end
 end
 
-BuffUI._set_widget_time_progress = function (self, widget, progress, time_left, is_cooldown)
-	local style = widget.style
+BuffUI._set_widget_time_progress = function (self, widget, progress, time_left)
 	local content = widget.content
+	content.progress = progress
 
 	if time_left and time_left > 0 then
+		content.set_unsaturated = true
 		content.is_expired = false
-
-		if is_cooldown then
-			style.texture_cooldown.color[1] = 255 * (1 - progress)
-			style.icon_mask.color[1] = 255 * (1 - progress)
-			style.texture_duration.color[1] = 0
-			style.texture_icon.saturated = true
-		else
-			style.texture_duration.color[1] = 255 * (1 - progress)
-		end
 	else
 		content.is_expired = true
-
-		if is_cooldown then
-			style.texture_cooldown.color[1] = 0
-			style.icon_mask.color[1] = 0
-		else
-			style.texture_duration.color[1] = 255
-		end
-
-		style.texture_icon.saturated = false
+		content.set_unsaturated = false
 	end
 
 	self:_set_widget_dirty(widget)

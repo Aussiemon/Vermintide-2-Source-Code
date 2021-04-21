@@ -1,7 +1,7 @@
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 
 local function guid()
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		local pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 		return string.gsub(pattern, "x", function (c)
@@ -27,14 +27,15 @@ PlayFabRequestQueue.is_pending_request = function (self)
 	return self._active_entry or #self._queue > 0
 end
 
-PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_eac_challenge)
+PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_eac_challenge, error_callback)
 	local id = self._id + 1
 	local entry = {
-		eac_challenge_success = false,
 		resends = 0,
+		eac_challenge_success = false,
 		api_function_name = "ExecuteCloudScript",
 		request = table.clone(request),
 		success_callback = success_callback,
+		error_callback = error_callback,
 		send_eac_challenge = send_eac_challenge,
 		timeout = TIMEOUT_TIME,
 		id = id

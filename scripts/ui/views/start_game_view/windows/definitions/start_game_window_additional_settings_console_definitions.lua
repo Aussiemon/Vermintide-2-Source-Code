@@ -86,17 +86,17 @@ local scenegraph_definition = {
 		size = window_size,
 		position = {
 			860,
-			10,
+			0,
 			1
 		}
 	},
 	additional_option = {
-		vertical_alignment = "center",
+		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1],
-			290
+			260
 		},
 		position = {
 			0,
@@ -282,7 +282,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			-10,
-			6,
+			-24,
 			1
 		}
 	}
@@ -314,7 +314,7 @@ function create_option_tooltip(scenegraph_id, size)
 	}
 	local text_offset = {
 		0,
-		-5,
+		-35,
 		1
 	}
 	local style = {

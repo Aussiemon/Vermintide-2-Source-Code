@@ -2,6 +2,24 @@ require("foundation/scripts/util/table")
 require("scripts/settings/unit_variation_settings")
 require("scripts/settings/unit_gib_settings")
 
+local enemy_dissovle_time = 3
+local enemy_darken_time = 2
+local enemy_darken_to_value = 0.15
+
+function flow_callback_enemy_dissolve_data(params)
+	return {
+		dissovle_time = enemy_dissovle_time,
+		darken_time = enemy_darken_time,
+		darken_to = enemy_darken_to_value
+	}
+end
+
+function flow_callback_enemy_dissolve_darken_vector(params)
+	return {
+		darken_vector = Vector3(1, enemy_darken_to_value, enemy_darken_time)
+	}
+end
+
 local function enemy_variation_tint_meshes(unit, meshes, material, variable, value)
 	for i = 1, #meshes, 1 do
 		if Unit.has_mesh(unit, meshes[i]) then

@@ -16,11 +16,12 @@ weapon_template.actions = {
 			hit_effect = "bullet_impact",
 			anim_event_last_ammo = "attack_shoot_last",
 			headshot_multiplier = 2,
-			aim_assist_max_ramp_multiplier = 1,
+			ranged_attack = true,
 			damage_window_end = 0,
-			aim_assist_ramp_decay_delay = 0.1,
+			aim_assist_max_ramp_multiplier = 1,
 			ammo_usage = 1,
 			fire_time = 0,
+			aim_assist_ramp_decay_delay = 0.1,
 			anim_event_secondary = "reload",
 			active_reload_time = 0.35,
 			aim_assist_ramp_multiplier = 0.3,
@@ -77,19 +78,20 @@ weapon_template.actions = {
 			kind = "handgun",
 			anim_event_no_ammo_left = "attack_shoot_last",
 			charge_value = "light_attack",
+			ranged_attack = true,
 			reload_when_out_of_ammo = true,
 			apply_recoil = true,
 			damage_profile = "shot_sniper",
 			alert_sound_range_fire = 10,
-			alert_sound_range_hit = 2,
 			hit_effect = "bullet_impact",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.66,
 			damage_window_end = 0,
-			aim_assist_ramp_multiplier = 0.3,
+			alert_sound_range_hit = 2,
 			ammo_usage = 1,
 			anim_end_event = "to_unzoom",
 			fire_time = 0,
+			aim_assist_ramp_multiplier = 0.3,
 			aim_assist_auto_hit_chance = 0.5,
 			aim_assist_ramp_decay_delay = 0.1,
 			aim_assist_max_ramp_multiplier = 1,
@@ -264,7 +266,7 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.wwise_dep_right_hand = {
-	"wwise/handgun_rifle"
+	"wwise/handgun"
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_high_damage",

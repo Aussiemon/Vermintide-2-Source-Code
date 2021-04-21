@@ -1,8 +1,9 @@
 local breed_data = {
-	perception = "perception_all_seeing",
+	is_always_spawnable = true,
 	has_inventory = true,
-	no_stagger_duration = true,
 	behavior = "chaos_vortex_sorcerer",
+	no_stagger_duration = true,
+	perception = "perception_all_seeing",
 	target_selection = "pick_closest_vortex_target",
 	base_unit = "units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
 	animation_sync_rpc = "rpc_sync_anim_state_7",

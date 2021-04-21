@@ -21,11 +21,8 @@ PeerStates.Connecting = {
 		self.wanted_profile_index = wanted_profile_index
 		self.wanted_career_index = wanted_career_index
 		self.wanted_party_index = wanted_party_index
-		local is_client = self.peer_id ~= Network.peer_id()
 
-		if is_client then
-			Managers.mechanism:client_joined(self.peer_id)
-		end
+		self.server:peer_connected(self.peer_id)
 	end,
 	rpc_post_game_notified = function (self, in_post_game)
 		self._has_been_notfied_of_post_game_state = true
@@ -44,7 +41,7 @@ PeerStates.Connecting = {
 			return PeerStates.Disconnecting
 		end
 
-		if self.server.level_key == "prologue" and self.peer_id ~= self.server.my_peer_id then
+		if Managers.level_transition_handler:get_current_level_key() == "prologue" and self.peer_id ~= self.server.my_peer_id then
 			self.server:disconnect_peer(self.peer_id, "host_plays_prologue")
 
 			return PeerStates.Disconnecting
@@ -79,15 +76,16 @@ PeerStates.Connecting = {
 
 		if not Development.parameter("allow_weave_joining") then
 			local lobby = self.server.lobby_host
+			local mechanism = lobby:lobby_data("mechanism")
 			local matchmaking = lobby:lobby_data("matchmaking")
-			local game_mode_id = lobby:lobby_data("game_mode")
-			local game_mode_key = "n/a"
+			local matchmaking_type_id = lobby:lobby_data("matchmaking_type")
+			local matchmaking_type = "n/a"
 
-			if game_mode_id then
-				game_mode_key = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
+			if matchmaking_type_id then
+				matchmaking_type = (IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
 			end
 
-			if game_mode_key == "weave" and matchmaking == "false" then
+			if mechanism == "weave" and matchmaking == "false" then
 				local player_ids = Managers.weave:get_player_ids()
 
 				if player_ids then
@@ -138,6 +136,11 @@ PeerStates.Connecting = {
 					party_manager:server_peer_hot_join_synced(self.peer_id)
 					party_manager:assign_peer_to_party(self.peer_id, local_player_id, wanted_party)
 
+					local server = self.server
+					local profile_synchronizer = server.profile_synchronizer
+
+					profile_synchronizer:hot_join_sync(self.peer_id)
+
 					return PeerStates.Loading
 				end
 			end
@@ -162,7 +165,6 @@ PeerStates.Loading = {
 	approved_for_joining = true,
 	on_enter = function (self, previous_state)
 		Network.write_dump_tag(string.format("%s loading", self.peer_id))
-		self.server:add_connected_peer(self.peer_id)
 
 		local party = Managers.party
 
@@ -175,29 +177,9 @@ PeerStates.Loading = {
 		local mechanism_manager = Managers.mechanism
 		local network_transmit = self.server.network_transmit
 		local peer_id = self.peer_id
+		self._sent_rpc_load_level = false
 
 		mechanism_manager:sync_game_mode_data_to_peer(network_transmit, peer_id)
-
-		local level_key = self.server.level_key
-		local environment_variation_id = self.server.environment_variation_id or 0
-		local level_seed = mechanism_manager:get_level_seed()
-		local difficulty, difficulty_tweak = mechanism_manager:get_difficulty()
-		local difficulty_id = NetworkLookup.difficulties[difficulty]
-		local locked_director_function_ids = mechanism_manager:get_locked_director_function_ids(level_key)
-
-		if level_seed == nil then
-			Application.warning("[PSM] No level seed set, fallbacking to 0")
-
-			level_seed = 0
-		end
-
-		print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", peer_id, level_key, environment_variation_id)
-
-		if PLATFORM == "linux" then
-			Crashify.print_exception("[PeerStates.Loading]", string.format("level_key: %s", level_key))
-		end
-
-		network_transmit:send_rpc("rpc_load_level", peer_id, NetworkLookup.level_keys[level_key], level_seed, difficulty_id, difficulty_tweak, locked_director_function_ids, environment_variation_id)
 	end,
 	rpc_is_ingame = function (self)
 		print("[PSM] Got rpc_is_ingame in PeerStates.Loading, is that ok?")
@@ -206,7 +188,7 @@ PeerStates.Loading = {
 	end,
 	rpc_level_loaded = function (self, level_id)
 		self.loaded_level = NetworkLookup.level_keys[level_id]
-		local enemies_are_loaded = self.server.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
+		local enemies_are_loaded = Managers.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
 
 		if enemies_are_loaded then
 			printf("Peer %s has loaded the level and all enemies are loaded", self.peer_id)
@@ -216,10 +198,32 @@ PeerStates.Loading = {
 	end,
 	update = function (self, dt)
 		local server = self.server
-		local server_level_key = server.level_key
 
-		if self.loaded_level == server_level_key then
-			local enemies_are_loaded = self.server.level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
+		if not self._sent_rpc_load_level and server.server_peer_id ~= self.peer_id then
+			if self.server:is_network_state_fully_synced_for_peer(self.peer_id) then
+				print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", self.peer_id)
+
+				local network_transmit = self.server.network_transmit
+
+				network_transmit:send_rpc("rpc_load_level", self.peer_id)
+
+				self._sent_rpc_load_level = true
+			else
+				return
+			end
+		end
+
+		if not self._client_joined_done then
+			Managers.mechanism:client_joined(self.peer_id)
+
+			self._client_joined_done = true
+		end
+
+		local level_transition_handler = Managers.level_transition_handler
+		local level_key = level_transition_handler:get_current_level_key()
+
+		if self.loaded_level == level_key then
+			local enemies_are_loaded = level_transition_handler.enemy_package_loader:load_sync_done_for_peer(self.peer_id)
 			local state_determined, can_play = server:eac_check_peer(self.peer_id)
 
 			if enemies_are_loaded and state_determined and can_play then
@@ -263,15 +267,6 @@ PeerStates.LoadingProfilePackages = {
 			self.wanted_profile_index = wanted_profile_index
 			self.wanted_career_index = wanted_career_index
 		end
-
-		if not profile_synchronizer:peer_already_added(peer_id) then
-			profile_synchronizer:peer_entered_session(peer_id, local_player_id)
-			profile_synchronizer:hot_join_sync(peer_id, {
-				local_player_id
-			})
-		elseif Managers.mechanism:switch_mechanism_key() ~= nil then
-			profile_synchronizer:select_profile(peer_id, local_player_id, wanted_profile_index, wanted_career_index)
-		end
 	end,
 	rpc_is_ingame = function (self)
 		self.is_ingame = true
@@ -311,7 +306,7 @@ PeerStates.WaitingForEnterGame = {
 					server.game_network_manager:set_peer_synchronizing(peer_id)
 
 					local game_session = server.game_session
-					local all_synced = server.profile_synchronizer:all_synced()
+					local all_synced = server.profile_synchronizer:is_peer_all_synced(peer_id)
 					local in_session = server.game_network_manager:in_game_session()
 
 					if game_session and in_session and all_synced then
@@ -345,7 +340,7 @@ PeerStates.WaitingForGameObjectSync = {
 
 		if self.server.peers_completed_game_object_sync[peer_id] then
 			if not self.game_started then
-				if PLATFORM == "xb1" then
+				if IS_XB1 then
 					self.server.network_transmit:send_rpc("rpc_game_started", self.peer_id, Managers.account:round_id() or "")
 				else
 					self.server.network_transmit:send_rpc("rpc_game_started", self.peer_id, "")
@@ -476,8 +471,6 @@ PeerStates.Disconnecting = {
 			game_network_manager:remove_peer(peer_id)
 		end
 
-		self.server:remove_connected_peer(peer_id)
-
 		server.peers_completed_game_object_sync[peer_id] = nil
 	end,
 	update = function (self, dt)
@@ -496,13 +489,7 @@ PeerStates.Disconnected = {
 
 		local peer_id = self.peer_id
 		local server = self.server
-		local profile_synchronizer = server.profile_synchronizer
 		local local_player_id = 1
-		local old_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-
-		if not old_index then
-			server.slot_allocator:free_peer_slots(peer_id, local_player_id)
-		end
 
 		if Managers.state.game_mode then
 			Managers.state.game_mode:player_left_game_session(peer_id, local_player_id)
@@ -512,7 +499,6 @@ PeerStates.Disconnected = {
 			Managers.venture.challenge:player_left_game_session(peer_id, local_player_id)
 		end
 
-		profile_synchronizer:peer_left_session(peer_id)
 		Managers.party:server_peer_left_session(peer_id)
 
 		local is_client = peer_id ~= Network.peer_id()
@@ -520,11 +506,12 @@ PeerStates.Disconnected = {
 		if is_client then
 			Managers.mechanism:client_left(peer_id)
 
-			local enemy_package_loader = server.level_transition_handler.enemy_package_loader
+			local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 			enemy_package_loader:client_disconnected(peer_id)
 		end
 
+		server:peer_disconnected(peer_id)
 		server:close_channel(peer_id)
 	end,
 	update = function (self, dt)

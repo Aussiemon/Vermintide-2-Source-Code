@@ -25,11 +25,11 @@ LobbyInternal.matchmaking_lobby_data = {
 		data_type = "integer",
 		id = PsnRoom.SEARCHABLE_INTEGER_ID_2
 	},
-	selected_level_key = {
+	selected_mission_id = {
 		data_type = "integer",
 		id = PsnRoom.SEARCHABLE_INTEGER_ID_3
 	},
-	game_mode = {
+	matchmaking_type = {
 		data_type = "integer",
 		id = PsnRoom.SEARCHABLE_INTEGER_ID_4
 	},
@@ -47,26 +47,26 @@ LobbyInternal.matchmaking_lobby_data = {
 	}
 }
 LobbyInternal.lobby_data_network_lookups = {
-	difficulty = "difficulties",
 	matchmaking = "lobby_data_values",
+	secondary_region = "matchmaking_regions",
 	is_private = "lobby_data_values",
-	game_mode = "game_modes",
+	matchmaking_type = "matchmaking_types",
+	mission_id = "mission_ids",
 	primary_region = "matchmaking_regions",
 	quick_game = "lobby_data_values",
-	selected_level_key = "level_keys",
-	secondary_region = "matchmaking_regions",
-	level_key = "level_keys",
+	selected_mission_id = "mission_ids",
+	difficulty = "difficulties",
 	twitch_enabled = "lobby_data_values"
 }
 LobbyInternal.key_order = {
+	"network_hash",
 	"difficulty",
-	"game_mode",
+	"matchmaking_type",
 	"is_private",
-	"level_key",
-	"selected_level_key",
+	"mission_id",
+	"selected_mission_id",
 	"matchmaking",
 	"num_players",
-	"expansion_rule_index",
 	"quick_game",
 	"session_id",
 	"player_slot_1",
@@ -74,25 +74,21 @@ LobbyInternal.key_order = {
 	"player_slot_3",
 	"player_slot_4",
 	"player_slot_5",
-	"time_of_search",
-	"network_hash",
 	"unique_server_name",
 	"host",
 	"country_code",
 	"twitch_enabled",
-	"weave_name",
-	"power_level"
+	"power_level",
+	"mechanism"
 }
 LobbyInternal.default_lobby_data = {
-	level_key = "n/a",
-	quick_game = "false",
 	is_private = "false",
-	game_mode = "n/a",
-	weave_name = "false",
+	matchmaking_type = "n/a",
+	mission_id = "n/a",
 	matchmaking = "false",
 	num_players = 1,
-	expansion_rule_index = 1,
-	selected_level_key = "n/a",
+	quick_game = "false",
+	selected_mission_id = "n/a",
 	difficulty = "normal",
 	twitch_enabled = "false"
 }
@@ -324,6 +320,12 @@ LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 	else
 		t = {}
 		local data_string_table = string.split(data_string, "/")
+
+		if #data_string_table > #LobbyInternal.key_order then
+			t.broken_lobby_data = data_string
+
+			return t, false
+		end
 
 		for i = 1, #data_string_table, 1 do
 			local key = LobbyInternal.key_order[i]

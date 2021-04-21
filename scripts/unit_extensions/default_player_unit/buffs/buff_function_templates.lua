@@ -1,3 +1,5 @@
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 BuffFunctionTemplates = BuffFunctionTemplates or {}
 
 local function get_variable(path_to_movement_setting_to_modify, unit)
@@ -518,6 +520,10 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	reapply_dot_damage = function (unit, buff, params)
+		if buff.template.reapply_start_flow_event and buff.template.start_flow_event then
+			Unit.flow_event(unit, buff.template.start_flow_event)
+		end
+
 		if buff.template.damage_type == "burninating" then
 			local attacker_unit = params.attacker_unit
 			local attacker_buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
@@ -549,8 +555,9 @@ BuffFunctionTemplates.functions = {
 				if Managers.state.network.is_server then
 					local attacker_unit = params.attacker_unit
 					local source_attacker_unit = params.source_attacker_unit
+					local used_attacker_unit = (ALIVE[attacker_unit] and attacker_unit) or (ALIVE[source_attacker_unit] and source_attacker_unit)
 
-					if Unit.alive(attacker_unit) then
+					if used_attacker_unit then
 						if buff.template.custom_dot_tick_func then
 							BuffFunctionTemplates.functions[buff.template.custom_dot_tick_func](unit, buff, params)
 						else
@@ -558,7 +565,7 @@ BuffFunctionTemplates.functions = {
 							local hit_zone_name = buff.template.hit_zone or "full"
 							local attack_direction = Vector3.down()
 							local hit_ragdoll_actor = nil
-							local damage_source = buff.damage_source or "dot_debuff"
+							local damage_source = "dot_debuff"
 							local power_level = buff.power_level or DefaultPowerLevel
 							local damage_profile_name = buff_template.damage_profile or "default"
 							local damage_profile = DamageProfileTemplates[damage_profile_name]
@@ -571,7 +578,7 @@ BuffFunctionTemplates.functions = {
 							local shield_breaking_hit = false
 							local backstab_multiplier, first_hit, total_hits = nil
 
-							DamageUtils.server_apply_hit(t, attacker_unit, target_unit, hit_zone_name, nil, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
+							DamageUtils.server_apply_hit(t, used_attacker_unit, target_unit, hit_zone_name, nil, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
 						end
 					end
 				end
@@ -860,13 +867,7 @@ BuffFunctionTemplates.functions = {
 		ext:remove_movement_modifier(buff.movement_modifier_id)
 	end,
 	apply_chaos_zombie_explosion_in_face = function (unit, buff, params, world)
-		local buff_template = buff.template
-		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-		if first_person_extension then
-			buff.nurgle_particle_id_01 = first_person_extension:create_screen_particles("fx/screenspace_nurgle_explosion_01")
-			buff.nurgle_particle_id_02 = first_person_extension:create_screen_particles("fx/screenspace_nurgle_explosion_02")
-		end
+		return
 	end,
 	update_chaos_zombie_explosion_in_face = function (unit, buff, params, world)
 		return
@@ -1555,6 +1556,10 @@ BuffFunctionTemplates.functions = {
 				local status_extension = ScriptUnit.extension(unit, "status_system")
 				local heal_amount = buff_template.heal_amount
 
+				if talent_extension:has_talent("kerillian_waywatcher_improved_regen", "wood_elf", true) then
+					heal_amount = heal_amount * 1.5
+				end
+
 				if health_extension:is_alive() and not status_extension:is_knocked_down() and not status_extension:is_assisted_respawning() then
 					if talent_extension:has_talent("kerillian_waywatcher_group_regen", "wood_elf", true) then
 						local side = Managers.state.side.side_by_unit[unit]
@@ -1571,10 +1576,6 @@ BuffFunctionTemplates.functions = {
 							end
 						end
 					elseif health_extension:current_permanent_health_percent() <= regen_cap then
-						if talent_extension:has_talent("kerillian_waywatcher_improved_regen", "wood_elf", true) then
-							heal_amount = heal_amount * 1.5
-						end
-
 						DamageUtils.heal_network(unit, unit, heal_amount, "career_passive")
 					end
 				end
@@ -1899,11 +1900,16 @@ BuffFunctionTemplates.functions = {
 
 					if buff_extension then
 						local link_buffs = add_buffs_data.link_buffs
+						local params = nil
+
+						if link_buffs then
+							params = {
+								parent_id = buff.id
+							}
+						end
 
 						for i = 1, #buffs_to_add, 1 do
-							buff_extension:add_buff(buffs_to_add[i], {
-								parent_id = buff.id
-							})
+							buff_extension:add_buff(buffs_to_add[i], params)
 						end
 					end
 				end
@@ -3159,13 +3165,15 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	activate_buff_on_other_buff = function (unit, buff, params)
+
+		-- Decompilation error in this vicinity:
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local activation_buff = template.activation_buff
 		local activate_on_missing = template.activate_on_missing
+		local only_local = template.only_local
 		local has_buff = buff_extension:get_non_stacking_buff(activation_buff)
-		local apply_buff = (has_buff and not activate_on_missing) or (not has_buff and activate_on_missing)
 		local applied_buff = buff_extension:get_non_stacking_buff(buff_to_add)
 
 		if apply_buff then
@@ -4096,8 +4104,16 @@ BuffFunctionTemplates.functions = {
 			career_extension:set_state("default")
 		end
 	end,
+	sienna_adept_double_trail_talent_start_ability_cooldown_add = function (unit, buff, params)
+		if ALIVE[unit] and is_local(unit) then
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local buff_to_add = buff.template.buff_to_add
+
+			buff_extension:add_buff(buff_to_add)
+		end
+	end,
 	sienna_adept_double_trail_talent_start_ability_cooldown = function (unit, buff, params)
-		if is_local(unit) then
+		if ALIVE[unit] and is_local(unit) then
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 
 			career_extension:stop_ability("cooldown_triggered")
@@ -4601,6 +4617,46 @@ BuffFunctionTemplates.functions = {
 			buff.next_heal_tick = t + buff_template.time_between_heals
 		end
 	end,
+	update_server_buff_on_health_percent = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		if ALIVE[owner_unit] then
+			local health_extension = ScriptUnit.has_extension(owner_unit, "health_system")
+
+			if health_extension then
+				local max_health = health_extension:get_max_health()
+				local health_threshold = buff.template.threshold
+				local current_health = health_extension:current_health()
+				local buff_to_add = buff.template.buff_to_add
+
+				if current_health >= max_health * buff.template.health_threshold and not buff.has_buff then
+					local buff_system = Managers.state.entity:system("buff_system")
+					buff.has_buff = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
+				elseif current_health < max_health * buff.template.health_threshold and buff.has_buff then
+					local buff_system = Managers.state.entity:system("buff_system")
+
+					buff_system:remove_server_controlled_buff(owner_unit, buff.has_buff)
+
+					buff.has_buff = nil
+				end
+			end
+		end
+	end,
+	remove_server_buff_on_health_percent = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		if ALIVE[owner_unit] and buff.has_buff then
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			buff_system:remove_server_controlled_buff(owner_unit, buff.has_buff)
+
+			buff.has_buff = nil
+		end
+	end,
 	start_maidenguard_activated_ability = function (unit, buff, params)
 		if is_local(unit) and not is_bot(unit) then
 			local fov_multiplier = 0.8
@@ -4977,6 +5033,29 @@ BuffFunctionTemplates.functions = {
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 
 			career_extension:modify_max_cooldown(1, 0, -buff.template.multiplier)
+		end
+	end,
+	refresh_ranged_slot_buffs = function (unit, buff, params)
+		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+
+		if inventory_extension then
+			local ranged_slot_data = inventory_extension:get_slot_data("slot_ranged")
+
+			if ranged_slot_data then
+				local left_hand_unit = ranged_slot_data.left_unit_1p
+				local right_hand_unit = ranged_slot_data.right_unit_1p
+				local left_hand_ammo_extension = ScriptUnit.has_extension(left_hand_unit, "ammo_system")
+
+				if left_hand_ammo_extension then
+					left_hand_ammo_extension:refresh_buffs()
+				end
+
+				local right_hand_ammo_extension = ScriptUnit.has_extension(right_hand_unit, "ammo_system")
+
+				if right_hand_ammo_extension then
+					right_hand_ammo_extension:refresh_buffs()
+				end
+			end
 		end
 	end
 }

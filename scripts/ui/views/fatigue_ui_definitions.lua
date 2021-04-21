@@ -11,7 +11,7 @@ local scenegraph_definition = {
 			1080
 		}
 	},
-	background = {
+	background_parent = {
 		vertical_alignment = "center",
 		parent = "root",
 		horizontal_alignment = "center",
@@ -23,6 +23,34 @@ local scenegraph_definition = {
 		size = {
 			500,
 			200
+		}
+	},
+	background = {
+		vertical_alignment = "bottom",
+		parent = "background_parent",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			500,
+			200
+		}
+	},
+	background_dragger = {
+		vertical_alignment = "center",
+		parent = "background",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-50,
+			0
+		},
+		size = {
+			320,
+			40
 		}
 	},
 	shield = {

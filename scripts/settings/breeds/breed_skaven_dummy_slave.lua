@@ -24,6 +24,7 @@ for key, value in pairs(Breeds.skaven_slave) do
 end
 
 Breeds.skaven_dummy_slave = table.create_copy(Breeds.skaven_dummy_slave, breed_data)
+Breeds.skaven_dummy_slave.is_always_spawnable = nil
 local action_data = {}
 
 for key, value in pairs(BreedActions.skaven_dummy_clan_rat) do

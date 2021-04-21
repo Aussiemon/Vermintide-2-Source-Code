@@ -115,6 +115,11 @@ settings.unlock_settings_xb1 = {
 		backend_reward_id = "cog",
 		class = "UnlockDlc",
 		requires_restart = true
+	},
+	cog_upgrade = {
+		id = "48544E39-5A31-3058-C047-324D54486800",
+		backend_reward_id = "cog_upgrade",
+		class = "UnlockDlc"
 	}
 }
 settings.unlock_settings_ps4 = {
@@ -125,6 +130,12 @@ settings.unlock_settings_ps4 = {
 			class = "UnlockDlc",
 			requires_restart = true,
 			id = "10cc3340ad9040e29daa599e48249a64"
+		},
+		cog_upgrade = {
+			id = "10cc3340ad9040e29daa599e48249a64",
+			product_label = "V2USENGINEERCARB",
+			class = "UnlockDlc",
+			backend_reward_id = "cog_upgrade"
 		}
 	},
 	CUSA13645_00 = {
@@ -134,6 +145,12 @@ settings.unlock_settings_ps4 = {
 			class = "UnlockDlc",
 			requires_restart = true,
 			id = "1693ba3b42364865a57670ae52b05477"
+		},
+		cog_upgrade = {
+			id = "1693ba3b42364865a57670ae52b05477",
+			product_label = "V2EUENGINEERCARB",
+			class = "UnlockDlc",
+			backend_reward_id = "cog_upgrade"
 		}
 	}
 }

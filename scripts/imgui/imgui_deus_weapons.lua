@@ -15,25 +15,15 @@ local difficulties = {
 }
 
 local function render_weapon_group_selection(available_weapon_groups, current_weapon_group_index, available_rarities, current_rarity_index, available_difficulties, current_difficulty_index, current_run_progress)
-	current_weapon_group_index = Imgui.Combo("Select weapon group", current_weapon_group_index - 1, available_weapon_groups)
-	current_rarity_index = Imgui.Combo("Select rarity", current_rarity_index - 1, available_rarities)
-	current_difficulty_index = Imgui.Combo("Select difficulty (affects powerlevel)", current_difficulty_index - 1, available_difficulties)
-	current_run_progress = Imgui.SliderFloat("Run progress (affects powerlevel)", current_run_progress, 0, 0.999)
+	current_weapon_group_index = Imgui.combo("Select weapon group", current_weapon_group_index, available_weapon_groups)
+	current_rarity_index = Imgui.combo("Select rarity", current_rarity_index, available_rarities)
+	current_difficulty_index = Imgui.combo("Select difficulty (affects powerlevel)", current_difficulty_index, available_difficulties)
+	current_run_progress = Imgui.slider_float("Run progress (affects powerlevel)", current_run_progress, 0, 0.999)
 
 	return current_weapon_group_index, current_rarity_index, current_difficulty_index, current_run_progress
 end
 
-local function equip_weapon(weapon, career_name)
-	local player_manager = Managers.player
-	local player = player_manager:local_player()
-	local player_unit = player.player_unit
-	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-	local resyncing_loadout = inventory_extension:resyncing_loadout()
-
-	if resyncing_loadout then
-		return false
-	end
-
+local function equip_weapon(weapon, career_name, inventory_extension)
 	local deus_backend = Managers.backend:get_interface("deus")
 
 	deus_backend:grant_deus_weapon(weapon)
@@ -58,34 +48,31 @@ local function render_weapon(weapon)
 	local inventory_icon, display_name, description, store_icon = UIUtils.get_ui_information_from_item(weapon)
 	local rarity_color = Colors.get_table(weapon.rarity)
 
-	Imgui.TextColored(" === " .. Localize(display_name) .. " === ", rarity_color[2], rarity_color[3], rarity_color[4], rarity_color[1])
-	Imgui.Spacing()
-	Imgui.Text("type: " .. Localize(weapon.data.item_type))
-	Imgui.Text("slot: " .. weapon.data.slot_type)
-	Imgui.Text("rarity: " .. weapon.rarity)
-
-	local power_level_text = "power_level: " .. weapon.power_level
-
-	Imgui.Text("power_level: " .. weapon.power_level)
+	Imgui.text_colored(" === " .. Localize(display_name) .. " === ", rarity_color[2], rarity_color[3], rarity_color[4], rarity_color[1])
+	Imgui.spacing()
+	Imgui.text("type: " .. Localize(weapon.data.item_type))
+	Imgui.text("slot: " .. weapon.data.slot_type)
+	Imgui.text("rarity: " .. weapon.rarity)
+	Imgui.text("power_level: " .. weapon.power_level)
 
 	if weapon.traits then
-		Imgui.Text("traits:")
+		Imgui.text("traits:")
 
 		for _, trait in ipairs(weapon.traits) do
-			Imgui.Text("  - " .. trait)
+			Imgui.text("  - " .. trait)
 		end
 	end
 
 	if weapon.properties then
-		Imgui.Text("props:")
+		Imgui.text("props:")
 
 		for prop, val in pairs(weapon.properties) do
-			Imgui.Text("  - " .. prop .. ": " .. val)
+			Imgui.text("  - " .. prop .. ": " .. val)
 		end
 	end
 
 	if weapon.skin then
-		Imgui.Text("skin: " .. weapon.skin)
+		Imgui.text("skin: " .. weapon.skin)
 	end
 end
 
@@ -98,7 +85,7 @@ local function render_property_setting(property_names, rarity, property_settings
 		if rarity == "unique" then
 			property_settings[property_key] = 1
 		else
-			local value = Imgui.SliderFloat("Set Property " .. property_key .. " power", property_settings[property_key], 0, 1)
+			local value = Imgui.slider_float("Set Property " .. property_key .. " power", property_settings[property_key], 0, 1)
 			property_settings[property_key] = math.round_with_precision(value, 3)
 		end
 	end
@@ -106,14 +93,31 @@ local function render_property_setting(property_names, rarity, property_settings
 	return property_settings
 end
 
+local function equip_random_weapon(deus_run_controller, inventory_extension, rarity, run_progress, difficulty, career_name)
+	local weapon_pool = deus_run_controller:get_weapon_pool()
+	local slot_chance_melee, slot_chance_ranged = deus_run_controller:get_slot_chances()
+	local weapon_seed = math.random_seed()
+	local new_weapon = DeusWeaponGeneration.generate_weapon(difficulty, run_progress, rarity, weapon_seed, weapon_pool, slot_chance_melee, slot_chance_ranged)
+
+	deus_run_controller:remove_weapon_from_pool(rarity, new_weapon.deus_item_key)
+	equip_weapon(new_weapon, career_name, inventory_extension)
+end
+
 ImguiDeusWeapons.init = function (self)
-	return
+	self._next_weapon_time = 0
 end
 
 ImguiDeusWeapons.update = function (self)
-	local player = Managers.player:local_player()
+	local player = Managers.player:local_human_player()
 
 	if not player then
+		return
+	end
+
+	local mechanism = Managers.mechanism:game_mechanism()
+	local deus_run_controller = mechanism and mechanism.get_deus_run_controller and mechanism:get_deus_run_controller()
+
+	if not deus_run_controller then
 		return
 	end
 
@@ -144,6 +148,28 @@ ImguiDeusWeapons.update = function (self)
 
 		self:_reset_base_weapon_selection_data()
 	end
+
+	if self._equip_random_weapon then
+		local t = Managers.time:time("game")
+
+		if self._next_weapon_time < t then
+			local inventory_extension = self:_get_inventory_extension()
+
+			if inventory_extension and not inventory_extension:resyncing_loadout() then
+				equip_random_weapon(deus_run_controller, inventory_extension, rarities[self._selected_rarity_index or 1], self._run_progress or 0, difficulties[self._difficulty_index or 1], self._career_name)
+			end
+
+			self._next_weapon_time = t + 2
+		end
+	end
+end
+
+ImguiDeusWeapons.on_round_end = function (self, ...)
+	self._equip_random_weapon = false
+end
+
+ImguiDeusWeapons.on_venture_end = function (self, ...)
+	self._equip_random_weapon = false
 end
 
 ImguiDeusWeapons.is_persistent = function (self)
@@ -152,16 +178,16 @@ end
 
 ImguiDeusWeapons.draw = function (self, is_open)
 	if not Managers.state or not Managers.state.game_mode or Managers.state.game_mode:game_mode_key() ~= "deus" then
-		Imgui.Begin("DeusWeapons", "always_auto_resize")
-		Imgui.Text("This UI only works when playing a deus level.")
-		Imgui.End()
+		Imgui.begin_window("DeusWeapons", "always_auto_resize")
+		Imgui.text("This UI only works when playing a deus level.")
+		Imgui.end_window()
 
 		return
 	end
 
-	Imgui.Begin("DeusWeapons", "always_auto_resize")
-	Imgui.Spacing()
-	Imgui.Text("Select Weapon Group:")
+	Imgui.begin_window("DeusWeapons", "always_auto_resize")
+	Imgui.spacing()
+	Imgui.text("Select Weapon Group:")
 
 	self._selected_weapon_group_index, self._selected_rarity_index, self._difficulty_index, self._run_progress = render_weapon_group_selection(self._available_weapon_groups, self._selected_weapon_group_index, rarities, self._selected_rarity_index, difficulties, self._difficulty_index, self._run_progress)
 	local group = DeusWeaponGroups[self._available_weapon_groups[self._selected_weapon_group_index]]
@@ -175,10 +201,10 @@ ImguiDeusWeapons.draw = function (self, is_open)
 		}
 	end
 
-	Imgui.Spacing()
-	Imgui.Text("Select Item From Group:")
+	Imgui.spacing()
+	Imgui.text("Select Item From Group:")
 
-	self._selected_item_key_index = Imgui.Combo("Select item key", self._selected_item_key_index - 1, available_items)
+	self._selected_item_key_index = Imgui.combo("Select item key", self._selected_item_key_index, available_items)
 	local item_key = available_items[self._selected_item_key_index]
 
 	if self._prev_item_key ~= item_key or self._prev_difficulty_index ~= self._difficulty_index or self._prev_rarity ~= rarity or self._prev_run_progress ~= self._run_progress then
@@ -196,19 +222,19 @@ ImguiDeusWeapons.draw = function (self, is_open)
 	local skins_available = self._available_skins and #self._available_skins > 0
 
 	if archetypes_available or properties_available or traits_available or skins_available then
-		Imgui.Spacing()
-		Imgui.Text("Select Properties, Traits and/or Skins:")
+		Imgui.spacing()
+		Imgui.text("Select Properties, Traits and/or Skins:")
 	end
 
 	if archetypes_available then
-		self._selected_archetype_index = Imgui.Combo("Select archetype", self._selected_archetype_index - 1, self._available_archetypes)
+		self._selected_archetype_index = Imgui.combo("Select archetype", self._selected_archetype_index, self._available_archetypes)
 		local archetype = DeusWeaponArchetypes[self._available_archetypes[self._selected_archetype_index]]
 		self._properties = archetype.properties
 		self._traits = archetype.traits
 	end
 
 	if properties_available then
-		self._selected_property_index = Imgui.Combo("Select property combination", self._selected_property_index - 1, self._available_property_combinations_string)
+		self._selected_property_index = Imgui.combo("Select property combination", self._selected_property_index, self._available_property_combinations_string)
 
 		if self._prev_selected_property_index ~= self._selected_property_index then
 			self._properties = {}
@@ -220,16 +246,16 @@ ImguiDeusWeapons.draw = function (self, is_open)
 	end
 
 	if traits_available then
-		self._selected_trait_index = Imgui.Combo("Select trait", self._selected_trait_index - 1, self._available_trait_combinations_string)
+		self._selected_trait_index = Imgui.combo("Select trait", self._selected_trait_index, self._available_trait_combinations_string)
 		self._traits = self._available_trait_combinations[self._selected_trait_index]
 	end
 
 	if skins_available then
-		self._selected_skin_index = Imgui.Combo("Select skin", self._selected_skin_index - 1, self._available_skins)
+		self._selected_skin_index = Imgui.combo("Select skin", self._selected_skin_index, self._available_skins)
 		self._skin = self._available_skins[self._selected_skin_index]
 	end
 
-	Imgui.Spacing()
+	Imgui.spacing()
 
 	local generate = not self._weapon
 	generate = generate or self._weapon.deus_item_key ~= item_key
@@ -244,25 +270,45 @@ ImguiDeusWeapons.draw = function (self, is_open)
 	generate = generate or self._weapon.power_level ~= self._powerlevel
 
 	if generate then
-		self._weapon = deus_create_weapon(item_key, self._properties and table.clone(self._properties), self._traits and table.clone(self._traits), self._skin, self._powerlevel, rarity)
+		self._weapon = DeusWeaponGeneration.create_weapon(item_key, self._properties and table.clone(self._properties), self._traits and table.clone(self._traits), self._skin, self._powerlevel, rarity)
 	end
 
 	if self._weapon then
-		Imgui.Text("Weapon:")
+		Imgui.text("Weapon:")
 		render_weapon(self._weapon)
 	end
 
-	Imgui.Spacing()
+	Imgui.spacing()
 
-	if self._weapon and Imgui.Button("Equip") then
-		equip_weapon(self._weapon, self._career_name)
+	if self._weapon and Imgui.button("Equip") then
+		local inventory_extension = self:_get_inventory_extension()
 
-		local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+		if inventory_extension and not inventory_extension:resyncing_loadout() then
+			equip_weapon(self._weapon, self._career_name, inventory_extension)
 
-		deus_run_controller:save_loadout(self._weapon)
+			local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+			local slot_type = self._weapon.data.slot_type
+			local slot_name = nil
+			local slots = InventorySettings.slots_by_slot_index
+
+			for _, slot in pairs(slots) do
+				if slot_type == slot.type then
+					slot_name = slot.name
+				end
+			end
+
+			deus_run_controller:save_loadout(self._weapon, slot_name)
+		end
 	end
 
-	Imgui.End()
+	Imgui.spacing()
+	Imgui.spacing()
+	Imgui.spacing()
+	Imgui.spacing()
+
+	self._equip_random_weapon = Imgui.checkbox("equip random weapons automatically", self._equip_random_weapon or false)
+
+	Imgui.end_window()
 end
 
 ImguiDeusWeapons._reset_base_weapon_selection_data = function (self)
@@ -275,7 +321,7 @@ ImguiDeusWeapons._reset_base_weapon_selection_data = function (self)
 end
 
 ImguiDeusWeapons._reset_weapon_setting_data = function (self, item_key, difficulty, run_progress, rarity)
-	self._powerlevel, self._available_archetypes, self._available_property_combinations, self._available_trait_combinations, self._available_skins = deus_get_possibilities_for_item_key(item_key, difficulty, run_progress, rarity)
+	self._powerlevel, self._available_archetypes, self._available_property_combinations, self._available_trait_combinations, self._available_skins = DeusWeaponGeneration.get_possibilities_for_item_key(item_key, difficulty, run_progress, rarity)
 	self._run_progress = run_progress
 	self._available_property_combinations_string = {}
 
@@ -300,6 +346,25 @@ ImguiDeusWeapons._reset_weapon_setting_data = function (self, item_key, difficul
 	self._properties = {}
 	self._traits = {}
 	self._skin = nil
+end
+
+ImguiDeusWeapons._get_inventory_extension = function (self)
+	local player_manager = Managers.player
+	local player = player_manager:local_player()
+
+	if not player then
+		return
+	end
+
+	local player_unit = player.player_unit
+
+	if not player_unit then
+		return
+	end
+
+	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+
+	return inventory_extension
 end
 
 return

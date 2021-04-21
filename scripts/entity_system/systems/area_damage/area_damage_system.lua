@@ -26,6 +26,8 @@ local extensions = {
 local AOE_DAMAGE_RING_BUFFER_SIZE = 128
 local NUM_UNITS_TO_DAMAGE_PER_FRAME = 15
 
+DLCUtils.append("area_damage_extension", extensions)
+
 AreaDamageSystem.init = function (self, entity_system_creation_context, system_name)
 	AreaDamageSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 

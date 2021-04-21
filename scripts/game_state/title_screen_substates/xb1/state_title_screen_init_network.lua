@@ -54,16 +54,9 @@ StateTitleScreenInitNetwork._create_session = function (self)
 	local auto_join_setting = Development.parameter("auto_join")
 	local unique_server_name = Development.parameter("unique_server_name")
 	local loading_context = self.parent.parent.loading_context
-
-	if loading_context.level_transition_handler then
-		self._level_transition_handler = loading_context.level_transition_handler
-	else
-		self._level_transition_handler = LevelTransitionHandler:new()
-	end
-
 	self._network_event_delegate = NetworkEventDelegate:new()
 
-	self._level_transition_handler:register_rpcs(self._network_event_delegate)
+	Managers.level_transition_handler:register_rpcs(self._network_event_delegate)
 	Managers.mechanism:register_rpcs(self._network_event_delegate)
 	Managers.party:register_rpcs(self._network_event_delegate)
 
@@ -109,12 +102,16 @@ end
 
 StateTitleScreenInitNetwork._join_session = function (self, dt, t)
 	self._lobby_host:update(dt)
-	self._level_transition_handler:load_default_level()
+
+	local initial_level = Managers.mechanism:default_level_key()
+	local level_transition_handler = Managers.level_transition_handler
+
+	level_transition_handler:set_next_level(initial_level)
+	level_transition_handler:promote_next_level_data()
+	level_transition_handler:load_current_level()
 
 	local loading_context = self.parent.parent.loading_context
-	local initial_level = self._level_transition_handler:get_current_level_keys()
-	local initial_environment = self._level_transition_handler:get_current_environment_id()
-	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, initial_level, initial_environment, nil, self._level_transition_handler)
+	self._network_server = NetworkServer:new(Managers.player, self._lobby_host, nil)
 	self._network_transmit = loading_context.network_transmit or NetworkTransmit:new(true, self._network_server.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -131,7 +128,7 @@ StateTitleScreenInitNetwork._join_session = function (self, dt, t)
 end
 
 StateTitleScreenInitNetwork._update_host_lobby = function (self, dt, t)
-	self._level_transition_handler:update()
+	Managers.level_transition_handler:update()
 	self._network_transmit:transmit_local_rpcs()
 
 	if self._lobby_host then
@@ -149,10 +146,7 @@ StateTitleScreenInitNetwork._update_host_lobby = function (self, dt, t)
 end
 
 StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
-	self._level_transition_handler:update()
-
-	local prev_lobby_state = self._lobby_client.state
-
+	Managers.level_transition_handler:update()
 	self._lobby_client:update(dt)
 
 	local new_lobby_state = self._lobby_client.state
@@ -161,9 +155,7 @@ StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
 		local host = self._lobby_client:lobby_host()
 
 		if host ~= "0" then
-			local level_key = self._level_transition_handler:get_current_level_keys()
-			local level_index = (level_key and NetworkLookup.level_keys[level_key]) or nil
-			self._network_client = NetworkClient:new(self._level_transition_handler, host, level_index)
+			self._network_client = NetworkClient:new(host)
 			self._network_transmit = NetworkTransmit:new(false, self._network_client.server_peer_id)
 
 			self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -206,8 +198,11 @@ StateTitleScreenInitNetwork._update_lobby_join = function (self, dt, t)
 
 		if lobby.valid and auto_join then
 			local network_options = Managers.lobby:network_options()
+			local level_transition_handler = Managers.level_transition_handler
 
-			self._level_transition_handler:load_level(lobby.level_key)
+			level_transition_handler:set_next_level(lobby.level_key)
+			level_transition_handler:promote_next_level_data()
+			level_transition_handler:load_current_level()
 
 			self._lobby_client = LobbyClient:new(network_options, lobby)
 			self._lobby_finder = nil
@@ -311,9 +306,7 @@ StateTitleScreenInitNetwork._next_state = function (self)
 end
 
 StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
-	if self._level_transition_handler then
-		self._level_transition_handler:unregister_rpcs()
-	end
+	Managers.level_transition_handler:unregister_rpcs()
 
 	if Managers.mechanism then
 		Managers.mechanism:unregister_rpcs()
@@ -375,13 +368,12 @@ StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 		end
 	else
 		local loading_context = {
-			level_transition_handler = self._level_transition_handler,
 			network_transmit = self._network_transmit
 		}
 
 		if self._lobby_host then
 			loading_context.lobby_host = self._lobby_host
-			local level_key = self._level_transition_handler:get_current_level_keys()
+			local level_key = Managers.level_transition_handler:get_current_level_keys()
 			local stored_lobby_host_data = self._lobby_host:get_stored_lobby_data() or {}
 			stored_lobby_host_data.level_key = level_key
 			stored_lobby_host_data.unique_server_name = stored_lobby_host_data.unique_server_name or LobbyAux.get_unique_server_name()
@@ -414,10 +406,12 @@ StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 end
 
 StateTitleScreenInitNetwork._packages_loaded = function (self)
-	if self._level_transition_handler:all_packages_loaded() then
+	local level_transition_handler = Managers.level_transition_handler
+
+	if level_transition_handler:all_packages_loaded() then
 		if self._network_server and not self._has_sent_level_loaded then
 			self._has_sent_level_loaded = true
-			local level_name = self._level_transition_handler:get_current_level_keys()
+			local level_name = level_transition_handler:get_current_level_keys()
 			local level_index = NetworkLookup.level_keys[level_name]
 
 			self._network_server.network_transmit:send_rpc("rpc_level_loaded", Network.peer_id(), level_index)

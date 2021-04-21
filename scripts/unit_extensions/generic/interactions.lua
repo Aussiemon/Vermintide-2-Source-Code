@@ -362,8 +362,10 @@ InteractionDefinitions.pull_up = {
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
 			local is_hanging = status_extension:get_is_ledge_hanging()
 			local is_pulled_up = status_extension:is_pulled_up()
+			local buff_extension = ScriptUnit.extension(interactable_unit, "buff_system")
+			local can_ledge_self_rescue = buff_extension:has_buff_perk("ledge_self_rescue")
 
-			return is_hanging and not is_pulled_up
+			return is_hanging and not is_pulled_up and not can_ledge_self_rescue
 		end
 	},
 	client = {
@@ -426,9 +428,11 @@ InteractionDefinitions.pull_up = {
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
+			local buff_extension = ScriptUnit.extension(interactable_unit, "buff_system")
+			local can_ledge_self_rescue = buff_extension:has_buff_perk("ledge_self_rescue")
 			local can_pull_up = status_extension:get_is_ledge_hanging() and not status_extension:is_pulled_up()
 
-			return can_pull_up
+			return can_pull_up and not can_ledge_self_rescue
 		end,
 		hud_description = function (interactable_unit, data, config)
 			if interactable_unit and Unit.alive(interactable_unit) then
@@ -905,7 +909,7 @@ InteractionDefinitions.pickup_object = {
 				local peer_id = player.peer_id
 				local interactor_name = nil
 
-				if PLATFORM == "win32" then
+				if IS_WINDOWS then
 					interactor_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
 				elseif Managers.account:is_online() then
 					local lobby = Managers.state.network:lobby()
@@ -1017,6 +1021,12 @@ InteractionDefinitions.pickup_object = {
 
 					SurroundingAwareSystem.add_event(interactor_unit, "on_other_pickup", DialogueSettings.default_view_distance, "pickup_name", pickup_name, "target_name", target_name)
 
+					local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
+
+					if pickup_settings.consumable_item and not data.is_server then
+						buff_extension:trigger_procs("on_consumable_picked_up", interactable_unit, pickup_settings)
+					end
+
 					local statistics_db = data.statistics_db
 					local pickup_name = pickup_extension.pickup_name
 					local pickup_spawn_type = pickup_extension.spawn_type
@@ -1123,12 +1133,6 @@ InteractionDefinitions.pickup_object = {
 										network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, position, rotation, pickup_spawn_type_id)
 									end
 								end
-							end
-
-							local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
-
-							if pickup_settings.consumable_item and not data.is_server then
-								buff_extension:trigger_procs("on_consumable_picked_up", interactable_unit, pickup_settings)
 							end
 
 							if pickup_settings.dupable and pickup_extension.spawn_type ~= "dropped" then
@@ -1389,10 +1393,12 @@ InteractionDefinitions.pickup_object = {
 			return return_value, fail_reason
 		end,
 		hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
-			local custom_description = Unit.get_data(interactable_unit, "interaction_action_description")
-			local interaction_action_description = custom_description or "interaction_action_pick_up"
+			local interaction_action_description = "interaction_action_pick_up"
 
 			if not Managers.state.unit_spawner:is_marked_for_deletion(interactable_unit) then
+				local custom_description = Unit.get_data(interactable_unit, "interaction_action_description")
+				interaction_action_description = custom_description or interaction_action_description
+
 				if fail_reason then
 					if fail_reason == "already_equipped" then
 						local pickup_extension = ScriptUnit.extension(interactable_unit, "pickup_system")
@@ -2350,9 +2356,7 @@ InteractionDefinitions.achievement_access.client.stop = function (world, interac
 end
 
 InteractionDefinitions.achievement_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	local has_access = not script_data.settings.use_beta_mode
-
-	return has_access and not script_data["eac-untrusted"]
+	return not script_data.settings.use_beta_mode
 end
 
 InteractionDefinitions.achievement_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
@@ -2376,11 +2380,12 @@ InteractionDefinitions.luckstone_access.server.stop = function (world, interacto
 
 		local vote_data = {
 			private_game = true,
-			quick_game = false,
+			mission_id = "plaza",
 			strict_matchmaking = false,
 			always_host = true,
-			game_mode = "event",
-			level_key = "plaza",
+			matchmaking_type = "event",
+			mechanism = "adventure",
+			quick_game = false,
 			difficulty = DefaultDifficulties[current_difficulty],
 			event_data = {}
 		}
@@ -2472,13 +2477,14 @@ InteractionDefinitions.inn_door_transition.client.stop = function (world, intera
 end
 
 InteractionDefinitions.inn_door_transition.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
-	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_enter"
 end
 
 InteractionDefinitions.inn_door_transition.client.can_interact = function (interactor_unit, interactable_unit, data, config)
 	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
+	local is_vote_in_progress = Managers.state.voting:vote_in_progress()
 
-	return not is_game_matchmaking
+	return not is_game_matchmaking and not is_vote_in_progress
 end
 
 InteractionDefinitions.deus_door_transition = InteractionDefinitions.deus_door_transition or table.clone(InteractionDefinitions.smartobject)
@@ -2498,7 +2504,7 @@ InteractionDefinitions.deus_door_transition.client.stop = function (world, inter
 end
 
 InteractionDefinitions.deus_door_transition.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
-	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_enter"
 end
 
 InteractionDefinitions.deus_door_transition.client.can_interact = function (interactor_unit, interactable_unit, data, config)
@@ -2507,8 +2513,9 @@ InteractionDefinitions.deus_door_transition.client.can_interact = function (inte
 	end
 
 	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
+	local is_vote_in_progress = Managers.state.voting:vote_in_progress()
 
-	return not is_game_matchmaking
+	return not is_game_matchmaking and not is_vote_in_progress
 end
 
 DLCUtils.require_list("interactions_filenames")

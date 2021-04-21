@@ -54,38 +54,38 @@ ImguiVersusCharacterPickingDebug.is_persistent = function (self)
 end
 
 ImguiVersusCharacterPickingDebug._same_line_dummy = function (self, x, y)
-	Imgui.SameLine()
-	Imgui.Dummy(x, y)
-	Imgui.SameLine()
+	Imgui.same_line()
+	Imgui.dummy(x, y)
+	Imgui.same_line()
 end
 
 ImguiVersusCharacterPickingDebug.draw = function (self, is_open)
-	Imgui.Begin("Versus Character Picking Debug", "always_auto_resize")
+	Imgui.begin_window("Versus Character Picking Debug", "always_auto_resize")
 	self:_draw_settings()
-	Imgui.Separator()
+	Imgui.separator()
 	self:_draw_timer()
 
 	if self._party_selection_logic._picking_started then
-		Imgui.Separator()
+		Imgui.separator()
 		self:_draw_party_data()
-		Imgui.Separator()
+		Imgui.separator()
 		self:_draw_player_data()
 	end
 
-	Imgui.End()
+	Imgui.end_window()
 end
 
 ImguiVersusCharacterPickingDebug._draw_settings = function (self)
-	Imgui.Text("Settings")
-	Imgui.Indent()
+	Imgui.text("Settings")
+	Imgui.indent()
 	self:_draw_selection_settings()
-	Imgui.Dummy(0, 4)
+	Imgui.dummy(0, 4)
 	self:_draw_time_settings()
-	Imgui.Unindent()
+	Imgui.unindent()
 end
 
 ImguiVersusCharacterPickingDebug._draw_time_settings = function (self)
-	local startup_time = Imgui.SliderFloat("Startup Time", self._startup_time, 0, 60)
+	local startup_time = Imgui.slider_float("Startup Time", self._startup_time, 0, 60)
 
 	if self._is_server and startup_time ~= self._startup_time then
 		self._startup_time = startup_time
@@ -96,7 +96,7 @@ ImguiVersusCharacterPickingDebug._draw_time_settings = function (self)
 		end
 	end
 
-	local player_pick_time = Imgui.SliderFloat("Player Picking Time", self._player_pick_time, 0, 60)
+	local player_pick_time = Imgui.slider_float("Player Picking Time", self._player_pick_time, 0, 60)
 
 	if self._is_server and player_pick_time ~= self._player_pick_time then
 		self._player_pick_time = player_pick_time
@@ -107,7 +107,7 @@ ImguiVersusCharacterPickingDebug._draw_time_settings = function (self)
 		end
 	end
 
-	local closing_time = Imgui.SliderFloat("Closing Time", self._closing_time, 0, 60)
+	local closing_time = Imgui.slider_float("Closing Time", self._closing_time, 0, 60)
 
 	if self._is_server and closing_time ~= self._closing_time then
 		self._closing_time = closing_time
@@ -120,37 +120,37 @@ ImguiVersusCharacterPickingDebug._draw_time_settings = function (self)
 end
 
 ImguiVersusCharacterPickingDebug._draw_timer = function (self)
-	Imgui.Text("Timer")
-	Imgui.Indent()
+	Imgui.text("Timer")
+	Imgui.indent()
 
-	local timer = Imgui.SliderFloat("Timer", self._timer, 0, 60)
+	local timer = Imgui.slider_float("Timer", self._timer, 0, 60)
 
 	if self._is_server and timer ~= self._timer then
 		self._timer = timer
 		self._party_selection_logic._timer = timer
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	local paused = Imgui.Checkbox("Pause", self._timer_paused)
+	local paused = Imgui.checkbox("Pause", self._timer_paused)
 
 	if self._is_server and paused ~= self._timer_paused then
 		self._timer_paused = paused
 		self._party_selection_logic._timer_paused = paused
 	end
 
-	Imgui.Unindent()
+	Imgui.unindent()
 end
 
 ImguiVersusCharacterPickingDebug._draw_selection_settings = function (self)
-	local same_hero_allowed = Imgui.Checkbox("Same Hero Allowed", self._same_hero_allowed)
+	local same_hero_allowed = Imgui.checkbox("Same Hero Allowed", self._same_hero_allowed)
 
 	if self._is_server and same_hero_allowed ~= self._same_hero_allowed then
 		self._same_hero_allowed = same_hero_allowed
 		GameModeSettings.versus.duplicate_hero_profiles_allowed = same_hero_allowed
 	end
 
-	local same_career_allowed = Imgui.Checkbox("Same Career Allowed", self._same_career_allowed)
+	local same_career_allowed = Imgui.checkbox("Same Career Allowed", self._same_career_allowed)
 
 	if self._is_server and same_career_allowed ~= self._same_career_allowed then
 		self._same_career_allowed = same_career_allowed
@@ -161,67 +161,67 @@ end
 ImguiVersusCharacterPickingDebug._draw_party_data = function (self)
 	local pick_data_per_party = self._pick_data_per_party
 
-	Imgui.Text("Party Data")
+	Imgui.text("Party Data")
 
 	for party_id, party_data in ipairs(pick_data_per_party) do
-		Imgui.TreePush(party_id)
+		Imgui.tree_push(party_id)
 
 		local party = Managers.party:get_party(party_id)
 
-		if Imgui.TreeNode(string.format("Party %d", party_id)) then
-			Imgui.Indent()
-			Imgui.Text(string.format("State: %s", party_data.state))
-			Imgui.Text(string.format("Slider Timer: %s", party_data.slider_timer))
-			Imgui.Text(string.format("Timer Finish: %s", party_data.time_finished))
-			Imgui.Text(string.format("Current Picker Index: %d", party_data.current_picker_index))
-			Imgui.Text(string.format("Prev Picker Index: %s", party_data.prev_picker_index))
-			Imgui.Text(string.format("Party Size: %d", party.num_slots))
-			Imgui.Text(string.format("Number of Players: %d", party.num_used_slots))
+		if Imgui.tree_node(string.format("Party %d", party_id)) then
+			Imgui.indent()
+			Imgui.text(string.format("State: %s", party_data.state))
+			Imgui.text(string.format("Slider Timer: %s", party_data.slider_timer))
+			Imgui.text(string.format("Timer Finish: %s", party_data.time_finished))
+			Imgui.text(string.format("Current Picker Index: %d", party_data.current_picker_index))
+			Imgui.text(string.format("Prev Picker Index: %s", party_data.prev_picker_index))
+			Imgui.text(string.format("Party Size: %d", party.num_slots))
+			Imgui.text(string.format("Number of Players: %d", party.num_used_slots))
 
-			if Imgui.TreeNode("Available Characters") then
-				Imgui.Indent()
+			if Imgui.tree_node("Available Characters") then
+				Imgui.indent()
 
 				local available_characters = party_data.available_characters
 
 				for profile_id, available_careers in pairs(available_characters) do
 					local profile = SPProfiles[profile_id]
 
-					if Imgui.TreeNode(profile.display_name) then
-						Imgui.Indent()
+					if Imgui.tree_node(profile.display_name) then
+						Imgui.indent()
 
 						for _, career_id in pairs(available_careers) do
 							local career = profile.careers[career_id]
 
-							Imgui.Text(career.display_name)
+							Imgui.text(career.display_name)
 						end
 
-						Imgui.Unindent()
-						Imgui.TreePop()
+						Imgui.unindent()
+						Imgui.tree_pop()
 					end
 				end
 
-				Imgui.Unindent()
-				Imgui.TreePop()
+				Imgui.unindent()
+				Imgui.tree_pop()
 			end
 
-			Imgui.Unindent()
-			Imgui.TreePop()
+			Imgui.unindent()
+			Imgui.tree_pop()
 		end
 
-		Imgui.TreePop()
+		Imgui.tree_pop()
 	end
 end
 
 ImguiVersusCharacterPickingDebug._draw_player_data = function (self)
 	local pick_data_per_party = self._pick_data_per_party
 
-	Imgui.Text("Player Data")
+	Imgui.text("Player Data")
 
 	for party_id, party_data in ipairs(pick_data_per_party) do
-		Imgui.TreePush(party_id .. "1")
+		Imgui.tree_push(party_id .. "1")
 
-		if Imgui.TreeNode(string.format("Party %d", party_id)) then
-			Imgui.Indent()
+		if Imgui.tree_node(string.format("Party %d", party_id)) then
+			Imgui.indent()
 
 			local picker_list = party_data.picker_list
 
@@ -232,8 +232,8 @@ ImguiVersusCharacterPickingDebug._draw_player_data = function (self)
 				local is_player_string = (is_player and "True") or "False"
 				local player_name = (is_player and player:name()) or string.format("Bot #%d", picker_id)
 
-				if Imgui.TreeNode(player_name) then
-					Imgui.Indent()
+				if Imgui.tree_node(player_name) then
+					Imgui.indent()
 
 					local profile_index = status.selected_profile_index
 					local career_index = status.selected_career_index
@@ -249,72 +249,72 @@ ImguiVersusCharacterPickingDebug._draw_player_data = function (self)
 						career_string = "nil"
 					end
 
-					Imgui.Text(string.format("State: %s", picker_data.state))
-					Imgui.Text(string.format("Picker Index: %d", picker_data.picker_index))
-					Imgui.Text(string.format("Slot Index: %d", picker_data.slot_id))
-					Imgui.Text(string.format("Profile Index: %s", profile_string))
-					Imgui.Text(string.format("Career Index: %s", career_string))
-					Imgui.Unindent()
-					Imgui.TreePop()
+					Imgui.text(string.format("State: %s", picker_data.state))
+					Imgui.text(string.format("Picker Index: %d", picker_data.picker_index))
+					Imgui.text(string.format("Slot Index: %d", picker_data.slot_id))
+					Imgui.text(string.format("Profile Index: %s", profile_string))
+					Imgui.text(string.format("Career Index: %s", career_string))
+					Imgui.unindent()
+					Imgui.tree_pop()
 				end
 			end
 
-			Imgui.Unindent()
-			Imgui.TreePop()
+			Imgui.unindent()
+			Imgui.tree_pop()
 		end
 
-		Imgui.TreePop()
+		Imgui.tree_pop()
 	end
 end
 
 ImguiVersusCharacterPickingDebug._draw_pick_data = function (self)
 	local pick_data_per_party = self._pick_data_per_party
 
-	Imgui.Unindent()
+	Imgui.unindent()
 
 	for party_id, data in ipairs(pick_data_per_party) do
-		Imgui.TreePush(party_id)
-		Imgui.Dummy(360, 8)
+		Imgui.tree_push(party_id)
+		Imgui.dummy(360, 8)
 
 		local party = Managers.party:get_party(data.party_id)
 		local slots_data = party.slots_data
 
-		Imgui.Text("Party " .. data.party_id)
-		Imgui.Text("State: " .. data.state)
-		Imgui.Text("Current Picker Index: " .. data.current_picker_index)
+		Imgui.text("Party " .. data.party_id)
+		Imgui.text("State: " .. data.state)
+		Imgui.text("Current Picker Index: " .. data.current_picker_index)
 
-		if Imgui.TreeNode("Available Characters") then
-			Imgui.Unindent()
+		if Imgui.tree_node("Available Characters") then
+			Imgui.unindent()
 
 			local available_characters = data.available_characters
 
 			for profile_id, available_careers in pairs(available_characters) do
-				Imgui.TreePush(profile_id)
+				Imgui.tree_push(profile_id)
 
 				local profile = SPProfiles[profile_id]
 				local profile_name = profile.display_name
 
-				if Imgui.TreeNode(profile_name) then
+				if Imgui.tree_node(profile_name) then
 					for career_index, career in pairs(available_careers) do
-						Imgui.Text(profile.careers[career_index].display_name)
+						Imgui.text(profile.careers[career_index].display_name)
 					end
 
-					Imgui.TreePop()
+					Imgui.tree_pop()
 				end
 
-				Imgui.TreePop()
+				Imgui.tree_pop()
 			end
 
 			for slot13, slot14 in ipairs(available_characters) do
 			end
 
-			Imgui.TreePop()
-			Imgui.Indent()
+			Imgui.tree_pop()
+			Imgui.indent()
 		end
 
-		if Imgui.TreeNode("Picker List") then
+		if Imgui.tree_node("Picker List") then
 			for picker_id, picker_data in ipairs(data.picker_list) do
-				Imgui.TreePush(picker_id)
+				Imgui.tree_push(picker_id)
 
 				local status = picker_data.status
 				local slot_data = slots_data[picker_data.slot_id]
@@ -323,35 +323,35 @@ ImguiVersusCharacterPickingDebug._draw_pick_data = function (self)
 				local player_name = (is_player and status.player:name()) or "Bot #" .. tostring(picker_data.picker_index)
 				local state = "State: " .. picker_data.state .. ((self._is_server and " (server)") or " (client)")
 
-				Imgui.Text(player_name)
-				Imgui.Text("Is Player: " .. is_player_string)
-				Imgui.Text("State: " .. state)
-				Imgui.Text("Picker Index: " .. tostring(picker_data.picker_index))
-				Imgui.Text("Slot Id: " .. tostring(picker_data.slot_id))
+				Imgui.text(player_name)
+				Imgui.text("Is Player: " .. is_player_string)
+				Imgui.text("State: " .. state)
+				Imgui.text("Picker Index: " .. tostring(picker_data.picker_index))
+				Imgui.text("Slot Id: " .. tostring(picker_data.slot_id))
 
-				if Imgui.TreeNode("Status Data") then
-					Imgui.Text("Selected Profile Index: " .. tostring(status.selected_profile_index))
-					Imgui.Text("Selected Career Index: " .. tostring(status.selected_career_index))
-					Imgui.Text("Profile Index: " .. tostring(status.profile_index))
-					Imgui.Text("Career Index: " .. tostring(status.career_index))
-					Imgui.TreePop()
+				if Imgui.tree_node("Status Data") then
+					Imgui.text("Selected Profile Index: " .. tostring(status.selected_profile_index))
+					Imgui.text("Selected Career Index: " .. tostring(status.selected_career_index))
+					Imgui.text("Profile Index: " .. tostring(status.profile_index))
+					Imgui.text("Career Index: " .. tostring(status.career_index))
+					Imgui.tree_pop()
 				end
 
-				if Imgui.TreeNode("Slot Data") then
-					Imgui.Text("Slot Melee: " .. tostring(slot_data.slot_melee))
-					Imgui.Text("Slot Ranged: " .. tostring(slot_data.slot_ranged))
-					Imgui.Text("Slot Skin: " .. tostring(slot_data.slot_skin))
-					Imgui.Text("Slot Hat: " .. tostring(slot_data.slot_hat))
-					Imgui.TreePop()
+				if Imgui.tree_node("Slot Data") then
+					Imgui.text("Slot Melee: " .. tostring(slot_data.slot_melee))
+					Imgui.text("Slot Ranged: " .. tostring(slot_data.slot_ranged))
+					Imgui.text("Slot Skin: " .. tostring(slot_data.slot_skin))
+					Imgui.text("Slot Hat: " .. tostring(slot_data.slot_hat))
+					Imgui.tree_pop()
 				end
 
-				Imgui.TreePop()
+				Imgui.tree_pop()
 			end
 
-			Imgui.TreePop()
+			Imgui.tree_pop()
 		end
 
-		Imgui.TreePop()
+		Imgui.tree_pop()
 	end
 end
 

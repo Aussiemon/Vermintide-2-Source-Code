@@ -208,6 +208,12 @@ StartGameWindowAdventureOverviewConsole._handle_input = function (self, dt, t)
 			parent:play(t, game_mode_type)
 		end
 	end
+
+	local consume = true
+
+	if DLCSettings.quick_play_preferences and input_service:get("right_stick_press", consume) then
+		parent:set_layout_by_name("adventure_level_preferences")
+	end
 end
 
 StartGameWindowAdventureOverviewConsole._play_sound = function (self, event)

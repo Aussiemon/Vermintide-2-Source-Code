@@ -1,3 +1,4 @@
+local player_unit_first_person_testify = script_data.testify and require("scripts/unit_extensions/default_player_unit/player_unit_first_person_testify")
 PlayerUnitFirstPerson = class(PlayerUnitFirstPerson)
 script_data.disable_aim_lead_rig_motion = script_data.disable_aim_lead_rig_motion or Development.parameter("disable_aim_lead_rig_motion") or true
 local unit_alive = Unit.alive
@@ -47,7 +48,8 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	Unit.set_local_position(fp_unit, 0, Unit.local_position(unit, 0))
 	Unit.set_local_rotation(fp_unit, 0, Unit.local_rotation(unit, 0))
 
-	self.look_delta = nil
+	self.has_look_delta = false
+	self.look_delta = Vector3Box()
 	self.player_height_wanted = self:_player_height_from_name("stand")
 	self.player_height_current = self.player_height_wanted
 	self.player_height_previous = self.player_height_wanted
@@ -62,6 +64,7 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 		name = "PlayerUnitFirstPerson"
 	})
 	self._head_bob = true
+	self._game_options_dirty = true
 	self.aim_assist_multiplier = 1
 	self.aim_assist_ramp_multiplier = 0
 	self.aim_assist_ramp_multiplier_timer = 0
@@ -92,6 +95,9 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	self._look_delta_x = 0
 	self._look_target_y = 0
 	self._look_target_x = 0
+
+	Managers.state.event:register(self, "on_game_options_changed", "_set_game_options_dirty")
+	self:update_game_options()
 end
 
 PlayerUnitFirstPerson.reset = function (self)
@@ -119,6 +125,45 @@ PlayerUnitFirstPerson.destroy = function (self)
 
 	unit_spawner:mark_for_deletion(self.first_person_unit)
 	unit_spawner:mark_for_deletion(self.first_person_attachment_unit)
+	Managers.state.event:unregister("on_game_options_changed", self)
+end
+
+PlayerUnitFirstPerson._set_game_options_dirty = function (self)
+	self._game_options_dirty = true
+end
+
+PlayerUnitFirstPerson.update_game_options = function (self)
+	if not self._game_options_dirty then
+		return
+	end
+
+	local head_bob = Application.user_setting("head_bob")
+
+	if self._head_bob ~= head_bob then
+		Unit.animation_event(self.first_person_unit, (head_bob and "enable_headbob") or "disable_headbob")
+
+		self._head_bob = head_bob
+	end
+
+	if self.profile.supports_no_wobble then
+		local no_wobble = Application.user_setting("no_wobble")
+
+		if self._no_wobble ~= no_wobble then
+			Unit.animation_event(self.first_person_unit, (no_wobble and "no_wobble_enabled") or "no_wobble_disabled")
+
+			self._no_wobble = no_wobble
+		end
+	end
+
+	self._gamepad_auto_aim_enabled = Application.user_setting("gamepad_auto_aim_enabled")
+	local eyetracking_extension = nil
+
+	if Application.user_setting("tobii_eyetracking") then
+		eyetracking_extension = ScriptUnit.has_extension(self.unit, "eyetracking_system")
+	end
+
+	self._eyetracking_extension = eyetracking_extension
+	self._game_options_dirty = false
 end
 
 local BROADPHASE_RESULTS = {}
@@ -277,22 +322,12 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 		self:update_aim_assist_multiplier(dt)
 	end
 
+	self:update_game_options(dt, t)
 	self:update_player_height(t)
 	self:update_rotation(t, dt)
 	self:update_position()
 
 	local player = Managers.player:owner(unit)
-	local head_bob = Application.user_setting("head_bob")
-
-	if not self._head_bob and head_bob then
-		Unit.animation_event(self.first_person_unit, "enable_headbob")
-
-		self._head_bob = true
-	elseif self._head_bob and not head_bob then
-		Unit.animation_event(self.first_person_unit, "disable_headbob")
-
-		self._head_bob = false
-	end
 
 	if self.toggle_visibility_timer and self.toggle_visibility_timer <= t then
 		self.toggle_visibility_timer = nil
@@ -337,11 +372,13 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 		self:check_for_jumps(unit, t)
 	end
 
-	self:_poll_testify_requests()
+	if script_data.testify then
+		Testify:poll_requests_through_handler(player_unit_first_person_testify, self)
+	end
 end
 
 PlayerUnitFirstPerson.update_aim_assist_multiplier = function (self, dt)
-	if Application.user_setting("gamepad_auto_aim_enabled") then
+	if self._gamepad_auto_aim_enabled then
 		local inventory_extension = self.inventory_extension
 		local action_settings = nil
 		local equipment = inventory_extension:equipment()
@@ -464,15 +501,15 @@ PlayerUnitFirstPerson.update_rotation = function (self, t, dt)
 		Unit.set_local_rotation(first_person_unit, 0, look_rotation)
 
 		if total_lerp_time <= self.forced_lerp_timer then
-			self.look_delta = nil
+			self.has_look_delta = false
 			self.forced_look_rotation = nil
 			self.forced_lerp_time = nil
 		end
-	elseif self.look_delta ~= nil then
+	elseif self.has_look_delta then
 		local aim_assist_unit = aim_assist_data.unit
 		local rotation = self.look_rotation:unbox()
 		local look_delta = self.look_delta:unbox()
-		self.look_delta = nil
+		self.has_look_delta = false
 		local look_rotation = self:calculate_look_rotation(rotation, look_delta)
 
 		if aim_assist_unit and Managers.input:is_device_active("gamepad") then
@@ -602,12 +639,10 @@ PlayerUnitFirstPerson.apply_recoil = function (self, factor)
 		camera_rotation = Quaternion.multiply(current_rotation, recoil_offset:unbox())
 	end
 
-	if Application.user_setting("tobii_eyetracking") and ScriptUnit.has_extension(self.unit, "eyetracking_system") then
-		local eyetracking_extension = ScriptUnit.extension(self.unit, "eyetracking_system")
+	local eyetracking_extension = self._eyetracking_extension
 
-		if eyetracking_extension:get_is_feature_enabled("tobii_extended_view") then
-			camera_rotation = eyetracking_extension:get_direction_without_extended_view(camera_rotation)
-		end
+	if self._eyetracking_extension and eyetracking_extension:get_is_feature_enabled("tobii_extended_view") then
+		camera_rotation = eyetracking_extension:get_direction_without_extended_view(camera_rotation)
 	end
 
 	local recoil_rotation = Quaternion.lerp(current_rotation, camera_rotation, factor or 1)
@@ -630,7 +665,9 @@ PlayerUnitFirstPerson.set_look_delta = function (self, look_delta)
 		print(Script.callstack())
 	end
 
-	self.look_delta = Vector3Box(look_delta)
+	Vector3Box.store(self.look_delta, look_delta)
+
+	self.has_look_delta = true
 end
 
 PlayerUnitFirstPerson.set_weapon_sway_settings = function (self, weapon_sway_settings)
@@ -1230,14 +1267,16 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	local move_z = current_velocity.z
 	local profile = self.profile
 	local profile_name = profile.display_name
-	local lerp_variables = weapon_sway_lerp_variables[profile_name] or {
-		0.05,
-		0.05,
-		0.05
-	}
-	local lerp_move_x = lerp_variables[1]
-	local lerp_move_y = lerp_variables[2]
-	local lerp_move_z = lerp_variables[3]
+	local lerp_move_x = 0.05
+	local lerp_move_y = 0.05
+	local lerp_move_z = 0.05
+	local lerp_variables = weapon_sway_lerp_variables[profile_name]
+
+	if lerp_variables then
+		lerp_move_x = lerp_variables[1]
+		lerp_move_y = lerp_variables[2]
+		lerp_move_z = lerp_variables[3]
+	end
 
 	if move_x <= 0.3 then
 		lerp_move_x = 0.075
@@ -1251,12 +1290,9 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 		lerp_move_z = 0.075
 	end
 
-	move_x = math.lerp(self._move_x, move_x, lerp_move_x)
-	move_y = math.lerp(self._move_y, move_y, lerp_move_y)
-	move_z = math.lerp(self._move_z, move_z, lerp_move_z)
-	move_x = math.min(1, math.abs(move_x)) * math.sign(move_x)
-	move_y = math.min(1, math.abs(move_y)) * math.sign(move_y)
-	move_z = math.min(1, math.abs(move_z)) * math.sign(move_z)
+	move_y = math.clamp(math.lerp(self._move_x, move_x, lerp_move_x), -1, 1)
+	move_x = math.clamp(math.lerp(self._move_y, move_y, lerp_move_y), -1, 1)
+	move_z = math.clamp(math.lerp(self._move_z, move_z, lerp_move_z), -1, 1)
 	self._move_y = move_y
 	self._move_x = move_x
 	self._move_z = move_z
@@ -1276,16 +1312,6 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 
 	if move_z_variable then
 		Unit.animation_set_variable(self.first_person_unit, move_z_variable, move_z)
-	end
-end
-
-PlayerUnitFirstPerson._poll_testify_requests = function (self)
-	if Testify:poll_request("set_player_unit_not_visible") then
-		local unit = Managers.player:local_player().player_unit
-
-		self:hide_weapons("hide_weapons_snippet", true)
-		Unit.set_unit_visibility(self.first_person_attachment_unit, false)
-		Testify:respond_to_request("set_player_unit_not_visible")
 	end
 end
 

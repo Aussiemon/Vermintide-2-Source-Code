@@ -829,4 +829,6 @@ WeaveTraits.categories = {
 	}
 }
 
+DLCUtils.merge("weave_traits", WeaveTraits.categories)
+
 return

@@ -556,8 +556,12 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 			end
 
 			local killer_name = killer_dialogue_extension.context.player_profile
+			local blackboard = BLACKBOARDS[killed_unit]
+			local optional_spawn_data = blackboard and blackboard.optional_spawn_data
 
-			SurroundingAwareSystem.add_event(killer_unit, "killed_enemy", DialogueSettings.default_view_distance, "killer_name", killer_name, "hit_zone", hit_zone, "enemy_tag", killed_unit_name, "weapon_slot", weapon_slot, "dot_type", dot_type)
+			if optional_spawn_data and not optional_spawn_data.prevent_killed_enemy_dialogue then
+				SurroundingAwareSystem.add_event(killer_unit, "killed_enemy", DialogueSettings.default_view_distance, "killer_name", killer_name, "hit_zone", hit_zone, "enemy_tag", killed_unit_name, "weapon_slot", weapon_slot, "dot_type", dot_type)
+			end
 
 			local event_name = "enemy_kill"
 			local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
@@ -568,7 +572,7 @@ local function trigger_unit_dialogue_death_event(killed_unit, killer_unit, hit_z
 end
 
 local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
-	local attacker_unit = killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT]
+	local attacker_unit = killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] or killing_blow[DamageDataIndex.ATTACKER]
 
 	if not Unit.alive(attacker_unit) or not Unit.alive(ai_unit) then
 		return
@@ -599,11 +603,20 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 		buff_extension:trigger_procs("on_kill_elite_special", killing_blow, breed_killed, ai_unit)
 	end
 
-	if breed_killed.elite and buff_extension then
-		buff_extension:trigger_procs("on_elite_killed", killing_blow, breed_killed, ai_unit)
-	end
-
 	local side = side_manager.side_by_unit[ai_unit]
+
+	if breed_killed.elite then
+		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
+
+		for i = 1, #player_and_bot_units, 1 do
+			local unit = player_and_bot_units[i]
+			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+			if buff_extension then
+				buff_extension:trigger_procs("on_elite_killed", killing_blow, breed_killed, ai_unit)
+			end
+		end
+	end
 
 	if breed_killed.boss then
 		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
@@ -1208,14 +1221,16 @@ DeathReactions.templates = {
 
 				for i = 1, amount_of_loot_drops, 1 do
 					local spawn_value = math.random()
-					local pickups = LootRatPickups
+					local game_mode_manager = Managers.state.game_mode
+					local game_mode = game_mode_manager:game_mode_key()
+					local pickups = LootRatPickups[game_mode] or LootRatPickups.default
 					local spawn_weighting_total = 0
 
 					for pickup_name, spawn_weighting in pairs(pickups) do
 						table.clear(pickup_params)
 
 						if pickup_name == "boss_loot" then
-							pickup_name = Managers.state.game_mode:get_boss_loot_pickup()
+							pickup_name = game_mode_manager:get_boss_loot_pickup()
 						end
 
 						local dice_keeper = context.dice_keeper

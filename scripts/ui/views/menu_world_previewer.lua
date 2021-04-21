@@ -74,6 +74,7 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 		0,
 		0
 	}
+	self._units = {}
 end
 
 MenuWorldPreviewer.destroy = function (self)
@@ -83,12 +84,12 @@ MenuWorldPreviewer.destroy = function (self)
 end
 
 MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
-	table.clear(self._requested_mip_streaming_units)
-	table.clear(self._hidden_units)
-
 	self.viewport_widget = viewport_widget
-	local preview_pass_data = self.viewport_widget.element.pass_data[1]
-	self.world = preview_pass_data.world
+	local preview_pass_data = viewport_widget.element.pass_data[1]
+
+	MenuWorldPreviewer.super.on_enter(self, preview_pass_data.world)
+	table.clear(self._requested_mip_streaming_units)
+
 	self.level = preview_pass_data.level
 	self.viewport = preview_pass_data.viewport
 	self.camera = ScriptViewport.camera(self.viewport)
@@ -104,12 +105,10 @@ MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
 		3,
 		1
 	}
-
-	Application.set_render_setting("max_shadow_casting_lights", 16)
-
 	self.camera_xy_angle_current = DEFAULT_ANGLE
 	self.camera_xy_angle_target = DEFAULT_ANGLE
-	self._session_id = self._session_id or 0
+	self._requested_unit_spawn_queue = {}
+	self._units = {}
 end
 
 MenuWorldPreviewer.trigger_level_event = function (self, event_name)
@@ -201,6 +200,11 @@ MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
 		self:handle_mouse_input(input_service, dt)
 		self:handle_controller_input(input_service, dt)
 	end
+end
+
+MenuWorldPreviewer.post_update = function (self, dt)
+	self:_handle_unit_spawn_request()
+	MenuWorldPreviewer.super.post_update(self, dt)
 end
 
 MenuWorldPreviewer.force_stream_highest_mip_levels = function (self)
@@ -433,6 +437,16 @@ MenuWorldPreviewer.request_spawn_hero_unit = function (self, profile_name, caree
 	self:clear_units(reset_camera)
 end
 
+MenuWorldPreviewer.request_spawn_unit = function (self, unit_name, unit_type, cb)
+	local queue = self._requested_unit_spawn_queue
+	queue[#queue + 1] = {
+		frame_delay = 1,
+		unit_name = unit_name,
+		unit_type = unit_type,
+		callback = cb
+	}
+end
+
 MenuWorldPreviewer._handle_hero_spawn_request = function (self)
 	if self._requested_hero_spawn_data then
 		local requested_hero_spawn_data = self._requested_hero_spawn_data
@@ -453,6 +467,22 @@ MenuWorldPreviewer._handle_hero_spawn_request = function (self)
 		else
 			requested_hero_spawn_data.frame_delay = frame_delay - 1
 		end
+	end
+end
+
+MenuWorldPreviewer._handle_unit_spawn_request = function (self)
+	if #self._requested_unit_spawn_queue < 1 then
+		return
+	end
+
+	local unit_data = self._requested_unit_spawn_queue[1]
+	local frame_delay = unit_data.frame_delay
+
+	if frame_delay == 0 then
+		self:_spawn_unit(unit_data.unit_name, unit_data)
+		table.remove(self._requested_unit_spawn_queue, 1)
+	else
+		unit_data.frame_delay = frame_delay - 1
 	end
 end
 
@@ -542,6 +572,26 @@ MenuWorldPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item
 	end
 end
 
+MenuWorldPreviewer._spawn_unit = function (self, unit_name, item_data)
+	local unit = World.spawn_unit(self.world, unit_name)
+	self._units[#self._units + 1] = unit
+	self._hidden_units[unit] = true
+
+	Unit.set_unit_visibility(unit, false)
+
+	local cb = item_data.callback
+
+	if cb then
+		cb(unit)
+	end
+end
+
+MenuWorldPreviewer.set_unit_location = function (self, unit, location)
+	if location and unit and Unit.alive(unit) then
+		Unit.set_local_position(unit, 0, Vector3Aux.unbox(location))
+	end
+end
+
 MenuWorldPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 	local world = self.world
 	local hidden_units = self._hidden_units
@@ -618,12 +668,26 @@ MenuWorldPreviewer.clear_units = function (self, reset_camera)
 		self:set_character_axis_offset("y", default_animation_data.y.value, 0.5, math.easeOutCubic)
 		self:set_character_axis_offset("z", default_animation_data.z.value, 0.5, math.easeOutCubic)
 	end
+
+	local units = self._units
+
+	if units then
+		for i = 1, #units, 1 do
+			World.destroy_unit(self.world, units[i])
+		end
+	end
+
+	self._units = {}
 end
 
 MenuWorldPreviewer.trigger_unit_flow_event = function (self, unit, event_name)
 	if unit and Unit.alive(unit) then
 		Unit.flow_event(unit, event_name)
 	end
+end
+
+MenuWorldPreviewer.trigger_level_flow_event = function (self, event_name)
+	return Level.trigger_event(self.level, event_name)
 end
 
 return

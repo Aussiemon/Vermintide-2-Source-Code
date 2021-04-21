@@ -63,7 +63,7 @@ ConsoleFriendsView.on_enter = function (self)
 
 	self._active = true
 
-	if PLATFORM == "xb1" and not Managers.account:friends_list_initiated() then
+	if IS_XB1 and not Managers.account:friends_list_initiated() then
 		Managers.account:setup_friendslist()
 	end
 
@@ -114,9 +114,9 @@ end
 ConsoleFriendsView._refresh_friends = function (self)
 	self._is_refreshing = true
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		Managers.account:get_friends(1000, callback(self, "cb_friends_collected"))
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		Managers.account:get_friends(2000, callback(self, "cb_friends_collected"))
 	end
 
@@ -353,7 +353,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		local invite = ((not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and Managers.account:has_session() and "invite") or nil
 		local refresh = not self._is_refreshing and "refresh"
 
-		if PLATFORM == "ps4" and refresh and not friend_online then
+		if IS_PS4 and refresh and not friend_online then
 			refresh = nil
 		end
 
@@ -378,7 +378,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		enable_profile_button = true
 		enable_invite_button = invite ~= nil
 		self._current_input_desc = input
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		local input = not self._is_refreshing and "only_refresh"
 
 		if self._current_input_desc ~= input then
@@ -412,7 +412,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 end
 
 ConsoleFriendsView._handle_refresh = function (self, dt, t)
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		self._refresh_friends_timer = self._refresh_friends_timer or t + REFRESH_COOLDOWN
 
 		if self._refresh_friends_timer < t then
@@ -471,7 +471,7 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 	local num_visible_friends = definitions.num_visible_friends
 	local scroll_value = input_service:get("scroll_axis")
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		scroll_value = scroll_value and math.sign(scroll_value.x)
 	else
 		scroll_value = scroll_value and math.sign(scroll_value.y)
@@ -486,9 +486,9 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 			self:_send_invite(friend_widget, t)
 		end
 	elseif input_service:get("special_1") and not self._is_refreshing then
-		if PLATFORM == "xb1" then
+		if IS_XB1 then
 			self:_refresh_friends()
-		elseif PLATFORM == "ps4" then
+		elseif IS_PS4 then
 			self:_join_game()
 		end
 	elseif input_service:get("confirm_press") or open_profile_pressed then
@@ -531,7 +531,7 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 				self._cursor_position = math.clamp(self._cursor_position + 1, 1, num_visible_friends)
 			end
 		end
-	elseif not gamepad_active and PLATFORM ~= "ps4" then
+	elseif not gamepad_active and not IS_PS4 then
 		local first_index = math.clamp(self._current_friend_index - (self._cursor_position - 1), 1, math.max(num_friends - (num_visible_friends - 1), 1))
 		local last_index = math.clamp((first_index + num_visible_friends) - 1, 1, num_friends)
 
@@ -635,9 +635,9 @@ ConsoleFriendsView._open_profile = function (self, widget)
 	local content = widget.content
 	local id = content.friend.id
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		Managers.account:show_player_profile(id)
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		Managers.account:show_player_profile_with_account_id(id)
 	end
 end

@@ -501,7 +501,7 @@ end
 StartGameWindowDifficulty._show_storepage = function (self, store_page_url)
 	local platform = PLATFORM
 
-	if platform == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		Steam.open_url(store_page_url)
 	end
 end

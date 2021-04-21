@@ -39,7 +39,15 @@ require("scripts/settings/packaged_levels")
 
 local function is_level_available_on_disk(level_data)
 	if rawget(_G, "PACKAGED_LEVEL_PACKAGE_NAMES") then
-		return PACKAGED_LEVEL_PACKAGE_NAMES[level_data.package_name]
+		local packages = level_data.packages
+
+		for i = 1, #packages, 1 do
+			local package = packages[i]
+
+			if not PACKAGED_LEVEL_PACKAGE_NAMES[package] then
+				return false
+			end
+		end
 	end
 
 	return true
@@ -49,7 +57,16 @@ local only_release = true
 
 local function validate_level_data(level_key, level_data)
 	if type(level_data) == "table" then
-		local debug_level = string.match(level_data.package_name, "resource_packages/levels/debug/")
+		local debug_level = false
+		local packages = level_data.packages
+
+		for i = 1, #packages, 1 do
+			if string.find(packages[i], "^resource_packages/levels/debug/") then
+				debug_level = true
+
+				break
+			end
+		end
 
 		if debug_level then
 			DebugLevels[level_key] = true
@@ -166,12 +183,30 @@ LevelUnlockUtils.completed_level_difficulty_index = function (statistics_db, pla
 	local level_difficulty_name = LevelDifficultyDBNames[level_key]
 
 	if level_difficulty_name then
-		local difficulty_index = statistics_db:get_persistent_stat(player_stats_id, "completed_levels_difficulty", level_difficulty_name)
-
-		return difficulty_index
+		return math.min(5, statistics_db:get_persistent_stat(player_stats_id, "completed_levels_difficulty", level_difficulty_name))
 	else
 		return 0
 	end
+end
+
+LevelUnlockUtils.unlocked_journeys = function (statistics_db, player_stats_id)
+	local journeys = {}
+
+	for i = 1, #AvailableJourneyOrder, 1 do
+		if i == 1 then
+			journeys[#journeys + 1] = AvailableJourneyOrder[i]
+		else
+			local difficulty = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, player_stats_id, AvailableJourneyOrder[i - 1])
+
+			if not script_data.unlock_all_levels and (not difficulty or difficulty == 0) then
+				break
+			else
+				journeys[#journeys + 1] = AvailableJourneyOrder[i]
+			end
+		end
+	end
+
+	return journeys
 end
 
 LevelUnlockUtils.completed_journey_difficulty_index = function (statistics_db, player_stats_id, journey_name)
@@ -180,7 +215,31 @@ LevelUnlockUtils.completed_journey_difficulty_index = function (statistics_db, p
 	if journey_difficulty_name then
 		local difficulty_index = statistics_db:get_persistent_stat(player_stats_id, "completed_journeys_difficulty", journey_difficulty_name)
 
-		return math.clamp(difficulty_index, 0, 5)
+		return difficulty_index
+	else
+		return 0
+	end
+end
+
+LevelUnlockUtils.completed_hero_journey_difficulty_index = function (statistics_db, player_stats_id, hero, journey_name)
+	local journey_difficulty_name = JourneyDifficultyDBNames[journey_name]
+
+	if journey_difficulty_name then
+		local difficulty_index = statistics_db:get_persistent_stat(player_stats_id, "completed_hero_journey_difficulty", hero, journey_difficulty_name)
+
+		return difficulty_index
+	else
+		return 0
+	end
+end
+
+LevelUnlockUtils.completed_journey_dominant_god_difficulty_index = function (statistics_db, player_stats_id, dominant_god)
+	local journey_dominant_god_difficulty_name = JourneyDominantGodDifficultyDBNames[dominant_god]
+
+	if journey_dominant_god_difficulty_name then
+		local difficulty_index = statistics_db:get_persistent_stat(player_stats_id, "completed_journey_dominant_god_difficulty", journey_dominant_god_difficulty_name)
+
+		return difficulty_index
 	else
 		return 0
 	end
@@ -632,6 +691,21 @@ LevelUnlockUtils.debug_set_completed_journey_difficulty = function (journey_name
 	local journey_difficulty_name = JourneyDifficultyDBNames[journey_name]
 
 	statistics_db:set_stat(stats_id, "completed_journeys_difficulty", journey_difficulty_name, difficulty_id)
+
+	local backend_stats = {}
+
+	statistics_db:generate_backend_stats(stats_id, backend_stats)
+	Managers.backend:set_stats(backend_stats)
+	Managers.backend:commit()
+end
+
+LevelUnlockUtils.debug_set_completed_hero_journey_difficulty = function (hero, journey_name, difficulty_id)
+	local statistics_db = Managers.player:statistics_db()
+	local player = Managers.player:local_player()
+	local stats_id = player:stats_id()
+	local journey_difficulty_name = JourneyDifficultyDBNames[journey_name]
+
+	statistics_db:set_stat(stats_id, "completed_hero_journey_difficulty", hero, journey_difficulty_name, difficulty_id)
 
 	local backend_stats = {}
 

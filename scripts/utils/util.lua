@@ -1,7 +1,7 @@
 function cprint(...)
 	print(...)
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		CommandWindow.print(...)
 	end
 end
@@ -11,7 +11,7 @@ function cprintf(f, ...)
 
 	print(s)
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		CommandWindow.print(s)
 	end
 end

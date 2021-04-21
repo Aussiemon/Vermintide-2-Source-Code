@@ -70,6 +70,20 @@ local scenegraph_definition = {
 			99
 		}
 	},
+	disclaimer = {
+		vertical_alignment = "center",
+		parent = "background",
+		horizontal_alignment = "center",
+		size = {
+			1400,
+			700
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	input_background = {
 		vertical_alignment = "center",
 		parent = "background_fit",
@@ -358,6 +372,145 @@ function create_xbox_beta_widget(input)
 	}
 end
 
+local function create_disclaimer_widget(input)
+	return {
+		scenegraph_id = "disclaimer",
+		element = {
+			passes = {
+				{
+					style_id = "foreground",
+					scenegraph_id = "foreground",
+					pass_type = "rect"
+				},
+				{
+					pass_type = "rect",
+					style_id = "divider"
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "texture_style",
+					pass_type = "texture"
+				},
+				{
+					style_id = "header",
+					pass_type = "text",
+					text_id = "header_text"
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
+				},
+				{
+					style_id = "continue",
+					pass_type = "text",
+					text_id = "continue",
+					scenegraph_id = "screen",
+					content_check_function = function (content)
+						return content.ready
+					end,
+					content_change_function = function (content, style)
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+						local time, dt = Managers.time:time_and_delta("main")
+						content.timer = content.timer + dt * 2
+						style.text_color[1] = 128 - math.cos(content.timer) * 127
+						content.continue = (gamepad_active and "press_any_button_to_continue") or "press_any_key_to_continue"
+					end
+				}
+			}
+		},
+		content = {
+			continue = "press_any_key_to_continue",
+			timer = 0,
+			ready = false,
+			text = input.text,
+			header_text = input.header_text,
+			texture_id = input.texture_id
+		},
+		style = {
+			foreground = {
+				color = Colors.color_definitions.black
+			},
+			texture_style = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				texture_size = input.texture_size,
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			divider = {
+				vertical_alignment = "top",
+				horizontal_alignment = "left",
+				texture_size = {
+					1400,
+					3
+				},
+				color = Colors.get_color_table_with_alpha("gray", 255),
+				offset = {
+					0,
+					-180,
+					0
+				}
+			},
+			header = {
+				word_wrap = false,
+				localize = true,
+				font_size = 32,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				area_size = {
+					1400,
+					900
+				},
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					-210,
+					0
+				}
+			},
+			text = {
+				font_type = "hell_shark_header",
+				font_size = 28,
+				localize = true,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				area_size = {
+					1400,
+					900
+				},
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					-260,
+					0
+				}
+			},
+			continue = {
+				vertical_alignment = "bottom",
+				word_wrap = false,
+				localize = true,
+				font_type = "hell_shark",
+				font_size = 32,
+				horizontal_alignment = "right",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					-50,
+					50,
+					0
+				}
+			}
+		}
+	}
+end
+
 local dead_space_filler = {
 	scenegraph_id = "dead_space_filler",
 	element = {
@@ -453,15 +606,27 @@ local splash_content = {
 			"partner_splash_dobly",
 			"partner_splash_dts"
 		}
+	},
+	{
+		text = "splash_seizure_disclaimer",
+		forced = true,
+		texture_id = "vermintide_2_logo",
+		type = "disclaimer",
+		time = 3,
+		header_text = "splash_seizure_disclaimer_header",
+		texture_size = {
+			300,
+			168
+		}
 	}
 }
 
 if Development.parameter("use_beta_mode") or script_data.settings.use_beta_mode then
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		local is_xbox_one_x = false
 		local console_type = XboxOne.console_type()
 
-		if console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT or console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
+		if console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT or console_type == XboxOne.CONSOLE_TYPE_XBOX_ONE_X or console_type == XboxOne.CONSOLE_TYPE_XBOX_ANACONDA or console_type == XboxOne.CONSOLE_TYPE_XBOX_SERIES_X_DEVKIT then
 			is_xbox_one_x = true
 		end
 
@@ -491,7 +656,7 @@ if Development.parameter("use_beta_mode") or script_data.settings.use_beta_mode 
 			},
 			time = math.huge
 		}
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		local is_pro = PS4.is_pro()
 		splash_content[#splash_content + 1] = {
 			scenegraph_id = "background",
@@ -529,7 +694,7 @@ if Development.parameter("use_beta_mode") or script_data.settings.use_beta_mode 
 				0
 			}
 		}
-	elseif PLATFORM == "win32" then
+	elseif IS_WINDOWS then
 		local is_beta = rawget(_G, "Steam") and Steam.app_id() == 1085780
 
 		if is_beta then
@@ -577,7 +742,7 @@ local VIDEO_REFERENCE_NAME = "SplashView"
 SplashView = class(SplashView)
 
 SplashView.init = function (self, input_manager, world)
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		PS4.hide_splash_screen()
 	end
 
@@ -590,23 +755,6 @@ SplashView.init = function (self, input_manager, world)
 	self._world = world
 	self._current_index = 1
 	self.ui_renderer = UIRenderer.create(world, "material", "video/fatshark_splash", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_splash_screen")
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	self.dead_space_filler = UIWidget.init(dead_space_filler)
-	self._splash_widgets = {}
-
-	for _, splash in pairs(splash_content) do
-		local widget = nil
-
-		if splash.type == "video" then
-			widget = UIWidgets.create_splash_video(splash, VIDEO_REFERENCE_NAME)
-		elseif splash.partner_splash then
-			widget = UIWidgets.create_partner_splash_widget(splash)
-		else
-			widget = UIWidgets.create_splash_texture(splash)
-		end
-
-		self._splash_widgets[#self._splash_widgets + 1] = UIWidget.init(widget)
-	end
 
 	if input_manager then
 		input_manager:create_input_service("splash_view", "SplashScreenKeymaps", "SplashScreenFilters")
@@ -617,6 +765,8 @@ SplashView.init = function (self, input_manager, world)
 		self.input_manager = input_manager
 	end
 
+	self:_create_ui_elements()
+
 	if script_data["-no-rendering"] then
 		self._current_index = #splash_content + 1
 	end
@@ -625,7 +775,7 @@ SplashView.init = function (self, input_manager, world)
 end
 
 SplashView._next_splash = function (self, override_skip)
-	if not override_skip and (PLATFORM == "xb1" or PLATFORM == "ps4") and not self._allow_console_skip then
+	if not override_skip and IS_CONSOLE and not self._allow_console_skip then
 		self._update_func = "_wait_for_allow_console_skip"
 		self._video_complete = true
 
@@ -637,7 +787,8 @@ SplashView._next_splash = function (self, override_skip)
 	self._current_widget = self._splash_widgets[self._current_index]
 
 	if self._current_splash_data then
-		self._update_func = "_update_" .. self._current_splash_data.type
+		local update_func = "_update_" .. self._current_splash_data.type
+		self._update_func = (self[update_func] and update_func) or "_update_texture"
 		self._current_index = self._current_index + 1
 		self._current_splash_data.timer = self._current_splash_data.time
 	elseif not Managers.transition:loading_icon_active() then
@@ -702,6 +853,47 @@ SplashView._update_texture = function (self, gui, dt)
 	end
 end
 
+SplashView._update_disclaimer = function (self, gui, dt)
+	local w, h = Gui.resolution()
+	local timer = self._current_splash_data.timer
+	local texts = self._current_splash_data.texts
+	local total_time = self._current_splash_data.time
+	dt = math.min(dt, 0.03333333333333333)
+
+	if self._current_splash_data.confirmed then
+		local value = 255 * (1 - timer / 0.5)
+		self._current_widget.style.foreground.color[1] = value
+	elseif timer > total_time - 0.5 then
+		local value = 255 * (timer - (total_time - 0.5)) / 0.5
+		self._current_widget.style.foreground.color[1] = value
+	elseif timer <= 0.5 then
+		local skip = nil
+		local input_service = self.input_manager:get_service("splash_view")
+
+		if IS_CONSOLE then
+			skip = script_data.skip_splash or self:_get_console_input()
+		else
+			skip = script_data.skip_splash or input_service:get("skip_splash")
+		end
+
+		if skip then
+			self._current_splash_data.confirmed = true
+		end
+
+		dt = 0
+		self._current_widget.style.foreground.color[1] = 0
+		self._current_widget.content.ready = true
+	end
+
+	UIRenderer.draw_widget(self.ui_renderer, self._current_widget)
+
+	self._current_splash_data.timer = self._current_splash_data.timer - dt
+
+	if self._current_splash_data.timer <= 0 then
+		self:_next_splash()
+	end
+end
+
 SplashView._update_beta_end = function (self, gui, dt)
 	local w, h = Gui.resolution()
 	local timer = self._current_splash_data.timer
@@ -743,7 +935,7 @@ SplashView._update_beta_end = function (self, gui, dt)
 	end
 end
 
-if PLATFORM == "xb1" or PLATFORM == "ps4" then
+if IS_CONSOLE then
 	SplashView._wait_for_allow_console_skip = function (self)
 		if self._allow_console_skip then
 			self:_next_splash()
@@ -757,10 +949,10 @@ SplashView.set_index = function (self, index)
 	self:_next_splash()
 end
 
-local DO_RELOAD = true
-
 SplashView._create_ui_elements = function (self)
-	table.clear(self._splash_widgets)
+	self._splash_widgets = {}
+	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self.dead_space_filler = UIWidget.init(dead_space_filler)
 
 	for _, splash in pairs(splash_content) do
 		local widget = nil
@@ -769,6 +961,8 @@ SplashView._create_ui_elements = function (self)
 			widget = UIWidgets.create_splash_video(splash, VIDEO_REFERENCE_NAME)
 		elseif splash.type == "beta_end" then
 			widget = create_xbox_beta_widget(splash)
+		elseif splash.type == "disclaimer" then
+			widget = create_disclaimer_widget(splash)
 		elseif splash.partner_splash then
 			widget = UIWidgets.create_partner_splash_widget(splash)
 		else
@@ -778,34 +972,26 @@ SplashView._create_ui_elements = function (self)
 		self._splash_widgets[#self._splash_widgets + 1] = UIWidget.init(widget)
 	end
 
-	self._current_index = self._current_index - 1
-
-	self:_next_splash()
-
-	DO_RELOAD = false
+	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 end
 
 SplashView.update = function (self, dt)
-	if PLATFORM == "win32" and self._fram_skip_hack < 1 then
+	if IS_WINDOWS and self._fram_skip_hack < 1 then
 		self._fram_skip_hack = self._fram_skip_hack + 1
 
 		return
 	end
 
-	if DO_RELOAD then
-		self:_create_ui_elements()
-	end
-
 	local w, h = Gui.resolution()
 	local ui_renderer = self.ui_renderer
-	local input_service = (PLATFORM == "win32" and self.input_manager:get_service("splash_view")) or false
+	local input_service = (IS_WINDOWS and self.input_manager:get_service("splash_view")) or false
 
 	UIRenderer.begin_pass(ui_renderer, self.ui_scenegraph, input_service, dt, nil, self.render_settings)
 	UIRenderer.draw_widget(ui_renderer, self.dead_space_filler)
 
 	local skip = nil
 
-	if PLATFORM == "xb1" or PLATFORM == "ps4" then
+	if IS_CONSOLE then
 		skip = script_data.skip_splash or self:_get_console_input()
 	else
 		skip = script_data.skip_splash or input_service:get("skip_splash")
@@ -832,7 +1018,7 @@ SplashView.update = function (self, dt)
 	UIRenderer.end_pass(ui_renderer)
 end
 
-if PLATFORM == "xb1" or PLATFORM == "ps4" then
+if IS_CONSOLE then
 	SplashView.allow_console_skip = function (self)
 		self._allow_console_skip = true
 	end
@@ -853,7 +1039,7 @@ if PLATFORM == "xb1" or PLATFORM == "ps4" then
 			end
 		end
 
-		if PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and (Keyboard.any_pressed() or Mouse.any_pressed()) then
+		if IS_XB1 and GameSettingsDevelopment.allow_keyboard_mouse and (Keyboard.any_pressed() or Mouse.any_pressed()) then
 			return true
 		end
 	end

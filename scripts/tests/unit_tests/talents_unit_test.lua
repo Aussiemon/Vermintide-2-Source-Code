@@ -241,6 +241,42 @@ local TALENT_BUFF_TEMPLATE_SCHEMA = schema("TALENT_BUFF_TEMPLATE_SCHEMA", {
 							},
 							refresh_durations = {
 								type = "boolean"
+							},
+							particles = {
+								type = "table",
+								table_array = {
+									strict = true,
+									type = "table",
+									map = {
+										effect = {
+											required = true,
+											type = "string"
+										},
+										link_node = {
+											type = "string"
+										},
+										orphaned_policy = {
+											required = true,
+											type = "string"
+										},
+										destroy_policy = {
+											required = true,
+											type = "string"
+										},
+										first_person = {
+											required = true,
+											type = "boolean"
+										},
+										third_person = {
+											required = true,
+											type = "boolean"
+										},
+										continuous = {
+											required = true,
+											type = "boolean"
+										}
+									}
+								}
 							}
 						}
 					}

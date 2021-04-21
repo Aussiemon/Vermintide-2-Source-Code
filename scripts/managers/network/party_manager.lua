@@ -27,7 +27,7 @@ end
 
 PartyManager._free_lobby = function (self)
 	if self._party_lobby_or_data ~= nil then
-		print("/// Party lobby has been freed!")
+		print("Party lobby has been freed!")
 
 		if type(self._party_lobby_or_data) == "userdata" then
 			LobbyInternal.leave_lobby(self._party_lobby_or_data)
@@ -68,14 +68,14 @@ PartyManager.has_party_lobby = function (self)
 end
 
 PartyManager.store_lobby = function (self, lobby_or_data)
-	print("/// Party lobby has been stored!")
+	print("Party lobby has been stored!")
 	self:_free_lobby()
 
 	self._party_lobby_or_data = lobby_or_data
 end
 
 PartyManager.steal_lobby = function (self)
-	print("/// Party lobby has been stolen!")
+	print("Party lobby has been stolen!")
 
 	local lobby = self._party_lobby_or_data
 	self._party_lobby_or_data = nil

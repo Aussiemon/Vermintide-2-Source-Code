@@ -107,7 +107,7 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 			text_size = text_size - 0.05
 		end
 
-		Managers.state.event:trigger("add_damage_number", damage_amount, text_size, unit, duration, color, is_critical_strike)
+		Managers.state.event:trigger("add_damage_number", damage_amount * 0.01, text_size, unit, duration, color, is_critical_strike)
 	end
 
 	if self.is_server and unit_id then

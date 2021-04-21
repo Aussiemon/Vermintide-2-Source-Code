@@ -206,7 +206,7 @@ local function fmtbytes(b)
 end
 
 ImguiJIT.draw = function (self)
-	Imgui.Begin("JIT utilities")
+	Imgui.begin_window("JIT utilities")
 
 	local enabled = Imgui.checkbox("JIT enabled", self._enabled or false)
 
@@ -343,7 +343,7 @@ ImguiJIT.draw = function (self)
 		Imgui.tree_pop()
 	end
 
-	Imgui.End()
+	Imgui.end_window()
 end
 
 ImguiJIT.is_persistent = function (self)

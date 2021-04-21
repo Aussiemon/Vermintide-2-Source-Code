@@ -43,8 +43,9 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	print("[StartGameState] Enter Substate StartGameStateSettingsOverview")
 
 	self.parent = params.parent
+	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 
-	self:_setup_menu_layout()
+	self:_setup_menu_layout(self._mechanism_name)
 
 	self._wwise_world = params.wwise_world
 	self._hero_name = params.hero_name
@@ -60,7 +61,6 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._ingame_ui = ingame_ui_context.ingame_ui
-	self._mechanism_name = Managers.mechanism:current_mechanism_name()
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -92,7 +92,8 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 		input_service = FAKE_INPUT_SERVICE,
 		layout_settings = self._layout_settings,
 		start_state = params.start_state,
-		use_gamepad_layout = self._gamepad_style_active
+		use_gamepad_layout = self._gamepad_style_active,
+		mechanism_name = self._mechanism_name
 	}
 
 	self:set_confirm_button_visibility(false)
@@ -143,9 +144,9 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 	end
 end
 
-StartGameStateSettingsOverview._setup_menu_layout = function (self)
+StartGameStateSettingsOverview._setup_menu_layout = function (self, mechanism_name)
 	local layout_settings = nil
-	local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout or MechanismSettings[mechanism_name].use_gamepad_layout
 
 	if use_gamepad_layout then
 		layout_settings = local_require("scripts/ui/views/start_game_view/states/start_game_window_layout_console")
@@ -164,6 +165,7 @@ StartGameStateSettingsOverview._setup_menu_layout = function (self)
 	self._mechanism_quickplay_settings = layout_settings.mechanism_quickplay_settings
 	self._mechanism_custom_game_settings = layout_settings.mechanism_custom_game_settings
 	self._mechanism_twitch_settings = layout_settings.mechanism_twitch_settings
+	self._save_data_table_maps = layout_settings.save_data_table_maps
 end
 
 StartGameStateSettingsOverview._create_ui_elements = function (self, params)
@@ -335,21 +337,19 @@ end
 
 StartGameStateSettingsOverview._start_layout_name = function (self)
 	local start_layout_name = PlayerData.mission_selection.start_layout
-	local layout_setting = self:_get_layout_setting_by_name(start_layout_name)
+	local layout_setting = self:get_layout_setting_by_name(start_layout_name)
 
-	if layout_setting and self:is_valid_game_mode_option(layout_setting) then
+	if layout_setting and self:can_add_layout(layout_setting) then
 		return start_layout_name
 	else
 		return self:_get_first_game_mode_option_layout()
 	end
 end
 
-StartGameStateSettingsOverview.is_valid_game_mode_option = function (self, layout_setting)
-	local is_game_mode_option = layout_setting.game_mode_option
-	local can_add_function_name = layout_setting.can_add_function_name
-	local is_valid = can_add_function_name == nil or self[can_add_function_name](self)
+StartGameStateSettingsOverview.can_add_layout = function (self, layout_setting)
+	local can_add_function = layout_setting.can_add_function
 
-	return is_game_mode_option and is_valid
+	return can_add_function and can_add_function(self)
 end
 
 StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
@@ -358,7 +358,11 @@ StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
 	self._window_params = params
 
 	if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) then
-		self:set_layout_by_name("twitch")
+		if Managers.mechanism:current_mechanism_name() == "deus" then
+			self:set_layout_by_name("deus_twitch")
+		else
+			self:set_layout_by_name("twitch")
+		end
 	else
 		local start_layout_name = params.start_state or self:_start_layout_name()
 
@@ -399,6 +403,7 @@ StartGameStateSettingsOverview._change_window = function (self, window_index, wi
 	local window_class = rawget(_G, window_class_name)
 	local window = window_class:new()
 	local ignore_alignment = new_window_settings.ignore_alignment
+	local parent_window_name = new_window_settings.parent_window_name
 	local window_offset = nil
 
 	if not ignore_alignment then
@@ -421,7 +426,7 @@ StartGameStateSettingsOverview._change_window = function (self, window_index, wi
 	if window.on_enter then
 		local params = self._window_params
 
-		window:on_enter(params, window_offset)
+		window:on_enter(params, window_offset, parent_window_name)
 	end
 
 	active_windows[window_index] = window
@@ -445,7 +450,6 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 		self:set_selected_level_id(table.level_id)
 		self:set_difficulty_option(table.difficulty_key)
 		self:set_selected_weave_id(table.weave_id)
-		self:set_selected_deus_journey(table.deus_journey_name)
 	else
 		self._layout_save_settings = nil
 	end
@@ -470,6 +474,14 @@ StartGameStateSettingsOverview.close_on_exit = function (self)
 	return self._close_on_exit
 end
 
+StartGameStateSettingsOverview.get_current_window_layout_settings = function (self)
+	for index, layout_setting in ipairs(self._window_layouts) do
+		if layout_setting.name == self._selected_layout_name then
+			return layout_setting
+		end
+	end
+end
+
 StartGameStateSettingsOverview.set_layout_by_name = function (self, name)
 	printf("[StartGameStateSettingsOverview]:set_layout_by_name() - %s", name)
 
@@ -484,16 +496,41 @@ StartGameStateSettingsOverview.set_layout_by_name = function (self, name)
 	ferror("[StartGameStateSettingsOverview]:set_layout_by_name() - Could not find a layout with name %s", name)
 end
 
+StartGameStateSettingsOverview.get_mechanism_name = function (self)
+	return self._mechanism_name
+end
+
+StartGameStateSettingsOverview.is_in_mechanism = function (self, mechanism_name)
+	local is_in_weave_menu = self.parent:on_enter_sub_state() == "weave_quickplay"
+
+	if mechanism_name == "weave" then
+		return self._mechanism_name == "adventure" and is_in_weave_menu
+	else
+		return self._mechanism_name == mechanism_name and not is_in_weave_menu
+	end
+end
+
+StartGameStateSettingsOverview.is_weekly_event_active = function (self)
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	local game_mode_data = live_event_interface:get_game_mode_data()
+
+	return game_mode_data ~= nil
+end
+
 StartGameStateSettingsOverview.get_quickplay_settings = function (self, mechanism_name)
-	return self._mechanism_quickplay_settings[mechanism_name]
+	return self._mechanism_quickplay_settings[mechanism_name or self._mechanism_name]
 end
 
 StartGameStateSettingsOverview.get_custom_game_settings = function (self, mechanism_name)
-	return self._mechanism_custom_game_settings[mechanism_name]
+	return self._mechanism_custom_game_settings[mechanism_name or self._mechanism_name]
 end
 
 StartGameStateSettingsOverview.get_twitch_settings = function (self, mechanism_name)
-	return self._mechanism_twitch_settings[mechanism_name]
+	return self._mechanism_twitch_settings[mechanism_name or self._mechanism_name]
+end
+
+StartGameStateSettingsOverview.get_save_data_table_map = function (self, mechanism_name)
+	return self._save_data_table_maps[mechanism_name or self._mechanism_name]
 end
 
 StartGameStateSettingsOverview.set_layout = function (self, index)
@@ -504,18 +541,23 @@ StartGameStateSettingsOverview.set_layout = function (self, index)
 		self:play_sound(sound_event_enter)
 	end
 
-	local save_data_table = layout_setting.save_data_table
+	local save_data_table_name = layout_setting.save_data_table
+	local save_data_table_map = self:get_save_data_table_map(self._mechanism_name) or self:get_quickplay_settings("adventure")
 
-	self:_set_new_save_data_table(save_data_table)
+	if save_data_table_map then
+		save_data_table_name = save_data_table_map[save_data_table_name] or save_data_table_name
+	end
+
+	self:_set_new_save_data_table(save_data_table_name)
 
 	local close_on_exit = layout_setting.close_on_exit
 	local reset_on_exit = layout_setting.reset_on_exit
-	slot7 = self._widgets_by_name.exit_button.content
+	slot8 = self._widgets_by_name.exit_button.content
 
 	if reset_on_exit then
 	end
 
-	slot7.visible = close_on_exit
+	slot8.visible = close_on_exit
 	self._widgets_by_name.back_button.content.visible = reset_on_exit or not close_on_exit
 	self._close_on_exit = close_on_exit
 	self._reset_on_exit = reset_on_exit
@@ -605,7 +647,7 @@ StartGameStateSettingsOverview._get_layout_setting = function (self, index)
 	return self._window_layouts[index]
 end
 
-StartGameStateSettingsOverview._get_layout_setting_by_name = function (self, name)
+StartGameStateSettingsOverview.get_layout_setting_by_name = function (self, name)
 	local window_layouts = self._window_layouts
 
 	for i = 1, #window_layouts, 1 do
@@ -624,7 +666,7 @@ StartGameStateSettingsOverview._get_first_game_mode_option_layout = function (se
 	for i = 1, #window_layouts, 1 do
 		local layout_setting = window_layouts[i]
 
-		if self:is_valid_game_mode_option(layout_setting) then
+		if self:can_add_layout(layout_setting) then
 			return layout_setting.name, layout_setting
 		end
 	end
@@ -881,12 +923,12 @@ StartGameStateSettingsOverview.cancel_matchmaking = function (self)
 	self.parent:cancel_matchmaking()
 end
 
-StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_close_menu)
-	printf("[StartGameStateSettingsOverview:play() - game_mode_type(%s)", game_mode_type)
+StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_menu)
+	printf("[StartGameStateSettingsOverview:play() - vote_type(%s)", vote_type)
 
 	local is_offline = Managers.account:offline_mode()
 
-	if game_mode_type == "adventure_mode" then
+	if vote_type == "adventure_mode" then
 		local level_key = self:get_selected_level_id()
 		local difficulty = self._selected_difficulty_key
 		local is_private = true
@@ -895,68 +937,84 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 		local strict_matchmaking = false
 		local deed_backend_id, event_data = nil
 
-		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, game_mode_type, deed_backend_id, event_data)
-	elseif game_mode_type == "adventure" then
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, matchmaking_type, deed_backend_id, event_data)
+	elseif vote_type == "adventure" then
 		local params = {
+			mechanism = "adventure",
 			quick_game = true,
 			strict_matchmaking = false,
+			matchmaking_type = "standard",
 			difficulty = self._selected_difficulty_key,
 			private_game = is_offline,
-			always_host = is_offline
+			always_host = is_offline,
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "weave_quick_play" then
+		self.parent:start_game(params)
+	elseif vote_type == "weave_quick_play" then
 		local params = {
+			mechanism = "weave",
 			quick_game = true,
 			strict_matchmaking = false,
+			matchmaking_type = "standard",
 			difficulty = self._selected_difficulty_key,
 			private_game = is_offline,
-			always_host = is_offline
+			always_host = is_offline,
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "custom" then
+		self.parent:start_game(params)
+	elseif vote_type == "custom" then
 		local network_lobby = self._network_lobby
 		local num_members = #network_lobby:members():get_members()
 		local is_private = is_offline or self:is_private_option_enabled()
 		local is_alone = num_members == 1
 		local always_host = is_private or self:is_always_host_option_enabled()
 		local params = {
+			mechanism = "adventure",
+			matchmaking_type = "custom",
 			quick_game = false,
 			network_lobby = network_lobby,
 			num_members = num_members,
 			is_alone = is_alone,
-			level_key = self:get_selected_level_id(),
+			mission_id = self:get_selected_level_id(),
 			difficulty = self._selected_difficulty_key,
 			private_game = is_private,
 			always_host = always_host,
-			strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled()
+			strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled(),
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "deed" then
+		self.parent:start_game(params)
+	elseif vote_type == "deed" then
 		local params = {
 			is_private = true,
+			mechanism = "adventure",
 			quick_game = false,
 			strict_matchmaking = false,
 			always_host = true,
-			deed_backend_id = self:get_selected_heroic_deed_backend_id()
+			matchmaking_type = "deed",
+			deed_backend_id = self:get_selected_heroic_deed_backend_id(),
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "twitch" then
+		self.parent:start_game(params)
+	elseif vote_type == "twitch" then
 		local params = {
 			private_game = true,
-			quick_game = false,
 			strict_matchmaking = false,
 			always_host = true,
-			level_key = self:get_selected_level_id(),
-			difficulty = self._selected_difficulty_key
+			matchmaking_type = "custom",
+			mechanism = "adventure",
+			quick_game = false,
+			twitch_enabled = true,
+			mission_id = self:get_selected_level_id(),
+			difficulty = self._selected_difficulty_key,
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "event" then
+		self.parent:start_game(params)
+	elseif vote_type == "event" then
 		local live_event_interface = Managers.backend:get_interface("live_events")
 		local game_mode_data = live_event_interface:get_game_mode_data()
 		local event_data = {
@@ -971,35 +1029,52 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 			private_game = false,
 			strict_matchmaking = false,
 			always_host = false,
+			matchmaking_type = "event",
+			mechanism = "adventure",
 			quick_game = false,
-			level_key = game_mode_data.level_key,
+			mission_id = game_mode_data.level_key,
 			difficulty = self._selected_difficulty_key,
 			event_data = event_data,
-			excluded_level_keys = game_mode_data.excluded_level_keys
+			excluded_level_keys = game_mode_data.excluded_level_keys,
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "versus" then
+		self.parent:start_game(params)
+	elseif vote_type == "versus" then
 		local params = {
-			quick_game = false,
 			strict_matchmaking = false,
 			always_host = true,
-			level_key = self:get_selected_level_id(),
+			matchmaking_type = "standard",
+			mechanism = "versus",
+			quick_game = false,
+			mission_id = self:get_selected_level_id(),
 			difficulty = self._selected_difficulty_key,
-			private_game = self:is_private_option_enabled()
+			private_game = self:is_private_option_enabled(),
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "weave" then
+		self.parent:start_game(params)
+	elseif vote_type == "weave" then
 		local weave_name = self:get_selected_weave_id()
+		local weave_template = WeaveSettings.templates[weave_name]
+		local difficulty = weave_template.difficulty_key
 		local objective_index = self:get_selected_weave_objective_index()
 		local is_private = is_offline or self:is_private_option_enabled()
 		local always_host = is_offline
+		local params = {
+			matchmaking_type = "custom",
+			mechanism = "weave",
+			quick_game = false,
+			mission_id = weave_name,
+			difficulty = difficulty,
+			objective_index = objective_index,
+			private_game = is_private,
+			always_host = is_offline,
+			request_type = vote_type
+		}
 
-		self.parent:start_game_weave(weave_name, objective_index, is_private, always_host)
-	elseif game_mode_type == "weave_find_group" then
-		self.parent:start_game_weave_find_group(force_close_menu)
-	elseif game_mode_type == "deus_custom" then
+		self.parent:start_game(params)
+	elseif vote_type == "deus_custom" then
 		local network_lobby = self._network_lobby
 		local num_members = #network_lobby:members():get_members()
 		local is_alone = num_members == 1
@@ -1007,62 +1082,59 @@ StartGameStateSettingsOverview.play = function (self, t, game_mode_type, force_c
 		local always_host = private_game or self:is_always_host_option_enabled()
 		local backend_deus = Managers.backend:get_interface("deus")
 		local journey_cycle = backend_deus:get_journey_cycle()
-		local journey_name = self:get_selected_deus_journey() or AvailableJourneyOrder[1]
-		local boon_name = journey_cycle.journey_data[journey_name].boon
+		local journey_name = self:get_selected_level_id()
+		journey_name = (DeusJourneySettings[journey_name] and journey_name) or AvailableJourneyOrder[1]
 		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
 		local params = {
+			matchmaking_type = "custom",
+			mechanism = "deus",
 			quick_game = false,
-			journey_name = journey_name,
+			mission_id = journey_name,
 			difficulty = self._selected_difficulty_key,
 			private_game = private_game,
 			always_host = always_host,
 			strict_matchmaking = is_alone and not private_game and not always_host and self:is_strict_matchmaking_option_enabled(),
-			boon_reward = boon_name,
-			dominant_god = dominant_god
+			dominant_god = dominant_god,
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "deus_twitch" then
+		self.parent:start_game(params)
+	elseif vote_type == "deus_twitch" then
 		local backend_deus = Managers.backend:get_interface("deus")
 		local journey_cycle = backend_deus:get_journey_cycle()
-		local journey_name = self:get_selected_deus_journey() or AvailableJourneyOrder[1]
-		local boon_name = journey_cycle.journey_data[journey_name].boon
+		local journey_name = self:get_selected_level_id()
+		journey_name = (DeusJourneySettings[journey_name] and journey_name) or AvailableJourneyOrder[1]
 		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
 		local params = {
 			private_game = true,
-			quick_game = false,
+			mechanism = "deus",
 			strict_matchmaking = false,
 			always_host = true,
-			journey_name = journey_name,
+			matchmaking_type = "custom",
+			quick_game = false,
+			twitch_enabled = true,
+			mission_id = journey_name,
 			difficulty = self._selected_difficulty_key,
-			boon_reward = boon_name,
-			dominant_god = dominant_god
+			dominant_god = dominant_god,
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
-	elseif game_mode_type == "deus_quickplay" then
-		local backend_deus = Managers.backend:get_interface("deus")
-		local journey_cycle = backend_deus:get_journey_cycle()
-		local journey_data = journey_cycle.journey_data
-		local journey_names = table.keys(journey_data)
-		local journey_name = journey_names[math.random(1, #journey_names)]
-		local journey_settings = journey_data[journey_name]
-		local boon_name = journey_settings.boon
-		local dominant_god = journey_settings.dominant_god
+		self.parent:start_game(params)
+	elseif vote_type == "deus_quickplay" then
 		local params = {
+			mechanism = "deus",
 			quick_game = true,
 			strict_matchmaking = false,
-			journey_name = journey_name,
-			boon_reward = boon_name,
-			dominant_god = dominant_god,
+			matchmaking_type = "standard",
 			difficulty = self._selected_difficulty_key,
 			private_game = is_offline,
-			always_host = is_offline
+			always_host = is_offline,
+			request_type = vote_type
 		}
 
-		self.parent:start_game(game_mode_type, params)
+		self.parent:start_game(params)
 	else
-		ferror("Unknown game_mode_type(%s)", game_mode_type)
+		ferror("Unknown matchmaking_type(%s)", matchmaking_type)
 	end
 end
 
@@ -1217,18 +1289,6 @@ StartGameStateSettingsOverview.set_selected_level_id = function (self, level_id)
 	end
 
 	self._specific_level_id = level_id
-end
-
-StartGameStateSettingsOverview.set_selected_deus_journey = function (self, journey_name)
-	if self._layout_save_settings then
-		self._layout_save_settings.deus_journey_name = journey_name
-	end
-
-	self._specific_deus_journey_name = journey_name
-end
-
-StartGameStateSettingsOverview.get_selected_deus_journey = function (self)
-	return self._specific_deus_journey_name or nil
 end
 
 StartGameStateSettingsOverview.get_selected_area_name = function (self)
@@ -1406,77 +1466,22 @@ StartGameStateSettingsOverview.get_mutator_option = function (self)
 	return self._selected_mutator_key
 end
 
-StartGameStateSettingsOverview._can_add_adventrue = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
+StartGameStateSettingsOverview.get_completed_level_difficulty_index = function (self, statistics_db, stats_id, level_id)
+	local settings = self:get_custom_game_settings(self._mechanism_name) or self:get_custom_game_settings("adventure")
+	local function_name = settings.difficulty_index_getter_name
 
-	return not is_weave_menu
+	return LevelUnlockUtils[function_name](statistics_db, stats_id, level_id)
 end
 
-StartGameStateSettingsOverview._can_add_custom_game = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-
-	return not is_weave_menu
-end
-
-StartGameStateSettingsOverview._can_add_heroic_deeds = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-
-	return not is_weave_menu
-end
-
-StartGameStateSettingsOverview._can_add_weave_game_mode_option = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-
-	return is_weave_menu
-end
-
-StartGameStateSettingsOverview._can_add_event_game_mode_option = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-	local live_event_interface = Managers.backend:get_interface("live_events")
-	local game_mode_data = live_event_interface:get_game_mode_data()
-
-	return game_mode_data ~= nil and not is_weave_menu
-end
-
-StartGameStateSettingsOverview._can_add_streaming_function = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-
-	if PLATFORM ~= "win32" then
-		local twitch_enabled = GameSettingsDevelopment.twitch_enabled
-		local is_offline = Managers.account:offline_mode()
-
-		return twitch_enabled and not is_offline and not is_weave_menu
-	else
-		return not is_weave_menu
+StartGameStateSettingsOverview.can_use_streaming = function (self)
+	if IS_WINDOWS then
+		return true
 	end
-end
 
-StartGameStateSettingsOverview._can_add_lobby_browser_function = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
+	local twitch_enabled = GameSettingsDevelopment.twitch_enabled
+	local is_offline = Managers.account:offline_mode()
 
-	return not is_weave_menu and PLATFORM ~= "xb1"
-end
-
-StartGameStateSettingsOverview._can_add_weave_lobby_browser_option = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-
-	return is_weave_menu and PLATFORM ~= "xb1"
-end
-
-StartGameStateSettingsOverview._can_add_adventure_mode_game_mode_option = function (self)
-	local on_enter_sub_state = self.parent:on_enter_sub_state()
-	local is_weave_menu = on_enter_sub_state == "weave_quickplay"
-	local next_adventure_level = LevelUnlockUtils.get_next_adventure_level(self._statistics_db, self._stats_id)
-
-	return next_adventure_level ~= nil and not is_weave_menu
+	return twitch_enabled and not is_offline
 end
 
 StartGameStateSettingsOverview.setup_backend_image_material = function (self, gui, reference_name, texture_name, masked)

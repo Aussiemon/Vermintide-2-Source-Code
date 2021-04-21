@@ -243,7 +243,7 @@ local widget_definitions = {
 					scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis, dt)
 						local axis_input = scroll_axis.y * -1
 
-						if PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not Managers.input:is_device_active("gamepad") then
+						if IS_XB1 and GameSettingsDevelopment.allow_keyboard_mouse and not Managers.input:is_device_active("gamepad") then
 							axis_input = math.sign(scroll_axis.x) * -1
 						end
 

@@ -367,7 +367,7 @@ UIWidgets.create_simple_item_tooltip = function (scenegraph_id, tooltip_passes)
 	}
 end
 
-UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_passes)
+UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_passes, force_equipped)
 	return {
 		element = {
 			passes = {
@@ -382,7 +382,9 @@ UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_pas
 				}
 			}
 		},
-		content = {},
+		content = {
+			force_equipped = force_equipped
+		},
 		style = {
 			item = {
 				font_size = 18,
@@ -2433,7 +2435,7 @@ UIWidgets.create_loadout_grid_console = function (scenegraph_id, size, rows, spa
 					5
 				}
 			}
-			content[title_text_name] = "n/a"
+			content[title_text_name] = Localize("not_assigned")
 			local title_text_selected_name = "title_text_selected" .. name_suffix
 			passes[#passes + 1] = {
 				pass_type = "text",
@@ -2518,7 +2520,7 @@ UIWidgets.create_loadout_grid_console = function (scenegraph_id, size, rows, spa
 					5
 				}
 			}
-			content[hotspot_name][sub_title_text_name] = "n/a"
+			content[hotspot_name][sub_title_text_name] = Localize("not_assigned")
 			local sub_title_shadow_text_name = "sub_title_shadow_text" .. name_suffix
 			passes[#passes + 1] = {
 				pass_type = "text",
@@ -3503,7 +3505,7 @@ UIWidgets.create_background = function (scenegraph_id, size, background_texture,
 	return widget
 end
 
-UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, color, frame_margins, masked)
+UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, color, frame_margins, masked, use_tiling, mirrored_tiling, skip_background)
 	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.menu_frame_02
 	local widget = {
 		element = {}
@@ -3534,7 +3536,10 @@ UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, colo
 				0,
 				0,
 				layer or 5
-			}
+			},
+			skip_background = skip_background,
+			use_tiling = use_tiling,
+			mirrored_tiling = mirrored_tiling
 		}
 	}
 	widget.element.passes = passes
@@ -3805,7 +3810,7 @@ UIWidgets.create_craft_recipe_window = function (scenegraph_id, size, num_compon
 			},
 			color = default_color
 		}
-		content[component_text] = "n/a"
+		content[component_text] = Localize("not_assigned")
 	end
 
 	widget.element.passes = passes
@@ -4491,7 +4496,7 @@ UIWidgets.create_reward_card = function (scenegraph_id, size)
 			item_offset[3] + 4
 		}
 	}
-	content[item_title_text_name] = "n/a"
+	content[item_title_text_name] = Localize("not_assigned")
 	local item_type_text_name = "item_type_text"
 	passes[#passes + 1] = {
 		pass_type = "text",
@@ -4515,7 +4520,7 @@ UIWidgets.create_reward_card = function (scenegraph_id, size)
 			item_offset[3] + 4
 		}
 	}
-	content[item_type_text_name] = "n/a"
+	content[item_type_text_name] = Localize("not_assigned")
 	widget.element.passes = passes
 	widget.content = content
 	widget.style = style
@@ -5131,7 +5136,7 @@ UIWidgets.create_chest_score_entry = function (scenegraph_id, size, index)
 			},
 			text = {
 				font_size = 20,
-				upper_case = false,
+				upper_case = true,
 				word_wrap = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
@@ -5150,7 +5155,7 @@ UIWidgets.create_chest_score_entry = function (scenegraph_id, size, index)
 			},
 			text_disabled = {
 				font_size = 20,
-				upper_case = false,
+				upper_case = true,
 				word_wrap = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
@@ -5174,7 +5179,7 @@ UIWidgets.create_chest_score_entry = function (scenegraph_id, size, index)
 			},
 			text_shadow = {
 				font_size = 20,
-				upper_case = false,
+				upper_case = true,
 				word_wrap = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
@@ -8038,7 +8043,7 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 	return widget
 end
 
-UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, font_size, tooltip_info, draw_tooltip_above)
+UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, font_size, tooltip_info, draw_tooltip_above, checkbox_frame_settings_name)
 	local background_texture = "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local widget = {
@@ -8355,7 +8360,8 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 			return not content.is_disabled
 		end
 	}
-	local frame_settings = UIFrameSettings.menu_frame_06
+	checkbox_frame_settings_name = checkbox_frame_settings_name or "menu_frame_06"
+	local frame_settings = UIFrameSettings[checkbox_frame_settings_name]
 	hotspot_content[checkbox_frame_name] = frame_settings.texture
 	style[checkbox_frame_name] = {
 		size = {
@@ -8458,7 +8464,7 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 	return widget
 end
 
-UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size, text, font_size, tooltip_info)
+UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size, text, font_size, tooltip_info, checkbox_frame_settings_name)
 	local background_texture = "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local widget = {
@@ -8652,7 +8658,8 @@ UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size
 			return not content.is_disabled
 		end
 	}
-	local frame_settings = UIFrameSettings.menu_frame_06
+	checkbox_frame_settings_name = checkbox_frame_settings_name or "menu_frame_06"
+	local frame_settings = UIFrameSettings[checkbox_frame_settings_name]
 	hotspot_content[checkbox_frame_name] = frame_settings.texture
 	style[checkbox_frame_name] = {
 		size = {
@@ -8982,7 +8989,7 @@ UIWidgets.create_default_text_tabs = function (scenegraph_id, size, amount)
 			},
 			size = button_size
 		}
-		hotspot_content[text_name] = "n/a"
+		hotspot_content[text_name] = Localize("not_assigned")
 		local text_disabled_name = "text_disabled" .. name_suffix
 		passes[#passes + 1] = {
 			pass_type = "text",
@@ -11903,7 +11910,10 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 			pass_type = "texture",
 			content_id = hotspot_name,
 			texture_id = icon_name,
-			style_id = icon_name
+			style_id = icon_name,
+			content_check_function = function (content)
+				return not content.disable_button
+			end
 		}
 		style[icon_name] = {
 			size = icon_size,
@@ -11915,6 +11925,27 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 			}
 		}
 		hotspot_content[icon_name] = icon_texture
+		local icon_texture = slot_icons[k]
+		local icon_name = "icon" .. name_suffix .. "_saturated"
+		passes[#passes + 1] = {
+			pass_type = "texture",
+			content_id = hotspot_name,
+			texture_id = icon_name,
+			style_id = icon_name,
+			content_check_function = function (content)
+				return content.disable_button
+			end
+		}
+		style[icon_name] = {
+			size = icon_size,
+			color = default_color,
+			offset = {
+				offset[1],
+				offset[2],
+				offset[3] + 2
+			}
+		}
+		hotspot_content[icon_name] = icon_texture .. "_saturated"
 		local selection_icon_name = "selection_icon" .. name_suffix
 		passes[#passes + 1] = {
 			pass_type = "texture",
@@ -11950,6 +11981,7 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 			end
 		}
 		style[disabled_name] = {
+			saturated = true,
 			size = icon_size,
 			color = default_color,
 			offset = {
@@ -14449,7 +14481,7 @@ UIWidgets.create_start_game_console_setting_button = function (scenegraph_id, ti
 		text_id = input_text_name,
 		style_id = input_text_shadow_name
 	}
-	content[input_text_name] = "n/a"
+	content[input_text_name] = Localize("not_assigned")
 	local input_text_style = {
 		vertical_alignment = "center",
 		font_size = 22,

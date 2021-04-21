@@ -179,7 +179,17 @@ ChallengeTrackerUI._update_restacking = function (self, dt)
 	end
 end
 
+local customizer_data = {
+	lock_y = false,
+	registry_key = "questingknight",
+	drag_scenegraph_id = "quest",
+	root_scenegraph_id = "quest",
+	label = "Duties",
+	lock_x = false
+}
+
 ChallengeTrackerUI.update = function (self, dt, t)
+	HudCustomizer.run(self._ui_renderer, self._ui_scenegraph, customizer_data)
 	self:_update_restacking(dt)
 	self:_update_animation_queue()
 	self:_refresh_challenge_data(self._data)

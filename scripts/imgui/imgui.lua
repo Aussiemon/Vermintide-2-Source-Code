@@ -1,4 +1,18 @@
-require("scripts/imgui/imgui_interface_alias")
+if not Imgui._FUNCTION_FIXES then
+	Imgui._FUNCTION_FIXES = true
+	local _combo = Imgui.combo
+
+	Imgui.combo = function (label, item_idx, values, ...)
+		return _combo(label, item_idx - 1, values, ...)
+	end
+
+	local _list_box = Imgui.list_box
+
+	Imgui.list_box = function (label, item_idx, values, ...)
+		return _list_box(label, item_idx - 1, values, ...)
+	end
+end
+
 require("scripts/imgui/imgui_umbra_debug")
 require("scripts/imgui/imgui_combat_log")
 require("scripts/imgui/imgui_craft_item")
@@ -17,8 +31,10 @@ require("scripts/imgui/imgui_sound_debug")
 require("scripts/imgui/imgui_career_debug")
 require("scripts/imgui/imgui_localization")
 require("scripts/imgui/imgui_call_interceptor")
+require("scripts/imgui/imgui_weapon_editor")
+require("scripts/imgui/imgui_ui_tool")
 
-if PLATFORM == "win32" then
+if IS_WINDOWS then
 	require("scripts/imgui/imgui_lua_scratchpad")
 	require("scripts/imgui/imgui_flamegraph")
 	require("scripts/imgui/imgui_jit")
@@ -53,19 +69,7 @@ ImguiManager.init = function (self)
 	self._guis = {}
 	self._key_bindings = {}
 
-	self:add_gui(ImguiUmbraDebug:new(), "World", "Umbra")
-	self:add_gui(ImguiCombatLog:new(), "Gameplay", "Combat Log")
-	self:add_gui(ImguiCraftItem:new(), "Gameplay", "Craft Item")
-	self:add_gui(ImguiWeaponDebug:new(), "Gameplay", "Weapon Debug")
-	self:add_gui(ImguiBuffsDebug:new(), "Gameplay", "Buffs Debug")
-	self:add_gui(ImguiAISpawnLog:new(), "Gameplay", "AI Spawn Log")
-	self:add_gui(ImguiTeleportTool:new(), "Gameplay", "Teleport Tool")
-	self:add_gui(ImguiBehaviorTree:new(), "Gameplay", "BT Debug")
-	self:add_gui(ImguiTerrorEventDebug:new(), "Gameplay", "Terror Event Debug")
-	self:add_gui(ImguiSpawning:new(), "Gameplay", "Spawn Breeds/Pickups")
-	self:add_gui(ImguiDebugMenu:new(), "Debug", "Debug Menu 2.0")
-	self:add_gui(ImguiUnlockOverride:new(), "Debug", "Unlock Override")
-	self:add_gui(ImguiLocalization:new(), "Tools", "Localization")
+	self:add_gui(ImguiUmbraDebug, "World", "Umbra")
 	self:add_gui(ImguiCombatLog, "Gameplay", "Combat Log")
 	self:add_gui(ImguiCraftItem, "Gameplay", "Craft Item")
 	self:add_gui(ImguiWeaponDebug, "Gameplay", "Weapon Debug")
@@ -79,11 +83,13 @@ ImguiManager.init = function (self)
 	self:add_gui(ImguiSoundDebug, "Gameplay", "Sound Debug")
 	self:add_gui(ImguiCareerDebug, "Gameplay", "Career Debug")
 	self:add_gui(ImguiLocalization, "Tools", "Localization")
+	self:add_gui(ImguiWeaponEditor, "Tools", "Weapon Editor")
+	self:add_gui(ImguiUITool, "Tools", "UI Tool")
 	self:add_gui(ImguiDebugMenu, "Debug", "Debug Menu 2.0")
 	self:add_gui(ImguiUnlockOverride, "Debug", "Unlock Override")
 	self:add_gui(ImguiCallInterceptor, "Debug", "Call Interceptor")
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self:add_gui(ImguiLuaScratchpad, "Debug", "Lua Scratchpad")
 		self:add_gui(ImguiJIT, "Debug", "JIT Debug")
 		self:add_gui(ImguiFlamegraph, "Debug", "Flamegraph")

@@ -209,7 +209,7 @@ EquipmentUI._get_input_texture_data = function (self, input_action)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if IS_WINDOWS and gamepad_active then
 		platform = "xb1"
 	end
 
@@ -502,44 +502,49 @@ EquipmentUI._update_ammo_count = function (self, item_data, slot_data, player_un
 	local draw_overheat = false
 
 	if item_template.ammo_data then
-		local ammo_count, remaining_ammo, using_single_clip = self:_get_ammunition_count(slot_data.left_unit_1p, slot_data.right_unit_1p, item_template)
-		local ammo_text_clip_widget = ammo_widgets_by_name.ammo_text_clip
-		local content = ammo_text_clip_widget.content
-		local ammo_empty = ammo_count + remaining_ammo == 0
-		local ammo_changed = false
+		if item_template.ammo_data.hide_ammo_ui then
+			self._draw_ammo = false
+		else
+			self._draw_ammo = true
+			local ammo_count, remaining_ammo, using_single_clip = self:_get_ammunition_count(slot_data.left_unit_1p, slot_data.right_unit_1p, item_template)
+			local ammo_text_clip_widget = ammo_widgets_by_name.ammo_text_clip
+			local content = ammo_text_clip_widget.content
+			local ammo_empty = ammo_count + remaining_ammo == 0
+			local ammo_changed = false
 
-		if self._ammo_count ~= ammo_count then
-			self._ammo_count = ammo_count
-			local widget = ammo_widgets_by_name.ammo_text_clip
-			local content = widget.content
-			content.text = tostring(ammo_count)
+			if self._ammo_count ~= ammo_count then
+				self._ammo_count = ammo_count
+				local widget = ammo_widgets_by_name.ammo_text_clip
+				local content = widget.content
+				content.text = tostring(ammo_count)
 
-			self:_set_widget_dirty(widget)
+				self:_set_widget_dirty(widget)
 
-			ammo_changed = true
-		end
+				ammo_changed = true
+			end
 
-		if self._remaining_ammo ~= remaining_ammo then
-			self._remaining_ammo = remaining_ammo
-			local widget = ammo_widgets_by_name.ammo_text_remaining
-			local content = widget.content
-			content.text = tostring(remaining_ammo)
+			if self._remaining_ammo ~= remaining_ammo then
+				self._remaining_ammo = remaining_ammo
+				local widget = ammo_widgets_by_name.ammo_text_remaining
+				local content = widget.content
+				content.text = tostring(remaining_ammo)
 
-			self:_set_widget_dirty(widget)
+				self:_set_widget_dirty(widget)
 
-			ammo_changed = true
-		end
+				ammo_changed = true
+			end
 
-		if ammo_changed then
-			self._ammo_counter_fade_delay = AMMO_PRESENTATION_DURATION
-			self._ammo_counter_fade_progress = 1
+			if ammo_changed then
+				self._ammo_counter_fade_delay = AMMO_PRESENTATION_DURATION
+				self._ammo_counter_fade_progress = 1
 
-			self:_set_ammo_counter_alpha(255)
+				self:_set_ammo_counter_alpha(255)
 
-			local ammo_text_color = (ammo_empty and ammo_colors.empty) or ammo_colors.normal
+				local ammo_text_color = (ammo_empty and ammo_colors.empty) or ammo_colors.normal
 
-			self:_set_ammo_counter_color(ammo_text_color)
-			self:set_dirty()
+				self:_set_ammo_counter_color(ammo_text_color)
+				self:set_dirty()
+			end
 		end
 	else
 		local has_overcharge, overcharge_fraction, threshold_fraction = self:_get_overcharge_amount(player_unit)
@@ -668,7 +673,7 @@ EquipmentUI._set_ammo_text_focus = function (self, focus)
 			self:_set_widget_dirty(bg_widget)
 			self:set_dirty()
 		end
-	else
+	elseif self._draw_ammo then
 		local ammo_widgets_by_name = self._ammo_widgets_by_name
 		self._ammo_counter_fade_delay = AMMO_PRESENTATION_DURATION
 		self._ammo_counter_fade_progress = 1
@@ -1024,9 +1029,34 @@ EquipmentUI._set_elements_visible = function (self, visible)
 	self:set_dirty()
 end
 
+local customizer_data_player_status = {
+	lock_y = true,
+	registry_key = "player_status",
+	drag_scenegraph_id = "background_panel",
+	root_scenegraph_id = "root",
+	label = "Player status",
+	lock_x = false
+}
+local customizer_data_ammo = {
+	root_scenegraph_id = "ammo_background",
+	label = "Ammo",
+	registry_key = "ammo",
+	drag_scenegraph_id = "ammo_background"
+}
+
 EquipmentUI.update = function (self, dt, t)
 	if not self._is_visible then
 		return
+	end
+
+	if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data_player_status) then
+		UIUtils.mark_dirty(self._widgets_by_name)
+		UIUtils.mark_dirty(self._widgets)
+		UIUtils.mark_dirty(self._extra_storage_icon_widgets)
+	end
+
+	if HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data_ammo) then
+		UIUtils.mark_dirty(self._ammo_widgets)
 	end
 
 	local dirty = false
@@ -1078,7 +1108,7 @@ end
 
 EquipmentUI._handle_gamepad = function (self)
 	local should_render = true
-	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM ~= "win32"
+	local gamepad_active = Managers.input:is_device_active("gamepad") or not IS_WINDOWS
 
 	if (gamepad_active or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never" then
 		if self._retained_elements_visible then

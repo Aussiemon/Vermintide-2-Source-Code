@@ -139,7 +139,6 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 		local template_name = extension_init_data.inventory_template or "default"
 		local template_function = AIInventoryTemplates[template_name]
 		inventory_configuration_name = template_function()
-		extension_init_data.optional_spawn_data.inventory_configuration_name = inventory_configuration_name
 	end
 
 	local item_extension_init_data = {

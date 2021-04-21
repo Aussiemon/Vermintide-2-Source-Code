@@ -18,6 +18,41 @@ local function dprint(...)
 	print("[AccountManager] ", ...)
 end
 
+local CONSOLE_TYPE_SETTINGS = {
+	[XboxOne.CONSOLE_TYPE_UNKNOWN] = {
+		should_throttle = true,
+		console_type_name = "Unknown"
+	},
+	[XboxOne.CONSOLE_TYPE_XBOX_ONE] = {
+		should_throttle = true,
+		console_type_name = "Xbox One"
+	},
+	[XboxOne.CONSOLE_TYPE_XBOX_ONE_S] = {
+		should_throttle = true,
+		console_type_name = "Xbox One S"
+	},
+	[XboxOne.CONSOLE_TYPE_XBOX_ONE_X] = {
+		should_throttle = true,
+		console_type_name = "Xbox One X"
+	},
+	[XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT] = {
+		should_throttle = true,
+		console_type_name = "Xbox One X Devkit"
+	},
+	[XboxOne.CONSOLE_TYPE_XBOX_LOCKHART] = {
+		should_throttle = false,
+		console_type_name = "Xbox Series S"
+	},
+	[XboxOne.CONSOLE_TYPE_XBOX_ANACONDA] = {
+		should_throttle = false,
+		console_type_name = "Xbox Series X"
+	},
+	[XboxOne.CONSOLE_TYPE_XBOX_SERIES_X_DEVKIT] = {
+		should_throttle = false,
+		console_type_name = "Xbox Series X Devkit"
+	}
+}
+
 AccountManager.init = function (self)
 	self._user_id = nil
 	self._controller_id = nil
@@ -53,10 +88,6 @@ end
 
 AccountManager.offline_achievement_progress = function (self, template_id)
 	return self._offline_achievement_progress[template_id]
-end
-
-AccountManager.set_level_transition_handler = function (self, level_transition_handler)
-	self._level_transition_handler = level_transition_handler
 end
 
 AccountManager._set_user_id = function (self, id, controller)
@@ -671,7 +702,7 @@ AccountManager.cb_profile_signed_out = function (self)
 	end
 end
 
-AccountManager.sign_in = function (self, user_id, controller)
+AccountManager.sign_in = function (self, user_id, controller, auto_sign_in)
 	if not user_id then
 		local controller_index = self:_controller_index(controller)
 
@@ -681,7 +712,7 @@ AccountManager.sign_in = function (self, user_id, controller)
 			return false
 		end
 	else
-		self:_hard_sign_in(user_id, controller)
+		self:_hard_sign_in(user_id, controller, auto_sign_in)
 	end
 
 	return true
@@ -697,7 +728,7 @@ AccountManager._controller_index = function (self, controller)
 	end
 end
 
-AccountManager._hard_sign_in = function (self, user_id, controller)
+AccountManager._hard_sign_in = function (self, user_id, controller, auto_sign_in)
 	dprint("Hard-sign in", user_id)
 	Crashify.print_property("xb1_user_id", user_id)
 	self:_set_user_id(user_id, controller)
@@ -1029,6 +1060,20 @@ AccountManager.get_product_details = function (self, product_ids, response_callb
 	end
 
 	self._xbox_marketplace:get_product_details(self._user_id, product_ids, response_callback)
+end
+
+AccountManager.console_type = function (self)
+	local console_type = XboxOne.console_type()
+	local console_settings = CONSOLE_TYPE_SETTINGS[console_type] or CONSOLE_TYPE_SETTINGS[XboxOne.CONSOLE_TYPE_UNKNOWN]
+
+	return console_settings.console_type_name
+end
+
+AccountManager.should_throttle = function (self)
+	local console_type = XboxOne.console_type()
+	local console_settings = CONSOLE_TYPE_SETTINGS[console_type] or CONSOLE_TYPE_SETTINGS[XboxOne.CONSOLE_TYPE_UNKNOWN]
+
+	return console_settings.should_throttle
 end
 
 AccountManager.has_session = function (self)

@@ -469,4 +469,41 @@ MainPathUtils.find_equidistant_points_in_node_list = function (node_list, start_
 	end
 end
 
+MainPathUtils.get_main_path_point_between_players = function ()
+	local conflict_director = Managers.state.conflict
+	local main_paths = conflict_director.level_analysis:get_main_paths()
+	local main_path_info = conflict_director.main_path_info
+	local ahead_player_travel_dist, behind_player_travel_dist = nil
+
+	if not main_path_info.ahead_unit then
+		ahead_player_travel_dist = 0
+		behind_player_travel_dist = 0
+	else
+		local ahead_player_info = conflict_director.main_path_player_info[main_path_info.ahead_unit]
+		ahead_player_travel_dist = ahead_player_info.travel_dist
+		local behind_player_info = conflict_director.main_path_player_info[main_path_info.behind_unit]
+		behind_player_travel_dist = behind_player_info.travel_dist
+	end
+
+	local dist = behind_player_travel_dist + (ahead_player_travel_dist - behind_player_travel_dist) * 0.5
+	dist = math.clamp(dist, 0, MainPathUtils.total_path_dist() - 0.1)
+	local position, sub_path_index = MainPathUtils.point_on_mainpath(main_paths, dist)
+	local sub_path = main_paths[sub_path_index]
+	local base_node_index = MainPathUtils.closest_node_in_node_list(sub_path.nodes, position)
+	local base_position = sub_path.nodes[base_node_index]
+	local next_position = sub_path.nodes[base_node_index + 1]
+	local prev_position = sub_path.nodes[base_node_index - 1]
+	local direction = nil
+
+	if next_position then
+		direction = next_position:unbox() - base_position:unbox()
+	elseif prev_position then
+		direction = base_position:unbox() - prev_position:unbox()
+	end
+
+	local rotation = (direction and Quaternion.look(direction)) or Quaternion.identity()
+
+	return Vector3Box(position), QuaternionBox(rotation)
+end
+
 return

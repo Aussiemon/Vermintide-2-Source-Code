@@ -210,14 +210,11 @@ TransitionManager.fade_out_completed = function (self)
 end
 
 TransitionManager._render = function (self, dt)
-	local w, h = nil
-
-	if Application.screen_resolution then
-		w, h = Application.screen_resolution()
-	else
-		w, h = Application.resolution()
+	if DEDICATED_SERVER then
+		return
 	end
 
+	local w, h = Application.resolution()
 	local color = self._color:unbox()
 
 	Gui.rect(self._gui, Vector3(0, 0, UILayer.transition), Vector2(w, h), Color(self._fade * 255, color.x, color.y, color.z))
@@ -233,7 +230,7 @@ TransitionManager._render_waiting_message = function (self, dt)
 		return
 	end
 
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		self:show_waiting_for_peers_message(false)
 
 		return

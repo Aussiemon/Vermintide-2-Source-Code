@@ -1245,7 +1245,7 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_spawn = function (unit, blackbo
 	blackboard.is_angry = true
 	blackboard.ray_can_go_update_time = t + 0.5
 	blackboard.is_valid_target_func = GenericStatusExtension.is_lord_target
-	local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 	local transform_action_data = BreedActions.chaos_exalted_champion.transform
 	local transform_breed_name = transform_action_data.wanted_breed_transform
 

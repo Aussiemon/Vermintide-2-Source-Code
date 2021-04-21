@@ -144,8 +144,7 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 		local bearer_position = Unit.world_position(unit, 0)
 		local standard_bearer_spawn_list = BreedTweaks.standard_bearer_spawn_list
 		local spawn_list = Managers.state.difficulty:get_difficulty_value_from_table(standard_bearer_spawn_list)
-		local game_mode_manager = Managers.state.game_mode
-		local level_transition_handler = game_mode_manager.level_transition_handler
+		local level_transition_handler = Managers.level_transition_handler
 		local enemy_package_loader = level_transition_handler.enemy_package_loader
 		local startup_breeds = enemy_package_loader:get_startup_breeds()
 		local replacement_breeds = BreedTweaks.standard_bearer_spawn_list_replacements
@@ -183,21 +182,21 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 		local below = 1
 
 		for i = 1, num_to_spawn, 1 do
-			local spawn_pos = nil
 			local offset = Vector3(-num_columns / 2 + i % num_columns, -num_columns / 2 + math.floor(i / num_columns), 0)
 			local spawn_pos = bearer_position + offset * 2
 			local spawn_pos_on_navmesh = LocomotionUtils.pos_on_mesh(nav_world, spawn_pos, above, below)
 			local breed = Breeds[new_spawn_list[i]]
+			local optional_data = nil
 
 			if spawn_pos_on_navmesh then
-				conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos_on_navmesh), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden")
+				conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos_on_navmesh), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden", optional_data)
 			else
 				local horizontal = 1
 				local distance_from_border = 0.1
 				local clamped_position = GwNavQueries.inside_position_from_outside_position(nav_world, spawn_pos, above, below, horizontal, distance_from_border)
 				clamped_position = clamped_position or POSITION_LOOKUP[unit]
 
-				conflict_director:spawn_queued_unit(breed, Vector3Box(clamped_position), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden")
+				conflict_director:spawn_queued_unit(breed, Vector3Box(clamped_position), QuaternionBox(rot), "hidden_spawn", nil, "horde_hidden", optional_data)
 			end
 		end
 	end

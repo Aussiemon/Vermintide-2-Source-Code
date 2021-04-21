@@ -2128,7 +2128,7 @@ AIBotGroupSystem._update_first_person_debug = function (self)
 		return
 	end
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		if Keyboard.pressed(Keyboard.button_index("numpad 1")) then
 			self:first_person_debug(1)
 		elseif Keyboard.pressed(Keyboard.button_index("numpad 2")) then

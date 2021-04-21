@@ -72,8 +72,10 @@ BTChaosSorcererTeleportAction.run = function (self, unit, blackboard, t, dt)
 end
 
 BTChaosSorcererTeleportAction.play_teleport_effect = function (self, unit, start_position, end_position)
+	local action_data = self._tree_node.action_data
+	local effect_name = (action_data and action_data.teleport_effect) or "fx/chr_chaos_sorcerer_teleport"
+	local effect_name_id = NetworkLookup.effects[effect_name]
 	local network_manager = Managers.state.network
-	local effect_name_id = NetworkLookup.effects["fx/chr_chaos_sorcerer_teleport"]
 	local owner_unit_id = network_manager:unit_game_object_id(unit)
 	local node_id = 0
 	local rotation_offset = Quaternion.identity()

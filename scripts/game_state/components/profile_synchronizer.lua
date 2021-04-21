@@ -1,445 +1,176 @@
-require("scripts/game_state/components/inventory_package_synchronizer")
-require("scripts/game_state/components/inventory_package_synchronizer_client")
 require("scripts/settings/profiles/sp_profiles")
 
-local NUM_PROFILES = #SPProfiles
-local network_printf = printf
+local NUM_HERO_PROFILES = #PROFILES_BY_AFFILIATION.heroes
+local PACKAGE_MANAGER_REFERENCE_NAME = "ProfileSynchronizer"
+local global_print = print
 
-local function inventory_map_to_network_array(inventory_map, destination)
-	local inventory_packages_lut = NetworkLookup.inventory_packages
-	local destination_n = 0
-
-	for inventory_package_name, _ in pairs(inventory_map) do
-		local value = inventory_packages_lut[inventory_package_name]
-
-		assert(value, "No existing inventory package for attempted name %q", inventory_package_name)
-
-		destination_n = destination_n + 1
-		destination[destination_n] = value
-	end
-
-	return destination_n
-end
-
-ProfileSynchronizer = class(ProfileSynchronizer)
-
-ProfileSynchronizer.init = function (self, is_server, lobby_object, network_handler)
-	local profile_owners = {}
-
-	for i = 1, NUM_PROFILES, 1 do
-		profile_owners[i] = {}
-	end
-
-	self._profile_owners = profile_owners
-	self._is_server = is_server
-
-	if is_server then
-		self._lobby_host = lobby_object
-		self._inventory_package_synchronizer_server = InventoryPackageSynchronizer:new()
-		self._network_server = network_handler
-		self._slot_allocator = self._network_server.slot_allocator
-		self._server_peer_id = Network.peer_id()
-	else
-		self._lobby_client = lobby_object
-		self._server_peer_id = self._lobby_client:lobby_host()
-	end
-
-	self._inventory_package_synchronizer = InventoryPackageSynchronizerClient:new(is_server)
-	self._peer_id = Network.peer_id()
-	self._inventory_sync_id = 0
-	self._client_sync_id = 0
-	self._client_sync_id_map = {}
-	self._loaded_peers = {}
-	self._all_synced = false
-	self._player_manager = Managers.player
-	self._hot_join_synced_peers = {}
-end
-
-ProfileSynchronizer.dump = function (self)
-	local s = "ProfileSynchronizer:\n"
-
-	for index, owners in pairs(self._profile_owners) do
-		for i = 1, #owners, 1 do
-			local owner_table = owners[i]
-			s = s .. string.format("%d: %s (%d)\n", index, owner_table.peer_id, owner_table.local_player_id)
-		end
-	end
-
-	print(s)
-end
-
-local RPCS = {
-	"rpc_server_assign_peer_to_profile",
-	"rpc_server_unassign_peer_to_profile",
-	"rpc_client_select_inventory",
-	"rpc_server_set_inventory_sync_id",
-	"rpc_client_inventory_map_loaded",
-	"rpc_server_inventory_all_synced"
-}
-local NO_CLIENT_SYNC_ID = 0
-
-ProfileSynchronizer.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, unpack(RPCS))
-
-	self._network_event_delegate = network_event_delegate
-	self._network_transmit = network_transmit
-
-	self._inventory_package_synchronizer:register_rpc(network_transmit, network_event_delegate)
-end
-
-ProfileSynchronizer.unregister_network_events = function (self)
-	if self._network_event_delegate then
-		self._network_event_delegate:unregister(self)
-
-		self._network_event_delegate = nil
-	end
-
-	self._network_transmit = nil
-
-	self._inventory_package_synchronizer:unregister()
-end
-
-ProfileSynchronizer.destroy = function (self)
-	self:unregister_network_events()
-	self._inventory_package_synchronizer:destroy()
-
-	self._inventory_package_synchronizer = nil
-	self._inventory_package_synchronizer_server = nil
-
-	GarbageLeakDetector.register_object(self, "Profile Synchronizer")
-
-	if self._gui ~= nil then
-		World.destroy_gui(Application.debug_world(), self._gui)
-
-		self._gui = nil
+local function dprint(...)
+	if script_data.profile_synchronizer_debug_logging then
+		global_print("[ProfileSynchronizer] ", ...)
 	end
 end
 
-ProfileSynchronizer.inventory_package_synchronizer_all_loaded = function (self)
-	return self._inventory_package_synchronizer.all_loaded
+local function print(...)
+	global_print("[ProfileSynchronizer] ", ...)
 end
 
-ProfileSynchronizer._send_rpc_lobby_clients = function (self, rpc, ...)
-	fassert(self._is_server, "Trying to send rpc to lobby clients without being lobby host.")
-
-	local my_peer_id = Network.peer_id()
-
-	for peer_id, _ in pairs(self._hot_join_synced_peers) do
-		if peer_id ~= my_peer_id then
-			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-
-			RPC[rpc](channel_id, ...)
-		end
-	end
+local function join_lobby_entry(peer_id, local_player_index)
+	return string.format("%s:%d", peer_id, local_player_index)
 end
 
-ProfileSynchronizer.update = function (self)
-	self._inventory_package_synchronizer:update()
+local function lobby_slot_name(profile_index)
+	return string.format("player_slot_%d", profile_index)
+end
 
-	local was_synced = self._all_synced
-	local all_synced = (next(self._loaded_peers) and true) or false
+local function split_lobby_entry(entry)
+	local split_point = string.find(entry, ":")
+	local peer_id = entry:sub(1, split_point - 1)
+	local local_player_index = tonumber(entry:sub(split_point + 1))
 
-	for _, peer_table in pairs(self._loaded_peers) do
-		for _, is_synced in pairs(peer_table) do
-			if not is_synced then
-				all_synced = false
+	return peer_id, local_player_index
+end
 
+local function profile_packages(profile_index, career_index, is_first_person)
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career = careers[career_index]
+	local career_name = career.name
+	local slots_n = #InventorySettings.slots
+	local packages_list = {}
+
+	for i = 1, slots_n, 1 do
+		repeat
+			local slot = InventorySettings.slots[i]
+			local slot_name = slot.name
+			local slot_category = slot.category
+			local item = BackendUtils.get_loadout_item(career_name, slot_name)
+
+			if not item then
 				break
 			end
-		end
-	end
 
-	if all_synced and not was_synced and self._is_server then
-		self._network_transmit:send_rpc_server("rpc_server_inventory_all_synced", self._inventory_sync_id)
-		self:_send_rpc_lobby_clients("rpc_server_inventory_all_synced", self._inventory_sync_id)
-	end
+			local item_data = item.data
+			local backend_id = item.backend_id
+			local item_template = BackendUtils.get_item_template(item_data, backend_id)
+			local item_units = BackendUtils.get_item_units(item_data, backend_id)
 
-	self._all_synced = all_synced
-end
+			if slot_category == "weapon" then
+				local weapon_packages = WeaponUtils.get_weapon_packages(item_template, item_units, is_first_person)
 
-ProfileSynchronizer._create_owner_table = function (self, peer_id, local_player_id, career_index)
-	return {
-		peer_id = peer_id,
-		local_player_id = local_player_id,
-		career_index = career_index
-	}
-end
+				for j = 1, #weapon_packages, 1 do
+					local package_name = weapon_packages[j]
+					packages_list[package_name] = false
+				end
+			else
+				if slot_category == "attachment" then
+					if item_units.unit then
+						packages_list[item_units.unit] = false
+					end
 
-local IS_LOCAL_CALL = "is_local_call"
+					local material_changes = item_template.character_material_changes
 
-ProfileSynchronizer._assign_peer_to_profile = function (self, peer_id, local_player_id, profile_index, career_index)
-	fassert(self._is_server)
-	fassert(profile_index)
-	printf("Assigning peer(%s:%s) to profile(%s) career(%s)", peer_id, local_player_id, profile_index, career_index)
+					if material_changes then
+						packages_list[material_changes.package_name] = false
+					end
 
-	local previous_profile_index, previous_career_index = self:profile_by_peer(peer_id, local_player_id)
+					break
+				end
 
-	if previous_profile_index then
-		self:unassign_peer_to_profile(peer_id, local_player_id, previous_profile_index, previous_career_index)
-	end
+				if slot_category == "cosmetic" then
+					break
+				end
 
-	self:rpc_server_assign_peer_to_profile(IS_LOCAL_CALL, peer_id, local_player_id, profile_index, career_index)
-	self:_send_rpc_lobby_clients("rpc_server_assign_peer_to_profile", peer_id, local_player_id, profile_index, career_index)
-end
-
-ProfileSynchronizer.unassign_peer_to_profile = function (self, peer_id, local_player_id, profile_index, career_index)
-	local slot = nil
-	local owners = self._profile_owners[profile_index]
-
-	for i, owner_table in ipairs(owners) do
-		if owner_table.peer_id == peer_id and owner_table.local_player_id == local_player_id then
-			slot = i
-		end
-	end
-
-	table.remove(owners, slot)
-
-	if self._is_server then
-		local hero_profile_index = GetHeroAffiliationIndex(profile_index)
-
-		if hero_profile_index then
-			local is_human_player = self:is_human_player(peer_id, local_player_id)
-
-			if is_human_player then
-				self._slot_allocator:free_slot(hero_profile_index)
+				error("ProfileSynchronizer unknown slot_category: " .. slot_category)
 			end
-		end
-
-		self:_send_rpc_lobby_clients("rpc_server_unassign_peer_to_profile", peer_id, local_player_id, profile_index, career_index)
-	end
-end
-
-ProfileSynchronizer._unassign_all_peers_profiles = function (self, peer_id)
-	for profile_index, profile_owners in pairs(self._profile_owners) do
-		for _, owner_table in ipairs(profile_owners) do
-			local owner_peer_id = owner_table.peer_id
-
-			if owner_peer_id == peer_id then
-				local owner_local_player_id = owner_table.local_player_id
-				local career_index = owner_table.career_index
-
-				self:unassign_peer_to_profile(owner_peer_id, owner_local_player_id, profile_index, career_index)
-			end
-		end
-	end
-end
-
-ProfileSynchronizer.all_synced = function (self)
-	return self._all_synced
-end
-
-ProfileSynchronizer.owners = function (self, profile_index)
-	return self._profile_owners[profile_index]
-end
-
-ProfileSynchronizer.profile_reserver_peer_id = function (self, profile_index)
-	return self._slot_allocator:owner(profile_index)
-end
-
-ProfileSynchronizer.hot_join_sync = function (self, peer_id, local_ids)
-	local profile_owners = self._profile_owners
-	local network_transmit = self._network_transmit
-	local sent_assign_message = false
-
-	for i = 1, NUM_PROFILES, 1 do
-		local owners = profile_owners[i]
-
-		for _, owner_table in ipairs(owners) do
-			if owner_table then
-				local owner_peer_id = owner_table.peer_id
-				local owner_local_player_id = owner_table.local_player_id
-				local career_index = owner_table.career_index
-
-				network_transmit:send_rpc("rpc_server_assign_peer_to_profile", peer_id, owner_peer_id, owner_local_player_id, i, career_index)
-
-				sent_assign_message = true
-			end
-		end
+		until true
 	end
 
-	self:_set_inventory_packages_for_peer(peer_id, self._inventory_sync_id)
+	local base_skin_name = career.base_skin
+	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
+	local skin_name = (skin_item and skin_item.data.name) or base_skin_name
+	local skin_packages = CosmeticsUtils.retrieve_skin_packages(skin_name, is_first_person)
 
-	local peer_table = self._loaded_peers[peer_id]
-
-	for _, local_player_id in pairs(local_ids) do
-		peer_table[local_player_id] = not sent_assign_message
+	for i = 1, #skin_packages, 1 do
+		local package_name = skin_packages[i]
+		packages_list[package_name] = false
 	end
 
-	self._loaded_peers[peer_id] = peer_table
-	self._all_synced = false
-end
-
-ProfileSynchronizer.peer_entered_session = function (self, peer_id, local_player_id)
-	self._hot_join_synced_peers[peer_id] = true
-	local peer_table = self._loaded_peers[peer_id] or {}
-	peer_table[local_player_id] = false
-	self._loaded_peers[peer_id] = peer_table
-	self._all_synced = false
-end
-
-ProfileSynchronizer.peer_left_session = function (self, peer_id)
-	self._hot_join_synced_peers[peer_id] = nil
-	self._loaded_peers[peer_id] = nil
-
-	self:_unassign_all_peers_profiles(peer_id)
-	self._inventory_package_synchronizer_server:clear_inventory_list(peer_id)
-end
-
-ProfileSynchronizer.peer_already_added = function (self, peer_id)
-	return not not self._hot_join_synced_peers[peer_id]
-end
-
-local TEMP_PEERS = {}
-
-ProfileSynchronizer._profile_select_inventory = function (self, profile_index, inventory_list, inventory_list_first_person, sender, local_player_id, client_sync_id)
-	self._inventory_package_synchronizer_server:set_inventory_list(sender, local_player_id, profile_index, inventory_list, inventory_list_first_person)
-	table.clear(inventory_list)
-	table.clear(inventory_list_first_person)
-	assert(self._is_server, "profile_select_inventory called not on server, wtf?")
-
-	local inventory_sync_id = self._inventory_sync_id + 1
-	self._inventory_sync_id = inventory_sync_id
-	local my_peer_id = self._peer_id
-
-	table.clear(TEMP_PEERS)
-
-	for peer_id, _ in pairs(self._hot_join_synced_peers) do
-		TEMP_PEERS[peer_id] = true
+	if career.package_name then
+		packages_list[career.package_name] = false
 	end
 
-	if DEDICATED_SERVER and not TEMP_PEERS[my_peer_id] then
-		TEMP_PEERS[my_peer_id] = true
+	if career.talent_packages then
+		local talent_interface = Managers.backend:get_talents_interface()
+		local talent_ids = talent_interface:get_talent_ids(career_name)
+
+		career.talent_packages(talent_ids, packages_list, is_first_person)
 	end
 
-	local network_transmit = self._network_transmit
+	packages_list[career.package_name] = false
 
-	for owned_peer_id, _ in pairs(TEMP_PEERS) do
-		self:_set_inventory_packages_for_peer(owned_peer_id, inventory_sync_id)
+	return packages_list
+end
 
-		if NO_CLIENT_SYNC_ID < client_sync_id and owned_peer_id == sender then
-			network_transmit:send_rpc("rpc_server_set_inventory_sync_id", owned_peer_id, client_sync_id, inventory_sync_id)
-		end
+local function build_inventory_lists(profile_index, career_index)
+	if not profile_index or profile_index == 0 then
+		return {}, {}
 	end
 
-	for _, peer_table in pairs(self._loaded_peers) do
-		for loaded_local_player_id, _ in pairs(peer_table) do
-			peer_table[loaded_local_player_id] = false
-		end
-	end
+	local inventory_list = profile_packages(profile_index, career_index, false)
+	local inventory_list_first_player = profile_packages(profile_index, career_index, true)
 
-	self._all_synced = false
+	return inventory_list, inventory_list_first_player
 end
 
-ProfileSynchronizer._set_inventory_packages_for_peer = function (self, peer_id, inventory_sync_id)
-	local inventory_package_map = self._inventory_package_synchronizer_server:get_complete_package_map_for_peer(peer_id)
-	local temporary_inventory_array = FrameTable.alloc_table()
+local function update_inventory_data(state, peer_id, local_player_id, profile_index, career_index)
+	local inventory_list, inventory_list_first_person = build_inventory_lists(profile_index, career_index)
+	local inventory_id = math.random_seed()
 
-	inventory_map_to_network_array(inventory_package_map, temporary_inventory_array)
-	self._network_transmit:send_rpc("rpc_server_set_inventory_packages", peer_id, inventory_sync_id, temporary_inventory_array)
-	network_printf("[NETWORK] send_rpc(rpc_server_set_inventory_packages) peer_id:%s inventory_sync_id:%d my_peer_id:%s", peer_id, inventory_sync_id, self._peer_id)
+	state:set_inventory_data(peer_id, local_player_id, {
+		inventory_id = inventory_id,
+		first_person = inventory_list_first_person,
+		third_person = inventory_list
+	})
+
+	return inventory_id
 end
 
-ProfileSynchronizer.select_profile = function (self, peer_id, local_player_id, profile_index, career_index)
-	fassert(self._is_server, "Should only be called on server.")
-	self:_assign_peer_to_profile(peer_id, local_player_id, profile_index, career_index)
-end
+local function are_all_synced_for_peer(state, peer_id, local_player_id, profile_index, career_index, ignore_loading_peers)
+	local inventory_data = state:get_inventory_data(peer_id, local_player_id)
+	local inventory_id = inventory_data.inventory_id
 
-ProfileSynchronizer.get_first_free_profile = function (self)
-	local career_index = 1
-	local profiles = SPProfiles
-
-	for profile_index = 1, #profiles, 1 do
-		if table.is_empty(self._profile_owners[profile_index]) then
-			return profile_index, career_index
-		end
-	end
-
-	table.dump(self._profile_owners, "profile owners", 2)
-	fassert(false, "Trying to get free profile when there are no free profiles.")
-end
-
-ProfileSynchronizer.profile_career_exists = function (self, profile_index, career_index)
-	local profile = SPProfiles[profile_index]
-	local careers = profile and profile.careers
-	local career = careers and careers[career_index]
-
-	return career ~= nil
-end
-
-ProfileSynchronizer.profile_career_unlocked = function (self, profile_index, career_index)
-	local profile = SPProfiles[profile_index]
-	local careers = profile and profile.careers
-	local career = careers and careers[career_index]
-
-	return career and career:is_unlocked_function(profile.display_name, ExperienceSettings.max_level)
-end
-
-ProfileSynchronizer.is_human_player = function (self, peer_id, local_player_id)
-	local player = self._player_manager:player(peer_id, local_player_id)
-
-	return not player or player:is_player_controlled()
-end
-
-ProfileSynchronizer.profile_by_peer = function (self, peer_id, local_player_id)
-	local profile_owners = self._profile_owners
-
-	for i = 1, NUM_PROFILES, 1 do
-		local owners = profile_owners[i]
-
-		for _, owner_table in ipairs(owners) do
-			if owner_table.peer_id == peer_id and owner_table.local_player_id == local_player_id then
-				return i, owner_table.career_index
-			end
-		end
-	end
-end
-
-ProfileSynchronizer.resync_loadout = function (self, profile_index, career_index, player)
-	CosmeticUtils.sync_local_player_cosmetics(profile_index, career_index)
-
-	local local_player_id = (player and player:local_player_id()) or 1
-	local inventory_list, inventory_list_first_person = self._inventory_package_synchronizer:build_inventory_lists(profile_index, career_index)
-	local network_inventory_list = FrameTable.alloc_table()
-	local network_inventory_list_first_person = FrameTable.alloc_table()
-
-	inventory_map_to_network_array(inventory_list, network_inventory_list)
-	inventory_map_to_network_array(inventory_list_first_person, network_inventory_list_first_person)
-
-	self._client_sync_id = self._client_sync_id + 1
-	local client_sync_id = self._client_sync_id
-
-	self._network_transmit:send_rpc_server("rpc_client_select_inventory", local_player_id, network_inventory_list, network_inventory_list_first_person, client_sync_id)
-
-	return client_sync_id
-end
-
-ProfileSynchronizer.all_clients_have_loaded_sync_id = function (self, client_sync_id)
-	local inventory_sync_id = self._client_sync_id_map[client_sync_id]
-
-	if not inventory_sync_id then
+	if inventory_id == 0 then
 		return false
 	end
 
-	local all_have_loaded = inventory_sync_id <= self.last_inventory_sync_id
+	local peers_with_full_profiles = state:get_peers_with_full_profiles()
 
-	return all_have_loaded
-end
+	for _, other_peer in ipairs(peers_with_full_profiles) do
+		local other_peer_id = other_peer.peer_id
 
-ProfileSynchronizer.is_only_owner = function (self, peer_id, local_player_id, profile_index)
-	local peer_profile_index = self:profile_by_peer(peer_id, local_player_id)
+		if not ignore_loading_peers or state:is_peer_ingame(other_peer_id) then
+			local loaded_inventory_id = state:get_loaded_inventory_id(other_peer_id, peer_id, local_player_id)
 
-	if peer_profile_index ~= profile_index then
-		return false
+			if inventory_id ~= loaded_inventory_id then
+				return false
+			end
+		end
 	end
 
-	local owners = self._profile_owners[profile_index]
+	return true
+end
 
-	for i = 1, #owners, 1 do
-		local owner_table = owners[i]
-		local owner_peer_id = owner_table.peer_id
-		local owner_local_player_id = owner_table.local_player_id
+local function are_all_synced(state, ignore_loading_peers)
+	local peers_with_full_profiles = state:get_peers_with_full_profiles()
 
-		if peer_id ~= owner_peer_id or owner_local_player_id ~= local_player_id then
+	for _, peer in ipairs(peers_with_full_profiles) do
+		local peer_id = peer.peer_id
+		local local_player_id = peer.local_player_id
+		local profile_index = peer.profile_index
+		local career_index = peer.career_index
+		local peer_all_synced = are_all_synced_for_peer(state, peer_id, local_player_id, profile_index, career_index, ignore_loading_peers)
+
+		if not peer_all_synced then
 			return false
 		end
 	end
@@ -447,104 +178,373 @@ ProfileSynchronizer.is_only_owner = function (self, peer_id, local_player_id, pr
 	return true
 end
 
-ProfileSynchronizer._is_hero_profile = function (self, profile_index)
-	local profile = SPProfiles[profile_index]
+local missing_packages = {}
+local all_needed_packages = {}
+local packages_to_remove = {}
 
-	return profile.affiliation == "heroes"
-end
+local function update_local_packages(state)
+	local package_manager = Managers.package
+	local own_peer_id = state:get_own_peer_id()
+	local loaded_or_loading_packages = state:get_loaded_or_loading_packages()
 
-local inventory_list = {}
-local inventory_list_first_person = {}
+	table.clear(missing_packages)
+	table.clear(all_needed_packages)
+	table.clear(packages_to_remove)
 
-ProfileSynchronizer.rpc_client_select_inventory = function (self, channel_id, local_player_id, network_inventory_list, network_inventory_list_first_person, client_sync_id)
-	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
-	local profile_index = self:profile_by_peer(peer_id, local_player_id)
+	local peers_with_full_profiles = state:get_peers_with_full_profiles()
 
-	if profile_index then
-		for i, package_id in ipairs(network_inventory_list) do
-			inventory_list[i] = NetworkLookup.inventory_packages[package_id]
-		end
+	for _, peer in ipairs(peers_with_full_profiles) do
+		local peer_id = peer.peer_id
+		local local_player_id = peer.local_player_id
+		local inventory_data = state:get_inventory_data(peer_id, local_player_id)
 
-		for i, package_id in ipairs(network_inventory_list_first_person) do
-			inventory_list_first_person[i] = NetworkLookup.inventory_packages[package_id]
-		end
+		if inventory_data then
+			local is_owner = peer_id == own_peer_id
+			local needed_packages = (is_owner and inventory_data.first_person) or inventory_data.third_person
 
-		self:_profile_select_inventory(profile_index, inventory_list, inventory_list_first_person, peer_id, local_player_id, client_sync_id)
-	end
-end
+			for needed_package, _ in pairs(needed_packages) do
+				all_needed_packages[needed_package] = true
+			end
 
-ProfileSynchronizer.rpc_server_assign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index)
-	if channel_id ~= IS_LOCAL_CALL then
-		local sender_peer_id = CHANNEL_TO_PEER_ID[channel_id]
+			local loaded_inventory_id = state:get_loaded_inventory_id(own_peer_id, peer_id, local_player_id)
 
-		if sender_peer_id ~= self._server_peer_id then
-			return
-		end
-	end
+			if loaded_inventory_id ~= inventory_data.inventory_id then
+				local all_loaded = true
 
-	printf("ProfileSynchronizer:rpc_server_assign_peer_to_profile() peer_id(%s) local_player_id(%s) profile_index(%s) career_index(%s)", peer_id, local_player_id, profile_index, career_index)
-	fassert(not self._is_server or channel_id == IS_LOCAL_CALL, "rpc_server_assign_peer_to_profile was sent by another peer when we're server!")
-	fassert(peer_id and local_player_id, "Sanity check.")
+				for needed_package, _ in pairs(needed_packages) do
+					if not package_manager:has_loaded(needed_package, PACKAGE_MANAGER_REFERENCE_NAME) then
+						missing_packages[needed_package] = true
+						all_loaded = false
+					end
+				end
 
-	local profile_owners = self._profile_owners[profile_index]
-	profile_owners[#profile_owners + 1] = self:_create_owner_table(peer_id, local_player_id, career_index)
-
-	if self._is_server then
-		local is_hero_profile = self:_is_hero_profile(profile_index)
-
-		if is_hero_profile then
-			local hero_profile_index = GetHeroAffiliationIndex(profile_index)
-
-			fassert(hero_profile_index, "sanity check.")
-
-			local is_human_player = self:is_human_player(peer_id, local_player_id) or false
-
-			if is_human_player then
-				self._slot_allocator:allocate_slot(hero_profile_index, peer_id, local_player_id)
-			else
-				self._slot_allocator:free_slot(hero_profile_index)
+				if all_loaded then
+					state:set_own_loaded_inventory_id(peer_id, local_player_id, inventory_data.inventory_id)
+				end
 			end
 		end
 	end
 
-	if self._is_server then
-		local matchmaking_manager = Managers.matchmaking
+	for missing_package, _ in pairs(missing_packages) do
+		if not package_manager:is_loading(missing_package) then
+			local async = true
+			loaded_or_loading_packages[missing_package] = true
 
-		if matchmaking_manager then
-			matchmaking_manager:update_profiles_data_on_clients()
+			package_manager:load(missing_package, PACKAGE_MANAGER_REFERENCE_NAME, nil, async)
 		end
 	end
 
-	if peer_id == self._peer_id then
-		self:_update_backend_selected_career(profile_index, career_index)
-
-		if profile_index ~= FindProfileIndex("spectator") then
-			CosmeticUtils.sync_local_player_cosmetics(profile_index, career_index)
-		end
-
-		local inventory_list, inventory_list_first_person = self._inventory_package_synchronizer:build_inventory_lists(profile_index, career_index)
-		local network_inventory_list = FrameTable.alloc_table()
-		local network_inventory_list_first_person = FrameTable.alloc_table()
-
-		inventory_map_to_network_array(inventory_list, network_inventory_list)
-		inventory_map_to_network_array(inventory_list_first_person, network_inventory_list_first_person)
-		table.dump(inventory_list, "inventory_list")
-		table.dump(inventory_list_first_person, "inventory_list_first_person")
-		self._network_transmit:send_rpc_server("rpc_client_select_inventory", local_player_id, network_inventory_list, network_inventory_list_first_person, NO_CLIENT_SYNC_ID)
+	for package, _ in pairs(loaded_or_loading_packages) do
+		packages_to_remove[package] = true
 	end
+
+	for needed_package, _ in pairs(all_needed_packages) do
+		packages_to_remove[needed_package] = nil
+	end
+
+	for package_to_remove, _ in pairs(packages_to_remove) do
+		if package_manager:can_unload(package_to_remove) then
+			package_manager:unload(package_to_remove, PACKAGE_MANAGER_REFERENCE_NAME)
+
+			loaded_or_loading_packages[package_to_remove] = nil
+		end
+	end
+
+	state:set_loaded_or_loading_packages(loaded_or_loading_packages)
+end
+
+local function unload_all_packages(state)
+	local loaded_or_loading_packages = state:get_loaded_or_loading_packages()
+	local package_manager = Managers.package
+
+	for package_name, _ in pairs(loaded_or_loading_packages) do
+		package_manager:unload(package_name, PACKAGE_MANAGER_REFERENCE_NAME)
+	end
+end
+
+ProfileSynchronizer = class(ProfileSynchronizer)
+
+ProfileSynchronizer.init = function (self, is_server, lobby_object, network_state)
+	self._state = network_state
+	self._lobby = lobby_object
+	self._cached_all_synced_for_peer = {
+		ingame = {},
+		any = {}
+	}
+end
+
+local RPCS = {
+	"rpc_assign_peer_to_profile"
+}
+
+ProfileSynchronizer.register_rpcs = function (self, network_event_delegate, network_transmit)
+	self._network_event_delegate = network_event_delegate
+
+	self._network_event_delegate:register(self, unpack(RPCS))
+end
+
+ProfileSynchronizer.unregister_network_events = function (self)
+	self._network_event_delegate:unregister(self)
+end
+
+ProfileSynchronizer.destroy = function (self)
+	unload_all_packages(self._state)
+end
+
+ProfileSynchronizer.update = function (self)
+	update_local_packages(self._state)
+end
+
+ProfileSynchronizer.hot_join_sync = function (self, peer_id)
+	fassert(self._state:is_server(), "only for the server")
+	print(sprintf("Peer %s entered session", peer_id))
+	print(sprintf("Running hot_join_sync for peer %s", peer_id))
+
+	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+	local peers_with_full_profiles = self._state:get_peers_with_full_profiles()
+
+	for _, other_peer in ipairs(peers_with_full_profiles) do
+		local other_peer_id = other_peer.peer_id
+		local other_local_player_id = other_peer.local_player_id
+		local other_profile_index = other_peer.profile_index
+		local other_career_index = other_peer.career_index
+		local other_is_bot = other_peer.is_bot
+
+		RPC.rpc_assign_peer_to_profile(channel_id, other_peer_id, other_local_player_id, other_profile_index, other_career_index, other_is_bot)
+	end
+end
+
+ProfileSynchronizer.clear_peer_data = function (self, peer_id)
+	fassert(self._state:is_server(), "only for the server")
+	print(sprintf("Peer %s left session", peer_id))
+	self:_unassign_profiles_of_peer(peer_id)
+	self:_clear_profile_index_reservation(peer_id)
+	self:_sync_lobby_data()
+end
+
+ProfileSynchronizer.get_profile_index_reservation = function (self, profile_index)
+	local peer_id = self._state:get_profile_index_reservation(profile_index)
+
+	return peer_id
+end
+
+ProfileSynchronizer.try_reserve_profile_for_peer = function (self, peer_id, profile_index)
+	fassert(self._state:is_server(), "Should only be called on server.")
+
+	local reserver_peer = self._state:get_profile_index_reservation(profile_index)
+
+	if reserver_peer == peer_id then
+		return true
+	end
+
+	if reserver_peer == nil then
+		print(sprintf("Reserving profile index %d to peer %s", profile_index, peer_id))
+		self:_clear_profile_index_reservation(peer_id)
+		self._state:set_profile_index_reservation(profile_index, peer_id)
+		self:_sync_lobby_data()
+
+		return true
+	end
+
+	return false
+end
+
+ProfileSynchronizer.clear_profile_index_reservation = function (self, peer_id)
+	self:_clear_profile_index_reservation(peer_id)
+	self:_sync_lobby_data()
+end
+
+ProfileSynchronizer.profile_by_peer = function (self, peer_id, local_player_id)
+	local peers_with_full_profiles = self._state:get_peers_with_full_profiles()
+
+	for _, other_peer in ipairs(peers_with_full_profiles) do
+		local other_peer_id = other_peer.peer_id
+		local other_local_player_id = other_peer.local_player_id
+
+		if other_peer_id == peer_id and other_local_player_id == local_player_id then
+			local other_profile_index = other_peer.profile_index
+			local other_career_index = other_peer.career_index
+
+			return other_profile_index, other_career_index
+		end
+	end
+
+	return nil, nil
+end
+
+ProfileSynchronizer.get_peers_with_full_profiles = function (self)
+	return self._state:get_peers_with_full_profiles()
+end
+
+ProfileSynchronizer.assign_full_profile = function (self, peer_id, local_player_id, profile_index, career_index, is_bot)
+	local state = self._state
+
+	fassert(state:is_server(), "Should only be called on server.")
+	print(sprintf("Assigning peer(%s:%s) to profile(%s) career(%s)", peer_id, local_player_id, profile_index, career_index))
+	self:_unassign_profiles_of_peer(peer_id, local_player_id)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
-	status.selected_profile_index = profile_index
-	status.selected_career_index = career_index
-	status.profile_index = profile_index
-	status.career_index = career_index
-	status.profile_id = SPProfiles[profile_index].display_name
 
-	for _, peer_table in pairs(self._loaded_peers) do
-		for loaded_local_player_id, _ in pairs(peer_table) do
-			peer_table[loaded_local_player_id] = false
+	self:_assign_peer_to_profile(peer_id, local_player_id, profile_index, career_index, is_bot, status)
+
+	local own_peer_id = state:get_own_peer_id()
+	local peers = state:get_peers()
+
+	for _, other_peer_id in ipairs(peers) do
+		if other_peer_id ~= own_peer_id then
+			local other_channel_id = PEER_ID_TO_CHANNEL[other_peer_id]
+
+			RPC.rpc_assign_peer_to_profile(other_channel_id, peer_id, local_player_id, profile_index, career_index, is_bot)
 		end
 	end
+end
+
+ProfileSynchronizer.unassign_profiles_of_peer = function (self, peer_id, optional_local_player_id)
+	self:_unassign_profiles_of_peer(peer_id, optional_local_player_id)
+end
+
+ProfileSynchronizer.get_first_free_profile = function (self)
+	local career_index = 1
+
+	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+		if not self:is_profile_in_use(profile_index) then
+			return profile_index, career_index
+		end
+	end
+
+	fassert(false, "Trying to get free profile when there are no free profiles.")
+end
+
+ProfileSynchronizer.is_profile_in_use = function (self, profile_index)
+	local peers_with_full_profiles = self._state:get_peers_with_full_profiles()
+
+	for _, peer in ipairs(peers_with_full_profiles) do
+		if peer.profile_index == profile_index then
+			return true
+		end
+	end
+
+	return false
+end
+
+ProfileSynchronizer.all_synced = function (self)
+	local current_revision = self._state:get_revision()
+
+	if self._cached_all_synced_revision ~= current_revision then
+		local ignore_loading_peers = false
+		self._cached_all_synced = are_all_synced(self._state, ignore_loading_peers)
+		self._cached_all_synced_revision = current_revision
+	end
+
+	return self._cached_all_synced
+end
+
+ProfileSynchronizer.all_synced_for_peer = function (self, peer_id, local_player_id)
+	local ignore_loading_peers = false
+
+	return self:_all_synced_for_peer(peer_id, local_player_id, ignore_loading_peers)
+end
+
+ProfileSynchronizer.all_ingame_synced_for_peer = function (self, peer_id, local_player_id)
+	local ignore_loading_peers = true
+
+	return self:_all_synced_for_peer(peer_id, local_player_id, ignore_loading_peers)
+end
+
+ProfileSynchronizer._all_synced_for_peer = function (self, peer_id, local_player_id, ignore_loading_peers)
+	local current_revision = self._state:get_revision()
+	local cache_type = (ignore_loading_peers and "ingame") or "any"
+	local cache_for_peer = self._cached_all_synced_for_peer[cache_type][peer_id]
+	local cached_data = cache_for_peer and cache_for_peer[local_player_id]
+	local cached_data_revision_key = 1
+	local cached_data_result_key = 2
+
+	if not cached_data or cached_data[cached_data_revision_key] ~= current_revision then
+		local ignore_loading_peers = true
+		local result = are_all_synced_for_peer(self._state, peer_id, local_player_id, ignore_loading_peers)
+		cached_data = {
+			current_revision,
+			result
+		}
+		cache_for_peer = cache_for_peer or {}
+		cache_for_peer[local_player_id] = cached_data
+		self._cached_all_synced_for_peer[cache_type][peer_id] = cache_for_peer
+	end
+
+	return cached_data[cached_data_result_key]
+end
+
+ProfileSynchronizer.is_peer_all_synced = function (self, peer_id)
+	local peers_with_full_profiles = self._state:get_peers_with_full_profiles()
+
+	for _, other_peer in ipairs(peers_with_full_profiles) do
+		local other_peer_id = other_peer.peer_id
+		local other_local_player_id = other_peer.local_player_id
+		local other_inventory_data = self._state:get_inventory_data(other_peer_id, other_local_player_id)
+		local loaded_inventory_id = self._state:get_loaded_inventory_id(peer_id, other_peer_id, other_local_player_id)
+
+		if other_inventory_data.inventory_id ~= loaded_inventory_id then
+			return false
+		end
+	end
+
+	return true
+end
+
+ProfileSynchronizer.resync_loadout = function (self, peer_id, local_player_id)
+	print(sprintf("Resyncing loadout of peer(%s:%s)", peer_id, local_player_id))
+
+	local profile_index, career_index = self:profile_by_peer(peer_id, local_player_id)
+
+	update_inventory_data(self._state, peer_id, local_player_id, profile_index, career_index)
+end
+
+ProfileSynchronizer.rpc_assign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index, is_bot)
+	print(sprintf("rpc_assign_peer_to_profile peer_id:%s local_player_id:%d profile_index:%d career_index:%d is_bot:%s", peer_id, local_player_id, profile_index, career_index, (is_bot and "true") or "false"))
+
+	local status = Managers.party:get_player_status(peer_id, local_player_id)
+
+	if not status then
+		print("rpc_assign_peer_to_profile called without status available in party manager. Ignoring it")
+
+		return
+	end
+
+	self:_assign_peer_to_profile(peer_id, local_player_id, profile_index, career_index, is_bot, status)
+end
+
+ProfileSynchronizer._clear_profile_index_reservation = function (self, peer_id)
+	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+		local profile_reserver_peer_id = self._state:get_profile_index_reservation(profile_index)
+
+		if profile_reserver_peer_id == peer_id then
+			self._state:set_profile_index_reservation(profile_index, "")
+		end
+	end
+end
+
+ProfileSynchronizer._unassign_profiles_of_peer = function (self, peer_id, optional_local_player_id)
+	local peers_with_full_profiles = self._state:get_peers_with_full_profiles()
+
+	for _, other_peer in ipairs(peers_with_full_profiles) do
+		local other_peer_id = other_peer.peer_id
+		local other_local_player_id = other_peer.local_player_id
+
+		if other_peer_id == peer_id and (not optional_local_player_id or optional_local_player_id == other_local_player_id) then
+			self._state:delete_profile_data(peer_id, optional_local_player_id or 1)
+		end
+	end
+end
+
+ProfileSynchronizer._assign_peer_to_profile = function (self, peer_id, local_player_id, profile_index, career_index, is_bot)
+	self._state:set_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
+
+	local status = Managers.party:get_player_status(peer_id, local_player_id)
+	status.profile_index = profile_index
+	status.career_index = career_index
+	status.selected_profile_index = profile_index
+	status.selected_career_index = career_index
+	status.profile_id = SPProfiles[profile_index].display_name
 
 	Managers.mechanism:profile_changed(peer_id, local_player_id, profile_index, career_index)
 
@@ -552,143 +552,99 @@ ProfileSynchronizer.rpc_server_assign_peer_to_profile = function (self, channel_
 		Managers.state.game_mode:profile_changed(peer_id, local_player_id, profile_index, career_index)
 	end
 
-	self._all_synced = false
-end
+	if peer_id == self._state:get_own_peer_id() then
+		if profile_index ~= FindProfileIndex("spectator") then
+			local profile_settings = SPProfiles[profile_index]
+			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+			local hero_name = profile_settings.display_name
 
-ProfileSynchronizer._update_backend_selected_career = function (self, profile_index, career_index)
-	local profile_settings = SPProfiles[profile_index]
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local hero_name = profile_settings.display_name
-
-	hero_attributes:set(hero_name, "career", career_index)
-end
-
-ProfileSynchronizer.rpc_server_unassign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index)
-	local sender_peer_id = CHANNEL_TO_PEER_ID[channel_id]
-
-	if sender_peer_id ~= self._server_peer_id then
-		return
-	end
-
-	self:unassign_peer_to_profile(peer_id, local_player_id, profile_index, career_index)
-end
-
-ProfileSynchronizer.rpc_client_inventory_map_loaded = function (self, channel_id, inventory_sync_id)
-	if inventory_sync_id == self._inventory_sync_id then
-		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
-		local peer_table = self._loaded_peers[peer_id]
-
-		if peer_table == nil then
-			peer_table = {}
-			self._loaded_peers[peer_id] = peer_table
+			hero_attributes:set(hero_name, "career", career_index)
 		end
 
-		for local_player_id, _ in pairs(peer_table) do
-			peer_table[local_player_id] = true
-		end
+		update_inventory_data(self._state, peer_id, local_player_id, profile_index, career_index)
 	end
 end
 
-ProfileSynchronizer.rpc_server_inventory_all_synced = function (self, channel_id, inventory_sync_id)
-	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+local INVALID_PEER = "0"
+local INVALID_OWNER = "0:0"
 
-	if peer_id ~= self._server_peer_id then
-		return
-	end
+ProfileSynchronizer._sync_lobby_data = function (self)
+	fassert(self._state:is_server(), "Should only be called on server.")
 
-	self.last_inventory_sync_id = inventory_sync_id
-end
+	local lobby_data = self._lobby:get_stored_lobby_data()
 
-ProfileSynchronizer.rpc_server_set_inventory_sync_id = function (self, channel_id, client_sync_id, inventory_sync_id)
-	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+		local peer_id = self._state:get_profile_index_reservation(profile_index)
+		local key = lobby_slot_name(profile_index)
 
-	if peer_id ~= self._server_peer_id then
-		return
-	end
+		dprint("Write lobby data %s = %s", key, peer_id)
 
-	self._client_sync_id_map[client_sync_id] = inventory_sync_id
-end
-
-ProfileSynchronizer._draw_state = function (self)
-	if DEDICATED_SERVER then
-		return
-	end
-
-	local font = "materials/fonts/arial"
-	local font_material = "arial"
-	local text_height = 20
-	local row_height = 20
-
-	Imgui.Begin("ProfileSynchronizer", "always_auto_resize")
-	Imgui.Text("ProfileOwners:")
-
-	for _, profile_owners in pairs(self._profile_owners) do
-		for _, owner_table in ipairs(profile_owners) do
-			Imgui.Text(string.format("peer_id: %s, local_player_id: %s, carrer_index: %s", owner_table.peer_id, owner_table.local_player_id, owner_table.career_index))
+		if not peer_id then
+			lobby_data[key] = INVALID_OWNER
+		else
+			local local_player_id = 1
+			lobby_data[key] = join_lobby_entry(peer_id, local_player_id)
 		end
 	end
 
-	Imgui.Spacing()
-	Imgui.Text("LoadedPeers:")
+	self._lobby:set_lobby_data(lobby_data)
+end
 
-	local _, height = Gui.resolution()
-	local y = height - margin - text_height
-	local world = Application.debug_world()
+ProfileSynchronizer.get_packed_lobby_profile_slots = function (self)
+	local peers = {}
+	local player_indices = {}
 
-	if self._gui == nil then
-		self._gui = World.create_screen_gui(world, "immediate", "material", "materials/fonts/gw_fonts")
-	end
+	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+		local peer_id = self._state:get_profile_index_reservation(profile_index)
 
-	for peer_id, peer_table in pairs(self._loaded_peers) do
-		Imgui.Text(string.format("peer_id: %s, peer_table: %s", peer_id, table.tostring(peer_table)))
-	end
-
-	Imgui.Spacing()
-	Imgui.Text("HotJoinSyncedPeers:")
-
-	for peer_id, synced in pairs(self._hot_join_synced_peers) do
-		Imgui.Text(string.format("peer_id: %s, synced: %s", peer_id, tostring(synced)))
-	end
-
-	Imgui.Spacing()
-	Imgui.Text("All Synced: " .. tostring(self._all_synced))
-	Imgui.End()
-
-	y = y - margin
-	local x = margin
-
-	Gui.text(self._gui, "Peer", font, text_height, font_material, Vector3(x, y, 0), text_color)
-
-	x = x + owner_width
-
-	Gui.text(self._gui, "PID", font, text_height, font_material, Vector3(x, y, 0), text_color)
-
-	x = x + profile_width
-
-	Gui.text(self._gui, "Synced", font, text_height, font_material, Vector3(x, y, 0), text_color)
-
-	y = y - 4
-
-	Gui.rect(self._gui, Vector2(margin, y), Vector2(profile_width + owner_width + state_width, 1), text_color)
-
-	y = y - row_height
-
-	for peer_id, peer_table in pairs(self._loaded_peers) do
-		for local_player_id, is_synced in pairs(peer_table) do
-			x = margin
-
-			Gui.text(self._gui, peer_id, font, text_height, font_material, Vector3(x, y, 0), text_color)
-
-			x = x + owner_width
-
-			Gui.text(self._gui, tostring(local_player_id), font, text_height, font_material, Vector3(x, y, 0), text_color)
-
-			x = x + profile_width
-
-			Gui.text(self._gui, tostring(is_synced), font, text_height, font_material, Vector3(x, y, 0), text_color)
-
-			y = y - row_height
+		if not peer_id or peer_id == "" then
+			peers[#peers + 1] = INVALID_PEER
+			player_indices[#player_indices + 1] = 0
+		else
+			peers[#peers + 1] = peer_id
+			player_indices[#player_indices + 1] = 1
 		end
+
+		dprint("Packing slot %d as %s:%d", profile_index, peers[#peers], player_indices[#player_indices])
+	end
+
+	fassert(#peers == #player_indices)
+
+	return peers, player_indices
+end
+
+ProfileSynchronizer.is_free_in_lobby = function (profile_index, lobby_data)
+	local slot_name = lobby_slot_name(profile_index)
+	local owner = lobby_data[slot_name]
+
+	return owner == INVALID_OWNER or owner == nil
+end
+
+ProfileSynchronizer.unpack_lobby_profile_slots = function (peer_ids, player_indices, lobby_data)
+	assert(#peer_ids == #player_indices)
+
+	for profile_index = 1, #peer_ids, 1 do
+		local slot_name = lobby_slot_name(profile_index)
+		local peer_id = peer_ids[profile_index]
+		local local_player_id = player_indices[profile_index]
+		lobby_data[slot_name] = join_lobby_entry(peer_id, local_player_id)
+
+		dprint(sprintf("Unpacking slot %d as %s:%d", profile_index, peer_id, local_player_id))
+	end
+end
+
+ProfileSynchronizer.owner_in_lobby = function (profile_index, lobby_data)
+	local slot_name = lobby_slot_name(profile_index)
+	local owner = lobby_data[slot_name]
+
+	if owner == nil then
+		return
+	end
+
+	local peer_id, local_player_index = split_lobby_entry(owner)
+
+	if peer_id ~= INVALID_PEER and peer_id ~= nil then
+		return peer_id, local_player_index
 	end
 end
 

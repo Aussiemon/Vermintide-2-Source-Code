@@ -82,7 +82,7 @@ TimeManager._update_demo_timer = function (self, dt)
 
 	for key = 0, device.num_axes() - 1, 1 do
 		if gamepad_active then
-			if (PLATFORM ~= "ps4" or key < 3) and Vector3.length(device.axis(key)) ~= 0 then
+			if (not IS_PS4 or key < 3) and Vector3.length(device.axis(key)) ~= 0 then
 				any_device_input_axis_moved = true
 
 				break

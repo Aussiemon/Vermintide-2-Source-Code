@@ -563,8 +563,8 @@ local attract_mode_video = {
 	scenegraph_id = "splash_video",
 	loop = false,
 	material_name = "vermintide_2_reveal",
-	sound_start = (PLATFORM == "xb1" and "Play_reveal_trailer") or "Play_vermintide_2_reveal",
-	sound_stop = (PLATFORM == "xb1" and "Stop_reveal_trailer") or "Stop_vermintide_2_reveal"
+	sound_start = (IS_XB1 and "Play_reveal_trailer") or "Play_vermintide_2_reveal",
+	sound_stop = (IS_XB1 and "Stop_reveal_trailer") or "Stop_vermintide_2_reveal"
 }
 local skill_title_style = {
 	vertical_alignment = "bottom",
@@ -815,5 +815,5 @@ return {
 	start_game_button_widget = UIWidgets.create_default_button("start_game_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("start_game_menu_button_name")),
 	back_button_widget = UIWidgets.create_default_button("back_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("back_menu_button_name")),
 	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
-	press_start_widget = create_simple_pulsating_text((PLATFORM == "win32" and "press_any_key_to_continue") or "press_any_button_to_continue", "press_start", nil, nil, press_start_style)
+	press_start_widget = create_simple_pulsating_text((IS_WINDOWS and "press_any_key_to_continue") or "press_any_button_to_continue", "press_start", nil, nil, press_start_style)
 }

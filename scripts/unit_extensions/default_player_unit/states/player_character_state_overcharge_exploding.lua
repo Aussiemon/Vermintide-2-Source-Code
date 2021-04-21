@@ -25,10 +25,12 @@ PlayerCharacterStateOverchargeExploding.on_enter = function (self, unit, input, 
 	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "explode_start")
 	self.last_input_direction:store(Vector3.zero())
 
-	self.explosion_time = t + 3
 	self.has_exploded = false
 	local overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
 	self.explosion_template = overcharge_extension.explosion_template
+	self.no_forced_movement = overcharge_extension.no_forced_movement
+	self.explosion_time = t + (overcharge_extension.overcharge_explosion_time or 3)
+	self.percent_health_lost = overcharge_extension.percent_health_lost
 	self.walking = false
 	self.falling = false
 end
@@ -61,11 +63,16 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 
 	local overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
 
-	overcharge_extension:reset()
+	if overcharge_extension.lockout_overcharge_decay_rate then
+		overcharge_extension:set_lockout(true)
+	else
+		overcharge_extension:reset()
+	end
 
 	if not self.inside_inn then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local self_damage = health_extension:get_max_health()
+		self_damage = self_damage * (self.percent_health_lost or 1)
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local _, procced = buff_extension:apply_buffs_to_value(0, "overcharge_damage_immunity")
 
@@ -112,12 +119,6 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 
 	local params = self.temp_params
 
-	if CharacterStateHelper.is_ledge_hanging(world, unit, params) then
-		csm:change_state("ledge_hanging", params)
-
-		return
-	end
-
 	if (self.explosion_time <= t and not self.has_exploded) or not status_extension:is_overcharge_exploding() then
 		if status_extension:is_overcharge_exploding() then
 			self:explode()
@@ -161,6 +162,10 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		self.movement_speed_limit = self.movement_speed
 
 		first_person_extension:animation_event("overheat_indicator")
+	end
+
+	if self.no_forced_movement then
+		return
 	end
 
 	local player = Managers.player:owner(unit)

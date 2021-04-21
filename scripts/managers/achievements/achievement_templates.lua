@@ -2890,23 +2890,23 @@ AchievementTemplates.achievements.complete_level_all = {
 			"witch_hunter"
 		}
 
-		for level_key, _ in pairs(LevelSettings) do
-			if table.contains(UnlockableLevels, level_key) then
-				local all_completed = true
+		for i = 1, #UnlockableLevels, 1 do
+			local level_key = UnlockableLevels[i]
+			local all_heroes_completed_level = true
 
-				for _, hero in ipairs(heroes) do
-					local completed = statistics_db:get_persistent_stat(stats_id, "completed_levels_" .. hero, level_key)
+			for j = 1, #heroes, 1 do
+				local hero = heroes[j]
+				local completed = statistics_db:get_persistent_stat(stats_id, "completed_levels_" .. hero, level_key)
 
-					if completed == 0 then
-						all_completed = false
+				if completed == 0 then
+					all_heroes_completed_level = false
 
-						break
-					end
+					break
 				end
+			end
 
-				if all_completed then
-					return true
-				end
+			if all_heroes_completed_level then
+				return true
 			end
 		end
 

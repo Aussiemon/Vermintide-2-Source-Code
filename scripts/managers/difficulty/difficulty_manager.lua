@@ -26,7 +26,6 @@ DifficultyManager.set_difficulty = function (self, difficulty, tweak)
 	self.difficulty_tweak = tweak
 	self.difficulty_rank = DifficultySettings[difficulty].rank
 
-	Managers.mechanism:set_difficulty(difficulty, tweak)
 	SET_BREED_DIFFICULTY()
 
 	if self.is_server then

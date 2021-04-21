@@ -20,6 +20,7 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self._deactivation_sounds = {}
 	self._continuous_screen_effects = {}
 	self._deactivation_screen_effects = {}
+	self._vfx = {}
 
 	for stat_buff_name, _ in pairs(StatBuffApplicationMethods) do
 		self._stat_buffs[stat_buff_name] = {}
@@ -31,6 +32,7 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	end
 
 	self.is_server = Managers.player.is_server
+	self.is_local = not Managers.player.remote
 	self.is_husk = extension_init_data.is_husk
 	self.id = 1
 	self.individual_stat_buff_index = 1
@@ -111,6 +113,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 	local id = self.id
 	local world = self.world
 	self.id = id + 1
+	local new_buff = false
 
 	if #self._buffs == 0 then
 		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, true)
@@ -315,6 +318,24 @@ BuffExtension.add_buff = function (self, template_name, params)
 								self._continuous_screen_effects[id] = self:_play_screen_effect(sub_buff_template.continuous_effect)
 							end
 
+							local particles = sub_buff_template.particles
+
+							if particles then
+								local target_unit = self._unit
+								local is_first_person = false
+
+								if self.is_local and not self.is_husk then
+									local first_person_extension = ScriptUnit.has_extension(target_unit, "first_person_system")
+
+									if first_person_extension and first_person_extension.first_person_unit then
+										target_unit = first_person_extension.first_person_unit
+										is_first_person = true
+									end
+								end
+
+								self._vfx[id] = BuffUtils.create_attached_particles(world, particles, target_unit, is_first_person)
+							end
+
 							self._buffs[#self._buffs + 1] = buff
 						end
 					end
@@ -441,6 +462,7 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 		buff_extension_function_params.t = t
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
+		buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
 
 		if end_time and end_time <= t then
 			self:_remove_sub_buff(buff, i, buff_extension_function_params)
@@ -608,6 +630,16 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 
 	if deactivation_screen_effect then
 		self:_play_screen_effect(deactivation_screen_effect)
+	end
+
+	if not buff.template.max_stacks or self:num_buff_type(buff.buff_type) == 0 then
+		local particles = self._vfx[id]
+
+		if particles then
+			BuffUtils.destroy_attached_particles(world, particles)
+
+			self._vfx[id] = nil
+		end
 	end
 end
 
@@ -777,6 +809,16 @@ BuffExtension.has_procced = function (self, proc_chance, key)
 	return success
 end
 
+local function WEIGHTED_PROCS_SORT_FUNC(a, b)
+	return b.proc_weight < a.proc_weight
+end
+
+local function has_authority(buff, is_server, is_local)
+	local authority = buff.template.authority
+
+	return not authority or (authority == "server" and is_server) or (authority == "client" and is_local)
+end
+
 BuffExtension.trigger_procs = function (self, event, ...)
 	local event_buffs = self._event_buffs[event]
 	local num_event_buffs = table.size(event_buffs)
@@ -785,6 +827,9 @@ BuffExtension.trigger_procs = function (self, event, ...)
 		return
 	end
 
+	local is_server = self.is_server
+	local is_local = self.is_local
+	local world = self.world
 	local player = Managers.player:owner(self._unit)
 	local num_args = select("#", ...)
 	local params = FrameTable.alloc_table()
@@ -795,16 +840,31 @@ BuffExtension.trigger_procs = function (self, event, ...)
 		params[i] = arg
 	end
 
+	local weigthed_proc_keys = 1
+	local temp_weighted_procs = FrameTable.alloc_table()
+
 	for index, buff in pairs(event_buffs) do
 		local proc_chance = buff.proc_chance or 1
 
-		if self:has_procced(proc_chance, buff) then
-			local buff_func = ProcFunctions[buff.buff_func]
-			local success = buff_func(player, buff, params)
+		if has_authority(buff, is_server, is_local) and self:has_procced(proc_chance, buff) then
+			local proc_weight = buff.template.proc_weight or 0
+			temp_weighted_procs[weigthed_proc_keys] = {
+				buff = buff,
+				proc_weight = proc_weight
+			}
+			weigthed_proc_keys = weigthed_proc_keys + 1
+		end
+	end
 
-			if success and buff.template.remove_on_proc then
-				event_buffs_to_remove[#event_buffs_to_remove + 1] = buff
-			end
+	table.sort(temp_weighted_procs, WEIGHTED_PROCS_SORT_FUNC)
+
+	for i = 1, #temp_weighted_procs, 1 do
+		local buff = temp_weighted_procs[i].buff
+		local buff_func = ProcFunctions[buff.buff_func]
+		local success = buff_func(player, buff, params, world, ProcEventParams[event])
+
+		if success and buff.template.remove_on_proc then
+			event_buffs_to_remove[#event_buffs_to_remove + 1] = buff
 		end
 	end
 

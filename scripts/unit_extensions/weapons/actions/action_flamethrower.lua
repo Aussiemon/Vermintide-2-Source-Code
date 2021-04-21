@@ -169,7 +169,11 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 						if breed then
 							buff_target_number = buff_target_number + 1
 							local rand = math.round(Math.random_range(1, #NODES))
-							node = NODES[rand]
+							local random_node = NODES[rand]
+
+							if Unit.has_node(current_target, random_node) then
+								node = random_node or node
+							end
 						end
 
 						local target_position = Unit.world_position(current_target, Unit.node(current_target, node))

@@ -157,7 +157,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	max_targets_attack = buff_extension:apply_buffs_to_value(max_targets_attack or 1, "increased_max_targets")
 	max_targets_impact = buff_extension:apply_buffs_to_value(max_targets_impact or 1, "increased_max_targets")
 
-	if buff_extension:has_buff_type("armor penetration") then
+	if buff_extension:has_buff_perk("potion_armor_penetration") then
 		max_targets_impact = max_targets_impact * 2
 	end
 
@@ -922,7 +922,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 					local buff_result = "no_buff"
 
 					if shield_blocked then
-						if (charge_value == "heavy_attack" and buff_extension:has_buff_perk("shield_break")) or buff_extension:has_buff_type("armor penetration") then
+						if (charge_value == "heavy_attack" and buff_extension:has_buff_perk("shield_break")) or buff_extension:has_buff_perk("potion_armor_penetration") then
 							shield_break_procc = true
 						end
 					else
@@ -1371,19 +1371,23 @@ ActionSweep.finish = function (self, reason, data)
 	self.action_aborted_flow_event_sent = nil
 
 	if current_action.keep_block then
-		if not LEVEL_EDITOR_TEST then
-			local go_id = Managers.state.unit_storage:go_id(owner_unit)
+		local new_action_settings = data and data.new_action_settings
 
-			if self.is_server then
-				Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", go_id, false)
-			else
-				Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", go_id, false)
+		if not new_action_settings or not new_action_settings.keep_block then
+			if not LEVEL_EDITOR_TEST then
+				local go_id = Managers.state.unit_storage:go_id(owner_unit)
+
+				if self.is_server then
+					Managers.state.network.network_transmit:send_rpc_clients("rpc_set_blocking", go_id, false)
+				else
+					Managers.state.network.network_transmit:send_rpc_server("rpc_set_blocking", go_id, false)
+				end
 			end
+
+			local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+
+			status_extension:set_blocking(false)
 		end
-
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-
-		status_extension:set_blocking(false)
 	end
 
 	local hud_extension = self._owner_hud_extension

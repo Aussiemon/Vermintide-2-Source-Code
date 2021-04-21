@@ -162,7 +162,9 @@ ActionRangedBase._start_shooting = function (self, t)
 		first_person_extension:play_hud_sound_event(fire_sound_event)
 	end
 
-	Unit.flow_event(self.weapon_unit, "lua_start_shooting")
+	if not self.is_bot then
+		Unit.flow_event(self.weapon_unit, "lua_start_shooting")
+	end
 
 	self._state = "shooting"
 end

@@ -84,7 +84,7 @@ ImguiBuffsDebug.is_persistent = function (self)
 end
 
 ImguiBuffsDebug.draw = function (self, is_open)
-	Imgui.Begin("Buff Debug")
+	Imgui.begin_window("Buff Debug")
 	self:_update_controls()
 
 	local buffs = self._buff_extension and self._buff_extension._buffs
@@ -95,115 +95,115 @@ ImguiBuffsDebug.draw = function (self, is_open)
 	self:_display_perks(buffs)
 	self:_display_stat_buffs(stat_buffs)
 	self:_display_event_buffs(event_buffs)
-	Imgui.End()
+	Imgui.end_window()
 end
 
 ImguiBuffsDebug._update_controls = function (self)
-	local selected_unit = Imgui.Combo("Unit", self._selected_unit, self._unit_names) - 1
+	local selected_unit = Imgui.combo("Unit", self._selected_unit, self._unit_names)
 
 	if selected_unit ~= self._selected_unit then
 		self._selected_unit = selected_unit
 
-		self:_initialize_unit(self._units[selected_unit + 1])
+		self:_initialize_unit(self._units[selected_unit])
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Refresh") then
+	if Imgui.button("Refresh") then
 		self:_refresh_unit_list()
 	end
 
-	if Imgui.TreeNode("Add Buff Settings") then
+	if Imgui.tree_node("Add Buff Settings") then
 		local old_filter = self._filter_text
-		self._filter_text = Imgui.InputText("Search", self._filter_text)
+		self._filter_text = Imgui.input_text("Search", self._filter_text)
 
 		if self._filter_text ~= old_filter then
 			self._filtered_buff_list = self:_apply_buff_filter(self._filter_text, self._buff_list)
 		end
 
-		self._selected_buff_id = Imgui.ListBox("Buff To Add", self._selected_buff_id, self._filtered_buff_list) - 1
-		self._buff_advanced_params_enabled = Imgui.Checkbox("Advanced Params", self._buff_advanced_params_enabled)
+		self._selected_buff_id = Imgui.list_box("Buff To Add", self._selected_buff_id, self._filtered_buff_list)
+		self._buff_advanced_params_enabled = Imgui.checkbox("Advanced Params", self._buff_advanced_params_enabled)
 
 		if self._buff_advanced_params_enabled then
-			Imgui.TreePush("bonus_input")
+			Imgui.tree_push("bonus_input")
 
-			self._buff_bonus_enabled = Imgui.Checkbox("Bonus", self._buff_bonus_enabled)
+			self._buff_bonus_enabled = Imgui.checkbox("Bonus", self._buff_bonus_enabled)
 
 			if self._buff_bonus_enabled then
-				Imgui.SameLine()
+				Imgui.same_line()
 
-				self._buff_bonus = Imgui.InputFloat("", self._buff_bonus)
+				self._buff_bonus = Imgui.input_float("", self._buff_bonus)
 			end
 
-			Imgui.TreePop()
-			Imgui.TreePush("mult_input")
+			Imgui.tree_pop()
+			Imgui.tree_push("mult_input")
 
-			self._buff_multiplier_enabled = Imgui.Checkbox("Multiplier", self._buff_multiplier_enabled)
+			self._buff_multiplier_enabled = Imgui.checkbox("Multiplier", self._buff_multiplier_enabled)
 
 			if self._buff_multiplier_enabled then
-				Imgui.SameLine()
+				Imgui.same_line()
 
-				self._buff_multiplier = Imgui.InputFloat("", self._buff_multiplier)
+				self._buff_multiplier = Imgui.input_float("", self._buff_multiplier)
 			end
 
-			Imgui.TreePop()
-			Imgui.TreePush("val_input")
+			Imgui.tree_pop()
+			Imgui.tree_push("val_input")
 
-			self._buff_value_enabled = Imgui.Checkbox("Value", self._buff_value_enabled)
+			self._buff_value_enabled = Imgui.checkbox("Value", self._buff_value_enabled)
 
 			if self._buff_value_enabled then
-				Imgui.SameLine()
+				Imgui.same_line()
 
-				self._buff_value = Imgui.InputFloat("", self._buff_value)
+				self._buff_value = Imgui.input_float("", self._buff_value)
 			end
 
-			Imgui.TreePop()
-			Imgui.TreePush("proc_input")
+			Imgui.tree_pop()
+			Imgui.tree_push("proc_input")
 
-			self._buff_proc_chance_enabled = Imgui.Checkbox("Proc Chance", self._buff_proc_chance_enabled)
+			self._buff_proc_chance_enabled = Imgui.checkbox("Proc Chance", self._buff_proc_chance_enabled)
 
 			if self._buff_proc_chance_enabled then
-				Imgui.SameLine()
+				Imgui.same_line()
 
-				self._buff_proc_chance = Imgui.InputFloat("", self._buff_proc_chance)
+				self._buff_proc_chance = Imgui.input_float("", self._buff_proc_chance)
 			end
 
-			Imgui.TreePop()
-			Imgui.TreePush("duration_input")
+			Imgui.tree_pop()
+			Imgui.tree_push("duration_input")
 
-			self._buff_duration_enabled = Imgui.Checkbox("Duration", self._buff_duration_enabled)
+			self._buff_duration_enabled = Imgui.checkbox("Duration", self._buff_duration_enabled)
 
 			if self._buff_duration_enabled then
-				Imgui.SameLine()
+				Imgui.same_line()
 
-				self._buff_duration = Imgui.InputFloat("", self._buff_duration)
+				self._buff_duration = Imgui.input_float("", self._buff_duration)
 			end
 
-			Imgui.TreePop()
-			Imgui.TreePush("range_input")
+			Imgui.tree_pop()
+			Imgui.tree_push("range_input")
 
-			self._buff_range_enabled = Imgui.Checkbox("Range", self._buff_range_enabled)
+			self._buff_range_enabled = Imgui.checkbox("Range", self._buff_range_enabled)
 
 			if self._buff_range_enabled then
-				Imgui.SameLine()
+				Imgui.same_line()
 
-				self._buff_range = Imgui.InputFloat("", self._buff_range)
+				self._buff_range = Imgui.input_float("", self._buff_range)
 			end
 
-			Imgui.TreePop()
-			Imgui.TreePush("power_input")
-			Imgui.Dummy(15, 15)
-			Imgui.SameLine()
-			Imgui.Text("Power Level")
-			Imgui.SameLine()
+			Imgui.tree_pop()
+			Imgui.tree_push("power_input")
+			Imgui.dummy(15, 15)
+			Imgui.same_line()
+			Imgui.text("Power Level")
+			Imgui.same_line()
 
-			self._buff_power_level = Imgui.InputFloat("", self._buff_power_level)
+			self._buff_power_level = Imgui.input_float("", self._buff_power_level)
 
-			Imgui.TreePop()
+			Imgui.tree_pop()
 		end
 
-		if Imgui.Button("Add", 100, 20) then
-			local buff_to_add = self._filtered_buff_list[self._selected_buff_id + 1]
+		if Imgui.button("Add", 100, 20) then
+			local buff_to_add = self._filtered_buff_list[self._selected_buff_id]
 
 			if self._buff_advanced_params_enabled then
 				local params = {
@@ -220,54 +220,54 @@ ImguiBuffsDebug._update_controls = function (self)
 			self:_add_buff(self._buff_extension, buff_to_add, params)
 		end
 
-		if Imgui.Button("Add with buff system", 200, 20) then
-			local buff_to_add = self._filtered_buff_list[self._selected_buff_id + 1]
+		if Imgui.button("Add with buff system", 200, 20) then
+			local buff_to_add = self._filtered_buff_list[self._selected_buff_id]
 
 			self:_add_buff_with_buff_system(buff_to_add)
 		end
 
-		Imgui.Dummy(10, 10)
-		Imgui.TreePop()
+		Imgui.dummy(10, 10)
+		Imgui.tree_pop()
 	end
 end
 
 ImguiBuffsDebug._display_buffs = function (self, buffs)
-	if Imgui.TreeNode("Buffs") then
+	if Imgui.tree_node("Buffs") then
 		if buffs then
 			local buffs_to_remove = nil
 
 			for i = 1, #buffs, 1 do
 				local buff = buffs[i]
 
-				if Imgui.TreeNode(buff.buff_type .. "(" .. buff.id .. ")") then
+				if Imgui.tree_node(buff.buff_type .. "(" .. buff.id .. ")") then
 					for name, data in pairs(buff) do
-						if name == "template" and Imgui.TreeNode(name) then
+						if name == "template" and Imgui.tree_node(name) then
 							for template_name, template_data in pairs(data) do
-								Imgui.Text(template_name)
-								Imgui.SameLine()
-								Imgui.Text(tostring(template_data))
+								Imgui.text(template_name)
+								Imgui.same_line()
+								Imgui.text(tostring(template_data))
 							end
 
-							Imgui.TreePop()
+							Imgui.tree_pop()
 						end
 
 						if type(data) ~= "function" and type(data) ~= "table" and name ~= "buff_type" and name ~= "id" then
-							Imgui.Text(name)
-							Imgui.SameLine()
-							Imgui.Text(tostring(data))
+							Imgui.text(name)
+							Imgui.same_line()
+							Imgui.text(tostring(data))
 						end
 					end
 
-					if Imgui.Button("Remove") then
+					if Imgui.button("Remove") then
 						buffs_to_remove = buffs_to_remove or {}
 
 						table.insert(buffs_to_remove, buff.id)
 					end
 
-					Imgui.TreePop()
+					Imgui.tree_pop()
 				end
 
-				Imgui.Separator()
+				Imgui.separator()
 			end
 
 			if buffs_to_remove then
@@ -277,13 +277,13 @@ ImguiBuffsDebug._display_buffs = function (self, buffs)
 			end
 		end
 
-		Imgui.Dummy(10, 10)
-		Imgui.TreePop()
+		Imgui.dummy(10, 10)
+		Imgui.tree_pop()
 	end
 end
 
 ImguiBuffsDebug._display_perks = function (self, buffs)
-	if Imgui.TreeNode("Perks") then
+	if Imgui.tree_node("Perks") then
 		if buffs then
 			for i = 1, #buffs, 1 do
 				local buff = buffs[i]
@@ -291,24 +291,24 @@ ImguiBuffsDebug._display_perks = function (self, buffs)
 				local perk = template and template.perk
 
 				if perk then
-					Imgui.Text(perk)
+					Imgui.text(perk)
 				end
 			end
 		end
 
-		Imgui.Dummy(10, 10)
-		Imgui.TreePop()
+		Imgui.dummy(10, 10)
+		Imgui.tree_pop()
 	end
 end
 
 ImguiBuffsDebug._display_stat_buffs = function (self, stat_buffs)
-	if Imgui.TreeNode("Stat Buffs") then
-		self._stat_base_value = Imgui.InputFloat("Base Stat Value", self._stat_base_value)
+	if Imgui.tree_node("Stat Buffs") then
+		self._stat_base_value = Imgui.input_float("Base Stat Value", self._stat_base_value)
 
 		if stat_buffs then
-			Imgui.Separator()
-			Imgui.Text(string.format("%-36s%8s%12s%13s%14s%15s", "Name", "Bonus", "Multiplier", "Value", "Proc Chance", "Final Value"))
-			Imgui.Separator()
+			Imgui.separator()
+			Imgui.text(string.format("%-36s%8s%12s%13s%14s%15s", "Name", "Bonus", "Multiplier", "Value", "Proc Chance", "Final Value"))
+			Imgui.separator()
 
 			for name, data in pairs(stat_buffs) do
 				if not table.is_empty(data) then
@@ -322,29 +322,29 @@ ImguiBuffsDebug._display_stat_buffs = function (self, stat_buffs)
 						local display_value = value or 0
 						final_value = value or final_value * (1 + multiplier) + bonus
 
-						Imgui.Text(string.format("%-36s%8.2f%12.2f%13.2f%14.2f%15.2f", name, bonus, multiplier, display_value, proc_chance, final_value))
+						Imgui.text(string.format("%-36s%8.2f%12.2f%13.2f%14.2f%15.2f", name, bonus, multiplier, display_value, proc_chance, final_value))
 					end
 
-					Imgui.Separator()
+					Imgui.separator()
 				end
 			end
 		end
 
-		Imgui.Dummy(10, 10)
-		Imgui.TreePop()
+		Imgui.dummy(10, 10)
+		Imgui.tree_pop()
 	end
 end
 
 ImguiBuffsDebug._display_event_buffs = function (self, event_buffs)
-	if Imgui.TreeNode("Event Buffs") then
+	if Imgui.tree_node("Event Buffs") then
 		if event_buffs then
-			Imgui.Separator()
-			Imgui.Text(string.format("%-53s%8s%12s%13s%14s", "Name", "Bonus", "Multiplier", "Value", "Proc Chance"))
-			Imgui.Separator()
+			Imgui.separator()
+			Imgui.text(string.format("%-53s%8s%12s%13s%14s", "Name", "Bonus", "Multiplier", "Value", "Proc Chance"))
+			Imgui.separator()
 
 			for name, data in pairs(event_buffs) do
 				if not table.is_empty(data) then
-					if Imgui.TreeNode(name) then
+					if Imgui.tree_node(name) then
 						for index, buff in pairs(data) do
 							local buff_name = buff.buff_type or ""
 							local bonus = buff.bonus or 0
@@ -352,19 +352,19 @@ ImguiBuffsDebug._display_event_buffs = function (self, event_buffs)
 							local multiplier = buff.multiplier or 0
 							local proc_chance = buff.proc_chance or 1
 
-							Imgui.Text(string.format("%-50s%8.2f%12.2f%13.2f%14.2f", buff_name, bonus, multiplier, value, proc_chance))
+							Imgui.text(string.format("%-50s%8.2f%12.2f%13.2f%14.2f", buff_name, bonus, multiplier, value, proc_chance))
 						end
 
-						Imgui.TreePop()
+						Imgui.tree_pop()
 					end
 
-					Imgui.Separator()
+					Imgui.separator()
 				end
 			end
 		end
 
-		Imgui.Dummy(10, 10)
-		Imgui.TreePop()
+		Imgui.dummy(10, 10)
+		Imgui.tree_pop()
 	end
 end
 
@@ -391,7 +391,7 @@ ImguiBuffsDebug._refresh_unit_list = function (self)
 
 				if player.local_player then
 					position = POSITION_LOOKUP[player.player_unit]
-					self._selected_unit = #self._unit_names - 1
+					self._selected_unit = #self._unit_names
 
 					self:_initialize_unit(player.player_unit)
 				end

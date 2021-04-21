@@ -10,7 +10,7 @@ local info_window_size = {
 	450,
 	list_window_size[2] + 20
 }
-local IS_PC = PLATFORM == "win32"
+local IS_PC = IS_WINDOWS
 local entry_height = (IS_PC and 35) or 50
 local entry_font_size = (IS_PC and 22) or 28
 local list_entry_size = {

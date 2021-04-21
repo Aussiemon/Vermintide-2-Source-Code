@@ -102,10 +102,16 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default_charge",
-					send_buffer = true,
+					start_time = 0.5,
 					action = "action_one",
-					auto_chain = true,
-					start_time = 0.5
+					send_buffer = true,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "heavy_attack",
+					start_time = 0.5,
+					action = "action_one",
+					auto_chain = true
 				}
 			}
 		},
@@ -159,10 +165,16 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default_charge_2",
-					send_buffer = true,
+					start_time = 0.5,
 					action = "action_one",
-					auto_chain = true,
-					start_time = 0.5
+					send_buffer = true,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "heavy_attack_left",
+					start_time = 0.5,
+					action = "action_one",
+					auto_chain = true
 				}
 			}
 		},

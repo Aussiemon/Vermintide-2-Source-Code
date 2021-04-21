@@ -164,8 +164,16 @@ MutatorHandler.has_activated_mutator = function (self, name)
 	return self._active_mutators[name] ~= nil
 end
 
+MutatorHandler.has_mutator = function (self, name)
+	return self._mutators[name] ~= nil
+end
+
 MutatorHandler.activated_mutators = function (self)
 	return self._active_mutators
+end
+
+MutatorHandler.mutators = function (self)
+	return self._mutators
 end
 
 MutatorHandler.ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)
@@ -244,7 +252,7 @@ MutatorHandler.player_hit = function (self, hit_unit, attacking_unit, attack_dat
 	end
 end
 
-MutatorHandler.modify_player_base_damage = function (self, damaged_unit, damage, damage_type)
+MutatorHandler.modify_player_base_damage = function (self, damaged_unit, attacker_unit, damage, damage_type)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
 	local is_server = self._is_server
@@ -253,7 +261,7 @@ MutatorHandler.modify_player_base_damage = function (self, damaged_unit, damage,
 		local template = mutator_data.template
 
 		if is_server and template.modify_player_base_damage then
-			damage = template.modify_player_base_damage(mutator_context, mutator_data, damaged_unit, damage, damage_type)
+			damage = template.modify_player_base_damage(mutator_context, mutator_data, damaged_unit, attacker_unit, damage, damage_type)
 		end
 	end
 
@@ -563,18 +571,25 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 	end
 end
 
-MutatorHandler.tweak_pack_spawning_settings = function (mutator_list, conflict_director_name, pack_spawning_settings)
+MutatorHandler.tweak_pack_spawning_settings = function (zone_mutator_list, mutator_list, conflict_director_name, pack_spawning_settings)
 	local new_pack_spawning_settings = nil
 
-	for _, mutator_name in ipairs(mutator_list) do
-		local mutator_template = MutatorTemplates[mutator_name]
+	local function run_mutators(mutators)
+		for _, mutator_name in ipairs(mutators) do
+			local mutator_template = MutatorTemplates[mutator_name]
 
-		if mutator_template.tweak_pack_spawning_settings then
-			new_pack_spawning_settings = new_pack_spawning_settings or table.clone(pack_spawning_settings)
+			if mutator_template.tweak_pack_spawning_settings then
+				if not new_pack_spawning_settings then
+					new_pack_spawning_settings = table.clone(pack_spawning_settings)
+				end
 
-			mutator_template.tweak_pack_spawning_settings(conflict_director_name, new_pack_spawning_settings)
+				mutator_template.tweak_pack_spawning_settings(conflict_director_name, new_pack_spawning_settings)
+			end
 		end
 	end
+
+	run_mutators(mutator_list)
+	run_mutators(zone_mutator_list)
 
 	return new_pack_spawning_settings or pack_spawning_settings
 end

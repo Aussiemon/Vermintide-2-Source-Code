@@ -12,7 +12,7 @@ end
 
 local params = {}
 
-TelemetryEvents.header = function (self, engine_revision, content_revision, machine_name, is_testify_session)
+TelemetryEvents.header = function (self, engine_revision, content_revision, steam_branch, svn_branch, machine_name, is_testify_session)
 	table.clear(params)
 
 	params.version = TelemetrySettings.version
@@ -21,9 +21,17 @@ TelemetryEvents.header = function (self, engine_revision, content_revision, mach
 	params.build = BUILD
 	params.engine_revision = engine_revision
 	params.content_revision = content_revision
+	params.steam_branch = steam_branch
+	params.svn_branch = svn_branch
 	params.machine_id = (Application.machine_id and Application.machine_id()) or nil
 	params.machine_name = machine_name
 	params.is_testify_session = is_testify_session
+
+	if IS_XB1 then
+		params.console_type = XboxOne.console_type_string()
+	elseif IS_PS4 then
+		params.console_type = (PS4.is_pro() and "pro") or "not_pro"
+	end
 
 	self.manager:register_event("header", params)
 end
@@ -159,8 +167,8 @@ TelemetryEvents.matchmaking_search = function (self, player, data)
 	table.clear(params)
 
 	params.state = "search"
-	params.game_mode = data.game_mode
-	params.level_key = data.level_key
+	params.matchmaking_type = data.matchmaking_type
+	params.mission_id = data.mission_id
 	params.difficulty = data.difficulty
 	params.quick_game = data.quick_game
 	params.join_mode = data.join_mode
@@ -178,8 +186,8 @@ TelemetryEvents.matchmaking_search_timeout = function (self, player, time_taken,
 
 	params.state = "search_timeout"
 	params.time_taken = time_taken
-	params.game_mode = data.game_mode
-	params.level_key = data.level_key
+	params.matchmaking_type = data.matchmaking_type
+	params.mission_id = data.mission_id
 	params.difficulty = data.difficulty
 	params.quick_game = data.quick_game
 	params.join_mode = data.join_mode
@@ -197,8 +205,8 @@ TelemetryEvents.matchmaking_cancelled = function (self, player, time_taken, data
 
 	params.state = "cancelled"
 	params.time_taken = time_taken
-	params.game_mode = data.game_mode
-	params.level_key = data.level_key
+	params.matchmaking_type = data.matchmaking_type
+	params.mission_id = data.mission_id
 	params.difficulty = data.difficulty
 	params.quick_game = data.quick_game
 	params.join_mode = data.join_mode
@@ -216,8 +224,8 @@ TelemetryEvents.matchmaking_hosting = function (self, player, time_taken, data)
 
 	params.state = "hosting"
 	params.time_taken = time_taken
-	params.game_mode = data.game_mode
-	params.level_key = data.level_key
+	params.matchmaking_type = data.matchmaking_type
+	params.mission_id = data.mission_id
 	params.difficulty = data.difficulty
 	params.quick_game = data.quick_game
 	params.join_mode = data.join_mode
@@ -235,8 +243,8 @@ TelemetryEvents.matchmaking_starting_game = function (self, player, time_taken, 
 
 	params.state = "starting_game"
 	params.time_taken = time_taken
-	params.game_mode = data.game_mode
-	params.level_key = data.level_key
+	params.matchmaking_type = data.matchmaking_type
+	params.mission_id = data.mission_id
 	params.difficulty = data.difficulty
 	params.quick_game = data.quick_game
 	params.join_mode = data.join_mode
@@ -254,8 +262,8 @@ TelemetryEvents.matchmaking_player_joined = function (self, player, time_taken, 
 
 	params.state = "player_joined"
 	params.time_taken = time_taken
-	params.game_mode = data.game_mode
-	params.level_key = data.level_key
+	params.matchmaking_type = data.matchmaking_type
+	params.mission_id = data.mission_id
 	params.difficulty = data.difficulty
 	params.quick_game = data.quick_game
 	params.join_mode = data.join_mode
@@ -613,6 +621,17 @@ TelemetryEvents.fps = function (self, avg_fps, histogram)
 	self.manager:register_event("fps", params)
 end
 
+TelemetryEvents.fps_at_point = function (self, point_id, cam_pos, cam_rot, avg_fps)
+	table.clear(params)
+
+	params.point_id = point_id
+	params.cam_pos = cam_pos
+	params.cam_rot = cam_rot
+	params.avg_fps = avg_fps
+
+	self.manager:register_event("fps_at_point", params)
+end
+
 TelemetryEvents.end_of_game_rewards = function (self, rewards)
 	table.clear(params)
 
@@ -675,20 +694,102 @@ TelemetryEvents.store_product_purchased = function (self, product)
 	self.manager:register_event("store_product_purchased", params)
 end
 
-TelemetryEvents.player_joined = function (self, player)
+TelemetryEvents.player_joined = function (self, player, num_human_players)
 	table.clear(params)
 
 	params.player_id = player:telemetry_id()
+	params.num_human_players = num_human_players
 
 	self.manager:register_event("player_joined", params)
 end
 
-TelemetryEvents.player_left = function (self, player)
+TelemetryEvents.player_left = function (self, player, num_human_players)
 	table.clear(params)
 
 	params.player_id = player:telemetry_id()
+	params.num_human_players = num_human_players
 
 	self.manager:register_event("player_left", params)
+end
+
+TelemetryEvents.deus_run_started = function (self, run_id, journey_name, run_seed, dominant_god, difficulty)
+	table.clear(params)
+
+	params.run_id = run_id
+	params.journey_name = journey_name
+	params.run_seed = run_seed
+	params.dominant_god = dominant_god
+	params.difficulty = difficulty
+
+	self.manager:register_event("deus_run_started", params)
+end
+
+TelemetryEvents.deus_run_ended = function (self, data)
+	table.clear(params)
+
+	params.run_id = data.run_id
+	params.run_duration_in_seconds = data.run_duration_in_seconds
+	params.completed_levels = data.completed_levels
+	params.game_won = data.game_won
+	params.blessings_boughts = data.blessings_boughts
+	params.power_ups_bought = data.power_ups_bought
+	params.ground_coins_picked_up = data.ground_coins_picked_up
+	params.monster_coins_picked_up = data.monster_coins_picked_up
+	params.melee_swap_chests_used = data.melee_swap_chests_used
+	params.ranged_swap_chests_used = data.ranged_swap_chests_used
+	params.upgrade_chests_used = data.upgrade_chests_used
+	params.power_up_chests_used = data.power_up_chests_used
+	params.cursed_chests_used = data.cursed_chests_used
+	params.coins_earned = data.coins_earned
+	params.coins_spent = data.coins_spent
+	params.shops_visited = data.shops_visited
+	params.signature_levels_completed = data.signature_levels_completed
+	params.travel_levels_completed = data.travel_levels_completed
+	params.host_migration_count = data.host_migration_count
+
+	self.manager:register_event("deus_run_ended", params)
+end
+
+TelemetryEvents.deus_level_started = function (self, data)
+	table.clear(params)
+
+	params.run_id = data.run_id
+	params.num_bots = data.num_bots
+	params.level = data.level
+	params.curse = data.curse
+	params.theme = data.theme
+	params.path = data.path
+	params.difficulty_tweak = data.difficulty_tweak
+
+	self.manager:register_event("deus_level_started", params)
+end
+
+TelemetryEvents.deus_level_ended = function (self, data)
+	table.clear(params)
+
+	params.run_id = data.run_id
+	params.times_revived = data.times_revived
+	params.num_bots = data.num_bots
+	params.level = data.level
+	params.curse = data.curse
+	params.theme = data.theme
+	params.game_won = data.game_won
+	params.level_duration_in_seconds = data.level_duration_in_seconds
+	params.path = data.path
+	params.difficulty_tweak = data.difficulty_tweak
+
+	self.manager:register_event("deus_level_ended", params)
+end
+
+TelemetryEvents.deus_coins_changed = function (self, telemetry_id, run_id, coin_delta, coin_description)
+	table.clear(params)
+
+	params.run_id = run_id
+	params.player_id = telemetry_id
+	params.coin_delta = coin_delta
+	params.coin_description = coin_description
+
+	self.manager:register_event("deus_coins_changed", params)
 end
 
 TelemetryEvents.network_ping = function (self, avg, std_dev, p99, p95, p90, p75, p50, p25, observations)
@@ -705,6 +806,15 @@ TelemetryEvents.network_ping = function (self, avg, std_dev, p99, p95, p90, p75,
 	params.observations = observations
 
 	self.manager:register_event("network_ping", params)
+end
+
+TelemetryEvents.memory_usage = function (self, index, memory_usage)
+	table.clear(params)
+
+	params.index = index
+	params.memory_usage = memory_usage
+
+	self.manager:register_event("memory_usage", params)
 end
 
 return

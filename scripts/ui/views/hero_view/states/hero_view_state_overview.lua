@@ -84,7 +84,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.disabled_backend_ids_sync_id = 0
 	self._disabled_backend_ids = {}
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
 	end
 
@@ -123,7 +123,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 end
 
 HeroViewStateOverview._setup_menu_layout = function (self)
-	local use_gamepad_layout = PLATFORM == "ps4" or PLATFORM == "xb1" or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
 
 	if use_gamepad_layout then
 		self._layout_settings = local_require("scripts/ui/views/hero_view/states/hero_window_layout_console")
@@ -188,6 +188,7 @@ HeroViewStateOverview.enable_ingame_overlay = function (self)
 
 		World.set_data(world, "fullscreen_blur", 0.5)
 		World.set_data(world, "greyscale", 1)
+		Managers.state.event:trigger("ingame_menu_opened", "interacting")
 	end
 end
 
@@ -198,6 +199,7 @@ HeroViewStateOverview.disable_ingame_overlay = function (self)
 
 		World.set_data(world, "fullscreen_blur", nil)
 		World.set_data(world, "greyscale", nil)
+		Managers.state.event:trigger("ingame_menu_closed")
 	end
 end
 
@@ -714,6 +716,17 @@ HeroViewStateOverview._start_transition_animation = function (self, key, animati
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 	self._animations[key] = anim_id
+end
+
+HeroViewStateOverview.set_auto_fill_rarity = function (self, rarity)
+	self._auto_fill_rarity = rarity
+end
+
+HeroViewStateOverview.get_auto_fill_rarity = function (self)
+	local auto_fill_rarity = self._auto_fill_rarity
+	self._auto_fill_rarity = nil
+
+	return auto_fill_rarity
 end
 
 HeroViewStateOverview.set_selected_items_backend_ids = function (self, backend_ids)

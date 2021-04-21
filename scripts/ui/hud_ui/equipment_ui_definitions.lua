@@ -10,7 +10,7 @@ local slot_icon_size = {
 	40
 }
 local scenegraph_definition = {
-	root = {
+	root_parent = {
 		scale = "hud_scale_fit",
 		position = {
 			0,
@@ -28,6 +28,19 @@ local scenegraph_definition = {
 			0,
 			0,
 			UILayer.hud
+		},
+		size = {
+			SIZE_X,
+			SIZE_Y
+		}
+	},
+	root = {
+		parent = "root_parent",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			0
 		},
 		size = {
 			SIZE_X,
@@ -113,14 +126,28 @@ local scenegraph_definition = {
 		},
 		size = slot_size
 	},
-	ammo_background = {
+	ammo_background_parent = {
 		vertical_alignment = "bottom",
-		parent = "root",
+		parent = "root_parent",
 		horizontal_alignment = "right",
 		position = {
 			-50,
 			100,
 			10
+		},
+		size = {
+			383,
+			86
+		}
+	},
+	ammo_background = {
+		vertical_alignment = "bottom",
+		parent = "ammo_background_parent",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
 		},
 		size = {
 			383,

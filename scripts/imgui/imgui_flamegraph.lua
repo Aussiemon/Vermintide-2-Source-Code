@@ -29,7 +29,7 @@ end
 ImguiFlamegraph.do_cell = function (self, gui, cursor, name, record, s, w, h, x, y)
 	local color = Color(hsl2rgb(tonumber(sub(make_hash(name), 1, 2), 16) / 256, 0.4, 0.5))
 	local box_pos = V3(x, y, 1000)
-	local box_size = V2(w, max(2, h))
+	local box_size = V2(w, math.max(2, h))
 
 	Gui_rect(gui, box_pos, box_size, color)
 
@@ -90,6 +90,8 @@ ImguiFlamegraph.clear_data = function (self)
 	ImguiFlamegraph._root = {
 		[false] = 0
 	}
+
+	self:reset_zoom()
 end
 
 ImguiFlamegraph.reset_zoom = function (self)

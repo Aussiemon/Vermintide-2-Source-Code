@@ -71,79 +71,94 @@ local windows = {
 local window_layouts = {
 	{
 		sound_event_enter = "play_gui_lobby_button_00_quickplay",
-		save_data_table = "adventure",
+		name = "adventure",
 		display_name = "start_game_window_adventure_title",
 		background_icon_name = "menu_options_button_image_02",
-		name = "adventure",
 		game_mode_option = true,
-		sorting = 10,
+		save_data_table = "adventure",
+		panel_sorting = 10,
 		close_on_exit = true,
 		icon_name = "options_button_icon_quickplay",
 		windows = {
 			adventure_settings = 3,
 			game_mode = 1,
 			adventure = 2
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure")
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		save_data_table = "custom",
+		name = "custom_game",
 		display_name = "start_game_window_specific_title",
 		background_icon_name = "menu_options_button_image_04",
-		name = "custom_game",
 		game_mode_option = true,
-		sorting = 20,
+		save_data_table = "custom",
+		panel_sorting = 20,
 		close_on_exit = true,
 		icon_name = "options_button_icon_custom",
 		windows = {
 			settings = 3,
 			game_mode = 1,
 			mission = 2
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure")
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_heroic_deed",
-		save_data_table = "deeds",
+		name = "heroic_deeds",
 		display_name = "start_game_window_mutator_title",
 		background_icon_name = "menu_options_button_image_05",
-		name = "heroic_deeds",
 		game_mode_option = true,
-		sorting = 30,
+		save_data_table = "deeds",
+		panel_sorting = 30,
 		close_on_exit = true,
 		icon_name = "options_button_icon_deed",
 		windows = {
 			mutator = 2,
 			game_mode = 1,
 			mutator_list = 3
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure")
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		save_data_table = "twitch",
+		name = "twitch",
 		display_name = "start_game_window_twitch",
 		background_icon_name = "menu_options_button_image_03",
-		name = "twitch",
 		game_mode_option = true,
-		sorting = 40,
+		save_data_table = "twitch",
+		panel_sorting = 40,
 		close_on_exit = true,
 		icon_name = "options_button_icon_twitch",
 		windows = {
 			twitch_login = 2,
 			game_mode = 1,
 			twitch_game_settings = 3
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure") and overview:can_use_streaming()
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_lobby_browser",
-		name = "lobby_browser",
 		display_name = "start_game_window_lobby_browser",
-		icon_name = "lobby_browser_icon",
+		name = "lobby_browser",
 		reset_on_exit = true,
-		close_on_exit = false,
 		save_data_table = "lobby_browser",
+		close_on_exit = false,
+		icon_name = "lobby_browser_icon",
 		windows = {
 			lobby_browser = 1
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure")
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_01_difficulty",
@@ -227,93 +242,83 @@ local window_layouts = {
 local mechanism_custom_game_settings = {
 	adventure = {
 		game_mode_type = "custom",
+		difficulty_index_getter_name = "completed_level_difficulty_index",
 		layout_name = "area_selection_custom"
 	}
 }
 local mechanism_twitch_settings = {
 	adventure = {
 		game_mode_type = "twitch",
-		layout_name = "area_selection_custom"
+		difficulty_index_getter_name = "completed_level_difficulty_index",
+		layout_name = "area_selection_twitch"
 	}
 }
 local mechanism_quickplay_settings = {
 	adventure = {
 		game_mode_type = "adventure",
-		layout_name = "area_selection_custom"
+		layout_name = "difficulty_selection_adventure"
 	}
 }
+local save_data_table_maps = {}
 
-for _, dlc in pairs(DLCSettings) do
-	local start_game_window_layout = dlc.start_game_window_layout
+DLCUtils.map("start_game_window_layout", function (start_game_window_layout)
+	local new_windows = start_game_window_layout.windows
 
-	if start_game_window_layout then
-		local new_windows = start_game_window_layout.windows
-
-		if new_windows then
-			for name, window in pairs(new_windows) do
-				windows[name] = window
-			end
-		end
-
-		local new_window_layouts = start_game_window_layout.window_layouts
-
-		if new_window_layouts then
-			for i = 1, #new_window_layouts, 1 do
-				table.insert(window_layouts, 3, new_window_layouts[i])
-			end
-		end
-
-		local dlc_mechanism_custom_game = start_game_window_layout.mechanism_custom_game
-
-		if dlc_mechanism_custom_game then
-			local mechanism_name = dlc_mechanism_custom_game.mechanism_name
-			local layout_name = dlc_mechanism_custom_game.layout_name
-			local game_mode_type = dlc_mechanism_custom_game.game_mode_type
-
-			fassert(mechanism_custom_game_settings[mechanism_name] == nil, "Trying to set custom_game for the mechanism '%s' which is already set.", mechanism_name)
-
-			mechanism_custom_game_settings[mechanism_name] = {
-				layout_name = layout_name,
-				game_mode_type = game_mode_type
-			}
-		end
-
-		local dlc_mechanism_twitch = start_game_window_layout.mechanism_twitch
-
-		if dlc_mechanism_twitch then
-			local mechanism_name = dlc_mechanism_twitch.mechanism_name
-			local layout_name = dlc_mechanism_twitch.layout_name
-			local game_mode_type = dlc_mechanism_twitch.game_mode_type
-
-			fassert(mechanism_twitch_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
-
-			mechanism_twitch_settings[mechanism_name] = {
-				layout_name = layout_name,
-				game_mode_type = game_mode_type
-			}
-		end
-
-		local dlc_mechanism_quickplay = start_game_window_layout.mechanism_quickplay
-
-		if dlc_mechanism_quickplay then
-			local mechanism_name = dlc_mechanism_quickplay.mechanism_name
-			local layout_name = dlc_mechanism_quickplay.layout_name
-			local game_mode_type = dlc_mechanism_quickplay.game_mode_type
-
-			fassert(mechanism_quickplay_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
-
-			mechanism_quickplay_settings[mechanism_name] = {
-				layout_name = layout_name,
-				game_mode_type = game_mode_type
-			}
+	if new_windows then
+		for name, window in pairs(new_windows) do
+			windows[name] = window
 		end
 	end
-end
+
+	local new_window_layouts = start_game_window_layout.window_layouts
+
+	if new_window_layouts then
+		for i = 1, #new_window_layouts, 1 do
+			window_layouts[#window_layouts + 1] = new_window_layouts[i]
+		end
+	end
+
+	local dlc_mechanism_custom_game = start_game_window_layout.mechanism_custom_game
+
+	if dlc_mechanism_custom_game then
+		local mechanism_name = dlc_mechanism_custom_game.mechanism_name
+
+		fassert(mechanism_custom_game_settings[mechanism_name] == nil, "Trying to set custom_game for the mechanism '%s' which is already set.", mechanism_name)
+
+		mechanism_custom_game_settings[mechanism_name] = dlc_mechanism_custom_game
+	end
+
+	local dlc_mechanism_twitch = start_game_window_layout.mechanism_twitch
+
+	if dlc_mechanism_twitch then
+		local mechanism_name = dlc_mechanism_twitch.mechanism_name
+
+		fassert(mechanism_twitch_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
+
+		mechanism_twitch_settings[mechanism_name] = dlc_mechanism_twitch
+	end
+
+	local dlc_mechanism_quickplay = start_game_window_layout.mechanism_quickplay
+
+	if dlc_mechanism_quickplay then
+		local mechanism_name = dlc_mechanism_quickplay.mechanism_name
+		local layout_name = dlc_mechanism_quickplay.layout_name
+		local game_mode_type = dlc_mechanism_quickplay.game_mode_type
+
+		fassert(mechanism_quickplay_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
+
+		mechanism_quickplay_settings[mechanism_name] = {
+			layout_name = layout_name,
+			game_mode_type = game_mode_type
+		}
+	end
+end)
+DLCUtils.merge("start_game_save_data_table_map", save_data_table_maps)
 
 local HUGE = math.huge
 
 table.sort(window_layouts, function (a, b)
-	return (a.sorting or HUGE) < (b.sorting or HUGE)
+	return (a.panel_sorting or HUGE) < (b.panel_sorting or HUGE)
 end)
 
 local MAX_ACTIVE_WINDOWS = 4
@@ -326,5 +331,6 @@ return {
 	window_layouts = window_layouts,
 	mechanism_custom_game_settings = mechanism_custom_game_settings,
 	mechanism_twitch_settings = mechanism_twitch_settings,
-	mechanism_quickplay_settings = mechanism_quickplay_settings
+	mechanism_quickplay_settings = mechanism_quickplay_settings,
+	save_data_table_maps = save_data_table_maps
 }

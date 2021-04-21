@@ -637,7 +637,7 @@ VortexExtension._update_attract_outside_ai = function (self, vortex_data, blackb
 
 							locomotion_extension:set_external_velocity(velocity)
 						else
-							target_blackboard.in_vortex_state = "in_vortex"
+							target_blackboard.in_vortex_state = "in_vortex_init"
 							target_blackboard.in_vortex = true
 							target_blackboard.eject_height = ConflictUtils.random_interval(vortex_template.ai_eject_height)
 							ai_units_inside[ai_unit] = true

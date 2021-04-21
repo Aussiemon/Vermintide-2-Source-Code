@@ -4,7 +4,9 @@ return {
 	display_name = "display_name_mutator_elite_run",
 	roamer_override_lookup = {
 		chaos_marauder_with_shield = "chaos_berzerker",
+		beastmen_gor = "beastmen_bestigor",
 		chaos_fanatic = "chaos_marauder",
+		beastmen_ungor = "beastmen_gor",
 		skaven_clan_rat_with_shield = "skaven_storm_vermin",
 		skaven_clan_rat = "skaven_storm_vermin",
 		chaos_marauder = "chaos_raider"

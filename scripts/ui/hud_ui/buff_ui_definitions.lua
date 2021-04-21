@@ -14,7 +14,7 @@ local scenegraph_definition = {
 			SIZE_Y
 		}
 	},
-	pivot = {
+	pivot_parent = {
 		vertical_alignment = "bottom",
 		parent = "root",
 		horizontal_alignment = "left",
@@ -26,6 +26,34 @@ local scenegraph_definition = {
 		size = {
 			0,
 			0
+		}
+	},
+	pivot = {
+		vertical_alignment = "bottom",
+		parent = "pivot_parent",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			0,
+			0
+		}
+	},
+	pivot_dragger = {
+		vertical_alignment = "bottom",
+		parent = "pivot",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			362,
+			214
 		}
 	},
 	buff_pivot = {
@@ -44,7 +72,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.root.scale = "hud_fit"
 	scenegraph_definition.root.is_root = false
 end
@@ -59,12 +87,21 @@ local buff_widget_definition_template = {
 	element = {
 		passes = {
 			{
-				pass_type = "texture",
 				style_id = "texture_icon",
 				texture_id = "texture_icon",
+				pass_type = "texture",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
 					return content.is_cooldown
+				end,
+				content_change_function = function (content, style, _, dt)
+					if content.set_unsaturated then
+						if content.is_cooldown then
+							style.saturated = true
+						end
+					else
+						style.saturated = false
+					end
 				end
 			},
 			{
@@ -74,10 +111,20 @@ local buff_widget_definition_template = {
 				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
-				pass_type = "texture",
 				style_id = "icon_mask",
 				texture_id = "icon_mask",
-				retained_mode = RETAINED_MODE_ENABLED
+				pass_type = "texture",
+				retained_mode = RETAINED_MODE_ENABLED,
+				content_change_function = function (content, style, _, dt)
+					if content.set_unsaturated then
+						if content.is_cooldown then
+							local progress_amount = 255 * (1 - content.progress)
+							style.color[1] = progress_amount
+						end
+					elseif content.is_cooldown then
+						style.color[1] = 0
+					end
+				end
 			},
 			{
 				pass_type = "texture",
@@ -108,24 +155,57 @@ local buff_widget_definition_template = {
 				end
 			},
 			{
+				style_id = "texture_cooldown",
+				texture_id = "texture_cooldown",
 				pass_type = "gradient_mask_texture",
+				retained_mode = RETAINED_MODE_ENABLED,
+				content_check_function = function (content)
+					return content.is_cooldown
+				end,
+				content_change_function = function (content, style, _, dt)
+					if content.set_unsaturated then
+						if content.is_cooldown then
+							local progress_amount = 255 * (1 - content.progress)
+							style.color[1] = progress_amount
+						end
+					elseif content.is_cooldown then
+						style.color[1] = 0
+					end
+				end
+			},
+			{
 				style_id = "texture_duration",
 				texture_id = "texture_duration",
-				retained_mode = RETAINED_MODE_ENABLED
+				pass_type = "gradient_mask_texture",
+				retained_mode = RETAINED_MODE_ENABLED,
+				content_change_function = function (content, style, _, dt)
+					if content.set_unsaturated then
+						if content.is_cooldown then
+							style.color[1] = 0
+						else
+							local progress_amount = 255 * (1 - content.progress)
+							style.color[1] = progress_amount
+						end
+					elseif not content.is_cooldown then
+						style.color[1] = 255
+					end
+				end
 			}
 		}
 	},
 	content = {
-		icon_mask = "buff_gradient_mask",
-		stack_count = 1,
+		set_unsaturated = false,
+		is_cooldown = false,
 		texture_cooldown = "buff_cooldown_gradient",
+		progress = 0,
 		texture_frame = "buff_frame",
 		is_expired = false,
+		stack_count = 1,
 		texture_icon = "teammate_consumable_icon_medpack",
 		last_stack_count = 1,
 		texture_duration = "buff_duration_gradient",
 		gris = "rect_masked",
-		is_cooldown = false
+		icon_mask = "buff_gradient_mask"
 	},
 	style = {
 		texture_icon_bg = {

@@ -15,7 +15,7 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 	self._unit = unit
 	self._profile = extension_init_data.profile
 	self._profile_index = FindProfileIndex(self._profile.display_name)
-	self._additional_equipment = {}
+	self._additional_items = {}
 	self._attached_units = {}
 	self._equipment = {
 		slots = {},
@@ -31,7 +31,7 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 
 	if additional_item_slots then
 		for slot_name, slot_count in pairs(additional_item_slots) do
-			self._additional_equipment[slot_name] = {
+			self._additional_items[slot_name] = {
 				max_slots = slot_count,
 				items = {}
 			}
@@ -53,8 +53,6 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 	}
 	self._weapon_fx = {}
 	self._items_to_spawn = {}
-	self.resync_ids = {}
-	self.latest_slot_resync_ids = {}
 	self.recently_acquired_list = {}
 	self._loaded_projectile_settings = {}
 	self._selected_consumable_slot = nil
@@ -100,19 +98,21 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 
 	self:add_equipment_by_category("career_skill_weapon_slots")
 
-	local additional_inventory = self.initial_inventory.additional_items
+	local additional_items = self.initial_inventory.additional_items
 
-	if additional_inventory then
-		for i = 1, #additional_inventory, 1 do
-			local additional_item = additional_inventory[i]
-			local slot_name = additional_item.slot_name
-			local item_data = ItemMasterList[additional_item.item_name]
-			local slot_data = self:get_slot_data(slot_name)
+	if additional_items then
+		for slot_name, slot_items in pairs(additional_items) do
+			for i = 1, #slot_items.items, 1 do
+				local item_data = slot_items.items[i]
+				local slot_data = self:get_slot_data(slot_name)
 
-			if slot_data then
-				self:store_additional_item(slot_name, item_data)
-			else
-				self:add_equipment(slot_name, item_data)
+				if slot_data then
+					local skip_resync = true
+
+					self:store_additional_item(slot_name, item_data, skip_resync)
+				else
+					self:add_equipment(slot_name, item_data)
+				end
 			end
 		end
 	end
@@ -144,7 +144,7 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 	self._equipment.wielded_slot = profile.default_wielded_slot
 end
 
-SimpleInventoryExtension.update_career_skill_weapon_slot = function (self, world, unit)
+SimpleInventoryExtension.update_career_skill_weapon_slot = function (self)
 	if not self._first_person_unit then
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 		self._first_person_unit = first_person_extension:get_first_person_unit()
@@ -162,18 +162,12 @@ SimpleInventoryExtension.update_career_skill_weapon_slot = function (self, world
 		if should_reload_career_weapon then
 			local career_item_data = rawget(ItemMasterList, career_skill_weapon_name)
 
-			self:destroy_slot("slot_career_skill_weapon", true)
-
-			self._items_to_spawn[#self._items_to_spawn + 1] = {
-				slot_id = "slot_career_skill_weapon",
-				item_data = career_item_data
-			}
-
 			if self._equipment.wielded_slot == "slot_career_skill_weapon" then
 				self:wield_previous_weapon()
 			end
 
-			self.resync_loadout_needed = true
+			self:destroy_slot("slot_career_skill_weapon", true)
+			self:_queue_item_spawn("slot_career_skill_weapon", career_item_data)
 		else
 			self.initial_inventory.slot_career_skill_weapon = career_skill_weapon_name
 
@@ -181,6 +175,10 @@ SimpleInventoryExtension.update_career_skill_weapon_slot = function (self, world
 			Unit.set_data(self._first_person_unit, "equipment", self._equipment)
 		end
 	end
+end
+
+SimpleInventoryExtension.update_career_skill_weapon_slot_safe = function (self)
+	self._queue_update_career_skill_weapon_slot = true
 end
 
 SimpleInventoryExtension.game_object_initialized = function (self, unit, unit_go_id)
@@ -219,6 +217,10 @@ SimpleInventoryExtension.game_object_initialized = function (self, unit, unit_go
 
 	local blackboard = BLACKBOARDS[unit]
 	blackboard.weapon_unit = self:get_weapon_unit()
+
+	for slot_name, slot_items in pairs(self._additional_items) do
+		self:_resync_stored_items(slot_name)
+	end
 end
 
 SimpleInventoryExtension._send_rpc_add_equipment_buffs = function (self, unit_go_id, slot_id, backend_id)
@@ -368,6 +370,12 @@ SimpleInventoryExtension.equipment = function (self)
 end
 
 SimpleInventoryExtension.update = function (self, unit, input, dt, context, t)
+	if self._queue_update_career_skill_weapon_slot then
+		self:update_career_skill_weapon_slot()
+
+		self._queue_update_career_skill_weapon_slot = false
+	end
+
 	self:_update_selected_consumable_slot()
 	self:_update_loaded_projectile_settings()
 	self:_update_resync_loadout()
@@ -395,44 +403,27 @@ SimpleInventoryExtension.recently_acquired = function (self, slot_name)
 end
 
 SimpleInventoryExtension._update_resync_loadout = function (self)
-	local _, equipment_to_spawn = next(self._items_to_spawn)
+	local slot_name, equipment_to_spawn = next(self._items_to_spawn)
 
 	if not equipment_to_spawn then
 		return
 	end
 
-	local latest_slot_resync_ids = self.latest_slot_resync_ids
+	local network_manager = Managers.state.network
+	local profile_synchronizer = network_manager.profile_synchronizer
+	local peer_id = self.player:network_id()
+	local local_player_id = self.player:local_player_id()
 
 	if self.resync_loadout_needed then
-		for i = #self.resync_ids + 1, #self._items_to_spawn, 1 do
-			local item_to_spawn = self._items_to_spawn[i]
-
-			if item_to_spawn then
-				local resync_id = self:_resync_loadout(item_to_spawn)
-				self.resync_ids[#self.resync_ids + 1] = resync_id
-				latest_slot_resync_ids[item_to_spawn.slot_id] = resync_id
-			end
-		end
+		profile_synchronizer:resync_loadout(peer_id, local_player_id)
 
 		self.resync_loadout_needed = false
-		self._is_resyncing_loadout = true
 	end
 
-	local _, resync_id = next(self.resync_ids)
-	local latest_slot_sync_id = latest_slot_resync_ids[equipment_to_spawn.slot_id]
-	local has_newer_item_pending = latest_slot_sync_id and resync_id < latest_slot_sync_id
+	if profile_synchronizer:all_ingame_synced_for_peer(peer_id, local_player_id) then
+		self:_spawn_resynced_loadout(equipment_to_spawn)
 
-	if resync_id and (has_newer_item_pending or self:all_clients_loaded_resource(resync_id)) then
-		if not has_newer_item_pending then
-			self:_spawn_resynced_loadout(equipment_to_spawn)
-		end
-
-		table.remove(self._items_to_spawn, 1)
-		table.remove(self.resync_ids, 1)
-	end
-
-	if #self.resync_ids == 0 then
-		self._is_resyncing_loadout = nil
+		self._items_to_spawn[slot_name] = nil
 	end
 end
 
@@ -491,15 +482,15 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	self:_stop_all_weapon_fx()
 	self:_despawn_attached_units()
 
-	local item_data = slot_data.item_data
-	local item_template = BackendUtils.get_item_template(item_data)
-	local wielded_weapon = self:_wield_slot(equipment, slot_data, self._first_person_unit, self._unit)
-	equipment.wielded_slot = slot_name
 	local career_extension = self.career_extension
 
 	CharacterStateHelper.stop_weapon_actions(self, "weapon_wielded")
 	CharacterStateHelper.stop_career_abilities(career_extension, "weapon_wielded")
 
+	local item_data = slot_data.item_data
+	local item_template = BackendUtils.get_item_template(item_data)
+	local wielded_weapon = self:_wield_slot(equipment, slot_data, self._first_person_unit, self._unit)
+	equipment.wielded_slot = slot_name
 	local backend_id = item_data.backend_id
 	local buffs = self:_get_property_and_trait_buffs(backend_id)
 
@@ -510,7 +501,7 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	end
 
 	self:apply_buffs(buffs, "wield", item_data.name, slot_name)
-	self.buff_extension:trigger_procs("on_inventory_post_apply_buffs")
+	self.buff_extension:trigger_procs("on_inventory_post_apply_buffs", equipment)
 
 	if wielded_weapon then
 		self:show_first_person_inventory(self._show_first_person)
@@ -876,7 +867,7 @@ SimpleInventoryExtension.is_showing_third_person_inventory = function (self)
 end
 
 SimpleInventoryExtension.hot_join_sync = function (self, sender)
-	GearUtils.hot_join_sync(sender, self._unit, self._equipment, self._additional_equipment)
+	GearUtils.hot_join_sync(sender, self._unit, self._equipment, self._additional_items)
 end
 
 SimpleInventoryExtension.destroy_slot = function (self, slot_name, allow_destroy_weapon, try_requip_from_storage)
@@ -1108,19 +1099,6 @@ SimpleInventoryExtension.get_item_data = function (self, slot_name)
 	return item_data
 end
 
-SimpleInventoryExtension._resync_loadout = function (self, equipment_to_spawn)
-	if not equipment_to_spawn then
-		return
-	end
-
-	local career_extension = self.career_extension
-	local career_index = career_extension:career_index()
-	local network_manager = Managers.state.network
-	local resync_id = network_manager.profile_synchronizer:resync_loadout(self._profile_index, career_index, self.player)
-
-	return resync_id
-end
-
 SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, backend_id, ammo_percent)
 	local item_data = BackendUtils.get_item_from_masterlist(backend_id)
 	local slot_data = self._equipment.slots[slot_id]
@@ -1141,13 +1119,8 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 	end
 
 	self:destroy_slot(slot_id, true)
+	self:_queue_item_spawn(slot_id, item_data, item_units.skin, ammo_percent)
 
-	self._items_to_spawn[#self._items_to_spawn + 1] = {
-		slot_id = slot_id,
-		item_data = item_data,
-		skin = item_units.skin,
-		ammo_percent = ammo_percent
-	}
 	local talent_extension = self.talent_extension
 	local skill_index = (talent_extension and talent_extension:get_talent_career_skill_index()) or 1
 	local weapon_index = talent_extension and talent_extension:get_talent_career_weapon_index()
@@ -1161,14 +1134,23 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 
 			career_item_data.left_hand_unit = item_data.left_hand_unit
 			career_item_data.right_hand_unit = item_data.right_hand_unit
-			self._items_to_spawn[#self._items_to_spawn + 1] = {
-				slot_id = "slot_career_skill_weapon",
-				item_data = career_item_data,
-				skin = item_units.skin
-			}
+
+			self:_queue_item_spawn("slot_career_skill_weapon", career_item_data, item_units.skin)
 		end
 	end
+end
 
+SimpleInventoryExtension._queue_item_spawn = function (self, slot_name, item_data, skin, ammo_percent)
+	if not slot_name or not item_data then
+		return
+	end
+
+	self._items_to_spawn[slot_name] = {
+		slot_id = slot_name,
+		item_data = item_data,
+		skin = skin,
+		ammo_percent = ammo_percent
+	}
 	self.resync_loadout_needed = true
 end
 
@@ -1202,13 +1184,6 @@ SimpleInventoryExtension._spawn_resynced_loadout = function (self, equipment_to_
 	if not skip_wield and slot_name ~= "slot_career_skill_weapon" then
 		self:wield(slot_name)
 	end
-end
-
-SimpleInventoryExtension.all_clients_loaded_resource = function (self, resync_id)
-	local profile_synchronizer = Managers.state.network.profile_synchronizer
-	local all_clients_have_loaded_resources = profile_synchronizer:all_clients_have_loaded_sync_id(resync_id)
-
-	return all_clients_have_loaded_resources
 end
 
 local slots_to_check = {
@@ -1248,6 +1223,32 @@ SimpleInventoryExtension.has_ammo_consuming_weapon_equipped = function (self, am
 
 		if has_ammo_weapon then
 			return true
+		end
+	end
+
+	return false
+end
+
+SimpleInventoryExtension.has_infinite_ammo = function (self)
+	local equipment = self._equipment
+	local inventory_slots = equipment.slots
+	local has_ammo_weapon = false
+
+	for slot_name, slot_data in pairs(inventory_slots) do
+		if slots_to_check[slot_name] then
+			local left_hand_unit = slot_data.left_unit_1p
+			local left_hand_ammo_extension = left_hand_unit and ScriptUnit.has_extension(left_hand_unit, "ammo_system")
+
+			if left_hand_ammo_extension and left_hand_ammo_extension:infinite_ammo() then
+				return true
+			end
+
+			local right_hand_unit = slot_data.right_unit_1p
+			local right_hand_ammo_extension = right_hand_unit and ScriptUnit.has_extension(right_hand_unit, "ammo_system")
+
+			if right_hand_ammo_extension and right_hand_ammo_extension:infinite_ammo() then
+				return true
+			end
 		end
 	end
 
@@ -1519,7 +1520,11 @@ SimpleInventoryExtension.get_selected_consumable_slot_name = function (self)
 end
 
 SimpleInventoryExtension.resyncing_loadout = function (self)
-	return self._is_resyncing_loadout
+	local profile_synchronizer = Managers.state.network.profile_synchronizer
+	local peer_id = self.player:network_id()
+	local local_player_id = self.player:local_player_id()
+
+	return not profile_synchronizer:all_ingame_synced_for_peer(peer_id, local_player_id)
 end
 
 SimpleInventoryExtension.get_item_slot_extension = function (self, slot_name, system_name)
@@ -1901,27 +1906,31 @@ SimpleInventoryExtension._stop_all_weapon_fx = function (self)
 end
 
 SimpleInventoryExtension.has_additional_item_slots = function (self, slot_name)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+	local additional_items_slot = self._additional_items[slot_name]
 
-	return additional_equipment_slot ~= nil
+	return additional_items_slot ~= nil
 end
 
 SimpleInventoryExtension.can_store_additional_item = function (self, slot_name)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+	local additional_items_slot = self._additional_items[slot_name]
 
-	return additional_equipment_slot and #additional_equipment_slot.items < additional_equipment_slot.max_slots
+	return additional_items_slot and #additional_items_slot.items < additional_items_slot.max_slots
 end
 
 SimpleInventoryExtension.has_additional_items = function (self, slot_name)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+	local additional_items_slot = self._additional_items[slot_name]
 
-	return additional_equipment_slot and #additional_equipment_slot.items > 0
+	return additional_items_slot and #additional_items_slot.items > 0
 end
 
 SimpleInventoryExtension.get_additional_items = function (self, slot_name)
-	local additional_equipment_slot = self._additional_equipment[slot_name]
+	local additional_items_slot = self._additional_items[slot_name]
 
-	return additional_equipment_slot and additional_equipment_slot.items
+	return additional_items_slot and additional_items_slot.items
+end
+
+SimpleInventoryExtension.get_additional_items_table = function (self)
+	return self._additional_items
 end
 
 SimpleInventoryExtension.get_total_item_count = function (self, slot_name)
@@ -2030,6 +2039,8 @@ SimpleInventoryExtension.swap_equipment_from_storage = function (self, slot_name
 	return false
 end
 
+local temp_table = {}
+
 SimpleInventoryExtension._resync_stored_items = function (self, slot_name)
 	local items = self:get_additional_items(slot_name)
 
@@ -2039,12 +2050,18 @@ SimpleInventoryExtension._resync_stored_items = function (self, slot_name)
 		if unit_go_id then
 			local network_manager = Managers.state.network
 			local slot_id = NetworkLookup.equipment_slots[slot_name]
-			local item_count = #items
+
+			table.clear(temp_table)
+
+			for i = 1, #items, 1 do
+				local item = items[i]
+				temp_table[#temp_table + 1] = NetworkLookup.item_names[item.name]
+			end
 
 			if self.is_server then
-				network_manager.network_transmit:send_rpc_clients("rpc_update_additional_slot", unit_go_id, slot_id, item_count)
+				network_manager.network_transmit:send_rpc_clients("rpc_update_additional_slot", unit_go_id, slot_id, temp_table)
 			else
-				network_manager.network_transmit:send_rpc_server("rpc_update_additional_slot", unit_go_id, slot_id, item_count)
+				network_manager.network_transmit:send_rpc_server("rpc_update_additional_slot", unit_go_id, slot_id, temp_table)
 			end
 		end
 	end

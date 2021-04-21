@@ -26,6 +26,7 @@ PositiveReinforcementUI.init = function (self, parent, ingame_ui_context)
 	self:create_ui_elements()
 
 	self._positive_enforcement_events = {}
+	self._positive_enforcement_lookup = {}
 	self._hash_order = {}
 	self._hash_widget_lookup = {}
 	self._animations = {}
@@ -71,6 +72,7 @@ PositiveReinforcementUI.remove_event = function (self, index)
 	local events = self._positive_enforcement_events
 	local event = table.remove(events, index)
 	local widget = event.widget
+	self._positive_enforcement_lookup[event.full_hash] = nil
 	local unused_widgets = self._unused_widgets
 	unused_widgets[#unused_widgets + 1] = widget
 end
@@ -102,60 +104,72 @@ PositiveReinforcementUI.add_event = function (self, hash, is_local_player, color
 		local events = self._positive_enforcement_events
 		local full_hash = hash .. event_type
 		local hash_order = self._hash_order
-		local t = Managers.time:time("game")
-		local increment_duration = UISettings.positive_reinforcement.increment_duration
-		local message_widgets = self.message_widgets
-		local unused_widgets = self._unused_widgets
-
-		if #unused_widgets == 0 then
-			self:remove_event(#events)
-		end
-
+		local settings_positive_reinforcement = UISettings.positive_reinforcement
+		local t = Managers.time:time("ui")
+		local increment_duration = settings_positive_reinforcement.increment_duration
 		local settings = event_settings[event_type]
-		local widget = table.remove(unused_widgets, 1)
-		local offset = widget.offset
-		local event = {
-			text = "",
-			shown_amount = 0,
-			amount = 0,
-			widget = widget,
-			event_type = event_type,
-			next_increment = t - increment_duration,
-			is_local_player = is_local_player,
-			data = {
-				...
+		local old_event = self._positive_enforcement_lookup[full_hash]
+
+		if old_event and settings_positive_reinforcement.folding_enabled then
+			local widget_content = old_event.widget.content
+			local count = widget_content.count + 1
+			widget_content.count_text = count .. "x"
+			widget_content.count = count
+			old_event.remove_time = nil
+		else
+			local message_widgets = self.message_widgets
+			local unused_widgets = self._unused_widgets
+
+			if #unused_widgets == 0 then
+				self:remove_event(#events)
+			end
+
+			local widget = table.remove(unused_widgets, 1)
+			local offset = widget.offset
+			local event = {
+				text = "",
+				shown_amount = 0,
+				amount = 0,
+				full_hash = full_hash,
+				widget = widget,
+				event_type = event_type,
+				is_local_player = is_local_player,
+				data = {
+					...
+				}
 			}
-		}
-		local event_index = #events + 1
+			local event_index = #events + 1
 
-		table.insert(events, 1, event)
+			table.insert(events, 1, event)
 
-		local content = widget.content
-		local style = widget.style
-		local texture_1, texture_2, texture_3 = settings.icon_function(...)
+			self._positive_enforcement_lookup[full_hash] = event
+			local content = widget.content
+			local style = widget.style
+			content.count = 1
+			content.count_text = nil
+			local texture_1, texture_2, texture_3 = settings.icon_function(...)
 
-		self:_assign_portrait_texture(widget, "portrait_1", texture_1)
-		self:_assign_portrait_texture(widget, "portrait_2", texture_3)
+			self:_assign_portrait_texture(widget, "portrait_1", texture_1)
+			self:_assign_portrait_texture(widget, "portrait_2", texture_3)
 
-		content.icon = texture_2
-		offset[2] = 0
-		local texte_style_ids = content.texte_style_ids
+			content.icon = texture_2
+			offset[2] = 0
+			local texte_style_ids = content.texte_style_ids
 
-		for _, style_id in ipairs(texte_style_ids) do
-			style[style_id].color[1] = 255
+			for _, style_id in ipairs(texte_style_ids) do
+				style[style_id].color[1] = 255
+			end
 		end
-
-		local sound_event = nil
 
 		if is_local_player then
-			sound_event = settings.sound_function()
-		end
+			local sound_event = settings.sound_function()
 
-		if sound_event then
-			local world = self.world
-			local wwise_world = Managers.world:wwise_world(world)
+			if sound_event then
+				local world = self.world
+				local wwise_world = Managers.world:wwise_world(world)
 
-			WwiseWorld.trigger_event(wwise_world, sound_event)
+				WwiseWorld.trigger_event(wwise_world, sound_event)
+			end
 		end
 	end
 end
@@ -166,6 +180,17 @@ local temp_portrait_size = {
 }
 
 PositiveReinforcementUI._assign_portrait_texture = function (self, widget, pass_name, texture)
+	local style = widget.style[pass_name]
+
+	if not texture then
+		style.size = {
+			0,
+			0
+		}
+
+		return
+	end
+
 	widget.content[pass_name].texture_id = texture
 	local portrait_size = table.clone(temp_portrait_size)
 
@@ -254,6 +279,12 @@ PositiveReinforcementUI._get_hero_portrait = function (self, profile_index, care
 	return "small_" .. character_portrait
 end
 
+local customizer_data = {
+	root_scenegraph_id = "pivot",
+	label = "Kill feed",
+	registry_key = "kill_feed",
+	drag_scenegraph_id = "pivot_dragger"
+}
 local DO_RELOAD = false
 
 PositiveReinforcementUI.update = function (self, dt, t)
@@ -262,6 +293,8 @@ PositiveReinforcementUI.update = function (self, dt, t)
 
 		DO_RELOAD = false
 	end
+
+	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
 
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph

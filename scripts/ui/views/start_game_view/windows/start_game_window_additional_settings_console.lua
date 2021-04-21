@@ -1,12 +1,8 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_additional_settings_console_definitions")
-local widget_definitions = definitions.widgets
-local scenegraph_definition = definitions.scenegraph_definition
-local animation_definitions = definitions.animation_definitions
-local gamepad_widget_navigation = definitions.gamepad_widget_navigation
 StartGameWindowAdditionalSettingsConsole = class(StartGameWindowAdditionalSettingsConsole)
 StartGameWindowAdditionalSettingsConsole.NAME = "StartGameWindowAdditionalSettingsConsole"
 
-StartGameWindowAdditionalSettingsConsole.on_enter = function (self, params, offset)
+StartGameWindowAdditionalSettingsConsole.on_enter = function (self, params, offset, parent_window_name)
 	print("[StartGameWindow] Enter Substate StartGameWindowAdditionalSettingsConsole")
 
 	self.parent = params.parent
@@ -19,6 +15,9 @@ StartGameWindowAdditionalSettingsConsole.on_enter = function (self, params, offs
 		snap_pixel_positions = true
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
+	self._mechanism_name = params.mechanism_name
+	self._params = params
+	self._parent_window_name = parent_window_name
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -26,7 +25,7 @@ StartGameWindowAdditionalSettingsConsole.on_enter = function (self, params, offs
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
 
-	self:create_ui_elements(params, offset)
+	self:create_ui_elements(definitions, params, offset)
 	self:_update_additional_options()
 
 	self._input_index = 0
@@ -41,28 +40,22 @@ StartGameWindowAdditionalSettingsConsole._start_transition_animation = function 
 		render_settings = self.render_settings
 	}
 	local widgets = {}
-	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	local anim_id = self.ui_animator:start_animation(animation_name, widgets, self._scenegraph_definition, params)
 	self._animations[animation_name] = anim_id
 end
 
-StartGameWindowAdditionalSettingsConsole.create_ui_elements = function (self, params, offset)
-	local ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+StartGameWindowAdditionalSettingsConsole.create_ui_elements = function (self, definitions, params, offset)
+	self._widget_definitions = definitions.widgets
+	self._scenegraph_definition = definitions.scenegraph_definition
+	self._animation_definitions = definitions.animation_definitions
+	self._gamepad_widget_navigation = definitions.gamepad_widget_navigation
+	local ui_scenegraph = UISceneGraph.init_scenegraph(self._scenegraph_definition)
 	self.ui_scenegraph = ui_scenegraph
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(self._widget_definitions)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_animator = UIAnimator:new(ui_scenegraph, animation_definitions)
+	self.ui_animator = UIAnimator:new(ui_scenegraph, self._animation_definitions)
 
 	if offset then
 		local window_position = ui_scenegraph.window.local_position
@@ -190,7 +183,7 @@ StartGameWindowAdditionalSettingsConsole._handle_input_index = function (self, i
 
 	repeat
 		input_index = input_index + index_increment
-		local widget_name = gamepad_widget_navigation[input_index]
+		local widget_name = self._gamepad_widget_navigation[input_index]
 
 		if not widget_name then
 			input_index = self._input_index
@@ -226,6 +219,7 @@ StartGameWindowAdditionalSettingsConsole._handle_gamepad_input = function (self,
 		toggle_option = true
 	end
 
+	local gamepad_widget_navigation = self._gamepad_widget_navigation
 	local num_inputs = #gamepad_widget_navigation
 
 	for i = 1, num_inputs, 1 do
@@ -249,6 +243,7 @@ StartGameWindowAdditionalSettingsConsole._handle_mouse_input = function (self, d
 	local widgets_by_name = self._widgets_by_name
 	local option_tooltip = widgets_by_name.option_tooltip
 	local is_hovered = false
+	local gamepad_widget_navigation = self._gamepad_widget_navigation
 	local num_inputs = #gamepad_widget_navigation
 
 	for i = 1, num_inputs, 1 do
@@ -317,8 +312,8 @@ StartGameWindowAdditionalSettingsConsole._handle_input = function (self, dt, t)
 	if self.gamepad_active_last_frame then
 		local consume = true
 
-		if input_service:get("back", consume) or input_service:get("refresh", consume) or input_service:get("right_stick_press", consume) then
-			parent:set_window_input_focus("custom_game_overview")
+		if input_service:get("back_menu", consume) or input_service:get("refresh", consume) or input_service:get("right_stick_press", consume) then
+			parent:set_window_input_focus(self._parent_window_name or "custom_game_overview")
 		end
 	end
 end
@@ -388,17 +383,15 @@ StartGameWindowAdditionalSettingsConsole._handle_gamepad_activity = function (se
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 			self.render_settings.alpha_multiplier = 0
-			self.ui_scenegraph.window.local_position[2] = 10
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
 
 		if self._is_focused then
-			self.parent:set_window_input_focus("custom_game_overview")
+			self.parent:set_window_input_focus(self._parent_window_name or "custom_game_overview")
 		end
 
 		self.render_settings.alpha_multiplier = 1
-		self.ui_scenegraph.window.local_position[2] = 265
 	end
 end
 

@@ -277,6 +277,22 @@ BackendInterfacePeddlerPlayFab.refresh_platform_item_prices = function (self)
 	end
 end
 
+BackendInterfacePeddlerPlayFab._read_bundle_from_steam = function (self, steam_itemdefid)
+	local bundle_string = SteamInventory.get_item_definition_property(steam_itemdefid, "bundle")
+
+	if bundle_string then
+		local bundle_contains = string.split(bundle_string, ";")
+
+		for k, v in ipairs(bundle_contains) do
+			bundle_contains[k] = tonumber(v)
+		end
+
+		local discount = SteamInventory.get_item_definition_property(steam_itemdefid, "purchase_bundle_discount")
+
+		return bundle_contains, tonumber(discount)
+	end
+end
+
 BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, price_list, currency)
 	print("_refresh_steam_item_prices_cb")
 
@@ -284,6 +300,7 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, p
 	local inventory_items = mirror:get_all_inventory_items()
 	local peddler_stock = self._peddler_stock
 	local steam_stock_index = #peddler_stock + 1
+	local bundles = {}
 
 	for i = 1, #price_list, 2 do
 		local steam_itemdefid = price_list[i]
@@ -305,19 +322,46 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, p
 					end
 				end
 
+				local cloned_master_item = table.clone(master_item)
+
+				if master_item.item_type == "bundle" then
+					local contains, discount = self:_read_bundle_from_steam(steam_itemdefid)
+
+					if contains then
+						cloned_master_item.bundle_contains = contains
+						cloned_master_item.discount = discount
+					end
+
+					bundles[#bundles + 1] = cloned_master_item
+				end
+
 				peddler_stock[steam_stock_index] = {
 					type = "item",
-					data = table.clone(master_item),
+					data = cloned_master_item,
 					key = item_key,
 					id = item_key,
 					owned = owned,
-					steam_itemdefid = master_item.steam_itemdefid
+					steam_itemdefid = master_item.steam_itemdefid,
+					steam_price = price
 				}
 				steam_stock_index = steam_stock_index + 1
 			end
 		else
 			print("Missing item masterlist item for steam_itemdefid:", steam_itemdefid)
 		end
+	end
+
+	for i = 1, #bundles, 1 do
+		local bundle_item_data = bundles[i]
+		local price_sum = 0
+		local bundle_contains = bundle_item_data.bundle_contains
+
+		for j = 1, #bundle_contains, 1 do
+			local steam_itemdefid = bundle_contains[j]
+			price_sum = price_sum + (self._steam_item_prices[steam_itemdefid] or 0)
+		end
+
+		bundle_item_data.bundle_price = price_sum
 	end
 
 	self._steam_item_currency = currency
@@ -327,11 +371,11 @@ end
 BackendInterfacePeddlerPlayFab.refresh_app_prices = function (self, external_cb)
 	local platform = PLATFORM
 
-	if platform == "win32" or platform == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		self:_refresh_app_prices_steam(external_cb)
-	elseif platform == "ps4" then
+	elseif IS_PS4 then
 		self:_refresh_app_prices_psn(external_cb)
-	elseif platform == "xb1" then
+	elseif IS_XB1 then
 		self:_refresh_app_prices_xboxlive(external_cb)
 	end
 end

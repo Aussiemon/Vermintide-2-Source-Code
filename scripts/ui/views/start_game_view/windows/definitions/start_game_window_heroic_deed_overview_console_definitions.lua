@@ -377,7 +377,7 @@ local function create_setting_button(scenegraph_id, title_text, input_text, icon
 		text_id = input_text_name,
 		style_id = input_text_shadow_name
 	}
-	content[input_text_name] = "n/a"
+	content[input_text_name] = Localize("not_assigned")
 	local input_text_style = {
 		vertical_alignment = "center",
 		font_size = 22,

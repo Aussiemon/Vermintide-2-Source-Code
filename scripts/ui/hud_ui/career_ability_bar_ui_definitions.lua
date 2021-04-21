@@ -97,14 +97,6 @@ local widget_definitions = {
 					texture_id = "bar_1"
 				},
 				{
-					pass_type = "rect",
-					style_id = "min_threshold"
-				},
-				{
-					pass_type = "rect",
-					style_id = "max_threshold"
-				},
-				{
 					style_id = "ability_bar_highlight",
 					pass_type = "texture_uv",
 					content_id = "ability_bar_highlight"
@@ -149,8 +141,8 @@ local widget_definitions = {
 			input_text = "",
 			bar_3 = "overcharge_bar_3",
 			bar_1 = "active_ability_bar",
+			icon = "xbone_button_icon_x",
 			bar_fg = "overcharge_frame",
-			icon = ((PLATFORM == "ps4" or Application.user_setting("gamepad_use_ps4_style_input_icons")) and "ps4_button_icon_square") or "xbone_button_icon_x",
 			ability_bar_highlight = {
 				texture_id = "hud_player_ability_skill_bar_glow",
 				uvs = {
@@ -307,48 +299,6 @@ local widget_definitions = {
 					0,
 					0,
 					0
-				}
-			},
-			min_threshold = {
-				pivot = {
-					0,
-					0
-				},
-				offset = {
-					0,
-					3,
-					4
-				},
-				color = {
-					204,
-					0,
-					0,
-					0
-				},
-				size = {
-					2,
-					ability_bar_size[2] - 6
-				}
-			},
-			max_threshold = {
-				pivot = {
-					0,
-					0
-				},
-				offset = {
-					0,
-					3,
-					4
-				},
-				color = {
-					204,
-					0,
-					0,
-					0
-				},
-				size = {
-					2,
-					ability_bar_size[2] - 6
 				}
 			},
 			ability_bar_highlight = {

@@ -44,6 +44,11 @@ local buff_tweak_data = {
 		max_stacks = 5
 	},
 	bardin_engineer_melee_power_free_shot_counter_buff = {},
+	bardin_engineer_melee_power_range_power_buff = {
+		max_stacks = 1,
+		duration = 10,
+		multiplier = 0.15
+	},
 	bardin_engineer_power_on_max_pump_buff = {
 		max_stacks = 1,
 		multiplier = 0.15,
@@ -234,7 +239,7 @@ local talent_buff_templates = {
 	bardin_engineer_vanguard = {
 		buffs = {
 			{
-				multiplier = 1,
+				multiplier = 0.5,
 				name = "vanguard",
 				event_buff = true,
 				buff_func = "heal_stagger_targets_on_melee",
@@ -318,6 +323,58 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				stat_buff = "ranged_additional_penetrations"
+			}
+		}
+	},
+	bardin_engineer_melee_power_ranged_power = {
+		buffs = {
+			{
+				buff_to_add = "bardin_engineer_melee_power_range_power_buff_counter",
+				max_stacks = 1,
+				event_buff = true,
+				buff_func = "add_buff_on_first_target_hit",
+				event = "on_hit",
+				valid_buff_types = MeleeBuffTypes
+			}
+		}
+	},
+	bardin_engineer_melee_power_range_power_buff_counter = {
+		buffs = {
+			{
+				reset_on_max_stacks = true,
+				max_stacks = 5,
+				is_cooldown = true,
+				on_max_stacks_func = "add_remove_buffs",
+				icon = "bardin_engineer_melee_power_free_shot",
+				max_stack_data = {
+					buffs_to_add = {
+						"bardin_engineer_melee_power_range_power_starter"
+					}
+				},
+				duration = math.huge
+			}
+		}
+	},
+	bardin_engineer_melee_power_range_power_starter = {
+		buffs = {
+			{
+				buff_to_add = "bardin_engineer_melee_power_range_power_buff",
+				max_stacks = 1,
+				event_buff = true,
+				buff_func = "bardin_engineer_power_on_next_range",
+				event = "on_start_action",
+				icon = "bardin_engineer_melee_power_free_shot"
+			}
+		}
+	},
+	bardin_engineer_melee_power_range_power_buff = {
+		buffs = {
+			{
+				icon = "bardin_engineer_melee_power_free_shot",
+				multiplier = 0.15,
+				stat_buff = "power_level_ranged",
+				max_stacks = 1,
+				duration = 10
 			}
 		}
 	},
@@ -432,10 +489,13 @@ local talent_buff_templates = {
 				update_func = "add_buff_server_controlled",
 				remove_buff_stack_data = {
 					{
-						num_stacks = 1,
 						reset_update_timer = true,
 						buff_to_remove = "bardin_engineer_stacking_damage_reduction_buff",
-						server_controlled = true
+						num_stacks = 1,
+						server_controlled = true,
+						ignored_damage_sources = {
+							"overcharge"
+						}
 					}
 				}
 			}
@@ -540,7 +600,7 @@ local talent_trees = {
 		{
 			"bardin_engineer_ranged_crit_count",
 			"bardin_engineer_ranged_pierce",
-			"bardin_engineer_melee_power_free_shot"
+			"bardin_engineer_melee_power_ranged_power"
 		},
 		{
 			"bardin_engineer_tank_unbalance",
@@ -622,7 +682,7 @@ local talents = {
 		}
 	},
 	{
-		description = "bardin_engineer_ranged_pierce_desc",
+		description = "bardin_engineer_ranged_pierce_desc_2",
 		name = "bardin_engineer_ranged_pierce",
 		num_ranks = 1,
 		icon = "bardin_engineer_ranged_pierce",
@@ -636,8 +696,8 @@ local talents = {
 		}
 	},
 	{
-		description = "bardin_engineer_melee_power_free_shot_desc",
-		name = "bardin_engineer_melee_power_free_shot",
+		description = "bardin_engineer_melee_power_ranged_power_desc",
+		name = "bardin_engineer_melee_power_ranged_power",
 		icon = "bardin_engineer_melee_power_free_shot",
 		num_ranks = 1,
 		description_values = {
@@ -647,10 +707,17 @@ local talents = {
 			},
 			{
 				value = buff_tweak_data.bardin_engineer_melee_power_free_shot_counter.max_stacks
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.bardin_engineer_melee_power_range_power_buff.multiplier
+			},
+			{
+				value = buff_tweak_data.bardin_engineer_melee_power_range_power_buff.duration
 			}
 		},
 		client_buffs = {
-			"bardin_engineer_melee_power_free_shot"
+			"bardin_engineer_melee_power_ranged_power"
 		},
 		server_buffs = {
 			"bardin_engineer_melee_power_free_shot_stat"

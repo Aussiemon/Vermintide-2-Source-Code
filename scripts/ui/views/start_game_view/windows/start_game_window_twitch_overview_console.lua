@@ -52,6 +52,11 @@ StartGameWindowTwitchOverviewConsole.on_enter = function (self, params, offset)
 	self:_set_input_description(connected)
 	self:_set_disconnect_button_text()
 	self:_setup_connected_status()
+
+	if Managers.twitch:is_connected() then
+		self:_set_active(true)
+	end
+
 	self:_start_transition_animation("on_enter")
 end
 
@@ -116,7 +121,7 @@ StartGameWindowTwitchOverviewConsole._create_ui_elements = function (self, param
 
 	self:_setup_input_buttons()
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		local frame_widget = self._widgets_by_name.frame_widget
 		local frame_widget_content = frame_widget.content
 		frame_widget_content.twitch_name = PlayerData.twitch_user_name or ""
@@ -175,6 +180,8 @@ StartGameWindowTwitchOverviewConsole.on_exit = function (self, params)
 	else
 		params.input_index = self._input_index
 	end
+
+	self:_set_active(false)
 end
 
 StartGameWindowTwitchOverviewConsole.set_focus = function (self, focused)
@@ -224,12 +231,44 @@ StartGameWindowTwitchOverviewConsole._update_can_play = function (self)
 	end
 end
 
+StartGameWindowTwitchOverviewConsole._set_active = function (self, active)
+	if active then
+		Managers.irc:register_message_callback("twitch_gamepad", Irc.CHANNEL_MSG, callback(self, "cb_on_message_received"))
+	else
+		Managers.irc:unregister_message_callback("twitch_gamepad")
+
+		local chat_output_widget = self._widgets_by_name.chat_output_widget
+		local chat_output_content = chat_output_widget.content
+
+		table.clear(chat_output_content.message_tables)
+	end
+end
+
+StartGameWindowTwitchOverviewConsole.cb_on_message_received = function (self, key, message_type, user_name, message, parameter)
+	local chat_output_widget = self._widgets_by_name.chat_output_widget
+	local chat_output_content = chat_output_widget.content
+	local message_tables = chat_output_content.message_tables
+	local new_message_table = {
+		is_dev = false,
+		is_system = false,
+		sender = string.format("%s: ", user_name),
+		message = message
+	}
+	message_tables[#message_tables + 1] = new_message_table
+
+	if #message_tables > 45 then
+		table.remove(message_tables, 1)
+	else
+		chat_output_content.text_start_offset = chat_output_content.text_start_offset + 1
+	end
+end
+
 StartGameWindowTwitchOverviewConsole._handle_virtual_keyboard = function (self, dt, t)
 	if not self._virtual_keyboard_id then
 		return
 	end
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if not XboxInterface.interface_active() then
 			local twitch_user_name = XboxInterface.get_keyboard_result()
 			self._virtual_keyboard_id = nil
@@ -336,7 +375,7 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 		local is_connected = Managers.twitch:is_connected()
 		local frame_widget = self._widgets_by_name.frame_widget
 
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			local frame_widget_content = frame_widget.content
 			local text_input_hotspot = frame_widget_content.text_input_hotspot
 			local screen_hotspot = frame_widget_content.screen_hotspot
@@ -385,14 +424,14 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 			local button_pressed = connect_button_widget and self:_is_button_pressed(connect_button_widget)
 
 			if button_pressed or input_service:get(CONNECT_INPUT) then
-				if PLATFORM == "ps4" then
+				if IS_PS4 then
 					local user_id = Managers.account:user_id()
 					local twitch_user_name = PlayerData.twitch_user_name
 					local title = Localize("start_game_window_twitch_login_hint")
 					local position = definitions.twitch_keyboard_anchor_point
 					local inv_scale = RESOLUTION_LOOKUP.inv_scale
 					self._virtual_keyboard_id = Managers.system_dialog:open_virtual_keyboard(user_id, title, twitch_user_name, position)
-				elseif PLATFORM == "xb1" then
+				elseif IS_XB1 then
 					local twitch_user_name = PlayerData.twitch_user_name
 					local title = Localize("start_game_window_twitch_login_hint")
 
@@ -422,6 +461,7 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 
 			if button_pressed or input_service:get(CONNECT_INPUT) then
 				self:_play_sound("Play_hud_select")
+				self:_set_active(false)
 				Managers.twitch:disconnect()
 			end
 		end
@@ -449,6 +489,7 @@ end
 StartGameWindowTwitchOverviewConsole.cb_connection_success_callback = function (self, user_data)
 	self:_set_disconnect_button_text()
 	self:_setup_connected_status()
+	self:_set_active(true)
 end
 
 StartGameWindowTwitchOverviewConsole._setup_connected_status = function (self)
@@ -463,11 +504,9 @@ StartGameWindowTwitchOverviewConsole._can_play = function (self)
 
 	local parent = self._parent
 	local selected_level_id = parent:get_selected_level_id()
-	local selected_journey = parent:get_selected_deus_journey()
-	local selected_mission = selected_journey or selected_level_id
 	local selected_difficulty_key = parent:get_difficulty_option()
 	local connected = Managers.twitch and Managers.twitch:is_connected()
-	local can_play = selected_mission ~= nil and selected_difficulty_key ~= nil and connected
+	local can_play = selected_level_id ~= nil and selected_difficulty_key ~= nil and connected
 
 	return can_play
 end
@@ -475,15 +514,9 @@ end
 StartGameWindowTwitchOverviewConsole._update_mission_option = function (self)
 	local parent = self._parent
 	local selected_level_id = parent:get_selected_level_id()
-	local selected_journey = parent:get_selected_deus_journey()
-	local selected_mission = selected_level_id or selected_journey
 
-	if selected_mission then
-		if selected_journey then
-			self:_set_selected_journey(selected_journey)
-		else
-			self:_set_selected_level(selected_level_id)
-		end
+	if selected_level_id then
+		self:_set_selected_level(selected_level_id)
 	end
 
 	self._widgets_by_name.mission_setting.content.button_hotspot.disable_button = selected_level_id == nil
@@ -495,18 +528,7 @@ StartGameWindowTwitchOverviewConsole._set_selected_level = function (self, level
 	mission_widget.content.input_text = Localize(level_settings.display_name)
 	local level_image = level_settings.level_image
 	mission_widget.content.icon_texture = level_image
-	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, level_id)
-	local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
-	mission_widget.content.icon_frame_texture = level_frame
-end
-
-StartGameWindowTwitchOverviewConsole._set_selected_journey = function (self, journey_name)
-	local level_settings = DeusJourneySettings[journey_name]
-	local mission_widget = self._widgets_by_name.mission_setting
-	mission_widget.content.input_text = Localize(level_settings.display_name)
-	local level_image = level_settings.level_image
-	mission_widget.content.icon_texture = level_image
-	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, journey_name)
+	local completed_difficulty_index = self._parent:get_completed_level_difficulty_index(self._statistics_db, self._stats_id, level_id)
 	local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
 	mission_widget.content.icon_frame_texture = level_frame
 end
@@ -578,7 +600,7 @@ StartGameWindowTwitchOverviewConsole._handle_new_selection = function (self, inp
 end
 
 StartGameWindowTwitchOverviewConsole._update_animations = function (self, dt)
-	if PLATFORM ~= "ps4" and not Managers.input:is_device_active("gamepad") then
+	if not IS_PS4 and not Managers.input:is_device_active("gamepad") then
 		self:_update_button_animations(dt)
 	end
 

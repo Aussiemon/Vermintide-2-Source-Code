@@ -16,7 +16,6 @@ end
 StateLoadingMigrateHost._init_params = function (self, params)
 	self._loading_view = params.loading_view
 	self._lobby_client = params.lobby_client
-	self._level_transition_handler = params.level_transition_handler
 	self._lobby_joined = false
 	self._server_created = false
 end
@@ -36,14 +35,19 @@ StateLoadingMigrateHost._init_network = function (self)
 	if host_peer_id == Network.peer_id() then
 		network_printf("creating host for people to migrate to")
 
-		local level_to_load = host_migration_info.level_to_load
-		local environment_to_load = host_migration_info.environment_to_load
+		local level_transition_handler = Managers.level_transition_handler
 
-		if level_to_load then
-			self._level_transition_handler:set_next_level(level_to_load, environment_to_load)
+		if host_migration_info.level_data then
+			local level_data = host_migration_info.level_data
+			host_migration_info.level_data = nil
+
+			level_transition_handler:set_next_level(level_data.level_key, level_data.environment_variation_id, level_data.level_seed, level_data.mechanism, level_data.game_mode_key, level_data.conflict_settings, level_data.locked_director_functions, level_data.difficulty, level_data.difficulty_tweak)
+		elseif host_migration_info.level_to_load then
+			local level_to_load = host_migration_info.level_to_load
+
+			level_transition_handler:set_next_level(level_to_load)
 
 			host_migration_info.level_to_load = nil
-			loading_context.environment_to_load = nil
 		end
 
 		self.parent:setup_lobby_host(callback(self, "cb_server_created"))

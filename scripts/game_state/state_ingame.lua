@@ -63,6 +63,7 @@ require("scripts/utils/ping_reporter")
 require("scripts/managers/side/side_manager")
 DLCUtils.require_list("statistics_database")
 
+local state_ingame_testify = script_data.testify and require("scripts/game_state/state_ingame_testify")
 StateIngame = class(StateIngame)
 StateIngame.NAME = "StateIngame"
 
@@ -75,7 +76,7 @@ StateIngame.on_enter = function (self)
 	self.level = self.parent.loading_context.ingame_level_object
 	self.parent.loading_context.ingame_level_object = self.level
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		Application.set_kinect_enabled(false)
 
 		self.hero_stats_updated = false
@@ -119,8 +120,7 @@ StateIngame.on_enter = function (self)
 
 	Managers.popup:set_input_manager(input_manager)
 
-	self.level_transition_handler = loading_context.level_transition_handler
-	local level_key = self.level_transition_handler:get_current_level_keys()
+	local level_key = Managers.level_transition_handler:get_current_level_keys()
 
 	Crashify.print_property("level", level_key)
 
@@ -134,10 +134,11 @@ StateIngame.on_enter = function (self)
 	self._onclose_called = false
 	self._quit_game = false
 	self._gm_event_end_conditions_met = false
+	self._gm_event_end_reason = nil
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
 
-	if (PLATFORM == "xb1" or PLATFORM == "ps4") and self.is_in_tutorial then
+	if IS_CONSOLE and self.is_in_tutorial then
 		Managers.backend:set_user_data("prologue_started", true)
 		Managers.backend:commit()
 	end
@@ -156,9 +157,12 @@ StateIngame.on_enter = function (self)
 
 	if self.is_server then
 		local lobby_data = self._lobby_host:get_stored_lobby_data()
-		lobby_data.selected_level_key = self.level_key
 
-		self._lobby_host:set_lobby_data(lobby_data)
+		if lobby_data.mechanism == "adventure" then
+			lobby_data.selected_mission_id = self.level_key
+
+			self._lobby_host:set_lobby_data(lobby_data)
+		end
 	end
 
 	self.world_name = LevelHelper.INGAME_WORLD_NAME
@@ -216,7 +220,9 @@ StateIngame.on_enter = function (self)
 	end
 
 	Managers.state.crafting = CraftingManager:new()
-	local difficulty, difficulty_tweak = Managers.mechanism:get_difficulty()
+	local level_transition_handler = Managers.level_transition_handler
+	local difficulty = level_transition_handler:get_current_difficulty()
+	local difficulty_tweak = level_transition_handler:get_current_difficulty_tweak()
 
 	if Development.parameter("weave_name") then
 		local weave_name = Development.parameter("weave_name")
@@ -233,14 +239,11 @@ StateIngame.on_enter = function (self)
 	self.num_local_human_players = num_players
 
 	if Managers.matchmaking then
-		Managers.matchmaking:reset_ping()
-
 		if not DEDICATED_SERVER then
 			Managers.matchmaking:reset_lobby_filters()
 		end
 	else
 		local matchmaking_params = {
-			level_transition_handler = self.level_transition_handler,
 			network_transmit = self.network_transmit,
 			network_server = self.network_server,
 			lobby = self._lobby_host or self._lobby_client,
@@ -248,7 +251,6 @@ StateIngame.on_enter = function (self)
 			is_server = is_server,
 			profile_synchronizer = self.profile_synchronizer,
 			statistics_db = self.statistics_db,
-			slot_allocator = (self.network_server and self.network_server.slot_allocator) or self.network_client.slot_allocator,
 			quick_game = loading_context.quickplay_bonus,
 			local_quick_game = loading_context.local_quickplay_bonus
 		}
@@ -259,7 +261,7 @@ StateIngame.on_enter = function (self)
 	Managers.matchmaking:set_statistics_db(self.statistics_db)
 	Managers.deed:register_rpcs(network_event_delegate)
 	self:_setup_state_context(world, is_server, network_event_delegate)
-	self.level_transition_handler:register_rpcs(network_event_delegate)
+	level_transition_handler:register_rpcs(network_event_delegate)
 	Managers.mechanism:register_rpcs(network_event_delegate)
 	Managers.party:register_rpcs(network_event_delegate)
 
@@ -276,12 +278,14 @@ StateIngame.on_enter = function (self)
 	Managers.telemetry.rpc_listener:register(self.network_event_delegate)
 	Managers.telemetry:reset()
 
-	local engine_revision = script_data.build_identifier
-	local content_revision = script_data.settings.content_revision
 	local is_testify_session = script_data.testify
+	local engine_revision = script_data.build_identifier
+	local content_revision = (is_testify_session and script_data.content_revision) or script_data.settings.content_revision
+	local steam_branch = script_data.steam_branch
+	local svn_branch = script_data.svn_branch
 	local machine_name = script_data.machine_name
 
-	Managers.telemetry.events:header(engine_revision, content_revision, machine_name, is_testify_session)
+	Managers.telemetry.events:header(engine_revision, content_revision, steam_branch, svn_branch, machine_name, is_testify_session)
 
 	if is_server then
 		local session_id = Managers.state.network:session_id()
@@ -297,7 +301,7 @@ StateIngame.on_enter = function (self)
 	for i = 1, num_players, 1 do
 		local viewport_name = "player_" .. i
 		self.viewport_name = viewport_name
-		slot26 = Managers.player:add_player(nil, viewport_name, self.world_name, i)
+		slot29 = Managers.player:add_player(nil, viewport_name, self.world_name, i)
 	end
 
 	local level = self.level
@@ -357,7 +361,6 @@ StateIngame.on_enter = function (self)
 			free_flight_manager = self.free_flight_manager,
 			lobby_host = loading_context.lobby_host,
 			lobby_client = loading_context.lobby_client,
-			level_transition_handler = loading_context.level_transition_handler,
 			profile_synchronizer = self.profile_synchronizer,
 			network_event_delegate = self.network_event_delegate,
 			statistics_db = self.statistics_db,
@@ -418,7 +421,7 @@ StateIngame.on_enter = function (self)
 
 	local platform = PLATFORM
 
-	if platform == "win32" then
+	if IS_WINDOWS then
 		Window.set_mouse_focus(true)
 	end
 
@@ -476,7 +479,7 @@ StateIngame.on_enter = function (self)
 		WwiseWorld.set_global_parameter(wwise_world, "dynamic_range_sound", value)
 	end
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local sound_quality = Application.user_setting("sound_quality")
 
 		SoundQualitySettings.set_sound_quality(wwise_world, sound_quality)
@@ -508,10 +511,14 @@ StateIngame.on_enter = function (self)
 
 	Managers.music:on_enter_level(network_event_delegate, is_server)
 	Managers.chat:register_network_event_delegate(network_event_delegate)
-	Managers.mod:register_network_event_delegate(network_event_delegate)
+
+	if Managers.mod then
+		Managers.mod:register_network_event_delegate(network_event_delegate)
+	end
+
 	Managers.state.game_mode:setup_done()
 
-	local environment_variation_name = self.level_transition_handler:get_current_environment_variation_name()
+	local environment_variation_name = level_transition_handler:get_current_environment_variation_name()
 
 	if environment_variation_name and not Managers.state.game_mode:has_activated_mutator("darkness") and not Managers.state.game_mode:has_activated_mutator("night_mode") then
 		LevelHelper:flow_event(world, environment_variation_name)
@@ -578,9 +585,9 @@ StateIngame.on_enter = function (self)
 
 	Managers.telemetry.events:tech_system(system_info, adapter_index)
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		Managers.account:set_presence("playing")
-	elseif platform == "ps4" then
+	elseif IS_PS4 then
 		if self.is_in_inn then
 			Managers.account:set_presence("inn")
 		else
@@ -588,6 +595,8 @@ StateIngame.on_enter = function (self)
 
 			Managers.account:set_presence("playing", level_display_name)
 		end
+	elseif IS_WINDOWS then
+		Managers.account:update_presence()
 	end
 
 	if Managers.deed:has_deed() then
@@ -617,20 +626,16 @@ end
 StateIngame.country_code = function (self)
 	if DEDICATED_SERVER then
 		return SteamGameServer.country_code()
-	elseif PLATFORM == "win32" and rawget(_G, "Steam") then
+	elseif IS_WINDOWS and rawget(_G, "Steam") then
 		return Steam.user_country_code()
-	elseif PLATFORM == "xb1" or PLATFORM == "ps4" then
+	elseif IS_CONSOLE then
 		return Managers.account:region()
 	end
 end
 
 StateIngame.event_xbox_one_hack_start_game = function (self, level_key, difficulty)
 	print(level_key, difficulty)
-	Managers.state.difficulty:set_difficulty(difficulty, 0)
-
-	local environment_variation_id = 0
-
-	self.level_transition_handler:set_next_level(level_key, environment_variation_id)
+	Managers.level_transition_handler:set_next_level(level_key, nil, nil, nil, nil, nil, difficulty)
 	Managers.state.game_mode:complete_level()
 end
 
@@ -728,11 +733,12 @@ StateIngame._create_level = function (self)
 	Level.finish_spawn_time_sliced(level)
 	ScriptWorld.activate(self.world)
 
-	local level_key = self.level_transition_handler:get_current_level_keys()
+	local level_transition_handler = Managers.level_transition_handler
+	local level_key = level_transition_handler:get_current_level_key()
 	local level_name = LevelSettings[level_key].level_name
-	local game_mode_key = Managers.mechanism:get_next_game_mode_key(self.level_transition_handler)
+	local game_mode_key = level_transition_handler:get_current_game_mode()
 	local object_sets, _ = GameModeHelper.get_object_sets(level_name, game_mode_key)
-	local level_seed = Managers.mechanism:get_level_seed()
+	local level_seed = level_transition_handler:get_current_level_seed()
 
 	print("[StateIngame] Level seed:", level_seed)
 	World.set_data(self.world, "level_seed", level_seed)
@@ -824,7 +830,7 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.backend:update(dt)
 	self.input_manager:update(dt, main_t)
 	Managers.state.badge:update(dt, main_t)
-	self.level_transition_handler:update()
+	Managers.level_transition_handler:update()
 
 	local t = Managers.time:time("game")
 
@@ -946,7 +952,9 @@ StateIngame.update = function (self, dt, main_t)
 		self._called_level_flow_events = true
 	end
 
-	self:_poll_testify_requests()
+	if script_data.testify then
+		Testify:poll_requests_through_handler(state_ingame_testify, self)
+	end
 end
 
 StateIngame._update_onclose_check = function (self, dt, t)
@@ -1005,7 +1013,7 @@ StateIngame._check_exit = function (self, t)
 			transition = "restart_game"
 
 			Development.set_parameter("auto_join", true)
-		elseif PLATFORM ~= "win32" and Managers.account:leaving_game() then
+		elseif not IS_WINDOWS and Managers.account:leaving_game() then
 			transition = "return_to_title_screen"
 		end
 
@@ -1019,7 +1027,8 @@ StateIngame._check_exit = function (self, t)
 			transition = Managers.time:get_demo_transition()
 		end
 
-		local level_transition_type = self.level_transition_handler.transition_type
+		local level_transition_handler = Managers.level_transition_handler
+		local level_transition_type = level_transition_handler:get_current_transition()
 
 		if transition or join_lobby_data or level_transition_type then
 			print("TRANSITION", transition, join_lobby_data, level_transition_type)
@@ -1099,10 +1108,10 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif self.network_client and self.network_client.state == "denied_enter_game" then
-			if self.network_client.host_to_migrate_to == nil or platform == "xb1" or platform == "ps4" then
+			if self.network_client.host_to_migrate_to == nil or IS_CONSOLE then
 				self.exit_type = "join_lobby_failed"
 
-				if self.network_client.host_to_migrate_to ~= nil and (platform == "xb1" or platform == "ps4") then
+				if self.network_client.host_to_migrate_to ~= nil and IS_CONSOLE then
 					Application.error("[StateIngame] Consoles doesn't support host migration yet")
 				end
 			else
@@ -1129,9 +1138,22 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif self.network_client and self.network_client.state == "lost_connection_to_host" and lobby and lobby:lost_connection_to_lobby() then
-			print("Game ended while reconnecting to lobby, restarting to inn.")
+			if self.network_client == nil or self.network_client.host_to_migrate_to == nil or platform ~= "win32" then
+				self.exit_type = "rejoin_party"
 
-			self.exit_type = "rejoin_party"
+				print("Game ended while reconnecting to lobby, restarting to inn.")
+			else
+				self.exit_type = "perform_host_migration"
+
+				if network_manager:in_game_session() then
+					local force_diconnect = true
+
+					network_manager:leave_game(force_diconnect)
+				end
+
+				Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
+				Managers.transition:show_loading_icon()
+			end
 		elseif (lobby and lobby.state == LobbyState.FAILED) or (self.network_client and self.network_client.state == "lost_connection_to_host") then
 			if self.network_client == nil or self.network_client.host_to_migrate_to == nil or platform ~= "win32" then
 				self.exit_type = "lobby_state_failed"
@@ -1196,31 +1218,42 @@ StateIngame._check_exit = function (self, t)
 			self.exit_type = "reload_level"
 
 			if self.is_server then
-				local _, locked_director_function_ids = Managers.mechanism:generate_locked_director_functions(self.level_key)
-				local level_seed = Managers.mechanism:generate_level_seed()
+				level_transition_handler:promote_next_level_data()
 
-				network_manager.network_transmit:send_rpc_clients("rpc_reload_level", level_seed, locked_director_function_ids)
+				for _, peer_id in ipairs(self.network_server:get_peers()) do
+					if peer_id ~= self.peer_id then
+						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+						RPC.rpc_reload_level(channel_id)
+					end
+				end
+
 				network_manager:leave_game()
 			end
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
-		elseif level_transition_type then
+		elseif level_transition_type == "load_next_level" then
 			self.exit_type = "load_next_level"
 
 			printf("Transition type %q, is server: %s", tostring(level_transition_type), tostring(self.is_server))
 
 			if self.is_server then
-				local level_to_transition_to = self.level_transition_handler:get_current_transition_level()
-				local environment_variation_id = self.level_transition_handler:get_current_transition_environment()
-				local _, locked_director_function_ids = Managers.mechanism:generate_locked_director_functions(level_to_transition_to)
-				local level_seed = Managers.mechanism:generate_level_seed()
+				level_transition_handler:promote_next_level_data()
 
-				self.network_server:set_current_level(level_to_transition_to, environment_variation_id)
-				network_manager.network_transmit:send_rpc_clients("rpc_load_level", NetworkLookup.level_keys[level_to_transition_to], level_seed, difficulty_id, difficulty_tweak, locked_director_function_ids, environment_variation_id)
+				for _, peer_id in ipairs(self.network_server:get_peers()) do
+					if peer_id ~= self.peer_id then
+						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+						RPC.rpc_load_level(channel_id)
+					end
+				end
+
 				network_manager:leave_game()
 
-				if level_to_transition_to == "prologue" then
+				local level_key = level_transition_handler:get_current_level_key()
+
+				if level_key == "prologue" then
 					self.parent.loading_context.play_trailer = true
 					local switch_to_tutorial_backend, tutorial_state = Managers.mechanism:should_run_tutorial()
 					self.parent.loading_context.switch_to_tutorial_backend = switch_to_tutorial_backend
@@ -1337,13 +1370,21 @@ StateIngame._check_exit = function (self, t)
 			printf("Transition type %q, is server: %s", tostring(level_transition_type), tostring(self.is_server))
 
 			if self.is_server then
-				local _, locked_director_function_ids = Managers.mechanism:generate_locked_director_functions(level_to_transition_to)
 				local level_to_transition_to = DemoSettings.demo_level
-				local environment_variation_id = 0
+				local locked_director_functions = Managers.mechanism:generate_locked_director_functions(level_to_transition_to)
 				local level_seed = Managers.mechanism:generate_level_seed()
 
-				self.network_server:set_current_level(level_to_transition_to)
-				network_manager.network_transmit:send_rpc_clients("rpc_load_level", NetworkLookup.level_keys[level_to_transition_to], level_seed, difficulty_id, difficulty_tweak, locked_director_function_ids, environment_variation_id)
+				level_transition_handler:set_next_level(level_to_transition_to, nil, level_seed, nil, nil, nil, locked_director_functions, difficulty, difficulty_tweak)
+				level_transition_handler:promote_next_level_data()
+
+				for _, peer_id in ipairs(self.network_server:get_peers()) do
+					if peer_id ~= self.peer_id then
+						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+						RPC.rpc_load_level(channel_id)
+					end
+				end
+
 				network_manager:leave_game()
 			else
 				self.network_client:set_wait_for_state_loading(true)
@@ -1374,7 +1415,7 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif transition == "complete_level" then
-			self.level_transition_handler:level_completed()
+			level_transition_handler:level_completed()
 		end
 
 		if self.exit_type then
@@ -1393,13 +1434,12 @@ StateIngame._check_exit = function (self, t)
 			input_manager:block_device_except_service(nil, "mouse", 1)
 			input_manager:block_device_except_service(nil, "gamepad", 1)
 			Managers.popup:cancel_all_popups()
-			self.level_transition_handler:set_transition_exit_type(self.exit_type)
 
-			if platform == "xb1" then
+			if IS_XB1 then
 				self.machines[1]:state():trigger_xbox_multiplayer_round_end_events()
 			end
 
-			if platform == "ps4" then
+			if IS_PS4 then
 				Managers.account:set_realtime_multiplay(false)
 			end
 
@@ -1457,16 +1497,15 @@ StateIngame._check_exit = function (self, t)
 				network_manager:leave_game(force_diconnect)
 			end
 
-			if PLATFORM == "xb1" and Managers.voice_chat then
+			if IS_XB1 and Managers.voice_chat then
 				Managers.voice_chat:_remove_all_users()
 			end
 
 			Boot.quit_game = true
 		elseif exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" then
 			printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", self.exit_type)
-			self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key(), self.level_transition_handler:default_environment_id())
 
-			if PLATFORM == "xb1" and Managers.voice_chat then
+			if IS_XB1 and Managers.voice_chat then
 				Managers.voice_chat:_remove_all_users()
 			end
 
@@ -1492,7 +1531,7 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.level_end_view_context = nil
 
 			if exit_type == "lobby_state_failed" then
-				if PLATFORM == "win32" or PLATFORM == "linux" then
+				if IS_WINDOWS or IS_LINUX then
 					return StateTitleScreen
 				else
 					return StateLoading
@@ -1502,7 +1541,6 @@ StateIngame._check_exit = function (self, t)
 			end
 		elseif exit_type == "return_to_pc_menu" then
 			printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", self.exit_type)
-			self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key(), self.level_transition_handler:default_environment_id())
 
 			self.parent.loading_context.restart_network = true
 			self.parent.loading_context.show_profile_on_startup = true
@@ -1519,9 +1557,6 @@ StateIngame._check_exit = function (self, t)
 
 			if Managers.play_go:installed() then
 				loading_context.restart_network = true
-
-				self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key(), self.level_transition_handler:default_environment_id())
-
 				loading_context.play_trailer = Application.user_setting("play_intro_cinematic")
 
 				printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", exit_type)
@@ -1536,32 +1571,7 @@ StateIngame._check_exit = function (self, t)
 
 			return StateLoading
 		elseif exit_type == "perform_host_migration" then
-			local host_migration_info = {
-				host_to_migrate_to = self.network_client.host_to_migrate_to
-			}
-
-			if Managers.state.game_mode:is_game_mode_ended() then
-				local level_key = self.level_transition_handler:default_level_key()
-				local environment_variation_id = self.level_transition_handler:default_environment_id()
-				host_migration_info.level_to_load = level_key
-				host_migration_info.environment_to_load = environment_variation_id
-			end
-
-			local is_private = self._lobby_client:lobby_data("is_private")
-			local game_mode_key = nil
-
-			if PLATFORM == "ps4" then
-				game_mode_key = self._lobby_client:lobby_data("game_mode") or "n/a"
-			else
-				game_mode_key = self._lobby_client:lobby_data("game_mode") or NetworkLookup.game_modes["n/a"]
-			end
-
-			host_migration_info.lobby_data = {
-				game_mode = game_mode_key,
-				is_private = is_private,
-				difficulty = difficulty,
-				current_level_key = Managers.mechanism:game_mechanism():get_hub_level_key()
-			}
+			local host_migration_info = Managers.mechanism:create_host_migration_info(self._gm_event_end_conditions_met, self._gm_event_end_reason)
 			self.parent.loading_context.host_migration_info = host_migration_info
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
@@ -1572,9 +1582,6 @@ StateIngame._check_exit = function (self, t)
 			local loading_context = self.parent.loading_context
 			loading_context.restart_network = true
 			loading_context.rejoin_lobby = true
-
-			self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key(), self.level_transition_handler:default_environment_id())
-
 			self.leave_lobby = true
 
 			return StateLoading
@@ -1612,7 +1619,7 @@ StateIngame._check_exit = function (self, t)
 
 			return StateTitleScreen
 		elseif exit_type == "load_next_level" or exit_type == "reload_level" then
-			self.parent.loading_context.checkpoint_data = self.level_transition_handler.checkpoint_data
+			self.parent.loading_context.checkpoint_data = (self.is_server and Managers.level_transition_handler:get_checkpoint_data()) or nil
 			self.parent.loading_context.lobby_host = self._lobby_host
 			self.parent.loading_context.lobby_client = self._lobby_client
 			self.parent.loading_context.matchmaking_loading_context = Managers.matchmaking:loading_context()
@@ -1744,7 +1751,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 	self.free_flight_manager:cleanup_free_flight()
 
-	if PLATFORM == "xb1" and not self.hero_stats_updated then
+	if IS_XB1 and not self.hero_stats_updated then
 		Managers.xbox_stats:update_hero_stats(nil)
 
 		self.hero_stats_updated = true
@@ -1782,12 +1789,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	self.network_clock = nil
 
 	if Managers.twitch then
-		local level_key = self.level_transition_handler:get_current_level_keys()
-		local level_settings = LevelSettings[level_key]
-
-		if level_settings and not level_settings.disable_twitch_game_mode then
-			Managers.twitch:deactivate_twitch_game_mode()
-		end
+		Managers.twitch:deactivate_twitch_game_mode()
 	end
 
 	for local_player_id, machine in pairs(self.machines) do
@@ -1799,9 +1801,11 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 	Network.write_dump_tag("end of game")
 	Managers.music:on_exit_level()
-	self.level_transition_handler:unregister_rpcs()
-	self.level_transition_handler:unregister_events(Managers.state.event)
-	self.level_transition_handler:clear_transition_exit_type()
+
+	local level_transition_handler = Managers.level_transition_handler
+
+	level_transition_handler:unregister_rpcs()
+	level_transition_handler:unregister_events(Managers.state.event)
 	Managers.mechanism:unregister_rpcs()
 	Managers.party:unregister_rpcs()
 	Managers.state.game_mode:cleanup_game_mode_units()
@@ -1831,7 +1835,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	VisualAssertLog.cleanup()
 	self:_teardown_world()
 	ScriptUnit.check_all_units_deleted()
-	self.level_transition_handler.enemy_package_loader:unload_enemy_packages(application_shutdown)
+	level_transition_handler.enemy_package_loader:unload_enemy_packages(application_shutdown)
 	self.statistics_db:unregister_network_event_delegate()
 	Managers.time:unregister_timer("game")
 
@@ -1883,7 +1887,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 		end
 
 		Managers.deed:network_context_destroyed()
-		self.level_transition_handler.enemy_package_loader:network_context_destroyed()
+		level_transition_handler.enemy_package_loader:network_context_destroyed()
 		Managers.party:network_context_destroyed()
 
 		local loading_context = self.parent.loading_context
@@ -1968,8 +1972,8 @@ StateIngame.on_exit = function (self, application_shutdown)
 	else
 		self.profile_synchronizer:unregister_network_events()
 
-		if self.is_server and not self.is_in_inn and not self.is_in_tutorial and PLATFORM == "xb1" and not script_data.honduras_demo then
-			local level_key = self.level_transition_handler:get_next_level_key()
+		if self.is_server and not self.is_in_inn and not self.is_in_tutorial and IS_XB1 and not script_data.honduras_demo then
+			local level_key = level_transition_handler:get_current_level_key()
 			local level_setting = LevelSettings[level_key]
 
 			if level_setting.hub_level or level_key == "prologue" then
@@ -1998,7 +2002,11 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.chat:unregister_network_event_delegate()
-	Managers.mod:unregister_network_event_delegate()
+
+	if Managers.mod then
+		Managers.mod:unregister_network_event_delegate()
+	end
+
 	self.dice_keeper:unregister_rpc()
 
 	self.dice_keeper = nil
@@ -2016,14 +2024,14 @@ StateIngame.on_exit = function (self, application_shutdown)
 	self.network_event_delegate = nil
 
 	if application_shutdown or self.release_level_resources then
-		self.level_transition_handler:release_level_resources(self.level_key)
+		level_transition_handler:release_level_resources(self.level_key)
 	end
 
 	Managers.transition:show_loading_icon()
 	self:_remove_ingame_clock()
 	Managers.unlock:enable_update_unlocks(false)
 	Managers.package:unload_dangling_painting_materials()
-	Managers.mechanism:check_venture_end()
+	Managers.mechanism:check_venture_end(self.leave_lobby)
 end
 
 StateIngame.on_close = function (self)
@@ -2114,7 +2122,9 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	local event_manager = EventManager:new()
 	Managers.state.event = event_manager
-	local game_mode_key, side_compositions, game_mode_settings = Managers.mechanism:start_next_round(self.level_transition_handler)
+	local level_transition_handler = Managers.level_transition_handler
+	local game_mode_key = level_transition_handler:get_current_game_mode()
+	local _, side_compositions, game_mode_settings = Managers.mechanism:start_next_round()
 	Managers.state.side = SideManager:new(side_compositions)
 
 	for _, dlc in pairs(DLCSettings) do
@@ -2127,37 +2137,17 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		end
 	end
 
-	self.level_transition_handler:register_events(Managers.state.event)
+	level_transition_handler:register_events(Managers.state.event)
 
 	self.game_mode_key = game_mode_key
 
 	Managers.weave:initiate(world, network_event_delegate, is_server, game_mode_key)
 
-	local interface_override = game_mode_key
-
-	if game_mode_key == "inn_vs" then
-		interface_override = "versus"
-	end
-
-	Managers.backend:get_interface("items"):set_game_mode_specific_items(interface_override)
-	Managers.backend:set_talents_interface_override(interface_override)
-
-	local loadout_changed, old_loadout, new_loadout = Managers.backend:set_loadout_interface_override(interface_override)
-
-	fassert(not loadout_changed, "[StateIngame] Correct loadout should already have been selected and re-synced in StateLoading")
-	print("[StateIngame] loadout_changed:", loadout_changed, "old_loadout:", old_loadout, "new_loadout:", new_loadout, "game_mode:", game_mode_key)
-
-	if loadout_changed and self.profile_synchronizer then
-		local peer_id = Network.peer_id()
-		local profile_index, career_index = self.profile_synchronizer:profile_by_peer(peer_id, 1)
-
-		self.profile_synchronizer:resync_loadout(profile_index, career_index, nil)
-	end
-
-	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, self.level_transition_handler, network_event_delegate, self.statistics_db, game_mode_key, self.network_server, self.network_transmit, self.profile_synchronizer, game_mode_settings)
-	local level_key = self.level_transition_handler:get_current_level_keys()
-	local level_seed = Managers.mechanism:get_level_seed()
-	Managers.state.conflict = ConflictDirector:new(world, level_key, network_event_delegate, level_seed, is_server)
+	Managers.state.game_mode = GameModeManager:new(world, self._lobby_host, self._lobby_client, network_event_delegate, self.statistics_db, game_mode_key, self.network_server, self.network_transmit, self.profile_synchronizer, game_mode_settings)
+	local level_key = level_transition_handler:get_current_level_keys()
+	local level_seed = level_transition_handler:get_current_level_seed()
+	local conflict_settings = level_transition_handler:get_current_conflict_director()
+	Managers.state.conflict = ConflictDirector:new(world, level_key, network_event_delegate, level_seed, is_server, conflict_settings)
 	Managers.state.networked_flow_state = NetworkedFlowStateManager:new(world, is_server, network_event_delegate)
 
 	GarbageLeakDetector.register_object(Managers.state.game_mode, "GameModeManager")
@@ -2205,7 +2195,6 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.world_interaction = WorldInteractionManager:new(self.world)
 	local wwise_world = Managers.world:wwise_world(world)
 	local voting_params = {
-		level_transition_handler = self.level_transition_handler,
 		network_event_delegate = network_event_delegate,
 		is_server = self.is_server,
 		input_manager = self.input_manager,
@@ -2220,7 +2209,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	local unit_spawner = UnitSpawner:new(world, entity_manager, is_server)
 	Managers.state.unit_spawner = unit_spawner
 
-	self.level_transition_handler.enemy_package_loader:set_unit_spawner(unit_spawner)
+	level_transition_handler.enemy_package_loader:set_unit_spawner(unit_spawner)
 	unit_spawner:set_unit_template_lookup_table(unit_templates)
 
 	local unit_storage = NetworkUnitStorage:new()
@@ -2246,9 +2235,8 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	Managers.state.debug = DebugManager:new(world, self.free_flight_manager, self.input_manager, network_event_delegate, is_server)
 	Managers.state.spawn = SpawnManager:new(world, is_server, network_event_delegate, unit_spawner, self.profile_synchronizer, self.network_server)
-	local level_transition_handler = self.level_transition_handler
 	local level_key = level_transition_handler:get_current_level_keys()
-	local environment_variation_name = self.level_transition_handler:get_current_environment_variation_name()
+	local environment_variation_name = level_transition_handler:get_current_environment_variation_name()
 	local network_manager_post_init_data = {
 		profile_synchronizer = self.profile_synchronizer,
 		game_mode = Managers.state.game_mode,
@@ -2378,6 +2366,7 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 	LevelHelper:flow_event(self.world, "gm_event_end_conditions_met")
 
 	self._gm_event_end_conditions_met = true
+	self._gm_event_end_reason = reason
 
 	if self.is_server then
 		Managers.state.voting:set_vote_kick_enabled(false)
@@ -2408,7 +2397,7 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 
 		mission_system:evaluate_level_end_missions()
 
-		if PLATFORM == "ps4" then
+		if IS_PS4 then
 			local level_key = Managers.state.game_mode:level_key()
 			local level_display_name = LevelSettings[level_key].display_name
 			local difficulty_display_name = Managers.state.difficulty:get_difficulty_settings().display_name
@@ -2466,424 +2455,6 @@ StateIngame._handle_onclose_warning_result = function (self)
 			self._onclose_popup_id = nil
 			self._onclose_called = false
 		end
-	end
-end
-
-StateIngame._poll_testify_requests = function (self)
-	local level_key = Testify:poll_request("load_level")
-
-	if level_key then
-		Managers.mechanism:debug_load_level(level_key)
-		Testify:respond_to_request("load_level")
-	end
-
-	local weather_variation = Testify:poll_request("load_level_with_variation")
-
-	if weather_variation then
-		local level = weather_variation.level
-		local variation_id = weather_variation.variation_id
-
-		self.level_transition_handler:set_next_level(level, variation_id)
-		self.level_transition_handler:level_completed()
-		Testify:respond_to_request("load_level_with_variation")
-	end
-
-	local level_key = Testify:poll_request("get_level_weather_variations")
-
-	if level_key then
-		local level_settings = LevelSettings[level_key]
-		local variations = level_settings.environment_variations
-
-		Testify:respond_to_request("get_level_weather_variations", variations)
-	end
-
-	if Testify:poll_request("wait_for_player_to_spawn") then
-		local player = Managers.player:local_player()
-
-		if Unit.alive(player.player_unit) then
-			Testify:respond_to_request("wait_for_player_to_spawn")
-		end
-	end
-
-	if Testify:poll_request("wait_for_bots_to_spawn") then
-		for _, bot in pairs(Managers.player:bots()) do
-			if Unit.alive(bot.player_unit) then
-				Testify:respond_to_request("wait_for_bots_to_spawn")
-
-				break
-			end
-		end
-	end
-
-	local affiliation = Testify:poll_request("request_profiles")
-
-	if affiliation then
-		local profiles = {}
-
-		for _, profile in pairs(SPProfiles) do
-			if profile.affiliation == affiliation then
-				local careers = table.map(profile.careers, function (career)
-					return career.display_name
-				end)
-				profiles[#profiles + 1] = {
-					name = profile.display_name,
-					careers = careers
-				}
-			end
-		end
-
-		Testify:respond_to_request("request_profiles", profiles)
-	end
-
-	local profile = Testify:poll_request("set_player_profile")
-
-	if profile then
-		Managers.state.network:request_profile(1, profile.profile_name, profile.career_name, true)
-		Testify:handle_request("set_player_profile")
-	end
-
-	local profile = Testify:poll_request("set_bot_profile")
-
-	if profile then
-		script_data.allow_same_bots = true
-		script_data.wanted_bot_profile = profile.profile_name
-		script_data.wanted_bot_career_index = career_index_from_name(FindProfileIndex(profile.profile_name), profile.career_name)
-
-		Testify:respond_to_request("set_bot_profile")
-	end
-
-	if Testify:poll_request("enable_bots") then
-		script_data.ai_bots_disabled = false
-
-		Testify:respond_to_request("enable_bots")
-	end
-
-	if Testify:poll_request("disable_bots") then
-		script_data.ai_bots_disabled = true
-
-		Testify:respond_to_request("disable_bots")
-	end
-
-	if Testify:poll_request("add_all_weapon_skins") then
-		for _, entry in ipairs(DebugScreen.console_settings) do
-			if entry.title == "Add All Weapon Skins" then
-				entry.func()
-			end
-		end
-
-		Testify:respond_to_request("add_all_weapon_skins")
-	end
-
-	local options = Testify:poll_request("set_script_data")
-
-	if options then
-		table.merge(script_data, options)
-		Testify:respond_to_request("set_script_data")
-	end
-
-	local weapon = Testify:poll_request("wait_for_weapon_asset_to_be_loaded")
-
-	if weapon then
-		local player = Managers.player:local_player(1)
-		local inventory_extension = ScriptUnit.extension(player.player_unit, "inventory_system")
-
-		if not inventory_extension:resyncing_loadout() then
-			Testify:respond_to_request("wait_for_weapon_asset_to_be_loaded")
-		end
-	end
-
-	if Testify:poll_request("wait_for_players_inventory_ready") then
-		local players = Managers.player:players()
-		local nb_inventory_ready = 0
-
-		for _, player in pairs(players) do
-			local inventory_system = ScriptUnit.extension(player.player_unit, "inventory_system")
-
-			if inventory_system and inventory_system:can_wield() then
-				nb_inventory_ready = nb_inventory_ready + 1
-			end
-		end
-
-		if nb_inventory_ready == table.size(players) then
-			Testify:respond_to_request("wait_for_players_inventory_ready")
-		end
-	end
-
-	local weapon = Testify:poll_request("player_wield_weapon")
-
-	if weapon then
-		local player = Managers.player:local_player(1)
-
-		ScriptUnit.extension(player.player_unit, "inventory_system"):testify_wield_weapon(weapon)
-		Testify:respond_to_request("player_wield_weapon")
-	end
-
-	local weapon = Testify:poll_request("bot_wield_weapon")
-
-	if weapon then
-		for _, bot in pairs(Managers.player:bots()) do
-			ScriptUnit.extension(bot.player_unit, "inventory_system"):testify_wield_weapon(weapon)
-		end
-
-		Testify:respond_to_request("bot_wield_weapon")
-	end
-
-	if Testify:poll_request("set_game_mode_to_weave") then
-		local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-		if game_mode_key ~= "weave" then
-			Managers.mechanism:choose_next_state("weave")
-			Managers.mechanism:progress_state()
-			self._lobby_host:set_lobby_data({
-				game_mode = NetworkLookup.game_modes.weave
-			})
-		end
-
-		Testify:respond_to_request("set_game_mode_to_weave")
-	end
-
-	local weave_name = Testify:poll_request("load_weave")
-
-	if weave_name then
-		local weave_template = WeaveSettings.templates[weave_name]
-		local objective = weave_template.objectives[1]
-		local level_key = objective.level_id
-		self.level_transition_handler.transition_type = level_key
-
-		Testify:respond_to_request("load_weave")
-	end
-
-	if Testify:poll_request("set_camera_to_observe_first_bot") then
-		local first_bot = Managers.player:bots()[1]
-
-		if first_bot.player_unit == nil then
-			Testify:respond_to_request("set_camera_to_observe_first_bot")
-		else
-			CharacterStateHelper.change_camera_state(Managers.player:local_player(), "observer")
-		end
-	end
-
-	if Testify:poll_request("update_camera_to_follow_first_bot_rotation") then
-		local camera_unit = Managers.player:local_player().camera_follow_unit
-		local first_bot_unit = Managers.player:bots()[1].player_unit
-
-		if first_bot_unit then
-			local rotation = Unit.local_rotation(first_bot_unit, 0)
-
-			Unit.set_local_rotation(camera_unit, 0, rotation)
-		end
-
-		Testify:respond_to_request("update_camera_to_follow_first_bot_rotation")
-	end
-
-	local best_point = Testify:poll_request("teleport_player_on_best_point")
-
-	if best_point then
-		if best_point == 0 then
-			Testify:respond_to_request("teleport_player_on_best_point")
-
-			return
-		end
-
-		local player_unit = Managers.player:local_player().player_unit
-
-		if player_unit == nil then
-			Testify:respond_to_request("teleport_player_on_best_point")
-
-			return
-		end
-
-		local player_state = ScriptUnit.extension(player_unit, "character_state_machine_system").state_machine.state_current.name
-
-		if player_state == "knocked_down" or player_state == "pounced_down" or player_state == "grabbed_by_pack_master" or player_state == "grabbed_by_tentacle" then
-			printf("[Testify] Player in " .. player_state .. " state, teleportation cancelled")
-			Testify:respond_to_request("teleport_player_on_best_point")
-
-			return
-		end
-
-		local target_position = EngineOptimized.point_on_mainpath(best_point)
-
-		if target_position then
-			local player_mover = Unit.mover(player_unit)
-			target_position.z = target_position.z + 1
-
-			Mover.set_position(player_mover, target_position)
-			printf("[Testify] Teleporting player to x: " .. target_position.x .. " y: " .. target_position.y .. " z: " .. target_position.z)
-		end
-
-		Testify:respond_to_request("teleport_player_on_best_point")
-	end
-
-	if Testify:poll_request("teleport_player_randomly_on_main_path") then
-		local random_point = math.random(1, EngineOptimized.main_path_total_length())
-		local player_unit = Managers.player:local_player().player_unit
-
-		if player_unit == nil then
-			Testify:respond_to_request("teleport_player_randomly_on_main_path")
-
-			return
-		end
-
-		local player_state = ScriptUnit.extension(player_unit, "character_state_machine_system").state_machine.state_current.name
-
-		if player_state == "knocked_down" or player_state == "pounced_down" or player_state == "grabbed_by_pack_master" or player_state == "grabbed_by_tentacle" then
-			printf("[Testify] Player in " .. player_state .. " state, teleportation cancelled")
-			Testify:respond_to_request("teleport_player_randomly_on_main_path")
-
-			return
-		end
-
-		local target_position = EngineOptimized.point_on_mainpath(random_point)
-
-		if target_position then
-			local player_mover = Unit.mover(player_unit)
-			target_position.z = target_position.z + 1
-
-			Mover.set_position(player_mover, target_position)
-			printf("[Testify] Teleporting player to x: " .. target_position.x .. " y: " .. target_position.y .. " z: " .. target_position.z)
-		end
-
-		Testify:respond_to_request("teleport_player_randomly_on_main_path")
-	end
-
-	if Testify:poll_request("set_player_unit_not_visible") and Managers.player:local_player().player_unit == nil then
-		Testify:respond_to_request("set_player_unit_not_visible")
-	end
-
-	local bots_data = Testify:poll_request("teleport_blocked_bots_forward_on_main_path")
-
-	if bots_data then
-		local bots_stuck_data = bots_data.bots_stuck_data
-		local bots_teleportation_range = bots_data.bots_teleportation_range or 21
-		local bots_blocked_time_before_teleportation = bots_data.bots_blocked_time_before_teleportation or 6
-		local bots = Managers.player:bots()
-
-		for i = 1, #bots, 1 do
-			if bots[i].player_unit == nil then
-				printf("Bot unit has been removed. Cannot teleport it.")
-				Testify:respond_to_request("teleport_blocked_bots_forward_on_main_path")
-
-				return
-			end
-
-			local bot_state = ScriptUnit.extension(bots[i].player_unit, "character_state_machine_system").state_machine.state_current.name
-
-			if bot_state == "knocked_down" or bot_state == "pounced_down" or bot_state == "grabbed_by_pack_master" or bot_state == "grabbed_by_tentacle" then
-				printf("Bot blocked in state " .. bot_state .. ". Cannot teleport it on main path.")
-				Testify:respond_to_request("teleport_blocked_bots_forward_on_main_path")
-
-				return
-			end
-
-			local bot_stuck_data = bots_stuck_data[i]
-			local bot_pos = Mover.position(Unit.mover(bots[i].player_unit))
-			local bot_main_path_data = Managers.state.conflict:get_main_path_player_data(bots[i].player_unit)
-
-			if not bot_main_path_data then
-				Testify:respond_to_request("teleport_blocked_bots_forward_on_main_path")
-
-				return
-			end
-
-			local bot_point = bot_main_path_data.travel_dist
-
-			if Vector3.distance_squared(bot_stuck_data[1]:unbox(), bot_pos) < 2 then
-				if bots_blocked_time_before_teleportation < os.time() - bot_stuck_data[2] then
-					local tp_pos = EngineOptimized.point_on_mainpath(bot_point + bots_teleportation_range)
-
-					if tp_pos then
-						tp_pos.z = tp_pos.z + 1
-
-						Mover.set_position(Unit.mover(bots[i].player_unit), tp_pos)
-					end
-				end
-			else
-				bot_stuck_data[1]:store(bot_pos)
-
-				bot_stuck_data[2] = os.time()
-			end
-		end
-
-		Testify:respond_to_request("teleport_blocked_bots_forward_on_main_path")
-	end
-
-	local bots_stuck_data = Testify:poll_request("are_bots_blocked")
-
-	if bots_stuck_data then
-		local bots = Managers.player:bots()
-
-		for i = 1, #bots, 1 do
-			if bots[i].player_unit then
-				local bot_stuck_data = bots_stuck_data[i]
-				local bot_pos = Mover.position(Unit.mover(bots[i].player_unit))
-
-				if Vector3.distance_squared(bot_stuck_data[1]:unbox(), bot_pos) < 2 then
-					if os.time() - bot_stuck_data[2] > 5 then
-						Testify:respond_to_request("are_bots_blocked", true)
-						bot_stuck_data[1]:store(Vector3(-999, -999, -999))
-
-						bot_stuck_data[2] = os.time()
-
-						return
-					end
-				else
-					bot_stuck_data[1]:store(bot_pos)
-
-					bot_stuck_data[2] = os.time()
-				end
-			end
-		end
-
-		Testify:respond_to_request("are_bots_blocked", false)
-	end
-
-	if Testify:poll_request("make_game_ready_for_next_weave") and self.is_in_inn then
-		Testify:respond_to_request("make_game_ready_for_next_weave")
-	end
-
-	if Testify:poll_request("make_players_invicible") then
-		local players = Managers.player:players()
-
-		for _, player in pairs(players) do
-			if player.player_unit ~= nil then
-				local player_health_extension = ScriptUnit.extension(player.player_unit, "health_system")
-				player_health_extension.is_invincible = true
-			end
-		end
-
-		Testify:respond_to_request("make_players_invicible")
-	end
-
-	if Testify:poll_request("make_player_and_two_bots_invicible") then
-		local bots = Managers.player:bots()
-
-		if bots[1].player_unit ~= nil then
-			local bot_health_extension = ScriptUnit.extension(bots[1].player_unit, "health_system")
-			bot_health_extension.is_invincible = true
-		end
-
-		if bots[2].player_unit ~= nil then
-			local bot_health_extension = ScriptUnit.extension(bots[2].player_unit, "health_system")
-			bot_health_extension.is_invincible = true
-		end
-
-		local player = Managers.player:local_player()
-
-		if player.player_unit ~= nil then
-			local player_health_extension = ScriptUnit.extension(player.player_unit, "health_system")
-			player_health_extension.is_invincible = true
-		end
-
-		Testify:respond_to_request("make_player_and_two_bots_invicible")
-	end
-
-	local settings = Testify:poll_request("set_telemetry_settings")
-
-	if settings then
-		table.merge(TelemetrySettings, settings)
-		Managers.telemetry:reload_settings()
-		Testify:respond_to_request("set_telemetry_settings")
 	end
 end
 

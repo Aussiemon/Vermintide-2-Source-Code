@@ -448,6 +448,7 @@ new_template("medium_blunt_smiter", nil, "medium_blunt_smiter_heavy", "heavy_att
 
 DamageProfileTemplates.medium_blunt_smiter_heavy.armor_modifier = "armor_modifier_blunt_smiter_2h_hammer_H"
 DamageProfileTemplates.medium_blunt_smiter_heavy.critical_strike = "critical_strike_blunt_smiter_2h_hammer_H"
+DamageProfileTemplates.medium_blunt_smiter_heavy.default_target = "default_target_slashing_smiter_burn_M"
 
 new_template("medium_slashing_smiter", nil, "medium_slashing_smiter_1h_axe", "heavy_attack", nil)
 

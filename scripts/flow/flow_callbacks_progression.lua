@@ -513,7 +513,7 @@ function flow_query_leader_owns_vt1(params)
 
 	local owns_vt1 = false
 
-	if PLATFORM == "win32" and rawget(_G, "Steam") then
+	if IS_WINDOWS and rawget(_G, "Steam") then
 		owns_vt1 = Steam.owns_app(235540)
 	end
 

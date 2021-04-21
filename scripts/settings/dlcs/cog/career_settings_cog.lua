@@ -91,30 +91,19 @@ CareerSettings.dr_engineer = {
 			Unit.animation_set_variable(fp_unit, variable_index, 1)
 		end
 	end,
-	talent_packages = function (talents, talent_tree, packages_list, is_first_person)
+	talent_packages = function (talent_ids, packages_list, is_first_person)
 		local career_skill_index = 1
 		local career_weapon_index = 1
 
-		if talents and talent_tree then
-			for i = 1, #talents, 1 do
-				local column = talents[i]
+		for _, talent_id in ipairs(talent_ids) do
+			local talent = Talents.dwarf_ranger[talent_id]
 
-				if column and column > 0 then
-					local talent_name = talent_tree[i][column]
+			if talent and talent.talent_career_skill_index then
+				career_skill_index = talent.talent_career_skill_index
+			end
 
-					if talent_name then
-						local talent_id = TalentIDLookup[talent_name].talent_id
-						local talent = Talents.dwarf_ranger[talent_id]
-
-						if talent and talent.talent_career_skill_index then
-							career_skill_index = talent.talent_career_skill_index
-						end
-
-						if talent and talent.talent_career_weapon_index then
-							career_weapon_index = talent.talent_career_weapon_index
-						end
-					end
-				end
+			if talent and talent.talent_career_weapon_index then
+				career_weapon_index = talent.talent_career_weapon_index
 			end
 		end
 
@@ -164,8 +153,7 @@ CareerSettings.dr_engineer = {
 	},
 	additional_item_slots = {
 		slot_grenade = 2
-	},
-	additional_starting_inventory = {}
+	}
 }
 OverchargeData = OverchargeData or {}
 OverchargeData.dr_engineer = {

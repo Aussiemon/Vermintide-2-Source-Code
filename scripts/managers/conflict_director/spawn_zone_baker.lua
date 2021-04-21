@@ -218,7 +218,7 @@ end
 local work_list = {}
 local lookup = {}
 
-SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_density, area_density_coefficient, length_density_coefficient, conflict_director_name)
+SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_density, area_density_coefficient, length_density_coefficient, conflict_director_name, mutator_list)
 	if not InterestPointUnitsLookup then
 		ConflictUtils.generate_spawn_point_lookup(self.world)
 	end
@@ -237,7 +237,7 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 	conflict_director_name = conflict_director_name or "default"
 	local conflict_director = ConflictDirectors[conflict_director_name]
 	local seed = self._initial_seed
-	local great_cycles = MainPathSpawningGenerator.generate_great_cycles(conflict_director, zones, zone_convert, num_main_zones, spawn_cycle_length, seed)
+	local great_cycles = MainPathSpawningGenerator.generate_great_cycles(conflict_director, mutator_list, zones, zone_convert, num_main_zones, spawn_cycle_length, seed)
 	local spawns = {}
 	local pack_sizes = {}
 	local pack_rotations = {}

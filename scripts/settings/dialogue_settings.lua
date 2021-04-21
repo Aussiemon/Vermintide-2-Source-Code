@@ -14,7 +14,8 @@ DialogueSettings.auto_load_files = {
 	"dialogues/generated/dwarf_ranger_generic_vo",
 	"dialogues/generated/witch_hunter_generic_vo",
 	"dialogues/generated/pactsworn_player_vo",
-	"dialogues/generated/vs_player_vo"
+	"dialogues/generated/vs_player_vo",
+	"dialogues/generated/weather_vo"
 }
 DialogueSettings.level_specific_load_files = {
 	whitebox_climb = {
@@ -138,6 +139,10 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/grey_seer_skittergate"
 	},
 	inn_level = {
+		"dialogues/generated/hub_conversations",
+		"dialogues/generated/fleur_conversations"
+	},
+	keep_base = {
 		"dialogues/generated/hub_conversations"
 	},
 	inn_level_celebrate = {
@@ -175,7 +180,8 @@ DialogueSettings.blocked_auto_load_files = {
 	tutorial = true,
 	inn_level_skulls = true,
 	inn_level_halloween = true,
-	inn_level = true
+	inn_level = true,
+	keep_base = true
 }
 
 DLCUtils.append("auto_load_files", DialogueSettings.auto_load_files)
@@ -372,13 +378,38 @@ DialogueSettings.dialogue_category_config = {
 	},
 	player_feedback = {
 		mutually_exclusive = true,
-		interrupted_by = {},
+		interrupted_by = {
+			mutator_special_occasion = true
+		},
 		playable_during_category = {
 			default = true,
 			enemy_high_prio = true,
 			enemy_basic_prio = true,
 			npc_talk_special = true,
 			story_talk_vce = true
+		}
+	},
+	mutator_special_occasion = {
+		mutually_exclusive = true,
+		interrupted_by = {},
+		playable_during_category = {
+			default = true,
+			player_feedback = true,
+			level_talk = true,
+			help_talk = true,
+			npc_talk_special = true,
+			level_talk_tutorial = true,
+			enemy_alerts = true,
+			casual_talk = true,
+			story_talk = true,
+			npc_talk = true,
+			enemy_basic_prio = true,
+			knocked_down_override = true,
+			enemy_high_prio = true,
+			guidance = true,
+			seen_items = true,
+			player_alerts = true,
+			enemy_alerts_high = true
 		}
 	},
 	player_feedback_reply = {

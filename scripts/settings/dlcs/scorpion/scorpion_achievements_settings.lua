@@ -156,7 +156,7 @@ settings.achievement_outline = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	local weaves = settings.achievement_outline.weaves
 	local weave_entries = weaves.entries
 	local categories = weaves.categories

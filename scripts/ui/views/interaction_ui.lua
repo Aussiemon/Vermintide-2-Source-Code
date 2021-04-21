@@ -49,7 +49,7 @@ local scenegraph_definition = {
 		position = {
 			60,
 			0,
-			1
+			10
 		}
 	},
 	text_pivot = {
@@ -122,7 +122,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 
@@ -162,7 +162,7 @@ local widget_definitions = {
 					pass_type = "text",
 					text_id = "text",
 					content_check_function = function (content)
-						return content.text
+						return content.text and content.text ~= ""
 					end
 				},
 				{
@@ -170,7 +170,7 @@ local widget_definitions = {
 					pass_type = "text",
 					text_id = "text",
 					content_check_function = function (content)
-						return content.text
+						return content.text and content.text ~= ""
 					end
 				},
 				{
@@ -203,7 +203,7 @@ local widget_definitions = {
 				offset = {
 					0,
 					0,
-					0
+					-100
 				},
 				color = {
 					255,
@@ -316,7 +316,7 @@ local widget_definitions = {
 				},
 				offset = {
 					0,
-					0,
+					3,
 					1
 				},
 				color = {
@@ -415,6 +415,20 @@ local widget_definitions = {
 		}
 	}
 }
+local extended_components = {}
+
+for _, dlc in pairs(DLCSettings) do
+	local interaction_ui_components = dlc.interaction_ui_components
+
+	if interaction_ui_components then
+		for name, component in pairs(interaction_ui_components) do
+			fassert(not extended_components[name], "[InternactionUi] There is already a component with the name %q", name)
+			local_require(component.filename)
+
+			extended_components[name] = component.class_name
+		end
+	end
+end
 
 InteractionUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
@@ -424,6 +438,7 @@ InteractionUI.init = function (self, parent, ingame_ui_context)
 	self.peer_id = ingame_ui_context.peer_id
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.world = ingame_ui_context.world
+	self._ingame_ui_context = ingame_ui_context
 	self.platform = PLATFORM
 	self.interaction_animations = {}
 
@@ -442,10 +457,20 @@ InteractionUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.interaction_widget = UIWidget.init(widget_definitions.tooltip)
 	self.interaction_bar_widget = UIWidget.init(widget_definitions.interaction_bar)
+	self._components = {}
+
+	for component_name, component_class_name in pairs(extended_components) do
+		local component_class = rawget(_G, component_class_name)
+		self._components[component_name] = component_class:new(self, self._ingame_ui_context)
+	end
 end
 
 InteractionUI.destroy = function (self)
 	GarbageLeakDetector.register_object(self, "interaction_gui")
+
+	for name, component in pairs(self._components) do
+		component:destroy()
+	end
 end
 
 InteractionUI.button_texture_data_by_input_action = function (self, input_action)
@@ -492,13 +517,17 @@ InteractionUI._handle_interaction_progress = function (self, progress)
 	end
 end
 
+local customizer_data = {
+	root_scenegraph_id = "pivot",
+	label = "Interact",
+	registry_key = "interact",
+	drag_scenegraph_id = "interaction"
+}
 local DO_RELOAD = false
 
 InteractionUI.update = function (self, dt, t, my_player)
 	if DO_RELOAD then
 		self:create_ui_elements()
-
-		DO_RELOAD = false
 	end
 
 	local ui_renderer = self.ui_renderer
@@ -510,6 +539,8 @@ InteractionUI.update = function (self, dt, t, my_player)
 		return
 	end
 
+	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
+
 	for name, ui_animation in pairs(self.interaction_animations) do
 		UIAnimation.update(ui_animation, dt)
 
@@ -520,10 +551,10 @@ InteractionUI.update = function (self, dt, t, my_player)
 
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
 	local interaction_bar_active = false
-	local title_text, action_text, interact_action, failed_reason, is_channeling, override_text_color = nil
+	local title_text, action_text, interact_action, failed_reason, is_channeling, override_text_color, interaction_component = nil
 	local is_interacting = interactor_extension:is_interacting()
 	local is_waiting_for_interaction_approval = interactor_extension:is_waiting_for_interaction_approval()
-	local interaction_in_progress = is_interacting and not is_waiting_for_interaction_approval
+	local interaction_in_progress = is_interacting and not is_waiting_for_interaction_approval and not interactor_extension:is_aborting_interaction()
 
 	if interaction_in_progress then
 		local t = Managers.time:time("game")
@@ -535,7 +566,7 @@ InteractionUI.update = function (self, dt, t, my_player)
 		end
 	end
 
-	title_text, action_text, interact_action, failed_reason, override_text_color = self:_get_interaction_text(player_unit, is_channeling)
+	title_text, action_text, interact_action, failed_reason, override_text_color, interaction_component = self:_get_interaction_text(player_unit, is_channeling)
 
 	if action_text then
 		title_text = (title_text and Localize(title_text)) or ""
@@ -591,11 +622,17 @@ InteractionUI.update = function (self, dt, t, my_player)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
+
+	local interaction_component = self._components[interaction_component]
+
+	if interaction_component then
+		interaction_component:update(player_unit, dt, t)
+	end
 end
 
 InteractionUI._get_interaction_text = function (self, player_unit, is_channeling)
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
-	local title_text, action_text, interact_action, override_text_color = nil
+	local title_text, action_text, interact_action, interaction_component, override_text_color = nil
 	local can_interact, failed_reason, interaction_type = interactor_extension:can_interact()
 	local is_interacting, current_interaction_type = interactor_extension:is_interacting()
 	interaction_type = interaction_type or current_interaction_type
@@ -608,20 +645,20 @@ InteractionUI._get_interaction_text = function (self, player_unit, is_channeling
 			end
 
 			if can_interact or is_interacting then
-				title_text, action_text = interactor_extension:interaction_description()
+				title_text, action_text, interaction_component = interactor_extension:interaction_description()
 			elseif failed_reason then
-				title_text, action_text = interactor_extension:interaction_description(failed_reason)
+				title_text, action_text, interaction_component = interactor_extension:interaction_description(failed_reason)
 			end
 		end
 	else
-		title_text, action_text, interact_action, override_text_color = self:_get_wielded_interaction_text(player_unit)
+		title_text, action_text, interact_action, override_text_color, interaction_component = self:_get_wielded_interaction_text(player_unit)
 	end
 
 	if GameSettingsDevelopment.disabled_interactions[interaction_type] then
 		title_text = "Currently Disabled"
 	end
 
-	return title_text, action_text, interact_action, failed_reason, override_text_color
+	return title_text, action_text, interact_action, failed_reason, override_text_color, interaction_component
 end
 
 InteractionUI._get_wielded_interaction_text = function (self, player_unit)
@@ -631,7 +668,7 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 		return
 	end
 
-	local title_text, action_text, interact_action, override_text_color = nil
+	local title_text, action_text, interact_action, override_text_color, interaction_component = nil
 	local highest_prio = 0
 	local best_action_name, best_sub_action_name = nil
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
@@ -671,18 +708,18 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 			local can_interact = can_interact_func(player_unit, interactable_unit, interaction_data, interaction_template.config, self.world)
 
 			if can_interact then
-				title_text, action_text, override_text_color = interaction_template.client.hud_description(interactable_unit, interaction_data, interaction_template.config, nil, player_unit)
+				title_text, action_text, override_text_color, interaction_component = interaction_template.client.hud_description(interactable_unit, interaction_data, interaction_template.config, nil, player_unit)
 			else
-				title_text, action_text, override_text_color = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
+				title_text, action_text, override_text_color, interaction_component = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
 			end
 		else
-			title_text, action_text, override_text_color = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
+			title_text, action_text, override_text_color, interaction_component = interaction_template.client.hud_description(nil, interaction_data, interaction_template.config, nil, player_unit)
 		end
 
 		interact_action = action_settings.hold_input or best_action_name
 	end
 
-	return title_text, action_text, interact_action, override_text_color
+	return title_text, action_text, interact_action, override_text_color, interaction_component
 end
 
 InteractionUI._get_wielded_item_data = function (self, player_unit)
@@ -709,7 +746,11 @@ InteractionUI._assign_button_info = function (self, interact_action, failed_reas
 		if button_texture_data and button_texture_data.texture then
 			widget_content.button_text = ""
 			widget_content.icon_textures[1] = button_texture_data.texture
-			widget_style.icon_styles.texture_sizes[1] = button_texture_data.size
+			local size = {
+				button_texture_data.size[1] / button_texture_data.size[2] * button_texture_data.size[1],
+				button_texture_data.size[1]
+			}
+			widget_style.icon_styles.texture_sizes[1] = size
 			widget_style.icon_styles.draw_count = 1
 			texture_size_x = button_texture_data.size[1]
 			texture_size_y = button_texture_data.size[2]

@@ -25,6 +25,7 @@ AIGroupSystem.init = function (self, context, system_name)
 	self.group_uid = 0
 	self._spline_properties = {}
 	self._spline_lookup = {}
+	self._cached_splines = {}
 	self._last_recycler_group_id = nil
 end
 
@@ -134,6 +135,7 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 		if spline then
 			local spline_points = spline.spline_points
 			group.spline_points = spline_points
+			group.cached_splines = self._cached_splines[spline_name]
 		end
 
 		fassert(group.size, "Created group without size!")
@@ -704,6 +706,11 @@ end
 
 AIGroupSystem._add_spline = function (self, spline_name, spline_data, spline_type)
 	self._spline_lookup[spline_name] = spline_data
+
+	if GameSettingsDevelopment.pre_calculate_patrol_splines then
+		self._cached_splines[spline_name] = self:_calculate_splines(spline_name, spline_data)
+	end
+
 	local is_patrol_spline = spline_type == "patrol" or string.find(spline_name, PATROL_SPLINE_PREFIX)
 
 	if is_patrol_spline then
@@ -729,6 +736,19 @@ AIGroupSystem._add_spline = function (self, spline_name, spline_data, spline_typ
 	end
 
 	error("unsupported spline type for spline: " .. spline_name .. ". Spline name should start with 'patrol_', 'roaming_' or 'event_' which defines the spline type")
+end
+
+AIGroupSystem._calculate_splines = function (self, spline_name, spline_data)
+	if not spline_data.spline_points then
+		return
+	end
+
+	local cached_spline_data = {}
+	local source_spline_points = spline_data.spline_points
+	local spline_points = AiUtils.remove_bad_boxed_spline_points(source_spline_points, spline_name)
+	local spline_curve = SplineCurve:new(spline_points, "Hermite", "SplineMovementHermiteInterpolatedMetered", spline_name, 3)
+
+	return spline_curve:splines()
 end
 
 AIGroupSystem.draw_active_spline_paths = function (self)
@@ -781,9 +801,10 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 	local spline_curve = nil
 
 	if spline.spline_points then
+		local cached_spline = self._cached_splines[spline_name]
 		local source_spline_points = spline.spline_points
 		local spline_points = AiUtils.remove_bad_boxed_spline_points(source_spline_points, spline_name)
-		spline_curve = SplineCurve:new(spline_points, "Hermite", "SplineMovementHermiteInterpolatedMetered", spline_name, 3)
+		spline_curve = SplineCurve:new(spline_points, "Hermite", "SplineMovementHermiteInterpolatedMetered", spline_name, 3, cached_spline)
 	else
 		local level = self._level
 		local source_spline_points = Level.spline(level, spline_name)

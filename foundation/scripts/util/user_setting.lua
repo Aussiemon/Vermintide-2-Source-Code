@@ -1,7 +1,7 @@
 Development = Development or {}
 PATCHED_USER_SETTINGS = PATCHED_USER_SETTINGS or false
 
-if PLATFORM == "ps4" or (PLATFORM == "xb1" and not PATCHED_USER_SETTINGS) then
+if IS_CONSOLE and not PATCHED_USER_SETTINGS then
 	UserSettings = UserSettings or {}
 
 	Application.set_user_setting = function (...)

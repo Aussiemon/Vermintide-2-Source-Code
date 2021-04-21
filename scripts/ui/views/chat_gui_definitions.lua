@@ -26,7 +26,7 @@ IRC_CHANNEL_COLORS = {
 	[Irc.ALL_MSG] = Colors.get_table("khaki")
 }
 local scenegraph_definition = {
-	root = {
+	root_parent = {
 		is_root = true,
 		position = {
 			0,
@@ -36,6 +36,30 @@ local scenegraph_definition = {
 		size = {
 			1920,
 			1080
+		}
+	},
+	root = {
+		parent = "root_parent",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			1920,
+			1080
+		}
+	},
+	root_dragger = {
+		parent = "root",
+		position = {
+			0,
+			200,
+			0
+		},
+		size = {
+			CHAT_WIDTH,
+			CHAT_HEIGHT
 		}
 	},
 	screen = {

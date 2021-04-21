@@ -3,7 +3,6 @@ MatchmakingStateFriendClient.NAME = "MatchmakingStateFriendClient"
 
 MatchmakingStateFriendClient.init = function (self, params)
 	self.matchmaking_manager = params.matchmaking_manager
-	self.handshaker_client = params.handshaker_client
 	self.wwise_world = params.wwise_world
 end
 
@@ -12,7 +11,6 @@ MatchmakingStateFriendClient.destroy = function (self)
 end
 
 MatchmakingStateFriendClient.on_enter = function (self, state_context)
-	self.request_data_done = false
 	self._game_server_data = nil
 end
 
@@ -34,11 +32,6 @@ MatchmakingStateFriendClient.update = function (self, dt, t)
 
 	local gamepad_active_last_frame = self._gamepad_active_last_frame
 	local gamepad_active = Managers.input:is_device_active("gamepad")
-
-	if self.handshaker_client:handshake_done() and not self.request_data_done then
-		self.request_data_done = true
-	end
-
 	self._gamepad_active_last_frame = gamepad_active
 end
 
@@ -48,11 +41,7 @@ MatchmakingStateFriendClient.get_transition = function (self)
 	end
 end
 
-MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = function (self, channel_id, client_cookie, host_cookie, ip_address)
-	if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return
-	end
-
+MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = function (self, channel_id, ip_address)
 	self._game_server_data = {
 		server_info = {
 			ip_port = ip_address

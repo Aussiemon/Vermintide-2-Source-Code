@@ -36,10 +36,6 @@ ProfileRequester.unregister_rpcs = function (self)
 	self._network_transmit = nil
 end
 
-ProfileRequester.profile_available_for_peer = function (self, peer_id, local_player_id, profile_name, career_name)
-	return Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
-end
-
 ProfileRequester.profile_is_specator = function (self, profile_index)
 	return profile_index == FindProfileIndex("spectator")
 end
@@ -59,17 +55,17 @@ end
 
 ProfileRequester._request_profile = function (self, peer_id, local_player_id, request_id, profile_index, career_index, force_respawn)
 	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
-	local allowed_to_switch_to_profile = self:profile_is_specator() or self:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
+	local allowed_to_switch_to_profile = self:profile_is_specator() or Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)
 	local result_id = nil
 
-	if allowed_to_switch_to_profile then
+	if allowed_to_switch_to_profile and self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index) then
 		result_id = ProfileRequester.REQUEST_RESULTS.success
 
 		Managers.party:set_selected_profile(peer_id, local_player_id, profile_index, career_index)
 
 		local is_bot = false
 
-		self._profile_synchronizer:select_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
+		self._profile_synchronizer:assign_full_profile(peer_id, local_player_id, profile_index, career_index, is_bot)
 
 		if force_respawn then
 			Managers.state.game_mode:force_respawn(peer_id, local_player_id)

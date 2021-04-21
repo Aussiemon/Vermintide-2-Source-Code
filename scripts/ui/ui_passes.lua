@@ -80,6 +80,11 @@ local function get_line_color_override(line_index, line_length, line_global_star
 end
 
 UIPasses = UIPasses or {}
+UIPasses.nop = {
+	init = NOP,
+	draw = NOP,
+	update = NOP
+}
 local NilCursor = {
 	0,
 	0,
@@ -280,7 +285,7 @@ UIPasses.list_pass = {
 		local index = 0
 		local row_count = 0
 
-		if PLATFORM == "ps4" then
+		if IS_PS4 then
 			row_count = math.max(start_index - 1, 0)
 			index = 0
 		end
@@ -445,7 +450,7 @@ UIPasses.texture_frame = {
 		return nil
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		local texture_size, texture_sizes, color, masked, saturated, only_corners, gui_position, gui_size = nil
+		local texture_size, texture_sizes, color, masked, saturated, only_corners, skip_background, use_tiling, mirrored_tiling, gui_position, gui_size = nil
 		local texture_id = pass_definition.texture_id or "texture_id"
 
 		if ui_style then
@@ -472,18 +477,13 @@ UIPasses.texture_frame = {
 			local frame_margins = ui_style.frame_margins
 
 			if frame_margins then
-				gui_position = Vector3(0, 0, 0)
-				gui_position[1] = position[1] + frame_margins[1]
-				gui_position[2] = position[2] + frame_margins[2]
-				gui_position[3] = position[3]
+				gui_position = Vector3(position[1] + frame_margins[1], position[2] + frame_margins[2], position[3])
 
 				if gui_size then
 					gui_size[1] = gui_size[1] - frame_margins[1] * 2
 					gui_size[2] = gui_size[2] - frame_margins[2] * 2
 				else
-					gui_size = Vector2(0, 0)
-					gui_size[1] = size[1] - frame_margins[1] * 2
-					gui_size[2] = size[2] - frame_margins[2] * 2
+					gui_size = Vector2(size[1] - frame_margins[1] * 2, size[2] - frame_margins[2] * 2)
 				end
 			end
 
@@ -495,9 +495,12 @@ UIPasses.texture_frame = {
 			masked = ui_style.masked
 			saturated = ui_style.saturated
 			only_corners = ui_style.only_corners
+			skip_background = ui_style.skip_background
+			use_tiling = ui_style.use_tiling
+			mirrored_tiling = ui_style.mirrored_tiling
 		end
 
-		return UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners)
+		return UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners, use_tiling, mirrored_tiling, skip_background)
 	end
 }
 UIPasses.texture_dynamic_color = {
@@ -666,7 +669,9 @@ UIPasses.tiled_texture = {
 
 		assert(texture_tiling_size, "Missing texture_tiling_size")
 
-		return UIRenderer.draw_tiled_texture(ui_renderer, ui_content[pass_definition.texture_id], position, size, texture_tiling_size, color, masked, saturated)
+		local texture_id = pass_definition.texture_id or "texture_id"
+
+		return UIRenderer.draw_tiled_texture(ui_renderer, ui_content[texture_id], position, size, texture_tiling_size, color, masked, saturated)
 	end
 }
 UIPasses.multi_texture = {
@@ -1700,6 +1705,229 @@ UIPasses.text_area_chat = {
 		end
 	end
 }
+local FINAL_REPLACEMENT_STR_LIST = {}
+local REPLACEMENT_STR_LIST = {}
+local INPUT_ACTIONS = {}
+local INPUT_SERVICE_NAMES = {}
+
+local function extract_button_data_from_text(ui_renderer, ui_style, input_text, prepared_text)
+	local text = input_text
+
+	if ui_style.localize then
+		text = Managers.localizer:simple_lookup(input_text)
+	end
+
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local input_action, input_service_name = nil
+	input_action, INPUT_ACTIONS, input_service_name, INPUT_SERVICE_NAMES = Managers.localizer:get_input_action(text)
+	local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
+	if INPUT_ACTIONS[1] then
+		table.clear(FINAL_REPLACEMENT_STR_LIST)
+		table.clear(REPLACEMENT_STR_LIST)
+
+		for i = 1, #INPUT_ACTIONS, 1 do
+			local input_action = INPUT_ACTIONS[i]
+			local input_service_name = INPUT_SERVICE_NAMES[i]
+			local font, size_of_font = UIFontByResolution(ui_style)
+			local font_material = font[1]
+			local font_size = font[2]
+			local font_name = font[3]
+			local font_size = size_of_font
+			local font_name = ui_style.font_type
+			local replacement_width = UIRenderer.text_size(ui_renderer, "½", font_material, font_size)
+			local test_width = UIRenderer.text_size(ui_renderer, "½ ", font_material, font_size)
+			local final_replacement_width = test_width - replacement_width
+
+			if gamepad_active then
+				local button_width = font_size * inv_scale
+				local final_replacement_str_iterator = math.ceil(button_width / final_replacement_width) + 1
+				FINAL_REPLACEMENT_STR_LIST[i] = ""
+
+				for j = 1, final_replacement_str_iterator, 1 do
+					FINAL_REPLACEMENT_STR_LIST[i] = FINAL_REPLACEMENT_STR_LIST[i] .. " "
+				end
+
+				local replacement_str_iterator = math.ceil(button_width / replacement_width) + 1
+				REPLACEMENT_STR_LIST[i] = " "
+
+				for k = 1, replacement_str_iterator, 1 do
+					REPLACEMENT_STR_LIST[i] = REPLACEMENT_STR_LIST[i] .. "½"
+				end
+			else
+				local button_texture_data, button_name, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(Managers.input:get_service(input_service_name), input_action, gamepad_active)
+
+				if not keymap_binding or (not unassigned and keymap_binding[1] == "mouse") then
+					local button_width = font_size * inv_scale
+					local final_replacement_str_iterator = math.ceil(button_width / final_replacement_width) + 1
+					FINAL_REPLACEMENT_STR_LIST[i] = ""
+
+					for j = 1, final_replacement_str_iterator, 1 do
+						FINAL_REPLACEMENT_STR_LIST[i] = FINAL_REPLACEMENT_STR_LIST[i] .. " "
+					end
+
+					local replacement_str_iterator = math.ceil(button_width / replacement_width) + 1
+					REPLACEMENT_STR_LIST[i] = " "
+
+					for k = 1, replacement_str_iterator, 1 do
+						REPLACEMENT_STR_LIST[i] = REPLACEMENT_STR_LIST[i] .. "½"
+					end
+				else
+					local button_name = string.upper((unassigned and Localize(keymap_binding[2])) or Keyboard.button_name(keymap_binding[2]) or Localize(UNASSIGNED_KEY))
+					local text_width = UIRenderer.text_size(ui_renderer, button_name, font_material, font_size) + font_size * inv_scale
+					local final_replacement_str_iterator = math.ceil(text_width / final_replacement_width)
+					FINAL_REPLACEMENT_STR_LIST[i] = ""
+
+					for j = 1, final_replacement_str_iterator, 1 do
+						FINAL_REPLACEMENT_STR_LIST[i] = FINAL_REPLACEMENT_STR_LIST[i] .. " "
+					end
+
+					local replacement_str_iterator = math.ceil(text_width / replacement_width)
+					REPLACEMENT_STR_LIST[i] = " "
+
+					for k = 1, replacement_str_iterator, 1 do
+						REPLACEMENT_STR_LIST[i] = REPLACEMENT_STR_LIST[i] .. "½"
+					end
+				end
+			end
+		end
+
+		local skip_localization = true
+		local number_of_replacements = 1
+
+		for i = 1, #REPLACEMENT_STR_LIST, 1 do
+			text = Managers.localizer:replace_macro_in_string(text, REPLACEMENT_STR_LIST[i], skip_localization, number_of_replacements)
+		end
+
+		table.reverse(INPUT_ACTIONS)
+		table.reverse(INPUT_SERVICE_NAMES)
+		table.reverse(REPLACEMENT_STR_LIST)
+		table.reverse(FINAL_REPLACEMENT_STR_LIST)
+	else
+		text = prepared_text
+	end
+
+	return text
+end
+
+local function render_buttons_in_text(ui_renderer, text, font_material, font_size, font_name, position, ui_style)
+	if not INPUT_ACTIONS[1] then
+		return text
+	end
+
+	local found_button = true
+	local inv_scale = RESOLUTION_LOOKUP.inv_scale
+
+	while found_button do
+		local start_idx, end_idx = string.find(text, REPLACEMENT_STR_LIST[#REPLACEMENT_STR_LIST])
+
+		if start_idx then
+			local input_action = INPUT_ACTIONS[#INPUT_ACTIONS]
+			local input_service = INPUT_SERVICE_NAMES[#INPUT_SERVICE_NAMES]
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+			local button_texture_data, button_name, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(Managers.input:get_service(input_service), input_action, gamepad_active)
+			local substr = string.sub(text, 1, math.max(start_idx, 2))
+			local length = UIRenderer.text_size(ui_renderer, substr, font_material, font_size)
+			length = (start_idx > 1 and length) or 0
+			local pos = position + Vector3(length, -font_size * inv_scale * 0.25, 0)
+
+			if not ui_style.skip_button_rendering then
+				if gamepad_active then
+					if button_texture_data then
+						UIRenderer_draw_texture(ui_renderer, button_texture_data.texture, pos, {
+							font_size * inv_scale,
+							font_size * inv_scale
+						}, {
+							ui_style.text_color[1],
+							255,
+							255,
+							255
+						}, ui_style.masked, ui_style.saturated)
+					else
+						local unassigned_button_pos = position + Vector3(length, 0, 0)
+
+						UIRenderer.draw_text(ui_renderer, "[?]", font_material, font_size, font_name, unassigned_button_pos, Colors.get_color_table_with_alpha("font_title", 255))
+					end
+				elseif not keymap_binding or (not unassigned and keymap_binding[1] == "mouse") then
+					if button_texture_data then
+						local height_multiplier = button_texture_data.size[2] / button_texture_data.size[1]
+
+						UIRenderer_draw_texture(ui_renderer, button_texture_data.texture, pos, {
+							font_size * inv_scale,
+							font_size * inv_scale * height_multiplier
+						}, {
+							ui_style.text_color[1],
+							255,
+							255,
+							255
+						}, ui_style.masked, ui_style.saturated)
+					else
+						local unassigned_button_pos = position + Vector3(length, 0, 0)
+
+						UIRenderer.draw_text(ui_renderer, "[?]", font_material, font_size, font_name, unassigned_button_pos, Colors.get_color_table_with_alpha("font_title", 255))
+					end
+				else
+					local button_name = string.upper((unassigned and Localize(keymap_binding[2])) or Keyboard.button_name(keymap_binding[2]) or Localize(UNASSIGNED_KEY))
+					local button_text_length, button_text_height = UIRenderer.text_size(ui_renderer, button_name, font_material, font_size)
+					local left_part = button_texture_data[1]
+					local middle_part = button_texture_data[2]
+					local right_part = button_texture_data[3]
+					local size_multiplier = button_text_height / left_part.size[2] * 1.5
+					local texture_pos = position + Vector3(length - left_part.size[1] * 0.3 * size_multiplier, -left_part.size[2] * 0.23 * size_multiplier, 0)
+
+					UIRenderer_draw_texture(ui_renderer, left_part.texture, texture_pos, Vector2(left_part.size[1] * size_multiplier, left_part.size[2] * size_multiplier), {
+						ui_style.text_color[1],
+						255,
+						255,
+						255
+					}, ui_style.masked, ui_style.saturated)
+
+					texture_pos[1] = texture_pos[1] + left_part.size[1] * size_multiplier
+
+					UIRenderer_draw_texture(ui_renderer, middle_part.texture, texture_pos, Vector2(button_text_length, middle_part.size[2] * size_multiplier), {
+						ui_style.text_color[1],
+						255,
+						255,
+						255
+					}, ui_style.masked, ui_style.saturated)
+
+					local text_pos = position + Vector3(length + left_part.size[1] * 0.3 * size_multiplier + left_part.size[1] * 0.3 * size_multiplier, 0, 1)
+
+					UIRenderer.draw_text(ui_renderer, button_name, font_material, font_size, font_name, text_pos, ui_style.text_color)
+
+					texture_pos[1] = texture_pos[1] + button_text_length
+
+					UIRenderer_draw_texture_uv(ui_renderer, left_part.texture, texture_pos, Vector2(left_part.size[1] * size_multiplier, left_part.size[2] * size_multiplier), {
+						{
+							1,
+							0
+						},
+						{
+							0,
+							1
+						}
+					}, {
+						ui_style.text_color[1],
+						255,
+						255,
+						255
+					}, ui_style.masked, ui_style.saturated)
+				end
+			end
+
+			text = string.gsub(text, REPLACEMENT_STR_LIST[#REPLACEMENT_STR_LIST], FINAL_REPLACEMENT_STR_LIST[#FINAL_REPLACEMENT_STR_LIST], 1)
+			INPUT_ACTIONS[#INPUT_ACTIONS] = nil
+			INPUT_SERVICE_NAMES[#INPUT_SERVICE_NAMES] = nil
+			REPLACEMENT_STR_LIST[#REPLACEMENT_STR_LIST] = nil
+			FINAL_REPLACEMENT_STR_LIST[#FINAL_REPLACEMENT_STR_LIST] = nil
+		end
+
+		found_button = start_idx ~= nil and #REPLACEMENT_STR_LIST > 0
+	end
+
+	return text
+end
+
 UIPasses.text = {
 	init = function (pass_definition)
 		assert(pass_definition.text_id, "no text id in pass definition. YOU NEEDS IT.")
@@ -1751,6 +1979,7 @@ UIPasses.text = {
 			widget_scale = ui_style_global.scale
 		end
 
+		local text = extract_button_data_from_text(ui_renderer, ui_style, ui_content[pass_data.text_id], text)
 		local default_font_size = ui_style.font_size
 
 		if ui_style.word_wrap and ui_style.dynamic_font_size_word_wrap then
@@ -1758,7 +1987,7 @@ UIPasses.text = {
 			local dynamic_wrap_font_size = nil
 
 			if recalculate then
-				dynamic_wrap_font_size = UIRenderer.scaled_font_size_by_area(ui_renderer, text, size, ui_style)
+				dynamic_wrap_font_size = UIRenderer.scaled_font_size_by_area(ui_renderer, text, ui_style.area_size or size, ui_style)
 			else
 				dynamic_wrap_font_size = ui_style._dynamic_wrap_font_size
 			end
@@ -1768,7 +1997,7 @@ UIPasses.text = {
 			ui_style._dynamic_wraped_text = text
 			ui_style._dynamic_wraped_scale = RESOLUTION_LOOKUP.scale
 		elseif ui_style.dynamic_font_size then
-			ui_style.font_size = UIRenderer.scaled_font_size_by_width(ui_renderer, text, size[1] - 1, ui_style)
+			ui_style.font_size = UIRenderer.scaled_font_size_by_width(ui_renderer, text, ((ui_style.area_size and ui_style.area_size[1]) or size[1]) - 1, ui_style)
 		end
 
 		local font_material, font_size, font_name = nil
@@ -1782,16 +2011,15 @@ UIPasses.text = {
 			font_name = ui_style.font_type
 		end
 
-		local global_text_length = UTF8Utils.string_length(text)
-
 		if ui_style.word_wrap then
+			local global_text_length = UTF8Utils.string_length(text)
 			local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-			local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
+			local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, (ui_style.area_size and ui_style.area_size[1]) or size[1])
 			local text_start_index = ui_content.text_start_index or 1
 			local max_texts = ui_content.max_texts or #texts
 			local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 			local inv_scale = RESOLUTION_LOOKUP.inv_scale
-			local full_font_height = (font_max + math.abs(font_min)) * inv_scale
+			local full_font_height = (font_max - font_min) * inv_scale
 			local text_offset = Vector3(0, (ui_style.grow_downward and full_font_height) or -full_font_height, 0)
 
 			if ui_style.dynamic_height then
@@ -1804,119 +2032,59 @@ UIPasses.text = {
 			if ui_style.vertical_alignment == "top" then
 				position = position + Vector3(0, size[2] - font_max * inv_scale, 0)
 			elseif ui_style.vertical_alignment == "center" then
-				position[2] = position[2] + (size[2] - full_font_height * 0.5) / 2
-				position[2] = position[2] + math.max(num_texts - 1, 0) * 0.5 * full_font_height
+				position[2] = position[2] + (size[2] - full_font_height * 0.5) / 2 + math.max(num_texts - 1, 0) * 0.5 * full_font_height
 			else
 				position = position + Vector3(0, (num_texts - 1) * full_font_height + math.abs(font_min) * inv_scale, 0)
 			end
 
-			if ui_style.horizontal_alignment == "center" then
-				local line_start_index = 0
+			local horizontal_alignment = ui_style.horizontal_alignment or "left"
+			local line_start_index = 0
+			local horizontal_alignment_multiplier = UIUtils.align(horizontal_alignment, 0, 1)
+			local alignment_offset = Vector3(0, 0, 0)
 
-				for i = 1, num_texts, 1 do
-					text = texts[i - 1 + text_start_index]
-					local text_length = (text and UTF8Utils.string_length(text)) or 0
-					local width, height, min = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
-					local alignment_offset = Vector3(size[1] / 2 - width / 2, 0, 0)
-					local color = ui_style.text_color
+			for i = 1, num_texts, 1 do
+				text = texts[i - 1 + text_start_index]
+				local text_length = (text and UTF8Utils.string_length(text)) or 0
 
-					if ui_style.line_colors and ui_style.line_colors[i] then
-						color = ui_style.line_colors[i]
-					end
-
-					local line_color_override = ui_style.line_color_override
-
-					if ui_style.color_override then
-						line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
-					end
-
-					local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[i])
-					retained_id = UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, color, retained_id, line_color_override)
-
-					if new_retained_ids then
-						new_retained_ids[i] = retained_id
-					end
-
-					position = position + text_offset
-					line_start_index = line_start_index + text_length + 1
+				if horizontal_alignment ~= "left" then
+					local width = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
+					alignment_offset.x = (size[1] - width) * horizontal_alignment_multiplier
 				end
-			elseif ui_style.horizontal_alignment == "right" then
-				local line_start_index = 0
 
-				for i = 1, num_texts, 1 do
-					text = texts[i - 1 + text_start_index]
-					local text_length = (text and UTF8Utils.string_length(text)) or 0
-					local width, height, min = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
-					local alignment_offset = Vector3(size[1] - width, 0, 0)
-					local color = ui_style.text_color
+				local color = ui_style.text_color
 
-					if ui_style.line_colors and ui_style.line_colors[i] then
-						color = ui_style.line_colors[i]
-					end
-
-					local line_color_override = ui_style.line_color_override
-
-					if ui_style.color_override then
-						line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
-					end
-
-					local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[i])
-					retained_id = UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, color, retained_id, line_color_override)
-
-					if new_retained_ids then
-						new_retained_ids[i] = retained_id
-					end
-
-					position = position + text_offset
-					line_start_index = line_start_index + text_length + 1
+				if ui_style.line_colors and ui_style.line_colors[i] then
+					color = ui_style.line_colors[i]
 				end
-			else
-				local line_start_index = 0
 
-				for i = 1, num_texts, 1 do
-					text = texts[i - 1 + text_start_index]
-					local text_length = (text and UTF8Utils.string_length(text)) or 0
-					local text_color = ui_style.text_color
+				local line_color_override = ui_style.line_color_override
 
-					if ui_style.line_colors and ui_style.line_colors[i] then
-						text_color = ui_style.line_colors[i]
-					end
-
-					if i == num_texts and last_line_color then
-						text_color = last_line_color
-					end
-
-					local line_color_override = ui_style.line_color_override
-
-					if ui_style.color_override then
-						line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
-					end
-
-					local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[i])
-					retained_id = UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position, text_color, retained_id, line_color_override)
-
-					if new_retained_ids then
-						new_retained_ids[i] = retained_id
-					end
-
-					position = position + text_offset
-					line_start_index = line_start_index + text_length + 1
+				if ui_style.color_override then
+					line_color_override = get_line_color_override(i, text_length, line_start_index, global_text_length, ui_style)
 				end
+
+				text = render_buttons_in_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, ui_style)
+				local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[i])
+				retained_id = UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, color, retained_id, line_color_override)
+
+				if new_retained_ids then
+					new_retained_ids[i] = retained_id
+				end
+
+				position = position + text_offset
+				line_start_index = line_start_index + text_length + 1
 			end
 
 			if ui_style.draw_text_rect then
 				local padding_x = 4
 				local padding_y = 4
-				position[3] = position[3] - 1
-				position[2] = position[2] - padding_y * 2 - text_offset[2]
-				position[1] = position[1] - padding_x
-				size[1] = size[1] + padding_x * 2
-				size[2] = num_texts * -text_offset[2]
+				local rect_pos = position - Vector3(padding_x, padding_y * 2 + text_offset[2], 1)
+				local rect_size = Vector2(size[1] + padding_x * 2, num_texts * -text_offset[2])
 
 				if ui_style.masked then
-					UIRenderer_draw_texture(ui_renderer, "rect_masked", position, size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
+					UIRenderer_draw_texture(ui_renderer, "rect_masked", rect_pos, rect_size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
 				else
-					UIRenderer.draw_rounded_rect(ui_renderer, position, size, 5, ui_style.rect_color)
+					UIRenderer.draw_rounded_rect(ui_renderer, rect_pos, rect_size, 5, ui_style.rect_color)
 				end
 			end
 		elseif ui_style.horizontal_scroll then
@@ -1925,11 +2093,7 @@ UIPasses.text = {
 			local replacing_character = ui_style.replacing_character
 
 			if replacing_character then
-				text = ""
-
-				for i = 1, end_index, 1 do
-					text = text .. replacing_character
-				end
+				text = string.rep(replacing_character, end_index)
 			end
 
 			local sub_string, sub_string_width = nil
@@ -2017,16 +2181,13 @@ UIPasses.text = {
 			local text_width, text_height, origin = UIRenderer.text_size(ui_renderer, text, font_material, font_size, font_name)
 			local offset = get_position_offset(text_width, font_height, font_min, font_max, size, origin, ui_style)
 			local new_position = position + offset
+			text = render_buttons_in_text(ui_renderer, text, font_material, font_size, font_name, new_position, ui_style)
 			local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[1])
 			retained_id = UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, new_position, ui_style.text_color, retained_id, ui_style.color_override)
 
 			if new_retained_ids then
 				new_retained_ids[1] = retained_id
 			end
-		end
-
-		if ui_style.debug_draw_box then
-			UIRenderer.draw_rect(ui_renderer, position, size, Colors.get_color_table_with_alpha("magenta", 50))
 		end
 
 		if pass_definition.retained_mode then
@@ -2349,7 +2510,8 @@ UIPasses.viewport = {
 		local level = nil
 
 		if level_name then
-			local position, rotation, shading_callback, mood_setting = nil
+			local position, rotation, shading_callback = nil
+			local mood_setting = style.mood_setting
 			local time_sliced_spawn = false
 			level = ScriptWorld.spawn_level(world, level_name, object_sets, position, rotation, shading_callback, mood_setting, time_sliced_spawn)
 
@@ -3803,7 +3965,7 @@ UIPasses.tooltip_text = {
 
 		if Managers.input:is_device_active("gamepad") then
 			cursor_position = temp_cursor_pos
-		elseif PLATFORM == "xb1" then
+		elseif IS_XB1 then
 			cursor_position = temp_cursor_pos
 			cursor_position[2] = 1080 - cursor_position[2] + 20
 		else
@@ -4020,7 +4182,7 @@ UIPasses.hotspot = {
 
 		local cursor_position = nil
 
-		if PLATFORM == "xb1" and not gamepad_active then
+		if IS_XB1 and not gamepad_active then
 			cursor_position = Vector3(cursor[1], 1080 - cursor[2], cursor[3])
 		else
 			cursor_position = UIInverseScaleVectorToResolution(cursor)
@@ -4431,6 +4593,7 @@ UIPasses.item_presentation = {
 		pass_data.passes = passes
 		pass_data.alpha_multiplier = 1
 		pass_data.player = nil
+		pass_data.force_equipped = ui_content.force_equipped
 
 		return pass_data
 	end,
@@ -4720,6 +4883,53 @@ UIPasses.auto_layout = {
 			base_pos_y = (position[2] + parent_size[2]) - total_height
 		else
 			base_pos_y = position[2]
+		end
+
+		local screen_padding = ui_style.screen_padding
+
+		if screen_padding then
+			local inv_scale = RESOLUTION_LOOKUP.inv_scale
+			local screen_width = RESOLUTION_LOOKUP.res_w * inv_scale
+			local screen_height = RESOLUTION_LOOKUP.res_h * inv_scale
+			local screen_padding_top = screen_padding.top
+
+			if screen_padding_top then
+				local top_height_difference = screen_height - screen_padding_top - (base_pos_y + total_height)
+
+				if top_height_difference < 0 then
+					base_pos_y = base_pos_y + top_height_difference
+				end
+			end
+
+			local screen_padding_right = screen_padding.right
+
+			if screen_padding_right then
+				local right_width_difference = screen_width - screen_padding_right - (base_pos_x + total_width)
+
+				if right_width_difference < 0 then
+					base_pos_x = base_pos_x + right_width_difference
+				end
+			end
+
+			local screen_padding_bottom = screen_padding.bottom
+
+			if screen_padding_bottom then
+				local bottom_height_difference = base_pos_y - screen_padding_bottom
+
+				if bottom_height_difference < 0 then
+					base_pos_y = base_pos_y - bottom_height_difference
+				end
+			end
+
+			local screen_padding_left = screen_padding.left
+
+			if screen_padding_left then
+				local left_width_difference = base_pos_x - screen_padding_left
+
+				if left_width_difference < 0 then
+					base_pos_x = base_pos_x - left_width_difference
+				end
+			end
 		end
 
 		pass_data._size_table[1] = total_width

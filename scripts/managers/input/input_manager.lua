@@ -6,8 +6,8 @@ require("scripts/managers/input/input_filters")
 require("scripts/managers/input/input_debugger")
 require("scripts/managers/input/input_stack_settings")
 
-local most_recent_input_device = most_recent_input_device or (PLATFORM == "win32" and Keyboard) or Pad1
-local most_recent_input_device_type = most_recent_input_device_type or (PLATFORM == "win32" and "keyboard") or "gamepad"
+local most_recent_input_device = most_recent_input_device or (IS_WINDOWS and Keyboard) or Pad1
+local most_recent_input_device_type = most_recent_input_device_type or (IS_WINDOWS and "keyboard") or "gamepad"
 local gamepad_disabled = Development.parameter("disable_gamepad")
 
 local function dprint(...)
@@ -44,7 +44,7 @@ InputManager.initialize_device = function (self, input_device_type, input_device
 		return
 	end
 
-	if (self.platform == "xb1" or self.platform == "ps4") and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
+	if IS_CONSOLE and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
 		return
 	end
 
@@ -613,7 +613,7 @@ InputManager.map_device_to_service = function (self, input_service_name, input_d
 		return
 	end
 
-	if (self.platform == "xb1" or self.platform == "ps4") and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
+	if IS_CONSOLE and (input_device_type == "keyboard" or input_device_type == "mouse") and not GameSettingsDevelopment.allow_keyboard_mouse then
 		return
 	end
 
@@ -785,7 +785,7 @@ InputManager.get_most_recent_device_type = function (self)
 end
 
 InputManager.is_device_active = function (self, input_device_type)
-	if PLATFORM == "xb1" and Managers.account and Managers.account:is_controller_disconnected() and input_device_type == "gamepad" then
+	if IS_XB1 and Managers.account and Managers.account:is_controller_disconnected() and input_device_type == "gamepad" then
 		return true
 	end
 
@@ -860,7 +860,7 @@ end
 InputManager.apply_saved_keymaps = function (self, specific_table_name)
 	local stored_keymaps_data = self.stored_keymaps_data
 
-	if self.platform == "win32" or self.platform == "xb1" or self.platform == "linux" then
+	if IS_WINDOWS or IS_XB1 or IS_LINUX then
 		local keymaps = PlayerData.controls or {}
 
 		for keybinding_table_name, keybinding_table in pairs(keymaps) do
@@ -1027,7 +1027,7 @@ InputManager.setup_keymaps = function (self, keymaps)
 			local input_key_name = keymap[j + 1]
 
 			if input_key_name ~= UNASSIGNED_KEY then
-				if self.platform == "ps4" or self.platform == "xb1" then
+				if IS_CONSOLE then
 					if input_type == "axis" then
 						key_index = input_device.axis_index(input_key_name)
 					else

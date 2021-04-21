@@ -237,7 +237,7 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 
 		WwiseWorld.set_switch(wwise_world, "husk", husk_value, source_id)
 
-		local event = (no_damage and sound.event.no_damage_event) or sound.event
+		local event = (no_damage and sound.no_damage_event) or sound.event
 
 		if script_data.debug_material_effects then
 			print("playing event ", event)

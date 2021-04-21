@@ -30,9 +30,8 @@ GameSettingsDevelopment.allow_ranged_attacks_to_damage_props = false
 GameSettingsDevelopment.release_levels_only = true
 GameSettingsDevelopment.use_engine_optimized_ai_locomotion = true
 GameSettingsDevelopment.allow_retry_weave = false
-GameSettingsDevelopment.disable_carousel = true
+GameSettingsDevelopment.disable_carousel = Development.parameter("disable_carousel") or not DLCSettings.carousel
 GameSettingsDevelopment.use_store_unload_list = true
-GameSettingsDevelopment.enable_deus_tracking = Development.parameter("enable_deus_tracking")
 local script_data = script_data
 script_data.debug_behaviour_trees = (script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees) or false
 GameSettingsDevelopment.use_backend = not Development.parameter("use_local_backend")
@@ -110,6 +109,8 @@ if settings.steam or Development.parameter("force_steam") then
 
 		if app_id == 795750 and test_backend == nil then
 			GameSettingsDevelopment.backend_settings = BackendSettings.stage_steam_playfab
+		elseif app_id == 1318500 then
+			GameSettingsDevelopment.backend_settings = BackendSettings.morris_beta_steam_playfab
 		elseif app_id == 552500 then
 			GameSettingsDevelopment.backend_settings = BackendSettings.prod_steam_playfab
 		elseif app_id == 1270350 then
@@ -338,12 +339,9 @@ GameSettingsDevelopment.ignored_rpc_logs = {
 	"rpc_projectile_stopped",
 	"rpc_generic_impact_projectile_impact",
 	"rpc_show_inventory",
-	"rpc_server_set_inventory_packages",
-	"rpc_server_assign_peer_to_profile",
-	"rpc_server_unassign_peer_to_profile",
+	"rpc_assign_peer_to_profile",
 	"rpc_add_equipment",
 	"rpc_create_attachment",
-	"rpc_client_select_inventory",
 	"rpc_wield_equipment",
 	"rpc_destroy_slot",
 	"rpc_set_current_location",
@@ -355,7 +353,13 @@ GameSettingsDevelopment.ignored_rpc_logs = {
 	"rpc_server_audio_unit_event",
 	"rpc_remove_server_controlled_buff",
 	"rpc_ping",
-	"rpc_pong"
+	"rpc_pong",
+	"rpc_shared_state_set_int",
+	"rpc_shared_state_set_string",
+	"rpc_shared_state_set_bool",
+	"rpc_shared_state_set_server_int",
+	"rpc_shared_state_set_server_string",
+	"rpc_shared_state_set_server_bool"
 }
 
 if not script_data.debug_interactions then

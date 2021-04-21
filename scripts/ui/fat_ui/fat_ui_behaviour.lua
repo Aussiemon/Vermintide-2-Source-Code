@@ -1,6 +1,39 @@
 FatUI = FatUI or {}
 local FatUI = FatUI
 
+FatUI.behaviour_hover = function (data, pos, size)
+	data = data or {
+		state = "default"
+	}
+	local is_hover = false
+	local state = data.state
+
+	if state == "default" then
+		if FatUI.mouse_is_inside(pos, size) then
+			is_hover = true
+			data.state = "hover"
+		end
+	elseif state == "hover" and not FatUI.mouse_is_inside(pos, size) then
+		data.state = "default"
+	end
+
+	return data, is_hover
+end
+
+FatUI.on_hover = function (data)
+	local state = data.state
+	local on_hover = false
+	local is_hover = state == "hover" or state == "hot"
+
+	if not data.is_hover and is_hover then
+		on_hover = true
+	end
+
+	data.is_hover = is_hover
+
+	return on_hover
+end
+
 FatUI.behaviour_button = function (data, pos, size)
 	data = data or {
 		state = "default"
@@ -69,6 +102,35 @@ local function TEXT_INPUT_delete_selection(data)
 	data.selection = nil
 end
 
+local function TEXT_INPUT_insert_string(data, str, max_length)
+	slot3 = 1
+	slot4 = math.min
+	slot5 = max_length or math.huge
+
+	for i = slot3, slot4(slot5 - #data, #str), 1 do
+		data.caret = data.caret + 1
+
+		table.insert(data, data.caret, string.sub(str, i))
+	end
+end
+
+local function TEXT_INPUT_yank(data)
+	local a = 1
+	local b = #data
+
+	if data.selection then
+		b = data.selection
+		a = data.caret
+
+		if b < a then
+			b = a
+			a = b
+		end
+	end
+
+	return table.concat(data, a, b)
+end
+
 FatUI.behaviour_text_input = function (data, text, pos, size, max_length)
 	data = data or {
 		caret = 0,
@@ -123,22 +185,20 @@ FatUI.behaviour_text_input = function (data, text, pos, size, max_length)
 				local stroke = keystrokes[i]
 
 				if type(stroke) == "string" then
-					if not max_length or max_length > #data or (data.selection and data.selection ~= data.caret) then
-						TEXT_INPUT_delete_selection(data)
-
-						data.caret = data.caret + 1
-
-						table.insert(data, data.caret, stroke)
-					end
+					TEXT_INPUT_delete_selection(data)
+					TEXT_INPUT_insert_string(data, stroke, max_length)
 				elseif mod_ctrl then
 					if stroke == Keyboard.LEFT then
 						data.selection = 0
 						data.caret = #data
 					elseif stroke == Keyboard.F11 then
+						Clipboard.put(TEXT_INPUT_yank(data))
 						TEXT_INPUT_delete_selection(data)
 					elseif stroke == Keyboard.UP then
+						Clipboard.put(TEXT_INPUT_yank(data))
 					elseif stroke == Keyboard.F9 then
 						TEXT_INPUT_delete_selection(data)
+						TEXT_INPUT_insert_string(data, Clipboard.get(), max_length)
 					end
 				elseif stroke == Keyboard.BACKSPACE then
 					if data.selection and data.caret ~= data.selection then

@@ -17,7 +17,8 @@ local RPCS = {
 	"rpc_replenish_fatigue",
 	"rpc_replenish_fatigue_other_players",
 	"rpc_set_stagger",
-	"rpc_set_action_data"
+	"rpc_set_action_data",
+	"rpc_set_override_blocking"
 }
 local extensions = {
 	"GenericStatusExtension"
@@ -263,6 +264,18 @@ StatusSystem.rpc_set_catapulted = function (self, channel_id, unit_id, catapulte
 
 		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_set_catapulted", peer_id, unit_id, catapulted, velocity)
 	end
+end
+
+StatusSystem.rpc_set_override_blocking = function (self, channel_id, unit_id, blocking)
+	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	local status_extension = ScriptUnit.extension(unit, "status_system")
+
+	status_extension:set_override_blocking(blocking or nil)
 end
 
 StatusSystem.rpc_leap_start = function (self, channel_id, unit_id)

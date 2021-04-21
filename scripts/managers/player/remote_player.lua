@@ -36,7 +36,7 @@ RemotePlayer.unique_id = function (self)
 end
 
 RemotePlayer.platform_id = function (self)
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		return self.peer_id
 	else
 		return self._account_id
@@ -172,7 +172,7 @@ RemotePlayer.name = function (self)
 			name = clan_tag .. Steam.user_name(self:network_id())
 			self._cached_name = name
 		end
-	elseif PLATFORM == "xb1" or PLATFORM == "ps4" then
+	elseif IS_CONSOLE then
 		if self._cached_name then
 			return self._cached_name
 		end

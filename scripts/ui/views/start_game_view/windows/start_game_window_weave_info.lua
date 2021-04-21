@@ -26,7 +26,6 @@ StartGameWindowWeaveInfo.on_enter = function (self, params, offset)
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_server = ingame_ui_context.is_server
-	self._level_transition_handler = ingame_ui_context.level_transition_handler
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._ui_hdr_renderer = self._parent:hdr_renderer()
 	self._my_player = ingame_ui_context.player
@@ -318,9 +317,8 @@ StartGameWindowWeaveInfo._update_party_status = function (self, dt)
 	local matchmaking_manager = Managers.matchmaking
 	local is_game_matchmaking = matchmaking_manager:is_game_matchmaking()
 	local active_game_mode = matchmaking_manager:active_game_mode()
-	local is_searching_for_weave_party = active_game_mode and active_game_mode == "weave_find_group"
 	local is_searching_for_weave = active_game_mode and active_game_mode == "weave"
-	local is_searching = is_game_matchmaking and (is_searching_for_weave_party or is_searching_for_weave)
+	local is_searching = is_game_matchmaking and is_searching_for_weave
 	self._is_matchmaking_for_weave = is_searching
 	local widgets_by_name = self._widgets_by_name
 	local play_button_widget = widgets_by_name.play_button

@@ -1337,8 +1337,9 @@ LevelAnalysis.debug_spawn_boss_from_closest_spawner_to_player = function (self, 
 			print("\t spawning ogre")
 
 			local rot = Quaternion(Vector3.up(), 0)
+			local optional_data = nil
 
-			Managers.state.conflict:spawn_queued_unit(Breeds.skaven_rat_ogre, Vector3Box(best_pos), QuaternionBox(rot), "debug_spawn")
+			Managers.state.conflict:spawn_queued_unit(Breeds.skaven_rat_ogre, Vector3Box(best_pos), QuaternionBox(rot), "debug_spawn", nil, nil, optional_data)
 		end
 	end
 end

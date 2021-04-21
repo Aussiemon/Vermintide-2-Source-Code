@@ -146,9 +146,11 @@ function test_spawn_pos_ahead_half_sphere(self)
 
 		local forward_path_dir = epicenter - player_pos
 		local avoid_dist_sqr = 25
+		local level = LevelHelper:current_level(self._world)
+		local nav_tag_volume_handler = self.nav_tag_volume_handler
 
 		for i = 1, 25, 1 do
-			local p = ConflictUtils.get_hidden_pos(self._world, self.nav_world, epicenter, self.hero_player_and_bot_positions, 30, 10, avoid_dist_sqr, 10, forward_path_dir, math.pi)
+			local p = ConflictUtils.get_hidden_pos(self._world, self.nav_world, level, nav_tag_volume_handler, true, epicenter, self.hero_player_and_bot_positions, 30, 10, avoid_dist_sqr, 10, forward_path_dir, math.pi)
 
 			if p then
 				QuickDrawer:sphere(p, 1)

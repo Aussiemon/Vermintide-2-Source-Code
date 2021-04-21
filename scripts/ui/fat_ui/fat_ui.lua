@@ -1,20 +1,13 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
-FatUI = FatUI or {
-	__index = "<FatUI>"
-}
+FatUI = FatUI or {}
 local FatUI = FatUI
-local _base_path = "scripts/ui/fat_ui/"
 
-FatUI.require = function (path)
-	return dofile(_base_path .. path)
-end
-
-FatUI.require("fat_ui_layout")
-FatUI.require("fat_ui_vector")
-FatUI.require("fat_ui_behaviour")
-FatUI.require("fat_ui_simple_ui")
-FatUI.require("fat_ui_documentation")
+require("scripts/ui/fat_ui/fat_ui_layout")
+require("scripts/ui/fat_ui/fat_ui_vector")
+require("scripts/ui/fat_ui/fat_ui_behaviour")
+require("scripts/ui/fat_ui/fat_ui_mockup")
+require("scripts/ui/fat_ui/fat_ui_honduras")
 
 local math = math
 local string = string
@@ -42,13 +35,17 @@ FatUI.debug_hook = function (key, func)
 end
 
 FatUI._INTERNAL_reset_data_tree = function ()
-	FatUI.data_node = {
-		__parent__ = false
-	}
-	FatUI.DATA_ROOT = FatUI.data_node
+	local root = {}
+	FatUI.data_node = root
+	FatUI.data_parent = setmetatable({
+		[root] = false
+	}, {
+		__mode = "kv"
+	})
+	FatUI.data_root = root
 end
 
-if not FatUI.DATA_ROOT then
+if not FatUI.data_root then
 	FatUI._INTERNAL_reset_data_tree()
 end
 
@@ -83,13 +80,26 @@ FatUI.set_data = function (idx, value)
 	FatUI.data_node[idx] = value
 end
 
+FatUI.get_data_absolute = function (idx, ...)
+	local node = FatUI.data_root
+
+	for i = 1, select("#", ...), 1 do
+		node = node[select(i, ...)]
+
+		if node == nil then
+			return nil
+		end
+	end
+
+	return mod
+end
+
 FatUI.begin_group = function (idx)
 	local val = FatUI.data_node[idx]
 
 	if not val then
-		val = {
-			__parent__ = FatUI.data_node
-		}
+		val = {}
+		FatUI.data_parent[val] = FatUI.data_node
 		FatUI.data_node[idx] = val
 	end
 
@@ -99,9 +109,11 @@ FatUI.begin_group = function (idx)
 end
 
 FatUI.close_group = function ()
-	assert(FatUI.data_node.__parent__, "group_close: No group was currently open")
+	local parent = FatUI.data_parent[FatUI.data_node]
 
-	FatUI.data_node = FatUI.data_node.__parent__
+	assert(parent, "group_close: No group was currently open")
+
+	FatUI.data_node = parent
 end
 
 local function USE_BEHAVIOUR_continuation(tab, key, new_value, ...)
@@ -143,7 +155,7 @@ end
 
 FatUI.t = FatUI.t or 0
 
-FatUI.begin_frame = function (gui, wwise_world, dt)
+FatUI.begin_frame = function (gui, wwise_world, dt, t)
 	FatUI.gui = gui
 	FatUI.wwise_world = wwise_world
 	local w, h = Gui.resolution()
@@ -156,12 +168,29 @@ FatUI.begin_frame = function (gui, wwise_world, dt)
 	FatUI.offset = offset
 	FatUI.screen_pos = -offset / scale
 	FatUI.screen_size = V2(w / scale, h / scale)
-	FatUI.keystrokes = Keyboard.keystrokes()
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS or GameSettingsDevelopment.allow_keyboard_mouse then
 		FatUI.mouse_cursor = (Mouse.axis(Mouse.axis_id("cursor")) - offset) / scale
 	end
 
+	FatUI.input_service = FatUI.get_input_service()
+	local gamepad_type = nil
+
+	if Managers.input:is_device_active("gamepad") then
+		local platform = PLATFORM
+
+		if IS_WINDOWS then
+			if UISettings.use_ps4_input_icons then
+				gamepad_type = "win32_ps4"
+			else
+				gamepad_type = "xb1"
+			end
+		else
+			gamepad_type = platform
+		end
+	end
+
+	FatUI.gamepad_type = gamepad_type
 	FatUI.dt = dt
 	FatUI.t = FatUI.t + dt
 end
@@ -173,10 +202,40 @@ FatUI.close_frame = function ()
 	FatUI.wwise_world = nil
 	FatUI.mouse_cursor = nil
 	FatUI.keystrokes = nil
+	FatUI.input_service = nil
+end
+
+FatUI.get_keystrokes = function ()
+	local keystrokes = FatUI.keystrokes
+
+	if keystrokes then
+		return keystrokes
+	end
+
+	keystrokes = Keyboard.keystrokes()
+	FatUI.keystrokes = keystrokes
+
+	return keystrokes
+end
+
+FatUI.get_input_service = function ()
+	local input_manager = Managers.input
+	local input_service = input_manager:get_service("FatUI")
+
+	if input_service and input_service ~= FAKE_INPUT_SERVICE then
+		return input_service
+	end
+
+	input_manager:create_input_service("FatUI", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service("FatUI", "keyboard")
+	input_manager:map_device_to_service("FatUI", "mouse")
+	input_manager:map_device_to_service("FatUI", "gamepad")
+
+	return input_manager:get_service("FatUI")
 end
 
 local Keyboard = Keyboard
-local keyboard_button_cache = setmetatable({}, {
+FatUI.keyboard_button_cache = setmetatable({}, {
 	__index = function (self, name)
 		local id = Keyboard.button_id(name)
 		self[name] = id
@@ -184,6 +243,7 @@ local keyboard_button_cache = setmetatable({}, {
 		return id
 	end
 })
+local keyboard_button_cache = FatUI.keyboard_button_cache
 
 FatUI.keyboard_keystrokes = function ()
 	return FatUI.keystrokes
@@ -202,7 +262,7 @@ FatUI.keyboard_is_released = function (button_name)
 end
 
 local Mouse = Mouse
-local mouse_button_cache = setmetatable({}, {
+FatUI.mouse_button_cache = setmetatable({}, {
 	__index = function (self, name)
 		local id = Mouse.button_id(name) or Mouse.axis_id(id)
 		self[name] = id
@@ -210,6 +270,7 @@ local mouse_button_cache = setmetatable({}, {
 		return id
 	end
 })
+local mouse_button_cache = FatUI.mouse_button_cache
 
 FatUI.mouse_is_inside = function (pos, size)
 	local cursor = FatUI.mouse_cursor
@@ -235,26 +296,39 @@ FatUI.mouse_is_released = function (button_name)
 	return Mouse.released(mouse_button_cache[button_name])
 end
 
-local _input_owner = nil
+local Pad1 = Pad1
+FatUI.mouse_button_cache = setmetatable({}, {
+	__index = function (self, name)
+		local id = Pad1.button_id(name) or Pad1.axis_id(id)
+		self[name] = id
 
-FatUI.request_input = function (idx)
-	if idx == _input_owner then
-		return true
-	elseif not _input_owner then
-		_input_owner = idx
-
-		return true
+		return id
 	end
+})
+local gamepad_button_cache = FatUI.gamepad_button_cache
 
-	return false
+FatUI.gamepad_axis = function (axis_name)
+	return Pad1.axis(gamepad_button_cache[axis_name])
 end
 
-FatUI.release_input = function ()
-	_input_owner = nil
+FatUI.gamepad_is_down = function (button_name, threshold)
+	return Pad1.button(gamepad_button_cache[button_name]) > (threshold or 0.5)
 end
 
-FatUI.input_is_captured = function ()
-	return _input_owner ~= nil
+FatUI.gamepad_is_pressed = function (button_name)
+	return Pad1.pressed(gamepad_button_cache[button_name])
+end
+
+FatUI.gamepad_is_released = function (button_name)
+	return Pad1.released(gamepad_button_cache[button_name])
+end
+
+FatUI.gamepad_input_texture_data = function (button_name)
+	local gamepad_type = FatUI.gamepad_type
+
+	if gamepad_type then
+		return UISettings.gamepad_button_texture_data[gamepad_type][button_name]
+	end
 end
 
 FatUI.play_sound = function (wwise_event_name)
@@ -385,6 +459,48 @@ FatUI.draw_text_multiline = function (text, font, font_size, align, pos, size, c
 	cache[hash] = data
 
 	return FatUI.draw_text_multiline(text, font, font_size, align, pos, size, color)
+end
+
+FatUI.draw_text_multiline_color = function (text, font, font_size, align, pos, size, ...)
+	local line_data, n, text_size = FatUI.compute_text_sizes(text, font, font_size, size.x)
+	local cursor = FatUILayout.align_box(align, text_size, pos, size)
+	local current_pos = 1
+	local style_index = 1
+	local color = nil
+
+	for i = 1, n, 1 do
+		local line = line_data[i]
+		local ox = cursor[1]
+		local oy = cursor[2] - line_height * i
+
+		repeat
+			local next_pos, next_col = nil
+
+			while true do
+				next_pos, next_col = select(style_index, ...)
+				next_pos = next_pos or math.huge
+
+				if next_pos <= current_pos then
+					color = next_col
+					style_index = style_index + 2
+				else
+					break
+				end
+			end
+
+			local len = math.min(next_pos - current_pos, #line)
+			local prefix = string.sub(line, 1, len)
+			local span = FatUI.calc_text_extents_caret(prefix, font, font_size)
+
+			FatUI.draw_text(prefix, font, font_size, V3(ox, oy, pos.z), color)
+
+			current_pos = current_pos + len
+			line = string.sub(line, len + 1)
+			ox = ox + span.x
+		until line == ""
+	end
+
+	return n
 end
 
 return

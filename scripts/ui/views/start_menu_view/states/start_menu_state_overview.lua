@@ -95,7 +95,7 @@ StartMenuStateOverview.create_ui_elements = function (self, params)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 
-	if script_data.settings.use_beta_mode and PLATFORM == "xb1" then
+	if script_data.settings.use_beta_mode and IS_XB1 then
 		local tutorial_button = widgets_by_name.tutorial_button
 		local tutorial_button_content = tutorial_button.content
 		tutorial_button_content.button_hotspot.disable_button = true

@@ -1046,6 +1046,9 @@ weapon_template.buffs = {
 weapon_template.wwise_dep_right_hand = {
 	"wwise/one_handed_swords"
 }
+weapon_template.wwise_dep_left_hand = {
+	"wwise/pistol"
+}
 
 return {
 	fencing_sword_template_1 = table.clone(weapon_template)

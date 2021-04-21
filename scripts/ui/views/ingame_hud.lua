@@ -1,4 +1,5 @@
 require("foundation/scripts/util/local_require")
+require("scripts/ui/hud_ui/hud_customizer")
 require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
 require("scripts/ui/ui_animator")
 require("scripts/ui/ui_cleanui")
@@ -390,6 +391,8 @@ IngameHud.update = function (self, dt, t)
 	if hud_scale_applied then
 		self:_abort_hud_scale()
 	end
+
+	HudCustomizer.reset_button(self._ingame_ui_context.ui_renderer)
 end
 
 IngameHud.post_update = function (self, dt, t)

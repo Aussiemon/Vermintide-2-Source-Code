@@ -121,6 +121,19 @@ CorruptorBeamExtension.set_state = function (self, state, target_unit)
 	end
 end
 
+CorruptorBeamExtension._get_positions = function (self, dt, self_pos, real_target_position)
+	if not self.aimed_at_position then
+		self.aimed_at_position = Vector3Box(real_target_position + 1 * Vector3.normalize(real_target_position - self_pos))
+	end
+
+	local aimed_at_position = self.aimed_at_position:unbox()
+	local current_pos = Unit.local_position(self.projectile_unit, 0)
+	local projectile_direction = Vector3.normalize(aimed_at_position - current_pos)
+	local wanted_position = current_pos + projectile_direction * self.projectile_speed * dt
+
+	return aimed_at_position, wanted_position
+end
+
 CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 	local state = self.state
 	local target_unit = self.target_unit
@@ -130,11 +143,6 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 		local world = self.world
 		local self_pos = Unit.world_position(unit, Unit.node(unit, "a_voice"))
 		local real_target_position = Unit.world_position(target_unit, Unit.node(target_unit, "j_neck"))
-
-		if not self.aimed_at_position then
-			self.aimed_at_position = Vector3Box(real_target_position + 1 * Vector3.normalize(real_target_position - self_pos))
-		end
-
 		local direction = Vector3.normalize(real_target_position - self_pos)
 		local distance = Vector3.distance(self_pos, real_target_position)
 		local rotation = Quaternion.look(direction)
@@ -142,11 +150,7 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 		local variable_name = "uv_dynamic_scaling"
 
 		if state == "projectile" and self.beam_effect then
-			local target_position = self.aimed_at_position:unbox()
-			local current_pos = Unit.local_position(projectile_unit, 0)
-			local projectile_target_position = target_position
-			local projectile_direction = Vector3.normalize(projectile_target_position - current_pos)
-			local wanted_position = current_pos + projectile_direction * self.projectile_speed * dt
+			local aimed_at_position, wanted_position = self:_get_positions(dt, self_pos, real_target_position)
 			local distance_to_particle = Vector3.distance(self_pos, wanted_position)
 			local caster_to_projectile_direction = Vector3.normalize(wanted_position - self_pos)
 			local caster_to_projectile_rotation = Quaternion.look(caster_to_projectile_direction)
@@ -164,11 +168,9 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 				end
 
 				if not blackboard.projectile_target_position then
-					blackboard.projectile_target_position = Vector3Box(target_position)
+					blackboard.projectile_target_position = Vector3Box(aimed_at_position)
 				else
-					local new_target_position = distance * projectile_direction + projectile_direction
-
-					blackboard.projectile_target_position:store(target_position)
+					blackboard.projectile_target_position:store(aimed_at_position)
 				end
 			end
 		elseif state == "start_beam" and self.beam_effect and self.beam_effect_start and self.beam_effect_end then

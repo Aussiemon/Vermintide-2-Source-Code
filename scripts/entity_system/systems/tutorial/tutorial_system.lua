@@ -113,7 +113,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 					Application.warning("[ObjectiveUnitExtension] Trying to set active on unit %q to %q when it's already %q", tostring(unit), active, extension.active)
 				else
 					extension.active = active
-					local level_transition_handler = Managers.state.game_mode.level_transition_handler
+					local level_transition_handler = Managers.level_transition_handler
 					local level_key = level_transition_handler:get_current_level_keys()
 					local level_settings = LevelSettings[level_key]
 
@@ -261,7 +261,7 @@ TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_un
 	local tooltip_templates = TutorialTooltipTemplates
 	local tooltip_templates_n = TutorialTooltipTemplates_n
 	local in_play_go = Managers.state.entity:system("play_go_tutorial_system"):active()
-	local level_transition_handler = Managers.state.game_mode.level_transition_handler
+	local level_transition_handler = Managers.level_transition_handler
 	local level_key = level_transition_handler:get_current_level_keys()
 	local level_settings = LevelSettings[level_key]
 	local is_in_inn = level_settings.hub_level

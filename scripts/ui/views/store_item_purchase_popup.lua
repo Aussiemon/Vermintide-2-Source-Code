@@ -1451,7 +1451,7 @@ StoreItemPurchasePopup._create_popup_widget = function (self, product, scenegrap
 		260,
 		220
 	}
-	local definition = UIWidgets.create_store_item_definition(scenegraph_id, item_size, masked)
+	local definition = UIWidgets.create_store_item_definition(scenegraph_id, item_size, masked, product)
 	local widget = UIWidget.init(definition)
 
 	self:_populate_item_widget(widget, item, product_id, display_as_owned)

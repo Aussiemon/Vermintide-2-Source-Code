@@ -51,6 +51,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	checkbox_pivot = {
+		vertical_alignment = "center",
+		parent = "letterbox_bottom_bar",
+		horizontal_alignment = "left",
+		size = {
+			40,
+			40
+		},
+		position = {
+			-20,
+			0,
+			1
+		}
+	},
 	fx_fade_rect = {
 		vertical_alignment = "bottom",
 		parent = "root",
@@ -78,23 +92,93 @@ local scenegraph_definition = {
 			140,
 			2
 		}
-	},
-	transparent_game_logo = {
-		vertical_alignment = "center",
-		parent = "root",
-		horizontal_alignment = "center",
-		size = {
-			1237,
-			538
-		},
-		position = {
-			0,
-			0,
-			1
-		}
 	}
 }
+
+local function make_checkbox(i)
+	local frame_settings = UIFrameSettings.menu_frame_06
+
+	return {
+		scenegraph_id = "checkbox_pivot",
+		offset = {
+			i * 50,
+			0,
+			0
+		},
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "check",
+					texture_id = "check",
+					content_check_function = function (content)
+						return content.checked
+					end
+				},
+				{
+					pass_type = "rect",
+					style_id = "background"
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame"
+				}
+			}
+		},
+		content = {
+			check = "matchmaking_checkbox",
+			frame = frame_settings.texture
+		},
+		style = {
+			background = {
+				color = {
+					100,
+					8,
+					8,
+					8
+				}
+			},
+			frame = {
+				area_size = {
+					40,
+					40
+				},
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+				offset = {
+					0,
+					0,
+					1
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			check = {
+				texture_size = {
+					37,
+					31
+				},
+				offset = {
+					4,
+					6,
+					2
+				},
+				color = Colors.get_color_table_with_alpha("dark_olive_green", 255)
+			}
+		}
+	}
+end
+
 local widget_definitions = {
+	checkbox_1 = make_checkbox(1),
+	checkbox_2 = make_checkbox(2),
+	checkbox_3 = make_checkbox(3),
+	checkbox_4 = make_checkbox(4),
 	letterbox = {
 		scenegraph_id = "screen",
 		element = {

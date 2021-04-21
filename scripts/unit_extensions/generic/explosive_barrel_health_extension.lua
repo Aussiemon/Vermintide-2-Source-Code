@@ -66,7 +66,7 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 		if self.explode_time <= network_time then
 			self.insta_explode = true
 
-			self:add_damage(self.unit, self.health, "full", "undefined", Unit.world_position(self.unit, 0), Vector3(0, 0, -1))
+			self:add_damage(self.unit, self.health, "full", "undefined", Unit.world_position(self.unit, 0), Vector3(0, 0, -1), nil, nil, self.last_attacker_unit)
 		elseif not self.in_hand and not self.insta_explode and self.insta_explode_time <= network_time then
 			self.insta_explode = true
 		elseif not self.played_fuse_out and network_time >= self.explode_time - 1.2 then
@@ -86,6 +86,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 		return
 	end
 
+	self.last_attacker_unit = attacker_unit
 	local did_damage = damage_amount > 0
 	local unit = self.unit
 	local network_manager = Managers.state.network

@@ -410,4 +410,25 @@ WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin
 	return false, position
 end
 
+WeaponHelper.ballistic_raycast = function (self, physics_world, max_steps, max_time, position, velocity, gravity, collision_filter, visualize)
+	local time_step = max_time / max_steps
+
+	for i = 1, max_steps, 1 do
+		local new_position = position + velocity * time_step
+		local delta = new_position - position
+		local direction = Vector3.normalize(delta)
+		local distance = Vector3.length(delta)
+		local result, hit_position, hit_distance, normal, actor = PhysicsWorld.immediate_raycast(physics_world, position, direction, distance, "closest", "collision_filter", collision_filter)
+
+		if hit_position then
+			return result, hit_position, hit_distance, normal, actor
+		end
+
+		velocity = velocity + gravity * time_step
+		position = new_position
+	end
+
+	return false, position
+end
+
 return

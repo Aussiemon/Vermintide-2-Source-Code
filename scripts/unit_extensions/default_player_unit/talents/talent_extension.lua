@@ -43,7 +43,7 @@ TalentExtension.talents_changed = function (self)
 
 	self:apply_buffs_from_talents(talent_ids)
 	self:update_talent_weapon_index(talent_ids)
-	self.inventory_extension:update_career_skill_weapon_slot(self.world, self._unit)
+	self.inventory_extension:update_career_skill_weapon_slot_safe()
 
 	if not self.is_server and Managers.state.network:game() then
 		self:_send_rpc_sync_talents(talent_ids)
@@ -54,14 +54,8 @@ TalentExtension._send_rpc_sync_talents = function (self, talent_ids)
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local unit_go_id = Managers.state.unit_storage:go_id(self._unit)
-	local talent_id_1 = talent_ids[1]
-	local talent_id_2 = talent_ids[2]
-	local talent_id_3 = talent_ids[3]
-	local talent_id_4 = talent_ids[4]
-	local talent_id_5 = talent_ids[5]
-	local talent_id_6 = talent_ids[6]
 
-	network_transmit:send_rpc_server("rpc_sync_talents", unit_go_id, talent_id_1, talent_id_2, talent_id_3, talent_id_4, talent_id_5, talent_id_6 or 0)
+	network_transmit:send_rpc_server("rpc_sync_talents", unit_go_id, talent_ids)
 end
 
 TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
@@ -215,32 +209,7 @@ end
 TalentExtension._get_talent_ids = function (self)
 	local talent_interface = Managers.backend:get_talents_interface()
 	local career_name = self._career_name
-	local talent_tree = talent_interface:get_talent_tree(career_name)
-	local talent_ids = {
-		0,
-		0,
-		0,
-		0,
-		0,
-		0
-	}
-
-	if talent_tree then
-		local talents = talent_interface:get_talents(career_name)
-
-		if talents then
-			for i = 1, #talents, 1 do
-				local column = talents[i]
-
-				if column == 0 then
-					talent_ids[i] = 0
-				else
-					local talent_name = talent_tree[i][column]
-					talent_ids[i] = (TalentIDLookup[talent_name] and TalentIDLookup[talent_name].talent_id) or 0
-				end
-			end
-		end
-	end
+	local talent_ids = talent_interface:get_talent_ids(career_name)
 
 	return talent_ids
 end
@@ -276,20 +245,13 @@ TalentExtension.has_talent_perk = function (self, perk)
 end
 
 TalentExtension.get_talent_names = function (self)
+	local talent_ids = self:_get_talent_ids()
 	local talent_names = {}
-	local talent_interface = Managers.backend:get_talents_interface()
-	local talent_tree = talent_interface:get_talent_tree(self._career_name)
-	local talents = talent_interface:get_talents(self._career_name)
+	local hero_name = self._hero_name
 
-	if talents then
-		for row, column in pairs(talents) do
-			if column == 0 or not talent_tree then
-				talent_names[#talent_names + 1] = "none"
-			else
-				local talent_name = talent_tree[row][column]
-				talent_names[#talent_names + 1] = talent_name
-			end
-		end
+	for _, talent_id in ipairs(talent_ids) do
+		local talent_data = Talents[hero_name][talent_id]
+		talent_names[#talent_names + 1] = talent_data.name
 	end
 
 	return talent_names

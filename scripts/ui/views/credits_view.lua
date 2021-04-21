@@ -95,7 +95,7 @@ CreditsView.on_exit = function (self)
 	self.active = nil
 	self.exiting = nil
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		Managers.music:trigger_event("Play_hud_select")
 	else
 		Managers.music:trigger_event("Play_console_menu_select")
@@ -144,7 +144,7 @@ CreditsView.update = function (self, dt)
 	local input_axis = (gamepad_active and input_service:get("gamepad_left_axis")) or input_service:get("scroll_axis")
 	local scroll_value = input_axis.y
 
-	if not gamepad_active and PLATFORM == "xb1" then
+	if not gamepad_active and IS_XB1 then
 		scroll_value = math.sign(input_axis.x) * 5
 	end
 

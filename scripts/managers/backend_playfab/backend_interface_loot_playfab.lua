@@ -56,10 +56,8 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	for i = 1, num_items, 1 do
 		local item = items[i]
 		local backend_id = item.ItemInstanceId
-
-		backend_mirror:add_item(backend_id, item)
-
-		loot[#loot + 1] = backend_id
+		local new_backend_id = backend_mirror:add_item(backend_id, item)
+		loot[#loot + 1] = new_backend_id or backend_id
 	end
 
 	if chest_backend_id then
@@ -150,8 +148,6 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local essence_rewards = function_result.EssenceRewards
 	local total_essence = function_result.total_essence
 	local vs_profile_data = function_result.vs_profile_data
-	local deus_meta_currency_rewards = function_result.deus_meta_currency_rewards
-	local granted_boon = function_result.granted_boon
 	local score_breakdown = function_result.ScoreBreakdown
 	local num_items = #items
 	local win_track_progress = function_result.win_tracks_progress
@@ -220,22 +216,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	end
 
 	backend_mirror:set_total_essence(total_essence)
-
-	if deus_meta_currency_rewards and #deus_meta_currency_rewards > 0 then
-		loot_request.deus_meta_currency = deus_meta_currency_rewards
-		local final_deus_meta_currency_reward = deus_meta_currency_rewards[#deus_meta_currency_rewards]
-		local new_total_deus_meta_currency = final_deus_meta_currency_reward.new_total
-
-		backend_mirror:set_deus_meta_currency(new_total_deus_meta_currency)
-	end
-
 	backend_mirror:handle_deus_result(result)
-	backend_mirror:handle_boons_result(result)
-
-	if granted_boon then
-		loot_request.granted_boon = granted_boon
-	end
-
 	Managers.backend:dirtify_interfaces()
 
 	self._loot_requests[id] = loot_request
@@ -244,7 +225,7 @@ end
 BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = function (self)
 	local ids_and_characters = {}
 
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		if rawget(_G, "Steam") then
 			local human_players = Managers.player:human_players()
 
@@ -260,7 +241,7 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 				end
 			end
 		end
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		local human_players = Managers.player:human_players()
 
 		for _, player in pairs(human_players) do
@@ -274,7 +255,7 @@ BackendInterfaceLootPlayfab._get_remote_player_network_ids_and_characters = func
 				ids_and_characters[decimal_id] = career_playfab_name
 			end
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		local human_players = Managers.player:human_players()
 
 		for _, player in pairs(human_players) do

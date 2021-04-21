@@ -13,7 +13,6 @@ require("scripts/managers/backend_playfab/backend_interface_keep_decorations_pla
 require("scripts/managers/backend_playfab/backend_interface_live_events_playfab")
 require("scripts/managers/backend_playfab/backend_interface_cdn_resources_playfab")
 require("scripts/managers/backend_playfab/backend_interface_dlcs_playfab")
-require("scripts/managers/backend_playfab/backend_interface_boons_playfab")
 require("scripts/managers/backend_playfab/backend_interfaces/backend_interface_motd_playfab")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_loot_benchmark")
 require("scripts/managers/backend_playfab/benchmark_backend/backend_interface_statistics_benchmark")
@@ -22,13 +21,13 @@ require("scripts/managers/backend/script_backend")
 require("scripts/settings/equipment/item_master_list")
 require("backend/error_codes")
 
-if PLATFORM == "win32" or PLATFORM == "linux" then
+if IS_WINDOWS or IS_LINUX then
 	require("scripts/managers/backend_playfab/script_backend_playfab")
 	DLCUtils.require_list("script_backend_playfab_files")
-elseif PLATFORM == "xb1" then
+elseif IS_XB1 then
 	require("scripts/managers/backend_playfab/script_backend_playfab_xbox")
 	require("scripts/managers/backend_playfab/backend_interface_console_dlc_rewards_playfab")
-elseif PLATFORM == "ps4" then
+elseif IS_PS4 then
 	require("scripts/managers/backend_playfab/script_backend_playfab_ps4")
 	require("scripts/managers/backend_playfab/backend_interface_console_dlc_rewards_playfab")
 end
@@ -38,6 +37,7 @@ if GameSettingsDevelopment.backend_settings.allow_local then
 end
 
 cjson = cjson.stingray_init()
+local backend_manager_playfab_testify = script_data.testify and require("scripts/managers/backend_playfab/backend_manager_playfab_testify")
 BackendManagerPlayFab = class(BackendManagerPlayFab)
 local TIMEOUT_SIGNIN = 20
 
@@ -206,9 +206,8 @@ BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	self:_create_cdn_resources_interface(settings, force_local)
 	self:_create_motd_interface(settings, force_local)
 	self:_create_dlcs_interface(settings, force_local)
-	self:_create_boons_interface(settings, force_local)
 
-	if PLATFORM == "xb1" or PLATFORM == "ps4" then
+	if IS_CONSOLE then
 		self:_create_console_dlc_rewards_interface(settings, force_local)
 	end
 
@@ -594,7 +593,10 @@ BackendManagerPlayFab.update = function (self, dt)
 	end
 
 	self:_update_error_handling(dt)
-	self:_poll_testify_requests()
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(backend_manager_playfab_testify, self)
+	end
 end
 
 BackendManagerPlayFab.playfab_api_error = function (self, result, error_code)
@@ -724,10 +726,10 @@ end
 BackendManagerPlayFab._reason_localize_key = function (self, reason, error_code)
 	local error_code = (error_code and tonumber(error_code)) or -1
 
-	if PLATFORM == "xb1" or PLATFORM == "ps4" then
+	if IS_CONSOLE then
 		if not self:profiles_loaded() then
 			if rawget(_G, "Backend") and reason == Backend.ERR_AUTH then
-				if PLATFORM == "xb1" then
+				if IS_XB1 then
 					return "backend_err_auth_xb1"
 				else
 					return "backend_err_auth_ps4"
@@ -862,15 +864,15 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 	local error_topic = optional_error_topic or Localize("backend_error_topic")
 	local error_text, button_1, button_2, button_3 = nil
 
-	if PLATFORM == "xb1" or PLATFORM == "ps4" then
+	if IS_CONSOLE then
 		error_text, button_1 = self:_format_error_message_console(reason, details_message)
 	else
 		error_text, button_1, button_2, button_3 = self:_format_error_message_windows(reason, details_message, optional_url_button)
 	end
 
-	local localized_error_text = error_text and Localize(error_text)
+	local localized_error_text = (error_text and Localize(error_text)) or Localize("backend_err_playfab")
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		if localized_error_text and details_message then
 			localized_error_text = localized_error_text .. " : " .. details_message
 		elseif details_message then
@@ -924,11 +926,11 @@ end
 BackendManagerPlayFab.available = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		return rawget(_G, "Steam") ~= nil or DEDICATED_SERVER
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		return true
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		return true
 	end
 
@@ -943,9 +945,9 @@ BackendManagerPlayFab.commit = function (self, skip_queue, commit_complete_callb
 			end
 		end
 
-		if PLATFORM == "win32" or PLATFORM == "linux" then
+		if IS_WINDOWS or IS_LINUX then
 			Managers.save:auto_save(self._local_backend_file_name, self._save_data, save_callback)
-		elseif PLATFORM == "ps4" or PLATFORM == "xb1" then
+		elseif IS_CONSOLE then
 			Managers.save:auto_save(SaveFileName, SaveData, save_callback)
 		end
 	end
@@ -1024,7 +1026,7 @@ end
 BackendManagerPlayFab._load_save_data = function (self, local_backend_data, local_backend_save_version)
 	local platform = PLATFORM
 
-	if platform == "win32" or platform == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		local function load_callback(info)
 			local save_data_version = info.data and info.data.save_data_version
 
@@ -1046,7 +1048,7 @@ BackendManagerPlayFab._load_save_data = function (self, local_backend_data, loca
 		end
 
 		Managers.save:auto_load(self._local_backend_file_name, load_callback)
-	elseif platform == "xb1" or platform == "ps4" then
+	elseif IS_CONSOLE then
 		if not SaveData.local_backend_save or script_data.honduras_demo then
 			SaveData.local_backend_save = table.clone(local_backend_data)
 		end
@@ -1262,7 +1264,7 @@ BackendManagerPlayFab._create_motd_interface = function (self, settings, force_l
 		}
 		self._interfaces.motd = motd_stub
 	else
-		self._interfaces.motd = BackendInterfaceMOTDPlayfab:new()
+		self._interfaces.motd = BackendInterfaceMOTDPlayfab:new(self._backend_mirror)
 	end
 end
 
@@ -1279,14 +1281,6 @@ BackendManagerPlayFab._create_dlcs_interface = function (self, settings, force_l
 		self._interfaces.dlcs = BackendInterfaceDLCsLocal:new(self._save_data)
 	else
 		self._interfaces.dlcs = BackendInterfaceDLCsPlayfab:new(self._backend_mirror)
-	end
-end
-
-BackendManagerPlayFab._create_boons_interface = function (self, settings, force_local)
-	if force_local then
-		self._interfaces.boons = BackendInterfaceBoonsLocal:new(self._save_data)
-	else
-		self._interfaces.boons = BackendInterfaceBoonsPlayFab:new(self._backend_mirror)
 	end
 end
 
@@ -1377,22 +1371,6 @@ BackendManagerPlayFab.is_pending_request = function (self)
 	return (mirror and mirror:request_queue():is_pending_request()) or false
 end
 
-BackendManagerPlayFab._poll_testify_requests = function (self)
-	local career_name = Testify:poll_request("request_weapons_for_career")
-
-	if career_name then
-		local items = self:get_interface("items"):get_all_backend_items()
-		local weapons = table.filter(items, function (item)
-			local is_weapon = item.data.slot_type == "melee" or item.data.slot_type == "ranged"
-			local can_wield = table.contains(item.data.can_wield, career_name)
-
-			return is_weapon and can_wield
-		end)
-
-		Testify:respond_to_request("request_weapons_for_career", weapons)
-	end
-end
-
 local EMPTY_TABLE = {}
 
 BackendManagerPlayFab.get_level_variation_data = function (self)
@@ -1408,7 +1386,7 @@ BackendManagerPlayFab.get_level_variation_data = function (self)
 end
 
 BackendManagerPlayFab.dlc_unlocked_at_signin = function (self, dlc_name)
-	if PLATFORM == "win32" or not self._backend_mirror then
+	if IS_WINDOWS or IS_LINUX or not self._backend_mirror then
 		return true
 	end
 

@@ -229,10 +229,8 @@ end
 StartGameWindowCustomGameOverviewConsole._can_play = function (self)
 	local parent = self._parent
 	local selected_level_id = parent:get_selected_level_id()
-	local selected_journey = parent:get_selected_deus_journey()
-	local selected_mission = selected_journey or selected_level_id
 	local selected_difficulty_key = parent:get_difficulty_option()
-	local can_play = selected_mission ~= nil and selected_difficulty_key ~= nil
+	local can_play = selected_level_id ~= nil and selected_difficulty_key ~= nil
 
 	return can_play
 end
@@ -240,29 +238,15 @@ end
 StartGameWindowCustomGameOverviewConsole._update_mission_option = function (self)
 	local parent = self._parent
 	local selected_level_id = parent:get_selected_level_id()
-	local selected_journey = parent:get_selected_deus_journey()
-	local selected_mission = selected_journey or selected_level_id
 
-	if not selected_mission then
+	if not selected_level_id then
 		return
 	end
 
-	local display_name = ""
-	local icon_texture = ""
-	local completed_difficulty_index = nil
-
-	if selected_journey then
-		local journey_settings = DeusJourneySettings[selected_journey]
-		display_name = journey_settings.display_name
-		icon_texture = journey_settings.level_image
-		completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(self._statistics_db, self._stats_id, selected_journey)
-	else
-		local level_settings = LevelSettings[selected_level_id]
-		display_name = level_settings.display_name
-		icon_texture = level_settings.level_image
-		completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self._statistics_db, self._stats_id, selected_level_id)
-	end
-
+	local level_settings = LevelSettings[selected_level_id]
+	local display_name = level_settings.display_name
+	local icon_texture = level_settings.level_image
+	local completed_difficulty_index = self._parent:get_completed_level_difficulty_index(self._statistics_db, self._stats_id, selected_level_id)
 	local mission_widget = self._widgets_by_name.mission_setting
 	mission_widget.content.input_text = Localize(display_name)
 	mission_widget.content.icon_texture = icon_texture

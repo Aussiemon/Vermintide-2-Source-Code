@@ -5,6 +5,17 @@ require("scripts/network/lobby_finder")
 require("scripts/network/lobby_members")
 
 LobbyInternal = LobbyInternal or {}
+LobbyInternal.lobby_data_version = 2
+
+if IS_XB1 then
+	LobbyInternal.state_map = {
+		[LobbyState.WORKING] = LobbyState.WORKING,
+		[LobbyState.SHUTDOWN] = LobbyState.SHUTDOWN,
+		[LobbyState.JOINED] = LobbyState.JOINED,
+		[LobbyState.FAILED] = LobbyState.FAILED
+	}
+end
+
 LobbyInternal.TYPE = "lan"
 
 LobbyInternal.network_initialized = function ()
@@ -62,6 +73,7 @@ LobbyInternal.init_client = function (network_options)
 		LobbyInternal.client = Network.init_lan_client(network_options.config_file_name, game_port)
 	end
 
+	fassert(LobbyInternal.client, "Failed to initialize the network. The port is most likely in use, which means that another game instance is running at the same time.")
 	GameSettingsDevelopment.set_ignored_rpc_logs()
 end
 
@@ -84,6 +96,21 @@ LobbyInternal.ping = function (peer_id)
 end
 
 LobbyInternal.get_lobby = LanLobbyBrowser.lobby
+local XBOX_MOCK_LOBBY_BROWSER = {
+	is_refreshing = function ()
+		return false
+	end,
+	refresh = function ()
+		return
+	end,
+	num_lobbies = function ()
+		return 0
+	end
+}
+
+LobbyInternal.lobby_browser = function ()
+	return XBOX_MOCK_LOBBY_BROWSER
+end
 
 LobbyInternal.clear_filter_requirements = function ()
 	return

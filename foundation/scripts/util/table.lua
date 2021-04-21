@@ -23,7 +23,7 @@ table.clone = function (t, skip_metatable)
 		if type(value) ~= "table" or is_class_instance(value) then
 			clone[key] = value
 		else
-			clone[key] = table.clone(value)
+			clone[key] = table.clone(value, skip_metatable)
 		end
 	end
 
@@ -178,6 +178,16 @@ table.find = function (t, element)
 	return nil
 end
 
+table.find_by_key = function (t, search_key, search_value)
+	for key, value in pairs(t) do
+		if value[search_key] == search_value then
+			return key
+		end
+	end
+
+	return nil
+end
+
 table.index_of = function (t, element)
 	for i = 1, #t, 1 do
 		if t[i] == element then
@@ -258,7 +268,7 @@ local function table_dump(key, value, depth, max_depth, print_func)
 		return
 	end
 
-	local prefix = string.rep("  ", depth) .. ((key == nil and "") or "[" .. tostring(key) .. "]")
+	local prefix = string.rep("  ", depth + 1) .. ((key == nil and "") or "[" .. tostring(key) .. "]")
 
 	if type(value) == "table" then
 		prefix = prefix .. ((key == nil and "") or " = ")
@@ -606,19 +616,17 @@ table.add_meta_logging = function (real_table, debug_enabled, debug_name)
 	end
 end
 
-function ripairs(t)
-	local function ripairs_it(t, i)
-		i = i - 1
-		local v = t[i]
+local function ripairs_iterator(t, i)
+	i = i - 1
+	local v = t[i]
 
-		if v == nil then
-			return v
-		end
-
+	if v then
 		return i, v
 	end
+end
 
-	return ripairs_it, t, #t + 1
+function ripairs(t)
+	return ripairs_iterator, t, #t + 1
 end
 
 table.swap_delete = function (t, index)
@@ -706,6 +714,30 @@ table.autovivified = function (new)
 			return val
 		end
 	})
+end
+
+table.every = function (t, func)
+	for key, value in pairs(t) do
+		if not func(key, value) then
+			return false
+		end
+	end
+
+	return true
+end
+
+table.find_func = function (t, func)
+	for key, value in pairs(t) do
+		if func(key, value) then
+			return key, value
+		end
+	end
+end
+
+table.random = function (t)
+	local index = math.random(1, #t)
+
+	return t[index]
 end
 
 return

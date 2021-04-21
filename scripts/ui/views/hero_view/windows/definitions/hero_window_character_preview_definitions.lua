@@ -69,6 +69,34 @@ local scenegraph_definition = {
 			8
 		}
 	},
+	disclaimer_text_background = {
+		vertical_alignment = "bottom",
+		parent = "preview",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1] - 40,
+			70
+		},
+		position = {
+			0,
+			10,
+			9
+		}
+	},
+	disclaimer_text = {
+		vertical_alignment = "bottom",
+		parent = "preview",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1] - 40,
+			50
+		},
+		position = {
+			0,
+			20,
+			10
+		}
+	},
 	detailed_button = {
 		vertical_alignment = "top",
 		parent = "preview",
@@ -157,8 +185,22 @@ local reward_title_text_style = {
 	}
 }
 local description_text_style = {
-	vertical_alignment = "top",
+	vertical_alignment = "bottom",
 	font_size = 18,
+	localize = false,
+	horizontal_alignment = "center",
+	word_wrap = true,
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local disclaimer_text_style = {
+	vertical_alignment = "bottom",
+	font_size = 20,
 	localize = false,
 	horizontal_alignment = "center",
 	word_wrap = true,
@@ -886,7 +928,9 @@ local camera_position_by_character = {
 }
 local widgets = {
 	window = UIWidgets.create_frame("window", window_size, window_frame, 15),
-	detailed = create_detailed_stat_widget("detailed_button", scenegraph_definition.detailed_button.size, "detailed_list", scenegraph_definition.detailed_list.size)
+	detailed = create_detailed_stat_widget("detailed_button", scenegraph_definition.detailed_button.size, "detailed_list", scenegraph_definition.detailed_list.size),
+	disclaimer_text_background = UIWidgets.create_rect_with_outer_frame("disclaimer_text_background", scenegraph_definition.disclaimer_text_background.size, "frame_outer_fade_02", nil, Colors.get_color_table_with_alpha("black", 175)),
+	disclaimer_text = UIWidgets.create_simple_text(Localize("inventory_morris_note"), "disclaimer_text", scenegraph_definition.preview.size, nil, disclaimer_text_style)
 }
 local animation_definitions = {
 	on_enter = {

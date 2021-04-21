@@ -354,7 +354,7 @@ BackendInterfaceWeavesPlayFab.submit_scores = function (self, tier, score, num_p
 	for _, player in pairs(players) do
 		local platform_id = player:platform_id()
 
-		if PLATFORM ~= "xb1" then
+		if not IS_XB1 then
 			platform_id = Application.hex64_to_dec(platform_id)
 		end
 
@@ -389,7 +389,7 @@ BackendInterfaceWeavesPlayFab.request_player_rank = function (self, stat_name, l
 		}
 	}
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		player_rank_request.XboxToken = Managers.account:get_xsts_token()
 	end
 
@@ -426,7 +426,7 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player = function (self
 		}
 	}
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		request_leaderboard_around_player.XboxToken = Managers.account:get_xsts_token()
 	end
 
@@ -482,7 +482,7 @@ BackendInterfaceWeavesPlayFab.request_leaderboard = function (self, stat_name, s
 		StartPosition = start_position
 	}
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		leaderboard_request.XboxToken = Managers.account:get_xsts_token()
 	end
 
@@ -877,7 +877,7 @@ BackendInterfaceWeavesPlayFab.buy_magic_item_cb = function (self, external_cb, r
 
 		backend_mirror:add_item(backend_id, item)
 
-		item.power_level = magic_level_to_power_level(item.magic_level)
+		item.power_level = magic_level_to_power_level(item.CustomData.magic_level)
 	end
 
 	backend_mirror:set_essence(new_essence)
@@ -1240,6 +1240,29 @@ BackendInterfaceWeavesPlayFab.get_loadout_talents = function (self, career_name)
 	local loadout_talents = loadout.talents
 
 	return loadout_talents
+end
+
+BackendInterfaceWeavesPlayFab.get_talent_ids = function (self, career_name)
+	local talent_tree = self:get_talent_tree(career_name)
+	local talent_ids = {}
+	local talents = self:get_talents(career_name)
+
+	if talents then
+		for i = 1, #talents, 1 do
+			local column = talents[i]
+
+			if column ~= 0 then
+				local talent_name = talent_tree[i][column]
+				local talent_lookup = TalentIDLookup[talent_name]
+
+				if talent_lookup and talent_lookup.talent_id then
+					talent_ids[#talent_ids + 1] = talent_lookup.talent_id
+				end
+			end
+		end
+	end
+
+	return talent_ids
 end
 
 BackendInterfaceWeavesPlayFab.get_talent_tree = function (self, career_name)

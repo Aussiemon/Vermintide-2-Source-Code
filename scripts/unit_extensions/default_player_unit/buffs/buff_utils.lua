@@ -91,4 +91,66 @@ BuffUtils.buffs_to_rpc_params = function (buffs)
 	}
 end
 
+local unit_node = Unit.node
+
+local function _get_particle_link_node(fx, link_target)
+	return (fx.link_node and unit_node(link_target, fx.link_node)) or 0
+end
+
+BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_first_person)
+	if not world or not particle_fx then
+		return nil
+	end
+
+	local stop_fx = {}
+	local destroy_fx = {}
+	local fx_ids = {
+		stop_fx = stop_fx,
+		destroy_fx = destroy_fx
+	}
+
+	for i = 1, #particle_fx, 1 do
+		local fx = particle_fx[i]
+
+		if (is_first_person and fx.first_person) or (not is_first_person and fx.third_person) then
+			local link_target = unit
+
+			if link_target then
+				local node_id = _get_particle_link_node(fx, link_target)
+				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy)
+
+				if fx.continuous then
+					if fx.destroy_policy == "stop" then
+						stop_fx[#stop_fx + 1] = fx_id
+					else
+						destroy_fx[#destroy_fx + 1] = fx_id
+					end
+				end
+			end
+		end
+	end
+
+	return fx_ids
+end
+
+BuffUtils.destroy_attached_particles = function (world, fx_ids)
+	if fx_ids and world then
+		local destroy_fx = fx_ids.destroy_fx
+
+		if destroy_fx then
+			for i = 1, #destroy_fx, 1 do
+				World.destroy_particles(world, destroy_fx[i])
+			end
+		end
+
+		local stop_fx = fx_ids.stop_fx
+
+		if stop_fx then
+			for i = 1, #stop_fx, 1 do
+				World.stop_spawning_particles(world, stop_fx[i])
+			end
+		end
+	end
+end
+
 return

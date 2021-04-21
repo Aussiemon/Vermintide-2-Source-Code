@@ -10,7 +10,6 @@ require("scripts/network/voice_chat_xb1")
 
 LobbyInternal = LobbyInternal or {}
 LobbyInternal.TYPE = "xboxlive"
-LobbyInternal.WEAVE_HOPPER_NAME = "weave_find_group_hopper"
 LobbyInternal.HOPPER_NAME = "safe_profiles_hopper"
 LobbyInternal.SESSION_TEMPLATE_NAME = "new_default_game"
 LobbyInternal.SMARTMATCH_SESSION_TEMPLATE_NAME = "ticket_default"
@@ -207,14 +206,6 @@ local HOPPER_PARAMS_LUT = {
 		"profiles",
 		"network_hash",
 		"matchmaking_types"
-	},
-	weave_find_group_hopper = {
-		"difficulty",
-		"powerlevel",
-		"profiles",
-		"network_hash",
-		"matchmaking_types",
-		"weave_index"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {

@@ -1,10 +1,6 @@
-math.degrees_to_radians = function (degrees)
-	return degrees * 0.0174532925
-end
-
-math.radians_to_degrees = function (radians)
-	return radians * 57.2957795
-end
+local math = math
+math.degrees_to_radians = math.rad
+math.radians_to_degrees = math.deg
 
 math.sign = function (x)
 	if x > 0 then
@@ -66,9 +62,7 @@ math.round_with_precision = function (value, precision)
 	return math.floor(value * mul + 0.5) / mul
 end
 
-math.round = function (value_in)
-	local value = value_in
-
+math.round = function (value)
 	return math.floor(value + 0.5)
 end
 

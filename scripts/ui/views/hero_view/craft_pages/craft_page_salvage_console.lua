@@ -48,6 +48,17 @@ CraftPageSalvageConsole.on_enter = function (self, params, settings)
 	local counter_text = tostring(self._num_craft_items or 0)
 
 	self:_set_craft_counter_text(counter_text, true)
+	self:_start_transition_animation("on_enter")
+end
+
+CraftPageSalvageConsole._start_transition_animation = function (self, animation_name)
+	local params = {
+		wwise_world = self.wwise_world,
+		render_settings = self.render_settings
+	}
+	local widgets = {}
+	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	self._animations[animation_name] = anim_id
 end
 
 CraftPageSalvageConsole.create_ui_elements = function (self, params)
@@ -117,35 +128,14 @@ CraftPageSalvageConsole._update_animations = function (self, dt)
 			animations[animation_name] = nil
 		end
 	end
-end
 
-CraftPageSalvageConsole._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
+	local widgets_by_name = self._widgets_by_name
 
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-CraftPageSalvageConsole._is_button_hovered = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_hover_enter then
-		return true
-	end
-end
-
-CraftPageSalvageConsole._is_button_held = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.is_clicked then
-		return hotspot.is_clicked
-	end
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_plentiful, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_common, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_rare, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_exotic, dt)
+	UIWidgetUtils.animate_icon_button(widgets_by_name.auto_fill_clear, dt)
 end
 
 CraftPageSalvageConsole._handle_input = function (self, dt, t)
@@ -161,13 +151,34 @@ CraftPageSalvageConsole._handle_input = function (self, dt, t)
 	local input_service = self.super_parent:window_input_service()
 	local widget = widgets_by_name.craft_button
 	local is_button_enabled = not widget.content.button_hotspot.disable_button
-	local craft_input = self:_is_button_held(widgets_by_name.craft_button)
+	local auto_fill_rarity = nil
+
+	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_plentiful) then
+		auto_fill_rarity = "plentiful"
+	end
+
+	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_common) then
+		auto_fill_rarity = "common"
+	end
+
+	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_rare) then
+		auto_fill_rarity = "rare"
+	end
+
+	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_exotic) then
+		auto_fill_rarity = "exotic"
+	end
+
+	self.super_parent:set_auto_fill_rarity(auto_fill_rarity)
+
+	local clear_input = UIUtils.is_button_pressed(widgets_by_name.auto_fill_clear)
+	local craft_input_held = UIUtils.is_button_held(widgets_by_name.craft_button)
 	local craft_input_gamepad = is_button_enabled and gamepad_active and input_service:get("refresh_hold")
 	local craft_input_accepted = false
 
-	if input_service:get("special_1") then
+	if input_service:get("special_1") or clear_input then
 		self:reset()
-	elseif craft_input == 0 or craft_input_gamepad then
+	elseif craft_input_held or craft_input_gamepad then
 		if not self._craft_input_time then
 			self._craft_input_time = 0
 

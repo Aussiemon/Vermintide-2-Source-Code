@@ -1,4 +1,4 @@
-if PLATFORM == "win32" then
+if IS_WINDOWS then
 	require("scripts/managers/input/input_manager")
 	require("scripts/utils/visual_assert_log")
 	require("scripts/managers/debug/debug")
@@ -16,14 +16,14 @@ StateSplashScreen.packages_to_load = {
 	"resource_packages/loading_screens/loading_screen_default"
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	StateSplashScreen.packages_to_load[#StateSplashScreen.packages_to_load + 1] = "resource_packages/news_splash/news_splash"
 end
 
 StateSplashScreen.on_enter = function (self)
 	Framerate.set_low_power()
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local assert_on_leak = true
 
 		GarbageLeakDetector.run_leak_detection(assert_on_leak)
@@ -49,19 +49,19 @@ StateSplashScreen.on_enter = function (self)
 	Managers.transition:show_loading_icon(false)
 	self:setup_world()
 
-	if PLATFORM == "win32" or PLATFORM == "xb1" then
+	if IS_WINDOWS or IS_XB1 then
 		self:setup_input()
 	end
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		if PS4.title_id() == "CUSA14407_00" or PS4.title_id() == "CUSA13595_00" then
 			self:setup_esrb_logo()
 		else
 			Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
 		end
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		if self:_is_in_esrb_terratory() then
 			self:setup_esrb_logo()
 		else
@@ -106,7 +106,21 @@ StateSplashScreen.on_enter = function (self)
 		end
 	end
 
-	if PLATFORM == "win32" and not self._skip_splash then
+	local args = {
+		Application.argv()
+	}
+
+	for i = 1, #args, 1 do
+		local arg = args[i]
+
+		if arg == "-skip-splash" then
+			self._skip_splash = true
+
+			break
+		end
+	end
+
+	if IS_WINDOWS and not self._skip_splash then
 		loading_context.first_time = true
 	end
 
@@ -179,7 +193,7 @@ StateSplashScreen.setup_world = function (self)
 	self.viewport = ScriptWorld.create_viewport(self.world, self._viewport_name, "overlay", 1)
 end
 
-if PLATFORM == "win32" or PLATFORM == "xb1" then
+if IS_WINDOWS or IS_XB1 then
 	StateSplashScreen.setup_input = function (self)
 		self.input_manager = InputManager:new()
 		Managers.input = self.input_manager
@@ -211,7 +225,7 @@ StateSplashScreen.setup_splash_screen_view = function (self)
 end
 
 StateSplashScreen.update = function (self, dt, t)
-	if PLATFORM ~= "xb1" and PLATFORM ~= "ps4" then
+	if not IS_CONSOLE then
 		Debug.update(t, dt)
 		self.input_manager:update(dt, t)
 	end
@@ -243,7 +257,7 @@ StateSplashScreen.next_state = function (self)
 		return
 	end
 
-	if PLATFORM == "win32" and not self.debug_setup then
+	if IS_WINDOWS and not self.debug_setup then
 		self.debug_setup = true
 
 		Debug.setup(self.world, "splash_ui")
@@ -289,7 +303,7 @@ StateSplashScreen.packages_loaded = function (self)
 		self._base_packages_loading = nil
 	end
 
-	if (PLATFORM == "xb1" or PLATFORM == "ps4") and self.splash_view then
+	if IS_CONSOLE and self.splash_view then
 		self.splash_view:allow_console_skip()
 	end
 
@@ -329,7 +343,7 @@ StateSplashScreen.on_exit = function (self, application_shutdown)
 
 	self.world = nil
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self.input_manager:destroy()
 
 		self.input_manager = nil

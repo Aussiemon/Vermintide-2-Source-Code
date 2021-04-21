@@ -4,7 +4,6 @@ require("scripts/settings/profiles/room_profiles")
 require("scripts/settings/equipment/attachments")
 require("scripts/settings/profiles/base_units")
 require("scripts/settings/equipment/cosmetics")
-require("scripts/settings/equipment/player_wwise_dependencies")
 
 if script_data.honduras_demo then
 	ProfilePriority = {
@@ -134,6 +133,7 @@ SPProfiles = {
 		character_name = "inventory_name_witch_hunter",
 		character_vo = "witch_hunter",
 		unit_name = "witch_hunter",
+		supports_no_wobble = true,
 		default_wielded_slot = "slot_melee",
 		role = "hero",
 		ingame_display_name = "inventory_name_witch_hunter",
@@ -177,6 +177,7 @@ SPProfiles = {
 		character_name = "inventory_name_bright_wizard",
 		character_vo = "bright_wizard",
 		unit_name = "bright_wizard",
+		supports_no_wobble = true,
 		default_wielded_slot = "slot_melee",
 		role = "hero",
 		ingame_display_name = "inventory_name_bright_wizard",
@@ -220,6 +221,7 @@ SPProfiles = {
 		character_name = "inventory_name_dwarf_ranger",
 		character_vo = "dwarf_ranger",
 		unit_name = "dwarf_ranger",
+		supports_no_wobble = true,
 		default_wielded_slot = "slot_melee",
 		role = "hero",
 		ingame_display_name = "inventory_name_dwarf_ranger",
@@ -263,6 +265,7 @@ SPProfiles = {
 		character_name = "inventory_name_wood_elf",
 		character_vo = "wood_elf",
 		unit_name = "way_watcher",
+		supports_no_wobble = true,
 		default_wielded_slot = "slot_melee",
 		role = "hero",
 		ingame_display_name = "inventory_name_wood_elf",
@@ -306,6 +309,7 @@ SPProfiles = {
 		character_name = "inventory_name_empire_soldier",
 		character_vo = "empire_soldier",
 		unit_name = "empire_soldier",
+		supports_no_wobble = true,
 		default_wielded_slot = "slot_melee",
 		role = "hero",
 		ingame_display_name = "inventory_name_empire_soldier",
@@ -351,6 +355,7 @@ SPProfiles = {
 		unit_name = "empire_soldier",
 		unit_template_name = "player_unit_3rd_tutorial",
 		tutorial_profile = true,
+		supports_no_wobble = true,
 		default_wielded_slot = "slot_melee",
 		role = "hero",
 		ingame_display_name = "inventory_name_empire_soldier",

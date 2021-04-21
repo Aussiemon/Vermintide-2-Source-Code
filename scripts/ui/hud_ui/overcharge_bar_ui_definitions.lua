@@ -15,20 +15,20 @@ local scenegraph_definition = {
 			1080
 		}
 	},
-	screen = {
-		scale = "fit",
+	screen_bottom_pivot_parent = {
+		parent = "screen",
 		position = {
 			0,
 			0,
-			UILayer.hud_inventory
+			0
 		},
 		size = {
-			1920,
-			1080
+			0,
+			0
 		}
 	},
 	screen_bottom_pivot = {
-		parent = "screen",
+		parent = "screen_bottom_pivot_parent",
 		position = {
 			0,
 			0,

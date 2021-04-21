@@ -1,6 +1,6 @@
 Framerate = {
 	set_low_power = function ()
-		if PLATFORM == "win32" and not DEDICATED_SERVER then
+		if IS_WINDOWS and not DEDICATED_SERVER then
 			Application.set_time_step_policy("no_smoothing", "clear_history", "throttle", 60)
 		end
 	end,
@@ -9,7 +9,7 @@ Framerate = {
 
 		if DEDICATED_SERVER then
 			Application.set_time_step_policy("no_smoothing", "throttle", 30)
-		elseif PLATFORM == "win32" then
+		elseif IS_WINDOWS then
 			Application.set_time_step_policy("smoothing", 11, 2, 0.1)
 
 			local max_fps = Application.user_setting("max_fps")
@@ -24,7 +24,7 @@ Framerate = {
 		end
 	end,
 	set_catchup = function ()
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			Application.set_time_step_policy("smoothing", 11, 2, 0.5)
 		end
 	end,

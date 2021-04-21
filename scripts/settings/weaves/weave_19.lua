@@ -11,7 +11,7 @@ return {
 			level_seed = 734621,
 			end_zone_name = "end_zone_03",
 			show_bar = true,
-			base_level_id = "dlc_scorpion_river",
+			base_level_id = "dlc_scorpion_wall",
 			objective_start_flow_event = "weave_objective_kill_enemies_start",
 			spawning_seed = 8973420,
 			objective_settings = {

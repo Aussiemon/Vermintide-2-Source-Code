@@ -5,7 +5,7 @@ FreeFlight.init = function (self, camera, unit)
 	self.unit = unit
 	self.translation_speed = 0.2
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		self.rotation_speed = 0.003
 	else
 		self.rotation_speed = 0.03
@@ -15,7 +15,7 @@ end
 FreeFlight.update = function (self, dt)
 	local input = {}
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		input.pan = Mouse.axis(Mouse.axis_index("mouse"))
 		input.accelerate = Vector3.y(Mouse.axis(Mouse.axis_index("wheel")))
 		input.move = Vector3(Keyboard.button(Keyboard.button_index("d")) - Keyboard.button(Keyboard.button_index("a")), Keyboard.button(Keyboard.button_index("w")) - Keyboard.button(Keyboard.button_index("s")), Keyboard.button(Keyboard.button_index("e")) - Keyboard.button(Keyboard.button_index("q")))

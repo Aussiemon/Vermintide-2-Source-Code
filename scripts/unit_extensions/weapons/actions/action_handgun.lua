@@ -93,11 +93,10 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 	end
 
 	if self.state == "shooting" then
-		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
+		local procced = self:_check_extra_shot_proc(self.owner_buff_extension)
 		local add_spread = not self.extra_buff_shot
 
-		if not self.extra_buff_shot and procced then
+		if procced then
 			self.state = "waiting_to_shoot"
 			self.time_to_shoot = t + 0.1
 			self.extra_buff_shot = true

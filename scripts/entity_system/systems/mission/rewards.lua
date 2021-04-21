@@ -100,6 +100,13 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 				text = "versus_mission_won",
 				experience = experience_settings.win_match
 			}
+		elseif game_mode_key == "deus" then
+			local expedition_complete_reward = {
+				text = "expedition_completed_" .. difficulty,
+				experience = EXPERIENCE_REWARD * self:experience_multiplier()
+			}
+
+			table.insert(mission_results, 1, expedition_complete_reward)
 		else
 			self:_add_missions_from_mission_system(mission_results, difficulty_rank)
 
@@ -140,6 +147,32 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 
 		table.insert(mission_results, 1, mission_failed_reward)
 	elseif game_mode_key == "versus" then
+	elseif game_mode_key == "deus" then
+		local mission_system = Managers.state.entity:system("mission_system")
+		local percentages_completed = mission_system:percentages_completed()
+		local best_completed_distance = 0
+
+		for _, completed_distance in pairs(percentages_completed) do
+			if best_completed_distance < completed_distance then
+				best_completed_distance = completed_distance
+			end
+		end
+
+		local current_level_settings = LevelHelper:current_level_settings()
+		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
+
+		if disable_percentage_completed then
+			best_completed_distance = 0
+		else
+			best_completed_distance = math.clamp(best_completed_distance, 0, 1)
+		end
+
+		local expedition_failed_reward = {
+			text = (difficulty == "cataclysm" and "expedition_failed_cataclysm") or "expedition_failed",
+			experience = EXPERIENCE_REWARD * self:experience_multiplier() * best_completed_distance
+		}
+
+		table.insert(mission_results, 1, expedition_failed_reward)
 	else
 		local mission_system = Managers.state.entity:system("mission_system")
 		local percentages_completed = mission_system:percentages_completed()

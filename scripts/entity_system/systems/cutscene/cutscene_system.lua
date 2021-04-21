@@ -1,3 +1,4 @@
+local cut_scene_system_testify = script_data.testify and require("scripts/entity_system/systems/cutscene/cutscene_system_testify")
 CutsceneSystem = class(CutsceneSystem, ExtensionSystemBase)
 local extensions = {
 	"CutsceneCamera"
@@ -60,6 +61,10 @@ CutsceneSystem.update = function (self)
 	end
 
 	self:handle_loading_icon()
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(cut_scene_system_testify, self)
+	end
 end
 
 CutsceneSystem.is_active = function (self)
@@ -121,11 +126,11 @@ CutsceneSystem.flow_cb_activate_cutscene_camera = function (self, camera_unit, t
 	self.ingame_hud_enabled = ingame_hud_enabled
 	self._should_hide_loading_icon = true
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		Managers.state.event:trigger("realtime_multiplay", false)
 	end
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS and Managers.account:should_throttle() then
 		Application.set_time_step_policy("throttle", 30)
 	end
 
@@ -144,11 +149,11 @@ CutsceneSystem.flow_cb_deactivate_cutscene_cameras = function (self)
 		self._should_hide_loading_icon = nil
 	end
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		Managers.state.event:trigger("realtime_multiplay", true)
 	end
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS and Managers.account:should_throttle() then
 		Application.set_time_step_policy("no_throttle")
 	end
 
@@ -178,10 +183,6 @@ CutsceneSystem.flow_cb_deactivate_cutscene_logic = function (self, event_on_deac
 	self.event_on_skip = nil
 
 	pdArray.push_back2(self.ui_event_queue, "set_player_input_enabled", true)
-
-	if Testify:poll_request("wait_for_cutscene_to_finish") then
-		Testify:respond_to_request("wait_for_cutscene_to_finish")
-	end
 end
 
 CutsceneSystem.flow_cb_cutscene_effect = function (self, name, flow_params)

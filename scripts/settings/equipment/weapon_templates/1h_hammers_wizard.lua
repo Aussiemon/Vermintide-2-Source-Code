@@ -868,7 +868,7 @@ weapon_template.actions = {
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_high_damage",
-	"weapon_keyword_damage_over_time",
+	"weapon_keyword_armour_piercing",
 	"weapon_keyword_wide_sweeps"
 }
 weapon_template.tooltip_compare = {

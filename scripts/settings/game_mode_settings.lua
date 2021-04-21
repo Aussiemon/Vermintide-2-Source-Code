@@ -122,8 +122,6 @@ GameModeSettings.weave.lose_condition_time_dead = 4
 GameModeSettings.weave.lose_condition_time = 10
 GameModeSettings.weave.lose_condition_time_time_up = 6
 GameModeSettings.weave.playable = true
-GameModeSettings.weave.required_dlc = "scorpion"
-GameModeSettings.weave.disable_difficulty_check = true
 GameModeSettings.weave.hud_component_list_path = "scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure"
 GameModeSettings.weave.difficulties = {
 	"normal",
@@ -147,52 +145,6 @@ GameModeSettings.weave.disable_difficulty_spawning_items = true
 GameModeSettings.weave.hud_ui_settings = {
 	killfeed_offset = true
 }
-
-GameModeSettings.weave.extra_requirements_function = function (optional_statistics_db, optional_stats_id)
-	if script_data.unlock_all_levels then
-		return true
-	end
-
-	local backend_stats = Managers.backend:get_stats()
-
-	for _, level_key in pairs(MainGameLevels) do
-		local level_settings = LevelSettings[level_key]
-
-		if level_settings.game_mode == "adventure" then
-			if optional_statistics_db then
-				local value = optional_statistics_db:get_persistent_stat(optional_stats_id, "completed_levels", level_key)
-				local level_completed = value and value ~= 0
-
-				if not level_completed then
-					return false
-				end
-			elseif (tonumber(backend_stats["completed_levels_" .. level_key]) or 0) < 1 then
-				return false
-			end
-		end
-	end
-
-	local scorpion_dlc_levels = GameActs.act_scorpion
-
-	for _, level_key in pairs(scorpion_dlc_levels) do
-		local level_settings = LevelSettings[level_key]
-
-		if level_settings.game_mode == "adventure" then
-			if optional_statistics_db then
-				local value = optional_statistics_db:get_persistent_stat(optional_stats_id, "completed_levels", level_key)
-				local level_completed = value and value ~= 0
-
-				if not level_completed then
-					return false
-				end
-			elseif (tonumber(backend_stats["completed_levels_" .. level_key]) or 0) < 1 then
-				return false
-			end
-		end
-	end
-
-	return true
-end
 
 DLCUtils.require("game_mode")
 

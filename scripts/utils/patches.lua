@@ -4,7 +4,7 @@ end
 
 rawset(_G, "G_GAME_PATCHES_RUN", true)
 
-if not rawget(_G, "G_IS_PROFILING") and PLATFORM == "win32" and BUILD ~= "release" then
+if not rawget(_G, "G_IS_PROFILING") and IS_WINDOWS and BUILD ~= "release" then
 	local tostring = tostring
 
 	rawset(_G, "G_unit_information", rawget(_G, "G_unit_information") or {})

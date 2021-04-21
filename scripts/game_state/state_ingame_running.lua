@@ -14,6 +14,7 @@ require("scripts/game_state/components/dice_keeper")
 require("scripts/ui/views/loading_view")
 require("scripts/entity_system/systems/mission/rewards")
 
+local state_ingame_running_testify = script_data.testify and require("scripts/game_state/state_ingame_running_testify")
 local RPCS = {
 	"rpc_trigger_local_afk_system_message",
 	"rpc_follow_to_lobby"
@@ -34,7 +35,6 @@ StateInGameRunning.on_enter = function (self, params)
 	self._network_options = params.network_options
 	self.statistics_db = params.statistics_db
 	self.profile_synchronizer = params.profile_synchronizer
-	self.level_transition_handler = params.level_transition_handler
 	self.network_server = params.network_server
 	self.network_client = params.network_client
 	local input_manager = params.input_manager
@@ -100,11 +100,11 @@ StateInGameRunning.on_enter = function (self, params)
 	event_manager:register(self, "conflict_director_setup_done", "event_conflict_director_setup_done")
 	event_manager:register(self, "close_ingame_menu", "event_close_ingame_menu")
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		event_manager:register(self, "realtime_multiplay", "event_realtime_multiplay")
 	end
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		event_manager:register(self, "trigger_xbox_round_end", "event_trigger_xbox_round_end")
 	end
 
@@ -128,34 +128,38 @@ StateInGameRunning.on_enter = function (self, params)
 		end
 	end)
 
+	local world_manager = Managers.world
+	local world = world_manager:world("level_world")
+	local wwise_world = Managers.world:wwise_world(self.world)
 	local ingame_ui_context = {
-		input_manager = input_manager,
-		world_manager = Managers.world,
-		level_transition_handler = params.level_transition_handler,
+		player = player,
+		peer_id = peer_id,
+		local_player_id = local_player_id,
 		camera_manager = Managers.state.camera,
-		profile_synchronizer = params.profile_synchronizer,
-		spawn_manager = Managers.state.spawn,
+		chat_manager = Managers.chat,
+		input_manager = input_manager,
+		matchmaking_manager = Managers.matchmaking,
 		player_manager = Managers.player,
 		room_manager = Managers.state.room,
-		is_server = params.is_server,
-		is_in_inn = params.is_in_inn,
-		is_in_tutorial = self.is_in_tutorial,
-		network_lobby = self._lobby_host or self._lobby_client,
-		network_event_delegate = self.network_event_delegate,
-		peer_id = peer_id,
-		player = player,
-		local_player_id = local_player_id,
-		dialogue_system = entity_manager:system("dialogue_system"),
-		dice_keeper = params.dice_keeper,
-		voting_manager = Managers.state.voting,
+		spawn_manager = Managers.state.spawn,
 		time_manager = Managers.time,
-		statistics_db = self.statistics_db,
-		stats_id = stats_id,
-		matchmaking_manager = Managers.matchmaking,
+		voting_manager = Managers.state.voting,
+		world_manager = world_manager,
+		is_server = params.is_server,
+		profile_synchronizer = params.profile_synchronizer,
+		network_event_delegate = self.network_event_delegate,
 		network_server = params.network_server,
 		network_client = params.network_client,
-		chat_manager = Managers.chat,
-		voip = params.voip
+		network_lobby = self._lobby_host or self._lobby_client,
+		voip = params.voip,
+		statistics_db = self.statistics_db,
+		stats_id = stats_id,
+		world = world,
+		wwise_world = wwise_world,
+		dialogue_system = entity_manager:system("dialogue_system"),
+		is_in_inn = params.is_in_inn,
+		is_in_tutorial = self.is_in_tutorial,
+		dice_keeper = params.dice_keeper
 	}
 	DamageUtils.is_in_inn = params.is_in_inn
 	self.ingame_ui_context = ingame_ui_context
@@ -239,7 +243,7 @@ StateInGameRunning.create_ingame_ui = function (self, ingame_ui_context)
 	unlock_manager:set_ingame_ui(self.ingame_ui)
 
 	if not matchmaking.popup_handler then
-		matchmaking:set_popup_join_lobby_handler(self.ingame_ui.popup_join_lobby_handler)
+		matchmaking:set_popup_profile_picker(self.ingame_ui.popup_profile_picker)
 		matchmaking:set_popup_handler(self.ingame_ui.popup_handler)
 	end
 end
@@ -257,7 +261,6 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			self.parent.parent.loading_context.saved_scoreboard_stats = nil
 		end
 
-		local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, saved_scoreboard_stats)
 		local hero_name = nil
 		local peer_id = Network.peer_id()
 		local local_player_id = self.local_player_id
@@ -274,13 +277,22 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			is_quickplay = self.is_quickplay,
 			peer_id = peer_id,
 			local_player_hero_name = hero_name,
-			players_session_score = players_session_score,
 			game_won = game_won,
 			game_mode_key = game_mode_key,
 			difficulty = Managers.state.difficulty:get_difficulty(),
 			weave_personal_best_achieved = self._weave_personal_best_achieved,
-			completed_weave = self._completed_weave
+			completed_weave = self._completed_weave,
+			profile_synchronizer = self.profile_synchronizer
 		}
+
+		if self.is_server then
+			local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, saved_scoreboard_stats)
+
+			Managers.mechanism:sync_players_session_score(self.statistics_db, self.profile_synchronizer, players_session_score)
+
+			level_end_view_context.players_session_score = players_session_score
+		end
+
 		self._weave_personal_best_achieved = nil
 		self._completed_weave = nil
 
@@ -306,7 +318,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		level_end_view_context.level_end_view = Managers.mechanism:get_level_end_view()
 		self.parent.parent.loading_context.level_end_view_context = level_end_view_context
 
-		if PLATFORM == "ps4" then
+		if IS_PS4 then
 			Managers.account:set_presence("dice_game")
 		end
 
@@ -356,7 +368,7 @@ StateInGameRunning.check_invites = function (self)
 
 	local platform = PLATFORM
 
-	if (platform == "xb1" or platform == "ps4") and (Managers.account:offline_mode() or Managers.account:has_fatal_error()) then
+	if IS_CONSOLE and (Managers.account:offline_mode() or Managers.account:has_fatal_error()) then
 		if Managers.invite:has_invitation() then
 			self._offline_invite = true
 		end
@@ -370,14 +382,14 @@ StateInGameRunning.check_invites = function (self)
 		local lobby_id = invite_data.id or invite_data.name
 		local current_lobby_id = nil
 
-		if platform == "xb1" then
+		if IS_XB1 then
 			current_lobby_id = (self._lobby_host and self._lobby_host.lobby._data.session_name) or self._lobby_client.lobby._data.session_name
 		else
 			current_lobby_id = (self._lobby_host and self._lobby_host:id()) or self._lobby_client:id()
 		end
 
 		local active_mission_vote = Managers.state.voting and Managers.state.voting:vote_in_progress() and Managers.state.voting:active_vote_template().mission_vote
-		local current_level = self.level_transition_handler.level_key
+		local current_level = Managers.level_transition_handler:get_current_level_key()
 		local level_settings = LevelSettings[current_level]
 
 		if (Managers.matchmaking:is_game_matchmaking() or active_mission_vote) and self.network_server and level_settings.hub_level then
@@ -461,7 +473,7 @@ StateInGameRunning.wanted_transition = function (self)
 
 	wanted_transition = wanted_transition or Managers.state.game_mode:wanted_transition()
 
-	if wanted_transition and PLATFORM == "xb1" and not self.is_in_inn and not self.is_in_tutorial then
+	if wanted_transition and IS_XB1 and not self.is_in_inn and not self.is_in_tutorial then
 		if Development.parameter("auto-host-level") ~= nil then
 		elseif not self._xbox_event_end_triggered then
 			Application.warning("MultiplyerRoundStart was triggered without end conditions met")
@@ -578,9 +590,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			end
 		elseif game_mode_key == "versus" then
 			register_statistics = is_final_objective
-		else
+		end
+
+		if is_final_objective then
 			self.parent.parent.loading_context.saved_scoreboard_stats = nil
-			is_final_objective = true
 		end
 
 		if register_statistics then
@@ -627,7 +640,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		stats_interface:save()
 	end
 
-	local screen_name, screen_config = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
+	local screen_name, screen_config, screen_params = Managers.state.game_mode:get_end_screen_config(game_won, game_lost, player)
 	local is_booted_unstrusted = self._booted_eac_untrusted
 	local is_game_mode_weave = game_mode_key == "weave"
 	local weave_tier, score, num_players, weave_progress = nil
@@ -640,6 +653,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 
 	local function callback(status)
+		if is_game_mode_weave and not is_booted_unstrusted and game_won and is_final_objective and is_server and not self.is_quickplay then
+			self:_submit_weave_scores(weave_tier, score, num_players)
+		end
+
 		if status == "commit_error" then
 			Managers.backend:commit_error()
 
@@ -650,8 +667,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			return
 		end
 
-		if is_game_mode_weave and not is_booted_unstrusted and game_won and is_final_objective and is_server and not self.is_quickplay then
-			self:_submit_weave_scores(weave_tier, score, num_players)
+		if not self.parent then
+			return
 		end
 
 		local game_mode_setting = GameModeSettings[game_mode_key]
@@ -662,7 +679,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 				self:_award_end_of_level_rewards(statistics_db, stats_id, game_won, difficulty_key)
 			end
 
-			ingame_ui:activate_end_screen_ui(screen_name, screen_config)
+			print(screen_name, screen_config, screen_params)
+			ingame_ui:activate_end_screen_ui(screen_name, screen_config, screen_params)
 		end
 
 		if ((game_won and is_final_objective) or game_lost) and is_game_mode_weave then
@@ -681,7 +699,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	self.game_lost = game_lost
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		Managers.account:set_realtime_multiplay(false)
 	end
 
@@ -689,7 +707,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		return
 	end
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if not self._xbox_event_end_triggered then
 			self:_xbone_end_of_round_events(statistics_db)
 		end
@@ -748,7 +766,7 @@ StateInGameRunning.on_checkpoint_vote_cancelled = function (self)
 	self.checkpoint_vote_cancelled = true
 end
 
-if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
+if not IS_WINDOWS and (BUILD == "dev" or BUILD == "debug") then
 	function RELOAD_CONTROLS()
 		Managers.input:create_input_service("Player", "PlayerControllerKeymaps", "PlayerControllerFilters")
 		Managers.input:map_device_to_service("Player", "keyboard")
@@ -830,7 +848,13 @@ StateInGameRunning.update = function (self, dt, t)
 		self._benchmark_handler:update(dt, t)
 	end
 
-	self:_poll_testify_requests()
+	if self._fps_reporter_testify then
+		self._fps_reporter_testify:update(dt, t)
+	end
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(state_ingame_running_testify, self)
+	end
 end
 
 StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
@@ -983,7 +1007,7 @@ StateInGameRunning.post_update = function (self, dt, t)
 	end
 
 	if self._game_started_current_frame then
-		if PLATFORM == "ps4" then
+		if IS_PS4 then
 			local entity_manager = Managers.state.entity
 			local cutscene_system = entity_manager:system("cutscene_system")
 			local active_camera = cutscene_system.active_camera
@@ -1030,7 +1054,7 @@ StateInGameRunning.on_exit = function (self)
 		self._level_end_view_wrapper = nil
 	end
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		Managers.account:set_realtime_multiplay(false)
 	end
 
@@ -1080,12 +1104,12 @@ StateInGameRunning.event_game_started = function (self)
 		return
 	end
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		self:_xbone_round_start_events()
 	end
 end
 
-if PLATFORM == "xb1" then
+if IS_XB1 then
 	StateInGameRunning.event_trigger_xbox_round_end = function (self)
 		self:_xbone_end_of_round_events(self.statistics_db)
 	end
@@ -1243,7 +1267,7 @@ StateInGameRunning._game_actually_starts = function (self)
 	Managers.load_time:end_timer()
 
 	if Managers.twitch then
-		local level_key = self.level_transition_handler:get_current_level_keys()
+		local level_key = Managers.level_transition_handler:get_current_level_keys()
 		local level_settings = LevelSettings[level_key]
 
 		if level_settings and not level_settings.disable_twitch_game_mode then
@@ -1337,7 +1361,7 @@ StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, channe
 		local is_player_controlled = player:is_player_controlled()
 		local player_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
 
-		if (PLATFORM == "xb1" or PLATFORM == "ps4") and not Managers.account:offline_mode() then
+		if IS_CONSOLE and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
 			player_name = (is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id))) or player:name()
 		end
@@ -1416,22 +1440,6 @@ StateInGameRunning.rpc_follow_to_lobby = function (self, channel_id, lobby_type,
 	}
 
 	Managers.matchmaking:request_join_lobby(lobby_join_data, state_context_params)
-end
-
-StateInGameRunning._poll_testify_requests = function (self)
-	local end_screen_active = self.has_setup_end_of_level == true
-
-	if Testify:poll_request("level_end_screen_displayed") then
-		Testify:respond_to_request("level_end_screen_displayed", end_screen_active)
-	end
-
-	if Testify:poll_request("has_lost") then
-		Testify:respond_to_request("has_lost", self.game_lost)
-	end
-
-	if end_screen_active and (Testify:poll_request("set_camera_to_observe_first_bot") or Testify:poll_request("update_camera_to_follow_first_bot_rotation") or Testify:poll_request("set_player_unit_not_visible") or Testify:poll_request("calculate_best_point_on_main_path") or Testify:poll_request("teleport_player_on_best_point") or Testify:poll_request("teleport_blocked_bots_forward_on_main_path") or Testify:poll_request("end_of_the_level_reached") or Testify:poll_request("end_zone_activated") or Testify:poll_request("spawn_essence_on_first_bot_position") or Testify:poll_request("make_players_invicible") or Testify:poll_request("are_bots_blocked") or Testify:poll_request("make_player_and_one_bot_invicible") or Testify:poll_request("get_active_weave_phase") or Testify:poll_request("teleport_player_randomly_on_main_path") or Testify:poll_request("teleport_player_to_end_zone_position")) then
-		Testify:clear_all_requests()
-	end
 end
 
 return

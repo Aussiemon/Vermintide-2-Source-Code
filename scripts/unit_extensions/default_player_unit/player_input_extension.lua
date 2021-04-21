@@ -26,34 +26,52 @@ PlayerInputExtension.init = function (self, extension_init_context, unit, extens
 	self.input_key_scale = {}
 	self._t = 0
 	self.minimum_dodge_input = 0.3
-	self.double_tap_dodge = Application.user_setting("double_tap_dodge")
-	self.toggle_crouch = Application.user_setting("toggle_crouch")
-	self.toggle_alternate_attack = Application.user_setting("toggle_alternate_attack")
-	self.input_buffer_user_setting = Application.user_setting("input_buffer")
-	self.priority_input_buffer_user_setting = Application.user_setting("priority_input_buffer")
+	self._game_options_dirty = true
 	self.priority_input = {
-		wield_2 = true,
-		wield_next = true,
-		wield_5 = true,
-		wield_prev = true,
-		wield_scroll = true,
-		wield_3 = true,
-		wield_1 = true,
-		wield_4 = true,
-		wield_switch = true
+		wield_2 = 1,
+		wield_next = 1,
+		wield_5 = 1,
+		wield_prev = 1,
+		wield_scroll = 1,
+		wield_3 = 1,
+		wield_1 = 2,
+		wield_4 = 1,
+		wield_switch = 3
 	}
+
+	Managers.state.event:register(self, "on_game_options_changed", "_set_game_options_dirty")
+	self:_update_game_options()
 end
 
 PlayerInputExtension.destroy = function (self)
-	return
+	Managers.state.event:unregister("on_game_options_changed", self)
 end
 
 PlayerInputExtension.reset = function (self)
 	return
 end
 
+PlayerInputExtension._set_game_options_dirty = function (self)
+	self._game_options_dirty = true
+end
+
+PlayerInputExtension._update_game_options = function (self)
+	if not self._game_options_dirty then
+		return
+	end
+
+	self.double_tap_dodge = Application.user_setting("double_tap_dodge")
+	self.toggle_crouch = Application.user_setting("toggle_crouch")
+	self.toggle_alternate_attack = Application.user_setting("toggle_alternate_attack")
+	self.input_buffer_user_setting = Application.user_setting("input_buffer")
+	self.priority_input_buffer_user_setting = Application.user_setting("priority_input_buffer")
+	self._game_options_dirty = false
+end
+
 PlayerInputExtension.update = function (self, unit, input, dt, context, t)
 	self._t = t
+
+	self:_update_game_options()
 
 	if self.input_buffer_reset then
 		self.last_added_buffer_time = t
@@ -117,7 +135,7 @@ PlayerInputExtension.was_double_tap = function (self, input_key, t, max_duration
 	return last_double_tap and t < last_double_tap + max_duration
 end
 
-local is_windows_platform = PLATFORM == "win32"
+local is_windows_platform = IS_WINDOWS
 
 PlayerInputExtension.is_input_blocked = function (self)
 	return (self.input_service:is_blocked() or (is_windows_platform and not Window.has_focus()) or (HAS_STEAM and Managers.steam:is_overlay_active())) and not DamageUtils.is_in_inn and not Managers.state.entity:system("cutscene_system"):is_active()
@@ -297,7 +315,7 @@ PlayerInputExtension.clear_input_buffer = function (self, clear_from_wield)
 	self.new_buffer_key = nil
 end
 
-PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window, is_melee_slot)
+PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window)
 	if input_key == "action_one_hold" or (input_key ~= "action_two_hold" and self.priority_input[self.buffer_key] and not self.priority_input[input_key]) then
 		return
 	elseif input_key == "action_two_hold" then
@@ -307,10 +325,17 @@ PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window,
 	local value = self.input_service:get(input_key)
 
 	if value then
-		if self.priority_input[input_key] then
-			self.input_buffer_timer = self.priority_input_buffer_user_setting
-			self.input_buffer = value
-			self.buffer_key = input_key
+		local priority_lookup = self.priority_input
+		local priority = priority_lookup[input_key]
+
+		if priority then
+			local last_priority = priority_lookup[self.buffer_key] or -1
+
+			if priority >= last_priority then
+				self.input_buffer_timer = self.priority_input_buffer_user_setting
+				self.input_buffer = value
+				self.buffer_key = input_key
+			end
 		else
 			self.new_input_buffer_timer = self.input_buffer_user_setting
 			self.new_input_buffer = value

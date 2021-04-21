@@ -106,6 +106,9 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 				ai_supplementary_system = {
 					standard_template_name = action.standard_template_name,
 					standard_bearer_unit = unit
+				},
+				ping_system = {
+					always_pingable = true
 				}
 			}
 			local unit_name = "units/weapons/enemy/wpn_bm_standard_01/wpn_bm_standard_01_placed"

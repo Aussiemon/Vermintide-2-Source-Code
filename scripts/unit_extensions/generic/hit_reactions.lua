@@ -8,6 +8,7 @@ local ignored_damage_types = {
 	buff_shared_medpack_temp_health = true,
 	push = true,
 	health_degen = true,
+	life_tap = true,
 	wounded_dot = true,
 	heal = true,
 	knockdown_bleed = true,
@@ -36,7 +37,7 @@ local function trigger_enemy_armor_hit_dialogue(enemy_unit, player_unit, damage_
 	if player_manager:is_player_unit(player_unit) and not owner.remote and player_unit ~= enemy_unit and Unit.alive(enemy_unit) then
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-		if buff_extension:has_buff_type("armor penetration") == false and damage_dealt < 0.5 then
+		if buff_extension:has_buff_perk("potion_armor_penetration") == false and damage_dealt < 0.5 then
 			local breed_data = Unit.get_data(enemy_unit, "breed")
 
 			if breed_data and breed_data.armor_category == 2 and hit[4] ~= "head" and hit[4] ~= "neck" then

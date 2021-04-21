@@ -529,6 +529,7 @@ HeroViewStateAchievements._reset_tab = function (self, widget)
 end
 
 local function has_unclaimed_challenge(challenge_manager, base_category)
+	local unlock_manager = Managers.unlock
 	local entries = base_category.entries
 
 	if entries then
@@ -536,7 +537,13 @@ local function has_unclaimed_challenge(challenge_manager, base_category)
 			local data = challenge_manager:get_data_by_id(entries[i])
 
 			if data.completed and not data.claimed then
-				return true
+				local required_dlc = data.required_dlc
+				local required_dlc_extra = data.required_dlc_extra
+				local is_unlocked = (not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc)) and (not required_dlc_extra or unlock_manager:is_dlc_unlocked(required_dlc_extra))
+
+				if is_unlocked then
+					return true
+				end
 			end
 		end
 	end
@@ -657,7 +664,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 			if settings then
 				locked_text = locked_text .. "\n" .. Localize(settings.name)
-				content.dlc_name = settings.name
+				content.dlc_name = settings.dlc_name
 			end
 
 			unlocked = false
@@ -670,7 +677,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 			if settings then
 				locked_text = locked_text .. "\n" .. Localize(settings.name)
-				content.dlc_name = settings.name
+				content.dlc_name = settings.dlc_name
 			end
 
 			unlocked = false
@@ -1862,7 +1869,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 
 				local dlc_lock_hotspot = widget.content.dlc_lock_hotspot
 
-				if dlc_lock_hotspot and dlc_lock_hotspot.on_release then
+				if dlc_lock_hotspot and dlc_lock_hotspot.on_release and widget.content.dlc_name then
 					dlc_lock_hotspot.on_release = false
 
 					Managers.unlock:open_dlc_page(widget.content.dlc_name)

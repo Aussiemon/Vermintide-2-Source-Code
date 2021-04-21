@@ -8,15 +8,15 @@ local function player_stuck_cb()
 end
 
 local tobii_contest_url = "https://vermintide2beta.com/?utm_medium=referral&utm_campaign=vermintide2beta&utm_source=ingame#challenge"
-local leave_party_button_text = (PLATFORM == "xb1" and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
-local disband_party_button_text = (PLATFORM == "xb1" and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
-local quit_menu_button_text = (PLATFORM == "xb1" and "quit_menu_button_name_xb1") or "quit_menu_button_name_ps4"
+local leave_party_button_text = (IS_XB1 and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
+local disband_party_button_text = (IS_XB1 and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
+local quit_menu_button_text = (IS_XB1 and "quit_menu_button_name_xb1") or "quit_menu_button_name_ps4"
 local menu_layouts = {}
 
 function demo_inverted_func()
 	local input_service = Managers.input:get_service("Player")
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local platform_key = "win32"
 		local input_filters = input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look
@@ -33,7 +33,7 @@ function demo_inverted_func()
 	end
 end
 
-if PLATFORM == "ps4" then
+if IS_PS4 then
 	menu_layouts = {
 		in_menu = {
 			alone = {
@@ -43,12 +43,12 @@ if PLATFORM == "ps4" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -80,12 +80,12 @@ if PLATFORM == "ps4" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -117,12 +117,12 @@ if PLATFORM == "ps4" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -173,12 +173,12 @@ if PLATFORM == "ps4" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -344,7 +344,7 @@ if PLATFORM == "ps4" then
 			}
 		}
 	}
-elseif PLATFORM == "xb1" then
+elseif IS_XB1 then
 	menu_layouts = {
 		in_menu = {
 			alone = {
@@ -354,12 +354,12 @@ elseif PLATFORM == "xb1" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -391,12 +391,12 @@ elseif PLATFORM == "xb1" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -428,12 +428,12 @@ elseif PLATFORM == "xb1" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -484,12 +484,12 @@ elseif PLATFORM == "xb1" then
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -665,12 +665,12 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -696,12 +696,12 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -732,12 +732,12 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
+					disable_when_matchmaking_ready = true,
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
-					transition = "character_selection",
-					disable_when_matchmaking = false
+					transition = "character_selection"
 				},
 				{
 					fade = true,
@@ -892,7 +892,7 @@ else
 	}
 end
 
-if GameSettingsDevelopment.use_global_chat and PLATFORM == "win32" then
+if GameSettingsDevelopment.use_global_chat and IS_WINDOWS then
 	table.insert(menu_layouts.in_menu.host, 4, {
 		fade = false,
 		transition = "chat_view",

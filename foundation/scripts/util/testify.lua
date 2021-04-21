@@ -6,6 +6,7 @@ Testify = {
 	active = false,
 	_requests = {},
 	_responses = {},
+	RETRY = newproxy(false),
 	init = function (self)
 		self._requests = {}
 		self._responses = {}
@@ -129,5 +130,23 @@ Testify = {
 		end
 	end
 }
+
+Testify.poll_requests_through_handler = function (self, callback_table, userdata)
+	local RETRY = Testify.RETRY
+
+	for request, callback in pairs(callback_table) do
+		local arg = Testify:poll_request(request)
+
+		if arg then
+			local ret = callback(arg, userdata)
+
+			if ret ~= RETRY then
+				Testify:respond_to_request(request, ret)
+			end
+
+			return
+		end
+	end
+end
 
 return

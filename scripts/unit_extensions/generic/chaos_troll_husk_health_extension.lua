@@ -8,15 +8,28 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	self._regen_time = t + 1
 	self.pulse_time = 0
 	self.state = "unhurt"
+
+	self:_update_health_variables(self.health)
+end
+
+ChaosTrollHuskHealthExtension.set_max_health = function (self, value)
+	ChaosTrollHuskHealthExtension.super.set_max_health(self, value)
+
+	if not self._first_damage_occured then
+		self:_update_health_variables(value)
+	end
+end
+
+ChaosTrollHuskHealthExtension._update_health_variables = function (self, value)
 	local breed = Breeds.chaos_troll
 	local action = BreedActions.chaos_troll.downed
-	self.go_down_health = self.health * action.become_downed_hp_percent
+	self.go_down_health = value * action.become_downed_hp_percent
 	self.regen_pulse_interval = breed.regen_pulse_interval
 	self.downed_pulse_interval = breed.downed_pulse_interval
 	self.regen_pulse_intensity = breed.regen_pulse_intensity
 	self.downed_pulse_intensity = breed.downed_pulse_intensity
 	self.action = action
-	self.original_health = self.health
+	self.original_health = value
 end
 
 ChaosTrollHuskHealthExtension.current_max_health_percent = function (self)
@@ -81,6 +94,7 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 	end
 
 	self.damage = damage
+	self._first_damage_occured = true
 
 	if self.state ~= state then
 		if state == "down" then

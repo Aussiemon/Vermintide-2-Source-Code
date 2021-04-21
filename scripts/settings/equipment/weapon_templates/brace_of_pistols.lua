@@ -392,10 +392,10 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.wwise_dep_right_hand = {
-	"wwise/handgun_rifle"
+	"wwise/pistol"
 }
 weapon_template.wwise_dep_left_hand = {
-	"wwise/handgun_rifle"
+	"wwise/pistol"
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_high_damage",

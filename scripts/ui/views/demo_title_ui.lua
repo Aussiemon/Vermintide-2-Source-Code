@@ -708,7 +708,7 @@ DemoTitleUI._draw_fps = function (self, dt, t)
 	local red_cap = 30
 	local platform = PLATFORM
 
-	if platform == "ps4" or platform == "xb1" then
+	if IS_CONSOLE then
 		red_cap = 28
 	end
 
@@ -854,7 +854,7 @@ DemoTitleUI.set_user_name = function (self, username)
 	self._draw_gamertag = true
 	self._user_gamertag_widget.content.text = username
 
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		self._switch_profile_blocked = true
 	end
 end

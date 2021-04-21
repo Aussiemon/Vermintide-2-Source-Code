@@ -5,7 +5,7 @@ MatchmakingStateJoinGame.init = function (self, params)
 	self._lobby = params.lobby
 	self._network_transmit = params.network_transmit
 	self._matchmaking_manager = params.matchmaking_manager
-	self._handshaker_client = params.handshaker_client
+	self._network_transmit = params.network_transmit
 	self._statistics_db = params.statistics_db
 	self._ingame_ui = params.ingame_ui
 	self._matchmaking_manager.selected_profile_index = nil
@@ -26,7 +26,7 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 	self.lobby_client = state_context.lobby_client
 	self._lobby_data = state_context.profiles_data
 	self._join_lobby_data = state_context.join_lobby_data
-	self._lobby_data.selected_level_key = self._join_lobby_data.selected_level_key
+	self._lobby_data.selected_mission_id = self._join_lobby_data.selected_mission_id
 	self._lobby_data.difficulty = self._join_lobby_data.difficulty
 
 	if Managers.mechanism:mechanism_setting("check_matchmaking_hero_availability") then
@@ -35,7 +35,7 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 
 		fassert(hero_index, "no hero index? this is wrong")
 
-		if matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) then
+		if matchmaking_manager:hero_available_in_lobby_data(hero_index, self._lobby_data) and not Application.user_setting("always_ask_hero_when_joining") then
 			self._selected_hero_name = hero_name
 
 			self:_request_profile_from_host(hero_index)
@@ -53,20 +53,18 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 end
 
 MatchmakingStateJoinGame.on_exit = function (self)
-	if self._popup_join_lobby_handler then
+	if self._popup_profile_picker then
 		if self._ingame_ui:unavailable_hero_popup_active() then
 			self._ingame_ui:hide_unavailable_hero_popup()
 		end
 
-		self._popup_join_lobby_handler = nil
+		self._popup_profile_picker = nil
 	end
 end
 
 MatchmakingStateJoinGame.update = function (self, dt, t)
-	local popup_join_lobby_handler = self._popup_join_lobby_handler
-
-	if popup_join_lobby_handler then
-		local popup_result = popup_join_lobby_handler:query_result()
+	if self._ingame_ui:unavailable_hero_popup_active() then
+		local popup_result = self._popup_profile_picker:query_result()
 
 		if popup_result then
 			self._selected_hero_at_t = t
@@ -80,15 +78,15 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		end
 
 		self:_update_lobby_data(dt, t)
-	end
+	elseif self._popup_profile_picker then
+		self._popup_profile_picker = nil
 
-	if self._handshaker_client:is_timed_out_from_server(t) then
-		mm_printf_force("Timed out from server")
-		self._matchmaking_manager:send_system_chat_message("matchmaking_status_handshaker_time_out")
 		self._matchmaking_manager:cancel_matchmaking()
 
 		return nil
-	elseif not Managers.state.network then
+	end
+
+	if not Managers.state.network then
 		self._matchmaking_manager:cancel_matchmaking()
 
 		return nil
@@ -110,7 +108,7 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		self.state_context.lobby_client = nil
 		self.state_context.join_lobby_data = nil
 
-		self._handshaker_client:reset()
+		self._matchmaking_manager:reset_joining()
 
 		local join_by_lobby_browser = self.state_context.join_by_lobby_browser
 
@@ -133,13 +131,7 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 				Managers.party:set_leader(lobby:lobby_host())
 			end
 
-			local game_mode = self.search_config.game_mode
-
-			if game_mode == "weave_find_group" then
-				return MatchmakingStateSearchForWeaveGroup, self.state_context
-			else
-				return MatchmakingStateSearchGame, self.state_context
-			end
+			return MatchmakingStateSearchGame, self.state_context
 		end
 	end
 
@@ -171,10 +163,10 @@ MatchmakingStateJoinGame._update_lobby_data = function (self, dt, t)
 		self._update_lobby_data_timer = 0.5
 		local lobby_data = self._lobby_data
 		local lobby_client = self.lobby_client
-		local selected_level_key = lobby_client:lobby_data("selected_level_key")
+		local selected_mission_id = lobby_client:lobby_data("selected_mission_id")
 
-		if lobby_data.selected_level_key ~= selected_level_key then
-			lobby_data.selected_level_key = selected_level_key
+		if lobby_data.selected_mission_id ~= selected_mission_id then
+			lobby_data.selected_mission_id = selected_mission_id
 		end
 
 		local difficulty = lobby_client:lobby_data("difficulty")
@@ -184,8 +176,8 @@ MatchmakingStateJoinGame._update_lobby_data = function (self, dt, t)
 		if lobby_data.difficulty ~= difficulty then
 			lobby_data.difficulty = difficulty
 
-			if self._popup_join_lobby_handler then
-				self._popup_join_lobby_handler:set_difficulty(difficulty)
+			if self._popup_profile_picker then
+				self._popup_profile_picker:set_difficulty(difficulty)
 			end
 		end
 	end
@@ -208,7 +200,7 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 		mm_printf_force("Popup cancelled")
 
 		local player = Managers.player:local_player(1)
-		local reason = (self._popup_join_lobby_handler.cancel_timer <= 0 and "timed_out") or "cancelled"
+		local reason = result.reason or "timed_out"
 		local time_taken = (self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t) or 0
 		local is_bad_connection = false
 
@@ -230,20 +222,8 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 	return cancel
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_update_profiles_data = function (self, channel_id, client_cookie, host_cookie, profile_array, player_id_array)
-	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return
-	end
-
-	self:_update_profiles_data(profile_array, player_id_array)
-
-	if self._popup_join_lobby_handler then
-		self:_set_unavailable_heroes(self._lobby_data)
-	end
-end
-
 MatchmakingStateJoinGame._update_profiles_data = function (self, profile_array, player_id_array)
-	SlotAllocator.unpack_after_transmission(profile_array, player_id_array, self._lobby_data)
+	ProfileSynchronizer.unpack_lobby_profile_slots(profile_array, player_id_array, self._lobby_data)
 
 	self._matchmaking_manager.debug.profiles_data = self._lobby_data
 end
@@ -275,10 +255,7 @@ MatchmakingStateJoinGame._spawn_join_popup = function (self, dt, t)
 	local auto_cancel_time = MatchmakingSettings.JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL
 	local join_by_lobby_browser = self.state_context.join_by_lobby_browser
 	local difficulty = self.lobby_client:lobby_data("difficulty")
-	self._popup_join_lobby_handler = self._ingame_ui:show_unavailable_hero_popup(profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty)
-
-	self:_set_unavailable_heroes(self._lobby_data)
-
+	self._popup_profile_picker = self._ingame_ui:show_unavailable_hero_popup(profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data)
 	local time_manager = Managers.time
 	self._hero_popup_at_t = time_manager:time("game")
 	self._show_popup = false
@@ -299,20 +276,7 @@ end
 MatchmakingStateJoinGame._remove_join_popup = function (self)
 	self._ingame_ui:hide_unavailable_hero_popup()
 
-	self._popup_join_lobby_handler = nil
-end
-
-MatchmakingStateJoinGame._set_unavailable_heroes = function (self, lobby_data)
-	local occupied_heroes = {}
-	local num_profiles = #SPProfiles
-
-	for i = 1, num_profiles, 1 do
-		if not SlotAllocator.is_free_in_lobby(i, lobby_data) then
-			occupied_heroes[i] = true
-		end
-	end
-
-	self._popup_join_lobby_handler:set_unavailable_heroes(occupied_heroes)
+	self._popup_profile_picker = nil
 end
 
 MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index)
@@ -320,7 +284,7 @@ MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index
 	local host = lobby_client:lobby_host()
 	self._matchmaking_manager.selected_profile_index = hero_index
 
-	self._handshaker_client:send_rpc_to_host("rpc_matchmaking_request_profile", hero_index)
+	RPC.rpc_matchmaking_request_profile(PEER_ID_TO_CHANNEL[host], hero_index)
 
 	local host_name = host
 
@@ -330,14 +294,10 @@ MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index
 
 	self._matchmaking_manager.debug.text = "requesting_profile"
 	self._matchmaking_manager.debug.state = "hosted by: " .. (host_name or "unknown")
-	self._matchmaking_manager.debug.level = lobby_client:lobby_data("selected_level_key")
+	self._matchmaking_manager.debug.level = lobby_client:lobby_data("selected_mission_id")
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, client_cookie, host_cookie, profile, reply)
-	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return
-	end
-
+MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self, channel_id, profile, reply)
 	local selected_hero_name = self._selected_hero_name
 	local selected_hero_index = FindProfileIndex(selected_hero_name)
 	local reason = nil
@@ -378,22 +338,18 @@ end
 
 MatchmakingStateJoinGame._level_started = function (self)
 	local lobby_client = self.lobby_client
-	local selected_level_key = lobby_client:lobby_data("selected_level_key")
-	local level_key = lobby_client:lobby_data("level_key")
-	local level_started = selected_level_key == level_key
+	local selected_mission_id = lobby_client:lobby_data("selected_mission_id")
+	local mission_id = lobby_client:lobby_data("mission_id")
+	local level_started = selected_mission_id == mission_id
 
-	return level_started, level_key
+	return level_started, mission_id
 end
 
 MatchmakingStateJoinGame.loading_context = function (self)
 	return self._matchmaking_loading_context
 end
 
-MatchmakingStateJoinGame.rpc_matchmaking_join_game = function (self, channel_id, client_cookie, host_cookie)
-	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return
-	end
-
+MatchmakingStateJoinGame.rpc_matchmaking_join_game = function (self, channel_id)
 	mm_printf_force("Transition from join due to rpc_matchmaking_join_game")
 	self:_set_state_to_start_lobby()
 end

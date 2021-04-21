@@ -13,6 +13,8 @@ local extensions = {
 	"ThornMutatorExtension"
 }
 
+DLCUtils.append("prop_extension", extensions)
+
 PropsSystem.init = function (self, entity_system_creation_context, system_name)
 	PropsSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 

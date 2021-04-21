@@ -75,7 +75,7 @@ HeroWindowOptions.create_ui_elements = function (self, params, offset)
 		window_position[3] = window_position[3] + offset[3]
 	end
 
-	if script_data["eac-untrusted"] then
+	if script_data["eac-untrusted"] or not DamageUtils.is_in_inn then
 		widgets_by_name.game_option_3.content.button_hotspot.disable_button = true
 		widgets_by_name.game_option_5.content.button_hotspot.disable_button = true
 	end

@@ -1,6 +1,6 @@
 local platform = PLATFORM
 
-if platform == "win32" then
+if IS_WINDOWS then
 	SoundQualitySettings = {
 		templates = {
 			low = {
@@ -20,7 +20,7 @@ if platform == "win32" then
 			}
 		}
 	}
-elseif platform == "linux" then
+elseif IS_LINUX then
 	SoundQualitySettings = {
 		templates = {
 			low = {
@@ -40,7 +40,7 @@ elseif platform == "linux" then
 			}
 		}
 	}
-elseif platform == "xb1" then
+elseif IS_XB1 then
 	SoundQualitySettings = {
 		templates = {
 			low = {
@@ -60,7 +60,7 @@ elseif platform == "xb1" then
 			}
 		}
 	}
-elseif platform == "ps4" then
+elseif IS_PS4 then
 	SoundQualitySettings = {
 		templates = {
 			low = {

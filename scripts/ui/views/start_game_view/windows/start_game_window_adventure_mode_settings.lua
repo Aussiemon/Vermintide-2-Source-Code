@@ -173,7 +173,7 @@ StartGameWindowAdventureModeSettings._update_difficulty_option = function (self)
 		self:_set_difficulty_option(difficulty_key)
 
 		self._difficulty_key = difficulty_key
-		self._enable_play = DifficultySettings[difficulty_key] ~= nil
+		self._enable_play = DifficultySettings[difficulty_key] ~= nil and rawget(LevelSettings, self._selected_level_id) ~= nil
 		self._widgets_by_name.play_button.content.button_hotspot.disable_button = not self._enable_play
 
 		if self._enable_play then

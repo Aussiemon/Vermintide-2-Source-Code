@@ -57,9 +57,10 @@ local function find_level_peaks(zones, num_zones)
 	return peaks
 end
 
+local conflict_director_testify = script_data.testify and require("scripts/managers/conflict_director/conflict_director_testify")
 ConflictDirector = class(ConflictDirector)
 
-ConflictDirector.init = function (self, world, level_key, network_event_delegate, level_seed, is_server)
+ConflictDirector.init = function (self, world, level_key, network_event_delegate, level_seed, is_server, conflict_settings)
 	self._world = world
 	self._time = 0
 	self._level_key = level_key
@@ -74,7 +75,6 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 		"none"
 	}
 	local level_settings = LevelSettings[level_key]
-	local conflict_settings = script_data.override_conflict_settings or Managers.state.game_mode:get_conflict_settings() or level_settings.conflict_settings or "default"
 	self.initial_conflict_settings = conflict_settings
 
 	self:set_updated_settings(conflict_settings)
@@ -601,23 +601,23 @@ ConflictDirector.has_horde = function (self)
 	end
 end
 
-ConflictDirector.mini_patrol = function (self, t, terror_event_id, side_id, composition_type, group_template)
+ConflictDirector.mini_patrol = function (self, t, terror_event_id, side_id, composition_type, group_template, optional_data)
 	local strictly_not_close_to_players = true
 	local limit_spawners = 1
 	local silent = true
 	self._last_mini_patrol_composition = composition_type
 
-	self.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players)
+	self.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, nil, nil, nil, optional_data)
 end
 
 ConflictDirector.mini_patrol_killed = function (self, id)
 	print("Mini patrol killed!", id)
 end
 
-ConflictDirector.event_horde = function (self, t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, sound_settings)
+ConflictDirector.event_horde = function (self, t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, sound_settings, optional_data)
 	if not script_data.ai_horde_spawning_disabled then
 		side_id = side_id or self.default_enemy_side_id
-		local horde = self.horde_spawner:execute_event_horde(t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, nil, sound_settings)
+		local horde = self.horde_spawner:execute_event_horde(t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, nil, sound_settings, nil, nil, optional_data)
 
 		return horde
 	end
@@ -918,10 +918,14 @@ ConflictDirector.start_terror_event = function (self, event_name, optional_seed)
 	TerrorEventMixer.add_to_start_event_list(event_name, seed)
 end
 
+ConflictDirector.terror_event_finished = function (self, event_name)
+	return table.contains(TerrorEventMixer.finished_events, event_name)
+end
+
 ConflictDirector.start_terror_event_from_template = function (self, event_template_name, spawner_id, optional_seed)
 	fassert(spawner_id ~= nil, "Starting a terror event from template should not be done if 'spawner_id' is nil!")
 
-	local level_transition_handler = Managers.state.game_mode.level_transition_handler
+	local level_transition_handler = Managers.level_transition_handler
 	local level_key = level_transition_handler:get_current_level_keys()
 	local new_terror_event_name = string.format("%s_%s", event_template_name, spawner_id)
 	local wanted_terror_event = TerrorEventBlueprints[level_key][new_terror_event_name]
@@ -1267,7 +1271,9 @@ end
 ConflictDirector.update = function (self, dt, t)
 	self._time = t
 
-	self:_poll_testify_requests()
+	if script_data.testify then
+		Testify:poll_requests_through_handler(conflict_director_testify, self)
+	end
 
 	if self.level_analysis then
 		self.level_analysis:update(t, dt)
@@ -1778,7 +1784,7 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 	end
 
 	local spawn_pose = Matrix4x4.from_quaternion_position(spawn_rot, spawn_pos)
-	local size_variation_range = breed.size_variation_range
+	local size_variation_range = optional_data.size_variation_range or breed.size_variation_range
 
 	if size_variation_range then
 		local size_normalized = Math.random()
@@ -1929,6 +1935,10 @@ ConflictDirector._remove_unit_from_spawned = function (self, unit, blackboard, d
 		spawned[index] = swap_unit
 		spawned[index_last] = nil
 		spawned_lookup[swap_unit] = index
+	end
+
+	if blackboard.optional_spawn_data and blackboard.optional_spawn_data.despawned_func then
+		blackboard.optional_spawn_data.despawned_func(unit, breed, blackboard.optional_spawn_data)
 	end
 
 	local breed_name = breed.name
@@ -2242,7 +2252,7 @@ ConflictDirector.debug_spawn_breed = function (self, t, delayed, override_pos)
 		print("Debug spawning func:", text)
 
 		if func_name and self[func_name] then
-			self[func_name](self, item[3], item[4], item[5])
+			return self[func_name](self, item[3], item[4], item[5])
 		end
 
 		return
@@ -2510,7 +2520,7 @@ ConflictDirector.debug_spawn_tentacle_blob = function (self, breed, only_breed, 
 
 	local spawn_category = "debug_spawn"
 	local rot = Quaternion(Vector3.up(), math.degrees_to_radians(math.random(1, 360)))
-	local optional_data = breed.debug_spawn_optional_data
+	local optional_data = breed.debug_spawn_optional_data or {}
 
 	optional_data.spawned_func = function (unit, breed, optional_data)
 		if breed.special then
@@ -2540,7 +2550,7 @@ ConflictDirector.aim_spawning_surface = function (self, breed, on_navmesh, optio
 
 	local spawn_category = "debug_spawn"
 	local rot = Quaternion.look(normal, Vector3.up())
-	local optional_data = breed.debug_spawn_optional_data
+	local optional_data = breed.debug_spawn_optional_data or {}
 	optional_data.side_id = self.debug_spawn_side_id
 
 	optional_data.spawned_func = function (unit, breed, optional_data)
@@ -2566,7 +2576,7 @@ ConflictDirector.set_debug_spawn_side = function (self, side_id)
 	self.debug_spawn_side_id = side_id
 end
 
-ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_delayed, optional_override_pos)
+ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_delayed, optional_override_pos, variant_data)
 	local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
 
 	if optional_delayed then
@@ -3002,11 +3012,43 @@ ConflictDirector.spawn_at_raw_spawner = function (self, breed, spawner_id, optio
 		optional_data = optional_data or {}
 		optional_data.idle_animation = optional_idle_animation
 		optional_data.spawner_unit = spawner_unit
-		optional_data.spawned_func = cb_spawn_at_raw_spawned
+
+		if optional_data.spawned_func then
+			local previous_spawned_func = optional_data.spawned_func
+
+			optional_data.spawned_func = function (ai_unit, breed, optional_data)
+				previous_spawned_func(ai_unit, breed, optional_data)
+				cb_spawn_at_raw_spawned(ai_unit, breed, optional_data)
+			end
+		else
+			optional_data.spawned_func = cb_spawn_at_raw_spawned
+		end
+
 		optional_data.side_id = optional_data.side_id or side_id or self.default_enemy_side_id
 
 		self:spawn_queued_unit(breed, Vector3Box(pos), QuaternionBox(rot), "raw_spawner", nil, nil, optional_data, nil, nil)
 	end
+end
+
+ConflictDirector.debug_spawn_at_raw = function (self, breed, optional_data, side_id)
+	local pos = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
+	local rot = Quaternion.identity()
+	optional_data = optional_data or {}
+
+	if optional_data.spawned_func then
+		local previous_spawned_func = optional_data.spawned_func
+
+		optional_data.spawned_func = function (ai_unit, breed, optional_data)
+			previous_spawned_func(ai_unit, breed, optional_data)
+			cb_spawn_at_raw_spawned(ai_unit, breed, optional_data)
+		end
+	else
+		optional_data.spawned_func = cb_spawn_at_raw_spawned
+	end
+
+	optional_data.side_id = optional_data.side_id or side_id or self.default_enemy_side_id
+
+	self:spawn_queued_unit(breed, Vector3Box(pos), QuaternionBox(rot), "raw_spawner", nil, nil, optional_data, nil, nil)
 end
 
 ConflictDirector.generate_spawns = function (self)
@@ -3042,7 +3084,9 @@ ConflictDirector.generate_spawns = function (self)
 		local spawn_cycle_length = basics.spawn_cycle_length
 		local area_density_coefficient = pack_spawning_setting.area_density_coefficient
 		local length_density_coefficient = basics.length_density_coefficient
-		pos_list, pack_sizes, pack_rotations, pack_members, zone_data_list = self.spawn_zone_baker:generate_spawns(spawn_cycle_length, goal_density, area_density_coefficient, length_density_coefficient, conflict_settings_name)
+		local mutators = Managers.state.game_mode:mutators()
+		local mutator_list = table.keys(mutators)
+		pos_list, pack_sizes, pack_rotations, pack_members, zone_data_list = self.spawn_zone_baker:generate_spawns(spawn_cycle_length, goal_density, area_density_coefficient, length_density_coefficient, conflict_settings_name, mutator_list)
 
 		return pos_list, pack_sizes, pack_rotations, pack_members, zone_data_list
 	else
@@ -3063,7 +3107,7 @@ ConflictDirector.register_main_path_obstacle = function (self, position, radius_
 end
 
 ConflictDirector.ai_ready = function (self, level_seed)
-	self.enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	self.enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 	local t = Managers.time:time("game")
 	local side = self._hero_side
 
@@ -3131,7 +3175,7 @@ ConflictDirector.ai_ready = function (self, level_seed)
 		forward_break_list = forward_break_nodes,
 		reversed_break_list = reversed_break_nodes
 	}
-	self.specials_pacing = SpecialsPacing:new(self.nav_world, enemy_side)
+	self.specials_pacing = SpecialsPacing:new(self._world, self.nav_world, self.nav_tag_volume_handler, enemy_side)
 	local start = {
 		self.level_analysis:get_start_and_finish()
 	}
@@ -3219,6 +3263,51 @@ end
 
 ConflictDirector.level_flow_event = function (self, event_name)
 	LevelHelper:flow_event(self._world, event_name)
+end
+
+SPARSE_GRID = {}
+local cell_size_xy = 0.3
+local cell_size_z = 0.3
+
+ConflictDirector.draw_sparse_grid = function (self, pos)
+	if not pos then
+		return
+	end
+
+	local floor = math.floor
+	local xp = floor(pos.x / cell_size_xy + 0.5)
+	local yp = floor(pos.y / cell_size_xy + 0.5)
+	local zp = floor(pos.z / cell_size_z + 0.5)
+	local hash = xp * 0.0001 + yp + zp * 10000
+
+	QuickDrawer:sphere(Vector3(floor(pos.x / cell_size_xy) * cell_size_xy, floor(pos.y / cell_size_xy) * cell_size_xy, floor(pos.z / cell_size_z) * cell_size_z), cell_size_xy * 0.5 - 0.01, Color(0, 200, 200))
+	QuickDrawer:sphere(pos, 0.1, Color(255, 200, 100))
+
+	for hash, cell in pairs(SPARSE_GRID) do
+		QuickDrawer:sphere(Vector3(cell.x, cell.y, cell.z), cell_size_xy * 0.5, Color(0, 0, 200))
+	end
+end
+
+ConflictDirector.sparse_grid_test = function (self, pos, unit)
+	local floor = math.floor
+	local xp = floor(pos.x / cell_size_xy + 0.5)
+	local yp = floor(pos.y / cell_size_xy + 0.5)
+	local zp = floor(pos.z / cell_size_z + 0.5)
+	local hash = xp * 0.0001 + yp + zp * 10000
+
+	if SPARSE_GRID[hash] then
+		Debug.text("SPARSE GRID: OCCUPIED")
+	else
+		SPARSE_GRID[hash] = {
+			u = unit,
+			x = xp * cell_size_xy,
+			y = yp * cell_size_xy,
+			z = zp * cell_size_z
+		}
+
+		print("SPARSE GRID:", hash, pos)
+		QuickDrawer:sphere(pos, 0.7, Color(200, 0, 0))
+	end
 end
 
 ConflictDirector.update_server_debug = function (self, t, dt)
@@ -3310,6 +3399,27 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 	end
 
 	if DebugKeyHandler.key_pressed("t", "test terror", "ai", "left shift") then
+		local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
+
+		if not position then
+			print("No spawn pos found")
+
+			return
+		end
+
+		local extension_init_data = {
+			props_system = {
+				start_size = 0.3,
+				duration = 0.5,
+				end_size = 1
+			}
+		}
+		local spawn_unit_name = "units/props/nurgle_liquid_blob/nurgle_liquid_blob_01"
+		local network_template_name = "nurgle_liquid_blob"
+		local blob_unit = Managers.state.unit_spawner:spawn_network_unit(spawn_unit_name, "nurgle_liquid_blob", extension_init_data, position)
+
+		return
+
 		print("Creating tentacle")
 
 		local start_pos = PLAYER_POSITIONS[1] + Vector3(1, 0, 0)
@@ -3449,7 +3559,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("u", "unspawn close AIs", "ai") then
 		self:destroy_close_units(nil, 144)
-	elseif DebugKeyHandler.key_pressed("i", "unspawn all AIs", "ai") then
+	elseif DebugKeyHandler.key_pressed("l", "unspawn all AIs", "ai") then
 		self:destroy_all_units(true)
 	end
 
@@ -3572,7 +3682,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		end
 	end
 
-	if DebugKeyHandler.key_pressed("h", "spawn_horde", "ai") then
+	if DebugKeyHandler.key_pressed("h", "spawn_horde", "ai") and not DamageUtils.is_in_inn then
 		self:debug_spawn_horde()
 	end
 
@@ -3823,7 +3933,7 @@ ConflictDirector.client_ready = function (self)
 	local level_settings = LevelSettings[self._level_key]
 
 	if not level_settings.load_no_enemies then
-		local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+		local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 		self.breed_freezer = BreedFreezer:new(self._world, Managers.state.entity, self._network_event_delegate, enemy_package_loader)
 	end
 end
@@ -3890,41 +4000,6 @@ ConflictDirector.update_kill_tester = function (self)
 
 			DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, "debug")
 		end
-	end
-end
-
-ConflictDirector._poll_testify_requests = function (self)
-	if Testify:poll_request("end_of_the_level_reached") then
-		local end_of_level_reached = false
-		local player_unit = Managers.player:local_player().player_unit
-		local player_main_path_data = self:get_main_path_player_data(player_unit)
-
-		if player_main_path_data then
-			end_of_level_reached = EngineOptimized.main_path_total_length() < player_main_path_data.travel_dist + 21
-		end
-
-		Testify:respond_to_request("end_of_the_level_reached", end_of_level_reached)
-	end
-
-	local additional_distance = Testify:poll_request("calculate_best_point_on_main_path")
-
-	if additional_distance then
-		local players = Managers.player:players()
-		local best_point = 0
-
-		for _, player in pairs(players) do
-			local unit_main_path_data = self:get_main_path_player_data(player.player_unit)
-
-			if unit_main_path_data then
-				local unit_point = unit_main_path_data.travel_dist
-
-				if best_point < unit_point then
-					best_point = unit_point + additional_distance
-				end
-			end
-		end
-
-		Testify:respond_to_request("calculate_best_point_on_main_path", best_point)
 	end
 end
 

@@ -14,6 +14,8 @@ PlayerUnitOverchargeExtension.init = function (self, extension_init_context, uni
 	self.venting_overcharge = false
 	self.vent_damage_pool = 0
 	self.no_damage = global_is_inside_inn
+	self.lockout = false
+	self.prev_lockout = false
 	self.overcharge_threshold = overcharge_data.overcharge_threshold or 0
 	self.overcharge_value_decrease_rate = overcharge_data.overcharge_value_decrease_rate or 0
 	self.time_until_overcharge_decreases = overcharge_data.time_until_overcharge_decreases or 0
@@ -22,7 +24,13 @@ PlayerUnitOverchargeExtension.init = function (self, extension_init_context, uni
 	self.overcharge_warning_high_sound_event = overcharge_data.overcharge_warning_high_sound_event
 	self.overcharge_warning_med_sound_event = overcharge_data.overcharge_warning_med_sound_event
 	self.overcharge_warning_low_sound_event = overcharge_data.overcharge_warning_low_sound_event
+	self.screen_space_particle = overcharge_data.onscreen_particles_id or "fx/screenspace_overheat_indicator"
+	self.screen_space_particle_critical = overcharge_data.critical_onscreen_particles_id or "fx/screenspace_overheat_critical"
 	self.explosion_template = overcharge_data.explosion_template or "overcharge_explosion"
+	self.no_forced_movement = overcharge_data.no_forced_movement
+	self.overcharge_explosion_time = overcharge_data.overcharge_explosion_time
+	self.percent_health_lost = overcharge_data.percent_health_lost
+	self.lockout_overcharge_decay_rate = overcharge_data.lockout_overcharge_decay_rate
 	self.has_overcharge = false
 	self.network_manager = Managers.state.network
 	self.venting_anim = nil
@@ -42,6 +50,7 @@ PlayerUnitOverchargeExtension.extensions_ready = function (self, world, unit)
 	self.first_person_extension = first_person_extension
 	self.first_person_unit = first_person_extension:get_first_person_unit()
 	self.overcharge_blend_id = Unit.animation_find_variable(self.first_person_unit, "overcharge")
+	self.overcharge_lockout_id = Unit.animation_find_variable(self.first_person_unit, "overcharge_locked_out")
 	self.buff_extension = ScriptUnit.extension(self.unit, "buff_system")
 	self.overcharge_value = 0
 	self.original_max_value = self.max_value
@@ -85,6 +94,7 @@ PlayerUnitOverchargeExtension.reset = function (self)
 		end
 	end
 
+	self.lockout = false
 	self.overcharge_value = 0
 	self.played_hit_overcharge_threshold = false
 	self.is_exploding = false
@@ -192,10 +202,27 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 		self:set_animation_variable()
 	end
 
-	if self.venting_anim then
-		Unit.animation_event(self.first_person_unit, self.venting_anim)
+	local first_person_unit = self.first_person_unit
 
-		self.venting_anim = nil
+	if first_person_unit then
+		if self.venting_anim then
+			Unit.animation_event(first_person_unit, self.venting_anim)
+
+			self.venting_anim = nil
+		end
+
+		local lockout = self.lockout
+
+		if self.prev_lockout ~= lockout then
+			self.prev_lockout = lockout
+			local anim_lockout = (lockout and 1) or 0
+
+			Unit.animation_set_variable(first_person_unit, self.overcharge_lockout_id, anim_lockout)
+
+			if not lockout then
+				Unit.animation_event(first_person_unit, "overcharge_end")
+			end
+		end
 	end
 
 	local buff_extension = self.buff_extension
@@ -209,11 +236,18 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 
 		self.has_overcharge = true
 
-		if not self.is_exploding and self.time_when_overcharge_start_decreasing < t then
+		if (not self.is_exploding and self.time_when_overcharge_start_decreasing < t) or self.lockout == true then
 			local decay = 1
 
 			if self.above_threshold then
 				decay = decay * 0.6
+			elseif self.lockout == true then
+				self.lockout = false
+				self.is_exploding = false
+			end
+
+			if self.lockout then
+				decay = decay * self.lockout_overcharge_decay_rate
 			end
 
 			local value = decay * self.overcharge_value_decrease_rate * dt
@@ -302,11 +336,11 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 				local first_person_extension = self.first_person_extension
 
 				if not self.onscreen_particles_id then
-					self.onscreen_particles_id = first_person_extension:create_screen_particles("fx/screenspace_overheat_indicator")
+					self.onscreen_particles_id = first_person_extension:create_screen_particles(self.screen_space_particle)
 				end
 
 				if not self.critical_onscreen_particles_id and is_above_critical_limit then
-					self.critical_onscreen_particles_id = first_person_extension:create_screen_particles("fx/screenspace_overheat_critical")
+					self.critical_onscreen_particles_id = first_person_extension:create_screen_particles(self.screen_space_particle_critical)
 				end
 
 				local material_name = "overlay"
@@ -518,6 +552,10 @@ PlayerUnitOverchargeExtension.hud_sound = function (self, event, fp_extension)
 	fp_extension:play_hud_sound_event(event)
 end
 
+PlayerUnitOverchargeExtension.set_lockout = function (self, new_state)
+	self.lockout = new_state
+end
+
 PlayerUnitOverchargeExtension.get_overcharge_value = function (self)
 	return self.overcharge_value
 end
@@ -544,6 +582,10 @@ end
 
 PlayerUnitOverchargeExtension.are_you_exploding = function (self)
 	return self.is_exploding
+end
+
+PlayerUnitOverchargeExtension.are_you_locked_out = function (self)
+	return self.lockout
 end
 
 PlayerUnitOverchargeExtension.overcharge_fraction = function (self)

@@ -138,7 +138,7 @@ LobbyClient.get_stored_lobby_data = function (self)
 end
 
 LobbyClient.update_user_names = function (self)
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		self.lobby:update_user_names()
 	end
 end

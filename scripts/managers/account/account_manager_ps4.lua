@@ -49,10 +49,6 @@ AccountManager.set_controller = function (self, controller)
 	self._active_controller = controller
 end
 
-AccountManager.set_level_transition_handler = function (self, level_transition_handler)
-	self._level_transition_handler = level_transition_handler
-end
-
 AccountManager.fetch_user_data = function (self)
 	self._online_id = PS4.online_id()
 	self._np_id = PS4.np_id()
@@ -695,7 +691,7 @@ end
 AccountManager.create_session = function (self, room_id)
 	assert(room_id, "[AccountManager] Tried to create psn session but parameter \"room_id\" is missing")
 
-	local level_key = self._level_transition_handler and self._level_transition_handler:get_current_level_keys()
+	local level_key = Managers.level_transition_handler:get_current_level_keys()
 	local lock_flag = false
 
 	if level_key and level_key == "tutorial" then
@@ -962,6 +958,10 @@ end
 
 AccountManager.cancel_all_popups = function (self)
 	return
+end
+
+AccountManager.should_throttle = function (self)
+	return true
 end
 
 return

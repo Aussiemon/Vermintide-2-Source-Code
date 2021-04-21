@@ -43,7 +43,7 @@ LobbyManager.setup_network_options = function (self, increment_lobby_port)
 		self._lobby_port_increment = self._lobby_port_increment + 1
 	end
 
-	if PLATFORM ~= "win32" and PLATFORM ~= "linux" then
+	if not IS_WINDOWS and not IS_LINUX then
 		server_port = network_options.lobby_port
 	end
 

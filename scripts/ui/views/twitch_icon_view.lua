@@ -4,7 +4,6 @@ require("scripts/ui/ui_element")
 require("scripts/ui/ui_widgets")
 
 local definitions = require("scripts/ui/views/twitch_icon_view_definitions")
-local DO_RELOAD = true
 TwitchIconView = class(TwitchIconView)
 
 TwitchIconView.init = function (self, world)
@@ -15,8 +14,6 @@ TwitchIconView.init = function (self, world)
 	}
 
 	self:_create_ui_elements()
-
-	DO_RELOAD = false
 end
 
 TwitchIconView._create_ui_elements = function (self)
@@ -27,13 +24,6 @@ TwitchIconView._create_ui_elements = function (self)
 end
 
 TwitchIconView.update = function (self, dt)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		print("Reloading Twitch Icon")
-		self:_create_ui_elements()
-	end
-
 	local lobby_has_twitch = false
 
 	if Managers.state.network then
@@ -41,7 +31,7 @@ TwitchIconView.update = function (self, dt)
 		lobby_has_twitch = lobby:lobby_data("twitch_enabled") == "true"
 	end
 
-	if (Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())) or lobby_has_twitch then
+	if lobby_has_twitch or (Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())) then
 		self:_draw(dt)
 	end
 end

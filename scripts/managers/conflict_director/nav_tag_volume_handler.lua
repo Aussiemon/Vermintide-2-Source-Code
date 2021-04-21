@@ -18,6 +18,10 @@ NavTagVolumeHandler.init = function (self, world, nav_world)
 		level_path = LevelResource.nested_level_resource_name(level_path, 0)
 	end
 
+	if IS_CONSOLE then
+		GwNavWorld.set_dynamicnavmesh_budget(self.nav_world, 5)
+	end
+
 	local file_path = level_path .. "_nav_tag_volumes"
 
 	if Application.can_get("lua", file_path) then
@@ -34,6 +38,11 @@ NavTagVolumeHandler.init = function (self, world, nav_world)
 				self:create_tag_volume_from_mappings(level_volume_name)
 			end
 		end
+	end
+
+	if IS_CONSOLE then
+		GwNavWorld.update(self.nav_world, 0)
+		GwNavWorld.set_dynamicnavmesh_budget(self.nav_world, 0.0045)
 	end
 end
 

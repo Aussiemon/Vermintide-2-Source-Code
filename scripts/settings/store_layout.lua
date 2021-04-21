@@ -1,14 +1,18 @@
 if not rawget(_G, "StoreLayoutConfig") then
+	require("scripts/settings/store_dlc_settings")
+
 	StoreLayoutConfig = {
 		menu_options = {
 			"featured",
 			"cosmetics",
+			"bundles",
 			"dlc"
 		},
 		pages = {},
 		structure = {},
 		structure = {
 			featured = 1,
+			bundles = 1,
 			dlc = 1,
 			cosmetics = {
 				bardin = {
@@ -115,29 +119,27 @@ if not rawget(_G, "StoreLayoutConfig") then
 	StoreLayoutConfig.pages.cosmetics = {
 		sound_event_enter = "Play_hud_store_category_cosmetics",
 		layout = "category",
-		display_name = "menu_store_panel_title_cosmetics"
+		display_name = "menu_store_panel_title_cosmetics",
+		item_filter = "item_type ~= bundle"
 	}
-	local dlc_content = nil
+	StoreLayoutConfig.pages.bundles = {
+		sound_event_enter = "Play_hud_store_category_button",
+		layout = "bundle_list",
+		display_name = "menu_store_category_title_bundles",
+		type = "item",
+		item_filter = "item_type == bundle",
+		sort_order = 3,
+		category_button_texture = "store_category_icon_weapons"
+	}
+	local dlc_content = {}
+	local platform = PLATFORM
 
-	if PLATFORM == "win32" then
-		dlc_content = {
-			"cog",
-			"cog_upgrade",
-			"lake",
-			"lake_upgrade",
-			"scorpion",
-			"holly",
-			"bogenhafen",
-			"pre_order"
-		}
-	else
-		dlc_content = {
-			"lake",
-			"scorpion",
-			"holly",
-			"bogenhafen",
-			"pre_order"
-		}
+	for _, settings in ipairs(StoreDlcSettings) do
+		local unavailable_platforms = settings.unavailable_platforms
+
+		if not unavailable_platforms or not table.find(unavailable_platforms, platform) then
+			dlc_content[#dlc_content + 1] = settings.dlc_name
+		end
 	end
 
 	StoreLayoutConfig.pages.dlc = {
@@ -395,6 +397,8 @@ local function item_get_type_order_key(item)
 
 		if item_type == "weapon_skin" then
 			return data.matching_item_key or "weapon_skin"
+		elseif item_type == "bundle" then
+			return "2.bundle"
 		elseif item_type == "skin" then
 			return "1.skin"
 		elseif item_type == "hat" then

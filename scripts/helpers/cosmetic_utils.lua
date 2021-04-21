@@ -37,7 +37,7 @@ CosmeticUtils.update_cosmetic_slot = function (player, slot, item_name, skin_nam
 		return
 	end
 
-	if player and player.local_player and player:sync_data_active() then
+	if player and (player.local_player or (player.bot_player and player.is_server)) and player:sync_data_active() then
 		local name_id = 1
 
 		if slot == "slot_frame" or slot == "slot_skin" then
@@ -162,10 +162,10 @@ CosmeticUtils.get_default_cosmetic_slot = function (career_settings, slot_name)
 	return nil
 end
 
-CosmeticUtils.sync_local_player_cosmetics = function (profile_index, career_index)
-	local player = Managers.player and Managers.player:local_player()
-
+CosmeticUtils.sync_local_player_cosmetics = function (player, profile_index, career_index)
 	if not player then
+		Application.warning("[CosmeticUtils.sync_local_player_cosmetics] Failed to sync cosmetics")
+
 		return
 	end
 

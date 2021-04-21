@@ -618,8 +618,9 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	local level_key = self._level_key
 	local disable_trailer = self._disable_trailer or not Application.user_setting("play_intro_cinematic")
 	local profile_name = self._profile_name
+	local switch_to_tutorial_backend, tutorial_state = Managers.mechanism:should_run_tutorial()
 
-	if PLATFORM ~= "win32" and not Managers.backend:get_user_data("prologue_started") and not script_data.settings.disable_tutorial_at_start then
+	if switch_to_tutorial_backend and not Managers.backend:get_user_data("prologue_started") and not script_data.settings.disable_tutorial_at_start and not script_data.disable_prologue and not script_data.honduras_demo then
 		disable_trailer = false
 		level_key = "prologue"
 	end
@@ -633,14 +634,13 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 		loading_context.first_time = false
 	end
 
-	if level_key and loading_context.level_transition_handler then
+	if level_key then
 		local environment_variation_id = (LevelHelper.get_environment_variation_id and LevelHelper:get_environment_variation_id(level_key)) or nil
 
-		loading_context.level_transition_handler:set_next_level(level_key, environment_variation_id)
+		Managers.level_transition_handler:set_next_level(level_key, environment_variation_id)
 	end
 
 	if level_key == "prologue" then
-		local switch_to_tutorial_backend, tutorial_state = Managers.mechanism:should_run_tutorial()
 		loading_context.gamma_correct = not SaveData.gamma_corrected
 		loading_context.play_trailer = true
 		loading_context.switch_to_tutorial_backend = switch_to_tutorial_backend

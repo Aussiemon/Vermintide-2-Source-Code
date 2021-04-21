@@ -28,13 +28,13 @@ TwitchManager.init = function (self)
 	self._game_object_ids = {}
 	self._vote_key_to_go_id = {}
 	self.locked_breed_packages = {}
-	self._rest_interface = (PLATFORM ~= "win32" and Managers.rest_transport) or Managers.curl
+	self._rest_interface = (not IS_WINDOWS and Managers.rest_transport) or Managers.curl
 	local settings = Application.settings()
 	self._twitch_settings = settings.twitch
 
 	debug_print(Application.settings("twitch"))
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		self._headers = {
 			"Accept",
 			"application/vnd.twitchtv.v5+json",
@@ -96,7 +96,7 @@ TwitchManager.connect = function (self, twitch_user_name, optional_connection_fa
 	local url = "https://api.twitch.tv/kraken/users?login=" .. twitch_user_name
 	local options = {}
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		options[Managers.curl._curl.OPT_SSL_OPTIONS] = Managers.curl._curl.SSLOPT_NO_REVOKE
 	end
 
@@ -314,9 +314,7 @@ TwitchManager.remove_game_object_id = function (self, game_object_id)
 end
 
 TwitchManager._update_game_object = function (self, vote_key, vote_data)
-	local network_manager = Managers.state.network
-	local game = network_manager:game()
-	local time = math.ceil(vote_data.timer)
+	local game = Managers.state.network and Managers.state.network:game()
 
 	if game then
 		local go_id = self._game_object_ids[vote_key]
@@ -329,8 +327,10 @@ TwitchManager._update_game_object = function (self, vote_key, vote_data)
 end
 
 TwitchManager._register_networked_vote = function (self, game_object_id)
-	local network_manager = Managers.state.network
-	local game = network_manager:game()
+	local game = Managers.state.network and Managers.state.network:game()
+
+	fassert(game, "[TwitchManager] You need to have an active game session to be able to register votes")
+
 	local vote_key = GameSession.game_object_field(game, game_object_id, "vote_key")
 	local vote_type = NetworkLookup.twitch_vote_types[GameSession.game_object_field(game, game_object_id, "vote_type")]
 	local option_strings = {
@@ -749,7 +749,7 @@ TwitchManager._update_vote_data = function (self, dt, t)
 			local vote_data = self._votes_lookup_table[vote_key]
 
 			if vote_data then
-				local game = Managers.state.network:game()
+				local game = Managers.state.network and Managers.state.network:game()
 
 				if game then
 					local options = GameSession.game_object_field(game, go_id, "options")
@@ -763,7 +763,7 @@ TwitchManager._update_vote_data = function (self, dt, t)
 end
 
 TwitchManager._handle_results = function (self, vote_results)
-	local package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local package_loader = Managers.level_transition_handler.enemy_package_loader
 	local network_manager = Managers.state.network
 	local is_server = network_manager.is_server
 	local best_option = -1
@@ -900,6 +900,8 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 
 		if is_server and self._connected then
 			self._twitch_game_mode = TwitchGameMode:new(self)
+
+			self:_load_sound_bank()
 		end
 
 		local lobby = network_manager:lobby()
@@ -908,8 +910,6 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 		if Development.parameter("twitch_debug_voting") then
 			self._activated = true
 		end
-
-		self:_load_sound_bank()
 	end
 end
 
@@ -920,6 +920,9 @@ TwitchManager.debug_activate_twitch_game_mode = function (self)
 		Managers.state.event:trigger("activate_twitch_game_mode")
 
 		self._twitch_game_mode = TwitchGameMode:new(self)
+
+		self:_load_sound_bank()
+
 		self._activated = true
 		self._connected = true
 	else
@@ -928,6 +931,10 @@ TwitchManager.debug_activate_twitch_game_mode = function (self)
 end
 
 TwitchManager.deactivate_twitch_game_mode = function (self)
+	if self._current_vote then
+		self:unregister_vote(self._current_vote.vote_key)
+	end
+
 	if self._network_event_delegate then
 		self._network_event_delegate:unregister(self)
 
@@ -1078,7 +1085,7 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 		return wanted_template
 	end
 
-	local package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
+	local package_loader = Managers.level_transition_handler.enemy_package_loader
 	local breed_processed = package_loader.breed_processed
 	local request_success = true
 	local replacement_breed_name = nil
@@ -1371,7 +1378,7 @@ TwitchGameMode.destroy = function (self)
 	local game_mode_manager = Managers.state.game_mode
 
 	if game_mode_manager then
-		local enemy_package_loader = game_mode_manager.level_transition_handler.enemy_package_loader
+		local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
 		for breed_name, _ in pairs(self._parent.locked_breed_packages) do
 			enemy_package_loader:unlock_breed_package(breed_name)

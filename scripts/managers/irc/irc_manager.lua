@@ -334,7 +334,7 @@ IRCStates.none = function (irc, dt)
 end
 
 IRCStates.initialize = function (irc_manager, dt)
-	if PLATFORM == "ps4" then
+	if IS_PS4 then
 		irc_manager._initialized = true
 
 		irc_manager:_change_state("connect")

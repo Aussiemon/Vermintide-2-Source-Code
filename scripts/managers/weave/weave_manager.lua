@@ -2,6 +2,7 @@ require("scripts/managers/conflict_director/weave_spawner")
 require("scripts/settings/wind_settings")
 require("scripts/settings/weave_settings")
 
+local weave_manager_testify = script_data.testify and require("scripts/managers/weave/weave_manager_testify")
 WeaveManager = class(WeaveManager)
 local RPCS = {
 	"rpc_set_active_weave",
@@ -207,7 +208,9 @@ WeaveManager.destroy = function (self)
 end
 
 WeaveManager.update = function (self, dt, t)
-	self:_poll_testify_requests()
+	if script_data.testify then
+		Testify:poll_requests_through_handler(weave_manager_testify, self)
+	end
 
 	if not self._initiated then
 		return
@@ -863,34 +866,6 @@ end
 
 WeaveManager.rpc_weave_final_objective_completed = function (self, channel_id)
 	self:final_objective_completed()
-end
-
-WeaveManager._poll_testify_requests = function (self)
-	local weave_name = Testify:poll_request("set_next_weave")
-
-	if weave_name then
-		self._remaining_time = WeaveSettings.starting_time
-
-		self:set_next_weave(weave_name)
-		self:set_next_objective(1)
-		Testify:respond_to_request("set_next_weave")
-	end
-
-	local weave_number = Testify:poll_request("get_weave_end_zone")
-
-	if weave_number then
-		local weave_template = WeaveSettings.templates_ordered[weave_number]
-
-		Testify:respond_to_request("get_weave_end_zone", weave_template.objectives[1].end_zone_name)
-	end
-
-	if Testify:poll_request("weave_remaining_time") then
-		Testify:respond_to_request("weave_remaining_time", self._remaining_time)
-	end
-
-	if Testify:poll_request("get_active_weave_phase") then
-		Testify:respond_to_request("get_active_weave_phase", self:get_active_weave_phase())
-	end
 end
 
 return

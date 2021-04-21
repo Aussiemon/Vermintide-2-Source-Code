@@ -325,7 +325,7 @@ GamepadConsumableUI._update_slot_ammo = function (self, widget, slot_data, item_
 	local ammo_count, remaining_ammo = get_ammunition_count(slot_data.left_unit_1p, slot_data.right_unit_1p, item_template)
 	local ammo_data = item_template and item_template.ammo_data
 
-	if ammo_data and ammo_count then
+	if ammo_data and ammo_count and not ammo_data.hide_ammo_ui then
 		local total_ammo = ammo_count + remaining_ammo
 
 		if total_ammo > 1 and widget_content.total_ammo ~= total_ammo then

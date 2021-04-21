@@ -40,6 +40,18 @@ PlayerCharacterStateStanding.on_exit = function (self, unit, input, dt, context,
 	return
 end
 
+PlayerCharacterStateStanding._inspection_available = function (self)
+	local is_state_ingame_deus = Managers.mechanism:get_state() == "ingame_deus"
+
+	if not is_state_ingame_deus then
+		return true
+	end
+
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	return not gamepad_active
+end
+
 PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local world = self.world
@@ -206,7 +218,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 		return
 	end
 
-	if input_extension:get("character_inspecting") then
+	if input_extension:get("character_inspecting") and self:_inspection_available() then
 		local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(self.inventory_extension)
 		local current_action_settings = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 

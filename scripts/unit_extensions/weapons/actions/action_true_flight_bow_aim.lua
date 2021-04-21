@@ -16,11 +16,15 @@ end
 ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t, chain_action_data)
 	ActionTrueFlightBowAim.super.client_owner_start_action(self, new_action, t, chain_action_data)
 
+	self._marked_target = {}
 	self.current_action = new_action
 	self.aim_timer = 0
 	self.target = (chain_action_data and chain_action_data.target) or nil
 	self.targets = (chain_action_data and chain_action_data.targets) or {}
 	self.aimed_target = (chain_action_data and chain_action_data.target) or nil
+
+	self:_mark_target(self.target)
+
 	self.time_to_shoot = t
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -47,8 +51,6 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	if spread_template_override then
 		self.spread_extension:override_spread_template(spread_template_override)
 	end
-
-	self._outline_system = Managers.state.entity:system("outline_system")
 end
 
 ActionTrueFlightBowAim._start_charge_sound = function (self)
@@ -182,17 +184,16 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			self.aim_timer = 0
 
 			if Unit.alive(hit_unit) and current_target ~= hit_unit then
+				current_target = hit_unit
 				self.target = hit_unit
-			end
-		end
 
-		if not is_bot and self._outline_system and self.target then
-			self._outline_system:set_priority_outline(self.target, "ai_alive", true)
+				self:_mark_target(hit_unit)
+			end
 		end
 	end
 
-	if not is_bot and self._outline_system and ((current_target and current_target ~= self.target) or (current_target and not AiUtils.unit_alive(current_target))) and not is_bot then
-		self._outline_system:set_priority_outline(current_target, "never", false)
+	if not is_bot and current_target and not AiUtils.unit_alive(current_target) then
+		self:_mark_target(nil)
 	end
 
 	self.charge_value = math.min(math.max(t - time_to_shoot, 0) / self.charge_time, 1)
@@ -286,24 +287,12 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 		local owner_player = Managers.player:owner(owner_unit)
 		local is_bot = owner_player and owner_player.bot_player
 		chain_action_data.targets = self:_get_visible_targets(self.target, current_action.num_projectiles, is_bot)
-		chain_action_data.target = self.target
-	else
-		chain_action_data.target = self.target
 	end
+
+	chain_action_data.target = self.target
 
 	self:_stop_charge_sound()
-
-	local action_two = data and data.new_action == "action_two"
-	local career_action = data and (data.new_action == "action_career_release" or data.new_action == "action_career_hold" or data.new_action == "action_career_not_hold") and data.new_sub_action == "default"
-	local not_interrupting_action = reason ~= "new_interupting_actions"
-	local has_outline_system = self._outline_system
-	local should_remove_outline = (action_two and not career_action) or not_interrupting_action
-	local owner_player = Managers.player:owner(owner_unit)
-	local is_bot = owner_player and owner_player.bot_player
-
-	if not is_bot and has_outline_system and should_remove_outline then
-		self._outline_system:set_priority_outline(self.target, "never", false)
-	end
+	self:_mark_target(nil)
 
 	self.targets = nil
 	self.target = nil
@@ -312,6 +301,30 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 	inventory_extension:set_loaded_projectile_override(nil)
 
 	return chain_action_data
+end
+
+ActionTrueFlightBowAim._mark_target = function (self, unit)
+	if self.is_bot then
+		return
+	end
+
+	local old_marked_target = self._marked_target
+
+	if old_marked_target.outline_extension then
+		old_marked_target.outline_extension:remove_outline(old_marked_target.outline_id)
+
+		old_marked_target.outline_extension = nil
+		old_marked_target.outline_id = nil
+	end
+
+	if unit and ALIVE[unit] then
+		local target_outline_extenson = ScriptUnit.has_extension(self.target, "outline_system")
+
+		if target_outline_extenson then
+			old_marked_target.outline_extension = target_outline_extenson
+			old_marked_target.outline_id = target_outline_extenson:add_outline(OutlineSettings.templates.target_enemy)
+		end
+	end
 end
 
 return

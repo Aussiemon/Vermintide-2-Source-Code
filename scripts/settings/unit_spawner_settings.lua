@@ -3,12 +3,12 @@ RagdollSettings = {
 	max_num_ragdolls = 24
 }
 
-if PLATFORM == "xb1" then
+if IS_XB1 then
 	RagdollSettings.min_num_ragdolls = 5
 	RagdollSettings.max_num_ragdolls = 5
 end
 
-if PLATFORM == "ps4" then
+if IS_PS4 then
 	RagdollSettings.min_num_ragdolls = 5
 	RagdollSettings.max_num_ragdolls = 5
 end

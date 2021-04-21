@@ -196,12 +196,9 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 
 			local breed_killed_name = breed_killed.name
 			local killed_race_name = breed_killed.race
+			local victim_side = Managers.state.side.side_by_unit[victim_unit]
 
-			if GameSettingsDevelopment.disable_carousel then
-				if Breeds[breed_killed_name] then
-					statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
-				end
-			else
+			if Breeds[breed_killed_name] or (PlayerBreeds[breed_killed_name] and Managers.state.side:is_enemy_by_side(attacker_side, victim_side)) then
 				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
 			end
 
@@ -289,13 +286,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 					local stats_id = player:stats_id()
 
 					if statistics_db:is_registered(stats_id) then
-						if GameSettingsDevelopment.disable_carousel then
-							if Breeds[breed_killed_name] then
-								statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
-							end
-						else
-							statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
-						end
+						statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_killed_name)
 					end
 				end
 			end
@@ -537,11 +528,7 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 
 				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt", damage_amount)
 
-				if GameSettingsDevelopment.disable_carousel then
-					if Breeds[breed_name] then
-						statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
-					end
-				else
+				if Breeds[breed_name] or (PlayerBreeds[breed_name] and Managers.state.side:is_enemy(attacker_unit, victim_unit)) then
 					statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
 				end
 
@@ -785,13 +772,13 @@ StatisticsUtil.register_weave_complete = function (statistics_db, player, is_qui
 		statistics_db:increment_stat(stats_id, ScorpionSeasonalSettings.current_season_name, weave_quickplay_wins_stat_name)
 		statistics_db:increment_stat(stats_id, "scorpion_weaves_won")
 
-		if ScorpionSeasonalSettings.current_season_id == 1 or PLATFORM ~= "win32" then
+		if ScorpionSeasonalSettings.current_season_id == 1 or not IS_WINDOWS then
 			local weave_quickplay_wins_difficulty_stat_name = "weave_quickplay_" .. difficulty_key .. "_wins"
 
 			statistics_db:increment_stat(stats_id, "season_1", weave_quickplay_wins_difficulty_stat_name)
 		end
 	else
-		if ScorpionSeasonalSettings.current_season_id == 1 or PLATFORM ~= "win32" then
+		if ScorpionSeasonalSettings.current_season_id == 1 or not IS_WINDOWS then
 			local rainbow_stat_name = "weave_rainbow_" .. wind .. "_" .. career_name .. "_season_1"
 
 			statistics_db:set_stat(stats_id, "season_1", rainbow_stat_name, 1)
@@ -816,7 +803,7 @@ StatisticsUtil.register_weave_complete = function (statistics_db, player, is_qui
 end
 
 StatisticsUtil._register_mutator_challenges = function (statistics_db, stats_id, wind)
-	if ScorpionSeasonalSettings.current_season_id == 1 or PLATFORM ~= "win32" then
+	if ScorpionSeasonalSettings.current_season_id == 1 or not IS_WINDOWS then
 		if wind == "life" then
 			local life_stat_id = "weave_life_stepped_in_bush"
 			local result = statistics_db:get_persistent_stat(stats_id, "season_1", life_stat_id)
@@ -866,8 +853,8 @@ StatisticsUtil._register_mutator_challenges = function (statistics_db, stats_id,
 	end
 end
 
-StatisticsUtil.register_journey_complete = function (statistics_db, player, journey_name, difficulty_name)
-	StatisticsUtil._register_completed_journey_difficulty(statistics_db, player, journey_name, difficulty_name)
+StatisticsUtil.register_journey_complete = function (statistics_db, player, journey_name, dominant_god, difficulty_name)
+	StatisticsUtil._register_completed_journey_difficulty(statistics_db, player, journey_name, dominant_god, difficulty_name)
 end
 
 StatisticsUtil.register_complete_tutorial = function (statistics_db)
@@ -967,10 +954,15 @@ StatisticsUtil._register_completed_level_difficulty = function (statistics_db, l
 	statistics_db:increment_stat(stats_id, "played_difficulty", difficulty_name)
 end
 
-StatisticsUtil._register_completed_journey_difficulty = function (statistics_db, player, journey_name, difficulty_name)
+StatisticsUtil._register_completed_journey_difficulty = function (statistics_db, player, journey_name, dominant_god, difficulty_name)
 	local stats_id = player:stats_id()
-	local journey_difficulty_name = JourneyDifficultyDBNames[journey_name]
-	local current_completed_difficulty = statistics_db:get_persistent_stat(stats_id, "completed_journeys_difficulty", journey_difficulty_name)
+	local profile_index = player:profile_index()
+	local profile_abbreviation = SPProfilesAbbreviation[profile_index]
+	local journey_db_name = JourneyDifficultyDBNames[journey_name]
+	local journey_dominant_god_db_name = JourneyDominantGodDifficultyDBNames[dominant_god]
+	local current_completed_difficulty = statistics_db:get_persistent_stat(stats_id, "completed_journeys_difficulty", journey_db_name)
+	local current_completed_journey_dominant_god_difficulty = statistics_db:get_persistent_stat(stats_id, "completed_journey_dominant_god_difficulty", journey_dominant_god_db_name)
+	local current_completed_hero_journey_difficulty = statistics_db:get_persistent_stat(stats_id, "completed_hero_journey_difficulty", profile_abbreviation, journey_db_name)
 	local difficulties = Managers.state.difficulty:get_level_difficulties()
 	local difficulty_index = table.find(difficulties, difficulty_name)
 
@@ -985,7 +977,35 @@ DefaultDifficulties: %s
 current_completed_difficulty: %s]], table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_difficulty)
 		end
 
-		statistics_db:set_stat(stats_id, "completed_journeys_difficulty", journey_difficulty_name, difficulty_index)
+		statistics_db:set_stat(stats_id, "completed_journeys_difficulty", journey_db_name, difficulty_index)
+	end
+
+	if current_completed_journey_dominant_god_difficulty < difficulty_index then
+		if difficulty_index > #DefaultDifficulties then
+			fassert(false, [[
+This shouldn't happen. 
+difficulties: %s
+difficulty_name: %s
+difficulty_index: %s
+DefaultDifficulties: %s
+current_completed_journey_dominant_god_difficulty: %s]], table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_journey_dominant_god_difficulty)
+		end
+
+		statistics_db:set_stat(stats_id, "completed_journey_dominant_god_difficulty", journey_dominant_god_db_name, difficulty_index)
+	end
+
+	if current_completed_hero_journey_difficulty < difficulty_index then
+		if difficulty_index > #DefaultDifficulties then
+			fassert(false, [[
+This shouldn't happen. 
+difficulties: %s
+difficulty_name: %s
+difficulty_index: %s
+DefaultDifficulties: %s
+current_completed_hero_journey_difficulty: %s]], table.tostring(difficulties), difficulty_name, difficulty_index, table.tostring(DefaultDifficulties), current_completed_hero_journey_difficulty)
+		end
+
+		statistics_db:set_stat(stats_id, "completed_hero_journey_difficulty", profile_abbreviation, journey_db_name, difficulty_index)
 	end
 end
 

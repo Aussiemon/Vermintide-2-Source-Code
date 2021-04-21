@@ -1,6 +1,18 @@
 require("scripts/ui/reward_popup/reward_popup_ui")
 DLCUtils.require_list("end_view_state")
 
+local extra_portrait_materials = {}
+
+for _, dlc in pairs(DLCSettings) do
+	local portrait_materials = dlc.portrait_materials
+
+	if portrait_materials then
+		for _, path in ipairs(portrait_materials) do
+			extra_portrait_materials[#extra_portrait_materials + 1] = path
+		end
+	end
+end
+
 local SPEED_UP_MULT_MAX = 3
 local SPEED_UP_LERP_SPEED = 4
 local RPCS = {
@@ -31,12 +43,19 @@ LevelEndViewBase.init = function (self, context)
 	self._lobby = context.lobby
 	self.is_server = context.is_server
 	self._state_speed_mult = 1
+
+	if not self.is_server then
+		local statistics_db = Managers.player:statistics_db()
+		self.context.players_session_score = Managers.mechanism:get_players_session_score(statistics_db, self.profile_synchronizer)
+	end
+
 	local is_untrusted = script_data["eac-untrusted"]
 	self._is_untrusted = is_untrusted
 
 	if not is_untrusted then
 		self.level_up_rewards = self:_get_level_up_rewards()
 		self.deed_rewards = self:_get_deed_rewards()
+		self.deus_rewards = self:_get_deus_rewards()
 		self.keep_decoration_rewards = self:_get_keep_decoration_rewards()
 		self.event_rewards = self:_get_event_rewards()
 		self.win_track_rewards = self:_get_win_track_rewards()
@@ -125,8 +144,6 @@ LevelEndViewBase._vote_to_leave_game = function (self)
 end
 
 LevelEndViewBase.exit_to_game = function (self)
-	self:play_sound(self._stop_music_event)
-
 	self._exit_timer = 2
 	self._started_exit = true
 end
@@ -173,10 +190,16 @@ LevelEndViewBase.get_viewport_world = function (self)
 	return self._world, self._world_viewport
 end
 
+LevelEndViewBase.post_update = function (self)
+	return
+end
+
 LevelEndViewBase.update = function (self, dt, t)
 	if self.suspended or self.waiting_for_post_update_enter then
 		return
 	end
+
+	FatUI.begin_frame(self.ui_renderer.gui, self.wwise_world, dt, t)
 
 	local active_camera_shakes = self._active_camera_shakes
 
@@ -234,6 +257,8 @@ LevelEndViewBase.update = function (self, dt, t)
 			end
 		end
 	end
+
+	FatUI.close_frame()
 end
 
 LevelEndViewBase.transitioning = function (self)
@@ -402,6 +427,19 @@ LevelEndViewBase._get_event_rewards = function (self)
 	end
 
 	return event_rewards
+end
+
+LevelEndViewBase._get_deus_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local deus_rewards = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "deus_reward") == 1 then
+			deus_rewards[#deus_rewards + 1] = item
+		end
+	end
+
+	return deus_rewards
 end
 
 LevelEndViewBase._get_keep_decoration_rewards = function (self)
@@ -689,6 +727,45 @@ LevelEndViewBase.present_additional_rewards = function (self)
 
 		self:_present_reward(presentation_data)
 	end
+
+	local deus_rewards = self.deus_rewards
+	local num_deus_rewards = #deus_rewards
+
+	if num_deus_rewards > 0 then
+		local presentation_data = {
+			{
+				{
+					widget_type = "title",
+					value = Localize("deus_expedition_completed_title")
+				}
+			}
+		}
+
+		for _, item in ipairs(deus_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+			description[1] = Localize(display_name)
+			description[2] = Localize("end_screen_you_received")
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+
+		self:_present_reward(presentation_data)
+	end
 end
 
 LevelEndViewBase.present_chest_rewards = function (self)
@@ -947,7 +1024,7 @@ end
 
 LevelEndViewBase.start_force_shutdown = function (self)
 	self._started_force_shutdown = true
-	self._force_shutdown_timer = 10
+	self._force_shutdown_timer = 45
 	self._force_shutdown_timer_start = self._force_shutdown_timer
 end
 
@@ -1336,6 +1413,11 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 		for _, extra_material in ipairs(extra_materials) do
 			materials[#materials + 1] = extra_material
 		end
+	end
+
+	for _, extra_portrait_material in ipairs(extra_portrait_materials) do
+		materials[#materials + 1] = "material"
+		materials[#materials + 1] = extra_portrait_material
 	end
 
 	local ui_renderer = UIRenderer.create(world, unpack(materials))

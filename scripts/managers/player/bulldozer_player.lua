@@ -149,7 +149,7 @@ BulldozerPlayer.spawn_unit = function (self, unit_name, extension_init_data, uni
 	end
 end
 
-BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, initial_buff_names)
+BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade, ability_cooldown_percent_int, additional_items, initial_buff_names)
 	local profile_index = self:profile_index()
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -171,14 +171,9 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	end
 
 	local aim_template = profile.aim_template or "player"
-	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, profile)
+	local initial_inventory = game_mode_manager:get_initial_inventory(healthkit, potion, grenade, additional_items, profile)
 	local hero_name = profile.display_name
 	local career = profile.careers[career_index]
-
-	if is_initial_spawn and career.additional_starting_inventory then
-		initial_inventory.additional_items = career.additional_starting_inventory
-	end
-
 	local character_state_class_list = {}
 
 	for _, character_state_name in ipairs(career.character_state_list) do
@@ -428,7 +423,7 @@ BulldozerPlayer.local_player_id = function (self)
 end
 
 BulldozerPlayer.platform_id = function (self)
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		return self.peer_id
 	else
 		return Managers.account:account_id()
@@ -500,7 +495,7 @@ BulldozerPlayer.name = function (self)
 
 			return name
 		end
-	elseif PLATFORM == "xb1" or PLATFORM == "ps4" then
+	elseif IS_CONSOLE then
 		if self._cached_name then
 			return self._cached_name
 		end

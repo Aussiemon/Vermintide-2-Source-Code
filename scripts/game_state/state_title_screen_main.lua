@@ -18,6 +18,7 @@ StateTitleScreenMain.on_enter = function (self, params)
 	self._attract_mode_timer = ATTRACT_MODE_TIMER
 	self._attract_mode_active = false
 	self._auto_start = params.auto_start
+	self._auto_sign_in = params.auto_sign_in
 	self.input_manager = Managers.input
 	self._title_start_ui = params.ui
 
@@ -29,7 +30,7 @@ StateTitleScreenMain.on_enter = function (self, params)
 
 	self._error_popups = {}
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if not Managers.account:should_teardown_xboxlive() then
 			Managers.account:reset()
 		end
@@ -39,7 +40,7 @@ StateTitleScreenMain.on_enter = function (self, params)
 
 			Managers.xbox_stats = nil
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		Managers.account:reset()
 	else
 		Managers.account:reset()
@@ -69,7 +70,7 @@ StateTitleScreenMain.on_enter = function (self, params)
 		end
 	}
 
-	if PLATFORM == "ps4" and self.parent.invite_handled then
+	if IS_PS4 and self.parent.invite_handled then
 		Managers.invite:clear_invites()
 
 		self.parent.invite_handled = nil
@@ -197,7 +198,7 @@ StateTitleScreenMain._handle_continue_input = function (self, dt, t)
 		if input_service:get("start", true) then
 			local current_device = Managers.input:get_most_recent_device()
 
-			if PLATFORM == "xb1" and (current_device._name == "Keyboard" or current_device._name == "Mouse") then
+			if IS_XB1 and (current_device._name == "Keyboard" or current_device._name == "Mouse") then
 				self:_queue_popup(Localize("popup_signin_only_with_gamepad"), Localize("popup_notice_topic"), "ok", Localize("popup_choice_ok"))
 			else
 				self._start_pressed = true
@@ -206,7 +207,7 @@ StateTitleScreenMain._handle_continue_input = function (self, dt, t)
 			local current_device = Managers.input:get_most_recent_device()
 
 			if current_device:any_pressed() then
-				if PLATFORM == "xb1" and (current_device._name == "Keyboard" or current_device._name == "Mouse") then
+				if IS_XB1 and (current_device._name == "Keyboard" or current_device._name == "Mouse") then
 					self:_queue_popup(Localize("popup_signin_only_with_gamepad"), Localize("popup_notice_topic"), "ok", Localize("popup_choice_ok"))
 				else
 					self._start_pressed = true
@@ -246,7 +247,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 	local platform = PLATFORM
 	local controller = Managers.input:get_most_recent_device()
 
-	if platform == "ps4" then
+	if IS_PS4 then
 		local play_together_list = SessionInvitation.play_together_list()
 
 		if play_together_list then
@@ -254,7 +255,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 		end
 	end
 
-	if platform == "ps4" and (Managers.invite:has_invitation() or Managers.invite:play_together_list()) and not self._state then
+	if IS_PS4 and (Managers.invite:has_invitation() or Managers.invite:play_together_list()) and not self._state then
 		if Managers.play_go:installed() then
 			Managers.music:trigger_event("Play_console_menu_select")
 
@@ -281,7 +282,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 			self:_exit_attract_mode()
 
 			self._start_pressed = false
-		elseif platform == "win32" then
+		elseif IS_WINDOWS then
 			if not GameSettingsDevelopment.skip_start_screen then
 				Managers.music:trigger_event("hud_menu_press_start")
 			end
@@ -289,7 +290,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 			self._title_start_ui:set_start_pressed(true)
 
 			self._state = StateTitleScreenInitNetwork
-		elseif platform == "xb1" then
+		elseif IS_XB1 then
 			if not controller or controller.type() ~= "xbox_controller" then
 				self._start_pressed = false
 
@@ -315,7 +316,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 			end
 
 			if can_proceed and user_id and Managers.account:user_exists(user_id) then
-				if Managers.account:sign_in(user_id, controller) then
+				if Managers.account:sign_in(user_id, controller, self._auto_sign_in) then
 					Managers.music:trigger_event("Play_console_menu_select")
 					self._title_start_ui:set_start_pressed(true)
 
@@ -345,7 +346,7 @@ StateTitleScreenMain._update_input = function (self, dt, t)
 				self._has_engaged = false
 				self._start_pressed = false
 			end
-		elseif platform == "ps4" then
+		elseif IS_PS4 then
 			Managers.music:trigger_event("Play_console_menu_select")
 			Managers.input:set_exclusive_gamepad(controller)
 			Managers.account:set_controller(controller)

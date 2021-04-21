@@ -408,7 +408,7 @@ SocialWheelSettings = {
 			event_text_func = get_drop_event_text,
 			execute_func = drop_item,
 			is_valid_func = has_item,
-			ping_type = PingTypes.PLAYER_PICK_UP
+			ping_type = PingTypes.CHAT_ONLY
 		},
 		wedge_adjustment = 1,
 		ping = false,

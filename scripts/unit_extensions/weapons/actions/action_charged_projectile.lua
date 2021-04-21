@@ -62,6 +62,14 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
 
 	self._is_critical_strike = is_critical_strike
+	local is_grenade = self.ammo_extension
+
+	if is_grenade then
+		self._extra_grenades = self.owner_buff_extension:apply_buffs_to_value(0, "grenade_extra_shot")
+		self._grenade_thrown = false
+	end
+
+	self._is_grenade = is_grenade
 end
 
 ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -73,6 +81,17 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 		self:_shoot(t)
 		self:_proc_spell_used(self.owner_buff_extension)
 	end
+end
+
+ActionChargedProjectile._check_extra_shot_proc = function (self, buff_extension)
+	if self._is_grenade then
+		local extra_shot = self._extra_grenades > 0
+		self._extra_grenades = self._extra_grenades - 1
+
+		return extra_shot
+	end
+
+	return ActionChargedProjectile.super._check_extra_shot_proc(self, buff_extension)
 end
 
 ActionChargedProjectile._shoot = function (self, t)
@@ -95,21 +114,29 @@ ActionChargedProjectile._shoot = function (self, t)
 		end
 	end
 
-	if self.ammo_extension then
-		local ammo_usage = self.current_action.ammo_usage
-		local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
-		local free_grenade_perk = self.owner_buff_extension:has_buff_perk("free_grenade")
+	local extra_shot_procced = self:_check_extra_shot_proc(self.owner_buff_extension)
+	local add_spread = not self.extra_buff_shot
 
-		if not procced and not free_grenade_perk then
+	if self._is_grenade then
+		local ammo_usage = self.current_action.ammo_usage
+		local _, free_grenade_proc = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
+		local free_grenade_perk = self.owner_buff_extension:has_buff_perk("free_grenade")
+		local should_use_ammo = not free_grenade_proc and not free_grenade_perk and not extra_shot_procced
+
+		if should_use_ammo then
 			self.ammo_extension:use_ammo(ammo_usage)
-		else
+		elseif not extra_shot_procced then
 			local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
 			inventory_extension:wield_previous_weapon()
 		end
 
-		self.owner_buff_extension:trigger_procs("on_grenade_use")
-		Managers.state.achievement:trigger_event("on_grenade_thrown", owner_unit, current_action)
+		if not self._grenade_thrown then
+			self.owner_buff_extension:trigger_procs("on_grenade_use")
+			Managers.state.achievement:trigger_event("on_grenade_thrown", owner_unit, current_action)
+
+			self._grenade_thrown = true
+		end
 	end
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
@@ -118,10 +145,7 @@ ActionChargedProjectile._shoot = function (self, t)
 		})
 	end
 
-	local _, procced = self.owner_buff_extension:apply_buffs_to_value(0, "extra_shot")
-	local add_spread = not self.extra_buff_shot
-
-	if procced and not self.extra_buff_shot then
+	if extra_shot_procced then
 		self.state = "waiting_to_shoot"
 		self.time_to_shoot = t + 0.1
 		self.extra_buff_shot = true
@@ -240,7 +264,7 @@ ActionChargedProjectile._shoot = function (self, t)
 		Unit.set_unit_visibility(self.weapon_unit, false)
 	end
 
-	if projectile_info.pickup_name then
+	if not projectile_info.disable_throwing_dialogue and projectile_info.pickup_name then
 		local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
 		event_data.item_type = projectile_info.pickup_name
@@ -251,7 +275,17 @@ end
 
 ActionChargedProjectile.finish = function (self, reason)
 	if self.state == "waiting_to_shoot" then
-		self:_shoot()
+		local t = Managers.time:time("game")
+		local max_iteration_count = 5
+
+		for i = 1, max_iteration_count, 1 do
+			self:_shoot(t)
+
+			if self.state == "shot" then
+				break
+			end
+		end
+
 		self:_proc_spell_used(self.owner_buff_extension)
 	end
 

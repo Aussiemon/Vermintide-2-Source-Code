@@ -68,59 +68,59 @@ ImguiObjectivesDebug._temp = function (self, data, current_objectives, depth)
 
 	for key, value in pairs(data) do
 		if depth == 1 or (type(value) == "table" and value.is_objective_root) then
-			if Imgui.TreeNode(key, current_objectives and not value.completed) then
+			if Imgui.tree_node(key, current_objectives and not value.completed) then
 				self:_temp(value, current_objectives, depth + 1)
 
 				if current_objectives and not value.completed then
-					Imgui.Indent()
+					Imgui.indent()
 
-					if Imgui.Button("Complete Objective") then
+					if Imgui.button("Complete Objective") then
 						self._objective_system:complete_objective(key)
 					end
 
-					Imgui.Unindent()
+					Imgui.unindent()
 				end
 
-				Imgui.TreePop()
+				Imgui.tree_pop()
 			end
 		else
-			Imgui.Indent()
+			Imgui.indent()
 
 			if type(value) == "table" then
 				if table.size(value) > 0 then
-					Imgui.Text(key .. ":")
+					Imgui.text(key .. ":")
 					self:_temp(value, current_objectives, depth + 1)
 				else
-					Imgui.Text(key .. ": {}")
+					Imgui.text(key .. ": {}")
 				end
 			else
-				Imgui.Text(key .. ": " .. tostring(value))
+				Imgui.text(key .. ": " .. tostring(value))
 			end
 
-			Imgui.Unindent()
+			Imgui.unindent()
 		end
 	end
 end
 
 ImguiObjectivesDebug._same_line_dummy = function (self, x, y)
-	Imgui.SameLine()
-	Imgui.Dummy(x, y)
-	Imgui.SameLine()
+	Imgui.same_line()
+	Imgui.dummy(x, y)
+	Imgui.same_line()
 end
 
 ImguiObjectivesDebug._draw_versus = function (self, is_open)
-	Imgui.Text("Timer")
-	Imgui.Indent()
-	Imgui.Text("Pause")
+	Imgui.text("Timer")
+	Imgui.indent()
+	Imgui.text("Pause")
 	self:_same_line_dummy(0, 0)
 
-	self._timer_paused = Imgui.Checkbox("  ", self._timer_paused)
+	self._timer_paused = Imgui.checkbox("  ", self._timer_paused)
 	script_data.versus_objective_timer_paused = self._timer_paused
 
-	Imgui.Text("Time")
+	Imgui.text("Time")
 	self:_same_line_dummy(7, 0)
 
-	local new_time = Imgui.SliderFloat(" ", self._timer, 0, 600)
+	local new_time = Imgui.slider_float(" ", self._timer, 0, 600)
 
 	if new_time ~= self._timer then
 		Managers.state.game_mode:game_mode():win_conditions():set_time(new_time)
@@ -128,38 +128,38 @@ ImguiObjectivesDebug._draw_versus = function (self, is_open)
 		self._timer = new_time
 	end
 
-	Imgui.Unindent()
+	Imgui.unindent()
 end
 
 ImguiObjectivesDebug.draw = function (self, is_open)
-	Imgui.Begin("Objectives Debug")
-	Imgui.Text(string.format("Completed Objectives: %s/%s", self._num_completed_main_objectives, self._num_main_objectives))
-	Imgui.Dummy(0, 16)
+	Imgui.begin_window("Objectives Debug")
+	Imgui.text(string.format("Completed Objectives: %s/%s", self._num_completed_main_objectives, self._num_main_objectives))
+	Imgui.dummy(0, 16)
 
 	if self._is_versus then
 		self:_draw_versus(is_open)
 	end
 
-	Imgui.Dummy(0, 16)
-	Imgui.Text("Objectives")
-	Imgui.Indent()
+	Imgui.dummy(0, 16)
+	Imgui.text("Objectives")
+	Imgui.indent()
 
 	if self._objective_lists then
 		for index, objectives in ipairs(self._objective_lists) do
 			if index == self._current_objectives_index then
-				Imgui.Text(tostring(index))
+				Imgui.text(tostring(index))
 			elseif index < self._current_objectives_index then
-				Imgui.TextColored(tostring(index), 0, 255, 0, 255)
+				Imgui.text_colored(tostring(index), 0, 255, 0, 255)
 			else
-				Imgui.TextColored(tostring(index), 255, 0, 0, 255)
+				Imgui.text_colored(tostring(index), 255, 0, 0, 255)
 			end
 
 			self:_temp(objectives, index == self._current_objectives_index)
 		end
 	end
 
-	Imgui.Unindent()
-	Imgui.End()
+	Imgui.unindent()
+	Imgui.end_window()
 end
 
 return

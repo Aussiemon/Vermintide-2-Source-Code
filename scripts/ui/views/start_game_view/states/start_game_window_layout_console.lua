@@ -1,8 +1,3 @@
-local TWITCH_DISPLAY_NAME = {
-	xb1 = "start_game_window_twitch",
-	win32 = "start_game_window_twitch",
-	ps4 = "start_game_window_twitch"
-}
 local windows = {
 	panel = {
 		ignore_alignment = true,
@@ -64,89 +59,117 @@ local windows = {
 		name = "twitch_overview",
 		class_name = "StartGameWindowTwitchOverviewConsole"
 	},
-	lobby_browser = {
+	console_lobby_browser = {
 		ignore_alignment = true,
-		name = "lobby_browser",
+		name = "console_lobby_browser",
 		class_name = "StartGameWindowLobbyBrowserConsole"
 	}
 }
 local window_layouts = {
 	{
 		sound_event_enter = "play_gui_lobby_button_00_quickplay",
-		disable_function_name = "_adventure_disable_function",
 		display_name = "start_game_window_adventure_title",
 		game_mode_option = true,
-		input_focus_window = "adventure_overview",
-		save_data_table = "adventure",
 		name = "adventure",
-		can_add_function_name = "_can_add_adventrue",
+		disable_function_name = "_adventure_disable_function",
+		save_data_table = "adventure",
+		panel_sorting = 10,
+		background_object_set = "quick_play",
+		input_focus_window = "adventure_overview",
 		close_on_exit = true,
+		background_flow_event = "quick_play",
 		windows = {
 			adventure_overview = 3,
 			panel = 1,
 			background = 2
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure")
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
-		disable_function_name = "_custom_game_disable_function",
 		display_name = "start_game_window_specific_title",
 		game_mode_option = true,
-		input_focus_window = "custom_game_overview",
-		save_data_table = "custom",
 		name = "custom_game",
-		can_add_function_name = "_can_add_custom_game",
+		disable_function_name = "_custom_game_disable_function",
+		save_data_table = "custom",
+		panel_sorting = 20,
+		background_object_set = "custom_game",
+		input_focus_window = "custom_game_overview",
 		close_on_exit = true,
+		background_flow_event = "custom_game",
 		windows = {
 			custom_game_overview = 3,
 			panel = 1,
 			background = 2,
 			additional_settings = 4
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure")
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_heroic_deed",
-		disable_function_name = "_heroic_deed_disable_function",
 		display_name = "start_game_window_mutator_title",
 		game_mode_option = true,
-		input_focus_window = "mutator_overview",
-		save_data_table = "deeds",
 		name = "heroic_deeds",
-		can_add_function_name = "_can_add_heroic_deeds",
+		disable_function_name = "_heroic_deed_disable_function",
+		save_data_table = "deeds",
+		panel_sorting = 30,
+		background_object_set = "deeds",
+		input_focus_window = "mutator_overview",
 		close_on_exit = true,
+		background_flow_event = "deeds",
 		windows = {
 			mutator_overview = 3,
 			panel = 1,
 			background = 2,
 			mutator_summary = 4
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure")
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
 		disable_function_name = "_streaming_disable_function",
+		display_name = "start_game_window_twitch",
 		game_mode_option = true,
-		input_focus_window = "twitch_overview",
-		save_data_table = "custom",
 		name = "twitch",
-		can_add_function_name = "_can_add_streaming_function",
+		save_data_table = "custom",
+		panel_sorting = 40,
+		background_object_set = "twitch",
+		input_focus_window = "twitch_overview",
 		close_on_exit = true,
-		display_name = TWITCH_DISPLAY_NAME[PLATFORM],
+		background_flow_event = "twitch",
 		windows = {
 			twitch_overview = 3,
 			panel = 1,
 			background = 2
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure") and overview:can_use_streaming()
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_lobby_browser",
-		name = "lobby_browser",
 		save_data_table = "lobby_browser",
+		display_name = "start_game_window_lobby_browser",
+		name = "console_lobby_browser",
+		disable_function_name = "_lobby_browser_disable_function",
+		panel_sorting = 100,
+		background_object_set = "lobby_browser",
 		close_on_exit = true,
+		background_flow_event = "lobby_browser",
 		windows = {
-			lobby_browser = 3,
+			console_lobby_browser = 3,
 			panel = 1,
 			background = 2
-		}
+		},
+		can_add_function = function (overview)
+			return overview:is_in_mechanism("adventure") and not IS_XB1
+		end
 	},
 	{
 		sound_event_enter = "play_gui_lobby_button_00_custom",
@@ -223,11 +246,19 @@ local generic_input_actions = {
 			description_text = "input_description_close"
 		},
 		{
+			input_action = "right_stick_press",
+			priority = 4,
+			description_text = "input_description_level_preferences",
+			content_check_function = function ()
+				return PLATFORM == "xb1" and DLCSettings.quick_play_preferences
+			end
+		},
+		{
 			input_action = "show_gamercard",
 			priority = 5,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		}
 	},
@@ -258,7 +289,7 @@ local generic_input_actions = {
 			priority = 5,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		}
 	},
@@ -307,7 +338,7 @@ local generic_input_actions = {
 			priority = 5,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		}
 	},
@@ -338,7 +369,7 @@ local generic_input_actions = {
 			priority = 5,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		}
 	},
@@ -358,7 +389,7 @@ local generic_input_actions = {
 			priority = 3,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		}
 	},
@@ -378,7 +409,7 @@ local generic_input_actions = {
 			priority = 3,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		}
 	},
@@ -404,7 +435,7 @@ local generic_input_actions = {
 			priority = 4,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		},
 		{
@@ -430,7 +461,7 @@ local generic_input_actions = {
 			priority = 3,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		},
 		{
@@ -450,7 +481,7 @@ local generic_input_actions = {
 			priority = 3,
 			description_text = "map_friend_button_tooltip",
 			content_check_function = function ()
-				return PLATFORM ~= "win32" and not Managers.account:offline_mode()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
 			end
 		}
 	},
@@ -524,7 +555,7 @@ local generic_input_actions = {
 			{
 				input_action = "confirm",
 				priority = 2,
-				description_text = (PLATFORM == "xb1" and "dlc1_4_input_description_storepage") or "buy_now"
+				description_text = (IS_XB1 and "dlc1_4_input_description_storepage") or "buy_now"
 			},
 			{
 				input_action = "back",
@@ -861,15 +892,20 @@ local generic_input_actions = {
 		}
 	}
 }
+
+DLCUtils.merge("start_game_layout_console_generic_inputs", generic_input_actions)
+
 local mechanism_custom_game_settings = {
 	adventure = {
 		game_mode_type = "custom",
+		difficulty_index_getter_name = "completed_level_difficulty_index",
 		layout_name = "area_selection"
 	}
 }
 local mechanism_twitch_settings = {
 	adventure = {
 		game_mode_type = "twitch",
+		difficulty_index_getter_name = "completed_level_difficulty_index",
 		layout_name = "area_selection"
 	}
 }
@@ -879,73 +915,62 @@ local mechanism_quickplay_settings = {
 		layout_name = "area_selection"
 	}
 }
+local save_data_table_maps = {}
 
-for _, dlc in pairs(DLCSettings) do
-	local start_game_window_layout_console = dlc.start_game_window_layout_console
+DLCUtils.map("start_game_window_layout_console", function (start_game_window_layout_console)
+	local new_windows = start_game_window_layout_console.windows
 
-	if start_game_window_layout_console then
-		local new_windows = start_game_window_layout_console.windows
-
-		if new_windows then
-			for name, window in pairs(new_windows) do
-				windows[name] = window
-			end
-		end
-
-		local new_window_layouts = start_game_window_layout_console.window_layouts
-
-		if new_window_layouts then
-			for i = 1, #new_window_layouts, 1 do
-				table.insert(window_layouts, 1, new_window_layouts[i])
-			end
-		end
-
-		local dlc_mechanism_custom_game = start_game_window_layout_console.mechanism_custom_game
-
-		if dlc_mechanism_custom_game then
-			local mechanism_name = dlc_mechanism_custom_game.mechanism_name
-			local layout_name = dlc_mechanism_custom_game.layout_name
-			local game_mode_type = dlc_mechanism_custom_game.game_mode_type
-
-			fassert(mechanism_custom_game_settings[mechanism_name] == nil, "Trying to set custom_game for the mechanism '%s' which is already set.", mechanism_name)
-
-			mechanism_custom_game_settings[mechanism_name] = {
-				layout_name = layout_name,
-				game_mode_type = game_mode_type
-			}
-		end
-
-		local dlc_mechanism_twitch = start_game_window_layout_console.mechanism_twitch
-
-		if dlc_mechanism_twitch then
-			local mechanism_name = dlc_mechanism_twitch.mechanism_name
-			local layout_name = dlc_mechanism_twitch.layout_name
-			local game_mode_type = dlc_mechanism_twitch.game_mode_type
-
-			fassert(mechanism_twitch_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
-
-			mechanism_twitch_settings[mechanism_name] = {
-				layout_name = layout_name,
-				game_mode_type = game_mode_type
-			}
-		end
-
-		local dlc_mechanism_quickplay = start_game_window_layout_console.mechanism_quickplay
-
-		if dlc_mechanism_quickplay then
-			local mechanism_name = dlc_mechanism_quickplay.mechanism_name
-			local layout_name = dlc_mechanism_quickplay.layout_name
-			local game_mode_type = dlc_mechanism_quickplay.game_mode_type
-
-			fassert(mechanism_quickplay_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
-
-			mechanism_quickplay_settings[mechanism_name] = {
-				layout_name = layout_name,
-				game_mode_type = game_mode_type
-			}
+	if new_windows then
+		for name, window in pairs(new_windows) do
+			windows[name] = window
 		end
 	end
-end
+
+	local new_window_layouts = start_game_window_layout_console.window_layouts
+
+	if new_window_layouts then
+		for i = 1, #new_window_layouts, 1 do
+			window_layouts[#window_layouts + 1] = new_window_layouts[i]
+		end
+	end
+
+	local dlc_mechanism_custom_game = start_game_window_layout_console.mechanism_custom_game
+
+	if dlc_mechanism_custom_game then
+		local mechanism_name = dlc_mechanism_custom_game.mechanism_name
+
+		fassert(mechanism_custom_game_settings[mechanism_name] == nil, "Trying to set custom_game for the mechanism '%s' which is already set.", mechanism_name)
+
+		mechanism_custom_game_settings[mechanism_name] = dlc_mechanism_custom_game
+	end
+
+	local dlc_mechanism_twitch = start_game_window_layout_console.mechanism_twitch
+
+	if dlc_mechanism_twitch then
+		local mechanism_name = dlc_mechanism_twitch.mechanism_name
+
+		fassert(mechanism_twitch_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
+
+		mechanism_twitch_settings[mechanism_name] = dlc_mechanism_twitch
+	end
+
+	local dlc_mechanism_quickplay = start_game_window_layout_console.mechanism_quickplay
+
+	if dlc_mechanism_quickplay then
+		local mechanism_name = dlc_mechanism_quickplay.mechanism_name
+
+		fassert(mechanism_quickplay_settings[mechanism_name] == nil, "Trying to set twitch for the mechanism '%s' which is already set.", mechanism_name)
+
+		mechanism_quickplay_settings[mechanism_name] = dlc_mechanism_quickplay
+	end
+end)
+DLCUtils.merge("start_game_save_data_table_map_console", save_data_table_maps)
+
+local HUGE = math.huge
+
+table.sort(window_layouts, function (a, b)
+	return (a.panel_sorting or HUGE) < (b.panel_sorting or HUGE)
+end)
 
 local video_resources = {}
 
@@ -964,5 +989,6 @@ return {
 	video_resources = video_resources,
 	mechanism_custom_game_settings = mechanism_custom_game_settings,
 	mechanism_twitch_settings = mechanism_twitch_settings,
-	mechanism_quickplay_settings = mechanism_quickplay_settings
+	mechanism_quickplay_settings = mechanism_quickplay_settings,
+	save_data_table_maps = save_data_table_maps
 }

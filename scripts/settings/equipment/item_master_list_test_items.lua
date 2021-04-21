@@ -285,21 +285,25 @@ ItemMasterList.test_item_1015 = {
 	steam_store_hidden = store_item_hidden
 }
 ItemMasterList.test_bundle_1016 = {
-	description = "test_item_1016_desc",
-	rarity = "promo",
-	display_name = "test_item_1016",
+	product_layout = "test_bundle_1016",
+	show_discount = false,
+	display_name = "shade_bundle_01",
 	template = "bw_hat",
-	inventory_icon = "icon_waywatcher_hat_1001",
-	slot_type = "hat",
-	information_text = "test_bundle_1016",
+	slot_type = "bundle",
+	information_text = "shade_bundle_01",
 	hud_icon = "hud_icon_default",
-	item_type = "hat",
+	item_type = "bundle",
 	unit = "units/beings/player/bright_wizard_unchained/headpiece/bw_u_hat_12",
 	steam_itemdefid = 16,
-	can_wield = {
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher"
+	description = "test_bundle_1016_desc",
+	rarity = "promo",
+	inventory_icon = "",
+	show_old_price = true,
+	can_wield = {},
+	bundle_contains = {
+		100,
+		101,
+		102
 	},
 	steam_store_hidden = store_item_hidden
 }

@@ -1,5 +1,5 @@
 local window_frame_width = 22
-local platform_offset = (PLATFORM ~= "win32" and 50) or 0
+local platform_offset = (not IS_WINDOWS and 50) or 0
 local score_container_w = 1600
 local score_container_margin_w = 50
 local score_content_w = score_container_w - score_container_margin_w

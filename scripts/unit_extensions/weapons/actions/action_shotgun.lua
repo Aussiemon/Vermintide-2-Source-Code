@@ -80,8 +80,14 @@ ActionShotgun._add_overcharge = function (self)
 	local current_action = self.current_action
 	local overcharge_type = current_action.overcharge_type
 
-	if overcharge_type then
+	if overcharge_type and not self.extra_buff_shot then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
+		local owner_unit = self.owner_unit
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+		if self._is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
+			overcharge_amount = 0
+		end
 
 		self.overcharge_extension:add_charge(overcharge_amount)
 	end
@@ -137,10 +143,9 @@ ActionShotgun._shooting = function (self, t, final_frame)
 
 	self:_shoot(num_shots_total, num_shots_this_frame)
 
-	local buff_extension = self.owner_buff_extension
-	local _, procced = buff_extension:apply_buffs_to_value(0, "extra_shot")
+	local procced = self:_check_extra_shot_proc(self.owner_buff_extension)
 
-	if procced and not self.extra_buff_shot then
+	if procced then
 		self.state = "waiting_to_shoot"
 		self.time_to_shoot = t + 0.2
 		self.extra_buff_shot = true

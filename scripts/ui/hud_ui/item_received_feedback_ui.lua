@@ -195,11 +195,22 @@ ItemReceivedFeedbackUI._get_hero_portrait = function (self, profile_index, caree
 	return "small_" .. character_portrait
 end
 
+local customizer_data = {
+	root_scenegraph_id = "message_animated",
+	label = "Item received",
+	registry_key = "item_received",
+	drag_scenegraph_id = "message_animated_dragger"
+}
+
 ItemReceivedFeedbackUI.update = function (self, dt, t)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")
 	local render_settings = self.render_settings
+
+	if HudCustomizer.run(ui_renderer, ui_scenegraph, customizer_data) then
+		UISceneGraph.update_scenegraph(ui_scenegraph)
+	end
 
 	for name, animation in pairs(self._animations) do
 		if self._animations[name] then

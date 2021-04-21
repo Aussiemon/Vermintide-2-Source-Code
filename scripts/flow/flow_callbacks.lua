@@ -362,6 +362,13 @@ function flow_callback_get_current_level_key(params)
 	return flow_return_table
 end
 
+function flow_callback_get_deus_post_match(params)
+	local mechanism = Managers.mechanism:game_mechanism()
+	flow_return_table.post_match = mechanism:post_match() == true
+
+	return flow_return_table
+end
+
 function flow_callback_get_current_current_deus_theme_index(params)
 	flow_return_table.theme_index = 1
 	local level_key = Managers.mechanism:get_current_level_keys()
@@ -1111,6 +1118,20 @@ function flow_callback_thrown_projectile_bounce(params)
 	end
 end
 
+function flow_callback_projectile_impacts_stopped(params)
+	local unit = params.unit
+	local impacts_stopped = true
+	local projectile_extension = ALIVE[unit] and ScriptUnit.has_extension(unit, "projectile_system")
+
+	if projectile_extension and projectile_extension.are_impacts_stopped then
+		impacts_stopped = projectile_extension:are_impacts_stopped()
+	end
+
+	flow_return_table.impacts_stopped = impacts_stopped
+
+	return flow_return_table
+end
+
 function flow_callback_mark_sack_for_linking(params)
 	local unit = params.unit
 
@@ -1347,19 +1368,24 @@ function flow_callback_change_outline_params(params)
 	end
 
 	local unit = params.unit
+	local outline_ext = ScriptUnit.has_extension(unit, "outline_system")
 
-	fassert(ScriptUnit.has_extension(unit, "outline_system"), "Trying to change outline params through flow without an outline extension on the unit")
+	fassert(outline_ext, "Trying to change outline params through flow without an outline extension on the unit")
 
-	local outline_extension = ScriptUnit.extension(unit, "outline_system")
 	local method = params.method
-	local color = params.color
 
 	if method then
-		outline_extension.set_method(method)
+		outline_ext:update_outline({
+			method = method
+		}, 0)
 	end
 
+	local color = OutlineSettings.colors[params.color]
+
 	if color then
-		outline_extension.set_outline_color(color)
+		outline_ext:update_outline({
+			outline_color = color
+		}, 0)
 	end
 end
 
@@ -1576,6 +1602,18 @@ function flow_callback_local_player_profile_check(params)
 	local profile_name = profile.display_name
 	local returns = {
 		player_profile = profile_name
+	}
+
+	return returns
+end
+
+function flow_callback_local_player_profile_available(params)
+	local player = Managers.player:local_player()
+	local profile_index = player:profile_index()
+	local profile = SPProfiles[profile_index]
+	local profile_name = profile and profile.display_name
+	local returns = {
+		is_available = profile_name ~= nil
 	}
 
 	return returns
@@ -2231,9 +2269,22 @@ function flow_callback_overcharge_reset_unit(params)
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to reset health and damage on overcharge unit %s from flow but the unit has no health extension", unit)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
+		local damage = 0
 
+		health_extension:set_current_damage(damage)
 		health_extension:set_max_health(max_health)
-		health_extension:set_current_damage(0)
+
+		local network_manager = Managers.state.network
+
+		if network_manager.is_server then
+			damage = NetworkUtils.get_network_safe_damage_hotjoin_sync(damage)
+			local health_state = health_extension.state
+			local state_id = NetworkLookup.health_statuses[health_state]
+			local network_transmit = Managers.state.network.network_transmit
+			local go_id, is_level_unit = network_manager:game_object_or_level_id(unit)
+
+			network_transmit:send_rpc_clients("rpc_sync_damage_taken", go_id, is_level_unit, false, damage, state_id)
+		end
 	end
 end
 
@@ -2328,6 +2379,21 @@ function flow_callback_remove_nav_graph_on_climb_unit(params)
 
 		nav_graph_system:queue_remove_nav_graph_from_flow(unit)
 	end
+end
+
+function flow_callback_create_permanent_box_obstacle_from_unit(params)
+	local unit = params.unit
+
+	if not unit_alive(unit) then
+		return
+	end
+
+	local nav_world = GLOBAL_AI_NAVWORLD
+	local obstacle, transform = NavigationUtils.create_exclusive_box_obstacle_from_unit_data(nav_world, unit)
+
+	GwNavBoxObstacle.add_to_world(obstacle)
+	GwNavBoxObstacle.set_transform(obstacle, transform)
+	GwNavBoxObstacle.set_does_trigger_tagvolume(obstacle, true)
 end
 
 function flow_callback_limited_item_spawner_group_register(params)
@@ -2585,6 +2651,72 @@ function flow_callback_objective_complete_current_objective_by_name(params)
 	objective_system:complete_objective(params.name)
 end
 
+function flow_callback_objective_is_objective_completed(params)
+	if not Managers.player.is_server then
+		return false
+	end
+
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return false
+	end
+
+	local objective = objective_system._objectives_by_name[params.name]
+
+	if not objective then
+		return false
+	end
+
+	return {
+		out_value = objective:is_done()
+	}
+end
+
+function flow_callback_objective_last_objective_by_name_completed(params)
+	if not Managers.player.is_server then
+		return false
+	end
+
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return false
+	end
+
+	local objective = objective_system._last_main_objective_completed
+
+	if not objective then
+		return false
+	end
+
+	return {
+		out_value = objective:objective_name() == params.name
+	}
+end
+
+function flow_callback_objective_last_completed_objective_name(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local objective_system = get_objective_system()
+
+	if not objective_system then
+		return
+	end
+
+	local objective = objective_system._last_main_objective_completed
+
+	if not objective then
+		return
+	end
+
+	return {
+		out_value = objective:objective_name()
+	}
+end
+
 function flow_callback_umbra_set_gate_closed(params)
 	local unit = params.unit
 	local world = Unit.world(unit)
@@ -2776,6 +2908,266 @@ function flow_callback_damage_unit(params)
 	end
 end
 
+function do_material_dissolve(material, timer_var, timer_data, start_state_var, start_state)
+	Material.set_scalar(material, start_state_var, start_state)
+	Material.set_vector2(material, timer_var, timer_data)
+end
+
+function flow_callback_material_dissolve(params)
+	fassert(params.unit, "[flow_callback_material_dissolve] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_material_dissolve] You need to specify duration")
+
+	local timer_var = params.timer_var_name or "dissolve_timer"
+	local start_time = World.time(Application.main_world())
+	local timer_data = Vector2(start_time, start_time + params.duration)
+	local start_state_var = params.dissolve_start_state_var_name or "dissolve_start_value"
+	local start_state = math.floor(0.5 + params.dissolve_start_state or 1)
+	local unit = params.unit
+	local mesh = nil
+	local mesh_name = params.mesh_name
+
+	if mesh_name then
+		fassert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_material_dissolve] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
+
+		mesh = Unit.mesh(unit, mesh_name)
+	end
+
+	local material = nil
+	local material_name = params.material_name
+
+	if mesh and material_name then
+		fassert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_material_dissolve] The material %s doesn't exist for mesh %s", mesh_name, material_name))
+
+		material = Mesh.material(mesh, material_name)
+	end
+
+	if mesh and material then
+		do_material_dissolve(material, timer_var, timer_data, start_state_var, start_state)
+	elseif mesh then
+		local num_materials = Mesh.num_materials(mesh)
+
+		for i = 0, num_materials - 1, 1 do
+			do_material_dissolve(Mesh.material(mesh, i), timer_var, timer_data, start_state_var, start_state)
+		end
+	elseif material_name then
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i)
+
+			if Mesh.has_material(unit_mesh, material_name) then
+				do_material_dissolve(Mesh.material(unit_mesh, material_name), timer_var, timer_data, start_state_var, start_state)
+			end
+		end
+	else
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i)
+			local num_materials = Mesh.num_materials(unit_mesh)
+
+			for j = 0, num_materials - 1, 1 do
+				do_material_dissolve(Mesh.material(unit_mesh, j), timer_var, timer_data, start_state_var, start_state)
+			end
+		end
+	end
+end
+
+function flow_callback_material_dissolve_chr(params)
+	fassert(params.unit, "[flow_callback_material_dissolve_chr] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_material_dissolve_chr] You need to specify duration")
+	flow_callback_material_dissolve(params)
+
+	local unit = params.unit
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.stump_items, 1 do
+			params.unit = unit_inventory_extension.stump_items[i]
+
+			flow_callback_material_dissolve(params)
+		end
+
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
+
+			flow_callback_material_dissolve(params)
+		end
+
+		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+
+		if helmet_unit ~= nil then
+			params.unit = helmet_unit
+
+			flow_callback_material_dissolve(params)
+		end
+	end
+end
+
+function flow_callback_material_dissolve_chr_inventory(params)
+	fassert(params.unit, "[flow_callback_material_dissolve_chr_inventory] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_material_dissolve_chr_inventory] You need to specify duration")
+	fassert(params.inventory_type, "[flow_callback_material_dissolve_chr_inventory] You need to specify inventory type")
+
+	local unit = params.unit
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		if params.inventory_type == "outfit" then
+			for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+				params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
+
+				flow_callback_material_dissolve(params)
+			end
+		elseif params.inventory_type == "stump" then
+			for i = 1, #unit_inventory_extension.stump_items, 1 do
+				params.unit = unit_inventory_extension.stump_items[i]
+
+				flow_callback_material_dissolve(params)
+			end
+		elseif params.inventory_type == "helmet" then
+			local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+
+			if helmet_unit ~= nil then
+				params.unit = helmet_unit
+
+				flow_callback_material_dissolve(params)
+			end
+		end
+	end
+end
+
+function do_material_fade(material, timer_var, timer_data, fade_range_var, fade_interval)
+	Material.set_vector2(material, fade_range_var, fade_interval)
+	Material.set_vector2(material, timer_var, timer_data)
+end
+
+function flow_callback_material_fade(params)
+	fassert(params.unit, "[flow_callback_material_fade] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_material_fade] You need to specify duration")
+
+	local timer_var = params.timer_var_name or "fade_timer"
+	local start_time = World.time(Application.main_world())
+	local timer_data = Vector2(start_time, start_time + params.duration)
+	local fade_range_var = params.fade_range_var_name or "fade_interval"
+	local fade_interval = Vector2(params.fade_range_from or 1, params.fade_range_to or 0)
+	local unit = params.unit
+	local mesh = nil
+	local mesh_name = params.mesh_name
+
+	if mesh_name then
+		fassert(Unit.has_mesh(unit, mesh_name), string.format("[flow_callback_material_fade] The mesh %s doesn't exist in unit %s", mesh_name, tostring(unit)))
+
+		mesh = Unit.mesh(unit, mesh_name)
+	end
+
+	local material = nil
+	local material_name = params.material_name
+
+	if mesh and material_name then
+		fassert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_material_fade] The material %s doesn't exist for mesh %s", mesh_name, material_name))
+
+		material = Mesh.material(mesh, material_name)
+	end
+
+	if mesh and material then
+		do_material_fade(material, timer_var, timer_data, fade_range_var, fade_interval)
+	elseif mesh then
+		local num_materials = Mesh.num_materials(mesh)
+
+		for i = 0, num_materials - 1, 1 do
+			do_material_fade(Mesh.material(mesh, i), timer_var, timer_data, fade_range_var, fade_interval)
+		end
+	elseif material_name then
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i)
+
+			if Mesh.has_material(unit_mesh, material_name) then
+				do_material_fade(Mesh.material(unit_mesh, material_name), timer_var, timer_data, fade_range_var, fade_interval)
+			end
+		end
+	else
+		local num_meshes = Unit.num_meshes(unit)
+
+		for i = 0, num_meshes - 1, 1 do
+			local unit_mesh = Unit.mesh(unit, i)
+			local num_materials = Mesh.num_materials(unit_mesh)
+
+			for j = 0, num_materials - 1, 1 do
+				do_material_fade(Mesh.material(unit_mesh, j), timer_var, timer_data, fade_range_var, fade_interval)
+			end
+		end
+	end
+end
+
+function flow_callback_material_fade_chr(params)
+	fassert(params.unit, "[flow_callback_material_fade_chr] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_material_fade_chr] You need to specify duration")
+	flow_callback_material_fade(params)
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.stump_items, 1 do
+			params.unit = unit_inventory_extension.stump_items[i]
+
+			flow_callback_material_fade(params)
+		end
+
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
+
+			flow_callback_material_fade(params)
+		end
+
+		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+
+		if helmet_unit ~= nil then
+			params.unit = helmet_unit
+
+			flow_callback_material_fade(params)
+		end
+	end
+end
+
+function flow_callback_material_fade_chr_inventory(params)
+	fassert(params.unit, "[flow_callback_material_fade_chr_inventory] You need to specify the Unit")
+	fassert(params.duration, "[flow_callback_material_fade_chr_inventory] You need to specify duration")
+	fassert(params.inventory_type, "[flow_callback_material_fade_chr_inventory] You need to specify inventory type")
+
+	local unit = params.unit
+	params.mesh_name = nil
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		if params.inventory_type == "outfit" then
+			for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+				params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
+
+				flow_callback_material_fade(params)
+			end
+		elseif params.inventory_type == "stump" then
+			for i = 1, #unit_inventory_extension.stump_items, 1 do
+				params.unit = unit_inventory_extension.stump_items[i]
+
+				flow_callback_material_fade(params)
+			end
+		elseif params.inventory_type == "helmet" then
+			local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+
+			if helmet_unit ~= nil then
+				params.unit = helmet_unit
+
+				flow_callback_material_fade(params)
+			end
+		end
+	end
+end
+
 function start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, start_end_time, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 	if start_fade_name and start_fade_value then
 		Material.set_scalar(material, start_fade_name, start_fade_value)
@@ -2856,92 +3248,6 @@ function flow_callback_start_fade(params)
 
 				start_material_fade(mesh_material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
 			end
-		end
-	end
-end
-
-function flow_callback_start_fade_chr_inventory(params)
-	fassert(params.unit, "[flow_callback_start_fade_chr_inventory] You need to specify the Unit")
-	fassert(params.duration, "[flow_callback_start_fade_chr_inventory] You need to specify duration")
-	fassert(params.fade_switch, "[flow_callback_start_fade_chr_inventory] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
-
-	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.stump_items, 1 do
-			params.unit = unit_inventory_extension.stump_items[i]
-
-			flow_callback_start_fade(params)
-		end
-
-		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
-			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
-
-			flow_callback_start_fade(params)
-		end
-
-		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
-
-		if helmet_unit ~= nil then
-			params.unit = helmet_unit
-
-			flow_callback_start_fade(params)
-		end
-	end
-end
-
-function flow_callback_start_fade_chr_outfit(params)
-	fassert(params.unit, "[flow_callback_start_fade_chr_outfit] You need to specify the Unit")
-	fassert(params.duration, "[flow_callback_start_fade_chr_outfit] You need to specify duration")
-	fassert(params.fade_switch, "[flow_callback_start_fade_chr_outfit] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
-
-	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
-			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
-
-			flow_callback_start_fade(params)
-		end
-	end
-end
-
-function flow_callback_start_fade_chr_stumps(params)
-	fassert(params.unit, "[flow_callback_start_fade_chr_stumps] You need to specify the Unit")
-	fassert(params.duration, "[flow_callback_start_fade_chr_stumps] You need to specify duration")
-	fassert(params.fade_switch, "[flow_callback_start_fade_chr_stumps] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
-
-	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.stump_items, 1 do
-			params.unit = unit_inventory_extension.stump_items[i]
-
-			flow_callback_start_fade(params)
-		end
-	end
-end
-
-function flow_callback_start_fade_chr_helmet(params)
-	fassert(params.unit, "[flow_callback_start_fade_chr_helmet] You need to specify the Unit")
-	fassert(params.duration, "[flow_callback_start_fade_chr_helmet] You need to specify duration")
-	fassert(params.fade_switch, "[flow_callback_start_fade_chr_helmet] You need to specify whether to fade in or out (0 or 1)")
-
-	local unit = params.unit
-	params.mesh_name = nil
-	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
-
-	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.inventory_item_helmet_units, 1 do
-			params.unit = unit_inventory_extension.inventory_item_helmet_units[i]
-
-			flow_callback_start_fade(params)
 		end
 	end
 end
@@ -3471,6 +3777,36 @@ function flow_callback_set_mutator_active(params)
 	end
 end
 
+function flow_callback_set_deus_curse_active(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local mechanism = Managers.mechanism:game_mechanism()
+	local mutator_name = mechanism.get_current_node_curse and mechanism:get_current_node_curse()
+
+	if not mutator_name then
+		return
+	end
+
+	local active = params.active
+	local mutator_handler = Managers.state.game_mode._mutator_handler
+	local is_active = mutator_handler:has_activated_mutator(mutator_name)
+
+	if active == is_active then
+		return
+	end
+
+	if active then
+		mutator_handler:initialize_mutators({
+			mutator_name
+		})
+		mutator_handler:activate_mutator(mutator_name, nil, "activated_by_flow")
+	else
+		mutator_handler:deactivate_mutator(mutator_name)
+	end
+end
+
 function flow_callback_set_game_mode_variable(params)
 	local variable = params.variable
 	local value = params.value
@@ -3689,6 +4025,18 @@ function flow_callback_unattach_unit(params)
 
 	return {
 		unlinked = true
+	}
+end
+
+function flow_callback_trigger_event_on_attachments(params)
+	local unit_attachments = Unit.get_data(params.unit, "flow_unit_attachments") or {}
+
+	for i = 1, #unit_attachments, 1 do
+		Unit.flow_event(unit_attachments[i], params.event)
+	end
+
+	return {
+		triggered = true
 	}
 end
 
@@ -4053,7 +4401,8 @@ function flow_callbacks_tutorial_enable_career_skill(params)
 		career_extension:start_activated_ability_cooldown(1, 0)
 		career_extension:set_activated_ability_cooldown_paused(1)
 	else
-		career_extension:start_activated_ability_cooldown(1, 1)
+		career_extension:set_activated_ability_cooldown_unpaused(1)
+		career_extension:reduce_activated_ability_cooldown_percent(1, 1)
 	end
 end
 
@@ -4132,6 +4481,16 @@ function flow_callback_set_player_fall_height(params)
 		else
 			status_ext:set_falling_height(true)
 		end
+	end
+end
+
+function flow_callback_enable_generic_unit_aim_extension(params)
+	local unit = params.unit
+	local enable = params.enable
+	local aim_extension = ScriptUnit.has_extension(unit, "aim_system")
+
+	if aim_extension then
+		aim_extension:set_enabled(enable)
 	end
 end
 
@@ -4234,7 +4593,9 @@ function flow_callback_set_unit_faded_status(params)
 end
 
 function flow_callback_get_level_seed(params)
-	return Managers.mechanism:get_level_seed()
+	return {
+		seed = Managers.mechanism:get_level_seed()
+	}
 end
 
 function flow_callback_predict_hitscan(params)
@@ -4244,8 +4605,18 @@ function flow_callback_predict_hitscan(params)
 	local returns = {
 		success = false
 	}
-	local world = Application.main_world()
+	local world = Managers.world and Managers.world:has_world(LevelHelper.INGAME_WORLD_NAME) and Managers.world:world(LevelHelper.INGAME_WORLD_NAME)
+
+	if not world then
+		return returns
+	end
+
 	local physics_world = World.get_data(world, "physics_world")
+
+	if not physics_world then
+		return returns
+	end
+
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
 	local unit_id = network_manager:unit_game_object_id(player_unit)

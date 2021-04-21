@@ -84,6 +84,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 		local ping_only_movement = input_extension:get("ping_only_movement")
 		local ping_only_item = input_extension:get("ping_only_item")
 		local social_wheel_only = input_extension:get("social_wheel_only")
+		local action_three = input_extension:get("action_three")
 		local is_ping_only = ping_only or ping_only_enemy or ping_only_movement or ping_only_item
 
 		if ping or is_ping_only or social_wheel_only then
@@ -163,9 +164,11 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 	end
 
 	if not self:_have_free_events() then
-		local error_message = Localize("social_wheel_too_many_messages_warning")
+		if ping_type ~= nil then
+			local error_message = Localize("social_wheel_too_many_messages_warning")
 
-		Managers.chat:add_local_system_message(1, error_message, true)
+			Managers.chat:add_local_system_message(1, error_message, true)
+		end
 
 		return false
 	end
@@ -224,7 +227,7 @@ ContextAwarePingExtension.ping_world_position_attempt = function (self, unit, po
 	return true
 end
 
-ContextAwarePingExtension.social_message_attempt = function (self, unit, social_wheel_event_id)
+ContextAwarePingExtension.social_message_attempt = function (self, unit, social_wheel_event_id, target_unit)
 	if not self:_have_free_events() then
 		local error_message = Localize("social_wheel_too_many_messages_warning")
 
@@ -240,8 +243,9 @@ ContextAwarePingExtension.social_message_attempt = function (self, unit, social_
 	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
+	local pinged_unit_id = (target_unit and Unit.alive(target_unit) and network_manager:unit_game_object_id(target_unit)) or 0
 
-	network_manager.network_transmit:send_rpc_server("rpc_social_message", pinger_unit_id, social_wheel_event_id)
+	network_manager.network_transmit:send_rpc_server("rpc_social_message", pinger_unit_id, social_wheel_event_id, pinged_unit_id)
 	self:_consume_ping_event()
 
 	return true
@@ -278,7 +282,9 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 				local hit_unit = Actor.unit(actor)
 
 				if hit_unit ~= unit then
-					if ScriptUnit.has_extension(hit_unit, "ping_system") then
+					local ping_ext = ScriptUnit.has_extension(hit_unit, "ping_system")
+
+					if ping_ext then
 						local health_ext = ScriptUnit.has_extension(hit_unit, "health_system")
 						local status_ext = ScriptUnit.has_extension(hit_unit, "status_system")
 						local is_pickup = ScriptUnit.has_extension(hit_unit, "pickup_system")
@@ -328,7 +334,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 							local is_enemy = has_breed and Managers.state.side:is_enemy(self._unit, hit_unit)
 							local is_incapacitated_player = status_ext and status_ext:is_disabled()
 
-							if (is_pickup or (is_alive and (is_enemy or is_incapacitated_player))) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
+							if (ping_ext.always_pingable or is_pickup or (is_alive and (is_enemy or is_incapacitated_player))) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
 								ping_unit = hit_unit
 								ping_unit_distance = distance
 								best_ping_utility = utility

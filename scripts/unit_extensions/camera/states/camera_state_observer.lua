@@ -1,3 +1,4 @@
+local camera_state_observer_testify = script_data.testify and require("scripts/unit_extensions/camera/states/camera_state_observer_testify")
 CameraStateObserver = class(CameraStateObserver, CameraState)
 
 CameraStateObserver.init = function (self, camera_state_init_context)
@@ -63,7 +64,9 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 
 	self._snap_camera = false
 
-	self:_poll_testify_requests()
+	if script_data.testify then
+		Testify:poll_requests_through_handler(camera_state_observer_testify, self)
+	end
 end
 
 CameraStateObserver._get_valid_players_to_observe = function (self)
@@ -168,8 +171,6 @@ end
 
 CameraStateObserver._set_follow_unit = function (self, observed_player_id, follow_unit)
 	if not follow_unit or not Unit.alive(follow_unit) then
-		self:follow_next_unit()
-
 		return false
 	end
 
@@ -215,19 +216,6 @@ CameraStateObserver._set_follow_unit = function (self, observed_player_id, follo
 	end
 
 	return true
-end
-
-CameraStateObserver._poll_testify_requests = function (self)
-	if Testify:poll_request("set_camera_to_observe_first_bot") then
-		local first_bot = Managers.player:bots()[1]
-		local players = self:_get_valid_players_to_observe()
-
-		if players[first_bot._unique_id] and self._observed_player_id ~= first_bot._unique_id then
-			self:follow_next_unit()
-		end
-
-		Testify:respond_to_request("set_camera_to_observe_first_bot")
-	end
 end
 
 return

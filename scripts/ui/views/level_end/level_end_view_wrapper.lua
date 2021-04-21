@@ -48,7 +48,7 @@ LevelEndViewWrapper.destroy = function (self)
 		input_manager:device_unblock_all_services("gamepad")
 	end
 
-	self._level_end_view:destroy()
+	self._level_end_view:delete()
 
 	self._level_end_view = nil
 	self._level_end_view_context = nil

@@ -22,6 +22,7 @@ ActionCareerDREngineer.init = function (self, world, item_name, is_server, owner
 	self._barrel_spin_anim_var_1p = Unit.animation_find_variable(first_person_unit, "barrel_spin_speed")
 	self._time_to_shoot = 0
 	self._last_avoidance_t = 0
+	self._ranged_attack = true
 end
 
 ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
@@ -47,6 +48,9 @@ ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t
 	end
 
 	Managers.state.achievement:trigger_event("crank_gun_fire_start", self.owner_unit)
+
+	self._ammo_expended = 0
+
 	self:_update_attack_speed(t)
 
 	self._time_to_shoot = math.max(old_time_to_shoot, t - 1 / self._current_rps)
@@ -86,10 +90,17 @@ ActionCareerDREngineer._waiting_to_shoot = function (self, t)
 		local num_projectilise = math.floor(rounds_to_fire)
 
 		if num_projectilise > 0 then
+			self._extra_shots_procced = false
+			local extra_shots = 0
+
+			if self:_check_extra_shot_proc(self.buff_extension) then
+				extra_shots = 1 + self._extra_shots
+			end
+
 			self._current_rps = math.clamp(self._current_rps + self._rps_gain_per_shot * num_projectilise, self._initial_rounds_per_second, self._max_rps)
 			self._time_last_fired = t
 			self._time_to_shoot = t - (rounds_to_fire - num_projectilise) / fire_rounds_per_second
-			self._num_projectiles_per_shot = num_projectilise
+			self._num_projectiles_per_shot = num_projectilise * (extra_shots + 1)
 			self._state = "start_shooting"
 			self._calculated_attack_speed = false
 		end
@@ -151,6 +162,14 @@ ActionCareerDREngineer.apply_shot_cost = function (self)
 	if not self.buff_extension or not self.buff_extension:has_buff_perk("free_ability") then
 		self.career_extension:reduce_activated_ability_cooldown(-self._shot_cost * self._num_projectiles_per_shot)
 	end
+
+	self._ammo_expended = self._ammo_expended + self._shot_cost * self._num_projectiles_per_shot
+
+	if self.buff_extension and self._ammo_expended > self.career_extension:get_max_ability_cooldown() / 2 then
+		self.buff_extension:trigger_procs("on_ability_cooldown_started")
+
+		self._ammo_expended = 0
+	end
 end
 
 ActionCareerDREngineer._has_ammo = function (self)
@@ -194,13 +213,15 @@ ActionCareerDREngineer.fire_hitscan = function (self, position, direction, range
 end
 
 ActionCareerDREngineer._add_bullet_trail = function (self, end_position, lifetime)
-	local weapon_unit = self.weapon_unit
+	if not self.is_bot then
+		local weapon_unit = self.weapon_unit
 
-	unit_set_flow_variable(weapon_unit, "is_critical_strike", self._is_critical_strike)
-	unit_set_flow_variable(weapon_unit, "hit_position", end_position)
-	unit_set_flow_variable(weapon_unit, "trail_life", lifetime)
-	unit_flow_event(weapon_unit, "lua_bullet_trail")
-	unit_flow_event(weapon_unit, "lua_bullet_trail_set")
+		unit_set_flow_variable(weapon_unit, "is_critical_strike", self._is_critical_strike)
+		unit_set_flow_variable(weapon_unit, "hit_position", end_position)
+		unit_set_flow_variable(weapon_unit, "trail_life", lifetime)
+		unit_flow_event(weapon_unit, "lua_bullet_trail")
+		unit_flow_event(weapon_unit, "lua_bullet_trail_set")
+	end
 end
 
 ActionCareerDREngineer._update_bot_avoidance = function (self, t)

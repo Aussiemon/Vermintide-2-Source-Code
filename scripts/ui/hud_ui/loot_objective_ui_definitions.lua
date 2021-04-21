@@ -21,7 +21,7 @@ local scenegraph_definition = {
 			SIZE_Y
 		}
 	},
-	background = {
+	background_parent = {
 		vertical_alignment = "center",
 		parent = "root",
 		horizontal_alignment = "right",
@@ -29,6 +29,20 @@ local scenegraph_definition = {
 			-200,
 			-100,
 			1
+		},
+		size = {
+			383,
+			86
+		}
+	},
+	background = {
+		vertical_alignment = "bottom",
+		parent = "background_parent",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
 		},
 		size = {
 			383,

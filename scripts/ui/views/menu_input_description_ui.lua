@@ -47,7 +47,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 
@@ -395,8 +395,9 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 	local total_width = 0
 	local widget_use_index = 0
 	self.current_console_selection_data = console_selection_data
-	local actions = (console_selection_data and console_selection_data.actions and table.clone(console_selection_data.actions)) or {}
+	local actions_to_add = (console_selection_data and console_selection_data.actions and table.clone(console_selection_data.actions)) or {}
 	local ignore_generic_actions = console_selection_data and console_selection_data.ignore_generic_actions
+	local actions = {}
 
 	if not ignore_generic_actions then
 		local generic_actions = self.generic_actions
@@ -407,6 +408,12 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 					actions[#actions + 1] = action_data
 				end
 			end
+		end
+	end
+
+	for _, action_data in pairs(actions_to_add) do
+		if not action_data.content_check_function or action_data.content_check_function() then
+			actions[#actions + 1] = action_data
 		end
 	end
 
@@ -461,7 +468,7 @@ end
 MenuInputDescriptionUI.get_gamepad_input_texture_data = function (self, input_action, ignore_keybinding)
 	local platform = PLATFORM
 
-	if platform == "win32" then
+	if IS_WINDOWS then
 		platform = "xb1"
 	end
 

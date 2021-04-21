@@ -1,9 +1,11 @@
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 BackendInterfaceMOTDPlayfab = class(BackendInterfaceMOTDPlayfab)
 
-BackendInterfaceMOTDPlayfab.init = function (self)
+BackendInterfaceMOTDPlayfab.init = function (self, mirror)
 	self._initialized = false
 	self._image_urls = {}
+	self._mirror = mirror
+	self._request_queue = mirror:request_queue()
 
 	self:_refresh()
 end
@@ -15,7 +17,7 @@ BackendInterfaceMOTDPlayfab._refresh = function (self)
 		FunctionName = "getMOTD"
 	}
 
-	PlayFabClientApi.ExecuteCloudScript(request, success_cb)
+	self._request_queue:enqueue(request, success_cb)
 end
 
 BackendInterfaceMOTDPlayfab._getMOTD_callback = function (self, result)

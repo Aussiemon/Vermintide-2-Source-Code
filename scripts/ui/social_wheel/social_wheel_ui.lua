@@ -13,7 +13,7 @@ local START_LERP_TIME_CONTROLLER = 0.125
 local MAX_FREE_EVENTS = 5
 local ANIMATION_TIMES = nil
 
-if PLATFORM == "win32" then
+if IS_WINDOWS then
 	ANIMATION_TIMES = {
 		OPEN = {
 			MOVE_Y = 1.5,
@@ -93,7 +93,7 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._side_name = Managers.state.side:get_side_from_player_unique_id(self._player:unique_id()):name()
 	self._wwise_world = ingame_ui_context.wwise_world
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		self._console_extension = (ingame_ui_context.is_in_inn and "_inn") or ""
 	end
 
@@ -204,7 +204,7 @@ SocialWheelUI._add_social_wheel_event = function (self, player, social_wheel_eve
 	end
 
 	if event_text then
-		if PLATFORM == "win32" then
+		if IS_WINDOWS then
 			if self._num_free_events >= 1 then
 				local localize = true
 				local localize_parameters = true
@@ -232,15 +232,6 @@ SocialWheelUI._add_social_wheel_event = function (self, player, social_wheel_eve
 					local camera = ScriptViewport.camera(viewport)
 					icon_widget = UIWidget.init(definitions.create_social_icon(social_wheel_event_settings, player.peer_id, camera, world, Managers.time:time("game") + 5, 1))
 					self._icon_widgets[player.peer_id] = icon_widget
-				elseif self._num_free_events >= 1 then
-					local localize = false
-					local localize_parameters = true
-
-					Managers.chat:send_chat_message(1, player:local_player_id(), event_text, localize, localization_parameters, localize_parameters)
-				else
-					local error_message = Localize("social_wheel_too_many_messages_warning")
-
-					Managers.chat:add_local_system_message(1, error_message, true)
 				end
 			end
 		end
@@ -289,7 +280,7 @@ SocialWheelUI._add_social_wheel_event_animation = function (self, widget, is_loc
 end
 
 SocialWheelUI.rpc_social_wheel_event = function (self, channel_id, peer_id, social_wheel_event_id, target_unit_id)
-	if PLATFORM == "xb1" and Managers.chat:ignoring_peer_id(peer_id) then
+	if IS_XB1 and Managers.chat:ignoring_peer_id(peer_id) then
 		return
 	end
 
@@ -494,7 +485,7 @@ SocialWheelUI._ping_world_position_attempt = function (self, position, ping_type
 	end
 end
 
-SocialWheelUI._social_message_attempt = function (self, social_wheel_event_id)
+SocialWheelUI._social_message_attempt = function (self, social_wheel_event_id, target_unit)
 	local player = self._player
 	local player_unit = player.player_unit
 
@@ -502,7 +493,7 @@ SocialWheelUI._social_message_attempt = function (self, social_wheel_event_id)
 		local game_time = Managers.time:time("game")
 		local context_aware_ping_extension = ScriptUnit.extension(player_unit, "ping_system")
 
-		return context_aware_ping_extension:social_message_attempt(player_unit, social_wheel_event_id)
+		return context_aware_ping_extension:social_message_attempt(player_unit, social_wheel_event_id, target_unit)
 	end
 end
 
@@ -548,10 +539,11 @@ SocialWheelUI._set_pulsing = function (self, context, enable)
 
 	if Unit.alive(unit) then
 		if enable then
-			local id = Managers.state.entity:system("outline_system"):set_pulsing(unit, true, "pulse")
-			context.id = id
+			Managers.state.entity:system("outline_system"):set_pulsing(unit, true, "pulse")
+
+			context.id = true
 		elseif not enable and context.id then
-			Managers.state.entity:system("outline_system"):set_pulsing(unit, false, context.id)
+			Managers.state.entity:system("outline_system"):set_pulsing(unit, false)
 
 			context.id = nil
 		end
@@ -598,7 +590,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 		category = "general"
 	end
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local gamepad_enabled = Managers.input:is_device_active("gamepad")
 		local layout_settings = Application.user_setting("social_wheel_gamepad_layout")
 		local use_gamepad_layout = (layout_settings == "auto" and gamepad_enabled) or layout_settings == "always"
@@ -645,7 +637,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 	local bg_widget = self._bg_widget
 	local widget_content = bg_widget.content
 	animations.animation_bg_size = UIAnimation.init(UIAnimation.function_by_time, widget_content, "size_multiplier", widget_content.final_size_multiplier * 0.5, widget_content.final_size_multiplier, animation_times.SIZE, math.ease_out_elastic)
-	local gamepad_enabled = PLATFORM ~= "win32" or Managers.input:is_device_active("gamepad")
+	local gamepad_enabled = not IS_WINDOWS or Managers.input:is_device_active("gamepad")
 	local stop_lerp_time = (gamepad_enabled and STOP_LERP_TIME_CONTROLLER) or STOP_LERP_TIME
 	self._valid_selection = true
 	self._selected_widget = nil
@@ -843,7 +835,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 		self._current_index = selection_index
 		self._valid_selection = true
 
-		if PLATFORM ~= "win32" then
+		if not IS_WINDOWS then
 			local active_context = self._active_context
 			local target_unit = active_context.unit
 
@@ -851,7 +843,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 				local social_wheel_event = new_widget.content.settings.name
 				local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event]
 				local event_text_func = social_wheel_event_settings.event_text_func
-				local event_text = event_text_func(target_unit, social_wheel_event_settings)
+				local event_text = event_text_func(target_unit, social_wheel_event_settings, true)
 				local bg_widget = self._bg_widget
 				local bg_widget_content = bg_widget.content
 				bg_widget_content.text_id = event_text
@@ -933,11 +925,11 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 		end
 	end
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		self._console_extension = (self._ingame_ui_context.is_in_inn and "_inn") or ""
 	end
 
-	local gamepad_enabled = PLATFORM ~= "win32" or Managers.input:is_device_active("gamepad")
+	local gamepad_enabled = not IS_WINDOWS or Managers.input:is_device_active("gamepad")
 	local start_lerp_time = (gamepad_enabled and START_LERP_TIME_CONTROLLER) or START_LERP_TIME
 	local social_message_sent = nil
 
@@ -967,7 +959,7 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 			elseif active_context.position and self._world_markers_enabled then
 				social_message_sent = self:_ping_world_position_attempt(active_context.position, ping_type, social_wheel_event_id)
 			else
-				social_message_sent = self:_social_message_attempt(social_wheel_event_id)
+				social_message_sent = self:_social_message_attempt(social_wheel_event_id, target_unit)
 			end
 		end
 	end

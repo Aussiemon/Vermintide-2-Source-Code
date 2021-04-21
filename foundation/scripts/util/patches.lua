@@ -18,7 +18,22 @@ local function auto_patch_missing_methods(library_name)
 	}))
 end
 
-if not _G.FOUNDATION_patches_applied and (PLATFORM == "ps4" or PLATFORM == "xb1" or DEDICATED_SERVER) then
+MockClass = MockClass or {}
+
+MockClass.new = function ()
+	return MockClass
+end
+
+local mt = {
+	__index = function (self, name)
+		return NOP
+	end,
+	update = NOP
+}
+
+setmetatable(MockClass, mt)
+
+if not _G.FOUNDATION_patches_applied and (IS_CONSOLE or DEDICATED_SERVER) then
 	_G.FOUNDATION_patches_applied = true
 
 	if not Wwise then

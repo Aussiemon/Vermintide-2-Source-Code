@@ -431,7 +431,16 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 		DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server, buff_type, unmodified)
 
-		allow_link, shield_blocked, forced_penetration = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
+		shield_blocked, forced_penetration = self:hit_enemy_damage(damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
+		allow_link = hit_zone_name ~= "ward"
+
+		if allow_link and breed and not shield_blocked then
+			local impact_pickup_settings = impact_data.pickup_settings
+
+			if impact_pickup_settings then
+				allow_link = not not impact_pickup_settings.link_hit_zones[hit_zone_name]
+			end
+		end
 	end
 
 	local grenade = impact_data.grenade
@@ -619,9 +628,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		end
 	end
 
-	local allow_link = hit_zone_name ~= "ward"
-
-	return allow_link, shield_blocked, forced_penetration
+	return shield_blocked, forced_penetration
 end
 
 PlayerProjectileUnitExtension.hit_player = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -992,10 +999,45 @@ PlayerProjectileUnitExtension._handle_linking = function (self, impact_data, hit
 
 	depth = depth + depth_offset
 
-	if impact_data.link then
+	if allow_link then
+		local unit_data_allow_link = Unit.get_data(hit_unit, "allow_link")
+
+		if unit_data_allow_link ~= nil then
+			allow_link = unit_data_allow_link
+		end
+	end
+
+	if allow_link and impact_data.link then
 		self:_link_projectile(hit_unit, hit_actor, dummy_linker_unit_name, hit_position, hit_direction, depth, shield_blocked)
 	elseif impact_data.link_pickup then
-		self:_link_pickup_projectile(impact_data, hit_unit, hit_actor, hit_position, hit_direction, hit_normal, depth, allow_link, shield_blocked, hit_enemy_or_player)
+		local network_manager = Managers.state.network
+		local hit_unit_id, is_level_unit = network_manager:game_object_or_level_id(hit_unit)
+
+		if not hit_unit_id and is_level_unit == nil then
+			return
+		end
+
+		local impact_pickup_settings = impact_data.pickup_settings
+		local slot_data = nil
+
+		if impact_pickup_settings.use_weapon_skin then
+			local inventory_extension = ScriptUnit.has_extension(self._owner_unit, "inventory_system")
+
+			if inventory_extension then
+				local slot_name = "slot_ranged"
+				slot_data = inventory_extension:get_slot_data(slot_name)
+			end
+		end
+
+		if allow_link then
+			local pickup_name = slot_data.link_pickup_template_name or impact_pickup_settings.link_pickup_name
+
+			self:_spawn_linked_pickup_projectile(pickup_name, hit_unit, hit_actor, hit_position, hit_direction, hit_normal, hit_unit_id, is_level_unit, depth, shield_blocked)
+		else
+			local pickup_name = slot_data.pickup_template_name or impact_pickup_settings.pickup_name
+
+			self:_spawn_pickup_projectile(pickup_name, hit_position, hit_direction, hit_normal, hit_enemy_or_player)
+		end
 	end
 end
 
@@ -1052,32 +1094,14 @@ PlayerProjectileUnitExtension._link_projectile = function (self, hit_unit, hit_a
 	end
 end
 
-PlayerProjectileUnitExtension._link_pickup_projectile = function (self, impact_data, hit_unit, hit_actor, hit_position, hit_direction, hit_normal, depth, allow_link, shield_blocked, hit_enemy_or_player)
+PlayerProjectileUnitExtension._spawn_linked_pickup_projectile = function (self, pickup_name, hit_unit, hit_actor, hit_position, hit_direction, hit_normal, hit_unit_id, is_level_unit, depth, shield_blocked)
 	local normalized_direction = Vector3.normalize(hit_direction)
 	local depth_position_offset = normalized_direction * depth
 	local link_position = hit_position + depth_position_offset
-	local impact_pickup_settings = impact_data.pickup_settings
 	local node_index = Actor.node(hit_actor)
-
-	if allow_link then
-		local breed = AiUtils.unit_breed(hit_unit)
-
-		if breed and not shield_blocked then
-			local hit_zone = breed.hit_zones_lookup[node_index]
-			local hit_zone_name = hit_zone.name
-			allow_link = not not impact_pickup_settings.link_hit_zones[hit_zone_name]
-		end
-	end
 
 	if shield_blocked then
 		hit_unit, node_index, link_position = self:_redirect_shield_linking(hit_unit, node_index, link_position, depth_position_offset)
-	end
-
-	local network_manager = Managers.state.network
-	local hit_unit_id, is_level_unit = network_manager:game_object_or_level_id(hit_unit)
-
-	if not hit_unit_id and is_level_unit == nil then
-		return
 	end
 
 	local spawn_limit = 1
@@ -1088,69 +1112,51 @@ PlayerProjectileUnitExtension._link_pickup_projectile = function (self, impact_d
 		spawn_limit = ammo_extension and ammo_extension:max_ammo()
 	end
 
-	if allow_link then
-		local random_pitch = Math.random_range(math.pi / 6, math.pi / 3)
-		local random_roll = Math.random_range(-math.pi / 10, math.pi / 10)
-		local link_direction = Vector3.normalize((normalized_direction - hit_normal) * 0.5)
-		local link_rotation = Quaternion.look(link_direction, Vector3.up())
-		link_rotation = Quaternion.multiply(link_rotation, Quaternion(Vector3.forward(), random_roll))
-		link_rotation = Quaternion.multiply(link_rotation, Quaternion(Vector3.left(), random_pitch))
-		local pickup_name = impact_pickup_settings.link_pickup_name
+	local random_pitch = Math.random_range(math.pi / 6, math.pi / 3)
+	local random_roll = Math.random_range(-math.pi / 10, math.pi / 10)
+	local link_direction = Vector3.normalize((normalized_direction - hit_normal) * 0.5)
+	local link_rotation = Quaternion.look(link_direction, Vector3.up())
+	link_rotation = Quaternion.multiply(link_rotation, Quaternion(Vector3.forward(), random_roll))
+	link_rotation = Quaternion.multiply(link_rotation, Quaternion(Vector3.left(), random_pitch))
+	local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
+	local pickup_spawn_type = "dropped"
+	local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
 
-		if impact_pickup_settings.use_weapon_skin then
-			local inventory_extension = ScriptUnit.has_extension(self._owner_unit, "inventory_system")
+	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_linked_pickup", pickup_name_id, link_position, link_rotation, pickup_spawn_type_id, hit_unit_id, node_index, is_level_unit, spawn_limit)
+end
 
-			if inventory_extension then
-				local slot_name = "slot_ranged"
-				local slot_data = inventory_extension:get_slot_data(slot_name)
-				pickup_name = slot_data.link_pickup_template_name or pickup_name
-			end
-		end
+PlayerProjectileUnitExtension._spawn_pickup_projectile = function (self, pickup_name, hit_position, hit_direction, hit_normal, hit_enemy_or_player)
+	local spawn_limit = 1
+	local weapon_unit = self:_get_weapon_unit()
 
-		local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
-		local pickup_spawn_type = "dropped"
-		local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
-
-		network_manager.network_transmit:send_rpc_server("rpc_spawn_linked_pickup", pickup_name_id, link_position, link_rotation, pickup_spawn_type_id, hit_unit_id, node_index, is_level_unit, spawn_limit)
-	else
-		local random_angle = math.random(-math.half_pi, math.half_pi)
-		local bounce_dir = (hit_enemy_or_player and hit_direction) or Vector3.reflect(hit_direction, hit_normal)
-		local position = hit_position + bounce_dir * 0.2
-		local rotation = Quaternion.axis_angle(bounce_dir, random_angle)
-		local pickup_name = impact_pickup_settings.pickup_name
-		local slot_pickup_name = nil
-
-		if impact_pickup_settings.use_weapon_skin then
-			local inventory_extension = ScriptUnit.has_extension(self._owner_unit, "inventory_system")
-
-			if inventory_extension then
-				local slot_name = "slot_ranged"
-				local slot_data = inventory_extension:get_slot_data(slot_name)
-				slot_pickup_name = slot_data.pickup_template_name
-			end
-		end
-
-		pickup_name = slot_pickup_name or pickup_name
-		local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
-		local pickup_spawn_type = "dropped"
-		local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
-		local pickup_settings = AllPickups[pickup_name]
-		local pickup_unit_name = pickup_settings.unit_name
-		local pickup_unit_template_name = pickup_settings.unit_template_name
-		local pickup_unit_name_id = NetworkLookup.husks[pickup_unit_name]
-		local pickup_unit_template_name_id = NetworkLookup.go_types[pickup_unit_template_name]
-		local velocity = bounce_dir * self._locomotion_extension.speed * 0.001
-		local weapon_pose = Unit.world_pose(self._projectile_unit, 0)
-		local av = self.projectile_info.bounce_angular_velocity
-		local angular_velocity = Vector3(av[1], av[2], av[3])
-		local angular_velocity_transformed = Matrix4x4.transform_without_translation(weapon_pose, angular_velocity)
-		local network_position = AiAnimUtils.position_network_scale(position, true)
-		local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
-		local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
-		local network_angular_velocity = AiAnimUtils.velocity_network_scale(angular_velocity_transformed, true)
-
-		network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", pickup_unit_name_id, pickup_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit)
+	if weapon_unit then
+		local ammo_extension = ScriptUnit.has_extension(weapon_unit, "ammo_system")
+		spawn_limit = ammo_extension and ammo_extension:max_ammo()
 	end
+
+	local random_angle = math.random(-math.half_pi, math.half_pi)
+	local bounce_dir = (hit_enemy_or_player and hit_direction) or Vector3.reflect(hit_direction, hit_normal)
+	local position = hit_position + bounce_dir * 0.2
+	local rotation = Quaternion.axis_angle(bounce_dir, random_angle)
+	local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
+	local pickup_spawn_type = "dropped"
+	local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
+	local pickup_settings = AllPickups[pickup_name]
+	local pickup_unit_name = pickup_settings.unit_name
+	local pickup_unit_template_name = pickup_settings.unit_template_name
+	local pickup_unit_name_id = NetworkLookup.husks[pickup_unit_name]
+	local pickup_unit_template_name_id = NetworkLookup.go_types[pickup_unit_template_name]
+	local velocity = bounce_dir * self._locomotion_extension.speed * 0.001
+	local weapon_pose = Unit.world_pose(self._projectile_unit, 0)
+	local av = self.projectile_info.bounce_angular_velocity
+	local angular_velocity = Vector3(av[1], av[2], av[3])
+	local angular_velocity_transformed = Matrix4x4.transform_without_translation(weapon_pose, angular_velocity)
+	local network_position = AiAnimUtils.position_network_scale(position, true)
+	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
+	local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
+	local network_angular_velocity = AiAnimUtils.velocity_network_scale(angular_velocity_transformed, true)
+
+	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", pickup_unit_name_id, pickup_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit)
 end
 
 PlayerProjectileUnitExtension.do_aoe = function (self, aoe_data, position)
@@ -1214,6 +1220,10 @@ PlayerProjectileUnitExtension.spawn_liquid_area = function (self, unit, pos, dir
 	local liquid_area_damage_extension = ScriptUnit.extension(liquid_aoe_unit, "area_damage_system")
 
 	liquid_area_damage_extension:ready()
+end
+
+PlayerProjectileUnitExtension.are_impacts_stopped = function (self)
+	return self._stop_impacts
 end
 
 return

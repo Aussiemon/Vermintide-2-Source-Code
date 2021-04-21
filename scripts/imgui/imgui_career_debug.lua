@@ -2,6 +2,12 @@ ImguiCareerDebug = class(ImguiCareerDebug)
 local SHOULD_RELOAD = true
 local DEFAULT_WINDOW_X = 820
 local DEFAULT_WINDOW_Y = 500
+local MAX_BOTS = 8
+local BOT_COUNT_TABLE = {}
+
+for i = 0, MAX_BOTS, 1 do
+	BOT_COUNT_TABLE[i + 1] = tostring(i)
+end
 
 ImguiCareerDebug.init = function (self)
 	self._first_run = true
@@ -107,6 +113,12 @@ ImguiCareerDebug.draw = function (self)
 
 	self._is_persistent = Imgui.checkbox("Keep Window Open", self._is_persistent)
 
+	Imgui.same_line()
+	Imgui.push_item_width(100)
+
+	script_data.cap_num_bots = Imgui.combo("Num bots", (script_data.cap_num_bots or MAX_BOTS) + 1, BOT_COUNT_TABLE) - 1
+
+	Imgui.pop_item_width()
 	Imgui.separator()
 	self:_draw_players()
 	self:_verify_indent()
@@ -156,7 +168,7 @@ ImguiCareerDebug._draw_profile_combo = function (self, player)
 
 	Imgui.tree_push("profile")
 
-	local new_profile_index = Imgui.combo("", profile_index - 1, self._profiles)
+	local new_profile_index = Imgui.combo("", profile_index, self._profiles)
 
 	Imgui.tree_pop()
 
@@ -192,7 +204,7 @@ ImguiCareerDebug._draw_career_combo = function (self, player)
 
 	Imgui.tree_push("career")
 
-	local new_career_index = Imgui.combo("", career_index - 1, careers)
+	local new_career_index = Imgui.combo("", career_index, careers)
 
 	Imgui.tree_pop()
 

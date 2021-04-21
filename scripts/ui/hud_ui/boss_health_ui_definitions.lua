@@ -15,23 +15,51 @@ local scenegraph_definition = {
 			UILayer.default
 		}
 	},
-	pivot = {
+	pivot_parent = {
 		vertical_alignment = "top",
 		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
 			440,
-			14
+			70
 		},
 		position = {
 			33,
-			-100,
+			-44,
+			0
+		}
+	},
+	pivot = {
+		vertical_alignment = "bottom",
+		parent = "pivot_parent",
+		horizontal_alignment = "left",
+		size = {
+			440,
+			14
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	pivot_dragger = {
+		vertical_alignment = "top",
+		parent = "pivot",
+		horizontal_alignment = "left",
+		size = {
+			440,
+			70
+		},
+		position = {
+			0,
+			0,
 			0
 		}
 	}
 }
 
-if platform ~= "win32" then
+if IS_CONSOLE then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 

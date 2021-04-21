@@ -60,14 +60,15 @@ GenericUnitInteractorExtension.destroy = function (self)
 end
 
 local IGNORED_DAMAGE_TYPES = {
-	warpfire_ground = true,
+	buff_shared_medpack = true,
 	buff_shared_medpack_temp_health = true,
+	buff = true,
 	arrow_poison_dot = true,
 	volume_generic_dot = true,
-	buff = true,
-	aoe_poison_dot = true,
+	warpfire_ground = true,
 	damage_over_time = true,
-	buff_shared_medpack = true,
+	life_tap = true,
+	aoe_poison_dot = true,
 	plague_ground = true,
 	temporary_health_degen = true,
 	health_degen = true,
@@ -416,6 +417,10 @@ GenericUnitInteractorExtension.is_waiting_for_interaction_approval = function (s
 	return self.state == "waiting_for_confirmation"
 end
 
+GenericUnitInteractorExtension.is_aborting_interaction = function (self)
+	return self.state == "waiting_for_abort"
+end
+
 GenericUnitInteractorExtension.is_looking_at_interactable = function (self)
 	return self.interaction_context.interactable_unit ~= nil
 end
@@ -436,6 +441,12 @@ end
 GenericUnitInteractorExtension.can_interact = function (self, interactable_unit, interaction_type)
 	local interaction_context = self.interaction_context
 	local unit_to_interact_with = interactable_unit or interaction_context.interactable_unit
+	local buff_extension = self.buff_extension
+	local disable_interactions = buff_extension:has_buff_perk("disable_interactions")
+
+	if disable_interactions then
+		return false
+	end
 
 	if self.state ~= "waiting_to_interact" then
 		return false

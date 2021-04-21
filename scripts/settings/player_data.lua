@@ -1,10 +1,12 @@
 DefaultPlayerData = {
 	controls_version = 18,
 	new_item_data_version = 6,
-	mission_selection_version = 3,
 	viewed_motd_urls_version = 1,
-	viewed_dialogues_version = 1,
+	seen_shop_items_version = 1,
 	new_keep_decoration_version = 1,
+	level_preferences_version = 1,
+	mission_selection_version = 3,
+	viewed_dialogues_version = 1,
 	bot_spawn_priority_version = 1,
 	new_sign_in_rewards_data_version = 2,
 	favorite_item_data_version = 1,
@@ -19,7 +21,12 @@ DefaultPlayerData = {
 	bot_spawn_priority = {},
 	viewed_motd_urls = {},
 	viewed_dialogues = {},
-	new_keep_decoration_ids = {}
+	new_keep_decoration_ids = {},
+	level_preferences = {
+		{},
+		{}
+	},
+	seen_shop_items = {}
 }
 PlayerData = PlayerData or table.clone(DefaultPlayerData)
 
@@ -120,6 +127,25 @@ function populate_player_data_from_save(save_data, id, version_match)
 			print("Wrong viewed_dialogues_version for save file, saved: ", player_save_data.viewed_dialogues_version, " current: ", DefaultPlayerData.viewed_dialogues_version)
 
 			player_save_data.viewed_dialogues_version = DefaultPlayerData.viewed_dialogues_version
+		end
+
+		if DefaultPlayerData.level_preferences_version ~= player_save_data.level_preferences_version then
+			player_save_data.level_preferences = {
+				{},
+				{}
+			}
+
+			print("Wrong level_preferences_version for save file, saved: ", tostring(player_save_data.level_preferences_version), " current: ", DefaultPlayerData.level_preferences_version)
+
+			player_save_data.level_preferences_version = DefaultPlayerData.level_preferences_version
+		end
+
+		if DefaultPlayerData.seen_shop_items_version ~= player_save_data.seen_shop_items_version then
+			player_save_data.seen_shop_items = {}
+
+			print("Wrong seen_shop_items_version for save file, saved: ", player_save_data.seen_shop_items_version, " current: ", DefaultPlayerData.seen_shop_items_version)
+
+			player_save_data.seen_shop_items_version = DefaultPlayerData.seen_shop_items_version
 		end
 	end
 

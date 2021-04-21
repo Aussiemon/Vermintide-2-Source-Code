@@ -190,17 +190,21 @@ PlayerUnitAttachmentExtension._show_attachment = function (self, slot_name, slot
 end
 
 PlayerUnitAttachmentExtension.show_attachments = function (self, show)
-	local slots = self._attachments.slots
+	if self._show_attachments ~= show then
+		local slots = self._attachments.slots
 
-	for slot_name, slot_data in pairs(slots) do
-		if slot_data.unit then
-			self:_show_attachment(slot_name, slot_data, show)
+		for slot_name, slot_data in pairs(slots) do
+			if slot_data.unit then
+				self:_show_attachment(slot_name, slot_data, show)
+			end
 		end
+
+		local attachment_event = (show and "lua_attachment_unhidden") or "lua_attachment_hidden"
+
+		Unit.flow_event(self._unit, attachment_event)
+
+		self._show_attachments = show
 	end
-
-	local attachment_event = (show and "lua_attachment_unhidden") or "lua_attachment_hidden"
-
-	Unit.flow_event(self._unit, attachment_event)
 end
 
 PlayerUnitAttachmentExtension.create_attachment_in_slot = function (self, slot_name, backend_id)
@@ -229,38 +233,22 @@ PlayerUnitAttachmentExtension.update_resync_loadout = function (self)
 		return
 	end
 
+	local network_manager = Managers.state.network
+	local profile_synchronizer = network_manager.profile_synchronizer
+	local peer_id = self._player:network_id()
+	local local_player_id = self._player:local_player_id()
+
 	if self.resync_loadout_needed then
-		self.resync_id = self:resync_loadout(equipment_to_spawn)
+		profile_synchronizer:resync_loadout(peer_id, local_player_id)
+
 		self.resync_loadout_needed = false
 	end
 
-	local resync_id = self.resync_id
-
-	if resync_id and self:all_clients_loaded_resource(resync_id) then
+	if profile_synchronizer:all_ingame_synced_for_peer(peer_id, local_player_id) then
 		self:spawn_resynced_loadout(equipment_to_spawn)
 
 		self._item_to_spawn = nil
-		self.resync_id = nil
 	end
-end
-
-PlayerUnitAttachmentExtension.resync_loadout = function (self, equipment_to_spawn)
-	if not equipment_to_spawn then
-		return
-	end
-
-	local career_index = self.career_extension:career_index()
-	local network_manager = Managers.state.network
-	local resync_id = network_manager.profile_synchronizer:resync_loadout(self._profile_index, career_index, self._player)
-
-	return resync_id
-end
-
-PlayerUnitAttachmentExtension.all_clients_loaded_resource = function (self, resync_id)
-	local profile_synchronizer = Managers.state.network.profile_synchronizer
-	local all_clients_have_loaded_resources = profile_synchronizer:all_clients_have_loaded_sync_id(resync_id)
-
-	return all_clients_have_loaded_resources
 end
 
 PlayerUnitAttachmentExtension.spawn_resynced_loadout = function (self, item_to_spawn)

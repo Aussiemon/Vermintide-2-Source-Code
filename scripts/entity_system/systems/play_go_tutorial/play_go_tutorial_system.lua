@@ -291,10 +291,10 @@ end
 PlayGoTutorialSystem._update_ai_units = function (self)
 	for i, data in pairs(self._spawned_ai_units) do
 		if Unit.alive(data.ai_unit) and not ScriptUnit.extension(data.ai_unit, "health_system"):is_alive() then
-			if data.is_highlighted then
+			if data.outline_id then
 				local outline_extension = ScriptUnit.extension(data.ai_unit, "outline_system")
 
-				outline_extension.set_method("never")
+				outline_extension:remove_outline(data.outline_id)
 			end
 
 			Unit.flow_event(data.spawner_unit, "lua_ai_death")
@@ -530,14 +530,7 @@ PlayGoTutorialSystem.register_unit = function (self, spawner_unit, ai_unit)
 
 	if Unit.get_data(spawner_unit, "Tutorial", "highlight_on_spawn") then
 		local outline_extension = ScriptUnit.extension(ai_unit, "outline_system")
-
-		outline_extension.set_method("always")
-
-		outline_extension.outline_color = OutlineSettings.colors.interactable
-
-		outline_extension:reapply_outline()
-
-		data.is_highlighted = true
+		data.outline_id = outline_extension:add_outline(OutlineSettings.templates.tutorial_highlight)
 	end
 
 	data.spawner_unit = spawner_unit

@@ -43,6 +43,8 @@ end
 
 FatigueUI.setup_hud = function (self, status_extension)
 	local fatigue_points, max_fatigue_points = status_extension:current_fatigue_points()
+	fatigue_points = math.clamp(fatigue_points, 0, UISettings.max_fatigue_shields * 2)
+	max_fatigue_points = math.clamp(max_fatigue_points, 0, UISettings.max_fatigue_shields * 2)
 	local active_shields = math.floor(max_fatigue_points / 2 + 0.5)
 	local offset = 30
 	local total_width = offset * (active_shields - 1)
@@ -100,6 +102,13 @@ FatigueUI.start_fade_out = function (self)
 	end
 end
 
+local customizer_data = {
+	root_scenegraph_id = "background",
+	label = "Stamina",
+	registry_key = "fatigue",
+	drag_scenegraph_id = "background_dragger"
+}
+
 FatigueUI.update = function (self, dt)
 	local player = self.local_player
 	local player_unit = player.player_unit
@@ -107,6 +116,8 @@ FatigueUI.update = function (self, dt)
 	if not Unit.alive(player_unit) then
 		return
 	end
+
+	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
 
 	local status_extension = ScriptUnit.extension(player_unit, "status_system")
 	local should_be_active = self:check_active(status_extension)

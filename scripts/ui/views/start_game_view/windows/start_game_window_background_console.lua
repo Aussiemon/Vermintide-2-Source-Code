@@ -5,35 +5,6 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local camera_position_by_character = definitions.camera_position_by_character
 local loading_overlay_widget_definitions = definitions.loading_overlay_widgets
-local object_sets_per_layout = {
-	weave_quickplay = {
-		quick_play = true
-	},
-	weave_ranked = {
-		custom_game = true
-	},
-	weave_find_group = {
-		weekly = true
-	},
-	event = {
-		weekly = true
-	},
-	adventure = {
-		quick_play = true
-	},
-	custom_game = {
-		custom_game = true
-	},
-	heroic_deeds = {
-		deeds = true
-	},
-	twitch = {
-		mixer = true
-	},
-	lobby_browser = {
-		quick_play = true
-	}
-}
 StartGameWindowBackgroundConsole = class(StartGameWindowBackgroundConsole)
 StartGameWindowBackgroundConsole.NAME = "StartGameWindowBackgroundConsole"
 
@@ -55,6 +26,17 @@ StartGameWindowBackgroundConsole.on_enter = function (self, params, offset)
 	self:_setup_object_sets()
 end
 
+StartGameWindowBackgroundConsole._get_with_mechanism = function (self, lookup)
+	local mechanism_name = self.parent:get_mechanism_name()
+
+	return lookup[mechanism_name] or lookup.adventure
+end
+
+local MOOD_PER_MECHANISM = {
+	adventure = "default",
+	deus = "menu_chaos_wastes_01"
+}
+
 StartGameWindowBackgroundConsole._create_viewport_definition = function (self)
 	return {
 		scenegraph_id = "root_fit",
@@ -63,6 +45,7 @@ StartGameWindowBackgroundConsole._create_viewport_definition = function (self)
 			viewport = {
 				layer = 990,
 				viewport_name = "character_preview_viewport",
+				shading_environment = "environment/ui_end_screen",
 				clear_screen_on_create = true,
 				level_name = "levels/ui_keep_menu/world",
 				enable_sub_gui = false,
@@ -74,6 +57,7 @@ StartGameWindowBackgroundConsole._create_viewport_definition = function (self)
 					Application.ENABLE_VOLUMETRICS
 				},
 				object_sets = LevelResource.object_set_names("levels/ui_keep_menu/world"),
+				mood_setting = self:_get_with_mechanism(MOOD_PER_MECHANISM),
 				camera_position = {
 					0,
 					0,
@@ -104,17 +88,7 @@ StartGameWindowBackgroundConsole.create_ui_elements = function (self, params, of
 	end
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local loading_overlay_widgets = {}
-	local loading_overlay_widgets_by_name = {}
-
-	for name, widget_definition in pairs(loading_overlay_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		loading_overlay_widgets[#loading_overlay_widgets + 1] = widget
-		loading_overlay_widgets_by_name[name] = widget
-	end
-
-	self._loading_overlay_widgets = loading_overlay_widgets
-	self._loading_overlay_widgets_by_name = loading_overlay_widgets_by_name
+	self._loading_overlay_widgets, self._loading_overlay_widgets_by_name = UIUtils.create_widgets(loading_overlay_widget_definitions)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -166,7 +140,7 @@ StartGameWindowBackgroundConsole.update = function (self, dt, t)
 
 		self.world_previewer:update(dt, t, disable_hero_unit_input)
 
-		local layout_name = self.parent:get_selected_game_mode_layout_name()
+		local layout_name = self.parent:get_selected_layout_name()
 
 		if layout_name ~= self._current_layout_name then
 			self._current_layout_name = layout_name
@@ -177,19 +151,19 @@ StartGameWindowBackgroundConsole.update = function (self, dt, t)
 end
 
 StartGameWindowBackgroundConsole._update_object_sets = function (self, layout_name)
-	local object_set_to_enable = object_sets_per_layout[layout_name]
-	local enabled_object_sets_string = "[StartGameWindowBackgroundConsole] Enabling the following object sets:"
+	local layout_settings = self.parent:get_layout_setting_by_name(layout_name)
+	local object_set = layout_settings.background_object_set
+	local flow_event = layout_settings.background_flow_event
+	local world_previewer = self.world_previewer
 
-	for object_set_name, _ in pairs(object_set_to_enable) do
-		enabled_object_sets_string = string.format("%s %s", enabled_object_sets_string, object_set_name)
+	for current_object_set, object_set_units in pairs(self._object_sets) do
+		local enable_visibility = current_object_set == object_set
+
+		world_previewer:show_level_units(object_set_units, enable_visibility)
 	end
 
-	print(enabled_object_sets_string)
-
-	for object_set_name, object_set_units in pairs(self._object_sets) do
-		local enable_visibility = object_set_to_enable[object_set_name] or false
-
-		self.world_previewer:show_level_units(object_set_units, enable_visibility)
+	if flow_event then
+		world_previewer:trigger_level_flow_event(flow_event)
 	end
 end
 
@@ -225,8 +199,6 @@ StartGameWindowBackgroundConsole._update_animations = function (self, dt)
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator:is_animation_completed(animation_id) then
-			ui_animator:stop_animation(animation_id)
-
 			animations[animation_name] = nil
 		end
 	end
@@ -237,19 +209,11 @@ StartGameWindowBackgroundConsole.draw = function (self, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.parent:window_input_service()
 
-	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
-
 	if self._show_loading_overlay then
-		local loading_overlay_widgets = self._loading_overlay_widgets
-
-		for i = 1, #loading_overlay_widgets, 1 do
-			local widget = loading_overlay_widgets[i]
-
-			UIRenderer.draw_widget(ui_top_renderer, widget)
-		end
+		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
+		UIRenderer.draw_all_widgets(ui_top_renderer, self._loading_overlay_widgets)
+		UIRenderer.end_pass(ui_top_renderer)
 	end
-
-	UIRenderer.end_pass(ui_top_renderer)
 
 	if self._viewport_widget then
 		local ui_renderer = self.ui_renderer

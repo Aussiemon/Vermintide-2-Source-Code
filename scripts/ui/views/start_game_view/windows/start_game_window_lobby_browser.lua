@@ -7,24 +7,25 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local input_delay_before_start_new_search = 0
 local platform = PLATFORM
-local GAME_MODE_LOOKUP_STRINGS = {
-	weave = "lb_game_type_weave",
+local MATCHMAKING_TYPE_LOOKUP_STRINGS = {
+	deus = "area_selection_morris_name",
 	deed = "lb_game_type_deed",
+	weave = "menu_weave_area_no_wom_title",
 	event = "lb_game_type_event",
 	custom = "lb_game_type_custom",
 	demo = "lb_game_type_none",
-	adventure = "lb_game_type_quick_play",
+	adventure = "area_selection_campaign",
 	tutorial = "lb_game_type_prologue",
-	twitch = "lb_game_type_twitch",
+	versus = "vs_ui_versus_tag",
 	["n/a"] = "lb_game_type_none",
 	any = "lobby_browser_mission"
 }
-local GAME_TYPES = {
-	"adventure",
-	"custom",
-	"event",
-	"weave",
-	"any"
+local GAME_TYPE_LOOKUP_STRINGS = {
+	deus = "area_selection_morris_name",
+	adventure = "area_selection_campaign",
+	weave = "menu_weave_area_no_wom_title",
+	versus = "vs_ui_versus_tag",
+	any = "lobby_browser_mission"
 }
 StartGameWindowLobbyBrowser = class(StartGameWindowLobbyBrowser)
 StartGameWindowLobbyBrowser.NAME = "StartGameWindowLobbyBrowser"
@@ -54,7 +55,7 @@ StartGameWindowLobbyBrowser.on_enter = function (self, params, offset)
 	self.lobby_finder = lobby_finder
 	local game_server_finder = nil
 	local disable_dedicated_servers = Development.parameter("use_lan_backend") or rawget(_G, "Steam") == nil
-	local supported_on_platform = PLATFORM == "win32"
+	local supported_on_platform = IS_WINDOWS
 
 	if disable_dedicated_servers or not supported_on_platform then
 		game_server_finder = GameServerFinderLan:new(network_options, MatchmakingSettings.MAX_NUM_SERVERS)
@@ -63,9 +64,9 @@ StartGameWindowLobbyBrowser.on_enter = function (self, params, offset)
 	end
 
 	self.game_server_finder = game_server_finder
-	definitions.game_mode_data = definitions.setup_game_mode_data(self.statistics_db, self._stats_id, GAME_TYPES)
+	self._game_mode_data = definitions.setup_game_mode_data(self.statistics_db, self._stats_id)
 
-	table.dump(definitions.game_mode_data, "GAME MODE DATA", 3)
+	table.dump(self._game_mode_data, "GAME MODE DATA", 3)
 	self:create_ui_elements(params, offset)
 
 	self._current_lobby_type = "lobbies"
@@ -89,7 +90,7 @@ StartGameWindowLobbyBrowser.on_enter = function (self, params, offset)
 	self._draw_invalid_checkbox = BUILD == "dev" or BUILD == "debug"
 	self._base_widgets_by_name.invalid_checkbox.content.visible = self._draw_invalid_checkbox
 	self._current_server_name = ""
-	self._show_weave_widgets = false
+	self._show_widget_type = "adventure"
 
 	Managers.matchmaking:set_active_lobby_browser(self)
 	self:_populate_lobby_list()
@@ -166,6 +167,28 @@ StartGameWindowLobbyBrowser.create_ui_elements = function (self, params, offset)
 
 	self._lobby_info_box_lobbies_weaves_widgets = lobby_info_box_lobbies_weaves_widgets
 	self._lobby_info_box_lobbies_weaves_widgets_by_name = lobby_info_box_lobbies_weaves_widgets_by_name
+	local lobby_info_box_deus_widgets = {}
+	local lobby_info_box_deus_widgets_by_name = {}
+
+	for name, widget_definition in pairs(widget_definitions.lobby_info_box_deus) do
+		local widget = UIWidget.init(widget_definition)
+		lobby_info_box_deus_widgets[#lobby_info_box_deus_widgets + 1] = widget
+		lobby_info_box_deus_widgets_by_name[name] = widget
+	end
+
+	self._lobby_info_box_deus_widgets = lobby_info_box_deus_widgets
+	self._lobby_info_box_deus_widgets_by_name = lobby_info_box_deus_widgets_by_name
+	local lobby_info_box_lobbies_deus_widgets = {}
+	local lobby_info_box_lobbies_deus_widgets_by_name = {}
+
+	for name, widget_definition in pairs(widget_definitions.lobby_info_box_lobbies_deus) do
+		local widget = UIWidget.init(widget_definition)
+		lobby_info_box_lobbies_deus_widgets[#lobby_info_box_lobbies_deus_widgets + 1] = widget
+		lobby_info_box_lobbies_deus_widgets_by_name[name] = widget
+	end
+
+	self._lobby_info_box_lobbies_deus_widgets = lobby_info_box_lobbies_deus_widgets
+	self._lobby_info_box_lobbies_deus_widgets_by_name = lobby_info_box_lobbies_deus_widgets_by_name
 	local lobby_info_box_lobbies_widgets = {}
 	local lobby_info_box_lobbies_widgets_by_name = {}
 
@@ -214,9 +237,27 @@ StartGameWindowLobbyBrowser._assign_hero_portraits = function (self)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = content[hotspot_name]
 		local icon_name = "icon" .. name_sufix
+		local icon_name_saturated = "icon" .. name_sufix .. "_saturated"
 		local profile_settings = SPProfiles[profile_index]
 		local ui_portrait = profile_settings.ui_portrait
 		hotspot_content[icon_name] = ui_portrait
+		hotspot_content[icon_name_saturated] = ui_portrait .. "_saturated"
+	end
+
+	local widget = self._lobby_info_box_deus_widgets_by_name.hero_tabs
+	local content = widget.content
+
+	for i = 1, #ProfilePriority, 1 do
+		local profile_index = ProfilePriority[i]
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot_content = content[hotspot_name]
+		local icon_name = "icon" .. name_sufix
+		local icon_name_saturated = "icon" .. name_sufix .. "_saturated"
+		local profile_settings = SPProfiles[profile_index]
+		local ui_portrait = profile_settings.ui_portrait
+		hotspot_content[icon_name] = ui_portrait
+		hotspot_content[icon_name_saturated] = ui_portrait .. "_saturated"
 	end
 end
 
@@ -229,6 +270,10 @@ StartGameWindowLobbyBrowser.on_exit = function (self, params)
 	self.lobby_finder:destroy()
 
 	self.lobby_finder = nil
+
+	self.game_server_finder:destroy()
+
+	self.game_server_finder = nil
 end
 
 StartGameWindowLobbyBrowser.update = function (self, dt, t)
@@ -385,11 +430,12 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 	objective_1.content.text = "tutorial_no_text"
 	local objective_2 = info_box_weaves_widgets.objective_2
 	objective_2.content.text = "tutorial_no_text"
-	local weave_template = WeaveSettings.templates[lobby_data.weave_name]
+	local weave_name = lobby_data.selected_mission_id
+	local weave_template = WeaveSettings.templates[weave_name]
 	local weave_identifier = Localize("lb_unknown")
 
-	if lobby_data.weave_name ~= "false" then
-		local weave_name_data = string.split(lobby_data.weave_name, "_")
+	if weave_name ~= "false" then
+		local weave_name_data = string.split(weave_name, "_")
 		weave_identifier = "Weave " .. weave_name_data[2]
 
 		if weave_template then
@@ -443,9 +489,10 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 
 	local level_image = "level_image_any"
 	local level_name = "lb_unknown"
-	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local mission_id = lobby_data.mission_id or lobby_data.selected_mission_id
 
-	if level_key and level_key ~= "n/a" then
+	if mission_id and mission_id ~= "n/a" then
+		local level_key = (weave_template and weave_template.objectives[1].level_id) or mission_id
 		local level_settings = LevelSettings[level_key]
 		level_image = level_settings.level_image
 		level_name = level_settings.display_name
@@ -467,7 +514,7 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 	info_box_widgets_weave.info_frame_status_text.content.text = status_text
 	local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
 	info_box_widgets_weave.info_frame_host_text.content.text = host or Localize("lb_unknown")
-	self._show_weave_widgets = true
+	self._show_widget_type = "weave"
 end
 
 StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobby_data)
@@ -478,10 +525,10 @@ StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobb
 	info_box_widgets_servers.info_frame_game_type_text.content.text = Localize(game_type)
 	local level_image = "level_image_any"
 	local level_name = "lb_unknown"
-	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 
-	if level_key and level_key ~= "n/a" then
-		local level_settings = LevelSettings[level_key]
+	if mission_id and mission_id ~= "n/a" then
+		local level_settings = LevelSettings[mission_id]
 		level_image = level_settings.level_image
 		level_name = level_settings.display_name
 	end
@@ -541,7 +588,89 @@ StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobb
 		info_box_widgets_servers.add_to_favorites_button.content.button_text = (favorite and Localize("lb_remove_from_favorites")) or Localize("lb_add_to_favorites")
 	end
 
-	self._show_weave_widgets = false
+	self._show_widget_type = "adventure"
+end
+
+StartGameWindowLobbyBrowser._gather_unlocked_journeys = function (self)
+	local unlocked_journeys = {}
+	local statistics_db = Managers.player:statistics_db()
+	local stats_id = Managers.player:local_player():stats_id()
+
+	for _, journey_name in ipairs(LevelUnlockUtils.unlocked_journeys(statistics_db, stats_id)) do
+		unlocked_journeys[journey_name] = true
+	end
+
+	return unlocked_journeys
+end
+
+StartGameWindowLobbyBrowser._handle_deus_data = function (self, lobby_data)
+	local unlocked_journeys = self:_gather_unlocked_journeys()
+	local info_box_widgets = self._lobby_info_box_deus_widgets_by_name
+	local info_box_widgets_lobbies = self._lobby_info_box_lobbies_deus_widgets_by_name
+	info_box_widgets_lobbies.info_frame_game_type_text.content.text = Localize("area_selection_morris_name")
+	local occupied_profiles = {}
+	local num_profiles = #SPProfiles
+
+	for i = 1, num_profiles, 1 do
+		if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
+			occupied_profiles[i] = true
+		end
+	end
+
+	local hero_tabs_widget = info_box_widgets.hero_tabs
+	local hero_tabs_content = hero_tabs_widget.content
+
+	for i = 1, #ProfilePriority, 1 do
+		local profile_index = ProfilePriority[i]
+		local name_sufix = "_" .. tostring(i)
+		local hotspot_name = "hotspot" .. name_sufix
+		local hotspot_content = hero_tabs_content[hotspot_name]
+
+		if occupied_profiles[profile_index] then
+			hotspot_content.disable_button = true
+		else
+			hotspot_content.disable_button = false
+		end
+	end
+
+	local expedition_widget = info_box_widgets.expedition_icon
+	local backend_deus = Managers.backend:get_interface("deus")
+	local journey_cycle = backend_deus:get_journey_cycle()
+	local journey_name = lobby_data.selected_mission_id
+	local journey_data = DeusJourneySettings[journey_name]
+	local level_name = journey_data.display_name
+	local theme = journey_cycle.journey_data[journey_name].dominant_god
+	local theme_settings = DeusThemeSettings[theme]
+	expedition_widget.content.theme_icon = theme_settings.icon
+	expedition_widget.content.level_icon = journey_data.level_image
+	expedition_widget.content.locked = not unlocked_journeys[journey_name]
+	local level_name_widget = info_box_widgets.level_name
+	level_name_widget.content.text = Localize(level_name)
+	local info_frame_level_name_lobbies_widget = info_box_widgets_lobbies.info_frame_level_name_text
+	info_frame_level_name_lobbies_widget.content.text = Localize(level_name)
+	local info_frame_difficulty_title = info_box_widgets_lobbies.info_frame_difficulty_title
+	local info_frame_difficulty_text = info_box_widgets_lobbies.info_frame_difficulty_text
+	local difficulty_text = "lb_difficulty_unknown"
+	local difficulty = lobby_data.difficulty
+
+	if difficulty then
+		difficulty_text = DifficultySettings[difficulty].display_name
+	end
+
+	info_box_widgets_lobbies.info_frame_difficulty_text.content.text = Localize(difficulty_text)
+	local num_players_text = "n/a"
+	local num_players = lobby_data.num_players
+
+	if num_players then
+		num_players_text = string.format("%s/%s", num_players, tostring(MatchmakingSettings.MAX_NUMBER_OF_PLAYERS))
+	end
+
+	info_box_widgets_lobbies.info_frame_players_text.content.text = num_players_text
+	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
+	info_box_widgets_lobbies.info_frame_status_text.content.text = status_text
+	local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
+	info_box_widgets_lobbies.info_frame_host_text.content.text = host or Localize("lb_unknown")
+	self._show_widget_type = "deus"
 end
 
 StartGameWindowLobbyBrowser._assign_objective = function (self, index, text, icon, spacing)
@@ -555,21 +684,23 @@ StartGameWindowLobbyBrowser._assign_objective = function (self, index, text, ico
 end
 
 StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
-	local game_type_text = "lb_unknown"
-	local game_mode = lobby_data.game_mode
-	local game_mode_name = ""
+	local matchmaking_type_text = "lb_unknown"
+	local mechanism = lobby_data.mechanism
+	local matchmaking_type = lobby_data.matchmaking_type
+	local selected_mission_id = lobby_data.selected_mission_id
+	local matchmaking_type_name = ""
 
-	if game_mode then
-		local game_mode_names = table.clone(NetworkLookup.game_modes, true)
-		game_mode_name = game_mode_names[tonumber(game_mode)]
-		game_type_text = GAME_MODE_LOOKUP_STRINGS[game_mode_name] or game_type_text
+	if matchmaking_type then
+		local matchmaking_type_names = table.clone(NetworkLookup.matchmaking_types, true)
+		matchmaking_type_name = matchmaking_type_names[tonumber(matchmaking_type)]
+		matchmaking_type_text = MATCHMAKING_TYPE_LOOKUP_STRINGS[matchmaking_type_name] or matchmaking_type_text
 	end
 
 	local occupied_profiles = {}
 	local num_profiles = #SPProfiles
 
 	for i = 1, num_profiles, 1 do
-		if not SlotAllocator.is_free_in_lobby(i, lobby_data) then
+		if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 			occupied_profiles[i] = true
 		end
 	end
@@ -589,10 +720,12 @@ StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
 		end
 	end
 
-	if game_mode_name == "weave" then
+	if mechanism == "weave" then
 		self:_handle_weave_data(lobby_data)
+	elseif mechanism == "deus" and DeusJourneySettings[selected_mission_id] then
+		self:_handle_deus_data(lobby_data)
 	else
-		self:_handle_lobby_data(game_type_text, lobby_data)
+		self:_handle_lobby_data(matchmaking_type_text, lobby_data)
 	end
 end
 
@@ -721,15 +854,15 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 	local current_lobby_type = self._current_lobby_type
 
 	if self.lobby_list:selected_lobby() then
-		local lobby_info_box_base_widgets = self._lobby_info_box_base_widgets
+		if self._show_widget_type == "weave" then
+			local lobby_info_box_base_widgets = self._lobby_info_box_base_widgets
 
-		for i = 1, #lobby_info_box_base_widgets, 1 do
-			local widget = lobby_info_box_base_widgets[i]
+			for i = 1, #lobby_info_box_base_widgets, 1 do
+				local widget = lobby_info_box_base_widgets[i]
 
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
+				UIRenderer.draw_widget(ui_renderer, widget)
+			end
 
-		if self._show_weave_widgets then
 			local lobby_info_box_weaves_widgets = self._lobby_info_box_weaves_widgets
 
 			for i = 1, #lobby_info_box_weaves_widgets, 1 do
@@ -745,21 +878,47 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 
 				UIRenderer.draw_widget(ui_renderer, widget)
 			end
-		elseif current_lobby_type == "lobbies" then
-			local lobby_info_box_lobbies_widgets = self._lobby_info_box_lobbies_widgets
+		elseif self._show_widget_type == "deus" then
+			local lobby_info_box_deus_widgets = self._lobby_info_box_deus_widgets
 
-			for i = 1, #lobby_info_box_lobbies_widgets, 1 do
-				local widget = lobby_info_box_lobbies_widgets[i]
+			for i = 1, #lobby_info_box_deus_widgets, 1 do
+				local widget = lobby_info_box_deus_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
 			end
-		elseif current_lobby_type == "servers" then
-			local lobby_info_box_servers_widgets = self._lobby_info_box_servers_widgets
 
-			for i = 1, #lobby_info_box_servers_widgets, 1 do
-				local widget = lobby_info_box_servers_widgets[i]
+			local lobby_info_box_lobbies_deus_widgets = self._lobby_info_box_lobbies_deus_widgets
+
+			for i = 1, #lobby_info_box_lobbies_deus_widgets, 1 do
+				local widget = lobby_info_box_lobbies_deus_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
+			end
+		else
+			local lobby_info_box_base_widgets = self._lobby_info_box_base_widgets
+
+			for i = 1, #lobby_info_box_base_widgets, 1 do
+				local widget = lobby_info_box_base_widgets[i]
+
+				UIRenderer.draw_widget(ui_renderer, widget)
+			end
+
+			if current_lobby_type == "lobbies" then
+				local lobby_info_box_lobbies_widgets = self._lobby_info_box_lobbies_widgets
+
+				for i = 1, #lobby_info_box_lobbies_widgets, 1 do
+					local widget = lobby_info_box_lobbies_widgets[i]
+
+					UIRenderer.draw_widget(ui_renderer, widget)
+				end
+			elseif current_lobby_type == "servers" then
+				local lobby_info_box_servers_widgets = self._lobby_info_box_servers_widgets
+
+				for i = 1, #lobby_info_box_servers_widgets, 1 do
+					local widget = lobby_info_box_servers_widgets[i]
+
+					UIRenderer.draw_widget(ui_renderer, widget)
+				end
 			end
 		end
 	end
@@ -845,16 +1004,10 @@ StartGameWindowLobbyBrowser._get_lobbies = function (self)
 end
 
 StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
-	local is_valid = lobby_data.valid
-
-	if not is_valid then
-		return false
-	end
-
-	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 	local num_players = tonumber(lobby_data.num_players)
 
-	if not level_key or num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS then
+	if not mission_id or num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS then
 		return false
 	end
 
@@ -870,7 +1023,6 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 		local required_dlcs = {}
 		local statistics_db = self.statistics_db
 		local player_stats_id = self._stats_id
-		local weave_name = lobby_data.weave_name
 		local difficulty = lobby_data.difficulty
 
 		if difficulty then
@@ -889,14 +1041,12 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 			end
 		end
 
-		local game_mode_index = tonumber(lobby_data.game_mode)
-		local game_mode_names = table.clone(NetworkLookup.game_modes, true)
-		local game_mode = game_mode_names[game_mode_index]
-		local game_mode_settings = GameModeSettings[game_mode]
 		local quick_game = lobby_data.quick_game == "true"
+		local mechanism = lobby_data.mechanism
+		local mechanism_settings = MechanismSettings[mechanism]
 
-		if game_mode_settings and game_mode_settings.required_dlc then
-			required_dlcs[game_mode_settings.required_dlc] = true
+		if mechanism_settings and mechanism_settings.required_dlc then
+			required_dlcs[mechanism_settings.required_dlc] = true
 		end
 
 		for dlc_name, _ in pairs(required_dlcs) do
@@ -905,11 +1055,13 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 			end
 		end
 
-		if game_mode_settings and game_mode_settings.extra_requirements_function and not game_mode_settings.extra_requirements_function() then
+		if mechanism_settings and mechanism_settings.extra_requirements_function and not mechanism_settings.extra_requirements_function() then
 			return false
 		end
 
-		if game_mode == "weave" then
+		if mechanism == "weave" then
+			local weave_name = mission_id
+
 			if weave_name ~= "false" and not quick_game then
 				local ignore_dlc_check = false
 				local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check) or weave_name == self._current_weave
@@ -919,7 +1071,7 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 				end
 			end
 		else
-			local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
+			local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, mission_id)
 
 			if not level_unlocked then
 				return false
@@ -932,10 +1084,9 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 			end
 		end
 
-		local difficulty = lobby_data.difficulty
 		local is_matchmaking = lobby_data.matchmaking and lobby_data.matchmaking ~= "false"
 
-		if not is_matchmaking or not difficulty or level_key == "n/a" then
+		if not is_matchmaking or not difficulty or mission_id == "n/a" then
 			return false
 		end
 	end
@@ -976,22 +1127,26 @@ StartGameWindowLobbyBrowser._update_join_button = function (self, lobby_data)
 end
 
 StartGameWindowLobbyBrowser._reset_filters = function (self)
-	local game_type_table = GAME_TYPES
-	local any_game_type_index = #game_type_table
+	local game_mode_data = self._game_mode_data
+	local any_game_type_index = self._game_mode_data.game_modes.any
 
 	self:_on_game_type_stepper_input(0, any_game_type_index)
+	self:_on_show_lobbies_stepper_input(0, 1)
+	self:_on_distance_stepper_input(0, 2)
+end
 
+StartGameWindowLobbyBrowser._reset_level_filter = function (self)
 	local levels_table = self:_get_levels()
 	local any_level_index = #levels_table
 
 	self:_on_level_stepper_input(0, any_level_index)
+end
 
+StartGameWindowLobbyBrowser._reset_difficulty_filter = function (self)
 	local difficulties_table = self:_get_difficulties()
 	local any_difficulty_index = #difficulties_table
 
 	self:_on_difficulty_stepper_input(0, any_difficulty_index)
-	self:_on_show_lobbies_stepper_input(0, 1)
-	self:_on_distance_stepper_input(0, 2)
 end
 
 StartGameWindowLobbyBrowser._switch_lobby_type = function (self, new_lobby_type)
@@ -1012,7 +1167,7 @@ end
 StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local lobby_finder = self.lobby_finder
 	local game_mode_index = self.selected_game_mode_index
-	local game_mode = GAME_TYPES[game_mode_index]
+	local mechanism = self._game_mode_data.game_modes[game_mode_index] or "any"
 	local level_index = self.selected_level_index
 	local levels_table = self:_get_levels()
 	local level_key = levels_table[level_index]
@@ -1037,7 +1192,7 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 		requirements.distance_filter = platform ~= "ps4" and distance_filter
 	end
 
-	if platform == "ps4" then
+	if IS_PS4 then
 		local user_region = Managers.account:region()
 
 		if distance_filter == "close" then
@@ -1068,16 +1223,16 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	end
 
 	if level_key ~= "any" and level_key then
-		requirements.filters.selected_level_key = {
+		requirements.filters.selected_mission_id = {
 			comparison = "equal",
 			value = level_key
 		}
 	end
 
-	if game_mode ~= "any" then
-		requirements.filters.game_mode = {
+	if mechanism ~= "any" then
+		requirements.filters.mechanism = {
 			comparison = "equal",
-			value = NetworkLookup.game_modes[game_mode]
+			value = mechanism
 		}
 	end
 
@@ -1140,9 +1295,10 @@ StartGameWindowLobbyBrowser._search = function (self)
 end
 
 StartGameWindowLobbyBrowser._get_levels = function (self)
-	local game_mode_data = definitions.game_mode_data
-	local game_mode_index = self.selected_game_mode_index or 1
-	local data = game_mode_data and game_mode_data[game_mode_index]
+	local game_mode_data = self._game_mode_data
+	local game_modes = game_mode_data.game_modes
+	local game_mode_index = self.selected_game_mode_index or game_modes.any
+	local data = game_mode_data[game_mode_index]
 	local levels = (data and data.levels) or {
 		"any"
 	}
@@ -1151,9 +1307,10 @@ StartGameWindowLobbyBrowser._get_levels = function (self)
 end
 
 StartGameWindowLobbyBrowser._get_difficulties = function (self)
-	local game_mode_data = definitions.game_mode_data
-	local game_mode_index = self.selected_game_mode_index or 1
-	local data = game_mode_data and game_mode_data[game_mode_index]
+	local game_mode_data = self._game_mode_data
+	local game_modes = game_mode_data.game_modes
+	local game_mode_index = self.selected_game_mode_index or game_modes.any
+	local data = game_mode_data[game_mode_index]
 	local difficulties = (data and data.difficulties) or {
 		"any"
 	}
@@ -1163,15 +1320,16 @@ end
 
 StartGameWindowLobbyBrowser._on_game_type_stepper_input = function (self, index_change, specific_index)
 	local stepper = self._lobbies_widgets_by_name.game_type_stepper
-	local game_types_table = GAME_TYPES
-	local current_index = self.selected_game_mode_index or 1
-	local new_index = self:_on_stepper_input(stepper, game_types_table, current_index, index_change, specific_index)
+	local game_modes = self._game_mode_data.game_modes
+	local current_index = self.selected_game_mode_index or game_modes.any
+	local new_index = self:_on_stepper_input(stepper, game_modes, current_index, index_change, specific_index)
 	local level_display_name = "lobby_browser_mission"
-	local game_type = game_types_table[new_index]
-	stepper.content.setting_text = Localize(GAME_MODE_LOOKUP_STRINGS[game_type])
+	local game_mode = game_modes[new_index]
+	stepper.content.setting_text = Localize(GAME_TYPE_LOOKUP_STRINGS[game_mode] or "")
 	self.selected_game_mode_index = new_index
 	self.search_timer = input_delay_before_start_new_search
-	local level_index = self.selected_level_index or 1
+	self.selected_level_index = 1
+	local level_index = self.selected_level_index
 	local levels_table = self:_get_levels()
 	local level_key = levels_table[level_index]
 	local banner_content = self._lobbies_widgets_by_name.level_banner_widget.content
@@ -1202,6 +1360,9 @@ StartGameWindowLobbyBrowser._on_game_type_stepper_input = function (self, index_
 		stepper_content.button_hotspot_left.disable_button = false
 		stepper_content.button_hotspot_right.disable_button = false
 	end
+
+	self:_reset_level_filter()
+	self:_reset_difficulty_filter()
 end
 
 StartGameWindowLobbyBrowser._on_level_stepper_input = function (self, index_change, specific_index)

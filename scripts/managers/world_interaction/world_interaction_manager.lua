@@ -339,12 +339,12 @@ WorldInteractionManager._update_foliage_players = function (self, dt, t)
 
 	for _, player in pairs(players) do
 		local player_unit = player.player_unit
+		local unit_pos = POSITION_LOOKUP[player_unit]
 
-		if Unit.alive(player_unit) then
+		if unit_pos then
 			local mover = Unit.mover(player_unit)
 
 			if Mover.collides_down(mover) then
-				local unit_pos = POSITION_LOOKUP[player_unit]
 				local texture_size = nil
 
 				if player.local_player then

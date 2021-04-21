@@ -976,7 +976,7 @@ local background_widget_definitions = {
 						local scroll_step = ui_content.scroll_step or 0.1
 						local current_scroll_value = ui_content.internal_scroll_value
 
-						if not gamepad_active and PLATFORM == "xb1" then
+						if not gamepad_active and IS_XB1 then
 							current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.x * 0.01
 						else
 							current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.y
@@ -1450,11 +1450,11 @@ local function create_gamepad_layout_widget(texture, texture_size, texture2, tex
 	local platform = PLATFORM
 	local definition = nil
 
-	if platform == "win32" then
+	if IS_WINDOWS then
 		definition = UIWidgets.create_gamepad_layout_win32(texture, texture_size, texture2, texture_size2, base_offset, scenegraph_id)
-	elseif platform == "xb1" then
+	elseif IS_XB1 then
 		definition = UIWidgets.create_gamepad_layout_xb1(texture, texture_size, base_offset, scenegraph_id)
-	elseif platform == "ps4" then
+	elseif IS_PS4 then
 		definition = UIWidgets.create_gamepad_layout_ps4(texture, texture_size, base_offset, scenegraph_id)
 	end
 
@@ -1536,7 +1536,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 
 						if gamepad_active then
 							cursor = input_service:get("cursor")
-						elseif PLATFORM == "xb1" and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
+						elseif IS_XB1 and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
 							cursor = input_service:get("cursor")
 						else
 							cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))

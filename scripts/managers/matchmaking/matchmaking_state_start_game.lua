@@ -3,12 +3,10 @@ MatchmakingStateStartGame.NAME = "MatchmakingStateStartGame"
 
 MatchmakingStateStartGame.init = function (self, params)
 	self._lobby = params.lobby
-	self._level_transition_handler = params.level_transition_handler
-	self._handshaker_host = params.handshaker_host
-	self._handshaker_client = params.handshaker_client
 	self._network_server = params.network_server
 	self._statistics_db = params.statistics_db
 	self._matchmaking_manager = params.matchmaking_manager
+	self._network_transmit = params.network_transmit
 end
 
 MatchmakingStateStartGame.on_enter = function (self, state_context)
@@ -31,28 +29,25 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 
 	local search_config = self.search_config
 	local human_players = Managers.player:human_players()
-	local game_mode = search_config.game_mode
-	local game_mode_settings = {}
+	local matchmaking_type = search_config.matchmaking_type
+	local mechanism = search_config.mechanism
+	local mechanism_settings = {}
 
-	if game_mode then
-		if game_mode == "weave_find_group" then
-			game_mode = "weave"
+	if matchmaking_type or mechanism then
+		mechanism_settings = MechanismSettings[mechanism] or mechanism_settings
+
+		if mechanism_settings.required_dlc and not ADDED_DLCS[mechanism_settings.required_dlc] then
+			DLCS_TO_CHECK[#DLCS_TO_CHECK + 1] = NetworkLookup.dlcs[mechanism_settings.required_dlc]
+			ADDED_DLCS[mechanism_settings.required_dlc] = true
 		end
 
-		game_mode_settings = GameModeSettings[game_mode] or game_mode_settings
-
-		if game_mode_settings.required_dlc and not ADDED_DLCS[game_mode_settings.required_dlc] then
-			DLCS_TO_CHECK[#DLCS_TO_CHECK + 1] = NetworkLookup.dlcs[game_mode_settings.required_dlc]
-			ADDED_DLCS[game_mode_settings.required_dlc] = true
-		end
-
-		if game_mode_settings.extra_requirements_function then
+		if mechanism_settings.extra_requirements_function then
 			local statistics_db = Managers.player:statistics_db()
 
 			for _, player in pairs(human_players) do
 				local stats_id = player:stats_id()
 
-				if not game_mode_settings.extra_requirements_function(statistics_db, stats_id) then
+				if not mechanism_settings.extra_requirements_function(statistics_db, stats_id) then
 					self._matchmaking_manager:cancel_matchmaking()
 					self._matchmaking_manager:send_system_chat_message("matchmaking_status_game_mode_requirements_failed")
 
@@ -67,7 +62,7 @@ MatchmakingStateStartGame._verify_requirements = function (self)
 	if difficulty then
 		local difficulty_settings = DifficultySettings[difficulty]
 
-		if difficulty_settings.extra_requirement_name and not game_mode_settings.disable_difficulty_check and not Development.parameter("unlock_all_difficulties") then
+		if difficulty_settings.extra_requirement_name and not mechanism_settings.disable_difficulty_check and not Development.parameter("unlock_all_difficulties") then
 			local players_not_meeting_requirements = DifficultyManager.players_below_difficulty_rank(difficulty, human_players)
 
 			if #players_not_meeting_requirements > 0 then
@@ -101,10 +96,6 @@ MatchmakingStateStartGame._initiate_start_game = function (self)
 	self:_start_game()
 end
 
-MatchmakingStateStartGame.on_exit = function (self)
-	self._game_parameters = nil
-end
-
 MatchmakingStateStartGame.update = function (self, dt, t)
 	if self._verifying_dlcs then
 		return self:_handle_verify_dlcs()
@@ -114,19 +105,20 @@ MatchmakingStateStartGame.update = function (self, dt, t)
 end
 
 MatchmakingStateStartGame._setup_lobby_data = function (self)
-	local level_key, difficulty, difficulty_tweak, act_key, quick_game, private_game, excluded_level_keys, weave_name = nil
+	local mission_id, difficulty, difficulty_tweak, act_key, quick_game, private_game, excluded_level_keys, weave_name, conflict_settings = nil
 	local search_config = self.search_config
-	local game_mode = search_config.game_mode
+	local matchmaking_type = search_config.matchmaking_type
+	local mechanism = search_config.mechanism
 
 	if self.state_context.join_by_lobby_browser then
-		level_key = self._level_transition_handler:default_level_key()
+		mission_id = Managers.mechanism:default_level_key()
 		difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
 		act_key = nil
 		quick_game = false
 		private_game = false
 		excluded_level_keys = {}
 	else
-		level_key = search_config.level_key
+		mission_id = search_config.mission_id
 		difficulty = search_config.difficulty
 		difficulty_tweak = 0
 		act_key = search_config.act_key
@@ -135,21 +127,40 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		excluded_level_keys = search_config.excluded_level_keys
 	end
 
-	if quick_game or level_key == nil then
+	if quick_game or mission_id == nil then
 		local ignore_dlc_check = false
 
 		if Managers.account:offline_mode() then
 			ignore_dlc_check = false
 		end
 
-		if game_mode == "weave" then
+		if mechanism == "weave" then
 			local weave_index = Math.random(#WeaveSettings.templates_ordered)
 			local weave_template = WeaveSettings.templates_ordered[weave_index]
 			weave_name = weave_template.name
-			level_key = weave_template.objectives[1].level_id
+			mission_id = weave_name
 
 			Managers.weave:set_next_weave(weave_name)
 			Managers.weave:set_next_objective(1)
+		elseif mechanism == "deus" then
+			local unlocked_journeys = self._matchmaking_manager:gather_party_unlocked_journeys()
+			mission_id = unlocked_journeys[Math.random(1, #unlocked_journeys)]
+			local backend_deus = Managers.backend:get_interface("deus")
+			local journey_cycle = backend_deus:get_journey_cycle()
+			local journey_data = journey_cycle.journey_data
+			local journey_settings = journey_data[mission_id]
+			local dominant_god = journey_settings.dominant_god
+			local vote_data = {
+				private_game = false,
+				quick_game = true,
+				strict_matchmaking = false,
+				mission_id = mission_id,
+				difficulty = difficulty,
+				dominant_god = dominant_god,
+				matchmaking_type = matchmaking_type
+			}
+
+			Managers.mechanism:set_vote_data(vote_data)
 		else
 			local preferred_level_keys = search_config.preferred_level_keys
 
@@ -158,13 +169,13 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			if preferred_level_keys then
 				table.dump(preferred_level_keys, "preferred_level_keys")
 
-				level_key = preferred_level_keys[Math.random(1, #preferred_level_keys)]
+				mission_id = preferred_level_keys[Math.random(1, #preferred_level_keys)]
 			else
-				level_key = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
+				mission_id = self._matchmaking_manager:get_weighed_random_unlocked_level(ignore_dlc_check, false, excluded_level_keys)
 			end
 		end
-	elseif game_mode == "weave" then
-		weave_name = search_config.weave_name
+	elseif mechanism == "weave" then
+		mission_id = search_config.mission_id
 
 		if not quick_game then
 			private_game = true
@@ -173,7 +184,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 
 	local eac_authorized = false
 
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		if DEDICATED_SERVER then
 			local eac_server = Managers.matchmaking.network_server:eac_server()
 			eac_authorized = EACServer.state(eac_server, Network.peer_id()) == "trusted"
@@ -186,7 +197,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		end
 	end
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		local hopper_name = LobbyInternal.HOPPER_NAME
 		local DIFFICULTY_LUT = {
 			"easy",
@@ -198,16 +209,16 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 			"cataclysm_2",
 			"cataclysm_3"
 		}
-		local ticket_level_key = level_key
+		local ticket_mission_id = mission_id
 		local matchmaking_types = nil
 
-		if game_mode == "event" then
+		if matchmaking_type == "event" then
 			matchmaking_types = {
 				"event"
 			}
-		elseif game_mode == "weave" then
+		elseif mechanism == "weave" then
 			if quick_game then
-				ticket_level_key = "weave_any"
+				ticket_mission_id = "weave_any"
 				matchmaking_types = {
 					"weave_quick_game"
 				}
@@ -215,7 +226,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 				hopper_name = LobbyInternal.WEAVE_HOPPER_NAME
 				matchmaking_types = {
 					"weave",
-					weave_name
+					mission_id
 				}
 			end
 		else
@@ -241,11 +252,11 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		local powerlevel = self._matchmaking_manager:get_average_power_level()
 		local strict_matchmaking = 0
 		local network_hash = self._lobby:get_network_hash()
-		local weave_template = weave_name and WeaveSettings.templates[weave_name]
+		local weave_template = WeaveSettings.templates[mission_id]
 		local weave_index = weave_template and table.find(WeaveSettings.templates_ordered, weave_template)
 		local ticket_params = {
 			level = {
-				ticket_level_key
+				ticket_mission_id
 			},
 			matchmaking_types = matchmaking_types,
 			difficulty = difficulty_id,
@@ -259,21 +270,34 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 		self._lobby:enable_matchmaking(not private_game, ticket_params, 600, hopper_name)
 	end
 
-	if game_mode == "adventure" then
-		game_mode = "custom"
+	local lobby_matchmaking_type = matchmaking_type
+
+	if lobby_matchmaking_type == "standard" then
+		lobby_matchmaking_type = "custom"
 	end
 
-	local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
+	local environment_variation_id = LevelHelper:get_environment_variation_id(mission_id)
 
-	self._matchmaking_manager:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized, weave_name, environment_variation_id)
-	Managers.state.difficulty:set_difficulty(difficulty, difficulty_tweak)
+	self._matchmaking_manager:set_matchmaking_data(mission_id, difficulty, act_key, lobby_matchmaking_type, private_game, quick_game, eac_authorized, environment_variation_id, mechanism)
 
-	self._game_parameters = {
-		level_key = level_key,
-		difficulty = difficulty,
-		game_mode = game_mode,
-		private_game = private_game
-	}
+	local level_transition_handler = Managers.level_transition_handler
+	local level_seed = Managers.mechanism:generate_level_seed()
+	local level_key = mission_id
+
+	if mechanism == "weave" then
+		local weave_template = WeaveSettings.templates[mission_id]
+
+		if weave_template then
+			local objective_index = Managers.weave:get_next_objective()
+			local objective = weave_template.objectives[objective_index]
+			level_key = objective.level_id
+			conflict_settings = objective.conflict_settings
+		end
+	end
+
+	local locked_director_functions = Managers.mechanism:generate_locked_director_functions(level_key)
+
+	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, nil, nil, conflict_settings, locked_director_functions, difficulty, nil)
 end
 
 MatchmakingStateStartGame.get_transition = function (self)
@@ -284,7 +308,7 @@ end
 
 MatchmakingStateStartGame._start_game = function (self)
 	self:_capture_telemetry()
-	self._handshaker_host:send_rpc_to_clients("rpc_matchmaking_join_game")
+	self._network_transmit:send_rpc_clients("rpc_matchmaking_join_game")
 
 	local game_server_lobby_client = self.state_context.game_server_lobby_client
 
@@ -295,7 +319,7 @@ MatchmakingStateStartGame._start_game = function (self)
 		}
 		local ip_address = game_server_lobby_client:ip_address()
 
-		self._handshaker_host:send_rpc_to_clients("rpc_matchmaking_broadcast_game_server_ip_address", ip_address)
+		self._network_transmit:send_rpc_clients("rpc_matchmaking_broadcast_game_server_ip_address", ip_address)
 	else
 		Managers.state.game_mode:complete_level()
 	end

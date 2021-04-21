@@ -340,12 +340,13 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 				local spawn_animation = nil
 				local spawn_type = "roam"
 				local group_data = nil
+				local spawn_position = Vector3Aux.unbox(point.position)
 
 				if breed_override_lookup and breed_override_lookup[breed.name] then
 					breed = Breeds[breed_override_lookup[breed.name]]
 				end
 
-				local id = conflict:spawn_queued_unit(breed, Vector3Box(Vector3Aux.unbox(point.position)), point.rotation, spawn_category, spawn_animation, spawn_type, optional_data, group_data, point)
+				local id = conflict:spawn_queued_unit(breed, Vector3Box(spawn_position), point.rotation, spawn_category, spawn_animation, spawn_type, optional_data, group_data, point)
 				point[1] = id
 			else
 				print("FAIL INTEREST POINT SPAWN UNIT")

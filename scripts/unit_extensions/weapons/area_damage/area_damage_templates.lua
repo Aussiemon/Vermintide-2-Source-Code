@@ -599,4 +599,6 @@ AreaDamageTemplates.get_template = function (area_damage_template, is_husk)
 	return template
 end
 
+DLCUtils.merge("area_damage_templates", AreaDamageTemplates.templates)
+
 return

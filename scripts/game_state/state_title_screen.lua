@@ -4,11 +4,9 @@ require("scripts/game_state/state_loading")
 require("scripts/managers/rcon/rcon_manager")
 require("scripts/managers/eac/eac_manager")
 require("scripts/settings/game_settings")
-require("scripts/ui/views/beta_overlay")
-require("scripts/ui/views/alpha_overlay")
 require("foundation/scripts/managers/chat/chat_manager")
 
-if PLATFORM == "xb1" then
+if IS_XB1 then
 	require("scripts/managers/stats/stats_manager_2017")
 end
 
@@ -18,13 +16,13 @@ StateTitleScreen.NAME = "StateTitleScreen"
 StateTitleScreen.on_enter = function (self, params)
 	print("[Gamestate] Enter StateTitleScreen")
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		Application.set_kinect_enabled(true)
 
 		if Managers.backend then
 			Managers.backend:reset()
 		end
-	elseif PLATFORM == "ps4" and Managers.backend then
+	elseif IS_PS4 and Managers.backend then
 		Managers.backend:reset()
 	end
 
@@ -32,7 +30,7 @@ StateTitleScreen.on_enter = function (self, params)
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
 
-	if (PLATFORM == "ps4" or PLATFORM == "xb1") and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and (PLATFORM == "ps4" or Managers.account:offline_mode()) then
+	if IS_CONSOLE and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and (IS_PS4 or Managers.account:offline_mode()) then
 		if Managers.party:has_party_lobby() then
 			local lobby = Managers.party:steal_lobby()
 
@@ -52,7 +50,7 @@ StateTitleScreen.on_enter = function (self, params)
 			self._auto_start = true
 
 			break
-		elseif PLATFORM == "ps4" then
+		elseif IS_PS4 then
 			local play_together_list = SessionInvitation.play_together_list()
 
 			if play_together_list then
@@ -83,19 +81,11 @@ StateTitleScreen.on_enter = function (self, params)
 
 	Managers.rcon = Managers.rcon or RconManager:new()
 
-	if PLATFORM == "win32" or PLATFORM == "linux" then
+	if IS_WINDOWS or IS_LINUX then
 		Managers.eac = Managers.eac or EacManager:new()
 	end
 
-	self:_init_beta_overlay()
-
-	if Development.parameter("use_alpha_overlay") or script_data.settings.use_alpha_overlay then
-		self:_init_alpha_overlay()
-	end
-
-	self._platform = PLATFORM
-
-	if self._platform == "ps4" then
+	if IS_PS4 then
 		local account_manager = Managers.account
 
 		if account_manager:is_online() then
@@ -155,7 +145,7 @@ StateTitleScreen._demo_hack_state_managers = function (self)
 end
 
 StateTitleScreen._fade_out = function (self)
-	if self._platform == "xb1" then
+	if IS_XB1 then
 		if Managers.account:should_teardown_xboxlive() then
 			Managers.account:teardown_xboxlive()
 
@@ -183,7 +173,7 @@ StateTitleScreen._setup_world = function (self)
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen")
 	end
 
-	if PLATFORM ~= "win32" and not Managers.package:has_loaded("resource_packages/news_splash/news_splash", "state_splash_screen") and not GameSettingsDevelopment.skip_start_screen then
+	if IS_CONSOLE and not Managers.package:has_loaded("resource_packages/news_splash/news_splash", "state_splash_screen") and not GameSettingsDevelopment.skip_start_screen then
 		Managers.package:load("resource_packages/news_splash/news_splash", "state_splash_screen")
 	end
 
@@ -240,14 +230,16 @@ StateTitleScreen._setup_state_machine = function (self)
 			world = self._world,
 			ui = self._title_start_ui,
 			viewport = self._viewport,
-			auto_start = self._auto_start
+			auto_start = self._auto_start,
+			auto_sign_in = self._auto_sign_in
 		}, true)
 	else
 		self._machine = GameStateMachine:new(self, StateTitleScreenMain, {
 			world = self._world,
 			ui = self._title_start_ui,
 			viewport = self._viewport,
-			auto_start = self._auto_start
+			auto_start = self._auto_start,
+			auto_sign_in = self._auto_sign_in
 		}, true)
 	end
 end
@@ -262,24 +254,6 @@ end
 
 StateTitleScreen._init_chat_manager = function (self)
 	Managers.chat = Managers.chat or ChatManager:new()
-end
-
-StateTitleScreen._init_beta_overlay = function (self)
-	local beta_overlay_text = Development.parameter("use_beta_overlay") or script_data.settings.use_beta_overlay
-
-	if beta_overlay_text and not Managers.beta_overlay then
-		local top_world = Managers.world:world("top_ingame_view")
-
-		if beta_overlay_text == true then
-			beta_overlay_text = "ALPHA"
-		end
-
-		Managers.beta_overlay = BetaOverlay:new(top_world, tostring(beta_overlay_text))
-	end
-end
-
-StateTitleScreen._init_alpha_overlay = function (self)
-	Managers.alpha_overlay = Managers.alpha_overlay or AlphaOverlay:new()
 end
 
 StateTitleScreen.update = function (self, dt, t)
@@ -333,7 +307,7 @@ StateTitleScreen._next_state = function (self)
 		self.state = StateTitleScreen
 
 		Managers.popup:cancel_all_popups()
-	elseif PLATFORM == "xb1" and Managers.backend and Managers.backend:is_disconnected() then
+	elseif IS_XB1 and Managers.backend and Managers.backend:is_disconnected() then
 		print("Reloading StateTitleScreen due to backend disconnect")
 
 		self.state = StateTitleScreen
@@ -345,7 +319,7 @@ StateTitleScreen._next_state = function (self)
 end
 
 StateTitleScreen._handle_delayed_fade_in = function (self)
-	if self._platform == "xb1" and self._wait_for_xboxlive_teardown and not Managers.account:should_teardown_xboxlive() and not self._auto_start then
+	if IS_XB1 and self._wait_for_xboxlive_teardown and not Managers.account:should_teardown_xboxlive() and not self._auto_start then
 		Managers.transition:fade_out(1)
 
 		self._wait_for_xboxlive_teardown = nil

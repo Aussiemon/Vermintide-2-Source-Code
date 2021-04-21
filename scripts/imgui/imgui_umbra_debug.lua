@@ -165,34 +165,34 @@ ImguiUmbraDebug.draw = function (self, is_open)
 	local world = Managers.world:world("level_world")
 
 	if is_open then
-		Imgui.Begin("Umbra Debug")
+		Imgui.begin_window("Umbra Debug")
 
-		self.enable_debug = Imgui.Checkbox("Enable Debug", self.enable_debug)
+		self.enable_debug = Imgui.checkbox("Enable Debug", self.enable_debug)
 
 		if self.enable_debug then
-			if Imgui.TreeNode("Debug render options", true) then
+			if Imgui.tree_node("Debug render options", true) then
 				for i, v in ipairs(self.debug_options) do
-					v.enabled = Imgui.Checkbox(v.name, v.enabled)
+					v.enabled = Imgui.checkbox(v.name, v.enabled)
 				end
 
-				Imgui.TreePop()
+				Imgui.tree_pop()
 			end
 
-			if Imgui.TreeNode("Config parameters") then
+			if Imgui.tree_node("Config parameters") then
 				for k, v in pairs(self.debug_config) do
 					local val = World.get_umbra_debug_config_value(world, v.idx)
-					local new_val = Imgui.SliderFloat(k, val, v.min, v.max, v.speed)
+					local new_val = Imgui.slider_float(k, val, v.min, v.max, v.speed)
 
 					if val ~= new_val then
 						World.set_umbra_debug_config_value(world, v.idx, new_val)
 					end
 				end
 
-				Imgui.TreePop()
+				Imgui.tree_pop()
 			end
 		end
 
-		Imgui.End("Umbra Debug")
+		Imgui.end_window("Umbra Debug")
 	end
 
 	World.set_umbra_debug_enable(world, self.enable_debug)
@@ -209,7 +209,7 @@ ImguiUmbraDebug.draw = function (self, is_open)
 end
 
 ImguiUmbraDebug._update_floater = function (self, world)
-	Imgui.Begin("Umbra Floater")
+	Imgui.begin_window("Umbra Floater")
 
 	for i, v in ipairs(self.sub_windows) do
 		if v.option.enabled then
@@ -217,7 +217,7 @@ ImguiUmbraDebug._update_floater = function (self, world)
 		end
 	end
 
-	Imgui.End()
+	Imgui.end_window()
 end
 
 return

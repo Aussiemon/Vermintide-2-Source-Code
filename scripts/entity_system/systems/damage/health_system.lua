@@ -350,6 +350,11 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 	local hit_react_type = NetworkLookup.hit_react_types[hit_react_type_id]
 	local attacker_unit_alive = Unit.alive(attacker_unit)
 	local victim_health_extension = self.unit_extensions[victim_unit]
+	local buff_extension = ScriptUnit.has_extension(source_attacker_unit, "buff_system")
+
+	if buff_extension and damage_source_name == "dot_debuff" then
+		buff_extension:trigger_procs("on_dot_damage_dealt", victim_unit, source_attacker_unit, damage_type, damage_source_name)
+	end
 
 	if damage_type ~= "sync_health" then
 		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
@@ -492,6 +497,23 @@ HealthSystem.rpc_request_heal = function (self, channel_id, unit_go_id, heal_amo
 	local unit = self.unit_storage:unit(unit_go_id)
 
 	if not Unit.alive(unit) then
+		return
+	end
+
+	local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+	if status_extension and status_extension:is_disabled() then
+		local heal_type = NetworkLookup.heal_types[heal_type_id]
+
+		if heal_type == "healing_draught" or heal_type == "healing_draught_temp_health" then
+			local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+			local slot_id = NetworkLookup.equipment_slots.slot_healthkit
+			local item_name_id = NetworkLookup.item_names.potion_healing_draught_01
+			local skin_id = NetworkLookup.weapon_skins["n/a"]
+
+			Managers.state.network.network_transmit:send_rpc("rpc_add_inventory_slot_item", peer_id, unit_go_id, slot_id, item_name_id, skin_id)
+		end
+
 		return
 	end
 

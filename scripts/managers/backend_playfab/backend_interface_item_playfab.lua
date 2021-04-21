@@ -40,12 +40,14 @@ BackendInterfaceItemPlayfab._refresh_items = function (self)
 		end
 	end
 
-	self._items = items
-
 	if self._active_game_mode_specific_items then
+		self._items = table.clone(items)
+
 		for key, item in pairs(self._active_game_mode_specific_items) do
 			self._items[key] = item
 		end
+	else
+		self._items = items
 	end
 
 	local fake_items = backend_mirror:get_all_fake_inventory_items()
@@ -326,7 +328,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 		local reward = unseen_rewards[index]
 		local reward_type = reward.reward_type
 
-		if reward_type == "item" then
+		if reward_type == "item" or reward_type == "keep_decoration_painting" then
 			unseen_items = unseen_items or {}
 			unseen_items[#unseen_items + 1] = reward
 

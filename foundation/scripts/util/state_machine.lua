@@ -22,12 +22,9 @@ local function profiler_scope(state_name, scope_type)
 end
 
 StateMachine = class(StateMachine)
-StateMachine.DEBUG = false
 
 local function debug_print(format, ...)
-	if script_data.network_debug or StateMachine.DEBUG then
-		printf("[StateMachine] " .. format, ...)
-	end
+	printf("[StateMachine] " .. format, ...)
 end
 
 StateMachine.init = function (self, parent, start_state, params, profiling_debugging_enabled)

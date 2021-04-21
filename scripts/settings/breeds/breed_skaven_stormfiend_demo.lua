@@ -144,6 +144,7 @@ for key, value in pairs(Breeds.skaven_stormfiend) do
 end
 
 Breeds.skaven_stormfiend_demo = table.create_copy(Breeds.skaven_stormfiend_demo, breed_data)
+Breeds.skaven_stormfiend_demo.is_always_spawnable = nil
 local action_data = {
 	follow = {
 		follow_target_function_name = "_follow_target_stormfiend",

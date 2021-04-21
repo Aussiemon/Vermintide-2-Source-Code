@@ -35,6 +35,10 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
+local extension_update = {}
+
+DLCUtils.merge("pickup_system_extension_update", extension_update)
+
 PickupSystem.init = function (self, context, system_name)
 	PickupSystem.super.init(self, context, system_name, extensions)
 
@@ -433,17 +437,10 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 				end
 			end
 		else
-			local pickups = Managers.mechanism:get_filtered_pickups(pickup_type)
-
 			for i = 1, value, 1 do
+				local spawn_value = self:_random()
+				local pickups = Pickups[pickup_type]
 				local spawn_weighting_total = 0
-
-				for _, settings in pairs(pickups) do
-					spawn_weighting_total = spawn_weighting_total + settings.spawn_weighting
-				end
-
-				local spawn_value = self:_random(0, spawn_weighting_total * 100) / 100
-				spawn_weighting_total = 0
 				local selected_pickup = false
 
 				for pickup_name, settings in pairs(pickups) do
@@ -838,6 +835,12 @@ PickupSystem.update = function (self, dt, t)
 	local statistics_db = self._statistics_db
 	local update_list = self.update_list
 
+	for i = 1, #extension_update, 1 do
+		local extension = extension_update[i]
+
+		self:update_extension(extension, dt, nil, t)
+	end
+
 	for extension_name, _ in pairs(self.extensions) do
 		local profiler_name = self.profiler_names[extension_name]
 
@@ -1105,6 +1108,10 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 	local next_index = self._next_index
 
 	if self._taken[next_index] then
+		return
+	end
+
+	if not Managers.state.network:in_game_session() then
 		return
 	end
 

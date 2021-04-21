@@ -25,9 +25,9 @@ local scenegraph_info = {
 }
 local FRIEND_LIST_LIMIT = 400
 
-if PLATFORM == "xb1" then
+if IS_XB1 then
 	FRIEND_LIST_LIMIT = 1000
-elseif PLATFORM == "ps4" then
+elseif IS_PS4 then
 	FRIEND_LIST_LIMIT = 2000
 end
 

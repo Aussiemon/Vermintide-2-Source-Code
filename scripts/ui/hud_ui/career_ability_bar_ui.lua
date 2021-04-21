@@ -22,9 +22,12 @@ CareerAbilityBarUI.init = function (self, parent, ingame_ui_context)
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
+	self._game_options_dirty = true
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
+	event_manager:register(self, "on_game_options_changed", "_set_game_options_dirty")
+	self:_update_game_options()
 end
 
 CareerAbilityBarUI._get_ability_amount = function (self, player_unit)
@@ -111,6 +114,8 @@ CareerAbilityBarUI.update = function (self, dt, t, player)
 		return
 	end
 
+	self:_update_game_options()
+
 	if self:_update_career_ability(actual_player, dt) then
 		local parent = self._parent
 		local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
@@ -176,8 +181,6 @@ CareerAbilityBarUI._set_ability_bar_fraction = function (self, ability_fraction,
 	bar_color[2] = color[2]
 	bar_color[3] = color[3]
 	bar_color[4] = color[4]
-	style.min_threshold.offset[1] = 3 + min_threshold_fraction * bar_size[1]
-	style.max_threshold.offset[1] = 3 + max_threshold_fraction * bar_size[1]
 	local pulse_speed = 10
 	local pulse_value = 1 - ability_fraction
 	local pulse_frame_fraction = math.min(math.max(pulse_value - max_threshold_fraction, 0) / (1 - max_threshold_fraction) * 1.3, 1)
@@ -198,7 +201,10 @@ CareerAbilityBarUI._set_ability_bar_fraction = function (self, ability_fraction,
 end
 
 CareerAbilityBarUI.destroy = function (self)
-	Managers.state.event:unregister("on_spectator_target_changed", self)
+	local event_manager = Managers.state.event
+
+	event_manager:unregister("on_spectator_target_changed", self)
+	event_manager:unregister("on_game_options_changed", self)
 end
 
 CareerAbilityBarUI.set_alpha = function (self, alpha)
@@ -210,6 +216,26 @@ CareerAbilityBarUI._apply_crosshair_position = function (self, x, y)
 	local position = self._ui_scenegraph[scenegraph_id].local_position
 	position[1] = x
 	position[2] = y
+end
+
+CareerAbilityBarUI._set_game_options_dirty = function (self)
+	self._game_options_dirty = true
+end
+
+CareerAbilityBarUI._update_game_options = function (self)
+	if not self._game_options_dirty then
+		return
+	end
+
+	local use_ps4_icons = UISettings.use_ps4_input_icons
+
+	if self._use_ps4_icons ~= use_ps4_icons then
+		self._use_ps4_icons = use_ps4_icons
+		local widget = self._ability_bar
+		widget.content.icon = (use_ps4_icons and "ps4_button_icon_square") or "xbone_button_icon_x"
+	end
+
+	self._game_options_dirty = false
 end
 
 return

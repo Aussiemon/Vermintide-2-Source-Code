@@ -282,7 +282,7 @@ local function is_valid_target(unit)
 end
 
 local function is_valid_aggro_target(unit)
-	if not unit_alive(unit) then
+	if not ALIVE[unit] then
 		return false
 	end
 

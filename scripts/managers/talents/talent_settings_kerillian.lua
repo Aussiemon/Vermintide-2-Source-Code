@@ -445,12 +445,11 @@ TalentBuffTemplates.wood_elf = {
 			{
 				remove_buff_func = "end_shade_activated_ability",
 				name = "kerillian_shade_activated_ability",
-				perk = "guaranteed_crit",
+				refresh_durations = true,
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "passive_bonus_kerillian_shade",
-				apply_buff_func = "apply_shade_activated_ability",
-				refresh_durations = true
+				apply_buff_func = "apply_shade_activated_ability"
 			}
 		}
 	},

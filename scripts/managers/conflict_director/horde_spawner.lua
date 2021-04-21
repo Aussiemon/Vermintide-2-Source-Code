@@ -86,8 +86,8 @@ HordeSpawner.execute_fallback = function (self, horde_type, side_id, fallback, r
 	end
 end
 
-HordeSpawner.execute_event_horde = function (self, t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
-	local horde = self:_execute_event_horde(t, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
+HordeSpawner.execute_event_horde = function (self, t, terror_event_type, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit, optional_data)
+	local horde = self:_execute_event_horde(t, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit, optional_data)
 
 	if type(terror_event_type) == "string" then
 		horde.terror_event_ids = {
@@ -104,7 +104,7 @@ HordeSpawner.execute_event_horde = function (self, t, terror_event_type, side_id
 	return horde
 end
 
-HordeSpawner._execute_event_horde = function (self, t, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit)
+HordeSpawner._execute_event_horde = function (self, t, side_id, composition_type, limit_spawners, silent, group_template, strictly_not_close_to_players, sound_settings, use_closest_spawners, source_unit, optional_data)
 	local composition = nil
 
 	fassert(side_id, "Missing side id in event horde")
@@ -136,7 +136,8 @@ HordeSpawner._execute_event_horde = function (self, t, side_id, composition_type
 		variant = variant,
 		source_unit = source_unit,
 		sound_settings = sound_settings,
-		side_id = side_id
+		side_id = side_id,
+		optional_data = optional_data
 	}
 
 	return horde
@@ -272,7 +273,7 @@ HordeSpawner.pop_random_horde_breed_only = function (self)
 	return breed
 end
 
-HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallback, override_epicenter_pos)
+HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallback, override_epicenter_pos, optional_data)
 	print("setting up ambush-horde")
 
 	local settings = CurrentHordeSettings.ambush
@@ -394,7 +395,8 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, side_id, fallbac
 		group_template = group_template,
 		sound_settings = sound_settings,
 		group_id = group_id,
-		side_id = side_id
+		side_id = side_id,
+		optional_data = optional_data
 	}
 
 	print("horde crated with id", group_id, "of type ", horde.horde_type)
@@ -1187,9 +1189,8 @@ HordeSpawner.spawn_unit = function (self, hidden_spawn, breed_name, goal_pos, ho
 	local spawn_type = "horde_hidden"
 	local spawn_category = "hidden_spawn"
 	local breed = Breeds[breed_name]
-	local optional_data = {
-		side_id = horde.side_id
-	}
+	local optional_data = horde.optional_data or {}
+	optional_data.side_id = horde.side_id
 	local spawn_animation = nil
 
 	self.conflict_director:spawn_queued_unit(breed, Vector3Box(pos), QuaternionBox(spawn_rot), spawn_category, spawn_animation, spawn_type, optional_data, horde.group_template)
@@ -1278,7 +1279,7 @@ end
 HordeSpawner.update_event_horde = function (self, horde, t)
 	if not horde.started then
 		if horde.start_time < t then
-			local success, amount = self.spawner_system:spawn_horde_from_terror_event_ids(horde.terror_event_ids, horde.variant, horde.limit_spawners, horde.group_template, horde.strictly, horde.side_id, horde.use_closest_spawners, horde.source_unit)
+			local success, amount = self.spawner_system:spawn_horde_from_terror_event_ids(horde.terror_event_ids, horde.variant, horde.limit_spawners, horde.group_template, horde.strictly, horde.side_id, horde.use_closest_spawners, horde.source_unit, horde.optional_data)
 
 			if success then
 				horde.started = true
@@ -1300,10 +1301,11 @@ HordeSpawner.update_event_horde = function (self, horde, t)
 	return false
 end
 
-HordeSpawner.spawner_in_view_of_players = function (self, spawner, side_id)
-	local spawner_pos = Unit.local_position(spawner.cover_point_unit, 0) + Vector3(0, 0, 1)
+HordeSpawner.spawner_in_view_of_players = function (self, spawner, side_id, spawner_pos)
+	spawner_pos = spawner_pos or Unit.local_position(spawner.cover_point_unit, 0) + Vector3(0, 0, 1)
 	local side = Managers.state.side:get_side(side_id)
 	local player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
+	local up_vector = Vector3.up()
 
 	for i = 1, #player_and_bot_positions, 1 do
 		local player_pos = player_and_bot_positions[i] + Vector3(0, 0, 1)
@@ -1311,14 +1313,12 @@ HordeSpawner.spawner_in_view_of_players = function (self, spawner, side_id)
 		local distance = Vector3.length(to_player)
 
 		if distance < 3 then
-			QuickDrawerStay:sphere(spawner_pos, 3)
-
 			return player_pos
 		end
 
-		if distance < 20 then
+		if distance < 30 then
 			local direction = Vector3.normalize(to_player)
-			local hit, hit_pos, _, _, actor = PhysicsWorld.immediate_raycast(self.physics_world, spawner_pos, direction, distance, "collision_filter", "filter_ai_line_of_sight_check")
+			local hit, _, _, _, _ = PhysicsWorld.immediate_raycast(self.physics_world, spawner_pos + up_vector, direction, distance, "collision_filter", "filter_ai_line_of_sight_check")
 
 			if not hit then
 				return player_pos
@@ -1333,13 +1333,44 @@ HordeSpawner.update_horde = function (self, horde, t)
 			local horde_spawns = horde.horde_spawns
 
 			if horde_spawns then
-				local breeds = CurrentHordeSettings.breeds
+				local lost_spawns_list = {}
 
 				for i = 1, #horde_spawns, 1 do
 					local horde_spawn = horde_spawns[i]
-					local spawn_rate = self.spawner_system:spawn_horde(horde_spawn.spawner, horde_spawn.spawn_list, horde.side_id, horde.group_template)
-					horde_spawn.all_done_spawned_time = t + 1 / spawn_rate * horde_spawn.num_to_spawn
+					local spawner = horde_spawn.spawner
+					local spawner_pos = Unit.local_position(spawner, 0)
+					local seen_from_this_pos = self:spawner_in_view_of_players(nil, horde.side_id, spawner_pos)
+
+					if seen_from_this_pos then
+						table.append(lost_spawns_list, horde_spawn.spawn_list)
+
+						horde_spawns[i] = nil
+					end
 				end
+
+				local new_horde_spawns = {}
+
+				for i = 1, #horde_spawns, 1 do
+					local horde_spawn = horde_spawns[i]
+
+					if horde_spawn then
+						local spawner = horde_spawn.spawner
+						local spawn_list = horde_spawn.spawn_list
+
+						if #lost_spawns_list > 0 then
+							table.append(spawn_list, lost_spawns_list)
+
+							lost_spawns_list = {}
+							horde_spawn.num_to_spawn = #spawn_list
+						end
+
+						local spawn_rate = self.spawner_system:spawn_horde(spawner, spawn_list, horde.side_id, horde.group_template, horde.optional_data)
+						horde_spawn.all_done_spawned_time = t + 1 / spawn_rate * horde_spawn.num_to_spawn
+						new_horde_spawns[#new_horde_spawns + 1] = horde_spawn
+					end
+				end
+
+				horde.horde_spawns = new_horde_spawns
 			end
 
 			horde.started = true
@@ -1348,15 +1379,20 @@ HordeSpawner.update_horde = function (self, horde, t)
 		end
 	end
 
+	local horde_completed = true
 	local horde_spawns = horde.horde_spawns
 
 	if horde_spawns then
 		for j = 1, #horde_spawns, 1 do
 			local horde_spawn = horde_spawns[j]
 
-			if not horde_spawn.done and horde_spawn.all_done_spawned_time < t then
-				horde_spawn.done = true
-				horde.spawned = horde.spawned + horde_spawn.num_to_spawn
+			if not horde_spawn.done then
+				if horde_spawn.all_done_spawned_time < t then
+					horde_spawn.done = true
+					horde.spawned = horde.spawned + horde_spawn.num_to_spawn
+				end
+
+				horde_completed = false
 			end
 		end
 	end
@@ -1367,25 +1403,42 @@ HordeSpawner.update_horde = function (self, horde, t)
 		for j = 1, #cover_spawns, 1 do
 			local hidden_spawn = cover_spawns[j]
 
-			if hidden_spawn.num_to_spawn > 0 and hidden_spawn.next_spawn_time < t then
-				local seen_from_this_pos = self:spawner_in_view_of_players(hidden_spawn, horde.side_id)
+			if hidden_spawn.num_to_spawn > 0 then
+				horde_completed = false
 
-				if seen_from_this_pos and self:replace_hidden_spawners(cover_spawns, hidden_spawn, seen_from_this_pos) then
-					break
+				if hidden_spawn.next_spawn_time < t then
+					local seen_from_this_pos = self:spawner_in_view_of_players(hidden_spawn, horde.side_id)
+
+					if seen_from_this_pos then
+						if self:replace_hidden_spawners(cover_spawns, hidden_spawn, seen_from_this_pos) then
+							break
+						else
+							local next_index = (j == #cover_spawns and 1) or j + 1
+							local next_hidden_spawn = cover_spawns[next_index]
+							next_hidden_spawn.num_to_spawn = next_hidden_spawn.num_to_spawn + hidden_spawn.num_to_spawn
+
+							table.append(next_hidden_spawn.spawn_list, hidden_spawn.spawn_list)
+							table.clear(hidden_spawn.spawn_list)
+
+							hidden_spawn.num_to_spawn = 0
+
+							print("Spawner visible and can't replace it. Using the next spawner in the list")
+						end
+					else
+						local breed_name = pop_array(hidden_spawn.spawn_list)
+
+						self:spawn_unit(hidden_spawn, breed_name, horde.main_target_pos:unbox(), horde)
+
+						horde.spawned = horde.spawned + 1
+						hidden_spawn.num_to_spawn = hidden_spawn.num_to_spawn - 1
+						hidden_spawn.next_spawn_time = hidden_spawn.next_spawn_time + 1
+					end
 				end
-
-				local breed_name = pop_array(hidden_spawn.spawn_list)
-
-				self:spawn_unit(hidden_spawn, breed_name, horde.main_target_pos:unbox(), horde)
-
-				horde.spawned = horde.spawned + 1
-				hidden_spawn.num_to_spawn = hidden_spawn.num_to_spawn - 1
-				hidden_spawn.next_spawn_time = hidden_spawn.next_spawn_time + 1
 			end
 		end
 	end
 
-	local has_spawned_enough = horde.num_to_spawn <= horde.spawned
+	local has_spawned_enough = horde.num_to_spawn <= horde.spawned or horde_completed
 	local group_has_spawned = horde.is_done_spawning
 	local should_wait_for_spawning_done = horde.horde_type == "vector" or horde.horde_type == "ambush"
 

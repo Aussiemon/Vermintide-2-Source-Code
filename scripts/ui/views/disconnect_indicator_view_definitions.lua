@@ -47,7 +47,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 

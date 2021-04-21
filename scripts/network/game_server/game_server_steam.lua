@@ -1,4 +1,5 @@
 GameServerInternal = GameServerInternal or {}
+GameServerInternal.lobby_data_version = 2
 
 GameServerInternal.init_server = function (network_options, server_name)
 	local config_file_name = network_options.config_file_name

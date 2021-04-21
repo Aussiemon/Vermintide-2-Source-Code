@@ -203,9 +203,18 @@ RespawnHandler.update = function (self, dt, t)
 	end
 end
 
+RespawnHandler._check_all_synced = function (self)
+	if not self._all_synced_checked then
+		self._all_synced_checked = true
+		self._all_synced = self._profile_synchronizer:all_synced()
+	end
+
+	return self._all_synced
+end
+
 RespawnHandler.server_update = function (self, dt, t, slots)
-	local profile_synchronizer = self._profile_synchronizer
-	local all_synced = profile_synchronizer:all_synced()
+	self._all_synced_checked = false
+	self._all_synced = false
 
 	for i = 1, #slots, 1 do
 		local status = slots[i]
@@ -237,62 +246,75 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			data.respawn_timer = nil
 		end
 
-		if all_synced then
-			if is_dead and data.ready_for_respawn and status.peer_id then
-				local data_respawn_unit = data.respawn_unit
-				local respawn_unit = self:get_respawn_unit()
-				local respawn_unit_to_use = nil
+		if is_dead and data.ready_for_respawn and status.peer_id and self:_check_all_synced() then
+			local data_respawn_unit = data.respawn_unit
+			local respawn_unit = self:get_respawn_unit()
+			local respawn_unit_to_use = nil
 
-				if data_respawn_unit and Unit.alive(data_respawn_unit) then
-					respawn_unit_to_use = data_respawn_unit
+			if data_respawn_unit and Unit.alive(data_respawn_unit) then
+				respawn_unit_to_use = data_respawn_unit
+			else
+				respawn_unit_to_use = respawn_unit
+			end
+
+			if respawn_unit_to_use then
+				local own_peer_id = Network.peer_id()
+				local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+				data.health_state = "respawning"
+				data.respawn_unit = respawn_unit_to_use
+				data.health_percentage = difficulty_settings.respawn.health_percentage
+				data.temporary_health_percentage = difficulty_settings.respawn.temporary_health_percentage
+
+				if own_peer_id == status.peer_id then
+					local player = Managers.player:player(status.peer_id, status.local_player_id)
+					local profile_index = status.profile_index
+					local career_index = status.career_index
+					local additional_items = data.additional_items
+					local health_kit = data.consumables.slot_health_kit
+					local potion = data.consumables.slot_potion
+					local grenade = data.consumables.slot_grenade
+
+					self:_respawn_player(player, profile_index, career_index, respawn_unit, health_kit, potion, grenade, additional_items)
 				else
-					respawn_unit_to_use = respawn_unit
-				end
-
-				if respawn_unit_to_use then
 					local respawn_unit_id = Managers.state.network:level_object_id(respawn_unit_to_use)
-					local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 					local network_consumables = SpawningHelper.netpack_consumables(data.consumables)
+					local healthkit_id, potion_id, grenade_id = unpack(network_consumables)
+					local network_additional_items = SpawningHelper.netpack_additional_items(data.additional_items)
 
-					Managers.state.network.network_transmit:send_rpc("rpc_to_client_respawn_player", status.peer_id, status.local_player_id, status.profile_index, status.career_index, respawn_unit_id, i, unpack(network_consumables))
-
-					data.health_state = "respawning"
-					data.respawn_unit = respawn_unit_to_use
-					data.health_percentage = difficulty_settings.respawn.health_percentage
-					data.temporary_health_percentage = difficulty_settings.respawn.temporary_health_percentage
+					Managers.state.network.network_transmit:send_rpc("rpc_to_client_respawn_player", status.peer_id, status.local_player_id, status.profile_index, status.career_index, respawn_unit_id, i, healthkit_id, potion_id, grenade_id, network_additional_items)
 				end
-			elseif self._move_players and data.health_state == "respawn" then
-				local current_respawn_unit = data.respawn_unit
-				local current_respawn_position = Unit.local_position(current_respawn_unit, 0)
-				local _, _, _, _, path_index = MainPathUtils.closest_pos_at_main_path(nil, current_respawn_position, nil)
-				local ahead_path_index = Managers.state.conflict.main_path_info.current_path_index
+			end
+		elseif self._move_players and data.health_state == "respawn" and self:_check_all_synced() then
+			local current_respawn_unit = data.respawn_unit
+			local current_respawn_position = Unit.local_position(current_respawn_unit, 0)
+			local _, _, _, _, path_index = MainPathUtils.closest_pos_at_main_path(nil, current_respawn_position, nil)
+			local ahead_path_index = Managers.state.conflict.main_path_info.current_path_index
 
-				if path_index < ahead_path_index then
-					local peer_id = status.peer_id
-					local local_player_id = status.local_player_id
+			if path_index < ahead_path_index then
+				local peer_id = status.peer_id
+				local local_player_id = status.local_player_id
 
-					if peer_id and local_player_id then
-						local player = Managers.player:player(peer_id, local_player_id)
-						local player_unit = player.player_unit
-						local player_unit_id = Managers.state.network:unit_game_object_id(player_unit)
-						local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
-						local new_respawn_unit = self:get_respawn_unit()
-						local position = Unit.local_position(new_respawn_unit, 0)
-						local rotation = Unit.local_rotation(new_respawn_unit, 0)
+				if peer_id and local_player_id then
+					local player = Managers.player:player(peer_id, local_player_id)
+					local player_unit = player.player_unit
+					local player_unit_id = Managers.state.network:unit_game_object_id(player_unit)
+					local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
+					local new_respawn_unit = self:get_respawn_unit()
+					local position = Unit.local_position(new_respawn_unit, 0)
+					local rotation = Unit.local_rotation(new_respawn_unit, 0)
 
-						LocomotionUtils.enable_linked_movement(self._world, player_unit, new_respawn_unit, 0, Vector3.zero())
-						locomotion_extension:teleport_to(position, rotation)
-						Managers.state.network.network_transmit:send_rpc_clients("rpc_teleport_unit_to", player_unit_id, position, rotation)
-						self:set_respawn_unit_available(current_respawn_unit)
+					LocomotionUtils.enable_linked_movement(self._world, player_unit, new_respawn_unit, 0, Vector3.zero())
+					locomotion_extension:teleport_to(position, rotation)
+					Managers.state.network.network_transmit:send_rpc_clients("rpc_teleport_unit_to", player_unit_id, position, rotation)
+					self:set_respawn_unit_available(current_respawn_unit)
 
-						data.respawn_unit = new_respawn_unit
-					end
+					data.respawn_unit = new_respawn_unit
 				end
 			end
 		end
 	end
 
-	if all_synced and self._move_players then
+	if self._move_players and self:_check_all_synced() then
 		self._move_players = false
 	end
 end
@@ -312,21 +334,22 @@ local BOSS_TERROR_EVENT_LOOKUP = {
 RespawnHandler.get_respawn_unit = function (self, ignore_boss_doors)
 	local respawn_units = self._respawn_units
 	local active_overridden = self._active_overridden_units
+	local override_respawn_data = nil
 
 	if next(active_overridden) then
 		for unit, respawn_data in pairs(active_overridden) do
 			if respawn_data.available then
-				respawn_data.available = false
+				print("[RespawnHandler] Found available override unit")
 
-				print("Returning override respawn unit")
+				override_respawn_data = respawn_data
 
-				return respawn_data.unit
+				break
 			end
 		end
 
-		print("No available overriden respawning units found!")
-
-		return nil
+		if not override_respawn_data then
+			print("[RespawnHandler] There were active respawn override units but none was available. Players might spawn outside the event.")
+		end
 	end
 
 	local conflict = Managers.state.conflict
@@ -414,10 +437,14 @@ RespawnHandler.get_respawn_unit = function (self, ignore_boss_doors)
 	end
 
 	local respawn_data = respawn_units[selected_unit_index]
-	local selected_unit = respawn_data.unit
+
+	if override_respawn_data and override_respawn_data.distance_through_level < respawn_data.distance_through_level then
+		respawn_data = override_respawn_data
+	end
+
 	respawn_data.available = false
 
-	return selected_unit
+	return respawn_data.unit
 end
 
 RespawnHandler.destroy = function (self)
@@ -439,11 +466,7 @@ RespawnHandler.get_active_respawn_units = function (self)
 	return active_respawn_units
 end
 
-RespawnHandler.rpc_to_client_respawn_player = function (self, channel_id, local_player_id, profile_index, career_index, respawn_unit_id, slot_index, health_kit_id, potion_id, grenade_id)
-	if not Managers.state.network:game() then
-		return
-	end
-
+RespawnHandler.rpc_to_client_respawn_player = function (self, channel_id, local_player_id, profile_index, career_index, respawn_unit_id, slot_index, health_kit_id, potion_id, grenade_id, network_additional_items)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 	printf("RespawnSystem:rpc_to_client_respawn_player(%s, %s)", tostring(peer_id), tostring(profile_index))
@@ -452,30 +475,17 @@ RespawnHandler.rpc_to_client_respawn_player = function (self, channel_id, local_
 	local respawn_unit = network_manager:game_object_or_level_unit(respawn_unit_id, true)
 	local player_manager = Managers.player
 	local player = player_manager:local_player(local_player_id)
-
-	if not player then
-		local is_server = Managers.player.is_server
-
-		if is_server then
-			local party_index = 1
-			local party = Managers.party:get_party(party_index)
-			local occupied_slots = party.occupied_slots
-			local slot = occupied_slots[slot_index]
-			slot.game_mode_data.health_state = "dead"
-		end
-
-		return
-	end
+	local additional_items = SpawningHelper.unnetpack_additional_items(network_additional_items)
 
 	if player:needs_despawn() or Unit.alive(player.player_unit) then
 		Managers.state.spawn:delayed_despawn(player)
-		self:_delayed_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id])
+		self:_delayed_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], additional_items)
 	else
-		self:_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id])
+		self:_respawn_player(player, profile_index, career_index, respawn_unit, NetworkLookup.item_names[health_kit_id], NetworkLookup.item_names[potion_id], NetworkLookup.item_names[grenade_id], additional_items)
 	end
 end
 
-RespawnHandler._respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade)
+RespawnHandler._respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade, additional_items)
 	player:set_profile_index(profile_index)
 	player:set_career_index(career_index)
 
@@ -484,7 +494,8 @@ RespawnHandler._respawn_player = function (self, player, profile_index, career_i
 	local respawn_settings = Managers.state.difficulty:get_difficulty_settings().respawn
 	local ammo_melee = respawn_settings.ammo_melee
 	local ammo_ranged = respawn_settings.ammo_ranged
-	local unit = player:spawn(position, rotation, false, ammo_melee, ammo_ranged, health_kit, potion, grenade)
+	local ability_cooldown_percent_int = 0
+	local unit = player:spawn(position, rotation, false, ammo_melee, ammo_ranged, health_kit, potion, grenade, ability_cooldown_percent_int, additional_items)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 
 	status_extension:set_ready_for_assisted_respawn(true, respawn_unit)
@@ -513,7 +524,7 @@ RespawnHandler.force_respawn_dead_players = function (self, party)
 	end
 end
 
-RespawnHandler._delayed_respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade)
+RespawnHandler._delayed_respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade, additional_items)
 	local respawn_entry = {
 		player,
 		profile_index,
@@ -521,7 +532,8 @@ RespawnHandler._delayed_respawn_player = function (self, player, profile_index, 
 		respawn_unit,
 		health_kit,
 		potion,
-		grenade
+		grenade,
+		additional_items
 	}
 
 	table.insert(self._delayed_respawn_queue, respawn_entry)

@@ -247,6 +247,7 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 	if self.is_server then
 		if pinged_unit then
 			self.network_transmit:send_rpc_party_clients("rpc_ping_unit", party, true, pinger_unit_id, pinged_unit_id, flash, ping_type, social_wheel_event_id)
+			self:_play_ping_vo(pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
 		elseif position then
 			self.network_transmit:send_rpc_party_clients("rpc_ping_world_position", party, true, pinger_unit_id, position, ping_type, social_wheel_event_id)
 		end
@@ -284,25 +285,25 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
 		social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event_name]
 
-		if PLATFORM ~= "win32" then
+		if not IS_WINDOWS then
 			local party = sender_player:get_party()
 			local pinged_unit_id = (pinged_unit and Managers.state.network:unit_game_object_id(pinged_unit)) or 0
 			local include_spectators = true
 
 			self.network_transmit:send_rpc_party("rpc_social_wheel_event", party, include_spectators, sender_player.peer_id, social_wheel_event_id, pinged_unit_id)
-		else
-			local text_func = social_wheel_event_settings.event_text_func
-			local text = social_wheel_event_settings.event_text
-			localization_parameters = nil
-			event_text = text
+		end
 
-			if text_func and pinged_unit then
-				event_text, localization_parameters = text_func(pinged_unit, social_wheel_event_settings)
-			end
+		local text_func = social_wheel_event_settings.event_text_func
+		local text = social_wheel_event_settings.event_text
+		localization_parameters = nil
+		event_text = text
 
-			if not event_text and chat_messages then
-				event_text = chat_messages[math.random(1, #chat_messages)]
-			end
+		if text_func and pinged_unit then
+			event_text, localization_parameters = text_func(pinged_unit, social_wheel_event_settings)
+		end
+
+		if not event_text and chat_messages then
+			event_text = chat_messages[math.random(1, #chat_messages)]
 		end
 	elseif chat_messages then
 		event_text = chat_messages[math.random(1, #chat_messages)]
@@ -330,10 +331,6 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 
 			execute_func(social_wheel_event_settings.data, pinged_unit, sender_player, social_wheel_category)
 		end
-	end
-
-	if self.is_server and self._world_markers_enabled then
-		self:_play_ping_vo(pinger_unit, ping_type, social_wheel_event_id)
 	end
 end
 
@@ -446,6 +443,12 @@ PingSystem._get_world_position_ping_type = function (self, position, sender_uniq
 end
 
 PingSystem._add_unit_ping = function (self, pinger_unit, pinged_unit, flash, ping_type)
+	local ping_extension = ScriptUnit.has_extension(pinged_unit, "ping_system")
+
+	if not ping_extension then
+		return
+	end
+
 	local do_ping, chat_messages, ping_icon = nil
 
 	for _, data in pairs(PingTemplates) do
@@ -459,8 +462,6 @@ PingSystem._add_unit_ping = function (self, pinger_unit, pinged_unit, flash, pin
 	if not do_ping then
 		return
 	end
-
-	local ping_extension = ScriptUnit.extension(pinged_unit, "ping_system")
 
 	if ping_extension.set_pinged then
 		local apply_outline = self:_is_outline_enabled(pinged_unit)
@@ -541,8 +542,6 @@ PingSystem.remove_ping_from_unit = function (self, target_unit)
 	for pinger_unit, target in pairs(self._pinged_units) do
 		if target_unit == target.pinged_unit then
 			self:_remove_ping(pinger_unit)
-
-			return
 		end
 	end
 end
@@ -577,7 +576,7 @@ PingSystem._remove_ping = function (self, pinger_unit)
 		if ping_extension.set_pinged and ping_extension:pinged() then
 			local apply_outline = self:_is_outline_enabled(pinged_unit)
 
-			ping_extension:set_pinged(false, nil, nil, apply_outline)
+			ping_extension:set_pinged(false, nil, pinger_unit, apply_outline)
 		end
 	end
 
@@ -613,39 +612,56 @@ PingSystem._is_outline_enabled = function (self, unit)
 	return self._outlines_enabled.unit
 end
 
-PingSystem._play_ping_vo = function (self, pinger_unit, ping_type, social_wheel_event_id)
-	local vo_event_name = nil
+PingSystem._play_ping_vo = function (self, pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
+	local event_data = FrameTable.alloc_table()
+	local dialogue_input = ScriptUnit.extension_input(pinger_unit, "dialogue_system")
+	event_data.is_ping = true
+	local is_enemy = Managers.state.side:is_enemy(pinger_unit, pinged_unit)
+	local is_dummy = Unit.get_data(pinged_unit, "is_dummy")
 
-	if social_wheel_event_id and social_wheel_event_id ~= NetworkLookup.social_wheel_events["n/a"] then
-		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
-		local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event_name]
-		vo_event_name = social_wheel_event_settings.vo_event_name
-	end
+	if is_enemy and not is_dummy then
+		local bb = BLACKBOARDS[pinged_unit]
 
-	if not vo_event_name then
-		if ping_type == PingTypes.ACKNOWLEDGE then
-			vo_event_name = "vw_affirmative"
-		elseif ping_type == PingTypes.CANCEL then
-			vo_event_name = "vw_cancel"
-		elseif ping_type == PingTypes.DENY then
-			vo_event_name = "vw_negation"
-		elseif ping_type == PingTypes.ENEMY_GENERIC then
-			vo_event_name = "vw_attack_now"
-		elseif ping_type == PingTypes.MOVEMENT_GENERIC then
-			vo_event_name = "vw_go_here"
-		elseif ping_type == PingTypes.PLAYER_PICK_UP_ACKNOWLEDGE then
-			vo_event_name = "vw_answer_ping"
-		else
-			return
+		if bb then
+			local breed = bb.breed
+			local breed_name = breed.name
+			local pinged_unit_pos = POSITION_LOOKUP[pinged_unit] or Unit.world_position(pinged_unit, 0)
+			local pinged_unit_pos_flat = Vector3.flat(pinged_unit_pos)
+			local pinger_unit_pos = POSITION_LOOKUP[pinger_unit]
+			local pinger_unit_pos_flat = Vector3.flat(pinger_unit_pos)
+			event_data.enemy_tag = breed_name
+			event_data.enemy_unit = pinged_unit
+			event_data.distance = Vector3.distance(pinged_unit_pos_flat, pinger_unit_pos_flat)
+
+			dialogue_input:trigger_networked_dialogue_event("seen_enemy", event_data)
 		end
+
+		return
 	end
 
-	if vo_event_name then
-		local event_data = FrameTable.alloc_table()
-		event_data.is_ping = true
-		local dialogue_input = ScriptUnit.extension_input(pinger_unit, "dialogue_system")
+	local status_extension = ScriptUnit.has_extension(pinged_unit, "status_system")
 
-		dialogue_input:trigger_networked_dialogue_event(vo_event_name, event_data)
+	if status_extension then
+		local event = status_extension:disabled_vo_reason()
+
+		if event then
+			event_data.source_name = ScriptUnit.extension(pinger_unit, "dialogue_system").context.player_profile
+			event_data.target_name = ScriptUnit.extension(pinged_unit, "dialogue_system").context.player_profile
+
+			dialogue_input:trigger_networked_dialogue_event(event, event_data)
+		end
+
+		return
+	end
+
+	local lookat_tag = Unit.get_data(pinged_unit, "lookat_tag")
+
+	if lookat_tag then
+		event_data.item_tag = lookat_tag or Unit.debug_name(pinged_unit)
+
+		dialogue_input:trigger_networked_dialogue_event("seen_item", event_data)
+
+		return
 	end
 end
 
@@ -653,6 +669,11 @@ PingSystem.rpc_ping_unit = function (self, channel_id, pinger_unit_id, pinged_un
 	local pinger_unit = self._unit_storage:unit(pinger_unit_id)
 	local pinged_unit = self._unit_storage:unit(pinged_unit_id)
 	local sender_player = Managers.player:unit_owner(pinger_unit)
+
+	if not sender_player then
+		return
+	end
+
 	local sender_unique_id = sender_player:unique_id()
 
 	if self.is_server then
@@ -721,13 +742,14 @@ PingSystem.rpc_ping_world_position = function (self, channel_id, pinger_unit_id,
 	end
 end
 
-PingSystem.rpc_social_message = function (self, channel_id, pinger_unit_id, social_wheel_event_id)
+PingSystem.rpc_social_message = function (self, channel_id, pinger_unit_id, social_wheel_event_id, pinged_unit_id)
 	fassert(self.is_server, "Only server should get this")
 
 	local pinger_unit = self._unit_storage:unit(pinger_unit_id)
+	local pinged_unit = self._unit_storage:unit(pinged_unit_id)
 	local sender_player = Managers.player:unit_owner(pinger_unit)
 
-	self:_handle_chat(nil, social_wheel_event_id, sender_player, pinger_unit)
+	self:_handle_chat(nil, social_wheel_event_id, sender_player, pinger_unit, pinged_unit)
 end
 
 PingSystem.rpc_remove_ping = function (self, channel_id, pinger_unit_id)

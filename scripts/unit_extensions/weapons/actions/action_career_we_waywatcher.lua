@@ -11,7 +11,6 @@ end
 ActionCareerWEWaywatcher.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	ActionCareerWEWaywatcher.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	self:_play_vo()
-	self.career_extension:start_activated_ability_cooldown()
 
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
@@ -20,6 +19,7 @@ end
 
 ActionCareerWEWaywatcher.finish = function (self, reason)
 	ActionCareerWEWaywatcher.super.finish(self, reason)
+	self.career_extension:start_activated_ability_cooldown()
 	self.inventory_extension:wield_previous_non_level_slot()
 end
 

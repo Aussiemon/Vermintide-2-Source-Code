@@ -20,6 +20,7 @@ StoreWindowCategoryList.on_enter = function (self, params, offset)
 
 	self._params = params
 	self._parent = params.parent
+	self._params.last_selected_product = nil
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
 	self._ui_renderer = ui_renderer
 	self._ui_top_renderer = ui_top_renderer

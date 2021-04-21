@@ -46,15 +46,25 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local owned_dlcs = function_result.owned_dlcs
 	local platform_dlcs = function_result.platform_dlcs
+	local excluded_dlcs = function_result.excluded_dlcs
+	local new_dlcs = function_result.new_dlcs
 	self._owned_dlcs = owned_dlcs or {}
 	self._platform_dlcs = platform_dlcs
 
+	Managers.unlock:set_excluded_dlcs(excluded_dlcs)
 	self._backend_mirror:set_owned_dlcs(owned_dlcs)
 	self._backend_mirror:set_platform_dlcs(platform_dlcs)
 	print("Finished Updating Owned DLCS")
 	table.dump(self._owned_dlcs, nil, 2)
 	self._backend_mirror:update_owned_dlcs(true)
-	self:_execute_dlc_specific_logic()
+
+	if script_data["eac-untrusted"] then
+		self._updating_dlc_ownership = false
+	else
+		self:_execute_dlc_specific_logic()
+	end
+
+	self._backend_mirror:handle_new_dlcs(new_dlcs)
 end
 
 BackendInterfaceDLCsPlayfab._execute_dlc_specific_logic = function (self)
@@ -78,47 +88,59 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 	for i = 1, #new_rewards, 1 do
 		local item = new_rewards[i]
 		local item_id = item.ItemId
-		local data = ItemMasterList[item_id]
-		local custom_data = item.CustomData
-		local rewarded_from = custom_data.rewarded_from
+		local item_type = item.ItemType
 
-		if data.bundle then
-			local bundled_currencies = data.bundle.BundledVirtualCurrencies
+		if item_type == "keep_decoration_painting" then
+			local reward = {
+				reward_type = "keep_decoration_painting",
+				keep_decoration_name = item_id
+			}
+			unseen_rewards[#unseen_rewards + 1] = reward
 
-			for currency_type, currency_amount in pairs(bundled_currencies) do
+			self._backend_mirror:add_keep_decoration(item_id)
+		else
+			local data = ItemMasterList[item_id]
+			local custom_data = item.CustomData
+			local rewarded_from = custom_data.rewarded_from
+
+			if data.bundle then
+				local bundled_currencies = data.bundle.BundledVirtualCurrencies
+
+				for currency_type, currency_amount in pairs(bundled_currencies) do
+					if rewarded_from then
+						local reward = {
+							reward_type = "currency",
+							currency_type = currency_type,
+							currency_amount = currency_amount,
+							rewarded_from = rewarded_from
+						}
+						unseen_rewards[#unseen_rewards + 1] = reward
+					end
+
+					if currency_type == "SM" then
+						local peddler_interface = Managers.backend:get_interface("peddler")
+						local current_chips = peddler_interface:get_chips("SM")
+
+						peddler_interface:set_chips(currency_type, current_chips + currency_amount)
+					end
+				end
+			else
+				local backend_id = item.ItemInstanceId
+
 				if rewarded_from then
+					local item_type = ItemMasterList[item.ItemId].item_type
 					local reward = {
-						reward_type = "currency",
-						currency_type = currency_type,
-						currency_amount = currency_amount,
-						rewarded_from = rewarded_from
+						reward_type = "item",
+						backend_id = backend_id,
+						rewarded_from = rewarded_from,
+						item_type = item_type,
+						item_id = item_id
 					}
 					unseen_rewards[#unseen_rewards + 1] = reward
 				end
 
-				if currency_type == "SM" then
-					local peddler_interface = Managers.backend:get_interface("peddler")
-					local current_chips = peddler_interface:get_chips("SM")
-
-					peddler_interface:set_chips(currency_type, current_chips + currency_amount)
-				end
+				self._backend_mirror:add_item(backend_id, item)
 			end
-		else
-			local backend_id = item.ItemInstanceId
-
-			if rewarded_from then
-				local item_type = ItemMasterList[item.ItemId].item_type
-				local reward = {
-					reward_type = "item",
-					backend_id = backend_id,
-					rewarded_from = rewarded_from,
-					item_type = item_type,
-					item_id = item_id
-				}
-				unseen_rewards[#unseen_rewards + 1] = reward
-			end
-
-			self._backend_mirror:add_item(backend_id, item)
 		end
 	end
 

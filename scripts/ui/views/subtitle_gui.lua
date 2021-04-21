@@ -11,7 +11,7 @@ local scenegraph_definition = {
 			1080
 		}
 	},
-	subtitle_background = {
+	subtitle_background_parent = {
 		vertical_alignment = "bottom",
 		parent = "screen",
 		horizontal_alignment = "center",
@@ -24,10 +24,24 @@ local scenegraph_definition = {
 			850,
 			140
 		}
+	},
+	subtitle_background = {
+		vertical_alignment = "bottom",
+		parent = "subtitle_background_parent",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			0
+		},
+		size = {
+			850,
+			140
+		}
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 
@@ -133,10 +147,19 @@ SubtitleGui._has_subtitle_for_unit = function (self, unit)
 	end
 end
 
+local customizer_data = {
+	root_scenegraph_id = "subtitle_background",
+	label = "Subtitles",
+	registry_key = "subtitle",
+	drag_scenegraph_id = "subtitle_background"
+}
+
 SubtitleGui.update = function (self, dt)
 	if not UISettings.use_subtitles then
 		return
 	end
+
+	HudCustomizer.run(self._ui_renderer, self._ui_scenegraph, customizer_data)
 
 	local remake_text = false
 	local dialogue_system = self._dialogue_system

@@ -15,20 +15,38 @@ ChaosTrollHealthExtension.extensions_ready = function (self, world, unit, extens
 	local blackboard = BLACKBOARDS[unit]
 	local breed = Breeds[blackboard.breed.name]
 	local action = BreedActions[blackboard.breed.name].downed
-	self.go_down_health = self.health * action.become_downed_hp_percent
-	self.respawn_hp_min = self.health * action.respawn_hp_min_percent
-	self.respawn_hp_max = self.health
-	self.regen_pulse_interval = breed.regen_pulse_interval
-	self.downed_pulse_interval = breed.downed_pulse_interval
-	self.regen_pulse_intensity = breed.regen_pulse_intensity
-	self.downed_pulse_intensity = breed.downed_pulse_intensity
-	self.regen_taken_damage_pause_time = breed.regen_taken_damage_pause_time
+	self.breed = breed
 	self.action = action
-	self.original_health = self.health
+
+	self:_update_health_variables(self.health)
 end
 
 ChaosTrollHealthExtension.current_max_health_percent = function (self)
 	return self.health / self.original_health
+end
+
+ChaosTrollHealthExtension.set_max_health = function (self, value)
+	ChaosTrollHealthExtension.super.set_max_health(self, value)
+
+	if not self._first_damage_occured then
+		self:_update_health_variables(value)
+	end
+end
+
+ChaosTrollHealthExtension._update_health_variables = function (self, new_original_health)
+	if not self.action then
+		return
+	end
+
+	self.go_down_health = new_original_health * self.action.become_downed_hp_percent
+	self.respawn_hp_min = new_original_health * self.action.respawn_hp_min_percent
+	self.respawn_hp_max = new_original_health
+	self.regen_pulse_interval = self.breed.regen_pulse_interval
+	self.downed_pulse_interval = self.breed.downed_pulse_interval
+	self.regen_pulse_intensity = self.breed.regen_pulse_intensity
+	self.downed_pulse_intensity = self.breed.downed_pulse_intensity
+	self.regen_taken_damage_pause_time = self.breed.regen_taken_damage_pause_time
+	self.original_health = new_original_health
 end
 
 ChaosTrollHealthExtension.hot_join_sync = function (self, peer_id)
@@ -103,6 +121,8 @@ end
 
 ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
 	ChaosTrollHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
+
+	self._first_damage_occured = true
 
 	if self.state == "dead" then
 		return

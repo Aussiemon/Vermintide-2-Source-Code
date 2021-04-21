@@ -24,7 +24,6 @@ StartGameWindowWeaveBackgroundConsole.on_enter = function (self, params, offset)
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	self._is_server = ingame_ui_context.is_server
-	self._level_transition_handler = ingame_ui_context.level_transition_handler
 	self._is_in_inn = ingame_ui_context.is_in_inn
 	self._ui_hdr_renderer = self._parent:hdr_renderer()
 	self._my_player = ingame_ui_context.player
@@ -290,10 +289,6 @@ StartGameWindowWeaveBackgroundConsole._animate_wheel_position = function (self, 
 		weave_ranked = {
 			300,
 			120
-		},
-		weave_find_group = {
-			0,
-			220
 		},
 		weave_quickplay = {
 			0,

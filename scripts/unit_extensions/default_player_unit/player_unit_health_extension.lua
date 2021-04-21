@@ -350,30 +350,35 @@ PlayerUnitHealthExtension._update_outline_color = function (self, t, dt)
 		return
 	end
 
-	local outline_color = nil
+	local new_outline_color = nil
+	local outline_ext = self._outline_extension
 	local is_disabled = self.status_extension:is_disabled()
+	local current_health_percent = self:current_health_percent()
 
 	if is_disabled then
-		outline_color = OutlineSettingsVS.colors.hero_dying
+		new_outline_color = OutlineSettingsVS.colors.hero_dying
+	elseif current_health_percent >= 0.66 then
+		new_outline_color = OutlineSettingsVS.colors.hero_healthy
+	elseif current_health_percent >= 0.33 then
+		new_outline_color = OutlineSettingsVS.colors.hero_hurt
 	else
-		local current_health_percent = self:current_health_percent()
-
-		if current_health_percent >= 0.66 then
-			outline_color = OutlineSettingsVS.colors.hero_healthy
-		elseif current_health_percent >= 0.33 then
-			outline_color = OutlineSettingsVS.colors.hero_hurt
-		else
-			outline_color = OutlineSettingsVS.colors.hero_dying
-		end
+		new_outline_color = OutlineSettingsVS.colors.hero_dying
 	end
 
-	local outline_ext = self._outline_extension
-	local prev_outline_color = outline_ext.outline_color
-
-	if outline_color ~= prev_outline_color then
-		outline_ext.outline_color = outline_color
-		outline_ext.reapply = true
+	if not self._outline_id then
+		self._outline_id = outline_ext:add_outline({
+			priority = 2,
+			method = "always",
+			outline_color = new_outline_color,
+			flag = OutlineSettings.flags.non_wall_occluded
+		})
+	elseif self._current_outline_color ~= new_outline_color then
+		outline_ext:update_outline({
+			outline_color = new_outline_color
+		}, self._outline_id)
 	end
+
+	self._current_outline_color = new_outline_color
 end
 
 local FORCED_PERMANENT_DAMAGE_TYPES = {
@@ -468,8 +473,6 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	end
 
 	local min_health = (buff_extension:has_buff_perk("ignore_death") and 1) or 0
-
-	print(damage_type)
 
 	if damage_source_name ~= "dot_debuff" and damage_type ~= "temporary_health_degen" and damage_type ~= "overcharge" then
 		local ai_inventory_extension = ScriptUnit.has_extension(attacker_unit, "ai_inventory_system")

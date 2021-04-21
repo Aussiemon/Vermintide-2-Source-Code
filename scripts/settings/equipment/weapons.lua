@@ -129,10 +129,10 @@ Dots = {
 		local breed = AiUtils.unit_breed(target_unit)
 
 		if breed and not breed.is_hero then
-			local talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system")
+			local talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system") or ScriptUnit.has_extension(source_attacker_unit, "talent_system")
 
 			if talent_extension and talent_extension:has_talent("sienna_adept_infinite_burn") then
-				dot_template_name = InfiniteBurnDotLookup[dot_template_name]
+				dot_template_name = InfiniteBurnDotLookup[dot_template_name] or dot_template_name
 			end
 
 			local attacker_unit_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")

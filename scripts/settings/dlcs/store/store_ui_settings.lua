@@ -46,6 +46,8 @@ settings.hotkey_mapping = {
 settings.store_state_filenames = {
 	"scripts/ui/ui_widgets_store",
 	"scripts/settings/store_dlc_settings",
+	"scripts/settings/store_bundle_layouts",
+	"scripts/settings/store_bundle_featured_settings",
 	"scripts/settings/store_layout",
 	"scripts/ui/views/store_welcome_popup",
 	"scripts/ui/views/store_item_purchase_popup",

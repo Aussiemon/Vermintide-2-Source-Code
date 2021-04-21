@@ -144,7 +144,7 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	self:_initialize_stepper(1, Localize("menu_weave_leaderboard_filter_title_position"), filter_data)
 	self:_initialize_stepper(2, Localize("menu_weave_leaderboard_filter_title_team_size"), team_size_data, #team_size_data)
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		self:_initialize_stepper(3, Localize("menu_weave_leaderboard_filter_season"), season_data, #season_data)
 	end
 
@@ -185,7 +185,7 @@ StartGameStateWeaveLeaderboard._restart_poll_queue = function (self, t)
 end
 
 StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, leaderboard_type, stat_name, season_id)
-	if PLATFORM == "win32" and season_id ~= self._current_season_id then
+	if IS_WINDOWS and season_id ~= self._current_season_id then
 		return
 	end
 
@@ -977,7 +977,7 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 					render_settings.snap_pixel_positions = snap_pixel_positions
 					render_settings.alpha_multiplier = alpha_multiplier
 
-					if PLATFORM ~= "win32" and content.button_hotspot.is_hover then
+					if not IS_WINDOWS and content.button_hotspot.is_hover then
 						input_description = generic_input_actions.open_profile
 
 						if input_service:get("refresh_press") then
@@ -1008,9 +1008,9 @@ StartGameStateWeaveLeaderboard._open_profile = function (self, profile_id)
 		return
 	end
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		XboxLive.show_gamercard(Managers.account:user_id(), profile_id)
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		Managers.account:show_player_profile_with_account_id(profile_id)
 	end
 end

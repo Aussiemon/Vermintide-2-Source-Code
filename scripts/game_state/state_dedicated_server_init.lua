@@ -14,7 +14,7 @@ StateDedicatedServerInit._init_network = function (self)
 	local platform = PLATFORM
 
 	if not rawget(_G, "GameServerInternal") then
-		if platform == "win32" or platform == "linux" then
+		if IS_WINDOWS or IS_LINUX then
 			if rawget(_G, "Steam") then
 				ferror("Running dedicated server with Steam enabled. This will make it easy to introduce bugs.")
 			end

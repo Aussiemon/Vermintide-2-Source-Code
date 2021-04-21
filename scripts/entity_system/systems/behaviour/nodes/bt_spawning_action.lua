@@ -128,13 +128,6 @@ BTSpawningAction.run = function (self, unit, blackboard, t, dt)
 					Managers.state.network:anim_event(unit, "idle")
 				end
 			else
-				if BUILD ~= "release" then
-					QuickDrawerStay:sphere(current_pos + Vector3.up(), 1, Colors.get("orange"))
-					QuickDrawerStay:vector(current_pos, Vector3.down(), Colors.get("orange"))
-					QuickDrawerStay:vector(current_pos, Vector3.down() * 20, Colors.get("orange"))
-					Debug.world_sticky_text(current_pos, "BTSpawningAction couldn't find place to land.", Colors.get("orange"))
-				end
-
 				local damage_type = "forced"
 				local damage_direction = Vector3(0, 0, -1)
 

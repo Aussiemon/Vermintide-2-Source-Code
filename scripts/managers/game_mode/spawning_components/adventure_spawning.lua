@@ -87,6 +87,10 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 		data.consumables = consumables
 	end
 
+	if not data.additional_items then
+		data.additional_items = {}
+	end
+
 	local health_state = data.health_state
 	local instant_spawn = health_state ~= "dead"
 	local spawn_state = data.spawn_state
@@ -214,7 +218,7 @@ AdventureSpawning._update_player_status = function (self, t, dt, occupied_slots)
 				local spawn_state = data.spawn_state
 
 				if spawn_state == "force_respawn" then
-					if not Unit.alive(player.player_unit) and self._profile_synchronizer:all_synced() then
+					if not ALIVE[player.player_unit] and self._profile_synchronizer:all_synced() then
 						data.spawn_state = "spawn"
 					end
 				elseif spawn_state == "spawned" then
@@ -265,6 +269,8 @@ AdventureSpawning._update_player_status = function (self, t, dt, occupied_slots)
 
 							SpawningHelper.fill_consumable_table(data.consumables, inventory)
 							SpawningHelper.fill_ammo_percentage(data.ammo, inventory, player_unit)
+
+							data.additional_items = inventory:get_additional_items_table()
 						end
 					end
 				elseif spawn_state == "spawning" or spawn_state == "initial_spawning" then
@@ -280,7 +286,15 @@ AdventureSpawning._update_player_status = function (self, t, dt, occupied_slots)
 end
 
 AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots)
-	if self._spawning and self._profile_synchronizer:all_synced() then
+	if self._spawning then
+		for i = 1, #occupied_slots, 1 do
+			local status = occupied_slots[i]
+
+			if not self._profile_synchronizer:all_synced_for_peer(status.peer_id, status.local_player_id) then
+				return
+			end
+		end
+
 		local network_server = self._network_server
 
 		for i = 1, #occupied_slots, 1 do
@@ -291,8 +305,7 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots)
 
 			if DEDICATED_SERVER then
 				local game_session = network_server.game_session ~= nil
-				local all_loaded = network_server.profile_synchronizer:inventory_package_synchronizer_all_loaded()
-				ready_to_spawn = game_session and all_loaded
+				ready_to_spawn = game_session
 			else
 				ready_to_spawn = network_server:is_peer_ingame(status.peer_id)
 			end
@@ -372,6 +385,7 @@ AdventureSpawning._spawn_player = function (self, status)
 		local career_index = status.career_index
 		local network_consumables = SpawningHelper.netpack_consumables(data.consumables)
 		local healthkit_id, potion_id, grenade_id = unpack(network_consumables)
+		local network_additional_items = SpawningHelper.netpack_additional_items(data.additional_items)
 		local network_buff_ids = {}
 
 		if data.persistent_buffs then
@@ -388,7 +402,7 @@ AdventureSpawning._spawn_player = function (self, status)
 		local ability_cooldown_perentage = data.ability_cooldown_percentage or 1
 		local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
 
-		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_buff_ids)
+		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
 	end
 
 	data.spawn_state = (is_initial_spawn and "initial_spawning") or "spawning"
@@ -471,7 +485,8 @@ end
 
 AdventureSpawning.get_spawn_point = function (self)
 	local default_state = "default"
-	local prior_state = Managers.mechanism:get_prior_state() or default_state
+	local came_from_mechanism = Managers.mechanism:get_last_mechanism_switch()
+	local prior_state = came_from_mechanism or Managers.mechanism:get_prior_state() or default_state
 	local spawn_points = self._spawn_points[prior_state] or self._spawn_points[default_state]
 	self._num_spawn_points_used = self._num_spawn_points_used + 1
 

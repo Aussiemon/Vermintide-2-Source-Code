@@ -17,14 +17,12 @@ VoteTemplates = {
 			}
 		},
 		on_complete = function (vote_result, ingame_context)
-			local level_transition_handler = ingame_context.level_transition_handler
-
-			if level_transition_handler:transition_in_progress() then
-				return
-			end
+			local level_transition_handler = Managers.level_transition_handler
 
 			if vote_result == 1 then
-				level_transition_handler:reload_level()
+				local level_seed = Managers.mechanism:generate_level_seed()
+
+				level_transition_handler:reload_level(nil, level_seed)
 			else
 				local mechanism = Managers.mechanism:game_mechanism()
 				local inn_level_name = mechanism:get_hub_level_key()
@@ -59,12 +57,6 @@ VoteTemplates = {
 			}
 		},
 		on_complete = function (vote_result, ingame_context)
-			local level_transition_handler = ingame_context.level_transition_handler
-
-			if level_transition_handler:transition_in_progress() then
-				return
-			end
-
 			local mechanism = Managers.mechanism:game_mechanism()
 			local inn_level_name = mechanism:get_hub_level_key()
 
@@ -104,14 +96,15 @@ VoteTemplates = {
 			}
 		},
 		on_complete = function (vote_result, ingame_context)
-			local level_transition_handler = ingame_context.level_transition_handler
+			local level_transition_handler = Managers.level_transition_handler
+			local level_seed = Managers.mechanism:generate_level_seed()
 
 			if vote_result == 1 then
 				local checkpoint_data = Managers.state.spawn:checkpoint_data()
 
-				level_transition_handler:reload_level(checkpoint_data)
+				level_transition_handler:reload_level(checkpoint_data, level_seed)
 			elseif vote_result == 2 then
-				level_transition_handler:reload_level()
+				level_transition_handler:reload_level(nil, level_seed)
 			else
 				Managers.state.event:trigger("checkpoint_vote_cancelled")
 			end
@@ -290,14 +283,14 @@ VoteTemplates = {
 		pack_sync_data = function (data)
 			local sync_data = {
 				data.voter_peer_id,
-				NetworkLookup.level_keys[data.level_key]
+				NetworkLookup.mission_ids[data.level_key]
 			}
 
 			return sync_data
 		end,
 		extract_sync_data = function (sync_data)
 			local voter_peer_id = sync_data[1]
-			local level_key = NetworkLookup.level_keys[tonumber(sync_data[2])]
+			local level_key = NetworkLookup.mission_ids[tonumber(sync_data[2])]
 			local data = {
 				voter_peer_id = voter_peer_id,
 				level_key = level_key
@@ -353,28 +346,30 @@ VoteTemplates = {
 		end,
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
-				local level_key = data.level_key
+				local mission_id = data.mission_id
 				local difficulty = data.difficulty
 				local quick_game = data.quick_game
 				local private_game = data.private_game
 				local always_host = data.always_host
 				local strict_matchmaking = data.strict_matchmaking
-				local game_mode = data.game_mode
+				local matchmaking_type = data.matchmaking_type
 				local excluded_level_keys = data.excluded_level_keys
+				local mechanism = data.mechanism
 				local search_config = {
 					dedicated_server = false,
 					join_method = "solo",
-					level_key = level_key,
+					mission_id = mission_id,
 					difficulty = difficulty,
 					quick_game = quick_game,
 					private_game = private_game,
 					always_host = always_host,
 					strict_matchmaking = strict_matchmaking,
-					game_mode = game_mode,
-					excluded_level_keys = excluded_level_keys
+					matchmaking_type = matchmaking_type,
+					excluded_level_keys = excluded_level_keys,
+					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(game_mode) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type) then
 					Managers.twitch:disconnect()
 				end
 
@@ -387,43 +382,46 @@ VoteTemplates = {
 			end
 		end,
 		pack_sync_data = function (data)
-			local level_key = data.level_key or "n/a"
+			local mission_id = data.mission_id or "n/a"
 			local act_key = data.act_key or "n/a"
 			local difficulty = data.difficulty
 			local quick_game = data.quick_game
 			local private_game = data.private_game
 			local always_host = data.always_host
 			local strict_matchmaking = data.strict_matchmaking
-			local game_mode = data.game_mode
+			local matchmaking_type = data.matchmaking_type
 			local twitch_enabled = Managers.twitch and Managers.twitch:is_connected()
+			local mechanism = data.mechanism
 			local sync_data = {
-				NetworkLookup.level_keys[level_key],
+				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.act_keys[act_key],
 				NetworkLookup.difficulties[difficulty],
 				(quick_game and 1) or 2,
 				(private_game and 1) or 2,
 				(always_host and 1) or 2,
 				(strict_matchmaking and 1) or 2,
-				NetworkLookup.game_modes[game_mode],
-				(twitch_enabled and 1) or 2
+				NetworkLookup.matchmaking_types[matchmaking_type],
+				(twitch_enabled and 1) or 2,
+				NetworkLookup.mechanisms[mechanism]
 			}
 
 			return sync_data
 		end,
 		extract_sync_data = function (sync_data)
-			local level_key_id = sync_data[1]
+			local mission_id = sync_data[1]
 			local act_key_id = sync_data[2]
 			local difficulty_id = sync_data[3]
 			local quick_game_id = sync_data[4]
 			local private_game_id = sync_data[5]
 			local always_host_id = sync_data[6]
 			local strict_matchmaking_id = sync_data[7]
-			local game_mode_id = sync_data[8]
+			local matchmaking_type_id = sync_data[8]
 			local twitch_enabled_id = sync_data[9]
-			local level_key = NetworkLookup.level_keys[level_key_id]
+			local mechanism_id = sync_data[10]
+			local mission_id = NetworkLookup.mission_ids[mission_id]
 
-			if level_key == "n/a" then
-				level_key = nil
+			if mission_id == "n/a" then
+				mission_id = nil
 			end
 
 			local act_key = NetworkLookup.act_keys[act_key_id]
@@ -433,17 +431,19 @@ VoteTemplates = {
 			end
 
 			local difficulty = NetworkLookup.difficulties[difficulty_id]
-			local game_mode = NetworkLookup.game_modes[game_mode_id]
+			local matchmaking_type = NetworkLookup.matchmaking_types[matchmaking_type_id]
+			local mechanism = NetworkLookup.mechanisms[mechanism_id]
 			local data = {
-				level_key = level_key,
+				mission_id = mission_id,
 				act_key = act_key,
 				difficulty = difficulty,
 				quick_game = (quick_game_id == 1 and true) or false,
 				private_game = (private_game_id == 1 and true) or false,
 				always_host = (always_host_id == 1 and true) or false,
 				strict_matchmaking = (strict_matchmaking_id == 1 and true) or false,
-				game_mode = game_mode,
-				twitch_enabled = (twitch_enabled_id == 1 and true) or false
+				matchmaking_type = matchmaking_type,
+				twitch_enabled = (twitch_enabled_id == 1 and true) or false,
+				mechanism = mechanism
 			}
 
 			return data
@@ -524,22 +524,24 @@ VoteTemplates = {
 		end,
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
-				local level_key = data.level_key
+				local mission_id = data.mission_id
 				local difficulty = data.difficulty
 				local private_game = true
 				local quick_game = false
-				local game_mode = "deed"
+				local matchmaking_type = "deed"
+				local mechanism = data.mechanism
 				local search_config = {
 					dedicated_server = false,
 					join_method = "solo",
-					level_key = level_key,
+					mission_id = mission_id,
 					difficulty = difficulty,
 					private_game = private_game,
 					quick_game = quick_game,
-					game_mode = game_mode
+					matchmaking_type = matchmaking_type,
+					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(game_mode) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type) then
 					Managers.twitch:disconnect()
 				end
 
@@ -551,37 +553,41 @@ VoteTemplates = {
 		end,
 		pack_sync_data = function (data)
 			local item_name = data.item_name
-			local level_key = data.level_key
+			local mission_id = data.mission_id
 			local difficulty = data.difficulty
 			local twitch_enabled = Managers.twitch and Managers.twitch:is_connected()
+			local mechanism = data.mechanism
 			local sync_data = {
 				NetworkLookup.item_names[item_name],
-				NetworkLookup.level_keys[level_key],
+				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.difficulties[difficulty],
-				(twitch_enabled and 1) or 2
+				(twitch_enabled and 1) or 2,
+				NetworkLookup.mechanisms[mechanism]
 			}
 
 			return sync_data
 		end,
 		extract_sync_data = function (sync_data)
 			local item_name_id = sync_data[1]
-			local level_key_id = sync_data[2]
+			local mission_id = sync_data[2]
 			local difficulty_id = sync_data[3]
 			local twitch_enabled_id = sync_data[4]
+			local mechanism_id = sync_data[5]
 			local item_name = NetworkLookup.item_names[item_name_id]
-			local level_key = NetworkLookup.level_keys[level_key_id]
+			local mission_id = NetworkLookup.mission_ids[mission_id]
 
-			if level_key == "n/a" then
-				level_key = nil
+			if mission_id == "n/a" then
+				mission_id = nil
 			end
 
 			local difficulty = NetworkLookup.difficulties[difficulty_id]
 			local data = {
-				game_mode = "deed",
+				matchmaking_type = "deed",
 				item_name = item_name,
-				level_key = level_key,
+				mission_id = mission_id,
 				difficulty = difficulty,
-				twitch_enabled = (twitch_enabled_id == 1 and true) or false
+				twitch_enabled = (twitch_enabled_id == 1 and true) or false,
+				mechanism = NetworkLookup.mechanisms[mechanism_id]
 			}
 
 			return data
@@ -641,22 +647,24 @@ VoteTemplates = {
 		end,
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
-				local level_key = data.level_key
+				local mission_id = data.mission_id
 				local difficulty = data.difficulty
 				local private_game = false
 				local quick_game = false
-				local game_mode = "event"
+				local matchmaking_type = "event"
+				local mechanism = data.mechanism
 				local search_config = {
 					dedicated_server = false,
 					join_method = "solo",
-					level_key = level_key,
+					mission_id = mission_id,
 					difficulty = difficulty,
 					quick_game = quick_game,
 					private_game = private_game,
-					game_mode = game_mode
+					matchmaking_type = matchmaking_type,
+					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(game_mode) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type) then
 					Managers.twitch:disconnect()
 				end
 
@@ -670,15 +678,17 @@ VoteTemplates = {
 			end
 		end,
 		pack_sync_data = function (data)
-			local level_key = data.level_key or "n/a"
+			local mission_id = data.mission_id or "n/a"
 			local difficulty = data.difficulty
 			local event_data = data.event_data
 			local mutators = event_data.mutators
 			local twitch_enabled = Managers.twitch and Managers.twitch:is_connected()
+			local mechanism = data.mechanism
 			local sync_data = {
-				NetworkLookup.level_keys[level_key],
+				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.difficulties[difficulty],
-				(twitch_enabled and 1) or 2
+				(twitch_enabled and 1) or 2,
+				NetworkLookup.mechanisms[mechanism]
 			}
 
 			for i = 1, #mutators, 1 do
@@ -690,32 +700,35 @@ VoteTemplates = {
 			return sync_data
 		end,
 		extract_sync_data = function (sync_data)
-			local level_key_id = sync_data[1]
+			local mission_id = sync_data[1]
 			local difficulty_id = sync_data[2]
 			local twitch_enabled_id = sync_data[3]
+			local mechanism_id = sync_data[4]
 			local mutators = {}
-			local mutator_start_index = 4
+			local mutator_start_index = 5
 
 			for i = mutator_start_index, #sync_data, 1 do
 				local mutator_id = sync_data[i]
 				mutators[#mutators + 1] = NetworkLookup.mutator_templates[mutator_id]
 			end
 
-			local level_key = NetworkLookup.level_keys[level_key_id]
+			local mission_id = NetworkLookup.mission_ids[mission_id]
 
-			if level_key == "n/a" then
-				level_key = nil
+			if mission_id == "n/a" then
+				mission_id = nil
 			end
 
 			local difficulty = NetworkLookup.difficulties[difficulty_id]
+			local mechanism = NetworkLookup.mechanisms[mechanism_id]
 			local data = {
-				game_mode = "event",
-				level_key = level_key,
+				matchmaking_type = "event",
+				mission_id = mission_id,
 				difficulty = difficulty,
 				event_data = {
 					mutators = mutators
 				},
-				twitch_enabled = (twitch_enabled_id == 1 and true) or false
+				twitch_enabled = (twitch_enabled_id == 1 and true) or false,
+				mechanism = mechanism
 			}
 
 			return data
@@ -778,14 +791,14 @@ VoteTemplates = {
 			end
 
 			local players_failing_requirements = ""
-			local game_mode_settings = GameModeSettings.weave
+			local mechanism_settings = MechanismSettings.weave
 			local human_players = Managers.player:human_players()
 			local statistics_db = Managers.player:statistics_db()
 
 			for _, player in pairs(human_players) do
 				local stats_id = player:stats_id()
 
-				if not game_mode_settings.extra_requirements_function(statistics_db, stats_id) then
+				if not mechanism_settings.extra_requirements_function(statistics_db, stats_id) then
 					players_failing_requirements = players_failing_requirements .. player:name() .. "\n"
 				end
 			end
@@ -804,24 +817,24 @@ VoteTemplates = {
 		end,
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
-				local weave_name = data.weave_name
+				local weave_name = data.mission_id
 				local objective_index = data.objective_index
 				local weave_template = WeaveSettings.templates[weave_name]
-				local level_key = weave_template.objectives[objective_index].level_id
 				local difficulty = weave_template.difficulty_key
 				local private_game = data.private_game
 				local always_host = data.always_host
 				local quick_game = false
-				local game_mode = "weave"
+				local matchmaking_type = data.matchmaking_type
+				local mechanism = data.mechanism
 				local search_config = {
 					dedicated_server = false,
-					level_key = level_key,
+					mission_id = weave_name,
 					difficulty = difficulty,
 					private_game = private_game,
 					always_host = always_host,
 					quick_game = quick_game,
-					game_mode = game_mode,
-					weave_name = weave_name
+					matchmaking_type = matchmaking_type,
+					mechanism = mechanism
 				}
 
 				Managers.mechanism:choose_next_state("weave")
@@ -831,32 +844,39 @@ VoteTemplates = {
 			end
 		end,
 		pack_sync_data = function (data)
-			local weave_name = data.weave_name
+			local weave_name = data.mission_id
 			local objective_index = data.objective_index
 			local private_game = data.private_game
+			local mechanism = data.mechanism
+			local matchmaking_type = data.matchmaking_type
 			local sync_data = {
-				NetworkLookup.weave_names[weave_name],
+				NetworkLookup.mission_ids[weave_name],
 				objective_index,
-				(private_game and 1) or 2
+				(private_game and 1) or 2,
+				NetworkLookup.mechanisms[mechanism],
+				NetworkLookup.matchmaking_types[matchmaking_type]
 			}
 
 			return sync_data
 		end,
 		extract_sync_data = function (sync_data)
 			local weave_name_id = sync_data[1]
-			local weave_name = NetworkLookup.weave_names[weave_name_id]
+			local weave_name = NetworkLookup.mission_ids[weave_name_id]
 			local objective_index = sync_data[2]
 			local weave_template = WeaveSettings.templates[weave_name]
-			local level_key = weave_template.objectives[objective_index].level_id
 			local difficulty = weave_template.difficulty_key
 			local private_game = (sync_data[3] == 1 and true) or false
+			local mechanism_id = sync_data[4]
+			local mechanism = NetworkLookup.mechanisms[mechanism_id]
+			local matchmaking_type_id = sync_data[5]
+			local matchmaking_type = NetworkLookup.matchmaking_types[matchmaking_type_id]
 			local data = {
-				game_mode = "weave",
-				level_key = level_key,
+				mission_id = weave_name,
 				difficulty = difficulty,
-				weave_name = weave_name,
 				objective_index = objective_index,
-				private_game = private_game
+				matchmaking_type = matchmaking_type,
+				private_game = private_game,
+				mechanism = mechanism
 			}
 
 			return data
@@ -902,22 +922,22 @@ VoteTemplates = {
 		end,
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
-				local weave_name = data.weave_name
+				local weave_name = data.mission_id
 				local objective_index = data.objective_index
 				local weave_template = WeaveSettings.templates[weave_name]
-				local level_key = weave_template.objectives[objective_index].level_id
 				local difficulty = weave_template.difficulty_key
 				local private_game = false
 				local quick_game = false
-				local game_mode = "weave"
+				local matchmaking_type = "custom"
+				local mechansim = data.mechanism
 				local search_config = {
 					dedicated_server = false,
-					level_key = level_key,
+					mission_id = weave_name,
 					difficulty = difficulty,
 					private_game = private_game,
 					quick_game = quick_game,
-					game_mode = game_mode,
-					weave_name = weave_name
+					matchmaking_type = matchmaking_type,
+					mechanism = mechanism
 				}
 
 				Managers.matchmaking:weave_vote_result(true)
@@ -926,11 +946,13 @@ VoteTemplates = {
 			end
 		end,
 		pack_sync_data = function (data)
-			local weave_name = data.weave_name
+			local weave_name = data.mission_id
 			local objective_index = data.objective_index
+			local mechanism = data.mechanism
 			local sync_data = {
 				NetworkLookup.weave_names[weave_name],
-				objective_index
+				objective_index,
+				NetworkLookup.mechanisms[mechanism]
 			}
 
 			return sync_data
@@ -940,153 +962,21 @@ VoteTemplates = {
 			local weave_name = NetworkLookup.weave_names[weave_name_id]
 			local objective_index = sync_data[2]
 			local weave_template = WeaveSettings.templates[weave_name]
-			local level_key = weave_template.objectives[objective_index].level_id
 			local difficulty = weave_template.difficulty_key
+			local mechanism_id = sync_data[3]
+			local mechanism = NetworkLookup.mechanisms[mechanism_id]
 			local data = {
-				game_mode = "weave",
-				level_key = level_key,
+				matchmaking_type = "custom",
+				mission_id = weave_name,
 				difficulty = difficulty,
-				weave_name = weave_name,
-				objective_index = objective_index
+				objective_index = objective_index,
+				mechanism = mechanism
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
 			local votes = {}
-
-			return votes
-		end
-	},
-	game_settings_weave_find_group_vote = {
-		mission_vote = true,
-		ingame_vote = false,
-		client_start_vote_rpc = "rpc_server_request_start_vote_lookup",
-		server_requirement_check_rpc = "rpc_client_check_dlc",
-		client_requirement_check_reply_rpc = "rpc_server_check_dlc_reply",
-		gamepad_support = true,
-		text = "game_settings_vote",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_lookup",
-		duration = 30,
-		priority = 110,
-		min_required_voters = 1,
-		gamepad_input_desc = "default_voting",
-		timeout_vote_option = 2,
-		requirement_data_func = function ()
-			local data = {
-				NetworkLookup.dlcs.scorpion
-			}
-
-			return data
-		end,
-		requirement_failed_message_func = function (requirement_check_data)
-			local text = Localize("vote_weave_requirement_failed")
-			local player_manager = Managers.player
-
-			for peer_id, success in pairs(requirement_check_data.results) do
-				if not success then
-					local player = player_manager:player_from_peer_id(peer_id)
-					local name = player:name()
-					text = text .. name .. "\n"
-				end
-			end
-
-			return text
-		end,
-		vote_options = {
-			{
-				text = "popup_choice_accept",
-				gamepad_input = "confirm",
-				vote = 1,
-				input = "ingame_vote_yes"
-			},
-			{
-				text = "dlc1_3_1_decline",
-				gamepad_input = "back",
-				vote = 2,
-				input = "ingame_vote_no"
-			}
-		},
-		can_start_vote = function (data)
-			local is_server = Managers.player.is_server
-
-			if not is_server then
-				return true
-			end
-
-			local players_failing_requirements = ""
-			local game_mode_settings = GameModeSettings.weave
-			local human_players = Managers.player:human_players()
-			local statistics_db = Managers.player:statistics_db()
-
-			for _, player in pairs(human_players) do
-				local stats_id = player:stats_id()
-
-				if not game_mode_settings.extra_requirements_function(statistics_db, stats_id) then
-					players_failing_requirements = players_failing_requirements .. player:name() .. "\n"
-				end
-			end
-
-			if #players_failing_requirements > 0 then
-				local reply_string = Localize("vote_game_mode_requirement_failed")
-				reply_string = string.format(reply_string, players_failing_requirements)
-
-				return false, reply_string
-			else
-				return true
-			end
-		end,
-		on_start = function (ingame_context, data)
-			Managers.matchmaking:cancel_matchmaking()
-		end,
-		on_complete = function (vote_result, ingame_context, data)
-			if vote_result == 1 then
-				local private_game = false
-				local quick_game = false
-				local mechanism = Managers.mechanism:game_mechanism()
-				local inn_level_name = mechanism:get_hub_level_key()
-				local level_key = inn_level_name
-				local difficulty = data.difficulty
-				local game_mode = "weave_find_group"
-				local search_config = {
-					dedicated_server = false,
-					level_key = level_key,
-					difficulty = difficulty,
-					private_game = private_game,
-					quick_game = quick_game,
-					game_mode = game_mode
-				}
-
-				Managers.matchmaking:find_game(search_config)
-			end
-		end,
-		pack_sync_data = function (data)
-			local difficulty = data.difficulty
-			local sync_data = {
-				NetworkLookup.difficulties[difficulty]
-			}
-
-			return sync_data
-		end,
-		extract_sync_data = function (sync_data)
-			local difficulty_id = sync_data[1]
-			local difficulty = NetworkLookup.difficulties[difficulty_id]
-			local mechanism = Managers.mechanism:game_mechanism()
-			local inn_level_name = mechanism:get_hub_level_key()
-			local data = {
-				game_mode = "weave_find_group",
-				level_key = inn_level_name,
-				difficulty = difficulty
-			}
-
-			return data
-		end,
-		initial_vote_func = function (data)
-			local votes = {
-				[data.voter_peer_id] = 1
-			}
 
 			return votes
 		end
@@ -1141,14 +1031,14 @@ VoteTemplates = {
 			end
 
 			local players_failing_requirements = ""
-			local game_mode_settings = GameModeSettings.weave
+			local mechanism_settings = MechanismSettings.weave
 			local human_players = Managers.player:human_players()
 			local statistics_db = Managers.player:statistics_db()
 
 			for _, player in pairs(human_players) do
 				local stats_id = player:stats_id()
 
-				if not game_mode_settings.extra_requirements_function(statistics_db, stats_id) then
+				if not mechanism_settings.extra_requirements_function(statistics_db, stats_id) then
 					players_failing_requirements = players_failing_requirements .. player:name() .. "\n"
 				end
 			end
@@ -1170,14 +1060,17 @@ VoteTemplates = {
 				local difficulty = data.difficulty
 				local always_host = data.always_host
 				local private_game = data.private_game
+				local mechanism = data.mechanism
+				local matchmaking_type = data.matchmaking_type
 				local search_config = {
 					any_level = true,
 					quick_game = true,
 					dedicated_server = false,
-					game_mode = "weave",
 					difficulty = difficulty,
 					always_host = always_host,
-					private_game = private_game
+					matchmaking_type = matchmaking_type,
+					private_game = private_game,
+					mechanism = mechanism
 				}
 
 				Managers.mechanism:choose_next_state("weave")
@@ -1186,8 +1079,12 @@ VoteTemplates = {
 		end,
 		pack_sync_data = function (data)
 			local difficulty = data.difficulty
+			local mechanism = data.mechanism
+			local matchmaking_type = data.matchmaking_type
 			local sync_data = {
-				NetworkLookup.difficulties[difficulty]
+				NetworkLookup.difficulties[difficulty],
+				NetworkLookup.mechanisms[mechanism],
+				NetworkLookup.matchmaking_types[matchmaking_type]
 			}
 
 			return sync_data
@@ -1195,77 +1092,18 @@ VoteTemplates = {
 		extract_sync_data = function (sync_data)
 			local difficulty_id = sync_data[1]
 			local difficulty = NetworkLookup.difficulties[difficulty_id]
+			local mechanism_id = sync_data[2]
+			local mechanism = NetworkLookup.mechanisms[mechanism_id]
+			local matchmaking_type_id = sync_data[3]
+			local matchmaking_type = NetworkLookup.matchmaking_types[matchmaking_type_id]
 			local data = {
 				private_game = false,
 				dedicated_server = false,
 				quick_game = true,
 				always_host = false,
-				game_mode = "weave",
-				difficulty = difficulty
-			}
-
-			return data
-		end,
-		initial_vote_func = function (data)
-			local votes = {
-				[data.voter_peer_id] = 1
-			}
-
-			return votes
-		end
-	},
-	change_game_mode = {
-		mission_vote = true,
-		ingame_vote = false,
-		timeout_vote_option = 2,
-		client_start_vote_rpc = "rpc_server_request_start_vote_peer_id",
-		text = "vote_for_game_mode",
-		minimum_voter_percent = 1,
-		success_percent = 1,
-		server_start_vote_rpc = "rpc_client_start_vote_peer_id",
-		duration = 300,
-		priority = 110,
-		min_required_voters = 1,
-		start_sound_event = "hud_dice_game_reward_sound",
-		vote_options = {
-			{
-				text = "popup_choice_accept",
-				vote = 1,
-				input = "ingame_vote_yes"
-			},
-			{
-				text = "dlc1_3_1_decline",
-				vote = 2,
-				input = "ingame_vote_no"
-			}
-		},
-		on_complete = function (vote_result, ingame_context, data)
-			if vote_result == 1 then
-				local mechanism_key = data.mechanism_key
-				local level_key = data.level_key
-
-				Managers.mechanism:switch_mechanism(mechanism_key)
-				Managers.matchmaking.level_transition_handler:set_next_level(level_key)
-				Managers.state.game_mode:game_mode():complete_level()
-			end
-		end,
-		pack_sync_data = function (data)
-			local sync_data = {
-				data.voter_peer_id,
-				NetworkLookup.mechanism_keys[data.mechanism_key],
-				NetworkLookup.level_keys[data.level_key]
-			}
-
-			return sync_data
-		end,
-		extract_sync_data = function (sync_data)
-			local voter_peer_id = sync_data[1]
-			local mechanism_key = NetworkLookup.mechanism_keys[tonumber(sync_data[2])]
-			local level_key = NetworkLookup.level_keys[tonumber(sync_data[3])]
-			local data = {
-				voter_peer_id = voter_peer_id,
-				mechanism_key = mechanism_key,
-				level_key = level_key
+				difficulty = difficulty,
+				matchmaking_type = matchmaking_type,
+				mechanism = mechanism
 			}
 
 			return data
@@ -1283,7 +1121,7 @@ VoteTemplates = {
 		ingame_vote = false,
 		mission_vote = true,
 		gamepad_support = true,
-		text = "game_settings_goto_keep_vote",
+		text = "vote_switch_mechanism",
 		minimum_voter_percent = 1,
 		success_percent = 1,
 		server_start_vote_rpc = "rpc_client_start_vote_lookup",
@@ -1320,18 +1158,35 @@ VoteTemplates = {
 				input = "ingame_vote_no"
 			}
 		},
+		can_start_vote = function (data)
+			local success = true
+			local is_server = Managers.player.is_server
+
+			if is_server then
+				local network_manager = Managers.state.network
+				local network_server = network_manager.network_server
+				success = network_server:are_all_peers_ingame()
+			end
+
+			if not success then
+				local channel_id = 1
+				local localization_param = ""
+				local pop_chat = true
+				local localize_parameters = false
+				local message = "map_confirm_button_disabled_tooltip_players_joining"
+
+				Managers.chat:send_system_chat_message(1, message, localization_param, localize_parameters, pop_chat)
+			end
+
+			return success
+		end,
 		on_start = function (ingame_context, data)
 			Managers.matchmaking:cancel_matchmaking()
 		end,
 		on_complete = function (vote_result, ingame_context, data)
 			if vote_result == 1 then
 				local level_key = data.level_key
-				local mechanism = data.mechanism
-
-				Managers.mechanism:switch_mechanism(mechanism)
-				Managers.mechanism:reset_choose_next_state()
-
-				local level_transition_handler = Managers.matchmaking.level_transition_handler
+				local level_transition_handler = Managers.level_transition_handler
 
 				level_transition_handler:set_next_level(level_key)
 				level_transition_handler:level_completed()
@@ -1341,7 +1196,7 @@ VoteTemplates = {
 			local level_key = data.level_key
 			local mechanism = data.mechanism
 			local vote_data = {
-				NetworkLookup.level_keys[level_key],
+				NetworkLookup.mission_ids[level_key],
 				NetworkLookup.mechanism_keys[mechanism]
 			}
 
@@ -1352,14 +1207,16 @@ VoteTemplates = {
 			local mechanism_id = sync_data[2]
 			local data = {
 				switch_mechanism = true,
-				level_key = NetworkLookup.level_keys[level_key_id],
+				level_key = NetworkLookup.mission_ids[level_key_id],
 				mechanism = NetworkLookup.mechanism_keys[mechanism_id]
 			}
 
 			return data
 		end,
 		initial_vote_func = function (data)
-			local votes = {}
+			local votes = {
+				[data.voter_peer_id] = 1
+			}
 
 			return votes
 		end

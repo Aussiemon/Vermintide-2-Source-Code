@@ -143,6 +143,12 @@ AreaDamageExtension.enable = function (self, enable)
 		end
 
 		table.clear(self.player_unit_particles)
+
+		if self.nav_tag_volume_id then
+			local volume_system = Managers.state.entity:system("volume_system")
+
+			volume_system:destroy_nav_tag_volume(self.nav_tag_volume_id)
+		end
 	end
 end
 

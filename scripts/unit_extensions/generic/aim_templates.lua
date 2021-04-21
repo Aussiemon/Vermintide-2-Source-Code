@@ -1010,6 +1010,60 @@ AimTemplates.innkeeper = {
 		end
 	}
 }
+AimTemplates.closest_player = {
+	owner = {
+		init = function (unit, data)
+			data.constraint_target = Unit.animation_find_constraint_target(unit, "aim_constraint_target")
+			data.current_target = nil
+			data.interpolation_origin_position = Vector3Box()
+			data.last_position = Vector3Box()
+			data.interpolation_time = -math.huge
+		end,
+		update = function (unit, t, dt, data)
+			local player_manager = Managers.player
+			local local_player = player_manager:local_player()
+			local local_player_unit = local_player.player_unit
+
+			if local_player_unit then
+				local head_index = Unit.node(local_player_unit, "j_head")
+				local aim_target = Unit.world_position(local_player_unit, head_index)
+
+				Unit.animation_set_constraint_target(unit, data.constraint_target, aim_target)
+			end
+		end,
+		leave = function (unit, data)
+			return
+		end
+	}
+}
+AimTemplates.closest_player_flat = {
+	owner = {
+		init = function (unit, data)
+			data.constraint_target = Unit.animation_find_constraint_target(unit, "aim_constraint_target")
+			data.current_target = nil
+			data.interpolation_origin_position = Vector3Box()
+			data.last_position = Vector3Box()
+			data.interpolation_time = -math.huge
+		end,
+		update = function (unit, t, dt, data)
+			local player_manager = Managers.player
+			local local_player = player_manager:local_player()
+			local local_player_unit = local_player.player_unit
+
+			if local_player_unit then
+				local aim_target = Unit.world_position(local_player_unit, 0)
+				local node_index = Unit.node(unit, "j_aim") or 0
+				local constraint_pos = Unit.world_position(unit, node_index)
+				aim_target[3] = constraint_pos[3]
+
+				Unit.animation_set_constraint_target(unit, data.constraint_target, aim_target)
+			end
+		end,
+		leave = function (unit, data)
+			return
+		end
+	}
+}
 
 DLCUtils.require_list("aim_templates_file_names")
 

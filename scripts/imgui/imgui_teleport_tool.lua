@@ -55,43 +55,43 @@ end
 ImguiTeleportTool.draw = function (self, is_open)
 	local config_keybinds_popup = false
 
-	Imgui.Begin("Teleport Tool", "always_auto_resize")
+	Imgui.begin_window("Teleport Tool", "always_auto_resize")
 
-	if Imgui.MenuItem("Keybinds") then
-		Imgui.OpenPopup("config_keybinds_popup")
+	if Imgui.menu_item("Keybinds") then
+		Imgui.open_popup("config_keybinds_popup")
 	end
 
-	Imgui.Dummy(300, 1)
-	Imgui.Text("Current level: ")
-	Imgui.SameLine()
-	Imgui.Text(tostring(self._current_level))
+	Imgui.dummy(300, 1)
+	Imgui.text("Current level: ")
+	Imgui.same_line()
+	Imgui.text(tostring(self._current_level))
 
-	self._is_persistent = Imgui.Checkbox("Keep on screen", self._is_persistent)
+	self._is_persistent = Imgui.checkbox("Keep on screen", self._is_persistent)
 	local old_filter = self._filter_text
-	self._filter_text = Imgui.InputText("Search", self._filter_text)
+	self._filter_text = Imgui.input_text("Search", self._filter_text)
 
 	if self._filter_text ~= old_filter then
 		self:_refresh_filter()
 	end
 
-	self._selected_teleport = Imgui.ListBox("", self._selected_teleport, self._filtered_teleport_names) - 1
+	self._selected_teleport = Imgui.list_box("", self._selected_teleport, self._filtered_teleport_names)
 
-	if Imgui.Button("Register Point") or self._key_states.register_new then
-		Imgui.OpenPopup("register_point_popup")
+	if Imgui.button("Register Point") or self._key_states.register_new then
+		Imgui.open_popup("register_point_popup")
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Teleport") or (self._key_states.teleport and not Imgui.IsPopupOpen("register_point_popup")) then
+	if Imgui.button("Teleport") or (self._key_states.teleport and not Imgui.is_popup_open("register_point_popup")) then
 		local local_player = Managers.player:local_player()
 		local player_unit = local_player and local_player.player_unit
 
 		self:_teleport_to_selected(player_unit)
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Save To Clipboard") or self._key_states.save_to_clipboatd then
+	if Imgui.button("Save To Clipboard") or self._key_states.save_to_clipboatd then
 		local local_player = Managers.player:local_player()
 		local unit = local_player and local_player.player_unit
 		local data_point = self:_get_unit_location(unit)
@@ -99,9 +99,9 @@ ImguiTeleportTool.draw = function (self, is_open)
 		self:_save_point_to_clipboard(data_point)
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Teleport Custom") or self._key_states.teleport_from_clipboard then
+	if Imgui.button("Teleport Custom") or self._key_states.teleport_from_clipboard then
 		local local_player = Managers.player:local_player()
 		local unit = local_player and local_player.player_unit
 		local data_point = self:_get_point_from_clipboard()
@@ -109,40 +109,40 @@ ImguiTeleportTool.draw = function (self, is_open)
 		self:_teleport_to_point(unit, data_point)
 	end
 
-	if Imgui.BeginPopup("register_point_popup") then
-		self._register_point_name = Imgui.InputText("Name", self._register_point_name)
+	if Imgui.begin_popup("register_point_popup") then
+		self._register_point_name = Imgui.input_text("Name", self._register_point_name)
 
-		if Imgui.Button("Confirm") or self._key_states.confirm then
+		if Imgui.button("Confirm") or self._key_states.confirm then
 			self:_register_point(self._register_point_name)
 			self:_refresh_filter()
-			Imgui.CloseCurrentPopup()
+			Imgui.close_current_popup()
 		end
 
-		Imgui.SameLine()
+		Imgui.same_line()
 
-		if Imgui.Button("Cancel") then
-			Imgui.CloseCurrentPopup()
+		if Imgui.button("Cancel") then
+			Imgui.close_current_popup()
 		end
 
-		Imgui.EndPopup()
+		Imgui.end_popup()
 	else
 		self._register_point_name = ""
 	end
 
-	if Imgui.BeginPopup("config_keybinds_popup") then
+	if Imgui.begin_popup("config_keybinds_popup") then
 		for name, val in pairs(self._key_bindings) do
-			Imgui.TreePush(name)
+			Imgui.tree_push(name)
 
 			local selected_for_rebind = self._rebind_action == name
 			local button_name = (selected_for_rebind and "<?>") or val
 
-			if Imgui.Button(button_name, 100, 20) then
+			if Imgui.button(button_name, 100, 20) then
 				self._rebind_action = name
 			end
 
-			Imgui.SameLine()
-			Imgui.Text(name)
-			Imgui.TreePop()
+			Imgui.same_line()
+			Imgui.text(name)
+			Imgui.tree_pop()
 		end
 
 		if self._rebind_action then
@@ -157,14 +157,14 @@ ImguiTeleportTool.draw = function (self, is_open)
 			end
 		end
 
-		Imgui.EndPopup()
+		Imgui.end_popup()
 	else
 		self._rebind_action = nil
 	end
 
-	config_keybinds_popup = Imgui.IsPopupOpen("config_keybinds_popup")
+	config_keybinds_popup = Imgui.is_popup_open("config_keybinds_popup")
 
-	Imgui.End()
+	Imgui.end_window()
 
 	if not config_keybinds_popup then
 		self:_update_input()

@@ -270,7 +270,7 @@ DebugScreen.accelerate_factor = DebugScreen.accelerate_factor or 1
 DebugScreen.update = function (dt, t, input_service, input_manager)
 	local DebugScreen = DebugScreen
 
-	if DebugScreen.is_blocked or not script_data.debug_enabled or not input_service or PLATFORM == "linux" then
+	if DebugScreen.is_blocked or not script_data.debug_enabled or not input_service or IS_LINUX then
 		return
 	end
 

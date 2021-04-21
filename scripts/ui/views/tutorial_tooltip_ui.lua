@@ -31,7 +31,7 @@ TutorialTooltipUI.button_texture_data_by_input_action = function (self, input_ac
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if IS_WINDOWS and gamepad_active then
 		platform = "xb1"
 	end
 

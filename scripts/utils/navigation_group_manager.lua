@@ -130,7 +130,7 @@ NavigationGroupManager.form_groups_start = function (self, radius, finish_point,
 	self:form_groups_update()
 end
 
-local max_nodes_per_frame = (PLATFORM == "win32" and 1000) or 400
+local max_nodes_per_frame = (IS_WINDOWS and 1000) or 400
 
 NavigationGroupManager.form_groups_update = function (self)
 	print("NavigationGroupManager -> form_groups_update")

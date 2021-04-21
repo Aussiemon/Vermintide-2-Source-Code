@@ -178,6 +178,9 @@ PingTemplates = {
 				{
 					"DENY"
 				}
+			},
+			[PingTypes.CHAT_ONLY] = {
+				true
 			}
 		},
 		exec_func = function (self, parent, pinger_unit, pinged_unit, ping_type, social_wheel_event_id)

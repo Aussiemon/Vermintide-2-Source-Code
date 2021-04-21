@@ -301,6 +301,20 @@ local scenegraph_definition = {
 			170
 		}
 	},
+	deus_level_icon = {
+		vertical_alignment = "center",
+		parent = "details_level_frame",
+		horizontal_alignment = "center",
+		size = {
+			180,
+			180
+		},
+		position = {
+			0,
+			-20,
+			-1
+		}
+	},
 	weave_details_hero_tabs = {
 		vertical_alignment = "top",
 		parent = "weave_details_level_name",
@@ -2288,6 +2302,7 @@ local function create_level_filter_scroller_func(num_elements)
 	local length = element_settings.window_height + element_settings.filter_height
 	local max_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing) - 1)
 	local size_y = math.max(length / (num_elements / max_entries), 30)
+	local visible = max_entries < num_elements
 
 	return {
 		scenegraph_id = "filter_level_scroller",
@@ -2300,6 +2315,29 @@ local function create_level_filter_scroller_func(num_elements)
 				{
 					pass_type = "rect",
 					style_id = "border"
+				},
+				{
+					style_id = "scroller_hotspot",
+					pass_type = "hotspot",
+					content_id = "scroller_hotspot",
+					content_check_function = function (content, style)
+						return content.parent.show_scroller and content.parent.active
+					end,
+					content_change_function = function (content, style)
+						local scrollbar_length = element_settings.window_height - element_settings.spacing * 2
+						local start_pos = -element_settings.filter_height - element_settings.spacing
+						local offset_y = start_pos - content.parent.scrollbar_progress * scrollbar_length
+						local offset_y = start_pos - element_settings.spacing - content.parent.scrollbar_progress * (scrollbar_length - style.area_size[2] - start_pos)
+						style.offset[2] = offset_y
+						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
+						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
+						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
+					end
+				},
+				{
+					style_id = "bar_hotspot",
+					pass_type = "hotspot",
+					content_id = "bar_hotspot"
 				},
 				{
 					style_id = "inner_scroller",
@@ -2316,14 +2354,18 @@ local function create_level_filter_scroller_func(num_elements)
 						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
 						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
 						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
+						style.color = (content.scroller_hotspot.is_hover and style.highlight_color) or style.default_color
 					end
 				}
 			}
 		},
 		content = {
-			show_scroller = true,
+			active = true,
 			scrollbar_progress = 0,
-			active = true
+			show_scroller = true,
+			bar_hotspot = {},
+			scroller_hotspot = {},
+			visible = visible
 		},
 		style = {
 			background = {
@@ -2345,6 +2387,19 @@ local function create_level_filter_scroller_func(num_elements)
 					0
 				}
 			},
+			bar_hotspot = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				area_size = {
+					scroller_width - element_settings.spacing,
+					element_settings.window_height + element_settings.filter_height
+				},
+				offset = {
+					element_settings.spacing,
+					-element_settings.spacing - element_settings.filter_height,
+					-1
+				}
+			},
 			border = {
 				vertical_alignment = "top",
 				horizontal_alignment = "right",
@@ -2364,6 +2419,19 @@ local function create_level_filter_scroller_func(num_elements)
 					-1
 				}
 			},
+			scroller_hotspot = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				area_size = {
+					scroller_width - 4,
+					size_y
+				},
+				offset = {
+					-1,
+					-element_settings.spacing - element_settings.filter_height,
+					2
+				}
+			},
 			inner_scroller = {
 				vertical_alignment = "top",
 				horizontal_alignment = "right",
@@ -2372,6 +2440,8 @@ local function create_level_filter_scroller_func(num_elements)
 					size_y
 				},
 				color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 255),
+				highlight_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					-1,
 					-element_settings.spacing - element_settings.filter_height,
@@ -2403,6 +2473,7 @@ local function create_level_filter_entry_func(level, unlocked)
 		element = {
 			passes = {
 				{
+					style_id = "button_hotspot",
 					pass_type = "hotspot",
 					content_id = "button_hotspot"
 				},
@@ -2456,6 +2527,12 @@ local function create_level_filter_entry_func(level, unlocked)
 			unlocked = unlocked
 		},
 		style = {
+			button_hotspot = {
+				area_size = {
+					element_settings.window_width / 4 - 15,
+					element_settings.filter_height
+				}
+			},
 			background = {
 				vertical_alignment = "top",
 				color = {
@@ -2505,11 +2582,16 @@ local function create_level_filter_entry_func(level, unlocked)
 				}
 			},
 			level_name = {
-				localize = false,
 				font_size = 28,
+				localize = false,
+				font_type = "hell_shark_masked",
 				horizontal_alignment = "center",
 				vertical_alignment = "top",
-				font_type = "hell_shark_masked",
+				dynamic_font_size = true,
+				area_size = {
+					400,
+					100
+				},
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				base_color = Colors.get_color_table_with_alpha("font_default", 255),
 				selection_color = Colors.get_color_table_with_alpha("black", 224),
@@ -2520,11 +2602,16 @@ local function create_level_filter_entry_func(level, unlocked)
 				}
 			},
 			level_name_locked = {
-				vertical_alignment = "top",
-				horizontal_alignment = "center",
-				localize = false,
 				font_size = 28,
 				font_type = "hell_shark_masked",
+				localize = false,
+				horizontal_alignment = "center",
+				vertical_alignment = "top",
+				dynamic_font_size = true,
+				area_size = {
+					400,
+					100
+				},
 				text_color = Colors.get_color_table_with_alpha("very_dark_gray", 255),
 				offset = {
 					0,
@@ -2937,12 +3024,12 @@ local function create_distance_filter_entry_func(distance, offset_y)
 end
 
 local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinable, completed_difficulty_index)
-	local host_name = (PLATFORM == "win32" and (lobby_data.unique_server_name or lobby_data.host)) or lobby_data.name or "UNKNOWN"
+	local host_name = (IS_WINDOWS and (lobby_data.unique_server_name or lobby_data.host)) or lobby_data.name or "UNKNOWN"
 	local num_players = lobby_data.num_players
 	local country_code = lobby_data.country_code
-	local game_mode_id = lobby_data.game_mode
-	local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
-	local weave_name = lobby_data.weave_name
+	local matchmaking_type_id = lobby_data.matchmaking_type
+	local matchmaking_type = (IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
+	local mechanism = lobby_data.mechanism
 	local difficulty = lobby_data.difficulty or "UNKNOWN"
 	local difficulty_settings = DifficultySettings[difficulty]
 
@@ -2951,38 +3038,51 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 		difficulty = Localize(display_name)
 	end
 
+	local selected_level_name = "UNKNOWN"
 	local level_image = "any_small_image"
-	local selected_level_name = lobby_data.selected_level_key
+	local selected_mission_id = lobby_data.selected_mission_id
 
-	if game_mode == "weave" and weave_name ~= "" then
+	if mechanism == "weave" and selected_mission_id ~= "" and selected_mission_id ~= "false" then
 		level_image = "weaves_small_image"
+		local weave_name = selected_mission_id
 		local weave_template = WeaveSettings.templates[weave_name]
 		local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
 
-		if lobby_data.quick_game == "true" then
+		if not weave_template then
+			local level_settings = LevelSettings[selected_mission_id]
+			selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
+		elseif lobby_data.quick_game == "true" then
 			selected_level_name = (weave_template and Localize(weave_template.display_name)) or Localize("start_game_window_weave_quickplay_title")
 		else
 			selected_level_name = weave_index .. ". " .. Localize(weave_template.display_name)
 		end
-	elseif selected_level_name then
-		local level_settings = LevelSettings[selected_level_name]
+	elseif mechanism == "deus" then
+		level_image = "deus_small_image"
+		local level_settings = LevelSettings[selected_mission_id]
 		selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
-		level_image = lobby_data.selected_level_key .. "_small_image"
+	elseif selected_mission_id then
+		local level_settings = LevelSettings[selected_mission_id]
+		selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
+		level_image = selected_mission_id .. "_small_image"
 
 		if not UIAtlasHelper.has_texture_by_name(level_image) then
-			level_image = "any_small_image"
+			level_image = level_settings.small_level_image or "any_small_image"
 		end
-	else
-		selected_level_name = "UNKNOWN"
 	end
 
-	local current_level_name = lobby_data.level_key
+	local current_level_name = "UNKNOWN"
+	local current_mission_id = lobby_data.mission_id
 
-	if current_level_name then
+	if current_mission_id then
+		local current_level_name = current_mission_id
+		local weave_template = WeaveSettings.templates[current_level_name]
+
+		if weave_template then
+			current_level_name = weave_template.objectives[1].level_id
+		end
+
 		local level_settings = LevelSettings[current_level_name]
 		current_level_name = Localize(level_settings.display_name or "UNKNOWN")
-	else
-		current_level_name = "UNKNOWN"
 	end
 
 	local country_code = (lobby_data.country_code and string.lower(lobby_data.country_code)) or Localize("lb_unknown")
@@ -4150,9 +4250,22 @@ local objective_title_text_style = {
 		2
 	}
 }
-local details_widget_definition = {
+local adventure_details_widget_definition = {
 	level_image_frame = UIWidgets.create_simple_texture("map_frame_00", "details_level_frame"),
 	level_image = UIWidgets.create_simple_texture("level_image_any", "details_level_image"),
+	level_name = UIWidgets.create_simple_text(" ", "details_level_name", nil, nil, level_name_style),
+	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
+	details_information = create_details_information("details_level_info", "details_game_type", "details_status"),
+	hero_tabs = UIWidgets.create_icon_selector("details_hero_tabs", {
+		hero_entry_width,
+		hero_entry_height
+	}, hero_icons, hero_entry_spacing, true, hero_entry_frame_size, true)
+}
+local deus_details_widget_definition = {
+	expedition_icon = UIWidgets.create_expedition_widget_func("deus_level_icon", nil, DeusJourneySettings.journey_cave, "journey_cave", {
+		width = 800,
+		spacing_x = 40
+	}, 1.2),
 	level_name = UIWidgets.create_simple_text(" ", "details_level_name", nil, nil, level_name_style),
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
 	details_information = create_details_information("details_level_info", "details_game_type", "details_status"),
@@ -4191,8 +4304,9 @@ return {
 	animation_definitions = animation_definitions,
 	scenegraph_definition = scenegraph_definition,
 	base_widget_definition = base_widget_definition,
-	details_widget_definition = details_widget_definition,
+	adventure_details_widget_definition = adventure_details_widget_definition,
 	weave_details_widget_definition = weave_details_widget_definition,
+	deus_details_widget_definition = deus_details_widget_definition,
 	create_lobby_entry_func = create_lobby_entry_func,
 	create_empty_lobby_entry_func = create_empty_lobby_entry_func,
 	create_level_filter_entry_func = create_level_filter_entry_func,

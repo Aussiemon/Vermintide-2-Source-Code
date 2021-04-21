@@ -4,15 +4,15 @@ PlayerCharacterStateStunned.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "stunned")
 
 	self.inputs_to_buffer = {
-		wield_2 = true,
-		wield_5 = true,
-		action_career_release = true,
-		action_career = true,
-		wield_3 = true,
-		wield_1 = true,
-		wield_4 = true,
-		action_one = true,
-		wield_switch = true
+		"action_career_release",
+		"action_career",
+		"wield_switch",
+		"wield_1",
+		"wield_2",
+		"wield_3",
+		"wield_4",
+		"wield_5",
+		"action_one"
 	}
 	self.movement_speed = 0
 	self.movement_speed_limit = 1
@@ -218,7 +218,7 @@ PlayerCharacterStateStunned.queue_input = function (self, input, input_extension
 		input_extension:add_buffer(wield_input)
 	end
 
-	for input_to_buffer, _ in pairs(self.inputs_to_buffer) do
+	for _, input_to_buffer in pairs(self.inputs_to_buffer) do
 		if input_extension:get(input_to_buffer) then
 			input_extension:add_stun_buffer(input_to_buffer)
 

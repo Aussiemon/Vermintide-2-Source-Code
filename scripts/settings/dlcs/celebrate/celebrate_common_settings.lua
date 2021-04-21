@@ -27,10 +27,5 @@ settings.husk_lookup = {
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_celebrate"
 }
-settings.level_packages = {
-	dlc_celebrate_crawl = {
-		"resource_packages/dlcs/celebrate_ingame"
-	}
-}
 
 return

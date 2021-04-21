@@ -2,12 +2,15 @@ require("scripts/managers/game_mode/mechanisms/adventure_mechanism")
 
 MechanismSettings = {
 	adventure = {
-		default_inventory = true,
-		check_matchmaking_hero_availability = true,
 		server_port = 27015,
+		display_name = "tutorial_intro_adventure",
+		default_inventory = true,
 		server_universe = "carousel",
+		check_matchmaking_hero_availability = true,
 		tobii_available = true,
 		max_members = 4,
+		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
+		vote_switch_mechanism_text = "vote_switch_mechanism_adventure_description",
 		class_name = "AdventureMechanism",
 		states = {
 			"inn",
@@ -28,6 +31,84 @@ MechanismSettings = {
 				num_slots = 4
 			}
 		}
+	},
+	weave = {
+		disable_difficulty_check = true,
+		display_name = "game_mode_adventure",
+		default_inventory = true,
+		server_port = 27015,
+		check_matchmaking_hero_availability = true,
+		tobii_available = true,
+		class_name = "AdventureMechanism",
+		server_universe = "carousel",
+		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
+		vote_switch_mechanism_text = "vote_switch_mechanism_adventure_description",
+		max_members = 4,
+		required_dlc = "scorpion",
+		states = {
+			"inn",
+			"ingame",
+			"tutorial",
+			"weave"
+		},
+		venture_end_states_in = {
+			"inn"
+		},
+		venture_end_states_out = {
+			"inn"
+		},
+		party_data = {
+			heroes = {
+				party_id = 1,
+				name = "heroes",
+				num_slots = 4
+			}
+		},
+		extra_requirements_function = function (optional_statistics_db, optional_stats_id)
+			if script_data.unlock_all_levels then
+				return true
+			end
+
+			local backend_stats = Managers.backend:get_stats()
+
+			for _, level_key in pairs(MainGameLevels) do
+				local level_settings = LevelSettings[level_key]
+
+				if level_settings.game_mode == "adventure" then
+					if optional_statistics_db then
+						local value = optional_statistics_db:get_persistent_stat(optional_stats_id, "completed_levels", level_key)
+						local level_completed = value and value ~= 0
+
+						if not level_completed then
+							return false
+						end
+					elseif (tonumber(backend_stats["completed_levels_" .. level_key]) or 0) < 1 then
+						return false
+					end
+				end
+			end
+
+			local scorpion_dlc_levels = GameActs.act_scorpion
+
+			for _, level_key in pairs(scorpion_dlc_levels) do
+				local level_settings = LevelSettings[level_key]
+
+				if level_settings.game_mode == "adventure" then
+					if optional_statistics_db then
+						local value = optional_statistics_db:get_persistent_stat(optional_stats_id, "completed_levels", level_key)
+						local level_completed = value and value ~= 0
+
+						if not level_completed then
+							return false
+						end
+					elseif (tonumber(backend_stats["completed_levels_" .. level_key]) or 0) < 1 then
+						return false
+					end
+				end
+			end
+
+			return true
+		end
 	}
 }
 
@@ -47,9 +128,7 @@ end
 
 GameMechanismManager = class(GameMechanismManager)
 local rpcs = {
-	"rpc_from_server_set_mechanism",
 	"rpc_set_current_mechanism_state",
-	"rpc_switch_mechanism",
 	"rpc_carousel_set_local_match",
 	"rpc_carousel_set_private_lobby",
 	"rpc_dedicated_or_player_hosted_search",
@@ -57,8 +136,17 @@ local rpcs = {
 	"rpc_party_slots_status",
 	"rpc_force_start_dedicated_server",
 	"rpc_switch_level_dedicated_server",
+	"rpc_sync_players_session_score",
 	"rpc_sync_adventure_data_to_peer"
 }
+
+local function check_bool_string(text)
+	if text == "false" then
+		return false
+	else
+		return text
+	end
+end
 
 GameMechanismManager.init = function (self)
 	self._mechanism_key = nil
@@ -66,13 +154,28 @@ GameMechanismManager.init = function (self)
 	self._level_seed = nil
 	self._locked_director_functions = nil
 	self._locked_director_function_ids = nil
-	self._joined_peers = {}
-	self._difficulty = script_data.current_difficulty_setting or "normal"
-	self._difficulty_tweak = script_data.current_difficulty_tweak_setting or 0
 	self._venture_started = false
 
-	self:_reset()
-	self:setup_party_data(false)
+	self:_init_mechanism()
+	self:_setup_party_data(false)
+end
+
+GameMechanismManager.handle_level_load = function (self, done_again_during_loading)
+	local level_transition_handler = Managers.level_transition_handler
+	local new_mechanism_name = level_transition_handler:get_current_mechanism()
+	local current_mechanism_name = self._mechanism_key
+
+	if not done_again_during_loading then
+		self._last_mechanism_switch = current_mechanism_name
+	end
+
+	if not self._game_mechanism or current_mechanism_name ~= new_mechanism_name then
+		self:_init_mechanism()
+	end
+
+	if Managers.party:cleared() then
+		self:_setup_party_data(self._is_server)
+	end
 end
 
 GameMechanismManager.create_level_seed = function (self)
@@ -100,10 +203,12 @@ GameMechanismManager.generate_level_seed = function (self)
 end
 
 GameMechanismManager.get_level_seed = function (self, optional_system)
+	local level_seed = Managers.level_transition_handler:get_current_level_seed()
+
 	if self._game_mechanism.get_level_seed then
-		return self._game_mechanism:get_level_seed(self._level_seed, optional_system)
+		return self._game_mechanism:get_level_seed(level_seed, optional_system)
 	else
-		return self._level_seed
+		return level_seed
 	end
 end
 
@@ -123,20 +228,34 @@ GameMechanismManager.get_end_of_level_extra_mission_results = function (self)
 	end
 end
 
-GameMechanismManager.register_network_server = function (self, network_server)
-	fassert(self._network_server == nil, "Game is trying to create duplicated instances of NetworkServer")
+GameMechanismManager.sync_players_session_score = function (self, statistics_db, profile_synchronizer, players_session_score)
+	local peer_ids = {}
+	local local_player_ids = {}
+	local scores = {}
 
-	self._network_server = network_server
-end
+	for _, player_data in pairs(players_session_score) do
+		peer_ids[#peer_ids + 1] = player_data.peer_id
+		local_player_ids[#local_player_ids + 1] = player_data.local_player_id
+		local stats = player_data.group_scores.offense
 
-GameMechanismManager.unregister_network_server = function (self)
-	fassert(self._network_server, "Trying to destroy NetworkServer even though it has already been destroyed?")
+		for i = 1, #stats, 1 do
+			scores[#scores + 1] = stats[i].score
+		end
+	end
 
-	self._network_server = nil
+	self:send_rpc_clients("rpc_sync_players_session_score", peer_ids, local_player_ids, scores)
 end
 
 GameMechanismManager.network_server = function (self)
 	return self._network_server
+end
+
+GameMechanismManager.network_client = function (self)
+	return self._network_client
+end
+
+GameMechanismManager.network_handler = function (self)
+	return self._network_server or self._network_client
 end
 
 GameMechanismManager.set_level_seed = function (self, seed)
@@ -145,34 +264,10 @@ GameMechanismManager.set_level_seed = function (self, seed)
 	self._level_seed = seed
 end
 
-GameMechanismManager.set_locked_director_functions_from_ids = function (self, locked_director_function_ids)
-	self._locked_director_functions = ConflictUtils.extract_conflict_director_locked_functions(locked_director_function_ids)
-	self._locked_director_function_ids = locked_director_function_ids
-end
-
-GameMechanismManager.get_locked_director_functions = function (self)
-	return self._locked_director_functions
-end
-
-GameMechanismManager.get_locked_director_function_ids = function (self)
-	return self._locked_director_function_ids
-end
-
 GameMechanismManager.generate_locked_director_functions = function (self, level_key)
-	self._locked_director_function_ids = ConflictUtils.generate_conflict_director_locked_function_ids(level_key)
-	self._locked_director_functions = ConflictUtils.extract_conflict_director_locked_functions(self._locked_director_function_ids)
+	local locked_director_functions = ConflictUtils.generate_conflict_director_locked_functions(level_key)
 
-	return self._locked_director_functions, self._locked_director_function_ids
-end
-
-GameMechanismManager.get_filtered_pickups = function (self, pickup_type)
-	local game_mechanism = self._game_mechanism
-
-	if game_mechanism and game_mechanism.get_filtered_pickups then
-		return game_mechanism:get_filtered_pickups(pickup_type)
-	end
-
-	return Pickups[pickup_type]
+	return locked_director_functions
 end
 
 GameMechanismManager.can_spawn_pickup = function (self, spawner_unit, pickup_name)
@@ -195,24 +290,6 @@ GameMechanismManager.uses_random_directors = function (self)
 	return true
 end
 
-GameMechanismManager.get_overriden_startup_conflict_setting = function (self)
-	local game_mechanism = self._game_mechanism
-
-	if game_mechanism and game_mechanism.get_overriden_startup_conflict_setting then
-		return game_mechanism:get_overriden_startup_conflict_setting()
-	end
-
-	return nil
-end
-
-GameMechanismManager._reset = function (self, level_key)
-	local dev_param_mechanism = Development.parameter("mechanism")
-	local key = dev_param_mechanism or self._mechanism_key or "adventure"
-	self._dedicated_server_peer_id = nil
-
-	self:_init_mechanism(key, level_key)
-end
-
 GameMechanismManager.destroy = function (self)
 	self:_unregister_mechanism_rpcs()
 
@@ -229,15 +306,6 @@ end
 
 GameMechanismManager.set_profile_synchronizer = function (self, profile_synchronizer)
 	self._profile_synchronizer = profile_synchronizer
-end
-
-GameMechanismManager.set_difficulty = function (self, difficulty, difficulty_tweak)
-	self._difficulty = difficulty
-	self._difficulty_tweak = difficulty_tweak
-end
-
-GameMechanismManager.get_difficulty = function (self)
-	return self._difficulty, self._difficulty_tweak
 end
 
 GameMechanismManager.get_level_end_view = function (self)
@@ -260,18 +328,26 @@ GameMechanismManager.handle_ingame_exit = function (self, exit_type)
 	end
 end
 
-GameMechanismManager.network_context_created = function (self, lobby, server_peer_id, own_peer_id)
+GameMechanismManager.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_handler)
 	printf("[GameMechanismManager] network_context_created (server_peer_id=%s, own_peer_id=%s)", server_peer_id, own_peer_id)
 
 	self._lobby = lobby
 	self._server_peer_id = server_peer_id
 	self._peer_id = own_peer_id
-	local is_server = server_peer_id == own_peer_id
 	self._is_server = is_server
+
+	if is_server then
+		self._network_server = network_handler
+		self._network_client = nil
+	else
+		self._network_client = network_handler
+		self._network_server = nil
+	end
+
 	local game_mechanism = self._game_mechanism
 
 	if game_mechanism and game_mechanism.network_context_created then
-		game_mechanism:network_context_created(lobby, server_peer_id, own_peer_id)
+		game_mechanism:network_context_created(lobby, server_peer_id, own_peer_id, is_server, network_handler)
 	end
 end
 
@@ -289,6 +365,8 @@ GameMechanismManager.network_context_destroyed = function (self, level_key)
 	self._lobby = nil
 	self._server_peer_id = nil
 	self._peer_id = nil
+	self._network_client = nil
+	self._network_server = nil
 	self._is_server = nil
 
 	if self._game_mechanism and self._game_mechanism.network_context_destroyed then
@@ -325,7 +403,10 @@ GameMechanismManager._unregister_mechanism_rpcs = function (self)
 	end
 end
 
-GameMechanismManager._init_mechanism = function (self, mechanism_key, level_key)
+GameMechanismManager._init_mechanism = function (self)
+	local level_transition_handler = Managers.level_transition_handler
+	local mechanism_key = level_transition_handler:get_current_mechanism()
+
 	print("initializing mechanism to:", mechanism_key)
 	fassert(MechanismSettings[mechanism_key], "[GameMechanismManager] Tried to set unknown mechanism %q", tostring(mechanism_key))
 
@@ -335,24 +416,58 @@ GameMechanismManager._init_mechanism = function (self, mechanism_key, level_key)
 
 	self:_unregister_mechanism_rpcs()
 
-	if self._game_mechanism and not switching_mechanism then
-		self._game_mechanism:reset(settings, level_key)
-	else
+	if not self._game_mechanism or switching_mechanism then
 		if self._game_mechanism and self._game_mechanism.left_mechanism_due_to_switch then
 			self._game_mechanism:left_mechanism_due_to_switch()
 		end
 
 		local class = rawget(_G, settings.class_name)
-		self._game_mechanism = class:new(settings, level_key)
+		self._game_mechanism = class:new(settings)
 
 		if switching_mechanism and self._game_mechanism.entered_mechanism_due_to_switch then
 			self._game_mechanism:entered_mechanism_due_to_switch()
+		end
+
+		if switching_mechanism then
+			Managers.backend:commit(true)
+			Managers.backend:load_mechanism_loadout(mechanism_key)
 		end
 	end
 
 	self:_register_mechanism_rpcs()
 
 	SaveData.last_mechanism = mechanism_key
+end
+
+GameMechanismManager.create_host_migration_info = function (self, gm_event_end_conditions_met, gm_event_end_reason)
+	if self._game_mechanism.create_host_migration_info then
+		return self._game_mechanism:create_host_migration_info(gm_event_end_conditions_met, gm_event_end_reason)
+	end
+
+	local host_migration_info = {
+		host_to_migrate_to = self._network_client.host_to_migrate_to
+	}
+	local difficulty = Managers.state.difficulty:get_difficulty()
+	local initial_level = Managers.mechanism:default_level_key()
+	host_migration_info.level_to_load = initial_level
+	local is_private = self._network_client.lobby_client:lobby_data("is_private")
+	local matchmaking_type = nil
+
+	if IS_PS4 then
+		matchmaking_type = "n/a"
+	else
+		matchmaking_type = NetworkLookup.matchmaking_types["n/a"]
+	end
+
+	host_migration_info.lobby_data = {
+		matchmaking_type = matchmaking_type,
+		is_private = is_private,
+		difficulty = difficulty,
+		selected_mission_id = initial_level,
+		mission_id = initial_level
+	}
+
+	return host_migration_info
 end
 
 GameMechanismManager.is_final_round = function (self)
@@ -372,35 +487,21 @@ GameMechanismManager.request_vote = function (self, request_type, params)
 end
 
 GameMechanismManager.game_round_ended = function (self, t, dt, reason, reason_data)
-	local level_key = self._game_mechanism:game_round_ended(t, dt, reason, reason_data)
-
-	return level_key
+	self._game_mechanism:game_round_ended(t, dt, reason, reason_data)
 end
 
-GameMechanismManager.get_next_game_mode_key = function (self, level_transition_handler)
-	return self._game_mechanism:get_next_game_mode_key(level_transition_handler)
-end
-
-GameMechanismManager.start_next_round = function (self, level_transition_handler)
-	self._level_transition_handler = level_transition_handler
-	local level_key = self._level_transition_handler:get_current_level_keys()
-
-	if not self._game_mechanism or self._switch_mechanism_key then
-		local dev_param_mechanism = Development.parameter("mechanism")
-		local key = self._switch_mechanism_key or dev_param_mechanism or "adventure"
-
-		self:_init_mechanism(key, level_key)
-
-		self._switch_mechanism_key = nil
-	end
-
-	local game_mode_key, side_compositions, game_mode_settings = self._game_mechanism:start_next_round(level_transition_handler)
+GameMechanismManager.start_next_round = function (self)
+	local game_mode_key, side_compositions, game_mode_settings = self._game_mechanism:start_next_round()
 
 	return game_mode_key, side_compositions, game_mode_settings
 end
 
+GameMechanismManager.get_current_level_key = function (self)
+	return Managers.level_transition_handler:get_current_level_key()
+end
+
 GameMechanismManager.get_current_level_keys = function (self)
-	return self._level_transition_handler:get_current_level_keys()
+	return Managers.level_transition_handler:get_current_level_key()
 end
 
 GameMechanismManager.game_mechanism = function (self)
@@ -409,6 +510,10 @@ end
 
 GameMechanismManager.current_mechanism_name = function (self)
 	return self._mechanism_key
+end
+
+GameMechanismManager.get_last_mechanism_switch = function (self)
+	return self._last_mechanism_switch
 end
 
 GameMechanismManager.mechanism_setting = function (self, setting_name)
@@ -433,13 +538,8 @@ GameMechanismManager.server_universe = function (self)
 	return MechanismSettings[self._mechanism_key].server_universe
 end
 
-GameMechanismManager.leaving_game = function (self)
-	print("Mechanism leaving game")
-	self:_reset()
-end
-
 GameMechanismManager.is_packages_loaded = function (self)
-	if self._game_mechanism.is_packages_loaded and not self._switch_mechanism_key then
+	if self._game_mechanism.is_packages_loaded then
 		return self._game_mechanism:is_packages_loaded()
 	end
 
@@ -447,21 +547,15 @@ GameMechanismManager.is_packages_loaded = function (self)
 end
 
 GameMechanismManager.load_packages = function (self)
-	if self._game_mechanism.load_packages and not self._switch_mechanism_key then
+	if self._game_mechanism.load_packages then
 		self._game_mechanism:load_packages()
 	end
 end
 
 GameMechanismManager.client_joined = function (self, peer_id)
-	self._joined_peers[peer_id] = true
-
 	print("Mechanism says: a client joined the game!", peer_id)
 
-	local mechanism_id = NetworkLookup.mechanism_keys[self._mechanism_key]
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-
-	RPC.rpc_from_server_set_mechanism(channel_id, mechanism_id)
-
 	local state_name = self._game_mechanism:get_state()
 	local settings = MechanismSettings[self._mechanism_key]
 	local states = settings.states
@@ -483,23 +577,9 @@ GameMechanismManager.sync_game_mode_data_to_peer = function (self, network_trans
 end
 
 GameMechanismManager.client_left = function (self, peer_id)
-	self._joined_peers[peer_id] = nil
-
 	if self._game_mechanism.client_left then
 		self._game_mechanism:client_left(peer_id)
 	end
-end
-
-GameMechanismManager.get_joined_peers = function (self)
-	return self._joined_peers
-end
-
-GameMechanismManager.get_profile_synchronizer_class = function (self)
-	if self._game_mechanism and self._game_mechanism.get_profile_synchronizer_class then
-		return self._game_mechanism:get_profile_synchronizer_class()
-	end
-
-	return ProfileSynchronizer
 end
 
 GameMechanismManager.profile_available = function (self, profile_name, career_name)
@@ -527,11 +607,15 @@ GameMechanismManager.profile_changed = function (self, peer_id, local_player_id,
 end
 
 GameMechanismManager.get_players_session_score = function (self, statistics_db, profile_synchronizer, saved_scoreboard_stats)
-	if self._game_mechanism.get_players_session_score then
-		return self._game_mechanism:get_players_session_score(statistics_db, profile_synchronizer, saved_scoreboard_stats)
-	end
+	if self._is_server then
+		if self._game_mechanism.get_players_session_score then
+			return self._game_mechanism:get_players_session_score(statistics_db, profile_synchronizer, saved_scoreboard_stats)
+		end
 
-	return ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats)
+		return ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats)
+	else
+		return self.synced_players_session_score
+	end
 end
 
 GameMechanismManager.save_current_score_information = function (self, game_won)
@@ -558,6 +642,10 @@ GameMechanismManager.reset_choose_next_state = function (self)
 	self._game_mechanism:reset_choose_next_state()
 end
 
+GameMechanismManager.setting = function (self, key)
+	return MechanismSettings[self._mechanism_key][key]
+end
+
 GameMechanismManager.progress_state = function (self)
 	local new_state = self._game_mechanism:progress_state()
 	local settings = MechanismSettings[self._mechanism_key]
@@ -572,6 +660,19 @@ GameMechanismManager.get_starting_level = function (self)
 	local level_key = (self._game_mechanism.get_starting_level and self._game_mechanism:get_starting_level()) or LevelSettings.default_start_level
 
 	return level_key
+end
+
+GameMechanismManager.default_level_key = function (self)
+	local boot_level_name = Boot.loading_context and Boot.loading_context.level_key
+
+	if boot_level_name then
+		return boot_level_name
+	end
+
+	local attract_mode_level = check_bool_string(Development.parameter("attract_mode")) and BenchmarkSettings.auto_host_level
+	local level_name = check_bool_string(Development.parameter("auto_host_level")) or attract_mode_level or self:get_starting_level()
+
+	return level_name
 end
 
 GameMechanismManager.get_loading_tip = function (self)
@@ -611,13 +712,16 @@ GameMechanismManager.game_server_slot_reservation_expired = function (self, peer
 end
 
 GameMechanismManager.debug_load_level = function (self, level_name, environment_variation_id)
-	if self._game_mechanism and self._game_mechanism.debug_load_level then
-		self._game_mechanism:debug_load_level(level_name)
-	else
-		local game_mode_manager = Managers.state.game_mode
-		local level_transition_handler = game_mode_manager.level_transition_handler
+	if not self._is_server then
+		return
+	end
 
-		level_transition_handler:set_next_level(level_name, environment_variation_id or 0)
+	if self._game_mechanism and self._game_mechanism.debug_load_level then
+		self._game_mechanism:debug_load_level(level_name, environment_variation_id)
+	else
+		local level_transition_handler = Managers.level_transition_handler
+
+		level_transition_handler:set_next_level(level_name, environment_variation_id)
 		level_transition_handler:level_completed()
 	end
 end
@@ -654,28 +758,31 @@ GameMechanismManager.check_venture_start = function (self)
 	end
 end
 
-GameMechanismManager.check_venture_end = function (self)
+GameMechanismManager.check_venture_end = function (self, left_lobby)
 	local state = self._game_mechanism:get_state()
 	local prior_state = self._game_mechanism:get_prior_state()
 	local venture_end_states_in = self:mechanism_setting("venture_end_states_in")
 	local venture_end_states_out = self:mechanism_setting("venture_end_states_out")
 
-	if self._venture_started and (table.contains(venture_end_states_in, state) or table.contains(venture_end_states_out, prior_state)) then
+	if left_lobby or self._venture_ended_manually or (self._venture_started and (table.contains(venture_end_states_in, state) or table.contains(venture_end_states_out, prior_state))) then
 		self:_on_venture_end()
 	end
+
+	self._venture_ended_manually = nil
 end
 
-GameMechanismManager.rpc_from_server_set_mechanism = function (self, channel_id, mechanism_id)
-	local mechanism_name = NetworkLookup.mechanism_keys[mechanism_id]
-
-	print("Server sends mechanism to client", mechanism_name)
-	self:_init_mechanism(mechanism_name)
+GameMechanismManager.manual_end_venture = function (self)
+	self._venture_ended_manually = true
 end
 
-GameMechanismManager.rpc_switch_mechanism = function (self, channel_id, mechanism_id)
-	self._switch_mechanism_key = NetworkLookup.mechanism_keys[mechanism_id]
+GameMechanismManager.is_venture_over = function (self)
+	if self._game_mechanism.is_venture_over then
+		return self._game_mechanism:is_venture_over()
+	end
 
-	Managers.backend:load_mechanism_loadout(self._switch_mechanism_key)
+	local game_mode_manager = Managers.state.game_mode
+
+	return game_mode_manager and game_mode_manager:is_game_mode_ended()
 end
 
 GameMechanismManager.rpc_set_current_mechanism_state = function (self, channel_id, state_id)
@@ -774,6 +881,49 @@ GameMechanismManager.rpc_switch_level_dedicated_server = function (self, channel
 	end
 end
 
+GameMechanismManager.rpc_sync_players_session_score = function (self, channel_id, peer_ids, local_player_ids, players_session_score)
+	local num_players = #peer_ids
+	local num_stats_per_player = #players_session_score / num_players
+	local statistics_db = Managers.player:statistics_db()
+	local unsynced_players_session_score = nil
+
+	if self._game_mechanism.get_players_session_score then
+		unsynced_players_session_score = self._game_mechanism:get_players_session_score(statistics_db, self._profile_synchronizer)
+	else
+		unsynced_players_session_score = ScoreboardHelper.get_grouped_topic_statistics(statistics_db, self._profile_synchronizer)
+	end
+
+	if ScoreboardHelper.num_stats_per_player ~= num_stats_per_player then
+		Crashify.print_exception("GameMechanismManager", "rpc_sync_players_session_score received with mismatching stats_per_player count, probably the host was modded. Ignoring the host score and using client's.")
+
+		self.synced_players_session_score = unsynced_players_session_score
+
+		return
+	end
+
+	for _, player_data in pairs(unsynced_players_session_score) do
+		local peer_id = player_data.peer_id
+		local local_player_id = player_data.local_player_id
+
+		for i = 1, num_players, 1 do
+			if peer_id == peer_ids[i] and local_player_id == local_player_ids[i] then
+				local scores = player_data.group_scores.offense
+				local start_value = (i - 1) * num_stats_per_player + 1
+				local score_index = 1
+
+				for j = start_value, (start_value + num_stats_per_player) - 1, 1 do
+					scores[score_index].score = players_session_score[j]
+					score_index = score_index + 1
+				end
+
+				break
+			end
+		end
+	end
+
+	self.synced_players_session_score = unsynced_players_session_score
+end
+
 GameMechanismManager.rpc_sync_adventure_data_to_peer = function (self, channel_id, next_weave_name_id, next_weave_objective_index)
 	local next_weave_name = NetworkLookup.weave_names[next_weave_name_id]
 	local weave_manager = Managers.weave
@@ -793,12 +943,18 @@ GameMechanismManager.reset_dedicated_server_peer_id = function (self)
 end
 
 GameMechanismManager.send_rpc_clients = function (self, rpc_name, ...)
+	local peers = self._network_server and self._network_server:get_peers()
+
+	if not peers then
+		return
+	end
+
 	local rpc_func = RPC[rpc_name]
 
-	for peer_id, _ in pairs(self._joined_peers) do
+	for _, peer_id in ipairs(peers) do
 		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-		if channel_id then
+		if peer_id ~= self._peer_id and channel_id then
 			rpc_func(channel_id, ...)
 		end
 	end
@@ -806,21 +962,6 @@ end
 
 GameMechanismManager.should_run_tutorial = function (self)
 	return self._game_mechanism:should_run_tutorial()
-end
-
-GameMechanismManager.switch_mechanism = function (self, mechanism_key)
-	self._switch_mechanism_key = mechanism_key
-
-	if self._mechanism_key ~= mechanism_key then
-		local mechanism_id = NetworkLookup.mechanism_keys[mechanism_key]
-
-		self:send_rpc_clients("rpc_switch_mechanism", mechanism_id)
-		Managers.backend:load_mechanism_loadout(self._switch_mechanism_key)
-	end
-end
-
-GameMechanismManager.switch_mechanism_key = function (self)
-	return self._switch_mechanism_key
 end
 
 GameMechanismManager.get_custom_lobby_sort = function (self)
@@ -837,7 +978,7 @@ GameMechanismManager.set_vote_data = function (self, data)
 	end
 end
 
-GameMechanismManager.setup_party_data = function (self, sync_to_clients)
+GameMechanismManager._setup_party_data = function (self, sync_to_clients)
 	local members = nil
 
 	if sync_to_clients then
@@ -858,11 +999,24 @@ GameMechanismManager.setup_party_data = function (self, sync_to_clients)
 end
 
 GameMechanismManager.setup_mechanism_parties = function (self)
-	local mechanism_key = self._switch_mechanism_key or Development.parameter("mechanism") or self._mechanism_key or "adventure"
-	local settings = MechanismSettings[mechanism_key]
+	local settings = MechanismSettings[self._mechanism_key]
 	local party_data = settings.party_data
 
 	Managers.party:register_parties(party_data)
+end
+
+GameMechanismManager.get_level_dialogue_context = function (self)
+	if self._game_mechanism.get_level_dialogue_context then
+		return self._game_mechanism:get_level_dialogue_context()
+	end
+
+	return {}
+end
+
+GameMechanismManager.override_hub_level = function (self, new_hub_level_key)
+	if self._game_mechanism and self._game_mechanism.override_hub_level then
+		self._game_mechanism:override_hub_level(new_hub_level_key)
+	end
 end
 
 return

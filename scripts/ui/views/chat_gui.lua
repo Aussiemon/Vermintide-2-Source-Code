@@ -67,7 +67,7 @@ ChatGui.set_input_manager = function (self, input_manager)
 	self.input_manager = input_manager
 end
 
-local RELOAD_CHAT_GUI = false
+local RELOAD_CHAT_GUI = true
 
 ChatGui.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -154,11 +154,20 @@ ChatGui.set_font_size = function (self, font_size)
 	ui_scenegraph[self.chat_output_widget.style.text.scenegraph_id].position[2] = output_field_margin * 0.5
 end
 
+local customizer_data = {
+	registry_key = "chat_gui",
+	drag_scenegraph_id = "root_dragger",
+	root_scenegraph_id = "root",
+	label = "Chat",
+	use_plain_rects = true
+}
+
 ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock, chat_enabled)
 	if RELOAD_CHAT_GUI then
 		self:create_ui_elements()
 	end
 
+	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
 	self:update_transition(dt)
 
 	local show_new_messages = self:_update_chat_messages()

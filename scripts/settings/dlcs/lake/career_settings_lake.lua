@@ -72,7 +72,7 @@ CareerSettings.es_questingknight = {
 	end,
 	is_dlc_unlocked = function (career)
 		if Managers.unlock:is_dlc_unlocked("lake") then
-			if PLATFORM == "win32" or Managers.backend:dlc_unlocked_at_signin("lake") then
+			if IS_WINDOWS or Managers.backend:dlc_unlocked_at_signin("lake") then
 				return true
 			else
 				return false, "popup_needs_restart_topic", "lake"

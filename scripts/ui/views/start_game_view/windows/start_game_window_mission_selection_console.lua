@@ -386,7 +386,7 @@ StartGameWindowMissionSelectionConsole._find_level_location_in_grid = function (
 		row = 1
 	end
 
-	if PLATFORM ~= "xb1" then
+	if not IS_XB1 then
 	end
 
 	if not row or not column then

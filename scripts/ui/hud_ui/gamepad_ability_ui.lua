@@ -8,7 +8,7 @@ GamePadAbilityUI.init = function (self, parent, ingame_ui_context)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
 	self.peer_id = ingame_ui_context.peer_id
-	self.player_manager = ingame_ui_context.player_manager
+	self.player = ingame_ui_context.player
 	self.ui_animations = {}
 	self.render_settings = {
 		snap_pixel_positions = true
@@ -48,8 +48,7 @@ GamePadAbilityUI._create_ui_elements = function (self)
 end
 
 GamePadAbilityUI._setup_activated_ability = function (self)
-	local player_manager = self.player_manager
-	local player = player_manager:local_player(1)
+	local player = self.player
 	local player_unit = player.player_unit
 
 	if not player_unit then
@@ -73,8 +72,7 @@ GamePadAbilityUI._setup_activated_ability = function (self)
 end
 
 GamePadAbilityUI._sync_ability_cooldown = function (self)
-	local player_manager = self.player_manager
-	local player = player_manager:local_player(1)
+	local player = self.player
 	local player_unit = player.player_unit
 
 	if not player_unit then
@@ -194,7 +192,7 @@ end
 
 GamePadAbilityUI._handle_gamepad = function (self)
 	local active_career_skill = self:_handle_active_ability()
-	local gamepad_active = Managers.input:is_device_active("gamepad") or PLATFORM == "xb1"
+	local gamepad_active = Managers.input:is_device_active("gamepad") or IS_XB1
 
 	if ((not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always") or active_career_skill then
 		if self._retained_elements_visible then
@@ -354,9 +352,9 @@ GamePadAbilityUI._get_input_texture_data = function (self, input_action)
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
-	if platform == "win32" and gamepad_active then
+	if IS_WINDOWS and gamepad_active then
 		platform = "xb1"
-	elseif platform == "xb1" and not gamepad_active then
+	elseif IS_XB1 and not gamepad_active then
 		platform = "win32"
 	end
 
@@ -383,7 +381,7 @@ GamePadAbilityUI._get_input_texture_data = function (self, input_action)
 	if device_type == "keyboard" then
 		button_name = (is_button_unassigned and "") or Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
 
-		if PLATFORM == "xb1" then
+		if IS_XB1 then
 			button_name = string.upper(button_name)
 		end
 

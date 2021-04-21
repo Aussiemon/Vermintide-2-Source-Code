@@ -774,7 +774,7 @@ local function _has_completed_tier(statistics_db, stats_id, from, to)
 		for player = 1, 4, 1 do
 			local stat_name = "weave_score_weave_" .. tier .. "_" .. player .. "_players"
 
-			if PLATFORM ~= "win32" then
+			if not IS_WINDOWS then
 				for season_index = 1, current_season, 1 do
 					if season_index == 1 then
 						stat_name = "weave_score_weave_" .. tier .. "_" .. player .. "_players"
@@ -1015,7 +1015,7 @@ for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list) do
 			local to = weave_number
 			local completed, count = _has_completed_tier(statistics_db, stats_id, from, to)
 
-			if PLATFORM ~= "win32" then
+			if not IS_WINDOWS then
 				return completed
 			else
 				local weaves_won = statistics_db:get_persistent_stat(stats_id, "scorpion_weaves_won")
@@ -1029,7 +1029,7 @@ for i, weave_number in ipairs(AchievementTemplates.complete_weaves_list) do
 			local to = weave_number
 			local completed, count = _has_completed_tier(statistics_db, stats_id, from, to)
 
-			if PLATFORM ~= "win32" then
+			if not IS_WINDOWS then
 				return {
 					count,
 					weave_number

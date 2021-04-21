@@ -74,11 +74,19 @@ LootObjectiveUI.destroy = function (self)
 	GarbageLeakDetector.register_object(self, "loot_objective_ui")
 end
 
+local customizer_data = {
+	root_scenegraph_id = "background",
+	label = "Books",
+	registry_key = "books",
+	drag_scenegraph_id = "background"
+}
+
 LootObjectiveUI.update = function (self, dt, t)
 	if DO_RELOAD then
 		self:create_ui_elements()
 	end
 
+	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
 	self:_sync_missions()
 
 	self._active_presentation_widget = self:_update_active_presentation(dt, t)

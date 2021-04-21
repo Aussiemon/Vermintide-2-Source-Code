@@ -348,7 +348,7 @@ local function find_patrol_spline(world, group)
 		local spline_name = spline_name .. ":" .. i
 
 		if use_way_points then
-			anchor.spline = SplineCurve:new(spline_points, "Hermite", "SplineMovementHermiteInterpolatedMetered", spline_name, 3)
+			anchor.spline = SplineCurve:new(spline_points, "Hermite", "SplineMovementHermiteInterpolatedMetered", spline_name, 3, group.cached_splines)
 		else
 			anchor.spline = SplineCurve:new(spline_points, "Bezier", "SplineMovementHermiteInterpolatedMetered", spline_name, 10)
 		end

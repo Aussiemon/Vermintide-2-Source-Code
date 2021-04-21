@@ -35,14 +35,12 @@ GameModeTutorial._switch_profile_to_tutorial = function (self)
 	end
 
 	local tutorial_profile_name = PROFILES_BY_AFFILIATION.tutorial[1]
-	local profile_index = FindProfileIndex(tutorial_profile_name)
-	local career_index = 1
-	self._tutorial_profile_index = profile_index
-	self._tutorial_career_index = career_index
+	self._tutorial_profile_index = FindProfileIndex(tutorial_profile_name)
+	self._tutorial_career_index = 1
 	self._local_player_spawned = false
 	local is_bot = false
 
-	self._profile_synchronizer:select_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index, is_bot)
+	self._profile_synchronizer:assign_full_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index, is_bot)
 end
 
 GameModeTutorial._switch_back_to_previous_profile = function (self)
@@ -54,9 +52,9 @@ GameModeTutorial._switch_back_to_previous_profile = function (self)
 	if prev_profile and prev_career then
 		local is_bot = false
 
-		self._profile_synchronizer:select_profile(peer_id, local_player_id, prev_profile, prev_career, is_bot)
+		self._profile_synchronizer:assign_full_profile(peer_id, local_player_id, prev_profile, prev_career, is_bot)
 	else
-		self._profile_synchronizer:unassign_peer_to_profile(peer_id, local_player_id, self._tutorial_profile_index, self._tutorial_career_index)
+		self._profile_synchronizer:unassign_profiles_of_peer(peer_id, local_player_id)
 	end
 end
 

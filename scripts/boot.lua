@@ -12,6 +12,23 @@ dofile("scripts/boot_init")
 local BUILD = BUILD
 local PLATFORM = PLATFORM
 
+if IS_XB1 then
+	local XB1_TYPE_LOOKUP = {
+		[XboxOne.CONSOLE_TYPE_UNKNOWN] = "unknown",
+		[XboxOne.CONSOLE_TYPE_XBOX_ONE] = "xb1",
+		[XboxOne.CONSOLE_TYPE_XBOX_ONE_S] = "xb1s",
+		[XboxOne.CONSOLE_TYPE_XBOX_ONE_X] = "xb1x",
+		[XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT] = "xb1x-devkit",
+		[XboxOne.CONSOLE_TYPE_XBOX_LOCKHART] = "xbs_lockhart",
+		[XboxOne.CONSOLE_TYPE_XBOX_ANACONDA] = "xbs_anaconda",
+		[XboxOne.CONSOLE_TYPE_XBOX_SERIES_X_DEVKIT] = "xbs_anaconda-devkit"
+	}
+
+	XboxOne.console_type_string = function ()
+		return XB1_TYPE_LOOKUP[XboxOne.console_type()]
+	end
+end
+
 local function base_require(path, ...)
 	for _, s in ipairs({
 		...
@@ -108,7 +125,7 @@ Boot.setup = function (self)
 	Boot.startup_timer = 0
 	Boot.startup_state = "loading"
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		Window.set_focus()
 		Window.set_mouse_focus(true)
 	end
@@ -205,13 +222,13 @@ Boot._init_localizer = function (self)
 	local default_language = "en"
 	local language = nil
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		language = Application.user_setting("language_id") or (rawget(_G, "Steam") and Steam:language()) or default_language
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		language = PS4.locale() or default_language
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		language = xb1_format_locale(XboxLive.locale() or default_language)
-	elseif PLATFORM == "linux" then
+	elseif IS_LINUX then
 		language = "en"
 	end
 
@@ -270,21 +287,11 @@ local function init_development_parameters()
 	print("*****************************************************************")
 
 	script_data.honduras_demo = script_data.settings.honduras_demo or script_data["honduras-demo"]
-	script_data.settings.use_alpha_overlay = script_data.settings.use_alpha_overlay or script_data.use_alpha_overlay
 	script_data.settings.use_beta_overlay = script_data.settings.use_beta_overlay or script_data.use_beta_overlay
 	script_data.settings.use_beta_mode = script_data.settings.use_beta_mode or script_data.use_beta_mode
-end
+	script_data.use_optimized_breed_units = IS_CONSOLE
 
-local function xb1_type_string()
-	local XB1_TYPE_LOOKUP = {
-		[XboxOne.CONSOLE_TYPE_UNKNOWN] = "unknown",
-		[XboxOne.CONSOLE_TYPE_XBOX_ONE] = "xb1",
-		[XboxOne.CONSOLE_TYPE_XBOX_ONE_S] = "xb1s",
-		[XboxOne.CONSOLE_TYPE_XBOX_ONE_X] = "xb1x",
-		[XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT] = "xb1x-devkit"
-	}
-
-	return XB1_TYPE_LOOKUP[XboxOne.console_type()]
+	print("[Boot] use baked enemy meshes:", script_data.use_optimized_breed_units)
 end
 
 Boot.booting_update = function (self, dt)
@@ -323,7 +330,7 @@ Boot.booting_update = function (self, dt)
 
 		local window_title = Development.parameter("window-title")
 
-		if window_title and PLATFORM == "win32" then
+		if window_title and IS_WINDOWS then
 			Window.set_title(window_title)
 		end
 
@@ -358,11 +365,14 @@ Boot.booting_update = function (self, dt)
 
 			local require_end = os.clock()
 
-			if PLATFORM == "win32" then
+			if IS_WINDOWS then
 				game_require("managers", "mod/mod_manager")
 
 				Managers.mod = ModManager:new(Boot.gui)
 				Boot.startup_state = "loading_mods"
+			elseif IS_LINUX then
+				Managers.mod = MockClass:new()
+				Boot.startup_state = "ready"
 			else
 				Boot.startup_state = "ready"
 			end
@@ -391,7 +401,7 @@ Boot.booting_update = function (self, dt)
 			Crashify.print_property("testify", true)
 		end
 
-		if PLATFORM == "win32" or PLATFORM == "linux" then
+		if IS_WINDOWS or IS_LINUX then
 			if rawget(_G, "Steam") then
 				Crashify.print_property("steam_id", Steam.user_id())
 				Crashify.print_property("steam_profile_name", Steam.user_name())
@@ -410,10 +420,10 @@ Boot.booting_update = function (self, dt)
 			end
 
 			Crashify.print_property("machine_id", Application.machine_id())
-		elseif PLATFORM == "ps4" then
+		elseif IS_PS4 then
 			Crashify.print_property("machine_id", Application.machine_id())
-		elseif PLATFORM == "xb1" then
-			Crashify.print_property("console_type", xb1_type_string())
+		elseif IS_XB1 then
+			Crashify.print_property("console_type", XboxOne.console_type_string())
 		end
 
 		local frame_table_start = os.clock()
@@ -431,7 +441,7 @@ Boot.booting_update = function (self, dt)
 		Game:setup()
 
 		local start_state, params = Game:select_starting_state()
-		params.notify_mod_manager = PLATFORM == "win32"
+		params.notify_mod_manager = IS_WINDOWS
 		local project_setup_end = os.clock()
 		local state_machine_start = os.clock()
 
@@ -712,7 +722,7 @@ Boot.game_update = function (self, real_world_dt)
 		})
 	end
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		Managers.curl:update(true)
 		Managers.irc:update(dt)
 		Managers.twitch:update(dt)
@@ -720,19 +730,19 @@ Boot.game_update = function (self, real_world_dt)
 		if rawget(_G, "Steam") then
 			Managers.steam:update(t, dt)
 		end
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		Managers.rest_transport:update(true, dt, t)
 
 		if GameSettingsDevelopment.twitch_enabled then
 			Managers.twitch:update(dt)
 			Managers.irc:update(dt)
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		Managers.rest_transport:update(true, dt, t)
 		Managers.irc:update(dt)
 		Managers.twitch:update(dt)
 		Managers.system_dialog:update(dt)
-	elseif PLATFORM == "linux" then
+	elseif IS_LINUX then
 		Managers.curl:update(true)
 		Managers.irc:update(dt)
 		Managers.twitch:update(dt)
@@ -776,13 +786,9 @@ Boot.game_update = function (self, real_world_dt)
 		Managers.beta_overlay:update(dt)
 	end
 
-	if Managers.alpha_overlay then
-		Managers.alpha_overlay:update(dt)
-	end
-
 	Managers.play_go:update(dt)
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		Managers.xbox_events:update(dt)
 
 		if Managers.xbox_stats ~= nil then
@@ -821,10 +827,6 @@ Boot.shutdown = function (self, dt)
 	end
 
 	if Managers then
-		if Managers.mod then
-			Managers.mod:unload_all_mods()
-		end
-
 		Managers:destroy()
 	end
 
@@ -850,7 +852,7 @@ Game.setup = function (self)
 	local p = profile_start("Game:setup()")
 	local is_dev_debug = BUILD == "dev" or BUILD == "debug"
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		Application.set_kinect_enabled(true)
 	end
 
@@ -864,7 +866,7 @@ Game.setup = function (self)
 
 	local user_settings_time = nil
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		local non_rendering_dedicated_server = Application.is_dedicated_server()
 
 		if not non_rendering_dedicated_server then
@@ -895,7 +897,7 @@ Game.setup = function (self)
 		DefaultUserSettings.set_default_user_settings()
 		profile(p, "default settings")
 
-		if PLATFORM == "ps4" then
+		if IS_PS4 then
 			self:_set_ps4_content_restrictions()
 		end
 	end
@@ -1290,19 +1292,19 @@ Game.require_game_scripts = function (self)
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
 	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "network/lobby_manager", "transition/transition_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "razer_chroma/razer_chroma_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "boon/boon_manager", "telemetry/telemetry_manager", "load_time/load_time_manager", "game_mode/game_mechanism_manager", "weave/weave_manager")
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
 
 		if rawget(_G, "Steam") then
 			game_require("managers", "steam/steam_manager")
 		end
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager", "twitch/twitch_manager", "irc/irc_manager")
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		game_require("managers", "irc/irc_manager", "twitch/twitch_manager", "rest_transport/rest_transport_manager", "system_dialog/system_dialog_manager")
-	elseif PLATFORM == "linux" then
+	elseif IS_LINUX then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
-	elseif PLATFORM == "linux" then
+	elseif IS_LINUX then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
 	end
 
@@ -1313,7 +1315,7 @@ Game.require_game_scripts = function (self)
 	require("scripts/ui/views/level_end/level_end_view_wrapper")
 	require("scripts/ui/views/title_loading_ui")
 	require("scripts/network_lookup/network_lookup")
-	require("scripts/tests/cases")
+	require("scripts/tests/test_cases")
 end
 
 Game._handle_win32_graphics_quality = function (self)
@@ -1470,9 +1472,9 @@ Game._init_managers = function (self)
 
 	Managers.save = SaveManager:new(script_data.settings.disable_cloud_save)
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		self:_init_backend_xbox()
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		self:_init_backend_ps4()
 	else
 		self:_init_backend()
@@ -1487,7 +1489,7 @@ Game._init_managers = function (self)
 	Managers.transition = TransitionManager:new()
 	Managers.play_go = PlayGoManager:new()
 
-	if PLATFORM == "win32" then
+	if IS_WINDOWS then
 		Managers.irc = IRCManager:new()
 		Managers.curl = CurlManager:new()
 		Managers.twitch = TwitchManager:new()
@@ -1496,7 +1498,7 @@ Game._init_managers = function (self)
 		if rawget(_G, "Steam") then
 			Managers.steam = SteamManager:new()
 		end
-	elseif PLATFORM == "xb1" then
+	elseif IS_XB1 then
 		Managers.xbox_events = XboxEventManager:new()
 		Managers.rest_transport_online = RestTransportManager:new()
 		Managers.rest_transport = Managers.rest_transport_online
@@ -1505,13 +1507,13 @@ Game._init_managers = function (self)
 			Managers.twitch = TwitchManager:new()
 			Managers.irc = IRCManager:new()
 		end
-	elseif PLATFORM == "ps4" then
+	elseif IS_PS4 then
 		Managers.rest_transport_online = RestTransportManager:new()
 		Managers.rest_transport = Managers.rest_transport_online
 		Managers.system_dialog = SystemDialogManager:new()
 		Managers.irc = IRCManager:new()
 		Managers.twitch = TwitchManager:new()
-	elseif PLATFORM == "linux" then
+	elseif IS_LINUX then
 		Managers.irc = IRCManager:new()
 		Managers.curl = CurlManager:new()
 		Managers.twitch = TwitchManager:new()
@@ -1530,6 +1532,7 @@ Game._init_managers = function (self)
 	Managers.deed = DeedManager:new()
 	Managers.boon = BoonManager:new()
 	Managers.load_time = LoadTimeManager:new()
+	Managers.level_transition_handler = LevelTransitionHandler:new()
 	Managers.mechanism = GameMechanismManager:new()
 	Managers.lobby = LobbyManager:new()
 
@@ -1666,10 +1669,6 @@ Game.select_starting_state = function (self)
 			assert(false)
 		end
 	end
-
-	script_data.use_optimized_breed_units = PLATFORM == "xb1" or PLATFORM == "ps4"
-
-	print("[Boot] use baked enemy meshes:", script_data.use_optimized_breed_units)
 
 	if GameSettingsDevelopment.start_state == "dedicated_server" then
 		Managers.package:load("resource_packages/menu", "boot")

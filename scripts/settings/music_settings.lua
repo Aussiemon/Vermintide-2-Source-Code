@@ -46,6 +46,7 @@ IntensityThresholds = {
 SyncedMusicFlags = {}
 SyncedMusicGroupFlags = {
 	game_state = true,
+	override = true,
 	boss_state = true,
 	combat_intensity = true
 }

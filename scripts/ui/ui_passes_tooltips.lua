@@ -4,9 +4,10 @@ local UIRenderer_draw_texture = UIRenderer.draw_texture
 local UIRenderer_draw_texture_uv = UIRenderer.draw_texture_uv
 local DEFAULT_START_LAYER = 994
 local FONT_SIZE_MULTIPLIER = 1.4
+local HIDDEN_DESCRIPTION_TEXT = "???"
 
 local function setup_font_size(font_size)
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		return math.floor(font_size * FONT_SIZE_MULTIPLIER)
 	end
 
@@ -980,16 +981,21 @@ UITooltipPasses = {
 						local text_style = style.property_text
 						local text_pass_data = data.text_pass_data
 						text_pass_data.text_id = text_id
-						local property_name = property_data.display_name
-						local property_advanced_description = property_data.advanced_description
-						local text, advanced_description = UIUtils.get_property_description(property_key, property_value)
-						local additional_text_length = (advanced_description and UTF8Utils.string_length(advanced_description)) or 0
-						local default_text_length = (text and UTF8Utils.string_length(text)) or 0
-						text = text .. advanced_description
-						local color_override_table = text_style.color_override_table
-						color_override_table.start_index = default_text_length + 1
-						color_override_table.end_index = default_text_length + additional_text_length
-						text_style.color_override[1] = color_override_table
+						local text = nil
+
+						if item.hidden_description then
+							text = HIDDEN_DESCRIPTION_TEXT
+						else
+							local description, advanced_description = UIUtils.get_property_description(property_key, property_value)
+							local additional_text_length = (advanced_description and UTF8Utils.string_length(advanced_description)) or 0
+							local default_text_length = (text and UTF8Utils.string_length(text)) or 0
+							text = description .. advanced_description
+							local color_override_table = text_style.color_override_table
+							color_override_table.start_index = default_text_length + 1
+							color_override_table.end_index = default_text_length + additional_text_length
+							text_style.color_override[1] = color_override_table
+						end
+
 						local text_size = data.text_size
 						text_size[2] = 0
 						local text_height, num_texts = UIUtils.get_text_height(ui_renderer, text_size, text_style, text, ui_style_global)
@@ -1197,7 +1203,15 @@ UITooltipPasses = {
 							description_text = UIUtils.get_trait_description(trait_key)
 						end
 
-						local text = title_text .. "\n" .. description_text
+						local text = nil
+
+						if item.hidden_description then
+							text = string.format("%s\n%s\n%s", HIDDEN_DESCRIPTION_TEXT, HIDDEN_DESCRIPTION_TEXT, HIDDEN_DESCRIPTION_TEXT)
+							content.icon = data.default_icon
+						else
+							text = title_text .. "\n" .. description_text
+						end
+
 						local text_size = data.text_size
 						text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
 						text_size[2] = 0
@@ -1544,31 +1558,35 @@ UITooltipPasses = {
 			local backend_id = item.backend_id
 			local slot_type = item and item.data and item.data.slot_type
 
-			if slot_type then
-				local slot_names = InventorySettings.slot_names_by_type[slot_type]
+			if not pass_data.force_equipped then
+				if slot_type then
+					local slot_names = InventorySettings.slot_names_by_type[slot_type]
 
-				if slot_names then
-					local slot_name = slot_names[1]
-					local player = pass_data.player
+					if slot_names then
+						local slot_name = slot_names[1]
+						local player = pass_data.player
 
-					if player then
-						local equipped_items = pass_data.equipped_items
+						if player then
+							local equipped_items = pass_data.equipped_items
 
-						if not equipped_items then
-							return 0
-						end
-
-						local is_equipped = false
-
-						for _, item in ipairs(equipped_items) do
-							if item.backend_id == backend_id then
-								is_equipped = true
-
-								break
+							if not equipped_items then
+								return 0
 							end
-						end
 
-						if not is_equipped then
+							local is_equipped = false
+
+							for _, item in ipairs(equipped_items) do
+								if item.backend_id == backend_id then
+									is_equipped = true
+
+									break
+								end
+							end
+
+							if not is_equipped then
+								return 0
+							end
+						else
 							return 0
 						end
 					else
@@ -1577,8 +1595,6 @@ UITooltipPasses = {
 				else
 					return 0
 				end
-			else
-				return 0
 			end
 
 			local alpha_multiplier = pass_data.alpha_multiplier
@@ -1767,6 +1783,10 @@ UITooltipPasses = {
 				if is_weapon then
 					return 0
 				end
+			end
+
+			if item.hidden_description then
+				return 0
 			end
 
 			local alpha_multiplier = pass_data.alpha_multiplier
@@ -1958,6 +1978,10 @@ UITooltipPasses = {
 				end
 			end
 
+			if item.hidden_description then
+				return 0
+			end
+
 			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
@@ -1978,7 +2002,7 @@ UITooltipPasses = {
 			local item_template = BackendUtils.get_item_template(item_data, backend_id)
 			local ammo_data = item_template.ammo_data
 
-			if ammo_data then
+			if ammo_data and not ammo_data.hide_ammo_ui then
 				local single_clip = ammo_data.single_clip
 				local reload_time = ammo_data.reload_time
 				local max_ammo = ammo_data.max_ammo
@@ -2013,7 +2037,7 @@ UITooltipPasses = {
 
 			UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, title_text_style, content, position, title_text_size, input_service, dt, ui_style_global)
 
-			if ammo_data then
+			if ammo_data and not ammo_data.hide_ammo_ui then
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text = content.text
@@ -2366,8 +2390,8 @@ UITooltipPasses = {
 			local total_height = 0
 			local item_type = item_data.item_type
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(item)
-			local title_text = Localize(display_name)
-			local type_text = Localize(item_type)
+			local title_text = (item.hidden_description and HIDDEN_DESCRIPTION_TEXT) or Localize(display_name)
+			local type_text = (item.hidden_description and HIDDEN_DESCRIPTION_TEXT) or Localize(item_type)
 			local text_style = style.text
 			local text_shadow_style = style.text_shadow
 			local player = pass_data.player
@@ -3033,7 +3057,7 @@ UITooltipPasses = {
 			local item_type = item_data.item_type
 
 			if item_skin and item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.ItemId] ~= item_skin then
-				content.text = content.prefix_text
+				content.text = (item.hidden_description and HIDDEN_DESCRIPTION_TEXT) or content.prefix_text
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]
@@ -5436,14 +5460,28 @@ UITooltipPasses = {
 
 			if keywords then
 				local text = ""
-				local key_word_count = #keywords
 
-				for index, keyword in ipairs(keywords) do
-					text = text .. Localize(keyword)
-					key_word_count = key_word_count - 1
+				if item.hidden_description then
+					local key_word_count = #keywords
 
-					if key_word_count > 0 then
-						text = text .. ", "
+					for _, _ in ipairs(keywords) do
+						text = text .. HIDDEN_DESCRIPTION_TEXT
+						key_word_count = key_word_count - 1
+
+						if key_word_count > 0 then
+							text = text .. ", "
+						end
+					end
+				else
+					local key_word_count = #keywords
+
+					for _, keyword in ipairs(keywords) do
+						text = text .. Localize(keyword)
+						key_word_count = key_word_count - 1
+
+						if key_word_count > 0 then
+							text = text .. ", "
+						end
 					end
 				end
 

@@ -5,6 +5,7 @@ require("scripts/ui/views/cutscene_overlay_ui")
 local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
 local penny_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_penny_intro")
 local cog_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_cog_intro")
+local morris_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_morris_intro")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -818,12 +819,12 @@ first_time_video = {
 	subtitle_template_settings = first_time_video_subtitle_settings
 }
 cog_intro_video = {
-	video_name = "video/vermintide_2_cog_intro",
-	sound_start = "Play_vermintide_2_cog_intro",
+	video_name = "video/vermintide_2_morris_intro",
+	sound_start = "Play_MORRIS_INTRO_FINAL_AUDIO",
 	scenegraph_id = "splash_video",
-	material_name = "vermintide_2_cog_intro",
-	sound_stop = "Stop_vermintide_2_cog_intro",
-	subtitle_template_settings = cog_intro_video_subtitle_settings
+	material_name = "vermintide_2_morris_intro",
+	sound_stop = "Stop_MORRIS_INTRO_FINAL_AUDIO",
+	subtitle_template_settings = morris_intro_video_subtitle_settings
 }
 
 local function get_slider_progress(min, max, value)
@@ -993,7 +994,7 @@ TitleLoadingUI._create_elements = function (self)
 		self._ui_scenegraph.console_input_icon_2.size[1] = texture_data.size[1]
 		self._ui_scenegraph.console_input_icon_2.size[2] = texture_data.size[2]
 		local platform = PLATFORM
-		local texture_data, input_text = ButtonTextureByName("d_horizontal", (platform == "win32" and "xb1") or platform)
+		local texture_data, input_text = ButtonTextureByName("d_horizontal", (IS_WINDOWS and "xb1") or platform)
 		gamma_adjuster.content.gamepad_navigation_icon = texture_data.texture
 		self._ui_scenegraph.console_input_icon_1.size[1] = texture_data.size[1]
 		self._ui_scenegraph.console_input_icon_1.size[2] = texture_data.size[2]
@@ -1223,7 +1224,7 @@ TitleLoadingUI._update_continue_button = function (self, gamepad_active, dt)
 
 			Managers.save:auto_save(SaveFileName, SaveData)
 
-			if PLATFORM == "win32" then
+			if IS_WINDOWS then
 				Application.save_user_settings()
 			end
 
@@ -1458,7 +1459,7 @@ end
 TitleLoadingUI._get_input_texture_data = function (self, input_action)
 	local input_service = Managers.input:get_service("title_loading_ui")
 
-	if (Managers.input:is_device_active("keyboard") or Managers.input:is_device_active("mouse")) and PLATFORM == "win32" then
+	if (Managers.input:is_device_active("keyboard") or Managers.input:is_device_active("mouse")) and IS_WINDOWS then
 		local platform = PLATFORM
 		local keymap_binding = input_service:get_keymapping(input_action, platform)
 		local device_type = keymap_binding[1]
@@ -1467,7 +1468,7 @@ TitleLoadingUI._get_input_texture_data = function (self, input_action)
 		local is_button_unassigned = key_index == UNASSIGNED_KEY
 
 		return nil, (is_button_unassigned and "") or Keyboard.button_locale_name(key_index)
-	elseif Managers.input:is_device_active("gamepad") or PLATFORM ~= "win32" then
+	elseif Managers.input:is_device_active("gamepad") or not IS_WINDOWS then
 		return UISettings.get_gamepad_input_texture_data(input_service, input_action, true)
 	end
 end
@@ -1499,7 +1500,7 @@ TitleLoadingUI._update_input_text = function (self, dt)
 
 	local icon_spacing = 10
 	local using_keyboard = (not texture_data and true) or false
-	widget_content.using_keyboard = PLATFORM == "win32" and using_keyboard
+	widget_content.using_keyboard = IS_WINDOWS and using_keyboard
 	local font, scaled_font_size = UIFontByResolution(widget_style.input_text_1)
 	local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, widget_content.input_text_1, font[1], scaled_font_size)
 	ui_scenegraph.skip_input_text_1.size[1] = text_width
@@ -1540,7 +1541,7 @@ TitleLoadingUI._update_any_held = function (self)
 
 	table.clear(INPUTS_TO_REMOVE)
 
-	if PLATFORM == "win32" or GameSettingsDevelopment.allow_keyboard_mouse then
+	if IS_WINDOWS or GameSettingsDevelopment.allow_keyboard_mouse then
 		local input = Keyboard.any_pressed()
 
 		if input then

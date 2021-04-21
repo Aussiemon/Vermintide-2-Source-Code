@@ -1,3 +1,4 @@
+local objective_system_testify = script_data.testify and require("scripts/entity_system/systems/objective/objective_system_testify")
 ObjectiveSystem = class(ObjectiveSystem, ExtensionSystemBase)
 local RPCS = {
 	"rpc_sync_objectives"
@@ -29,6 +30,7 @@ ObjectiveSystem.init = function (self, entity_system_creation_context, system_na
 	self._current_objective_index = 1
 	self._item_spawner = nil
 	self._initial_activation_done = false
+	self._last_main_objective_completed = nil
 end
 
 ObjectiveSystem.destroy = function (self)
@@ -252,6 +254,10 @@ ObjectiveSystem.update = function (self, context, t)
 	else
 		self:_update_client(dt, t)
 	end
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(objective_system_testify, self)
+	end
 end
 
 ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
@@ -432,10 +438,12 @@ ObjectiveSystem._complete_objective = function (self, id, extension, objects_to_
 	extension:complete()
 
 	objects_to_remove[#objects_to_remove + 1] = id
+	local objective_name = extension:objective_name()
 
 	if not is_sub_objective then
 		self._num_completed_main_objectives = self._num_completed_main_objectives + 1
 		self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
+		self._last_main_objective_completed = extension
 
 		LevelHelper:flow_event(self._world, "main_objective_completed")
 	else
@@ -446,8 +454,6 @@ ObjectiveSystem._complete_objective = function (self, id, extension, objects_to_
 	end
 
 	if not extension.keep_alive then
-		local objective_name = extension:objective_name()
-
 		self._item_spawner:destroy_objective(objective_name)
 	end
 end

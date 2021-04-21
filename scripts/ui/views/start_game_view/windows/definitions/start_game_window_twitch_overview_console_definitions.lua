@@ -386,10 +386,42 @@ local scenegraph_definition = {
 			2,
 			10
 		}
+	},
+	chat_feed_area_mask = {
+		vertical_alignment = "bottom",
+		parent = "menu_root",
+		horizontal_alignment = "right",
+		size = {
+			700,
+			1000
+		}
+	},
+	chat_feed_area = {
+		vertical_alignment = "bottom",
+		parent = "chat_feed_area_mask",
+		horizontal_alignment = "right",
+		size = {
+			700,
+			1000
+		},
+		position = {
+			-10,
+			0,
+			1
+		}
+	},
+	chat_text_box = {
+		vertical_alignment = "bottom",
+		parent = "chat_feed_area",
+		horizontal_alignment = "right",
+		size = {
+			700,
+			1000
+		}
 	}
 }
 
-if PLATFORM == "xb1" then
+if IS_XB1 then
 	scenegraph_definition.connect_button = {
 		vertical_alignment = "center",
 		parent = "login_text_area",
@@ -678,6 +710,52 @@ function create_button(scenegraph_id, size, text, font_size, content_check_funct
 	return widget
 end
 
+local chat_output_widget = {
+	scenegraph_id = "chat_feed_area",
+	element = {
+		passes = {
+			{
+				style_id = "chat_text_box",
+				pass_type = "text_area_chat",
+				text_id = "text_field",
+				content_check_function = function (content)
+					return Managers.twitch:is_connected()
+				end
+			}
+		}
+	},
+	content = {
+		mask_id = "mask_rect",
+		text_start_offset = 0,
+		message_tables = {}
+	},
+	style = {
+		chat_text_box = {
+			word_wrap = true,
+			font_size = 18,
+			spacing = 0,
+			pixel_perfect = false,
+			vertical_alignment = "top",
+			dynamic_font = true,
+			font_type = "chat_output_font",
+			text_color = Colors.get_table("white"),
+			name_color = Colors.get_table("sky_blue"),
+			name_color_dev = Colors.get_table("cheeseburger"),
+			name_color_system = Colors.get_table("gold"),
+			offset = {
+				0,
+				-10,
+				10
+			}
+		}
+	},
+	offset = {
+		0,
+		-25,
+		0
+	}
+}
+
 local function create_window(scenegraph_id, size)
 	local widget = {
 		element = {}
@@ -749,14 +827,8 @@ local function create_window(scenegraph_id, size)
 					return
 				end
 
-				local timer = math.ceil(Managers.time:time("ui") * 10)
-				local dots = timer % 5
-				local dot_str = ""
-
-				for i = 1, dots, 1 do
-					dot_str = dot_str .. "."
-				end
-
+				local timer = 10 * Managers.time:time("ui")
+				local dot_str = string.rep(".", timer % 5)
 				content.connecting_id = Localize("start_game_window_twitch_connecting") .. dot_str
 
 				return true
@@ -949,7 +1021,8 @@ local widgets = {
 		window_text_width,
 		50
 	}, "menu_frame_09", 1),
-	frame_widget = create_window("twitch_background", scenegraph_definition.twitch_background.size)
+	frame_widget = create_window("twitch_background", scenegraph_definition.twitch_background.size),
+	chat_output_widget = chat_output_widget
 }
 widgets.login_text_frame.element.passes[1].content_check_function = connected_content_check_function
 widgets.connect_button_frame.element.passes[1].content_check_function = connected_content_check_function

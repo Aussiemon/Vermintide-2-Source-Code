@@ -1,6 +1,6 @@
 require("scripts/unit_extensions/generic/generic_state_machine")
 
-local is_windows_platform = PLATFORM == "win32"
+local is_windows_platform = IS_WINDOWS
 PlayerInputTutorialExtension = class(PlayerInputTutorialExtension)
 
 PlayerInputTutorialExtension.get_window_is_in_focus = function ()

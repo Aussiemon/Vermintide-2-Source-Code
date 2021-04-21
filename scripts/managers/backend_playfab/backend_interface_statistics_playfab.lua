@@ -7,8 +7,9 @@ end
 
 BackendInterfaceStatisticsPlayFab.init = function (self, mirror)
 	self._mirror = mirror
+	self._request_queue = mirror:request_queue()
 
-	local function callback(result)
+	local function success_callback(result)
 		print("Player statistics loaded!")
 
 		local stats = result.FunctionResult
@@ -22,7 +23,7 @@ BackendInterfaceStatisticsPlayFab.init = function (self, mirror)
 		FunctionName = "loadPlayerStatistics"
 	}
 
-	PlayFabClientApi.ExecuteCloudScript(request, callback)
+	self._request_queue:enqueue(request, success_callback)
 end
 
 BackendInterfaceStatisticsPlayFab.ready = function (self)
@@ -157,11 +158,11 @@ BackendInterfaceStatisticsPlayFab.reset = function (self)
 		}
 	}
 
-	local function request_callback(result)
+	local function success_callback(result)
 		print("[BackendInterfaceStatisticsPlayFab] Player statistics resetted!")
 	end
 
-	PlayFabClientApi.ExecuteCloudScript(request, request_callback)
+	self._request_queue:enqueue(request, success_callback)
 end
 
 return

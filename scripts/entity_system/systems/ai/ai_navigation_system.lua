@@ -17,6 +17,7 @@ AINavigationSystem.init = function (self, entity_system_creation_context, system
 	self.navbots_to_release = {}
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	self.nav_world = nav_world
+	self._nav_safe_callbacks = {}
 end
 
 AINavigationSystem.destroy = function (self)
@@ -128,6 +129,23 @@ AINavigationSystem.update = function (self, context, t)
 	if not script_data.disable_crowd_dispersion then
 		self:update_dispersion()
 	end
+
+	local nav_safe_callbacks = self._nav_safe_callbacks
+	local num_callbacks = #nav_safe_callbacks
+
+	if num_callbacks > 0 then
+		for i = 1, num_callbacks, 1 do
+			local safe_callback = nav_safe_callbacks[i]
+
+			safe_callback()
+		end
+
+		table.clear(nav_safe_callbacks)
+	end
+end
+
+AINavigationSystem.add_safe_navigation_callback = function (self, callback)
+	self._nav_safe_callbacks[#self._nav_safe_callbacks + 1] = callback
 end
 
 AINavigationSystem.post_update = function (self, context, t)

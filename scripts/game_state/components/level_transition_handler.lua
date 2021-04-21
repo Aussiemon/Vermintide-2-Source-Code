@@ -1,30 +1,84 @@
 require("scripts/game_state/components/enemy_package_loader")
 
-local function check_bool_string(text)
-	if text == "false" then
-		return false
-	else
-		return text
+local global_print = print
+
+local function dprint(...)
+	if script_data.level_transition_handler_debug_logging then
+		local message = sprintf(...)
+
+		global_print("[LevelTransitionHandler] ", message)
 	end
 end
 
-local function Print(format, ...)
-	print(string.format(string.format("[LevelTransitionHandler] %s", format), ...))
+local function print(...)
+	local message = sprintf(...)
+
+	global_print("[LevelTransitionHandler] ", message)
 end
 
 LevelTransitionHandler = class(LevelTransitionHandler)
 
 LevelTransitionHandler.init = function (self)
+	dprint("init")
+
 	self.loading_packages = {}
-	self.has_loaded_all_packages = nil
+	self._has_loaded_all_packages = nil
 	self.loaded_levels = {}
 	self.enemy_package_loader = EnemyPackageLoader:new()
+	self._network_state = nil
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak = nil
+	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak)
+	local default_level_data = {
+		level_key = level_key,
+		mechanism = mechanism,
+		game_mode = game_mode,
+		level_seed = level_seed,
+		environment_variation_id = environment_variation_id,
+		conflict_director = conflict_director,
+		locked_director_functions = locked_director_functions,
+		difficulty = difficulty,
+		difficulty_tweak = difficulty_tweak
+	}
+	self._offline_level_data = table.clone(default_level_data)
+	self._default_level_data = default_level_data
+	self._needs_level_load = true
+	self._next_level_data = nil
+	self._transition_type = nil
+	self._checkpoint_data = nil
+	self._transition_exit_type = nil
 end
 
 local rpcs = {
-	"rpc_reload_level"
+	"rpc_reload_level",
+	"rpc_load_level"
 }
 local events = {}
+
+LevelTransitionHandler.register_network_state = function (self, network_state)
+	self._network_state = network_state
+
+	dprint("register_network_state")
+
+	local offline_level_data = self._offline_level_data
+
+	if network_state:is_server() then
+		network_state:set_level_data(offline_level_data.level_key, offline_level_data.environment_variation_id, offline_level_data.level_seed, offline_level_data.mechanism, offline_level_data.game_mode, offline_level_data.conflict_director, offline_level_data.locked_director_functions, offline_level_data.difficulty, offline_level_data.difficulty_tweak)
+	end
+
+	self._offline_level_data = nil
+	self._next_level_data = nil
+	self._transition_type = nil
+	self._transition_exit_type = nil
+	self._checkpoint_data = nil
+end
+
+LevelTransitionHandler.deregister_network_state = function (self)
+	dprint("deregister_network_state")
+
+	self._next_level_data = nil
+	self._network_state = nil
+	self._offline_level_data = table.clone(self._default_level_data)
+end
 
 LevelTransitionHandler.register_rpcs = function (self, network_event_delegate)
 	self.network_event_delegate = network_event_delegate
@@ -53,164 +107,32 @@ LevelTransitionHandler.unregister_rpcs = function (self)
 	self.enemy_package_loader:unregister_rpcs()
 end
 
-LevelTransitionHandler.default_level_key = function (self)
-	local boot_level_name = Boot.loading_context and Boot.loading_context.level_key
+LevelTransitionHandler.reload_level = function (self, optional_checkpoint_data, optional_level_seed)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server can reload")
+	print("reload_level")
 
-	if boot_level_name then
-		return boot_level_name
-	end
+	self._checkpoint_data = optional_checkpoint_data
+	self._transition_type = "reload_level"
 
-	local attract_mode_level = check_bool_string(Development.parameter("attract_mode")) and BenchmarkSettings.auto_host_level
-	local level_name = check_bool_string(Development.parameter("auto_host_level")) or attract_mode_level or Managers.mechanism:get_starting_level()
-
-	return level_name
+	self:set_next_level(self:get_current_level_key(), self:get_current_environment_variation_id(), optional_level_seed or self:get_current_level_seed(), self:get_current_mechanism(), self:get_current_game_mode(), self:get_current_conflict_director(), self:get_current_locked_director_functions(), self:get_current_difficulty(), self:get_current_difficulty_tweak())
 end
 
-LevelTransitionHandler.default_environment_id = function (self)
-	return 0
-end
+LevelTransitionHandler.get_checkpoint_data = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles checkpoint data")
 
-LevelTransitionHandler.load_default_level = function (self)
-	local level_key = self:default_level_key()
-	local environment_id = self:default_environment_id()
-
-	self:load_level(level_key, environment_id)
-end
-
-LevelTransitionHandler.load_level = function (self, level_key, environment_variation_id)
-	printf("[LevelTransitionHandler] load_level %s %s", level_key, tostring(environment_variation_id))
-	fassert(LevelSettings[level_key], "The level named %q does not exist in LevelSettings.", tostring(level_key))
-
-	local current_level = self.level_key
-
-	if current_level and level_key ~= current_level then
-		self:release_level_resources(current_level)
-	end
-
-	local level_settings = LevelSettings[level_key]
-	local level_package_name = level_settings.package_name
-	local meta_package_name = level_settings.meta_package_name
-	local package_manager = Managers.package
-
-	if self.level_key ~= level_key or self.environment_variation_id ~= environment_variation_id or (not package_manager:has_loaded(level_package_name, "LevelTransitionHandler") and not package_manager:is_loading(level_package_name) and (not meta_package_name or (not package_manager:has_loaded(meta_package_name, "LevelTransitionHandler") and not package_manager:is_loading(meta_package_name)))) then
-		self:_load_dlc_level_packages(level_key)
-		self:_load_nested_level_packages(level_key)
-		self:_load_umbra_tome_package(level_key)
-		self:_load_meta_package(level_key)
-
-		self.last_level_key = self.level_key
-		self.level_key = level_key
-		self.environment_variation_id = environment_variation_id
-		self.level_name = level_settings.level_name
-
-		Print("Loading level: %q", self.level_key)
-		Print("Package name: %q Meta package name: %q", level_package_name, meta_package_name)
-
-		self.picked_level_key = nil
-		self.loading_packages[level_key] = level_package_name
-
-		package_manager:load(level_package_name, "LevelTransitionHandler", nil, true)
-
-		self.has_loaded_all_packages = false
-	else
-		self.last_level_key = self.level_key
-	end
-end
-
-LevelTransitionHandler.release_level_resources = function (self, level_key)
-	if level_key == nil then
-		return
-	end
-
-	local package_name = LevelSettings[level_key].package_name
-
-	if not LEVEL_EDITOR_TEST and (self.loaded_levels[level_key] or Managers.package:is_loading(package_name)) then
-		self:_unload_meta_packages(level_key)
-		self:_unload_dlc_level_packages(level_key)
-		self:_unload_nested_level_packages(level_key)
-		self:_unload_umbra_tome_package(level_key)
-		Managers.package:unload(package_name, "LevelTransitionHandler")
-
-		if level_key == self.level_key then
-			self.level_key = nil
-			self.environment_variation_id = nil
-		end
-
-		self.loaded_levels[level_key] = false
-	end
-end
-
-LevelTransitionHandler.get_current_transition_level = function (self)
-	assert(self.transition_type, "Missing transition type.")
-
-	if self.picked_level_key then
-		return self.picked_level_key
-	elseif self.transition_type ~= "reload_level" then
-		return self.transition_type
-	else
-		return self.level_key
-	end
-end
-
-LevelTransitionHandler.get_current_transition_environment = function (self)
-	return self.picked_environment_id or self.environment_variation_id or 0
-end
-
-LevelTransitionHandler.get_next_level_key = function (self)
-	if self.picked_level_key then
-		return self.picked_level_key
-	elseif self.transition_type and self.transition_type ~= "reload_level" then
-		return self.transition_type
-	else
-		return self.level_key
-	end
-end
-
-LevelTransitionHandler.load_next_level = function (self)
-	printf("[LevelTransitionHandler] load_next_level - self.transition_type=[%s] self.picked_level_key=[%s] self.picked_environment_id=[%s]", tostring(self.transition_type), tostring(self.picked_level_key), tostring(self.picked_environment_id))
-
-	if self.picked_level_key then
-		self:load_level(self.picked_level_key, self.picked_environment_id)
-
-		self.picked_level_key = nil
-	elseif self.transition_type ~= "reload_level" then
-		self:load_level(self.transition_type, self.picked_environment_id)
-	end
-
-	self.transition_type = nil
-	self.picked_environment_id = nil
-end
-
-LevelTransitionHandler.reload_level = function (self, checkpoint_data)
-	self.checkpoint_data = checkpoint_data
-	self.transition_type = "reload_level"
+	return self._checkpoint_data
 end
 
 LevelTransitionHandler.level_completed = function (self)
-	if self.picked_level_key then
-		self.transition_type = self.picked_level_key
-		self.picked_level_key = nil
-	end
-end
+	fassert(not self._network_state or self._network_state:is_server(), "only the server triggers level completed, the clients get the rpc")
+	dprint("level_completed")
 
-LevelTransitionHandler.set_next_level = function (self, level_key, environment_variation_id)
-	printf("[LevelTransitionHandler] set_next_level( %s, %s )", tostring(level_key), tostring(environment_variation_id))
-
-	self.picked_level_key = level_key
-	self.picked_environment_id = environment_variation_id or 0
-end
-
-LevelTransitionHandler.get_current_level_keys = function (self)
-	return self.level_key
-end
-
-LevelTransitionHandler.get_current_environment_id = function (self)
-	return self.environment_variation_id or 0
+	self._transition_type = "load_next_level"
 end
 
 LevelTransitionHandler.get_current_environment_variation_name = function (self)
-	local variation_id = self.environment_variation_id
-	local level_key = self.level_key
+	local variation_id = self:get_current_environment_variation_id()
+	local level_key = self:get_current_level_key()
 
 	if variation_id and level_key then
 		local settings = LevelSettings[level_key]
@@ -222,154 +144,287 @@ LevelTransitionHandler.get_current_environment_variation_name = function (self)
 	return nil
 end
 
-LevelTransitionHandler.all_packages_loaded = function (self)
-	return self.has_loaded_all_packages == true
-end
-
 LevelTransitionHandler.update = function (self)
-	local package_manager = Managers.package
 	local has_loading_packages = false
 
-	for level_name, level_package_name in pairs(self.loading_packages) do
+	for level_name, _ in pairs(self.loading_packages) do
 		has_loading_packages = true
 
-		if package_manager:has_loaded(level_package_name) then
+		if self:_level_packages_loaded(level_name) then
 			self.loaded_levels[level_name] = true
-
-			if self:_meta_package_loaded(level_name) and self:_dlc_level_packages_loaded(level_name) and self:_nested_level_packages_loaded(level_name) and self:_umbra_tome_package_loaded(level_name) then
-				self.loading_packages[level_name] = nil
-			end
+			self.loading_packages[level_name] = nil
 		end
 	end
 
-	if self.has_loaded_all_packages == has_loading_packages and not self.transition_type then
-		print("[LevelTransitionHandler] Level load completed!")
+	if has_loading_packages then
+		self._has_loaded_all_packages = false
+	elseif not self._has_loaded_all_packages and not has_loading_packages then
+		print("Level load completed!")
 
-		self.has_loaded_all_packages = not has_loading_packages
+		self._has_loaded_all_packages = true
 	end
 end
 
-LevelTransitionHandler.prepare_load_level = function (self, level_index, level_seed, environment_variation_id)
-	local level_name = NetworkLookup.level_keys[level_index]
-	self.transition_type = level_name
+LevelTransitionHandler.rpc_reload_level = function (self, channel_id)
+	if not self._network_state then
+		return
+	end
 
-	self:set_next_level(level_name, environment_variation_id)
+	self._transition_type = "reload_level"
 
-	if self.level_key ~= level_name then
-		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i environment %i. New level, resetting package load status.", level_name, level_seed or -1, environment_variation_id or 0)
+	dprint("rpc_reload_level")
 
-		self.has_loaded_all_packages = false
+	self._needs_level_load = true
+end
+
+LevelTransitionHandler.rpc_load_level = function (self, channel_id)
+	if not self._network_state then
+		return
+	end
+
+	self._transition_type = "load_next_level"
+
+	dprint("rpc_load_level")
+
+	self._needs_level_load = true
+end
+
+LevelTransitionHandler.get_current_transition = function (self)
+	return self._transition_type
+end
+
+LevelTransitionHandler.promote_next_level_data = function (self)
+	fassert((self._network_state and self._network_state:is_server()) or not self._network_state, "only server can promote")
+	fassert(self._next_level_data, "can't promote without previously calling set_next_level")
+	print("promote_next_level_data")
+
+	if self._network_state then
+		self._network_state:set_level_data(self._next_level_data.level_key, self._next_level_data.environment_variation_id, self._next_level_data.level_seed, self._next_level_data.mechanism, self._next_level_data.game_mode, self._next_level_data.conflict_director, self._next_level_data.locked_director_functions, self._next_level_data.difficulty, self._next_level_data.difficulty_tweak)
 	else
-		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i environment %i. Same level as previously, NOT resetting package load status.", level_name, level_seed or -1, environment_variation_id or 0)
+		self._offline_level_data = self._next_level_data
+	end
+
+	self._next_level_data = nil
+	self._needs_level_load = true
+end
+
+LevelTransitionHandler.needs_level_load = function (self)
+	return self._needs_level_load
+end
+
+LevelTransitionHandler.load_current_level = function (self)
+	local new_level_key = self:get_current_level_key()
+	local new_environment_variation_id = self:get_current_environment_variation_id()
+
+	print("load_current_level, loading %s %s", new_level_key, tostring(new_environment_variation_id))
+	fassert(LevelSettings[new_level_key], "The level named %q does not exist in LevelSettings.", tostring(new_level_key))
+
+	local currently_loaded_level_key = self._currently_loaded_level_key
+	local currently_loaded_environment_variation_id = self._currently_loaded_environment_variation_id
+
+	if currently_loaded_level_key and new_level_key ~= currently_loaded_level_key then
+		self:_release_level_resources(currently_loaded_level_key)
+	end
+
+	local is_not_loading = not self.loading_packages[new_level_key]
+	local is_not_loaded = not self:_level_packages_loaded(new_level_key)
+
+	if currently_loaded_level_key ~= new_level_key or currently_loaded_environment_variation_id ~= new_environment_variation_id or (is_not_loading and is_not_loaded) then
+		self:_load_level_packages(new_level_key)
+
+		local level_settings = LevelSettings[new_level_key]
+		local packages = level_settings.packages
+
+		dprint("loading level: %q", new_level_key)
+		dprint("loading packages: %s", table.tostring(packages))
+
+		self.loading_packages[new_level_key] = true
+		self._has_loaded_all_packages = false
+	end
+
+	self._currently_loaded_level_key = new_level_key
+	self._currently_loaded_environment_variation_id = new_environment_variation_id
+	self._needs_level_load = false
+	self._transition_type = nil
+end
+
+LevelTransitionHandler.release_level_resources = function (self, level_key)
+	if level_key == nil then
+		return
+	end
+
+	self:_release_level_resources(level_key)
+end
+
+LevelTransitionHandler._release_level_resources = function (self, level_key)
+	local is_loaded = self.loaded_levels[level_key]
+	local is_loading = self.loading_packages[level_key]
+
+	if not LEVEL_EDITOR_TEST and (is_loaded or is_loading) then
+		self:_unload_level_packages(level_key)
+
+		self.loading_packages[level_key] = nil
+
+		if self._currently_loaded_level_key == level_key then
+			self._currently_loaded_level_key = nil
+			self._currently_loaded_environment_variation_id = nil
+		end
+
+		self.loaded_levels[level_key] = false
 	end
 end
 
-LevelTransitionHandler.rpc_reload_level = function (self, channel_id, level_seed, locked_director_functions_ids)
-	self:reload_level()
-	printf("[LevelTransitionHandler] rpc_reload_level : %s seed: %i environment %i. Same level as previously, NOT resetting package load status.", self.level_key, level_seed or -1, self.environment_variation_id or 0)
-	print("[LevelTransitionHandler] Setting level_seed: ", level_seed)
-	Managers.mechanism:set_level_seed(level_seed)
-	Managers.mechanism:set_locked_director_functions_from_ids(locked_director_functions_ids)
+LevelTransitionHandler.has_next_level = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data ~= nil
 end
 
-LevelTransitionHandler.set_transition_exit_type = function (self, transition_exit_type)
-	self.transition_exit_type = transition_exit_type
+LevelTransitionHandler.clear_next_level = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+	dprint("clear_next_level")
+
+	self._next_level_data = nil
 end
 
-LevelTransitionHandler.clear_transition_exit_type = function (self)
-	self.transition_exit_type = nil
+LevelTransitionHandler.set_next_level = function (self, optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak = LevelTransitionHandler.apply_defaults_to_level_data(optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak)
+
+	print("set_next_level( lvl:%s, mc:%s, gm:%s, env:%s, seed:%d, conflict:%s, lckd_director_funcs:{%s}, diff:%s diff_tweak:%d )", tostring(level_key), mechanism, game_mode, tostring(environment_variation_id), level_seed, conflict_director, table.concat(locked_director_functions, ","), difficulty, difficulty_tweak)
+
+	self._next_level_data = {
+		level_key = level_key,
+		mechanism = mechanism,
+		game_mode = game_mode,
+		level_seed = level_seed,
+		environment_variation_id = environment_variation_id,
+		conflict_director = conflict_director,
+		locked_director_functions = locked_director_functions,
+		difficulty = difficulty,
+		difficulty_tweak = difficulty_tweak
+	}
 end
 
-LevelTransitionHandler.transition_in_progress = function (self)
-	return self.transition_exit_type ~= nil
+LevelTransitionHandler.get_next_level_key = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.level_key
 end
 
-LevelTransitionHandler._load_dlc_level_packages = function (self, level_key)
+LevelTransitionHandler.get_next_level_seed = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.level_seed
+end
+
+LevelTransitionHandler.get_next_game_mode = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.game_mode
+end
+
+LevelTransitionHandler.get_next_conflict_director = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.conflict_director
+end
+
+LevelTransitionHandler.get_next_environment_variation_id = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.environment_variation_id
+end
+
+LevelTransitionHandler.get_next_locked_director_functions = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.locked_director_functions
+end
+
+LevelTransitionHandler.get_next_difficulty = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.difficulty
+end
+
+LevelTransitionHandler.get_next_difficulty_tweak = function (self)
+	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
+
+	return self._next_level_data and self._next_level_data.difficulty_tweak
+end
+
+LevelTransitionHandler.get_current_level_key = function (self)
+	return (self._network_state and self._network_state:get_level_key()) or self._offline_level_data.level_key
+end
+
+LevelTransitionHandler.get_current_level_seed = function (self)
+	return (self._network_state and self._network_state:get_level_seed()) or self._offline_level_data.level_seed
+end
+
+LevelTransitionHandler.get_current_game_mode = function (self)
+	return (self._network_state and self._network_state:get_game_mode()) or self._offline_level_data.game_mode
+end
+
+LevelTransitionHandler.get_current_conflict_director = function (self)
+	return (self._network_state and self._network_state:get_conflict_director()) or self._offline_level_data.conflict_director
+end
+
+LevelTransitionHandler.get_current_environment_variation_id = function (self)
+	return (self._network_state and self._network_state:get_environment_variation_id()) or self._offline_level_data.environment_variation_id
+end
+
+LevelTransitionHandler.get_current_locked_director_functions = function (self)
+	return (self._network_state and self._network_state:get_locked_director_functions()) or self._offline_level_data.locked_director_functions
+end
+
+LevelTransitionHandler.get_current_difficulty = function (self)
+	return (self._network_state and self._network_state:get_difficulty()) or self._offline_level_data.difficulty
+end
+
+LevelTransitionHandler.get_current_difficulty_tweak = function (self)
+	return (self._network_state and self._network_state:get_difficulty_tweak()) or self._offline_level_data.difficulty_tweak
+end
+
+LevelTransitionHandler.get_current_mechanism = function (self)
+	return (self._network_state and self._network_state:get_mechanism()) or self._offline_level_data.mechanism
+end
+
+LevelTransitionHandler.get_current_level_keys = function (self)
+	return self:get_current_level_key()
+end
+
+LevelTransitionHandler.all_packages_loaded = function (self)
+	return self._has_loaded_all_packages == true
+end
+
+LevelTransitionHandler._load_level_packages = function (self, level_key)
 	local async = true
-	local reference_name = "dlc_level_package_" .. level_key
 	local package_manager = Managers.package
-
-	for _, settings in pairs(DLCSettings) do
-		local level_packages = settings.level_packages
-
-		if level_packages then
-			local level_specific_packages = level_packages[level_key]
-
-			if level_specific_packages then
-				for _, package_path in ipairs(level_specific_packages) do
-					package_manager:load(package_path, reference_name, nil, async)
-				end
-			end
-		end
-	end
-end
-
-LevelTransitionHandler._unload_dlc_level_packages = function (self, level_key)
-	local reference_name = "dlc_level_package_" .. level_key
-	local package_manager = Managers.package
-
-	for _, settings in pairs(DLCSettings) do
-		local level_packages = settings.level_packages
-
-		if level_packages then
-			local level_specific_packages = level_packages[level_key]
-
-			if level_specific_packages then
-				for _, package_path in ipairs(level_specific_packages) do
-					if package_manager:has_loaded(package_path, reference_name) or package_manager:is_loading(package_path) then
-						package_manager:unload(package_path, reference_name)
-					end
-				end
-			end
-		end
-	end
-end
-
-LevelTransitionHandler._dlc_level_packages_loaded = function (self, level_key)
-	local reference_name = "dlc_level_package_" .. level_key
-	local package_manager = Managers.package
-
-	for _, settings in pairs(DLCSettings) do
-		local level_packages = settings.level_packages
-
-		if level_packages then
-			local level_specific_packages = level_packages[level_key]
-
-			if level_specific_packages then
-				for _, package_path in ipairs(level_specific_packages) do
-					if not package_manager:has_loaded(package_path, reference_name) then
-						return false
-					end
-				end
-			end
-		end
-	end
-
-	return true
-end
-
-LevelTransitionHandler._load_nested_level_packages = function (self, level_key)
-	local async = true
-	local package_manager = Managers.package
-	local reference_name = "nested_level_package_" .. level_key
+	local reference_name = level_key
 	local settings = LevelSettings[level_key]
-	local nested_level_package_names = settings.nested_level_package_names
+	local packages = settings.packages
 
-	if nested_level_package_names then
-		for _, package_path in ipairs(nested_level_package_names) do
+	if packages then
+		for i = 1, #packages, 1 do
+			local package_path = packages[i]
+
 			package_manager:load(package_path, reference_name, nil, async)
 		end
 	end
 end
 
-LevelTransitionHandler._unload_nested_level_packages = function (self, level_key)
-	local reference_name = "nested_level_package_" .. level_key
+LevelTransitionHandler._unload_level_packages = function (self, level_key)
+	local reference_name = level_key
 	local package_manager = Managers.package
 	local settings = LevelSettings[level_key]
-	local nested_level_package_names = settings.nested_level_package_names
+	local packages = settings.packages
 
-	if nested_level_package_names then
-		for _, package_path in ipairs(nested_level_package_names) do
+	if packages then
+		for i = #packages, 1, -1 do
+			local package_path = packages[i]
+
 			if package_manager:has_loaded(package_path, reference_name) or package_manager:is_loading(package_path) then
 				package_manager:unload(package_path, reference_name)
 			end
@@ -377,14 +432,16 @@ LevelTransitionHandler._unload_nested_level_packages = function (self, level_key
 	end
 end
 
-LevelTransitionHandler._nested_level_packages_loaded = function (self, level_key)
-	local reference_name = "nested_level_package_" .. level_key
+LevelTransitionHandler._level_packages_loaded = function (self, level_key)
+	local reference_name = level_key
 	local package_manager = Managers.package
 	local settings = LevelSettings[level_key]
-	local nested_level_package_names = settings.nested_level_package_names
+	local packages = settings.packages
 
-	if nested_level_package_names then
-		for _, package_path in ipairs(nested_level_package_names) do
+	if packages then
+		for i = 1, #packages, 1 do
+			local package_path = packages[i]
+
 			if not package_manager:has_loaded(package_path, reference_name) then
 				return false
 			end
@@ -394,94 +451,38 @@ LevelTransitionHandler._nested_level_packages_loaded = function (self, level_key
 	return true
 end
 
-LevelTransitionHandler._load_umbra_tome_package = function (self, level_key)
-	local async = true
-	local package_manager = Managers.package
-	local reference_name = "tome_package_" .. level_key
-	local settings = LevelSettings[level_key]
-	local tome_package_name = settings.tome_package_name
-
-	if tome_package_name then
-		package_manager:load(tome_package_name, reference_name, nil, async)
-	end
-end
-
-LevelTransitionHandler._unload_umbra_tome_package = function (self, level_key)
-	local reference_name = "tome_package_" .. level_key
-	local package_manager = Managers.package
-	local settings = LevelSettings[level_key]
-	local tome_package_name = settings.tome_package_name
-
-	if tome_package_name and (package_manager:has_loaded(tome_package_name, reference_name) or package_manager:is_loading(tome_package_name)) then
-		package_manager:unload(tome_package_name, reference_name)
-	end
-end
-
-LevelTransitionHandler._umbra_tome_package_loaded = function (self, level_key)
-	local reference_name = "tome_package_" .. level_key
-	local package_manager = Managers.package
-	local settings = LevelSettings[level_key]
-	local tome_package_name = settings.tome_package_name
-
-	if tome_package_name and not package_manager:has_loaded(tome_package_name, reference_name) then
-		return false
+LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak)
+	if not mechanism then
+		if level_key then
+			local level_settings = LevelSettings[level_key]
+			mechanism = level_settings.mechanism
+		else
+			mechanism = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+		end
 	end
 
-	return true
-end
-
-LevelTransitionHandler._load_meta_package = function (self, level_key)
-	local settings = LevelSettings[level_key]
-	local meta_package_name = settings.meta_package_name
-
-	if not meta_package_name then
-		return
+	if not level_key then
+		local mechanism_settings = MechanismSettings[mechanism]
+		local class_name = mechanism_settings.class_name
+		local class = rawget(_G, class_name)
+		level_key = class.get_starting_level()
 	end
 
-	local async = true
-	local package_manager = Managers.package
-	local reference_name = "LevelTransitionHandler"
+	local level_settings = LevelSettings[level_key]
+	game_mode = game_mode or level_settings.game_mode
+	environment_variation_id = environment_variation_id or 0
+	conflict_director = script_data.override_conflict_settings or conflict_director or level_settings.conflict_settings or "default"
+	locked_director_functions = locked_director_functions or {}
+	difficulty = script_data.current_difficulty_setting or difficulty or "normal"
+	difficulty_tweak = script_data.current_difficulty_tweak_setting or difficulty_tweak or 0
+	level_seed = level_seed or 0
 
-	package_manager:load(meta_package_name, reference_name, nil, async)
-end
-
-LevelTransitionHandler._meta_package_loaded = function (self, level_key)
-	local settings = LevelSettings[level_key]
-	local meta_package_name = settings.meta_package_name
-
-	if not meta_package_name then
-		return true
-	end
-
-	local reference_name = "LevelTransitionHandler"
-	local package_manager = Managers.package
-
-	if not package_manager:has_loaded(meta_package_name, reference_name) then
-		return false
-	end
-
-	return true
-end
-
-LevelTransitionHandler._unload_meta_packages = function (self, level_key)
-	local settings = LevelSettings[level_key]
-	local meta_package_name = settings.meta_package_name
-
-	if not meta_package_name then
-		return
-	end
-
-	local reference_name = "LevelTransitionHandler"
-	local package_manager = Managers.package
-
-	if package_manager:has_loaded(meta_package_name, reference_name) or package_manager:is_loading(meta_package_name) then
-		package_manager:unload(meta_package_name, reference_name)
-	end
+	return level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak
 end
 
 LevelTransitionHandler._update_debug = function (self)
 	if script_data.debug_level_packages then
-		local level_seed = Managers.mechanism:get_level_seed()
+		local level_seed = self:get_current_level_seed()
 
 		for level_name, is_loaded in pairs(self.loaded_levels) do
 			Debug.text("Level %q is_loaded: %s", level_name, tostring(is_loaded))

@@ -308,6 +308,14 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 end
 
 ActionUtils.apply_buffs_to_armor_power_on_hit = function (attacker_unit, target_unit, attack_armor_power_modifer, armor_category)
+	if ALIVE[attacker_unit] then
+		local attacker_unit_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+		if attacker_unit_buff_extension and armor_category == 6 then
+			attack_armor_power_modifer = attacker_unit_buff_extension:apply_buffs_to_value(attack_armor_power_modifer, "power_level_super_armour")
+		end
+	end
+
 	if not ALIVE[target_unit] then
 		return attack_armor_power_modifer
 	end

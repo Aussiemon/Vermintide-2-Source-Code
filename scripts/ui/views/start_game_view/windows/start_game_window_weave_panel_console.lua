@@ -32,17 +32,7 @@ end
 
 StartGameWindowWeavePanelConsole._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
 	local title_button_widgets = {}
 	local layout_settings = self._layout_settings
 	local window_layouts = layout_settings.window_layouts
@@ -58,18 +48,11 @@ StartGameWindowWeavePanelConsole._create_ui_elements = function (self, params, o
 		font_type = "hell_shark_header",
 		font_size = font_size
 	}
+	local parent = self._parent
 	local total_length = 0
 
 	for index, settings in ipairs(window_layouts) do
-		local weave_game_mode_option = settings.weave_game_mode_option
-		local can_add = true
-		local can_add_function_name = settings.can_add_function_name
-
-		if can_add_function_name then
-			can_add = self._parent[can_add_function_name](self._parent)
-		end
-
-		if weave_game_mode_option and can_add then
+		if settings.panel_sorting and parent:can_add_layout(settings) then
 			local settings_name = settings.name
 			local display_name = settings.display_name or "n/a"
 			local text_width = self:_get_text_width(temp_text_style, display_name)

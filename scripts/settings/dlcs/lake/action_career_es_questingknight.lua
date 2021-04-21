@@ -19,10 +19,6 @@ ActionCareerESQuestingKnight.client_owner_start_action = function (self, new_act
 
 	self:_play_vo()
 	self:_play_vfx()
-
-	local career_extension = self.career_extension
-
-	career_extension:start_activated_ability_cooldown()
 	self.inventory_extension:check_and_drop_pickups("career_ability")
 	self.status_extension:set_stagger_immune(true)
 end
@@ -55,6 +51,10 @@ ActionCareerESQuestingKnight.finish = function (self, reason)
 
 	if not self._combo_no_wield or reason ~= "new_interupting_action" then
 		self.status_extension:set_stagger_immune(false)
+
+		local career_extension = self.career_extension
+
+		career_extension:start_activated_ability_cooldown()
 		self.inventory_extension:wield_previous_non_level_slot()
 	end
 end

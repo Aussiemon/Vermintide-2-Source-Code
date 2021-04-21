@@ -21,7 +21,7 @@ local scenegraph_definition = {
 			SIZE_Y
 		}
 	},
-	pivot = {
+	pivot_parent = {
 		vertical_alignment = "top",
 		parent = "screen",
 		horizontal_alignment = "center",
@@ -29,6 +29,20 @@ local scenegraph_definition = {
 			0,
 			-50,
 			100
+		},
+		size = {
+			0,
+			0
+		}
+	},
+	pivot = {
+		vertical_alignment = "top",
+		parent = "pivot_parent",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			0
 		},
 		size = {
 			0,
@@ -275,7 +289,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 

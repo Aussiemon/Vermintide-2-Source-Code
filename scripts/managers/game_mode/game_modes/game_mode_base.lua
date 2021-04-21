@@ -1,10 +1,9 @@
 GameModeBase = class(GameModeBase)
 
-GameModeBase.init = function (self, settings, world, network_server, level_transition_handler, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
+GameModeBase.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
 	self._network_server = network_server
 	self._settings = settings
 	self._world = world
-	self._level_transition_handler = level_transition_handler
 	self._is_server = is_server
 	self._profile_synchronizer = profile_synchronizer
 	self._level_completed = false
@@ -84,7 +83,7 @@ GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career
 	local bot_player = Managers.player:add_bot_player(profile.display_name, local_peer_id, "default", profile_index, career_index, local_player_id)
 
 	bot_player:create_game_object()
-	self._profile_synchronizer:select_profile(local_peer_id, local_player_id, profile_index, career_index, is_bot)
+	self._profile_synchronizer:assign_full_profile(local_peer_id, local_player_id, profile_index, career_index, is_bot)
 
 	local event_manager = Managers.state.event
 
@@ -108,10 +107,8 @@ GameModeBase._remove_bot_instant = function (self, bot_player)
 
 	local peer_id = bot_player:network_id()
 	local local_player_id = bot_player:local_player_id()
-	local profile_index = bot_player:profile_index()
-	local career_index = bot_player:career_index()
 
-	self._profile_synchronizer:unassign_peer_to_profile(peer_id, local_player_id, profile_index, career_index)
+	self._profile_synchronizer:unassign_profiles_of_peer(peer_id, local_player_id)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
@@ -202,7 +199,7 @@ GameModeBase.evaluate_end_conditions = function (self)
 end
 
 GameModeBase.ready_to_transition = function (self)
-	self._level_transition_handler:level_completed()
+	Managers.level_transition_handler:level_completed()
 end
 
 GameModeBase.wanted_transition = function (self)
@@ -333,19 +330,16 @@ GameModeBase.get_player_wounds = function (self, profile)
 	return 5
 end
 
-GameModeBase.get_initial_inventory = function (self, healthkit, potion, grenade, profile)
+GameModeBase.get_initial_inventory = function (self, healthkit, potion, grenade, additional_items, profile)
 	local initial_inventory = {
 		slot_packmaster_claw = "packmaster_claw",
 		slot_healthkit = healthkit,
 		slot_potion = potion,
-		slot_grenade = grenade
+		slot_grenade = grenade,
+		additional_items = additional_items
 	}
 
 	return initial_inventory
-end
-
-GameModeBase.get_conflict_settings = function (self)
-	return
 end
 
 GameModeBase.activate_end_level_area = function (self, unit, object, from, to)

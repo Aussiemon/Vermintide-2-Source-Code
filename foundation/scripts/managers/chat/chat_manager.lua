@@ -78,7 +78,7 @@ ChatManager.init = function (self)
 
 	self:add_message_target("Party", Irc.PARTY_MSG)
 
-	if (PLATFORM == "win32" or PLATFORM == "linux") and GameSettingsDevelopment.use_global_chat and rawget(_G, "Steam") then
+	if (IS_WINDOWS or IS_LINUX) and GameSettingsDevelopment.use_global_chat and rawget(_G, "Steam") then
 		Steam.retrieve_encrypted_app_ticket()
 
 		local token = ScriptReceiveAppTicketToken:new()
@@ -383,7 +383,7 @@ end
 ChatManager.ignore_peer_id = function (self, peer_id)
 	self.peer_ignore_list[peer_id] = true
 
-	if rawget(_G, "Steam") or PLATFORM ~= "win32" then
+	if rawget(_G, "Steam") or not IS_WINDOWS then
 		SaveData.chat_ignore_list = self.peer_ignore_list
 
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
@@ -393,7 +393,7 @@ end
 ChatManager.remove_ignore_peer_id = function (self, peer_id)
 	self.peer_ignore_list[peer_id] = nil
 
-	if rawget(_G, "Steam") or PLATFORM ~= "win32" then
+	if rawget(_G, "Steam") or not IS_WINDOWS then
 		SaveData.chat_ignore_list = self.peer_ignore_list
 
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
@@ -431,7 +431,7 @@ ChatManager.register_channel = function (self, channel_id, members_func)
 
 	local channels = self.channels
 
-	if PLATFORM == "xb1" then
+	if IS_XB1 then
 		if channels[channel_id] then
 			Application.warning(string.format("[ChatManager] Tried to add already registered channel %q", channel_id))
 		end
@@ -459,7 +459,7 @@ ChatManager.enable_gui = function (self, enable)
 end
 
 ChatManager.update = function (self, dt, t, menu_active, menu_input_service, no_unblock)
-	if self.gui_enabled and PLATFORM ~= "linux" then
+	if self.gui_enabled and not IS_LINUX then
 		self.chat_gui:update(dt, menu_active, menu_input_service, no_unblock, self._chat_enabled)
 	end
 end
@@ -757,7 +757,7 @@ ChatManager._profanity_check = function (self, message)
 end
 
 ChatManager._add_message_to_list = function (self, channel_id, message_sender, local_player_id, message, is_system_message, pop_chat, is_dev, message_type, link, data)
-	if PLATFORM ~= "win32" and not self._chat_enabled then
+	if not IS_WINDOWS and not self._chat_enabled then
 		return
 	end
 
@@ -808,7 +808,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 		is_system_message = is_system_message
 	}
 
-	if PLATFORM ~= "win32" then
+	if not IS_WINDOWS then
 		if not self._chat_enabled then
 			return
 		end

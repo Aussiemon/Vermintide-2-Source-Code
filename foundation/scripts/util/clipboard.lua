@@ -1,4 +1,4 @@
-if PLATFORM ~= "win32" or not rawget(_G, "jit") then
+if not IS_WINDOWS or not rawget(_G, "jit") then
 	Clipboard = {
 		get = function ()
 			return ""

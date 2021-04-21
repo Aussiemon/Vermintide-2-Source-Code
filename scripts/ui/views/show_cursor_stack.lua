@@ -27,7 +27,7 @@ end
 ShowCursorStack.pop = function ()
 	ShowCursorStack.stack_depth = ShowCursorStack.stack_depth - 1
 
-	assert(ShowCursorStack.stack_depth >= 0 or PLATFORM ~= "win32", "Trying to pop a cursor stack that doesn't exist.")
+	assert(ShowCursorStack.stack_depth >= 0 or not IS_WINDOWS, "Trying to pop a cursor stack that doesn't exist.")
 
 	if ShowCursorStack.stack_depth == 0 then
 		Window.set_show_cursor(false)
@@ -44,6 +44,10 @@ ShowCursorStack.update_clip_cursor = function ()
 	elseif ShowCursorStack.stack_depth > 0 then
 		Window.set_clip_cursor(is_fullscreen)
 	end
+end
+
+ShowCursorStack.cursor_active = function ()
+	return ShowCursorStack.stack_depth > 0
 end
 
 return

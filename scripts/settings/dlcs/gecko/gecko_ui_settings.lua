@@ -23,20 +23,22 @@ settings.start_game_window_layout = {
 	window_layouts = {
 		{
 			sound_event_enter = "play_gui_lobby_button_00_quickplay",
-			name = "event",
 			display_name = "start_game_window_event_title",
 			background_icon_name = "button_image_09",
-			save_data_table = "event",
+			name = "event",
 			game_mode_option = true,
-			sorting = 21,
-			can_add_function_name = "_can_add_event_game_mode_option",
+			save_data_table = "event",
+			panel_sorting = 50,
 			close_on_exit = true,
 			icon_name = "options_button_icon_event",
 			windows = {
 				event = 2,
 				game_mode = 1,
 				event_settings = 3
-			}
+			},
+			can_add_function = function (overview)
+				return overview:is_in_mechanism("adventure") and overview:is_weekly_event_active()
+			end
 		},
 		{
 			sound_event_enter = "play_gui_lobby_button_01_difficulty",
@@ -68,17 +70,22 @@ settings.start_game_window_layout_console = {
 			disable_function_name = "_event_disable_function",
 			display_name = "start_game_window_event_title",
 			game_mode_option = true,
-			input_focus_window = "event_overview",
-			save_data_table = "event",
 			name = "event",
-			can_add_function_name = "_can_add_event_game_mode_option",
+			save_data_table = "event",
+			panel_sorting = 50,
+			background_object_set = "weekly",
+			input_focus_window = "event_overview",
 			close_on_exit = true,
+			background_flow_event = "weekly",
 			windows = {
 				event_overview = 3,
 				panel = 1,
 				background = 2,
 				event_summary = 4
-			}
+			},
+			can_add_function = function (overview)
+				return overview:is_in_mechanism("adventure") and overview:is_weekly_event_active()
+			end
 		},
 		{
 			sound_event_enter = "play_gui_lobby_button_00_custom",

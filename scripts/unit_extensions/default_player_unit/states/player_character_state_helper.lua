@@ -752,7 +752,6 @@ CharacterStateHelper.get_buffered_input = function (input_id, input_extension, n
 		if not no_buffer then
 			if input then
 				input_extension:add_buffer(input_id, doubleclick_window)
-				input_extension:add_buffer(input_id, doubleclick_window, is_melee_slot)
 			else
 				input = input_extension:get_buffer(input_id)
 				buffered = true
@@ -787,24 +786,26 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 	local current_slot_wield_input = current_slot.wield_input
 	local slot_to_wield = nil
 
-	for index, slot in ipairs(wieldable_slots) do
-		if slot ~= current_slot or inventory_extension:can_swap_from_storage(slot.name, SwapFromStorageType.Unique) then
-			local wield_input = slot.wield_input
-			local name = slot.name
-
-			if equipment.slots[name] and CharacterStateHelper.get_buffered_input(wield_input, input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") then
-				slot_to_wield = name
-
-				break
-			end
-		end
-	end
-
-	if not slot_to_wield and CharacterStateHelper.get_buffered_input("wield_switch", input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") then
+	if CharacterStateHelper.get_buffered_input("wield_switch", input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") then
 		if current_slot.name ~= "slot_melee" then
 			slot_to_wield = "slot_melee"
 		else
 			slot_to_wield = "slot_ranged"
+		end
+	end
+
+	if not slot_to_wield then
+		for index, slot in ipairs(wieldable_slots) do
+			if slot ~= current_slot or inventory_extension:can_swap_from_storage(slot.name, SwapFromStorageType.Unique) then
+				local wield_input = slot.wield_input
+				local name = slot.name
+
+				if equipment.slots[name] and CharacterStateHelper.get_buffered_input(wield_input, input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") then
+					slot_to_wield = name
+
+					break
+				end
+			end
 		end
 	end
 

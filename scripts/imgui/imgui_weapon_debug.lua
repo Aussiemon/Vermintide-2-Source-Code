@@ -19,8 +19,8 @@ ImguiWeaponDebug.init = function (self)
 	self._display_current_action = true
 	self._action_list = {}
 	self._sub_action_list = {}
-	self._selected_action = 0
-	self._selected_sub_action = 0
+	self._selected_action = 1
+	self._selected_sub_action = 1
 	self._unit_names = {}
 	self._units = {}
 	self._selected_unit = -1
@@ -34,8 +34,8 @@ ImguiWeaponDebug.init = function (self)
 	self._previous_wield_slot = ""
 	self._current_actions = nil
 	self._damage_power_level = 200
-	self._damage_hit_zone_id = 0
-	self._damage_difficulty_id = 0
+	self._damage_hit_zone_id = 1
+	self._damage_difficulty_id = 1
 	self._hit_zone_names = {
 		"head",
 		"neck",
@@ -116,7 +116,7 @@ ImguiWeaponDebug.is_persistent = function (self)
 end
 
 ImguiWeaponDebug.draw = function (self)
-	Imgui.Begin("Weapon Debug", true)
+	Imgui.begin_window("Weapon Debug", true)
 
 	if Imgui.begin_menu_bar() then
 		if Imgui.begin_menu("Run Test") then
@@ -138,51 +138,51 @@ ImguiWeaponDebug.draw = function (self)
 		Imgui.end_menu_bar()
 	end
 
-	local selected_unit = Imgui.Combo("Unit", self._selected_unit, self._unit_names) - 1
+	local selected_unit = Imgui.combo("Unit", self._selected_unit, self._unit_names)
 
 	if selected_unit ~= self._selected_unit then
 		self._selected_unit = selected_unit
 
-		self:_initialize_unit(self._units[selected_unit + 1])
+		self:_initialize_unit(self._units[selected_unit])
 	end
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	if Imgui.Button("Refresh") then
+	if Imgui.button("Refresh") then
 		self:_refresh_unit_list()
 	end
 
 	if script_data and script_data.debug_weapons ~= nil then
-		script_data.debug_weapons = Imgui.Checkbox("Draw Hit Box", script_data.debug_weapons)
+		script_data.debug_weapons = Imgui.checkbox("Draw Hit Box", script_data.debug_weapons)
 
-		Imgui.SameLine()
+		Imgui.same_line()
 	end
 
-	self._draw_chain_action_data = Imgui.Checkbox("Draw Action Chain", self._draw_chain_action_data)
+	self._draw_chain_action_data = Imgui.checkbox("Draw Action Chain", self._draw_chain_action_data)
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	self._display_current_action = Imgui.Checkbox("Use Current Action", self._display_current_action)
+	self._display_current_action = Imgui.checkbox("Use Current Action", self._display_current_action)
 
 	if not self._display_current_action then
-		self._selected_action = Imgui.Combo("Action", self._selected_action, self._action_list) - 1
-		local selected_action_name = self._selected_action >= 0 and self._action_list[self._selected_action + 1]
+		self._selected_action = Imgui.combo("Action", self._selected_action, self._action_list)
+		local selected_action_name = self._selected_action > 0 and self._action_list[self._selected_action]
 		local selected_sub_actions = (selected_action_name and self._sub_action_list[selected_action_name]) or {}
-		self._selected_sub_action = Imgui.Combo("Sub Action", self._selected_sub_action, selected_sub_actions) - 1
+		self._selected_sub_action = Imgui.combo("Sub Action", self._selected_sub_action, selected_sub_actions)
 	end
 
 	local _first_weapon_entry = true
 
 	for name, weapon in pairs(self._weapon_extensions) do
 		if not _first_weapon_entry then
-			Imgui.SameLine()
+			Imgui.same_line()
 		end
 
 		if name == "any" then
 			weapon = nil
 		end
 
-		if Imgui.RadioButton(name, weapon == self._current_weapon_extension) then
+		if Imgui.radio_button(name, weapon == self._current_weapon_extension) then
 			self._current_weapon_extension = weapon
 			self._selected_weapon_extenstion_name = name
 		end
@@ -192,7 +192,7 @@ ImguiWeaponDebug.draw = function (self)
 
 	self:_draw_basic_info()
 	self:_draw_damage_info()
-	Imgui.End()
+	Imgui.end_window()
 end
 
 ImguiWeaponDebug._refresh_unit_list = function (self)
@@ -216,7 +216,7 @@ ImguiWeaponDebug._refresh_unit_list = function (self)
 				table.insert(self._units, player.player_unit)
 
 				if player.local_player then
-					self._selected_unit = #self._unit_names - 1
+					self._selected_unit = #self._unit_names
 
 					self:_initialize_unit(player.player_unit)
 				end
@@ -376,22 +376,22 @@ ImguiWeaponDebug._draw_basic_info = function (self)
 	local weapon_name = self._combat_current_weapon_name or "-"
 
 	if weapon then
-		Imgui.Separator()
+		Imgui.separator()
 
-		if Imgui.TreeNode("Basic Information") then
-			Imgui.Text(string.format("Item Name:     %s", weapon_name))
-			Imgui.Text(string.format("Template Name: %s", weapon.template))
-			Imgui.Text(string.format("Left Hand:     %s", weapon.left_hand_unit))
-			Imgui.Text(string.format("Right Hand:    %s", weapon.right_hand_unit))
-			Imgui.Separator()
+		if Imgui.tree_node("Basic Information") then
+			Imgui.text(string.format("Item Name:     %s", weapon_name))
+			Imgui.text(string.format("Template Name: %s", weapon.template))
+			Imgui.text(string.format("Left Hand:     %s", weapon.left_hand_unit))
+			Imgui.text(string.format("Right Hand:    %s", weapon.right_hand_unit))
+			Imgui.separator()
 			Imgui.columns(3, true)
-			Imgui.Text("Damage Profiles")
+			Imgui.text("Damage Profiles")
 			Imgui.next_column()
-			Imgui.Text("left")
+			Imgui.text("left")
 			Imgui.next_column()
-			Imgui.Text("right")
+			Imgui.text("right")
 			Imgui.next_column()
-			Imgui.Separator()
+			Imgui.separator()
 
 			local damage_actions = self._combat_hit_actions
 
@@ -399,77 +399,77 @@ ImguiWeaponDebug._draw_basic_info = function (self)
 				local action_hand = sub_action and sub_action.weapon_action_hand
 				local damage_profile_name_1, damage_profile_name_2 = ActionUtils.get_damage_profile_name(sub_action, action_hand)
 
-				Imgui.Text(action_name)
+				Imgui.text(action_name)
 				Imgui.next_column()
-				Imgui.Text(tostring(damage_profile_name_1))
+				Imgui.text(tostring(damage_profile_name_1))
 				Imgui.next_column()
-				Imgui.Text(tostring(damage_profile_name_2))
+				Imgui.text(tostring(damage_profile_name_2))
 				Imgui.next_column()
 			end
 
-			Imgui.Separator()
+			Imgui.separator()
 			Imgui.columns(7, true)
-			Imgui.Text("category\\armor type")
+			Imgui.text("category\\armor type")
 
 			for i = 1, 6, 1 do
 				Imgui.next_column()
-				Imgui.Text(tostring(i))
+				Imgui.text(tostring(i))
 			end
 
-			Imgui.Separator()
+			Imgui.separator()
 
 			for charge_type, values in pairs(self._armor_modifiers_charge_value) do
 				Imgui.next_column()
-				Imgui.Text(charge_type)
+				Imgui.text(charge_type)
 
 				for i = 1, 6, 1 do
 					Imgui.next_column()
-					Imgui.Text(string.format("%.2f", values[i] or 0))
+					Imgui.text(string.format("%.2f", values[i] or 0))
 				end
 			end
 
 			Imgui.next_column()
-			Imgui.Text("total average")
+			Imgui.text("total average")
 
 			for i = 1, 6, 1 do
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", self._attack_armor_modifiers[i] or 0))
+				Imgui.text(string.format("%.2f", self._attack_armor_modifiers[i] or 0))
 			end
 
 			Imgui.columns(1)
-			Imgui.TreePop()
+			Imgui.tree_pop()
 		end
 	end
 end
 
 ImguiWeaponDebug._draw_damage_info = function (self)
-	Imgui.Separator()
-	Imgui.Text("Damage Information")
+	Imgui.separator()
+	Imgui.text("Damage Information")
 
-	self._combat_pop_settings = Imgui.Checkbox("Pop Combat Settings", self._combat_pop_settings)
+	self._combat_pop_settings = Imgui.checkbox("Pop Combat Settings", self._combat_pop_settings)
 
 	if self._combat_pop_settings then
-		Imgui.Begin("Combat Settings (Weapon Debug)")
+		Imgui.begin_window("Combat Settings (Weapon Debug)")
 		self:_update_combat_settings()
-		Imgui.End()
+		Imgui.end_window()
 	else
 		self:_update_combat_settings()
 	end
 
-	local difficulty_level = self._difficulties[self._damage_difficulty_id + 1]
-	local hit_zone_name = self._hit_zone_names[self._damage_hit_zone_id + 1]
+	local difficulty_level = self._difficulties[self._damage_difficulty_id]
+	local hit_zone_name = self._hit_zone_names[self._damage_hit_zone_id]
 
 	for breed_table_name, breed_table in pairs(self._breed_table) do
-		if difficulty_level and hit_zone_name and Imgui.TreeNode(breed_table_name) then
-			Imgui.Separator()
+		if difficulty_level and hit_zone_name and Imgui.tree_node(breed_table_name) then
+			Imgui.separator()
 			self:_draw_faction_combat_info(breed_table, difficulty_level, hit_zone_name, self._damage_power_level, self._combat_stagger_level, self._combat_critical, self._combat_backstab_multiplier, self._combat_power_boost)
-			Imgui.TreePop()
+			Imgui.tree_pop()
 		end
 	end
 end
 
 ImguiWeaponDebug._update_combat_settings = function (self)
-	self._combat_use_current_power_level = Imgui.Checkbox("Use Current Power Level", self._combat_use_current_power_level)
+	self._combat_use_current_power_level = Imgui.checkbox("Use Current Power Level", self._combat_use_current_power_level)
 
 	if self._combat_use_current_power_level then
 		local unit = self._current_unit
@@ -478,22 +478,22 @@ ImguiWeaponDebug._update_combat_settings = function (self)
 		self._damage_power_level = power_level
 	end
 
-	self._damage_power_level = math.max(Imgui.InputFloat("Power Level", self._damage_power_level), min_power_level)
-	self._damage_difficulty_id = Imgui.Combo("Difficulty", self._damage_difficulty_id, self._difficulties) - 1
-	self._damage_hit_zone_id = Imgui.Combo("Hit Zone", self._damage_hit_zone_id, self._hit_zone_names) - 1
-	self._combat_backstab_multiplier = Imgui.SliderFloat("Backstab Mult", self._combat_backstab_multiplier, 1, 2)
-	self._combat_stagger_level = math.floor(Imgui.SliderFloat("Stagger Level", self._combat_stagger_level, 0, 3))
-	self._combat_critical = Imgui.Checkbox("Critical", self._combat_critical)
+	self._damage_power_level = math.max(Imgui.input_float("Power Level", self._damage_power_level), min_power_level)
+	self._damage_difficulty_id = Imgui.combo("Difficulty", self._damage_difficulty_id, self._difficulties)
+	self._damage_hit_zone_id = Imgui.combo("Hit Zone", self._damage_hit_zone_id, self._hit_zone_names)
+	self._combat_backstab_multiplier = Imgui.slider_float("Backstab Mult", self._combat_backstab_multiplier, 1, 2)
+	self._combat_stagger_level = math.floor(Imgui.slider_float("Stagger Level", self._combat_stagger_level, 0, 3))
+	self._combat_critical = Imgui.checkbox("Critical", self._combat_critical)
 
-	Imgui.SameLine()
+	Imgui.same_line()
 
-	self._combat_power_boost = Imgui.Checkbox("Power Boost", self._combat_power_boost)
+	self._combat_power_boost = Imgui.checkbox("Power Boost", self._combat_power_boost)
 
 	for power_type, _ in pairs(POWER_LEVEL_DIFF_RATIO) do
-		local difficulty_level = self._difficulties[self._damage_difficulty_id + 1]
+		local difficulty_level = self._difficulties[self._damage_difficulty_id]
 		local scaled_power_level = ActionUtils.scale_power_levels(self._damage_power_level, power_type, self._current_unit, difficulty_level)
 
-		Imgui.Text(string.format("Scaled - %-8s: %s", power_type, scaled_power_level))
+		Imgui.text(string.format("Scaled - %-8s: %s", power_type, scaled_power_level))
 	end
 end
 
@@ -507,28 +507,28 @@ ImguiWeaponDebug._draw_faction_combat_info = function (self, breed_table, diffic
 	local target_hits = {}
 
 	for breed_name, _ in pairs(breed_table) do
-		Imgui.Separator()
+		Imgui.separator()
 
 		local breed = Breeds[breed_name] or PlayerBreeds[breed_name]
 		local armor_type, _, primary_armor_type, _ = ActionUtils.get_target_armor(hit_zone_name, breed, 1)
 		local node_name = string.format("Breed: %s (Armor: %d / Primary Armor: %d)", breed_name, armor_type or 0, primary_armor_type or 0)
 
-		if Imgui.TreeNode(node_name) then
+		if Imgui.tree_node(node_name) then
 			local breed_health = self:get_breed_health(difficulty_level, breed)
 			local stagger_threshold_light, stagger_threshold_medium, stagger_threshold_heavy = self:get_breed_stagger(difficulty_level, breed)
 
-			Imgui.Text(string.format("Health: %.2f", breed_health))
-			Imgui.Text(string.format("Stagger Thresholds: %.2f / %.2f / %.2f", stagger_threshold_light, stagger_threshold_medium, stagger_threshold_heavy))
-			Imgui.Separator()
+			Imgui.text(string.format("Health: %.2f", breed_health))
+			Imgui.text(string.format("Stagger Thresholds: %.2f / %.2f / %.2f", stagger_threshold_light, stagger_threshold_medium, stagger_threshold_heavy))
+			Imgui.separator()
 			Imgui.columns(9, true)
-			Imgui.Text("Hit Index")
+			Imgui.text("Hit Index")
 
 			for i = start_target_index, max_target_index, 1 do
 				Imgui.next_column()
-				Imgui.Text(i)
+				Imgui.text(i)
 			end
 
-			Imgui.Separator()
+			Imgui.separator()
 
 			for action_name, sub_action in pairs(damage_actions) do
 				table.clear(target_damage)
@@ -543,68 +543,68 @@ ImguiWeaponDebug._draw_faction_combat_info = function (self, breed_table, diffic
 				end
 
 				Imgui.next_column()
-				Imgui.Text(action_name)
+				Imgui.text(action_name)
 
 				for i = 1, #target_damage, 1 do
 					Imgui.next_column()
-					Imgui.Text(string.format("%6.2f - %-3d", target_damage[i], target_hits[i]))
+					Imgui.text(string.format("%6.2f - %-3d", target_damage[i], target_hits[i]))
 				end
 			end
 
 			Imgui.columns(1)
-			Imgui.Dummy(10, 10)
-			Imgui.Separator()
+			Imgui.dummy(10, 10)
+			Imgui.separator()
 			Imgui.columns(6, true)
-			Imgui.Text("Name")
+			Imgui.text("Name")
 			Imgui.next_column()
-			Imgui.Text("Type")
+			Imgui.text("Type")
 			Imgui.next_column()
-			Imgui.Text("Duration")
+			Imgui.text("Duration")
 			Imgui.next_column()
-			Imgui.Text("Distance")
+			Imgui.text("Distance")
 			Imgui.next_column()
-			Imgui.Text("Value")
+			Imgui.text("Value")
 			Imgui.next_column()
-			Imgui.Text("Strength")
-			Imgui.Separator()
+			Imgui.text("Strength")
+			Imgui.separator()
 
 			for action_name, damage_profiles in pairs(push_actions) do
 				Imgui.next_column()
-				Imgui.Text(action_name .. " Inner")
+				Imgui.text(action_name .. " Inner")
 
 				local inner_damage_profile = DamageProfileTemplates[damage_profiles.inner]
 				local type, duration, distance, value, strength = self:get_ai_stagger(inner_damage_profile, power_level, difficulty_level, hit_zone_name, breed, 1, is_critical_strike, has_power_boost)
 
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", type))
+				Imgui.text(string.format("%.2f", type))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", duration))
+				Imgui.text(string.format("%.2f", duration))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", distance))
+				Imgui.text(string.format("%.2f", distance))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", value))
+				Imgui.text(string.format("%.2f", value))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", strength))
+				Imgui.text(string.format("%.2f", strength))
 
 				local outer_damage_profile = DamageProfileTemplates[damage_profiles.inner]
 				local type, duration, distance, value, strength = self:get_ai_stagger(outer_damage_profile, power_level, difficulty_level, hit_zone_name, breed, 1, is_critical_strike, has_power_boost)
 
 				Imgui.next_column()
-				Imgui.Text(action_name .. " Outer")
+				Imgui.text(action_name .. " Outer")
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", type))
+				Imgui.text(string.format("%.2f", type))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", duration))
+				Imgui.text(string.format("%.2f", duration))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", distance))
+				Imgui.text(string.format("%.2f", distance))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", value))
+				Imgui.text(string.format("%.2f", value))
 				Imgui.next_column()
-				Imgui.Text(string.format("%.2f", strength))
+				Imgui.text(string.format("%.2f", strength))
 			end
 
 			Imgui.columns(1)
-			Imgui.TreePop()
+			Imgui.tree_pop()
 		end
 	end
 end
@@ -633,9 +633,9 @@ end
 
 ImguiWeaponDebug._get_current_action = function (self)
 	if not self._display_current_action then
-		local selected_action_name = self._selected_action >= 0 and self._action_list[self._selected_action + 1]
+		local selected_action_name = self._selected_action >= 0 and self._action_list[self._selected_action]
 		local selected_sub_actions = (selected_action_name and self._sub_action_list[selected_action_name]) or {}
-		local selected_sub_action_name = self._selected_sub_action >= 0 and selected_sub_actions[self._selected_sub_action + 1]
+		local selected_sub_action_name = self._selected_sub_action >= 0 and selected_sub_actions[self._selected_sub_action]
 		local action = selected_action_name and self._current_actions[selected_action_name]
 		local sub_action = action and action[selected_sub_action_name]
 

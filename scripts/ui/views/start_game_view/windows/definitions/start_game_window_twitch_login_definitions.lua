@@ -351,14 +351,8 @@ local function create_window(scenegraph_id, size)
 					return
 				end
 
-				local timer = math.ceil(Managers.time:time("ui") * 10)
-				local dots = timer % 5
-				local dot_str = ""
-
-				for i = 1, dots, 1 do
-					dot_str = dot_str .. "."
-				end
-
+				local timer = 10 * Managers.time:time("ui")
+				local dot_str = string.rep(".", timer % 5)
 				content.connecting_id = Localize("start_game_window_twitch_connecting") .. dot_str
 
 				return true

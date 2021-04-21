@@ -203,7 +203,7 @@ AIDebugger.update = function (self, t, dt)
 		local platform = PLATFORM
 		local toggle_bt_pressed = nil
 
-		if platform == "ps4" or platform == "xb1" then
+		if IS_CONSOLE then
 			toggle_bt_pressed = DebugKeyHandler.key_pressed("show_behaviour", "show behaviour graph", "ai debugger")
 		else
 			toggle_bt_pressed = DebugKeyHandler.key_pressed("b", "show behaviour graph", "ai debugger", "left ctrl")

@@ -1,5 +1,6 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
+print("[UIRenderer] Loading")
 require("scripts/utils/strict_table")
 require("scripts/ui/ui_scenegraph")
 require("scripts/ui/ui_resolution")
@@ -859,11 +860,7 @@ UIRenderer.draw_multi_texture = function (self, materials, lower_left_corner, te
 	direction = direction or 1
 	local position = UIScaleVectorToResolution(lower_left_corner)
 	local draw_position = Vector3(lower_left_corner[1], lower_left_corner[2], lower_left_corner[3])
-	local unscaled_position = {
-		lower_left_corner[1],
-		lower_left_corner[2],
-		lower_left_corner[3]
-	}
+	local unscaled_position = Vector3(lower_left_corner[1], lower_left_corner[2], lower_left_corner[3])
 	local spacing = spacing and UIScaleVectorToResolution(spacing)
 	local gui = self.gui
 	local gui_retained = self.gui_retained
@@ -1526,13 +1523,14 @@ end
 UIRenderer.scaled_font_size_by_area = function (self, text, area_size, style)
 	local area_width = area_size[1]
 	local area_height = area_size[2]
-	local font_material = Fonts[style.font_type][1]
+	local font_type = style.font_type
+	local font_material = Fonts[font_type][1]
 	local gui = self.gui
 
 	for font_size = style.font_size, 1, -0.5 do
-		local _, font_min, font_max = UIGetFontHeight(gui, style.font_type, font_size)
+		local _, font_min, font_max = UIGetFontHeight(gui, font_type, font_size)
 		local texts = Gui.word_wrap(gui, text, font_material, font_size, area_width, " \u3002\uff0c", "-+&/*", "\n", true)
-		local text_height = math.ceil((font_max - font_min) * #texts)
+		local text_height = math.ceil(1.05 * (font_max - font_min) * #texts)
 
 		if text_height < area_height then
 			return font_size
@@ -1601,20 +1599,16 @@ local uvs_u = {
 	}
 }
 
-UIRenderer.draw_texture_frame = function (self, position, size, texture_id, texture_size, texture_sizes, color, masked, saturated, only_corners)
+UIRenderer.draw_texture_frame = function (self, position, size, texture_id, texture_size, texture_sizes, color, masked, saturated, only_corners, use_tiling, mirrored_tiling, skip_background)
 	local UIRenderer_script_draw_bitmap_uv = UIRenderer.script_draw_bitmap_uv
 	local gui = self.gui
 	position = UIScaleVectorToResolution(position)
 	size = UIScaleVectorToResolution(size)
-	local corner = UIScalePositionTableToResolution(texture_sizes.corner)
-	local horizontal = UIScalePositionTableToResolution(texture_sizes.horizontal)
-	local vertical = UIScalePositionTableToResolution(texture_sizes.vertical)
 	texture_size = UIScalePositionTableToResolution(texture_size)
 	local layer = position[3]
-	local corner_size = corner
-	local corner_size_x = corner_size[1]
-	local corner_size_y = corner_size[2]
-	local corner_size_vec = Vector2(corner_size_x, corner_size_y)
+	local corner_size_vec = UIScalePositionTableToResolution(texture_sizes.corner)
+	local corner_size_x = corner_size_vec[1]
+	local corner_size_y = corner_size_vec[2]
 	local x_pos = position.x
 	local y_pos = position.y
 	local texture_size_x = texture_size[1]
@@ -1651,55 +1645,143 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3((x_pos + x_size) - corner_size_x, y_pos, layer), corner_size_vec, color, masked, saturated)
 
-	uvs[1][1] = corner_uv_size_x
-	uvs[1][2] = corner_uv_size_y
-	uvs[2][1] = 1 - corner_uv_size_x
-	uvs[2][2] = 1 - corner_uv_size_y
+	if not skip_background then
+		uvs[1][1] = corner_uv_size_x
+		uvs[1][2] = corner_uv_size_y
+		uvs[2][1] = 1 - corner_uv_size_x
+		uvs[2][2] = 1 - corner_uv_size_y
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos + corner_size_x, y_pos + corner_size_y, layer), size - corner_size_vec * 2, color, masked, saturated)
+		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos + corner_size_x, y_pos + corner_size_y, layer), size - corner_size_vec * 2, color, masked, saturated)
+	end
 
 	if only_corners then
 		return
 	end
 
-	local tile_vertical_size = vertical
-	local tile_vertical_size_x = tile_vertical_size[1]
-	local tile_vertical_size_y = tile_vertical_size[2]
-	local tile_vertical_size_vec = Vector2(unpack(tile_vertical_size))
-	local bar_height = size[2] - corner_size_y * 2
-	tile_vertical_size_vec[2] = bar_height
-	uvs[1][1] = 0
-	uvs[1][2] = 0.5 - tile_vertical_size_y / size[2] * 0.5
-	uvs[2][1] = tile_vertical_size_x / texture_size_x
-	uvs[2][2] = 0.5 + tile_vertical_size_y / size[2] * 0.5
-	uvs_r[1][1] = 1 - tile_vertical_size_x / texture_size_x
-	uvs_r[1][2] = 0.5 - tile_vertical_size_y / size[2] * 0.5
-	uvs_r[2][1] = 1
-	uvs_r[2][2] = 0.5 + tile_vertical_size_y / size[2] * 0.5
-	local math_floor = math.floor
-	local tile_pos_y = y_pos + corner_size_y
+	if use_tiling then
+		local tile_vertical_size_vec = UIScalePositionTableToResolution(texture_sizes.vertical)
+		local tile_vertical_size_x = tile_vertical_size_vec[1]
+		local tile_vertical_size_y = tile_vertical_size_vec[2]
+		local bar_height = size[2] - corner_size_y * 2
+		tile_vertical_size_vec[2] = bar_height
+		local total_size = bar_height
+		local tile_pos_y = y_pos + corner_size_y
+		local segments = math.max(math.ceil(total_size / tile_vertical_size_y), 1)
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+		for i = 1, segments, 1 do
+			local segment_size = math.clamp(total_size / tile_vertical_size_y, 0, 1)
+			local mirrored = i % 2 == 0
+			uvs[1][1] = 0
+			uvs[2][1] = tile_vertical_size_x / texture_size_x
 
-	local tile_horizontal_size = horizontal
-	local tile_horizontal_size_x = tile_horizontal_size[1]
-	local tile_horizontal_size_y = tile_horizontal_size[2]
-	local tile_horizontal_size_vec = Vector2(unpack(tile_horizontal_size))
-	local bar_width = size[1] - corner_size_x * 2
-	tile_horizontal_size_vec[1] = bar_width
-	uvs_u[1][1] = 0.5 - tile_horizontal_size_x / size[1] * 0.5
-	uvs_u[1][2] = 0
-	uvs_u[2][1] = 0.5 + tile_horizontal_size_x / size[1] * 0.5
-	uvs_u[2][2] = tile_horizontal_size_y / texture_size_y
-	uvs[1][1] = 0.5 - tile_horizontal_size_x / size[1] * 0.5
-	uvs[1][2] = 1 - tile_horizontal_size_y / texture_size_y
-	uvs[2][1] = 0.5 + tile_horizontal_size_x / size[1] * 0.5
-	uvs[2][2] = 1
-	local tile_pos_x = x_pos + corner_size_x
+			if mirrored and mirrored_tiling then
+				uvs[1][2] = math.lerp(corner_size_y / texture_size_y, 1 - corner_size_y / texture_size_y, segment_size)
+				uvs[2][2] = corner_size_y / texture_size_y
+			else
+				uvs[1][2] = math.lerp(1 - corner_size_y / texture_size_y, corner_size_y / texture_size_y, segment_size)
+				uvs[2][2] = 1 - corner_size_y / texture_size_y
+			end
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
+			uvs_r[1][1] = 1 - tile_vertical_size_x / texture_size_x
+			uvs_r[2][1] = 1
+
+			if mirrored and mirrored_tiling then
+				uvs_r[1][2] = math.lerp(corner_size_y / texture_size_y, 1 - corner_size_y / texture_size_y, segment_size)
+				uvs_r[2][2] = corner_size_y / texture_size_y
+			else
+				uvs_r[1][2] = math.lerp(1 - corner_size_y / texture_size_y, corner_size_y / texture_size_y, segment_size)
+				uvs_r[2][2] = 1 - corner_size_y / texture_size_y
+			end
+
+			tile_vertical_size_vec[2] = segment_size * tile_vertical_size_y
+
+			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+
+			tile_pos_y = tile_pos_y + tile_vertical_size_y
+			total_size = total_size - tile_vertical_size_y
+		end
+
+		local tile_horizontal_size_vec = UIScalePositionTableToResolution(texture_sizes.horizontal)
+		local tile_horizontal_size_x = tile_horizontal_size_vec[1]
+		local tile_horizontal_size_y = tile_horizontal_size_vec[2]
+		local bar_width = size[1] - corner_size_x * 2
+		tile_horizontal_size_vec[1] = bar_width
+		local total_size = bar_width
+		local tile_pos_x = x_pos + corner_size_x
+		local segments = math.max(math.ceil(total_size / tile_vertical_size_y), 1)
+
+		for i = 1, segments, 1 do
+			local segment_size = math.clamp(total_size / tile_horizontal_size_x, 0, 1)
+			local mirrored = i % 2 == 0
+
+			if mirrored and mirrored_tiling then
+				uvs[1][1] = 1 - corner_size_x / texture_size_x
+				uvs[2][1] = math.lerp(1 - corner_size_x / texture_size_x, corner_size_x / texture_size_x, segment_size)
+			else
+				uvs[1][1] = corner_size_x / texture_size_x
+				uvs[2][1] = math.lerp(corner_size_x / texture_size_x, 1 - corner_size_x / texture_size_x, segment_size)
+			end
+
+			uvs[1][2] = 1 - corner_size_y / texture_size_y
+			uvs[2][2] = 1
+
+			if mirrored and mirrored_tiling then
+				uvs_u[1][1] = 1 - corner_size_x / texture_size_x
+				uvs_u[2][1] = math.lerp(1 - corner_size_x / texture_size_x, corner_size_x / texture_size_x, segment_size)
+			else
+				uvs_u[1][1] = corner_size_x / texture_size_x
+				uvs_u[2][1] = math.lerp(corner_size_x / texture_size_x, 1 - corner_size_x / texture_size_x, segment_size)
+			end
+
+			uvs_u[1][2] = 0
+			uvs_u[2][2] = corner_size_y / texture_size_y
+			tile_horizontal_size_vec[1] = segment_size * tile_horizontal_size_x
+
+			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
+			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
+
+			tile_pos_x = tile_pos_x + tile_horizontal_size_x
+			total_size = total_size - tile_horizontal_size_x
+		end
+	else
+		local tile_vertical_size_vec = UIScalePositionTableToResolution(texture_sizes.vertical)
+		local tile_vertical_size_x = tile_vertical_size_vec[1]
+		local tile_vertical_size_y = tile_vertical_size_vec[2]
+		local bar_height = size[2] - corner_size_y * 2
+		tile_vertical_size_vec[2] = bar_height
+		uvs[1][1] = 0
+		uvs[1][2] = 0.5 - tile_vertical_size_y / size[2] * 0.5
+		uvs[2][1] = tile_vertical_size_x / texture_size_x
+		uvs[2][2] = 0.5 + tile_vertical_size_y / size[2] * 0.5
+		uvs_r[1][1] = 1 - tile_vertical_size_x / texture_size_x
+		uvs_r[1][2] = 0.5 - tile_vertical_size_y / size[2] * 0.5
+		uvs_r[2][1] = 1
+		uvs_r[2][2] = 0.5 + tile_vertical_size_y / size[2] * 0.5
+		local math_floor = math.floor
+		local tile_pos_y = y_pos + corner_size_y
+
+		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+
+		local tile_horizontal_size_vec = UIScalePositionTableToResolution(texture_sizes.horizontal)
+		local tile_horizontal_size_x = tile_horizontal_size_vec[1]
+		local tile_horizontal_size_y = tile_horizontal_size_vec[2]
+		local bar_width = size[1] - corner_size_x * 2
+		tile_horizontal_size_vec[1] = bar_width
+		uvs_u[1][1] = 0.5 - tile_horizontal_size_x / size[1] * 0.5
+		uvs_u[1][2] = 0
+		uvs_u[2][1] = 0.5 + tile_horizontal_size_x / size[1] * 0.5
+		uvs_u[2][2] = tile_horizontal_size_y / texture_size_y
+		uvs[1][1] = 0.5 - tile_horizontal_size_x / size[1] * 0.5
+		uvs[1][2] = 1 - tile_horizontal_size_y / texture_size_y
+		uvs[2][1] = 0.5 + tile_horizontal_size_x / size[1] * 0.5
+		uvs[2][2] = 1
+		local tile_pos_x = x_pos + corner_size_x
+
+		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
+		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
+	end
 end
 
 UIRenderer.destroy_bitmap = function (self, retained_id)

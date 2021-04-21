@@ -21,7 +21,7 @@ return {
 		data.buff_system = Managers.state.entity:system("buff_system")
 		data.hero_side = Managers.state.side:get_side_from_name("heroes")
 		data.lantern_spawned = false
-		data.light_radius = wind_settings.light_radius[difficulty_name][wind_strength]
+		data.light_radius = wind_settings and wind_settings.light_radius[difficulty_name][wind_strength]
 	end,
 	server_ai_killed_function = function (context, data, killed_unit, killer_unit, killing_blow)
 		if data.template.linked_units_visibility[killed_unit] then
@@ -225,7 +225,7 @@ return {
 
 						local breed = Unit.get_data(unit, "breed")
 
-						if breed.name == "skaven_warpfire_thrower" then
+						if breed and breed.name == "skaven_warpfire_thrower" then
 							Unit.flow_event(unit, "disable_vfx")
 						end
 
@@ -246,7 +246,7 @@ return {
 					if effect_unit and effect_unit_visible then
 						local breed = Unit.get_data(unit, "breed")
 
-						if breed.name == "skaven_warpfire_thrower" and AiUtils.unit_alive(unit) then
+						if breed and breed.name == "skaven_warpfire_thrower" and AiUtils.unit_alive(unit) then
 							Unit.flow_event(unit, "enable_vfx")
 						end
 
@@ -263,7 +263,7 @@ return {
 				elseif effect_unit and not effect_unit_visible then
 					local breed = Unit.get_data(unit, "breed")
 
-					if breed.name == "skaven_warpfire_thrower" then
+					if breed and breed.name == "skaven_warpfire_thrower" then
 						Unit.flow_event(unit, "disable_vfx")
 					end
 

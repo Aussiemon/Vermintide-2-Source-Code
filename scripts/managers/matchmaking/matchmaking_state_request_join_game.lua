@@ -7,7 +7,7 @@ MatchmakingStateRequestJoinGame.init = function (self, params)
 	self._lobby = params.lobby
 	self._network_options = params.network_options
 	self._matchmaking_manager = params.matchmaking_manager
-	self._handshaker_client = params.handshaker_client
+	self._network_transmit = params.network_transmit
 	self._matchmaking_manager.selected_profile_index = nil
 	self._state = "waiting_to_join_lobby"
 end
@@ -165,25 +165,20 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			return self:_join_game_failed("lobby_data_timeout", t, true)
 		end
 	elseif state == "verify_game_mode" then
-		local game_mode_id = lobby_client:lobby_data("game_mode")
+		local matchmaking_type_id = lobby_client:lobby_data("matchmaking_type")
 
-		if not game_mode_id then
+		if not matchmaking_type_id then
 			self._state = "verify_difficulty"
 
 			return
 		end
 
-		local game_mode = (PLATFORM == "ps4" and game_mode_id) or NetworkLookup.game_modes[tonumber(game_mode_id)]
+		local mechanism = lobby_client:lobby_data("mechanism")
+		local mechanism_settings = MechanismSettings[mechanism]
 
-		if game_mode == "weave_find_group" then
-			game_mode = "weave"
-		end
-
-		local game_mode_settings = GameModeSettings[game_mode]
-
-		if game_mode_settings and game_mode_settings.extra_requirements_function then
-			if game_mode_settings.extra_requirements_function() then
-				if game_mode_settings.disable_difficulty_check then
+		if mechanism_settings and mechanism_settings.extra_requirements_function then
+			if mechanism_settings.extra_requirements_function() then
+				if mechanism_settings.disable_difficulty_check then
 					self._state = "waiting_to_connect"
 					self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
 				else
@@ -195,7 +190,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 				return self:_join_game_failed(game_reply, t, false, nil, true)
 			end
-		elseif game_mode_settings and game_mode_settings.disable_difficulty_check then
+		elseif mechanism_settings and mechanism_settings.disable_difficulty_check then
 			self._state = "waiting_to_connect"
 			self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
 		else
@@ -241,47 +236,28 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 		end
 	elseif state == "waiting_to_connect" then
 		if self._connected_to_server then
-			self._matchmaking_manager.debug.text = "Handshaking"
+			self._matchmaking_manager.debug.text = "Requesting to join"
 
-			mm_printf("Connected, starting handshake...")
-			self._handshaker_client:start_handshake(host)
+			mm_printf("Connected, requesting to join game...")
 
-			self._handshake_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
-			self._state = "waiting_for_handshake"
+			local friend_join = false
+
+			if IS_PS4 then
+				friend_join = not not self.state_context.friend_join
+			end
+
+			local unlocked_dlcs_array = self:_gather_dlc_ids()
+
+			self._network_transmit:send_rpc("rpc_matchmaking_request_join_lobby", host, lobby_id, friend_join, unlocked_dlcs_array)
+
+			self._join_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
+			self._state = "asking_to_join"
 		elseif self._connect_timeout < t then
 			local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
 
 			mm_printf_force("Failed to connect to host due to timeout. lobby_id=%s, host_id:%s", lobby_id, host_name)
 
 			return self:_join_game_failed("connection_timeout", t, true)
-		end
-	elseif state == "waiting_for_handshake" then
-		local handshake_time = self._handshake_timeout - t + 1
-		self._matchmaking_manager.debug.text = string.format("Waiting for handshake %s [%.0f]", self.lobby_client:id(), handshake_time)
-
-		if self._handshaker_client:handshake_done() then
-			self._matchmaking_manager.debug.text = "Requesting to join"
-
-			mm_printf("Handshake done, requesting to join game...")
-
-			local friend_join = false
-
-			if PLATFORM == "ps4" then
-				friend_join = not not self.state_context.friend_join
-			end
-
-			local unlocked_dlcs_array = self:_gather_dlc_ids()
-
-			self._handshaker_client:send_rpc_to_host("rpc_matchmaking_request_join_lobby", lobby_id, friend_join, unlocked_dlcs_array)
-
-			self._join_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
-			self._state = "asking_to_join"
-		elseif self._handshake_timeout < t then
-			local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
-
-			mm_printf("Failed to resolve handshake in time. lobby_id=%s, host_id:%s", lobby_id, host_name)
-
-			return self:_join_game_failed("handshake_timeout", t, true)
 		end
 	elseif state == "asking_to_join" then
 		local join_time = MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME - (self._join_timeout - t)
@@ -360,7 +336,7 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, reason, t, i
 		self.lobby_client = nil
 	end
 
-	self._handshaker_client:reset()
+	self._matchmaking_manager:reset_joining()
 
 	self.state_context.join_lobby_data = nil
 
@@ -377,22 +353,11 @@ MatchmakingStateRequestJoinGame._join_game_failed = function (self, reason, t, i
 
 		return MatchmakingStateIdle, self.state_context
 	else
-		local search_config = self.state_context.search_config
-		local game_mode = search_config and search_config.game_mode
-
-		if game_mode == "weave_find_group" then
-			return MatchmakingStateSearchForWeaveGroup, self.state_context
-		else
-			return MatchmakingStateSearchGame, self.state_context
-		end
+		return MatchmakingStateSearchGame, self.state_context
 	end
 end
 
-MatchmakingStateRequestJoinGame.rpc_matchmaking_request_join_lobby_reply = function (self, channel_id, client_cookie, host_cookie, reply_id, reply_variable)
-	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return
-	end
-
+MatchmakingStateRequestJoinGame.rpc_matchmaking_request_join_lobby_reply = function (self, channel_id, reply_id, reply_variable)
 	self._game_reply = NetworkLookup.game_ping_reply[reply_id]
 	self._game_reply_variable = reply_variable
 end

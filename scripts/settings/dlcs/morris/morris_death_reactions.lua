@@ -1,0 +1,48 @@
+local death_reactions = {
+	destructible_buff_objective_unit = {
+		unit = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				return
+			end,
+			update = function (unit, dt, context, t, data)
+				Managers.state.unit_spawner:mark_for_deletion(unit)
+
+				return DeathReactions.IS_DONE
+			end
+		},
+		husk = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				return
+			end,
+			update = function (unit, dt, context, t, data)
+				return DeathReactions.IS_DONE
+			end
+		}
+	},
+	chaos_greed_pinata = table.clone(DeathReactions.templates.ai_default)
+}
+
+death_reactions.chaos_greed_pinata.unit.start = function (unit, context, t, killing_blow, is_server)
+	local data, result = DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+
+	if is_server then
+		local player_unit = DialogueSystem:get_random_player()
+
+		if player_unit then
+			local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
+
+			dialogue_input:trigger_dialogue_event("curse_very_positive_effect_happened", event_data)
+		end
+	end
+
+	return data, result
+end
+
+return death_reactions

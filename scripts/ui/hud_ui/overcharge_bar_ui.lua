@@ -4,6 +4,27 @@ local accepted_slots = {
 	slot_ranged = true,
 	slot_melee = true
 }
+local DEFAULT_UI_DATA = {
+	material = "overcharge_bar_1",
+	color_normal = {
+		255,
+		255,
+		255,
+		255
+	},
+	color_medium = {
+		255,
+		255,
+		165,
+		0
+	},
+	color_high = {
+		255,
+		255,
+		0,
+		0
+	}
+}
 
 OverchargeBarUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
@@ -94,7 +115,7 @@ OverchargeBarUI._update_overcharge = function (self, player, dt)
 						self.wielded_item_name = item_name
 					end
 
-					self:set_charge_bar_fraction(overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
+					self:set_charge_bar_fraction(player, overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
 
 					return true
 				end
@@ -111,49 +132,37 @@ OverchargeBarUI.create_ui_elements = function (self)
 	self.charge_bar = UIWidget.init(definitions.widget_definitions.charge_bar)
 end
 
+local customizer_data = {
+	root_scenegraph_id = "screen_bottom_pivot_parent",
+	label = "Overcharge",
+	registry_key = "overcharge",
+	drag_scenegraph_id = "charge_bar"
+}
+
 OverchargeBarUI.update = function (self, dt, t, player)
+	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local actual_player = (self._is_spectator and self._spectated_player) or player
 
+	if HudCustomizer.run(ui_renderer, ui_scenegraph, customizer_data) then
+		UISceneGraph.update_scenegraph(ui_scenegraph)
+	end
+
 	if self:_update_overcharge(actual_player, dt) then
 		local parent = self._parent
 		local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
 
 		self:_apply_crosshair_position(crosshair_position_x, crosshair_position_y)
-
-		local ui_renderer = self.ui_renderer
-
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 		UIRenderer.draw_widget(ui_renderer, self.charge_bar)
 		UIRenderer.end_pass(ui_renderer)
 	end
 end
 
-local colors = {
-	normal = {
-		255,
-		255,
-		255,
-		255
-	},
-	medium = {
-		255,
-		255,
-		165,
-		0
-	},
-	high = {
-		255,
-		255,
-		0,
-		0
-	}
-}
-
-OverchargeBarUI.set_charge_bar_fraction = function (self, overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
+OverchargeBarUI.set_charge_bar_fraction = function (self, player, overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
 	local widget = self.charge_bar
 	local style = widget.style
 	local content = widget.content
@@ -170,15 +179,19 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, overcharge_fraction, m
 	local color = nil
 	local icon_color = style.icon.color
 	local bar_color = style.bar_1.color
+	local career_name = player:career_name()
+	local overcharge_data = OverchargeData[career_name]
+	local ui_data = (overcharge_data and overcharge_data.overcharge_ui) or DEFAULT_UI_DATA
+	content.bar_1 = ui_data.material
 
 	if overcharge_fraction <= min_threshold_fraction then
-		color = colors.normal
+		color = ui_data.color_normal
 		alpha_multiplier = 0.6
 	elseif overcharge_fraction <= max_threshold_fraction then
 		alpha_multiplier = 0.8
-		color = colors.medium
+		color = ui_data.color_medium
 	else
-		color = colors.high
+		color = ui_data.color_high
 	end
 
 	bar_color[1] = color[1] * alpha_multiplier

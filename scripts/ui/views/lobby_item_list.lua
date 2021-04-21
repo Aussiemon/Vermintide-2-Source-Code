@@ -452,21 +452,15 @@ local function setup_mouse_scroll_widget_definition(scroll_field_width, scroll_f
 end
 
 local function lobby_level_display_name(lobby_data)
-	local level = lobby_data.selected_level_key or lobby_data.level_key
+	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
+	local mechanism = lobby_data.mechanism
+	local matchmaking_type_index = tonumber(lobby_data.matchmaking_type)
+	local matchmaking_type_names = table.clone(NetworkLookup.matchmaking_types, true)
+	local matchmaking_type_name = matchmaking_type_index and matchmaking_type_names[matchmaking_type_index]
 
-	if level == "n/a" then
-		level = nil
-	elseif level == "default_start_level" then
-		level = LevelSettings[level]
-	end
-
-	local game_mode_index = tonumber(lobby_data.game_mode)
-	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
-	local game_mode_name = game_mode_index and game_mode_names[game_mode_index]
-
-	if game_mode_name == "weave" then
-		if lobby_data.weave_name ~= "false" and lobby_data.quick_game == "false" then
-			local weave_name_data = string.split(lobby_data.weave_name, "_")
+	if mechanism == "weave" then
+		if mission_id ~= "false" and lobby_data.quick_game == "false" then
+			local weave_name_data = string.split(mission_id, "_")
 			local weave_name = "Weave " .. weave_name_data[2]
 
 			return weave_name
@@ -476,21 +470,28 @@ local function lobby_level_display_name(lobby_data)
 			return Localize("lb_unknown")
 		end
 	else
-		local level_setting = level and LevelSettings[level]
-		local level_display_name = level and level_setting.display_name
-		local level_text = (level and Localize(level_display_name)) or "-"
+		local level_key = mission_id
+
+		if level_key == "n/a" then
+			level_key = nil
+		elseif level_key == "default_start_level" then
+			level_key = LevelSettingsDefaultStartLevel
+		end
+
+		local level_setting = level_key and LevelSettings[level_key]
+		local level_display_name = level_key and level_setting.display_name
+		local level_text = (level_key and Localize(level_display_name)) or "-"
 
 		return level_text
 	end
 end
 
 local function lobby_level_sort_order(lobby_data)
-	local level = lobby_data.selected_level_key or lobby_data.level_key
-	local level_setting = level and LevelSettings[level]
-	local map_settings = level_setting and level_setting.map_settings
-	local level_sort_order = map_settings and map_settings.sorting
+	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
+	local mission_hex = Application.make_hash(mission_id)
+	local sort_id = Application.hex64_to_dec(mission_hex)
 
-	return level_sort_order or 0
+	return sort_id or 0
 end
 
 local function lobby_difficulty_display_name(lobby_data)
@@ -518,57 +519,61 @@ local function lobby_country_text(lobby_data)
 end
 
 function level_is_locked(lobby_data)
-	local level = lobby_data.selected_level_key or lobby_data.level_key
-
-	if not level then
-		return false
-	end
-
-	local level_setting = LevelSettings[level]
-	local in_inn = level_setting.hub_level
-
-	if in_inn then
-		return false
-	end
-
 	local player_manager = Managers.player
 	local player = player_manager:local_player()
 	local statistics_db = player_manager:statistics_db()
 	local player_stats_id = player:stats_id()
-	local game_mode_index = tonumber(lobby_data.game_mode)
-	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
-	local game_mode = game_mode_names[game_mode_index]
-	local game_mode_settings = game_mode and GameModeSettings[game_mode]
 	local quick_game = lobby_data.quick_game == "true"
 	local private_game = lobby_data.is_private == "true"
+	local mechanism = lobby_data.mechanism
+	local mechanism_settings = mechanism and MechanismSettings[mechanism]
 
 	if private_game then
 		return true
 	end
 
-	if game_mode_settings and game_mode_settings.extra_requirements_function and not game_mode_settings.extra_requirements_function() then
+	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
+
+	if not mission_id then
+		return false
+	end
+
+	local weave_template = WeaveSettings.templates[mission_id]
+
+	if not weave_template then
+		local level_setting = LevelSettings[mission_id]
+		local in_inn = level_setting.hub_level
+
+		if in_inn then
+			return false
+		end
+	end
+
+	if mechanism_settings and mechanism_settings.extra_requirements_function and not mechanism_settings.extra_requirements_function() then
 		return true
 	end
 
-	if game_mode == "weave" and not quick_game then
-		local ignore_dlc_check = false
-		local weave_name = lobby_data.weave_name
-		local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check)
+	if mechanism == "weave" then
+		if not quick_game then
+			local ignore_dlc_check = false
+			local weave_name = mission_id
+			local weave_unlocked = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, weave_name, ignore_dlc_check)
 
-		if weave_unlocked then
-			return false
+			if weave_unlocked then
+				return false
+			end
+
+			local current_weave = LevelUnlockUtils.current_weave(statistics_db, player_stats_id, ignore_dlc_check)
+
+			if current_weave == weave_name then
+				return false
+			end
 		end
 
-		local current_weave = LevelUnlockUtils.current_weave(statistics_db, player_stats_id, ignore_dlc_check)
-
-		if current_weave == weave_name then
-			return false
-		end
-
-		return true
+		return false
 	end
 
-	local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level)
+	local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, mission_id)
 
 	if not level_unlocked then
 		return true
@@ -576,22 +581,23 @@ function level_is_locked(lobby_data)
 end
 
 function difficulty_is_locked(lobby_data)
-	local game_mode_index = tonumber(lobby_data.game_mode)
-	local game_mode_names = table.clone(NetworkLookup.game_modes, true)
-	local game_mode = game_mode_names[game_mode_index]
+	local matchmaking_type_index = tonumber(lobby_data.matchmaking_type)
+	local matchmaking_type_names = table.clone(NetworkLookup.matchmaking_types, true)
+	local matchmaking_type = matchmaking_type_names[matchmaking_type_index]
+	local mechanism = lobby_data.mechanism
 
-	if game_mode == "weave" then
+	if mechanism == "weave" then
 		return false
 	end
 
-	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 	local player_manager = Managers.player
 	local player = player_manager:local_player()
 	local statistics_db = player_manager:statistics_db()
 	local player_stats_id = player:stats_id()
 	local difficulty = lobby_data.difficulty
 
-	if not difficulty or not level_key then
+	if not difficulty or not mission_id then
 		return false
 	end
 
@@ -767,8 +773,10 @@ local function create_lobby_list_entry_style()
 			offset = title_text_position
 		},
 		level_text = {
-			vertical_alignment = "center",
+			word_wrap = false,
 			horizontal_alignment = "left",
+			vertical_alignment = "center",
+			dynamic_font_size = true,
 			font_type = "arial",
 			size = {
 				element_settings.width,
@@ -776,6 +784,10 @@ local function create_lobby_list_entry_style()
 			},
 			text_color = Colors.color_definitions.white,
 			font_size = ListSettings.font_size,
+			area_size = {
+				240,
+				50
+			},
 			offset = level_text_position
 		},
 		difficulty_text = {
@@ -893,10 +905,23 @@ end
 
 LobbyItemsList.lobby_status_text = function (lobby_data)
 	local is_dedicated_server = lobby_data.server_info ~= nil
-	local level_key = lobby_data.selected_level_key or lobby_data.level_key
+	local mission_id = lobby_data.mission_id
 	local is_private = (is_dedicated_server and lobby_data.server_info.password) or (not is_dedicated_server and lobby_data.matchmaking == "false")
 	local is_full = lobby_data.num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
-	local level_setting = LevelSettings[level_key]
+	local matchmaking_type_index = tonumber(lobby_data.matchmaking_type)
+	local matchmaking_type_names = table.clone(NetworkLookup.matchmaking_types, true)
+	local matchmaking_type_name = matchmaking_type_index and matchmaking_type_names[matchmaking_type_index]
+	local level_key = mission_id
+
+	if matchmaking_type_name == "weave" then
+		local weave_template = WeaveSettings.templates[mission_id]
+
+		if weave_template then
+			level_key = weave_template.objectives[1].level_id
+		end
+	end
+
+	local level_setting = LevelSettings[mission_id]
 	local is_in_inn = level_setting.hub_level
 	local is_broken = lobby_data.is_broken
 	local status = (is_broken and "lb_broken") or (is_private and "lb_private") or (is_full and "lb_full") or (is_in_inn and "lb_in_inn") or "lb_started"
@@ -947,17 +972,19 @@ local function sort_lobbies_on_host_desc(lobby_a, lobby_b)
 end
 
 local function sort_lobbies_on_levels_asc(lobby_a, lobby_b)
-	local level_a = lobby_level_sort_order(lobby_a)
-	local level_b = lobby_level_sort_order(lobby_b)
+	local mission_a = lobby_a.selected_mission_id or lobby_a.mission_id or "lb_unknown"
+	local mission_b = lobby_b.selected_mission_id or lobby_b.mission_id or "lb_unknown"
 
-	return level_a < level_b
+	return Localize(mission_a) < Localize(mission_b)
 end
 
 local function sort_lobbies_on_levels_desc(lobby_a, lobby_b)
 	local level_a = lobby_level_sort_order(lobby_a)
 	local level_b = lobby_level_sort_order(lobby_b)
+	local mission_a = lobby_a.selected_mission_id or lobby_a.mission_id or "lb_unknown"
+	local mission_b = lobby_b.selected_mission_id or lobby_b.mission_id or "lb_unknown"
 
-	return level_b < level_a
+	return Localize(mission_b) < Localize(mission_a)
 end
 
 local function sort_lobbies_on_difficulty_asc(lobby_a, lobby_b)

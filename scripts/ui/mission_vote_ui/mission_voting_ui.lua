@@ -1,5 +1,4 @@
 local definitions = local_require("scripts/ui/mission_vote_ui/mission_voting_ui_definitions")
-local widget_definitions = definitions.widgets
 local generic_input_actions = definitions.generic_input_actions
 local deed_game_widget_definitions = definitions.deed_game_widgets
 local custom_game_widget_definitions = definitions.custom_game_widgets
@@ -7,8 +6,9 @@ local adventure_game_widget_definitions = definitions.adventure_game_widgets
 local game_mode_widget_definitions = definitions.game_mode_widgets
 local event_game_widget_definitions = definitions.event_game_widgets
 local weave_game_widget_definitions = definitions.weave_game_widgets
-local weave_find_group_widget_definitions = definitions.weave_find_group_widgets
 local weave_quickplay_widget_definitions = definitions.weave_quickplay_widgets
+local deus_quickplay_widget_definitions = definitions.deus_quickplay_widget
+local deus_custom_widget_definitions = definitions.deus_custom_widget
 local twitch_mode_widget_funcs = definitions.twitch_mode_widget_funcs
 local switch_mechanism_widget_definitions = definitions.switch_mechanism_widgets
 MissionVotingUI = class(MissionVotingUI)
@@ -18,6 +18,7 @@ MissionVotingUI.init = function (self, parent, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
+	self.wwise_world = ingame_ui_context.wwise_world
 	self.input_manager = ingame_ui_context.input_manager
 	self.voting_manager = ingame_ui_context.voting_manager
 	self.statistics_db = ingame_ui_context.statistics_db
@@ -47,142 +48,24 @@ end
 
 MissionVotingUI.create_ui_elements = function (self)
 	self._ui_animations = {}
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			widgets[#widgets + 1] = widget
-			widgets_by_name[name] = widget
-		end
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
-	local deed_widgets = {}
-	local deed_widgets_by_name = {}
-
-	for name, widget_definition in pairs(deed_game_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			deed_widgets[#deed_widgets + 1] = widget
-			deed_widgets_by_name[name] = widget
-		end
-	end
-
-	self._deed_widgets = deed_widgets
-	self._deed_widgets_by_name = deed_widgets_by_name
-	local custom_game_widgets = {}
-	local custom_game_widgets_by_name = {}
-
-	for name, widget_definition in pairs(custom_game_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			custom_game_widgets[#custom_game_widgets + 1] = widget
-			custom_game_widgets_by_name[name] = widget
-		end
-	end
-
-	self._custom_game_widgets = custom_game_widgets
-	self._custom_game_widgets_by_name = custom_game_widgets_by_name
-	local event_game_widgets = {}
-	local event_game_widgets_by_name = {}
-
-	for name, widget_definition in pairs(event_game_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			event_game_widgets[#event_game_widgets + 1] = widget
-			event_game_widgets_by_name[name] = widget
-		end
-	end
-
-	self._event_game_widgets = event_game_widgets
-	self._event_game_widgets_by_name = event_game_widgets_by_name
-	local weave_game_widgets = {}
-	local weave_game_widgets_by_name = {}
-
-	for name, widget_definition in pairs(weave_game_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			weave_game_widgets[#weave_game_widgets + 1] = widget
-			weave_game_widgets_by_name[name] = widget
-		end
-	end
-
-	self._weave_game_widgets = weave_game_widgets
-	self._weave_game_widgets_by_name = weave_game_widgets_by_name
-	local weave_find_group_widgets = {}
-	local weave_find_group_widgets_by_name = {}
-
-	for name, widget_definition in pairs(weave_find_group_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			weave_find_group_widgets[#weave_find_group_widgets + 1] = widget
-			weave_find_group_widgets_by_name[name] = widget
-		end
-	end
-
-	self._weave_find_group_widgets = weave_find_group_widgets
-	self._weave_find_group_widgets_by_name = weave_find_group_widgets_by_name
-	local weave_quickplay_widgets = {}
-	local weave_quickplay_widgets_by_name = {}
-
-	for name, widget_definition in pairs(weave_quickplay_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			weave_quickplay_widgets[#weave_quickplay_widgets + 1] = widget
-			weave_quickplay_widgets_by_name[name] = widget
-		end
-	end
-
-	self._weave_quickplay_widgets = weave_quickplay_widgets
-	self._weave_quickplay_widgets_by_name = weave_quickplay_widgets_by_name
-	local adventure_game_widgets = {}
-	local adventure_game_widgets_by_name = {}
-
-	for name, widget_definition in pairs(adventure_game_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			adventure_game_widgets[#adventure_game_widgets + 1] = widget
-			adventure_game_widgets_by_name[name] = widget
-		end
-	end
-
-	self._adventure_game_widgets = adventure_game_widgets
-	self._adventure_game_widgets_by_name = adventure_game_widgets_by_name
-	local game_mode_widgets = {}
-	local game_mode_widgets_by_name = {}
-
-	for name, widget_definition in pairs(game_mode_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			game_mode_widgets[#game_mode_widgets + 1] = widget
-			game_mode_widgets_by_name[name] = widget
-		end
-	end
-
-	self._game_mode_widgets = game_mode_widgets
-	self._game_mode_widgets_by_name = game_mode_widgets_by_name
-	local switch_mechanism_widgets = {}
-	local switch_mechanism_widgets_by_name = {}
-
-	for name, widget_definition in pairs(switch_mechanism_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			switch_mechanism_widgets[#switch_mechanism_widgets + 1] = widget
-			switch_mechanism_widgets_by_name[name] = widget
-		end
-	end
-
-	self._switch_mechanism_widgets = switch_mechanism_widgets
-	self._switch_mechanism_widgets_by_name = switch_mechanism_widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(definitions.widgets)
+	self._widgets_deus, self._widgets_deus_by_name = UIUtils.create_widgets(definitions.widgets_deus)
+	self._deed_widgets, self._deed_widgets_by_name = UIUtils.create_widgets(deed_game_widget_definitions)
+	self._custom_game_widgets, self._custom_game_widgets_by_name = UIUtils.create_widgets(custom_game_widget_definitions)
+	self._event_game_widgets, self._event_game_widgets_by_name = UIUtils.create_widgets(event_game_widget_definitions)
+	self._weave_game_widgets, self._weave_game_widgets_by_name = UIUtils.create_widgets(weave_game_widget_definitions)
+	self._weave_quickplay_widgets, self._weave_quickplay_widgets_by_name = UIUtils.create_widgets(weave_quickplay_widget_definitions)
+	self._deus_quickplay_widgets, self._deus_quickplay_widgets_by_name = UIUtils.create_widgets(deus_quickplay_widget_definitions)
+	self._deus_custom_widgets, self._deus_custom_widgets_by_name = UIUtils.create_widgets(deus_custom_widget_definitions)
+	self._adventure_game_widgets, self._adventure_game_widgets_by_name = UIUtils.create_widgets(adventure_game_widget_definitions)
+	self._game_mode_widgets, self._game_mode_widgets_by_name = UIUtils.create_widgets(game_mode_widget_definitions)
+	self._switch_mechanism_widgets, self._switch_mechanism_widgets_by_name = UIUtils.create_widgets(switch_mechanism_widget_definitions)
 	local twitch_widgets = {}
 	local twitch_widgets_by_name = {}
+	local is_server = self._is_server
 
 	for name, widget_func in pairs(twitch_mode_widget_funcs) do
-		local widget_definition = widget_func(self._is_server)
-		local widget = UIWidget.init(widget_definition)
+		local widget = UIWidget.init(widget_func(is_server))
 		twitch_widgets[#twitch_widgets + 1] = widget
 		twitch_widgets_by_name[name] = widget
 	end
@@ -198,6 +81,14 @@ end
 MissionVotingUI.destroy = function (self)
 	if self.vote_started then
 		self:on_vote_ended()
+	end
+end
+
+MissionVotingUI.get_chrome_widgets = function (self)
+	if self._active_mechanism == "deus" then
+		return self._widgets_deus_by_name, self._widgets_deus
+	else
+		return self._widgets_by_name, self._widgets
 	end
 end
 
@@ -238,24 +129,29 @@ MissionVotingUI.start_vote = function (self, active_voting)
 	end
 
 	local vote_data = active_voting.data
-	local game_mode = vote_data.game_mode
+	local matchmaking_type = vote_data.matchmaking_type
+	local mechanism = vote_data.mechanism
+	local switch_mechanism = vote_data.switch_mechanism
 	self._twitch_mode_enabled = vote_data.twitch_enabled
-	self._game_mode = vote_data.game_mode
+	self._matchmaking_type = vote_data.matchmaking_type
+	self._active_mechanism = mechanism
 
-	if game_mode == "deed" then
+	if switch_mechanism then
+		self:_set_switch_mechanism_presentation(vote_data)
+	elseif matchmaking_type == "deed" then
 		local item_name = vote_data.item_name
-		local level_key = vote_data.level_key
+		local mission_id = vote_data.mission_id
 		local difficulty = vote_data.difficulty
 
-		self:_set_deed_presentation(item_name, level_key, difficulty)
-	elseif game_mode == "event" then
+		self:_set_deed_presentation(item_name, mission_id, difficulty)
+	elseif matchmaking_type == "event" then
 		local event_data = vote_data.event_data
-		local level_key = vote_data.level_key
+		local mission_id = vote_data.mission_id
 		local difficulty = vote_data.difficulty
 		local mutators = (event_data and event_data.mutators) or {}
 
-		self:_set_event_game_presentation(difficulty, level_key, mutators)
-	elseif game_mode == "weave" then
+		self:_set_event_game_presentation(difficulty, mission_id, mutators)
+	elseif mechanism == "weave" then
 		local quick_game = vote_data.quick_game
 
 		if quick_game then
@@ -263,15 +159,29 @@ MissionVotingUI.start_vote = function (self, active_voting)
 
 			self:_set_weave_quickplay_presentation(difficulty)
 		else
-			local weave_name = vote_data.weave_name
-			local level_key = vote_data.level_key
+			local mission_id = vote_data.mission_id
 			local difficulty = vote_data.difficulty
 			local private_game = vote_data.private_game
 
-			self:_set_weave_presentation(difficulty, level_key, weave_name, private_game)
+			self:_set_weave_presentation(difficulty, mission_id, private_game)
 		end
-	elseif game_mode == "weave_find_group" then
-		self:_set_weave_find_group_presentation()
+	elseif mechanism == "deus" then
+		local quick_game = vote_data.quick_game
+
+		if quick_game then
+			local difficulty = vote_data.difficulty
+
+			self:_set_deus_quickplay_presentation(difficulty)
+		else
+			local journey_name = vote_data.mission_id
+			local difficulty = vote_data.difficulty
+			local private_game = vote_data.private_game
+			local always_host = vote_data.always_host
+			local strict_matchmaking = vote_data.strict_matchmaking
+			local theme = vote_data.dominant_god
+
+			self:_set_deus_custom_game_presentation(difficulty, journey_name, private_game, always_host, strict_matchmaking, theme)
+		end
 	else
 		local quick_game = vote_data.quick_game
 
@@ -283,16 +193,14 @@ MissionVotingUI.start_vote = function (self, active_voting)
 			local mechanism_key = vote_data.mechanism_key
 
 			self:_set_game_mode_presentation(mechanism_key)
-		elseif vote_data.switch_mechanism then
-			self:_set_switch_mechanism_presentation(vote_data)
 		else
-			local level_key = vote_data.level_key
+			local mission_id = vote_data.mission_id
 			local difficulty = vote_data.difficulty
 			local private_game = vote_data.private_game
 			local always_host = vote_data.always_host
 			local strict_matchmaking = vote_data.strict_matchmaking
 
-			self:_set_custom_game_presentation(difficulty, level_key, private_game, always_host, strict_matchmaking)
+			self:_set_custom_game_presentation(difficulty, mission_id, private_game, always_host, strict_matchmaking)
 		end
 	end
 
@@ -304,7 +212,7 @@ MissionVotingUI.start_vote = function (self, active_voting)
 		title_text = Localize(title_text)
 	end
 
-	local widgets_by_name = self._widgets_by_name
+	local widgets_by_name = self:get_chrome_widgets()
 	widgets_by_name.title_text.content.text = title_text
 	self.voters = {}
 	self.vote_results = {
@@ -331,6 +239,8 @@ MissionVotingUI.start_vote = function (self, active_voting)
 		ShadingEnvironment.apply(shading_env)
 	end
 
+	self:_play_sound("play_gui_mission_vote_start")
+
 	self._ui_animations.twitch_info = UIAnimation.init(UIAnimation.function_by_time, self.ui_scenegraph.twitch_mode_info.local_position, 1, 400, 0, 0.3, math.easeOutCubic)
 
 	self:_check_initial_votes()
@@ -355,10 +265,17 @@ MissionVotingUI._check_initial_votes = function (self)
 	end
 end
 
-MissionVotingUI.on_vote_casted = function (self)
+MissionVotingUI.on_vote_casted = function (self, voted_yes)
 	self.has_voted = true
 
 	self.voting_manager:allow_vote_input(false)
+
+	if voted_yes then
+		self:_play_sound("play_gui_mission_vote_button_accept")
+	else
+		self:_play_sound("play_gui_mission_vote_button_decline")
+	end
+
 	self:_release_input()
 
 	local world = self.ui_renderer.world
@@ -442,22 +359,26 @@ MissionVotingUI._set_game_mode_presentation = function (self, mechanism_key)
 end
 
 MissionVotingUI._set_switch_mechanism_presentation = function (self, vote_data)
-	local mechanism_key = vote_data.mechanism
-	local level_key = vote_data.level_key
+	local mechanism_key = vote_data.mechanism or "adventure"
+	local level_key = vote_data.level_key or "inn_level"
 	local level_settings = LevelSettings[level_key]
-	local level_display_name = level_settings.display_name
-	local level_image = level_settings.level_image
-	local frame_index = 3
-	local level_frame = self:_get_selection_frame_by_difficulty_index(frame_index)
+	local mechanism_settings = MechanismSettings[mechanism_key]
+	local background_texture = mechanism_settings.vote_switch_mechanism_background or "icons_placeholder"
+	local info_blurb = mechanism_settings.vote_switch_mechanism_text or "n/a"
 	local switch_mechanism_widgets_by_name = self._switch_mechanism_widgets_by_name
-	local game_option_1 = switch_mechanism_widgets_by_name.game_option_1
-	game_option_1.content.title_text = Localize(level_display_name)
-	local level_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
-	game_option_1.content.icon = level_image
-	game_option_1.content.icon_frame = level_frame
-	local level_texture_size = game_option_1.style.icon.texture_size
-	level_texture_size[1] = level_texture_settings.size[1]
-	level_texture_size[2] = level_texture_settings.size[2]
+	switch_mechanism_widgets_by_name.background.content.texture_id = background_texture
+	switch_mechanism_widgets_by_name.title.content.text = mechanism_settings.display_name
+	switch_mechanism_widgets_by_name.subtitle.content.text = level_settings.display_name
+	switch_mechanism_widgets_by_name.description.content.text = info_blurb
+	local text_color_key = (self._active_mechanism == "deus" and "morris_text_color") or "adventure_text_color"
+	local title_style = switch_mechanism_widgets_by_name.title.style.text
+
+	Colors.copy_to(title_style.text_color, title_style[text_color_key])
+
+	local subtitle_style = switch_mechanism_widgets_by_name.subtitle.style.text
+
+	Colors.copy_to(subtitle_style.text_color, subtitle_style[text_color_key])
+
 	self._presentation_type = "switch_mechanism"
 end
 
@@ -532,10 +453,13 @@ MissionVotingUI._set_event_game_presentation = function (self, difficulty, level
 	self._presentation_type = "event"
 end
 
-MissionVotingUI._set_weave_presentation = function (self, difficulty, level_key, weave_id, private_game)
+MissionVotingUI._set_weave_presentation = function (self, difficulty, mission_id, private_game)
+	local objective_index = 1
+	local weave_id = mission_id
+	local weave_template = WeaveSettings.templates[weave_id]
+	local level_key = weave_template.objectives[objective_index].level_id
 	local weave_game_widgets_by_name = self._weave_game_widgets_by_name
 	local game_option_1 = weave_game_widgets_by_name.game_option_1
-	local weave_template = WeaveSettings.templates[weave_id]
 	local weave_index = table.find(WeaveSettings.templates_ordered, weave_template)
 	local wind_name = weave_template.wind
 	local wind_settings = WindSettings[wind_name]
@@ -603,10 +527,6 @@ MissionVotingUI._set_weave_presentation = function (self, difficulty, level_key,
 	self._presentation_type = "weave"
 end
 
-MissionVotingUI._set_weave_find_group_presentation = function (self)
-	self._presentation_type = "weave_find_group"
-end
-
 MissionVotingUI._assign_objective = function (self, index, text, icon, spacing)
 	local widgets_by_name = self._weave_game_widgets_by_name
 	local widget_name = "objective_" .. index
@@ -615,6 +535,65 @@ MissionVotingUI._assign_objective = function (self, index, text, icon, spacing)
 	local style = widget.style
 	content.icon = icon or "objective_icon_general"
 	content.text = text or "-"
+end
+
+MissionVotingUI._set_deus_quickplay_presentation = function (self, difficulty)
+	local difficulty_settings = DifficultySettings[difficulty]
+	local difficulty_display_name = difficulty_settings.display_name
+	local difficulty_display_image = difficulty_settings.display_image
+	local difficulty_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
+	local deus_quickplay_widgets_by_name = self._deus_quickplay_widgets_by_name
+	local game_option_1 = deus_quickplay_widgets_by_name.game_option_1
+	game_option_1.content.option_text = Localize(difficulty_display_name)
+	game_option_1.content.icon = difficulty_display_image
+	game_option_1.content.icon_frame = difficulty_frame_texture
+	self._presentation_type = "deus_quickplay"
+end
+
+MissionVotingUI._set_deus_custom_game_presentation = function (self, difficulty, journey_name, private_game, always_host, strict_matchmaking, theme)
+	self._presentation_type = "deus_custom"
+	local deus_custom_widgets_by_name = self._deus_custom_widgets_by_name
+	local game_option_1 = deus_custom_widgets_by_name.game_option_1
+	local game_option_1_content = game_option_1.content
+	local journey_settings = DeusJourneySettings[journey_name]
+	local journey_display_name = journey_settings.display_name
+	local level_image = journey_settings.level_image
+	local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(self.statistics_db, self._stats_id, journey_name) or 0
+	local level_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
+	game_option_1_content.icon = level_image
+	game_option_1_content.show_journey_border = true
+	local level_texture_size = game_option_1.style.icon.texture_size
+	level_texture_size[1] = level_texture_settings.size[1]
+	level_texture_size[2] = level_texture_settings.size[2]
+	local journey_name_widget = deus_custom_widgets_by_name.journey_name
+	journey_name_widget.content.text = journey_display_name
+	local theme_settings = DeusThemeSettings[theme]
+	game_option_1_content.theme_icon = theme_settings.icon
+	local theme_widget = deus_custom_widgets_by_name.journey_theme
+	theme_widget.content.text = theme_settings.journey_title
+	theme_widget.content.icon = theme_settings.text_icon
+	theme_widget.style.text.text_color = theme_settings.color
+	theme_widget.style.icon.color = theme_settings.color
+	local difficulty_settings = DifficultySettings[difficulty]
+	local difficulty_display_name = difficulty_settings.display_name
+	local difficulty_display_image = difficulty_settings.display_image
+	local game_option_2 = deus_custom_widgets_by_name.game_option_2
+	game_option_2.content.option_text = Localize(difficulty_display_name)
+	game_option_2.content.icon = difficulty_display_image
+	local additional_option = deus_custom_widgets_by_name.additional_option
+	additional_option.content.option_text = ""
+	local private_button = deus_custom_widgets_by_name.private_button
+	private_button.content.button_hotspot.disable_button = true
+	private_button.content.button_hotspot.is_selected = private_game
+	private_button.style.hover_glow.color[1] = 0
+	local host_button = deus_custom_widgets_by_name.host_button
+	host_button.content.button_hotspot.disable_button = true
+	host_button.content.button_hotspot.is_selected = always_host
+	host_button.style.hover_glow.color[1] = 0
+	local strict_matchmaking_button = deus_custom_widgets_by_name.strict_matchmaking_button
+	strict_matchmaking_button.content.button_hotspot.disable_button = true
+	strict_matchmaking_button.content.button_hotspot.is_selected = strict_matchmaking
+	strict_matchmaking_button.style.hover_glow.color[1] = 0
 end
 
 MissionVotingUI._update_vote_timer = function (self)
@@ -628,7 +607,7 @@ MissionVotingUI._update_vote_timer = function (self)
 end
 
 MissionVotingUI._set_vote_time_progress = function (self, progress)
-	local widgets_by_name = self._widgets_by_name
+	local widgets_by_name = self:get_chrome_widgets()
 	local widget = widgets_by_name.timer_fg
 	local content = widget.content
 	local uvs = content.texture_id.uvs
@@ -637,17 +616,6 @@ MissionVotingUI._set_vote_time_progress = function (self, progress)
 	local current_size = self.ui_scenegraph[scenegraph_id].size
 	current_size[1] = default_size[1] * progress
 	uvs[2][1] = progress
-end
-
-MissionVotingUI._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
 end
 
 MissionVotingUI._update_animations = function (self, dt, t)
@@ -669,8 +637,9 @@ MissionVotingUI.update = function (self, dt, t)
 	self:_update_animations(dt, t)
 
 	local voting_manager = self.voting_manager
+	local is_mission_vote_in_progress = voting_manager:vote_in_progress() and voting_manager:is_mission_vote() and not voting_manager:has_voted(Network.peer_id())
 
-	if voting_manager:vote_in_progress() and voting_manager:is_mission_vote() then
+	if is_mission_vote_in_progress then
 		if not menu_active then
 			if not self.vote_started then
 				self:start_vote(voting_manager.active_voting)
@@ -678,7 +647,7 @@ MissionVotingUI.update = function (self, dt, t)
 
 			self:_update_vote_timer()
 
-			local widgets_by_name = self._widgets_by_name
+			local widgets_by_name = self:get_chrome_widgets()
 
 			UIWidgetUtils.animate_default_button(widgets_by_name.button_abort, dt)
 
@@ -697,17 +666,19 @@ MissionVotingUI.update = function (self, dt, t)
 
 							if input_service:get(vote_option.gamepad_input) then
 								voting_manager:vote(vote_option.vote)
-								self:on_vote_casted()
+								self:on_vote_casted(vote_options.vote == 1)
 
 								break
 							end
 						end
-					elseif self:_is_button_pressed(widgets_by_name.button_confirm) then
+					elseif UIUtils.is_button_pressed(widgets_by_name.button_confirm) then
 						voting_manager:vote(1)
-						self:on_vote_casted()
-					elseif self:_is_button_pressed(widgets_by_name.button_abort) then
+						self:on_vote_casted(true)
+					elseif UIUtils.is_button_pressed(widgets_by_name.button_abort) then
 						voting_manager:vote(2)
-						self:on_vote_casted()
+						self:on_vote_casted(false)
+					elseif UIUtils.is_button_hover_enter(widgets_by_name.button_confirm) or UIUtils.is_button_hover_enter(widgets_by_name.button_abort) then
+						self:_play_sound("Play_hud_hover")
 					end
 				end
 
@@ -744,7 +715,7 @@ MissionVotingUI.draw = function (self, dt)
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	local snap_pixel_positions = render_settings.snap_pixel_positions
-	local widgets = self._widgets
+	local _, widgets = self:get_chrome_widgets()
 
 	for i = 1, #widgets, 1 do
 		local widget = widgets[i]
@@ -758,7 +729,7 @@ MissionVotingUI.draw = function (self, dt)
 		render_settings.snap_pixel_positions = snap_pixel_positions
 	end
 
-	if not self._twitch_mode_enabled and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(self._game_mode) then
+	if not self._twitch_mode_enabled and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(self._matchmaking_type) then
 		local twitch_widgets_by_name = self._twitch_widgets_by_name
 		local widget = twitch_widgets_by_name.twitch_disclaimer
 
@@ -857,11 +828,25 @@ MissionVotingUI.draw = function (self, dt)
 
 				render_settings.snap_pixel_positions = snap_pixel_positions
 			end
-		elseif presentation_type == "weave_find_group" then
-			local weave_find_group_widgets = self._weave_find_group_widgets
+		elseif presentation_type == "deus_quickplay" then
+			local deus_quickplay_widgets = self._deus_quickplay_widgets
 
-			for i = 1, #weave_find_group_widgets, 1 do
-				local widget = weave_find_group_widgets[i]
+			for i = 1, #deus_quickplay_widgets, 1 do
+				local widget = deus_quickplay_widgets[i]
+
+				if widget.snap_pixel_positions ~= nil then
+					render_settings.snap_pixel_positions = widget.snap_pixel_positions
+				end
+
+				UIRenderer.draw_widget(ui_top_renderer, widget)
+
+				render_settings.snap_pixel_positions = snap_pixel_positions
+			end
+		elseif presentation_type == "deus_custom" then
+			local deus_custom_widgets = self._deus_custom_widgets
+
+			for i = 1, #deus_custom_widgets, 1 do
+				local widget = deus_custom_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
 					render_settings.snap_pixel_positions = widget.snap_pixel_positions
@@ -964,6 +949,10 @@ MissionVotingUI.active_input_service = function (self)
 	local input_service = input_manager:get_service(service_name)
 
 	return input_service
+end
+
+MissionVotingUI._play_sound = function (self, sound_event)
+	WwiseWorld.trigger_event(self.wwise_world, sound_event)
 end
 
 return

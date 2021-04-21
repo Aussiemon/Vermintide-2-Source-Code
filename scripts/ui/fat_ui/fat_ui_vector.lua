@@ -63,9 +63,9 @@ if not FatUIVector.pool then
 	function luaVec(x, y, z)
 		local v = pool[index]
 		index = index + 1
-		v[0] = x
-		v[1] = y
-		v[2] = z
+		v[1] = x
+		v[2] = y
+		v[3] = z
 
 		return v
 	end

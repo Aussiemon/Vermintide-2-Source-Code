@@ -15,7 +15,7 @@ local Crashify = {
 		local property = string.format("%s = %s", key, value)
 		local output = string.format("<<crashify-property>>%s<</crashify-property>>", property)
 
-		if PLATFORM ~= "win32" then
+		if not IS_WINDOWS then
 			Application.add_crash_property(key, tostring(value))
 		end
 

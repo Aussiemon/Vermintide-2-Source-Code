@@ -1,3 +1,5 @@
+require("foundation/scripts/util/table")
+
 Colors = Colors or {}
 local ALPHA = 255
 Colors.color_definitions = {
@@ -1087,6 +1089,12 @@ Colors.color_definitions = {
 		197,
 		174
 	},
+	wh_4 = {
+		ALPHA,
+		230,
+		184,
+		71
+	},
 	dr_ranger = {
 		ALPHA,
 		187,
@@ -1129,6 +1137,12 @@ Colors.color_definitions = {
 		99,
 		192
 	},
+	we_4 = {
+		ALPHA,
+		113,
+		113,
+		66
+	},
 	es_mercenary = {
 		ALPHA,
 		204,
@@ -1170,6 +1184,12 @@ Colors.color_definitions = {
 		150,
 		50,
 		100
+	},
+	bw_4 = {
+		ALPHA,
+		28,
+		32,
+		53
 	},
 	empire_soldier_tutorial = {
 		ALPHA,
@@ -1398,6 +1418,12 @@ Colors.color_definitions = {
 		200,
 		230,
 		81
+	},
+	deus_potion = {
+		ALPHA,
+		155,
+		17,
+		30
 	}
 }
 Colors.indexed_colors, Colors.num_colors = table.values(Colors.color_definitions)
@@ -1502,6 +1528,12 @@ end
 
 Colors.copy_to = function (dst, src)
 	dst[1] = src[1]
+	dst[2] = src[2]
+	dst[3] = src[3]
+	dst[4] = src[4]
+end
+
+Colors.copy_no_alpha_to = function (dst, src)
 	dst[2] = src[2]
 	dst[3] = src[3]
 	dst[4] = src[4]

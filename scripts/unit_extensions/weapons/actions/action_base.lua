@@ -19,6 +19,8 @@ ActionBase.init = function (self, world, item_name, is_server, owner_unit, damag
 	self.is_bot = self.owner_player and self.owner_player.bot_player
 	self._is_critical_strike = false
 	self._fatigue_reset = true
+	self._extra_shots = 0
+	self._extra_shots_procced = false
 end
 
 ActionBase.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
@@ -28,6 +30,7 @@ ActionBase.client_owner_start_action = function (self, new_action, t, chain_acti
 	buff_extension:trigger_procs("on_start_action", new_action, t, chain_action_data, power_level, action_init_data)
 
 	self._fatigue_reset = true
+	self._extra_shots_procced = false
 end
 
 ActionBase._handle_critical_strike = function (self, is_critical_strike, buff_extension, hud_extension, first_person_extension, proc_type, hud_sound_event)
@@ -59,6 +62,25 @@ ActionBase._do_critical_strike_procs = function (self, buff_extension, proc_type
 	end
 end
 
+ActionBase._check_extra_shot_proc = function (self, buff_extension)
+	if not self._extra_shots_procced then
+		local extra_shots = buff_extension:apply_buffs_to_value(0, "extra_shot")
+
+		if buff_extension:has_buff_perk("extra_shot") then
+			extra_shots = extra_shots + 1
+		end
+
+		self._extra_shots = math.floor(extra_shots)
+		self._extra_shots_procced = true
+	end
+
+	if self._extra_shots > 0 then
+		self._extra_shots = self._extra_shots - 1
+
+		return true
+	end
+end
+
 ActionBase._handle_fatigue = function (self, buff_extension, status_extension, new_action, check_buffs)
 	local procced = nil
 
@@ -69,16 +91,17 @@ ActionBase._handle_fatigue = function (self, buff_extension, status_extension, n
 
 		if not procced then
 			local cost = "action_push"
+			local cost_multiplier = 1
 
 			if new_action.fatigue_cost then
 				cost = new_action.fatigue_cost
 			end
 
 			if buff_extension:has_buff_perk("slayer_stamina") then
-				cost = "action_stun_push"
+				cost_multiplier = 0.5
 			end
 
-			status_extension:add_fatigue_points(cost)
+			status_extension:add_fatigue_points(cost, nil, nil, cost_multiplier)
 			status_extension:set_has_pushed(new_action.fatigue_regen_delay)
 		end
 

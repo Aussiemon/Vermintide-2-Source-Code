@@ -59,9 +59,10 @@ end
 
 PlayerCharacterStateGrabbedByChaosSpawn.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local status_extension = self.status_extension
+	local chaos_spawn_alive = ALIVE[self.chaos_spawn_unit]
 	local pos = nil
 
-	if Unit.alive(self.chaos_spawn_unit) and status_extension:is_catapulted() then
+	if chaos_spawn_alive and status_extension:is_catapulted() then
 		local node1 = Unit.node(unit, "j_leftfoot")
 		local node2 = Unit.node(unit, "j_rightfoot")
 		local pos1 = Unit.world_position(unit, node1)
@@ -78,7 +79,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.on_exit = function (self, unit, input, d
 
 	locomotion_extension:teleport_to(pos, current_rotation)
 
-	if self.is_server then
+	if self.is_server and chaos_spawn_alive then
 		StatusUtils.set_grabbed_by_chaos_spawn_network(unit, false, self.chaos_spawn_unit)
 	else
 		status_extension:set_grabbed_by_chaos_spawn(false)

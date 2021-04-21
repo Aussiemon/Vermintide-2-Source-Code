@@ -12,6 +12,7 @@ local generic_input_actions = definitions.generic_input_actions
 local weave_widget_definitions = definitions.weave_widget_definitions
 local debug_draw_scenegraph = false
 local debug_menu = false
+local level_end_view_testify = script_data.testify and require("scripts/ui/views/level_end/level_end_view_testify")
 LevelEndView = class(LevelEndView, LevelEndViewBase)
 
 LevelEndView.init = function (self, context)
@@ -20,6 +21,16 @@ LevelEndView.init = function (self, context)
 	self._weave_render_settings = {
 		snap_pixel_positions = true
 	}
+
+	if context.players_session_score then
+		local peers_with_score = {}
+
+		for peer_id in pairs(context.players_session_score) do
+			peers_with_score[peer_id] = true
+		end
+
+		self._peers_with_score = peers_with_score
+	end
 end
 
 LevelEndView.start = function (self)
@@ -40,12 +51,6 @@ LevelEndView.setup_pages = function (self, game_won, rewards)
 		index_by_state_name = self:_setup_pages_victory(rewards)
 	else
 		index_by_state_name = self:_setup_pages_defeat(rewards)
-	end
-
-	if Managers.mechanism:current_mechanism_name() == "versus" then
-		index_by_state_name = {
-			EndViewStateScoreVS = 1
-		}
 	end
 
 	return index_by_state_name
@@ -252,7 +257,9 @@ LevelEndView.update = function (self, dt, t)
 		self:_update_gamepad_input(dt, t)
 	end
 
-	self:_poll_testify_requests()
+	if script_data.testify then
+		Testify:poll_requests_through_handler(level_end_view_testify, self)
+	end
 end
 
 LevelEndView._update_gamepad_input = function (self, dt, t)
@@ -358,12 +365,12 @@ LevelEndView.update_force_shutdown = function (self, dt)
 		self:signal_done(false)
 
 		self._signaled_done = true
-		self._signal_done_timer = 15
+		self._signal_done_fallback_timer = 15
 		self._ready_button_widget.content.button_hotspot.disable_button = true
 		self._retry_button_widget.content.button_hotspot.disable_button = true
 	elseif not self._left_lobby then
-		if self.is_server and self._signal_done_timer then
-			self._signal_done_timer = math.max(0, self._signal_done_timer - dt)
+		if self._signal_done_fallback_timer then
+			self._signal_done_fallback_timer = math.max(0, self._signal_done_fallback_timer - dt)
 		end
 
 		local all_done = true
@@ -371,16 +378,13 @@ LevelEndView.update_force_shutdown = function (self, dt)
 
 		if lobby_members then
 			local members = self._lobby:members():get_members()
+			local peers_with_score = self._peers_with_score
 
-			for i, peer_id in ipairs(members) do
-				if not self._done_peers[peer_id] then
-					if self.is_server and self._signal_done_timer and self._signal_done_timer == 0 then
-						local server = Managers.matchmaking.network_server
+			for i = 1, #members, 1 do
+				local peer_id = members[i]
+				local unique_id = peer_id .. ":1"
 
-						server:disconnect_peer(peer_id, "signal_done_timeout")
-						Crashify.print_exception("LevelEndView", "Client did not RPC signal_done in time")
-					end
-
+				if not self._done_peers[peer_id] and (not peers_with_score or peers_with_score[unique_id]) then
 					all_done = false
 
 					break
@@ -388,7 +392,7 @@ LevelEndView.update_force_shutdown = function (self, dt)
 			end
 		end
 
-		if all_done then
+		if all_done or (self._signal_done_fallback_timer and self._signal_done_fallback_timer <= 0) then
 			self:exit_to_game()
 		end
 	end
@@ -450,13 +454,6 @@ end
 
 LevelEndView.input_enabled = function (self)
 	return not self._ready_button_widget.content.button_hotspot.disable_button
-end
-
-LevelEndView._poll_testify_requests = function (self)
-	if Testify:poll_request("close_level_end_screen") then
-		self:exit_to_game()
-		Testify:respond_to_request("close_level_end_screen")
-	end
 end
 
 return

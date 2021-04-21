@@ -475,7 +475,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.setting_stepper_1 = {
 		vertical_alignment = "top",
 		parent = "list_window",
@@ -1202,7 +1202,7 @@ local widgets = {
 	title_text = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title"), "title_text", nil, nil, title_text_style),
 	option_tabs_divider = create_window_divider("option_tabs_divider", scenegraph_definition.option_tabs_divider.size),
 	list_title_rank = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_rank"), "list_title_rank", nil, nil, list_title_text_style),
-	list_title_name = UIWidgets.create_simple_text((PLATFORM ~= "xb1" and Localize("menu_weave_leaderboard_title_player_name")) or Localize("menu_weave_leaderboard_title_gamertag"), "list_title_name", nil, nil, list_title_text_style),
+	list_title_name = UIWidgets.create_simple_text((not IS_XB1 and Localize("menu_weave_leaderboard_title_player_name")) or Localize("menu_weave_leaderboard_title_gamertag"), "list_title_name", nil, nil, list_title_text_style),
 	list_title_weave = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_number"), "list_title_weave", nil, nil, list_title_text_style),
 	list_title_score = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_title_weave_score"), "list_title_score", nil, nil, list_title_text_style),
 	no_placement_text = UIWidgets.create_simple_text(Localize("menu_weave_leaderboard_no_placement_text"), "no_placement_text", nil, nil, no_placement_text_style),
@@ -1229,7 +1229,7 @@ local widgets = {
 	})
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	widgets.setting_stepper_3 = create_stepper("setting_stepper_3", scenegraph_definition.setting_stepper_3.size)
 end
 

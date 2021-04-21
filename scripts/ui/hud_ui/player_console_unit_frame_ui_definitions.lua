@@ -66,7 +66,7 @@ local scenegraph_definition = {
 	}
 }
 
-if PLATFORM ~= "win32" then
+if not IS_WINDOWS then
 	scenegraph_definition.root.scale = "hud_fit"
 	scenegraph_definition.root.is_root = nil
 end

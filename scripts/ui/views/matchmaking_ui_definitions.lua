@@ -374,342 +374,6 @@ local scenegraph_definition = {
 			0,
 			2
 		}
-	},
-	debug_box = {
-		vertical_alignment = "bottom",
-		parent = "window_root",
-		horizontal_alignment = "center",
-		size = {
-			320,
-			320
-		},
-		position = {
-			0,
-			-340,
-			1
-		}
-	},
-	debug_box_text = {
-		vertical_alignment = "center",
-		parent = "debug_box",
-		horizontal_alignment = "center",
-		position = {
-			0,
-			0,
-			2
-		},
-		size = {
-			300,
-			300
-		}
-	},
-	debug_lobbies_box = {
-		vertical_alignment = "top",
-		parent = "screen",
-		horizontal_alignment = "left",
-		size = {
-			1440,
-			1040
-		},
-		position = {
-			20,
-			-20,
-			1
-		}
-	},
-	debug_lobbies_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "center",
-		position = {
-			0,
-			0,
-			2
-		},
-		size = {
-			900,
-			1040
-		}
-	},
-	debug_server_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			0,
-			0,
-			2
-		},
-		size = {
-			150,
-			1000
-		}
-	},
-	debug_match_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			150,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_broken_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			190,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_valid_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			250,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_level_key_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			300,
-			0,
-			2
-		},
-		size = {
-			100,
-			1000
-		}
-	},
-	debug_selected_level_key_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			400,
-			0,
-			2
-		},
-		size = {
-			100,
-			1000
-		}
-	},
-	debug_matchmaking_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			500,
-			0,
-			2
-		},
-		size = {
-			75,
-			1000
-		}
-	},
-	debug_difficulty_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			575,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_num_players_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			640,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_wh_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			690,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_we_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			740,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_dr_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			790,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_bw_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			840,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_es_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			890,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_rp_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			940,
-			0,
-			2
-		},
-		size = {
-			50,
-			1000
-		}
-	},
-	debug_host_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			990,
-			0,
-			2
-		},
-		size = {
-			150,
-			1000
-		}
-	},
-	debug_lobby_id_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			1140,
-			0,
-			2
-		},
-		size = {
-			150,
-			1000
-		}
-	},
-	debug_hash_text = {
-		vertical_alignment = "center",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			1290,
-			0,
-			2
-		},
-		size = {
-			150,
-			1000
-		}
-	},
-	debug_divider_0 = {
-		vertical_alignment = "top",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			0,
-			-40,
-			2
-		},
-		size = {
-			1290,
-			2
-		}
-	},
-	debug_divider_1 = {
-		vertical_alignment = "top",
-		parent = "debug_lobbies_box",
-		horizontal_alignment = "left",
-		position = {
-			179,
-			0,
-			2
-		},
-		size = {
-			2,
-			1040
-		}
 	}
 }
 local window_corner_radius = 5
@@ -747,6 +411,13 @@ difficulty_text_style.horizontal_alignment = "left"
 difficulty_text_style.font_size = 16
 difficulty_text_style.offset[1] = 15
 difficulty_text_style.offset[2] = -35
+local deus_difficulty_text_style = table.clone(difficulty_text_style)
+deus_difficulty_text_style.default_color = {
+	255,
+	200,
+	200,
+	200
+}
 local matchmaking_status_text_style = table.clone(default_text_style)
 matchmaking_status_text_style.vertical_alignment = "center"
 matchmaking_status_text_style.horizontal_alignment = "center"
@@ -754,6 +425,8 @@ matchmaking_status_text_style.font_size = 26
 matchmaking_status_text_style.dynamic_font_size = true
 matchmaking_status_text_style.word_wrap = false
 matchmaking_status_text_style.offset[2] = 2
+local deus_matchmaking_status_text_style = table.clone(matchmaking_status_text_style)
+deus_matchmaking_status_text_style.text_color = Colors.get_table("font_title")
 local cancel_input_text_style = table.clone(default_text_style)
 cancel_input_text_style.vertical_alignment = "center"
 cancel_input_text_style.horizontal_alignment = "left"
@@ -856,6 +529,70 @@ local widget_detail_definitions = {
 	}, "timer_fg"),
 	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow")
 }
+local deus_widget_definitions = {
+	window = UIWidgets.create_simple_texture("matchmaking_top", "window", false, false, nil, {
+		-10,
+		15,
+		0
+	}, "native"),
+	loading_icon = UIWidgets.create_simple_texture("matchmaking_icon_morris", "loading_icon", false, false, nil, {
+		0,
+		3,
+		0
+	}),
+	loading_status_frame = UIWidgets.create_simple_rotated_texture("matchmaking_icon_effect_morris", 0, {
+		71,
+		71
+	}, "loading_status_frame", false, false, nil, nil, {
+		0,
+		3,
+		0
+	}),
+	window_hotspot = UIWidgets.create_simple_hotspot("window"),
+	status_text = UIWidgets.create_simple_text("n/a", "status_text", nil, nil, deus_matchmaking_status_text_style),
+	player_status_1 = create_status_widget("matchmaking_light_02", "player_status_1"),
+	player_status_2 = create_status_widget("matchmaking_light_02", "player_status_2"),
+	player_status_3 = create_status_widget("matchmaking_light_02", "player_status_3"),
+	player_status_4 = create_status_widget("matchmaking_light_02", "player_status_4")
+}
+local deus_widget_detail_definitions = {
+	detailed_info_box = UIWidgets.create_simple_texture("matchmaking_animated_panel", "detailed_info_box", false, false, nil, {
+		-5,
+		-7,
+		0
+	}, "native"),
+	title_text = UIWidgets.create_simple_text("n/a", "level_key_info_box", nil, nil, title_text_style),
+	difficulty_text = UIWidgets.create_simple_text("n/a", "detailed_info_box", nil, nil, deus_difficulty_text_style),
+	party_slot_1 = UIWidgets.create_matchmaking_portrait(scenegraph_definition.party_slot_1.size, "party_slot_1"),
+	party_slot_2 = UIWidgets.create_matchmaking_portrait(scenegraph_definition.party_slot_2.size, "party_slot_2"),
+	party_slot_3 = UIWidgets.create_matchmaking_portrait(scenegraph_definition.party_slot_3.size, "party_slot_3"),
+	party_slot_4 = UIWidgets.create_matchmaking_portrait(scenegraph_definition.party_slot_4.size, "party_slot_4"),
+	timer_bg = UIWidgets.create_simple_texture("matchmaking_progressbar_border", "timer_bg", false, false, nil, {
+		5,
+		-15,
+		0
+	}, "native"),
+	timer_fg = UIWidgets.create_simple_uv_texture("timer_fg", {
+		{
+			0,
+			0
+		},
+		{
+			1,
+			1
+		}
+	}, "timer_fg", false, false, nil, {
+		19,
+		-1,
+		2
+	}),
+	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow", false, false, nil, {
+		19,
+		-1,
+		2
+	})
+}
+deus_widget_detail_definitions.detailed_info_box.content.no_background_changes = true
 local cancel_input_widgets = {
 	cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_input", nil, nil, cancel_input_text_style),
 	cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_suffix_cancel"), "cancel_text_suffix", nil, nil, cancel_text_style),
@@ -1242,8 +979,10 @@ local debug_widget_definitions = {
 
 return {
 	widget_definitions = widget_definitions,
-	cancel_input_widgets = cancel_input_widgets,
 	widget_detail_definitions = widget_detail_definitions,
+	deus_widget_definitions = deus_widget_definitions,
+	deus_widget_detail_definitions = deus_widget_detail_definitions,
+	cancel_input_widgets = cancel_input_widgets,
 	debug_widget_definitions = debug_widget_definitions,
 	scenegraph_definition = scenegraph_definition
 }

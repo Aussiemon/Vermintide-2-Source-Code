@@ -41,6 +41,7 @@ local ignored_damage_types = {
 	buff_shared_medpack = true,
 	buff = true,
 	warpfire_ground = true,
+	life_tap = true,
 	health_degen = true,
 	vomit_ground = true,
 	wounded_dot = true,

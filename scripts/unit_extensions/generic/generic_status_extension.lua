@@ -20,6 +20,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.invisible = false
 	self.crouching = false
 	self.blocking = false
+	self.override_blocking = nil
 	self.charge_blocking = false
 	self.catapulted = false
 	self.catapulted_direction = nil
@@ -107,6 +108,9 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 
 	self._intoxication_level = 0
 	self.shade_stealth_counter = 0
+	self._incapacitated_outline_ids = {}
+	self._assisted_respawn_outline_id = -1
+	self._invisible_outline_id = -1
 end
 
 GenericStatusExtension.extensions_ready = function (self)
@@ -709,8 +713,10 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 	local fatigue_cost = amount * max_fatigue / max_fatigue_points * (fatigue_point_costs_multiplier or 1)
+	local all_blocks_parry_buff = "power_up_deus_block_procs_parry_exotic"
+	local all_blocks_parry = buff_extension:has_buff_type(all_blocks_parry_buff)
 
-	if blocking_weapon_unit and self.timed_block and t < self.timed_block then
+	if blocking_weapon_unit and self.timed_block and (t < self.timed_block or all_blocks_parry) then
 		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, "timed_block_cost")
 
 		buff_extension:trigger_procs("on_timed_block")
@@ -803,6 +809,12 @@ GenericStatusExtension.get_dodge_item_data = function (self)
 end
 
 GenericStatusExtension.add_dodge_cooldown = function (self)
+	if self.buff_extension:has_buff_perk("infinite_dodge") then
+		self.dodge_cooldown = 0
+
+		return
+	end
+
 	self:get_dodge_item_data()
 
 	self.dodge_cooldown = math.min(self.dodge_cooldown + 1, 3 + self.dodge_count)
@@ -814,10 +826,11 @@ GenericStatusExtension.start_dodge_cooldown = function (self, t)
 end
 
 GenericStatusExtension.get_dodge_cooldown = function (self)
-	local buff_extension = ScriptUnit.extension(self.unit, "buff_system")
-	local cooldown = 0.4 + 0.6 * (1 - math.max(self.dodge_cooldown - self.dodge_count, 0) / 3)
+	if self.buff_extension:has_buff_type("passive_career_we_2") then
+		return 1
+	end
 
-	return (buff_extension:has_buff_type("passive_career_we_2") and 1) or cooldown
+	return 0.4 + 0.6 * (1 - math.max(self.dodge_cooldown - self.dodge_count, 0) / 3)
 end
 
 GenericStatusExtension._block_breaking_fatigue_gain = function (self, fatigue_type, max_fatigue)
@@ -965,6 +978,12 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.pounced_down, pounced_down, go_id, enemy_go_id)
 	end
+
+	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
+	if pounced_down then
+		buff_extension:trigger_procs("on_player_disabled", "assassin_pounced")
+	end
 end
 
 GenericStatusExtension.set_crouching = function (self, crouching)
@@ -1051,6 +1070,17 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 		buff_extension:trigger_procs("on_knocked_down")
 
+		local local_player = Managers.player:local_player()
+		local local_player_unit = local_player.player_unit
+
+		if local_player_unit then
+			local local_player_buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
+
+			if local_player_buff_extension then
+				local_player_buff_extension:trigger_procs("on_ally_knocked_down", unit)
+			end
+		end
+
 		if self._intoxication_level < 0 then
 			self._intoxication_level = -1
 		end
@@ -1092,20 +1122,24 @@ GenericStatusExtension.set_ready_for_assisted_respawn = function (self, ready, f
 	self.ready_for_assisted_respawn = ready
 	self.assisted_respawn_flavour_unit = flavour_unit
 	local unit = self.unit
+	local outline_extension = ScriptUnit.has_extension(unit, "outline_system")
 
-	if not ScriptUnit.has_extension(unit, "outline_system") then
+	if not outline_extension then
 		return
 	end
 
 	local player = self.player
-	local outline_extension = ScriptUnit.extension(unit, "outline_system")
 
-	if player and player.local_player then
-		outline_extension.set_method("never")
+	if ready then
+		if player and player.local_player then
+			self._assisted_respawn_outline_id = outline_extension:add_outline(OutlineSettings.templates.ready_for_assisted_respawn)
+		else
+			self._assisted_respawn_outline_id = outline_extension:add_outline(OutlineSettings.templates.ready_for_assisted_respawn_husk)
+		end
 	else
-		outline_extension.set_method_player_setting("within_distance")
-		outline_extension.set_distance("revive")
-		outline_extension.set_outline_color("ally")
+		outline_extension:remove_outline(self._assisted_respawn_outline_id)
+
+		self._assisted_respawn_outline_id = nil
 	end
 end
 
@@ -1135,11 +1169,7 @@ GenericStatusExtension.set_dead = function (self, dead)
 	if dead and ScriptUnit.has_extension(self.unit, "outline_system") then
 		local outline_extension = ScriptUnit.extension(self.unit, "outline_system")
 
-		if player and player.local_player then
-			outline_extension.set_method("never")
-		else
-			outline_extension.set_method_player_setting("never")
-		end
+		outline_extension:add_outline(OutlineSettings.templates.dead)
 	end
 
 	if dead and player and not player.remote then
@@ -1168,6 +1198,20 @@ GenericStatusExtension.set_blocking = function (self, blocking)
 	if blocking then
 		local t = Managers.time:time("game")
 		self.raise_block_time = t
+	end
+end
+
+GenericStatusExtension.set_override_blocking = function (self, blocking, rpc_server)
+	self.override_blocking = blocking
+
+	if rpc_server then
+		local network_manager = Managers.state.network
+		local game = network_manager:game()
+		local unit_id = network_manager:unit_game_object_id(self.unit)
+
+		if unit_id and game then
+			network_manager.network_transmit:send_rpc_server("rpc_set_override_blocking", unit_id, blocking or false)
+		end
 	end
 end
 
@@ -1439,6 +1483,12 @@ GenericStatusExtension.set_is_ledge_hanging = function (self, is_ledge_hanging, 
 		self.pulled_up = false
 	end
 
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	if is_ledge_hanging and buff_extension then
+		buff_extension:trigger_procs("on_ledge_hang_start")
+	end
+
 	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 
 	if is_ledge_hanging then
@@ -1474,26 +1524,36 @@ GenericStatusExtension.set_outline_incapacitated = function (self, incapacitated
 		return
 	end
 
-	if not ScriptUnit.has_extension(unit, "outline_system") then
+	local outline_extension = ScriptUnit.has_extension(unit, "outline_system")
+
+	if not outline_extension then
 		return
 	end
 
-	if not player.local_player then
-		local outline_extension = ScriptUnit.extension(unit, "outline_system")
-		local color_name = (incapacitated and "knocked_down") or "ally"
-		local method_name = (incapacitated and "within_distance") or "outside_distance_or_not_visible"
-		local range = (incapacitated and "revive") or "player_husk"
+	if incapacitated then
+		if not player.local_player then
+			if not self._incapacitated_outline_ids.target_id then
+				self._incapacitated_outline_ids.target_id = outline_extension:add_outline(OutlineSettings.templates.incapacitated)
+			end
 
-		outline_extension.set_outline_color(color_name)
-		outline_extension.set_method_player_setting(method_name)
-		outline_extension.set_distance(range)
+			if disabler_unit and not self._incapacitated_outline_ids.disabler_id then
+				outline_extension = ScriptUnit.extension(disabler_unit, "outline_system")
+				local outline_id = outline_extension:add_outline(OutlineSettings.templates.incapacitated)
+				self._incapacitated_outline_ids.disabler_id = outline_id
+			end
+		end
+	else
+		local incapacitated_outline_ids = self._incapacitated_outline_ids
 
-		if disabler_unit then
+		outline_extension:remove_outline(incapacitated_outline_ids.target_id)
+
+		if incapacitated_outline_ids.disabler_id and disabler_unit then
 			outline_extension = ScriptUnit.extension(disabler_unit, "outline_system")
 
-			outline_extension.set_outline_color("knocked_down")
-			outline_extension.set_method((incapacitated and outline_disabler_unit and "always") or "never")
+			outline_extension:remove_outline(incapacitated_outline_ids.disabler_id)
 		end
+
+		table.clear(self._incapacitated_outline_ids)
 	end
 end
 
@@ -1526,6 +1586,12 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	self.pack_master_grabber = (is_grabbed and grabber_unit) or nil
 	local previous_status = self.pack_master_status
 	self.pack_master_status = grabbed_status
+	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
+	if is_grabbed then
+		buff_extension:trigger_procs("on_player_disabled", "pack_master_grab")
+	end
+
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 	local outline_grabbed_unit = grabbed_status ~= "pack_master_hanging"
 	local player_manager = Managers.player
@@ -1690,6 +1756,12 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 		locomotion_extension:set_wanted_velocity(Vector3.zero())
 		locomotion_extension:move_to_non_intersecting_position()
 	end
+
+	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
+	if is_grabbed then
+		buff_extension:trigger_procs("on_player_disabled", "corruptor_grab")
+	end
 end
 
 GenericStatusExtension.get_pacing_intensity = function (self)
@@ -1825,7 +1897,7 @@ GenericStatusExtension.is_crouching = function (self)
 end
 
 GenericStatusExtension.is_blocking = function (self)
-	return self.blocking, self.shield_block
+	return (self.override_blocking == nil and self.blocking) or self.override_blocking, self.shield_block
 end
 
 GenericStatusExtension.is_wounded = function (self)
@@ -1849,7 +1921,7 @@ GenericStatusExtension.is_permanent_heal = function (self, heal_type)
 		end
 	end
 
-	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "career_passive" or heal_type == "health_regen" or heal_type == "debug"
+	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "career_passive" or heal_type == "health_regen" or heal_type == "debug" or heal_type == "health_conversion"
 end
 
 GenericStatusExtension.heal_can_remove_wounded = function (self, heal_type)
@@ -1976,8 +2048,7 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 
 		if unit_is_hero and is_enemies then
 			local outline_extension = ScriptUnit.extension(self.unit, "outline_system")
-
-			outline_extension.set_method("never")
+			self._invisible_outline_id = outline_extension:add_outline(OutlineSettings.templates.invisible)
 		end
 	else
 		flow_event_name = "lua_disabled_invisibility"
@@ -1989,8 +2060,9 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 		if unit_is_hero and is_enemies then
 			local outline_extension = ScriptUnit.extension(self.unit, "outline_system")
 
-			outline_extension.set_method("outside_distance_or_not_visible")
-			outline_extension.update_override_method_player_setting()
+			outline_extension:remove_outline(self._invisible_outline_id)
+
+			self._invisible_outline_id = -1
 		end
 	end
 

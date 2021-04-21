@@ -38,7 +38,8 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 	self.player_height_previous = self.player_height_wanted
 	self.player_height_time_to_change = 0
 	self.player_height_change_start_time = 0
-	self.look_delta = nil
+	self.has_look_delta = false
+	self.look_delta = Vector3Box()
 	local small_delta = math.pi / 15
 	self.MAX_MIN_PITCH = math.pi / 2 - small_delta
 	self.drawer = Managers.state.debug:drawer({
@@ -109,10 +110,10 @@ PlayerBotUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 end
 
 PlayerBotUnitFirstPerson.update_rotation = function (self, t, dt)
-	if self.look_delta ~= nil then
+	if self.has_look_delta then
 		local rotation = self.look_rotation:unbox()
 		local look_delta = self.look_delta:unbox()
-		self.look_delta = nil
+		self.has_look_delta = false
 		local yaw = Quaternion.yaw(rotation) - look_delta.x
 		local pitch = math.clamp(Quaternion.pitch(rotation) + look_delta.y, -self.MAX_MIN_PITCH, self.MAX_MIN_PITCH)
 		local yaw_rotation = Quaternion(Vector3.up(), yaw)
@@ -148,7 +149,9 @@ PlayerBotUnitFirstPerson.get_first_person_mesh_unit = function (self)
 end
 
 PlayerBotUnitFirstPerson.set_look_delta = function (self, look_delta)
-	self.look_delta = Vector3Box(look_delta)
+	self.has_look_delta = true
+
+	Vector3Box.store(self.look_delta, look_delta)
 end
 
 PlayerBotUnitFirstPerson.play_animation_event = function (self, anim_event)

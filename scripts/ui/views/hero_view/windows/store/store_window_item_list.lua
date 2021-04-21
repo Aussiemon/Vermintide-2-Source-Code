@@ -426,8 +426,17 @@ StoreWindowItemList._on_list_index_selected = function (self, index, scrollbar_a
 	local layout = self._layout
 	local entry = layout[index]
 	self._params.selected_product = entry
-	local row, column = nil
 	local list_widgets = self._list_widgets
+
+	if entry.item then
+		local item_data = entry.item.data
+
+		ItemHelper.set_shop_item_seen(entry.product_id, item_data.item_type, self._parent.tab_cat)
+	elseif entry.dlc_settings then
+		ItemHelper.set_shop_item_seen(entry.product_id, "dlc", self._parent.tab_cat)
+	end
+
+	local row, column = nil
 
 	if list_widgets then
 		for i, widget in ipairs(list_widgets) do
@@ -490,7 +499,7 @@ StoreWindowItemList._create_product_widgets = function (self, layout)
 	self:_initialize_scrollbar()
 
 	if #widgets > 0 then
-		local selected_product = self._params.selected_product
+		local selected_product = self._params.last_selected_product or self._params.selected_product
 		local selected_product_id = selected_product and selected_product.product_id
 		local start_index = self:_get_list_index_by_product_id(selected_product_id) or 1
 

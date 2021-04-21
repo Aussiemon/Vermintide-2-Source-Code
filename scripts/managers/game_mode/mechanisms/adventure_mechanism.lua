@@ -1,63 +1,66 @@
 AdventureMechanism = class(AdventureMechanism)
 AdventureMechanism.name = "Adventure"
 
-local function print_vote_request(request_type, params)
-	local level_key = params.level_key
+local function print_vote_request(params)
+	local level_key = params.mission_id
 	local difficulty_key = params.difficulty
 	local quick_game = params.quick_game
 	local private_game = params.private_game
 	local always_host = params.always_host
 	local strict_matchmaking = params.strict_matchmaking
-	local game_mode = request_type
+	local matchmaking_type = params.matchmaking_type
+	local twitch_enabled = params.twitch_enabled
 
 	print("............................................................................................................")
 	print("............................................................................................................")
-	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Game Mode: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no", game_mode or "Not specified")
+	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Matchmaking Type: %s | Twitch: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no", matchmaking_type or "Not specified", (twitch_enabled and "Yes") or "No")
 	print("............................................................................................................")
 	print("............................................................................................................")
 end
 
 local vote_requests = {
-	default = function (request_type, params)
-		print_vote_request(request_type, params)
+	default = function (params)
+		print_vote_request(params)
 
 		local vote_data = {
-			level_key = params.level_key,
+			mission_id = params.mission_id,
 			difficulty = params.difficulty,
 			quick_game = params.quick_game,
 			private_game = params.private_game,
 			always_host = params.always_host,
 			strict_matchmaking = params.strict_matchmaking,
 			excluded_level_keys = params.excluded_level_keys,
-			game_mode = request_type
+			matchmaking_type = params.matchmaking_type,
+			mechanism = params.mechanism
 		}
 		local vote_template = "game_settings_vote"
 
 		Managers.state.voting:request_vote(vote_template, vote_data, Network.peer_id())
 	end,
-	deed = function (request_type, params)
-		print_vote_request(request_type, params)
+	deed = function (params)
+		print_vote_request(params)
 
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(params.deed_backend_id)
 		local item_data = item.data
 		local difficulty = item.difficulty
-		local level_key = item.level_key
+		local mission_id = item.level_key
 		local vote_data = {
 			item_name = item_data.name,
-			level_key = level_key,
+			mission_id = mission_id,
 			difficulty = difficulty,
 			excluded_level_keys = params.excluded_level_keys,
-			game_mode = request_type
+			matchmaking_type = params.matchmaking_type,
+			mechanism = params.mechanism
 		}
 
 		Managers.state.voting:request_vote("game_settings_deed_vote", vote_data, Network.peer_id())
 	end,
-	event = function (request_type, params)
-		print_vote_request(request_type, params)
+	event = function (params)
+		print_vote_request(params)
 
 		local vote_data = {
-			level_key = params.level_key,
+			mission_id = params.mission_id,
 			difficulty = params.difficulty,
 			quick_game = params.quick_game,
 			private_game = params.private_game,
@@ -65,30 +68,47 @@ local vote_requests = {
 			strict_matchmaking = params.strict_matchmaking,
 			event_data = params.event_data,
 			excluded_level_keys = params.excluded_level_keys,
-			game_mode = request_type
+			matchmaking_type = params.matchmaking_type,
+			mechanism = params.mechanism
 		}
 
 		Managers.state.voting:request_vote("game_settings_event_vote", vote_data, Network.peer_id())
 	end,
-	weave_quick_play = function (request_type, params)
-		print_vote_request(request_type, params)
+	weave_quick_play = function (params)
+		print_vote_request(params)
 
 		local vote_data = {
 			quick_game = true,
-			game_mode = "weave",
 			difficulty = params.difficulty,
 			private_game = params.private_game,
-			always_host = params.always_host
+			always_host = params.always_host,
+			matchmaking_type = params.matchmaking_type,
+			mechanism = params.mechanism
 		}
 
 		Managers.state.voting:request_vote("game_settings_weave_quick_play_vote", vote_data, Network.peer_id())
+	end,
+	weave = function (params)
+		print_vote_request(params)
+
+		local vote_data = {
+			quick_game = false,
+			mission_id = params.mission_id,
+			difficulty = params.difficulty,
+			objective_index = params.objective_index,
+			private_game = params.private_game,
+			always_host = params.always_host,
+			matchmaking_type = params.matchmaking_type,
+			mechanism = params.mechanism
+		}
+
+		Managers.state.voting:request_vote("game_settings_weave_vote", vote_data, Network.peer_id())
 	end
 }
+local HUB_LEVEL_NAME = "inn_level"
 
-AdventureMechanism.init = function (self, settings, level_key)
-	self._hub_level_key = "inn_level"
-
-	self:reset(settings, level_key)
+AdventureMechanism.init = function (self, settings)
+	self:_reset(settings)
 end
 
 AdventureMechanism.on_venture_start = function (self)
@@ -102,14 +122,32 @@ AdventureMechanism.on_venture_end = function (self)
 	end
 end
 
-AdventureMechanism.reset = function (self, settings, level_key)
-	level_key = level_key or self._hub_level_key
+AdventureMechanism.is_venture_over = function (self)
+	local reason = self._game_round_ended_reason
+	local game_mode_ended = reason == "won" or reason == "lost"
+
+	if self._state == "weave" then
+		local final_round = not Managers.weave:calculate_next_objective_index()
+
+		return game_mode_ended and (reason == "lost" or final_round)
+	else
+		return game_mode_ended
+	end
+end
+
+AdventureMechanism.handle_ingame_exit = function (self, exit_type)
+	if exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" or exit_type == "quit_game" or exit_type == "return_to_pc_menu" then
+		self:_reset()
+	end
+end
+
+AdventureMechanism._reset = function (self, settings)
+	local level_key = self:get_hub_level_key()
 	local level_settings = LevelSettings[level_key]
 	self._prior_state = self._state
 
 	if level_settings.hub_level then
 		self._state = "inn"
-		self._hub_level_key = level_key
 	else
 		self._state = "ingame"
 	end
@@ -121,7 +159,7 @@ AdventureMechanism.reset = function (self, settings, level_key)
 end
 
 AdventureMechanism.network_context_destroyed = function (self)
-	self:reset()
+	self:_reset()
 end
 
 AdventureMechanism.choose_next_state = function (self, next_state)
@@ -183,36 +221,15 @@ AdventureMechanism.set_current_state = function (self, state)
 	self._state = state
 end
 
-AdventureMechanism.get_starting_level = function (self)
-	local weave_name = Development.parameter("weave_name")
-
-	if weave_name and weave_name ~= "false" then
-		local weave_template = WeaveSettings.templates[weave_name]
-		local objective = weave_template.objectives[1]
-		local level_key = objective.level_id
-
-		return level_key
-	end
-
-	local keep_variation_data = Managers.backend:get_level_variation_data()
-	self._hub_level_key = self._debug_hub_level_key or keep_variation_data.hub_level or self._hub_level_key
-
-	return self._hub_level_key
-end
-
 AdventureMechanism.get_hub_level_key = function (self)
-	return self._hub_level_key
+	return self._debug_hub_level_key or AdventureMechanism.get_starting_level()
 end
 
-AdventureMechanism.allocate_slot = function (self, sender, profile)
+AdventureMechanism.allocate_slot = function (self, sender, profile_index)
 	local network_server = Managers.mechanism:network_server()
-	local slot_allocator = network_server.slot_allocator
+	local profile_synchronizer = network_server.profile_synchronizer
 
-	if slot_allocator:is_free(profile) then
-		local local_player_id = 1
-
-		slot_allocator:allocate_slot(profile, sender, local_player_id)
-
+	if profile_synchronizer:try_reserve_profile_for_peer(sender, profile_index) then
 		return true
 	end
 
@@ -297,15 +314,15 @@ AdventureMechanism.get_level_end_view = function (self)
 end
 
 AdventureMechanism.game_round_ended = function (self, t, dt, reason)
+	self._game_round_ended_reason = reason
 	local new_saved_game_mode_data = nil
-	self._hub_level_key = self._debug_hub_level_key or self._hub_level_key
 	local state = self._state
-	local level_key = nil
+	local level_key, conflict_settings, level_seed = nil
 
 	if state == "inn" then
-		level_key = self._level_transition_handler:get_next_level_key()
+		level_key = Managers.level_transition_handler:get_next_level_key()
 	elseif state == "tutorial" then
-		level_key = self._hub_level_key
+		level_key = self._debug_hub_level_key or AdventureMechanism.get_starting_level()
 	elseif state == "weave" then
 		local weave_manager = Managers.weave
 		local next_objective_index = weave_manager:calculate_next_objective_index()
@@ -330,40 +347,42 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 			end
 
 			level_key = objective.level_id
+			conflict_settings = objective.conflict_settings
+			level_seed = Managers.mechanism:generate_level_seed()
 		else
-			level_key = self._hub_level_key
+			level_key = AdventureMechanism.debug_hub_level_key or AdventureMechanism.get_starting_level()
 			self._next_state = "inn"
 		end
 	else
-		level_key = self._hub_level_key
+		level_key = AdventureMechanism.debug_hub_level_key or AdventureMechanism.get_starting_level()
 	end
 
 	if reason == "start_game" then
-		self._level_transition_handler:level_completed()
+		Managers.level_transition_handler:level_completed()
 	elseif reason == "won" or reason == "lost" then
 		self._saved_game_mode_data = new_saved_game_mode_data
 		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
 
-		self._level_transition_handler:set_next_level(level_key, environment_variation_id)
+		Managers.level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, nil, nil, conflict_settings)
 	elseif reason == "reload" then
-		self._level_transition_handler:reload_level()
+		level_seed = Managers.mechanism:generate_level_seed()
+
+		Managers.level_transition_handler:reload_level(nil, level_seed)
 	else
 		fassert(false, "Invalid end reason %q.", tostring(reason))
 	end
-
-	return level_key
 end
 
 AdventureMechanism.should_run_tutorial = function (self)
 	return true, "tutorial"
 end
 
-AdventureMechanism.get_next_game_mode_key = function (self, level_transition_handler)
+AdventureMechanism._get_next_game_mode_key = function (self)
 	local game_mode_key = nil
 	local state = self._state
 
 	if state == "inn" then
-		local current_level_key = level_transition_handler:get_current_level_keys()
+		local current_level_key = Managers.level_transition_handler:get_current_level_keys()
 		local level_settings = LevelSettings[current_level_key]
 
 		if level_settings.hub_level then
@@ -382,28 +401,16 @@ AdventureMechanism.get_next_game_mode_key = function (self, level_transition_han
 	return game_mode_key
 end
 
-AdventureMechanism.start_next_round = function (self, level_transition_handler)
-	self._level_transition_handler = level_transition_handler
+AdventureMechanism.start_next_round = function (self)
+	self._game_round_ended_reason = nil
 	local state = self._state
 
 	if state == "inn" then
-		local current_level_key = level_transition_handler:get_current_level_keys()
-		local level_settings = LevelSettings[current_level_key]
-
-		if level_settings.hub_level then
-			self._hub_level_key = current_level_key
-		end
-	elseif state == "tutorial" then
-	elseif state == "weave" then
-		if not self._saved_game_mode_data then
-			self:_handle_game_start()
-		end
-	else
-		self:_handle_game_start()
+		self:_reset()
 	end
 
 	local side_compositions = self:_build_side_compositions(state)
-	local game_mode_key = self:get_next_game_mode_key(level_transition_handler)
+	local game_mode_key = self:_get_next_game_mode_key()
 	self._current_game_mode = game_mode_key
 	local saved_game_mode_data = nil
 
@@ -497,50 +504,18 @@ AdventureMechanism.sync_game_mode_data_to_peer = function (self, network_transmi
 		local active_weave = weave_manager:get_active_weave()
 		local active_objective_index = weave_manager:get_active_objective()
 		local weave_name = next_weave or active_weave or "n/a"
-		local objective_index = next_objective_index or active_objective_index or 0
+		local objective_index = next_objective_index or active_objective_index or 1
 		local weave_name_id = NetworkLookup.weave_names[weave_name]
 
 		network_transmit:send_rpc("rpc_sync_adventure_data_to_peer", peer_id, weave_name_id, objective_index)
 	end
 end
 
-local TEMP_LOBBY_DATA = {}
-
 AdventureMechanism.profile_available_for_peer = function (self, profile_synchronizer, peer_id, local_player_id, profile_name, career_name)
 	local profile_index = FindProfileIndex(profile_name)
-	local owners = profile_synchronizer:owners(profile_index)
-	local local_player = Managers.player:local_player()
-	local is_server = local_player.is_server
+	local reserver_peer_id = profile_synchronizer:get_profile_index_reservation(profile_index)
 
-	if is_server then
-		local reserver_peer_id, local_player_id = profile_synchronizer:profile_reserver_peer_id(profile_index)
-
-		if reserver_peer_id and reserver_peer_id ~= peer_id then
-			return false
-		end
-	else
-		table.clear(TEMP_LOBBY_DATA)
-
-		local base_name = "player_slot_"
-		local lobby = Managers.state.network:lobby()
-
-		for _, idx in pairs(ProfilePriority) do
-			local key = base_name .. idx
-			TEMP_LOBBY_DATA[key] = lobby:lobby_data(key)
-		end
-
-		if not Managers.matchmaking:hero_available_in_lobby_data(profile_index, TEMP_LOBBY_DATA) then
-			return false
-		end
-	end
-
-	local has_owners = next(owners)
-
-	if has_owners and not profile_synchronizer:is_only_owner(peer_id, local_player_id, profile_index) then
-		return false
-	end
-
-	return true
+	return not reserver_peer_id or reserver_peer_id == peer_id
 end
 
 AdventureMechanism.should_play_level_introduction = function (self)
@@ -554,39 +529,54 @@ AdventureMechanism.uses_random_directors = function (self)
 	return not weave_data
 end
 
-AdventureMechanism.get_overriden_startup_conflict_setting = function (self)
-	local weave_name = Managers.weave:get_next_weave() or Development.parameter("weave_name")
-	local weave_data = WeaveSettings.templates[weave_name]
+AdventureMechanism.debug_load_level = function (self, level_name, environment_variation_id)
+	local level_settings = LevelSettings[level_name]
+	local level_transition_handler = Managers.level_transition_handler
 
-	if weave_data then
-		local weave_objective_index = Managers.weave:get_next_objective() or 1
-		local weave_objective_data = weave_data.objectives[weave_objective_index]
-		local override_conflict_settings_name = weave_objective_data.conflict_settings
+	level_transition_handler:set_next_level(level_name, environment_variation_id)
+	level_transition_handler:level_completed()
 
-		return override_conflict_settings_name
+	if level_settings and level_settings.hub_level then
+		self._next_state = "inn"
+	else
+		self._next_state = "ingame"
 	end
 
-	return nil
+	Managers.mechanism:progress_state()
 end
 
-AdventureMechanism._handle_game_start = function (self)
-	local boons_backend = Managers.backend:get_interface("boons")
-
-	boons_backend:refresh_boons()
-end
-
-AdventureMechanism.request_vote = function (self, request_type, params)
+AdventureMechanism.request_vote = function (self, params)
 	local deed_backend_id = params.deed_backend_id
 
 	if deed_backend_id then
 		Managers.deed:select_deed(deed_backend_id, Network.peer_id())
 	end
 
-	local request_func = vote_requests[request_type] or vote_requests.default
+	local request_func = vote_requests[params.request_type] or vote_requests.default
 
 	if request_func then
-		request_func(request_type, params)
+		request_func(params)
 	end
+end
+
+AdventureMechanism.override_hub_level = function (self, new_hub_level_key)
+	self._debug_hub_level_key = new_hub_level_key
+end
+
+AdventureMechanism.get_starting_level = function ()
+	local weave_name = Development.parameter("weave_name")
+
+	if weave_name and weave_name ~= "false" then
+		local weave_template = WeaveSettings.templates[weave_name]
+		local objective = weave_template.objectives[1]
+		local level_key = objective.level_id
+
+		return level_key
+	end
+
+	local keep_variation_data = Managers.backend:get_level_variation_data()
+
+	return keep_variation_data.hub_level or HUB_LEVEL_NAME
 end
 
 return
