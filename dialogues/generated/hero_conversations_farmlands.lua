@@ -2891,1390 +2891,1390 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_level_farmlands_story_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 0.95168751478195
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_ten_01"
-			}
-		},
-		pes_level_farmlands_story_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.0301666259766
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_five_01"
-			}
-		},
-		pwh_level_farmlands_story_eleven_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_eleven_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.4405417442322
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_eleven_03"
-			}
-		},
-		pbw_level_farmlands_story_eleven_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_eleven_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.3526043891907
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_eleven_03"
-			}
-		},
-		pdr_level_farmlands_story_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_farmlands_story_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.9099373817444
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_farmlands_story_five_01"
-			}
-		},
-		pwh_level_farmlands_story_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_eleven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.3693749904633
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_eleven_02"
-			}
-		},
-		pbw_level_farmlands_story_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_eleven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.5045207738876
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_eleven_02"
-			}
-		},
-		pwh_level_farmlands_story_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4277708530426
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_three_01"
-			}
-		},
-		pwe_level_farmlands_story_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.6114373207092
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_two_01"
-			}
-		},
-		pwh_level_farmlands_story_eight_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_eight_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5187501907349
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_eight_03"
-			}
-		},
-		pbw_level_farmlands_story_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_eleven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.8685626983643
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_eleven_01"
-			}
-		},
-		pwh_level_farmlands_story_thirteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_thirteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.477020740509
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_thirteen_02"
-			}
-		},
-		pbw_level_farmlands_story_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0402917861939
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_three_01"
-			}
-		},
-		pes_level_farmlands_story_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.6913958787918
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_seven_01"
-			}
-		},
-		pwh_level_farmlands_story_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_eight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.6180624961853
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_eight_02"
-			}
-		},
-		pdr_level_farmlands_story_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_farmlands_story_twelve_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4800832271576
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_farmlands_story_twelve_02"
-			}
-		},
-		pbw_level_farmlands_story_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.6083331108093
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_seven_01"
-			}
-		},
-		pdr_level_farmlands_story_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_farmlands_story_twelve_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7648334503174
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_farmlands_story_twelve_01"
-			}
-		},
-		pbw_level_farmlands_story_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.3455834388733
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_three_02"
-			}
-		},
-		pwe_level_farmlands_story_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.4439167976379
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_nine_01"
-			}
-		},
-		pbw_level_farmlands_story_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.420041680336
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_four_01"
-			}
-		},
-		pdr_level_farmlands_story_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_farmlands_story_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4485833644867
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_farmlands_story_four_01"
-			}
-		},
-		pwe_level_farmlands_story_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0638332366943
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_ten_02"
-			}
-		},
-		pes_level_farmlands_story_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.6477084159851
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_four_01"
-			}
-		},
-		pwe_level_farmlands_story_ten_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_ten_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0848541259766
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_ten_03"
-			}
-		},
-		pdr_level_farmlands_story_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_farmlands_story_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.2968120574951
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_farmlands_story_two_01"
-			}
-		},
-		pes_level_farmlands_story_thirteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_thirteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8891248703003
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_thirteen_01"
-			}
-		},
-		pes_level_farmlands_story_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_eight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8288750648499
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_eight_02"
-			}
-		},
-		pes_level_farmlands_story_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0865416526794
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_one_01"
-			}
-		},
-		pwe_level_farmlands_story_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.6213126182556
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_two_02"
-			}
-		},
-		pdr_level_farmlands_story_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_farmlands_story_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.737104177475
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_farmlands_story_five_02"
-			}
-		},
-		pbw_level_farmlands_story_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2187085151672
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_ten_02"
-			}
-		},
-		pwe_level_farmlands_story_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.7117710113525
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_nine_02"
-			}
-		},
-		pwh_level_farmlands_story_six_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_six_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0625624656677
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_six_03"
-			}
-		},
-		pwh_level_farmlands_story_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7480208873749
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_nine_01"
-			}
-		},
-		pdr_level_farmlands_story_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_farmlands_story_four_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.1332499980927
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_farmlands_story_four_02"
-			}
-		},
-		pbw_level_farmlands_story_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5013332366943
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_one_01"
-			}
-		},
-		pwe_level_farmlands_story_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.8210206031799
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_three_01"
-			}
-		},
-		pwh_level_farmlands_story_thirteen_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_thirteen_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.1850833892822
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_thirteen_03"
-			}
-		},
-		pes_level_farmlands_story_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5535626411438
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_two_01"
-			}
-		},
-		pes_level_farmlands_story_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.279354095459
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_eight_01"
-			}
-		},
-		pwe_level_farmlands_story_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.7304372787476
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_one_01"
-			}
-		},
-		pwh_level_farmlands_story_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_eleven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.1902918815613
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_eleven_01"
-			}
-		},
-		pwh_level_farmlands_story_fourteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_fourteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.541895866394
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_fourteen_02"
-			}
-		},
-		pwe_level_farmlands_story_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_twelve_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.3082499504089
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_twelve_02"
-			}
-		},
-		pwe_level_farmlands_story_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4418749809265
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_six_01"
-			}
-		},
-		pwe_level_farmlands_story_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_twelve_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7319166660309
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_twelve_01"
-			}
-		},
-		pes_level_farmlands_story_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2353541851044
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_two_02"
-			}
-		},
-		pwe_level_farmlands_story_nine_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_nine_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3165001869202
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_nine_03"
-			}
-		},
-		pwh_level_farmlands_story_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.9082500934601
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_seven_01"
-			}
-		},
-		pes_level_farmlands_story_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5065832138061
-			},
-			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_one_02"
-			}
-		},
-		pbw_level_farmlands_story_ten_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_ten_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1339790821075
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_ten_03"
-			}
-		},
-		pwh_level_farmlands_story_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_fourteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4721667766571
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_fourteen_01"
-			}
-		},
-		pwh_level_farmlands_story_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0913333892822
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_nine_02"
-			}
-		},
-		pwe_level_farmlands_story_thirteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_thirteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8461666107178
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_thirteen_02"
-			}
-		},
-		pwh_level_farmlands_story_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.6055207252502
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_six_01"
-			}
-		},
 		pwe_level_farmlands_story_two_03 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_two_03"
+			},
 			sound_events = {
 				[1.0] = "pwe_level_farmlands_story_two_03"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 4.3334794044495
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_two_03"
 			}
 		},
-		pwe_level_farmlands_story_six_03 = {
-			sound_events_n = 1,
+		pwh_level_farmlands_story_fourteen_01 = {
 			face_animations_n = 1,
 			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_six_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.1341667175293
-			},
 			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_six_03"
-			}
-		},
-		pwe_level_farmlands_story_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
+				[1.0] = "pwh_level_farmlands_story_fourteen_01"
+			},
 			sound_events = {
-				[1.0] = "pwe_level_farmlands_story_six_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.5635209083557
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_farmlands_story_six_02"
-			}
-		},
-		pwh_level_farmlands_story_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_story_six_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 0.97539585828781
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_six_02"
-			}
-		},
-		pbw_level_farmlands_story_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_farmlands_story_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1.0] = "pwh_level_farmlands_story_fourteen_01"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 1.9623124599457
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_farmlands_story_ten_01"
-			}
-		},
-		pes_level_farmlands_story_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_farmlands",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_farmlands_story_fourteen_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4721667766571
+			}
+		},
+		pwe_level_farmlands_story_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_two_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_two_01"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 4.8675208091736
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 6.6114373207092
+			}
+		},
+		pdr_level_farmlands_story_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pes_level_farmlands_story_fourteen_01"
+				[1.0] = "pdr_level_farmlands_story_four_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_farmlands_story_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4485833644867
+			}
+		},
+		pwe_level_farmlands_story_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4439167976379
+			}
+		},
+		pbw_level_farmlands_story_eleven_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_eleven_03"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_eleven_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3526043891907
+			}
+		},
+		pwh_level_farmlands_story_fourteen_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_fourteen_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_fourteen_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.541895866394
+			}
+		},
+		pdr_level_farmlands_story_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_farmlands_story_five_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_farmlands_story_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9099373817444
+			}
+		},
+		pwh_level_farmlands_story_eleven_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_eleven_03"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_eleven_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.4405417442322
 			}
 		},
 		pwh_level_farmlands_story_five_01 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
+			localization_strings = {
 				[1.0] = "pwh_level_farmlands_story_five_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_five_01"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
 			sound_events_duration = {
 				[1.0] = 4.2492499351502
-			},
+			}
+		},
+		pes_level_farmlands_story_seven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pwh_level_farmlands_story_five_01"
+				[1.0] = "pes_level_farmlands_story_seven_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_seven_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.6913958787918
+			}
+		},
+		pwe_level_farmlands_story_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_one_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7304372787476
+			}
+		},
+		pwh_level_farmlands_story_eleven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_eleven_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_eleven_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.1902918815613
+			}
+		},
+		pwe_level_farmlands_story_twelve_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_twelve_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_twelve_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7319166660309
+			}
+		},
+		pwe_level_farmlands_story_ten_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_ten_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_ten_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 0.95168751478195
+			}
+		},
+		pes_level_farmlands_story_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_two_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5535626411438
+			}
+		},
+		pdr_level_farmlands_story_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_farmlands_story_two_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_farmlands_story_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.2968120574951
+			}
+		},
+		pwe_level_farmlands_story_twelve_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_twelve_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_twelve_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.3082499504089
+			}
+		},
+		pbw_level_farmlands_story_eleven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_eleven_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_eleven_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8685626983643
+			}
+		},
+		pwe_level_farmlands_story_nine_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_nine_03"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_nine_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3165001869202
+			}
+		},
+		pbw_level_farmlands_story_seven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_seven_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_seven_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6083331108093
+			}
+		},
+		pwh_level_farmlands_story_eight_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_eight_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_eight_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.6180624961853
+			}
+		},
+		pwe_level_farmlands_story_nine_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_nine_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_nine_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7117710113525
+			}
+		},
+		pwe_level_farmlands_story_ten_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_ten_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_ten_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0638332366943
+			}
+		},
+		pdr_level_farmlands_story_twelve_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_farmlands_story_twelve_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_farmlands_story_twelve_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7648334503174
+			}
+		},
+		pdr_level_farmlands_story_four_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_farmlands_story_four_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_farmlands_story_four_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1332499980927
+			}
+		},
+		pwe_level_farmlands_story_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_three_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8210206031799
+			}
+		},
+		pbw_level_farmlands_story_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_four_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.420041680336
+			}
+		},
+		pdr_level_farmlands_story_twelve_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_farmlands_story_twelve_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_farmlands_story_twelve_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4800832271576
+			}
+		},
+		pes_level_farmlands_story_fourteen_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_fourteen_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_fourteen_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8675208091736
+			}
+		},
+		pwh_level_farmlands_story_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_six_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6055207252502
+			}
+		},
+		pwe_level_farmlands_story_two_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_two_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_two_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.6213126182556
+			}
+		},
+		pwh_level_farmlands_story_eleven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_eleven_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_eleven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3693749904633
+			}
+		},
+		pwh_level_farmlands_story_six_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_six_03"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_six_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0625624656677
+			}
+		},
+		pbw_level_farmlands_story_ten_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_ten_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_ten_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2187085151672
+			}
+		},
+		pwh_level_farmlands_story_six_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_six_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_six_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 0.97539585828781
+			}
+		},
+		pwh_level_farmlands_story_nine_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_nine_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_nine_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0913333892822
+			}
+		},
+		pes_level_farmlands_story_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_one_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5065832138061
+			}
+		},
+		pwh_level_farmlands_story_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7480208873749
+			}
+		},
+		pbw_level_farmlands_story_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_one_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5013332366943
+			}
+		},
+		pes_level_farmlands_story_eight_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_eight_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_eight_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.827291727066
+			}
+		},
+		pwe_level_farmlands_story_six_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_six_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_six_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5635209083557
+			}
+		},
+		pwe_level_farmlands_story_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_six_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4418749809265
+			}
+		},
+		pwh_level_farmlands_story_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_three_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4277708530426
+			}
+		},
+		pbw_level_farmlands_story_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_three_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0402917861939
+			}
+		},
+		pbw_level_farmlands_story_eleven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_eleven_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_eleven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.5045207738876
+			}
+		},
+		pes_level_farmlands_story_eight_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_eight_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_eight_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8288750648499
+			}
+		},
+		pwh_level_farmlands_story_eight_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_eight_03"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_eight_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5187501907349
+			}
+		},
+		pes_level_farmlands_story_thirteen_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_thirteen_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_thirteen_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8891248703003
+			}
+		},
+		pes_level_farmlands_story_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_one_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0865416526794
+			}
+		},
+		pdr_level_farmlands_story_five_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_farmlands_story_five_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_farmlands_story_five_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.737104177475
+			}
+		},
+		pes_level_farmlands_story_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_four_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6477084159851
+			}
+		},
+		pbw_level_farmlands_story_ten_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_ten_03"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_ten_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1339790821075
+			}
+		},
+		pes_level_farmlands_story_two_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_two_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_two_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2353541851044
+			}
+		},
+		pes_level_farmlands_story_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_farmlands_story_five_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_farmlands_story_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0301666259766
+			}
+		},
+		pwh_level_farmlands_story_thirteen_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_thirteen_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_thirteen_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.477020740509
+			}
+		},
+		pwe_level_farmlands_story_six_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_six_03"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_six_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1341667175293
+			}
+		},
+		pbw_level_farmlands_story_ten_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_ten_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_ten_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.9623124599457
+			}
+		},
+		pbw_level_farmlands_story_three_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_farmlands_story_three_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_farmlands_story_three_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3455834388733
+			}
+		},
+		pwe_level_farmlands_story_ten_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_ten_03"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_ten_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0848541259766
+			}
+		},
+		pwh_level_farmlands_story_seven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_seven_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_seven_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9082500934601
+			}
+		},
+		pwh_level_farmlands_story_thirteen_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_farmlands_story_thirteen_03"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_farmlands_story_thirteen_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.1850833892822
+			}
+		},
+		pwe_level_farmlands_story_thirteen_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_farmlands",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_farmlands_story_thirteen_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_farmlands_story_thirteen_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8461666107178
 			}
 		}
 	})

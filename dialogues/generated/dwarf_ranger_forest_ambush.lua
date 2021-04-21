@@ -692,377 +692,103 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pdr_forest_ambush_intro_c = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_forest_ambush_intro_c_01",
-				[2.0] = "pdr_forest_ambush_intro_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2580416202545,
-				[2.0] = 2.9193749427795
-			},
-			localization_strings = {
-				[1.0] = "pdr_forest_ambush_intro_c_01",
-				[2.0] = "pdr_forest_ambush_intro_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_objective_forest_ambush_spotting_ruins = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_spotting_ruins_01",
-				"pdr_objective_forest_ambush_spotting_ruins_02",
-				"pdr_objective_forest_ambush_spotting_ruins_03",
-				"pdr_objective_forest_ambush_spotting_ruins_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.0327084064484,
-				3.4281041622162,
-				2.7330000400543,
-				3.1281666755676
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_spotting_ruins_01",
-				"pdr_objective_forest_ambush_spotting_ruins_02",
-				"pdr_objective_forest_ambush_spotting_ruins_03",
-				"pdr_objective_forest_ambush_spotting_ruins_04"
-			},
-			randomize_indexes = {}
-		},
 		pdr_objective_forest_ambush_back_to_ferry = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_back_to_ferry_01",
+				"pdr_objective_forest_ambush_back_to_ferry_02",
+				"pdr_objective_forest_ambush_back_to_ferry_03",
+				"pdr_objective_forest_ambush_back_to_ferry_04"
+			},
 			sound_events = {
 				"pdr_objective_forest_ambush_back_to_ferry_01",
 				"pdr_objective_forest_ambush_back_to_ferry_02",
 				"pdr_objective_forest_ambush_back_to_ferry_03",
 				"pdr_objective_forest_ambush_back_to_ferry_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				0.71060419082642,
 				1.9992707967758,
 				3.5546667575836,
 				2.2718124389648
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_back_to_ferry_01",
-				"pdr_objective_forest_ambush_back_to_ferry_02",
-				"pdr_objective_forest_ambush_back_to_ferry_03",
-				"pdr_objective_forest_ambush_back_to_ferry_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_objective_forest_ambush_ring_bell = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dwarf_ranger_forest_ambush",
-			category = "player_feedback",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_objective_forest_ambush_ring_bell_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 1.194375038147
-			},
-			localization_strings = {
-				[1.0] = "pdr_objective_forest_ambush_ring_bell_01"
 			}
 		},
-		pdr_objective_forest_ambush_spotting_bridge = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_spotting_bridge_01",
-				"pdr_objective_forest_ambush_spotting_bridge_02",
-				"pdr_objective_forest_ambush_spotting_bridge_03",
-				"pdr_objective_forest_ambush_spotting_bridge_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				0.85312497615814,
-				2.049708366394,
-				2.3151874542236,
-				1.6655625104904
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_spotting_bridge_01",
-				"pdr_objective_forest_ambush_spotting_bridge_02",
-				"pdr_objective_forest_ambush_spotting_bridge_03",
-				"pdr_objective_forest_ambush_spotting_bridge_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_objective_forest_ambush_finding_explosives = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_finding_explosives_01",
-				"pdr_objective_forest_ambush_finding_explosives_02",
-				"pdr_objective_forest_ambush_finding_explosives_03",
-				"pdr_objective_forest_ambush_finding_explosives_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.1950626373291,
-				2.8487915992737,
-				3.7163124084473,
-				3.2264583110809
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_finding_explosives_01",
-				"pdr_objective_forest_ambush_finding_explosives_02",
-				"pdr_objective_forest_ambush_finding_explosives_03",
-				"pdr_objective_forest_ambush_finding_explosives_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_objective_forest_ambush_boat_arrives = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_boat_arrives_01",
-				"pdr_objective_forest_ambush_boat_arrives_02",
-				"pdr_objective_forest_ambush_boat_arrives_03",
-				"pdr_objective_forest_ambush_boat_arrives_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				0.85000002384186,
-				1.2641667127609,
-				3.9430832862854,
-				1.2961250543594
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_boat_arrives_01",
-				"pdr_objective_forest_ambush_boat_arrives_02",
-				"pdr_objective_forest_ambush_boat_arrives_03",
-				"pdr_objective_forest_ambush_boat_arrives_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_forest_ambush_intro = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_forest_ambush_intro_a_01",
-				[2.0] = "pdr_forest_ambush_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.9276041984558,
-				[2.0] = 3.4657292366028
-			},
-			localization_strings = {
-				[1.0] = "pdr_forest_ambush_intro_a_01",
-				[2.0] = "pdr_forest_ambush_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_objective_forest_ambush_crescendo_starting = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_crescendo_starting_01",
-				"pdr_objective_forest_ambush_crescendo_starting_02",
-				"pdr_objective_forest_ambush_crescendo_starting_03",
-				"pdr_objective_forest_ambush_crescendo_starting_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2,
-				3.6017916202545,
-				6.5245833396912,
-				0.71927082538605
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_crescendo_starting_01",
-				"pdr_objective_forest_ambush_crescendo_starting_02",
-				"pdr_objective_forest_ambush_crescendo_starting_03",
-				"pdr_objective_forest_ambush_crescendo_starting_04"
-			},
-			randomize_indexes = {}
-		},
 		pdr_objective_forest_ambush_spotting_trunk = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_spotting_trunk_01",
+				"pdr_objective_forest_ambush_spotting_trunk_02",
+				"pdr_objective_forest_ambush_spotting_trunk_03",
+				"pdr_objective_forest_ambush_spotting_trunk_04"
+			},
 			sound_events = {
 				"pdr_objective_forest_ambush_spotting_trunk_01",
 				"pdr_objective_forest_ambush_spotting_trunk_02",
 				"pdr_objective_forest_ambush_spotting_trunk_03",
 				"pdr_objective_forest_ambush_spotting_trunk_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				3.2739999294281,
 				1.2503957748413,
 				1.4872708320618,
 				2.9344582557678
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_spotting_trunk_01",
-				"pdr_objective_forest_ambush_spotting_trunk_02",
-				"pdr_objective_forest_ambush_spotting_trunk_03",
-				"pdr_objective_forest_ambush_spotting_trunk_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pdr_objective_forest_ambush_spotting_first_doomwheel = {
-			sound_events_n = 4,
+		pdr_objective_forest_ambush_spotting_ruins = {
 			face_animations_n = 4,
 			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_01",
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_02",
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_03",
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_spotting_ruins_01",
+				"pdr_objective_forest_ambush_spotting_ruins_02",
+				"pdr_objective_forest_ambush_spotting_ruins_03",
+				"pdr_objective_forest_ambush_spotting_ruins_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pdr_objective_forest_ambush_spotting_ruins_01",
+				"pdr_objective_forest_ambush_spotting_ruins_02",
+				"pdr_objective_forest_ambush_spotting_ruins_03",
+				"pdr_objective_forest_ambush_spotting_ruins_04"
 			},
 			face_animations = {
 				"face_neutral",
@@ -1070,145 +796,77 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
-			sound_events_duration = {
-				4.3349165916443,
-				4.7958331108093,
-				3.3401041030884,
-				2.5383958816528
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_01",
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_02",
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_03",
-				"pdr_objective_forest_ambush_spotting_first_doomwheel_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_objective_forest_ambush_spotting_coaching_inn = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_spotting_coaching_inn_01",
-				"pdr_objective_forest_ambush_spotting_coaching_inn_02",
-				"pdr_objective_forest_ambush_spotting_coaching_inn_03",
-				"pdr_objective_forest_ambush_spotting_coaching_inn_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
 			sound_events_duration = {
-				2.3725416660309,
-				1.9426250457764,
-				2.0893957614899,
-				1.7776875495911
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_spotting_coaching_inn_01",
-				"pdr_objective_forest_ambush_spotting_coaching_inn_02",
-				"pdr_objective_forest_ambush_spotting_coaching_inn_03",
-				"pdr_objective_forest_ambush_spotting_coaching_inn_04"
-			},
-			randomize_indexes = {}
+				2.0327084064484,
+				3.4281041622162,
+				2.7330000400543,
+				3.1281666755676
+			}
 		},
 		pdr_objective_forest_ambush_reaching_skaven_camp = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_reaching_skaven_camp_01",
+				"pdr_objective_forest_ambush_reaching_skaven_camp_02",
+				"pdr_objective_forest_ambush_reaching_skaven_camp_03",
+				"pdr_objective_forest_ambush_reaching_skaven_camp_04"
+			},
 			sound_events = {
 				"pdr_objective_forest_ambush_reaching_skaven_camp_01",
 				"pdr_objective_forest_ambush_reaching_skaven_camp_02",
 				"pdr_objective_forest_ambush_reaching_skaven_camp_03",
 				"pdr_objective_forest_ambush_reaching_skaven_camp_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				1.9360208511352,
 				3.5152292251587,
 				2.720624923706,
 				5.6372289657593
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_reaching_skaven_camp_01",
-				"pdr_objective_forest_ambush_reaching_skaven_camp_02",
-				"pdr_objective_forest_ambush_reaching_skaven_camp_03",
-				"pdr_objective_forest_ambush_reaching_skaven_camp_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pdr_forest_ambush_intro_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "dwarf_ranger_forest_ambush",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_forest_ambush_intro_b_01",
-				[2.0] = "pdr_forest_ambush_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4748959541321,
-				[2.0] = 3.0017499923706
-			},
-			localization_strings = {
-				[1.0] = "pdr_forest_ambush_intro_b_01",
-				[2.0] = "pdr_forest_ambush_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_objective_forest_ambush_doomwheel_objective_done = {
-			sound_events_n = 4,
+		pdr_objective_forest_ambush_boat_arrives = {
 			face_animations_n = 4,
 			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_objective_forest_ambush_doomwheel_objective_done_01",
-				"pdr_objective_forest_ambush_doomwheel_objective_done_02",
-				"pdr_objective_forest_ambush_doomwheel_objective_done_03",
-				"pdr_objective_forest_ambush_doomwheel_objective_done_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_boat_arrives_01",
+				"pdr_objective_forest_ambush_boat_arrives_02",
+				"pdr_objective_forest_ambush_boat_arrives_03",
+				"pdr_objective_forest_ambush_boat_arrives_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pdr_objective_forest_ambush_boat_arrives_01",
+				"pdr_objective_forest_ambush_boat_arrives_02",
+				"pdr_objective_forest_ambush_boat_arrives_03",
+				"pdr_objective_forest_ambush_boat_arrives_04"
 			},
 			face_animations = {
 				"face_neutral",
@@ -1216,58 +874,400 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
 			sound_events_duration = {
-				1.8719791173935,
-				3.0031666755676,
-				3.0786874294281,
-				2.4349167346954
-			},
-			localization_strings = {
-				"pdr_objective_forest_ambush_doomwheel_objective_done_01",
-				"pdr_objective_forest_ambush_doomwheel_objective_done_02",
-				"pdr_objective_forest_ambush_doomwheel_objective_done_03",
-				"pdr_objective_forest_ambush_doomwheel_objective_done_04"
-			},
-			randomize_indexes = {}
+				0.85000002384186,
+				1.2641667127609,
+				3.9430832862854,
+				1.2961250543594
+			}
 		},
-		pdr_objective_forest_ambush_spotting_watch_tower = {
-			sound_events_n = 4,
+		pdr_forest_ambush_intro_b = {
+			face_animations_n = 2,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pdr_forest_ambush_intro_b_01",
+				[2.0] = "pdr_forest_ambush_intro_b_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_forest_ambush_intro_b_01",
+				[2.0] = "pdr_forest_ambush_intro_b_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4748959541321,
+				[2.0] = 3.0017499923706
+			}
+		},
+		pdr_objective_forest_ambush_spotting_bridge = {
 			face_animations_n = 4,
 			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_spotting_bridge_01",
+				"pdr_objective_forest_ambush_spotting_bridge_02",
+				"pdr_objective_forest_ambush_spotting_bridge_03",
+				"pdr_objective_forest_ambush_spotting_bridge_04"
+			},
+			sound_events = {
+				"pdr_objective_forest_ambush_spotting_bridge_01",
+				"pdr_objective_forest_ambush_spotting_bridge_02",
+				"pdr_objective_forest_ambush_spotting_bridge_03",
+				"pdr_objective_forest_ambush_spotting_bridge_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				0.85312497615814,
+				2.049708366394,
+				2.3151874542236,
+				1.6655625104904
+			}
+		},
+		pdr_objective_forest_ambush_finding_explosives = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_finding_explosives_01",
+				"pdr_objective_forest_ambush_finding_explosives_02",
+				"pdr_objective_forest_ambush_finding_explosives_03",
+				"pdr_objective_forest_ambush_finding_explosives_04"
+			},
+			sound_events = {
+				"pdr_objective_forest_ambush_finding_explosives_01",
+				"pdr_objective_forest_ambush_finding_explosives_02",
+				"pdr_objective_forest_ambush_finding_explosives_03",
+				"pdr_objective_forest_ambush_finding_explosives_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.1950626373291,
+				2.8487915992737,
+				3.7163124084473,
+				3.2264583110809
+			}
+		},
+		pdr_objective_forest_ambush_ring_bell = {
+			face_animations_n = 1,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 1,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_objective_forest_ambush_ring_bell_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_objective_forest_ambush_ring_bell_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.194375038147
+			}
+		},
+		pdr_forest_ambush_intro = {
+			face_animations_n = 2,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pdr_forest_ambush_intro_a_01",
+				[2.0] = "pdr_forest_ambush_intro_a_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_forest_ambush_intro_a_01",
+				[2.0] = "pdr_forest_ambush_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9276041984558,
+				[2.0] = 3.4657292366028
+			}
+		},
+		pdr_objective_forest_ambush_spotting_first_doomwheel = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_01",
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_02",
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_03",
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_04"
+			},
+			sound_events = {
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_01",
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_02",
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_03",
+				"pdr_objective_forest_ambush_spotting_first_doomwheel_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.3349165916443,
+				4.7958331108093,
+				3.3401041030884,
+				2.5383958816528
+			}
+		},
+		pdr_forest_ambush_intro_c = {
+			face_animations_n = 2,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pdr_forest_ambush_intro_c_01",
+				[2.0] = "pdr_forest_ambush_intro_c_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_forest_ambush_intro_c_01",
+				[2.0] = "pdr_forest_ambush_intro_c_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2580416202545,
+				[2.0] = 2.9193749427795
+			}
+		},
+		pdr_objective_forest_ambush_spotting_watch_tower = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_spotting_watch_tower_01",
+				"pdr_objective_forest_ambush_spotting_watch_tower_02",
+				"pdr_objective_forest_ambush_spotting_watch_tower_03",
+				"pdr_objective_forest_ambush_spotting_watch_tower_04"
+			},
 			sound_events = {
 				"pdr_objective_forest_ambush_spotting_watch_tower_01",
 				"pdr_objective_forest_ambush_spotting_watch_tower_02",
 				"pdr_objective_forest_ambush_spotting_watch_tower_03",
 				"pdr_objective_forest_ambush_spotting_watch_tower_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				2.5332915782928,
 				1.3034374713898,
 				3.2565624713898,
 				2.8687083721161
-			},
+			}
+		},
+		pdr_objective_forest_ambush_spotting_coaching_inn = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
 			localization_strings = {
-				"pdr_objective_forest_ambush_spotting_watch_tower_01",
-				"pdr_objective_forest_ambush_spotting_watch_tower_02",
-				"pdr_objective_forest_ambush_spotting_watch_tower_03",
-				"pdr_objective_forest_ambush_spotting_watch_tower_04"
+				"pdr_objective_forest_ambush_spotting_coaching_inn_01",
+				"pdr_objective_forest_ambush_spotting_coaching_inn_02",
+				"pdr_objective_forest_ambush_spotting_coaching_inn_03",
+				"pdr_objective_forest_ambush_spotting_coaching_inn_04"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				"pdr_objective_forest_ambush_spotting_coaching_inn_01",
+				"pdr_objective_forest_ambush_spotting_coaching_inn_02",
+				"pdr_objective_forest_ambush_spotting_coaching_inn_03",
+				"pdr_objective_forest_ambush_spotting_coaching_inn_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.3725416660309,
+				1.9426250457764,
+				2.0893957614899,
+				1.7776875495911
+			}
+		},
+		pdr_objective_forest_ambush_crescendo_starting = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_crescendo_starting_01",
+				"pdr_objective_forest_ambush_crescendo_starting_02",
+				"pdr_objective_forest_ambush_crescendo_starting_03",
+				"pdr_objective_forest_ambush_crescendo_starting_04"
+			},
+			sound_events = {
+				"pdr_objective_forest_ambush_crescendo_starting_01",
+				"pdr_objective_forest_ambush_crescendo_starting_02",
+				"pdr_objective_forest_ambush_crescendo_starting_03",
+				"pdr_objective_forest_ambush_crescendo_starting_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2,
+				3.6017916202545,
+				6.5245833396912,
+				0.71927082538605
+			}
+		},
+		pdr_objective_forest_ambush_doomwheel_objective_done = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_forest_ambush",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_objective_forest_ambush_doomwheel_objective_done_01",
+				"pdr_objective_forest_ambush_doomwheel_objective_done_02",
+				"pdr_objective_forest_ambush_doomwheel_objective_done_03",
+				"pdr_objective_forest_ambush_doomwheel_objective_done_04"
+			},
+			sound_events = {
+				"pdr_objective_forest_ambush_doomwheel_objective_done_01",
+				"pdr_objective_forest_ambush_doomwheel_objective_done_02",
+				"pdr_objective_forest_ambush_doomwheel_objective_done_03",
+				"pdr_objective_forest_ambush_doomwheel_objective_done_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.8719791173935,
+				3.0031666755676,
+				3.0786874294281,
+				2.4349167346954
+			}
 		}
 	})
 end

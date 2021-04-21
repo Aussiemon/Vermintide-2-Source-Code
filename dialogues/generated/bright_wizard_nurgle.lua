@@ -658,24 +658,54 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pbw_level_nurgle_spotting_objective = {
-			sound_events_n = 4,
+		pbw_nurgle_intro_a = {
+			face_animations_n = 2,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pbw_nurgle_intro_a_01",
+				[2.0] = "pbw_nurgle_intro_a_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_nurgle_intro_a_01",
+				[2.0] = "pbw_nurgle_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.4851040840149,
+				[2.0] = 8.1700830459595
+			}
+		},
+		pbw_level_nurgle_nurglification = {
 			face_animations_n = 4,
 			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_spotting_objective_01",
-				"pbw_level_nurgle_spotting_objective_02",
-				"pbw_level_nurgle_spotting_objective_03",
-				"pbw_level_nurgle_spotting_objective_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_nurglification_01",
+				"pbw_level_nurgle_nurglification_02",
+				"pbw_level_nurgle_nurglification_03",
+				"pbw_level_nurgle_nurglification_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pbw_level_nurgle_nurglification_01",
+				"pbw_level_nurgle_nurglification_02",
+				"pbw_level_nurgle_nurglification_03",
+				"pbw_level_nurgle_nurglification_04"
 			},
 			face_animations = {
 				"face_fear",
@@ -683,32 +713,317 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
-			sound_events_duration = {
-				6.1763334274292,
-				4.7558541297913,
-				4.3497085571289,
-				6.5088334083557
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
+			sound_events_duration = {
+				3.6995000839233,
+				3.9216666221619,
+				1.3077291250229,
+				4.2634372711182
+			}
+		},
+		pbw_level_nurgle_spotting_objective = {
+			face_animations_n = 4,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
 			localization_strings = {
 				"pbw_level_nurgle_spotting_objective_01",
 				"pbw_level_nurgle_spotting_objective_02",
 				"pbw_level_nurgle_spotting_objective_03",
 				"pbw_level_nurgle_spotting_objective_04"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				"pbw_level_nurgle_spotting_objective_01",
+				"pbw_level_nurgle_spotting_objective_02",
+				"pbw_level_nurgle_spotting_objective_03",
+				"pbw_level_nurgle_spotting_objective_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				6.1763334274292,
+				4.7558541297913,
+				4.3497085571289,
+				6.5088334083557
+			}
 		},
-		pbw_level_nurgle_ruins = {
-			sound_events_n = 4,
+		pbw_level_nurgle_skaven_collapse = {
 			face_animations_n = 4,
 			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_skaven_collapse_01",
+				"pbw_level_nurgle_skaven_collapse_02",
+				"pbw_level_nurgle_skaven_collapse_03",
+				"pbw_level_nurgle_skaven_collapse_04"
+			},
+			sound_events = {
+				"pbw_level_nurgle_skaven_collapse_01",
+				"pbw_level_nurgle_skaven_collapse_02",
+				"pbw_level_nurgle_skaven_collapse_03",
+				"pbw_level_nurgle_skaven_collapse_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.1763958930969,
+				3.1292290687561,
+				4.1092710494995,
+				4.3292708396912
+			}
+		},
+		pbw_level_nurgle_swift_river = {
+			face_animations_n = 4,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_swift_river_01",
+				"pbw_level_nurgle_swift_river_02",
+				"pbw_level_nurgle_swift_river_03",
+				"pbw_level_nurgle_swift_river_04"
+			},
+			sound_events = {
+				"pbw_level_nurgle_swift_river_01",
+				"pbw_level_nurgle_swift_river_02",
+				"pbw_level_nurgle_swift_river_03",
+				"pbw_level_nurgle_swift_river_04"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				2.462708234787,
+				3.2273333072662,
+				3.1687500476837,
+				3.4791667461395
+			}
+		},
+		pbw_level_nurgle_coming_down = {
+			face_animations_n = 4,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_coming_down_01",
+				"pbw_level_nurgle_coming_down_02",
+				"pbw_level_nurgle_coming_down_03",
+				"pbw_level_nurgle_coming_down_04"
+			},
+			sound_events = {
+				"pbw_level_nurgle_coming_down_01",
+				"pbw_level_nurgle_coming_down_02",
+				"pbw_level_nurgle_coming_down_03",
+				"pbw_level_nurgle_coming_down_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				5.3582916259766,
+				6.8751249313355,
+				6.4462084770203,
+				7.1327290534973
+			}
+		},
+		pbw_level_nurgle_bury_objective = {
+			face_animations_n = 4,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_bury_objective_01",
+				"pbw_level_nurgle_bury_objective_02",
+				"pbw_level_nurgle_bury_objective_03",
+				"pbw_level_nurgle_bury_objective_04"
+			},
+			sound_events = {
+				"pbw_level_nurgle_bury_objective_01",
+				"pbw_level_nurgle_bury_objective_02",
+				"pbw_level_nurgle_bury_objective_03",
+				"pbw_level_nurgle_bury_objective_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.0437707901001,
+				4.8699584007263,
+				4.3143124580383,
+				5.8599791526794
+			}
+		},
+		pbw_level_nurgle_nurglification_increase = {
+			face_animations_n = 4,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_nurglification_increase_01",
+				"pbw_level_nurgle_nurglification_increase_02",
+				"pbw_level_nurgle_nurglification_increase_03",
+				"pbw_level_nurgle_nurglification_increase_04"
+			},
+			sound_events = {
+				"pbw_level_nurgle_nurglification_increase_01",
+				"pbw_level_nurgle_nurglification_increase_02",
+				"pbw_level_nurgle_nurglification_increase_03",
+				"pbw_level_nurgle_nurglification_increase_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.2436459064484,
+				3.0019373893738,
+				4.0258955955505,
+				6.0843749046326
+			}
+		},
+		pbw_level_nurgle_river = {
+			face_animations_n = 4,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_river_01",
+				"pbw_level_nurgle_river_02",
+				"pbw_level_nurgle_river_03",
+				"pbw_level_nurgle_river_04"
+			},
+			sound_events = {
+				"pbw_level_nurgle_river_01",
+				"pbw_level_nurgle_river_02",
+				"pbw_level_nurgle_river_03",
+				"pbw_level_nurgle_river_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				2.2616457939148,
+				1.923666715622,
+				3.3246250152588,
+				2.858416557312
+			}
+		},
+		pbw_level_nurgle_ruins = {
+			face_animations_n = 4,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_ruins_01",
+				"pbw_level_nurgle_ruins_02",
+				"pbw_level_nurgle_ruins_03",
+				"pbw_level_nurgle_ruins_04"
+			},
 			sound_events = {
 				"pbw_level_nurgle_ruins_01",
 				"pbw_level_nurgle_ruins_02",
 				"pbw_level_nurgle_ruins_03",
 				"pbw_level_nurgle_ruins_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -716,151 +1031,100 @@ return function ()
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
 			sound_events_duration = {
 				4.1002082824707,
 				4.8668751716614,
 				4.2422914505005,
 				2.782083272934
-			},
-			localization_strings = {
-				"pbw_level_nurgle_ruins_01",
-				"pbw_level_nurgle_ruins_02",
-				"pbw_level_nurgle_ruins_03",
-				"pbw_level_nurgle_ruins_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_nurgle_river = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_river_01",
-				"pbw_level_nurgle_river_02",
-				"pbw_level_nurgle_river_03",
-				"pbw_level_nurgle_river_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				2.2616457939148,
-				1.923666715622,
-				3.3246250152588,
-				2.858416557312
-			},
-			localization_strings = {
-				"pbw_level_nurgle_river_01",
-				"pbw_level_nurgle_river_02",
-				"pbw_level_nurgle_river_03",
-				"pbw_level_nurgle_river_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_nurgle_intro_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_nurgle_intro_b_01",
-				[2.0] = "pbw_nurgle_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.9115624427795,
-				[2.0] = 8.6083745956421
-			},
-			localization_strings = {
-				[1.0] = "pbw_nurgle_intro_b_01",
-				[2.0] = "pbw_nurgle_intro_b_02"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pbw_level_nurgle_digsite = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_level_nurgle_digsite_01",
+				"pbw_level_nurgle_digsite_02",
+				"pbw_level_nurgle_digsite_03",
+				"pbw_level_nurgle_digsite_04"
+			},
 			sound_events = {
 				"pbw_level_nurgle_digsite_01",
 				"pbw_level_nurgle_digsite_02",
 				"pbw_level_nurgle_digsite_03",
 				"pbw_level_nurgle_digsite_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
 			face_animations = {
 				"face_fear",
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			sound_events_duration = {
 				1.6231458187103,
 				2.0025417804718,
 				3.1977083683014,
 				1.5915207862854
-			},
+			}
+		},
+		pbw_nurgle_intro_b = {
+			face_animations_n = 2,
+			database = "bright_wizard_nurgle",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			localization_strings = {
-				"pbw_level_nurgle_digsite_01",
-				"pbw_level_nurgle_digsite_02",
-				"pbw_level_nurgle_digsite_03",
-				"pbw_level_nurgle_digsite_04"
+				[1.0] = "pbw_nurgle_intro_b_01",
+				[2.0] = "pbw_nurgle_intro_b_02"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				[1.0] = "pbw_nurgle_intro_b_01",
+				[2.0] = "pbw_nurgle_intro_b_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.9115624427795,
+				[2.0] = 8.6083745956421
+			}
 		},
 		pbw_level_nurgle_drop_down = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pbw_level_nurgle_drop_down_01",
 				"pbw_level_nurgle_drop_down_02",
 				"pbw_level_nurgle_drop_down_03",
 				"pbw_level_nurgle_drop_down_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pbw_level_nurgle_drop_down_01",
+				"pbw_level_nurgle_drop_down_02",
+				"pbw_level_nurgle_drop_down_03",
+				"pbw_level_nurgle_drop_down_04"
 			},
 			face_animations = {
 				"face_concerned",
@@ -868,184 +1132,38 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
 				1.1369166374207,
 				2.0736875534058,
 				2.6978957653046,
 				1.1347916126251
-			},
-			localization_strings = {
-				"pbw_level_nurgle_drop_down_01",
-				"pbw_level_nurgle_drop_down_02",
-				"pbw_level_nurgle_drop_down_03",
-				"pbw_level_nurgle_drop_down_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_nurgle_intro_a = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_nurgle_intro_a_01",
-				[2.0] = "pbw_nurgle_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.4851040840149,
-				[2.0] = 8.1700830459595
-			},
-			localization_strings = {
-				[1.0] = "pbw_nurgle_intro_a_01",
-				[2.0] = "pbw_nurgle_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_nurgle_coming_down = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_coming_down_01",
-				"pbw_level_nurgle_coming_down_02",
-				"pbw_level_nurgle_coming_down_03",
-				"pbw_level_nurgle_coming_down_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				5.3582916259766,
-				6.8751249313355,
-				6.4462084770203,
-				7.1327290534973
-			},
-			localization_strings = {
-				"pbw_level_nurgle_coming_down_01",
-				"pbw_level_nurgle_coming_down_02",
-				"pbw_level_nurgle_coming_down_03",
-				"pbw_level_nurgle_coming_down_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_nurgle_bury_objective = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_bury_objective_01",
-				"pbw_level_nurgle_bury_objective_02",
-				"pbw_level_nurgle_bury_objective_03",
-				"pbw_level_nurgle_bury_objective_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.0437707901001,
-				4.8699584007263,
-				4.3143124580383,
-				5.8599791526794
-			},
-			localization_strings = {
-				"pbw_level_nurgle_bury_objective_01",
-				"pbw_level_nurgle_bury_objective_02",
-				"pbw_level_nurgle_bury_objective_03",
-				"pbw_level_nurgle_bury_objective_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_nurgle_skaven_collapse = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_skaven_collapse_01",
-				"pbw_level_nurgle_skaven_collapse_02",
-				"pbw_level_nurgle_skaven_collapse_03",
-				"pbw_level_nurgle_skaven_collapse_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.1763958930969,
-				3.1292290687561,
-				4.1092710494995,
-				4.3292708396912
-			},
-			localization_strings = {
-				"pbw_level_nurgle_skaven_collapse_01",
-				"pbw_level_nurgle_skaven_collapse_02",
-				"pbw_level_nurgle_skaven_collapse_03",
-				"pbw_level_nurgle_skaven_collapse_04"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pbw_level_nurgle_outcast_lair = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "bright_wizard_nurgle",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pbw_level_nurgle_outcast_lair_01",
 				"pbw_level_nurgle_outcast_lair_02",
 				"pbw_level_nurgle_outcast_lair_03",
 				"pbw_level_nurgle_outcast_lair_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pbw_level_nurgle_outcast_lair_01",
+				"pbw_level_nurgle_outcast_lair_02",
+				"pbw_level_nurgle_outcast_lair_03",
+				"pbw_level_nurgle_outcast_lair_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1053,136 +1171,18 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
 				4.803249835968,
 				4.3851456642151,
 				4.7519583702087,
 				4.4822502136231
-			},
-			localization_strings = {
-				"pbw_level_nurgle_outcast_lair_01",
-				"pbw_level_nurgle_outcast_lair_02",
-				"pbw_level_nurgle_outcast_lair_03",
-				"pbw_level_nurgle_outcast_lair_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_nurgle_nurglification = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_nurglification_01",
-				"pbw_level_nurgle_nurglification_02",
-				"pbw_level_nurgle_nurglification_03",
-				"pbw_level_nurgle_nurglification_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.6995000839233,
-				3.9216666221619,
-				1.3077291250229,
-				4.2634372711182
-			},
-			localization_strings = {
-				"pbw_level_nurgle_nurglification_01",
-				"pbw_level_nurgle_nurglification_02",
-				"pbw_level_nurgle_nurglification_03",
-				"pbw_level_nurgle_nurglification_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_nurgle_swift_river = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_swift_river_01",
-				"pbw_level_nurgle_swift_river_02",
-				"pbw_level_nurgle_swift_river_03",
-				"pbw_level_nurgle_swift_river_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
-			sound_events_duration = {
-				2.462708234787,
-				3.2273333072662,
-				3.1687500476837,
-				3.4791667461395
-			},
-			localization_strings = {
-				"pbw_level_nurgle_swift_river_01",
-				"pbw_level_nurgle_swift_river_02",
-				"pbw_level_nurgle_swift_river_03",
-				"pbw_level_nurgle_swift_river_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_nurgle_nurglification_increase = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_nurgle_nurglification_increase_01",
-				"pbw_level_nurgle_nurglification_increase_02",
-				"pbw_level_nurgle_nurglification_increase_03",
-				"pbw_level_nurgle_nurglification_increase_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.2436459064484,
-				3.0019373893738,
-				4.0258955955505,
-				6.0843749046326
-			},
-			localization_strings = {
-				"pbw_level_nurgle_nurglification_increase_01",
-				"pbw_level_nurgle_nurglification_increase_02",
-				"pbw_level_nurgle_nurglification_increase_03",
-				"pbw_level_nurgle_nurglification_increase_04"
-			},
-			randomize_indexes = {}
+			}
 		}
 	})
 end

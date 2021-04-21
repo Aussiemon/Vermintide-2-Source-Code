@@ -968,53 +968,25 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pes_crater_plan_banter_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_crater_plan_banter_b_01",
-				[2.0] = "pes_crater_plan_banter_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.3053331375122,
-				[2.0] = 8.8673753738403
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_plan_banter_b_01",
-				[2.0] = "pes_crater_plan_banter_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_wasteland_tree_push = {
-			sound_events_n = 4,
+		pes_crater_devastation = {
 			face_animations_n = 4,
 			database = "empire_soldier_crater",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_wasteland_tree_push_01",
-				"pes_crater_wasteland_tree_push_02",
-				"pes_crater_wasteland_tree_push_03",
-				"pes_crater_wasteland_tree_push_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_devastation_01",
+				"pes_crater_devastation_02",
+				"pes_crater_devastation_03",
+				"pes_crater_devastation_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pes_crater_devastation_01",
+				"pes_crater_devastation_02",
+				"pes_crater_devastation_03",
+				"pes_crater_devastation_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1022,476 +994,145 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			sound_events_duration = {
-				2.1616249084473,
-				2.1537292003632,
-				1.9880625009537,
-				1.7987291812897
-			},
-			localization_strings = {
-				"pes_crater_wasteland_tree_push_01",
-				"pes_crater_wasteland_tree_push_02",
-				"pes_crater_wasteland_tree_push_03",
-				"pes_crater_wasteland_tree_push_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_ambush_interactable = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_ambush_interactable_01",
-				"pes_crater_ambush_interactable_02",
-				"pes_crater_ambush_interactable_03",
-				"pes_crater_ambush_interactable_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
 			sound_events_duration = {
-				2.0566458702087,
-				5.0332708358765,
-				3.21875,
-				4.678249835968
-			},
-			localization_strings = {
-				"pes_crater_ambush_interactable_01",
-				"pes_crater_ambush_interactable_02",
-				"pes_crater_ambush_interactable_03",
-				"pes_crater_ambush_interactable_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_intro_banter_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_crater_intro_banter_b_01",
-				[2.0] = "pes_crater_intro_banter_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5311250686645,
-				[2.0] = 3.3047916889191
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_intro_banter_b_01",
-				[2.0] = "pes_crater_intro_banter_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_intro_banter_a = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_crater_intro_banter_a_01",
-				[2.0] = "pes_crater_intro_banter_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.179229259491,
-				[2.0] = 6.2579164505005
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_intro_banter_a_01",
-				[2.0] = "pes_crater_intro_banter_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_vista_reveal = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_vista_reveal_01",
-				"pes_crater_vista_reveal_02",
-				"pes_crater_vista_reveal_03",
-				"pes_crater_vista_reveal_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				4.2115001678467,
-				6.1155624389648,
-				6.2875833511353,
-				4.4606251716614
-			},
-			localization_strings = {
-				"pes_crater_vista_reveal_01",
-				"pes_crater_vista_reveal_02",
-				"pes_crater_vista_reveal_03",
-				"pes_crater_vista_reveal_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_climb_top = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_climb_top_01",
-				"pes_crater_climb_top_02",
-				"pes_crater_climb_top_03",
-				"pes_crater_climb_top_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				5.4987082481384,
-				8.8673753738403,
-				4.1891250610352,
-				5.7748332023621
-			},
-			localization_strings = {
-				"pes_crater_climb_top_01",
-				"pes_crater_climb_top_02",
-				"pes_crater_climb_top_03",
-				"pes_crater_climb_top_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_arena_waystone = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_arena_waystone_01",
-				"pes_crater_arena_waystone_02",
-				"pes_crater_arena_waystone_03",
-				"pes_crater_arena_waystone_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				3.2980000972748,
-				2.9777083396912,
-				4.3657083511353,
-				3.8199999332428
-			},
-			localization_strings = {
-				"pes_crater_arena_waystone_01",
-				"pes_crater_arena_waystone_02",
-				"pes_crater_arena_waystone_03",
-				"pes_crater_arena_waystone_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_wasteland_intro = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_wasteland_intro_01",
-				"pes_crater_wasteland_intro_02",
-				"pes_crater_wasteland_intro_03",
-				"pes_crater_wasteland_intro_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				9.0803747177124,
-				6.5164375305176,
-				7.7155623435974,
-				7.4788956642151
-			},
-			localization_strings = {
-				"pes_crater_wasteland_intro_01",
-				"pes_crater_wasteland_intro_02",
-				"pes_crater_wasteland_intro_03",
-				"pes_crater_wasteland_intro_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_arena_end = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_arena_end_01",
-				"pes_crater_arena_end_02",
-				"pes_crater_arena_end_03",
-				"pes_crater_arena_end_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				3.1319167613983,
-				5.3088541030884,
-				5.3444375991821,
-				4.3597707748413
-			},
-			localization_strings = {
-				"pes_crater_arena_end_01",
-				"pes_crater_arena_end_02",
-				"pes_crater_arena_end_03",
-				"pes_crater_arena_end_04"
-			},
-			randomize_indexes = {}
+				5.8773956298828,
+				7.5262293815613,
+				4.2212707996368,
+				4.4494581222534
+			}
 		},
 		pes_crater_arena_standard_02 = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "empire_soldier_crater",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_arena_standard_02_01",
+				"pes_crater_arena_standard_02_02",
+				"pes_crater_arena_standard_02_03",
+				"pes_crater_arena_standard_02_04"
+			},
 			sound_events = {
 				"pes_crater_arena_standard_02_01",
 				"pes_crater_arena_standard_02_02",
 				"pes_crater_arena_standard_02_03",
 				"pes_crater_arena_standard_02_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				1.8269582986832,
 				1.8269375562668,
 				2.2065832614899,
 				2.1235415935516
-			},
-			localization_strings = {
-				"pes_crater_arena_standard_02_01",
-				"pes_crater_arena_standard_02_02",
-				"pes_crater_arena_standard_02_03",
-				"pes_crater_arena_standard_02_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_tracking_camp = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_tracking_camp_01",
-				"pes_crater_tracking_camp_02",
-				"pes_crater_tracking_camp_03",
-				"pes_crater_tracking_camp_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				5.1989374160767,
-				3.025333404541,
-				5.0096039772034,
-				5.0332708358765
-			},
-			localization_strings = {
-				"pes_crater_tracking_camp_01",
-				"pes_crater_tracking_camp_02",
-				"pes_crater_tracking_camp_03",
-				"pes_crater_tracking_camp_04"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pes_crater_bridge_sighted = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "empire_soldier_crater",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_bridge_sighted_01",
+				"pes_crater_bridge_sighted_02",
+				"pes_crater_bridge_sighted_03",
+				"pes_crater_bridge_sighted_04"
+			},
 			sound_events = {
 				"pes_crater_bridge_sighted_01",
 				"pes_crater_bridge_sighted_02",
 				"pes_crater_bridge_sighted_03",
 				"pes_crater_bridge_sighted_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				3.1635415554047,
 				2.3430624008179,
 				2.9189791679382,
 				3.5027709007263
-			},
-			localization_strings = {
-				"pes_crater_bridge_sighted_01",
-				"pes_crater_bridge_sighted_02",
-				"pes_crater_bridge_sighted_03",
-				"pes_crater_bridge_sighted_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pes_crater_intro_banter_c = {
-			sound_events_n = 2,
+		pes_crater_plan_banter_b = {
 			face_animations_n = 2,
 			database = "empire_soldier_crater",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			category = "level_talk",
+			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_crater_intro_banter_c_01",
-				[2.0] = "pes_crater_intro_banter_c_02"
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_crater_plan_banter_b_01",
+				[2.0] = "pes_crater_plan_banter_b_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pes_crater_plan_banter_b_01",
+				[2.0] = "pes_crater_plan_banter_b_02"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
 			sound_events_duration = {
-				[1.0] = 4.8167085647583,
-				[2.0] = 5.0122709274292
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_intro_banter_c_01",
-				[2.0] = "pes_crater_intro_banter_c_02"
-			},
-			randomize_indexes = {}
+				[1.0] = 7.3053331375122,
+				[2.0] = 8.8673753738403
+			}
 		},
-		pes_crater_forest_ascent_top = {
-			sound_events_n = 4,
+		pes_crater_wasteland_intro = {
 			face_animations_n = 4,
 			database = "empire_soldier_crater",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_forest_ascent_top_01",
-				"pes_crater_forest_ascent_top_02",
-				"pes_crater_forest_ascent_top_03",
-				"pes_crater_forest_ascent_top_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_wasteland_intro_01",
+				"pes_crater_wasteland_intro_02",
+				"pes_crater_wasteland_intro_03",
+				"pes_crater_wasteland_intro_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pes_crater_wasteland_intro_01",
+				"pes_crater_wasteland_intro_02",
+				"pes_crater_wasteland_intro_03",
+				"pes_crater_wasteland_intro_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1499,235 +1140,77 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			sound_events_duration = {
-				3.4759583473206,
-				5.3622498512268,
-				5.136833190918,
-				5.1961460113525
-			},
-			localization_strings = {
-				"pes_crater_forest_ascent_top_01",
-				"pes_crater_forest_ascent_top_02",
-				"pes_crater_forest_ascent_top_03",
-				"pes_crater_forest_ascent_top_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_devastation = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_devastation_01",
-				"pes_crater_devastation_02",
-				"pes_crater_devastation_03",
-				"pes_crater_devastation_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
 			sound_events_duration = {
-				5.8773956298828,
-				7.5262293815613,
-				5.530291557312,
-				4.4494581222534
-			},
-			localization_strings = {
-				"pes_crater_devastation_01",
-				"pes_crater_devastation_02",
-				"pes_crater_devastation_03",
-				"pes_crater_devastation_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_plan_banter_c = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_crater_plan_banter_c_01",
-				[2.0] = "pes_crater_plan_banter_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 10.027083396912,
-				[2.0] = 7.6806039810181
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_plan_banter_c_01",
-				[2.0] = "pes_crater_plan_banter_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_ambush_done = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_ambush_done_01",
-				"pes_crater_ambush_done_02",
-				"pes_crater_ambush_done_03",
-				"pes_crater_ambush_done_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				4.9622707366943,
-				5.8852915763855,
-				5.1279373168945,
-				6.1155414581299
-			},
-			localization_strings = {
-				"pes_crater_ambush_done_01",
-				"pes_crater_ambush_done_02",
-				"pes_crater_ambush_done_03",
-				"pes_crater_ambush_done_04"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_plan_banter_a = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "empire_soldier_crater",
-			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_crater_plan_banter_a_01",
-				[2.0] = "pes_crater_plan_banter_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.6149168014526,
-				[2.0] = 6.5400834083557
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_plan_banter_a_01",
-				[2.0] = "pes_crater_plan_banter_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_crater_dummy = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "empire_soldier_crater",
-			category = "level_talk_must_play",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "dummy"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 0.20000000298023
-			},
-			localization_strings = {
-				[1.0] = "dummy"
+				9.0803747177124,
+				6.5164375305176,
+				7.7155623435974,
+				7.4788956642151
 			}
 		},
 		pes_crater_arena_standard = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "empire_soldier_crater",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_arena_standard_01",
+				"pes_crater_arena_standard_02",
+				"pes_crater_arena_standard_03",
+				"pes_crater_arena_standard_04"
+			},
 			sound_events = {
 				"pes_crater_arena_standard_01",
 				"pes_crater_arena_standard_02",
 				"pes_crater_arena_standard_03",
 				"pes_crater_arena_standard_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				2.1294584274292,
 				1.7557708024979,
 				2.3845207691193,
 				2.1116666793823
-			},
-			localization_strings = {
-				"pes_crater_arena_standard_01",
-				"pes_crater_arena_standard_02",
-				"pes_crater_arena_standard_03",
-				"pes_crater_arena_standard_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pes_crater_rim_vista = {
-			sound_events_n = 4,
+		pes_crater_climb_top = {
 			face_animations_n = 4,
 			database = "empire_soldier_crater",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_crater_rim_vista_01",
-				"pes_crater_rim_vista_02",
-				"pes_crater_rim_vista_03",
-				"pes_crater_rim_vista_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_climb_top_01",
+				"pes_crater_climb_top_02",
+				"pes_crater_climb_top_03",
+				"pes_crater_climb_top_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pes_crater_climb_top_01",
+				"pes_crater_climb_top_02",
+				"pes_crater_climb_top_03",
+				"pes_crater_climb_top_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1735,19 +1218,536 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			sound_events_duration = {
-				5.0096039772034,
-				7.242208480835,
-				7.1475625038147,
-				7.9048957824707
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
+			sound_events_duration = {
+				4.4862395524979,
+				8.8673753738403,
+				4.1891250610352,
+				5.7748332023621
+			}
+		},
+		pes_crater_intro_banter_c = {
+			face_animations_n = 2,
+			database = "empire_soldier_crater",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_crater_intro_banter_c_01",
+				[2.0] = "pes_crater_intro_banter_c_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_intro_banter_c_01",
+				[2.0] = "pes_crater_intro_banter_c_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8167085647583,
+				[2.0] = 5.0122709274292
+			}
+		},
+		pes_crater_wasteland_tree_push = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_wasteland_tree_push_01",
+				"pes_crater_wasteland_tree_push_02",
+				"pes_crater_wasteland_tree_push_03",
+				"pes_crater_wasteland_tree_push_04"
+			},
+			sound_events = {
+				"pes_crater_wasteland_tree_push_01",
+				"pes_crater_wasteland_tree_push_02",
+				"pes_crater_wasteland_tree_push_03",
+				"pes_crater_wasteland_tree_push_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.1616249084473,
+				2.1537292003632,
+				1.9880625009537,
+				1.7987291812897
+			}
+		},
+		pes_crater_vista_reveal = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk_must_play",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_vista_reveal_01",
+				"pes_crater_vista_reveal_02",
+				"pes_crater_vista_reveal_03",
+				"pes_crater_vista_reveal_04"
+			},
+			sound_events = {
+				"pes_crater_vista_reveal_01",
+				"pes_crater_vista_reveal_02",
+				"pes_crater_vista_reveal_03",
+				"pes_crater_vista_reveal_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.1916251182556,
+				6.1155624389648,
+				6.2875833511353,
+				4.4606251716614
+			}
+		},
+		pes_crater_dummy = {
+			face_animations_n = 1,
+			database = "empire_soldier_crater",
+			sound_events_n = 1,
+			category = "level_talk_must_play",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "dummy"
+			},
+			sound_events = {
+				[1.0] = "dummy"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 0.20000000298023
+			}
+		},
+		pes_crater_arena_waystone = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_arena_waystone_01",
+				"pes_crater_arena_waystone_02",
+				"pes_crater_arena_waystone_03",
+				"pes_crater_arena_waystone_04"
+			},
+			sound_events = {
+				"pes_crater_arena_waystone_01",
+				"pes_crater_arena_waystone_02",
+				"pes_crater_arena_waystone_03",
+				"pes_crater_arena_waystone_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.2980000972748,
+				2.9777083396912,
+				4.3657083511353,
+				3.8199999332428
+			}
+		},
+		pes_crater_arena_end = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_arena_end_01",
+				"pes_crater_arena_end_02",
+				"pes_crater_arena_end_03",
+				"pes_crater_arena_end_04"
+			},
+			sound_events = {
+				"pes_crater_arena_end_01",
+				"pes_crater_arena_end_02",
+				"pes_crater_arena_end_03",
+				"pes_crater_arena_end_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.1319167613983,
+				5.3088541030884,
+				5.3444375991821,
+				4.3597707748413
+			}
+		},
+		pes_crater_plan_banter_c = {
+			face_animations_n = 2,
+			database = "empire_soldier_crater",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk_must_play",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_crater_plan_banter_c_01",
+				[2.0] = "pes_crater_plan_banter_c_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_plan_banter_c_01",
+				[2.0] = "pes_crater_plan_banter_c_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 10.027083396912,
+				[2.0] = 7.6806039810181
+			}
+		},
+		pes_crater_ambush_done = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk_must_play",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_ambush_done_01",
+				"pes_crater_ambush_done_02",
+				"pes_crater_ambush_done_03",
+				"pes_crater_ambush_done_04"
+			},
+			sound_events = {
+				"pes_crater_ambush_done_01",
+				"pes_crater_ambush_done_02",
+				"pes_crater_ambush_done_03",
+				"pes_crater_ambush_done_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.9622707366943,
+				5.8852915763855,
+				5.1279373168945,
+				6.1155414581299
+			}
+		},
+		pes_crater_intro_banter_b = {
+			face_animations_n = 2,
+			database = "empire_soldier_crater",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_crater_intro_banter_b_01",
+				[2.0] = "pes_crater_intro_banter_b_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_intro_banter_b_01",
+				[2.0] = "pes_crater_intro_banter_b_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5311250686645,
+				[2.0] = 3.3047916889191
+			}
+		},
+		pes_crater_tracking_camp = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_tracking_camp_01",
+				"pes_crater_tracking_camp_02",
+				"pes_crater_tracking_camp_03",
+				"pes_crater_tracking_camp_04"
+			},
+			sound_events = {
+				"pes_crater_tracking_camp_01",
+				"pes_crater_tracking_camp_02",
+				"pes_crater_tracking_camp_03",
+				"pes_crater_tracking_camp_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				5.1989374160767,
+				3.025333404541,
+				5.0096039772034,
+				5.0332708358765
+			}
+		},
+		pes_crater_ambush_interactable = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_ambush_interactable_01",
+				"pes_crater_ambush_interactable_02",
+				"pes_crater_ambush_interactable_03",
+				"pes_crater_ambush_interactable_04"
+			},
+			sound_events = {
+				"pes_crater_ambush_interactable_01",
+				"pes_crater_ambush_interactable_02",
+				"pes_crater_ambush_interactable_03",
+				"pes_crater_ambush_interactable_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.0566458702087,
+				5.0332708358765,
+				3.21875,
+				4.678249835968
+			}
+		},
+		pes_crater_plan_banter_a = {
+			face_animations_n = 2,
+			database = "empire_soldier_crater",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk_must_play",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_crater_plan_banter_a_01",
+				[2.0] = "pes_crater_plan_banter_a_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_plan_banter_a_01",
+				[2.0] = "pes_crater_plan_banter_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.6149168014526,
+				[2.0] = 6.5400834083557
+			}
+		},
+		pes_crater_rim_vista = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
 			localization_strings = {
 				"pes_crater_rim_vista_01",
 				"pes_crater_rim_vista_02",
 				"pes_crater_rim_vista_03",
 				"pes_crater_rim_vista_04"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				"pes_crater_rim_vista_01",
+				"pes_crater_rim_vista_02",
+				"pes_crater_rim_vista_03",
+				"pes_crater_rim_vista_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				5.0096039772034,
+				7.242208480835,
+				5.9455938339233,
+				7.0211665630341
+			}
+		},
+		pes_crater_forest_ascent_top = {
+			face_animations_n = 4,
+			database = "empire_soldier_crater",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_crater_forest_ascent_top_01",
+				"pes_crater_forest_ascent_top_02",
+				"pes_crater_forest_ascent_top_03",
+				"pes_crater_forest_ascent_top_04"
+			},
+			sound_events = {
+				"pes_crater_forest_ascent_top_01",
+				"pes_crater_forest_ascent_top_02",
+				"pes_crater_forest_ascent_top_03",
+				"pes_crater_forest_ascent_top_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.4759583473206,
+				5.3622498512268,
+				5.136833190918,
+				5.1961460113525
+			}
+		},
+		pes_crater_intro_banter_a = {
+			face_animations_n = 2,
+			database = "empire_soldier_crater",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_crater_intro_banter_a_01",
+				[2.0] = "pes_crater_intro_banter_a_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_intro_banter_a_01",
+				[2.0] = "pes_crater_intro_banter_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.179229259491,
+				[2.0] = 6.2579164505005
+			}
 		}
 	})
 end

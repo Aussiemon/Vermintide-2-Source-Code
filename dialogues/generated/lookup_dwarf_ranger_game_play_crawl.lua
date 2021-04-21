@@ -118,6 +118,7 @@ assert(DialogueLookup[DialogueLookup_n + 117] == nil)
 assert(DialogueLookup[DialogueLookup_n + 118] == nil)
 assert(DialogueLookup[DialogueLookup_n + 119] == nil)
 assert(DialogueLookup[DialogueLookup_n + 120] == nil)
+assert(DialogueLookup[DialogueLookup_n + 121] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_gameplay_hearing_a_gutter_runner_drunk"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_gameplay_hearing_a_globadier_drunk"
@@ -239,6 +240,7 @@ DialogueLookup[DialogueLookup_n + 117] = "pdr_special_ability_slayer_non_drunk"
 DialogueLookup[DialogueLookup_n + 118] = "pdr_activate_ability_ranger_non_drunk"
 DialogueLookup[DialogueLookup_n + 119] = "pdr_special_ability_ironbreaker_non_drunk"
 DialogueLookup[DialogueLookup_n + 120] = "pdr_special_ability_ironbreaker_taunt_non_drunk"
-DialogueLookup_n = DialogueLookup_n + 120
+DialogueLookup[DialogueLookup_n + 121] = "pdr_activate_ability_dwarf_engineer_non_drunk"
+DialogueLookup_n = DialogueLookup_n + 121
 
 return

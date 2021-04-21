@@ -384,271 +384,271 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_level_bell_distance_01 = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "wood_elf_bell",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_level_bell_distance_01",
-				[2.0] = "pwe_level_bell_distance_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0271458625794,
-				[2.0] = 3.101083278656
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bell_distance_01",
-				[2.0] = "pwe_level_bell_distance_02"
-			},
-			randomize_indexes = {}
-		},
 		pwe_bell_intro_b = {
-			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "wood_elf_bell",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwe_bell_intro_b_01",
+				[2.0] = "pwe_bell_intro_b_02"
+			},
 			sound_events = {
 				[1.0] = "pwe_bell_intro_b_01",
 				[2.0] = "pwe_bell_intro_b_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 6.3633127212524,
 				[2.0] = 6.2121667861939
-			},
-			localization_strings = {
-				[1.0] = "pwe_bell_intro_b_01",
-				[2.0] = "pwe_bell_intro_b_02"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pwe_bell_intro_c = {
-			sound_events_n = 2,
+		pwe_level_bell_effect_01 = {
 			face_animations_n = 2,
 			database = "wood_elf_bell",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_bell_intro_c_01",
-				[2.0] = "pwe_bell_intro_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.0178751945496,
-				[2.0] = 7.699333190918
-			},
+			randomize_indexes = {},
 			localization_strings = {
-				[1.0] = "pwe_bell_intro_c_01",
-				[2.0] = "pwe_bell_intro_c_02"
+				[1.0] = "pwe_level_bell_effect_01",
+				[2.0] = "pwe_level_bell_effect_02"
 			},
-			randomize_indexes = {}
-		},
-		pwe_level_bell_reaching_bell_01 = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "wood_elf_bell",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pwe_level_bell_reaching_bell_01",
-				[2.0] = "pwe_level_bell_reaching_bell_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1.0] = "pwe_level_bell_effect_01",
+				[2.0] = "pwe_level_bell_effect_02"
 			},
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
 			sound_events_duration = {
-				[1.0] = 3.5663125514984,
-				[2.0] = 3.6468749046326
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bell_reaching_bell_01",
-				[2.0] = "pwe_level_bell_reaching_bell_02"
-			},
-			randomize_indexes = {}
+				[1.0] = 5.6722497940064,
+				[2.0] = 4.1969165802002
+			}
 		},
-		pwe_bell_intro_a = {
-			sound_events_n = 2,
+		pwe_level_bell_falling_01 = {
 			face_animations_n = 2,
 			database = "wood_elf_bell",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwe_level_bell_falling_01",
+				[2.0] = "pwe_level_bell_falling_02"
+			},
 			sound_events = {
-				[1.0] = "pwe_bell_intro_a_01",
-				[2.0] = "pwe_bell_intro_a_02"
+				[1.0] = "pwe_level_bell_falling_01",
+				[2.0] = "pwe_level_bell_falling_02"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8203959465027,
+				[2.0] = 5.5686664581299
+			}
+		},
+		pwe_level_bell_distance_01 = {
+			face_animations_n = 2,
+			database = "wood_elf_bell",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwe_level_bell_distance_01",
+				[2.0] = "pwe_level_bell_distance_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bell_distance_01",
+				[2.0] = "pwe_level_bell_distance_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 4.0271458625794,
+				[2.0] = 3.101083278656
+			}
+		},
+		pwe_level_bell_reaching_bell_01 = {
+			face_animations_n = 2,
+			database = "wood_elf_bell",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwe_level_bell_reaching_bell_01",
+				[2.0] = "pwe_level_bell_reaching_bell_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bell_reaching_bell_01",
+				[2.0] = "pwe_level_bell_reaching_bell_02"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5663125514984,
+				[2.0] = 3.6468749046326
+			}
+		},
+		pwe_bell_intro_c = {
+			face_animations_n = 2,
+			database = "wood_elf_bell",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwe_bell_intro_c_01",
+				[2.0] = "pwe_bell_intro_c_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_bell_intro_c_01",
+				[2.0] = "pwe_bell_intro_c_02"
+			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 5.6873750686645,
-				[2.0] = 6.0246248245239
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 7.0178751945496,
+				[2.0] = 7.699333190918
+			}
+		},
+		pwe_bell_intro_a = {
+			face_animations_n = 2,
+			database = "wood_elf_bell",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			localization_strings = {
 				[1.0] = "pwe_bell_intro_a_01",
 				[2.0] = "pwe_bell_intro_a_02"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				[1.0] = "pwe_bell_intro_a_01",
+				[2.0] = "pwe_bell_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6873750686645,
+				[2.0] = 6.0246248245239
+			}
+		},
+		pwe_level_bell_destroyed_01 = {
+			face_animations_n = 2,
+			database = "wood_elf_bell",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwe_level_bell_destroyed_01",
+				[2.0] = "pwe_level_bell_destroyed_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bell_destroyed_01",
+				[2.0] = "pwe_level_bell_destroyed_02"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9728751182556,
+				[2.0] = 2.2525417804718
+			}
 		},
 		pwe_level_bell_spotting_01 = {
-			sound_events_n = 3,
 			face_animations_n = 3,
 			database = "wood_elf_bell",
+			sound_events_n = 3,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 3,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pwe_level_bell_spotting_01",
 				"pwe_level_bell_spotting_02",
 				"pwe_level_bell_spotting_03"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pwe_level_bell_spotting_01",
+				"pwe_level_bell_spotting_02",
+				"pwe_level_bell_spotting_03"
 			},
 			face_animations = {
 				"face_fear",
 				"face_fear",
 				"face_fear"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
 				2.6632499694824,
 				2.0719375610352,
 				2.592916727066
-			},
-			localization_strings = {
-				"pwe_level_bell_spotting_01",
-				"pwe_level_bell_spotting_02",
-				"pwe_level_bell_spotting_03"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_bell_falling_01 = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "wood_elf_bell",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_level_bell_falling_01",
-				[2.0] = "pwe_level_bell_falling_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8203959465027,
-				[2.0] = 5.5686664581299
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bell_falling_01",
-				[2.0] = "pwe_level_bell_falling_02"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_bell_destroyed_01 = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "wood_elf_bell",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_level_bell_destroyed_01",
-				[2.0] = "pwe_level_bell_destroyed_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9728751182556,
-				[2.0] = 2.2525417804718
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bell_destroyed_01",
-				[2.0] = "pwe_level_bell_destroyed_02"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_bell_effect_01 = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "wood_elf_bell",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_level_bell_effect_01",
-				[2.0] = "pwe_level_bell_effect_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			sound_events_duration = {
-				[1.0] = 5.6722497940064,
-				[2.0] = 4.1969165802002
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bell_effect_01",
-				[2.0] = "pwe_level_bell_effect_02"
-			},
-			randomize_indexes = {}
+			}
 		}
 	})
 end

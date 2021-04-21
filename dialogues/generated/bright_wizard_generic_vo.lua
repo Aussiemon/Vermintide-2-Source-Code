@@ -728,24 +728,25 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pbw_generic_success = {
-			sound_events_n = 4,
+		pbw_generic_search_complete = {
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_success_01",
-				"pbw_generic_success_02",
-				"pbw_generic_success_03",
-				"pbw_generic_success_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_search_complete_01",
+				"pbw_generic_search_complete_02",
+				"pbw_generic_search_complete_03",
+				"pbw_generic_search_complete_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pbw_generic_search_complete_01",
+				"pbw_generic_search_complete_02",
+				"pbw_generic_search_complete_03",
+				"pbw_generic_search_complete_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -753,38 +754,38 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
 			sound_events_duration = {
-				3.4702084064484,
-				1.1767292022705,
-				1.9494999647141,
-				1.8055208921433
-			},
-			localization_strings = {
-				"pbw_generic_success_01",
-				"pbw_generic_success_02",
-				"pbw_generic_success_03",
-				"pbw_generic_success_04"
-			},
-			randomize_indexes = {}
+				0.66083335876465,
+				1.1482291221619,
+				1.580854177475,
+				2.7464792728424
+			}
 		},
-		pbw_generic_assemble = {
-			sound_events_n = 4,
+		pbw_generic_reaction_action = {
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_assemble_01",
-				"pbw_generic_assemble_02",
-				"pbw_generic_assemble_03",
-				"pbw_generic_assemble_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_reaction_action_01",
+				"pbw_generic_reaction_action_02",
+				"pbw_generic_reaction_action_03",
+				"pbw_generic_reaction_action_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pbw_generic_reaction_action_01",
+				"pbw_generic_reaction_action_02",
+				"pbw_generic_reaction_action_03",
+				"pbw_generic_reaction_action_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -792,38 +793,38 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
 			sound_events_duration = {
-				0.79231250286102,
-				1.6037499904633,
-				1.4211041927338,
-				0.55722916126251
-			},
-			localization_strings = {
-				"pbw_generic_assemble_01",
-				"pbw_generic_assemble_02",
-				"pbw_generic_assemble_03",
-				"pbw_generic_assemble_04"
-			},
-			randomize_indexes = {}
+				0.39360415935516,
+				0.64220833778381,
+				0.80283331871033,
+				0.47285416722298
+			}
 		},
-		pbw_generic_rain = {
-			sound_events_n = 4,
+		pbw_generic_falling = {
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			category = "level_talk",
+			category = "level_talk_must_play",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_rain_01",
-				"pbw_generic_rain_02",
-				"pbw_generic_rain_03",
-				"pbw_generic_rain_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_falling_01",
+				"pbw_generic_falling_02",
+				"pbw_generic_falling_03",
+				"pbw_generic_falling_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pbw_generic_falling_01",
+				"pbw_generic_falling_02",
+				"pbw_generic_falling_03",
+				"pbw_generic_falling_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -831,155 +832,77 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			sound_events_duration = {
-				1.8126666545868,
-				2.217916727066,
-				1.601979136467,
-				3.0897917747498
-			},
-			localization_strings = {
-				"pbw_generic_rain_01",
-				"pbw_generic_rain_02",
-				"pbw_generic_rain_03",
-				"pbw_generic_rain_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_cold_inside = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_cold_inside_01",
-				"pbw_generic_cold_inside_02",
-				"pbw_generic_cold_inside_03",
-				"pbw_generic_cold_inside_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
 			sound_events_duration = {
-				1.881875038147,
-				2.9943957328796,
-				2.2599375247955,
-				4.7120833396912
-			},
-			localization_strings = {
-				"pbw_generic_cold_inside_01",
-				"pbw_generic_cold_inside_02",
-				"pbw_generic_cold_inside_03",
-				"pbw_generic_cold_inside_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_unexpected_event_01 = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_unexpected_event_01",
-				"pbw_generic_unexpected_event_02",
-				"pbw_generic_unexpected_event_03",
-				"pbw_generic_unexpected_event_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				1.8376666307449,
-				1.9248125553131,
-				0.72131252288818,
-				1.2327708005905
-			},
-			localization_strings = {
-				"pbw_generic_unexpected_event_01",
-				"pbw_generic_unexpected_event_02",
-				"pbw_generic_unexpected_event_03",
-				"pbw_generic_unexpected_event_04"
-			},
-			randomize_indexes = {}
+				1.4785000085831,
+				1.1784166097641,
+				1.0940208435059,
+				1.9392708539963
+			}
 		},
 		pbw_generic_cold_outside = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_cold_outside_01",
+				"pbw_generic_cold_outside_02",
+				"pbw_generic_cold_outside_03",
+				"pbw_generic_cold_outside_04"
+			},
 			sound_events = {
 				"pbw_generic_cold_outside_01",
 				"pbw_generic_cold_outside_02",
 				"pbw_generic_cold_outside_03",
 				"pbw_generic_cold_outside_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				1.1928541660309,
 				2.3439166545868,
 				4.0962710380554,
 				1.3823750019074
-			},
-			localization_strings = {
-				"pbw_generic_cold_outside_01",
-				"pbw_generic_cold_outside_02",
-				"pbw_generic_cold_outside_03",
-				"pbw_generic_cold_outside_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pbw_generic_path_blocked = {
-			sound_events_n = 4,
+		pbw_generic_cold_inside = {
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_path_blocked_01",
-				"pbw_generic_path_blocked_02",
-				"pbw_generic_path_blocked_03",
-				"pbw_generic_path_blocked_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_cold_inside_01",
+				"pbw_generic_cold_inside_02",
+				"pbw_generic_cold_inside_03",
+				"pbw_generic_cold_inside_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pbw_generic_cold_inside_01",
+				"pbw_generic_cold_inside_02",
+				"pbw_generic_cold_inside_03",
+				"pbw_generic_cold_inside_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -987,38 +910,38 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			sound_events_duration = {
-				1.229708313942,
-				1.3492292165756,
-				1.2307499647141,
-				2.3981459140778
-			},
-			localization_strings = {
-				"pbw_generic_path_blocked_01",
-				"pbw_generic_path_blocked_02",
-				"pbw_generic_path_blocked_03",
-				"pbw_generic_path_blocked_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_getting_dark_outside = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_getting_dark_outside_01",
-				"pbw_generic_getting_dark_outside_02",
-				"pbw_generic_getting_dark_outside_03",
-				"pbw_generic_getting_dark_outside_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.881875038147,
+				2.9943957328796,
+				2.2599375247955,
+				4.7120833396912
+			}
+		},
+		pbw_generic_success = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_success_01",
+				"pbw_generic_success_02",
+				"pbw_generic_success_03",
+				"pbw_generic_success_04"
+			},
+			sound_events = {
+				"pbw_generic_success_01",
+				"pbw_generic_success_02",
+				"pbw_generic_success_03",
+				"pbw_generic_success_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1026,27 +949,37 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
 			sound_events_duration = {
-				1.6737707853317,
-				1.1182916164398,
-				1.3271666765213,
-				1.6492708921433
-			},
-			localization_strings = {
-				"pbw_generic_getting_dark_outside_01",
-				"pbw_generic_getting_dark_outside_02",
-				"pbw_generic_getting_dark_outside_03",
-				"pbw_generic_getting_dark_outside_04"
-			},
-			randomize_indexes = {}
+				3.4702084064484,
+				1.1767292022705,
+				1.9494999647141,
+				1.8055208921433
+			}
 		},
 		pbw_generic_search_progressing = {
-			sound_events_n = 8,
 			face_animations_n = 8,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 8,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 8,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_search_progressing_01",
+				"pbw_generic_search_progressing_02",
+				"pbw_generic_search_progressing_03",
+				"pbw_generic_search_progressing_04",
+				"pbw_generic_search_progressing_05",
+				"pbw_generic_search_progressing_06",
+				"pbw_generic_search_progressing_07",
+				"pbw_generic_search_progressing_08"
+			},
 			sound_events = {
 				"pbw_generic_search_progressing_01",
 				"pbw_generic_search_progressing_02",
@@ -1057,16 +990,6 @@ return function ()
 				"pbw_generic_search_progressing_07",
 				"pbw_generic_search_progressing_08"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
@@ -1076,6 +999,16 @@ return function ()
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				1.6381249427795,
@@ -1086,37 +1019,27 @@ return function ()
 				1.7479374408722,
 				1.1414999961853,
 				1.3762708902359
-			},
-			localization_strings = {
-				"pbw_generic_search_progressing_01",
-				"pbw_generic_search_progressing_02",
-				"pbw_generic_search_progressing_03",
-				"pbw_generic_search_progressing_04",
-				"pbw_generic_search_progressing_05",
-				"pbw_generic_search_progressing_06",
-				"pbw_generic_search_progressing_07",
-				"pbw_generic_search_progressing_08"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pbw_generic_dark = {
-			sound_events_n = 4,
+		pbw_generic_rain = {
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_dark_01",
-				"pbw_generic_dark_02",
-				"pbw_generic_dark_03",
-				"pbw_generic_dark_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_rain_01",
+				"pbw_generic_rain_02",
+				"pbw_generic_rain_03",
+				"pbw_generic_rain_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pbw_generic_rain_01",
+				"pbw_generic_rain_02",
+				"pbw_generic_rain_03",
+				"pbw_generic_rain_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1124,38 +1047,38 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			sound_events_duration = {
-				1.158083319664,
-				2.2347500324249,
-				1.4452291727066,
-				2.8126249313355
-			},
-			localization_strings = {
-				"pbw_generic_dark_01",
-				"pbw_generic_dark_02",
-				"pbw_generic_dark_03",
-				"pbw_generic_dark_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_search_start = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_search_start_01",
-				"pbw_generic_search_start_02",
-				"pbw_generic_search_start_03",
-				"pbw_generic_search_start_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.8126666545868,
+				2.217916727066,
+				1.601979136467,
+				3.0897917747498
+			}
+		},
+		pbw_generic_unexpected_event_01 = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_unexpected_event_01",
+				"pbw_generic_unexpected_event_02",
+				"pbw_generic_unexpected_event_03",
+				"pbw_generic_unexpected_event_04"
+			},
+			sound_events = {
+				"pbw_generic_unexpected_event_01",
+				"pbw_generic_unexpected_event_02",
+				"pbw_generic_unexpected_event_03",
+				"pbw_generic_unexpected_event_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1163,253 +1086,330 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			sound_events_duration = {
-				0.77889585494995,
-				1.1656874418259,
-				1.0041249990463,
-				1.4949375391007
-			},
-			localization_strings = {
-				"pbw_generic_search_start_01",
-				"pbw_generic_search_start_02",
-				"pbw_generic_search_start_03",
-				"pbw_generic_search_start_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_reaction_action = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_reaction_action_01",
-				"pbw_generic_reaction_action_02",
-				"pbw_generic_reaction_action_03",
-				"pbw_generic_reaction_action_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
 			sound_events_duration = {
-				0.39360415935516,
-				0.64220833778381,
-				0.80283331871033,
-				0.47285416722298
-			},
-			localization_strings = {
-				"pbw_generic_reaction_action_01",
-				"pbw_generic_reaction_action_02",
-				"pbw_generic_reaction_action_03",
-				"pbw_generic_reaction_action_04"
-			},
-			randomize_indexes = {}
+				1.8376666307449,
+				1.9248125553131,
+				0.72131252288818,
+				1.2327708005905
+			}
 		},
 		pbw_generic_objective_complete = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_objective_complete_01",
+				"pbw_generic_objective_complete_02",
+				"pbw_generic_objective_complete_03",
+				"pbw_generic_objective_complete_04"
+			},
 			sound_events = {
 				"pbw_generic_objective_complete_01",
 				"pbw_generic_objective_complete_02",
 				"pbw_generic_objective_complete_03",
 				"pbw_generic_objective_complete_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				1.2612291574478,
 				1.0660417079925,
 				1.393770813942,
 				3.2644166946411
-			},
-			localization_strings = {
-				"pbw_generic_objective_complete_01",
-				"pbw_generic_objective_complete_02",
-				"pbw_generic_objective_complete_03",
-				"pbw_generic_objective_complete_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_search_complete = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_search_complete_01",
-				"pbw_generic_search_complete_02",
-				"pbw_generic_search_complete_03",
-				"pbw_generic_search_complete_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				0.66083335876465,
-				1.1482291221619,
-				1.580854177475,
-				2.7464792728424
-			},
-			localization_strings = {
-				"pbw_generic_search_complete_01",
-				"pbw_generic_search_complete_02",
-				"pbw_generic_search_complete_03",
-				"pbw_generic_search_complete_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_door_locked = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_door_locked_01",
-				"pbw_generic_door_locked_02",
-				"pbw_generic_door_locked_03",
-				"pbw_generic_door_locked_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				0.6777708530426,
-				2.3858957290649,
-				2.3088126182556,
-				1.1142499446869
-			},
-			localization_strings = {
-				"pbw_generic_door_locked_01",
-				"pbw_generic_door_locked_02",
-				"pbw_generic_door_locked_03",
-				"pbw_generic_door_locked_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_generic_falling = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_generic_vo",
-			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_generic_falling_01",
-				"pbw_generic_falling_02",
-				"pbw_generic_falling_03",
-				"pbw_generic_falling_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				1.4785000085831,
-				1.1784166097641,
-				1.0940208435059,
-				1.9392708539963
-			},
-			localization_strings = {
-				"pbw_generic_falling_01",
-				"pbw_generic_falling_02",
-				"pbw_generic_falling_03",
-				"pbw_generic_falling_04"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pbw_generic_reaction_sound = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_reaction_sound_01",
+				"pbw_generic_reaction_sound_02",
+				"pbw_generic_reaction_sound_03",
+				"pbw_generic_reaction_sound_04"
+			},
 			sound_events = {
 				"pbw_generic_reaction_sound_01",
 				"pbw_generic_reaction_sound_02",
 				"pbw_generic_reaction_sound_03",
 				"pbw_generic_reaction_sound_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				0.50995832681656,
 				0.64985418319702,
 				0.51862502098083,
 				0.58756250143051
-			},
+			}
+		},
+		pbw_generic_dark = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
 			localization_strings = {
-				"pbw_generic_reaction_sound_01",
-				"pbw_generic_reaction_sound_02",
-				"pbw_generic_reaction_sound_03",
-				"pbw_generic_reaction_sound_04"
+				"pbw_generic_dark_01",
+				"pbw_generic_dark_02",
+				"pbw_generic_dark_03",
+				"pbw_generic_dark_04"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				"pbw_generic_dark_01",
+				"pbw_generic_dark_02",
+				"pbw_generic_dark_03",
+				"pbw_generic_dark_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.158083319664,
+				2.2347500324249,
+				1.4452291727066,
+				2.8126249313355
+			}
+		},
+		pbw_generic_search_start = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_search_start_01",
+				"pbw_generic_search_start_02",
+				"pbw_generic_search_start_03",
+				"pbw_generic_search_start_04"
+			},
+			sound_events = {
+				"pbw_generic_search_start_01",
+				"pbw_generic_search_start_02",
+				"pbw_generic_search_start_03",
+				"pbw_generic_search_start_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				0.77889585494995,
+				1.1656874418259,
+				1.0041249990463,
+				1.4949375391007
+			}
+		},
+		pbw_generic_path_blocked = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_path_blocked_01",
+				"pbw_generic_path_blocked_02",
+				"pbw_generic_path_blocked_03",
+				"pbw_generic_path_blocked_04"
+			},
+			sound_events = {
+				"pbw_generic_path_blocked_01",
+				"pbw_generic_path_blocked_02",
+				"pbw_generic_path_blocked_03",
+				"pbw_generic_path_blocked_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.229708313942,
+				1.3492292165756,
+				1.2307499647141,
+				2.3981459140778
+			}
+		},
+		pbw_generic_assemble = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_assemble_01",
+				"pbw_generic_assemble_02",
+				"pbw_generic_assemble_03",
+				"pbw_generic_assemble_04"
+			},
+			sound_events = {
+				"pbw_generic_assemble_01",
+				"pbw_generic_assemble_02",
+				"pbw_generic_assemble_03",
+				"pbw_generic_assemble_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				0.79231250286102,
+				1.6037499904633,
+				1.4211041927338,
+				0.55722916126251
+			}
+		},
+		pbw_generic_getting_dark_outside = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_getting_dark_outside_01",
+				"pbw_generic_getting_dark_outside_02",
+				"pbw_generic_getting_dark_outside_03",
+				"pbw_generic_getting_dark_outside_04"
+			},
+			sound_events = {
+				"pbw_generic_getting_dark_outside_01",
+				"pbw_generic_getting_dark_outside_02",
+				"pbw_generic_getting_dark_outside_03",
+				"pbw_generic_getting_dark_outside_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.6737707853317,
+				1.1182916164398,
+				1.3271666765213,
+				1.6492708921433
+			}
+		},
+		pbw_generic_door_locked = {
+			face_animations_n = 4,
+			database = "bright_wizard_generic_vo",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_generic_door_locked_01",
+				"pbw_generic_door_locked_02",
+				"pbw_generic_door_locked_03",
+				"pbw_generic_door_locked_04"
+			},
+			sound_events = {
+				"pbw_generic_door_locked_01",
+				"pbw_generic_door_locked_02",
+				"pbw_generic_door_locked_03",
+				"pbw_generic_door_locked_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				0.6777708530426,
+				2.3858957290649,
+				2.3088126182556,
+				1.1142499446869
+			}
 		}
 	})
 end

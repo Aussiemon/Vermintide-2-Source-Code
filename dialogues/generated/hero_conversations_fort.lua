@@ -1893,906 +1893,906 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pbw_level_fort_story_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_fort_story_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7546665668488
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_fort_story_four_01"
-			}
-		},
-		pwe_level_fort_story_on_the_way_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_on_the_way_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5626459121704
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_on_the_way_five_02"
-			}
-		},
-		pwe_level_fort_story_on_the_way_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_on_the_way_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4620625972748
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_on_the_way_three_01"
-			}
-		},
-		pdr_level_fort_story_on_the_way_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_on_the_way_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2992084026337
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_on_the_way_two_02"
-			}
-		},
-		pwe_level_fort_story_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.5642499923706
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_nine_01"
-			}
-		},
-		pes_level_fort_story_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_eight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2130000591278
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_eight_02"
-			}
-		},
-		pbw_level_fort_story_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_fort_story_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.567271232605
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_fort_story_nine_01"
-			}
-		},
-		pbw_level_fort_story_on_the_way_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_fort_story_on_the_way_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7313957214356
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_fort_story_on_the_way_one_02"
-			}
-		},
-		pdr_level_fort_story_on_the_way_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_on_the_way_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.3976874351502
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_on_the_way_one_02"
-			}
-		},
-		pwh_level_fort_story_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_fort_story_seven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.0330419540405
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_fort_story_seven_02"
-			}
-		},
-		pdr_level_fort_story_on_the_way_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_on_the_way_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.7048540115356
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_on_the_way_one_01"
-			}
-		},
-		pbw_level_fort_story_on_the_way_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_fort_story_on_the_way_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0683541297913
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_fort_story_on_the_way_one_01"
-			}
-		},
-		pdr_level_fort_story_on_the_way_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_on_the_way_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.0714998245239
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_on_the_way_two_01"
-			}
-		},
-		pdr_level_fort_story_river_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_river_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2088332176208
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_river_one_01"
-			}
-		},
-		pes_level_fort_story_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.8752918243408
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_seven_01"
-			}
-		},
-		pwe_level_fort_story_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.249499797821
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_eight_01"
-			}
-		},
-		pbw_level_fort_story_river_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_fort_story_river_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0754792690277
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_fort_story_river_one_02"
-			}
-		},
-		pwe_level_fort_story_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.562479019165
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_nine_02"
-			}
-		},
-		pwe_level_fort_story_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_eight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 9.3509168624878
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_eight_02"
-			}
-		},
-		pes_level_fort_story_seven_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_seven_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.4885417222977
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_seven_03"
-			}
-		},
-		pdr_level_fort_story_on_the_way_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_on_the_way_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.5929789543152
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_on_the_way_five_02"
-			}
-		},
-		pwe_level_fort_story_on_the_way_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_on_the_way_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.0198750495911
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_on_the_way_two_01"
-			}
-		},
-		pdr_level_fort_story_on_the_way_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_on_the_way_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.9148958921433
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_on_the_way_five_01"
-			}
-		},
-		pwh_level_fort_story_seven_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_fort_story_seven_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3658957481384
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_fort_story_seven_03"
-			}
-		},
-		pes_level_fort_story_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 1.9908958673477
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_eight_01"
-			}
-		},
-		pes_level_fort_story_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1050415039063
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_four_01"
-			}
-		},
-		pes_level_fort_story_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_four_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.741229057312
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_four_02"
-			}
-		},
-		pbw_level_fort_story_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_fort_story_four_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9789166450501
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_fort_story_four_02"
-			}
-		},
-		pwh_level_fort_story_on_the_way_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_fort_story_on_the_way_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4567
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_fort_story_on_the_way_three_02"
-			}
-		},
-		pwe_level_fort_story_on_the_way_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_on_the_way_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 9.8548545837402
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_on_the_way_three_02"
-			}
-		},
-		pes_level_fort_story_on_the_way_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_on_the_way_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.6878333091736
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_on_the_way_three_01"
-			}
-		},
-		pdr_level_fort_story_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_six_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.3393541574478
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_six_02"
-			}
-		},
-		pdr_level_fort_story_river_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_river_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2925000190735
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_river_one_02"
-			}
-		},
-		pbw_level_fort_story_river_one_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_fort_story_river_one_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.6843538284302
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_fort_story_river_one_03"
-			}
-		},
-		pwh_level_fort_story_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_fort_story_six_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.0833120346069
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_fort_story_six_02"
-			}
-		},
-		pes_level_fort_story_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_fort_story_seven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8703126907349
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_story_seven_02"
-			}
-		},
-		pdr_level_fort_story_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_fort_story_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 8.0789794921875
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_fort_story_six_01"
-			}
-		},
-		pwe_level_fort_story_on_the_way_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_fort",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_fort_story_on_the_way_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4214792251587
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_story_on_the_way_two_02"
-			}
-		},
 		pwh_level_fort_story_six_01 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_fort",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_fort_story_six_01"
+			},
 			sound_events = {
 				[1.0] = "pwh_level_fort_story_six_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 5.0516457557678
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_fort_story_six_01"
 			}
 		},
-		pwe_level_fort_story_on_the_way_five_01 = {
-			sound_events_n = 1,
+		pbw_level_fort_story_four_02 = {
 			face_animations_n = 1,
 			database = "hero_conversations_fort",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_fort_story_four_02"
+			},
 			sound_events = {
-				[1.0] = "pwe_level_fort_story_on_the_way_five_01"
+				[1.0] = "pbw_level_fort_story_four_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 2.9789166450501
+			}
+		},
+		pes_level_fort_story_seven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_seven_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_seven_01"
+			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 6.2733335494995
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 6.8752918243408
+			}
+		},
+		pdr_level_fort_story_on_the_way_two_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pwe_level_fort_story_on_the_way_five_01"
+				[1.0] = "pdr_level_fort_story_on_the_way_two_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_on_the_way_two_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2992084026337
+			}
+		},
+		pwe_level_fort_story_nine_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_nine_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_nine_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.562479019165
+			}
+		},
+		pes_level_fort_story_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_four_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1050415039063
+			}
+		},
+		pes_level_fort_story_seven_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_seven_03"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_seven_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4756875634193
+			}
+		},
+		pwe_level_fort_story_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.5642499923706
 			}
 		},
 		pbw_level_fort_story_river_one_01 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_fort",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
+			localization_strings = {
 				[1.0] = "pbw_level_fort_story_river_one_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pbw_level_fort_story_river_one_01"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
 			sound_events_duration = {
 				[1.0] = 1.2875624895096
-			},
+			}
+		},
+		pwh_level_fort_story_six_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pbw_level_fort_story_river_one_01"
+				[1.0] = "pwh_level_fort_story_six_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_fort_story_six_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0833120346069
+			}
+		},
+		pwe_level_fort_story_eight_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_eight_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_eight_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.249499797821
+			}
+		},
+		pdr_level_fort_story_river_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_river_one_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_river_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2088332176208
+			}
+		},
+		pes_level_fort_story_seven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_seven_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_seven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8703126907349
+			}
+		},
+		pdr_level_fort_story_on_the_way_five_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_on_the_way_five_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_on_the_way_five_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.5929789543152
+			}
+		},
+		pwh_level_fort_story_seven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_fort_story_seven_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_fort_story_seven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0330419540405
+			}
+		},
+		pes_level_fort_story_eight_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_eight_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_eight_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2130000591278
+			}
+		},
+		pwh_level_fort_story_on_the_way_three_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_fort_story_on_the_way_three_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_fort_story_on_the_way_three_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4567
+			}
+		},
+		pwe_level_fort_story_on_the_way_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_on_the_way_two_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_on_the_way_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0198750495911
+			}
+		},
+		pes_level_fort_story_on_the_way_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_on_the_way_three_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_on_the_way_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6878333091736
+			}
+		},
+		pbw_level_fort_story_on_the_way_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_fort_story_on_the_way_one_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_fort_story_on_the_way_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0683541297913
+			}
+		},
+		pes_level_fort_story_four_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_four_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_four_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.741229057312
+			}
+		},
+		pdr_level_fort_story_on_the_way_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_on_the_way_one_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_on_the_way_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7048540115356
+			}
+		},
+		pes_level_fort_story_eight_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_fort_story_eight_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_fort_story_eight_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.9908958673477
+			}
+		},
+		pwe_level_fort_story_on_the_way_five_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_on_the_way_five_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_on_the_way_five_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5626459121704
+			}
+		},
+		pbw_level_fort_story_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_fort_story_four_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_fort_story_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7546665668488
+			}
+		},
+		pwe_level_fort_story_eight_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_eight_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_eight_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 9.3509168624878
+			}
+		},
+		pbw_level_fort_story_river_one_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_fort_story_river_one_03"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_fort_story_river_one_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.6843538284302
+			}
+		},
+		pwh_level_fort_story_seven_03 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_fort_story_seven_03"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_fort_story_seven_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3658957481384
+			}
+		},
+		pwe_level_fort_story_on_the_way_two_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_on_the_way_two_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_on_the_way_two_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4214792251587
+			}
+		},
+		pdr_level_fort_story_on_the_way_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_on_the_way_two_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_on_the_way_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0714998245239
+			}
+		},
+		pdr_level_fort_story_on_the_way_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_on_the_way_five_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_on_the_way_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.9148958921433
+			}
+		},
+		pwe_level_fort_story_on_the_way_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_on_the_way_five_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_on_the_way_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2733335494995
+			}
+		},
+		pwe_level_fort_story_on_the_way_three_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_on_the_way_three_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_on_the_way_three_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 9.8548545837402
+			}
+		},
+		pbw_level_fort_story_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_fort_story_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_fort_story_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.567271232605
+			}
+		},
+		pdr_level_fort_story_on_the_way_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_on_the_way_one_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_on_the_way_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3976874351502
+			}
+		},
+		pdr_level_fort_story_six_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_six_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_six_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.3393541574478
+			}
+		},
+		pbw_level_fort_story_on_the_way_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_fort_story_on_the_way_one_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_fort_story_on_the_way_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7313957214356
+			}
+		},
+		pwe_level_fort_story_on_the_way_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_fort_story_on_the_way_three_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_fort_story_on_the_way_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4620625972748
+			}
+		},
+		pdr_level_fort_story_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_six_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0789794921875
+			}
+		},
+		pbw_level_fort_story_river_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_fort_story_river_one_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_fort_story_river_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0754792690277
+			}
+		},
+		pdr_level_fort_story_river_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_fort",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_fort_story_river_one_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_fort_story_river_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2925000190735
 			}
 		}
 	})

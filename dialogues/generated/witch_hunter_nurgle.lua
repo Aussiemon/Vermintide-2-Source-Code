@@ -608,304 +608,304 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwh_level_nurgle_spotting_objective = {
-			sound_events_n = 1,
+		pwh_level_nurgle_nurglification_increase = {
 			face_animations_n = 1,
 			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
 			category = "level_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_spotting_objective_01"
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_nurglification_increase_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_nurglification_increase_01"
 			},
 			face_animations = {
 				[1.0] = "face_fear"
 			},
-			sound_events_duration = {
-				[1.0] = 6.2820625305176
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
 			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_spotting_objective_01"
+			sound_events_duration = {
+				[1.0] = 4.790020942688
 			}
 		},
-		pwh_nurgle_intro_a = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "witch_hunter_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwh_nurgle_intro_a_01",
-				[2.0] = "pwh_nurgle_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 8.3753747940063,
-				[2.0] = 8.6943330764771
-			},
-			localization_strings = {
-				[1.0] = "pwh_nurgle_intro_a_01",
-				[2.0] = "pwh_nurgle_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_nurgle_skaven_collapse = {
-			sound_events_n = 1,
+		pwh_level_nurgle_outcast_lair = {
 			face_animations_n = 1,
 			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
 			category = "level_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_outcast_lair_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_outcast_lair_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6056041717529
+			}
+		},
+		pwh_level_nurgle_digsite = {
+			face_animations_n = 1,
+			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_digsite_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_digsite_01"
+			},
+			face_animations = {
+				[1.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4481041431427
+			}
+		},
+		pwh_level_nurgle_skaven_collapse = {
+			face_animations_n = 1,
+			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_skaven_collapse_01"
+			},
 			sound_events = {
 				[1.0] = "pwh_level_nurgle_skaven_collapse_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
 			face_animations = {
 				[1.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
 			},
 			sound_events_duration = {
 				[1.0] = 6.7491250038147
-			},
+			}
+		},
+		pwh_level_nurgle_river = {
+			face_animations_n = 1,
+			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pwh_level_nurgle_skaven_collapse_01"
+				[1.0] = "pwh_level_nurgle_river_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_river_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6269791126251
+			}
+		},
+		pwh_level_nurgle_bury_objective = {
+			face_animations_n = 1,
+			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_bury_objective_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_bury_objective_01"
+			},
+			face_animations = {
+				[1.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 5.7862915992737
 			}
 		},
 		pwh_nurgle_intro_b = {
-			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "witch_hunter_nurgle",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_nurgle_intro_b_01",
+				[2.0] = "pwh_nurgle_intro_b_02"
+			},
 			sound_events = {
 				[1.0] = "pwh_nurgle_intro_b_01",
 				[2.0] = "pwh_nurgle_intro_b_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 8.8635416030884,
 				[2.0] = 8.6546669006348
-			},
-			localization_strings = {
-				[1.0] = "pwh_nurgle_intro_b_01",
-				[2.0] = "pwh_nurgle_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_nurgle_river = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_nurgle",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_river_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6269791126251
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_river_01"
 			}
 		},
-		pwh_level_nurgle_nurglification_increase = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		pwh_nurgle_intro_a = {
+			face_animations_n = 2,
 			database = "witch_hunter_nurgle",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
 			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_nurglification_increase_01"
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_nurgle_intro_a_01",
+				[2.0] = "pwh_nurgle_intro_a_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+			sound_events = {
+				[1.0] = "pwh_nurgle_intro_a_01",
+				[2.0] = "pwh_nurgle_intro_a_02"
 			},
 			face_animations = {
-				[1.0] = "face_fear"
-			},
-			sound_events_duration = {
-				[1.0] = 4.790020942688
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_nurglification_increase_01"
-			}
-		},
-		pwh_level_nurgle_bury_objective = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_nurgle",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_bury_objective_01"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
-				[1.0] = 5.7862915992737
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_bury_objective_01"
-			}
-		},
-		pwh_level_nurgle_nurglification = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_nurgle",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_nurglification_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2301459312439
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_nurglification_01"
-			}
-		},
-		pwh_level_nurgle_digsite = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_nurgle",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_digsite_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4481041431427
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_digsite_01"
+				[1.0] = 8.3753747940063,
+				[2.0] = 8.6943330764771
 			}
 		},
 		pwh_level_nurgle_swift_river = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
 			category = "level_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_swift_river_01"
+			},
 			sound_events = {
 				[1.0] = "pwh_level_nurgle_swift_river_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
 			face_animations = {
 				[1.0] = "face_concerned"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
 			},
 			sound_events_duration = {
 				[1.0] = 3.3006665706634
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_swift_river_01"
-			}
-		},
-		pwh_level_nurgle_drop_down = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_nurgle",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_drop_down_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_concerned"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0208334922791
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_drop_down_01"
-			}
-		},
-		pwh_level_nurgle_outcast_lair = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_nurgle",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_nurgle_outcast_lair_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.6056041717529
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_nurgle_outcast_lair_01"
 			}
 		},
 		pwh_level_nurgle_coming_down = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
 			category = "level_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
+			localization_strings = {
 				[1.0] = "pwh_level_nurgle_coming_down_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_coming_down_01"
 			},
 			face_animations = {
 				[1.0] = "face_fear"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
 			sound_events_duration = {
 				[1.0] = 5.8908748626709
-			},
+			}
+		},
+		pwh_level_nurgle_drop_down = {
+			face_animations_n = 1,
+			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pwh_level_nurgle_coming_down_01"
+				[1.0] = "pwh_level_nurgle_drop_down_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_drop_down_01"
+			},
+			face_animations = {
+				[1.0] = "face_concerned"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0208334922791
+			}
+		},
+		pwh_level_nurgle_spotting_objective = {
+			face_animations_n = 1,
+			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_spotting_objective_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_spotting_objective_01"
+			},
+			face_animations = {
+				[1.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2820625305176
+			}
+		},
+		pwh_level_nurgle_nurglification = {
+			face_animations_n = 1,
+			database = "witch_hunter_nurgle",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_nurgle_nurglification_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_nurgle_nurglification_01"
+			},
+			face_animations = {
+				[1.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2301459312439
 			}
 		}
 	})

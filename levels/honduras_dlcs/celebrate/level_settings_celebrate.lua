@@ -1,15 +1,14 @@
 LevelSettings.dlc_celebrate_crawl = {
 	act_unlock_order = 0,
-	display_name = "level_name_crawl",
-	ambient_sound_event = "silent_default_world_sound",
 	climate_type = "",
+	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_crawl",
 	act = "act_celebrate",
 	level_image = "level_icon_celebrate_crawl",
 	unlockable = true,
 	use_mini_patrols = true,
-	level_name = "levels/honduras_dlcs/celebrate/crawl/world",
 	dlc_name = "celebrate",
 	description_text = "nik_loading_screen_dlc_pit_01",
 	act_presentation_order = 1,
@@ -18,8 +17,12 @@ LevelSettings.dlc_celebrate_crawl = {
 	default_surface_material = "dirt",
 	not_quickplayable = true,
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/dlcs/celebrate/crawl",
+	level_name = "levels/honduras_dlcs/celebrate/crawl/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/celebrate/crawl",
+		"resource_packages/dlcs/celebrate_ingame"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {

@@ -1,10 +1,9 @@
 LevelSettings.dlc_bastion = {
 	act_unlock_order = 1,
-	display_name = "level_name_dlc_bastion",
-	package_name = "resource_packages/levels/dlcs/penny/dlc_bastion",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_dlc_bastion",
 	loading_ui_package_name = "loading_screen_25",
 	unlockable = true,
 	level_image = "level_image_bastion",
@@ -18,6 +17,9 @@ LevelSettings.dlc_bastion = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras_dlcs/penny/dlc_bastion/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/penny/dlc_bastion"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {

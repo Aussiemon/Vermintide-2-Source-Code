@@ -1186,18 +1186,31 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwh_level_catacombs_ritual_disrupted_ritual = {
-			sound_events_n = 4,
+		pwh_level_catacombs_sewers = {
 			face_animations_n = 4,
 			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_sewers_01",
+				"pwh_level_catacombs_sewers_02",
+				"pwh_level_catacombs_sewers_03",
+				"pwh_level_catacombs_sewers_04"
+			},
 			sound_events = {
-				"pwh_level_catacombs_ritual_disrupted_ritual_01",
-				"pwh_level_catacombs_ritual_disrupted_ritual_02",
-				"pwh_level_catacombs_ritual_disrupted_ritual_03",
-				"pwh_level_catacombs_ritual_disrupted_ritual_04"
+				"pwh_level_catacombs_sewers_01",
+				"pwh_level_catacombs_sewers_02",
+				"pwh_level_catacombs_sewers_03",
+				"pwh_level_catacombs_sewers_04"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1205,190 +1218,32 @@ return function ()
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
 			sound_events_duration = {
-				5.502375125885,
-				5.6681456565857,
-				6.86483335495,
-				6.779354095459
-			},
-			localization_strings = {
-				"pwh_level_catacombs_ritual_disrupted_ritual_01",
-				"pwh_level_catacombs_ritual_disrupted_ritual_02",
-				"pwh_level_catacombs_ritual_disrupted_ritual_03",
-				"pwh_level_catacombs_ritual_disrupted_ritual_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_nurgle_water = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_nurgle_water_01",
-				"pwh_level_catacombs_nurgle_water_02",
-				"pwh_level_catacombs_nurgle_water_03",
-				"pwh_level_catacombs_nurgle_water_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				6.3150835037231,
-				6.1444582939148,
-				4.0641875267029,
-				3.9305624961853
-			},
-			localization_strings = {
-				"pwh_level_catacombs_nurgle_water_01",
-				"pwh_level_catacombs_nurgle_water_02",
-				"pwh_level_catacombs_nurgle_water_03",
-				"pwh_level_catacombs_nurgle_water_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_sewers_nurglefication_light = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_sewers_nurglefication_light_01",
-				"pwh_level_catacombs_sewers_nurglefication_light_02",
-				"pwh_level_catacombs_sewers_nurglefication_light_03",
-				"pwh_level_catacombs_sewers_nurglefication_light_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.623104095459,
-				2.8444583415985,
-				1.2820208072662,
-				4.0395832061768
-			},
-			localization_strings = {
-				"pwh_level_catacombs_sewers_nurglefication_light_01",
-				"pwh_level_catacombs_sewers_nurglefication_light_02",
-				"pwh_level_catacombs_sewers_nurglefication_light_03",
-				"pwh_level_catacombs_sewers_nurglefication_light_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_hear_chanting = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_hear_chanting_01",
-				"pwh_level_catacombs_hear_chanting_02",
-				"pwh_level_catacombs_hear_chanting_03",
-				"pwh_level_catacombs_hear_chanting_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.279354095459,
-				3.3944375514984,
-				2.9879374504089,
-				5.3401875495911
-			},
-			localization_strings = {
-				"pwh_level_catacombs_hear_chanting_01",
-				"pwh_level_catacombs_hear_chanting_02",
-				"pwh_level_catacombs_hear_chanting_03",
-				"pwh_level_catacombs_hear_chanting_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_catacombs_intro_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwh_catacombs_intro_b_01",
-				[2.0] = "pwh_catacombs_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3556666374206,
-				[2.0] = 3.0640625953674
-			},
-			localization_strings = {
-				[1.0] = "pwh_catacombs_intro_b_01",
-				[2.0] = "pwh_catacombs_intro_b_02"
-			},
-			randomize_indexes = {}
+				3.9014375209808,
+				6.050666809082,
+				7.2558751106262,
+				5.6911458969116
+			}
 		},
 		pwh_level_catacombs_switch_instructions = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pwh_level_catacombs_switch_instructions_01",
 				"pwh_level_catacombs_switch_instructions_02",
 				"pwh_level_catacombs_switch_instructions_03",
 				"pwh_level_catacombs_switch_instructions_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pwh_level_catacombs_switch_instructions_01",
+				"pwh_level_catacombs_switch_instructions_02",
+				"pwh_level_catacombs_switch_instructions_03",
+				"pwh_level_catacombs_switch_instructions_04"
 			},
 			face_animations = {
 				"face_happy",
@@ -1396,613 +1251,77 @@ return function ()
 				"face_contempt",
 				"face_neutral"
 			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
 			sound_events_duration = {
 				4.0488958358765,
 				4.0244374275208,
 				4.2128124237061,
 				4.1970210075378
-			},
-			localization_strings = {
-				"pwh_level_catacombs_switch_instructions_01",
-				"pwh_level_catacombs_switch_instructions_02",
-				"pwh_level_catacombs_switch_instructions_03",
-				"pwh_level_catacombs_switch_instructions_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_slime_trail = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_slime_trail_01",
-				"pwh_level_catacombs_slime_trail_02",
-				"pwh_level_catacombs_slime_trail_03",
-				"pwh_level_catacombs_slime_trail_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.1852293014526,
-				3.3943958282471,
-				5.0370206832886,
-				4.0227918624878
-			},
-			localization_strings = {
-				"pwh_level_catacombs_slime_trail_01",
-				"pwh_level_catacombs_slime_trail_02",
-				"pwh_level_catacombs_slime_trail_03",
-				"pwh_level_catacombs_slime_trail_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_jump_into_intestine_hole = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_jump_into_intestine_hole_01",
-				"pwh_level_catacombs_jump_into_intestine_hole_02",
-				"pwh_level_catacombs_jump_into_intestine_hole_03",
-				"pwh_level_catacombs_jump_into_intestine_hole_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.0772290229797,
-				3.6303334236145,
-				5.1886043548584,
-				3.225145816803
-			},
-			localization_strings = {
-				"pwh_level_catacombs_jump_into_intestine_hole_01",
-				"pwh_level_catacombs_jump_into_intestine_hole_02",
-				"pwh_level_catacombs_jump_into_intestine_hole_03",
-				"pwh_level_catacombs_jump_into_intestine_hole_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_catacombs_intro_a = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwh_catacombs_intro_a_01",
-				[2.0] = "pwh_catacombs_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2850832939148,
-				[2.0] = 3.3344376087189
-			},
-			localization_strings = {
-				[1.0] = "pwh_catacombs_intro_a_01",
-				[2.0] = "pwh_catacombs_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_sewers_nurglefication_heavy = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_sewers_nurglefication_heavy_01",
-				"pwh_level_catacombs_sewers_nurglefication_heavy_02",
-				"pwh_level_catacombs_sewers_nurglefication_heavy_03",
-				"pwh_level_catacombs_sewers_nurglefication_heavy_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				7.0568752288818,
-				6.3746666908264,
-				3.2300000190735,
-				4.9627499580383
-			},
-			localization_strings = {
-				"pwh_level_catacombs_sewers_nurglefication_heavy_01",
-				"pwh_level_catacombs_sewers_nurglefication_heavy_02",
-				"pwh_level_catacombs_sewers_nurglefication_heavy_03",
-				"pwh_level_catacombs_sewers_nurglefication_heavy_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_tunnel_entrance = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_tunnel_entrance_01",
-				"pwh_level_catacombs_tunnel_entrance_02",
-				"pwh_level_catacombs_tunnel_entrance_03",
-				"pwh_level_catacombs_tunnel_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			sound_events_duration = {
-				2.8735208511352,
-				3.4071667194366,
-				3.4628748893738,
-				4.334499835968
-			},
-			localization_strings = {
-				"pwh_level_catacombs_tunnel_entrance_01",
-				"pwh_level_catacombs_tunnel_entrance_02",
-				"pwh_level_catacombs_tunnel_entrance_03",
-				"pwh_level_catacombs_tunnel_entrance_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_sabotage_ritual = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_sabotage_ritual_01",
-				"pwh_level_catacombs_sabotage_ritual_02",
-				"pwh_level_catacombs_sabotage_ritual_03",
-				"pwh_level_catacombs_sabotage_ritual_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.1219582557678,
-				3.9892499446869,
-				4.3039164543152,
-				3.258770942688
-			},
-			localization_strings = {
-				"pwh_level_catacombs_sabotage_ritual_01",
-				"pwh_level_catacombs_sabotage_ritual_02",
-				"pwh_level_catacombs_sabotage_ritual_03",
-				"pwh_level_catacombs_sabotage_ritual_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_mausoleum_entrance = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_mausoleum_entrance_01",
-				"pwh_level_catacombs_mausoleum_entrance_02",
-				"pwh_level_catacombs_mausoleum_entrance_03",
-				"pwh_level_catacombs_mausoleum_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.1902289390564,
-				2.0585000514984,
-				3.8687083721161,
-				2.8816249370575
-			},
-			localization_strings = {
-				"pwh_level_catacombs_mausoleum_entrance_01",
-				"pwh_level_catacombs_mausoleum_entrance_02",
-				"pwh_level_catacombs_mausoleum_entrance_03",
-				"pwh_level_catacombs_mausoleum_entrance_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_one_sorcerer_dead = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_one_sorcerer_dead_01",
-				"pwh_level_catacombs_one_sorcerer_dead_02",
-				"pwh_level_catacombs_one_sorcerer_dead_03",
-				"pwh_level_catacombs_one_sorcerer_dead_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.3298540115356,
-				3.919041633606,
-				4.005437374115,
-				4.8412499427795
-			},
-			localization_strings = {
-				"pwh_level_catacombs_one_sorcerer_dead_01",
-				"pwh_level_catacombs_one_sorcerer_dead_02",
-				"pwh_level_catacombs_one_sorcerer_dead_03",
-				"pwh_level_catacombs_one_sorcerer_dead_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_healing_ward = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_healing_ward_01",
-				"pwh_level_catacombs_healing_ward_02",
-				"pwh_level_catacombs_healing_ward_03",
-				"pwh_level_catacombs_healing_ward_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
-			sound_events_duration = {
-				3.9506874084473,
-				4.7169585227966,
-				2.886020898819,
-				3.5498125553131
-			},
-			localization_strings = {
-				"pwh_level_catacombs_healing_ward_01",
-				"pwh_level_catacombs_healing_ward_02",
-				"pwh_level_catacombs_healing_ward_03",
-				"pwh_level_catacombs_healing_ward_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_two_sorcerer_dead = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_two_sorcerer_dead_01",
-				"pwh_level_catacombs_two_sorcerer_dead_02",
-				"pwh_level_catacombs_two_sorcerer_dead_03",
-				"pwh_level_catacombs_two_sorcerer_dead_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.0288333892822,
-				4.3702917098999,
-				4.6391668319702,
-				4.510666847229
-			},
-			localization_strings = {
-				"pwh_level_catacombs_two_sorcerer_dead_01",
-				"pwh_level_catacombs_two_sorcerer_dead_02",
-				"pwh_level_catacombs_two_sorcerer_dead_03",
-				"pwh_level_catacombs_two_sorcerer_dead_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_cultist_door = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_cultist_door_01",
-				"pwh_level_catacombs_cultist_door_02",
-				"pwh_level_catacombs_cultist_door_03",
-				"pwh_level_catacombs_cultist_door_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.0727500915527,
-				2.7336249351502,
-				5.0114793777466,
-				3.073499917984
-			},
-			localization_strings = {
-				"pwh_level_catacombs_cultist_door_01",
-				"pwh_level_catacombs_cultist_door_02",
-				"pwh_level_catacombs_cultist_door_03",
-				"pwh_level_catacombs_cultist_door_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_sewers = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_sewers_01",
-				"pwh_level_catacombs_sewers_02",
-				"pwh_level_catacombs_sewers_03",
-				"pwh_level_catacombs_sewers_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			sound_events_duration = {
-				3.9014375209808,
-				6.050666809082,
-				7.2558751106262,
-				5.6911458969116
-			},
-			localization_strings = {
-				"pwh_level_catacombs_sewers_01",
-				"pwh_level_catacombs_sewers_02",
-				"pwh_level_catacombs_sewers_03",
-				"pwh_level_catacombs_sewers_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_ritual_exit_through_portal = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_ritual_exit_through_portal_01",
-				"pwh_level_catacombs_ritual_exit_through_portal_02",
-				"pwh_level_catacombs_ritual_exit_through_portal_03",
-				"pwh_level_catacombs_ritual_exit_through_portal_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.3314790725708,
-				2.870020866394,
-				3.5299167633057,
-				2.9479374885559
-			},
-			localization_strings = {
-				"pwh_level_catacombs_ritual_exit_through_portal_01",
-				"pwh_level_catacombs_ritual_exit_through_portal_02",
-				"pwh_level_catacombs_ritual_exit_through_portal_03",
-				"pwh_level_catacombs_ritual_exit_through_portal_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_correct_switch = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_correct_switch_01",
-				"pwh_level_catacombs_correct_switch_02",
-				"pwh_level_catacombs_correct_switch_03",
-				"pwh_level_catacombs_correct_switch_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.4469165802002,
-				3.4261250495911,
-				5.5742502212524,
-				5.0235414505005
-			},
-			localization_strings = {
-				"pwh_level_catacombs_correct_switch_01",
-				"pwh_level_catacombs_correct_switch_02",
-				"pwh_level_catacombs_correct_switch_03",
-				"pwh_level_catacombs_correct_switch_04"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pwh_level_catacombs_confinement_cells = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_confinement_cells_01",
+				"pwh_level_catacombs_confinement_cells_02",
+				"pwh_level_catacombs_confinement_cells_03",
+				"pwh_level_catacombs_confinement_cells_04"
+			},
 			sound_events = {
 				"pwh_level_catacombs_confinement_cells_01",
 				"pwh_level_catacombs_confinement_cells_02",
 				"pwh_level_catacombs_confinement_cells_03",
 				"pwh_level_catacombs_confinement_cells_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_concerned",
 				"face_concerned",
 				"face_concerned",
 				"face_concerned"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				3.5932500362396,
 				1.9079583883286,
 				6.2389793395996,
 				7.3140416145325
-			},
-			localization_strings = {
-				"pwh_level_catacombs_confinement_cells_01",
-				"pwh_level_catacombs_confinement_cells_02",
-				"pwh_level_catacombs_confinement_cells_03",
-				"pwh_level_catacombs_confinement_cells_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pwh_level_catacombs_whoa_wrong_switch = {
-			sound_events_n = 4,
+		pwh_level_catacombs_hear_chanting = {
 			face_animations_n = 4,
 			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_whoa_wrong_switch_01",
-				"pwh_level_catacombs_whoa_wrong_switch_02",
-				"pwh_level_catacombs_whoa_wrong_switch_03",
-				"pwh_level_catacombs_whoa_wrong_switch_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_hear_chanting_01",
+				"pwh_level_catacombs_hear_chanting_02",
+				"pwh_level_catacombs_hear_chanting_03",
+				"pwh_level_catacombs_hear_chanting_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pwh_level_catacombs_hear_chanting_01",
+				"pwh_level_catacombs_hear_chanting_02",
+				"pwh_level_catacombs_hear_chanting_03",
+				"pwh_level_catacombs_hear_chanting_04"
 			},
 			face_animations = {
 				"face_neutral",
@@ -2010,77 +1329,38 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
-			sound_events_duration = {
-				1.6265000104904,
-				2.7957084178925,
-				3.2075417041779,
-				2.7427499294281
-			},
-			localization_strings = {
-				"pwh_level_catacombs_whoa_wrong_switch_01",
-				"pwh_level_catacombs_whoa_wrong_switch_02",
-				"pwh_level_catacombs_whoa_wrong_switch_03",
-				"pwh_level_catacombs_whoa_wrong_switch_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_catacombs_spot_ritual = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_catacombs_spot_ritual_01",
-				"pwh_level_catacombs_spot_ritual_02",
-				"pwh_level_catacombs_spot_ritual_03",
-				"pwh_level_catacombs_spot_ritual_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
 			sound_events_duration = {
-				3.1248750686645,
-				4.4786872863769,
-				4.271999835968,
-				6.4808959960938
-			},
-			localization_strings = {
-				"pwh_level_catacombs_spot_ritual_01",
-				"pwh_level_catacombs_spot_ritual_02",
-				"pwh_level_catacombs_spot_ritual_03",
-				"pwh_level_catacombs_spot_ritual_04"
-			},
-			randomize_indexes = {}
+				3.279354095459,
+				3.3944375514984,
+				2.9879374504089,
+				5.3401875495911
+			}
 		},
 		pwh_level_catacombs_apothercary_room = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pwh_level_catacombs_apothercary_room_01",
 				"pwh_level_catacombs_apothercary_room_02",
 				"pwh_level_catacombs_apothercary_room_03",
 				"pwh_level_catacombs_apothercary_room_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pwh_level_catacombs_apothercary_room_01",
+				"pwh_level_catacombs_apothercary_room_02",
+				"pwh_level_catacombs_apothercary_room_03",
+				"pwh_level_catacombs_apothercary_room_04"
 			},
 			face_animations = {
 				"face_concerned",
@@ -2088,77 +1368,797 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
 			sound_events_duration = {
 				3.6369376182556,
 				2.701812505722,
 				2.6175000667572,
 				3.8356873989105
-			},
+			}
+		},
+		pwh_level_catacombs_tunnel_entrance = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
 			localization_strings = {
-				"pwh_level_catacombs_apothercary_room_01",
-				"pwh_level_catacombs_apothercary_room_02",
-				"pwh_level_catacombs_apothercary_room_03",
-				"pwh_level_catacombs_apothercary_room_04"
+				"pwh_level_catacombs_tunnel_entrance_01",
+				"pwh_level_catacombs_tunnel_entrance_02",
+				"pwh_level_catacombs_tunnel_entrance_03",
+				"pwh_level_catacombs_tunnel_entrance_04"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				"pwh_level_catacombs_tunnel_entrance_01",
+				"pwh_level_catacombs_tunnel_entrance_02",
+				"pwh_level_catacombs_tunnel_entrance_03",
+				"pwh_level_catacombs_tunnel_entrance_04"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.8735208511352,
+				3.4071667194366,
+				3.4628748893738,
+				4.334499835968
+			}
 		},
 		pwh_catacombs_intro_c = {
-			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "witch_hunter_catacombs",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_catacombs_intro_c_01",
+				[2.0] = "pwh_catacombs_intro_c_02"
+			},
 			sound_events = {
 				[1.0] = "pwh_catacombs_intro_c_01",
 				[2.0] = "pwh_catacombs_intro_c_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 4.2496876716614,
 				[2.0] = 3.7732083797455
-			},
-			localization_strings = {
-				[1.0] = "pwh_catacombs_intro_c_01",
-				[2.0] = "pwh_catacombs_intro_c_02"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pwh_level_catacombs_way_is_clear = {
-			sound_events_n = 2,
+		pwh_level_catacombs_correct_switch = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_correct_switch_01",
+				"pwh_level_catacombs_correct_switch_02",
+				"pwh_level_catacombs_correct_switch_03",
+				"pwh_level_catacombs_correct_switch_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_correct_switch_01",
+				"pwh_level_catacombs_correct_switch_02",
+				"pwh_level_catacombs_correct_switch_03",
+				"pwh_level_catacombs_correct_switch_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.4469165802002,
+				3.4261250495911,
+				5.5742502212524,
+				5.0235414505005
+			}
+		},
+		pwh_catacombs_intro_b = {
 			face_animations_n = 2,
 			database = "witch_hunter_catacombs",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwh_level_catacombs_way_is_clear_01",
-				[2.0] = "pwh_level_catacombs_way_is_clear_02"
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_catacombs_intro_b_01",
+				[2.0] = "pwh_catacombs_intro_b_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pwh_catacombs_intro_b_01",
+				[2.0] = "pwh_catacombs_intro_b_02"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 2.357479095459,
-				[2.0] = 4.6437082290649
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 4.3556666374206,
+				[2.0] = 3.0640625953674
+			}
+		},
+		pwh_level_catacombs_sabotage_ritual = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_sabotage_ritual_01",
+				"pwh_level_catacombs_sabotage_ritual_02",
+				"pwh_level_catacombs_sabotage_ritual_03",
+				"pwh_level_catacombs_sabotage_ritual_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_sabotage_ritual_01",
+				"pwh_level_catacombs_sabotage_ritual_02",
+				"pwh_level_catacombs_sabotage_ritual_03",
+				"pwh_level_catacombs_sabotage_ritual_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.1219582557678,
+				3.9892499446869,
+				4.3039164543152,
+				3.258770942688
+			}
+		},
+		pwh_level_catacombs_spot_ritual = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_spot_ritual_01",
+				"pwh_level_catacombs_spot_ritual_02",
+				"pwh_level_catacombs_spot_ritual_03",
+				"pwh_level_catacombs_spot_ritual_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_spot_ritual_01",
+				"pwh_level_catacombs_spot_ritual_02",
+				"pwh_level_catacombs_spot_ritual_03",
+				"pwh_level_catacombs_spot_ritual_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.1248750686645,
+				4.4786872863769,
+				4.271999835968,
+				6.4808959960938
+			}
+		},
+		pwh_level_catacombs_nurgle_water = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_nurgle_water_01",
+				"pwh_level_catacombs_nurgle_water_02",
+				"pwh_level_catacombs_nurgle_water_03",
+				"pwh_level_catacombs_nurgle_water_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_nurgle_water_01",
+				"pwh_level_catacombs_nurgle_water_02",
+				"pwh_level_catacombs_nurgle_water_03",
+				"pwh_level_catacombs_nurgle_water_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				6.3150835037231,
+				6.1444582939148,
+				4.0641875267029,
+				3.9305624961853
+			}
+		},
+		pwh_level_catacombs_cultist_door = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_cultist_door_01",
+				"pwh_level_catacombs_cultist_door_02",
+				"pwh_level_catacombs_cultist_door_03",
+				"pwh_level_catacombs_cultist_door_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_cultist_door_01",
+				"pwh_level_catacombs_cultist_door_02",
+				"pwh_level_catacombs_cultist_door_03",
+				"pwh_level_catacombs_cultist_door_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.0727500915527,
+				2.7336249351502,
+				5.0114793777466,
+				3.073499917984
+			}
+		},
+		pwh_level_catacombs_mausoleum_entrance = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_mausoleum_entrance_01",
+				"pwh_level_catacombs_mausoleum_entrance_02",
+				"pwh_level_catacombs_mausoleum_entrance_03",
+				"pwh_level_catacombs_mausoleum_entrance_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_mausoleum_entrance_01",
+				"pwh_level_catacombs_mausoleum_entrance_02",
+				"pwh_level_catacombs_mausoleum_entrance_03",
+				"pwh_level_catacombs_mausoleum_entrance_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.1902289390564,
+				2.0585000514984,
+				3.8687083721161,
+				2.8816249370575
+			}
+		},
+		pwh_catacombs_intro_a = {
+			face_animations_n = 2,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_catacombs_intro_a_01",
+				[2.0] = "pwh_catacombs_intro_a_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_catacombs_intro_a_01",
+				[2.0] = "pwh_catacombs_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2850832939148,
+				[2.0] = 3.3344376087189
+			}
+		},
+		pwh_level_catacombs_slime_trail = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_slime_trail_01",
+				"pwh_level_catacombs_slime_trail_02",
+				"pwh_level_catacombs_slime_trail_03",
+				"pwh_level_catacombs_slime_trail_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_slime_trail_01",
+				"pwh_level_catacombs_slime_trail_02",
+				"pwh_level_catacombs_slime_trail_03",
+				"pwh_level_catacombs_slime_trail_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.1852293014526,
+				3.3943958282471,
+				5.0370206832886,
+				4.0227918624878
+			}
+		},
+		pwh_level_catacombs_sewers_nurglefication_heavy = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_sewers_nurglefication_heavy_01",
+				"pwh_level_catacombs_sewers_nurglefication_heavy_02",
+				"pwh_level_catacombs_sewers_nurglefication_heavy_03",
+				"pwh_level_catacombs_sewers_nurglefication_heavy_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_sewers_nurglefication_heavy_01",
+				"pwh_level_catacombs_sewers_nurglefication_heavy_02",
+				"pwh_level_catacombs_sewers_nurglefication_heavy_03",
+				"pwh_level_catacombs_sewers_nurglefication_heavy_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				7.0568752288818,
+				6.3746666908264,
+				3.2300000190735,
+				4.9627499580383
+			}
+		},
+		pwh_level_catacombs_one_sorcerer_dead = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_one_sorcerer_dead_01",
+				"pwh_level_catacombs_one_sorcerer_dead_02",
+				"pwh_level_catacombs_one_sorcerer_dead_03",
+				"pwh_level_catacombs_one_sorcerer_dead_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_one_sorcerer_dead_01",
+				"pwh_level_catacombs_one_sorcerer_dead_02",
+				"pwh_level_catacombs_one_sorcerer_dead_03",
+				"pwh_level_catacombs_one_sorcerer_dead_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.3298540115356,
+				3.919041633606,
+				4.005437374115,
+				4.8412499427795
+			}
+		},
+		pwh_level_catacombs_two_sorcerer_dead = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_two_sorcerer_dead_01",
+				"pwh_level_catacombs_two_sorcerer_dead_02",
+				"pwh_level_catacombs_two_sorcerer_dead_03",
+				"pwh_level_catacombs_two_sorcerer_dead_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_two_sorcerer_dead_01",
+				"pwh_level_catacombs_two_sorcerer_dead_02",
+				"pwh_level_catacombs_two_sorcerer_dead_03",
+				"pwh_level_catacombs_two_sorcerer_dead_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.0288333892822,
+				4.3702917098999,
+				4.6391668319702,
+				4.510666847229
+			}
+		},
+		pwh_level_catacombs_ritual_exit_through_portal = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_ritual_exit_through_portal_01",
+				"pwh_level_catacombs_ritual_exit_through_portal_02",
+				"pwh_level_catacombs_ritual_exit_through_portal_03",
+				"pwh_level_catacombs_ritual_exit_through_portal_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_ritual_exit_through_portal_01",
+				"pwh_level_catacombs_ritual_exit_through_portal_02",
+				"pwh_level_catacombs_ritual_exit_through_portal_03",
+				"pwh_level_catacombs_ritual_exit_through_portal_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.3314790725708,
+				2.870020866394,
+				3.5299167633057,
+				2.9479374885559
+			}
+		},
+		pwh_level_catacombs_jump_into_intestine_hole = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_jump_into_intestine_hole_01",
+				"pwh_level_catacombs_jump_into_intestine_hole_02",
+				"pwh_level_catacombs_jump_into_intestine_hole_03",
+				"pwh_level_catacombs_jump_into_intestine_hole_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_jump_into_intestine_hole_01",
+				"pwh_level_catacombs_jump_into_intestine_hole_02",
+				"pwh_level_catacombs_jump_into_intestine_hole_03",
+				"pwh_level_catacombs_jump_into_intestine_hole_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.0772290229797,
+				3.6303334236145,
+				5.1886043548584,
+				3.225145816803
+			}
+		},
+		pwh_level_catacombs_way_is_clear = {
+			face_animations_n = 2,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			localization_strings = {
 				[1.0] = "pwh_level_catacombs_way_is_clear_01",
 				[2.0] = "pwh_level_catacombs_way_is_clear_02"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				[1.0] = "pwh_level_catacombs_way_is_clear_01",
+				[2.0] = "pwh_level_catacombs_way_is_clear_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.357479095459,
+				[2.0] = 4.6437082290649
+			}
+		},
+		pwh_level_catacombs_ritual_disrupted_ritual = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_ritual_disrupted_ritual_01",
+				"pwh_level_catacombs_ritual_disrupted_ritual_02",
+				"pwh_level_catacombs_ritual_disrupted_ritual_03",
+				"pwh_level_catacombs_ritual_disrupted_ritual_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_ritual_disrupted_ritual_01",
+				"pwh_level_catacombs_ritual_disrupted_ritual_02",
+				"pwh_level_catacombs_ritual_disrupted_ritual_03",
+				"pwh_level_catacombs_ritual_disrupted_ritual_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				5.502375125885,
+				5.6681456565857,
+				6.86483335495,
+				6.779354095459
+			}
+		},
+		pwh_level_catacombs_whoa_wrong_switch = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_whoa_wrong_switch_01",
+				"pwh_level_catacombs_whoa_wrong_switch_02",
+				"pwh_level_catacombs_whoa_wrong_switch_03",
+				"pwh_level_catacombs_whoa_wrong_switch_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_whoa_wrong_switch_01",
+				"pwh_level_catacombs_whoa_wrong_switch_02",
+				"pwh_level_catacombs_whoa_wrong_switch_03",
+				"pwh_level_catacombs_whoa_wrong_switch_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.6265000104904,
+				2.7957084178925,
+				3.2075417041779,
+				2.7427499294281
+			}
+		},
+		pwh_level_catacombs_sewers_nurglefication_light = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_sewers_nurglefication_light_01",
+				"pwh_level_catacombs_sewers_nurglefication_light_02",
+				"pwh_level_catacombs_sewers_nurglefication_light_03",
+				"pwh_level_catacombs_sewers_nurglefication_light_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_sewers_nurglefication_light_01",
+				"pwh_level_catacombs_sewers_nurglefication_light_02",
+				"pwh_level_catacombs_sewers_nurglefication_light_03",
+				"pwh_level_catacombs_sewers_nurglefication_light_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.623104095459,
+				2.8444583415985,
+				1.2820208072662,
+				4.0395832061768
+			}
+		},
+		pwh_level_catacombs_healing_ward = {
+			face_animations_n = 4,
+			database = "witch_hunter_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_catacombs_healing_ward_01",
+				"pwh_level_catacombs_healing_ward_02",
+				"pwh_level_catacombs_healing_ward_03",
+				"pwh_level_catacombs_healing_ward_04"
+			},
+			sound_events = {
+				"pwh_level_catacombs_healing_ward_01",
+				"pwh_level_catacombs_healing_ward_02",
+				"pwh_level_catacombs_healing_ward_03",
+				"pwh_level_catacombs_healing_ward_04"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.9506874084473,
+				4.7169585227966,
+				2.886020898819,
+				3.5498125553131
+			}
 		}
 	})
 end

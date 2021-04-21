@@ -101,13 +101,24 @@ return function ()
 	})
 	add_dialogues({
 		ewl_gameplay_summoning_skaven = {
-			sound_events_n = 8,
 			face_animations_n = 8,
 			database = "skaven_warlord_skaven_stronghold_level",
+			sound_events_n = 8,
 			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 8,
+			randomize_indexes = {},
+			localization_strings = {
+				"ewl_gameplay_summoning_skaven_01",
+				"ewl_gameplay_summoning_skaven_02",
+				"ewl_gameplay_summoning_skaven_03",
+				"ewl_gameplay_summoning_skaven_04",
+				"ewl_gameplay_summoning_skaven_05",
+				"ewl_gameplay_summoning_skaven_06",
+				"ewl_gameplay_summoning_skaven_07",
+				"ewl_gameplay_summoning_skaven_08"
+			},
 			sound_events = {
 				"ewl_gameplay_summoning_skaven_01",
 				"ewl_gameplay_summoning_skaven_02",
@@ -118,16 +129,6 @@ return function ()
 				"ewl_gameplay_summoning_skaven_07",
 				"ewl_gameplay_summoning_skaven_08"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
 			face_animations = {
 				"face_angry",
 				"face_angry",
@@ -137,6 +138,16 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			sound_events_duration = {
 				2.622700214386,
@@ -147,38 +158,28 @@ return function ()
 				3.4114513397217,
 				4.5472564697266,
 				4.0115194320679
-			},
-			localization_strings = {
-				"ewl_gameplay_summoning_skaven_01",
-				"ewl_gameplay_summoning_skaven_02",
-				"ewl_gameplay_summoning_skaven_03",
-				"ewl_gameplay_summoning_skaven_04",
-				"ewl_gameplay_summoning_skaven_05",
-				"ewl_gameplay_summoning_skaven_06",
-				"ewl_gameplay_summoning_skaven_07",
-				"ewl_gameplay_summoning_skaven_08"
-			},
-			randomize_indexes = {}
+			}
 		},
 		ewl_opening_line = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "skaven_warlord_skaven_stronghold_level",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "champion_opening",
 			dialogue_animations_n = 4,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"ewl_level_skaven_stronghold_taunt_reply_04",
 				"ewl_level_skaven_stronghold_taunt_reply_01",
 				"ewl_level_skaven_stronghold_taunt_reply_02",
 				"ewl_level_skaven_stronghold_taunt_reply_03"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"ewl_level_skaven_stronghold_taunt_reply_04",
+				"ewl_level_skaven_stronghold_taunt_reply_01",
+				"ewl_level_skaven_stronghold_taunt_reply_02",
+				"ewl_level_skaven_stronghold_taunt_reply_03"
 			},
 			face_animations = {
 				"face_angry",
@@ -186,28 +187,38 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
 				5.3708844184875,
 				6.1793651580811,
 				6.5120182037353,
 				6.8495693206787
-			},
-			localization_strings = {
-				"ewl_level_skaven_stronghold_taunt_reply_04",
-				"ewl_level_skaven_stronghold_taunt_reply_01",
-				"ewl_level_skaven_stronghold_taunt_reply_02",
-				"ewl_level_skaven_stronghold_taunt_reply_03"
-			},
-			randomize_indexes = {}
+			}
 		},
 		ewl_gameplay_banter = {
-			sound_events_n = 8,
 			face_animations_n = 8,
 			database = "skaven_warlord_skaven_stronghold_level",
+			sound_events_n = 8,
 			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 8,
+			randomize_indexes = {},
+			localization_strings = {
+				"ewl_gameplay_banter_08",
+				"ewl_gameplay_banter_01",
+				"ewl_gameplay_banter_02",
+				"ewl_gameplay_banter_03",
+				"ewl_gameplay_banter_04",
+				"ewl_gameplay_banter_05",
+				"ewl_gameplay_banter_06",
+				"ewl_gameplay_banter_07"
+			},
 			sound_events = {
 				"ewl_gameplay_banter_08",
 				"ewl_gameplay_banter_01",
@@ -218,16 +229,6 @@ return function ()
 				"ewl_gameplay_banter_06",
 				"ewl_gameplay_banter_07"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
 			face_animations = {
 				"face_angry",
 				"face_angry",
@@ -237,6 +238,16 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			sound_events_duration = {
 				5.2431292533875,
@@ -247,18 +258,7 @@ return function ()
 				3.1397504806519,
 				3.5556688308716,
 				4.8628797531128
-			},
-			localization_strings = {
-				"ewl_gameplay_banter_08",
-				"ewl_gameplay_banter_01",
-				"ewl_gameplay_banter_02",
-				"ewl_gameplay_banter_03",
-				"ewl_gameplay_banter_04",
-				"ewl_gameplay_banter_05",
-				"ewl_gameplay_banter_06",
-				"ewl_gameplay_banter_07"
-			},
-			randomize_indexes = {}
+			}
 		}
 	})
 end

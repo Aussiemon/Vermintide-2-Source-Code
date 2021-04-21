@@ -1,0 +1,44 @@
+assert(DialogueLookup[DialogueLookup_n + 1] == nil)
+assert(DialogueLookup[DialogueLookup_n + 2] == nil)
+assert(DialogueLookup[DialogueLookup_n + 3] == nil)
+assert(DialogueLookup[DialogueLookup_n + 4] == nil)
+assert(DialogueLookup[DialogueLookup_n + 5] == nil)
+assert(DialogueLookup[DialogueLookup_n + 6] == nil)
+assert(DialogueLookup[DialogueLookup_n + 7] == nil)
+assert(DialogueLookup[DialogueLookup_n + 8] == nil)
+assert(DialogueLookup[DialogueLookup_n + 9] == nil)
+assert(DialogueLookup[DialogueLookup_n + 10] == nil)
+assert(DialogueLookup[DialogueLookup_n + 11] == nil)
+assert(DialogueLookup[DialogueLookup_n + 12] == nil)
+assert(DialogueLookup[DialogueLookup_n + 13] == nil)
+assert(DialogueLookup[DialogueLookup_n + 14] == nil)
+assert(DialogueLookup[DialogueLookup_n + 15] == nil)
+assert(DialogueLookup[DialogueLookup_n + 16] == nil)
+assert(DialogueLookup[DialogueLookup_n + 17] == nil)
+assert(DialogueLookup[DialogueLookup_n + 18] == nil)
+assert(DialogueLookup[DialogueLookup_n + 19] == nil)
+assert(DialogueLookup[DialogueLookup_n + 20] == nil)
+
+DialogueLookup[DialogueLookup_n + 1] = "pwh_morris_bay_stranded_ships"
+DialogueLookup[DialogueLookup_n + 2] = "pwh_morris_bay_ice_cave"
+DialogueLookup[DialogueLookup_n + 3] = "pwh_morris_bay_lookout"
+DialogueLookup[DialogueLookup_n + 4] = "pwh_morris_bay_cursed_shore"
+DialogueLookup[DialogueLookup_n + 5] = "pbw_morris_bay_stranded_ships"
+DialogueLookup[DialogueLookup_n + 6] = "pbw_morris_bay_ice_cave"
+DialogueLookup[DialogueLookup_n + 7] = "pbw_morris_bay_lookout"
+DialogueLookup[DialogueLookup_n + 8] = "pbw_morris_bay_cursed_shore"
+DialogueLookup[DialogueLookup_n + 9] = "pdr_morris_bay_stranded_ships"
+DialogueLookup[DialogueLookup_n + 10] = "pdr_morris_bay_ice_cave"
+DialogueLookup[DialogueLookup_n + 11] = "pdr_morris_bay_lookout"
+DialogueLookup[DialogueLookup_n + 12] = "pdr_morris_bay_cursed_shore"
+DialogueLookup[DialogueLookup_n + 13] = "pwe_morris_bay_stranded_ships"
+DialogueLookup[DialogueLookup_n + 14] = "pwe_morris_bay_ice_cave"
+DialogueLookup[DialogueLookup_n + 15] = "pwe_morris_bay_lookout"
+DialogueLookup[DialogueLookup_n + 16] = "pwe_morris_bay_cursed_shore"
+DialogueLookup[DialogueLookup_n + 17] = "pes_morris_bay_stranded_ships"
+DialogueLookup[DialogueLookup_n + 18] = "pes_morris_bay_ice_cave"
+DialogueLookup[DialogueLookup_n + 19] = "pes_morris_bay_lookout"
+DialogueLookup[DialogueLookup_n + 20] = "pes_morris_bay_cursed_shore"
+DialogueLookup_n = DialogueLookup_n + 20
+
+return

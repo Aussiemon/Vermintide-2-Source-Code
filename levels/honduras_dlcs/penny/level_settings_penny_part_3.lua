@@ -1,10 +1,9 @@
 LevelSettings.dlc_castle = {
 	act_unlock_order = 2,
-	display_name = "level_name_dlc_castle",
-	package_name = "resource_packages/levels/dlcs/penny/dlc_castle",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_dlc_castle",
 	act = "act_penny",
 	loading_ui_package_name = "loading_screen_26",
 	unlockable = true,
@@ -18,6 +17,9 @@ LevelSettings.dlc_castle = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras_dlcs/penny/dlc_castle/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/penny/dlc_castle"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {

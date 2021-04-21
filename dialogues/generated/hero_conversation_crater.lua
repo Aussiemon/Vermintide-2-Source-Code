@@ -1945,862 +1945,862 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pdr_crater_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_crater_conversation_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 9.2842502593994
-			},
-			localization_strings = {
-				[1.0] = "pdr_crater_conversation_four_01"
-			}
-		},
-		pdr_crater_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_crater_conversation_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.1065833568573
-			},
-			localization_strings = {
-				[1.0] = "pdr_crater_conversation_nine_02"
-			}
-		},
-		pbw_crater_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_crater_conversation_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8262500762939
-			},
-			localization_strings = {
-				[1.0] = "pbw_crater_conversation_nine_02"
-			}
-		},
-		pwe_crater_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5570831298828
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_seven_01"
-			}
-		},
-		pwe_crater_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8620209693909
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_five_02"
-			}
-		},
-		pwe_crater_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3679375648499
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_one_02"
-			}
-		},
-		pwe_crater_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5388751029968
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_one_01"
-			}
-		},
-		pes_crater_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_crater_conversation_eight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 14.932708740234
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_conversation_eight_02"
-			}
-		},
-		pbw_crater_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_crater_conversation_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.806104183197
-			},
-			localization_strings = {
-				[1.0] = "pbw_crater_conversation_five_01"
-			}
-		},
-		pes_crater_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_crater_conversation_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4699790477753
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_conversation_ten_02"
-			}
-		},
-		pwh_crater_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2149791717529
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_two_01"
-			}
-		},
-		pes_crater_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_crater_conversation_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0626459121704
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_conversation_ten_01"
-			}
-		},
-		pbw_crater_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_crater_conversation_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0991249084473
-			},
-			localization_strings = {
-				[1.0] = "pbw_crater_conversation_two_01"
-			}
-		},
-		pdr_crater_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_crater_conversation_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3349165916443
-			},
-			localization_strings = {
-				[1.0] = "pdr_crater_conversation_seven_01"
-			}
-		},
-		pwh_crater_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.6173334121704
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_nine_01"
-			}
-		},
-		pwh_crater_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.9120001792908
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_two_02"
-			}
-		},
-		pwh_crater_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.8666875362396
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_ten_02"
-			}
-		},
-		pwh_crater_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8783750534058
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_ten_01"
-			}
-		},
-		pdr_crater_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_crater_conversation_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.2901043891907
-			},
-			localization_strings = {
-				[1.0] = "pdr_crater_conversation_six_01"
-			}
-		},
-		pdr_crater_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_crater_conversation_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.642416715622
-			},
-			localization_strings = {
-				[1.0] = "pdr_crater_conversation_nine_01"
-			}
-		},
-		pdr_crater_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_crater_conversation_seven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1369166374206
-			},
-			localization_strings = {
-				[1.0] = "pdr_crater_conversation_seven_02"
-			}
-		},
-		pes_crater_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_crater_conversation_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5605416297913
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_conversation_one_01"
-			}
-		},
-		pbw_crater_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_crater_conversation_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.653395652771
-			},
-			localization_strings = {
-				[1.0] = "pbw_crater_conversation_nine_01"
-			}
-		},
-		pwe_crater_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.7399997711182
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_five_01"
-			}
-		},
-		pbw_crater_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_crater_conversation_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.6674165725708
-			},
-			localization_strings = {
-				[1.0] = "pbw_crater_conversation_eight_01"
-			}
-		},
-		pwe_crater_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2758331298828
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_three_02"
-			}
-		},
-		pbw_crater_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_crater_conversation_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.648895740509
-			},
-			localization_strings = {
-				[1.0] = "pbw_crater_conversation_two_02"
-			}
-		},
-		pwh_crater_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 11.765062332153
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_six_01"
-			}
-		},
-		pwe_crater_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_seven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 12.084145545959
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_seven_02"
-			}
-		},
-		pwe_crater_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_crater_conversation_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7014582157135
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_three_01"
-			}
-		},
 		pwe_crater_conversation_four_01 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversation_crater",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_four_01"
+			},
 			sound_events = {
 				[1.0] = "pwe_crater_conversation_four_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 6.2974791526794
-			},
-			localization_strings = {
-				[1.0] = "pwe_crater_conversation_four_01"
-			}
-		},
-		pwh_crater_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9652917385101
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_three_02"
 			}
 		},
 		pwh_crater_conversation_six_02 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversation_crater",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_six_02"
+			},
 			sound_events = {
 				[1.0] = "pwh_crater_conversation_six_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 10.934791564941
-			},
-			localization_strings = {
-				[1.0] = "pwh_crater_conversation_six_02"
 			}
 		},
 		pes_crater_conversation_one_02 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversation_crater",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_crater_conversation_one_02"
+			},
 			sound_events = {
 				[1.0] = "pes_crater_conversation_one_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 5.9530625343323
-			},
-			localization_strings = {
-				[1.0] = "pes_crater_conversation_one_02"
 			}
 		},
-		pes_crater_conversation_one_03 = {
-			sound_events_n = 1,
+		pes_crater_conversation_one_01 = {
 			face_animations_n = 1,
 			database = "hero_conversation_crater",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_crater_conversation_one_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.0258333683014
-			},
 			localization_strings = {
-				[1.0] = "pes_crater_conversation_one_03"
-			}
-		},
-		pwh_crater_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversation_crater",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_crater_conversation_three_01"
+				[1.0] = "pes_crater_conversation_one_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pes_crater_conversation_one_01"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 3.7144167423248
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 2.5605416297913
+			}
+		},
+		pbw_crater_conversation_nine_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pwh_crater_conversation_three_01"
+				[1.0] = "pbw_crater_conversation_nine_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_crater_conversation_nine_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8262500762939
+			}
+		},
+		pwh_crater_conversation_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_two_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_crater_conversation_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2149791717529
+			}
+		},
+		pdr_crater_conversation_seven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_crater_conversation_seven_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_crater_conversation_seven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1369166374206
+			}
+		},
+		pbw_crater_conversation_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_crater_conversation_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_crater_conversation_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.653395652771
+			}
+		},
+		pwe_crater_conversation_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_one_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5388751029968
 			}
 		},
 		pbw_crater_conversation_five_02 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversation_crater",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
+			localization_strings = {
 				[1.0] = "pbw_crater_conversation_five_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pbw_crater_conversation_five_02"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
 			sound_events_duration = {
 				[1.0] = 3.3930208683014
-			},
-			localization_strings = {
-				[1.0] = "pbw_crater_conversation_five_02"
 			}
 		},
-		pes_crater_conversation_four_01 = {
-			sound_events_n = 1,
+		pdr_crater_conversation_seven_01 = {
 			face_animations_n = 1,
 			database = "hero_conversation_crater",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_crater_conversation_seven_01"
+			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_four_01"
+				[1.0] = "pdr_crater_conversation_seven_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3349165916443
+			}
+		},
+		pwe_crater_conversation_seven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_seven_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_seven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 12.084145545959
+			}
+		},
+		pdr_crater_conversation_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_crater_conversation_six_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_crater_conversation_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2901043891907
+			}
+		},
+		pes_crater_conversation_one_03 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_crater_conversation_one_03"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_conversation_one_03"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.0258333683014
+			}
+		},
+		pwe_crater_conversation_five_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_five_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_five_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8620209693909
+			}
+		},
+		pwh_crater_conversation_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_three_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_crater_conversation_three_01"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 2.4878542423248
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
-			localization_strings = {
-				[1.0] = "pes_crater_conversation_four_01"
+			sound_events_duration = {
+				[1.0] = 3.7144167423248
 			}
 		},
-		pes_crater_conversation_four_02 = {
-			sound_events_n = 1,
+		pwh_crater_conversation_ten_01 = {
 			face_animations_n = 1,
 			database = "hero_conversation_crater",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_ten_01"
+			},
 			sound_events = {
-				[1.0] = "pes_crater_conversation_four_02"
+				[1.0] = "pwh_crater_conversation_ten_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 5.8783750534058
+			}
+		},
+		pdr_crater_conversation_nine_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_crater_conversation_nine_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_crater_conversation_nine_02"
+			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 4.9756875038147
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 1.1065833568573
+			}
+		},
+		pwh_crater_conversation_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_six_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_crater_conversation_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 11.765062332153
+			}
+		},
+		pdr_crater_conversation_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_crater_conversation_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_crater_conversation_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 1.642416715622
+			}
+		},
+		pbw_crater_conversation_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_crater_conversation_five_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_crater_conversation_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.806104183197
+			}
+		},
+		pwe_crater_conversation_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_five_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 8.7399997711182
+			}
+		},
+		pes_crater_conversation_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_crater_conversation_four_01"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_conversation_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4878542423248
+			}
+		},
+		pes_crater_conversation_ten_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_crater_conversation_ten_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_conversation_ten_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1555936336517
+			}
+		},
+		pbw_crater_conversation_eight_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_crater_conversation_eight_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_crater_conversation_eight_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.6674165725708
+			}
+		},
+		pes_crater_conversation_ten_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_crater_conversation_ten_01"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_conversation_ten_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0626459121704
+			}
+		},
+		pwe_crater_conversation_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_three_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7014582157135
+			}
+		},
+		pwh_crater_conversation_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_crater_conversation_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.6173334121704
+			}
+		},
+		pdr_crater_conversation_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_crater_conversation_four_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_crater_conversation_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 9.2842502593994
+			}
+		},
+		pes_crater_conversation_four_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
 				[1.0] = "pes_crater_conversation_four_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_conversation_four_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9756875038147
+			}
+		},
+		pwh_crater_conversation_ten_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_ten_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_crater_conversation_ten_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8666875362396
+			}
+		},
+		pes_crater_conversation_eight_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_crater_conversation_eight_02"
+			},
+			sound_events = {
+				[1.0] = "pes_crater_conversation_eight_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 14.932708740234
+			}
+		},
+		pwh_crater_conversation_three_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_three_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_crater_conversation_three_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9652917385101
+			}
+		},
+		pbw_crater_conversation_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_crater_conversation_two_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_crater_conversation_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0991249084473
+			}
+		},
+		pbw_crater_conversation_two_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_crater_conversation_two_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_crater_conversation_two_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.648895740509
+			}
+		},
+		pwe_crater_conversation_seven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_seven_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_seven_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5570831298828
+			}
+		},
+		pwe_crater_conversation_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_one_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3679375648499
+			}
+		},
+		pwe_crater_conversation_three_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_crater_conversation_three_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_crater_conversation_three_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2758331298828
+			}
+		},
+		pwh_crater_conversation_two_02 = {
+			face_animations_n = 1,
+			database = "hero_conversation_crater",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_crater_conversation_two_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_crater_conversation_two_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.9120001792908
 			}
 		}
 	})

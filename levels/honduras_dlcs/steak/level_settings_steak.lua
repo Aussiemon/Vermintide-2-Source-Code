@@ -1,10 +1,9 @@
 LevelSettings.crater = {
 	act_unlock_order = 0,
-	display_name = "level_name_crater",
-	package_name = "resource_packages/levels/dlcs/scorpion/crater",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_crater",
 	act = "act_scorpion",
 	conflict_settings = "beastmen",
 	unlockable = true,
@@ -18,6 +17,9 @@ LevelSettings.crater = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras_dlcs/scorpion/crater/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/scorpion/crater"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {},

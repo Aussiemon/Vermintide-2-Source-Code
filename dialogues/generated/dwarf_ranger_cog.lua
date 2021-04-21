@@ -45,13 +45,14 @@ return function ()
 	})
 	add_dialogues({
 		pdr_activate_ability_dwarf_engineer = {
-			sound_events_n = 10,
 			face_animations_n = 10,
 			database = "dwarf_ranger_cog",
+			sound_events_n = 10,
 			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 10,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pdr_activate_ability_dwarf_engineer_01",
 				"pdr_activate_ability_dwarf_engineer_02",
 				"pdr_activate_ability_dwarf_engineer_03",
@@ -63,17 +64,17 @@ return function ()
 				"pdr_activate_ability_dwarf_engineer_09",
 				"pdr_activate_ability_dwarf_engineer_10"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pdr_activate_ability_dwarf_engineer_01",
+				"pdr_activate_ability_dwarf_engineer_02",
+				"pdr_activate_ability_dwarf_engineer_03",
+				"pdr_activate_ability_dwarf_engineer_04",
+				"pdr_activate_ability_dwarf_engineer_05",
+				"pdr_activate_ability_dwarf_engineer_06",
+				"pdr_activate_ability_dwarf_engineer_07",
+				"pdr_activate_ability_dwarf_engineer_08",
+				"pdr_activate_ability_dwarf_engineer_09",
+				"pdr_activate_ability_dwarf_engineer_10"
 			},
 			face_animations = {
 				"face_happy",
@@ -87,31 +88,30 @@ return function ()
 				"face_happy",
 				"face_happy"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
-				1,
-				1,
-				1,
-				1,
-				1,
-				1,
-				1,
-				1,
-				2,
-				2
-			},
-			localization_strings = {
-				"pdr_activate_ability_dwarf_engineer_01",
-				"pdr_activate_ability_dwarf_engineer_02",
-				"pdr_activate_ability_dwarf_engineer_03",
-				"pdr_activate_ability_dwarf_engineer_04",
-				"pdr_activate_ability_dwarf_engineer_05",
-				"pdr_activate_ability_dwarf_engineer_06",
-				"pdr_activate_ability_dwarf_engineer_07",
-				"pdr_activate_ability_dwarf_engineer_08",
-				"pdr_activate_ability_dwarf_engineer_09",
-				"pdr_activate_ability_dwarf_engineer_10"
-			},
-			randomize_indexes = {}
+				1.4520416259766,
+				1.3176041841507,
+				1.7979791164398,
+				1.9152292013168,
+				1.5095624923706,
+				1.5485208034515,
+				1.1934167146683,
+				1.3340417146683,
+				2.2459790706634,
+				2.3116042613983
+			}
 		}
 	})
 end

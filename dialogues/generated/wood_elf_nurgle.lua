@@ -214,160 +214,25 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_nurgle_intro_a = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "wood_elf_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_nurgle_intro_a_01",
-				[2.0] = "pwe_nurgle_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.7614164352417,
-				[2.0] = 8.7651872634888
-			},
-			localization_strings = {
-				[1.0] = "pwe_nurgle_intro_a_01",
-				[2.0] = "pwe_nurgle_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_nurgle_spotting_objective = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "wood_elf_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwe_level_nurgle_spotting_objective_01",
-				"pwe_level_nurgle_spotting_objective_02",
-				"pwe_level_nurgle_spotting_objective_03",
-				"pwe_level_nurgle_spotting_objective_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.4518959522247,
-				3.3708124160767,
-				4.223249912262,
-				3.3921458721161
-			},
-			localization_strings = {
-				"pwe_level_nurgle_spotting_objective_01",
-				"pwe_level_nurgle_spotting_objective_02",
-				"pwe_level_nurgle_spotting_objective_03",
-				"pwe_level_nurgle_spotting_objective_04"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_nurgle_coming_down = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "wood_elf_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwe_level_nurgle_coming_down_01",
-				"pwe_level_nurgle_coming_down_02",
-				"pwe_level_nurgle_coming_down_03",
-				"pwe_level_nurgle_coming_down_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				4.6912498474121,
-				5.1840624809265,
-				6.0263748168945,
-				4.5843749046326
-			},
-			localization_strings = {
-				"pwe_level_nurgle_coming_down_01",
-				"pwe_level_nurgle_coming_down_02",
-				"pwe_level_nurgle_coming_down_03",
-				"pwe_level_nurgle_coming_down_04"
-			},
-			randomize_indexes = {}
-		},
-		pwe_nurgle_intro_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "wood_elf_nurgle",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_nurgle_intro_b_01",
-				[2.0] = "pwe_nurgle_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 10.481687545776,
-				[2.0] = 9.5001878738403
-			},
-			localization_strings = {
-				[1.0] = "pwe_nurgle_intro_b_01",
-				[2.0] = "pwe_nurgle_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
 		pwe_level_nurgle_swift_river = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "wood_elf_nurgle",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pwe_level_nurgle_swift_river_01",
 				"pwe_level_nurgle_swift_river_02",
 				"pwe_level_nurgle_swift_river_03",
 				"pwe_level_nurgle_swift_river_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pwe_level_nurgle_swift_river_01",
+				"pwe_level_nurgle_swift_river_02",
+				"pwe_level_nurgle_swift_river_03",
+				"pwe_level_nurgle_swift_river_04"
 			},
 			face_animations = {
 				"face_concerned",
@@ -375,19 +240,154 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
 				4.52889585495,
 				2.8746666908264,
 				3.9763333797455,
 				4.0714793205261
-			},
+			}
+		},
+		pwe_nurgle_intro_a = {
+			face_animations_n = 2,
+			database = "wood_elf_nurgle",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			localization_strings = {
-				"pwe_level_nurgle_swift_river_01",
-				"pwe_level_nurgle_swift_river_02",
-				"pwe_level_nurgle_swift_river_03",
-				"pwe_level_nurgle_swift_river_04"
+				[1.0] = "pwe_nurgle_intro_a_01",
+				[2.0] = "pwe_nurgle_intro_a_02"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				[1.0] = "pwe_nurgle_intro_a_01",
+				[2.0] = "pwe_nurgle_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7614164352417,
+				[2.0] = 8.7651872634888
+			}
+		},
+		pwe_nurgle_intro_b = {
+			face_animations_n = 2,
+			database = "wood_elf_nurgle",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwe_nurgle_intro_b_01",
+				[2.0] = "pwe_nurgle_intro_b_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_nurgle_intro_b_01",
+				[2.0] = "pwe_nurgle_intro_b_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 10.481687545776,
+				[2.0] = 9.5001878738403
+			}
+		},
+		pwe_level_nurgle_spotting_objective = {
+			face_animations_n = 4,
+			database = "wood_elf_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwe_level_nurgle_spotting_objective_01",
+				"pwe_level_nurgle_spotting_objective_02",
+				"pwe_level_nurgle_spotting_objective_03",
+				"pwe_level_nurgle_spotting_objective_04"
+			},
+			sound_events = {
+				"pwe_level_nurgle_spotting_objective_01",
+				"pwe_level_nurgle_spotting_objective_02",
+				"pwe_level_nurgle_spotting_objective_03",
+				"pwe_level_nurgle_spotting_objective_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.4518959522247,
+				3.3708124160767,
+				4.223249912262,
+				3.3921458721161
+			}
+		},
+		pwe_level_nurgle_coming_down = {
+			face_animations_n = 4,
+			database = "wood_elf_nurgle",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwe_level_nurgle_coming_down_01",
+				"pwe_level_nurgle_coming_down_02",
+				"pwe_level_nurgle_coming_down_03",
+				"pwe_level_nurgle_coming_down_04"
+			},
+			sound_events = {
+				"pwe_level_nurgle_coming_down_01",
+				"pwe_level_nurgle_coming_down_02",
+				"pwe_level_nurgle_coming_down_03",
+				"pwe_level_nurgle_coming_down_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				4.6912498474121,
+				5.1840624809265,
+				6.0263748168945,
+				4.5843749046326
+			}
 		}
 	})
 end

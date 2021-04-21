@@ -1044,124 +1044,181 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwh_gameplay_chieftain_tips_special_lunge_attack_2 = {
-			sound_events_n = 4,
+		pwh_gameplay_skaven_warlord_summoning_reply = {
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			category = "player_alerts",
+			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_gameplay_chieftain_summoning_reply_01",
+				"pwh_gameplay_chieftain_summoning_reply_02",
+				"pwh_gameplay_chieftain_summoning_reply_03",
+				"pwh_gameplay_chieftain_summoning_reply_04"
+			},
 			sound_events = {
-				"pwh_gameplay_chieftain_tips_01",
-				"pwh_gameplay_chieftain_tips_02",
-				"pwh_gameplay_chieftain_tips_03",
-				"pwh_gameplay_chieftain_tips_04"
+				"pwh_gameplay_chieftain_summoning_reply_01",
+				"pwh_gameplay_chieftain_summoning_reply_02",
+				"pwh_gameplay_chieftain_summoning_reply_03",
+				"pwh_gameplay_chieftain_summoning_reply_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
-				"dialogue_talk",
-				"dialogue_talk",
+				"dialogue_shout",
+				"dialogue_shout",
 				"dialogue_shout"
 			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
 			sound_events_duration = {
-				2.0402500629425,
-				2.7265000343323,
-				3.1482708454132,
-				2.7022707462311
-			},
-			localization_strings = {
-				"pwh_gameplay_chieftain_tips_01",
-				"pwh_gameplay_chieftain_tips_02",
-				"pwh_gameplay_chieftain_tips_03",
-				"pwh_gameplay_chieftain_tips_04"
-			},
-			randomize_indexes = {}
+				1.509645819664,
+				3.2907500267029,
+				3.9650208950043,
+				5.0295834541321
+			}
 		},
-		pwh_level_skaven_stronghold_foundry_entered = {
-			sound_events_n = 4,
+		pwh_level_skaven_stronghold_waterwheel_complete = {
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_foundry_entered_01",
-				"pwh_level_skaven_stronghold_foundry_entered_02",
-				"pwh_level_skaven_stronghold_foundry_entered_03",
-				"pwh_level_skaven_stronghold_foundry_entered_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_waterwheel_complete_01",
+				"pwh_level_skaven_stronghold_waterwheel_complete_02",
+				"pwh_level_skaven_stronghold_waterwheel_complete_03",
+				"pwh_level_skaven_stronghold_waterwheel_complete_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pwh_level_skaven_stronghold_waterwheel_complete_01",
+				"pwh_level_skaven_stronghold_waterwheel_complete_02",
+				"pwh_level_skaven_stronghold_waterwheel_complete_03",
+				"pwh_level_skaven_stronghold_waterwheel_complete_04"
 			},
 			face_animations = {
 				"face_fear",
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				1.4607499837875,
+				2.294625043869,
+				2.3325207233429,
+				5.4045414924622
+			}
+		},
+		pwh_level_skaven_stronghold_city_afire = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_city_afire_01",
+				"pwh_level_skaven_stronghold_city_afire_02",
+				"pwh_level_skaven_stronghold_city_afire_03",
+				"pwh_level_skaven_stronghold_city_afire_04"
+			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_city_afire_01",
+				"pwh_level_skaven_stronghold_city_afire_02",
+				"pwh_level_skaven_stronghold_city_afire_03",
+				"pwh_level_skaven_stronghold_city_afire_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.9947500228882,
+				2.9066874980927,
+				3.2682082653046,
+				6.3296666145325
+			}
+		},
+		pwh_level_skaven_stronghold_foundry_entered = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_foundry_entered_01",
+				"pwh_level_skaven_stronghold_foundry_entered_02",
+				"pwh_level_skaven_stronghold_foundry_entered_03",
+				"pwh_level_skaven_stronghold_foundry_entered_04"
+			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_foundry_entered_01",
+				"pwh_level_skaven_stronghold_foundry_entered_02",
+				"pwh_level_skaven_stronghold_foundry_entered_03",
+				"pwh_level_skaven_stronghold_foundry_entered_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			sound_events_duration = {
 				5.0213332176208,
 				5.5862083435059,
 				6.5012497901917,
 				5.7823958396912
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_foundry_entered_01",
-				"pwh_level_skaven_stronghold_foundry_entered_02",
-				"pwh_level_skaven_stronghold_foundry_entered_03",
-				"pwh_level_skaven_stronghold_foundry_entered_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_rat_ogre_rampage = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_skaven_stronghold",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_skaven_stronghold_rat_ogre_rampage_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0119791030884
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_skaven_stronghold_rat_ogre_rampage_01"
 			}
 		},
 		pwh_gameplay_chieftain_tips_special_attack_cleave = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "player_alerts",
 			dialogue_animations_n = 4,
-			sound_events = {
+			randomize_indexes = {},
+			localization_strings = {
 				"pwh_gameplay_chieftain_tips_01",
 				"pwh_gameplay_chieftain_tips_02",
 				"pwh_gameplay_chieftain_tips_03",
 				"pwh_gameplay_chieftain_tips_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_shout"
+			sound_events = {
+				"pwh_gameplay_chieftain_tips_01",
+				"pwh_gameplay_chieftain_tips_02",
+				"pwh_gameplay_chieftain_tips_03",
+				"pwh_gameplay_chieftain_tips_04"
 			},
 			face_animations = {
 				"face_concerned",
@@ -1169,77 +1226,245 @@ return function ()
 				"face_concerned",
 				"face_concerned"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
 				2.0402500629425,
 				2.7265000343323,
 				3.1482708454132,
 				2.7022707462311
+			}
+		},
+		pwh_level_skaven_stronghold_patrol_lanes = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_patrol_lanes_01",
+				"pwh_level_skaven_stronghold_patrol_lanes_02",
+				"pwh_level_skaven_stronghold_patrol_lanes_03",
+				"pwh_level_skaven_stronghold_patrol_lanes_04"
 			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_patrol_lanes_01",
+				"pwh_level_skaven_stronghold_patrol_lanes_02",
+				"pwh_level_skaven_stronghold_patrol_lanes_03",
+				"pwh_level_skaven_stronghold_patrol_lanes_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.8661458492279,
+				3.4470207691193,
+				3.8541250228882,
+				2.7298333644867
+			}
+		},
+		pwh_gameplay_chieftain_tips_special_lunge_attack_2 = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "player_alerts",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
 			localization_strings = {
 				"pwh_gameplay_chieftain_tips_01",
 				"pwh_gameplay_chieftain_tips_02",
 				"pwh_gameplay_chieftain_tips_03",
 				"pwh_gameplay_chieftain_tips_04"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				"pwh_gameplay_chieftain_tips_01",
+				"pwh_gameplay_chieftain_tips_02",
+				"pwh_gameplay_chieftain_tips_03",
+				"pwh_gameplay_chieftain_tips_04"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				2.0402500629425,
+				2.7265000343323,
+				3.1482708454132,
+				2.7022707462311
+			}
 		},
 		pwh_level_skaven_stronghold_downtown = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_downtown_01",
+				"pwh_level_skaven_stronghold_downtown_02",
+				"pwh_level_skaven_stronghold_downtown_03",
+				"pwh_level_skaven_stronghold_downtown_04"
+			},
 			sound_events = {
 				"pwh_level_skaven_stronghold_downtown_01",
 				"pwh_level_skaven_stronghold_downtown_02",
 				"pwh_level_skaven_stronghold_downtown_03",
 				"pwh_level_skaven_stronghold_downtown_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
 			face_animations = {
 				"face_fear",
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			sound_events_duration = {
 				5.3571457862854,
 				5.0792083740234,
 				5.7457709312439,
 				5.8972706794739
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_downtown_01",
-				"pwh_level_skaven_stronghold_downtown_02",
-				"pwh_level_skaven_stronghold_downtown_03",
-				"pwh_level_skaven_stronghold_downtown_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pwh_level_skaven_stronghold_exit = {
-			sound_events_n = 4,
+		pwh_level_skaven_stronghold_rat_ogre_rampage = {
+			face_animations_n = 1,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 1,
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_skaven_stronghold_rat_ogre_rampage_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_skaven_stronghold_rat_ogre_rampage_01"
+			},
+			face_animations = {
+				[1.0] = "face_fear"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0119791030884
+			}
+		},
+		pwh_level_skaven_stronghold_barrier = {
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_barrier_01",
+				"pwh_level_skaven_stronghold_barrier_02",
+				"pwh_level_skaven_stronghold_barrier_03",
+				"pwh_level_skaven_stronghold_barrier_04"
+			},
 			sound_events = {
-				"pwh_level_skaven_stronghold_exit_01",
-				"pwh_level_skaven_stronghold_exit_02",
-				"pwh_level_skaven_stronghold_exit_03",
-				"pwh_level_skaven_stronghold_exit_04"
+				"pwh_level_skaven_stronghold_barrier_01",
+				"pwh_level_skaven_stronghold_barrier_02",
+				"pwh_level_skaven_stronghold_barrier_03",
+				"pwh_level_skaven_stronghold_barrier_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.2278542518616,
+				3.3113124370575,
+				5.6345624923706,
+				4.1765208244324
+			}
+		},
+		pwh_skaven_stronghold_intro_b = {
+			face_animations_n = 2,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_skaven_stronghold_intro_b_01",
+				[2.0] = "pwh_skaven_stronghold_intro_b_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_skaven_stronghold_intro_b_01",
+				[2.0] = "pwh_skaven_stronghold_intro_b_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2605209350586,
+				[2.0] = 9.5200004577637
+			}
+		},
+		pwh_level_skaven_stronghold_mission_complete = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_mission_complete_01",
+				"pwh_level_skaven_stronghold_mission_complete_02",
+				"pwh_level_skaven_stronghold_mission_complete_03",
+				"pwh_level_skaven_stronghold_mission_complete_04"
+			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_mission_complete_01",
+				"pwh_level_skaven_stronghold_mission_complete_02",
+				"pwh_level_skaven_stronghold_mission_complete_03",
+				"pwh_level_skaven_stronghold_mission_complete_04"
 			},
 			face_animations = {
 				"face_fear",
@@ -1247,38 +1472,184 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
-				3.6005415916443,
-				2.9050834178925,
-				1.2479583024979,
-				3.4039583206177
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_exit_01",
-				"pwh_level_skaven_stronghold_exit_02",
-				"pwh_level_skaven_stronghold_exit_03",
-				"pwh_level_skaven_stronghold_exit_04"
-			},
-			randomize_indexes = {}
+				4.6960835456848,
+				5.9257497787476,
+				4.071249961853,
+				4.3720207214356
+			}
 		},
-		pwh_level_skaven_stronghold_vista = {
-			sound_events_n = 4,
+		pwh_level_skaven_stronghold_warlord_nest = {
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_warlord_nest_01",
+				"pwh_level_skaven_stronghold_warlord_nest_02",
+				"pwh_level_skaven_stronghold_warlord_nest_03",
+				"pwh_level_skaven_stronghold_warlord_nest_04"
+			},
 			sound_events = {
-				"pwh_level_skaven_stronghold_vista_01",
-				"pwh_level_skaven_stronghold_vista_02",
-				"pwh_level_skaven_stronghold_vista_03",
-				"pwh_level_skaven_stronghold_vista_04"
+				"pwh_level_skaven_stronghold_warlord_nest_01",
+				"pwh_level_skaven_stronghold_warlord_nest_02",
+				"pwh_level_skaven_stronghold_warlord_nest_03",
+				"pwh_level_skaven_stronghold_warlord_nest_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.9685416221619,
+				5.731541633606,
+				4.2628960609436,
+				5.3619790077209
+			}
+		},
+		pwh_level_skaven_stronghold_dead_warlord = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_dead_warlord_01",
+				"pwh_level_skaven_stronghold_dead_warlord_02",
+				"pwh_level_skaven_stronghold_dead_warlord_03",
+				"pwh_level_skaven_stronghold_dead_warlord_04"
+			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_dead_warlord_01",
+				"pwh_level_skaven_stronghold_dead_warlord_02",
+				"pwh_level_skaven_stronghold_dead_warlord_03",
+				"pwh_level_skaven_stronghold_dead_warlord_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				6.0427083969116,
+				5.998104095459,
+				5.862208366394,
+				5.1354584693909
+			}
+		},
+		pwh_level_skaven_stronghold_exit = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_exit_01",
+				"pwh_level_skaven_stronghold_exit_02",
+				"pwh_level_skaven_stronghold_exit_03",
+				"pwh_level_skaven_stronghold_exit_04"
+			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_exit_01",
+				"pwh_level_skaven_stronghold_exit_02",
+				"pwh_level_skaven_stronghold_exit_03",
+				"pwh_level_skaven_stronghold_exit_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				3.6005415916443,
+				2.9050834178925,
+				1.2479583024979,
+				3.4039583206177
+			}
+		},
+		pwh_skaven_stronghold_intro_c = {
+			face_animations_n = 2,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_skaven_stronghold_intro_c_01",
+				[2.0] = "pwh_skaven_stronghold_intro_c_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_skaven_stronghold_intro_c_01",
+				[2.0] = "pwh_skaven_stronghold_intro_c_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5401668548584,
+				[2.0] = 3.5368542671204
+			}
+		},
+		pwh_level_skaven_stronghold_vista = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_vista_01",
+				"pwh_level_skaven_stronghold_vista_02",
+				"pwh_level_skaven_stronghold_vista_03",
+				"pwh_level_skaven_stronghold_vista_04"
+			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_vista_01",
+				"pwh_level_skaven_stronghold_vista_02",
+				"pwh_level_skaven_stronghold_vista_03",
+				"pwh_level_skaven_stronghold_vista_04"
 			},
 			face_animations = {
 				"face_angry",
@@ -1286,281 +1657,184 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
 				5.8293747901917,
 				4.9786872863769,
 				6.9532709121704,
 				6.224645614624
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_vista_01",
-				"pwh_level_skaven_stronghold_vista_02",
-				"pwh_level_skaven_stronghold_vista_03",
-				"pwh_level_skaven_stronghold_vista_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pwh_skaven_stronghold_intro_c = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwh_skaven_stronghold_intro_c_01",
-				[2.0] = "pwh_skaven_stronghold_intro_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5401668548584,
-				[2.0] = 3.5368542671204
-			},
-			localization_strings = {
-				[1.0] = "pwh_skaven_stronghold_intro_c_01",
-				[2.0] = "pwh_skaven_stronghold_intro_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_long_way_down = {
-			sound_events_n = 4,
+		pwh_gameplay_skaven_warlord_kill = {
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_long_way_down_01",
-				"pwh_level_skaven_stronghold_long_way_down_02",
-				"pwh_level_skaven_stronghold_long_way_down_03",
-				"pwh_level_skaven_stronghold_long_way_down_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				1.1473541259766,
-				2.9511458873749,
-				4.0201458930969,
-				4.9778752326965
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_long_way_down_01",
-				"pwh_level_skaven_stronghold_long_way_down_02",
-				"pwh_level_skaven_stronghold_long_way_down_03",
-				"pwh_level_skaven_stronghold_long_way_down_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_light_brazier = {
 			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_light_brazier_01",
-				"pwh_level_skaven_stronghold_light_brazier_02",
-				"pwh_level_skaven_stronghold_light_brazier_03",
-				"pwh_level_skaven_stronghold_light_brazier_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events_duration = {
-				4.5946459770203,
-				5.0459790229797,
-				4.5562915802002,
-				3.4763958454132
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_light_brazier_01",
-				"pwh_level_skaven_stronghold_light_brazier_02",
-				"pwh_level_skaven_stronghold_light_brazier_03",
-				"pwh_level_skaven_stronghold_light_brazier_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_gameplay_skaven_warlord_banter_reply = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
 			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_gameplay_chieftain_banter_reply_01",
-				"pwh_gameplay_chieftain_banter_reply_02",
-				"pwh_gameplay_chieftain_banter_reply_03",
-				"pwh_gameplay_chieftain_banter_reply_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_dead_warlord_01",
+				"pwh_level_skaven_stronghold_dead_warlord_02",
+				"pwh_level_skaven_stronghold_dead_warlord_03",
+				"pwh_level_skaven_stronghold_dead_warlord_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			sound_events = {
+				"pwh_level_skaven_stronghold_dead_warlord_01",
+				"pwh_level_skaven_stronghold_dead_warlord_02",
+				"pwh_level_skaven_stronghold_dead_warlord_03",
+				"pwh_level_skaven_stronghold_dead_warlord_04"
 			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				6.0427083969116,
+				5.998104095459,
+				5.862208366394,
+				5.1354584693909
+			}
+		},
+		pwh_gameplay_skaven_warlord_banter_reply = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_gameplay_chieftain_banter_reply_01",
+				"pwh_gameplay_chieftain_banter_reply_02",
+				"pwh_gameplay_chieftain_banter_reply_03",
+				"pwh_gameplay_chieftain_banter_reply_04"
+			},
+			sound_events = {
+				"pwh_gameplay_chieftain_banter_reply_01",
+				"pwh_gameplay_chieftain_banter_reply_02",
+				"pwh_gameplay_chieftain_banter_reply_03",
+				"pwh_gameplay_chieftain_banter_reply_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			sound_events_duration = {
 				2.9004790782928,
 				3.7456042766571,
 				1.4868333339691,
 				2.3293750286102
-			},
+			}
+		},
+		pwh_level_skaven_stronghold_taunt_warlord = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
 			localization_strings = {
-				"pwh_gameplay_chieftain_banter_reply_01",
-				"pwh_gameplay_chieftain_banter_reply_02",
-				"pwh_gameplay_chieftain_banter_reply_03",
-				"pwh_gameplay_chieftain_banter_reply_04"
+				"pwh_level_skaven_stronghold_taunt_warlord_01",
+				"pwh_level_skaven_stronghold_taunt_warlord_02",
+				"pwh_level_skaven_stronghold_taunt_warlord_03",
+				"pwh_level_skaven_stronghold_taunt_warlord_04"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				"pwh_level_skaven_stronghold_taunt_warlord_01",
+				"pwh_level_skaven_stronghold_taunt_warlord_02",
+				"pwh_level_skaven_stronghold_taunt_warlord_03",
+				"pwh_level_skaven_stronghold_taunt_warlord_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events_duration = {
+				4.8936457633972,
+				5.1052293777466,
+				3.1225209236145,
+				3.5428125858307
+			}
 		},
 		pwh_skaven_stronghold_intro_a = {
-			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pwh_skaven_stronghold_intro_a_01",
+				[2.0] = "pwh_skaven_stronghold_intro_a_02"
+			},
 			sound_events = {
 				[1.0] = "pwh_skaven_stronghold_intro_a_01",
 				[2.0] = "pwh_skaven_stronghold_intro_a_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 5.0077710151672,
 				[2.0] = 7.5742292404175
-			},
-			localization_strings = {
-				[1.0] = "pwh_skaven_stronghold_intro_a_01",
-				[2.0] = "pwh_skaven_stronghold_intro_a_02"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pwh_skaven_stronghold_intro_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwh_skaven_stronghold_intro_b_01",
-				[2.0] = "pwh_skaven_stronghold_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.2605209350586,
-				[2.0] = 9.5200004577637
-			},
-			localization_strings = {
-				[1.0] = "pwh_skaven_stronghold_intro_b_01",
-				[2.0] = "pwh_skaven_stronghold_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_gameplay_skaven_warlord_kill = {
-			sound_events_n = 4,
+		pwh_level_skaven_stronghold_long_way_down = {
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_dead_warlord_01",
-				"pwh_level_skaven_stronghold_dead_warlord_02",
-				"pwh_level_skaven_stronghold_dead_warlord_03",
-				"pwh_level_skaven_stronghold_dead_warlord_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				6.0427083969116,
-				5.998104095459,
-				5.862208366394,
-				5.1354584693909
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_dead_warlord_01",
-				"pwh_level_skaven_stronghold_dead_warlord_02",
-				"pwh_level_skaven_stronghold_dead_warlord_03",
-				"pwh_level_skaven_stronghold_dead_warlord_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_barrier = {
 			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_barrier_01",
-				"pwh_level_skaven_stronghold_barrier_02",
-				"pwh_level_skaven_stronghold_barrier_03",
-				"pwh_level_skaven_stronghold_barrier_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_long_way_down_01",
+				"pwh_level_skaven_stronghold_long_way_down_02",
+				"pwh_level_skaven_stronghold_long_way_down_03",
+				"pwh_level_skaven_stronghold_long_way_down_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pwh_level_skaven_stronghold_long_way_down_01",
+				"pwh_level_skaven_stronghold_long_way_down_02",
+				"pwh_level_skaven_stronghold_long_way_down_03",
+				"pwh_level_skaven_stronghold_long_way_down_04"
 			},
 			face_animations = {
 				"face_calm",
@@ -1568,32 +1842,44 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
 			sound_events_duration = {
-				3.2278542518616,
-				3.3113124370575,
-				5.6345624923706,
-				4.1765208244324
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_barrier_01",
-				"pwh_level_skaven_stronghold_barrier_02",
-				"pwh_level_skaven_stronghold_barrier_03",
-				"pwh_level_skaven_stronghold_barrier_04"
-			},
-			randomize_indexes = {}
+				1.1473541259766,
+				2.9511458873749,
+				4.0201458930969,
+				4.9778752326965
+			}
 		},
-		pwh_level_skaven_stronghold_waterwheel_move = {
-			sound_events_n = 4,
+		pwh_level_skaven_stronghold_light_brazier = {
 			face_animations_n = 4,
 			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_light_brazier_01",
+				"pwh_level_skaven_stronghold_light_brazier_02",
+				"pwh_level_skaven_stronghold_light_brazier_03",
+				"pwh_level_skaven_stronghold_light_brazier_04"
+			},
 			sound_events = {
-				"pwh_level_skaven_stronghold_waterwheel_move_01",
-				"pwh_level_skaven_stronghold_waterwheel_move_02",
-				"pwh_level_skaven_stronghold_waterwheel_move_03",
-				"pwh_level_skaven_stronghold_waterwheel_move_04"
+				"pwh_level_skaven_stronghold_light_brazier_01",
+				"pwh_level_skaven_stronghold_light_brazier_02",
+				"pwh_level_skaven_stronghold_light_brazier_03",
+				"pwh_level_skaven_stronghold_light_brazier_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1601,337 +1887,51 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout"
 			},
+			sound_events_duration = {
+				4.5946459770203,
+				5.0459790229797,
+				4.5562915802002,
+				3.4763958454132
+			}
+		},
+		pwh_level_skaven_stronghold_waterwheel_move = {
+			face_animations_n = 4,
+			database = "witch_hunter_skaven_stronghold",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pwh_level_skaven_stronghold_waterwheel_move_01",
+				"pwh_level_skaven_stronghold_waterwheel_move_02",
+				"pwh_level_skaven_stronghold_waterwheel_move_03",
+				"pwh_level_skaven_stronghold_waterwheel_move_04"
+			},
+			sound_events = {
+				"pwh_level_skaven_stronghold_waterwheel_move_01",
+				"pwh_level_skaven_stronghold_waterwheel_move_02",
+				"pwh_level_skaven_stronghold_waterwheel_move_03",
+				"pwh_level_skaven_stronghold_waterwheel_move_04"
+			},
 			face_animations = {
 				"face_fear",
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			sound_events_duration = {
 				3.7889375686645,
 				2.888729095459,
 				6.7066459655762,
 				3.5332291126251
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_waterwheel_move_01",
-				"pwh_level_skaven_stronghold_waterwheel_move_02",
-				"pwh_level_skaven_stronghold_waterwheel_move_03",
-				"pwh_level_skaven_stronghold_waterwheel_move_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_mission_complete = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_mission_complete_01",
-				"pwh_level_skaven_stronghold_mission_complete_02",
-				"pwh_level_skaven_stronghold_mission_complete_03",
-				"pwh_level_skaven_stronghold_mission_complete_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				4.6960835456848,
-				5.9257497787476,
-				4.071249961853,
-				4.3720207214356
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_mission_complete_01",
-				"pwh_level_skaven_stronghold_mission_complete_02",
-				"pwh_level_skaven_stronghold_mission_complete_03",
-				"pwh_level_skaven_stronghold_mission_complete_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_taunt_warlord = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_taunt_warlord_01",
-				"pwh_level_skaven_stronghold_taunt_warlord_02",
-				"pwh_level_skaven_stronghold_taunt_warlord_03",
-				"pwh_level_skaven_stronghold_taunt_warlord_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				4.8936457633972,
-				5.1052293777466,
-				3.1225209236145,
-				3.5428125858307
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_taunt_warlord_01",
-				"pwh_level_skaven_stronghold_taunt_warlord_02",
-				"pwh_level_skaven_stronghold_taunt_warlord_03",
-				"pwh_level_skaven_stronghold_taunt_warlord_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_warlord_nest = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_warlord_nest_01",
-				"pwh_level_skaven_stronghold_warlord_nest_02",
-				"pwh_level_skaven_stronghold_warlord_nest_03",
-				"pwh_level_skaven_stronghold_warlord_nest_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.9685416221619,
-				5.731541633606,
-				4.2628960609436,
-				5.3619790077209
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_warlord_nest_01",
-				"pwh_level_skaven_stronghold_warlord_nest_02",
-				"pwh_level_skaven_stronghold_warlord_nest_03",
-				"pwh_level_skaven_stronghold_warlord_nest_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_dead_warlord = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_dead_warlord_01",
-				"pwh_level_skaven_stronghold_dead_warlord_02",
-				"pwh_level_skaven_stronghold_dead_warlord_03",
-				"pwh_level_skaven_stronghold_dead_warlord_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				6.0427083969116,
-				5.998104095459,
-				5.862208366394,
-				5.1354584693909
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_dead_warlord_01",
-				"pwh_level_skaven_stronghold_dead_warlord_02",
-				"pwh_level_skaven_stronghold_dead_warlord_03",
-				"pwh_level_skaven_stronghold_dead_warlord_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_city_afire = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_city_afire_01",
-				"pwh_level_skaven_stronghold_city_afire_02",
-				"pwh_level_skaven_stronghold_city_afire_03",
-				"pwh_level_skaven_stronghold_city_afire_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.9947500228882,
-				2.9066874980927,
-				3.2682082653046,
-				6.3296666145325
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_city_afire_01",
-				"pwh_level_skaven_stronghold_city_afire_02",
-				"pwh_level_skaven_stronghold_city_afire_03",
-				"pwh_level_skaven_stronghold_city_afire_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_waterwheel_complete = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_waterwheel_complete_01",
-				"pwh_level_skaven_stronghold_waterwheel_complete_02",
-				"pwh_level_skaven_stronghold_waterwheel_complete_03",
-				"pwh_level_skaven_stronghold_waterwheel_complete_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				1.4607499837875,
-				2.294625043869,
-				2.3325207233429,
-				5.4045414924622
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_waterwheel_complete_01",
-				"pwh_level_skaven_stronghold_waterwheel_complete_02",
-				"pwh_level_skaven_stronghold_waterwheel_complete_03",
-				"pwh_level_skaven_stronghold_waterwheel_complete_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_skaven_stronghold_patrol_lanes = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_skaven_stronghold_patrol_lanes_01",
-				"pwh_level_skaven_stronghold_patrol_lanes_02",
-				"pwh_level_skaven_stronghold_patrol_lanes_03",
-				"pwh_level_skaven_stronghold_patrol_lanes_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			sound_events_duration = {
-				3.8661458492279,
-				3.4470207691193,
-				3.8541250228882,
-				2.7298333644867
-			},
-			localization_strings = {
-				"pwh_level_skaven_stronghold_patrol_lanes_01",
-				"pwh_level_skaven_stronghold_patrol_lanes_02",
-				"pwh_level_skaven_stronghold_patrol_lanes_03",
-				"pwh_level_skaven_stronghold_patrol_lanes_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_gameplay_skaven_warlord_summoning_reply = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "witch_hunter_skaven_stronghold",
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_gameplay_chieftain_summoning_reply_01",
-				"pwh_gameplay_chieftain_summoning_reply_02",
-				"pwh_gameplay_chieftain_summoning_reply_03",
-				"pwh_gameplay_chieftain_summoning_reply_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				1.509645819664,
-				3.2907500267029,
-				3.9650208950043,
-				5.0295834541321
-			},
-			localization_strings = {
-				"pwh_gameplay_chieftain_summoning_reply_01",
-				"pwh_gameplay_chieftain_summoning_reply_02",
-				"pwh_gameplay_chieftain_summoning_reply_03",
-				"pwh_gameplay_chieftain_summoning_reply_04"
-			},
-			randomize_indexes = {}
+			}
 		}
 	})
 end

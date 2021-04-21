@@ -2137,950 +2137,950 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_level_bogenhafen_city_story_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_city_story_twelve_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5711665153503
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_city_story_twelve_01"
-			}
-		},
-		pwe_level_bogenhafen_city_story_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_city_story_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5022082328796
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_city_story_three_01"
-			}
-		},
 		pdr_level_bogenhafen_city_story_four_02 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_four_02"
+			},
 			sound_events = {
 				[1.0] = "pdr_level_bogenhafen_city_story_four_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 5.3639998435974
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_four_02"
 			}
 		},
-		pbw_level_bogenhafen_city_story_eight_01 = {
-			sound_events_n = 1,
+		pwe_level_bogenhafen_city_story_three_01 = {
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_bogenhafen_city_story_eight_01"
+			localization_strings = {
+				[1.0] = "pwe_level_bogenhafen_city_story_three_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pwe_level_bogenhafen_city_story_three_01"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 4.0925626754761
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_bogenhafen_city_story_eight_01"
-			}
-		},
-		pes_level_bogenhafen_city_story_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_five_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
 			sound_events_duration = {
-				[1.0] = 6.1552081108093
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_five_01"
-			}
-		},
-		pbw_level_bogenhafen_city_story_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_bogenhafen_city_story_four_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3220624923706
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_bogenhafen_city_story_four_02"
-			}
-		},
-		pes_level_bogenhafen_city_story_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4673957824707
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_eight_01"
-			}
-		},
-		pdr_level_bogenhafen_city_story_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_seven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8682293891907
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_seven_02"
-			}
-		},
-		pdr_level_bogenhafen_city_story_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0330834388733
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_seven_01"
-			}
-		},
-		pwe_level_bogenhafen_city_story_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_city_story_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1277916431427
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_city_story_one_02"
-			}
-		},
-		pwh_level_bogenhafen_city_story_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.0674166679382
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_two_02"
-			}
-		},
-		pes_level_bogenhafen_city_story_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.9972290992737
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_one_01"
-			}
-		},
-		pes_level_bogenhafen_city_story_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7211875915527
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_three_01"
-			}
-		},
-		pdr_level_bogenhafen_city_story_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_six_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.139666557312
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_six_02"
-			}
-		},
-		pbw_level_bogenhafen_city_story_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_bogenhafen_city_story_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.3082082271576
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_bogenhafen_city_story_three_01"
-			}
-		},
-		pwe_level_bogenhafen_city_story_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_city_story_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1313543319702
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_city_story_six_01"
-			}
-		},
-		pbw_level_bogenhafen_city_story_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_bogenhafen_city_story_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.769896030426
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_bogenhafen_city_story_five_01"
-			}
-		},
-		pwh_level_bogenhafen_city_story_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.7427082061768
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_ten_02"
-			}
-		},
-		pwe_level_bogenhafen_city_story_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_city_story_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0985417366028
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_city_story_one_01"
-			}
-		},
-		pwh_level_bogenhafen_city_story_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 11.878520965576
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_two_01"
-			}
-		},
-		pwh_level_bogenhafen_city_story_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_seven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4743332862854
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_seven_01"
-			}
-		},
-		pdr_level_bogenhafen_city_story_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2303750514984
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_four_01"
-			}
-		},
-		pwh_level_bogenhafen_city_story_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5808124542236
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_nine_01"
-			}
-		},
-		pwh_level_bogenhafen_city_story_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.4808959960938
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_eight_01"
-			}
-		},
-		pes_level_bogenhafen_city_story_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2794585227966
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_six_01"
-			}
-		},
-		pdr_level_bogenhafen_city_story_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1280832290649
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_six_01"
-			}
-		},
-		pes_level_bogenhafen_city_story_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5469584465027
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_three_02"
+				[1.0] = 6.5022082328796
 			}
 		},
 		pbw_level_bogenhafen_city_story_four_01 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_bogenhafen_city_story_four_01"
+			},
 			sound_events = {
 				[1.0] = "pbw_level_bogenhafen_city_story_four_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 4.7864375114441
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_bogenhafen_city_story_four_01"
 			}
 		},
-		pdr_level_bogenhafen_city_story_twelve_02 = {
-			sound_events_n = 1,
+		pes_level_bogenhafen_city_story_eight_01 = {
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_twelve_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2518539428711
-			},
 			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_twelve_02"
-			}
-		},
-		pes_level_bogenhafen_city_story_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
+				[1.0] = "pes_level_bogenhafen_city_story_eight_01"
+			},
 			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.1776666641235
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_one_02"
-			}
-		},
-		pes_level_bogenhafen_city_story_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_eleven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1.0] = "pes_level_bogenhafen_city_story_eight_01"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 3.3341457843781
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_eleven_01"
-			}
-		},
-		pwh_level_bogenhafen_city_story_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_twelve_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
 			sound_events_duration = {
-				[1.0] = 3.4855625629425
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_twelve_01"
-			}
-		},
-		pbw_level_bogenhafen_city_story_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_level_bogenhafen_city_story_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.9970417022705
-			},
-			localization_strings = {
-				[1.0] = "pbw_level_bogenhafen_city_story_two_01"
-			}
-		},
-		pdr_level_bogenhafen_city_story_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_twelve_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7088959217072
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_twelve_01"
-			}
-		},
-		pes_level_bogenhafen_city_story_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_eleven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.3827085494995
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_eleven_02"
-			}
-		},
-		pwh_level_bogenhafen_city_story_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 13.767312049866
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_nine_02"
-			}
-		},
-		pdr_level_bogenhafen_city_story_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_level_bogenhafen_city_story_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2548542022705
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_bogenhafen_city_story_five_01"
-			}
-		},
-		pwe_level_bogenhafen_city_story_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_city_story_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8674583435059
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_city_story_ten_02"
-			}
-		},
-		pes_level_bogenhafen_city_story_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_city_story_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2485625743866
-			},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_city_story_nine_01"
-			}
-		},
-		pwe_level_bogenhafen_city_story_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_bogenhafen_city",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_level_bogenhafen_city_story_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0751667022705
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_bogenhafen_city_story_ten_01"
+				[1.0] = 2.4199062585831
 			}
 		},
 		pwh_level_bogenhafen_city_story_ten_01 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
+			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_ten_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_ten_01"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
 			sound_events_duration = {
 				[1.0] = 5.6510834693909
-			},
+			}
+		},
+		pwe_level_bogenhafen_city_story_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_ten_01"
+				[1.0] = "pwe_level_bogenhafen_city_story_six_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bogenhafen_city_story_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1313543319702
+			}
+		},
+		pbw_level_bogenhafen_city_story_eight_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_bogenhafen_city_story_eight_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_bogenhafen_city_story_eight_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0925626754761
+			}
+		},
+		pwh_level_bogenhafen_city_story_seven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_seven_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_seven_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4743332862854
+			}
+		},
+		pwh_level_bogenhafen_city_story_ten_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_ten_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_ten_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7427082061768
+			}
+		},
+		pwh_level_bogenhafen_city_story_nine_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_nine_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_nine_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 13.767312049866
+			}
+		},
+		pbw_level_bogenhafen_city_story_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_bogenhafen_city_story_two_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_bogenhafen_city_story_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9970417022705
+			}
+		},
+		pes_level_bogenhafen_city_story_three_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_three_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_three_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5469584465027
+			}
+		},
+		pbw_level_bogenhafen_city_story_four_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_bogenhafen_city_story_four_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_bogenhafen_city_story_four_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3220624923706
+			}
+		},
+		pwh_level_bogenhafen_city_story_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5808124542236
+			}
+		},
+		pdr_level_bogenhafen_city_story_seven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_seven_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_seven_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0330834388733
+			}
+		},
+		pwh_level_bogenhafen_city_story_eight_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_eight_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_eight_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4808959960938
+			}
+		},
+		pdr_level_bogenhafen_city_story_twelve_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_twelve_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_twelve_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7088959217072
+			}
+		},
+		pbw_level_bogenhafen_city_story_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_bogenhafen_city_story_five_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_bogenhafen_city_story_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.769896030426
+			}
+		},
+		pdr_level_bogenhafen_city_story_four_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_four_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_four_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2303750514984
+			}
+		},
+		pdr_level_bogenhafen_city_story_twelve_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_twelve_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_twelve_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2518539428711
+			}
+		},
+		pdr_level_bogenhafen_city_story_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_five_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2548542022705
+			}
+		},
+		pes_level_bogenhafen_city_story_five_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_five_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_five_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 6.1552081108093
+			}
+		},
+		pes_level_bogenhafen_city_story_nine_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_nine_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_nine_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0901666879654
+			}
+		},
+		pwh_level_bogenhafen_city_story_two_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_two_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_two_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0674166679382
+			}
+		},
+		pes_level_bogenhafen_city_story_eleven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_eleven_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_eleven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 7.3827085494995
 			}
 		},
 		pwh_level_bogenhafen_city_story_eleven_01 = {
-			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_eleven_01"
+			},
 			sound_events = {
 				[1.0] = "pwh_level_bogenhafen_city_story_eleven_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 10.440541267395
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_bogenhafen_city_story_eleven_01"
 			}
 		},
-		pwh_level_bogenhafen_city_story_eight_02 = {
-			sound_events_n = 1,
+		pes_level_bogenhafen_city_story_one_01 = {
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_bogenhafen_city_story_eight_02"
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_one_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_one_01"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 2.0745625495911
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 3.9972290992737
+			}
+		},
+		pdr_level_bogenhafen_city_story_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_six_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1280832290649
+			}
+		},
+		pes_level_bogenhafen_city_story_eleven_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_eleven_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_eleven_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3341457843781
+			}
+		},
+		pwh_level_bogenhafen_city_story_eight_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			localization_strings = {
 				[1.0] = "pwh_level_bogenhafen_city_story_eight_02"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_eight_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0745625495911
+			}
+		},
+		pes_level_bogenhafen_city_story_six_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_six_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_six_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2794585227966
+			}
+		},
+		pwe_level_bogenhafen_city_story_ten_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_bogenhafen_city_story_ten_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bogenhafen_city_story_ten_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8674583435059
+			}
+		},
+		pwe_level_bogenhafen_city_story_ten_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_bogenhafen_city_story_ten_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bogenhafen_city_story_ten_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0751667022705
+			}
+		},
+		pes_level_bogenhafen_city_story_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_three_01"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7211875915527
+			}
+		},
+		pes_level_bogenhafen_city_story_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_city_story_one_02"
+			},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_city_story_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1776666641235
+			}
+		},
+		pwh_level_bogenhafen_city_story_two_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_two_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_two_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 11.878520965576
+			}
+		},
+		pdr_level_bogenhafen_city_story_six_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_six_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_six_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.139666557312
+			}
+		},
+		pwe_level_bogenhafen_city_story_twelve_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_bogenhafen_city_story_twelve_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bogenhafen_city_story_twelve_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5711665153503
+			}
+		},
+		pbw_level_bogenhafen_city_story_three_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pbw_level_bogenhafen_city_story_three_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_level_bogenhafen_city_story_three_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3082082271576
+			}
+		},
+		pdr_level_bogenhafen_city_story_seven_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pdr_level_bogenhafen_city_story_seven_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_level_bogenhafen_city_story_seven_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8682293891907
+			}
+		},
+		pwe_level_bogenhafen_city_story_one_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_bogenhafen_city_story_one_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bogenhafen_city_story_one_01"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0985417366028
+			}
+		},
+		pwe_level_bogenhafen_city_story_one_02 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwe_level_bogenhafen_city_story_one_02"
+			},
+			sound_events = {
+				[1.0] = "pwe_level_bogenhafen_city_story_one_02"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1277916431427
+			}
+		},
+		pwh_level_bogenhafen_city_story_twelve_01 = {
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_bogenhafen_city",
+			sound_events_n = 1,
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			localization_strings = {
+				[1.0] = "pwh_level_bogenhafen_city_story_twelve_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_level_bogenhafen_city_story_twelve_01"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4855625629425
 			}
 		}
 	})

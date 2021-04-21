@@ -1,25 +1,27 @@
 LevelSettings.magnus = {
 	act_unlock_order = 0,
-	display_name = "level_name_magnus",
 	ambient_sound_event = "silent_default_world_sound",
-	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
+	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_magnus",
 	act = "act_holly",
 	loading_ui_package_name = "loading_screen_19",
 	unlockable = true,
 	level_image = "level_icon_ubersreik_magnus",
 	waystone_type = 2,
 	use_mini_patrols = false,
-	description_text = "nfl_magnus_tower_loading_screen_02",
 	act_presentation_order = 1,
 	boss_spawning_method = "hand_placed",
-	package_name = "resource_packages/levels/dlcs/holly/magnus",
+	description_text = "nfl_magnus_tower_loading_screen_02",
 	default_surface_material = "stone",
 	dlc_name = "holly",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras_dlcs/holly/magnus/world",
-	meta_package_name = "resource_packages/levels/dlcs/holly/magnus_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/holly/magnus",
+		"resource_packages/levels/dlcs/holly/magnus_meta"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
@@ -93,11 +95,10 @@ LevelSettings.magnus = {
 }
 LevelSettings.cemetery = {
 	act_unlock_order = 1,
-	display_name = "level_name_cemetery",
-	package_name = "resource_packages/levels/dlcs/holly/cemetery",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_cemetery",
 	act = "act_holly",
 	loading_ui_package_name = "loading_screen_20",
 	unlockable = true,
@@ -112,6 +113,9 @@ LevelSettings.cemetery = {
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras_dlcs/holly/cemetery/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/holly/cemetery"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
@@ -187,26 +191,28 @@ LevelSettings.cemetery = {
 }
 LevelSettings.forest_ambush = {
 	act_unlock_order = 2,
-	display_name = "level_name_forest_ambush",
 	ambient_sound_event = "silent_default_world_sound",
-	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
+	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_forest_ambush",
 	act = "act_holly",
 	loading_ui_package_name = "loading_screen_18",
 	unlockable = true,
 	level_image = "level_icon_ubersreik_forest",
 	waystone_type = 2,
 	use_mini_patrols = false,
-	description_text = "nfl_forest_ambush_loading_screen_02",
 	act_presentation_order = 3,
 	boss_spawning_method = "hand_placed",
-	package_name = "resource_packages/levels/dlcs/holly/forest_ambush",
+	description_text = "nfl_forest_ambush_loading_screen_02",
 	default_surface_material = "stone",
 	dlc_name = "holly",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras_dlcs/holly/forest_ambush/world",
-	meta_package_name = "resource_packages/levels/dlcs/holly/forest_ambush_meta",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/holly/forest_ambush",
+		"resource_packages/levels/dlcs/holly/forest_ambush_meta"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	pickup_settings = {
@@ -279,14 +285,13 @@ LevelSettings.forest_ambush = {
 LevelSettings.plaza = {
 	act_unlock_order = 0,
 	display_name = "level_name_plaza",
-	knocked_down_setting = "knocked_down",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
+	ambient_sound_event = "silent_default_world_sound",
 	act = "act_holly_final",
 	unlockable = true,
 	loading_ui_package_name = "loading_screen_21",
 	use_mini_patrols = false,
-	level_name = "levels/honduras_dlcs/holly/plaza/world",
 	description_text = "nfl_loading_screen_plaza_02",
 	dlc_name = "holly",
 	boss_spawning_method = "hand_placed",
@@ -295,11 +300,14 @@ LevelSettings.plaza = {
 	default_surface_material = "stone",
 	act_presentation_order = 1,
 	conflict_settings = "challenge_level",
-	ambient_sound_event = "silent_default_world_sound",
-	package_name = "resource_packages/levels/dlcs/holly/plaza",
+	knocked_down_setting = "knocked_down",
+	level_name = "levels/honduras_dlcs/holly/plaza/world",
 	disable_twitch_game_mode = true,
 	disable_percentage_completed = true,
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/holly/plaza"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	loot_objectives = {

@@ -956,833 +956,833 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pbw_objective_cemetery_through_crypt_a = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_through_crypt_a_01",
-				"pbw_objective_cemetery_through_crypt_a_02",
-				"pbw_objective_cemetery_through_crypt_a_03",
-				"pbw_objective_cemetery_through_crypt_a_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.7662084102631,
-				3.973354101181,
-				2.6191875934601,
-				1.9430832862854
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_through_crypt_a_01",
-				"pbw_objective_cemetery_through_crypt_a_02",
-				"pbw_objective_cemetery_through_crypt_a_03",
-				"pbw_objective_cemetery_through_crypt_a_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_hedge_maze = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_hedge_maze_01",
-				"pbw_objective_cemetery_spotting_hedge_maze_02",
-				"pbw_objective_cemetery_spotting_hedge_maze_03",
-				"pbw_objective_cemetery_spotting_hedge_maze_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				5.4723749160767,
-				2.433833360672,
-				3.6481666564941,
-				3.327166557312
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_hedge_maze_01",
-				"pbw_objective_cemetery_spotting_hedge_maze_02",
-				"pbw_objective_cemetery_spotting_hedge_maze_03",
-				"pbw_objective_cemetery_spotting_hedge_maze_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_the_attachements = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_the_attachements_01",
-				"pbw_objective_cemetery_spotting_the_attachements_02",
-				"pbw_objective_cemetery_spotting_the_attachements_03",
-				"pbw_objective_cemetery_spotting_the_attachements_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.4522082805634,
-				2.147958278656,
-				2.1999583244324,
-				1.7892708778381
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_the_attachements_01",
-				"pbw_objective_cemetery_spotting_the_attachements_02",
-				"pbw_objective_cemetery_spotting_the_attachements_03",
-				"pbw_objective_cemetery_spotting_the_attachements_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_graveyard = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_graveyard_01",
-				"pbw_objective_cemetery_spotting_graveyard_02",
-				"pbw_objective_cemetery_spotting_graveyard_03",
-				"pbw_objective_cemetery_spotting_graveyard_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.7653334140778,
-				2.9436249732971,
-				2.2245624065399,
-				5.3439373970032
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_graveyard_01",
-				"pbw_objective_cemetery_spotting_graveyard_02",
-				"pbw_objective_cemetery_spotting_graveyard_03",
-				"pbw_objective_cemetery_spotting_graveyard_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_victim = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_victim_01",
-				"pbw_objective_cemetery_spotting_victim_02",
-				"pbw_objective_cemetery_spotting_victim_03",
-				"pbw_objective_cemetery_spotting_victim_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.1266460418701,
-				1.5300625562668,
-				1.2566250562668,
-				2.0560624599457
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_victim_01",
-				"pbw_objective_cemetery_spotting_victim_02",
-				"pbw_objective_cemetery_spotting_victim_03",
-				"pbw_objective_cemetery_spotting_victim_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_through_crypt_c = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_through_crypt_c_01",
-				"pbw_objective_cemetery_through_crypt_c_02",
-				"pbw_objective_cemetery_through_crypt_c_03",
-				"pbw_objective_cemetery_through_crypt_c_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.6316459178925,
-				3.1878957748413,
-				2.7999999523163,
-				3.9771249294281
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_through_crypt_c_01",
-				"pbw_objective_cemetery_through_crypt_c_02",
-				"pbw_objective_cemetery_through_crypt_c_03",
-				"pbw_objective_cemetery_through_crypt_c_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_plague_brew_stains = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_plague_brew_stains_01",
-				"pbw_objective_cemetery_spotting_plague_brew_stains_02",
-				"pbw_objective_cemetery_spotting_plague_brew_stains_03",
-				"pbw_objective_cemetery_spotting_plague_brew_stains_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				6.664999961853,
-				6.7257499694824,
-				5.1891460418701,
-				6.2896041870117
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_plague_brew_stains_01",
-				"pbw_objective_cemetery_spotting_plague_brew_stains_02",
-				"pbw_objective_cemetery_spotting_plague_brew_stains_03",
-				"pbw_objective_cemetery_spotting_plague_brew_stains_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_skaven_tunnels = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_skaven_tunnels_01",
-				"pbw_objective_cemetery_spotting_skaven_tunnels_02",
-				"pbw_objective_cemetery_spotting_skaven_tunnels_03",
-				"pbw_objective_cemetery_spotting_skaven_tunnels_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.5534167289734,
-				3.5097498893738,
-				1.6995416879654,
-				2.9661874771118
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_skaven_tunnels_01",
-				"pbw_objective_cemetery_spotting_skaven_tunnels_02",
-				"pbw_objective_cemetery_spotting_skaven_tunnels_03",
-				"pbw_objective_cemetery_spotting_skaven_tunnels_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_bringing_down_first_attachment = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_bringing_down_first_attachment_01",
-				"pbw_objective_cemetery_bringing_down_first_attachment_02",
-				"pbw_objective_cemetery_bringing_down_first_attachment_03",
-				"pbw_objective_cemetery_bringing_down_first_attachment_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				1.346479177475,
-				1.9283541440964,
-				1.7706874608993,
-				1.9433749914169
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_bringing_down_first_attachment_01",
-				"pbw_objective_cemetery_bringing_down_first_attachment_02",
-				"pbw_objective_cemetery_bringing_down_first_attachment_03",
-				"pbw_objective_cemetery_bringing_down_first_attachment_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_bringing_down_third_attachment = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_bringing_down_third_attachment_01",
-				"pbw_objective_cemetery_bringing_down_third_attachment_02",
-				"pbw_objective_cemetery_bringing_down_third_attachment_03",
-				"pbw_objective_cemetery_bringing_down_third_attachment_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				1.7822291851044,
-				1.3999999761581,
-				1.1373125314713,
-				2.2199375629425
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_bringing_down_third_attachment_01",
-				"pbw_objective_cemetery_bringing_down_third_attachment_02",
-				"pbw_objective_cemetery_bringing_down_third_attachment_03",
-				"pbw_objective_cemetery_bringing_down_third_attachment_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_destroyed_plague_cauldron = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_destroyed_plague_cauldron_01",
-				"pbw_objective_cemetery_destroyed_plague_cauldron_02",
-				"pbw_objective_cemetery_destroyed_plague_cauldron_03",
-				"pbw_objective_cemetery_destroyed_plague_cauldron_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.1694374084473,
-				2.4242291450501,
-				1.4362291097641,
-				1.6162707805634
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_destroyed_plague_cauldron_01",
-				"pbw_objective_cemetery_destroyed_plague_cauldron_02",
-				"pbw_objective_cemetery_destroyed_plague_cauldron_03",
-				"pbw_objective_cemetery_destroyed_plague_cauldron_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_done = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_done_01",
-				"pbw_objective_cemetery_done_02",
-				"pbw_objective_cemetery_done_03",
-				"pbw_objective_cemetery_done_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.6863541603088,
-				2.442125082016,
-				2.8648540973663,
-				3.0197916030884
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_done_01",
-				"pbw_objective_cemetery_done_02",
-				"pbw_objective_cemetery_done_03",
-				"pbw_objective_cemetery_done_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_cemetary_intro_c = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_cemetary_intro_c_01",
-				[2.0] = "pbw_cemetary_intro_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9476873874664,
-				[2.0] = 4.8361873626709
-			},
-			localization_strings = {
-				[1.0] = "pbw_cemetary_intro_c_01",
-				[2.0] = "pbw_cemetary_intro_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_plague_pyre = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_plague_pyre_01",
-				"pbw_objective_cemetery_spotting_plague_pyre_02",
-				"pbw_objective_cemetery_spotting_plague_pyre_03",
-				"pbw_objective_cemetery_spotting_plague_pyre_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.0606458187103,
-				2.0685000419617,
-				1.9192916154861,
-				4.1810626983643
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_plague_pyre_01",
-				"pbw_objective_cemetery_spotting_plague_pyre_02",
-				"pbw_objective_cemetery_spotting_plague_pyre_03",
-				"pbw_objective_cemetery_spotting_plague_pyre_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_cemetary_intro_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_cemetary_intro_b_01",
-				[2.0] = "pbw_cemetary_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.174604177475,
-				[2.0] = 3.6883125305176
-			},
-			localization_strings = {
-				[1.0] = "pbw_cemetary_intro_b_01",
-				[2.0] = "pbw_cemetary_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_crypt_maze = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_crypt_maze_01",
-				"pbw_objective_cemetery_spotting_crypt_maze_02",
-				"pbw_objective_cemetery_spotting_crypt_maze_03",
-				"pbw_objective_cemetery_spotting_crypt_maze_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.5232291221619,
-				4.141583442688,
-				2.9983332157135,
-				3.8649165630341
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_crypt_maze_01",
-				"pbw_objective_cemetery_spotting_crypt_maze_02",
-				"pbw_objective_cemetery_spotting_crypt_maze_03",
-				"pbw_objective_cemetery_spotting_crypt_maze_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_through_crypt_b = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_through_crypt_b_01",
-				"pbw_objective_cemetery_through_crypt_b_02",
-				"pbw_objective_cemetery_through_crypt_b_03",
-				"pbw_objective_cemetery_through_crypt_b_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				1.4275833368301,
-				1.6597083806992,
-				4.4611668586731,
-				2.7613542079926
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_through_crypt_b_01",
-				"pbw_objective_cemetery_through_crypt_b_02",
-				"pbw_objective_cemetery_through_crypt_b_03",
-				"pbw_objective_cemetery_through_crypt_b_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_bringing_down_fourth_attachment = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_01",
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_02",
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_03",
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.6500000953674,
-				2.3940000534058,
-				2.2975416183472,
-				1.7465000152588
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_01",
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_02",
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_03",
-				"pbw_objective_cemetery_bringing_down_fourth_attachment_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_plague_cauldron = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_plague_cauldron_01",
-				"pbw_objective_cemetery_spotting_plague_cauldron_02",
-				"pbw_objective_cemetery_spotting_plague_cauldron_03",
-				"pbw_objective_cemetery_spotting_plague_cauldron_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.827166557312,
-				4.7216248512268,
-				3.8339791297913,
-				2.9962916374206
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_plague_cauldron_01",
-				"pbw_objective_cemetery_spotting_plague_cauldron_02",
-				"pbw_objective_cemetery_spotting_plague_cauldron_03",
-				"pbw_objective_cemetery_spotting_plague_cauldron_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_objective_cemetery_spotting_mausoleum = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "bright_wizard_cemetery",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_objective_cemetery_spotting_mausoleum_01",
-				"pbw_objective_cemetery_spotting_mausoleum_02",
-				"pbw_objective_cemetery_spotting_mausoleum_03",
-				"pbw_objective_cemetery_spotting_mausoleum_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				6,
-				4.3273749351502,
-				4.6634793281555,
-				3.7096457481384
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_spotting_mausoleum_01",
-				"pbw_objective_cemetery_spotting_mausoleum_02",
-				"pbw_objective_cemetery_spotting_mausoleum_03",
-				"pbw_objective_cemetery_spotting_mausoleum_04"
-			},
-			randomize_indexes = {}
-		},
 		pbw_objective_cemetery_bringing_down_second_attachment = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_bringing_down_second_attachment_01",
+				"pbw_objective_cemetery_bringing_down_second_attachment_02",
+				"pbw_objective_cemetery_bringing_down_second_attachment_03",
+				"pbw_objective_cemetery_bringing_down_second_attachment_04"
+			},
 			sound_events = {
 				"pbw_objective_cemetery_bringing_down_second_attachment_01",
 				"pbw_objective_cemetery_bringing_down_second_attachment_02",
 				"pbw_objective_cemetery_bringing_down_second_attachment_03",
 				"pbw_objective_cemetery_bringing_down_second_attachment_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				1.2890625,
 				1.495437502861,
 				1.0789583921433,
 				1.3888125419617
-			},
-			localization_strings = {
-				"pbw_objective_cemetery_bringing_down_second_attachment_01",
-				"pbw_objective_cemetery_bringing_down_second_attachment_02",
-				"pbw_objective_cemetery_bringing_down_second_attachment_03",
-				"pbw_objective_cemetery_bringing_down_second_attachment_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pbw_cemetary_intro = {
-			sound_events_n = 2,
+		pbw_objective_cemetery_bringing_down_fourth_attachment = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_01",
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_02",
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_03",
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_01",
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_02",
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_03",
+				"pbw_objective_cemetery_bringing_down_fourth_attachment_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.6500000953674,
+				2.3940000534058,
+				2.2975416183472,
+				1.7465000152588
+			}
+		},
+		pbw_objective_cemetery_destroyed_plague_cauldron = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_destroyed_plague_cauldron_01",
+				"pbw_objective_cemetery_destroyed_plague_cauldron_02",
+				"pbw_objective_cemetery_destroyed_plague_cauldron_03",
+				"pbw_objective_cemetery_destroyed_plague_cauldron_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_destroyed_plague_cauldron_01",
+				"pbw_objective_cemetery_destroyed_plague_cauldron_02",
+				"pbw_objective_cemetery_destroyed_plague_cauldron_03",
+				"pbw_objective_cemetery_destroyed_plague_cauldron_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.1694374084473,
+				2.4242291450501,
+				1.4362291097641,
+				1.6162707805634
+			}
+		},
+		pbw_objective_cemetery_spotting_mausoleum = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_mausoleum_01",
+				"pbw_objective_cemetery_spotting_mausoleum_02",
+				"pbw_objective_cemetery_spotting_mausoleum_03",
+				"pbw_objective_cemetery_spotting_mausoleum_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_mausoleum_01",
+				"pbw_objective_cemetery_spotting_mausoleum_02",
+				"pbw_objective_cemetery_spotting_mausoleum_03",
+				"pbw_objective_cemetery_spotting_mausoleum_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				6,
+				4.3273749351502,
+				4.6634793281555,
+				3.7096457481384
+			}
+		},
+		pbw_objective_cemetery_spotting_plague_cauldron = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_plague_cauldron_01",
+				"pbw_objective_cemetery_spotting_plague_cauldron_02",
+				"pbw_objective_cemetery_spotting_plague_cauldron_03",
+				"pbw_objective_cemetery_spotting_plague_cauldron_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_plague_cauldron_01",
+				"pbw_objective_cemetery_spotting_plague_cauldron_02",
+				"pbw_objective_cemetery_spotting_plague_cauldron_03",
+				"pbw_objective_cemetery_spotting_plague_cauldron_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.827166557312,
+				4.7216248512268,
+				3.8339791297913,
+				2.9962916374206
+			}
+		},
+		pbw_objective_cemetery_spotting_victim = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_victim_01",
+				"pbw_objective_cemetery_spotting_victim_02",
+				"pbw_objective_cemetery_spotting_victim_03",
+				"pbw_objective_cemetery_spotting_victim_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_victim_01",
+				"pbw_objective_cemetery_spotting_victim_02",
+				"pbw_objective_cemetery_spotting_victim_03",
+				"pbw_objective_cemetery_spotting_victim_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.1266460418701,
+				1.5300625562668,
+				1.2566250562668,
+				2.0560624599457
+			}
+		},
+		pbw_objective_cemetery_spotting_hedge_maze = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_hedge_maze_01",
+				"pbw_objective_cemetery_spotting_hedge_maze_02",
+				"pbw_objective_cemetery_spotting_hedge_maze_03",
+				"pbw_objective_cemetery_spotting_hedge_maze_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_hedge_maze_01",
+				"pbw_objective_cemetery_spotting_hedge_maze_02",
+				"pbw_objective_cemetery_spotting_hedge_maze_03",
+				"pbw_objective_cemetery_spotting_hedge_maze_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				5.4723749160767,
+				2.433833360672,
+				3.6481666564941,
+				3.327166557312
+			}
+		},
+		pbw_objective_cemetery_spotting_plague_brew_stains = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_plague_brew_stains_01",
+				"pbw_objective_cemetery_spotting_plague_brew_stains_02",
+				"pbw_objective_cemetery_spotting_plague_brew_stains_03",
+				"pbw_objective_cemetery_spotting_plague_brew_stains_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_plague_brew_stains_01",
+				"pbw_objective_cemetery_spotting_plague_brew_stains_02",
+				"pbw_objective_cemetery_spotting_plague_brew_stains_03",
+				"pbw_objective_cemetery_spotting_plague_brew_stains_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				6.664999961853,
+				6.7257499694824,
+				5.1891460418701,
+				6.2896041870117
+			}
+		},
+		pbw_objective_cemetery_through_crypt_b = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_through_crypt_b_01",
+				"pbw_objective_cemetery_through_crypt_b_02",
+				"pbw_objective_cemetery_through_crypt_b_03",
+				"pbw_objective_cemetery_through_crypt_b_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_through_crypt_b_01",
+				"pbw_objective_cemetery_through_crypt_b_02",
+				"pbw_objective_cemetery_through_crypt_b_03",
+				"pbw_objective_cemetery_through_crypt_b_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.4275833368301,
+				1.6597083806992,
+				4.4611668586731,
+				2.7613542079926
+			}
+		},
+		pbw_objective_cemetery_through_crypt_c = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_through_crypt_c_01",
+				"pbw_objective_cemetery_through_crypt_c_02",
+				"pbw_objective_cemetery_through_crypt_c_03",
+				"pbw_objective_cemetery_through_crypt_c_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_through_crypt_c_01",
+				"pbw_objective_cemetery_through_crypt_c_02",
+				"pbw_objective_cemetery_through_crypt_c_03",
+				"pbw_objective_cemetery_through_crypt_c_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.6316459178925,
+				3.1878957748413,
+				2.7999999523163,
+				3.9771249294281
+			}
+		},
+		pbw_cemetary_intro_c = {
 			face_animations_n = 2,
 			database = "bright_wizard_cemetery",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_cemetary_intro_a_01",
-				[2.0] = "pbw_cemetary_intro_a_02"
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pbw_cemetary_intro_c_01",
+				[2.0] = "pbw_cemetary_intro_c_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pbw_cemetary_intro_c_01",
+				[2.0] = "pbw_cemetary_intro_c_02"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 3.3889999389648,
-				[2.0] = 5.0301666259766
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
+			sound_events_duration = {
+				[1.0] = 2.9476873874664,
+				[2.0] = 4.8361873626709
+			}
+		},
+		pbw_objective_cemetery_done = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_done_01",
+				"pbw_objective_cemetery_done_02",
+				"pbw_objective_cemetery_done_03",
+				"pbw_objective_cemetery_done_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_done_01",
+				"pbw_objective_cemetery_done_02",
+				"pbw_objective_cemetery_done_03",
+				"pbw_objective_cemetery_done_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.6863541603088,
+				2.442125082016,
+				2.8648540973663,
+				3.0197916030884
+			}
+		},
+		pbw_objective_cemetery_through_crypt_a = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_through_crypt_a_01",
+				"pbw_objective_cemetery_through_crypt_a_02",
+				"pbw_objective_cemetery_through_crypt_a_03",
+				"pbw_objective_cemetery_through_crypt_a_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_through_crypt_a_01",
+				"pbw_objective_cemetery_through_crypt_a_02",
+				"pbw_objective_cemetery_through_crypt_a_03",
+				"pbw_objective_cemetery_through_crypt_a_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.7662084102631,
+				3.973354101181,
+				2.6191875934601,
+				1.9430832862854
+			}
+		},
+		pbw_objective_cemetery_spotting_graveyard = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_graveyard_01",
+				"pbw_objective_cemetery_spotting_graveyard_02",
+				"pbw_objective_cemetery_spotting_graveyard_03",
+				"pbw_objective_cemetery_spotting_graveyard_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_graveyard_01",
+				"pbw_objective_cemetery_spotting_graveyard_02",
+				"pbw_objective_cemetery_spotting_graveyard_03",
+				"pbw_objective_cemetery_spotting_graveyard_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.7653334140778,
+				2.9436249732971,
+				2.2245624065399,
+				5.3439373970032
+			}
+		},
+		pbw_objective_cemetery_bringing_down_first_attachment = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_bringing_down_first_attachment_01",
+				"pbw_objective_cemetery_bringing_down_first_attachment_02",
+				"pbw_objective_cemetery_bringing_down_first_attachment_03",
+				"pbw_objective_cemetery_bringing_down_first_attachment_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_bringing_down_first_attachment_01",
+				"pbw_objective_cemetery_bringing_down_first_attachment_02",
+				"pbw_objective_cemetery_bringing_down_first_attachment_03",
+				"pbw_objective_cemetery_bringing_down_first_attachment_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.346479177475,
+				1.9283541440964,
+				1.7706874608993,
+				1.9433749914169
+			}
+		},
+		pbw_cemetary_intro_b = {
+			face_animations_n = 2,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pbw_cemetary_intro_b_01",
+				[2.0] = "pbw_cemetary_intro_b_02"
+			},
+			sound_events = {
+				[1.0] = "pbw_cemetary_intro_b_01",
+				[2.0] = "pbw_cemetary_intro_b_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.174604177475,
+				[2.0] = 3.6883125305176
+			}
+		},
+		pbw_objective_cemetery_spotting_skaven_tunnels = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_skaven_tunnels_01",
+				"pbw_objective_cemetery_spotting_skaven_tunnels_02",
+				"pbw_objective_cemetery_spotting_skaven_tunnels_03",
+				"pbw_objective_cemetery_spotting_skaven_tunnels_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_skaven_tunnels_01",
+				"pbw_objective_cemetery_spotting_skaven_tunnels_02",
+				"pbw_objective_cemetery_spotting_skaven_tunnels_03",
+				"pbw_objective_cemetery_spotting_skaven_tunnels_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.5534167289734,
+				3.5097498893738,
+				1.6995416879654,
+				2.9661874771118
+			}
+		},
+		pbw_objective_cemetery_spotting_the_attachements = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_the_attachements_01",
+				"pbw_objective_cemetery_spotting_the_attachements_02",
+				"pbw_objective_cemetery_spotting_the_attachements_03",
+				"pbw_objective_cemetery_spotting_the_attachements_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_the_attachements_01",
+				"pbw_objective_cemetery_spotting_the_attachements_02",
+				"pbw_objective_cemetery_spotting_the_attachements_03",
+				"pbw_objective_cemetery_spotting_the_attachements_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.4522082805634,
+				2.147958278656,
+				2.1999583244324,
+				1.7892708778381
+			}
+		},
+		pbw_objective_cemetery_bringing_down_third_attachment = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_bringing_down_third_attachment_01",
+				"pbw_objective_cemetery_bringing_down_third_attachment_02",
+				"pbw_objective_cemetery_bringing_down_third_attachment_03",
+				"pbw_objective_cemetery_bringing_down_third_attachment_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_bringing_down_third_attachment_01",
+				"pbw_objective_cemetery_bringing_down_third_attachment_02",
+				"pbw_objective_cemetery_bringing_down_third_attachment_03",
+				"pbw_objective_cemetery_bringing_down_third_attachment_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.7822291851044,
+				1.3999999761581,
+				1.1373125314713,
+				2.2199375629425
+			}
+		},
+		pbw_cemetary_intro = {
+			face_animations_n = 2,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			localization_strings = {
 				[1.0] = "pbw_cemetary_intro_a_01",
 				[2.0] = "pbw_cemetary_intro_a_02"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				[1.0] = "pbw_cemetary_intro_a_01",
+				[2.0] = "pbw_cemetary_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3889999389648,
+				[2.0] = 5.0301666259766
+			}
+		},
+		pbw_objective_cemetery_spotting_crypt_maze = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_crypt_maze_01",
+				"pbw_objective_cemetery_spotting_crypt_maze_02",
+				"pbw_objective_cemetery_spotting_crypt_maze_03",
+				"pbw_objective_cemetery_spotting_crypt_maze_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_crypt_maze_01",
+				"pbw_objective_cemetery_spotting_crypt_maze_02",
+				"pbw_objective_cemetery_spotting_crypt_maze_03",
+				"pbw_objective_cemetery_spotting_crypt_maze_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.5232291221619,
+				4.141583442688,
+				2.9983332157135,
+				3.8649165630341
+			}
+		},
+		pbw_objective_cemetery_spotting_plague_pyre = {
+			face_animations_n = 4,
+			database = "bright_wizard_cemetery",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pbw_objective_cemetery_spotting_plague_pyre_01",
+				"pbw_objective_cemetery_spotting_plague_pyre_02",
+				"pbw_objective_cemetery_spotting_plague_pyre_03",
+				"pbw_objective_cemetery_spotting_plague_pyre_04"
+			},
+			sound_events = {
+				"pbw_objective_cemetery_spotting_plague_pyre_01",
+				"pbw_objective_cemetery_spotting_plague_pyre_02",
+				"pbw_objective_cemetery_spotting_plague_pyre_03",
+				"pbw_objective_cemetery_spotting_plague_pyre_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.0606458187103,
+				2.0685000419617,
+				1.9192916154861,
+				4.1810626983643
+			}
 		}
 	})
 end

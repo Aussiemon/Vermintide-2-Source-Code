@@ -1,15 +1,14 @@
 LevelSettings.dlc_bogenhafen_slum = {
 	act_unlock_order = 0,
-	display_name = "level_name_bogenhafen_slum",
-	ambient_sound_event = "silent_default_world_sound",
 	climate_type = "",
+	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	display_name = "level_name_bogenhafen_slum",
 	act = "act_bogenhafen",
 	level_image = "level_icon_bgh_pit",
 	unlockable = true,
 	use_mini_patrols = true,
-	level_name = "levels/honduras_dlcs/bogenhafen/slum/world",
 	dlc_name = "bogenhafen",
 	description_text = "nik_loading_screen_dlc_pit_01",
 	act_presentation_order = 1,
@@ -17,8 +16,11 @@ LevelSettings.dlc_bogenhafen_slum = {
 	loading_ui_package_name = "loading_screen_16",
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/dlcs/bogenhafen/slum",
+	level_name = "levels/honduras_dlcs/bogenhafen/slum/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/bogenhafen/slum"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	locations = {
@@ -92,11 +94,10 @@ LevelSettings.dlc_bogenhafen_slum = {
 }
 LevelSettings.dlc_bogenhafen_city = {
 	act_unlock_order = 1,
-	display_name = "level_name_bogenhafen_city",
 	climate_type = "",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
-	level_name = "levels/honduras_dlcs/bogenhafen/city/world",
+	display_name = "level_name_bogenhafen_city",
 	act = "act_bogenhafen",
 	level_image = "level_icon_bgh_city",
 	loading_ui_package_name = "loading_screen_17",
@@ -109,8 +110,11 @@ LevelSettings.dlc_bogenhafen_city = {
 	default_surface_material = "stone",
 	unlockable = true,
 	knocked_down_setting = "knocked_down",
-	package_name = "resource_packages/levels/dlcs/bogenhafen/city",
+	level_name = "levels/honduras_dlcs/bogenhafen/city/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/levels/dlcs/bogenhafen/city"
+	},
 	level_particle_effects = {},
 	level_screen_effects = {},
 	camera_backlight = COLD_CAMERA_BACKLIGHT,

@@ -1186,18 +1186,99 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pdr_level_catacombs_apothercary_room = {
-			sound_events_n = 4,
+		pdr_level_catacombs_mausoleum_entrance = {
 			face_animations_n = 4,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_mausoleum_entrance_01",
+				"pdr_level_catacombs_mausoleum_entrance_02",
+				"pdr_level_catacombs_mausoleum_entrance_03",
+				"pdr_level_catacombs_mausoleum_entrance_04"
+			},
 			sound_events = {
-				"pdr_level_catacombs_apothercary_room_01",
-				"pdr_level_catacombs_apothercary_room_02",
-				"pdr_level_catacombs_apothercary_room_03",
-				"pdr_level_catacombs_apothercary_room_04"
+				"pdr_level_catacombs_mausoleum_entrance_01",
+				"pdr_level_catacombs_mausoleum_entrance_02",
+				"pdr_level_catacombs_mausoleum_entrance_03",
+				"pdr_level_catacombs_mausoleum_entrance_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.6157290935516,
+				3.0757291316986,
+				2.5584375858307,
+				4.136125087738
+			}
+		},
+		pdr_catacombs_intro_a = {
+			face_animations_n = 2,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pdr_catacombs_intro_a_01",
+				[2.0] = "pdr_catacombs_intro_a_02"
+			},
+			sound_events = {
+				[1.0] = "pdr_catacombs_intro_a_01",
+				[2.0] = "pdr_catacombs_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4358539581299,
+				[2.0] = 2.8840832710266
+			}
+		},
+		pdr_level_catacombs_tunnel_entrance = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_tunnel_entrance_01",
+				"pdr_level_catacombs_tunnel_entrance_02",
+				"pdr_level_catacombs_tunnel_entrance_03",
+				"pdr_level_catacombs_tunnel_entrance_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_tunnel_entrance_01",
+				"pdr_level_catacombs_tunnel_entrance_02",
+				"pdr_level_catacombs_tunnel_entrance_03",
+				"pdr_level_catacombs_tunnel_entrance_04"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1205,44 +1286,227 @@ return function ()
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
 			sound_events_duration = {
-				3.8857917785645,
-				3.9745833873749,
-				3.0996041297913,
-				2.9773333072662
-			},
-			localization_strings = {
-				"pdr_level_catacombs_apothercary_room_01",
-				"pdr_level_catacombs_apothercary_room_02",
-				"pdr_level_catacombs_apothercary_room_03",
-				"pdr_level_catacombs_apothercary_room_04"
-			},
-			randomize_indexes = {}
+				2.9363124370575,
+				3.4766666889191,
+				3.3490624427795,
+				4.9508123397827
+			}
 		},
-		pdr_level_catacombs_switch_instructions = {
-			sound_events_n = 4,
+		pdr_level_catacombs_cultist_door = {
 			face_animations_n = 4,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_cultist_door_01",
+				"pdr_level_catacombs_cultist_door_02",
+				"pdr_level_catacombs_cultist_door_03",
+				"pdr_level_catacombs_cultist_door_04"
+			},
 			sound_events = {
+				"pdr_level_catacombs_cultist_door_01",
+				"pdr_level_catacombs_cultist_door_02",
+				"pdr_level_catacombs_cultist_door_03",
+				"pdr_level_catacombs_cultist_door_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.763708114624,
+				2.7114791870117,
+				5.5192708969116,
+				3.4348542690277
+			}
+		},
+		pdr_level_catacombs_sewers_nurglefication_heavy = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_sewers_nurglefication_heavy_01",
+				"pdr_level_catacombs_sewers_nurglefication_heavy_02",
+				"pdr_level_catacombs_sewers_nurglefication_heavy_03",
+				"pdr_level_catacombs_sewers_nurglefication_heavy_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_sewers_nurglefication_heavy_01",
+				"pdr_level_catacombs_sewers_nurglefication_heavy_02",
+				"pdr_level_catacombs_sewers_nurglefication_heavy_03",
+				"pdr_level_catacombs_sewers_nurglefication_heavy_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.8743751049042,
+				5.407208442688,
+				5.8320832252502,
+				6.915958404541
+			}
+		},
+		pdr_level_catacombs_jump_into_intestine_hole = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_jump_into_intestine_hole_01",
+				"pdr_level_catacombs_jump_into_intestine_hole_02",
+				"pdr_level_catacombs_jump_into_intestine_hole_03",
+				"pdr_level_catacombs_jump_into_intestine_hole_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_jump_into_intestine_hole_01",
+				"pdr_level_catacombs_jump_into_intestine_hole_02",
+				"pdr_level_catacombs_jump_into_intestine_hole_03",
+				"pdr_level_catacombs_jump_into_intestine_hole_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				2.884604215622,
+				2.3572707176209,
+				4.3371248245239,
+				4.9073543548584
+			}
+		},
+		pdr_level_catacombs_ritual_disrupted_ritual = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_ritual_disrupted_ritual_01",
+				"pdr_level_catacombs_ritual_disrupted_ritual_02",
+				"pdr_level_catacombs_ritual_disrupted_ritual_03",
+				"pdr_level_catacombs_ritual_disrupted_ritual_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_ritual_disrupted_ritual_01",
+				"pdr_level_catacombs_ritual_disrupted_ritual_02",
+				"pdr_level_catacombs_ritual_disrupted_ritual_03",
+				"pdr_level_catacombs_ritual_disrupted_ritual_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.6390624046326,
+				5.1178126335144,
+				5.156708240509,
+				3.9286458492279
+			}
+		},
+		pdr_level_catacombs_sewers = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_sewers_01",
+				"pdr_level_catacombs_sewers_02",
+				"pdr_level_catacombs_sewers_03",
+				"pdr_level_catacombs_sewers_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_sewers_01",
+				"pdr_level_catacombs_sewers_02",
+				"pdr_level_catacombs_sewers_03",
+				"pdr_level_catacombs_sewers_04"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.951208114624,
+				6.5392498970032,
+				4.6495623588562,
+				4.7013125419617
+			}
+		},
+		pdr_level_catacombs_switch_instructions = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
 				"pdr_level_catacombs_switch_instructions_01",
 				"pdr_level_catacombs_switch_instructions_02",
 				"pdr_level_catacombs_switch_instructions_03",
 				"pdr_level_catacombs_switch_instructions_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pdr_level_catacombs_switch_instructions_01",
+				"pdr_level_catacombs_switch_instructions_02",
+				"pdr_level_catacombs_switch_instructions_03",
+				"pdr_level_catacombs_switch_instructions_04"
 			},
 			face_animations = {
 				"face_happy",
@@ -1250,925 +1514,661 @@ return function ()
 				"face_contempt",
 				"face_neutral"
 			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
 			sound_events_duration = {
 				2.7200417518616,
 				3.1667292118073,
 				2.1903958320618,
 				2.3155000209808
-			},
-			localization_strings = {
-				"pdr_level_catacombs_switch_instructions_01",
-				"pdr_level_catacombs_switch_instructions_02",
-				"pdr_level_catacombs_switch_instructions_03",
-				"pdr_level_catacombs_switch_instructions_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_catacombs_intro_b = {
-			sound_events_n = 2,
-			face_animations_n = 2,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_catacombs_intro_b_01",
-				[2.0] = "pdr_catacombs_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5763540267944,
-				[2.0] = 3.9463124275208
-			},
-			localization_strings = {
-				[1.0] = "pdr_catacombs_intro_b_01",
-				[2.0] = "pdr_catacombs_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_healing_ward = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_healing_ward_01",
-				"pdr_level_catacombs_healing_ward_02",
-				"pdr_level_catacombs_healing_ward_03",
-				"pdr_level_catacombs_healing_ward_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
-			sound_events_duration = {
-				3.5574791431427,
-				3.7676250934601,
-				2.6110208034515,
-				2.4461874961853
-			},
-			localization_strings = {
-				"pdr_level_catacombs_healing_ward_01",
-				"pdr_level_catacombs_healing_ward_02",
-				"pdr_level_catacombs_healing_ward_03",
-				"pdr_level_catacombs_healing_ward_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_ritual_disrupted_ritual = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_ritual_disrupted_ritual_01",
-				"pdr_level_catacombs_ritual_disrupted_ritual_02",
-				"pdr_level_catacombs_ritual_disrupted_ritual_03",
-				"pdr_level_catacombs_ritual_disrupted_ritual_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.6390624046326,
-				5.1178126335144,
-				5.156708240509,
-				3.9286458492279
-			},
-			localization_strings = {
-				"pdr_level_catacombs_ritual_disrupted_ritual_01",
-				"pdr_level_catacombs_ritual_disrupted_ritual_02",
-				"pdr_level_catacombs_ritual_disrupted_ritual_03",
-				"pdr_level_catacombs_ritual_disrupted_ritual_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_nurgle_water = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_nurgle_water_01",
-				"pdr_level_catacombs_nurgle_water_02",
-				"pdr_level_catacombs_nurgle_water_03",
-				"pdr_level_catacombs_nurgle_water_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.1129584312439,
-				4.6828541755676,
-				3.232479095459,
-				1.6336250305176
-			},
-			localization_strings = {
-				"pdr_level_catacombs_nurgle_water_01",
-				"pdr_level_catacombs_nurgle_water_02",
-				"pdr_level_catacombs_nurgle_water_03",
-				"pdr_level_catacombs_nurgle_water_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_spot_ritual = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_spot_ritual_01",
-				"pdr_level_catacombs_spot_ritual_02",
-				"pdr_level_catacombs_spot_ritual_03",
-				"pdr_level_catacombs_spot_ritual_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.364333152771,
-				5.1935000419617,
-				3.1996042728424,
-				2.8247709274292
-			},
-			localization_strings = {
-				"pdr_level_catacombs_spot_ritual_01",
-				"pdr_level_catacombs_spot_ritual_02",
-				"pdr_level_catacombs_spot_ritual_03",
-				"pdr_level_catacombs_spot_ritual_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_confinement_cells = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_confinement_cells_01",
-				"pdr_level_catacombs_confinement_cells_02",
-				"pdr_level_catacombs_confinement_cells_03",
-				"pdr_level_catacombs_confinement_cells_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
-			sound_events_duration = {
-				3.0964167118073,
-				3.740312576294,
-				4.3663539886475,
-				3.8503959178925
-			},
-			localization_strings = {
-				"pdr_level_catacombs_confinement_cells_01",
-				"pdr_level_catacombs_confinement_cells_02",
-				"pdr_level_catacombs_confinement_cells_03",
-				"pdr_level_catacombs_confinement_cells_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_ritual_exit_through_portal = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_ritual_exit_through_portal_01",
-				"pdr_level_catacombs_ritual_exit_through_portal_02",
-				"pdr_level_catacombs_ritual_exit_through_portal_03",
-				"pdr_level_catacombs_ritual_exit_through_portal_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.4681251049042,
-				2.9592916965485,
-				4.8239998817444,
-				4.407187461853
-			},
-			localization_strings = {
-				"pdr_level_catacombs_ritual_exit_through_portal_01",
-				"pdr_level_catacombs_ritual_exit_through_portal_02",
-				"pdr_level_catacombs_ritual_exit_through_portal_03",
-				"pdr_level_catacombs_ritual_exit_through_portal_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_correct_switch = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_correct_switch_01",
-				"pdr_level_catacombs_correct_switch_02",
-				"pdr_level_catacombs_correct_switch_03",
-				"pdr_level_catacombs_correct_switch_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				1.3099792003632,
-				3.1745624542236,
-				3.0605416297913,
-				2.4900207519531
-			},
-			localization_strings = {
-				"pdr_level_catacombs_correct_switch_01",
-				"pdr_level_catacombs_correct_switch_02",
-				"pdr_level_catacombs_correct_switch_03",
-				"pdr_level_catacombs_correct_switch_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_jump_into_intestine_hole = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_jump_into_intestine_hole_01",
-				"pdr_level_catacombs_jump_into_intestine_hole_02",
-				"pdr_level_catacombs_jump_into_intestine_hole_03",
-				"pdr_level_catacombs_jump_into_intestine_hole_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				2.884604215622,
-				2.3572707176209,
-				4.3371248245239,
-				4.9073543548584
-			},
-			localization_strings = {
-				"pdr_level_catacombs_jump_into_intestine_hole_01",
-				"pdr_level_catacombs_jump_into_intestine_hole_02",
-				"pdr_level_catacombs_jump_into_intestine_hole_03",
-				"pdr_level_catacombs_jump_into_intestine_hole_04"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pdr_catacombs_intro_c = {
-			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pdr_catacombs_intro_c_01",
+				[2.0] = "pdr_catacombs_intro_c_02"
+			},
 			sound_events = {
 				[1.0] = "pdr_catacombs_intro_c_01",
 				[2.0] = "pdr_catacombs_intro_c_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 5.108916759491,
 				[2.0] = 5.8371458053589
-			},
-			localization_strings = {
-				[1.0] = "pdr_catacombs_intro_c_01",
-				[2.0] = "pdr_catacombs_intro_c_02"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pdr_level_catacombs_way_is_clear = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_way_is_clear_01",
-				"pdr_level_catacombs_way_is_clear_02",
-				"pdr_level_catacombs_way_is_clear_03",
-				"pdr_level_catacombs_way_is_clear_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				1.4978333711624,
-				2.0760416984558,
-				2.1247916221619,
-				2.8336250782013
-			},
-			localization_strings = {
-				"pdr_level_catacombs_way_is_clear_01",
-				"pdr_level_catacombs_way_is_clear_02",
-				"pdr_level_catacombs_way_is_clear_03",
-				"pdr_level_catacombs_way_is_clear_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_catacombs_intro_a = {
-			sound_events_n = 2,
+		pdr_catacombs_intro_b = {
 			face_animations_n = 2,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_catacombs_intro_a_01",
-				[2.0] = "pdr_catacombs_intro_a_02"
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pdr_catacombs_intro_b_01",
+				[2.0] = "pdr_catacombs_intro_b_02"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			sound_events = {
+				[1.0] = "pdr_catacombs_intro_b_01",
+				[2.0] = "pdr_catacombs_intro_b_02"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 4.4358539581299,
-				[2.0] = 2.8840832710266
-			},
-			localization_strings = {
-				[1.0] = "pdr_catacombs_intro_a_01",
-				[2.0] = "pdr_catacombs_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_one_sorcerer_dead = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_one_sorcerer_dead_01",
-				"pdr_level_catacombs_one_sorcerer_dead_02",
-				"pdr_level_catacombs_one_sorcerer_dead_03",
-				"pdr_level_catacombs_one_sorcerer_dead_04"
-			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
-				3.5695834159851,
-				4.7256460189819,
-				4.5392084121704,
-				3.8034791946411
-			},
-			localization_strings = {
-				"pdr_level_catacombs_one_sorcerer_dead_01",
-				"pdr_level_catacombs_one_sorcerer_dead_02",
-				"pdr_level_catacombs_one_sorcerer_dead_03",
-				"pdr_level_catacombs_one_sorcerer_dead_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_sewers_nurglefication_heavy = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_sewers_nurglefication_heavy_01",
-				"pdr_level_catacombs_sewers_nurglefication_heavy_02",
-				"pdr_level_catacombs_sewers_nurglefication_heavy_03",
-				"pdr_level_catacombs_sewers_nurglefication_heavy_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.8743751049042,
-				5.407208442688,
-				5.8320832252502,
-				6.915958404541
-			},
-			localization_strings = {
-				"pdr_level_catacombs_sewers_nurglefication_heavy_01",
-				"pdr_level_catacombs_sewers_nurglefication_heavy_02",
-				"pdr_level_catacombs_sewers_nurglefication_heavy_03",
-				"pdr_level_catacombs_sewers_nurglefication_heavy_04"
-			},
-			randomize_indexes = {}
+				[1.0] = 4.5763540267944,
+				[2.0] = 3.9463124275208
+			}
 		},
 		pdr_level_catacombs_slime_trail = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_slime_trail_01",
+				"pdr_level_catacombs_slime_trail_02",
+				"pdr_level_catacombs_slime_trail_03",
+				"pdr_level_catacombs_slime_trail_04"
+			},
 			sound_events = {
 				"pdr_level_catacombs_slime_trail_01",
 				"pdr_level_catacombs_slime_trail_02",
 				"pdr_level_catacombs_slime_trail_03",
 				"pdr_level_catacombs_slime_trail_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				2.780291557312,
 				4.3736248016357,
 				5.076708316803,
 				5.5408334732056
-			},
-			localization_strings = {
-				"pdr_level_catacombs_slime_trail_01",
-				"pdr_level_catacombs_slime_trail_02",
-				"pdr_level_catacombs_slime_trail_03",
-				"pdr_level_catacombs_slime_trail_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_cultist_door = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_cultist_door_01",
-				"pdr_level_catacombs_cultist_door_02",
-				"pdr_level_catacombs_cultist_door_03",
-				"pdr_level_catacombs_cultist_door_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.763708114624,
-				2.7114791870117,
-				5.5192708969116,
-				3.4348542690277
-			},
-			localization_strings = {
-				"pdr_level_catacombs_cultist_door_01",
-				"pdr_level_catacombs_cultist_door_02",
-				"pdr_level_catacombs_cultist_door_03",
-				"pdr_level_catacombs_cultist_door_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_two_sorcerer_dead = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_two_sorcerer_dead_01",
-				"pdr_level_catacombs_two_sorcerer_dead_02",
-				"pdr_level_catacombs_two_sorcerer_dead_03",
-				"pdr_level_catacombs_two_sorcerer_dead_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.6859791278839,
-				2.2890417575836,
-				2.6655416488648,
-				3.3294167518616
-			},
-			localization_strings = {
-				"pdr_level_catacombs_two_sorcerer_dead_01",
-				"pdr_level_catacombs_two_sorcerer_dead_02",
-				"pdr_level_catacombs_two_sorcerer_dead_03",
-				"pdr_level_catacombs_two_sorcerer_dead_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_sabotage_ritual = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_sabotage_ritual_01",
-				"pdr_level_catacombs_sabotage_ritual_02",
-				"pdr_level_catacombs_sabotage_ritual_03",
-				"pdr_level_catacombs_sabotage_ritual_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				4.4022498130798,
-				4.398916721344,
-				4.2869167327881,
-				4.3088126182556
-			},
-			localization_strings = {
-				"pdr_level_catacombs_sabotage_ritual_01",
-				"pdr_level_catacombs_sabotage_ritual_02",
-				"pdr_level_catacombs_sabotage_ritual_03",
-				"pdr_level_catacombs_sabotage_ritual_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_tunnel_entrance = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_tunnel_entrance_01",
-				"pdr_level_catacombs_tunnel_entrance_02",
-				"pdr_level_catacombs_tunnel_entrance_03",
-				"pdr_level_catacombs_tunnel_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			sound_events_duration = {
-				2.9363124370575,
-				3.4766666889191,
-				3.3490624427795,
-				4.9508123397827
-			},
-			localization_strings = {
-				"pdr_level_catacombs_tunnel_entrance_01",
-				"pdr_level_catacombs_tunnel_entrance_02",
-				"pdr_level_catacombs_tunnel_entrance_03",
-				"pdr_level_catacombs_tunnel_entrance_04"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pdr_level_catacombs_hear_chanting = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_hear_chanting_01",
+				"pdr_level_catacombs_hear_chanting_02",
+				"pdr_level_catacombs_hear_chanting_03",
+				"pdr_level_catacombs_hear_chanting_04"
+			},
 			sound_events = {
 				"pdr_level_catacombs_hear_chanting_01",
 				"pdr_level_catacombs_hear_chanting_02",
 				"pdr_level_catacombs_hear_chanting_03",
 				"pdr_level_catacombs_hear_chanting_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				3.6514167785645,
 				3.2743332386017,
 				3.2664165496826,
 				5.5400624275208
-			},
-			localization_strings = {
-				"pdr_level_catacombs_hear_chanting_01",
-				"pdr_level_catacombs_hear_chanting_02",
-				"pdr_level_catacombs_hear_chanting_03",
-				"pdr_level_catacombs_hear_chanting_04"
-			},
-			randomize_indexes = {}
+			}
 		},
-		pdr_level_catacombs_whoa_wrong_switch = {
-			sound_events_n = 4,
+		pdr_level_catacombs_ritual_exit_through_portal = {
 			face_animations_n = 4,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_whoa_wrong_switch_01",
-				"pdr_level_catacombs_whoa_wrong_switch_02",
-				"pdr_level_catacombs_whoa_wrong_switch_03",
-				"pdr_level_catacombs_whoa_wrong_switch_04"
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_ritual_exit_through_portal_01",
+				"pdr_level_catacombs_ritual_exit_through_portal_02",
+				"pdr_level_catacombs_ritual_exit_through_portal_03",
+				"pdr_level_catacombs_ritual_exit_through_portal_04"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_talk",
-				"dialogue_talk"
+			sound_events = {
+				"pdr_level_catacombs_ritual_exit_through_portal_01",
+				"pdr_level_catacombs_ritual_exit_through_portal_02",
+				"pdr_level_catacombs_ritual_exit_through_portal_03",
+				"pdr_level_catacombs_ritual_exit_through_portal_04"
 			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.4681251049042,
+				2.9592916965485,
+				4.8239998817444,
+				4.407187461853
+			}
+		},
+		pdr_level_catacombs_way_is_clear = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_way_is_clear_01",
+				"pdr_level_catacombs_way_is_clear_02",
+				"pdr_level_catacombs_way_is_clear_03",
+				"pdr_level_catacombs_way_is_clear_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_way_is_clear_01",
+				"pdr_level_catacombs_way_is_clear_02",
+				"pdr_level_catacombs_way_is_clear_03",
+				"pdr_level_catacombs_way_is_clear_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.4978333711624,
+				2.0760416984558,
+				2.1247916221619,
+				2.8336250782013
+			}
+		},
+		pdr_level_catacombs_sabotage_ritual = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_sabotage_ritual_01",
+				"pdr_level_catacombs_sabotage_ritual_02",
+				"pdr_level_catacombs_sabotage_ritual_03",
+				"pdr_level_catacombs_sabotage_ritual_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_sabotage_ritual_01",
+				"pdr_level_catacombs_sabotage_ritual_02",
+				"pdr_level_catacombs_sabotage_ritual_03",
+				"pdr_level_catacombs_sabotage_ritual_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.4022498130798,
+				4.398916721344,
+				4.2869167327881,
+				4.3088126182556
+			}
+		},
+		pdr_level_catacombs_two_sorcerer_dead = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_two_sorcerer_dead_01",
+				"pdr_level_catacombs_two_sorcerer_dead_02",
+				"pdr_level_catacombs_two_sorcerer_dead_03",
+				"pdr_level_catacombs_two_sorcerer_dead_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_two_sorcerer_dead_01",
+				"pdr_level_catacombs_two_sorcerer_dead_02",
+				"pdr_level_catacombs_two_sorcerer_dead_03",
+				"pdr_level_catacombs_two_sorcerer_dead_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.6859791278839,
+				2.2890417575836,
+				2.6655416488648,
+				3.3294167518616
+			}
+		},
+		pdr_level_catacombs_nurgle_water = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_nurgle_water_01",
+				"pdr_level_catacombs_nurgle_water_02",
+				"pdr_level_catacombs_nurgle_water_03",
+				"pdr_level_catacombs_nurgle_water_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_nurgle_water_01",
+				"pdr_level_catacombs_nurgle_water_02",
+				"pdr_level_catacombs_nurgle_water_03",
+				"pdr_level_catacombs_nurgle_water_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.1129584312439,
+				4.6828541755676,
+				3.232479095459,
+				1.6336250305176
+			}
+		},
+		pdr_level_catacombs_healing_ward = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_healing_ward_01",
+				"pdr_level_catacombs_healing_ward_02",
+				"pdr_level_catacombs_healing_ward_03",
+				"pdr_level_catacombs_healing_ward_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_healing_ward_01",
+				"pdr_level_catacombs_healing_ward_02",
+				"pdr_level_catacombs_healing_ward_03",
+				"pdr_level_catacombs_healing_ward_04"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.5574791431427,
+				3.7676250934601,
+				2.6110208034515,
+				2.4461874961853
+			}
+		},
+		pdr_level_catacombs_spot_ritual = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_spot_ritual_01",
+				"pdr_level_catacombs_spot_ritual_02",
+				"pdr_level_catacombs_spot_ritual_03",
+				"pdr_level_catacombs_spot_ritual_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_spot_ritual_01",
+				"pdr_level_catacombs_spot_ritual_02",
+				"pdr_level_catacombs_spot_ritual_03",
+				"pdr_level_catacombs_spot_ritual_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				4.364333152771,
+				5.1935000419617,
+				3.1996042728424,
+				2.8247709274292
+			}
+		},
+		pdr_level_catacombs_correct_switch = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_correct_switch_01",
+				"pdr_level_catacombs_correct_switch_02",
+				"pdr_level_catacombs_correct_switch_03",
+				"pdr_level_catacombs_correct_switch_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_correct_switch_01",
+				"pdr_level_catacombs_correct_switch_02",
+				"pdr_level_catacombs_correct_switch_03",
+				"pdr_level_catacombs_correct_switch_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				1.3099792003632,
+				3.1745624542236,
+				3.0605416297913,
+				2.4900207519531
+			}
+		},
+		pdr_level_catacombs_confinement_cells = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_confinement_cells_01",
+				"pdr_level_catacombs_confinement_cells_02",
+				"pdr_level_catacombs_confinement_cells_03",
+				"pdr_level_catacombs_confinement_cells_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_confinement_cells_01",
+				"pdr_level_catacombs_confinement_cells_02",
+				"pdr_level_catacombs_confinement_cells_03",
+				"pdr_level_catacombs_confinement_cells_04"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.0964167118073,
+				3.740312576294,
+				4.3663539886475,
+				3.8503959178925
+			}
+		},
+		pdr_level_catacombs_apothercary_room = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_apothercary_room_01",
+				"pdr_level_catacombs_apothercary_room_02",
+				"pdr_level_catacombs_apothercary_room_03",
+				"pdr_level_catacombs_apothercary_room_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_apothercary_room_01",
+				"pdr_level_catacombs_apothercary_room_02",
+				"pdr_level_catacombs_apothercary_room_03",
+				"pdr_level_catacombs_apothercary_room_04"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.8857917785645,
+				3.9745833873749,
+				3.0996041297913,
+				2.9773333072662
+			}
+		},
+		pdr_level_catacombs_one_sorcerer_dead = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_one_sorcerer_dead_01",
+				"pdr_level_catacombs_one_sorcerer_dead_02",
+				"pdr_level_catacombs_one_sorcerer_dead_03",
+				"pdr_level_catacombs_one_sorcerer_dead_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_one_sorcerer_dead_01",
+				"pdr_level_catacombs_one_sorcerer_dead_02",
+				"pdr_level_catacombs_one_sorcerer_dead_03",
+				"pdr_level_catacombs_one_sorcerer_dead_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events_duration = {
+				3.5695834159851,
+				4.7256460189819,
+				4.5392084121704,
+				3.8034791946411
+			}
+		},
+		pdr_level_catacombs_whoa_wrong_switch = {
+			face_animations_n = 4,
+			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_whoa_wrong_switch_01",
+				"pdr_level_catacombs_whoa_wrong_switch_02",
+				"pdr_level_catacombs_whoa_wrong_switch_03",
+				"pdr_level_catacombs_whoa_wrong_switch_04"
+			},
+			sound_events = {
+				"pdr_level_catacombs_whoa_wrong_switch_01",
+				"pdr_level_catacombs_whoa_wrong_switch_02",
+				"pdr_level_catacombs_whoa_wrong_switch_03",
+				"pdr_level_catacombs_whoa_wrong_switch_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				1.2719583511352,
 				1.9449167251587,
 				3.1356875896454,
 				2.1491041183472
-			},
-			localization_strings = {
-				"pdr_level_catacombs_whoa_wrong_switch_01",
-				"pdr_level_catacombs_whoa_wrong_switch_02",
-				"pdr_level_catacombs_whoa_wrong_switch_03",
-				"pdr_level_catacombs_whoa_wrong_switch_04"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pdr_level_catacombs_sewers_nurglefication_light = {
-			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "dwarf_ranger_catacombs",
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			randomize_indexes = {},
+			localization_strings = {
+				"pdr_level_catacombs_sewers_nurglefication_light_01",
+				"pdr_level_catacombs_sewers_nurglefication_light_02",
+				"pdr_level_catacombs_sewers_nurglefication_light_03",
+				"pdr_level_catacombs_sewers_nurglefication_light_04"
+			},
 			sound_events = {
 				"pdr_level_catacombs_sewers_nurglefication_light_01",
 				"pdr_level_catacombs_sewers_nurglefication_light_02",
 				"pdr_level_catacombs_sewers_nurglefication_light_03",
 				"pdr_level_catacombs_sewers_nurglefication_light_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events_duration = {
 				6.9877915382385,
 				2.6074376106262,
 				5.0794377326965,
 				5.9867081642151
-			},
-			localization_strings = {
-				"pdr_level_catacombs_sewers_nurglefication_light_01",
-				"pdr_level_catacombs_sewers_nurglefication_light_02",
-				"pdr_level_catacombs_sewers_nurglefication_light_03",
-				"pdr_level_catacombs_sewers_nurglefication_light_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_sewers = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_sewers_01",
-				"pdr_level_catacombs_sewers_02",
-				"pdr_level_catacombs_sewers_03",
-				"pdr_level_catacombs_sewers_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			sound_events_duration = {
-				4.951208114624,
-				6.5392498970032,
-				4.6495623588562,
-				4.7013125419617
-			},
-			localization_strings = {
-				"pdr_level_catacombs_sewers_01",
-				"pdr_level_catacombs_sewers_02",
-				"pdr_level_catacombs_sewers_03",
-				"pdr_level_catacombs_sewers_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_catacombs_mausoleum_entrance = {
-			sound_events_n = 4,
-			face_animations_n = 4,
-			database = "dwarf_ranger_catacombs",
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_catacombs_mausoleum_entrance_01",
-				"pdr_level_catacombs_mausoleum_entrance_02",
-				"pdr_level_catacombs_mausoleum_entrance_03",
-				"pdr_level_catacombs_mausoleum_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			sound_events_duration = {
-				3.6157290935516,
-				3.0757291316986,
-				2.5584375858307,
-				4.136125087738
-			},
-			localization_strings = {
-				"pdr_level_catacombs_mausoleum_entrance_01",
-				"pdr_level_catacombs_mausoleum_entrance_02",
-				"pdr_level_catacombs_mausoleum_entrance_03",
-				"pdr_level_catacombs_mausoleum_entrance_04"
-			},
-			randomize_indexes = {}
+			}
 		}
 	})
 end
