@@ -481,6 +481,7 @@ dlc_settings.buff_function_templates = {
 	apply_curse_rotten_miasma = function (unit, buff, params, world)
 		buff.next_update_time = 0
 		buff.stacked_buff_ids = {}
+		buff.is_outside_safe_area = {}
 		local difficulty_index = Managers.state.difficulty:get_difficulty_index()
 		buff.radius = table.get_value_or_last(buff.template.safe_area_radius, difficulty_index)
 
@@ -488,77 +489,59 @@ dlc_settings.buff_function_templates = {
 		Unit.flow_event(unit, "update_radius")
 	end,
 	update_curse_rotten_miasma = function (unit, buff, params, world)
-		local local_player = Managers.player:local_player()
-		local player_unit = local_player and local_player.player_unit
-
-		if not player_unit then
+		if not is_server() then
 			return
 		end
 
-		local stacked_buff_ids = buff.stacked_buff_ids
-		local template = buff.template
 		local safe_area_pos = Unit.local_position(unit, 0)
-		local radius_squared = math.pow(buff.radius, 2)
-		local other_player_position = POSITION_LOOKUP[player_unit]
-		local distance_squared = Vector3.distance_squared(safe_area_pos, other_player_position)
-		local is_outside_safe_area = radius_squared < distance_squared
-		local is_inside_safe_area = not is_outside_safe_area
-		local previous_is_outside_safe_area = buff.is_outside_safe_area
-		local exit_safe_area = is_outside_safe_area and not previous_is_outside_safe_area
-		local entered_safe_area = is_inside_safe_area and previous_is_outside_safe_area
-
-		if exit_safe_area then
-			buff.is_outside_safe_area = true
-			local wwise_world = Managers.world:wwise_world(world)
-
-			WwiseWorld.trigger_event(wwise_world, "Play_curse_rotten_miasma_loop")
-		elseif entered_safe_area then
-			buff.is_outside_safe_area = false
-			local wwise_world = Managers.world:wwise_world(world)
-
-			WwiseWorld.trigger_event(wwise_world, "Stop_curse_rotten_miasma_loop")
-		end
 
 		if params.t < buff.next_update_time then
 			return
 		end
 
-		if is_outside_safe_area and #stacked_buff_ids < template.miasma_stack_limit then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-			local buff_id = buff_extension:add_buff("curse_rotten_miasma_debuff")
-			stacked_buff_ids[#stacked_buff_ids + 1] = buff_id
+		local template = buff.template
+		buff.next_update_time = params.t + template.buff_exposure_tick_rate
+		local buff_system = Managers.state.entity:system("buff_system")
+		local side = Managers.state.side:get_side_from_name("heroes")
+		local player_units = side.PLAYER_UNITS
 
-			if not buff.effect_buff_id then
-				buff.effect_buff_id = buff_extension:add_buff("curse_rotten_miasma_effect")
+		for _, player_unit in ipairs(player_units) do
+			local radius_squared = math.pow(buff.radius, 2)
+			local player_position = POSITION_LOOKUP[player_unit]
+			local distance_squared = Vector3.distance_squared(safe_area_pos, player_position)
+			local is_outside_safe_area = radius_squared < distance_squared
+			local is_inside_safe_area = not is_outside_safe_area
+			local previous_is_outside_safe_area = buff.is_outside_safe_area[player_unit]
+			local exit_safe_area = is_outside_safe_area and not previous_is_outside_safe_area
+			local entered_safe_area = is_inside_safe_area and previous_is_outside_safe_area
+
+			if exit_safe_area then
+				buff.is_outside_safe_area[player_unit] = true
+			elseif entered_safe_area then
+				buff.is_outside_safe_area[player_unit] = false
 			end
 
-			buff.next_update_time = params.t + template.buff_exposure_tick_rate
-		elseif is_inside_safe_area and #stacked_buff_ids > 0 then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-			local last_buff_id = stacked_buff_ids[#stacked_buff_ids]
+			buff.stacked_buff_ids[player_unit] = buff.stacked_buff_ids[player_unit] or {}
+			local stacked_buff_ids = buff.stacked_buff_ids[player_unit]
 
-			buff_extension:remove_buff(last_buff_id)
+			if is_outside_safe_area and #stacked_buff_ids < template.miasma_stack_limit then
+				local is_server_sided_buff = true
+				local buff_id = buff_system:add_buff(player_unit, "curse_rotten_miasma_debuff", player_unit, is_server_sided_buff)
+				stacked_buff_ids[#stacked_buff_ids + 1] = buff_id
+			elseif is_inside_safe_area and #stacked_buff_ids > 0 then
+				local last_buff_id = stacked_buff_ids[#stacked_buff_ids]
 
-			stacked_buff_ids[#stacked_buff_ids] = nil
+				buff_system:remove_server_controlled_buff(player_unit, last_buff_id)
 
-			if #stacked_buff_ids == 0 then
-				local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
-				local event_data = FrameTable.alloc_table()
+				stacked_buff_ids[#stacked_buff_ids] = nil
 
-				dialogue_input:trigger_networked_dialogue_event("curse_positive_effect_happened", event_data)
+				if #stacked_buff_ids == 0 then
+					local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
+					local event_data = FrameTable.alloc_table()
+
+					dialogue_input:trigger_networked_dialogue_event("curse_positive_effect_happened", event_data)
+				end
 			end
-
-			if buff.effect_buff_id then
-				buff_extension:remove_buff(buff.effect_buff_id)
-
-				buff.effect_buff_id = nil
-			end
-
-			buff.next_update_time = params.t + template.buff_exposure_tick_rate
-		end
-
-		if script_data.debug_mutators then
-			QuickDrawer:sphere(safe_area_pos, buff.radius, Color(255, 0, 0))
 		end
 	end,
 	remove_curse_rotten_miasma = function (unit, buff, params, world)
@@ -583,6 +566,25 @@ dlc_settings.buff_function_templates = {
 			buff_extension:remove_buff(buff.effect_buff_id)
 
 			buff.effect_buff_id = nil
+		end
+	end,
+	apply_curse_rotten_miasma_debuff = function (unit, buff, params, world)
+		local local_player = Managers.player:local_player()
+		local local_player_unit = local_player.player_unit
+
+		if local_player_unit == unit then
+			local wwise_world = Managers.world:wwise_world(world)
+
+			WwiseWorld.trigger_event(wwise_world, "Play_curse_rotten_miasma_loop")
+
+			buff.buff_triggered_sound = true
+		end
+	end,
+	remove_curse_rotten_miasma_debuff = function (unit, buff, params, world)
+		if buff.buff_triggered_sound then
+			local wwise_world = Managers.world:wwise_world(world)
+
+			WwiseWorld.trigger_event(wwise_world, "Stop_curse_rotten_miasma_loop")
 		end
 	end,
 	apply_objective_unit = function (unit, buff, params, world)
@@ -1567,12 +1569,13 @@ dlc_settings.proc_functions = {
 			end
 		end
 	end,
-	chain_lightning = function (player, buff, params, world)
+	chain_lightning = function (player, buff, params, world, param_order)
 		local player_unit = player.player_unit
-		local hit_unit = params[1]
-		local target_number = params[4]
+		local hit_unit = params[param_order.attacked_unit]
+		local first_hit = params[param_order.first_hit]
+		local is_critical_strike = params[param_order.is_critical_strike]
 
-		if ALIVE[player_unit] and ALIVE[hit_unit] and target_number == 1 then
+		if ALIVE[player_unit] and ALIVE[hit_unit] and first_hit and is_critical_strike then
 			local hit_pos = POSITION_LOOKUP[hit_unit]
 			local template = buff.template
 			local damage_profile = template.damage_profile
@@ -1580,19 +1583,8 @@ dlc_settings.proc_functions = {
 			local audio_system = Managers.state.entity:system("audio_system")
 			local sound_event = template.sound_event
 			local damage_type = "damage_over_time"
-			local damage = 15
-			local target_unit_health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
-
-			if target_unit_health_extension then
-				local max_health = target_unit_health_extension:get_max_health()
-				local target_breed = Unit.get_data(hit_unit, "breed")
-
-				if target_breed and target_breed.boss then
-					damage = max_health / 20
-				else
-					damage = max_health / 3
-				end
-			end
+			local damage_dealt = params[2]
+			local damage = damage_dealt
 
 			DamageUtils.add_damage_network(hit_unit, player_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 
@@ -1632,21 +1624,8 @@ dlc_settings.proc_functions = {
 
 					if ALIVE[target_unit] and not hit_units[target_unit] and AiUtils.unit_alive(target_unit) and target_unit ~= hit_unit then
 						hit_units[target_unit] = true
-						local jump_damage = 15
-						local target_unit_health_extension = ScriptUnit.has_extension(target_unit, "health_system")
 
-						if target_unit_health_extension then
-							local max_health = target_unit_health_extension:get_max_health()
-							local target_breed = Unit.get_data(target_unit, "breed")
-
-							if target_breed and target_breed.boss then
-								jump_damage = max_health / 20
-							else
-								jump_damage = max_health / 3
-							end
-						end
-
-						DamageUtils.add_damage_network(target_unit, player_unit, jump_damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+						DamageUtils.add_damage_network(target_unit, player_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 						audio_system:play_audio_unit_event(sound_event, target_unit)
 
 						start_point = end_point
@@ -3561,16 +3540,14 @@ dlc_settings.buff_templates = {
 				name = "curse_rotten_miasma_debuff",
 				perk = "slayer_curse",
 				debuff = true
-			}
-		}
-	},
-	curse_rotten_miasma_effect = {
-		buffs = {
+			},
 			{
 				activation_effect = "fx/screenspace_deus_miasma",
 				name = "curse_rotten_miasma_effect",
+				continuous_effect = "fx/screenspace_deus_miasma",
 				max_stacks = 1,
-				continuous_effect = "fx/screenspace_deus_miasma"
+				remove_buff_func = "remove_curse_rotten_miasma_debuff",
+				apply_buff_func = "apply_curse_rotten_miasma_debuff"
 			}
 		}
 	},

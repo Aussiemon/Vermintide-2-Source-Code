@@ -534,10 +534,11 @@ DeusPowerUpBuffTemplates = {
 	deus_big_swing_stagger_buff = {
 		buffs = {
 			{
+				refresh_durations = true,
 				name = "deus_big_swing_stagger_buff",
 				stat_buff = "power_level_impact",
-				max_stacks = 1,
 				icon = "deus_icon_big_swing_stagger",
+				max_stacks = 1,
 				duration = power_up_tweak_data.deus_big_swing_stagger_buff.duration,
 				multiplier = power_up_tweak_data.deus_big_swing_stagger_buff.multiplier
 			}
@@ -652,7 +653,9 @@ DeusPowerUpBuffTemplates = {
 			{
 				name = "triple_melee_headshot_power_boost",
 				stat_buff = "power_level_melee",
+				max_stacks = 1,
 				icon = "triple_melee_headshot_power",
+				refresh_durations = true,
 				multiplier = power_up_tweak_data.triple_melee_headshot_power_boost.multiplier,
 				duration = power_up_tweak_data.triple_melee_headshot_power_boost.duration
 			}
@@ -1937,7 +1940,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					name = "deus_crit_chain_lightning",
 					authority = "server",
 					buff_func = "chain_lightning",
-					event = "on_critical_hit",
+					event = "on_player_damage_dealt",
 					damage_profile = "beam_shot",
 					particle_name = "",
 					damage_source = "buff",

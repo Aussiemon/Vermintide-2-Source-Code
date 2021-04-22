@@ -328,21 +328,16 @@ StoreWindowItemList._update_item_list = function (self)
 		table.sort(layout, StoreLayoutConfig.sort.cmp_layout_item)
 	elseif product_type == "dlc" then
 		for index, dlc_name in ipairs(page_content) do
-			local dlc_settings = nil
+			local dlc_index = table.find_by_key(StoreDlcSettings, "dlc_name", dlc_name)
+			local dlc_settings = StoreDlcSettings[dlc_index]
 
-			for _, settings in ipairs(StoreDlcSettings) do
-				if settings.dlc_name == dlc_name then
-					dlc_settings = settings
-
-					break
-				end
+			if dlc_settings then
+				layout[#layout + 1] = {
+					dlc_settings = dlc_settings,
+					type = product_type,
+					product_id = dlc_settings.dlc_name
+				}
 			end
-
-			layout[#layout + 1] = {
-				dlc_settings = dlc_settings,
-				type = product_type,
-				product_id = dlc_settings.dlc_name
-			}
 		end
 	end
 

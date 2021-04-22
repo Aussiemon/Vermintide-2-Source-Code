@@ -749,7 +749,6 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		price_strike_through = {
 			vertical_alignment = "top",
 			horizontal_alignment = "left",
-			masked = true,
 			angle = -0.17,
 			pivot = {
 				0,

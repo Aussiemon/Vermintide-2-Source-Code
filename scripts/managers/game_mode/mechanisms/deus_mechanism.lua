@@ -210,7 +210,7 @@ DeusMechanism.handle_ingame_enter = function (self, game_mode)
 end
 
 DeusMechanism.handle_ingame_exit = function (self, exit_type)
-	if exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" or exit_type == "quit_game" or exit_type == "return_to_pc_menu" then
+	if exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" or exit_type == "quit_game" or exit_type == "return_to_pc_menu" or exit_type == "backend_disconnected" then
 		self:_reset()
 	end
 end

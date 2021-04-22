@@ -1042,7 +1042,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 	local item_preview_layout_name = item.product_layout or item_data.product_layout
 	local item_preview_layout = item_preview_layout_name and StoreBundleLayouts[item_preview_layout_name]
 
-	if item_data.bundle_contains then
+	if item_data.bundle_contains and not item_preview_layout_name then
 		item_preview_layout = self:_create_item_bundle_layout(steam_itemdefid, item_data)
 	end
 

@@ -227,8 +227,8 @@ local function make_proc_param_lookup(...)
 end
 
 ProcEventParams = {
-	on_player_damage_dealt = make_proc_param_lookup("attacked_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "PROC_MODIFIABLE"),
-	on_damage_dealt = make_proc_param_lookup("attacked_unit", "attacker_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "damage_type", "PROC_MODIFIABLE"),
+	on_player_damage_dealt = make_proc_param_lookup("attacked_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "first_hit", "PROC_MODIFIABLE"),
+	on_damage_dealt = make_proc_param_lookup("attacked_unit", "attacker_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "damage_type", "first_hit", "PROC_MODIFIABLE"),
 	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number")
 }
 local buff_params = {}

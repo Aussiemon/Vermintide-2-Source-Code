@@ -570,7 +570,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		end
 	end
 
-	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike)
+	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "first_hit", self._num_targets_hit == 1)
 
 	local no_damage = predicted_damage <= 0
 
@@ -713,7 +713,7 @@ PlayerProjectileUnitExtension.hit_player_damage = function (self, damage_profile
 	local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 	local weapon_system = self._weapon_system
 
-	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, hit_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike)
+	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, hit_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "first_hit", num_targets_hit == 1)
 
 	local predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
 	local no_damage = predicted_damage <= 0

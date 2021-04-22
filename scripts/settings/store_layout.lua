@@ -388,6 +388,13 @@ local function cmp_price(a, b)
 	return b_price - a_price
 end
 
+local function cmp_prio(a, b)
+	local a_prio = a.prio or (a.data and a.data.prio) or 0
+	local b_prio = b.prio or (b.data and b.data.prio) or 0
+
+	return a_prio - b_prio
+end
+
 local function item_get_type_order_key(item)
 	local data = item.data
 	local item_type = nil
@@ -440,6 +447,12 @@ local function cmp_item(a, b)
 		return diff > 0
 	end
 
+	diff = cmp_prio(a, b)
+
+	if diff ~= 0 then
+		return diff > 0
+	end
+
 	diff = cmp_price(a, b)
 
 	if diff ~= 0 then
@@ -454,6 +467,7 @@ local function cmp_layout_item(a, b)
 end
 
 StoreLayoutConfig.sort = {
+	cmp_prio = cmp_prio,
 	cmp_rarity = cmp_rarity,
 	cmp_price = cmp_price,
 	cmp_type = cmp_type,

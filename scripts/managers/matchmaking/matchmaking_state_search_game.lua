@@ -288,12 +288,17 @@ MatchmakingStateSearchGame._compare_first_prio_lobbies = function (self, current
 	local quick_game = search_config.quick_game
 	local matchmaking_type = search_config.matchmaking_type
 	local mechanism = search_config.mechanism
+
+	if mechanism == "deus" or mechanism == "weave" then
+		return current_lobby
+	end
+
 	local current_mission_id = current_lobby.selected_mission_id
 	local new_mission_id = new_lobby.selected_mission_id
 	local current_level_settings = current_mission_id and LevelSettings[current_mission_id]
 	local new_level_settings = new_mission_id and LevelSettings[new_mission_id]
 
-	if mechanism ~= "weave" and mechanism ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
+	if quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
 		local current_times_completed = self:_times_party_completed_level(current_mission_id)
 		local new_times_completed = self:_times_party_completed_level(new_mission_id)
 
@@ -314,12 +319,17 @@ MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, cur
 	local quick_game = search_config.quick_game
 	local matchmaking_type = search_config.matchmaking_type
 	local mechanism = search_config.mechanism
+
+	if mechanism == "deus" or mechanism == "weave" then
+		return current_lobby
+	end
+
 	local current_mission_id = current_lobby.selected_mission_id
 	local new_mission_id = new_lobby.selected_mission_id
 	local current_level_settings = current_mission_id and LevelSettings[current_mission_id]
 	local new_level_settings = new_mission_id and LevelSettings[new_mission_id]
 
-	if mechanism ~= "weave" and mechanism ~= "deus" and quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
+	if quick_game and current_level_settings and not current_level_settings.hub_level and new_level_settings and not new_level_settings.hub_level then
 		local current_times_completed = self:_times_party_completed_level(current_mission_id)
 		local new_times_completed = self:_times_party_completed_level(new_mission_id)
 

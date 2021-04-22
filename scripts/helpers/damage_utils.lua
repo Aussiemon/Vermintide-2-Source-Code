@@ -1633,7 +1633,7 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 	if buff_extension and hit_unit_health_extension:is_alive() then
 		ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount = damage_amount
 
-		buff_extension:trigger_procs("on_damage_dealt", attacked_unit, attacker_unit, damage_amount, hit_zone_name, 0, is_critical_strike, buff_attack_type, 100, damage_source, damage_type, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
+		buff_extension:trigger_procs("on_damage_dealt", attacked_unit, attacker_unit, damage_amount, hit_zone_name, 0, is_critical_strike, buff_attack_type, 100, damage_source, damage_type, first_hit, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
 
 		damage_amount = ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount
 	end
@@ -1736,8 +1736,8 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 
 		ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount = damage_amount
 
-		buff_extension:trigger_procs("on_player_damage_dealt", hit_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index, damage_source, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
-		buff_extension:trigger_procs("on_damage_dealt", hit_unit, attacker_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index, damage_source, damage_type, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
+		buff_extension:trigger_procs("on_player_damage_dealt", hit_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index, damage_source, first_hit, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
+		buff_extension:trigger_procs("on_damage_dealt", hit_unit, attacker_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index, damage_source, damage_type, first_hit, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
 
 		damage_amount = ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount
 	end
@@ -2637,7 +2637,7 @@ DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name
 		local damage_source_id = NetworkLookup.damage_sources[damage_source]
 		local weapon_system = Managers.state.entity:system("weapon_system")
 
-		weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true, "backstab_multiplier", backstab_multiplier)
+		weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true, "backstab_multiplier", backstab_multiplier, "first_hit", target_index == 1)
 
 		local stagger_type, _, _, _ = DamageUtils.calculate_stagger_dummy(ImpactTypeOutput, hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, false, damage_source)
 		local attack_template_name = target_settings.attack_template
@@ -2754,7 +2754,7 @@ DamageUtils._projectile_hit_object = function (current_action, owner_unit, owner
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 		local weapon_system = Managers.state.entity:system("weapon_system")
 
-		weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike)
+		weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "first_hit", num_penetrations == 0)
 
 		if is_critical_strike and critical_hit_effect then
 			EffectHelper.play_surface_material_effects(critical_hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, nil, is_husk, nil, hit_actor)
@@ -2985,7 +2985,7 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 
 			local weapon_system = Managers.state.entity:system("weapon_system")
 
-			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "attacker_is_level_unit", attacker_is_level_unit)
+			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "attacker_is_level_unit", attacker_is_level_unit, "first_hit", num_penetrations == 0)
 			EffectHelper.player_critical_hit(world, is_critical_strike, owner_unit, hit_unit, hit_position)
 
 			if not owner_player and owner_unit_alive and hit_unit_player and hit_unit_player.bot_player then

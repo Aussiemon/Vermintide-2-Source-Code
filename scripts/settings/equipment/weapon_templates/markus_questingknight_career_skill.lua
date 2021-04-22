@@ -681,6 +681,7 @@ local weapon_template = {
 		action_two = {
 			default = {
 				kind = "career_dummy",
+				is_ability_cancel = true,
 				anim_end_event = "ability_finished",
 				anim_event = "questing_knight_ability_cancel_01",
 				total_time = 0.47,

@@ -1692,19 +1692,6 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
-LevelSettingsMeta = LevelSettingsMeta or {}
-
-LevelSettingsMeta.__index = function (table, key)
-	local message = string.format("LevelSettings has no level %q\nMaybe you were looking for one of these:\n", tostring(key))
-
-	for level_key, _ in pairs(LevelSettings) do
-		message = string.format("%s\n%s", message, level_key)
-	end
-
-	error(message)
-end
-
-setmetatable(LevelSettings, LevelSettingsMeta)
 dofile("scripts/settings/level_unlock_settings")
 
 return

@@ -45,11 +45,14 @@ ActionCareerESQuestingKnight.client_owner_post_update = function (self, dt, t, w
 	end
 end
 
-ActionCareerESQuestingKnight.finish = function (self, reason)
-	ActionCareerESQuestingKnight.super.finish(self, reason)
+ActionCareerESQuestingKnight.finish = function (self, reason, data)
+	ActionCareerESQuestingKnight.super.finish(self, reason, data)
 	self.inventory_extension:stop_weapon_fx("career_action", true)
 
-	if not self._combo_no_wield or reason ~= "new_interupting_action" then
+	local new_action_settings = data and data.new_action_settings
+	local is_ability_cancel = new_action_settings and new_action_settings.is_ability_cancel
+
+	if is_ability_cancel or not self._combo_no_wield or reason ~= "new_interupting_action" then
 		self.status_extension:set_stagger_immune(false)
 
 		local career_extension = self.career_extension
