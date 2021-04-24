@@ -5,6 +5,7 @@ Versions 'Closed-Beta Phase 2' to 4.3.0.3 and Associated Bundles
 
 Date      |  Patch  | Notes
 --------: | :-----: | :--------------
+4-23-21   |  4.3.0.3b  | (Unannounced) .Patch_001
 4-20-21   |  4.3.0.3  | .Patch_001
 4-20-21   |  4.3.0.2  | .Patch_001
 4-20-21   |  4.3.0.1  | .Patch_001

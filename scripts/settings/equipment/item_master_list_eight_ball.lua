@@ -642,7 +642,6 @@ ItemMasterList.shade_hat_1002 = {
 	slot_type = "hat",
 	information_text = "information_text_hat",
 	hud_icon = "hud_icon_default",
-	steam_store_hidden = false,
 	template = "ww_half_mask_full_face",
 	item_type = "hat",
 	unit = "units/beings/player/way_watcher_shade/headpiece/ww_s_hat_13",
@@ -650,7 +649,8 @@ ItemMasterList.shade_hat_1002 = {
 	store_optional_skin = "skin_ww_shade_1001",
 	can_wield = {
 		"we_shade"
-	}
+	},
+	steam_store_hidden = store_item_hidden
 }
 ItemMasterList.skin_ww_shade_1001 = {
 	description = "description_skin_ww_shade_1001",
