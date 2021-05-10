@@ -352,16 +352,19 @@ weapon_template.ammo_data = {
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow
 }
 weapon_template.attack_meta_data = {
-	aim_at_node = "j_spine1",
-	charged_attack_action_name = "shoot_charged",
-	ignore_enemies_for_obstruction_charged = true,
-	can_charge_shot = true,
-	aim_at_node_charged = "j_head",
+	aim_at_node = "j_head",
 	minimum_charge_time = 0.55,
-	charge_against_armored_enemy = true,
+	charged_attack_action_name = "shoot_special_charged",
+	can_charge_shot = true,
+	max_range = 30,
+	aim_at_node_charged = "j_spine1",
+	max_range_charged = 50,
+	ignore_enemies_for_obstruction_charged = true,
 	charge_above_range = 30,
 	charge_when_obstructed = false,
-	ignore_enemies_for_obstruction = false
+	ignore_enemies_for_obstruction = false,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Special, BreedCategory.SuperArmor, BreedCategory.Boss),
+	effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Special, BreedCategory.Shielded, BreedCategory.SuperArmor, BreedCategory.Boss)
 }
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {

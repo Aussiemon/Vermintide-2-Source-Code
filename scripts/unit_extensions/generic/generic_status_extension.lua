@@ -979,10 +979,11 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.pounced_down, pounced_down, go_id, enemy_go_id)
 	end
 
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-
 	if pounced_down then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
 		buff_extension:trigger_procs("on_player_disabled", "assassin_pounced")
+		Managers.state.event:trigger("on_player_disabled", "assassin_pounced", unit, pouncer_unit)
 	end
 end
 
@@ -1586,10 +1587,12 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	self.pack_master_grabber = (is_grabbed and grabber_unit) or nil
 	local previous_status = self.pack_master_status
 	self.pack_master_status = grabbed_status
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
 	if is_grabbed then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
 		buff_extension:trigger_procs("on_player_disabled", "pack_master_grab")
+		Managers.state.event:trigger("on_player_disabled", "pack_master_grab", unit, grabber_unit)
 	end
 
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
@@ -1757,10 +1760,11 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 		locomotion_extension:move_to_non_intersecting_position()
 	end
 
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-
 	if is_grabbed then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
 		buff_extension:trigger_procs("on_player_disabled", "corruptor_grab")
+		Managers.state.event:trigger("on_player_disabled", "corruptor_grab", unit, self.corruptor_unit)
 	end
 end
 

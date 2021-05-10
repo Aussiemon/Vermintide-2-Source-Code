@@ -62,9 +62,11 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 		self._updating_dlc_ownership = false
 	else
 		self:_execute_dlc_specific_logic()
-	end
 
-	self._backend_mirror:handle_new_dlcs(new_dlcs)
+		if HAS_STEAM then
+			self._backend_mirror:handle_new_dlcs(new_dlcs)
+		end
+	end
 end
 
 BackendInterfaceDLCsPlayfab._execute_dlc_specific_logic = function (self)

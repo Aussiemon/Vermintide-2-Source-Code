@@ -1,6 +1,9 @@
 require("scripts/managers/game_mode/mechanisms/deus_weapon_generation")
 require("scripts/utils/hash_utils")
 
+local RPCS = {
+	"rpc_deus_chest_looted"
+}
 local REAL_PLAYER_LOCAL_ID = 1
 local RELIQUARY_NEAR_DISTANCE = 10
 local RELIQUARY_FAR_DISTANCE = 12
@@ -43,6 +46,8 @@ DeusChestExtension.init = function (self, extension_init_context, unit, extensio
 	self._sound_state = nil
 	self._sound_state_interact = nil
 	self._wwise_world = Managers.world:wwise_world(self.world)
+
+	self:register_rpcs(extension_init_context.network_transmit.network_event_delegate)
 end
 
 DeusChestExtension.game_object_initialized = function (self, unit, go_id)
@@ -58,6 +63,22 @@ DeusChestExtension.extensions_ready = function (self, world, unit)
 	self._deus_run_controller = mechanism:get_deus_run_controller()
 
 	fassert(self._deus_run_controller, "deus pickup unit can only be used in a deus run")
+end
+
+DeusChestExtension.destroy = function (self)
+	self:unregister_rpcs()
+end
+
+DeusChestExtension.register_rpcs = function (self, network_event_delegate)
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+end
+
+DeusChestExtension.unregister_rpcs = function (self)
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
 end
 
 DeusChestExtension.update = function (self, unit, input, dt, context, t)
@@ -101,6 +122,19 @@ DeusChestExtension.update = function (self, unit, input, dt, context, t)
 
 				Unit.set_data(self.unit, "interaction_data", "hud_description", "deus_weapon_chest_swap_" .. slot .. "_hud_desc")
 				Unit.set_data(self.unit, "interaction_data", "hud_action", "deus_weapon_chest_swap_" .. slot .. "_action")
+			end
+
+			local game_session = Managers.state.network:game()
+			local collected_by_peers = GameSession.game_object_field(game_session, go_id, "collected_by_peers")
+			local peer_id = deus_run_controller:get_own_peer_id()
+			local is_purchased = self._is_purchased
+			local new_is_purchased = table.contains(collected_by_peers, peer_id)
+
+			if is_purchased ~= new_is_purchased and new_is_purchased == true then
+				self._is_purchased = new_is_purchased
+				self._animation_state = "looted"
+
+				Unit.flow_event(self.unit, "lua_update_collected")
 			end
 
 			self._profile_index = profile_index
@@ -216,6 +250,12 @@ DeusChestExtension.purchase = function (self)
 	Unit.flow_event(self.unit, "lua_update_collected")
 
 	self._animation_state = "looted"
+
+	if not self._is_server then
+		local go_id = Managers.state.unit_storage:go_id(self.unit)
+
+		Managers.state.network.network_transmit:send_rpc_server("rpc_deus_chest_looted", go_id)
+	end
 end
 
 DeusChestExtension._get_wielded_weapon = function (self)
@@ -591,6 +631,24 @@ DeusChestExtension._update_chest_animation_and_sound_state = function (self, che
 			end
 		end
 	end
+end
+
+DeusChestExtension.rpc_deus_chest_looted = function (self, channel_id, go_id)
+	local own_go_id = Managers.state.unit_storage:go_id(self.unit)
+
+	if go_id ~= own_go_id then
+		return
+	end
+
+	local game = Managers.state.network:game()
+
+	fassert(game and own_go_id, "setting state without network setup done")
+
+	local collected_by_peers = GameSession.game_object_field(game, own_go_id, "collected_by_peers")
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	table.insert(collected_by_peers, peer_id)
+	GameSession.set_game_object_field(game, own_go_id, "collected_by_peers", collected_by_peers)
 end
 
 return

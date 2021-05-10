@@ -105,31 +105,31 @@ local function spawn_egg_on_path(conflict_director, unit_spawner, nav_world, mis
 	audio_system:play_2d_audio_event(SOUND_EVENTS.ALERT_LOW)
 end
 
-local function is_valid_spawn_distance(behind_player_travel_dist, egg_spawn_distance, behind_peak_distance, peaks)
+local function is_valid_spawn_distance(ahead_player_travel_dist, egg_spawn_distance, ahead_peak_distance, peaks)
 	local total_path_dist = MainPathUtils.total_path_dist()
 
 	if total_path_dist < egg_spawn_distance then
 		return false
 	end
 
-	local is_egg_behind_last_peak = false
+	local is_egg_ahead_last_peak = false
 	local last_peak_distance = 0
-	local behind_player_closest_peak_distance = math.huge
+	local ahead_player_closest_peak_distance = math.huge
 
 	for _, peak_travel_distance in ipairs(peaks) do
-		if behind_player_travel_dist < peak_travel_distance and peak_travel_distance < behind_player_closest_peak_distance then
-			behind_player_closest_peak_distance = peak_travel_distance
+		if ahead_player_travel_dist < peak_travel_distance and peak_travel_distance < ahead_player_closest_peak_distance then
+			ahead_player_closest_peak_distance = peak_travel_distance
 		end
 
 		if last_peak_distance < peak_travel_distance then
 			last_peak_distance = peak_travel_distance
-			is_egg_behind_last_peak = last_peak_distance <= egg_spawn_distance
+			is_egg_ahead_last_peak = last_peak_distance <= egg_spawn_distance
 		end
 	end
 
-	local closest_valid_peak_distance = behind_player_closest_peak_distance - behind_peak_distance
+	local closest_valid_peak_distance = ahead_player_closest_peak_distance - ahead_peak_distance
 
-	if is_egg_behind_last_peak or closest_valid_peak_distance < egg_spawn_distance then
+	if is_egg_ahead_last_peak or closest_valid_peak_distance < egg_spawn_distance then
 		return false
 	else
 		return true
@@ -220,12 +220,12 @@ return {
 
 		local conflict_director = data.conflict_director
 		local main_path_info = conflict_director.main_path_info
-		local behind_player_info = conflict_director.main_path_player_info[main_path_info.behind_unit]
-		local behind_player_travel_dist = behind_player_info.travel_dist
-		local egg_spawn_distance = egg_mission.distance + behind_player_travel_dist
-		local behind_peak_distance = egg_mission.behind_peak_distance
+		local ahead_player_info = conflict_director.main_path_player_info[main_path_info.ahead_unit]
+		local ahead_player_travel_dist = ahead_player_info.travel_dist
+		local egg_spawn_distance = egg_mission.distance + ahead_player_travel_dist
+		local ahead_peak_distance = egg_mission.ahead_peak_distance
 
-		if not is_valid_spawn_distance(behind_player_travel_dist, egg_spawn_distance, behind_peak_distance, data.peaks) then
+		if not is_valid_spawn_distance(ahead_player_travel_dist, egg_spawn_distance, ahead_peak_distance, data.peaks) then
 			return
 		end
 

@@ -42,12 +42,15 @@ AttachmentSystem.rpc_create_attachment = function (self, channel_id, unit_go_id,
 
 	local unit_storage = self.unit_storage
 	local unit = unit_storage:unit(unit_go_id)
-	local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
-	local slot_name = NetworkLookup.equipment_slots[slot_id]
-	local item_name = NetworkLookup.item_names[item_name_id]
-	local item_data = ItemMasterList[item_name]
 
-	attachment_extension:create_attachment(slot_name, item_data)
+	if unit then
+		local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
+		local slot_name = NetworkLookup.equipment_slots[slot_id]
+		local item_name = NetworkLookup.item_names[item_name_id]
+		local item_data = ItemMasterList[item_name]
+
+		attachment_extension:create_attachment(slot_name, item_data)
+	end
 end
 
 AttachmentSystem.rpc_remove_attachment = function (self, channel_id, unit_go_id, slot_id)

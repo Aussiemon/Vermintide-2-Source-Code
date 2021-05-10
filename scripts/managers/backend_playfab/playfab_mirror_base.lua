@@ -193,7 +193,10 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 
 	unlock_manager:set_excluded_dlcs(excluded_dlcs)
 	self:update_owned_dlcs(false)
-	self:handle_new_dlcs(new_dlcs)
+
+	if HAS_STEAM then
+		self:handle_new_dlcs(new_dlcs)
+	end
 
 	local read_only_data_values = self._read_only_data
 	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
@@ -2016,8 +2019,6 @@ PlayFabMirrorBase.update_owned_dlcs = function (self, set_status_changed)
 			unlock:set_owned(is_owned, set_status_changed)
 		end
 	end
-
-	Managers.save:auto_save(SaveFileName, SaveData)
 end
 
 PlayFabMirrorBase.handle_new_dlcs = function (self, new_dlcs)
@@ -2025,8 +2026,10 @@ PlayFabMirrorBase.handle_new_dlcs = function (self, new_dlcs)
 
 	if new_dlcs then
 		for i = 1, #new_dlcs, 1 do
-			if not SaveData.new_dlcs_unlocks[new_dlcs[i]] then
-				SaveData.new_dlcs_unlocks[new_dlcs[i]] = true
+			local new_dlc = new_dlcs[i]
+
+			if not SaveData.new_dlcs_unlocks[new_dlc] then
+				SaveData.new_dlcs_unlocks[new_dlc] = true
 			end
 		end
 

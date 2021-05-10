@@ -1303,7 +1303,8 @@ local keybind_settings_definition = {
 		keymappings_key = "IngameMenuKeymaps",
 		widget_type = "keybind",
 		actions = {
-			"hotkey_inventory"
+			"hotkey_inventory",
+			"hotkey_deus_inventory"
 		}
 	},
 	{

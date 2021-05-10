@@ -30,6 +30,7 @@ SpawnerSystem.init = function (self, context, system_name)
 	event_manager:register(self, "spawn_horde", "spawn_horde")
 
 	self.hidden_spawners_broadphase = Broadphase(40, 512)
+	self._use_alt_horde_spawning = Managers.mechanism:setting("use_alt_horde_spawning")
 	self._breed_limits = {}
 end
 
@@ -375,7 +376,7 @@ local ok_spawner_breeds = {
 SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, variant, limit_spawners, group_template, strictly_not_close_to_players, side_id, use_closest_spawners, source_unit, optional_data)
 	local ConflictUtils = ConflictUtils
 	local must_use_hidden_spawners = variant.must_use_hidden_spawners
-	local spawners, hidden_spawners = nil
+	local spawners, hidden_spawners, event_spawn = nil
 	local dont_remove_this = math.random()
 
 	if event_ids and #event_ids > 0 then
@@ -409,6 +410,8 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 		if #spawners == 0 then
 			return
 		end
+
+		event_spawn = self._use_alt_horde_spawning ~= true
 	else
 		local side = Managers.state.side:get_side_from_name("heroes")
 		local player_positions = side.PLAYER_POSITIONS
@@ -483,7 +486,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 	for i = 1, num_breeds, 1 do
 		local breed_name = exchange_order[i]
 
-		if ok_spawner_breeds[breed_name] then
+		if event_spawn or ok_spawner_breeds[breed_name] then
 			self:_try_spawn_breed(breed_name, temp_spawn_list_per_breed, spawn_list, breed_limits, active_enemies, side_id, group_template)
 		else
 			self:_try_spawn_breed(breed_name, temp_spawn_list_per_breed, spawn_list_hidden, breed_limits, active_enemies, side_id, group_template)
@@ -497,7 +500,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 	local hidden_count = 0
 	count = self:_fill_spawners(spawn_list, spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit, optional_data)
 
-	if must_use_hidden_spawners then
+	if not event_spawn and must_use_hidden_spawners then
 		hidden_count = self:_fill_spawners(spawn_list_hidden, hidden_spawners, limit_spawners, side_id, group_template, use_closest_spawners, source_unit, optional_data)
 
 		if hidden_count > 0 then

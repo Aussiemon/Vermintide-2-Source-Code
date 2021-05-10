@@ -1144,13 +1144,13 @@ return function ()
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"witch_hunter"
+				"empire_soldier"
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"empire_soldier"
 			},
 			{
 				"faction_memory",

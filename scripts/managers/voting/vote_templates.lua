@@ -23,13 +23,14 @@ VoteTemplates = {
 				local level_seed = Managers.mechanism:generate_level_seed()
 
 				level_transition_handler:reload_level(nil, level_seed)
+				Managers.level_transition_handler:promote_next_level_data()
 			else
 				local mechanism = Managers.mechanism:game_mechanism()
 				local inn_level_name = mechanism:get_hub_level_key()
 				local environment_variation_id = LevelHelper:get_environment_variation_id(inn_level_name)
 
 				level_transition_handler:set_next_level(inn_level_name, environment_variation_id)
-				level_transition_handler:level_completed()
+				level_transition_handler:promote_next_level_data()
 			end
 		end,
 		pack_sync_data = function (data)
@@ -103,8 +104,10 @@ VoteTemplates = {
 				local checkpoint_data = Managers.state.spawn:checkpoint_data()
 
 				level_transition_handler:reload_level(checkpoint_data, level_seed)
+				Managers.level_transition_handler:promote_next_level_data()
 			elseif vote_result == 2 then
 				level_transition_handler:reload_level(nil, level_seed)
+				Managers.level_transition_handler:promote_next_level_data()
 			else
 				Managers.state.event:trigger("checkpoint_vote_cancelled")
 			end
@@ -1189,7 +1192,7 @@ VoteTemplates = {
 				local level_transition_handler = Managers.level_transition_handler
 
 				level_transition_handler:set_next_level(level_key)
-				level_transition_handler:level_completed()
+				level_transition_handler:promote_next_level_data()
 			end
 		end,
 		pack_sync_data = function (data)

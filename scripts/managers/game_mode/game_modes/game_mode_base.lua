@@ -199,7 +199,7 @@ GameModeBase.evaluate_end_conditions = function (self)
 end
 
 GameModeBase.ready_to_transition = function (self)
-	Managers.level_transition_handler:level_completed()
+	Managers.level_transition_handler:promote_next_level_data()
 end
 
 GameModeBase.wanted_transition = function (self)

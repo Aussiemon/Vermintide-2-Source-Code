@@ -167,7 +167,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 	end
 
 	slot9 = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
-	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_RPC_LOAD_LEVEL
+	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_LEVEL_LOAD
 	local has_invitation = Managers.invite:has_invitation()
 
 	print("[StateLoadingRestartNetwork] Selecting loadout_resync_state...", has_invitation, self._starting_tutorial, loading_context.join_lobby_data, loading_context.join_server_data, auto_join_setting, lobby_to_join, host_to_join, platform)
@@ -262,10 +262,6 @@ end
 
 StateLoadingRestartNetwork.cb_server_created = function (self)
 	self._server_created = true
-
-	assert(self.parent:loadout_resync_state() == StateLoading.LoadoutResyncStates.WAIT_FOR_RPC_LOAD_LEVEL, "[StateLoadingRestartNetwork] loadout_resync_state wasn't WAIT_FOR_RPC_LOAD_LEVEL")
-	print("[StateLoadingRestartNetwork] cb_server_created WAIT_FOR_RPC_LOAD_LEVEL ->", StateLoading.LoadoutResyncStates.CHECK_RESYNC)
-	self.parent:set_loadout_resync_state(StateLoading.LoadoutResyncStates.CHECK_RESYNC)
 end
 
 StateLoadingRestartNetwork.cb_lobby_joined = function (self)

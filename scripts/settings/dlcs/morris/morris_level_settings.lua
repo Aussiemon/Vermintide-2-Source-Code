@@ -8,7 +8,7 @@ settings.missions = {
 		mission_template_name = "simple"
 	},
 	egg_of_tzeentch = {
-		behind_peak_distance = 30,
+		ahead_peak_distance = 30,
 		distance = 70,
 		mission_template_name = "timed",
 		alert_medium_timer = 45,

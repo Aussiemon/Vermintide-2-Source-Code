@@ -47,8 +47,6 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 	self._lobby_entry_widgets = {}
 	self._empty_lobby_entry_widgets = {}
 	self._details_widgets = {}
-	self._weave_details_widgets = {}
-	self._deus_details_widgets = {}
 	self._ui_animations = {}
 	self._selected_lobby_index = 1
 	self._mouse_selected_index = 1
@@ -1834,7 +1832,8 @@ end
 
 LobbyBrowserConsoleUI._assign_objective = function (self, index, text, icon, spacing)
 	local widget_name = "objective_" .. index
-	local widget = self._weave_details_widgets[widget_name]
+	local details_widgets = self._details_widgets.weave
+	local widget = details_widgets[widget_name]
 	local content = widget.content
 	local style = widget.style
 	content.icon = icon or "trial_gem"

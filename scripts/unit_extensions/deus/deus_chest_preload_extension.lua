@@ -1,5 +1,13 @@
 DeusChestPreloadExtension = class(DeusChestPreloadExtension)
 local REAL_PLAYER_LOCAL_ID = 1
+local package_exclusion_list = {
+	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_runed_3p"] = true,
+	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_3p"] = true,
+	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed_3p"] = true,
+	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_magic_3p"] = true,
+	["units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_3p"] = true,
+	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_3p"] = true
+}
 
 local function get_weapon_packages(stored_purchase)
 	local item_data = stored_purchase.data
@@ -7,8 +15,18 @@ local function get_weapon_packages(stored_purchase)
 	local skin = stored_purchase.skin
 	local item_template = BackendUtils.get_item_template(item_data, backend_id)
 	local item_units = BackendUtils.get_item_units(item_data, backend_id, skin)
+	local packages = WeaponUtils.get_weapon_packages(item_template, item_units, false)
+	local filtered_packages = {}
 
-	return WeaponUtils.get_weapon_packages(item_template, item_units, false)
+	for i = 1, #packages, 1 do
+		local package = packages[i]
+
+		if not package_exclusion_list[package] then
+			filtered_packages[#filtered_packages + 1] = package
+		end
+	end
+
+	return filtered_packages
 end
 
 DeusChestPreloadExtension.init = function (self, extension_init_context, unit, extension_init_data)

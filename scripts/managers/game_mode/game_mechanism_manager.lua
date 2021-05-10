@@ -129,6 +129,7 @@ end
 GameMechanismManager = class(GameMechanismManager)
 local rpcs = {
 	"rpc_set_current_mechanism_state",
+	"rpc_level_load_started",
 	"rpc_carousel_set_local_match",
 	"rpc_carousel_set_private_lobby",
 	"rpc_dedicated_or_player_hosted_search",
@@ -136,8 +137,7 @@ local rpcs = {
 	"rpc_party_slots_status",
 	"rpc_force_start_dedicated_server",
 	"rpc_switch_level_dedicated_server",
-	"rpc_sync_players_session_score",
-	"rpc_sync_adventure_data_to_peer"
+	"rpc_sync_players_session_score"
 }
 
 local function check_bool_string(text)
@@ -171,6 +171,13 @@ GameMechanismManager.handle_level_load = function (self, done_again_during_loadi
 
 	if not self._game_mechanism or current_mechanism_name ~= new_mechanism_name then
 		self:_init_mechanism()
+	end
+
+	if self._network_client then
+		local server_channel = PEER_ID_TO_CHANNEL[self._server_peer_id]
+		local session_id = level_transition_handler:get_current_level_session_id()
+
+		RPC.rpc_level_load_started(server_channel, session_id)
 	end
 
 	if Managers.party:cleared() then
@@ -328,6 +335,14 @@ GameMechanismManager.handle_ingame_exit = function (self, exit_type)
 	end
 end
 
+GameMechanismManager.update_loadout = function (self)
+	local game_mechanism = self._game_mechanism
+
+	if game_mechanism and game_mechanism.update_loadout then
+		game_mechanism:update_loadout()
+	end
+end
+
 GameMechanismManager.network_context_created = function (self, lobby, server_peer_id, own_peer_id, is_server, network_handler)
 	printf("[GameMechanismManager] network_context_created (server_peer_id=%s, own_peer_id=%s)", server_peer_id, own_peer_id)
 
@@ -437,6 +452,50 @@ GameMechanismManager._init_mechanism = function (self)
 	self:_register_mechanism_rpcs()
 
 	SaveData.last_mechanism = mechanism_key
+end
+
+GameMechanismManager.rpc_level_load_started = function (self, channel_id, session_id)
+	local level_transition_handler = Managers.level_transition_handler
+	local current_session_id = level_transition_handler:get_current_level_session_id()
+
+	if current_session_id ~= session_id then
+		Crashify.print_exception("GameMechanismManager", "rpc_level_load_started received with the wrong current state, ignoring it.")
+
+		return
+	end
+
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	if not peer_id or peer_id == "0" then
+		Crashify.print_exception("GameMechanismManager", "rpc_level_load_started received with unknown channel_id, ignoring it.")
+
+		return
+	end
+
+	local network_server = self._network_server
+
+	if not network_server then
+		Crashify.print_exception("GameMechanismManager", "rpc_level_load_started as not the server, ignoring it.")
+
+		return
+	end
+
+	local peer_initialized_mechanism = network_server:get_peer_initialized_mechanism(peer_id)
+
+	if peer_initialized_mechanism ~= self._mechanism_key then
+		print("Mechanism says: a client has initialized the mechanism!", peer_id)
+
+		local state_name = self._game_mechanism:get_state()
+		local settings = MechanismSettings[self._mechanism_key]
+		local states = settings.states
+		local state_id = table.find(states, state_name)
+
+		RPC.rpc_set_current_mechanism_state(channel_id, state_id)
+
+		if self._game_mechanism.sync_mechanism_data then
+			self._game_mechanism:sync_mechanism_data(peer_id)
+		end
+	end
 end
 
 GameMechanismManager.create_host_migration_info = function (self, gm_event_end_conditions_met, gm_event_end_reason)
@@ -549,30 +608,6 @@ end
 GameMechanismManager.load_packages = function (self)
 	if self._game_mechanism.load_packages then
 		self._game_mechanism:load_packages()
-	end
-end
-
-GameMechanismManager.client_joined = function (self, peer_id)
-	print("Mechanism says: a client joined the game!", peer_id)
-
-	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-	local state_name = self._game_mechanism:get_state()
-	local settings = MechanismSettings[self._mechanism_key]
-	local states = settings.states
-	local state_id = table.find(states, state_name)
-
-	RPC.rpc_set_current_mechanism_state(channel_id, state_id)
-
-	if self._game_mechanism.client_joined then
-		self._game_mechanism:client_joined(peer_id)
-	end
-end
-
-GameMechanismManager.sync_game_mode_data_to_peer = function (self, network_transmit, peer_id)
-	local mechanism = self._game_mechanism
-
-	if mechanism and mechanism.sync_game_mode_data_to_peer then
-		mechanism:sync_game_mode_data_to_peer(network_transmit, peer_id)
 	end
 end
 
@@ -722,7 +757,7 @@ GameMechanismManager.debug_load_level = function (self, level_name, environment_
 		local level_transition_handler = Managers.level_transition_handler
 
 		level_transition_handler:set_next_level(level_name, environment_variation_id)
-		level_transition_handler:level_completed()
+		level_transition_handler:promote_next_level_data()
 	end
 end
 
@@ -922,16 +957,6 @@ GameMechanismManager.rpc_sync_players_session_score = function (self, channel_id
 	end
 
 	self.synced_players_session_score = unsynced_players_session_score
-end
-
-GameMechanismManager.rpc_sync_adventure_data_to_peer = function (self, channel_id, next_weave_name_id, next_weave_objective_index)
-	local next_weave_name = NetworkLookup.weave_names[next_weave_name_id]
-	local weave_manager = Managers.weave
-
-	if next_weave_name ~= "n/a" then
-		weave_manager:set_next_weave(next_weave_name)
-		weave_manager:set_next_objective(next_weave_objective_index)
-	end
 end
 
 GameMechanismManager.dedicated_server_peer_id = function (self)

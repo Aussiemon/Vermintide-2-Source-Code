@@ -52,10 +52,10 @@ local StateInGameTestify = {
 		Managers.mechanism:debug_load_level(level_key)
 	end,
 	load_level_with_variation = function (weather_variation, state_ingame)
-		local lth = state_ingame.level_transition_handler
+		local level_transition_handler = state_ingame.level_transition_handler
 
-		lth:set_next_level(weather_variation.level, weather_variation.variation_id)
-		lth:level_completed()
+		level_transition_handler:set_next_level(weather_variation.level, weather_variation.variation_id)
+		level_transition_handler:promote_next_level_data()
 	end,
 	get_level_weather_variations = function (level_key)
 		return LevelSettings[level_key].environment_variations
@@ -261,7 +261,7 @@ local StateInGameTestify = {
 		local level_transition_handler = Managers.level_transition_handler
 
 		level_transition_handler:set_next_level(level_key)
-		level_transition_handler:level_completed()
+		level_transition_handler:promote_next_level_data()
 	end,
 	make_game_ready_for_next_weave = function (_, state_ingame)
 		if not state_ingame.is_in_inn then

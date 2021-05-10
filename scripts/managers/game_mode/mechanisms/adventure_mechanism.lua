@@ -105,10 +105,29 @@ local vote_requests = {
 		Managers.state.voting:request_vote("game_settings_weave_vote", vote_data, Network.peer_id())
 	end
 }
+local RPCS = {
+	"rpc_sync_adventure_data_to_peer"
+}
 local HUB_LEVEL_NAME = "inn_level"
 
 AdventureMechanism.init = function (self, settings)
 	self:_reset(settings)
+end
+
+AdventureMechanism.register_rpcs = function (self, network_event_delegate)
+	self:unregister_rpcs()
+
+	self._network_event_delegate = network_event_delegate
+
+	network_event_delegate:register(self, unpack(RPCS))
+end
+
+AdventureMechanism.unregister_rpcs = function (self)
+	if self._network_event_delegate then
+		self._network_event_delegate:unregister(self)
+
+		self._network_event_delegate = nil
+	end
 end
 
 AdventureMechanism.on_venture_start = function (self)
@@ -358,7 +377,7 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 	end
 
 	if reason == "start_game" then
-		Managers.level_transition_handler:level_completed()
+		Managers.level_transition_handler:promote_next_level_data()
 	elseif reason == "won" or reason == "lost" then
 		self._saved_game_mode_data = new_saved_game_mode_data
 		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
@@ -368,6 +387,7 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 		level_seed = Managers.mechanism:generate_level_seed()
 
 		Managers.level_transition_handler:reload_level(nil, level_seed)
+		Managers.level_transition_handler:promote_next_level_data()
 	else
 		fassert(false, "Invalid end reason %q.", tostring(reason))
 	end
@@ -495,7 +515,7 @@ AdventureMechanism.get_state = function (self)
 	return self._state
 end
 
-AdventureMechanism.sync_game_mode_data_to_peer = function (self, network_transmit, peer_id)
+AdventureMechanism.sync_mechanism_data = function (self, peer_id)
 	local weave_manager = Managers.weave
 
 	if weave_manager then
@@ -506,8 +526,19 @@ AdventureMechanism.sync_game_mode_data_to_peer = function (self, network_transmi
 		local weave_name = next_weave or active_weave or "n/a"
 		local objective_index = next_objective_index or active_objective_index or 1
 		local weave_name_id = NetworkLookup.weave_names[weave_name]
+		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-		network_transmit:send_rpc("rpc_sync_adventure_data_to_peer", peer_id, weave_name_id, objective_index)
+		RPC.rpc_sync_adventure_data_to_peer(channel_id, weave_name_id, objective_index)
+	end
+end
+
+AdventureMechanism.rpc_sync_adventure_data_to_peer = function (self, channel_id, next_weave_name_id, next_weave_objective_index)
+	local next_weave_name = NetworkLookup.weave_names[next_weave_name_id]
+	local weave_manager = Managers.weave
+
+	if next_weave_name ~= "n/a" then
+		weave_manager:set_next_weave(next_weave_name)
+		weave_manager:set_next_objective(next_weave_objective_index)
 	end
 end
 
@@ -534,7 +565,7 @@ AdventureMechanism.debug_load_level = function (self, level_name, environment_va
 	local level_transition_handler = Managers.level_transition_handler
 
 	level_transition_handler:set_next_level(level_name, environment_variation_id)
-	level_transition_handler:level_completed()
+	level_transition_handler:promote_next_level_data()
 
 	if level_settings and level_settings.hub_level then
 		self._next_state = "inn"

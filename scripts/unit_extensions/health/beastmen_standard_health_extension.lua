@@ -25,7 +25,9 @@ local white_listed_damage_sources = {
 	grenade_frag_02 = true,
 	markus_questingknight_career_skill_weapon = true,
 	torch = true,
+	dr_deus_01 = true,
 	grenade_frag_01 = true,
+	wpn_deus_relic_01 = true,
 	shadow_torch = true
 }
 

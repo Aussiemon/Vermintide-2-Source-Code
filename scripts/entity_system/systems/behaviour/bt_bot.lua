@@ -432,6 +432,24 @@ BotBehaviors.default = {
 				"BTSelector",
 				{
 					"BTBotInventorySwitchAction",
+					name = "switch_ranged_reload",
+					condition = "is_slot_not_wielded",
+					condition_args = {
+						"slot_ranged"
+					},
+					action_data = ACTIONS_DEFAULT.switch_ranged
+				},
+				{
+					"BTBotReloadAction",
+					name = "reload"
+				},
+				condition = "should_reload_weapon",
+				name = "reload_weapon"
+			},
+			{
+				"BTSelector",
+				{
+					"BTBotInventorySwitchAction",
 					name = "switch_ranged_vent",
 					condition = "is_slot_not_wielded",
 					condition_args = {
@@ -486,7 +504,7 @@ BotBehaviors.default = {
 				},
 				{
 					"BTBotReloadAction",
-					name = "reload"
+					name = "reload_ability"
 				},
 				name = "reload_ability_weapon",
 				condition = "should_reload_ability_weapon",

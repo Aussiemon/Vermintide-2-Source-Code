@@ -94,6 +94,18 @@ NetworkState.remove_peer = function (self, peer_id)
 	end
 end
 
+NetworkState.get_peer_initialized = function (self, peer_id)
+	local key = self._shared_state:get_key("peer_initialized", peer_id)
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.set_peer_initialized = function (self, peer_id, value)
+	local key = self._shared_state:get_key("peer_initialized", peer_id)
+
+	return self._shared_state:set_server(key, value)
+end
+
 NetworkState.get_level_key = function (self)
 	local key = self._shared_state:get_key("level_key")
 
@@ -148,7 +160,19 @@ NetworkState.get_mechanism = function (self)
 	return self._shared_state:get_server(key)
 end
 
-NetworkState.set_level_data = function (self, level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak)
+NetworkState.get_level_session_id = function (self)
+	local key = self._shared_state:get_key("level_session_id")
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.get_level_transition_type = function (self)
+	local key = self._shared_state:get_key("level_transition_type")
+
+	return self._shared_state:get_server(key)
+end
+
+NetworkState.set_level_data = function (self, level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, level_session_id, level_transition_type)
 	local shared_state = self._shared_state
 
 	shared_state:start_atomic_set_server("set_level_data")
@@ -161,6 +185,8 @@ NetworkState.set_level_data = function (self, level_key, environment_variation_i
 	shared_state:set_server(shared_state:get_key("environment_variation_id"), environment_variation_id)
 	shared_state:set_server(shared_state:get_key("difficulty"), difficulty)
 	shared_state:set_server(shared_state:get_key("difficulty_tweak"), difficulty_tweak)
+	shared_state:set_server(shared_state:get_key("level_session_id"), level_session_id)
+	shared_state:set_server(shared_state:get_key("level_transition_type"), level_transition_type)
 	shared_state:end_atomic_set_server("set_level_data")
 end
 

@@ -1016,6 +1016,10 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "Filip Ilu",
+			type = "person"
+		},
+		{
 			text = " ",
 			type = "person"
 		},
@@ -1052,6 +1056,19 @@ local Credits = {
 		},
 		{
 			text = "Alexandra Martins",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_technical_artist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Nita van der Velden",
 			type = "person"
 		},
 		{

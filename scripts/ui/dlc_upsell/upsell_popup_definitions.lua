@@ -513,8 +513,8 @@ local widget_definitions = {
 	}),
 	title_text = UIWidgets.create_simple_text("menu_weave_area_no_wom_title", "title", nil, nil, title_text_style),
 	body_text = UIWidgets.create_simple_text("menu_weave_area_no_wom_body", "body", nil, nil, body_text_style),
-	ok_button = create_frameless_button("ok_button", scenegraph_definition.ok_button.size, nil, Localize("menu_close"), nil, nil, nil, nil, "button_detail_03_gold", nil, disable_with_gamepad),
-	store_button = create_frameless_button("store_button", scenegraph_definition.store_button.size, nil, Localize("menu_weave_area_no_wom_button"), nil, "hell_shark_header", false, "white", "button_detail_01_gold", nil, disable_with_gamepad)
+	ok_button = create_frameless_button("ok_button", scenegraph_definition.ok_button.size, nil, "", nil, nil, nil, nil, "button_detail_03_gold", nil, disable_with_gamepad),
+	store_button = create_frameless_button("store_button", scenegraph_definition.store_button.size, nil, "", nil, "hell_shark_header", false, "white", "button_detail_01_gold", nil, disable_with_gamepad)
 }
 local animation_definitions = {
 	transition_enter = {

@@ -5,17 +5,22 @@ local EXPLOSION_TEMPLATE_NAME = "blessing_of_isha_stagger"
 local SOUND_EVENTS = {
 	player_resurrected = "Play_blessing_of_isha_activate"
 }
+local VALID_DISABLE_EVENTS = {
+	pack_master_grab = true,
+	assassin_pounced = true,
+	corruptor_grab = true
+}
 
-local function stagger_enemies(radius, player_unit, explosion_template_name)
+local function stagger_enemies(radius, attacker_unit, explosion_template_name, position)
+	position = position or POSITION_LOOKUP[attacker_unit]
 	local world = Application.main_world()
-	local hit_position = POSITION_LOOKUP[player_unit]
 	local rotation = Quaternion.identity()
-	local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+	local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 	local career_power_level = career_extension and career_extension:get_career_power_level()
 	local explosion_template = ExplosionTemplates[explosion_template_name]
 	explosion_template.explosion.radius = radius
 
-	DamageUtils.create_explosion(world, player_unit, hit_position, rotation, explosion_template, 1, "buff", true, false, player_unit, career_power_level, false)
+	DamageUtils.create_explosion(world, attacker_unit, position, rotation, explosion_template, 1, "buff", true, false, attacker_unit, career_power_level, false)
 end
 
 local function remove_blessing(blessing_name)
@@ -54,15 +59,19 @@ local function display_effect(unit)
 	end
 end
 
-local function get_not_downed_units(units, not_downed_units_out)
+local function get_not_disabled_units(units, not_disabled_units_out)
 	for _, unit in ipairs(units) do
-		if ALIVE[unit] then
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-			local is_dead = status_extension and status_extension:is_dead()
-			local is_knocked = status_extension and status_extension:is_knocked_down()
+		local status_extension = ALIVE[unit] and ScriptUnit.has_extension(unit, "status_system")
 
-			if not is_dead and not is_knocked then
-				table.insert(not_downed_units_out, unit)
+		if status_extension then
+			local is_dead = status_extension:is_dead()
+			local is_knocked = status_extension:is_knocked_down()
+			local is_grabbed_by_corruptor = status_extension:is_grabbed_by_corruptor()
+			local is_grabbed_by_pack_master = status_extension:is_grabbed_by_pack_master()
+			local is_pounced_down = status_extension:is_pounced_down()
+
+			if not is_dead and not is_knocked and not is_grabbed_by_corruptor and not is_grabbed_by_pack_master and not is_pounced_down then
+				table.insert(not_disabled_units_out, unit)
 			end
 		end
 	end
@@ -72,60 +81,87 @@ return {
 	display_name = DeusBlessingSettings.blessing_of_isha.display_name,
 	description = DeusBlessingSettings.blessing_of_isha.description,
 	icon = DeusBlessingSettings.blessing_of_isha.icon,
-	temp_not_downed_units = {},
+	temp_not_disabled_units = {},
 	server_start_function = function (context, data, unit)
 		local hero_side = Managers.state.side:get_side_from_name("heroes")
 		data.hero_side = hero_side
 		data.buff_ids = {}
 	end,
-	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
-		local not_downed_units = data.template.temp_not_downed_units
+	try_activate_blessing = function (context, data, needed_not_disabled_units, blessed_unit)
+		local not_disabled_units = data.template.temp_not_disabled_units
 
-		table.clear(not_downed_units)
+		table.clear(not_disabled_units)
 
 		local player_units = data.hero_side.PLAYER_UNITS
 
-		get_not_downed_units(player_units, not_downed_units)
+		get_not_disabled_units(player_units, not_disabled_units)
 
-		if #not_downed_units == 1 and table.contains(not_downed_units, hit_unit) then
-			local health_extension = ScriptUnit.extension(hit_unit, "health_system")
-			local damage = hit_data[1]
-			local health = health_extension:current_health()
-			local killing_blow = health <= damage
+		if #not_disabled_units == needed_not_disabled_units and ALIVE[blessed_unit] then
+			stagger_enemies(STAGGER_RADIUS, blessed_unit, EXPLOSION_TEMPLATE_NAME)
+			remove_invincibility_buffs(data.buff_ids)
+			display_effect(blessed_unit)
 
-			if killing_blow then
-				stagger_enemies(STAGGER_RADIUS, hit_unit, EXPLOSION_TEMPLATE_NAME)
-				remove_invincibility_buffs(data.buff_ids)
-				display_effect(hit_unit)
-				health_extension:reset()
+			local health_extension = ScriptUnit.extension(blessed_unit, "health_system")
 
-				local dialogue_input = ScriptUnit.extension_input(hit_unit, "dialogue_system")
-				local event_data = FrameTable.alloc_table()
+			health_extension:reset()
 
-				dialogue_input:trigger_dialogue_event("blessing_isha_resurrected", event_data)
+			local dialogue_input = ScriptUnit.extension_input(blessed_unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
 
-				local audio_system = Managers.state.entity:system("audio_system")
+			dialogue_input:trigger_dialogue_event("blessing_isha_resurrected", event_data)
 
-				audio_system:play_2d_audio_event(SOUND_EVENTS.player_resurrected)
-				remove_blessing("blessing_of_isha")
+			local audio_system = Managers.state.entity:system("audio_system")
 
-				local player = Managers.player:owner(hit_unit)
-				local local_human = player and player.local_player
+			audio_system:play_2d_audio_event(SOUND_EVENTS.player_resurrected)
+			remove_blessing("blessing_of_isha")
 
-				if local_human then
-					Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "collected_isha_reward", player, player)
-				end
+			local player = Managers.player:owner(blessed_unit)
+			local local_human = player and player.local_player
+
+			if local_human then
+				Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "collected_isha_reward", player, player)
 			end
+
+			return true
+		end
+
+		return false
+	end,
+	server_player_disabled_function = function (context, data, disabling_event, target_unit, attacker_unit)
+		if not VALID_DISABLE_EVENTS[disabling_event] then
+			return
+		end
+
+		local needed_not_disabled_units = 0
+		local successful = data.template.try_activate_blessing(context, data, needed_not_disabled_units, target_unit)
+
+		if successful and disabling_event == "corruptor_grab" then
+			local position = POSITION_LOOKUP[attacker_unit]
+			local radius = 1
+
+			stagger_enemies(radius, target_unit, EXPLOSION_TEMPLATE_NAME, position)
+		end
+	end,
+	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
+		local health_extension = ScriptUnit.extension(hit_unit, "health_system")
+		local damage = hit_data[1]
+		local health = health_extension:current_health()
+		local killing_blow = health <= damage
+
+		if killing_blow then
+			local needed_not_disabled_units = 1
+
+			data.template.try_activate_blessing(context, data, needed_not_disabled_units, hit_unit)
 		end
 	end,
 	server_update_function = function (context, data, dt, t)
-		local not_downed_units = data.template.temp_not_downed_units
+		local not_disabled_units = data.template.temp_not_disabled_units
 
-		table.clear(not_downed_units)
-		get_not_downed_units(data.hero_side.PLAYER_UNITS, not_downed_units)
+		table.clear(not_disabled_units)
+		get_not_disabled_units(data.hero_side.PLAYER_UNITS, not_disabled_units)
 
-		if #not_downed_units == 1 then
-			local unit = not_downed_units[1]
+		if #not_disabled_units == 1 then
+			local unit = not_disabled_units[1]
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local has_buff = buff_extension:has_buff_type("blessing_of_isha_invincibility")
 

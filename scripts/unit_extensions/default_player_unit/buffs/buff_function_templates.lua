@@ -4142,8 +4142,18 @@ BuffFunctionTemplates.functions = {
 	end,
 	end_shade_activated_ability = function (unit, buff, params, world)
 		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		local allowed_to_trigger = false
+		local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 
-		if status_extension and status_extension:subtract_shade_stealth_counter() == 0 then
+		if talent_extension and talent_extension:has_talent("kerillian_shade_passive_stealth_on_backstab_kill") then
+			if status_extension and (status_extension:subtract_shade_stealth_counter() == 0 or status_extension:subtract_shade_stealth_counter() == 1) then
+				allowed_to_trigger = true
+			end
+		elseif status_extension and status_extension:subtract_shade_stealth_counter() == 0 then
+			allowed_to_trigger = true
+		end
+
+		if allowed_to_trigger == true then
 			if is_local(unit) then
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 

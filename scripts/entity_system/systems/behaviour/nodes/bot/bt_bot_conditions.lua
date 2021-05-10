@@ -1079,6 +1079,36 @@ BTConditions.should_recall_throwing_axes = function (blackboard, args)
 	return should_recall
 end
 
+BTConditions.should_reload_weapon = function (blackboard, args)
+	local inventory_extension = blackboard.inventory_extension
+	local ranged_slot_data = inventory_extension:get_slot_data("slot_ranged")
+	local right_unit_1p = ranged_slot_data and ranged_slot_data.right_unit_1p
+	local left_unit_1p = ranged_slot_data and ranged_slot_data.left_unit_1p
+	local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
+
+	if not ammo_extension then
+		return false
+	end
+
+	local should_reload = nil
+
+	if blackboard.reloading then
+		if ammo_extension:remaining_ammo() > 0 then
+			should_reload = not ammo_extension:clip_full()
+		else
+			should_reload = false
+
+			if false then
+				should_reload = true
+			end
+		end
+	else
+		should_reload = ammo_extension:can_reload()
+	end
+
+	return should_reload
+end
+
 BTConditions.can_open_door = function (blackboard)
 	local can_interact = false
 

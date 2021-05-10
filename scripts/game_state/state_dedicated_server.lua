@@ -153,7 +153,6 @@ StateDedicatedServer.update = function (self, dt, t)
 
 			level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode, nil, locked_director_functions, difficulty)
 			level_transition_handler:promote_next_level_data()
-			level_transition_handler:level_completed()
 
 			self._wanted_state = StateLoading
 		end
@@ -214,7 +213,7 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 	local level_transition_handler = Managers.level_transition_handler
 
 	level_transition_handler:set_next_level(initial_level)
-	level_transition_handler:level_completed()
+	level_transition_handler:promote_next_level_data()
 end
 
 StateDedicatedServer.setup_chat_manager = function (self, game_server)

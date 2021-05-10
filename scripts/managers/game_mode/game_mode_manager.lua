@@ -587,6 +587,7 @@ GameModeManager.retry_level = function (self)
 	local level_seed = Managers.mechanism:generate_level_seed()
 
 	Managers.level_transition_handler:reload_level(nil, level_seed)
+	Managers.level_transition_handler:promote_next_level_data()
 end
 
 GameModeManager.disable_player_spawning = function (self, disable, reason, safe_position, safe_rotation)
@@ -622,7 +623,7 @@ GameModeManager.start_specific_level = function (self, level_key, time_until_sta
 		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
 
 		level_transition_handler:set_next_level(level_key, environment_variation_id)
-		level_transition_handler:level_completed()
+		level_transition_handler:promote_next_level_data()
 	end
 end
 

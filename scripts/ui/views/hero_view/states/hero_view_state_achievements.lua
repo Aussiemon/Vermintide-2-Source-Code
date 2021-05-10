@@ -284,8 +284,9 @@ end
 
 HeroViewStateAchievements._setup_achievement_progress_overview = function (self)
 	local achievement_manager = self._achievement_manager
+	local loot_interface = Managers.backend:get_interface("loot")
 
-	local function gather_category_progress(category, amount, amount_completed)
+	local function gather_category_progress(category, amount, amount_completed, incomplete_but_claimed)
 		if category.entries then
 			local entries = category.entries
 
@@ -294,32 +295,43 @@ HeroViewStateAchievements._setup_achievement_progress_overview = function (self)
 
 				if achievement_manager:get_data_by_id(achievement_id).completed then
 					amount_completed = amount_completed + 1
+				elseif loot_interface:achievement_rewards_claimed(achievement_id) then
+					incomplete_but_claimed[#incomplete_but_claimed + 1] = achievement_id
 				end
 			end
 		end
 
 		if category.categories then
 			for _, category_category in ipairs(category.categories) do
-				amount, amount_completed = gather_category_progress(category_category, amount, amount_completed)
+				amount, amount_completed, incomplete_but_claimed = gather_category_progress(category_category, amount, amount_completed, incomplete_but_claimed)
 			end
 		end
 
-		return amount, amount_completed
+		return amount, amount_completed, incomplete_but_claimed
 	end
 
 	local progress_overview = {}
 	local achievement_outline = achievement_manager:outline()
+	local all_incomplete_but_claimed = {}
 
 	for i, category in ipairs(achievement_outline.categories) do
 		if category.present_progression then
 			local category_progress_data = {
 				display_name = category.name
 			}
-			local amount, amount_completed = gather_category_progress(category, 0, 0)
+			local amount, amount_completed, current_incomplete_but_claimed = gather_category_progress(category, 0, 0, {})
 			category_progress_data.amount = amount
 			category_progress_data.amount_completed = amount_completed
 			progress_overview[i] = category_progress_data
+
+			if #current_incomplete_but_claimed > 0 then
+				table.append(all_incomplete_but_claimed, current_incomplete_but_claimed)
+			end
 		end
+	end
+
+	if #all_incomplete_but_claimed > 0 then
+		Crashify.print_exception("Challenges incomplete but claimed: " .. table.dump_string(all_incomplete_but_claimed))
 	end
 
 	self:_set_summary_achievement_categories_progress(progress_overview)

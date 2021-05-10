@@ -261,7 +261,8 @@ DeusWeapons = DeusWeapons or {
 		base_item = "we_deus_01"
 	},
 	deus_dr_2h_cog_hammer = {
-		base_item = "dr_2h_cog_hammer"
+		base_item = "dr_2h_cog_hammer",
+		trait_table_name = "deus_heavy_melee"
 	},
 	deus_dr_steam_pistol = {
 		base_item = "dr_steam_pistol",

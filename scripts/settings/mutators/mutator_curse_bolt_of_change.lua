@@ -6,6 +6,7 @@ bolt_of_change.description = "curse_bolt_of_change_desc"
 bolt_of_change.icon = "deus_curse_tzeentch_01"
 bolt_of_change.spawn_rate = 40
 bolt_of_change.max_spawns = math.huge
+local BOT_DAMAGE_MODIFIER = 0.3
 local NORMAL = 2
 local HARD = 3
 local HARDER = 4
@@ -280,6 +281,17 @@ bolt_of_change.server_update_function = function (context, data, dt, t)
 		if not AiUtils.unit_alive(unit) then
 			table.swap_delete(spawned_units_data, i)
 		end
+	end
+end
+
+bolt_of_change.modify_player_base_damage = function (context, data, damaged_unit, attacker_unit, damage, damage_type)
+	local player = Managers.player:owner(damaged_unit)
+	local is_bot = player and player.bot_player
+
+	if is_bot then
+		return damage * BOT_DAMAGE_MODIFIER
+	else
+		return damage
 	end
 end
 

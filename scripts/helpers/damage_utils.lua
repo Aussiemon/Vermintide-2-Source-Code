@@ -1610,17 +1610,21 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 		original_damage_amount = DamageUtils.apply_buffs_to_damage(original_damage_amount, attacked_unit, attacker_unit, damage_source, VICTIM_UNITS, damage_type, buff_attack_type, first_hit)
 	end
 
-	local attacker_side = Managers.state.side.side_by_unit[source_attacker_unit or attacker_unit]
-	local attacker_side_name = attacker_side and attacker_side:name()
+	local local_player_unit = Managers.player:local_player().player_unit
 
-	if attacker_side and attacker_side_name == "dark_pact" and attacker_unit ~= attacked_unit then
-		local exception = damage_source == "vs_gutter_runner"
+	if local_player_unit and local_player_unit == attacker_unit then
+		local attacker_side = Managers.state.side.side_by_unit[source_attacker_unit or attacker_unit]
+		local attacker_side_name = attacker_side and attacker_side:name()
 
-		if not exception then
-			local world = Managers.world:world("level_world")
-			local wwise_world = Managers.world:wwise_world(world)
+		if attacker_side and attacker_side_name == "dark_pact" and attacker_unit ~= attacked_unit then
+			local exception = damage_source == "vs_gutter_runner"
 
-			WwiseWorld.trigger_event(wwise_world, "versus_ui_damage_indicator")
+			if not exception then
+				local world = Managers.world:world("level_world")
+				local wwise_world = Managers.world:wwise_world(world)
+
+				WwiseWorld.trigger_event(wwise_world, "versus_ui_damage_indicator")
+			end
 		end
 	end
 

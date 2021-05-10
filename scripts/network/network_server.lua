@@ -34,6 +34,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	self._game_server_manager = game_server_manager
 	self._connections = {}
 	self._joined_peers = {}
+	self._peer_initialized_mechanisms = {}
 	self._shared_states = {}
 	self._network_state = NetworkState:new(true, self, my_peer_id, my_peer_id)
 
@@ -341,7 +342,7 @@ NetworkServer.destroy = function (self)
 end
 
 NetworkServer.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_notify_lobby_joined", "rpc_to_client_spawn_player", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player")
+	network_event_delegate:register(self, "rpc_notify_lobby_joined", "rpc_to_client_spawn_player", "rpc_post_game_notified", "rpc_want_to_spawn_player", "rpc_level_load_started", "rpc_level_loaded", "rpc_game_started", "rpc_is_ingame", "game_object_sync_done", "rpc_notify_connected", "rpc_loading_synced", "rpc_clear_peer_state", "rpc_notify_in_post_game", "rpc_client_respawn_player")
 	network_event_delegate:register_with_return(self, "approve_channel")
 
 	self.network_event_delegate = network_event_delegate
@@ -504,8 +505,23 @@ NetworkServer.rpc_post_game_notified = function (self, channel_id, in_post_game)
 	end
 end
 
+NetworkServer.rpc_level_load_started = function (self, channel_id, level_session_id)
+	print("### Received rpc_level_load_started")
+
+	local remote_peer = CHANNEL_TO_PEER_ID[channel_id]
+	local peer_state_machine = self.peer_state_machines[remote_peer]
+
+	if peer_state_machine then
+		print(string.format("#### Has state machine: %s, peer_id: %s, level_session_id: %s", peer_state_machine:has_function("rpc_level_load_started"), remote_peer, level_session_id))
+
+		if peer_state_machine:has_function("rpc_level_load_started") then
+			peer_state_machine.rpc_level_load_started(level_session_id)
+		end
+	end
+end
+
 NetworkServer.rpc_level_loaded = function (self, channel_id, level_id)
-	print("### Sending rpc_level_loaded")
+	print("### Received rpc_level_loaded")
 
 	local remote_peer = CHANNEL_TO_PEER_ID[channel_id]
 	local peer_state_machine = self.peer_state_machines[remote_peer]
@@ -656,6 +672,16 @@ NetworkServer.peer_disconnected = function (self, peer_id)
 	end
 
 	self.profile_synchronizer:clear_peer_data(peer_id)
+
+	self._peer_initialized_mechanisms[peer_id] = nil
+end
+
+NetworkServer.get_peer_initialized_mechanism = function (self, peer_id)
+	return self._peer_initialized_mechanisms[peer_id]
+end
+
+NetworkServer.set_peer_initialized_mechanism = function (self, peer_id, mechanism_key)
+	self._peer_initialized_mechanisms[peer_id] = mechanism_key
 end
 
 NetworkServer.update = function (self, dt)
@@ -1196,6 +1222,20 @@ end
 
 NetworkServer.get_peers = function (self)
 	return (self._network_state and self._network_state:get_peers()) or {}
+end
+
+NetworkServer.hot_join_sync_party_and_profiles = function (self, peer_id)
+	local local_player_id = 1
+	local wanted_party = 0
+	local party_manager = Managers.party
+
+	party_manager:hot_join_sync(peer_id, local_player_id)
+	party_manager:server_peer_hot_join_synced(peer_id)
+	party_manager:assign_peer_to_party(peer_id, local_player_id, wanted_party)
+
+	local profile_synchronizer = self.profile_synchronizer
+
+	profile_synchronizer:hot_join_sync(peer_id)
 end
 
 return

@@ -137,6 +137,10 @@ local function default_hot_join_sync_function_server(context, data, peer_id)
 	return
 end
 
+local function default_player_disabled_function_server(context, data, killed_unit, killer_unit, death_data, killing_blow)
+	return
+end
+
 local function default_ai_killed_function_server(context, data, killed_unit, killer_unit, death_data, killing_blow)
 	return
 end
@@ -272,6 +276,17 @@ for name, template in pairs(mutator_settings) do
 		template.server.hot_join_sync_function = hot_join_sync_function
 	else
 		template.server.hot_join_sync_function = default_hot_join_sync_function_server
+	end
+
+	if template.server_player_disabled_function then
+		local function player_disabled_function(context, data, disabling_event, target_unit, attacker_unit)
+			default_player_disabled_function_server(context, data, disabling_event, target_unit, attacker_unit)
+			template.server_player_disabled_function(context, data, disabling_event, target_unit, attacker_unit)
+		end
+
+		template.server.player_disabled_function = player_disabled_function
+	else
+		template.server.player_disabled_function = default_player_disabled_function_server
 	end
 
 	if template.server_ai_killed_function then

@@ -1263,6 +1263,27 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 	end
 end
 
+local dummy_table = {}
+
+HeroViewStateStore.check_owns_bundle = function (self, backend_items, bundle_contains)
+	bundle_contains = bundle_contains or dummy_table
+
+	if #bundle_contains <= 0 then
+		return false
+	end
+
+	for i = 1, #bundle_contains, 1 do
+		local steam_itemdefid = bundle_contains[i]
+		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+
+		if not backend_items:has_item(item_key) and not backend_items:has_weapon_illusion(item_key) then
+			return false
+		end
+	end
+
+	return true
+end
+
 HeroViewStateStore.open_golden_key_popup = function (self)
 	self:play_sound("Play_hud_store_buy_window")
 
@@ -1569,7 +1590,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
-	local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
+	local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or self:check_owns_bundle(backend_items, item.data.bundle_contains)
 	content.owned = item_owned
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
 	content.type_tag_icon = (rarity and item_type_icon .. "_" .. rarity) or item_type_icon

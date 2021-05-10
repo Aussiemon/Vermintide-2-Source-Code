@@ -128,18 +128,13 @@ PeerStates.Connecting = {
 						end
 					end
 
-					local local_player_id = 1
-					local wanted_party = 0
-					local party_manager = Managers.party
+					local peer_id = self.peer_id
 
-					party_manager:hot_join_sync(self.peer_id, local_player_id)
-					party_manager:server_peer_hot_join_synced(self.peer_id)
-					party_manager:assign_peer_to_party(self.peer_id, local_player_id, wanted_party)
+					if peer_id == Network.peer_id() then
+						self.server:hot_join_sync_party_and_profiles(self.peer_id)
 
-					local server = self.server
-					local profile_synchronizer = server.profile_synchronizer
-
-					profile_synchronizer:hot_join_sync(self.peer_id)
+						self.has_hot_join_synced_party_and_profile = true
+					end
 
 					return PeerStates.Loading
 				end
@@ -153,6 +148,13 @@ PeerStates.Connecting = {
 
 				self.resend_post_game_timer = time_between_resend_rpc_notify_connected
 			end
+		end
+	end,
+	rpc_level_load_started = function (self, level_session_id)
+		if not self.has_hot_join_synced_party_and_profile then
+			self.server:hot_join_sync_party_and_profiles(self.peer_id)
+
+			self.has_hot_join_synced_party_and_profile = true
 		end
 	end,
 	on_exit = function (self, new_state)
@@ -174,17 +176,18 @@ PeerStates.Loading = {
 
 		self.game_started = false
 		self.is_ingame = nil
-		local mechanism_manager = Managers.mechanism
-		local network_transmit = self.server.network_transmit
-		local peer_id = self.peer_id
-		self._sent_rpc_load_level = false
-
-		mechanism_manager:sync_game_mode_data_to_peer(network_transmit, peer_id)
 	end,
 	rpc_is_ingame = function (self)
 		print("[PSM] Got rpc_is_ingame in PeerStates.Loading, is that ok?")
 
 		self.is_ingame = true
+	end,
+	rpc_level_load_started = function (self, level_session_id)
+		if not self.has_hot_join_synced_party_and_profile then
+			self.server:hot_join_sync_party_and_profiles(self.peer_id)
+
+			self.has_hot_join_synced_party_and_profile = true
+		end
 	end,
 	rpc_level_loaded = function (self, level_id)
 		self.loaded_level = NetworkLookup.level_keys[level_id]
@@ -198,27 +201,6 @@ PeerStates.Loading = {
 	end,
 	update = function (self, dt)
 		local server = self.server
-
-		if not self._sent_rpc_load_level and server.server_peer_id ~= self.peer_id then
-			if self.server:is_network_state_fully_synced_for_peer(self.peer_id) then
-				print("SENDING RPC_LOAD_LEVEL FROM PEER_STATE", self.peer_id)
-
-				local network_transmit = self.server.network_transmit
-
-				network_transmit:send_rpc("rpc_load_level", self.peer_id)
-
-				self._sent_rpc_load_level = true
-			else
-				return
-			end
-		end
-
-		if not self._client_joined_done then
-			Managers.mechanism:client_joined(self.peer_id)
-
-			self._client_joined_done = true
-		end
-
 		local level_transition_handler = Managers.level_transition_handler
 		local level_key = level_transition_handler:get_current_level_key()
 

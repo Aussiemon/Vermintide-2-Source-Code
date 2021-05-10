@@ -1,8 +1,7 @@
 local settings = DLCSettings.morris
 settings.unlock_settings = {
 	morris = {
-		class = "UnlockDlc",
-		id = "552500"
+		class = "AlwaysUnlocked"
 	},
 	grass = {
 		class = "UnlockDlc",
@@ -105,11 +104,12 @@ settings.mechanism_settings = {
 		display_name = "area_selection_morris_name",
 		start_game_play_sound_event = "hud_morris_start_menu_play",
 		server_port = 27017,
+		use_alt_horde_spawning = true,
 		default_inventory = true,
-		vote_switch_mechanism_text = "vote_switch_mechanism_morris_description",
 		start_game_open_sound_event = "hud_morris_start_menu_open",
-		should_display_weapon_disclaimer = true,
+		vote_switch_mechanism_text = "vote_switch_mechanism_morris_description",
 		file = "scripts/managers/game_mode/mechanisms/deus_mechanism",
+		should_display_weapon_disclaimer = true,
 		query_port = 27016,
 		class_name = "DeusMechanism",
 		start_game_close_sound_event = "hud_morris_start_menu_close",

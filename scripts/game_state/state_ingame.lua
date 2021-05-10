@@ -1028,7 +1028,7 @@ StateIngame._check_exit = function (self, t)
 		end
 
 		local level_transition_handler = Managers.level_transition_handler
-		local level_transition_type = level_transition_handler:get_current_transition()
+		local level_transition_type = level_transition_handler:needs_level_load() and level_transition_handler:get_current_level_transition_type()
 
 		if transition or join_lobby_data or level_transition_type then
 			print("TRANSITION", transition, join_lobby_data, level_transition_type)
@@ -1218,16 +1218,6 @@ StateIngame._check_exit = function (self, t)
 			self.exit_type = "reload_level"
 
 			if self.is_server then
-				level_transition_handler:promote_next_level_data()
-
-				for _, peer_id in ipairs(self.network_server:get_peers()) do
-					if peer_id ~= self.peer_id then
-						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-
-						RPC.rpc_reload_level(channel_id)
-					end
-				end
-
 				network_manager:leave_game()
 			end
 
@@ -1239,16 +1229,6 @@ StateIngame._check_exit = function (self, t)
 			printf("Transition type %q, is server: %s", tostring(level_transition_type), tostring(self.is_server))
 
 			if self.is_server then
-				level_transition_handler:promote_next_level_data()
-
-				for _, peer_id in ipairs(self.network_server:get_peers()) do
-					if peer_id ~= self.peer_id then
-						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-
-						RPC.rpc_load_level(channel_id)
-					end
-				end
-
 				network_manager:leave_game()
 
 				local level_key = level_transition_handler:get_current_level_key()
@@ -1376,15 +1356,6 @@ StateIngame._check_exit = function (self, t)
 
 				level_transition_handler:set_next_level(level_to_transition_to, nil, level_seed, nil, nil, nil, locked_director_functions, difficulty, difficulty_tweak)
 				level_transition_handler:promote_next_level_data()
-
-				for _, peer_id in ipairs(self.network_server:get_peers()) do
-					if peer_id ~= self.peer_id then
-						local channel_id = PEER_ID_TO_CHANNEL[peer_id]
-
-						RPC.rpc_load_level(channel_id)
-					end
-				end
-
 				network_manager:leave_game()
 			else
 				self.network_client:set_wait_for_state_loading(true)
@@ -1415,7 +1386,6 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif transition == "complete_level" then
-			level_transition_handler:level_completed()
 		end
 
 		if self.exit_type then
@@ -1805,7 +1775,6 @@ StateIngame.on_exit = function (self, application_shutdown)
 	local level_transition_handler = Managers.level_transition_handler
 
 	level_transition_handler:unregister_rpcs()
-	level_transition_handler:unregister_events(Managers.state.event)
 	Managers.mechanism:unregister_rpcs()
 	Managers.party:unregister_rpcs()
 	Managers.state.game_mode:cleanup_game_mode_units()
@@ -2136,8 +2105,6 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 			end
 		end
 	end
-
-	level_transition_handler:register_events(Managers.state.event)
 
 	self.game_mode_key = game_mode_key
 

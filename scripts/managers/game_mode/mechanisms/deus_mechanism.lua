@@ -268,9 +268,11 @@ DeusMechanism.create_host_migration_info = function (self, gm_event_end_conditio
 	host_migration_info.lobby_data = {
 		is_private = is_private,
 		difficulty = run_difficulty,
+		difficulty_tweak = difficulty_tweak,
 		selected_mission_id = level_key,
 		mission_id = level_key,
-		matchmaking_type = matchmaking_type
+		matchmaking_type = matchmaking_type,
+		mechanism = mechanism
 	}
 
 	return host_migration_info
@@ -297,6 +299,24 @@ DeusMechanism.unregister_rpcs = function (self)
 
 	if self._deus_run_controller then
 		self._deus_run_controller:unregister_rpcs()
+	end
+end
+
+DeusMechanism.update_loadout = function (self)
+	local deus_run_controller = self._deus_run_controller
+
+	if deus_run_controller then
+		local own_peer_id = deus_run_controller:get_own_peer_id()
+		local current_profile_index, current_career_index = deus_run_controller:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
+
+		if current_profile_index ~= 0 then
+			local profile = SPProfiles[current_profile_index]
+			local careers = profile.careers
+			local career = careers[current_career_index]
+			local career_name = career.name
+
+			self:_update_career_loadout(REAL_PLAYER_LOCAL_ID, career_name)
+		end
 	end
 end
 
@@ -457,6 +477,7 @@ DeusMechanism.game_round_ended = function (self, t, dt, reason, reason_data)
 
 	if reason == "reload" then
 		Managers.level_transition_handler:reload_level()
+		Managers.level_transition_handler:promote_next_level_data()
 
 		self._next_state = self._state
 	elseif reason == "start_game" then
@@ -560,7 +581,7 @@ DeusMechanism._transition_next_node = function (self, next_node_key)
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak = get_next_level_data(deus_run_controller, in_map)
 
 	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak)
-	level_transition_handler:level_completed()
+	level_transition_handler:promote_next_level_data()
 
 	local next_state = node_type_to_state(current_node_type)
 
@@ -748,10 +769,6 @@ DeusMechanism.profile_available = function (self, profile_synchronizer, profile_
 	return true
 end
 
-DeusMechanism.sync_game_mode_data_to_peer = function (self, network_transmit, peer_id)
-	return
-end
-
 DeusMechanism.get_state = function (self)
 	return self._state
 end
@@ -831,7 +848,7 @@ DeusMechanism.allocate_slot = function (self, sender, profile_index)
 	return false
 end
 
-DeusMechanism.client_joined = function (self, peer_id)
+DeusMechanism.sync_mechanism_data = function (self, peer_id)
 	if self._deus_run_controller then
 		local deus_run_controller = self._deus_run_controller
 		local difficulty_id = NetworkLookup.difficulties[deus_run_controller:get_run_difficulty()]
@@ -888,7 +905,7 @@ DeusMechanism.debug_load_level = function (self, level_name)
 		local level_transition_handler = Managers.level_transition_handler
 
 		level_transition_handler:set_next_level(level_name)
-		level_transition_handler:level_completed()
+		level_transition_handler:promote_next_level_data()
 	else
 		local run_seed = "DEBUG_SPECIFIC_NODE" .. 0 .. "_" .. level_name .. "SEED" .. 0 .. "SEED_END"
 
@@ -935,7 +952,7 @@ DeusMechanism._debug_load_seed = function (self, run_seed, difficulty)
 
 	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, nil, run_difficulty, difficulty_tweak)
 	self:_update_current_state()
-	level_transition_handler:level_completed()
+	level_transition_handler:promote_next_level_data()
 end
 
 DeusMechanism._setup_run = function (self, run_id, run_seed, is_server, server_peer_id, difficulty, journey_name, dominant_god)

@@ -275,11 +275,9 @@ ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
 
 	local bots_and_players = ScoreboardHelper.get_current_players()
-	local own_player_stats_id = nil
 	local player_list = {}
 
 	for _, player in pairs(bots_and_players) do
-		local is_local_player = player.local_player
 		local player_peer_id = player:network_id()
 		local player_name = player:name()
 		local stats_id = player:stats_id()
@@ -294,13 +292,8 @@ ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer
 			is_player_controlled = is_player_controlled,
 			scores = {}
 		}
-
-		if is_local_player then
-			own_player_stats_id = stats_id
-		end
 	end
 
-	local topic_stats_table = {}
 	local scoreboard_topic_stats = ScoreboardHelper.scoreboard_topic_stats
 
 	for i, topic in ipairs(scoreboard_topic_stats) do
@@ -456,12 +449,9 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
 
 	local bots_and_players = ScoreboardHelper.get_current_players()
-	local own_player_stats_id = nil
-	local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 	local player_list = {}
 
 	for _, player in pairs(bots_and_players) do
-		local is_local_player = player.local_player
 		local player_peer_id = player:network_id()
 		local player_name = player:name()
 		local stats_id = player:stats_id()
@@ -509,10 +499,6 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 			weapon = weapon,
 			hat = hat
 		}
-
-		if is_local_player then
-			own_player_stats_id = stats_id
-		end
 	end
 
 	for stats_id, player_data in pairs(player_list) do

@@ -272,7 +272,7 @@ StoreWindowItemList._update_item_list = function (self)
 		if item then
 			local backend_items = Managers.backend:get_interface("items")
 			local item_key = item.key
-			local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
+			local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or self._parent:check_owns_bundle(backend_items, item.data.bundle_contains)
 			item.owned = item_owned
 			self._list_widgets[self._selected_gamepad_grid_index].content.owned = item_owned
 		end

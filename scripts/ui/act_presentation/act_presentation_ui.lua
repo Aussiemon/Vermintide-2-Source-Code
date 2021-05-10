@@ -44,8 +44,8 @@ ActPresentationUI.create_ui_elements = function (self)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 	self._animations = {}
 	RELOAD_UI = false
 end
@@ -114,12 +114,12 @@ ActPresentationUI._setup_level = function (self, act_key, played_level_key, prev
 end
 
 ActPresentationUI.destroy = function (self)
-	self.ui_animator = nil
+	self._ui_animator = nil
 end
 
 ActPresentationUI._update_animations = function (self, dt)
 	local animations = self._animations
-	local ui_animator = self.ui_animator
+	local ui_animator = self._ui_animator
 
 	ui_animator:update(dt)
 
@@ -156,7 +156,7 @@ end
 ActPresentationUI.draw = function (self, dt)
 	local ui_top_renderer = self.ui_top_renderer
 	local render_settings = self.render_settings
-	local ui_scenegraph = self.ui_scenegraph
+	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self.input_manager:get_service("act_presentation")
 	local alpha_multiplier = render_settings.alpha_multiplier
 
@@ -184,7 +184,7 @@ ActPresentationUI.start_presentation_animation = function (self, animation_name,
 		}
 	end
 
-	local animation_id = self.ui_animator:start_animation(animation_name, self._widgets_by_name, scenegraph_definition, params)
+	local animation_id = self._ui_animator:start_animation(animation_name, self._widgets_by_name, scenegraph_definition, params)
 	local animation_key = animation_name
 	self._animations[animation_key] = animation_id
 

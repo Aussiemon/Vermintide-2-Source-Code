@@ -20,11 +20,13 @@ local item_master_list = {
 		}
 	},
 	dr_deus_01_skin = {
-		base_skin_item = true,
+		description = "dr_deus_01_skin_01_description",
 		rarity = "plentiful",
-		item_type = "weapon_skin",
+		display_name = "dr_deus_01_skin_01_name",
+		base_skin_item = true,
 		slot_type = "weapon_skin",
 		information_text = "information_weapon_skin",
+		item_type = "weapon_skin",
 		matching_item_key = "dr_deus_01",
 		can_wield = {
 			"dr_ironbreaker"
@@ -129,11 +131,13 @@ local item_master_list = {
 		}
 	},
 	es_deus_01_skin = {
-		base_skin_item = true,
+		description = "es_deus_01_skin_01_description",
 		rarity = "plentiful",
-		item_type = "weapon_skin",
+		display_name = "es_deus_01_skin_01_name",
+		base_skin_item = true,
 		slot_type = "weapon_skin",
 		information_text = "information_weapon_skin",
+		item_type = "weapon_skin",
 		matching_item_key = "es_deus_01",
 		can_wield = {
 			"es_huntsman",
@@ -142,7 +146,7 @@ local item_master_list = {
 		}
 	},
 	es_deus_01_skin_02 = {
-		description = "we_deus_01_skin_02_description",
+		description = "es_deus_01_skin_02_description",
 		rarity = "rare",
 		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_02/wpn_es_deus_spear_02",
 		hud_icon = "weapon_generic_iweapon_generic_icon_falkencon_bow",
@@ -150,7 +154,7 @@ local item_master_list = {
 		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02",
 		information_text = "information_weapon_skin",
 		template = "es_deus_01_template",
-		display_name = "we_deus_01_skin_02_name",
+		display_name = "es_deus_01_skin_02_name",
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
 		item_type = "weapon_skin",
@@ -245,11 +249,13 @@ local item_master_list = {
 		}
 	},
 	we_deus_01_skin = {
-		base_skin_item = true,
+		description = "we_deus_01_skin_01_description",
 		rarity = "plentiful",
-		item_type = "weapon_skin",
+		display_name = "we_deus_01_skin_01_name",
+		base_skin_item = true,
 		slot_type = "weapon_skin",
 		information_text = "information_weapon_skin",
+		item_type = "weapon_skin",
 		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
@@ -364,11 +370,13 @@ local item_master_list = {
 		}
 	},
 	bw_deus_01_skin = {
-		base_skin_item = true,
+		description = "bw_deus_01_skin_01_description",
 		rarity = "plentiful",
-		item_type = "weapon_skin",
+		display_name = "bw_deus_01_skin_01_name",
+		base_skin_item = true,
 		slot_type = "weapon_skin",
 		information_text = "information_weapon_skin",
+		item_type = "weapon_skin",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
@@ -479,11 +487,13 @@ local item_master_list = {
 		}
 	},
 	wh_deus_01_skin = {
-		base_skin_item = true,
+		description = "wh_deus_01_skin_01_description",
 		rarity = "plentiful",
-		item_type = "weapon_skin",
+		display_name = "wh_deus_01_skin_01_name",
+		base_skin_item = true,
 		slot_type = "weapon_skin",
 		information_text = "information_weapon_skin",
+		item_type = "weapon_skin",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
 			"wh_bountyhunter",

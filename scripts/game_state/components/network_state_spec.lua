@@ -153,6 +153,18 @@ local function decode_lookup(lookup_key)
 	end
 end
 
+local function encode_level_transition_type(level_transition_type_string)
+	return (level_transition_type_string == "load_next_level" and 0) or 1
+end
+
+local function decode_level_transition_type(level_transition_type_number)
+	if level_transition_type_number == 0 then
+		return "load_next_level"
+	else
+		return "reload_level"
+	end
+end
+
 local spec = {
 	server = {
 		peer_ingame = {
@@ -234,6 +246,18 @@ local spec = {
 			composite_keys = {},
 			encode = encode_lookup("mechanism_keys"),
 			decode = decode_lookup("mechanism_keys")
+		},
+		level_session_id = {
+			default_value = 0,
+			type = "number",
+			composite_keys = {}
+		},
+		level_transition_type = {
+			type = "string",
+			default_value = "load_next_level",
+			composite_keys = {},
+			encode = encode_level_transition_type,
+			decode = decode_level_transition_type
 		}
 	},
 	peer = {

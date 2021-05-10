@@ -125,18 +125,6 @@ IngameUI.init = function (self, ingame_ui_context)
 		event_manager:register(self, "ui_event_transition_with_fade", "transition_with_fade")
 		event_manager:register(self, "ui_event_transition", "handle_transition")
 	end
-
-	if SaveData.new_dlcs_unlocks then
-		for dlc_name, first_time in pairs(SaveData.new_dlcs_unlocks) do
-			if first_time then
-				Managers.state.event:trigger("ui_show_popup", dlc_name, "reminder")
-
-				SaveData.new_dlcs_unlocks[dlc_name] = false
-			end
-		end
-
-		Managers.save:auto_save(SaveFileName, SaveData)
-	end
 end
 
 IngameUI.create_ui_renderer = function (self, world, is_tutorial, is_in_inn)

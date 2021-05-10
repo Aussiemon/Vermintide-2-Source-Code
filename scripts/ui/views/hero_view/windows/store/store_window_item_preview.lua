@@ -771,6 +771,8 @@ StoreWindowItemPreview._destroy_previewers = function (self)
 	end
 end
 
+local dummy_table = {}
+
 StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 	local params = self._params
 	local selected_product = params.selected_product
@@ -792,7 +794,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				local backend_items = Managers.backend:get_interface("items")
 				local item_key = item.key
 				dlc_name = item.dlc_name
-				already_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
+				already_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or self._parent:check_owns_bundle(backend_items, item.data.bundle_contains)
 				can_afford = self._parent:can_afford_item(item)
 				is_item_useable = self._parent:can_use_item(item)
 			elseif product_type == "dlc" then
@@ -1127,8 +1129,6 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 		self._parent:change_generic_actions(generic_input_actions.item_preview_purchase)
 	end
 end
-
-local dummy_table = {}
 
 StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 	local item_data = item.data

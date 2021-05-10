@@ -123,7 +123,7 @@ local widget_definitions = {
 		0
 	}),
 	body_text = UIWidgets.create_simple_text("not_assigned", "body_text", nil, nil, title_text_style),
-	ok_button = UIWidgets.create_default_button("ok_button", scenegraph_definition.ok_button.size, nil, nil, Localize("not_assigned"), nil, nil, "button_detail_04", 34, disable_with_gamepad)
+	ok_button = UIWidgets.create_default_button("ok_button", scenegraph_definition.ok_button.size, nil, nil, "n/a", nil, nil, "button_detail_04", 34, disable_with_gamepad)
 }
 local animation_definitions = {
 	on_enter = {

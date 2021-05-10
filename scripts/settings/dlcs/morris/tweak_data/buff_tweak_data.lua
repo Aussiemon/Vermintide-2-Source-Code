@@ -25,11 +25,11 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 	},
 	liquid_bravado_potion = {
 		multiplier = 1.5,
-		duration = 25
+		duration = 15
 	},
 	liquid_bravado_potion_increased = {
 		multiplier = 1,
-		duration = 15
+		duration = 25
 	},
 	vampiric_draught_potion = {
 		bonus = 5,

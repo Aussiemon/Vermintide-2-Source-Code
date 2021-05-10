@@ -33,9 +33,13 @@ MutatorHandler.init = function (self, mutators, is_server, has_local_client, wor
 	if is_server and mutators then
 		self:initialize_mutators(mutators)
 	end
+
+	Managers.state.event:register(self, "on_player_disabled", "player_disabled")
 end
 
 MutatorHandler.destroy = function (self)
+	Managers.state.event:unregister(self)
+
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
 	mutator_context.is_destroy = true
@@ -174,6 +178,20 @@ end
 
 MutatorHandler.mutators = function (self)
 	return self._mutators
+end
+
+MutatorHandler.player_disabled = function (self, disabling_event, target_unit, attacker_unit)
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+	local is_server = self._is_server
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server then
+			template.server.player_disabled_function(mutator_context, mutator_data, disabling_event, target_unit, attacker_unit)
+		end
+	end
 end
 
 MutatorHandler.ai_killed = function (self, killed_unit, killer_unit, death_data, killing_blow)

@@ -3,19 +3,21 @@ require("scripts/managers/unlock/unlock_dlc")
 require("scripts/managers/unlock/unlock_game")
 require("scripts/managers/unlock/always_unlocked")
 require("scripts/settings/unlock_settings")
+require("scripts/ui/dlc_upsell/common_popup_settings")
 
 UnlockManager = class(UnlockManager)
 
 UnlockManager.init = function (self)
 	self:_init_unlocks()
 
-	self._state = "query_unlocked"
+	self._state = "handle_reminder_popup"
 	self._query_unlocked_index = 0
 	self._dlc_status_changed = nil
 	self._update_unlocks = false
 	self._popup_ids = {}
 	self._xbox_dlc_package_names = {}
 	self._excluded_dlcs = {}
+	self._handled_reminders_popups = false
 
 	if IS_XB1 then
 		self._unlocks_ready = false
@@ -598,7 +600,27 @@ UnlockManager.debug_remove_console_dlc_reward = function (self, reward_id)
 end
 
 UnlockManager._update_backend_unlocks = function (self)
-	if self._state == "query_unlocked" then
+	if self._state == "handle_reminder_popup" then
+		if SaveData.new_dlcs_unlocks and not self._handled_reminders_popups then
+			for dlc_name, first_time in pairs(SaveData.new_dlcs_unlocks) do
+				local popup_settings = CommonPopupSettings[dlc_name]
+
+				if first_time then
+					if popup_settings and popup_settings.popup_type == "reminder" then
+						Managers.state.event:trigger("ui_show_popup", dlc_name, "reminder")
+
+						self._handled_reminders_popups = true
+					else
+						SaveData.new_dlcs_unlocks[dlc_name] = false
+					end
+				end
+			end
+		end
+
+		if not self:_has_new_dlc() then
+			self._state = "query_unlocked"
+		end
+	elseif self._state == "query_unlocked" then
 		local backend_manager = Managers.backend
 
 		if backend_manager:interfaces_ready() then
@@ -801,6 +823,20 @@ UnlockManager.set_excluded_dlcs = function (self, dlcs_to_exclude)
 		local dlc = dlcs_to_exclude[i]
 		excluded_dlcs[dlc] = true
 	end
+end
+
+UnlockManager._has_new_dlc = function (self)
+	if SaveData.new_dlcs_unlocks then
+		for _, first_time in pairs(SaveData.new_dlcs_unlocks) do
+			if first_time == true then
+				return true
+			end
+		end
+	end
+
+	Managers.save:auto_save(SaveFileName, SaveData)
+
+	return false
 end
 
 return

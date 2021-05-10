@@ -91,7 +91,7 @@ NetworkClient.destroy = function (self)
 end
 
 NetworkClient.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_reload_level", "rpc_load_level", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state")
+	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state")
 
 	self._network_event_delegate = network_event_delegate
 
@@ -149,6 +149,12 @@ NetworkClient.rpc_notify_connected = function (self, channel_id)
 	end
 end
 
+NetworkClient.is_fully_synced = function (self)
+	local own_id = Network.peer_id()
+
+	return self._network_state:is_peer_fully_synced(own_id)
+end
+
 NetworkClient.rpc_notify_in_post_game = function (self, channel_id, in_post_game)
 	if self._is_in_post_game ~= in_post_game then
 		self._is_in_post_game = in_post_game
@@ -178,14 +184,6 @@ NetworkClient.rpc_loading_synced = function (self, channel_id)
 	if self.state ~= "game_started" then
 		self:set_state("waiting_enter_game")
 	end
-end
-
-NetworkClient.rpc_reload_level = function (self, channel_id, level_seed)
-	self:set_state("loading")
-end
-
-NetworkClient.rpc_load_level = function (self, channel_id)
-	self:set_state("loading")
 end
 
 NetworkClient.rpc_set_migration_host = function (self, channel_id, peer_id, do_migrate)

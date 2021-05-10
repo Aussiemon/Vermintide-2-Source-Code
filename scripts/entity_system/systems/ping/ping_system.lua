@@ -571,9 +571,9 @@ PingSystem._remove_ping = function (self, pinger_unit)
 	local pinged_unit = data.pinged_unit
 
 	if ALIVE[pinged_unit] then
-		local ping_extension = ScriptUnit.extension(pinged_unit, "ping_system")
+		local ping_extension = ScriptUnit.has_extension(pinged_unit, "ping_system")
 
-		if ping_extension.set_pinged and ping_extension:pinged() then
+		if ping_extension and ping_extension.set_pinged and ping_extension:pinged() then
 			local apply_outline = self:_is_outline_enabled(pinged_unit)
 
 			ping_extension:set_pinged(false, nil, pinger_unit, apply_outline)

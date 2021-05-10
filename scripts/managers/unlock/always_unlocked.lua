@@ -3,9 +3,6 @@ AlwaysUnlocked = class(AlwaysUnlocked)
 AlwaysUnlocked.init = function (self, name, app_id, backend_reward_id, cosmetic)
 	self._name = name
 	self._id = app_id or "0"
-	self._backend_reward_id = nil
-	self._unlocked = true
-	self._cosmetic = true
 end
 
 AlwaysUnlocked.ready = function (self)
@@ -21,15 +18,15 @@ AlwaysUnlocked.id = function (self)
 end
 
 AlwaysUnlocked.backend_reward_id = function (self)
-	return self._backend_reward_id
+	return
 end
 
 AlwaysUnlocked.remove_backend_reward_id = function (self)
-	self._backend_reward_id = nil
+	return
 end
 
 AlwaysUnlocked.unlocked = function (self)
-	return self._unlocked
+	return true
 end
 
 AlwaysUnlocked.installed = function (self)
@@ -37,7 +34,7 @@ AlwaysUnlocked.installed = function (self)
 end
 
 AlwaysUnlocked.is_cosmetic = function (self)
-	return self._cosmetic
+	return true
 end
 
 AlwaysUnlocked.requires_restart = function (self)

@@ -8,7 +8,8 @@ local transitions = {
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
 		else
-			local text = Localize("leave_game_popup_text")
+			local warning_message_data = Managers.mechanism:mechanism_setting("progress_loss_warning_message_data")
+			local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("leave_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("leave_game_popup_text")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_leave_game_topic"), "leave_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 	end,
@@ -21,7 +22,8 @@ local transitions = {
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup_hero_view", Localize("menu_ok"))
 		else
-			local text = Localize("leave_game_popup_text")
+			local warning_message_data = Managers.mechanism:mechanism_setting("progress_loss_warning_message_data")
+			local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("leave_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("leave_game_popup_text")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_leave_game_topic"), "leave_game_hero_view", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 		end
 	end,
@@ -29,21 +31,27 @@ local transitions = {
 		self:_cancel_popup()
 
 		local network_server = Managers.state.network.network_server
+		local warning_message_data = Managers.mechanism:mechanism_setting("progress_loss_warning_message_data")
 
 		if network_server and network_server:num_active_peers() > 1 and network_server:are_all_peers_ingame() then
-			local text = Localize("exit_game_popup_text") .. "\n\n" .. Localize("exit_game_popup_text_is_hosting_players")
+			local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize("exit_game_popup_text_is_hosting_players") .. [[
+
+
+
+]] .. Localize(warning_message_data.message)) or Localize("exit_game_popup_text") .. "\n\n" .. Localize("exit_game_popup_text_is_hosting_players")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 
 			return
 		end
 
-		local text = Localize("exit_game_popup_text")
+		local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("leave_game_popup_text")
 		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 	end,
 	quit_game_hero_view = function (self)
 		self:_cancel_popup()
 
-		local text = Localize("exit_game_popup_text")
+		local warning_message_data = Managers.mechanism:mechanism_setting("progress_loss_warning_message_data")
+		local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("leave_game_popup_text")
 		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 	end,
 	return_to_title_screen = function (self)

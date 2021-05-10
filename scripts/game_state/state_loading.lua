@@ -16,14 +16,11 @@ StateLoading.join_lobby_timeout = 120
 StateLoading.join_lobby_refresh_interval = 5
 StateLoading.LoadoutResyncStates = {
 	NEEDS_RESYNC = "needs_resync",
-	WAIT_FOR_RPC_LOAD_LEVEL = "wait_for_rpc_load_level",
+	WAIT_FOR_LEVEL_LOAD = "wait_for_level_load",
 	IDLE = "idle",
 	DONE = "done",
 	CHECK_RESYNC = "check_resync",
 	RESYNCING = "resyncing"
-}
-local RPCS = {
-	"rpc_load_level"
 }
 local LOADING_SCREEN_MUSIC_BY_GAME_MODE = {
 	survival = "Play_loading_screen_music",
@@ -86,7 +83,6 @@ StateLoading.on_enter = function (self, param_block)
 	Managers.chat:set_input_manager(self._input_manager)
 	self:_setup_state_machine()
 	self:_unmute_all_world_sounds()
-	Managers.mechanism:handle_level_load()
 
 	if self._switch_to_tutorial_backend then
 		Managers.backend:start_tutorial()
@@ -1333,7 +1329,7 @@ StateLoading._try_next_state = function (self, dt)
 
 		local packages_loaded = self:_packages_loaded()
 
-		if packages_loaded and not self._async_level_spawner and (DEDICATED_SERVER or self._rpc_load_level_received or not self._host_migrating) then
+		if packages_loaded and not self._async_level_spawner then
 			local level_transition_handler = Managers.level_transition_handler
 			local world_name = LevelHelper.INGAME_WORLD_NAME
 			local level_key = level_transition_handler:get_current_level_keys()
@@ -1813,10 +1809,24 @@ StateLoading._packages_loaded = function (self)
 	return false
 end
 
-StateLoading.rpc_load_level = function (self, channel_id)
-	self._rpc_load_level_received = true
+StateLoading.load_current_level = function (self)
+	print("[StateLoading] load_current_level")
 
-	print("[StateLoading] got rpc_load_level")
+	local done_again_during_loading = self._already_loaded_once
+
+	Managers.mechanism:handle_level_load(done_again_during_loading)
+
+	self._already_loaded_once = true
+
+	if self._network_client then
+		self._network_client:set_state("loading")
+	end
+
+	local level_transition_handler = Managers.level_transition_handler
+
+	level_transition_handler:load_current_level()
+
+	self._should_start_breed_loading = true
 
 	if self._async_level_spawner then
 		self._async_level_spawner:destroy()
@@ -1839,14 +1849,8 @@ StateLoading.rpc_load_level = function (self, channel_id)
 	self._level_spawned = false
 	self._permission_to_go_to_next_state = false
 	self._has_sent_level_loaded = false
-	local done_again_during_loading = true
 
-	Managers.mechanism:handle_level_load(done_again_during_loading)
 	self:set_loadout_resync_state(StateLoading.LoadoutResyncStates.CHECK_RESYNC)
-end
-
-StateLoading.set_host_migrating = function (self, host_migrating)
-	self._host_migrating = host_migrating
 end
 
 StateLoading._update_loadout_resync = function (self)
@@ -1857,10 +1861,7 @@ StateLoading._update_loadout_resync = function (self)
 		return state
 	end
 
-	if state == states.WAIT_FOR_RPC_LOAD_LEVEL and self._rpc_load_level_received then
-		state = states.CHECK_RESYNC
-
-		print("[StateLoading] loadout_resync_state WAIT_FOR_RPC_LOAD_LEVEL -> CHECK_RESYNC")
+	if state == states.WAIT_FOR_LEVEL_LOAD then
 	end
 
 	if state == states.CHECK_RESYNC and self:has_joined() then
@@ -1875,6 +1876,7 @@ StateLoading._update_loadout_resync = function (self)
 		loadout_changed = loadout_changed or talents_changed
 
 		print("[StateLoading] loadout_changed:", loadout_changed, "old_loadout:", old_loadout, "new_loadout:", new_loadout, "level_key:", level_key, "game_mode:", game_mode)
+		Managers.mechanism:update_loadout()
 
 		if loadout_changed then
 			state = states.NEEDS_RESYNC
@@ -2067,8 +2069,6 @@ StateLoading.register_rpcs = function (self)
 		end
 	end
 
-	network_event_delegate:register(self, unpack(RPCS))
-
 	self._registered_rpcs = true
 
 	print("registering RPCs")
@@ -2096,8 +2096,6 @@ StateLoading._unregister_rpcs = function (self)
 			level_end_view_wrapper:unregister_rpcs()
 		end
 	end
-
-	self._network_event_delegate:unregister(self)
 
 	self._registered_rpcs = false
 end
@@ -2185,10 +2183,6 @@ StateLoading.setup_lobby_finder = function (self, lobby_joined_callback, lobby_t
 	return self._lobby_finder
 end
 
-StateLoading.should_start_breed_load_process = function (self)
-	self._should_start_breed_loading = true
-end
-
 StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platform_lobby)
 	local loading_context = self.parent.loading_context
 
@@ -2210,10 +2204,6 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 
 	level_transition_handler:promote_next_level_data()
 
-	local done_again_during_loading = true
-
-	Managers.mechanism:handle_level_load(done_again_during_loading)
-
 	local level_key = level_transition_handler:get_current_level_key()
 
 	if not self:loading_view_setup_done() then
@@ -2225,8 +2215,6 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 	end
 
 	self._load_global_packages()
-	level_transition_handler:load_current_level()
-	self:should_start_breed_load_process()
 
 	if not wait_for_joined_callback then
 		self:_create_network_server()

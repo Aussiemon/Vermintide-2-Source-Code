@@ -81,6 +81,7 @@ local terror_event_blueprints = {
 	citadel_arena_a1_end = {
 		{
 			"continue_when_spawned_count",
+			duration = 60,
 			condition = function (counter)
 				return counter.boss <= 0 and counter.main <= 0 and counter.elite <= 0
 			end
@@ -165,7 +166,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -202,7 +203,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -226,13 +227,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	deus_citadel_arena_a1_chaos = {
@@ -272,7 +266,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -309,7 +303,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -333,13 +327,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	deus_citadel_arena_a1_beastmen = {
@@ -373,7 +360,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -410,7 +397,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -434,13 +421,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	citadel_arena_a2 = {
@@ -520,6 +500,7 @@ local terror_event_blueprints = {
 	citadel_arena_a2_end = {
 		{
 			"continue_when_spawned_count",
+			duration = 60,
 			condition = function (counter)
 				return counter.boss <= 0 and counter.main <= 0 and counter.elite <= 0
 			end
@@ -610,7 +591,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -647,7 +628,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -671,13 +652,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	deus_citadel_arena_a2_chaos = {
@@ -717,7 +691,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -754,7 +728,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -778,13 +752,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	deus_citadel_arena_a2_beastmen = {
@@ -818,7 +785,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -855,7 +822,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -879,13 +846,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	citadel_arena_b1 = {
@@ -965,6 +925,7 @@ local terror_event_blueprints = {
 	citadel_arena_b1_end = {
 		{
 			"continue_when_spawned_count",
+			duration = 60,
 			condition = function (counter)
 				return counter.boss <= 0 and counter.main <= 0 and counter.elite <= 0
 			end
@@ -1090,7 +1051,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1159,7 +1120,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1225,13 +1186,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	deus_citadel_arena_b1_chaos = {
@@ -1343,7 +1297,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1404,7 +1358,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1464,11 +1418,8 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
+			"delay",
+			duration = 5
 		}
 	},
 	deus_citadel_arena_b1_beastmen = {
@@ -1576,7 +1527,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1637,7 +1588,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1697,11 +1648,8 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
+			"delay",
+			duration = 5
 		}
 	},
 	citadel_arena_b2 = {
@@ -1781,6 +1729,7 @@ local terror_event_blueprints = {
 	citadel_arena_b2_end = {
 		{
 			"continue_when_spawned_count",
+			duration = 60,
 			condition = function (counter)
 				return counter.boss <= 0 and counter.main <= 0 and counter.elite <= 0
 			end
@@ -1865,7 +1814,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1902,7 +1851,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -1926,13 +1875,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	deus_citadel_arena_b2_chaos = {
@@ -1972,7 +1914,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -2009,7 +1951,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -2033,13 +1975,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	deus_citadel_arena_b2_beastmen = {
@@ -2073,7 +2008,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -2110,7 +2045,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -2134,13 +2069,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	arena_citadel_terror = {
@@ -2220,6 +2148,7 @@ local terror_event_blueprints = {
 	arena_citadel_terror_end = {
 		{
 			"continue_when_spawned_count",
+			duration = 60,
 			condition = function (counter)
 				return counter.boss <= 0 and counter.main <= 0 and counter.elite <= 0
 			end
@@ -2346,7 +2275,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 15
 			end
@@ -2364,7 +2293,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 30
 			end
@@ -2381,7 +2310,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2401,7 +2330,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2418,7 +2347,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2458,7 +2387,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.boss < 1
 			end
@@ -2505,7 +2434,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2522,7 +2451,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2539,7 +2468,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2553,13 +2482,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	arena_citadel_terror_chaos_wave_1 = {
@@ -2588,7 +2510,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 15
 			end
@@ -2606,7 +2528,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 30
 			end
@@ -2623,7 +2545,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2643,7 +2565,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2660,7 +2582,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2700,7 +2622,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.boss < 1
 			end
@@ -2747,7 +2669,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2764,7 +2686,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2781,7 +2703,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2795,13 +2717,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	arena_citadel_terror_beastmen_wave_1 = {
@@ -2830,7 +2745,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 15
 			end
@@ -2848,7 +2763,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 30
 			end
@@ -2865,7 +2780,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2882,7 +2797,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2899,7 +2814,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -2939,7 +2854,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.boss < 1
 			end
@@ -2983,7 +2898,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -3000,7 +2915,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -3017,7 +2932,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -3031,13 +2946,6 @@ local terror_event_blueprints = {
 		{
 			"delay",
 			duration = 5
-		},
-		{
-			"continue_when_spawned_count",
-			duration = 120,
-			condition = function (counter)
-				return counter.main < 1
-			end
 		}
 	},
 	arena_citadel_terror_skaven_special = {
@@ -3088,7 +2996,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.special < 1
 			end
@@ -3140,7 +3048,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.special < 1
 			end
@@ -3173,7 +3081,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.special < 1
 			end

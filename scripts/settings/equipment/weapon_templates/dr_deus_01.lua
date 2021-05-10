@@ -206,14 +206,23 @@ weapon_template.ammo_data = {
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.dr_deus_01_projectile
 }
 weapon_template.attack_meta_data = {
+	max_range = 20,
 	aim_at_node = "j_spine1",
-	minimum_charge_time = 0.45,
-	ignore_enemies_for_obstruction_charged = true,
-	can_charge_shot = true,
-	charge_above_range = 10,
-	charge_when_obstructed = false,
+	can_charge_shot = false,
 	ignore_enemies_for_obstruction = false,
-	aim_at_node_charged = "j_neck"
+	aim_data = {
+		min_radius_pseudo_random_c = 0.3021,
+		max_radius_pseudo_random_c = 0.0557,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	},
+	aim_data_charged = {
+		min_radius_pseudo_random_c = 0.0557,
+		max_radius_pseudo_random_c = 0.01475,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	},
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Special, BreedCategory.Shielded, BreedCategory.SuperArmor, BreedCategory.Boss)
 }
 weapon_template.aim_assist_settings = {
 	max_range = 50,

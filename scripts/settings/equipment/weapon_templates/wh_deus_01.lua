@@ -291,8 +291,11 @@ weapon_template.ammo_data = {
 	play_reload_anim_on_wield_reload = true
 }
 weapon_template.attack_meta_data = {
-	aim_at_node = "j_head",
-	can_charge_shot = false
+	max_range = 10,
+	aim_at_node = "j_spine",
+	can_charge_shot = false,
+	ignore_enemies_for_obstruction = true,
+	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.default_spread_template = "wh_deus_01"
 weapon_template.spread_lerp_speed = 5

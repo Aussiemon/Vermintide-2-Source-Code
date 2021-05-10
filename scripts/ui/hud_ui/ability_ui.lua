@@ -302,7 +302,7 @@ end
 AbilityUI.event_input_changed = function (self)
 	local inventory_slots = InventorySettings.slots
 	local num_inventory_slots = #inventory_slots
-	local input_action = "action_career"
+	local input_action = (IS_CONSOLE and "ability") or "action_career"
 	local widget = self._widgets_by_name.ability
 
 	self:_set_input(widget, input_action)

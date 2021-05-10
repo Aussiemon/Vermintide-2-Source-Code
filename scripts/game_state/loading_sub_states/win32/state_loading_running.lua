@@ -35,7 +35,7 @@ StateLoadingRunning._init_network = function (self)
 		self.parent:register_rpcs()
 	end
 
-	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_RPC_LOAD_LEVEL
+	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_LEVEL_LOAD
 
 	print("[StateLoadingRunning] Selecting loadout_resync_state...", loading_context.join_lobby_data, loading_context.join_server_data, loading_context.start_lobby_data)
 
@@ -97,7 +97,7 @@ StateLoadingRunning.update = function (self, dt)
 
 	local level_transition_handler = Managers.level_transition_handler
 
-	if not LEVEL_EDITOR_TEST and level_transition_handler:needs_level_load() then
+	if not LEVEL_EDITOR_TEST and ((self.parent._network_server and level_transition_handler:needs_level_load()) or (self.parent._network_client and self.parent._network_client:is_fully_synced() and level_transition_handler:needs_level_load())) then
 		if not self.parent:loading_view_setup_done() then
 			local level_key = level_transition_handler:get_current_level_key()
 
@@ -108,8 +108,7 @@ StateLoadingRunning.update = function (self, dt)
 			self.parent:setup_menu_assets()
 		end
 
-		level_transition_handler:load_current_level()
-		self.parent:should_start_breed_load_process()
+		self.parent:load_current_level()
 	end
 
 	if script_data.honduras_demo and not self.parent:loading_view_setup_done() then

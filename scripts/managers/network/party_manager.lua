@@ -106,6 +106,11 @@ end
 PartyManager.gather_party_members = function (self)
 	local members = {}
 	local party = self:get_local_player_party()
+
+	if not party then
+		return members
+	end
+
 	local occupied_slots = party.occupied_slots
 
 	for slot_id, player_data in ipairs(occupied_slots) do

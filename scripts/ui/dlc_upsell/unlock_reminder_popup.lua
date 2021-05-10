@@ -25,7 +25,9 @@ UnlockReminderPopup._handle_input = function (self, dt)
 
 	if UIUtils.is_button_pressed(widgets_by_name.ok_button) or input_service:get("back", true) or input_service:get("confirm_press", true) then
 		self._has_widget_been_closed = true
+		SaveData.new_dlcs_unlocks[self._dlc_name] = false
 
+		Managers.save:auto_save(SaveFileName, SaveData)
 		self:hide()
 
 		return

@@ -54,7 +54,6 @@ StateLoadingMigrateHost._init_network = function (self)
 		self.parent:start_matchmaking()
 	else
 		network_printf("Migrating to host %s, trying to find its lobby...", host_to_migrate_to)
-		self.parent:set_host_migrating(true)
 
 		local lobby_finder = self.parent:setup_lobby_finder(callback(self, "cb_lobby_joined"), nil, host_to_migrate_to)
 		local requirements = {

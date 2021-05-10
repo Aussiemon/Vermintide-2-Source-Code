@@ -1,7 +1,10 @@
 DeusCursedChestExtension = class(DeusCursedChestExtension)
+local RPCS = {
+	"rpc_deus_chest_looted"
+}
 local STATES = {
 	OPEN = 3,
-	LOOTED = 4,
+	HOTJOIN_OPEN = 4,
 	WAITING = 1,
 	INITIALIZING = 0,
 	RUNNING = 2
@@ -23,6 +26,8 @@ DeusCursedChestExtension.init = function (self, extension_init_context, unit, ex
 	self._unit = unit
 	self._is_server = Managers.player.is_server
 	self.game = extension_init_data.game
+
+	self:register_rpcs(extension_init_context.network_transmit.network_event_delegate)
 end
 
 DeusCursedChestExtension.game_object_initialized = function (self, unit, go_id)
@@ -43,6 +48,20 @@ DeusCursedChestExtension.destroy = function (self)
 	if self._objective_unit then
 		self:_clear_objective_unit()
 	end
+
+	self:unregister_rpcs()
+end
+
+DeusCursedChestExtension.register_rpcs = function (self, network_event_delegate)
+	network_event_delegate:register(self, unpack(RPCS))
+
+	self._network_event_delegate = network_event_delegate
+end
+
+DeusCursedChestExtension.unregister_rpcs = function (self)
+	self._network_event_delegate:unregister(self)
+
+	self._network_event_delegate = nil
 end
 
 DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
@@ -65,13 +84,16 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 			local position = POSITION_LOOKUP[self._unit]
 
 			WwiseUtils.trigger_position_event(context.world, SOUND_EVENTS.trigger_cursed_chest, position)
+		elseif current_state == STATES.HOTJOIN_OPEN then
+			Unit.flow_event(self._unit, "state_HOTJOIN_OPEN")
+
+			self._reward_collected = true
 		elseif current_state == STATES.OPEN then
 			if self._is_server then
 				local mission_system = Managers.state.entity:system("mission_system")
 
 				mission_system:end_mission("deus_cursed_chest_defend", true)
 
-				local pickup_system = Managers.state.entity:system("pickup_system")
 				local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
 
 				deus_run_controller:record_cursed_chest_purified()
@@ -105,7 +127,11 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 			Managers.state.event:trigger("player_cleansed_deus_cursed_chest", player)
 		end
 
-		self._prev_state = current_state
+		if current_state == STATES.HOTJOIN_OPEN then
+			self._prev_state = STATES.OPEN
+		else
+			self._prev_state = current_state
+		end
 	elseif current_state == STATES.RUNNING and self._is_server and not TerrorEventMixer.find_event("cursed_chest_prototype") then
 		self:_set_state(STATES.OPEN)
 	end
@@ -161,6 +187,12 @@ DeusCursedChestExtension.on_reward_collected = function (self)
 	Unit.flow_event(self._unit, "state_LOOTED")
 
 	self._reward_collected = true
+
+	if not self._is_server then
+		local go_id = Managers.state.unit_storage:go_id(self._unit)
+
+		Managers.state.network.network_transmit:send_rpc_server("rpc_deus_chest_looted", go_id)
+	end
 end
 
 DeusCursedChestExtension._clear_objective_unit = function (self)
@@ -251,6 +283,17 @@ DeusCursedChestExtension._get_state = function (self)
 		return STATES.INITIALIZING
 	end
 
+	local collected_by_peers = GameSession.game_object_field(game_session, go_id, "collected_by_peers")
+	local mechanism = Managers.mechanism:game_mechanism()
+	local deus_run_controller = mechanism:get_deus_run_controller()
+	local peer_id = deus_run_controller:get_own_peer_id()
+	local reward_collected = self._reward_collected
+	local new_reward_collected = table.contains(collected_by_peers, peer_id)
+
+	if new_reward_collected ~= reward_collected and new_reward_collected == true then
+		return STATES.HOTJOIN_OPEN
+	end
+
 	return GameSession.game_object_field(game_session, go_id, "deus_cursed_chest_state")
 end
 
@@ -260,6 +303,24 @@ DeusCursedChestExtension._set_state = function (self, state)
 
 	fassert(game and go_id, "setting state without network setup done")
 	GameSession.set_game_object_field(game, go_id, "deus_cursed_chest_state", state)
+end
+
+DeusCursedChestExtension.rpc_deus_chest_looted = function (self, channel_id, go_id)
+	local own_go_id = Managers.state.unit_storage:go_id(self._unit)
+
+	if go_id ~= own_go_id then
+		return
+	end
+
+	local game = Managers.state.network:game()
+
+	fassert(game and own_go_id, "setting state without network setup done")
+
+	local collected_by_peers = GameSession.game_object_field(game, own_go_id, "collected_by_peers")
+	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+	table.insert(collected_by_peers, peer_id)
+	GameSession.set_game_object_field(game, own_go_id, "collected_by_peers", collected_by_peers)
 end
 
 return

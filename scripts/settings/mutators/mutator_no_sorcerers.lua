@@ -63,7 +63,7 @@ return {
 	end,
 	post_process_terror_event = function (context, data, elements)
 		for _, element in ipairs(elements) do
-			if element[1] == "spawn_special" then
+			if element.breed_name then
 				if type(element.breed_name) == "string" then
 					element.breed_name = conversion_table[element.breed_name] or element.breed_name
 				else

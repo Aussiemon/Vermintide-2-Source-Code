@@ -1,4 +1,4 @@
-local base_nurgle_storm = require("scripts/settings/mutators/mutator_nurgle_storm")
+local base_nurgle_storm = require("scripts/settings/mutators/mutator_nurgle_storm_v2")
 local curse_blood_storm = table.clone(base_nurgle_storm)
 curse_blood_storm.display_name = "curse_blood_storm_name"
 curse_blood_storm.description = "curse_blood_storm_desc"
@@ -14,7 +14,7 @@ local DIFFICULTY_POWER_LEVEL = {
 	easy = 20
 }
 
-curse_blood_storm.server_initialize_function = function (context, data)
+curse_blood_storm.server_start_function = function (context, data)
 	local time = Managers.time:time("game")
 	data.spawn_nurgle_storm_at = time + 30
 	data.next_bleed_time = 0
@@ -28,6 +28,8 @@ curse_blood_storm.server_initialize_function = function (context, data)
 	data.storm_spawn_position = Vector3Box()
 	data.offset_spawn_distance = 3
 	data.delay_between_spawns = 2
+	data.unchecked_positions = {}
+	data.astar = GwNavAStar.create()
 end
 
 local base_update_function = curse_blood_storm.server_update_function

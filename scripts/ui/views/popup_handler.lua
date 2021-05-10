@@ -121,7 +121,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-10,
+			-35,
 			2
 		},
 		size = {

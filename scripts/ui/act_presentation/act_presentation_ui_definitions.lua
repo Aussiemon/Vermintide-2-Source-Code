@@ -260,6 +260,15 @@ local widgets = {
 	level_title = UIWidgets.create_simple_text("Catacombs", "level_title", nil, nil, level_title_text_style),
 	title_divider = UIWidgets.create_simple_texture("divider_01_top", "title_divider")
 }
+local deus_widgets = {
+	level = UIWidgets.create_expedition_widget_func("level", nil, DeusJourneySettings.journey_cave, "journey_cave", {
+		width = 800,
+		spacing_x = 40
+	}, 1.2),
+	act_title = UIWidgets.create_simple_text("ACT IV", "act_title", nil, nil, act_title_text_style),
+	level_title = UIWidgets.create_simple_text("Catacombs", "level_title", nil, nil, level_title_text_style),
+	title_divider = UIWidgets.create_simple_texture("divider_01_top", "title_divider")
+}
 local animations = {
 	enter = {
 		{
@@ -508,9 +517,213 @@ local animations = {
 		}
 	}
 }
+local deus_animations = {
+	enter = {
+		{
+			name = "entry",
+			start_progress = 2,
+			end_progress = 2.5,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				local render_settings = params.render_settings
+				render_settings.alpha_multiplier = 0
+				params.played_entry_sound = false
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				if not params.played_entry_sound then
+					params.played_entry_sound = true
+
+					WwiseWorld.trigger_event(params.wwise_world, "play_gui_skullz_show_plate")
+				end
+
+				local anim_fraction = math.easeInCubic(progress)
+				local render_settings = params.render_settings
+				render_settings.alpha_multiplier = anim_fraction
+				local size_fraction = math.easeCubic(1 - progress)
+				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
+				local widget = widgets.level
+				local style = widget.style
+				local size_multiplier = 3
+				local icon_size = style.level_icon.texture_size
+				icon_size[1] = 180 + 180 * size_multiplier * anim_size_fraction
+				icon_size[2] = 180 + 180 * size_multiplier * anim_size_fraction
+				local frame_size = style.level_icon_frame.texture_size
+				frame_size[1] = 200 + 200 * size_multiplier * anim_size_fraction
+				frame_size[2] = 200 + 200 * size_multiplier * anim_size_fraction
+				local icon_mask_size = style.level_icon_mask.texture_size
+				icon_mask_size[1] = 110 + 110 * size_multiplier * anim_size_fraction
+				icon_mask_size[2] = 110 + 110 * size_multiplier * anim_size_fraction
+				local theme_icon_size = style.theme_icon.texture_size
+				theme_icon_size[1] = 40 + 40 * size_multiplier * anim_size_fraction
+				theme_icon_size[2] = 40 + 40 * size_multiplier * anim_size_fraction
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "text",
+			start_progress = 2.4,
+			end_progress = 2.6,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				local alpha = 0
+				local text_style = widgets.level_title.style.text
+				local text_shadow_style = widgets.level_title.style.text_shadow
+				local title_divider_style = widgets.title_divider.style.texture_id
+				text_style.text_color[1] = alpha
+				text_shadow_style.text_color[1] = alpha
+				title_divider_style.color[1] = alpha
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_fraction = math.easeCubic(progress)
+				local alpha = 255 * anim_fraction
+				local text_style = widgets.level_title.style.text
+				local text_shadow_style = widgets.level_title.style.text_shadow
+				local title_divider_style = widgets.title_divider.style.texture_id
+				text_style.text_color[1] = alpha
+				text_shadow_style.text_color[1] = alpha
+				title_divider_style.color[1] = alpha
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "fade_out",
+			start_progress = 5.7,
+			end_progress = 6.2,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_fraction = math.easeInCubic(progress)
+				local render_settings = params.render_settings
+				render_settings.alpha_multiplier = 1 - anim_fraction
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	enter_first_time = {
+		{
+			name = "entry",
+			start_progress = 2,
+			end_progress = 2.5,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				local render_settings = params.render_settings
+				render_settings.alpha_multiplier = 0
+				params.played_entry_sound = false
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				if not params.played_entry_sound then
+					params.played_entry_sound = true
+
+					WwiseWorld.trigger_event(params.wwise_world, "play_gui_skullz_show_plate")
+				end
+
+				local anim_fraction = math.easeInCubic(progress)
+				local render_settings = params.render_settings
+				render_settings.alpha_multiplier = anim_fraction
+				local size_fraction = math.easeCubic(1 - progress)
+				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
+				local widget = widgets.Enlevel
+				local style = widget.style
+				local size_multiplier = 3
+				local icon_size = style.level_icon.texture_size
+				icon_size[1] = 180 + 180 * size_multiplier * anim_size_fraction
+				icon_size[2] = 180 + 180 * size_multiplier * anim_size_fraction
+				local frame_size = style.level_icon_frame.texture_size
+				frame_size[1] = 200 + 200 * size_multiplier * anim_size_fraction
+				frame_size[2] = 200 + 200 * size_multiplier * anim_size_fraction
+				local icon_mask_size = style.level_icon_mask.texture_size
+				icon_mask_size[1] = 110 + 110 * size_multiplier * anim_size_fraction
+				icon_mask_size[2] = 110 + 110 * size_multiplier * anim_size_fraction
+				local theme_icon_size = style.theme_icon.texture_size
+				theme_icon_size[1] = 40 + 40 * size_multiplier * anim_size_fraction
+				theme_icon_size[2] = 40 + 40 * size_multiplier * anim_size_fraction
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "text",
+			start_progress = 2.4,
+			end_progress = 2.8,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				local alpha = 0
+				local text_style = widgets.level_title.style.text
+				local text_shadow_style = widgets.level_title.style.text_shadow
+				local title_divider_style = widgets.title_divider.style.texture_id
+				text_style.text_color[1] = alpha
+				text_shadow_style.text_color[1] = alpha
+				title_divider_style.color[1] = alpha
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_fraction = math.easeCubic(progress)
+				local alpha = 255 * anim_fraction
+				local text_style = widgets.level_title.style.text
+				local text_shadow_style = widgets.level_title.style.text_shadow
+				local title_divider_style = widgets.title_divider.style.texture_id
+				text_style.text_color[1] = alpha
+				text_shadow_style.text_color[1] = alpha
+				title_divider_style.color[1] = alpha
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "glow",
+			start_progress = 2.5,
+			end_progress = 4.5,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				local alpha = 0
+				local icon_glow = widgets.level.style.icon_glow
+				icon_glow.color[1] = alpha
+				params.played_skull_sound = false
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				if not params.played_skull_sound then
+					params.played_skull_sound = true
+					local difficulty_index = params.difficulty_index
+
+					WwiseWorld.trigger_event(params.wwise_world, "play_gui_skullz_tier_0" .. difficulty_index)
+				end
+
+				local anim_fraction = math.easeOutCubic(progress)
+				anim_fraction = math.ease_pulse(anim_fraction)
+				local alpha = 255 * anim_fraction
+				local icon_glow = widgets.level.style.icon_glow
+				icon_glow.color[1] = alpha
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "fade_out",
+			start_progress = 5.7,
+			end_progress = 6.2,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_fraction = math.easeInCubic(progress)
+				local render_settings = params.render_settings
+				render_settings.alpha_multiplier = 1 - anim_fraction
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
+}
 
 return {
 	animations = animations,
 	scenegraph_definition = scenegraph_definition,
-	widgets = widgets
+	widgets = widgets,
+	deus_widgets = deus_widgets,
+	deus_animations = deus_animations
 }

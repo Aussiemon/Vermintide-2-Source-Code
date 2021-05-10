@@ -81,6 +81,7 @@ local terror_event_blueprints = {
 	arena_ruin_terror_end = {
 		{
 			"continue_when_spawned_count",
+			duration = 60,
 			condition = function (counter)
 				return counter.boss <= 0 and counter.main <= 0 and counter.elite <= 0
 			end
@@ -212,7 +213,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -268,14 +269,14 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.boss < 1
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -298,7 +299,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -325,14 +326,14 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.elite < 4
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -389,7 +390,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 8
 			end
@@ -416,7 +417,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -466,7 +467,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.boss < 1
 			end
@@ -497,14 +498,14 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.elite < 4
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -555,14 +556,14 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.elite < 4
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -611,14 +612,14 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.elite < 4
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -699,14 +700,14 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.elite < 4
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -765,21 +766,21 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.boss < 1
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.elite < 4
 			end
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -812,7 +813,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -843,7 +844,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.main < 10
 			end
@@ -923,7 +924,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.special < 1
 			end
@@ -977,7 +978,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.special < 1
 			end
@@ -1011,7 +1012,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when_spawned_count",
-			duration = 120,
+			duration = 60,
 			condition = function (counter)
 				return counter.special < 1
 			end

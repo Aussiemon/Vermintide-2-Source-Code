@@ -255,7 +255,8 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 		local intensity_state_id = NetworkLookup.music_group_states.low_battle
 		local game_state_id = NetworkLookup.music_group_states.explore
 		local boss_state_id = NetworkLookup.music_group_states.no_boss
-		local override_state_id = NetworkLookup.music_group_states.false
+		local is_weave = Managers.mechanism:game_mechanism():get_state() == "weave"
+		local override_state_id = (is_weave and NetworkLookup.music_group_states.winds) or NetworkLookup.music_group_states.false
 		local init_data = {
 			go_type = go_type,
 			combat_intensity = intensity_state_id,

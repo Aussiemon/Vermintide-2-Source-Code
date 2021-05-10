@@ -706,7 +706,19 @@ morris_weapon_properties.combinations = {
 			},
 			{
 				"deus_coins_greed",
-				"stamina"
+				"power_vs_unarmoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_armoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_large"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_frenzy"
 			}
 		},
 		exotic = {
@@ -836,7 +848,19 @@ morris_weapon_properties.combinations = {
 			},
 			{
 				"deus_coins_greed",
-				"stamina"
+				"power_vs_unarmoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_armoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_large"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_frenzy"
 			}
 		},
 		unique = {
@@ -966,7 +990,19 @@ morris_weapon_properties.combinations = {
 			},
 			{
 				"deus_coins_greed",
-				"stamina"
+				"power_vs_unarmoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_armoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_large"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_frenzy"
 			}
 		}
 	},
@@ -1123,7 +1159,19 @@ morris_weapon_properties.combinations = {
 			},
 			{
 				"deus_coins_greed",
-				"stamina"
+				"power_vs_unarmoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_armoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_large"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_frenzy"
 			},
 			{
 				"power_vs_skaven",
@@ -1253,7 +1301,19 @@ morris_weapon_properties.combinations = {
 			},
 			{
 				"deus_coins_greed",
-				"stamina"
+				"power_vs_unarmoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_armoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_large"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_frenzy"
 			},
 			{
 				"power_vs_skaven",
@@ -1383,7 +1443,19 @@ morris_weapon_properties.combinations = {
 			},
 			{
 				"deus_coins_greed",
-				"stamina"
+				"power_vs_unarmoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_armoured"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_large"
+			},
+			{
+				"deus_coins_greed",
+				"power_vs_frenzy"
 			},
 			{
 				"power_vs_skaven",

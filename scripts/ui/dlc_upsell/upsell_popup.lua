@@ -10,6 +10,7 @@ UpsellPopup.create_ui_elements = function (self)
 	self._widgets_by_name.title_text.content.text = Localize(upsell_settings.title_text)
 	self._widgets_by_name.body_text.content.text = Localize(upsell_settings.body_text)
 	self._widgets_by_name.store_button.content.title_text = Localize(upsell_settings.button_text)
+	self._widgets_by_name.ok_button.content.title_text = Localize(upsell_settings.ok_button_text)
 end
 
 UpsellPopup.update = function (self, dt)

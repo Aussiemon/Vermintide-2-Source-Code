@@ -50,6 +50,7 @@ ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t
 	Managers.state.achievement:trigger_event("crank_gun_fire_start", self.owner_unit)
 
 	self._ammo_expended = 0
+	self.extra_buff_shot = false
 
 	self:_update_attack_speed(t)
 
@@ -94,6 +95,7 @@ ActionCareerDREngineer._waiting_to_shoot = function (self, t)
 			local extra_shots = 0
 
 			if self:_check_extra_shot_proc(self.buff_extension) then
+				self.extra_buff_shot = true
 				extra_shots = 1 + self._extra_shots
 			end
 
@@ -160,7 +162,15 @@ end
 
 ActionCareerDREngineer.apply_shot_cost = function (self)
 	if not self.buff_extension or not self.buff_extension:has_buff_perk("free_ability") then
-		self.career_extension:reduce_activated_ability_cooldown(-self._shot_cost * self._num_projectiles_per_shot)
+		local projectiles_per_shot = self._num_projectiles_per_shot
+
+		if self.extra_buff_shot then
+			projectiles_per_shot = math.max(projectiles_per_shot - 1, 1)
+		end
+
+		self.career_extension:reduce_activated_ability_cooldown(-self._shot_cost * projectiles_per_shot)
+
+		self.extra_buff_shot = false
 	end
 
 	self._ammo_expended = self._ammo_expended + self._shot_cost * self._num_projectiles_per_shot

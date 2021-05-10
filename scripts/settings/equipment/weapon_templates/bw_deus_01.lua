@@ -78,17 +78,18 @@ weapon_template.actions = {
 			damage_profile = "geiser_magma_no_damage",
 			medium_charge_value = 0,
 			overcharge_type_heavy = "magma_charged_2",
-			fire_sound_event = "player_combat_weapon_bw_deus_01_magma_fire",
 			alert_enemies = true,
 			small_charge_value = 0,
 			fire_sound_on_husk = true,
+			fire_sound_event = "player_combat_weapon_bw_deus_01_magma_fire",
 			spell_proc_time = 0.2,
-			is_spell = true,
 			damage_window_end = 0,
 			overcharge_type = "magma_charged",
 			alert_sound_range_fire = 12,
 			fire_time = 0,
+			is_spell = true,
 			can_proc_in_inn = true,
+			speed = 1500,
 			apply_recoil = true,
 			anim_event = "attack_geiser_placed",
 			total_time = 1,
@@ -130,6 +131,7 @@ weapon_template.actions = {
 				input_extension:reset_release_input()
 				input_extension:clear_input_buffer()
 			end,
+			projectile_info = Projectiles.default,
 			recoil_settings = {
 				horizontal_climb = -1,
 				restore_duration = 0.3,
@@ -279,15 +281,12 @@ weapon_template.overcharge_data = {
 	overcharge_value_decrease_rate = 1
 }
 weapon_template.attack_meta_data = {
-	aim_at_node = "j_head",
+	max_range = 12,
 	obstruction_fuzzyness_range_charged = 3.5,
-	charged_attack_action_name = "geiser_launch",
-	can_charge_shot = true,
-	minimum_charge_time = 0.21,
-	aim_at_node_charged = "j_spine1",
-	ignore_enemies_for_obstruction_charged = false,
-	charge_when_obstructed = true,
-	ignore_enemies_for_obstruction = false
+	aim_at_node = "j_spine1",
+	max_range_charged = 18,
+	ignore_enemies_for_obstruction = true,
+	effective_against = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Special, BreedCategory.Armored)
 }
 weapon_template.default_spread_template = "bw_deus_01"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_brw_skullstaff/wpn_brw_skullstaff"
